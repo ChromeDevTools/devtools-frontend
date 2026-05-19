@@ -1,6 +1,7 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 /**
@@ -103,7 +104,15 @@ export class ProtocolService {
         //
         // To ensure the teardown operations can proceed, we need a dialog handler which lasts until
         // the LighthouseProtocolService detaches.
-        const dialogHandler = () => {
+        const initialInspectedUrl = mainTarget.inspectedURL();
+        const parsedInitialOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initialInspectedUrl);
+        const dialogHandler = (event) => {
+            const parsedEventOrigin = Common.ParsedURL.ParsedURL.extractOrigin(event.data.url);
+            if (!parsedInitialOrigin || parsedEventOrigin !== parsedInitialOrigin) {
+                // See http://crbug.com/513728809.
+                console.warn(`Lighthouse auto-accept for dialog on ${event.data.url} blocked as it was not from the original audit origin ${initialInspectedUrl}.`);
+                return;
+            }
             void mainTarget.pageAgent().invoke_handleJavaScriptDialog({ accept: true });
         };
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.JavaScriptDialogOpening, dialogHandler);

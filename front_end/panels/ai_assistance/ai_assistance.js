@@ -4607,20 +4607,34 @@ async function makePerformanceTraceWidget(widgetData) {
     jslogContext: "performance-trace"
   };
 }
+async function makeSourceFileWidget(widgetData) {
+  const file = widgetData.data.uiSourceCode;
+  const customRevealTitle = i18n9.i18n.lockedString(`Show ${file.name()}`);
+  return {
+    renderedWidget: null,
+    title: null,
+    revealable: file,
+    customRevealTitle,
+    accessibleRevealLabel: customRevealTitle,
+    jslogContext: "source-file-widget"
+  };
+}
 function renderNetworkRequestPreview(networkRequest) {
   const filename = networkRequest.url.split("/").pop() || networkRequest.url;
   const size = i18n9.ByteUtilities.bytesToString(networkRequest.size);
   const resourceType = Common4.ResourceType.resourceTypes[networkRequest.resourceType];
   const { iconName, color } = PanelUtils3.iconDataForResourceType(resourceType);
-  const imageUrl = networkRequest.imageContent?.asImagePreviewUrl() ?? networkRequest.url;
+  const imageUrl = networkRequest.imageContent?.asImagePreviewUrl();
   return html7`
     <div class="network-request-preview">
       <div class="network-request-header">
         <div class="network-request-icon">
-          ${resourceType.isImage() ? html7`<img src=${imageUrl} alt=${filename} />` : html7`<devtools-icon name=${iconName} style=${Lit5.Directives.styleMap({
-    color: color ?? ""
-  })}></devtools-icon>`}
-        </div>        <div class="network-request-details">
+          ${resourceType.isImage() && imageUrl ? (
+    // only try to render the image if we have a preview URL, else fallback to a coloured square.
+    html7`<img src=${imageUrl} alt=${filename} />`
+  ) : html7`<devtools-icon name=${iconName} style=${Lit5.Directives.styleMap({ color: color ?? "" })}></devtools-icon>`}
+        </div>
+        <div class="network-request-details">
           <div class="network-request-name" title=${networkRequest.url}>${filename}</div>
           <div class="network-request-size">${size}</div>
         </div>
@@ -4675,6 +4689,8 @@ function getWidgetSignature(widget6) {
       return `${widget6.name}:${widget6.data.track}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
     case "BOTTOM_UP_TREE":
       return `${widget6.name}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
+    case "SOURCE_FILE":
+      return `${widget6.name}:${widget6.data.uiSourceCode.url()}`;
     default:
       Platform5.assertNever(widget6, "Unknown AiWidget name");
   }
@@ -4744,6 +4760,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "BOTTOM_UP_TREE":
         response = await makeBottomUpTimelineTreeWidget(widgetData);
+        break;
+      case "SOURCE_FILE":
+        response = await makeSourceFileWidget(widgetData);
         break;
       default:
         Platform5.assertNever(widgetData, "Unknown AiWidget name");

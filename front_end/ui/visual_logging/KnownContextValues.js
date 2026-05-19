@@ -3746,6 +3746,7 @@ export const knownContextValues = new Set([
     'sort-by',
     'source-code',
     'source-file',
+    'source-file-widget',
     'source-line',
     'source-location',
     'source-map-failed',

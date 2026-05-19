@@ -1008,7 +1008,7 @@ __export(LighthousePanel_exports, {
   LighthousePanel: () => LighthousePanel
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as i18n12 from "./../../core/i18n/i18n.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
@@ -1131,6 +1131,7 @@ __export(LighthouseProtocolService_exports, {
   CancelledError: () => CancelledError,
   ProtocolService: () => ProtocolService
 });
+import * as Common2 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var lastId = 1;
@@ -1185,7 +1186,14 @@ var ProtocolService = class {
     const { sessionId } = await rootTarget.targetAgent().invoke_attachToTarget({ targetId: rootTargetId, flatten: true });
     this.connection = connection;
     this.connection.observe(this);
-    const dialogHandler = () => {
+    const initialInspectedUrl = mainTarget.inspectedURL();
+    const parsedInitialOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(initialInspectedUrl);
+    const dialogHandler = (event) => {
+      const parsedEventOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(event.data.url);
+      if (!parsedInitialOrigin || parsedEventOrigin !== parsedInitialOrigin) {
+        console.warn(`Lighthouse auto-accept for dialog on ${event.data.url} blocked as it was not from the original audit origin ${initialInspectedUrl}.`);
+        return;
+      }
       void mainTarget.pageAgent().invoke_handleJavaScriptDialog({ accept: true });
     };
     resourceTreeModel.addEventListener(SDK2.ResourceTreeModel.Events.JavaScriptDialogOpening, dialogHandler);
@@ -1344,7 +1352,7 @@ var LighthouseReportRenderer_exports = {};
 __export(LighthouseReportRenderer_exports, {
   LighthouseReportRenderer: () => LighthouseReportRenderer
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
@@ -1365,16 +1373,16 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
       onViewTrace = async () => {
         Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.LighthouseViewTrace);
         const trace = new SDK3.TraceObject.TraceObject(artifacts.Trace.traceEvents);
-        void Common2.Revealer.reveal(trace);
+        void Common3.Revealer.reveal(trace);
       };
     }
     async function onSaveFileOverride(blob) {
-      const domain = new Common2.ParsedURL.ParsedURL(lhr.finalUrl || lhr.finalDisplayedUrl).domain();
+      const domain = new Common3.ParsedURL.ParsedURL(lhr.finalUrl || lhr.finalDisplayedUrl).domain();
       const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, "_");
       const timestamp = Platform.DateUtilities.toISO8601Compact(new Date(lhr.fetchTime));
       const ext = blob.type.match("json") ? ".json" : ".html";
       const basename = `${sanitizedDomain}-${timestamp}${ext}`;
-      const base64 = await blob.arrayBuffer().then(Common2.Base64.encode);
+      const base64 = await blob.arrayBuffer().then(Common3.Base64.encode);
       await Workspace.FileManager.FileManager.instance().save(
         basename,
         new TextUtils.ContentData.ContentData(
@@ -1533,7 +1541,7 @@ __export(LighthouseReportSelector_exports, {
   Item: () => Item,
   ReportSelector: () => ReportSelector
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as i18n4 from "./../../core/i18n/i18n.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 var UIStrings2 = {
@@ -1617,7 +1625,7 @@ var Item = class {
     this.renderReport = renderReport2;
     this.showLandingCallback = showLandingCallback;
     const finalDisplayedUrl = lighthouseResult.finalDisplayedUrl || lighthouseResult.finalUrl || "";
-    const url = new Common3.ParsedURL.ParsedURL(finalDisplayedUrl);
+    const url = new Common4.ParsedURL.ParsedURL(finalDisplayedUrl);
     const timestamp = lighthouseResult.fetchTime;
     this.element = document.createElement("option");
     this.element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
@@ -2184,7 +2192,7 @@ __export(LighthouseStatusView_exports, {
   fastFactRotationInterval: () => fastFactRotationInterval,
   minimumTextVisibilityDuration: () => minimumTextVisibilityDuration
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as i18n8 from "./../../core/i18n/i18n.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
@@ -2582,7 +2590,7 @@ var StatusView = class {
     this.render();
   }
   getStatusHeader() {
-    const parsedURL = Common4.ParsedURL.ParsedURL.fromString(this.inspectedURL);
+    const parsedURL = Common5.ParsedURL.ParsedURL.fromString(this.inspectedURL);
     const pageHost = parsedURL?.host;
     if (this.isAIControlled) {
       return pageHost ? i18nString4(UIStrings4.aiAuditingS, { PH1: pageHost }) : i18nString4(UIStrings4.aiAuditingYourWebPage);
@@ -3071,7 +3079,7 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
     this.settingsPane.show(this.contentElement);
     this.settingsPane.element.classList.add("lighthouse-settings-pane");
     this.settingsPane.element.appendChild(this.startView.settingsToolbar());
-    this.showSettingsPaneSetting = Common5.Settings.Settings.instance().createSetting(
+    this.showSettingsPaneSetting = Common6.Settings.Settings.instance().createSetting(
       "lighthouse-show-settings-toolbar",
       false,
       "Synced"

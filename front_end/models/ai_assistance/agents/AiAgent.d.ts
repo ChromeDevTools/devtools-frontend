@@ -4,6 +4,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as TextUtils from '../../text_utils/text_utils.js';
 import type * as Trace from '../../trace/trace.js';
+import type * as Workspace from '../../workspace/workspace.js';
 export declare const enum ResponseType {
     CONTEXT = "context",
     TITLE = "title",
@@ -212,7 +213,13 @@ export interface BottomUpTreeAiWidget {
         parsedTrace: Trace.TraceModel.ParsedTrace;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget;
+export interface SourceFileAiWidget {
+    name: 'SOURCE_FILE';
+    data: {
+        uiSourceCode: Workspace.UISourceCode.UISourceCode;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

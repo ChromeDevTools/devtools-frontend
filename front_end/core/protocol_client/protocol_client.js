@@ -2206,6 +2206,9 @@ var DevToolsCDPConnection = class {
       if (!callback) {
         return;
       }
+      if ((callback.sessionId ?? "") !== (messageObject.sessionId ?? "")) {
+        return;
+      }
       callback.resolve(messageObject);
       --this.#pendingResponsesCount;
       this.#pendingLongPollingMessageIds.delete(messageObject.id);

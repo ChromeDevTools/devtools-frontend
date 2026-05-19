@@ -234,6 +234,12 @@ export class ContextSelectionAgent extends AiAgent {
                 return {
                     context: new FileContext(file),
                     description: 'User selected a source file',
+                    widgets: [{
+                            name: 'SOURCE_FILE',
+                            data: {
+                                uiSourceCode: file,
+                            },
+                        }],
                 };
             },
         });

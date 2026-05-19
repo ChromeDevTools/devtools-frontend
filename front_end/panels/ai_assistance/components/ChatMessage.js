@@ -1071,27 +1071,43 @@ async function makePerformanceTraceWidget(widgetData) {
         jslogContext: 'performance-trace',
     };
 }
+async function makeSourceFileWidget(widgetData) {
+    const file = widgetData.data.uiSourceCode;
+    const customRevealTitle = i18n.i18n.lockedString(`Show ${file.name()}`);
+    return {
+        renderedWidget: null,
+        title: null,
+        revealable: file,
+        customRevealTitle,
+        accessibleRevealLabel: customRevealTitle,
+        jslogContext: 'source-file-widget',
+    };
+}
 function renderNetworkRequestPreview(networkRequest) {
     const filename = networkRequest.url.split('/').pop() || networkRequest.url;
     const size = i18n.ByteUtilities.bytesToString(networkRequest.size);
     const resourceType = Common.ResourceType.resourceTypes[networkRequest.resourceType];
     const { iconName, color } = PanelUtils.iconDataForResourceType(resourceType);
-    const imageUrl = networkRequest.imageContent?.asImagePreviewUrl() ?? networkRequest.url;
+    // This can be `null` if the image is too large to have a preview generated.
+    // And we can't fallback to the actual URL due to CSP restrictions.
+    const imageUrl = networkRequest.imageContent?.asImagePreviewUrl();
+    // clang-format off
     return html `
     <div class="network-request-preview">
       <div class="network-request-header">
         <div class="network-request-icon">
-          ${resourceType.isImage() ? html `<img src=${imageUrl} alt=${filename} />` :
-        html `<devtools-icon name=${iconName} style=${Lit.Directives.styleMap({
-            color: color ?? ''
-        })}></devtools-icon>`}
-        </div>        <div class="network-request-details">
+          ${resourceType.isImage() && imageUrl ? // only try to render the image if we have a preview URL, else fallback to a coloured square.
+        html `<img src=${imageUrl} alt=${filename} />` :
+        html `<devtools-icon name=${iconName} style=${Lit.Directives.styleMap({ color: color ?? '' })}></devtools-icon>`}
+        </div>
+        <div class="network-request-details">
           <div class="network-request-name" title=${networkRequest.url}>${filename}</div>
           <div class="network-request-size">${size}</div>
         </div>
       </div>
     </div>
   `;
+    // clang-format on
 }
 async function makeDomTreeWidget(widgetData) {
     const root = widgetData.data.root;
@@ -1163,6 +1179,8 @@ export function getWidgetSignature(widget) {
             return `${widget.name}:${widget.data.track}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
         case 'BOTTOM_UP_TREE':
             return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
+        case 'SOURCE_FILE':
+            return `${widget.name}:${widget.data.uiSourceCode.url()}`;
         default:
             Platform.assertNever(widget, 'Unknown AiWidget name');
     }
@@ -1237,6 +1255,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'BOTTOM_UP_TREE':
                 response = await makeBottomUpTimelineTreeWidget(widgetData);
+                break;
+            case 'SOURCE_FILE':
+                response = await makeSourceFileWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');

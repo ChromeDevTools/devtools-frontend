@@ -17136,6 +17136,7 @@ export namespace Preload {
     PrefetchResponseUsed = 'PrefetchResponseUsed',
     PrefetchSuccessfulButNotUsed = 'PrefetchSuccessfulButNotUsed',
     PrefetchNotUsedProbeFailed = 'PrefetchNotUsedProbeFailed',
+    PrefetchCancelledOnUserNavigation = 'PrefetchCancelledOnUserNavigation',
   }
 
   /**

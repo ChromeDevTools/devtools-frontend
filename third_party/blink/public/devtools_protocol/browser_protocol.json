@@ -25598,7 +25598,8 @@
                         "PrefetchProxyNotAvailable",
                         "PrefetchResponseUsed",
                         "PrefetchSuccessfulButNotUsed",
-                        "PrefetchNotUsedProbeFailed"
+                        "PrefetchNotUsedProbeFailed",
+                        "PrefetchCancelledOnUserNavigation"
                     ]
                 },
                 {

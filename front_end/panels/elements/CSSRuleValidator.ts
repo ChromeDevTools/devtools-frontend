@@ -4,6 +4,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as uiI18n from '../../ui/i18n/i18n.js';
+import {html, type LitTemplate} from '../../ui/lit/lit.js';
 
 import {
   buildPropertyDefinitionText,
@@ -102,6 +104,7 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(undefined, str_);
 
 export const enum HintType {
   INACTIVE_PROPERTY = 'ruleValidation',
@@ -109,21 +112,21 @@ export const enum HintType {
 }
 
 export class Hint {
-  readonly #hintMessage: string;
-  readonly #possibleFixMessage: string|null;
+  readonly #hintMessage: LitTemplate|string;
+  readonly #possibleFixMessage: LitTemplate|string|null;
   readonly #learnMoreLink: string|undefined;
 
-  constructor(hintMessage: string, possibleFixMessage: string|null, learnMoreLink?: string) {
+  constructor(hintMessage: LitTemplate|string, possibleFixMessage: LitTemplate|string|null, learnMoreLink?: string) {
     this.#hintMessage = hintMessage;
     this.#possibleFixMessage = possibleFixMessage;
     this.#learnMoreLink = learnMoreLink;
   }
 
-  getMessage(): string {
+  getMessage(): LitTemplate|string {
     return this.#hintMessage;
   }
 
-  getPossibleFixMessage(): string|null {
+  getPossibleFixMessage(): LitTemplate|string|null {
     return this.#possibleFixMessage;
   }
 
@@ -164,11 +167,11 @@ export class AlignContentValidator extends CSSRuleValidator {
       const affectedPropertyDeclarationCode = buildPropertyName('align-content');
 
       return new Hint(
-          i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+          i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
             REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
             AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
           }),
-          i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+          i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
             PROPERTY_NAME: buildPropertyName('display'),
             PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
           }),
@@ -186,11 +189,11 @@ export class AlignContentValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName('align-content');
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
           PROPERTY_NAME: buildPropertyName('flex-wrap'),
           PROPERTY_VALUE: buildPropertyValue('nowrap'),
         }),
@@ -215,11 +218,11 @@ export class FlexItemValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
     const targetParentPropertyDeclaration = buildPropertyDefinitionText('display', 'flex');
     return new Hint(
-        i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedByParentElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedByParentElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedByParentElementRuleFix, {
           EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
           TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration,
         }),
@@ -244,11 +247,11 @@ export class FlexContainerValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleChangeSuggestion, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleChangeSuggestion, {
           EXISTING_PROPERTY_DECLARATION: reasonPropertyDeclaration,
           TARGET_PROPERTY_DECLARATION: targetRuleCode,
         }),
@@ -279,11 +282,11 @@ export class GridContainerValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleChangeSuggestion, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleChangeSuggestion, {
           EXISTING_PROPERTY_DECLARATION: reasonPropertyDeclaration,
           TARGET_PROPERTY_DECLARATION: targetRuleCode,
         }),
@@ -315,11 +318,11 @@ export class GridItemValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedByParentElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedByParentElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedByParentElementRuleFix, {
           EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
           TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration,
         }),
@@ -344,15 +347,15 @@ export class FlexOrGridItemValidator extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText('display', parentComputedStyles?.get('display'));
     const targetParentPropertyDeclaration =
-        `${buildPropertyDefinitionText('display', 'flex')} or ${buildPropertyDefinitionText('display', 'grid')}`;
+        html`${buildPropertyDefinitionText('display', 'flex')} or ${buildPropertyDefinitionText('display', 'grid')}`;
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedByParentElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedByParentElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedByParentElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedByParentElementRuleFix, {
           EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
           TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration,
         }),
@@ -383,11 +386,11 @@ export class FlexGridValidator extends CSSRuleValidator {
       const reasonPropertyName = buildPropertyName(propertyName);
       const reasonAlternativePropertyName = buildPropertyName('justify-self');
       return new Hint(
-          i18nString(UIStrings.flexGridContainerPropertyRuleReason, {
+          i18nLazyStringTemplate(UIStrings.flexGridContainerPropertyRuleReason, {
             CONTAINER_DISPLAY_NAME: reasonContainerDisplayName,
             PROPERTY_NAME: reasonPropertyName,
           }),
-          i18nString(UIStrings.flexGridContainerPropertyRuleFix, {
+          i18nLazyStringTemplate(UIStrings.flexGridContainerPropertyRuleFix, {
             PROPERTY_NAME: reasonPropertyName,
             ALTERNATIVE_PROPERTY_NAME: reasonAlternativePropertyName,
           }),
@@ -398,11 +401,11 @@ export class FlexGridValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleChangeFlexOrGrid, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleChangeFlexOrGrid, {
           DISPLAY_GRID_RULE: buildPropertyDefinitionText('display', 'grid'),
           DISPLAY_FLEX_RULE: buildPropertyDefinitionText('display', 'flex'),
         }),
@@ -436,11 +439,11 @@ export class MulticolFlexGridValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
           PROPERTY_NAME: buildPropertyName('display'),
           PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
         }),
@@ -480,11 +483,11 @@ export class PaddingValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
           PROPERTY_NAME: buildPropertyName('display'),
           PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
         }),
@@ -515,11 +518,11 @@ export class PositionValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
           PROPERTY_NAME: buildPropertyName('position'),
           PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('position') as string),
         }),
@@ -549,11 +552,11 @@ export class ZIndexValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
           PROPERTY_NAME: buildPropertyName('position'),
           PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('position') as string),
         }),
@@ -615,11 +618,11 @@ export class SizingValidator extends CSSRuleValidator {
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
 
     return new Hint(
-        i18nString(UIStrings.ruleViolatedBySameElementRuleReason, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleReason, {
           REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
           AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode,
         }),
-        i18nString(UIStrings.ruleViolatedBySameElementRuleFix, {
+        i18nLazyStringTemplate(UIStrings.ruleViolatedBySameElementRuleFix, {
           PROPERTY_NAME: buildPropertyName('display'),
           PROPERTY_VALUE: buildPropertyValue(computedStyles?.get('display') as string),
         }),

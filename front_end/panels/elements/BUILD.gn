@@ -111,6 +111,7 @@ devtools_ui_module("elements") {
     "../../ui/components/tooltips:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/helpers:bundle",
+    "../../ui/i18n:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",

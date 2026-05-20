@@ -3597,7 +3597,11 @@ var UIStrings = {
   /**
    * @description The UI destination when revealing loaded resources through the Animations panel
    */
-  animationsPanel: "Animations panel"
+  animationsPanel: "Animations panel",
+  /**
+   * @description The UI destination when revealing an item in the Lighthouse panel
+   */
+  lighthousePanel: "Lighthouse panel"
 };
 var str_ = i18n.i18n.registerUIStrings("core/common/Revealer.ts", UIStrings);
 var i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(void 0, str_);
@@ -3683,7 +3687,8 @@ var RevealerDestination = {
   APPLICATION_PANEL: i18nLazyString(UIStrings.applicationPanel),
   SOURCES_PANEL: i18nLazyString(UIStrings.sourcesPanel),
   MEMORY_INSPECTOR_PANEL: i18nLazyString(UIStrings.memoryInspectorPanel),
-  ANIMATIONS_PANEL: i18nLazyString(UIStrings.animationsPanel)
+  ANIMATIONS_PANEL: i18nLazyString(UIStrings.animationsPanel),
+  LIGHTHOUSE_PANEL: i18nLazyString(UIStrings.lighthousePanel)
 };
 
 // gen/front_end/core/common/Console.js

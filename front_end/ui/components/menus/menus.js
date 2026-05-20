@@ -454,7 +454,7 @@ var MenuItem = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   connectedCallback() {
     this.tabIndex = 0;
-    this.setAttribute("role", "option");
+    this.setAttribute("role", "menuitem");
     this.setAttribute("aria-selected", String(this.#props.selected));
   }
   #props = {

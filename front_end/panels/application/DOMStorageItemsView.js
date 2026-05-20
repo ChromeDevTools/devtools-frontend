@@ -30,6 +30,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -87,6 +88,7 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
             this.domStorage.addEventListener("DOMStorageItemUpdated" /* SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED */, this.domStorageItemUpdated, this),
         ];
         this.refreshItems();
+        this.selectedItemChanged(null);
     }
     domStorageItemsCleared() {
         if (!this.isShowing()) {
@@ -137,6 +139,22 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
         this.domStorage.clear();
         // explicitly clear the view because the event won't be fired when it has no items
         this.domStorageItemsCleared();
+    }
+    selectedItemChanged(item) {
+        const storageKey = this.domStorage.storageKey;
+        if (!storageKey) {
+            return;
+        }
+        const parsedKey = SDK.StorageKeyManager.parseStorageKey(storageKey);
+        const origin = parsedKey.origin;
+        const storageType = this.domStorage.isLocalStorage ? 'localStorage' : 'sessionStorage';
+        if (!item) {
+            const storageItem = new AiAssistanceModel.StorageItem.StorageItem({ origin, storageKey });
+            UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
+            return;
+        }
+        const storageItem = new AiAssistanceModel.StorageItem.StorageItem({ origin, storageKey, storageType, key: item.key });
+        UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
     }
     removeItem(key) {
         this.domStorage?.removeItem(key);

@@ -79,7 +79,7 @@ export class ContextSelectionAgent extends AiAgent {
         this.#lighthouseRecording = opts.lighthouseRecording;
         this.#onInspectElement = opts.onInspectElement;
         this.#networkTimeCalculator = opts.networkTimeCalculator;
-        this.#allowedOrigin = opts.allowedOrigin ?? (() => undefined);
+        this.#allowedOrigin = opts.allowedOrigin ?? (() => ({ origin: undefined }));
         this.declareFunction('listNetworkRequests', {
             description: `Gives a list of network requests including URL, status code, and duration.`,
             parameters: {
@@ -97,7 +97,13 @@ export class ContextSelectionAgent extends AiAgent {
             },
             handler: async () => {
                 const requests = [];
-                const origin = this.#allowedOrigin();
+                const allowedOriginResult = this.#allowedOrigin();
+                if ('blocked' in allowedOriginResult) {
+                    return {
+                        error: 'Cross-origin access blocked due to navigation. Please start a new chat.',
+                    };
+                }
+                const origin = allowedOriginResult.origin;
                 let hasCrossOriginRequest = false;
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
                     const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
@@ -155,7 +161,13 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             },
             handler: async ({ id }) => {
-                const origin = this.#allowedOrigin();
+                const allowedOriginResult = this.#allowedOrigin();
+                if ('blocked' in allowedOriginResult) {
+                    return {
+                        error: 'Cross-origin access blocked due to navigation. Please start a new chat.',
+                    };
+                }
+                const origin = allowedOriginResult.origin;
                 const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
                     if (req.requestId() !== id) {
                         return false;
@@ -312,6 +324,7 @@ export class ContextSelectionAgent extends AiAgent {
                 return {
                     context: new AccessibilityContext(result),
                     description: 'User has selected a Lighthouse report',
+                    widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report: result } }],
                 };
             }
         });

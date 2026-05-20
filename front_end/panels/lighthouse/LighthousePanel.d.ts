@@ -1,4 +1,5 @@
 import '../../ui/legacy/legacy.js';
+import * as Common from '../../core/common/common.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Events, LighthouseController } from './LighthouseController.js';
@@ -54,5 +55,9 @@ export declare class LighthousePanel extends UI.Panel.Panel {
     private loadedFromFile;
     elementsToRestoreScrollPositionsFor(): Element[];
     private onKeyDown;
+    selectReport(report: LighthouseModel.ReporterTypes.ReportJSON): void;
     static executeLighthouseRecording(overrides?: LighthouseModel.RunTypes.RunOverrides): Promise<LighthouseModel.ReporterTypes.ReportJSON | null>;
+}
+export declare class ReportRevealer implements Common.Revealer.Revealer<ActiveLighthouseReport> {
+    reveal(report: ActiveLighthouseReport): Promise<void>;
 }

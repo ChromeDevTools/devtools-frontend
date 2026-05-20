@@ -14,11 +14,13 @@ export declare class ReportSelector {
     prepend(item: Item): void;
     clearAll(): void;
     selectNewReport(): void;
+    selectReport(report: LighthouseModel.ReporterTypes.ReportJSON): void;
 }
 export declare class Item {
     private readonly renderReport;
     private readonly showLandingCallback;
     private readonly element;
+    readonly report: LighthouseModel.ReporterTypes.ReportJSON;
     constructor(lighthouseResult: LighthouseModel.ReporterTypes.ReportJSON, renderReport: () => void, showLandingCallback: () => void);
     select(): void;
     optionElement(): Element;

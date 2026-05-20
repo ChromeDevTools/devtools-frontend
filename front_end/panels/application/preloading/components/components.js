@@ -26,6 +26,10 @@ import * as SDK from "./../../../../core/sdk/sdk.js";
 import * as Bindings from "./../../../../models/bindings/bindings.js";
 var UIStrings = {
   /**
+   * @description Descrption text for Prefetch status PrefetchCancelledOnUserNavigation.
+   */
+  PrefetchCancelledOnUserNavigation: "The prefetch was cancelled because the user navigated the page before the prefetch finished",
+  /**
    * @description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
    */
   PrefetchFailedIneligibleRedirect: "The prefetch was redirected, but the redirect URL is not eligible for prefetch.",
@@ -404,7 +408,8 @@ var PrefetchReasonDescription = {
   PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler: { name: () => i18n.i18n.lockedString("Unknown") },
   PrefetchNotEligibleRedirectFromServiceWorker: { name: () => i18n.i18n.lockedString("Unknown") },
   PrefetchNotEligibleRedirectToServiceWorker: { name: () => i18n.i18n.lockedString("Unknown") },
-  PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved) }
+  PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved) },
+  PrefetchCancelledOnUserNavigation: { name: i18nLazyString(UIStrings.PrefetchCancelledOnUserNavigation) }
 };
 function prefetchFailureReason({ prefetchStatus }, statusCode) {
   switch (prefetchStatus) {
@@ -486,6 +491,8 @@ function prefetchFailureReason({ prefetchStatus }, statusCode) {
       return PrefetchReasonDescription["PrefetchNotEligibleRedirectToServiceWorker"].name();
     case "PrefetchEvictedAfterBrowsingDataRemoved":
       return PrefetchReasonDescription["PrefetchEvictedAfterBrowsingDataRemoved"].name();
+    case "PrefetchCancelledOnUserNavigation":
+      return PrefetchReasonDescription["PrefetchCancelledOnUserNavigation"].name();
     default:
       return i18n.i18n.lockedString(`Unknown failure reason: ${prefetchStatus}`);
   }

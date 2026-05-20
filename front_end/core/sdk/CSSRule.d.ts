@@ -124,5 +124,8 @@ export declare class CSSFunctionRule extends CSSRule {
     nameWithParameters(): string;
     protocolNodesToNestedStyles(nodes: Protocol.CSS.CSSFunctionNode[]): CSSNestedStyle[];
     protocolNodeToNestedStyle(node: Protocol.CSS.CSSFunctionNode): CSSNestedStyle | undefined;
+    rebase(edit: Edit): void;
+    rebaseChildren(children: CSSNestedStyle[], edit: Edit): void;
+    static mergeRanges(nodes: Protocol.CSS.CSSFunctionNode[]): Protocol.CSS.SourceRange | undefined;
 }
 export {};

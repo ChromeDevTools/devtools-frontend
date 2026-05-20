@@ -1005,7 +1005,8 @@ var Events;
 var LighthousePanel_exports = {};
 __export(LighthousePanel_exports, {
   ActiveLighthouseReport: () => ActiveLighthouseReport,
-  LighthousePanel: () => LighthousePanel
+  LighthousePanel: () => LighthousePanel,
+  ReportRevealer: () => ReportRevealer
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common6 from "./../../core/common/common.js";
@@ -1436,6 +1437,22 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
     });
     return reportEl;
   }
+  /**
+   * Renders only the score gauges component of the Lighthouse report, stripping out
+   * topbar, categories, and footer. Used by the Lighthouse report walkthrough widget.
+   */
+  static renderLighthouseScores(lhr) {
+    const reportEl = _LighthouseReportRenderer.renderLighthouseReport(lhr);
+    const reportContainer = reportEl.querySelector(".lh-container");
+    const scoresHeader = reportEl.querySelector(".lh-scores-header");
+    if (!scoresHeader || !reportContainer) {
+      return null;
+    }
+    reportContainer.replaceChildren(scoresHeader);
+    const topbar = reportEl.querySelector(".lh-topbar");
+    topbar?.remove();
+    return reportEl;
+  }
   static async waitForMainTargetLoad() {
     const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -1616,12 +1633,23 @@ var ReportSelector = class {
   selectNewReport() {
     this.#comboBox.select(this.newLighthouseItem);
   }
+  selectReport(report) {
+    for (const [optionElement, item2] of this.itemByOptionElement) {
+      if (item2.report === report) {
+        this.#comboBox.select(optionElement);
+        item2.select();
+        return;
+      }
+    }
+  }
 };
 var Item = class {
   renderReport;
   showLandingCallback;
   element;
+  report;
   constructor(lighthouseResult, renderReport2, showLandingCallback) {
+    this.report = lighthouseResult;
     this.renderReport = renderReport2;
     this.showLandingCallback = showLandingCallback;
     const finalDisplayedUrl = lighthouseResult.finalDisplayedUrl || lighthouseResult.finalUrl || "";
@@ -3201,11 +3229,20 @@ var LighthousePanel = class _LighthousePanel extends UI7.Panel.Panel {
       event.handled = true;
     }
   }
+  selectReport(report) {
+    this.reportSelector.selectReport(report);
+  }
   static async executeLighthouseRecording(overrides) {
     const panel = _LighthousePanel.instance();
     await UI7.ViewManager.ViewManager.instance().showView("lighthouse");
     const { report } = await panel.handleCompleteRun(overrides);
     return report;
+  }
+};
+var ReportRevealer = class {
+  async reveal(report) {
+    await UI7.ViewManager.ViewManager.instance().showView("lighthouse");
+    LighthousePanel.instance().selectReport(report.report);
   }
 };
 export {

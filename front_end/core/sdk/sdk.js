@@ -15956,14 +15956,19 @@ var CSSPositionTryRule = class extends CSSRule {
     return this.#active;
   }
 };
-var CSSFunctionRule = class extends CSSRule {
+var CSSFunctionRule = class _CSSFunctionRule extends CSSRule {
   #name;
   #parameters;
   #children;
   constructor(cssModel, payload) {
     super(cssModel, {
       origin: payload.origin,
-      style: { cssProperties: [], shorthandEntries: [] },
+      style: {
+        cssProperties: [],
+        shorthandEntries: [],
+        range: _CSSFunctionRule.mergeRanges(payload.children),
+        styleSheetId: payload.styleSheetId
+      },
       header: styleSheetHeaderForRule(cssModel, payload)
     });
     this.#name = new CSSValue(payload.name);
@@ -16024,6 +16029,64 @@ var CSSFunctionRule = class extends CSSRule {
     }
     console.error("A function rule node must have a style or condition");
     return;
+  }
+  rebase(edit) {
+    super.rebase(edit);
+    if (edit.styleSheetId !== this.style.styleSheetId) {
+      return;
+    }
+    this.rebaseChildren(this.#children, edit);
+  }
+  rebaseChildren(children, edit) {
+    for (const child of children) {
+      if ("style" in child) {
+        child.style.rebase(edit);
+      }
+      if ("children" in child) {
+        if ("media" in child) {
+          child.media.rebase(edit);
+        }
+        if ("container" in child) {
+          child.container.rebase(edit);
+        }
+        if ("supports" in child) {
+          child.supports.rebase(edit);
+        }
+        if ("navigation" in child) {
+          child.navigation.rebase(edit);
+        }
+        this.rebaseChildren(child.children, edit);
+      }
+    }
+  }
+  static mergeRanges(nodes) {
+    let mergedRange;
+    const nodeQueue = [...nodes];
+    while (nodeQueue.length > 0) {
+      const node = nodeQueue.pop();
+      if (node.condition) {
+        nodeQueue.push(...node.condition.children);
+      }
+      if (node.style) {
+        if (!node.style.range) {
+          return;
+        }
+        const { startLine, startColumn, endLine, endColumn } = node.style.range;
+        if (!mergedRange) {
+          mergedRange = { startLine, startColumn, endLine, endColumn };
+          continue;
+        }
+        if (startLine < mergedRange.startLine || startLine === mergedRange.startLine && startColumn < mergedRange.startColumn) {
+          mergedRange.startLine = startLine;
+          mergedRange.startColumn = startColumn;
+        }
+        if (endLine > mergedRange.endLine || endLine === mergedRange.endLine && endColumn > mergedRange.endColumn) {
+          mergedRange.endLine = endLine;
+          mergedRange.endColumn = endColumn;
+        }
+      }
+    }
+    return mergedRange;
   }
 };
 
@@ -17734,10 +17797,10 @@ var RemoteObject = class _RemoteObject {
   get className() {
     return null;
   }
-  callFunction(_functionDeclaration, _args) {
+  callFunction(_functionDeclaration, _args, _params) {
     throw new Error("Not implemented");
   }
-  callFunctionJSON(_functionDeclaration, _args) {
+  callFunctionJSON(_functionDeclaration, _args, _params) {
     throw new Error("Not implemented");
   }
   arrayBufferByteLength() {
@@ -17965,12 +18028,13 @@ var RemoteObjectImpl = class extends RemoteObject {
     }
     return void 0;
   }
-  async callFunction(functionDeclaration, args) {
+  async callFunction(functionDeclaration, args, params) {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
       objectId: this.#objectId,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
-      silent: true
+      silent: true,
+      throwOnSideEffect: params?.throwOnSideEffect
     });
     if (response.getError()) {
       return { object: null, wasThrown: false };
@@ -17980,13 +18044,14 @@ var RemoteObjectImpl = class extends RemoteObject {
       wasThrown: Boolean(response.exceptionDetails)
     };
   }
-  async callFunctionJSON(functionDeclaration, args) {
+  async callFunctionJSON(functionDeclaration, args, params) {
     const response = await this.#runtimeAgent.invoke_callFunctionOn({
       objectId: this.#objectId,
       functionDeclaration: functionDeclaration.toString(),
       arguments: args,
       silent: true,
-      returnByValue: true
+      returnByValue: true,
+      throwOnSideEffect: params?.throwOnSideEffect
     });
     if (response.getError() || response.exceptionDetails) {
       return null;

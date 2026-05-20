@@ -115,6 +115,11 @@ export interface RequestOptions {
     temperature?: number;
     modelId?: string;
 }
+export type AllowedOriginResult = {
+    origin: string | undefined;
+} | {
+    blocked: true;
+};
 export interface AgentOptions {
     aidaClient: Host.AidaClient.AidaClient;
     serverSideLoggingEnabled?: boolean;
@@ -122,7 +127,7 @@ export interface AgentOptions {
     confirmSideEffectForTest?: typeof Promise.withResolvers;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     history?: Host.AidaClient.Content[];
-    allowedOrigin?: () => string | undefined;
+    allowedOrigin?: () => AllowedOriginResult;
     lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
 }
 export interface ParsedAnswer {
@@ -219,7 +224,13 @@ export interface SourceFileAiWidget {
         uiSourceCode: Workspace.UISourceCode.UISourceCode;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget;
+export interface LighthouseReportAiWidget {
+    name: 'LIGHTHOUSE_REPORT';
+    data: {
+        report: LHModel.ReporterTypes.ReportJSON;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

@@ -267,7 +267,7 @@ var EditableContent = class EditableContent2 extends HTMLElement {
     this.contentEditable = "true";
     this.tabIndex = 0;
     this.addEventListener("focus", () => {
-      this.innerHTML = this.innerText;
+      this.textContent = this.innerText;
     });
     this.addEventListener("blur", this.#highlight.bind(this));
   }

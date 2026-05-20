@@ -44,6 +44,7 @@ export class AiAgent {
     #serverSideLoggingEnabled;
     confirmSideEffect;
     #functionDeclarations = new Map();
+    #allowedOrigin;
     /**
      * Used in the debug mode and evals.
      */
@@ -68,6 +69,7 @@ export class AiAgent {
         this.#sessionId = opts.sessionId ?? crypto.randomUUID();
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
         this.#history = opts.history ?? [];
+        this.#allowedOrigin = opts.allowedOrigin;
     }
     async enhanceQuery(query) {
         return query;
@@ -313,8 +315,15 @@ export class AiAgent {
                 }
             }
             if (functionCall) {
+                const allowedOriginResult = this.#allowedOrigin?.();
+                if (allowedOriginResult && 'blocked' in allowedOriginResult) {
+                    // Abort immediately if the page navigated before we could lock the origin.
+                    // This prevents the AI from accessing data from the new page.
+                    yield this.#createErrorResponse("cross-origin" /* ErrorType.CROSS_ORIGIN */);
+                    break;
+                }
                 try {
-                    const result = yield* this.#callFunction(functionCall.name, functionCall.args, {
+                    const result = yield* this.#callFunction(functionCall.name, functionCall.args, functionCall.thoughtSignature, {
                         ...options,
                         explanation: textResponse,
                     });
@@ -356,7 +365,7 @@ export class AiAgent {
         }
         return;
     }
-    async *#callFunction(name, args, options) {
+    async *#callFunction(name, args, thoughtSignature, options) {
         const call = this.#functionDeclarations.get(name);
         if (!call) {
             throw new Error(`Function ${name} is not found.`);
@@ -367,12 +376,14 @@ export class AiAgent {
                 text: options.explanation,
             });
         }
-        parts.push({
-            functionCall: {
-                name,
-                args,
-            },
-        });
+        const functionCall = {
+            name,
+            args,
+        };
+        if (thoughtSignature) {
+            functionCall.thoughtSignature = thoughtSignature;
+        }
+        parts.push({ functionCall });
         this.#history.push({
             parts,
             role: Host.AidaClient.Role.MODEL,

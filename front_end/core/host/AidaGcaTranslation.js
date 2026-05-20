@@ -35,7 +35,7 @@ export function aidaDoConversationRequestToGcaRequest(request) {
                     })),
                 }];
         }
-        AIDA.debugLog('Translation succeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
+        AIDA.debugLog('Translation succeeded:', JSON.stringify(request), JSON.stringify(gcaRequest));
         return gcaRequest;
     }
     catch (e) {
@@ -59,10 +59,14 @@ export function gcaResponseToAidaDoConversationResponse(response) {
     if (response.candidates?.[0].content?.parts) {
         for (const part of response.candidates[0].content.parts) {
             if (part.functionCall) {
-                functionCalls.push({
+                const functionCall = {
                     name: part.functionCall.name,
                     args: part.functionCall.args || {},
-                });
+                };
+                if (part.thoughtSignature) {
+                    functionCall.thoughtSignature = part.thoughtSignature;
+                }
+                functionCalls.push(functionCall);
             }
         }
     }
@@ -71,8 +75,7 @@ export function gcaResponseToAidaDoConversationResponse(response) {
         metadata: {
             rpcGlobalId: response.responseId,
         },
-        functionCalls: functionCalls.length > 0 ?
-            functionCalls :
+        functionCalls: functionCalls.length > 0 ? functionCalls :
             undefined,
         completed: true,
     };
@@ -342,12 +345,16 @@ function convertAidaPartToGcaPart(part) {
         return { text: part.text };
     }
     if ('functionCall' in part) {
-        return {
+        const gcaPart = {
             functionCall: {
                 name: part.functionCall.name,
                 args: part.functionCall.args,
             },
         };
+        if (part.functionCall.thoughtSignature) {
+            gcaPart.thoughtSignature = part.functionCall.thoughtSignature;
+        }
+        return gcaPart;
     }
     if ('functionResponse' in part) {
         const fResponse = {};
@@ -402,6 +409,9 @@ function convertAidaParamToGcaSchema(param) {
 }
 export function gcaChunkResponseToAidaChunkResponse(response) {
     try {
+        if (response.error) {
+            throw new Error(JSON.stringify(response.error));
+        }
         const candidate = response.candidates?.[0];
         const parts = candidate?.content?.parts || [];
         const metadata = {
@@ -432,6 +442,9 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
                         args: part.functionCall.args || {},
                     },
                 };
+                if (part.thoughtSignature) {
+                    aidaChunkResponse.functionCallChunk.functionCall.thoughtSignature = part.thoughtSignature;
+                }
             }
             if (part.executableCode) {
                 aidaChunkResponse.codeChunk = {

@@ -54,6 +54,10 @@ export declare abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
     showPreview(preview: Widget | null, value: string | null): void;
     set editable(editable: boolean);
     protected keys(): string[];
+    protected selectedItemChanged(_item: {
+        key: string;
+        value: string;
+    } | null): void;
     protected abstract setItem(key: string, value: string): void;
     protected abstract removeItem(key: string): void;
     protected abstract createPreview(key: string, value: string): Promise<Widget | null>;

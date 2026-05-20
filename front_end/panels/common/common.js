@@ -3809,13 +3809,17 @@ var ExtensionServer = class _ExtensionServer extends Common6.ObjectWrapper.Objec
     }
     return void 0;
   }
-  onAddRequestHeaders(message) {
+  onAddRequestHeaders(message, port) {
     if (message.command !== "addRequestHeaders") {
       return this.status.E_BADARG("command", `expected ${"addRequestHeaders"}`);
     }
-    const id = message.extensionId;
-    if (typeof id !== "string") {
-      return this.status.E_BADARGTYPE("extensionId", typeof id, "string");
+    const id = this.getExtensionOrigin(port);
+    const extension = this.registeredExtensions.get(id);
+    if (!extension) {
+      return this.status.E_FAILED("Permission denied");
+    }
+    if (extension.hostsPolicy.runtimeBlockedHosts.length > 0) {
+      return this.status.E_FAILED("Permission denied");
     }
     let extensionHeaders = this.extraHeaders.get(id);
     if (!extensionHeaders) {
@@ -4106,7 +4110,6 @@ var ExtensionServer = class _ExtensionServer extends Common6.ObjectWrapper.Objec
       return this.status.E_BADARG("command", `expected ${"Reload"}`);
     }
     const options = message.options || {};
-    SDK2.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(typeof options.userAgent === "string" ? options.userAgent : "", null);
     let injectedScript;
     if (options.injectedScript) {
       injectedScript = "(function(){" + options.injectedScript + "})()";
@@ -4119,6 +4122,7 @@ var ExtensionServer = class _ExtensionServer extends Common6.ObjectWrapper.Objec
     if (!this.extensionAllowedOnTarget(target, port)) {
       return this.status.E_FAILED("Permission denied");
     }
+    SDK2.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(typeof options.userAgent === "string" ? options.userAgent : "", null);
     resourceTreeModel?.reloadPage(Boolean(options.ignoreCache), injectedScript);
     return this.status.OK();
   }

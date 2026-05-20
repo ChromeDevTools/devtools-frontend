@@ -320,11 +320,20 @@ export class LighthousePanel extends UI.Panel.Panel {
             event.handled = true;
         }
     }
+    selectReport(report) {
+        this.reportSelector.selectReport(report);
+    }
     static async executeLighthouseRecording(overrides) {
         const panel = LighthousePanel.instance();
         await UI.ViewManager.ViewManager.instance().showView('lighthouse');
         const { report } = await panel.handleCompleteRun(overrides);
         return report;
+    }
+}
+export class ReportRevealer {
+    async reveal(report) {
+        await UI.ViewManager.ViewManager.instance().showView('lighthouse');
+        LighthousePanel.instance().selectReport(report.report);
     }
 }
 //# sourceMappingURL=LighthousePanel.js.map

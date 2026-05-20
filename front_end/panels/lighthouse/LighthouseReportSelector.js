@@ -78,12 +78,23 @@ export class ReportSelector {
     selectNewReport() {
         this.#comboBox.select(this.newLighthouseItem);
     }
+    selectReport(report) {
+        for (const [optionElement, item] of this.itemByOptionElement) {
+            if (item.report === report) {
+                this.#comboBox.select(optionElement);
+                item.select();
+                return;
+            }
+        }
+    }
 }
 export class Item {
     renderReport;
     showLandingCallback;
     element;
+    report;
     constructor(lighthouseResult, renderReport, showLandingCallback) {
+        this.report = lighthouseResult;
         this.renderReport = renderReport;
         this.showLandingCallback = showLandingCallback;
         // In Lighthouse 10.0, `finalUrl` is not provided on snapshot or timespan reports.

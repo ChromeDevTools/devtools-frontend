@@ -254,9 +254,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.Sim
         return true;
     }
     async showSelfXssWarning() {
-        // Hack to circumvent Chrome issue which would show a tooltip for the newly opened
-        // dialog if pasting via keyboard.
-        await new Promise(resolve => setTimeout(resolve, 0));
         const allowPasting = await PanelCommon.TypeToAllowDialog.show({
             jslogContext: {
                 dialog: 'self-xss-warning',

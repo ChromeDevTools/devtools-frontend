@@ -343,7 +343,12 @@ export class CSSFunctionRule extends CSSRule {
     constructor(cssModel, payload) {
         super(cssModel, {
             origin: payload.origin,
-            style: { cssProperties: [], shorthandEntries: [] },
+            style: {
+                cssProperties: [],
+                shorthandEntries: [],
+                range: CSSFunctionRule.mergeRanges(payload.children),
+                styleSheetId: payload.styleSheetId
+            },
             header: styleSheetHeaderForRule(cssModel, payload),
         });
         this.#name = new CSSValue(payload.name);
@@ -404,6 +409,65 @@ export class CSSFunctionRule extends CSSRule {
         }
         console.error('A function rule node must have a style or condition');
         return;
+    }
+    rebase(edit) {
+        super.rebase(edit);
+        if (edit.styleSheetId !== this.style.styleSheetId) {
+            return;
+        }
+        this.rebaseChildren(this.#children, edit);
+    }
+    rebaseChildren(children, edit) {
+        for (const child of children) {
+            if ('style' in child) {
+                child.style.rebase(edit);
+            }
+            if ('children' in child) {
+                if ('media' in child) {
+                    child.media.rebase(edit);
+                }
+                if ('container' in child) {
+                    child.container.rebase(edit);
+                }
+                if ('supports' in child) {
+                    child.supports.rebase(edit);
+                }
+                if ('navigation' in child) {
+                    child.navigation.rebase(edit);
+                }
+                this.rebaseChildren(child.children, edit);
+            }
+        }
+    }
+    static mergeRanges(nodes) {
+        let mergedRange;
+        const nodeQueue = [...nodes];
+        while (nodeQueue.length > 0) {
+            const node = nodeQueue.pop();
+            if (node.condition) {
+                nodeQueue.push(...node.condition.children);
+            }
+            if (node.style) {
+                if (!node.style.range) {
+                    return;
+                }
+                const { startLine, startColumn, endLine, endColumn } = node.style.range;
+                if (!mergedRange) {
+                    mergedRange = { startLine, startColumn, endLine, endColumn };
+                    continue;
+                }
+                if (startLine < mergedRange.startLine ||
+                    (startLine === mergedRange.startLine && startColumn < mergedRange.startColumn)) {
+                    mergedRange.startLine = startLine;
+                    mergedRange.startColumn = startColumn;
+                }
+                if (endLine > mergedRange.endLine || (endLine === mergedRange.endLine && endColumn > mergedRange.endColumn)) {
+                    mergedRange.endLine = endLine;
+                    mergedRange.endColumn = endColumn;
+                }
+            }
+        }
+        return mergedRange;
     }
 }
 //# sourceMappingURL=CSSRule.js.map

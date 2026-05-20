@@ -7,7 +7,8 @@ export declare const enum ConversationType {
     NETWORK = "drjones-network-request",
     PERFORMANCE = "drjones-performance-full",
     BREAKPOINT = "breakpoint",
-    ACCESSIBILITY = "accessibility"
+    ACCESSIBILITY = "accessibility",
+    STORAGE = "storage"
 }
 export interface SerializedConversation {
     id: string;

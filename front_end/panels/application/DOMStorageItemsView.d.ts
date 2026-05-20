@@ -16,6 +16,10 @@ export declare class DOMStorageItemsView extends KeyValueStorageItemsView {
     private domStorageItemUpdated;
     refreshItems(): void;
     deleteAllItems(): void;
+    protected selectedItemChanged(item: {
+        key: string;
+        value: string;
+    } | null): void;
     protected removeItem(key: string): void;
     protected setItem(key: string, value: string): void;
 }

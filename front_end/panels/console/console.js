@@ -4610,6 +4610,7 @@ __export(ConsolePinPane_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import * as Common5 from "./../../core/common/common.js";
+import * as Host3 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
@@ -4621,6 +4622,7 @@ import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js"
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import { Directives, html as html3, nothing as nothing4, render as render4 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as PanelCommon2 from "./../common/common.js";
 
 // gen/front_end/panels/console/consolePinPane.css.js
 var consolePinPane_css_default = `/*
@@ -4736,7 +4738,25 @@ var UIStrings3 = {
   /**
    * @description Text of a DOM element in Console Pin Pane of the Console panel
    */
-  notAvailable: "not available"
+  notAvailable: "not available",
+  /**
+   * @description Headline of warning shown to users when pasting text/code into DevTools.
+   */
+  doYouTrustThisCode: "Do you trust this code?",
+  /**
+   * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @example {allow pasting} PH1
+   */
+  doNotPaste: "Don't paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below to allow pasting.",
+  /**
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   */
+  allowPasting: "allow pasting",
+  /**
+   * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @example {allow pasting} PH1
+   */
+  typeAllowPasting: "Type \u201C{PH1}\u201D"
 };
 var str_3 = i18n7.i18n.registerUIStrings("panels/console/ConsolePinPane.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
@@ -4895,9 +4915,16 @@ var ConsolePinPresenter = class extends UI5.Widget.Widget {
   #hovered = false;
   #lastNode = null;
   #deletePinIcon;
+  #selfXssWarningDisabledSetting;
   constructor(element, view = DEFAULT_VIEW3) {
     super(element);
     this.#view = view;
+    this.#selfXssWarningDisabledSetting = Common5.Settings.Settings.instance().createSetting(
+      "disable-self-xss-warning",
+      false,
+      "Synced"
+      /* Common.Settings.SettingStorageType.SYNCED */
+    );
     this.#pinEditor = {
       workingCopy: () => this.#editor?.state.doc.toString() ?? "",
       workingCopyWithHint: () => this.#editor ? TextEditor.Config.contentIncludingHint(this.#editor.editor) : "",
@@ -4985,7 +5012,10 @@ var ConsolePinPresenter = class extends UI5.Widget.Widget {
           }
         }
       ]),
-      CodeMirror.EditorView.domEventHandlers({ blur: (_e, view) => this.#onBlur(view) }),
+      CodeMirror.EditorView.domEventHandlers({
+        blur: (_e, view) => this.#onBlur(view),
+        paste: () => this.#onPaste()
+      }),
       TextEditor.Config.baseConfiguration(doc),
       TextEditor.Config.closeBrackets.instance(),
       TextEditor.Config.autocompletion.instance()
@@ -5005,6 +5035,29 @@ var ConsolePinPresenter = class extends UI5.Widget.Widget {
       changes: !commitedAsIs ? { from: 0, to: editor.state.doc.length, insert: this.#pin.expression } : void 0
     });
     this.requestUpdate();
+  }
+  #onPaste() {
+    if (Root2.Runtime.Runtime.queryParam("isChromeForTesting") || Root2.Runtime.Runtime.queryParam("disableSelfXssWarnings") || this.#selfXssWarningDisabledSetting.get()) {
+      return false;
+    }
+    void this.#showSelfXssWarning();
+    return true;
+  }
+  async #showSelfXssWarning() {
+    const allowPasting = await PanelCommon2.TypeToAllowDialog.show({
+      jslogContext: {
+        dialog: "self-xss-warning",
+        input: "allow-pasting"
+      },
+      header: i18nString3(UIStrings3.doYouTrustThisCode),
+      message: i18nString3(UIStrings3.doNotPaste, { PH1: i18nString3(UIStrings3.allowPasting) }),
+      typePhrase: i18nString3(UIStrings3.allowPasting),
+      inputPlaceholder: i18nString3(UIStrings3.typeAllowPasting, { PH1: i18nString3(UIStrings3.allowPasting) })
+    });
+    if (allowPasting) {
+      this.#selfXssWarningDisabledSetting.set(true);
+      Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.SelfXssAllowPastingInDialog);
+    }
   }
   setHovered(hovered) {
     if (this.#hovered === hovered) {
@@ -6062,7 +6115,7 @@ __export(ConsolePrompt_exports, {
   ConsolePrompt: () => ConsolePrompt
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
+import * as Host5 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
@@ -6095,7 +6148,7 @@ __export(ConsoleView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common7 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
+import * as Host4 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
@@ -6410,7 +6463,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       this.isSidebarOpen = event.data === "Both";
       if (this.isSidebarOpen) {
         if (!this.userHasOpenedSidebarAtLeastOnce) {
-          Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.ConsoleSidebarOpened);
+          Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ConsoleSidebarOpened);
           this.userHasOpenedSidebarAtLeastOnce = true;
         }
         this.pendingSidebarMessages.forEach((message) => {
@@ -6467,7 +6520,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     const issuesToolbarItem = new UI8.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: () => {
-        Host3.userMetrics.issuesPanelOpenedFrom(
+        Host4.userMetrics.issuesPanelOpenedFrom(
           2
           /* Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER */
         );
@@ -6542,7 +6595,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
         additionalFiles: [{
           path: "devtools-console-context.js",
           content: AiCodeCompletion.AiCodeCompletion.consoleAdditionalContextFileContent,
-          included_reason: Host3.AidaClient.Reason.RELATED_FILE
+          included_reason: Host4.AidaClient.Reason.RELATED_FILE
         }],
         stopSequences: ["\n\n"]
       },
@@ -7186,7 +7239,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       const message = this.itemElement(i);
       messageContents.push(message.toExportString());
     }
-    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(messageContents.join("\n") + "\n");
+    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(messageContents.join("\n") + "\n");
   }
   tryToCollapseMessages(viewMessage, lastMessage) {
     const timestampsShown = this.timestampsSetting.get();
@@ -7625,13 +7678,13 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     for (const { key } of parsedFilters) {
       switch (key) {
         case FilterType.Context:
-          Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.ConsoleFilterByContext);
+          Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ConsoleFilterByContext);
           break;
         case FilterType.Source:
-          Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.ConsoleFilterBySource);
+          Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ConsoleFilterBySource);
           break;
         case FilterType.Url:
-          Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.ConsoleFilterByUrl);
+          Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ConsoleFilterByUrl);
           break;
       }
     }
@@ -7725,7 +7778,7 @@ var ActionDelegate = class {
         if (inspectorView.drawerVisible() && inspectorView.isDrawerMinimized()) {
           inspectorView.setDrawerMinimized(false);
         }
-        Host3.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
+        Host4.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         Common7.Console.Console.instance().show();
         consoleView.focusPrompt();
         return true;
@@ -8192,7 +8245,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
   showSelfXssWarning() {
     Common8.Console.Console.instance().warn(i18nString6(UIStrings6.selfXssWarning, { PH1: i18nString6(UIStrings6.allowPasting) }), Common8.Console.FrontendMessageSource.SELF_XSS);
     this.#selfXssWarningShown = true;
-    Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
+    Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.SelfXssWarningConsoleMessageShown);
     this.#updateJavaScriptCompletionCompartment();
   }
   async handleEnter(forceEvaluate) {
@@ -8209,7 +8262,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
         /* Common.Settings.SettingStorageType.SYNCED */
       ).set(true);
       this.#selfXssWarningShown = false;
-      Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.SelfXssAllowPastingInConsole);
+      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.SelfXssAllowPastingInConsole);
       this.#updateJavaScriptCompletionCompartment();
       return;
     }
@@ -8249,7 +8302,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
         const expression = ObjectUI3.JavaScriptREPL.JavaScriptREPL.wrapObjectLiteral(text);
         void this.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
         if (ConsolePanel.instance().isShowing()) {
-          Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.CommandEvaluatedInConsolePanel);
+          Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.CommandEvaluatedInConsolePanel);
           Badges.UserBadges.instance().recordAction(Badges.BadgeAction.CONSOLE_PROMPT_EXECUTED);
         }
       }

@@ -75,5 +75,6 @@ export declare const RevealerDestination: {
     SOURCES_PANEL: () => Platform.UIString.LocalizedString;
     MEMORY_INSPECTOR_PANEL: () => Platform.UIString.LocalizedString;
     ANIMATIONS_PANEL: () => Platform.UIString.LocalizedString;
+    LIGHTHOUSE_PANEL: () => Platform.UIString.LocalizedString;
 };
 export type RevealerDestination = () => Platform.UIString.LocalizedString;

@@ -314,7 +314,6 @@ var SourceFrameImpl = class extends Common.ObjectWrapper.eventMixin(UI.View.Simp
     return true;
   }
   async showSelfXssWarning() {
-    await new Promise((resolve) => setTimeout(resolve, 0));
     const allowPasting = await PanelCommon.TypeToAllowDialog.show({
       jslogContext: {
         dialog: "self-xss-warning",

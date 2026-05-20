@@ -86,6 +86,25 @@ export class LighthouseReportRenderer {
         });
         return reportEl;
     }
+    /**
+     * Renders only the score gauges component of the Lighthouse report, stripping out
+     * topbar, categories, and footer. Used by the Lighthouse report walkthrough widget.
+     */
+    static renderLighthouseScores(lhr) {
+        // Ideally, we would only render the scores header, but since it's imported from lighthouse
+        // and it doesn't expose a way to render only the scores header, we render the full report
+        // and strip out the other components.
+        const reportEl = LighthouseReportRenderer.renderLighthouseReport(lhr);
+        const reportContainer = reportEl.querySelector('.lh-container');
+        const scoresHeader = reportEl.querySelector('.lh-scores-header');
+        if (!scoresHeader || !reportContainer) {
+            return null;
+        }
+        reportContainer.replaceChildren(scoresHeader);
+        const topbar = reportEl.querySelector('.lh-topbar');
+        topbar?.remove();
+        return reportEl;
+    }
     static async waitForMainTargetLoad() {
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!mainTarget) {

@@ -299,6 +299,12 @@ async function getEmptyStateSuggestions(conversation) {
                 { title: 'What are the slowest network requests on this page?', jslogContext: 'empty' },
             ];
         }
+        case "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */: {
+            return [
+                { title: 'How is localStorage used on this page?', jslogContext: 'storage-default' },
+                { title: 'How is sessionStorage used on this page?', jslogContext: 'storage-default' },
+            ];
+        }
         default:
             Platform.assertNever(conversation.type, 'Unknown conversation type');
     }
@@ -509,6 +515,12 @@ function createPerformanceTraceContext(focus) {
     }
     return new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
 }
+function createStorageContext(item) {
+    if (!item) {
+        return null;
+    }
+    return new AiAssistanceModel.StorageAgent.StorageContext(item);
+}
 let panelInstance;
 export class AiAssistancePanel extends UI.Panel.Panel {
     view;
@@ -529,6 +541,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedRequest = null;
     #selectedBreakpoint = null;
     #selectedAccessibility = null;
+    #selectedStorage = null;
     // Messages displayed in the `ChatView` component.
     #messages = [];
     // Whether the UI should show loading or not.
@@ -808,6 +821,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         const isSourcesPanelVisible = viewManager.isViewVisible('sources');
         const isPerformancePanelVisible = viewManager.isViewVisible('timeline');
         const isLighthousePanelVisible = viewManager.isViewVisible('lighthouse');
+        const isApplicationPanelVisible = viewManager.isViewVisible('resources');
         let targetConversationType;
         if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
             targetConversationType = "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */;
@@ -827,6 +841,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         else if (isLighthousePanelVisible && hostConfig.devToolsAiAssistanceAccessibilityAgent?.enabled) {
             targetConversationType = "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */;
+        }
+        else if (isApplicationPanelVisible && hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
+            targetConversationType = "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */;
         }
         if (isAiAssistanceContextSelectionAgentEnabled() && !targetConversationType) {
             return "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */;
@@ -950,6 +967,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#selectedBreakpoint =
             createBreakpointContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UILocation));
         this.#selectedAccessibility = createAccessibilityContext(UI.Context.Context.instance().flavor(LighthousePanel.LighthousePanel.ActiveLighthouseReport));
+        this.#selectedStorage =
+            createStorageContext(UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem));
         this.#updateConversationState(this.#conversation);
         this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#handleAidaAvailabilityChange);
@@ -957,6 +976,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+        UI.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(LighthousePanel.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
@@ -979,6 +999,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
         UI.Context.Context.instance().removeFlavorChangeListener(SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
         UI.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+        UI.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
         UI.Context.Context.instance().removeFlavorChangeListener(Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
         UI.Context.Context.instance().removeFlavorChangeListener(LighthousePanel.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
         UI.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged" /* UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED */, this.#selectDefaultAgentIfNeeded, this);
@@ -1002,6 +1023,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
+        this.#updateConversationState(this.#conversation);
+    };
+    #handleStorageItemFlavorChange = (ev) => {
+        if (this.#selectedStorage?.getItem() === ev.data) {
+            return;
+        }
+        this.#selectedStorage = createStorageContext(ev.data);
         this.#updateConversationState(this.#conversation);
     };
     #handleDOMNodeAttrChange = (ev) => {
@@ -1144,6 +1172,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return this.#conversation.selectedContext ?
                     lockedString(UIStringsNotTranslate.inputPlaceholderForAccessibility) :
                     lockedString(UIStringsNotTranslate.inputPlaceholderForAccessibilityNoContext);
+            case "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */:
+                return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
                 if (AiAssistanceModel.AiUtils.isGeminiBranding()) {
                     return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContextBranded);
@@ -1192,6 +1222,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 }
                 return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibilityEnterpriseNoLogging);
             case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
+            case "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */:
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
                 if (loggingEnabled) {
                     return lockedString(UIStringsNotTranslate.inputDisclaimerForNoContext);
@@ -1411,6 +1442,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return this.#selectedBreakpoint;
             case "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */:
                 return this.#selectedAccessibility;
+            case "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */:
+                return this.#selectedStorage;
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
             case undefined:
                 return null;
@@ -1434,6 +1467,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         else if (data instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext) {
             this.#selectedAccessibility = data;
+        }
+        else if (data instanceof AiAssistanceModel.StorageAgent.StorageContext) {
+            this.#selectedStorage = data;
         }
         void VisualLogging.logFunctionCall(`context-change-${this.#conversation?.type}`);
         this.requestUpdate();

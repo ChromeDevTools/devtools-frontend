@@ -28,8 +28,12 @@ export declare abstract class RemoteObject {
     unserializableValue(): string | undefined;
     get preview(): Protocol.Runtime.ObjectPreview | undefined;
     get className(): string | null;
-    callFunction<T, U>(_functionDeclaration: (this: U, ...args: any[]) => T, _args?: Protocol.Runtime.CallArgument[]): Promise<CallFunctionResult>;
-    callFunctionJSON<T, U>(_functionDeclaration: (this: U, ...args: any[]) => T, _args: Protocol.Runtime.CallArgument[] | undefined): Promise<T | null>;
+    callFunction<T, U>(_functionDeclaration: (this: U, ...args: any[]) => T, _args?: Protocol.Runtime.CallArgument[], _params?: {
+        throwOnSideEffect?: boolean;
+    } | undefined): Promise<CallFunctionResult>;
+    callFunctionJSON<T, U>(_functionDeclaration: (this: U, ...args: any[]) => T, _args: Protocol.Runtime.CallArgument[] | undefined, _params?: {
+        throwOnSideEffect?: boolean;
+    } | undefined): Promise<T | null>;
     arrayBufferByteLength(): number;
     deleteProperty(_name: Protocol.Runtime.CallArgument): Promise<string | undefined>;
     setPropertyValue(_name: string | Protocol.Runtime.CallArgument, _value: string): Promise<string | undefined>;
@@ -65,8 +69,12 @@ export declare class RemoteObjectImpl extends RemoteObject {
     setPropertyValue(name: string | Protocol.Runtime.CallArgument, value: string): Promise<string | undefined>;
     doSetObjectPropertyValue(result: Protocol.Runtime.RemoteObject, name: Protocol.Runtime.CallArgument): Promise<string | undefined>;
     deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string | undefined>;
-    callFunction<T, U>(functionDeclaration: (this: U, ...args: any[]) => T, args?: Protocol.Runtime.CallArgument[]): Promise<CallFunctionResult>;
-    callFunctionJSON<T, U>(functionDeclaration: (this: U, ...args: any[]) => T, args: Protocol.Runtime.CallArgument[] | undefined): Promise<T | null>;
+    callFunction<T, U>(functionDeclaration: (this: U, ...args: any[]) => T, args?: Protocol.Runtime.CallArgument[], params?: {
+        throwOnSideEffect?: boolean;
+    }): Promise<CallFunctionResult>;
+    callFunctionJSON<T, U>(functionDeclaration: (this: U, ...args: any[]) => T, args: Protocol.Runtime.CallArgument[] | undefined, params?: {
+        throwOnSideEffect?: boolean;
+    }): Promise<T | null>;
     release(): void;
     arrayLength(): number;
     arrayBufferByteLength(): number;

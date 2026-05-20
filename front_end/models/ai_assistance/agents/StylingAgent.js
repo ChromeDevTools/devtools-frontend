@@ -431,6 +431,10 @@ export class StylingAgent extends AiAgent {
             if (!resolved) {
                 return { error: 'Error: Could not find the element with uid=' + uid };
             }
+            const newContext = new NodeContext(resolved);
+            if (this.context?.getOrigin() !== newContext.getOrigin()) {
+                return { error: 'Error: Node does not belong to the current origin.' };
+            }
             const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
             if (!styles) {
                 return { error: 'Error: Could not get computed styles.' };

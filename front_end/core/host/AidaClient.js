@@ -193,6 +193,7 @@ export class AidaClient {
                     functionCalls.push({
                         name: result.functionCallChunk.functionCall.name,
                         args: result.functionCallChunk.functionCall.args,
+                        thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature,
                     });
                 }
                 else if ('error' in result) {
@@ -213,8 +214,7 @@ export class AidaClient {
         yield {
             explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR() : ''),
             metadata,
-            functionCalls: functionCalls.length ? functionCalls :
-                undefined,
+            functionCalls: functionCalls.length ? functionCalls : undefined,
             completed: true,
         };
     }

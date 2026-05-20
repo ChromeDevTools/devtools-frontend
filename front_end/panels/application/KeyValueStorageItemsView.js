@@ -179,6 +179,7 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
                 else {
                     void this.#previewEntry(item);
                 }
+                this.selectedItemChanged(item);
             },
             onSort: (ascending) => {
                 this.#isSortOrderAscending = ascending;
@@ -340,6 +341,8 @@ export class KeyValueStorageItemsView extends UI.Widget.VBox {
     }
     keys() {
         return this.#items.map(item => item.key);
+    }
+    selectedItemChanged(_item) {
     }
 }
 //# sourceMappingURL=KeyValueStorageItemsView.js.map

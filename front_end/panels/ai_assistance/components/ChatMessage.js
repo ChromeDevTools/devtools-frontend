@@ -22,6 +22,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
+import * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
 import * as TimelineInsights from '../../timeline/components/insights/insights.js';
 import * as Timeline from '../../timeline/timeline.js';
@@ -224,6 +225,14 @@ const UIStringsNotTranslate = {
      * @description Title for the core web vitals widget.
      */
     coreVitals: 'Core Web Vitals',
+    /**
+     * @description Title for the Lighthouse report widget.
+     */
+    lighthouseReport: 'Lighthouse report',
+    /**
+     * @description Accessible label for the reveal button in the Lighthouse report widget.
+     */
+    revealLighthouse: 'Reveal Lighthouse report',
     /**
      * @description Title for the LCP breakdown widget.
      */
@@ -1181,6 +1190,8 @@ export function getWidgetSignature(widget) {
             return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
         case 'SOURCE_FILE':
             return `${widget.name}:${widget.data.uiSourceCode.url()}`;
+        case 'LIGHTHOUSE_REPORT':
+            return `${widget.name}:${widget.data.report.fetchTime}`;
         default:
             Platform.assertNever(widget, 'Unknown AiWidget name');
     }
@@ -1258,6 +1269,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'SOURCE_FILE':
                 response = await makeSourceFileWidget(widgetData);
+                break;
+            case 'LIGHTHOUSE_REPORT':
+                response = await makeLighthouseReportWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -1731,6 +1745,19 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealPerformanceSummary),
         title: lockedString(UIStringsNotTranslate.performanceSummary),
         jslogContext: 'timeline-range-summary',
+    };
+}
+async function makeLighthouseReportWidget(widgetData) {
+    const reportEl = Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
+    if (!reportEl) {
+        return null;
+    }
+    return {
+        renderedWidget: html `<div class="lighthouse-report-widget">${reportEl}</div>`,
+        revealable: new Lighthouse.LighthousePanel.ActiveLighthouseReport(widgetData.data.report),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLighthouse),
+        title: lockedString(UIStringsNotTranslate.lighthouseReport),
+        jslogContext: 'lighthouse-report-widget',
     };
 }
 //# sourceMappingURL=ChatMessage.js.map

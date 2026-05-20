@@ -306,7 +306,7 @@ function aidaDoConversationRequestToGcaRequest(request) {
         }))
       }];
     }
-    debugLog("Translation succeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
+    debugLog("Translation succeeded:", JSON.stringify(request), JSON.stringify(gcaRequest));
     return gcaRequest;
   } catch (e) {
     debugLog("Translation error:", JSON.stringify(request), e);
@@ -329,10 +329,14 @@ function gcaResponseToAidaDoConversationResponse(response) {
   if (response.candidates?.[0].content?.parts) {
     for (const part of response.candidates[0].content.parts) {
       if (part.functionCall) {
-        functionCalls.push({
+        const functionCall = {
           name: part.functionCall.name,
           args: part.functionCall.args || {}
-        });
+        };
+        if (part.thoughtSignature) {
+          functionCall.thoughtSignature = part.thoughtSignature;
+        }
+        functionCalls.push(functionCall);
       }
     }
   }
@@ -599,12 +603,16 @@ function convertAidaPartToGcaPart(part) {
     return { text: part.text };
   }
   if ("functionCall" in part) {
-    return {
+    const gcaPart = {
       functionCall: {
         name: part.functionCall.name,
         args: part.functionCall.args
       }
     };
+    if (part.functionCall.thoughtSignature) {
+      gcaPart.thoughtSignature = part.functionCall.thoughtSignature;
+    }
+    return gcaPart;
   }
   if ("functionResponse" in part) {
     const fResponse = {};
@@ -656,6 +664,9 @@ function convertAidaParamToGcaSchema(param) {
 }
 function gcaChunkResponseToAidaChunkResponse(response) {
   try {
+    if (response.error) {
+      throw new Error(JSON.stringify(response.error));
+    }
     const candidate = response.candidates?.[0];
     const parts = candidate?.content?.parts || [];
     const metadata = {
@@ -686,6 +697,9 @@ function gcaChunkResponseToAidaChunkResponse(response) {
             args: part.functionCall.args || {}
           }
         };
+        if (part.thoughtSignature) {
+          aidaChunkResponse.functionCallChunk.functionCall.thoughtSignature = part.thoughtSignature;
+        }
       }
       if (part.executableCode) {
         aidaChunkResponse.codeChunk = {
@@ -1836,7 +1850,8 @@ var AidaClient = class {
         } else if (result.functionCallChunk) {
           functionCalls.push({
             name: result.functionCallChunk.functionCall.name,
-            args: result.functionCallChunk.functionCall.args
+            args: result.functionCallChunk.functionCall.args,
+            thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature
           });
         } else if ("error" in result) {
           throw new Error(`Server responded: ${JSON.stringify(result)}`);

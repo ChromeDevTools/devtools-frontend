@@ -13,11 +13,23 @@ import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent, FileContext } from './agents/FileAgent.js';
 import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
 import { PerformanceAgent, PerformanceTraceContext } from './agents/PerformanceAgent.js';
+import { StorageAgent, StorageContext } from './agents/StorageAgent.js';
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 export const CONTEXT_TITLE = 'Analyzing data';
 const MAX_TITLE_LENGTH = 80;
+/**
+ * List of page navigations that are allowed during an AI agent run.
+ * These are page navigations triggered by agents themselves:
+ * - `about://` : Navigated to before initiating a trace recording to ensure a clean state.
+ * - `chrome://terms`: Navigated to by Lighthouse during its Back-Forward Cache
+ *    audit.
+ */
+export const ALLOWED_PAGE_NAVIGATIONS = [
+    Platform.DevToolsPath.urlString `about://`,
+    Platform.DevToolsPath.urlString `chrome://terms`,
+];
 export function generateContextDetailsMarkdown(details) {
     const detailsMarkdown = [];
     for (const detail of details) {
@@ -53,6 +65,7 @@ export class AiConversation {
     #aidaClient;
     #changeManager;
     #origin;
+    #navigationOccurredDuringRun = false;
     #contexts = [];
     #performanceRecordAndReload;
     #lighthouseRecording;
@@ -118,6 +131,9 @@ export class AiConversation {
             }
             else if (updateContext instanceof AccessibilityContext) {
                 this.#updateAgent("accessibility" /* ConversationType.ACCESSIBILITY */);
+            }
+            else if (updateContext instanceof StorageContext) {
+                this.#updateAgent("storage" /* ConversationType.STORAGE */);
             }
         }
     }
@@ -299,6 +315,10 @@ export class AiConversation {
                 this.#agent = new AccessibilityAgent(options);
                 break;
             }
+            case "storage" /* ConversationType.STORAGE */: {
+                this.#agent = new StorageAgent(options);
+                break;
+            }
             case "none" /* ConversationType.NONE */: {
                 this.#agent = new ContextSelectionAgent(options);
                 break;
@@ -308,20 +328,39 @@ export class AiConversation {
         }
     }
     async *run(initialQuery, options = {}) {
-        if (this.isBlockedByOrigin) {
-            // This error should not be reached. If it happens, some
-            // invariants do not hold anymore.
-            throw new Error('cross-origin context data should not be included');
-        }
-        const userQuery = {
-            type: "user-query" /* ResponseType.USER_QUERY */,
-            query: initialQuery,
-            imageInput: options.multimodalInput?.input,
-            imageId: options.multimodalInput?.id,
+        this.#navigationOccurredDuringRun = false;
+        const originAtRunStart = getPrimaryPageOrigin();
+        const listener = () => {
+            // If an unexpected navigation to a different origin occurred
+            // during processing the user's request, we don't want to allow
+            // the agent to run any function calls and retrieve data from the new origin.
+            // Performance agent and accessibility agent navigate to 'about://' or 'chrome://terms'
+            const newOrigin = getPrimaryPageOrigin();
+            if (originAtRunStart !== newOrigin && newOrigin && !ALLOWED_PAGE_NAVIGATIONS.includes(newOrigin)) {
+                this.#navigationOccurredDuringRun = true;
+            }
         };
-        void this.addHistoryItem(userQuery);
-        yield userQuery;
-        yield* this.#runAgent(initialQuery, options);
+        const targetManager = SDK.TargetManager.TargetManager.instance();
+        targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+        try {
+            if (this.isBlockedByOrigin) {
+                // This error should not be reached. If it happens, some
+                // invariants do not hold anymore.
+                throw new Error('cross-origin context data should not be included');
+            }
+            const userQuery = {
+                type: "user-query" /* ResponseType.USER_QUERY */,
+                query: initialQuery,
+                imageInput: options.multimodalInput?.input,
+                imageId: options.multimodalInput?.id,
+            };
+            void this.addHistoryItem(userQuery);
+            yield userQuery;
+            yield* this.#runAgent(initialQuery, options);
+        }
+        finally {
+            targetManager.removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+        }
     }
     #getQueryAfterSelection(initialQuery, selection) {
         return `${selection}\nOriginal user query: ${initialQuery}`;
@@ -380,13 +419,14 @@ export class AiConversation {
         return this.#type;
     }
     allowedOrigin = () => {
-        if (this.#origin) {
-            return this.#origin;
+        if (this.#navigationOccurredDuringRun) {
+            return { blocked: true };
         }
-        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-        const inspectedURL = target?.inspectedURL();
-        this.#origin = inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : undefined;
-        return this.#origin;
+        if (this.#origin) {
+            return { origin: this.#origin };
+        }
+        this.#origin = getPrimaryPageOrigin();
+        return { origin: this.#origin };
     };
 }
 function isAiAssistanceServerSideLoggingEnabled() {
@@ -394,5 +434,10 @@ function isAiAssistanceServerSideLoggingEnabled() {
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
     return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+}
+function getPrimaryPageOrigin() {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const inspectedURL = target?.inspectedURL();
+    return inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : undefined;
 }
 //# sourceMappingURL=AiConversation.js.map

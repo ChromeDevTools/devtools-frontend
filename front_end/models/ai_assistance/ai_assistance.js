@@ -1214,6 +1214,7 @@ var AiAgent = class {
   #serverSideLoggingEnabled;
   confirmSideEffect;
   #functionDeclarations = /* @__PURE__ */ new Map();
+  #allowedOrigin;
   /**
    * Used in the debug mode and evals.
    */
@@ -1235,6 +1236,7 @@ var AiAgent = class {
     this.#sessionId = opts.sessionId ?? crypto.randomUUID();
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     this.#history = opts.history ?? [];
+    this.#allowedOrigin = opts.allowedOrigin;
   }
   async enhanceQuery(query) {
     return query;
@@ -1468,8 +1470,16 @@ var AiAgent = class {
         }
       }
       if (functionCall) {
+        const allowedOriginResult = this.#allowedOrigin?.();
+        if (allowedOriginResult && "blocked" in allowedOriginResult) {
+          yield this.#createErrorResponse(
+            "cross-origin"
+            /* ErrorType.CROSS_ORIGIN */
+          );
+          break;
+        }
         try {
-          const result = yield* this.#callFunction(functionCall.name, functionCall.args, {
+          const result = yield* this.#callFunction(functionCall.name, functionCall.args, functionCall.thoughtSignature, {
             ...options,
             explanation: textResponse
           });
@@ -1518,7 +1528,7 @@ var AiAgent = class {
     }
     return;
   }
-  async *#callFunction(name, args, options) {
+  async *#callFunction(name, args, thoughtSignature, options) {
     const call = this.#functionDeclarations.get(name);
     if (!call) {
       throw new Error(`Function ${name} is not found.`);
@@ -1529,12 +1539,14 @@ var AiAgent = class {
         text: options.explanation
       });
     }
-    parts.push({
-      functionCall: {
-        name,
-        args
-      }
-    });
+    const functionCall = {
+      name,
+      args
+    };
+    if (thoughtSignature) {
+      functionCall.thoughtSignature = thoughtSignature;
+    }
+    parts.push({ functionCall });
     this.#history.push({
       parts,
       role: Host.AidaClient.Role.MODEL
@@ -1693,10 +1705,10 @@ function formatError(message) {
 var SideEffectError = class extends Error {
 };
 function getErrorStackOnThePage() {
-  return { stack: this.stack, message: this.message };
+  return { stack: "", message: this.message };
 }
 function stringifyObjectOnThePage() {
-  const seenBefore = /* @__PURE__ */ new WeakMap();
+  const seenBefore = /* @__PURE__ */ new Map();
   return JSON.stringify(this, function replacer(key, value) {
     if (typeof value === "object" && value !== null) {
       if (seenBefore.has(value)) {
@@ -1733,13 +1745,15 @@ async function stringifyRemoteObject(object, functionDeclaration) {
       return `${object.description}`;
     case "object": {
       if (object.subtype === "error") {
-        const res2 = await object.callFunctionJSON(getErrorStackOnThePage, []);
+        const res2 = await object.callFunctionJSON(getErrorStackOnThePage, [], { throwOnSideEffect: true });
         if (!res2) {
           throw new Error("Could not stringify the object" + object);
         }
         return EvaluateAction.stringifyError(res2, functionDeclaration);
       }
-      const res = await object.callFunction(stringifyObjectOnThePage);
+      const res = await object.callFunction(stringifyObjectOnThePage, void 0, {
+        throwOnSideEffect: true
+      });
       if (!res.object || res.object.type !== "string") {
         throw new Error("Could not stringify the object" + object);
       }
@@ -2058,6 +2072,20 @@ var JavascriptExecutor = class {
 };
 
 // gen/front_end/models/ai_assistance/agents/AccessibilityAgent.js
+var ACCESSIBILITY_CSS_PROPERTIES = [
+  "color",
+  "background-color",
+  "display",
+  "visibility",
+  "opacity",
+  "clip",
+  "clip-path",
+  "font-size",
+  "font-weight",
+  "line-height",
+  "letter-spacing",
+  "text-transform"
+];
 var preamble = `You are an accessibility expert agent integrated into Chrome DevTools.
 Your role is to help users understand and fix accessibility issues found in Lighthouse reports.
 
@@ -2245,7 +2273,10 @@ var AccessibilityAgent = class extends AiAgent {
           return { error: "Failed to run accessibility audits." };
         }
         const audits = new LighthouseFormatter().audits(report, "accessibility");
-        return { result: { audits } };
+        return {
+          result: { audits },
+          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
+        };
       }
     });
     this.declareFunction("getLighthouseAudits", {
@@ -2276,7 +2307,10 @@ var AccessibilityAgent = class extends AiAgent {
           return { error: "No Lighthouse report available." };
         }
         const audits = new LighthouseFormatter().audits(report, params.categoryId);
-        return { result: { audits } };
+        return {
+          result: { audits },
+          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
+        };
       }
     });
     this.declareFunction("getStyles", {
@@ -2407,7 +2441,25 @@ var AccessibilityAgent = class extends AiAgent {
           ignoredReasons: axNode.ignoredReasons(),
           backendNodeId: node.backendNodeId()
         };
-        return { result: JSON.stringify(result, null, 2) };
+        const widgets = [];
+        const cssModel = node.domModel().cssModel();
+        const styles = await cssModel.getComputedStyle(node.id);
+        const matchedStyles = await cssModel.getMatchedStyles(node.id);
+        if (styles && matchedStyles) {
+          widgets.push({
+            name: "COMPUTED_STYLES",
+            data: {
+              computedStyles: styles,
+              backendNodeId: node.backendNodeId(),
+              matchedCascade: matchedStyles,
+              properties: ACCESSIBILITY_CSS_PROPERTIES
+            }
+          });
+        }
+        return {
+          result: JSON.stringify(result, null, 2),
+          widgets: widgets.length > 0 ? widgets : void 0
+        };
       }
     });
   }
@@ -8324,6 +8376,10 @@ var StylingAgent = class _StylingAgent extends AiAgent {
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
       }
+      const newContext = new NodeContext(resolved);
+      if (this.context?.getOrigin() !== newContext.getOrigin()) {
+        return { error: "Error: Node does not belong to the current origin." };
+      }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
       if (!styles) {
         return { error: "Error: Could not get computed styles." };
@@ -8632,7 +8688,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#onInspectElement = opts.onInspectElement;
     this.#networkTimeCalculator = opts.networkTimeCalculator;
-    this.#allowedOrigin = opts.allowedOrigin ?? (() => void 0);
+    this.#allowedOrigin = opts.allowedOrigin ?? (() => ({ origin: void 0 }));
     this.declareFunction("listNetworkRequests", {
       description: `Gives a list of network requests including URL, status code, and duration.`,
       parameters: {
@@ -8650,7 +8706,13 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       handler: async () => {
         const requests = [];
-        const origin = this.#allowedOrigin();
+        const allowedOriginResult = this.#allowedOrigin();
+        if ("blocked" in allowedOriginResult) {
+          return {
+            error: "Cross-origin access blocked due to navigation. Please start a new chat."
+          };
+        }
+        const origin = allowedOriginResult.origin;
         let hasCrossOriginRequest = false;
         for (const request of Logs3.NetworkLog.NetworkLog.instance().requests()) {
           const documentOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
@@ -8698,7 +8760,13 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       },
       handler: async ({ id }) => {
-        const origin = this.#allowedOrigin();
+        const allowedOriginResult = this.#allowedOrigin();
+        if ("blocked" in allowedOriginResult) {
+          return {
+            error: "Cross-origin access blocked due to navigation. Please start a new chat."
+          };
+        }
+        const origin = allowedOriginResult.origin;
         const request = Logs3.NetworkLog.NetworkLog.instance().requests().find((req) => {
           if (req.requestId() !== id) {
             return false;
@@ -8854,7 +8922,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         }
         return {
           context: new AccessibilityContext(result),
-          description: "User has selected a Lighthouse report"
+          description: "User has selected a Lighthouse report",
+          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report: result } }]
         };
       }
     });
@@ -10137,15 +10206,38 @@ __export(StorageAgent_exports, {
   StorageContext: () => StorageContext
 });
 import * as Host14 from "./../../core/host/host.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root13 from "./../../core/root/root.js";
-var preamble11 = `You are a Senior Software Engineer, specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in Cookies, LocalStorage, and SessionStorage and connecting it to the application logic in the source code.
+import * as SDK11 from "./../../core/sdk/sdk.js";
+var lockedString7 = i18n15.i18n.lockedString;
+var preamble11 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage and SessionStorage.
+
+You have access to the site's storage using tools like \`listStorageKeys\` and \`getStorageValues\` to analyze storage state.
+
+# Goals
+
+1.  **Explain Purpose**: Identify what specific storage entries are for.
+2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in their browser storage, and how it relates to their application's behavior or potential issues (such as state mismatch or drift).
+
+# Tools & Workflow
+
+-   Use \`listStorageKeys\` to survey the keys available for Local or Session storage.
+-   Use \`getStorageValues\` to access the values of specific Local or Session storage keys.
+-   **CRITICAL**: Only access storage values when the keys/names are not enough, and if you have a good reason to access them.
+
+If the user asks a question that requires an investigation of a problem, use this structure for answering:
+
+-   If available, point out the root cause(s) of the problem.
+    -   Example: "**Root Cause**: The UI theme is resetting because the 'uiTheme' local storage key is set to an invalid value."
+-   If applicable, list actionable solution suggestion(s) in order of impact:
+    -   Example: "**Suggestion**: Clear the 'uiTheme' local storage key or set it to 'light' or 'dark'."
 
 # Considerations
 
--   **Raw Evidence**: Treat storage data as "raw evidence". Do not make assumptions without verifying code references.
+-   **Raw Evidence**: Treat storage data as "raw evidence". Do not make assumptions.
+-   **Dynamic State**: Storage values may change over time as the user interacts with the page. ALWAYS re-request values using the \`getStorageValues\` tool when you need to inspect them, even if you have already requested them in the past. Do NOT rely on previously cached values in your memory.
 -   **Brevity**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Keep answers short and actionable.
-
- **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
+-   **CRITICAL**: You are a storage debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
 `;
 var StorageContext = class extends ConversationContext {
   #item;
@@ -10166,7 +10258,7 @@ var StorageContext = class extends ConversationContext {
     return `Storage for ${this.#item.origin}`;
   }
 };
-var StorageAgent = class extends AiAgent {
+var StorageAgent = class _StorageAgent extends AiAgent {
   preamble = preamble11;
   clientFeature = Host14.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
   get userTier() {
@@ -10180,22 +10272,172 @@ var StorageAgent = class extends AiAgent {
       modelId
     };
   }
-  constructor(opts = {}) {
-    super({
-      aidaClient: opts.aidaClient ?? new Host14.AidaClient.AidaClient(),
-      sessionId: opts.sessionId
+  constructor(opts) {
+    super(opts);
+    this.declareFunction("listStorageKeys", {
+      description: "Lists all keys for a given storage type for the current origin.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          type: {
+            type: 1,
+            description: "Storage type: localStorage or sessionStorage",
+            nullable: false
+          }
+        },
+        required: ["type"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString7("Reading storage keys"),
+          action: `listStorageKeys('${args.type}')`
+        };
+      },
+      handler: async (args) => {
+        const storageOrError = this.getDOMStorage(args.type);
+        if ("error" in storageOrError) {
+          return storageOrError;
+        }
+        const items = await storageOrError.storage.getItems();
+        if (!items) {
+          return { result: JSON.stringify({ keys: [] }) };
+        }
+        const keys = items.map((item) => item[0]);
+        return { result: JSON.stringify({ keys }) };
+      }
+    });
+    this.declareFunction("getStorageValues", {
+      description: "Retrieve specific string values from storage for requested keys.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          type: {
+            type: 1,
+            description: "Storage type: localStorage or sessionStorage",
+            nullable: false
+          },
+          keys: {
+            type: 5,
+            description: "A list of keys to retrieve values for.",
+            items: { type: 1, description: "A storage key." },
+            nullable: false
+          }
+        },
+        required: ["type", "keys"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString7("Reading storage values"),
+          action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)})`
+        };
+      },
+      handler: async (args, options) => {
+        if (options?.approved !== true) {
+          const keyString = args.keys.map((k) => `\`${k}\``).join(", ");
+          return {
+            requiresApproval: true,
+            description: lockedString7(`The AI wants to access the value(s) of ${args.type} keys ${keyString}.`)
+          };
+        }
+        const storageOrError = this.getDOMStorage(args.type);
+        if ("error" in storageOrError) {
+          return storageOrError;
+        }
+        const items = await storageOrError.storage.getItems();
+        if (!items) {
+          return { result: JSON.stringify({ items: {} }) };
+        }
+        const itemMap = new Map(items);
+        const resultRecord = {};
+        for (const key of args.keys) {
+          resultRecord[key] = itemMap.get(key) ?? null;
+        }
+        return { result: JSON.stringify({ items: resultRecord }) };
+      }
     });
   }
-  async *handleContextDetails(_context) {
+  getDOMStorage(type) {
+    const origin = this.context?.getOrigin();
+    if (!origin) {
+      return { error: "No origin available." };
+    }
+    const storageKey = this.context?.getItem().storageKey;
+    const isLocalStorage = type === "localStorage";
+    if (storageKey) {
+      const domStorageModels = SDK11.TargetManager.TargetManager.instance().models(SDK11.DOMStorageModel.DOMStorageModel);
+      for (const domStorageModel2 of domStorageModels) {
+        domStorageModel2.enable();
+        const storage2 = domStorageModel2.storageForId({ storageKey, isLocalStorage });
+        if (storage2) {
+          return { storage: storage2 };
+        }
+      }
+      return { error: `Storage not found for key ${storageKey} and type ${type}` };
+    }
+    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!target) {
+      return { error: "No primary page target found." };
+    }
+    const domStorageModel = target.model(SDK11.DOMStorageModel.DOMStorageModel);
+    if (!domStorageModel) {
+      return { error: "DOMStorageModel not found." };
+    }
+    domStorageModel.enable();
+    const storages = domStorageModel.storages();
+    const storage = storages.find((s) => {
+      const storageKey2 = s.storageKey;
+      if (!storageKey2) {
+        return false;
+      }
+      const parsedKey = SDK11.StorageKeyManager.parseStorageKey(storageKey2);
+      return parsedKey.origin === origin && s.isLocalStorage === isLocalStorage;
+    });
+    if (!storage) {
+      return { error: `Storage not found for origin ${origin} and type ${type}` };
+    }
+    return { storage };
   }
-  async enhanceQuery(query, _context) {
-    return query;
+  static #formatContext(origin, item) {
+    if (item.storageType && item.key) {
+      return `Storage Type: ${item.storageType}
+Origin: ${origin}
+Key: ${item.key}`;
+    }
+    return `Origin: ${origin}`;
+  }
+  async *handleContextDetails(context) {
+    if (!context) {
+      return;
+    }
+    yield {
+      type: "context",
+      details: [
+        {
+          title: "Selected Storage Context",
+          text: _StorageAgent.#formatContext(context.getOrigin(), context.getItem())
+        }
+      ]
+    };
+  }
+  async enhanceQuery(query, context) {
+    if (!context) {
+      return query;
+    }
+    return `# Active Context
+${_StorageAgent.#formatContext(context.getOrigin(), context.getItem())}
+
+${query}`;
   }
 };
 
 // gen/front_end/models/ai_assistance/AiConversation.js
 var AiConversation_exports = {};
 __export(AiConversation_exports, {
+  ALLOWED_PAGE_NAVIGATIONS: () => ALLOWED_PAGE_NAVIGATIONS,
   AiConversation: () => AiConversation,
   CONTEXT_TITLE: () => CONTEXT_TITLE,
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
@@ -10205,7 +10447,7 @@ import * as Common8 from "./../../core/common/common.js";
 import * as Host15 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Greendev4 from "./../greendev/greendev.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
@@ -10358,6 +10600,10 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common7.ObjectWrapper.Obj
 var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
+var ALLOWED_PAGE_NAVIGATIONS = [
+  Platform6.DevToolsPath.urlString`about://`,
+  Platform6.DevToolsPath.urlString`chrome://terms`
+];
 function generateContextDetailsMarkdown(details) {
   const detailsMarkdown = [];
   for (const detail of details) {
@@ -10397,6 +10643,7 @@ var AiConversation = class _AiConversation {
   #aidaClient;
   #changeManager;
   #origin;
+  #navigationOccurredDuringRun = false;
   #contexts = [];
   #performanceRecordAndReload;
   #lighthouseRecording;
@@ -10477,6 +10724,11 @@ var AiConversation = class _AiConversation {
         this.#updateAgent(
           "accessibility"
           /* ConversationType.ACCESSIBILITY */
+        );
+      } else if (updateContext instanceof StorageContext) {
+        this.#updateAgent(
+          "storage"
+          /* ConversationType.STORAGE */
         );
       }
     }
@@ -10662,6 +10914,10 @@ ${item.text.trim()}`);
         this.#agent = new AccessibilityAgent(options);
         break;
       }
+      case "storage": {
+        this.#agent = new StorageAgent(options);
+        break;
+      }
       case "none": {
         this.#agent = new ContextSelectionAgent(options);
         break;
@@ -10671,18 +10927,32 @@ ${item.text.trim()}`);
     }
   }
   async *run(initialQuery, options = {}) {
-    if (this.isBlockedByOrigin) {
-      throw new Error("cross-origin context data should not be included");
-    }
-    const userQuery = {
-      type: "user-query",
-      query: initialQuery,
-      imageInput: options.multimodalInput?.input,
-      imageId: options.multimodalInput?.id
+    this.#navigationOccurredDuringRun = false;
+    const originAtRunStart = getPrimaryPageOrigin();
+    const listener = () => {
+      const newOrigin = getPrimaryPageOrigin();
+      if (originAtRunStart !== newOrigin && newOrigin && !ALLOWED_PAGE_NAVIGATIONS.includes(newOrigin)) {
+        this.#navigationOccurredDuringRun = true;
+      }
     };
-    void this.addHistoryItem(userQuery);
-    yield userQuery;
-    yield* this.#runAgent(initialQuery, options);
+    const targetManager = SDK12.TargetManager.TargetManager.instance();
+    targetManager.addModelListener(SDK12.ResourceTreeModel.ResourceTreeModel, SDK12.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    try {
+      if (this.isBlockedByOrigin) {
+        throw new Error("cross-origin context data should not be included");
+      }
+      const userQuery = {
+        type: "user-query",
+        query: initialQuery,
+        imageInput: options.multimodalInput?.input,
+        imageId: options.multimodalInput?.id
+      };
+      void this.addHistoryItem(userQuery);
+      yield userQuery;
+      yield* this.#runAgent(initialQuery, options);
+    } finally {
+      targetManager.removeModelListener(SDK12.ResourceTreeModel.ResourceTreeModel, SDK12.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    }
   }
   #getQueryAfterSelection(initialQuery, selection) {
     return `${selection}
@@ -10736,13 +11006,14 @@ Original user query: ${initialQuery}`;
     return this.#type;
   }
   allowedOrigin = () => {
-    if (this.#origin) {
-      return this.#origin;
+    if (this.#navigationOccurredDuringRun) {
+      return { blocked: true };
     }
-    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
-    const inspectedURL = target?.inspectedURL();
-    this.#origin = inspectedURL ? new Common8.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
-    return this.#origin;
+    if (this.#origin) {
+      return { origin: this.#origin };
+    }
+    this.#origin = getPrimaryPageOrigin();
+    return { origin: this.#origin };
   };
 };
 function isAiAssistanceServerSideLoggingEnabled() {
@@ -10750,6 +11021,11 @@ function isAiAssistanceServerSideLoggingEnabled() {
 }
 function isAiAssistanceContextSelectionAgentEnabled() {
   return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
+}
+function getPrimaryPageOrigin() {
+  const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+  const inspectedURL = target?.inspectedURL();
+  return inspectedURL ? new Common8.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
 }
 
 // gen/front_end/models/ai_assistance/AiUtils.js
@@ -10761,7 +11037,7 @@ __export(AiUtils_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host16 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root15 from "./../../core/root/root.js";
 var UIStrings = {
   /**
@@ -10781,8 +11057,8 @@ var UIStrings = {
    */
   notAvailableInIncognitoMode: "AI assistance is not available in Incognito mode or Guest mode."
 };
-var str_ = i18n15.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
-var i18nString = i18n15.i18n.getLocalizedString.bind(void 0, str_);
+var str_ = i18n17.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
+var i18nString = i18n17.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
   if (Root15.Runtime.hostConfig.isOffTheRecord) {
@@ -11068,6 +11344,21 @@ Your instructions are as follows:
 
 // gen/front_end/models/ai_assistance/StorageItem.js
 var StorageItem_exports = {};
+__export(StorageItem_exports, {
+  StorageItem: () => StorageItem
+});
+var StorageItem = class {
+  origin;
+  storageKey;
+  storageType;
+  key;
+  constructor(data) {
+    this.origin = data.origin;
+    this.storageKey = data.storageKey;
+    this.storageType = data.storageType;
+    this.key = data.key;
+  }
+};
 export {
   AICallTree_exports as AICallTree,
   AIContext_exports as AIContext,

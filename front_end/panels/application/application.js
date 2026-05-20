@@ -5955,6 +5955,10 @@ import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 var UIStrings12 = {
   /**
+   * @description Descrption text for Prefetch status PrefetchCancelledOnUserNavigation.
+   */
+  PrefetchCancelledOnUserNavigation: "The prefetch was cancelled because the user navigated the page before the prefetch finished",
+  /**
    * @description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
    */
   PrefetchFailedIneligibleRedirect: "The prefetch was redirected, but the redirect URL is not eligible for prefetch.",
@@ -6333,7 +6337,8 @@ var PrefetchReasonDescription = {
   PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler: { name: () => i18n23.i18n.lockedString("Unknown") },
   PrefetchNotEligibleRedirectFromServiceWorker: { name: () => i18n23.i18n.lockedString("Unknown") },
   PrefetchNotEligibleRedirectToServiceWorker: { name: () => i18n23.i18n.lockedString("Unknown") },
-  PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings12.PrefetchEvictedAfterBrowsingDataRemoved) }
+  PrefetchEvictedAfterBrowsingDataRemoved: { name: i18nLazyString(UIStrings12.PrefetchEvictedAfterBrowsingDataRemoved) },
+  PrefetchCancelledOnUserNavigation: { name: i18nLazyString(UIStrings12.PrefetchCancelledOnUserNavigation) }
 };
 function ruleSetLocationShort(ruleSet, pageURL2) {
   const url = ruleSet.url === void 0 ? pageURL2 : ruleSet.url;
@@ -10420,6 +10425,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
         } else {
           void this.#previewEntry(item2);
         }
+        this.selectedItemChanged(item2);
       },
       onSort: (ascending) => {
         this.#isSortOrderAscending = ascending;
@@ -10577,6 +10583,8 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
   }
   keys() {
     return this.#items.map((item2) => item2.key);
+  }
+  selectedItemChanged(_item) {
   }
 };
 
@@ -16667,6 +16675,7 @@ __export(DOMStorageItemsView_exports, {
 import * as Common19 from "./../../core/common/common.js";
 import * as i18n67 from "./../../core/i18n/i18n.js";
 import * as SDK27 from "./../../core/sdk/sdk.js";
+import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
 import * as SourceFrame7 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI33 from "./../../ui/legacy/legacy.js";
@@ -16733,6 +16742,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       this.domStorage.addEventListener("DOMStorageItemUpdated", this.domStorageItemUpdated, this)
     ];
     this.refreshItems();
+    this.selectedItemChanged(null);
   }
   domStorageItemsCleared() {
     if (!this.isShowing()) {
@@ -16781,6 +16791,22 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   deleteAllItems() {
     this.domStorage.clear();
     this.domStorageItemsCleared();
+  }
+  selectedItemChanged(item2) {
+    const storageKey = this.domStorage.storageKey;
+    if (!storageKey) {
+      return;
+    }
+    const parsedKey = SDK27.StorageKeyManager.parseStorageKey(storageKey);
+    const origin = parsedKey.origin;
+    const storageType = this.domStorage.isLocalStorage ? "localStorage" : "sessionStorage";
+    if (!item2) {
+      const storageItem2 = new AiAssistanceModel.StorageItem.StorageItem({ origin, storageKey });
+      UI33.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem2);
+      return;
+    }
+    const storageItem = new AiAssistanceModel.StorageItem.StorageItem({ origin, storageKey, storageType, key: item2.key });
+    UI33.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
   removeItem(key) {
     this.domStorage?.removeItem(key);

@@ -1,13 +1,22 @@
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import type * as Trace from '../../models/trace/trace.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
-import { type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
+import { type AllowedOriginResult, type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
 import { ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare const CONTEXT_TITLE = "Analyzing data";
+/**
+ * List of page navigations that are allowed during an AI agent run.
+ * These are page navigations triggered by agents themselves:
+ * - `about://` : Navigated to before initiating a trace recording to ensure a clean state.
+ * - `chrome://terms`: Navigated to by Lighthouse during its Back-Forward Cache
+ *    audit.
+ */
+export declare const ALLOWED_PAGE_NAVIGATIONS: Platform.DevToolsPath.UrlString[];
 export declare function generateContextDetailsMarkdown(details: ContextDetail[]): string;
 export interface AiConversationOptions {
     type: ConversationType;
@@ -50,5 +59,5 @@ export declare class AiConversation {
     get isBlockedByOrigin(): boolean;
     get origin(): string | undefined;
     get type(): ConversationType;
-    allowedOrigin: () => string | undefined;
+    allowedOrigin: () => AllowedOriginResult;
 }

@@ -15902,7 +15902,8 @@ export declare namespace Preload {
         PrefetchProxyNotAvailable = "PrefetchProxyNotAvailable",
         PrefetchResponseUsed = "PrefetchResponseUsed",
         PrefetchSuccessfulButNotUsed = "PrefetchSuccessfulButNotUsed",
-        PrefetchNotUsedProbeFailed = "PrefetchNotUsedProbeFailed"
+        PrefetchNotUsedProbeFailed = "PrefetchNotUsedProbeFailed",
+        PrefetchCancelledOnUserNavigation = "PrefetchCancelledOnUserNavigation"
     }
     /**
      * Information of headers to be displayed when the header mismatch occurred.

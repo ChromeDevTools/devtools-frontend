@@ -172,6 +172,7 @@ models/ai_assistance/agents/NetworkAgent.test.js
 models/ai_assistance/agents/PatchAgent.test.js
 models/ai_assistance/agents/PerformanceAgent.test.js
 models/ai_assistance/agents/PerformanceAnnotationsAgent.test.js
+models/ai_assistance/agents/StorageAgent.test.js
 models/ai_assistance/agents/StylingAgent.test.js
 models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIQueries.test.js

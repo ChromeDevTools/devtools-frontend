@@ -63,7 +63,6 @@ ts_library("testing") {
 
   deps = [
     "../../extension-api",
-    "../../inspector_overlay",
     "../core/common:bundle",
     "../core/host:bundle",
     "../core/i18n:bundle",
@@ -71,9 +70,6 @@ ts_library("testing") {
     "../core/protocol_client:bundle",
     "../core/root:bundle",
     "../core/sdk:bundle",
-    "../entrypoints/inspector_main:meta",
-    "../entrypoints/main:bundle",
-    "../entrypoints/shell",
     "../foundation:bundle",
     "../generated",
     "../generated:protocol",
@@ -95,10 +91,8 @@ ts_library("testing") {
     "../panels/ai_assistance:bundle",
     "../panels/common:bundle",
     "../panels/console:bundle",
-    "../panels/elements:meta",
     "../panels/explain:bundle",
     "../panels/network:bundle",
-    "../panels/sensors:meta",
     "../panels/timeline:bundle",
     "../services/trace_bounds:bundle",
     "../third_party/codemirror.next:bundle",

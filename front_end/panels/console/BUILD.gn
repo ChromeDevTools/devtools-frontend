@@ -45,7 +45,6 @@ devtools_ui_module("console") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/ai_assistance:bundle",
     "../../models/ai_code_completion:bundle",
     "../../models/ai_code_generation:bundle",
@@ -73,13 +72,12 @@ devtools_ui_module("console") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",
+    "../../ui/legacy/components/object_ui:css_files",
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
-    "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
-    "../console_counters:bundle",
   ]
 }
 

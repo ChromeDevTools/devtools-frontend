@@ -69,4 +69,64 @@ describeWithEnvironment('DataGrid', () => {
 
     sinon.assert.called(editCallback);
   });
+
+  it('tests nodes attached to dom', () => {
+    const columns = [{id: 'id', width: '250px', sortable: false}] as DataGrid.DataGrid.ColumnDescriptor[];
+    const dataGrid = new DataGrid.DataGrid.DataGridImpl({displayName: 'Test', columns});
+    container.appendChild(dataGrid.element);
+    dataGrid.element.style.height = '150px';
+
+    const rootNode = dataGrid.rootNode();
+    const nodes: Array<DataGrid.DataGrid.DataGridNode<{id: string}>> = [];
+
+    for (let i = 0; i < 15; i++) {
+      const node = new DataGrid.DataGrid.DataGridNode({id: 'a' + i});
+      rootNode.appendChild(node);
+      nodes.push(node);
+    }
+
+    function getVisibleNodeIds(): string[] {
+      const visibleIds: string[] = [];
+      for (const node of nodes) {
+        const element = node.existingElement();
+        if (element && dataGrid.element.contains(element)) {
+          visibleIds.push(node.data.id);
+        }
+      }
+      return visibleIds;
+    }
+
+    // Initial check
+    // All nodes should be attached.
+    let visibleIds = getVisibleNodeIds();
+    assert.lengthOf(visibleIds, 15);
+
+    // Testing removal of some nodes
+    nodes[0].remove();
+    nodes[1].remove();
+    nodes[3].remove();
+    nodes[5].remove();
+
+    visibleIds = getVisibleNodeIds();
+    // Should be missing node 0, 1, 3, 5
+    assert.notInclude(visibleIds, 'a0');
+    assert.notInclude(visibleIds, 'a1');
+    assert.notInclude(visibleIds, 'a3');
+    assert.notInclude(visibleIds, 'a5');
+    assert.lengthOf(visibleIds, 11);
+
+    // Testing adding of some nodes back
+    rootNode.insertChild(nodes[0], 0);
+    rootNode.insertChild(nodes[1], 1);
+    rootNode.insertChild(nodes[3], 3);
+    rootNode.insertChild(nodes[5], 5);
+
+    visibleIds = getVisibleNodeIds();
+    // Should have nodes 0, 1, 3, 5 back
+    assert.include(visibleIds, 'a0');
+    assert.include(visibleIds, 'a1');
+    assert.include(visibleIds, 'a3');
+    assert.include(visibleIds, 'a5');
+    assert.lengthOf(visibleIds, 15);
+  });
 });

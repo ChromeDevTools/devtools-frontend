@@ -13,6 +13,8 @@ import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 
+const MAX_SUGGESTION_LENGTH = 200;
+
 export const enum ResponseType {
   CONTEXT = 'context',
   TITLE = 'title',
@@ -575,8 +577,7 @@ export abstract class AiAgent<T> {
       const trimmed = line.trim();
       if (trimmed.startsWith('SUGGESTIONS:')) {
         try {
-          // TODO: Do basic validation this is an array with strings
-          suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
+          suggestions = sanitizeSuggestions(trimmed.substring('SUGGESTIONS:'.length).trim());
         } catch {
         }
       } else {
@@ -589,8 +590,7 @@ export abstract class AiAgent<T> {
     if (!suggestions && answerLines.at(-1)?.includes('SUGGESTIONS:')) {
       const [answer, suggestionsText] = answerLines[answerLines.length - 1].split('SUGGESTIONS:', 2);
       try {
-        // TODO: Do basic validation this is an array with strings
-        suggestions = JSON.parse(suggestionsText.trim().substring('SUGGESTIONS:'.length).trim());
+        suggestions = sanitizeSuggestions(suggestionsText.trim());
       } catch {
       }
       answerLines[answerLines.length - 1] = answer;
@@ -996,4 +996,27 @@ export abstract class AiAgent<T> {
       error,
     };
   }
+}
+
+function sanitizeSuggestions(suggestions: string): [string, ...string[]]|undefined {
+  const parsed = JSON.parse(suggestions);
+  if (!Array.isArray(parsed)) {
+    return undefined;
+  }
+  const sanitized: string[] = [];
+  for (const item of parsed) {
+    if (typeof item !== 'string') {
+      continue;
+    }
+    // Collapse multiple whitespace/newlines into a single space.
+    const noExtraWhitespace = item.replace(/\s+/g, ' ').trim();
+    if (noExtraWhitespace.length === 0) {
+      continue;
+    }
+    sanitized.push(noExtraWhitespace.substring(0, MAX_SUGGESTION_LENGTH));
+  }
+  if (sanitized.length === 0) {
+    return undefined;
+  }
+  return sanitized as [string, ...string[]];
 }

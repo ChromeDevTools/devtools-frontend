@@ -43,6 +43,16 @@ function isPageTarget(target: Protocol.Target.TargetInfo): boolean {
       target.type === 'background_page' || target.type === 'webview');
 }
 
+function checkNavigationUrl(url: Platform.DevToolsPath.UrlString): void {
+  const allowedSchemes = ['http:', 'https:', 'data:'];
+  const isAllowed = allowedSchemes.some(scheme => Common.ParsedURL.schemeIs(url, scheme));
+  // We allow only about:blank but any other about: pages are intentionally
+  // blocked as they may navigate to other internal pages.
+  if (!isAllowed && url !== 'about:blank') {
+    throw new Error(`Navigation to ${url} is not allowed, due to blocked schema`);
+  }
+}
+
 export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   userFlow: UserFlow;
   speed: PlayRecordingSpeed;
@@ -273,9 +283,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
             (step.type === 'setViewport' || step.type === 'navigate')) {
           return;
         }
-        if (step.type === 'navigate' &&
-            Common.ParsedURL.schemeIs(step.url as Platform.DevToolsPath.UrlString, 'chrome:')) {
-          throw new Error('Not allowed to replay on chrome:// URLs');
+        if (step.type === 'navigate') {
+          checkNavigationUrl(step.url as Platform.DevToolsPath.UrlString);
         }
         // Focus the target in case it's not focused.
         await this.page.bringToFront();

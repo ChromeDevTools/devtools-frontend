@@ -509,12 +509,12 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const [head, tail] = splitDescription(elementData.description);
     const type = elementData.type;
     const replyArgs = elementData.replyArgs;
-    let popupContent = '';
+    let popupContent: Lit.LitTemplate|string;
     // replyArgs and type cannot get into conflict because replyArgs is attached to a command and type to a parameter
     if (replyArgs && replyArgs.length > 0) {
-      popupContent = tail + `Returns: ${replyArgs}<br>`;
+      popupContent = html`${tail}Returns: ${replyArgs}<br>`;
     } else if (type) {
-      popupContent = tail + `<br>Type: ${type}<br>`;
+      popupContent = html`${tail}<br>Type: ${type}<br>`;
     } else {
       popupContent = tail;
     }
@@ -523,7 +523,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       box: hintElement.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
         const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
-          getMessage: () => `<span>${head}</span>`,
+          getMessage: () => html`<span>${head}</span>`,
           getPossibleFixMessage: () => popupContent,
           getLearnMoreLink: () =>
               `https://chromedevtools.github.io/devtools-protocol/tot/${this.command.split('.')[0]}/`,

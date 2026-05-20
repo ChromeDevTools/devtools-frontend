@@ -507,26 +507,28 @@ export class TimelineFrameBeginFrameQueue {
   private queueFrames: number[] = [];
 
   // Maps frameSeqId to BeginFrameInfo.
-  private mapFrames: Record<number, BeginFrameInfo> = {};
+  private mapFrames = new Map<number, BeginFrameInfo>();
 
   // Add a BeginFrame to the queue, if it does not already exit.
   addFrameIfNotExists(seqId: number, startTime: Types.Timing.Micro, isDropped: boolean, isPartial: boolean): void {
-    if (!(seqId in this.mapFrames)) {
-      this.mapFrames[seqId] = new BeginFrameInfo(seqId, startTime, isDropped, isPartial);
+    if (!this.mapFrames.has(seqId)) {
+      this.mapFrames.set(seqId, new BeginFrameInfo(seqId, startTime, isDropped, isPartial));
       this.queueFrames.push(seqId);
     }
   }
 
   // Set a BeginFrame in queue as dropped.
   setDropped(seqId: number, isDropped: boolean): void {
-    if (seqId in this.mapFrames) {
-      this.mapFrames[seqId].isDropped = isDropped;
+    const frame = this.mapFrames.get(seqId);
+    if (frame) {
+      frame.isDropped = isDropped;
     }
   }
 
   setPartial(seqId: number, isPartial: boolean): void {
-    if (seqId in this.mapFrames) {
-      this.mapFrames[seqId].isPartial = isPartial;
+    const frame = this.mapFrames.get(seqId);
+    if (frame) {
+      frame.isPartial = isPartial;
     }
   }
 
@@ -535,7 +537,7 @@ export class TimelineFrameBeginFrameQueue {
 
     // Do not visualize this frame in the rare case where the current DrawFrame
     // does not have a corresponding BeginFrame.
-    if (seqId in this.mapFrames) {
+    if (this.mapFrames.has(seqId)) {
       // Pop all BeginFrames before the current frame, and add only the dropped
       // ones in |frames_to_visualize|.
       // Non-dropped frames popped here are BeginFrames that are never
@@ -544,17 +546,21 @@ export class TimelineFrameBeginFrameQueue {
       // be naturally presented as continuationss of other frames.
       while (this.queueFrames[0] !== seqId) {
         const currentSeqId = this.queueFrames[0];
-        if (this.mapFrames[currentSeqId].isDropped) {
-          framesToVisualize.push(this.mapFrames[currentSeqId]);
+        const currentFrame = this.mapFrames.get(currentSeqId);
+        if (currentFrame && currentFrame.isDropped) {
+          framesToVisualize.push(currentFrame);
         }
 
-        delete this.mapFrames[currentSeqId];
+        this.mapFrames.delete(currentSeqId);
         this.queueFrames.shift();
       }
 
       // Pop the BeginFrame associated with the current DrawFrame.
-      framesToVisualize.push(this.mapFrames[seqId]);
-      delete this.mapFrames[seqId];
+      const frame = this.mapFrames.get(seqId);
+      if (frame) {
+        framesToVisualize.push(frame);
+      }
+      this.mapFrames.delete(seqId);
       this.queueFrames.shift();
     }
     return framesToVisualize;

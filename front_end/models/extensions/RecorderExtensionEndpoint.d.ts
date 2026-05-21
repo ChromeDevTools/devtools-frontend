@@ -1,11 +1,14 @@
+import type * as Platform from '../../core/platform/platform.js';
 import { PrivateAPI } from './ExtensionAPI.js';
 import { ExtensionEndpoint } from './ExtensionEndpoint.js';
 export declare class RecorderExtensionEndpoint extends ExtensionEndpoint {
+    #private;
     private readonly name;
     private readonly mediaType?;
     private readonly capabilities;
-    constructor(name: string, port: MessagePort, capabilities: PrivateAPI.RecordingExtensionPluginCapability[], mediaType?: string);
+    constructor(name: string, port: MessagePort, capabilities: PrivateAPI.RecordingExtensionPluginCapability[], extensionOrigin: Platform.DevToolsPath.UrlString, mediaType?: string);
     getName(): string;
+    getOrigin(): Platform.DevToolsPath.UrlString;
     getCapabilities(): PrivateAPI.RecordingExtensionPluginCapability[];
     getMediaType(): string | undefined;
     protected handleEvent({ event }: {

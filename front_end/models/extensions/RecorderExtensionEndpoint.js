@@ -7,14 +7,19 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
     name;
     mediaType;
     capabilities;
-    constructor(name, port, capabilities, mediaType) {
+    #extensionOrigin;
+    constructor(name, port, capabilities, extensionOrigin, mediaType) {
         super(port);
         this.name = name;
         this.mediaType = mediaType;
         this.capabilities = capabilities;
+        this.#extensionOrigin = extensionOrigin;
     }
     getName() {
         return this.name;
+    }
+    getOrigin() {
+        return this.#extensionOrigin;
     }
     getCapabilities() {
         return this.capabilities;

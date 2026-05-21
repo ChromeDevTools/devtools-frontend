@@ -41,6 +41,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private inspectedTabId?;
     private readonly extensionAPITestHook?;
     private themeChangeHandlers;
+    private readonly recorderViewPortMap;
     private constructor();
     get isEnabledForTest(): boolean;
     dispose(): void;

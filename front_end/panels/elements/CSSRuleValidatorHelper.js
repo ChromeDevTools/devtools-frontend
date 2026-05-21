@@ -1,17 +1,18 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import { html } from '../../ui/lit/lit.js';
 export const buildPropertyDefinitionText = (property, value) => {
     if (value === undefined) {
         return buildPropertyName(property);
     }
-    return '<code class="unbreakable-text"><span class="property">' + property + '</span>: ' + value + '</code>';
+    return html `<code class="unbreakable-text"><span class="property">${property}</span>: ${value}</code>`;
 };
 export const buildPropertyName = (property) => {
-    return '<code class="unbreakable-text"><span class="property">' + property + '</span></code>';
+    return html `<code class="unbreakable-text"><span class="property">${property}</span></code>`;
 };
 export const buildPropertyValue = (property) => {
-    return '<code class="unbreakable-text">' + property + '</code>';
+    return html `<code class="unbreakable-text">${property}</code>`;
 };
 export const isFlexContainer = (computedStyles) => {
     if (!computedStyles) {

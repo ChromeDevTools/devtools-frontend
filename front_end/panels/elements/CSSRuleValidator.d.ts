@@ -1,13 +1,14 @@
 import * as SDK from '../../core/sdk/sdk.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 export declare const enum HintType {
     INACTIVE_PROPERTY = "ruleValidation",
     DEPRECATED_PROPERTY = "deprecatedProperty"
 }
 export declare class Hint {
     #private;
-    constructor(hintMessage: string, possibleFixMessage: string | null, learnMoreLink?: string);
-    getMessage(): string;
-    getPossibleFixMessage(): string | null;
+    constructor(hintMessage: LitTemplate | string, possibleFixMessage: LitTemplate | string | null, learnMoreLink?: string);
+    getMessage(): LitTemplate | string;
+    getPossibleFixMessage(): LitTemplate | string | null;
     getLearnMoreLink(): string | undefined;
 }
 export declare abstract class CSSRuleValidator {

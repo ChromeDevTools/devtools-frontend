@@ -25,6 +25,13 @@ export declare const enum ErrorType {
     BLOCK = "block",
     CROSS_ORIGIN = "cross-origin"
 }
+/**
+ * Returns true if the origin is considered opaque and should be blocked from
+ * AI assistance to prevent potential data leakage.
+ *
+ * @see https://crbug.com/513732588
+ */
+export declare function isOpaqueOrigin(origin: string): boolean;
 export declare const enum MultimodalInputType {
     SCREENSHOT = "screenshot",
     UPLOADED_IMAGE = "uploaded-image"
@@ -146,7 +153,19 @@ export declare abstract class ConversationContext<T> {
     abstract getOrigin(): string;
     abstract getItem(): T;
     abstract getTitle(): string;
-    isOriginAllowed(agentOrigin: string | undefined): boolean;
+    /**
+     * Returns true if this data context (e.g., a DOM node or Network Request) is
+     * allowed to be included in a conversation that is locked to the provided
+     * `establishedOrigin`.
+     *
+     * A conversation is "locked" to an origin once the first query is made.
+     * This method ensures that we don't mix data from different origins in the
+     * same conversation.
+     *
+     * @param establishedOrigin The origin that the current conversation is locked to.
+     * If undefined, the conversation has not yet been locked to an origin.
+     */
+    isOriginAllowed(establishedOrigin: string | undefined): boolean;
     /**
      * This method is called at the start of `AiAgent.run`.
      * It will be overridden in subclasses to fetch data related to the context item.

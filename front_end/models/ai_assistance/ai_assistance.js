@@ -1184,18 +1184,38 @@ var AiAgent_exports = {};
 __export(AiAgent_exports, {
   AiAgent: () => AiAgent,
   ConversationContext: () => ConversationContext,
-  MAX_STEPS: () => MAX_STEPS
+  MAX_STEPS: () => MAX_STEPS,
+  isOpaqueOrigin: () => isOpaqueOrigin
 });
 import * as Host from "./../../core/host/host.js";
 import * as Root from "./../../core/root/root.js";
 import * as Greendev from "./../greendev/greendev.js";
+function isOpaqueOrigin(origin) {
+  return origin === "null" || origin === "data:" || origin.startsWith("about") || origin.startsWith("detached");
+}
 var MAX_STEPS = 10;
 var ConversationContext = class {
-  isOriginAllowed(agentOrigin) {
-    if (!agentOrigin) {
+  /**
+   * Returns true if this data context (e.g., a DOM node or Network Request) is
+   * allowed to be included in a conversation that is locked to the provided
+   * `establishedOrigin`.
+   *
+   * A conversation is "locked" to an origin once the first query is made.
+   * This method ensures that we don't mix data from different origins in the
+   * same conversation.
+   *
+   * @param establishedOrigin The origin that the current conversation is locked to.
+   * If undefined, the conversation has not yet been locked to an origin.
+   */
+  isOriginAllowed(establishedOrigin) {
+    const dataOrigin = this.getOrigin();
+    if (isOpaqueOrigin(dataOrigin)) {
+      return false;
+    }
+    if (!establishedOrigin) {
       return true;
     }
-    return this.getOrigin() === agentOrigin;
+    return dataOrigin === establishedOrigin;
   }
   /**
    * This method is called at the start of `AiAgent.run`.
@@ -8713,6 +8733,11 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           };
         }
         const origin = allowedOriginResult.origin;
+        if (origin && isOpaqueOrigin(origin)) {
+          return {
+            error: "No requests recorded by DevTools"
+          };
+        }
         let hasCrossOriginRequest = false;
         for (const request of Logs3.NetworkLog.NetworkLog.instance().requests()) {
           const documentOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
@@ -8767,6 +8792,11 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
           };
         }
         const origin = allowedOriginResult.origin;
+        if (origin && isOpaqueOrigin(origin)) {
+          return {
+            error: "No request found"
+          };
+        }
         const request = Logs3.NetworkLog.NetworkLog.instance().requests().find((req) => {
           if (req.requestId() !== id) {
             return false;
@@ -10941,15 +10971,7 @@ ${item.text.trim()}`);
       if (this.isBlockedByOrigin) {
         throw new Error("cross-origin context data should not be included");
       }
-      const userQuery = {
-        type: "user-query",
-        query: initialQuery,
-        imageInput: options.multimodalInput?.input,
-        imageId: options.multimodalInput?.id
-      };
-      void this.addHistoryItem(userQuery);
-      yield userQuery;
-      yield* this.#runAgent(initialQuery, options);
+      yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
       targetManager.removeModelListener(SDK12.ResourceTreeModel.ResourceTreeModel, SDK12.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     }
@@ -10958,7 +10980,7 @@ ${item.text.trim()}`);
     return `${selection}
 Original user query: ${initialQuery}`;
   }
-  async *#runAgent(initialQuery, options = {}) {
+  async *#runAgent(initialQuery, options = {}, runOptions = {}) {
     this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
     if (this.isBlockedByOrigin) {
       yield {
@@ -10966,6 +10988,16 @@ Original user query: ${initialQuery}`;
         error: "cross-origin"
       };
       return;
+    }
+    if (runOptions.isInitialCall) {
+      const userQuery = {
+        type: "user-query",
+        query: initialQuery,
+        imageInput: options.multimodalInput?.input,
+        imageId: options.multimodalInput?.id
+      };
+      void this.addHistoryItem(userQuery);
+      yield userQuery;
     }
     function shouldAddToHistory(data) {
       if (data.type === "context-change") {
@@ -10986,7 +11018,7 @@ Original user query: ${initialQuery}`;
       yield data;
       if (data.type === "context-change") {
         this.setContext(data.context);
-        yield* this.#runAgent(this.#getQueryAfterSelection(initialQuery, data.description), options);
+        yield* this.#runAgent(this.#getQueryAfterSelection(initialQuery, data.description), options, { isInitialCall: false });
         return;
       }
     }

@@ -5,7 +5,7 @@
 import '../../../ui/kit/kit.js';
 import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import { Directives, html, render } from '../../../ui/lit/lit.js';
+import { html, render } from '../../../ui/lit/lit.js';
 import cssHintDetailsViewStyles from './cssHintDetailsView.css.js';
 const UIStrings = {
     /**
@@ -30,11 +30,11 @@ export class CSSHintDetailsView extends HTMLElement {
         <style>${cssHintDetailsViewStyles}</style>
         <div class="hint-popup-wrapper">
           <div class="hint-popup-reason">
-            ${Directives.unsafeHTML(this.#authoringHint.getMessage())}
+            ${this.#authoringHint.getMessage()}
           </div>
           ${this.#authoringHint.getPossibleFixMessage() ? html `
               <div class="hint-popup-possible-fix">
-                  ${Directives.unsafeHTML(this.#authoringHint.getPossibleFixMessage())}
+                  ${this.#authoringHint.getPossibleFixMessage()}
               </div>
           ` : ''}
           ${link ? html `

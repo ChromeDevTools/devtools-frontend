@@ -348,15 +348,7 @@ export class AiConversation {
                 // invariants do not hold anymore.
                 throw new Error('cross-origin context data should not be included');
             }
-            const userQuery = {
-                type: "user-query" /* ResponseType.USER_QUERY */,
-                query: initialQuery,
-                imageInput: options.multimodalInput?.input,
-                imageId: options.multimodalInput?.id,
-            };
-            void this.addHistoryItem(userQuery);
-            yield userQuery;
-            yield* this.#runAgent(initialQuery, options);
+            yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
         }
         finally {
             targetManager.removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
@@ -365,7 +357,7 @@ export class AiConversation {
     #getQueryAfterSelection(initialQuery, selection) {
         return `${selection}\nOriginal user query: ${initialQuery}`;
     }
-    async *#runAgent(initialQuery, options = {}) {
+    async *#runAgent(initialQuery, options = {}, runOptions = {}) {
         this.#setOriginIfEmpty(this.selectedContext?.getOrigin());
         if (this.isBlockedByOrigin) {
             yield {
@@ -373,6 +365,16 @@ export class AiConversation {
                 error: "cross-origin" /* ErrorType.CROSS_ORIGIN */,
             };
             return;
+        }
+        if (runOptions.isInitialCall) {
+            const userQuery = {
+                type: "user-query" /* ResponseType.USER_QUERY */,
+                query: initialQuery,
+                imageInput: options.multimodalInput?.input,
+                imageId: options.multimodalInput?.id,
+            };
+            void this.addHistoryItem(userQuery);
+            yield userQuery;
         }
         function shouldAddToHistory(data) {
             if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
@@ -399,7 +401,7 @@ export class AiConversation {
             // requery with the specialized agent.
             if (data.type === "context-change" /* ResponseType.CONTEXT_CHANGE */) {
                 this.setContext(data.context);
-                yield* this.#runAgent(this.#getQueryAfterSelection(initialQuery, data.description), options);
+                yield* this.#runAgent(this.#getQueryAfterSelection(initialQuery, data.description), options, { isInitialCall: false });
                 return;
             }
         }

@@ -507,7 +507,7 @@ __export(CSSHintDetailsView_exports, {
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/legacy/legacy.js";
 import * as i18n3 from "./../../../core/i18n/i18n.js";
-import { Directives, html as html4, render as render4 } from "./../../../ui/lit/lit.js";
+import { html as html4, render as render4 } from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/cssHintDetailsView.css.js
 var cssHintDetailsView_css_default = `/*
@@ -570,11 +570,11 @@ var CSSHintDetailsView = class extends HTMLElement {
         <style>${cssHintDetailsView_css_default}</style>
         <div class="hint-popup-wrapper">
           <div class="hint-popup-reason">
-            ${Directives.unsafeHTML(this.#authoringHint.getMessage())}
+            ${this.#authoringHint.getMessage()}
           </div>
           ${this.#authoringHint.getPossibleFixMessage() ? html4`
               <div class="hint-popup-possible-fix">
-                  ${Directives.unsafeHTML(this.#authoringHint.getPossibleFixMessage())}
+                  ${this.#authoringHint.getPossibleFixMessage()}
               </div>
           ` : ""}
           ${link ? html4`
@@ -2321,7 +2321,7 @@ var UIStrings8 = {
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/elements/components/StylePropertyEditor.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
-var { render: render11, html: html11, Directives: Directives5 } = Lit5;
+var { render: render11, html: html11, Directives: Directives4 } = Lit5;
 var PropertySelectedEvent = class _PropertySelectedEvent extends Event {
   static eventName = "propertyselected";
   data;
@@ -2366,7 +2366,7 @@ var StylePropertyEditor = class extends HTMLElement {
     const authoredValue = this.#authoredProperties.get(prop.propertyName);
     const notAuthored = !authoredValue;
     const shownValue = authoredValue || this.#computedProperties.get(prop.propertyName);
-    const classes = Directives5.classMap({
+    const classes = Directives4.classMap({
       "property-value": true,
       "not-authored": notAuthored
     });
@@ -2429,7 +2429,7 @@ var StylePropertyEditor = class extends HTMLElement {
       throw new Error(`Icon for ${query} is not found`);
     }
     const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
-    const classes = Directives5.classMap({
+    const classes = Directives4.classMap({
       button: true,
       selected
     });

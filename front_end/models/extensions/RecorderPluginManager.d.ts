@@ -6,6 +6,7 @@ export interface ViewDescriptor {
     pagePath: string;
     onShown: () => void;
     onHidden: () => void;
+    extensionOrigin: string;
 }
 export declare class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;

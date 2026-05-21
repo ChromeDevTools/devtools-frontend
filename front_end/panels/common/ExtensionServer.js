@@ -121,12 +121,14 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     inspectedTabId;
     extensionAPITestHook;
     themeChangeHandlers = new Map();
+    recorderViewPortMap;
     #pendingExtensions = [];
     constructor() {
         super();
         this.clientObjects = new Map();
         this.handlers = new Map();
         this.subscribers = new Map();
+        this.recorderViewPortMap = new Map();
         this.subscriptionStartHandlers = new Map();
         this.subscriptionStopHandlers = new Map();
         this.extraHeaders = new Map();
@@ -326,7 +328,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             return this.status.E_BADARG('command', `expected ${"registerRecorderExtensionPlugin" /* Extensions.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin */}`);
         }
         const { pluginName, mediaType, port, capabilities } = message;
-        Extensions.RecorderPluginManager.RecorderPluginManager.instance().addPlugin(new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, mediaType));
+        const extensionOrigin = this.getExtensionOrigin(_shared_port);
+        Extensions.RecorderPluginManager.RecorderPluginManager.instance().addPlugin(new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, mediaType));
         return this.status.OK();
     }
     onReportResourceLoad(message) {
@@ -371,9 +374,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.status.OK();
     }
-    onShowRecorderView(message) {
+    onShowRecorderView(message, port) {
         if (message.command !== "showRecorderView" /* Extensions.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView */) {
             return this.status.E_BADARG('command', `expected ${"showRecorderView" /* Extensions.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView */}`);
+        }
+        if (this.recorderViewPortMap.get(message.id) !== port) {
+            return this.status.E_FAILED('Permission denied');
         }
         Extensions.RecorderPluginManager.RecorderPluginManager.instance().showView(message.id);
         return undefined;
@@ -395,7 +401,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (this.clientObjects.has(id)) {
             return this.status.E_EXISTS(id);
         }
-        const pagePath = ExtensionServer.expandResourcePath(this.getExtensionOrigin(port), message.pagePath);
+        const extensionOrigin = this.getExtensionOrigin(port);
+        const pagePath = ExtensionServer.expandResourcePath(extensionOrigin, message.pagePath);
         if (pagePath === undefined) {
             return this.status.E_BADARG('pagePath', 'Resources paths cannot point to non-extension resources');
         }
@@ -407,7 +414,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             title: message.title,
             onShown,
             onHidden,
+            extensionOrigin,
         });
+        this.recorderViewPortMap.set(id, port);
         return this.status.OK();
     }
     inspectedURLChanged(event) {

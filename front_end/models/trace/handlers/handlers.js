@@ -2703,38 +2703,44 @@ var BeginFrameInfo = class {
 var TimelineFrameBeginFrameQueue = class {
   queueFrames = [];
   // Maps frameSeqId to BeginFrameInfo.
-  mapFrames = {};
+  mapFrames = /* @__PURE__ */ new Map();
   // Add a BeginFrame to the queue, if it does not already exit.
   addFrameIfNotExists(seqId, startTime, isDropped, isPartial) {
-    if (!(seqId in this.mapFrames)) {
-      this.mapFrames[seqId] = new BeginFrameInfo(seqId, startTime, isDropped, isPartial);
+    if (!this.mapFrames.has(seqId)) {
+      this.mapFrames.set(seqId, new BeginFrameInfo(seqId, startTime, isDropped, isPartial));
       this.queueFrames.push(seqId);
     }
   }
   // Set a BeginFrame in queue as dropped.
   setDropped(seqId, isDropped) {
-    if (seqId in this.mapFrames) {
-      this.mapFrames[seqId].isDropped = isDropped;
+    const frame = this.mapFrames.get(seqId);
+    if (frame) {
+      frame.isDropped = isDropped;
     }
   }
   setPartial(seqId, isPartial) {
-    if (seqId in this.mapFrames) {
-      this.mapFrames[seqId].isPartial = isPartial;
+    const frame = this.mapFrames.get(seqId);
+    if (frame) {
+      frame.isPartial = isPartial;
     }
   }
   processPendingBeginFramesOnDrawFrame(seqId) {
     const framesToVisualize = [];
-    if (seqId in this.mapFrames) {
+    if (this.mapFrames.has(seqId)) {
       while (this.queueFrames[0] !== seqId) {
         const currentSeqId = this.queueFrames[0];
-        if (this.mapFrames[currentSeqId].isDropped) {
-          framesToVisualize.push(this.mapFrames[currentSeqId]);
+        const currentFrame = this.mapFrames.get(currentSeqId);
+        if (currentFrame && currentFrame.isDropped) {
+          framesToVisualize.push(currentFrame);
         }
-        delete this.mapFrames[currentSeqId];
+        this.mapFrames.delete(currentSeqId);
         this.queueFrames.shift();
       }
-      framesToVisualize.push(this.mapFrames[seqId]);
-      delete this.mapFrames[seqId];
+      const frame = this.mapFrames.get(seqId);
+      if (frame) {
+        framesToVisualize.push(frame);
+      }
+      this.mapFrames.delete(seqId);
       this.queueFrames.shift();
     }
     return framesToVisualize;

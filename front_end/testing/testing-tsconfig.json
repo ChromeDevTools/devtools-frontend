@@ -101,9 +101,6 @@
       "path": "../../extension-api/extension-api-tsconfig.json"
     },
     {
-      "path": "../../inspector_overlay/inspector_overlay-tsconfig.json"
-    },
-    {
       "path": "../core/common/bundle-tsconfig.json"
     },
     {
@@ -123,15 +120,6 @@
     },
     {
       "path": "../core/sdk/bundle-tsconfig.json"
-    },
-    {
-      "path": "../entrypoints/inspector_main/meta-tsconfig.json"
-    },
-    {
-      "path": "../entrypoints/main/bundle-tsconfig.json"
-    },
-    {
-      "path": "../entrypoints/shell/shell-tsconfig.json"
     },
     {
       "path": "../foundation/bundle-tsconfig.json"
@@ -197,16 +185,10 @@
       "path": "../panels/console/bundle-tsconfig.json"
     },
     {
-      "path": "../panels/elements/meta-tsconfig.json"
-    },
-    {
       "path": "../panels/explain/bundle-tsconfig.json"
     },
     {
       "path": "../panels/network/bundle-tsconfig.json"
-    },
-    {
-      "path": "../panels/sensors/meta-tsconfig.json"
     },
     {
       "path": "../panels/timeline/bundle-tsconfig.json"

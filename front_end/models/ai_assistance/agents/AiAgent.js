@@ -5,17 +5,46 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as Greendev from '../../greendev/greendev.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
+/**
+ * Returns true if the origin is considered opaque and should be blocked from
+ * AI assistance to prevent potential data leakage.
+ *
+ * @see https://crbug.com/513732588
+ */
+export function isOpaqueOrigin(origin) {
+    /**
+     * Origins starting with 'about' (like about:blank or about:srcdoc) are
+     * considered opaque. 'about://' is the sentinel used by DevTools
+     * ParsedURL.securityOrigin() for these.
+     */
+    return origin === 'null' || origin === 'data:' || origin.startsWith('about') || origin.startsWith('detached');
+}
 export const MAX_STEPS = 10;
 export class ConversationContext {
-    isOriginAllowed(agentOrigin) {
-        if (!agentOrigin) {
+    /**
+     * Returns true if this data context (e.g., a DOM node or Network Request) is
+     * allowed to be included in a conversation that is locked to the provided
+     * `establishedOrigin`.
+     *
+     * A conversation is "locked" to an origin once the first query is made.
+     * This method ensures that we don't mix data from different origins in the
+     * same conversation.
+     *
+     * @param establishedOrigin The origin that the current conversation is locked to.
+     * If undefined, the conversation has not yet been locked to an origin.
+     */
+    isOriginAllowed(establishedOrigin) {
+        const dataOrigin = this.getOrigin();
+        // Opaque origins are never allowed to be used as context.
+        if (isOpaqueOrigin(dataOrigin)) {
+            return false;
+        }
+        // If no origin is established yet, this context will be the one to lock the conversation.
+        if (!establishedOrigin) {
             return true;
         }
-        // Currently does not handle opaque origins because they
-        // are not available to DevTools, instead checks
-        // that serialization of the origin is the same
-        // https://html.spec.whatwg.org/#ascii-serialisation-of-an-origin.
-        return this.getOrigin() === agentOrigin;
+        // Only allow data that matches the origin the conversation is already locked to.
+        return dataOrigin === establishedOrigin;
     }
     /**
      * This method is called at the start of `AiAgent.run`.

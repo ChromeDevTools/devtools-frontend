@@ -10,7 +10,7 @@ import * as NetworkTimeCalculator from '../../network_time_calculator/network_ti
 import * as Workspace from '../../workspace/workspace.js';
 import { debugLog } from '../debug.js';
 import { AccessibilityContext } from './AccessibilityAgent.js';
-import { AiAgent, } from './AiAgent.js';
+import { AiAgent, isOpaqueOrigin, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
 import { RequestContext } from './NetworkAgent.js';
 import { PerformanceTraceContext } from './PerformanceAgent.js';
@@ -104,6 +104,11 @@ export class ContextSelectionAgent extends AiAgent {
                     };
                 }
                 const origin = allowedOriginResult.origin;
+                if (origin && isOpaqueOrigin(origin)) {
+                    return {
+                        error: 'No requests recorded by DevTools',
+                    };
+                }
                 let hasCrossOriginRequest = false;
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
                     const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
@@ -168,6 +173,11 @@ export class ContextSelectionAgent extends AiAgent {
                     };
                 }
                 const origin = allowedOriginResult.origin;
+                if (origin && isOpaqueOrigin(origin)) {
+                    return {
+                        error: 'No request found',
+                    };
+                }
                 const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
                     if (req.requestId() !== id) {
                         return false;

@@ -88,6 +88,13 @@ describeWithMockConnection('AccessibilityAgent', () => {
     const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
     assert.exists(titleResponse);
     assert.strictEqual(titleResponse.title, 'Getting Lighthouse audits for accessibility');
+
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.exists(actionResponse.widgets);
+    assert.lengthOf(actionResponse.widgets, 1);
+    assert.strictEqual(actionResponse.widgets[0].name, 'LIGHTHOUSE_REPORT');
+    assert.deepEqual(actionResponse.widgets[0].data, {report: mockReport});
   });
 
   it('can call the getStyles method', async () => {
@@ -203,7 +210,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
        ]);
      });
 
-  it('can call the runAccessibilityAudits method', async () => {
+  it('can call the runAccessibilityAudits method and yields widget with snapshotReport: true', async () => {
     const aidaClient = mockAidaClient([[{
       explanation: '',
       functionCalls: [{name: 'runAccessibilityAudits', args: {explanation: 'testing'}}],
@@ -226,6 +233,13 @@ describeWithMockConnection('AccessibilityAgent', () => {
       categoryIds: ['accessibility'],
       isAIControlled: true,
     }));
+
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.exists(actionResponse.widgets);
+    assert.lengthOf(actionResponse.widgets, 1);
+    assert.strictEqual(actionResponse.widgets[0].name, 'LIGHTHOUSE_REPORT');
+    assert.deepEqual(actionResponse.widgets[0].data, {report: mockReport, snapshotReport: true});
   });
 
   function createExtensionScope() {

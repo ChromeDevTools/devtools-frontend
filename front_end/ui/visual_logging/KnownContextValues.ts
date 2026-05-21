@@ -2316,6 +2316,7 @@ export const knownContextValues = new Set([
   'lighthouse',
   'lighthouse-report-widget',
   'lighthouse-show-settings-toolbar',
+  'lighthouse-snapshot-report-widget',
   'lighthouse.audit-summary.average',
   'lighthouse.audit-summary.fail',
   'lighthouse.audit-summary.informative',

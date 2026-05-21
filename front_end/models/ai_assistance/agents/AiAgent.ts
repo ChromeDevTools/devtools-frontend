@@ -326,6 +326,7 @@ export interface LighthouseReportAiWidget {
   name: 'LIGHTHOUSE_REPORT';
   data: {
     report: LHModel.ReporterTypes.ReportJSON,
+    snapshotReport?: boolean,
   };
 }
 

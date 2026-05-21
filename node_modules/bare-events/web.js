@@ -10,6 +10,7 @@ const STOP = 0x20
 const CAPTURE = 0x1
 const PASSIVE = 0x2
 const ONCE = 0x4
+const REMOVED = 0x8
 
 // https://dom.spec.whatwg.org/#event
 class Event {
@@ -144,8 +145,7 @@ exports.EventTarget = class EventTarget {
 
     const listeners = this._listeners.get(type)
 
-    if (listeners === undefined) this._listeners.set(type, listener)
-    else {
+    if (listeners !== undefined) {
       for (const existing of listeners) {
         if (callback === existing.callback && capture === existing.capture) {
           return // Duplicate listener
@@ -153,13 +153,16 @@ exports.EventTarget = class EventTarget {
       }
 
       listener.link(listeners)
+    } else {
+      this._listeners.set(type, listener)
+    }
 
-      if (signal !== null) {
-        signal.addEventListener('abort', onabort)
+    if (signal !== null) {
+      const self = this
+      signal.addEventListener('abort', onabort)
 
-        function onabort() {
-          listener.unlink()
-        }
+      function onabort() {
+        self._unlink(type, listener)
       }
     }
   }
@@ -176,10 +179,7 @@ exports.EventTarget = class EventTarget {
 
     for (const existing of listeners) {
       if (callback === existing.callback && capture === existing.capture) {
-        const next = existing.unlink()
-
-        if (listeners === existing) this._listeners.set(type, next)
-
+        this._unlink(type, existing)
         return
       }
     }
@@ -195,10 +195,14 @@ exports.EventTarget = class EventTarget {
     try {
       if (listeners === undefined) return true
 
-      for (const listener of listeners) {
+      const snapshot = Array.from(listeners)
+
+      for (const listener of snapshot) {
         // https://dom.spec.whatwg.org/#concept-event-listener-inner-invoke
 
-        if (listener.once) listener.unlink()
+        if (listener.removed) continue
+
+        if (listener.once) this._unlink(event.type, listener)
 
         let callback = listener.callback
         let context = this
@@ -227,6 +231,18 @@ exports.EventTarget = class EventTarget {
   [Symbol.for('bare.inspect')]() {
     return {
       __proto__: { constructor: EventTarget }
+    }
+  }
+
+  _unlink(type, listener) {
+    if (listener.removed) return
+
+    const head = this._listeners.get(type)
+    const next = listener.unlink()
+
+    if (head === listener) {
+      if (next === listener) this._listeners.delete(type)
+      else this._listeners.set(type, next)
     }
   }
 }
@@ -268,7 +284,7 @@ class EventListener {
   }
 
   get removed() {
-    return this._previous === this && this._next === this
+    return (this._state & REMOVED) !== 0
   }
 
   link(listener) {
@@ -286,6 +302,8 @@ class EventListener {
 
   unlink() {
     if (this.removed) return this
+
+    this._state |= REMOVED
 
     const next = this._next
     const previous = this._previous

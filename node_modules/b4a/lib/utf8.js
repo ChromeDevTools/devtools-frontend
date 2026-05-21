@@ -100,6 +100,7 @@ if (typeof TextEncoder !== 'undefined') {
       const code = string.codePointAt(i)
 
       if (code <= 0x7f) {
+        if (j + 1 > len) break
         buffer[j++] = code
         i++
         continue
@@ -119,6 +120,8 @@ if (typeof TextEncoder !== 'undefined') {
         bits = 0xf0
       }
 
+      if (j + count / 6 + 1 > len) break
+
       buffer[j++] = bits | (code >> count)
       count -= 6
 
@@ -130,7 +133,7 @@ if (typeof TextEncoder !== 'undefined') {
       i += code >= 0x10000 ? 2 : 1
     }
 
-    return len
+    return j
   }
 }
 

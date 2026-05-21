@@ -2,7 +2,7 @@ const PassThroughDecoder = require('./lib/pass-through-decoder')
 const UTF8Decoder = require('./lib/utf8-decoder')
 
 module.exports = class TextDecoder {
-  constructor (encoding = 'utf8') {
+  constructor(encoding = 'utf8') {
     this.encoding = normalizeEncoding(encoding)
 
     switch (this.encoding) {
@@ -17,21 +17,21 @@ module.exports = class TextDecoder {
     }
   }
 
-  get remaining () {
+  get remaining() {
     return this.decoder.remaining
   }
 
-  push (data) {
+  push(data) {
     if (typeof data === 'string') return data
     return this.decoder.decode(data)
   }
 
   // For Node.js compatibility
-  write (data) {
+  write(data) {
     return this.push(data)
   }
 
-  end (data) {
+  end(data) {
     let result = ''
     if (data) result = this.push(data)
     result += this.decoder.flush()
@@ -39,7 +39,7 @@ module.exports = class TextDecoder {
   }
 }
 
-function normalizeEncoding (encoding) {
+function normalizeEncoding(encoding) {
   encoding = encoding.toLowerCase()
 
   switch (encoding) {
@@ -61,4 +61,4 @@ function normalizeEncoding (encoding) {
     default:
       throw new Error('Unknown encoding: ' + encoding)
   }
-};
+}

@@ -8,7 +8,7 @@ npm i text-decoder
 
 ## Usage
 
-``` js
+```js
 const TextDecoder = require('text-decoder')
 
 const td = new TextDecoder()

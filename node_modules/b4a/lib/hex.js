@@ -29,7 +29,7 @@ function write(buffer, string) {
     const b = hexValue(string.charCodeAt(i * 2 + 1))
 
     if (a === undefined || b === undefined) {
-      return buffer.subarray(0, i)
+      return i
     }
 
     buffer[i] = (a << 4) | b

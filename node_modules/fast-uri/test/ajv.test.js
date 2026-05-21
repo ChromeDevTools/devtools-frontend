@@ -1,9 +1,13 @@
-const AJV = require('ajv')
-const fastUri = require('../')
-const ajv = new AJV({
-  uriResolver: fastUri // comment this line to see it works with uri-js
-})
+'use strict'
+
 const test = require('tape')
+const fastURI = require('..')
+
+const AJV = require('ajv')
+
+const ajv = new AJV({
+  uriResolver: fastURI // comment this line to see it works with uri-js
+})
 
 test('ajv', t => {
   t.plan(1)

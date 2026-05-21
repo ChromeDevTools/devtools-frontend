@@ -800,5 +800,151 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       assert.strictEqual(widget.name, 'SOURCE_FILE');
       assert.strictEqual(widget.data.uiSourceCode, file);
     });
+
+    it('returns an error when selecting cross-origin source file', async () => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const project = {
+        id: () => 'test-project',
+        type: () => Workspace.Workspace.projectTypes.Network,
+        uiSourceCodes: () => [file],
+        fullDisplayName: () => 'script.js',
+      } as unknown as Workspace.Workspace.Project;
+      const file = new Workspace.UISourceCode.UISourceCode(
+          project, urlString`https://another.com/script.js`, Common.ResourceType.resourceTypes.Script);
+      sinon.stub(workspace, 'projects').returns([project]);
+      ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.set(file, 1);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'selectSourceFile',
+              args: {
+                id: 1,
+              },
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => ({origin: 'https://example.com'}),
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: null}));
+      assert.isUndefined(responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.isOk(requestToAida.historical_contexts);
+      assert.isOk(requestToAida.historical_contexts[2].parts);
+      assert.deepEqual(requestToAida.historical_contexts[2].parts[0], {
+        functionResponse: {
+          name: 'selectSourceFile',
+          response: {
+            error: 'Unable to find file.',
+            widgets: undefined,
+          },
+        },
+      });
+    });
+  });
+
+  describe('listSourceFiles', () => {
+    it('lists source files', async () => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const project = {
+        id: () => 'test-project',
+        type: () => Workspace.Workspace.projectTypes.Network,
+        uiSourceCodes: () => [file],
+        fullDisplayName: () => 'script.js',
+      } as unknown as Workspace.Workspace.Project;
+      const file = new Workspace.UISourceCode.UISourceCode(
+          project, urlString`https://example.com/script.js`, Common.ResourceType.resourceTypes.Script);
+      sinon.stub(workspace, 'projects').returns([project]);
+      ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.set(file, 1);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listSourceFiles',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.isOk(requestToAida.historical_contexts);
+      assert.isOk(requestToAida.historical_contexts[2].parts);
+      assert.deepEqual(requestToAida.historical_contexts[2].parts[0], {
+        functionResponse: {
+          name: 'listSourceFiles',
+          response: {
+            result: [
+              {
+                file: 'script.js',
+                id: 1,
+              },
+            ],
+            widgets: undefined,
+          },
+        },
+      });
+    });
+
+    it('filters source files by origin', async () => {
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const project = {
+        id: () => 'test-project',
+        type: () => Workspace.Workspace.projectTypes.Network,
+        uiSourceCodes: () => [file1, file2],
+        fullDisplayName: () => 'script.js',
+      } as unknown as Workspace.Workspace.Project;
+      const file1 = new Workspace.UISourceCode.UISourceCode(
+          project, urlString`https://example.com/script.js`, Common.ResourceType.resourceTypes.Script);
+      const file2 = new Workspace.UISourceCode.UISourceCode(
+          project, urlString`https://another.com/script.js`, Common.ResourceType.resourceTypes.Script);
+      sinon.stub(workspace, 'projects').returns([project]);
+      ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.set(file1, 1);
+      ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.set(file2, 2);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listSourceFiles',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => ({origin: 'https://example.com'}),
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      assert.isOk(requestToAida.historical_contexts);
+      assert.isOk(requestToAida.historical_contexts[2].parts);
+      assert.deepEqual(requestToAida.historical_contexts[2].parts[0], {
+        functionResponse: {
+          name: 'listSourceFiles',
+          response: {
+            result: [
+              {
+                file: 'script.js',
+                id: 1,
+              },
+            ],
+            widgets: undefined,
+          },
+        },
+      });
+    });
   });
 });

@@ -1642,6 +1642,148 @@ code
     });
   });
 
+  describe('getEventByKey', () => {
+    it('sanitizes headers for network requests', async function() {
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getEventByKey', args: {eventKey: 'valid-event-key'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {
+          cpuThrottling: undefined,
+          networkThrottling: undefined,
+        },
+        data: {
+          Meta: {
+            mainFrameNavigations: [],
+            traceBounds: {min: 0, max: 100},
+            mainFrameURL: 'https://example.com',
+          }
+        }
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      await agent.run('test', {selected: context}).next();
+
+      const focus = context.getItem();
+      assert.exists(focus);
+
+      const mockNetworkEvent = {
+        name: Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
+        args: {
+          data: {
+            responseHeaders: [
+              {name: 'x-csrf-token', value: 'secret'},
+              {name: 'content-type', value: 'text/html'},
+            ],
+          },
+        },
+      };
+
+      sinon.stub(focus, 'lookupEvent').callsFake(key => {
+        if (key === 'valid-event-key' as SerializableKey) {
+          return mockNetworkEvent as unknown as Trace.Types.Events.Event;
+        }
+        return null;
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 1);
+
+      const action = actions[0] as AiAgent.ActionResponse;
+      assert.exists(action.output);
+
+      const parsedOutput = JSON.parse(action.output);
+      const details = JSON.parse(parsedOutput.details);
+      const responseHeaders = details.args.data.responseHeaders;
+
+      assert.deepEqual(responseHeaders, [
+        {name: 'x-csrf-token', value: '<redacted>'},
+        {name: 'content-type', value: 'text/html'},
+      ]);
+    });
+
+    it('sanitizes headers for ResourceReceiveResponse events', async function() {
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getEventByKey', args: {eventKey: 'valid-event-key'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {
+          cpuThrottling: undefined,
+          networkThrottling: undefined,
+        },
+        data: {
+          Meta: {
+            mainFrameNavigations: [],
+            traceBounds: {min: 0, max: 100},
+            mainFrameURL: 'https://example.com',
+          }
+        }
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      await agent.run('test', {selected: context}).next();
+
+      const focus = context.getItem();
+      assert.exists(focus);
+
+      const mockResourceEvent = {
+        name: 'ResourceReceiveResponse',
+        args: {
+          data: {
+            headers: [
+              {name: 'x-csrf-token', value: 'secret'},
+              {name: 'content-type', value: 'text/html'},
+            ],
+          },
+        },
+      };
+
+      sinon.stub(focus, 'lookupEvent').callsFake(key => {
+        if (key === 'valid-event-key' as SerializableKey) {
+          return mockResourceEvent as unknown as Trace.Types.Events.Event;
+        }
+        return null;
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 1);
+
+      const action = actions[0] as AiAgent.ActionResponse;
+      assert.exists(action.output);
+
+      const parsedOutput = JSON.parse(action.output);
+      const details = JSON.parse(parsedOutput.details);
+      const headers = details.args.data.headers;
+
+      assert.deepEqual(headers, [
+        {name: 'x-csrf-token', value: '<redacted>'},
+        {name: 'content-type', value: 'text/html'},
+      ]);
+    });
+  });
+
   describe('getLabelName', () => {
     it('returns correct names for static labels', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');

@@ -14,6 +14,7 @@ import * as Logs from '../../logs/logs.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
+import {sanitizeHeaders} from '../data_formatters/NetworkRequestFormatter.js';
 import {
   PerformanceInsightFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
@@ -1060,7 +1061,35 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         }
 
         // TODO(b/425270067): Format in the same way that "Summary" detail tab does.
-        const details = JSON.stringify(event);
+        let details;
+        if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+          const eventToSerialize = {
+            ...event,
+            args: {
+              ...event.args,
+              data: {
+                ...event.args.data,
+                responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) :
+                                                                   null,
+              },
+            },
+          };
+          details = JSON.stringify(eventToSerialize);
+        } else if (Trace.Types.Events.isResourceReceiveResponse(event)) {
+          const eventToSerialize = {
+            ...event,
+            args: {
+              ...event.args,
+              data: {
+                ...event.args.data,
+                headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
+              },
+            },
+          };
+          details = JSON.stringify(eventToSerialize);
+        } else {
+          details = JSON.stringify(event);
+        }
 
         const key = `getEventByKey('${params.eventKey}')`;
         this.#cacheFunctionResult(focus, key, details);

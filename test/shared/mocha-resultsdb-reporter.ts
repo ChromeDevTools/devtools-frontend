@@ -93,7 +93,6 @@ class ResultsDbReporter extends (TestConfig.isAiAgent ? Mocha.reporters.Base : M
     const testResult = this.buildDefaultTestResultFrom(test);
     testResult.status = 'FAIL';
     testResult.expected = false;
-    console.error('>>>>>>>>>>');
     if (error instanceof ScreenshotError) {
       testResult.artifacts = error.screenshots;
       testResult.summaryHtml = error.toMiloSummary();

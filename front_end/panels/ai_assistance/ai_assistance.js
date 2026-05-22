@@ -2144,8 +2144,10 @@ var ChatInput = class extends UI3.Widget.Widget {
   #uncommittedText = "";
   setInputValue(text) {
     if (this.#textAreaRef.value) {
-      this.#textAreaRef.value.value = text;
-      this.#textAreaRef.value.setSelectionRange(text.length, text.length);
+      const maxLength = this.#textAreaRef.value.maxLength;
+      const truncatedText = maxLength >= 0 ? text.substring(0, maxLength) : text;
+      this.#textAreaRef.value.value = truncatedText;
+      this.#textAreaRef.value.setSelectionRange(truncatedText.length, truncatedText.length);
     }
     this.performUpdate();
   }

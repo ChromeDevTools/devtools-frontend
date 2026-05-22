@@ -459,9 +459,11 @@ export class ChatInput extends UI.Widget.Widget {
     #uncommittedText = '';
     setInputValue(text) {
         if (this.#textAreaRef.value) {
-            this.#textAreaRef.value.value = text;
+            const maxLength = this.#textAreaRef.value.maxLength;
+            const truncatedText = (maxLength >= 0) ? text.substring(0, maxLength) : text;
+            this.#textAreaRef.value.value = truncatedText;
             // Place the cursor at the end of the new value.
-            this.#textAreaRef.value.setSelectionRange(text.length, text.length);
+            this.#textAreaRef.value.setSelectionRange(truncatedText.length, truncatedText.length);
         }
         this.performUpdate();
     }

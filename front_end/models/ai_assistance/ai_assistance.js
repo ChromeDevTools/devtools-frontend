@@ -1190,6 +1190,7 @@ __export(AiAgent_exports, {
 import * as Host from "./../../core/host/host.js";
 import * as Root from "./../../core/root/root.js";
 import * as Greendev from "./../greendev/greendev.js";
+var MAX_SUGGESTION_LENGTH = 200;
 function isOpaqueOrigin(origin) {
   return origin === "null" || origin === "data:" || origin.startsWith("about") || origin.startsWith("detached");
 }
@@ -1355,7 +1356,7 @@ var AiAgent = class {
       const trimmed = line.trim();
       if (trimmed.startsWith("SUGGESTIONS:")) {
         try {
-          suggestions = JSON.parse(trimmed.substring("SUGGESTIONS:".length).trim());
+          suggestions = sanitizeSuggestions(trimmed.substring("SUGGESTIONS:".length).trim());
         } catch {
         }
       } else {
@@ -1365,7 +1366,7 @@ var AiAgent = class {
     if (!suggestions && answerLines.at(-1)?.includes("SUGGESTIONS:")) {
       const [answer, suggestionsText] = answerLines[answerLines.length - 1].split("SUGGESTIONS:", 2);
       try {
-        suggestions = JSON.parse(suggestionsText.trim().substring("SUGGESTIONS:".length).trim());
+        suggestions = sanitizeSuggestions(suggestionsText.trim());
       } catch {
       }
       answerLines[answerLines.length - 1] = answer;
@@ -1700,6 +1701,27 @@ var AiAgent = class {
     };
   }
 };
+function sanitizeSuggestions(suggestions) {
+  const parsed = JSON.parse(suggestions);
+  if (!Array.isArray(parsed)) {
+    return void 0;
+  }
+  const sanitized = [];
+  for (const item of parsed) {
+    if (typeof item !== "string") {
+      continue;
+    }
+    const noExtraWhitespace = item.replace(/\s+/g, " ").trim();
+    if (noExtraWhitespace.length === 0) {
+      continue;
+    }
+    sanitized.push(noExtraWhitespace.substring(0, MAX_SUGGESTION_LENGTH));
+  }
+  if (sanitized.length === 0) {
+    return void 0;
+  }
+  return sanitized;
+}
 
 // gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
 import * as Host2 from "./../../core/host/host.js";

@@ -495,7 +495,7 @@ describeWithMockConnection('ElementsTreeElement', () => {
          nodeName: 'DIV',
          localName: 'div',
          nodeValue: '',
-         attributes: ['autofill-information', 'foo'],
+         attributes: ['autofill-information', 'foo: test, bar: test'],
          childNodeCount: 0,
        };
        const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);

@@ -8,6 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {expectError} from '../../conductor/events.js';
 import {
   editQueryRuleText,
+  elementWithPartialText,
   expandSelectedNodeRecursively,
   focusCSSPropertyValue,
   getComputedStylesForDomNode,
@@ -1279,23 +1280,30 @@ describe('The Styles pane', () => {
        await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html', devToolsPage, inspectedPage);
        await prepareElementsTab(devToolsPage);
 
-       await inspectedPage.evaluate(async () => {
+       await inspectedPage.evaluate(() => {
          const iframe = document.createElement('iframe');
-         iframe.src = 'css-inject-stylesheet-iframe-data.html';
          document.getElementById('main')?.appendChild(iframe);
+
+         const {promise, resolve} = Promise.withResolvers<void>();
+         iframe.addEventListener('load', () => {
+           if (!iframe.contentDocument) {
+             return;
+           }
+           const style = iframe.contentDocument.createElement('style');
+           style.textContent = '#iframeBody { background: red }';
+           iframe.contentDocument.head.append(style);
+
+           resolve();
+         });
+
+         iframe.src = 'css-inject-stylesheet-iframe-data.html';
+         return promise;
        });
 
-       await expandSelectedNodeRecursively(devToolsPage);
-       await inspectedPage.evaluate(async () => {
-         const iframe = document.querySelector('iframe');
-         if (!iframe?.contentDocument) {
-           return;
-         }
-         const style = iframe.contentDocument.createElement('style');
-         style.textContent = '#iframeBody { background: red }';
-         iframe.contentDocument.head.append(style);
+       await devToolsPage.waitForFunction(async () => {
+         await expandSelectedNodeRecursively(devToolsPage);
+         return await elementWithPartialText('id=\u200B"iframeBody"', devToolsPage);
        });
-
        await waitForAndClickTreeElementWithPartialText('id=\u200B"iframeBody"', devToolsPage);
        await waitForStyleRule('#iframeBody', devToolsPage);
        const inspectedRulesAfter = await getDisplayedStyleRulesCompact(devToolsPage);

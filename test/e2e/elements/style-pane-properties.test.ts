@@ -421,6 +421,7 @@ describe('The Styles pane', () => {
            }
          </style>`);
     await waitForElementsStyleSection(undefined, devToolsPage);
+    await waitForStyleRule('--color', devToolsPage);
 
     const bodySection = await getStyleRule('body', devToolsPage);
     const isCollapsed = await bodySection.evaluate(section => section.classList.contains('collapsed'));

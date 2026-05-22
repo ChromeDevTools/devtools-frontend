@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type {EventTargetEvent} from '../../core/common/EventTarget.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
 
@@ -29,7 +29,7 @@ describeWithEnvironment('ViewManager', () => {
     createLocation(panelName: string, initialVisibility: boolean, defaultTab: string|undefined) {
       const location = viewManager.createTabbedLocation(() => {
         this.locations.get(panelName)!.isShown = initialVisibility;
-      }, panelName, false, true, defaultTab);
+      }, panelName, false, true, {defaultTab});
       this.locations.set(panelName, {location, isShown: initialVisibility});
       sinon.stub(location.tabbedPane(), 'isShowing').callsFake(() => this.locations.get(panelName)?.isShown ?? false);
     }
@@ -183,7 +183,7 @@ describeWithEnvironment('ViewManager', () => {
     it('respects custom location visibility predicate', async () => {
       let locationIsVisible = false;
       const tabbedLocation = viewManager.createTabbedLocation(
-          () => {}, 'visibility-test-location', false, true, undefined, () => locationIsVisible);
+          () => {}, 'visibility-test-location', false, true, {isLocationVisible: () => locationIsVisible});
 
       const view = new UI.View.SimpleView({
         title: i18n.i18n.lockedString('Visibility test view'),
@@ -249,6 +249,40 @@ describeWithEnvironment('ViewManager', () => {
           'transient-view',
           'Transient views must never be included in `closeable-tabs`',
       );
+    });
+
+    it('installs the plus button BEFORE appending tabs so the very first overflow detection reserves its width', () => {
+      // Regression test for the ordering invariant in TabbedLocation's
+      // constructor. A TabbedPane subclass spies on the first call to
+      // `appendTab` and records whether the plus button is already
+      // mounted at that point. If `installPlusButton` ran AFTER
+      // `appendApplicableItems`, the first appendTab would happen
+      // before the slotted button existed, and the first overflow
+      // detection pass would not reserve its width — causing the
+      // last visible tab to briefly snap into the overflow menu
+      // before a second layout pass corrected it.
+      class CapturingTabbedPane extends UI.TabbedPane.TabbedPane {
+        plusButtonPresentAtFirstAppendTab: boolean|undefined;
+        override appendTab(...args: Parameters<UI.TabbedPane.TabbedPane['appendTab']>): void {
+          if (this.plusButtonPresentAtFirstAppendTab === undefined) {
+            this.plusButtonPresentAtFirstAppendTab =
+                this.element.querySelector('devtools-menu-button[slot="trailing-button"]') !== null;
+          }
+          return super.appendTab(...args);
+        }
+      }
+      const tabbedPane = new CapturingTabbedPane();
+
+      // Enable the `devToolsPlusButton` base::Feature for this test; the
+      // host config is reset between tests by `describeWithEnvironment`.
+      updateHostConfig({devToolsPlusButton: {enabled: true}});
+      viewManager.createTabbedLocation(
+          () => {}, UI.ViewManager.ViewLocationValues.PANEL, false, true,
+          {tabbedPaneFactory: () => tabbedPane, plusButton: {}});
+
+      assert.isTrue(
+          tabbedPane.plusButtonPresentAtFirstAppendTab,
+          'installPlusButton must run before appendApplicableItems mounts any tabs');
     });
   });
 });

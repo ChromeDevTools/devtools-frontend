@@ -130,7 +130,8 @@ export class InspectorDrawerView {
     this.#drawerMinimizedSetting =
         Common.Settings.Settings.instance().createLocalSetting('inspector.drawer-minimized', false);
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(
-        options.revealDrawer, 'drawer-view', true, true, undefined, options.isVisible, () => new DrawerTabbedPane());
+        options.revealDrawer, 'drawer-view', true, true,
+        {isLocationVisible: options.isVisible, tabbedPaneFactory: () => new DrawerTabbedPane()});
     this.#moreTabsButton = this.tabbedLocation.enableMoreTabsButton();
     this.#moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     this.tabbedPane = this.tabbedLocation.tabbedPane() as DrawerTabbedPane;

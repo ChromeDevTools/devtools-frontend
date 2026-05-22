@@ -3054,6 +3054,7 @@ export const knownContextValues = new Set([
   'play-recording',
   'player',
   'playing',
+  'plus-button',
   'pointer',
   'pointer-32-bit',
   'pointer-64-bit',

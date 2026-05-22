@@ -384,6 +384,14 @@ export class MainImpl {
       requiresChromeRestart: true,
     });
 
+    Root.Runtime.experiments.registerHostExperiment({
+      name: Root.ExperimentNames.ExperimentName.PLUS_BUTTON,
+      title: 'Show "+" button on the tab strip for adding tools',
+      aboutFlag: 'devtools-plus-button',
+      isEnabled: Root.Runtime.hostConfig.devToolsPlusButton?.enabled ?? false,
+      requiresChromeRestart: false,
+    });
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
     ]);

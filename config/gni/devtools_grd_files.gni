@@ -2626,6 +2626,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/ListModel.js",
   "front_end/ui/legacy/ListWidget.js",
   "front_end/ui/legacy/Panel.js",
+  "front_end/ui/legacy/PlusButton.js",
   "front_end/ui/legacy/PopoverHelper.js",
   "front_end/ui/legacy/ProgressIndicator.js",
   "front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js",

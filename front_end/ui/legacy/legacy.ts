@@ -29,6 +29,7 @@ import * as ListControl from './ListControl.js';
 import * as ListModel from './ListModel.js';
 import * as ListWidget from './ListWidget.js';
 import * as Panel from './Panel.js';
+import * as PlusButton from './PlusButton.js';
 import * as PopoverHelper from './PopoverHelper.js';
 import * as ProgressIndicator from './ProgressIndicator.js';
 import * as RemoteDebuggingTerminatedScreen from './RemoteDebuggingTerminatedScreen.js';
@@ -82,6 +83,7 @@ export {
   ListModel,
   ListWidget,
   Panel,
+  PlusButton,
   PopoverHelper,
   ProgressIndicator,
   RemoteDebuggingTerminatedScreen,

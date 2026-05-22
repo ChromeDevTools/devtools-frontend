@@ -746,6 +746,7 @@ export enum KeyboardShortcutAction {
   MAX_VALUE = 120,
 }
 
+/** Update DevToolsIssuesPanelOpenedFrom in tools/metrics/histograms/metadata/dev/enums.xml if new enum is added. **/
 export const enum IssueOpener {
   CONSOLE_INFO_BAR = 0,
   LEARN_MORE_LINK_COEP = 1,
@@ -753,7 +754,8 @@ export const enum IssueOpener {
   HAMBURGER_MENU = 3,
   ADORNER = 4,
   COMMAND_MENU = 5,
-  MAX_VALUE = 6,
+  MORE_TOOLS_MENU = 6,
+  MAX_VALUE = 7,
 }
 
 /**
@@ -767,10 +769,11 @@ export enum DevtoolsExperiments {
   'use-source-map-scopes' = 76,
   'durable-messages' = 110,
   'jpeg-xl' = 111,
+  'plus-button' = 112,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 112,
+  MAX_VALUE = 113,
 }
 
 /** Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added. **/

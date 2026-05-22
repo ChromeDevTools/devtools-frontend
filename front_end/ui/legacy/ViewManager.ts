@@ -9,7 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
 import {createIcon, type Icon} from '../kit/kit.js';
 import {render, type TemplateResult} from '../lit/lit.js';
@@ -17,6 +17,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu} from './ContextMenu.js';
+import * as PlusButton from './PlusButton.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {type ItemsProvider, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
@@ -397,11 +398,8 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   createTabbedLocation(
       revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean,
-      defaultTab?: string|null, isLocationVisible?: (() => boolean),
-      tabbedPaneFactory?: TabbedPaneFactory): TabbedViewLocation {
-    return new TabbedLocation(
-        this, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible,
-        tabbedPaneFactory);
+      options?: TabbedLocationOptions): TabbedViewLocation {
+    return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, options);
   }
 
   createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation {
@@ -648,6 +646,17 @@ type CloseableTabSetting = Record<string, boolean>;
 
 type TabOrderSetting = Record<string, number>;
 
+export interface TabbedLocationOptions {
+  defaultTab?: string|null;
+  isLocationVisible?: () => boolean;
+  tabbedPaneFactory?: TabbedPaneFactory;
+  /**
+   * Installed into the `TabbedPane`'s `trailing-button` slot before any
+   * tabs are appended, so the very first layout pass reserves width for it.
+   */
+  plusButton?: PlusButton.PlusButtonOptions;
+}
+
 class TabbedLocation extends Location implements TabbedViewLocation {
   #tabbedPane: TabbedPane;
   private readonly location: string;
@@ -661,9 +670,8 @@ class TabbedLocation extends Location implements TabbedViewLocation {
 
   constructor(
       manager: ViewManager, revealCallback: (() => void), location: string, restoreSelection?: boolean,
-      allowReorder?: boolean, defaultTab?: string|null, isLocationVisible?: (() => boolean),
-      tabbedPaneFactory?: TabbedPaneFactory) {
-    const tabbedPane = tabbedPaneFactory ? tabbedPaneFactory() : new TabbedPane();
+      allowReorder?: boolean, options?: TabbedLocationOptions) {
+    const tabbedPane = options?.tabbedPaneFactory ? options.tabbedPaneFactory() : new TabbedPane();
     if (allowReorder) {
       tabbedPane.setAllowTabReorder(true);
     }
@@ -687,8 +695,27 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     if (restoreSelection) {
       this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selected-tab', '');
     }
-    this.defaultTab = defaultTab;
-    this.isLocationVisible = isLocationVisible;
+    this.defaultTab = options?.defaultTab;
+    this.isLocationVisible = options?.isLocationVisible;
+
+    // Install before `appendApplicableItems` so the very first layout pass
+    // reserves width for the button and we avoid a reflow that snaps the
+    // last tab into the overflow menu.
+    if (options?.plusButton && Root.Runtime.hostConfig.devToolsPlusButton?.enabled) {
+      PlusButton.installPlusButton(
+          {
+            tabbedPane: this.#tabbedPane,
+            location: this.location,
+            // Use the local `views` map (not `manager.viewsForLocation`) so
+            // cross-location moves added via `appendView` are reflected.
+            views: () => this.views.values(),
+            manager: this.manager,
+            showView: view => {
+              this.showView(view, undefined, /* userGesture */ true).catch(err => console.error(err));
+            },
+          },
+          options.plusButton);
+    }
 
     if (location) {
       this.appendApplicableItems(location);

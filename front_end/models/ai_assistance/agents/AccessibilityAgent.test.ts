@@ -136,7 +136,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
 
   it('getElementAccessibilityDetails yields a ComputedStyleAiWidget if styles and matched styles are found',
      async () => {
-       createTarget();
+       const target = createTarget();
        const aidaClient = mockAidaClient([[{
          explanation: '',
          functionCalls:
@@ -150,19 +150,21 @@ describeWithMockConnection('AccessibilityAgent', () => {
        });
        const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
 
-       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget()!;
        const domModel = target.model(SDK.DOMModel.DOMModel)!;
        const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel)!;
        const cssModel = domModel.cssModel();
+       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
 
        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
        mockNode.domModel.returns(domModel);
        mockNode.id = 42 as Protocol.DOM.NodeId;
        mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
        mockNode.attributes.returns([]);
+       mockNode.frameId.returns('main' as Protocol.Page.FrameId);
 
        sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
        sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+       resourceTreeModel.mainFrame = {id: 'main' as Protocol.Page.FrameId} as SDK.ResourceTreeModel.ResourceTreeFrame;
 
        const styles = new Map<string, string>([
          ['color', 'rgb(0, 0, 0)'],
@@ -210,6 +212,38 @@ describeWithMockConnection('AccessibilityAgent', () => {
        ]);
      });
 
+  it('getElementAccessibilityDetails returns an error if the node is in a different frame', async () => {
+    const target = createTarget();
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+
+    const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockNode.domModel.returns(domModel);
+    mockNode.id = 42 as Protocol.DOM.NodeId;
+    mockNode.frameId.returns('different-frame' as Protocol.Page.FrameId);
+
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
+    sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+    resourceTreeModel.mainFrame = {id: 'main' as Protocol.Page.FrameId} as SDK.ResourceTreeModel.ResourceTreeFrame;
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Could not find the element with path: 1,HTML,1,BODY');
+  });
+
   it('can call the runAccessibilityAudits method and yields widget with snapshotReport: true', async () => {
     const aidaClient = mockAidaClient([[{
       explanation: '',
@@ -250,7 +284,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
   }
 
   it('can call the executeJavaScript method', async () => {
-    createTarget();
+    const target = createTarget();
     const aidaClient = mockAidaClient([
       [{
         explanation: 'thought',
@@ -272,8 +306,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
     });
     const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
 
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target!.model(SDK.DOMModel.DOMModel)!;
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
     const documentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     documentNode.domModel.returns(domModel);
     const document = sinon.createStubInstance(SDK.DOMModel.DOMDocument);

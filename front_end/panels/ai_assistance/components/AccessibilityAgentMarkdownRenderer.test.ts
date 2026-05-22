@@ -154,6 +154,43 @@ describeWithEnvironment('AccessibilityAgentMarkdownRenderer', () => {
       assert.include(el.textContent, 'LINKIFIED_PATH');
     });
 
+    it('does not linkify paths if the node belongs to a different frame', async () => {
+      const targetManager = SDK.TargetManager.TargetManager.instance();
+      const mockDomModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+
+      const mockTarget = {
+        model: (modelClass: unknown) => {
+          if (modelClass === SDK.DOMModel.DOMModel) {
+            return mockDomModel;
+          }
+          return null;
+        },
+      } as unknown as SDK.Target.Target;
+
+      sinon.stub(targetManager, 'primaryPageTarget').returns(mockTarget);
+
+      const mockNode = {
+        frameId: () => 'different-frame',
+      } as SDK.DOMModel.DOMNode;
+
+      mockDomModel.pushNodeByPathToFrontend.resolves(42 as Protocol.DOM.NodeId);
+      mockDomModel.nodeForId.returns(mockNode);
+
+      const component = new MarkdownView.MarkdownView.MarkdownView();
+      renderElementIntoDOM(component, {allowMultipleChildren: true});
+      component.data = {
+        tokens: Marked.Marked.lexer('[text](#path-1,HTML,1,BODY)'),
+        renderer: new AiAssistance.AccessibilityAgentMarkdownRenderer('main-frame'),
+      };
+
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      const el = component.shadowRoot?.querySelector('span');
+      assert.exists(el);
+      assert.include(el.textContent, 'text');
+      assert.notInclude(el.textContent, 'LINKIFIED_PATH');
+    });
+
     it('does not linkify non-integer node IDs', async () => {
       const targetManager = SDK.TargetManager.TargetManager.instance();
       const mockDomModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);

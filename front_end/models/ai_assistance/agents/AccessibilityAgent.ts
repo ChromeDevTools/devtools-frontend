@@ -236,7 +236,18 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
     if (!nodeId) {
       return null;
     }
-    return domModel.nodeForId(nodeId);
+    const node = domModel.nodeForId(nodeId);
+    if (!node) {
+      return null;
+    }
+
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const mainFrameId = resourceTreeModel?.mainFrame?.id;
+    if (node.frameId() !== mainFrameId) {
+      return null;
+    }
+
+    return node;
   }
 
   #declareFunctions(): void {

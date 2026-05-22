@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import type * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Trace from '../../trace/trace.js';
 import type {ConversationSuggestions} from '../agents/AiAgent.js';
 import type {AgentFocus} from '../performance/AIContext.js';
@@ -48,8 +49,9 @@ export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.TraceModel.ParsedTrace;
 
-  constructor(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel) {
-    this.#traceFormatter = new PerformanceTraceFormatter(focus);
+  constructor(
+      focus: AgentFocus, insight: Trace.Insights.Types.InsightModel, deviceScope: CrUXManager.DeviceScope|null = null) {
+    this.#traceFormatter = new PerformanceTraceFormatter(focus, deviceScope);
     this.#insight = insight;
     this.#parsedTrace = focus.parsedTrace;
   }

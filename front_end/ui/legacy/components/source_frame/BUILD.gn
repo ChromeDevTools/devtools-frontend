@@ -52,6 +52,7 @@ devtools_ui_module("source_frame") {
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/object_ui:bundle",
     "../../../components/code_highlighter:bundle",
+    "../../../kit:bundle",
     "../../../lit:bundle",
     "../../../visual_logging:bundle",
   ]

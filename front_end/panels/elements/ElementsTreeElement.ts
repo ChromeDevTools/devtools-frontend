@@ -1304,6 +1304,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   // ClearNode param is used to clean DOM after in-place editing..
   performUpdate(clearNode = false): void {
+    // Skip updating when in-place editing (not HTML editing indicated by the
+    // editorState) is happening. Doing an update would break editing
+    // (crbug.com/515639787).
+    if (this.editing && !this.#editorState) {
+      return;
+    }
     const output: ViewOutput = {};
     DEFAULT_VIEW(
         {
@@ -2389,7 +2395,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return this.startEditingAttribute(attr, attr);
   }
 
-  private triggerEditAttribute(attributeName: string): boolean|undefined {
+  triggerEditAttribute(attributeName: string): boolean|undefined {
     const attributeElements = this.listItemElement.getElementsByClassName('webkit-html-attribute-name');
     for (let i = 0, len = attributeElements.length; i < len; ++i) {
       if (attributeElements[i].textContent === attributeName) {
@@ -2828,7 +2834,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     textNode.setNodeValue(newText, callback.bind(this));
   }
 
-  private editingCancelled(_element: Element, _tagName: string|null): void {
+  editingCancelled(_element: Element, _tagName: string|null): void {
     this.editing = null;
 
     // Need to restore attributes structure.

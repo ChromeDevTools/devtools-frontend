@@ -481,6 +481,66 @@ describeWithMockConnection('ElementsTreeElement', () => {
     (adorner as HTMLElement).click();
     sinon.assert.calledWith(forceSpy, node, false);
   });
+
+  it('ensures in-place editing does not add or keep zero-width spaces when re-rendering is attempted (crbug.com/515639787)',
+     async () => {
+       const target = createTarget();
+       const domModel = target.model(SDK.DOMModel.DOMModel);
+       assert.exists(domModel);
+
+       const nodePayload = {
+         nodeId: 1 as Protocol.DOM.NodeId,
+         backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+         nodeType: Node.ELEMENT_NODE,
+         nodeName: 'DIV',
+         localName: 'div',
+         nodeValue: '',
+         attributes: ['autofill-information', 'foo'],
+         childNodeCount: 0,
+       };
+       const node = SDK.DOMModel.DOMNode.create(domModel, null, false, nodePayload);
+
+       const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
+       const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
+       treeElement.treeOutline = treeOutline;
+       treeElement.onbind();
+
+       // Render the element initially
+       treeElement.performUpdate();
+
+       // The attribute container DOM initially contains zero-width spaces (inserted for wrapping by rendering)
+       const attributeElement = treeElement.listItemElement.querySelector('.webkit-html-attribute');
+       assert.exists(attributeElement);
+
+       // Count initial zero-width spaces
+       const initialSpacesCount = (attributeElement.textContent).split('\u200B').length - 1;
+       assert.isAbove(initialSpacesCount, 0);
+
+       // Start in-place editing of the attribute
+       const editStarted = treeElement.triggerEditAttribute('autofill-information');
+       assert.isTrue(editStarted);
+
+       // Verify that starting edit stripped the zero-width spaces from the attribute element
+       assert.notInclude(attributeElement.textContent, '\u200B');
+
+       // While editing is active, call performUpdate (or hover, etc.) which would re-render
+       treeElement.performUpdate();
+
+       // Verify that the attribute element STILL does not contain zero-width spaces.
+       assert.notInclude(attributeElement.textContent, '\u200B');
+
+       // Cancel the editing session and clean up
+       treeElement.editingCancelled(attributeElement, 'autofill-information');
+
+       // Re-query the newly rendered attribute element from the DOM
+       const finalAttributeElement = treeElement.listItemElement.querySelector('.webkit-html-attribute');
+       assert.exists(finalAttributeElement);
+
+       // After cancelling, the element is restored, and the zero-width spaces should be restored back to initial count
+       // (verifying no duplicate or redundant spaces are added/kept in the DOM)
+       const finalSpacesCount = finalAttributeElement.textContent.split('\u200B').length - 1;
+       assert.strictEqual(finalSpacesCount, initialSpacesCount);
+     });
 });
 
 describeWithMockConnection('ElementsTreeElement highlighting', () => {

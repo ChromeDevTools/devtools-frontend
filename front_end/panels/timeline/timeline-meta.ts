@@ -329,26 +329,30 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.timelineInvalidationTracking),
+  settingName: 'timeline-invalidation-tracking',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
+// IMPORTANT: if you are updating this, you should also update the setting in
+// js_timeline-meta.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timelineShowAllEvents),
   settingName: 'timeline-show-all-events',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });
 
+// IMPORTANT: if you are updating this, you should also update the setting in
+// js_timeline-meta.
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.timelineDebugMode),
   settingName: 'timeline-debug-mode',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.timelineInvalidationTracking),
-  settingName: 'timeline-invalidation-tracking',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 });

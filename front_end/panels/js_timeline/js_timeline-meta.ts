@@ -33,6 +33,14 @@ const UIStrings = {
    * @description Title of an action in the timeline tool to record a reload of the current page
    */
   recordAndReload: 'Record and reload',
+  /**
+   * @description Title of a setting under the Performance category in Settings
+   */
+  timelineShowAllEvents: 'Show all events',
+  /**
+   * @description Title of a setting under the Performance category in Settings
+   */
+  timelineDebugMode: 'Timeline debug mode (trace event details, etc.)',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/js_timeline/js_timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -150,6 +158,28 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+Shift+E',
     },
   ],
+});
+
+// IMPORTANT: if you are updating this, you should also update the setting in
+// timeline-meta.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.timelineShowAllEvents),
+  settingName: 'timeline-show-all-events',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
+// IMPORTANT: if you are updating this, you should also update the setting in
+// timeline-meta.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.timelineDebugMode),
+  settingName: 'timeline-debug-mode',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
 });
 
 // IMPORTANT: if you are updating this, you should also update the setting in

@@ -247,6 +247,7 @@ export interface LighthouseReportAiWidget {
     name: 'LIGHTHOUSE_REPORT';
     data: {
         report: LHModel.ReporterTypes.ReportJSON;
+        snapshotReport?: boolean;
     };
 }
 export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget;

@@ -926,7 +926,7 @@ export class ContentProviderContextMenuProvider {
             return;
         }
         if (!Common.ParsedURL.schemeIs(contentUrl, 'file:')) {
-            contextMenu.revealSection().appendItem(UI.UIUtils.openLinkExternallyLabel(), () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(contentUrl.endsWith(':formatted') ?
+            contextMenu.revealSection().appendItem(UI.UIUtils.openLinkExternallyLabel(), () => UIHelpers.openInNewTab(contentUrl.endsWith(':formatted') ?
                 Common.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(':')) :
                 contentUrl), { jslogContext: 'open-in-new-tab' });
         }

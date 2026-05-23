@@ -28,6 +28,7 @@ import * as ListControl from './ListControl.js';
 import * as ListModel from './ListModel.js';
 import * as ListWidget from './ListWidget.js';
 import * as Panel from './Panel.js';
+import * as PlusButton from './PlusButton.js';
 import * as PopoverHelper from './PopoverHelper.js';
 import * as ProgressIndicator from './ProgressIndicator.js';
 import * as RemoteDebuggingTerminatedScreen from './RemoteDebuggingTerminatedScreen.js';
@@ -52,5 +53,5 @@ import * as View from './View.js';
 import * as ViewManager from './ViewManager.js';
 import * as Widget from './Widget.js';
 import * as ZoomManager from './ZoomManager.js';
-export { ActionRegistration, ActionRegistry, App, AppProvider, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUserMetrics, UIUtils, View, ViewManager, Widget, ZoomManager };
+export { ActionRegistration, ActionRegistry, App, AppProvider, ARIAUtils, Context, ContextFlavorListener, ContextMenu, Dialog, DockController, DOMUtilities, DropTarget, EmptyWidget, FilterBar, FilterSuggestionBuilder, ForwardedInputEventHandler, GlassPane, Infobar, InplaceEditor, inspectorCommonStyles, InspectorView, KeyboardShortcut, LinkContextMenuProvider, ListControl, ListModel, ListWidget, Panel, PlusButton, PopoverHelper, ProgressIndicator, RemoteDebuggingTerminatedScreen, ReportView, ResizerWidget, RootView, SearchableView, ShortcutRegistry, SoftContextMenu, SoftDropDown, SplitWidget, SuggestBox, TabbedPane, TargetCrashedScreen, TextPrompt, Toolbar, Tooltip, TreeOutline, UIUserMetrics, UIUtils, View, ViewManager, Widget, ZoomManager };
 //# sourceMappingURL=legacy.prebundle.js.map

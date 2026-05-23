@@ -14,12 +14,14 @@ export class PerformanceTraceFormatter {
     #insightSet;
     #eventsSerializer;
     #formattedFunctionCodes = new Set();
+    #deviceScope;
     resolveFunctionCode;
-    constructor(focus) {
+    constructor(focus, deviceScope = null) {
         this.#focus = focus;
         this.#parsedTrace = focus.parsedTrace;
         this.#insightSet = focus.primaryInsightSet;
         this.#eventsSerializer = focus.eventsSerializer;
+        this.#deviceScope = deviceScope;
     }
     serializeEvent(event) {
         const key = this.#eventsSerializer.keyForEvent(event);
@@ -37,7 +39,8 @@ export class PerformanceTraceFormatter {
             return [];
         }
         try {
-            const cruxScope = CrUXManager.CrUXManager.instance().getSelectedScope();
+            const cruxScope = this.#deviceScope ? { pageScope: 'url', deviceScope: this.#deviceScope } :
+                CrUXManager.CrUXManager.instance().getSelectedScope();
             const parts = [];
             const fieldMetrics = Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#parsedTrace.metadata, cruxScope);
             const fieldLcp = fieldMetrics?.lcp;

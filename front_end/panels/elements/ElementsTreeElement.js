@@ -1082,6 +1082,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     // ClearNode param is used to clean DOM after in-place editing..
     performUpdate(clearNode = false) {
+        // Skip updating when in-place editing (not HTML editing indicated by the
+        // editorState) is happening. Doing an update would break editing
+        // (crbug.com/515639787).
+        if (this.editing && !this.#editorState) {
+            return;
+        }
         const output = {};
         DEFAULT_VIEW({
             node: !clearNode ? this.nodeInternal : null,

@@ -2275,7 +2275,16 @@ var AccessibilityAgent = class extends AiAgent {
     if (!nodeId) {
       return null;
     }
-    return domModel.nodeForId(nodeId);
+    const node = domModel.nodeForId(nodeId);
+    if (!node) {
+      return null;
+    }
+    const resourceTreeModel = target.model(SDK5.ResourceTreeModel.ResourceTreeModel);
+    const mainFrameId = resourceTreeModel?.mainFrame?.id;
+    if (node.frameId() !== mainFrameId) {
+      return null;
+    }
+    return node;
   }
   #declareFunctions() {
     this.declareFunction("executeJavaScript", executeJavaScriptFunction(this.#javascriptExecutor));
@@ -2317,7 +2326,7 @@ var AccessibilityAgent = class extends AiAgent {
         const audits = new LighthouseFormatter().audits(report, "accessibility");
         return {
           result: { audits },
-          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
+          widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report, snapshotReport: true } }]
         };
       }
     });
@@ -4868,12 +4877,14 @@ var PerformanceTraceFormatter = class {
   #insightSet;
   #eventsSerializer;
   #formattedFunctionCodes = /* @__PURE__ */ new Set();
+  #deviceScope;
   resolveFunctionCode;
-  constructor(focus) {
+  constructor(focus, deviceScope = null) {
     this.#focus = focus;
     this.#parsedTrace = focus.parsedTrace;
     this.#insightSet = focus.primaryInsightSet;
     this.#eventsSerializer = focus.eventsSerializer;
+    this.#deviceScope = deviceScope;
   }
   serializeEvent(event) {
     const key = this.#eventsSerializer.keyForEvent(event);
@@ -4891,7 +4902,7 @@ var PerformanceTraceFormatter = class {
       return [];
     }
     try {
-      const cruxScope = CrUXManager.CrUXManager.instance().getSelectedScope();
+      const cruxScope = this.#deviceScope ? { pageScope: "url", deviceScope: this.#deviceScope } : CrUXManager.CrUXManager.instance().getSelectedScope();
       const parts = [];
       const fieldMetrics = Trace3.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#parsedTrace.metadata, cruxScope);
       const fieldLcp = fieldMetrics?.lcp;
@@ -5604,8 +5615,8 @@ var PerformanceInsightFormatter = class {
   #traceFormatter;
   #insight;
   #parsedTrace;
-  constructor(focus, insight) {
-    this.#traceFormatter = new PerformanceTraceFormatter(focus);
+  constructor(focus, insight, deviceScope = null) {
+    this.#traceFormatter = new PerformanceTraceFormatter(focus, deviceScope);
     this.#insight = insight;
     this.#parsedTrace = focus.parsedTrace;
   }
@@ -7552,7 +7563,34 @@ ${result}`,
         if (!event) {
           return { error: "Invalid eventKey" };
         }
-        const details = JSON.stringify(event);
+        let details;
+        if (Trace6.Types.Events.isSyntheticNetworkRequest(event)) {
+          const eventToSerialize = {
+            ...event,
+            args: {
+              ...event.args,
+              data: {
+                ...event.args.data,
+                responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null
+              }
+            }
+          };
+          details = JSON.stringify(eventToSerialize);
+        } else if (Trace6.Types.Events.isResourceReceiveResponse(event)) {
+          const eventToSerialize = {
+            ...event,
+            args: {
+              ...event.args,
+              data: {
+                ...event.args.data,
+                headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : void 0
+              }
+            }
+          };
+          details = JSON.stringify(eventToSerialize);
+        } else {
+          details = JSON.stringify(event);
+        }
         const key = `getEventByKey('${params.eventKey}')`;
         this.#cacheFunctionResult(focus, key, details);
         return { result: { details } };
@@ -8854,8 +8892,20 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       },
       handler: async () => {
+        const allowedOriginResult = this.#allowedOrigin();
+        if ("blocked" in allowedOriginResult) {
+          return {
+            error: "Cross-origin access blocked due to navigation. Please start a new chat."
+          };
+        }
+        const origin = allowedOriginResult.origin;
         const files = [];
         for (const file of _ContextSelectionAgent.getUISourceCodes()) {
+          const fileUrl = file.url();
+          const fileOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+          if (origin && fileOrigin !== origin) {
+            continue;
+          }
           files.push({
             file: file.fullDisplayName(),
             id: _ContextSelectionAgent.uiSourceCodeId.get(file)
@@ -8888,7 +8938,21 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       },
       handler: async (params) => {
-        const file = _ContextSelectionAgent.getUISourceCodes().find((file2) => _ContextSelectionAgent.uiSourceCodeId.get(file2) === params.id);
+        const allowedOriginResult = this.#allowedOrigin();
+        if ("blocked" in allowedOriginResult) {
+          return {
+            error: "Cross-origin access blocked due to navigation. Please start a new chat."
+          };
+        }
+        const origin = allowedOriginResult.origin;
+        const file = _ContextSelectionAgent.getUISourceCodes().find((file2) => {
+          if (_ContextSelectionAgent.uiSourceCodeId.get(file2) !== params.id) {
+            return false;
+          }
+          const fileUrl = file2.url();
+          const fileOrigin = Common6.ParsedURL.ParsedURL.extractOrigin(fileUrl);
+          return !origin || fileOrigin === origin;
+        });
         if (!file) {
           return {
             error: "Unable to find file."

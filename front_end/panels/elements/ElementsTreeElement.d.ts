@@ -152,7 +152,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     private startEditing;
     private startEditingProcessingInstructionValue;
     private addNewAttribute;
-    private triggerEditAttribute;
+    triggerEditAttribute(attributeName: string): boolean | undefined;
     private startEditingAttribute;
     private startEditingTextNode;
     private startEditingTagName;
@@ -161,7 +161,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     private attributeEditingCommitted;
     private tagNameEditingCommitted;
     private textNodeEditingCommitted;
-    private editingCancelled;
+    editingCancelled(_element: Element, _tagName: string | null): void;
     private distinctClosingTagElement;
     updateTitle(updateRecord?: Elements.ElementUpdateRecord.ElementUpdateRecord | null): void;
     private computeLeftIndent;

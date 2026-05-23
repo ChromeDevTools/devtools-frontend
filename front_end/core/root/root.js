@@ -59,6 +59,7 @@ var ExperimentName;
   ExperimentName2["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
   ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";
   ExperimentName2["JPEG_XL"] = "jpeg-xl";
+  ExperimentName2["PLUS_BUTTON"] = "plus-button";
 })(ExperimentName || (ExperimentName = {}));
 
 // gen/front_end/core/root/Runtime.js

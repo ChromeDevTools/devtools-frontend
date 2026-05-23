@@ -7,10 +7,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import { createIcon } from '../kit/kit.js';
 import { render } from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
+import * as PlusButton from './PlusButton.js';
 import { Events as TabbedPaneEvents, TabbedPane } from './TabbedPane.js';
 import { ToolbarMenuButton } from './Toolbar.js';
 import { createTextChild } from './UIUtils.js';
@@ -300,8 +302,8 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
         }
         throw new Error('Unresolved location: ' + location);
     }
-    createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
-        return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory);
+    createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, options) {
+        return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, options);
     }
     createStackLocation(revealCallback, location, jslogContext) {
         return new StackLocation(this, revealCallback, location, jslogContext);
@@ -526,8 +528,8 @@ class TabbedLocation extends Location {
     defaultTab;
     isLocationVisible;
     views = new Map();
-    constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
-        const tabbedPane = tabbedPaneFactory ? tabbedPaneFactory() : new TabbedPane();
+    constructor(manager, revealCallback, location, restoreSelection, allowReorder, options) {
+        const tabbedPane = options?.tabbedPaneFactory ? options.tabbedPaneFactory() : new TabbedPane();
         if (allowReorder) {
             tabbedPane.setAllowTabReorder(true);
         }
@@ -547,8 +549,24 @@ class TabbedLocation extends Location {
         if (restoreSelection) {
             this.lastSelectedTabSetting = Common.Settings.Settings.instance().createSetting(location + '-selected-tab', '');
         }
-        this.defaultTab = defaultTab;
-        this.isLocationVisible = isLocationVisible;
+        this.defaultTab = options?.defaultTab;
+        this.isLocationVisible = options?.isLocationVisible;
+        // Install before `appendApplicableItems` so the very first layout pass
+        // reserves width for the button and we avoid a reflow that snaps the
+        // last tab into the overflow menu.
+        if (options?.plusButton && Root.Runtime.hostConfig.devToolsPlusButton?.enabled) {
+            PlusButton.installPlusButton({
+                tabbedPane: this.#tabbedPane,
+                location: this.location,
+                // Use the local `views` map (not `manager.viewsForLocation`) so
+                // cross-location moves added via `appendView` are reflected.
+                views: () => this.views.values(),
+                manager: this.manager,
+                showView: view => {
+                    this.showView(view, undefined, /* userGesture */ true).catch(err => console.error(err));
+                },
+            }, options.plusButton);
+        }
         if (location) {
             this.appendApplicableItems(location);
         }

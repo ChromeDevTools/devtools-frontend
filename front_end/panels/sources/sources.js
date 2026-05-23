@@ -12393,7 +12393,9 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       this.scorer = new FilePathScoreFunction(query);
     }
     let multiplier = 10;
-    if (uiSourceCode.project().type() === Workspace25.Workspace.projectTypes.FileSystem && !Persistence12.Persistence.PersistenceImpl.instance().binding(uiSourceCode)) {
+    const isSnippet = Common14.ParsedURL.schemeIs(uiSourceCode.url(), "snippet:");
+    const isUnboundLocalFile = uiSourceCode.project().type() === Workspace25.Workspace.projectTypes.FileSystem && !Persistence12.Persistence.PersistenceImpl.instance().binding(uiSourceCode) && !isSnippet;
+    if (isUnboundLocalFile) {
       multiplier = 5;
     }
     let contentTypeBonus = 0;

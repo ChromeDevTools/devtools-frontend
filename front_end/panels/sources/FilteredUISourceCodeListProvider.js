@@ -102,8 +102,10 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
             this.scorer = new FilePathScoreFunction(query);
         }
         let multiplier = 10;
-        if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
-            !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode)) {
+        const isSnippet = Common.ParsedURL.schemeIs(uiSourceCode.url(), 'snippet:');
+        const isUnboundLocalFile = uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
+            !Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode) && !isSnippet;
+        if (isUnboundLocalFile) {
             multiplier = 5;
         }
         let contentTypeBonus = 0;

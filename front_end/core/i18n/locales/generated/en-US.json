@@ -9161,6 +9161,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Timeline debug mode (trace event details, etc.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Show all events"
+  },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "Pan or rotate down"
   },
@@ -18112,6 +18118,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Save"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "More tools"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Reason: {PH1}."

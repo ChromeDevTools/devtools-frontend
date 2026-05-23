@@ -1,4 +1,5 @@
 import type * as Platform from '../../../core/platform/platform.js';
+import * as CrUXManager from '../../crux-manager/crux-manager.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import type { AICallTree } from '../performance/AICallTree.js';
@@ -10,7 +11,7 @@ export interface NetworkRequestFormatOptions {
 export declare class PerformanceTraceFormatter {
     #private;
     resolveFunctionCode?: (url: Platform.DevToolsPath.UrlString, line: number, column: number) => Promise<SourceMapScopes.FunctionCodeResolver.FunctionCode | null>;
-    constructor(focus: AgentFocus);
+    constructor(focus: AgentFocus, deviceScope?: CrUXManager.DeviceScope | null);
     serializeEvent(event: Trace.Types.Events.Event): string;
     serializeBounds(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatTraceSummary(): string;

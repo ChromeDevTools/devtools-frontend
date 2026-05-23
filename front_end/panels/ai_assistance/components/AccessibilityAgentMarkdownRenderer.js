@@ -94,6 +94,9 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
         if (!node) {
             return;
         }
+        if (node.frameId() !== this.mainFrameId) {
+            return;
+        }
         const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
         return linkedNode;
     }

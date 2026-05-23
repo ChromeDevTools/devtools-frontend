@@ -565,7 +565,7 @@ __export(Dialog_exports, {
   Dialog: () => Dialog
 });
 import * as Common16 from "./../../core/common/common.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Buttons7 from "./../components/buttons/buttons.js";
 import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
@@ -744,9 +744,9 @@ __export(Toolbar_exports, {
   registerToolbarItem: () => registerToolbarItem
 });
 import * as Common14 from "./../../core/common/common.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root7 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon6 } from "./../kit/kit.js";
@@ -763,10 +763,10 @@ __export(ContextMenu_exports, {
   registerItem: () => registerItem,
   registerProvider: () => registerProvider
 });
-import * as Host7 from "./../../core/host/host.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Host8 from "./../../core/host/host.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
-import { html as html2, render as render3 } from "./../lit/lit.js";
+import { html as html3, render as render4 } from "./../lit/lit.js";
 import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
@@ -1529,7 +1529,7 @@ var SoftContextMenu_exports = {};
 __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import { createIcon as createIcon5 } from "./../kit/kit.js";
 import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
 
@@ -1543,9 +1543,9 @@ __export(InspectorView_exports, {
   InspectorViewTabDelegate: () => InspectorViewTabDelegate
 });
 import * as Common11 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root4 from "./../../core/root/root.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon4 } from "./../kit/kit.js";
@@ -2081,7 +2081,7 @@ var TYPE_TO_ICON = {
 
 // gen/front_end/ui/legacy/InspectorDrawerView.js
 import * as Common8 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
@@ -5449,12 +5449,145 @@ __export(ViewManager_exports, {
   resetViewRegistration: () => resetViewRegistration
 });
 import * as Common7 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Host5 from "./../../core/host/host.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
+import * as Root4 from "./../../core/root/root.js";
 import { createIcon as createIcon3 } from "./../kit/kit.js";
-import { render as render2 } from "./../lit/lit.js";
+import { render as render3 } from "./../lit/lit.js";
 import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
+
+// gen/front_end/ui/legacy/PlusButton.js
+var PlusButton_exports = {};
+__export(PlusButton_exports, {
+  PLUS_BUTTON_VIEW: () => PLUS_BUTTON_VIEW,
+  PlusButtonPresenter: () => PlusButtonPresenter,
+  installPlusButton: () => installPlusButton,
+  populatePlusButtonMenu: () => populatePlusButtonMenu,
+  revealOverflowTab: () => revealOverflowTab
+});
+import * as Host4 from "./../../core/host/host.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
+import { Directives as Directives2, html as html2, render as render2 } from "./../lit/lit.js";
+var UIStrings5 = {
+  /**
+   * @description Default tooltip / accessible name of the "plus" button shown
+   * after the visible tabs in a tab strip. Clicking it opens a menu listing
+   * tools that are not currently shown as a visible tab.
+   */
+  moreTools: "More tools"
+};
+var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/PlusButton.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var PlusButtonPresenter = class {
+  #context;
+  constructor(context) {
+    this.#context = context;
+  }
+  buildModel() {
+    const { tabbedPane, location, views, manager } = this.#context;
+    const overflowTabs = tabbedPane.hiddenTabs().map((tab) => ({ id: tab.id, title: tab.title, jslogContext: tab.jslogContext }));
+    const addToolEntries = [];
+    const seenIds = new Set(overflowTabs.map((tab) => tab.id));
+    const seenTitles = new Set(overflowTabs.map((tab) => tab.title));
+    for (const view of views()) {
+      if (tabbedPane.hasTab(view.viewId())) {
+        continue;
+      }
+      if (view.isTransient()) {
+        continue;
+      }
+      if (seenIds.has(view.viewId()) || seenTitles.has(view.title())) {
+        continue;
+      }
+      seenIds.add(view.viewId());
+      seenTitles.add(view.title());
+      const isIssuesPane = view.viewId() === "issues-pane";
+      addToolEntries.push({
+        title: view.title(),
+        jslogContext: view.viewId(),
+        isPreviewFeature: view.isPreviewFeature(),
+        action: () => {
+          if (isIssuesPane) {
+            Host4.userMetrics.issuesPanelOpenedFrom(
+              6
+              /* Host.UserMetrics.IssueOpener.MORE_TOOLS_MENU */
+            );
+          }
+          this.#context.showView(view);
+        }
+      });
+    }
+    const otherLocation = location === "panel" ? "drawer-view" : location === "drawer-view" ? "panel" : null;
+    if (otherLocation) {
+      for (const view of manager.viewsForLocation(otherLocation)) {
+        if (view.isTransient() || !view.isCloseable() || seenIds.has(view.viewId()) || seenTitles.has(view.title())) {
+          continue;
+        }
+        seenIds.add(view.viewId());
+        seenTitles.add(view.title());
+        const viewId = view.viewId();
+        addToolEntries.push({
+          title: view.title(),
+          jslogContext: viewId,
+          isPreviewFeature: view.isPreviewFeature(),
+          action: () => manager.moveView(viewId, location)
+        });
+      }
+    }
+    addToolEntries.sort((a, b) => a.title.localeCompare(b.title));
+    return { overflowTabs, addToolEntries };
+  }
+};
+function populatePlusButtonMenu(contextMenu, context) {
+  const model = new PlusButtonPresenter(context).buildModel();
+  const hasOverflow = model.overflowTabs.length > 0;
+  for (const tab of model.overflowTabs) {
+    contextMenu.defaultSection().appendItem(tab.title, () => revealOverflowTab(context.tabbedPane, tab.id), { jslogContext: tab.jslogContext ?? tab.id });
+  }
+  const addToolSection = hasOverflow ? contextMenu.footerSection() : contextMenu.defaultSection();
+  for (const entry of model.addToolEntries) {
+    addToolSection.appendItem(entry.title, entry.action, { isPreviewFeature: entry.isPreviewFeature, jslogContext: entry.jslogContext });
+  }
+}
+function revealOverflowTab(tabbedPane, tabId) {
+  const firstHidden = tabbedPane.firstHiddenTabIndex();
+  if (firstHidden > 0) {
+    tabbedPane.moveTab(tabId, firstHidden - 1);
+  }
+  tabbedPane.selectTab(
+    tabId,
+    /* userGesture */
+    true,
+    /* forceFocus */
+    true
+  );
+}
+var PLUS_BUTTON_VIEW = (input, output, target) => {
+  render2(html2`
+        <devtools-menu-button
+            ${Directives2.ref((el) => {
+    output.button = el;
+  })}
+            slot="trailing-button"
+            .iconName=${"plus"}
+            .title=${input.title}
+            .jslogContext=${input.jslogContext}
+            .populateMenuCall=${input.populateMenuCall}>
+        </devtools-menu-button>`, target);
+};
+function installPlusButton(context, options = {}) {
+  const output = {};
+  PLUS_BUTTON_VIEW({
+    title: options.title ?? i18nString5(UIStrings5.moreTools),
+    jslogContext: options.jslogContext ?? "",
+    populateMenuCall: (menu5) => populatePlusButtonMenu(menu5, context)
+  }, output, context.tabbedPane.element);
+  if (!output.button) {
+    throw new Error("installPlusButton: ref directive did not capture <devtools-menu-button>");
+  }
+  return output.button;
+}
 
 // gen/front_end/ui/legacy/viewContainers.css.js
 var viewContainers_css_default = `/* Copyright 2025 The Chromium Authors
@@ -5550,9 +5683,9 @@ found in the LICENSE file. */
 /*# sourceURL=${import.meta.resolve("./viewContainers.css")} */`;
 
 // gen/front_end/ui/legacy/ViewRegistration.js
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Root3 from "./../../core/root/root.js";
-var UIStrings5 = {
+var UIStrings6 = {
   /**
    * @description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Elements' panel.
    */
@@ -5582,8 +5715,8 @@ var UIStrings5 = {
    */
   sources: "Sources"
 };
-var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var registeredViewExtensions = /* @__PURE__ */ new Map();
 function registerViewExtension(registration) {
   const viewId = registration.id;
@@ -5619,34 +5752,34 @@ function resetViewRegistration() {
 function getLocalizedViewLocationCategory(category) {
   switch (category) {
     case "ELEMENTS":
-      return i18nString5(UIStrings5.elements);
+      return i18nString6(UIStrings6.elements);
     case "DRAWER":
-      return i18nString5(UIStrings5.drawer);
+      return i18nString6(UIStrings6.drawer);
     case "DRAWER_SIDEBAR":
-      return i18nString5(UIStrings5.drawer_sidebar);
+      return i18nString6(UIStrings6.drawer_sidebar);
     case "PANEL":
-      return i18nString5(UIStrings5.panel);
+      return i18nString6(UIStrings6.panel);
     case "NETWORK":
-      return i18nString5(UIStrings5.network);
+      return i18nString6(UIStrings6.network);
     case "SETTINGS":
-      return i18nString5(UIStrings5.settings);
+      return i18nString6(UIStrings6.settings);
     case "SOURCES":
-      return i18nString5(UIStrings5.sources);
+      return i18nString6(UIStrings6.sources);
     case "":
-      return i18n9.i18n.lockedString("");
+      return i18n11.i18n.lockedString("");
   }
 }
 
 // gen/front_end/ui/legacy/ViewManager.js
-var UIStrings6 = {
+var UIStrings7 = {
   /**
    * @description Aria label for the tab panel view container
    * @example {Sensors} PH1
    */
   sPanel: "{PH1} panel"
 };
-var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/ViewManager.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/ViewManager.ts", UIStrings7);
+var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var defaultOptionsForTabs = {
   security: true,
   freestyler: true
@@ -5798,7 +5931,7 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
         toolbar5.appendToolbarItem(item8);
       }
     } else {
-      render2(toolbarItems, toolbar5);
+      render3(toolbarItems, toolbar5);
     }
     return toolbar5;
   }
@@ -5919,8 +6052,8 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
     }
     throw new Error("Unresolved location: " + location);
   }
-  createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
-    return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory);
+  createTabbedLocation(revealCallback, location, restoreSelection, allowReorder, options) {
+    return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, options);
   }
   createStackLocation(revealCallback, location, jslogContext) {
     return new StackLocation(this, revealCallback, location, jslogContext);
@@ -5948,7 +6081,7 @@ var ContainerWidget = class extends VBox {
     this.view = view;
     this.element.tabIndex = -1;
     markAsTabpanel(this.element);
-    setLabel(this.element, i18nString6(UIStrings6.sPanel, { PH1: view.title() }));
+    setLabel(this.element, i18nString7(UIStrings7.sPanel, { PH1: view.title() }));
     this.setDefaultFocusedElement(this.element);
   }
   materialize() {
@@ -6140,8 +6273,8 @@ var TabbedLocation = class _TabbedLocation extends Location {
   defaultTab;
   isLocationVisible;
   views = /* @__PURE__ */ new Map();
-  constructor(manager, revealCallback, location, restoreSelection, allowReorder, defaultTab, isLocationVisible, tabbedPaneFactory) {
-    const tabbedPane = tabbedPaneFactory ? tabbedPaneFactory() : new TabbedPane();
+  constructor(manager, revealCallback, location, restoreSelection, allowReorder, options) {
+    const tabbedPane = options?.tabbedPaneFactory ? options.tabbedPaneFactory() : new TabbedPane();
     if (allowReorder) {
       tabbedPane.setAllowTabReorder(true);
     }
@@ -6159,8 +6292,26 @@ var TabbedLocation = class _TabbedLocation extends Location {
     if (restoreSelection) {
       this.lastSelectedTabSetting = Common7.Settings.Settings.instance().createSetting(location + "-selected-tab", "");
     }
-    this.defaultTab = defaultTab;
-    this.isLocationVisible = isLocationVisible;
+    this.defaultTab = options?.defaultTab;
+    this.isLocationVisible = options?.isLocationVisible;
+    if (options?.plusButton && Root4.Runtime.hostConfig.devToolsPlusButton?.enabled) {
+      installPlusButton({
+        tabbedPane: this.#tabbedPane,
+        location: this.location,
+        // Use the local `views` map (not `manager.viewsForLocation`) so
+        // cross-location moves added via `appendView` are reflected.
+        views: () => this.views.values(),
+        manager: this.manager,
+        showView: (view) => {
+          this.showView(
+            view,
+            void 0,
+            /* userGesture */
+            true
+          ).catch((err) => console.error(err));
+        }
+      }, options.plusButton);
+    }
     if (location) {
       this.appendApplicableItems(location);
     }
@@ -6234,7 +6385,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
       const title = view.title();
       if (view.viewId() === "issues-pane") {
         contextMenu.defaultSection().appendItem(title, () => {
-          Host4.userMetrics.issuesPanelOpenedFrom(
+          Host5.userMetrics.issuesPanelOpenedFrom(
             3
             /* Host.UserMetrics.IssueOpener.HAMBURGER_MENU */
           );
@@ -6456,7 +6607,7 @@ var DrawerTabbedPane = class extends TabbedPane {
     this.headerResized();
   }
 };
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Title of more tabs button in the drawer view.
    */
@@ -6478,8 +6629,8 @@ var UIStrings7 = {
    */
   toggleDrawerOrientation: "Toggle drawer orientation"
 };
-var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/InspectorDrawerView.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/InspectorDrawerView.ts", UIStrings8);
+var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var InspectorDrawerView = class {
   tabbedLocation;
   tabbedPane;
@@ -6508,19 +6659,19 @@ var InspectorDrawerView = class {
     this.#onTabSelected = options.onTabSelected;
     this.#isConsoleOpenInMainAndDrawer = options.isConsoleOpenInMainAndDrawer;
     this.#drawerMinimizedSetting = Common8.Settings.Settings.instance().createLocalSetting("inspector.drawer-minimized", false);
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, void 0, options.isVisible, () => new DrawerTabbedPane());
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, { isLocationVisible: options.isVisible, tabbedPaneFactory: () => new DrawerTabbedPane() });
     this.#moreTabsButton = this.tabbedLocation.enableMoreTabsButton();
-    this.#moreTabsButton.setTitle(i18nString7(UIStrings7.moreTools));
+    this.#moreTabsButton.setTitle(i18nString8(UIStrings8.moreTools));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add("drawer-tabbed-pane");
     this.tabbedPane.element.setAttribute("jslog", `${VisualLogging6.drawer()}`);
-    this.#minimizeExpandButton = new ToolbarButton(i18nString7(UIStrings7.minimizeDrawer), options.isVertical ? "right-panel-close" : "bottom-panel-close");
+    this.#minimizeExpandButton = new ToolbarButton(i18nString8(UIStrings8.minimizeDrawer), options.isVertical ? "right-panel-close" : "bottom-panel-close");
     this.#minimizeExpandButton.element.setAttribute("jslog", `${VisualLogging6.toggle("minimize-drawer").track({ click: true })}`);
     this.#minimizeExpandButton.addEventListener("Click", options.onToggleMinimized);
-    this.#closeDrawerButton = new ToolbarButton(i18nString7(UIStrings7.closeDrawer), "cross");
+    this.#closeDrawerButton = new ToolbarButton(i18nString8(UIStrings8.closeDrawer), "cross");
     this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging6.close("close-drawer").track({ click: true })}`);
     this.#closeDrawerButton.addEventListener("Click", options.onHide);
-    this.#toggleOrientationButton = new ToolbarButton(i18nString7(UIStrings7.toggleDrawerOrientation), options.isVertical ? "dock-bottom" : "dock-right");
+    this.#toggleOrientationButton = new ToolbarButton(i18nString8(UIStrings8.toggleDrawerOrientation), options.isVertical ? "dock-bottom" : "dock-right");
     this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging6.toggle("toggle-drawer-orientation").track({ click: true })}`);
     this.#toggleOrientationButton.addEventListener("Click", options.onToggleOrientation);
     if (options.enableOrientationToggle) {
@@ -6663,11 +6814,11 @@ var InspectorDrawerView = class {
   #updateMinimizeExpandButton(isVertical, isMinimized) {
     if (isMinimized) {
       this.#minimizeExpandButton.setGlyph(isVertical ? "right-panel-open" : "bottom-panel-open");
-      this.#minimizeExpandButton.setTitle(i18nString7(UIStrings7.expandDrawer));
+      this.#minimizeExpandButton.setTitle(i18nString8(UIStrings8.expandDrawer));
       return;
     }
     this.#minimizeExpandButton.setGlyph(isVertical ? "right-panel-close" : "bottom-panel-close");
-    this.#minimizeExpandButton.setTitle(i18nString7(UIStrings7.minimizeDrawer));
+    this.#minimizeExpandButton.setTitle(i18nString8(UIStrings8.minimizeDrawer));
   }
   #updatePresentation(minimized) {
     const drawerIsVertical = this.#splitWidget.isVertical();
@@ -7719,7 +7870,7 @@ var UIUserMetrics_exports = {};
 __export(UIUserMetrics_exports, {
   UIUserMetrics: () => UIUserMetrics
 });
-import * as Host5 from "./../../core/host/host.js";
+import * as Host6 from "./../../core/host/host.js";
 var UIUserMetrics = class _UIUserMetrics {
   #panelChangedSinceLaunch = false;
   #firedLaunchHistogram = false;
@@ -7742,7 +7893,7 @@ var UIUserMetrics = class _UIUserMetrics {
         if (this.#panelChangedSinceLaunch) {
           return;
         }
-        Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
+        Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
       }, 0);
     });
   }
@@ -7750,12 +7901,12 @@ var UIUserMetrics = class _UIUserMetrics {
     this.#launchPanelName = panelName;
   }
   performanceTraceLoad(measure) {
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.TraceLoad", measure.duration);
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.TraceLoad", measure.duration);
   }
   panelShown(panelName, isLaunching) {
-    const code = Host5.UserMetrics.PanelCodes[panelName] || 0;
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.PanelShown", code, Host5.UserMetrics.PanelCodes.MAX_VALUE);
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.recordUserMetricsAction("DevTools_PanelShown_" + panelName);
+    const code = Host6.UserMetrics.PanelCodes[panelName] || 0;
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.PanelShown", code, Host6.UserMetrics.PanelCodes.MAX_VALUE);
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordUserMetricsAction("DevTools_PanelShown_" + panelName);
     if (!isLaunching) {
       this.#panelChangedSinceLaunch = true;
     }
@@ -7766,7 +7917,7 @@ var UIUserMetrics = class _UIUserMetrics {
 };
 
 // gen/front_end/ui/legacy/InspectorView.js
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description The aria label for the drawer minimized.
    */
@@ -7849,8 +8000,8 @@ var UIStrings8 = {
    */
   selectFolder: "Select folder"
 };
-var str_8 = i18n15.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIStrings8);
-var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
+var str_9 = i18n17.i18n.registerUIStrings("ui/legacy/InspectorView.ts", UIStrings9);
+var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
 var inspectorViewInstance = null;
 var MIN_MAIN_PANEL_WIDTH = 240;
 var MIN_VERTICAL_DRAWER_WIDTH = 280;
@@ -7914,7 +8065,7 @@ var InspectorView = class _InspectorView extends VBox {
         hasTargetDrawer: true
       }),
       isVisible: () => this.drawerSplitWidget.sidebarIsShowing() && !this.drawerSplitWidget.isSidebarMinimized(),
-      drawerLabel: i18nString8(UIStrings8.drawer),
+      drawerLabel: i18nString9(UIStrings9.drawer),
       onToggleMinimized: this.toggleDrawerMinimized.bind(this),
       onHide: this.closeDrawer.bind(this),
       onToggleOrientation: this.toggleDrawerOrientation.bind(this),
@@ -7923,7 +8074,7 @@ var InspectorView = class _InspectorView extends VBox {
       onTabSelected: this.tabSelected.bind(this),
       isConsoleOpenInMainAndDrawer: (tabId) => tabId === "console-view" && this.tabbedPane.selectedTabId === "console",
       tabDelegate: this.tabDelegate,
-      enableOrientationToggle: Boolean(Root4.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
+      enableOrientationToggle: Boolean(Root5.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
       isVertical,
       verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
       minimumSizes: {
@@ -7935,34 +8086,34 @@ var InspectorView = class _InspectorView extends VBox {
     });
     this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
     this.drawerTabbedPane = this.#drawerView.tabbedPane;
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host6.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host6.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, Root4.Runtime.Runtime.queryParam("panel"));
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host7.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, { defaultTab: Root5.Runtime.Runtime.queryParam("panel") });
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add("main-tabbed-pane");
-    const allocatedSpace = Root4.Runtime.conditions.canDock() ? "69px" : "41px";
+    const allocatedSpace = Root5.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
     this.tabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
     if (selectedTab) {
       UIUserMetrics.instance().panelShown(selectedTab, true);
     }
-    this.tabbedPane.setAccessibleName(i18nString8(UIStrings8.panels));
+    this.tabbedPane.setAccessibleName(i18nString9(UIStrings9.panels));
     this.tabbedPane.setTabDelegate(this.tabDelegate);
     const mainHeaderElement = this.tabbedPane.headerElement();
     markAsNavigation(mainHeaderElement);
-    setLabel(mainHeaderElement, i18nString8(UIStrings8.mainToolbar));
+    setLabel(mainHeaderElement, i18nString9(UIStrings9.mainToolbar));
     mainHeaderElement.setAttribute("jslog", `${VisualLogging8.toolbar("main").track({
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
     UIUserMetrics.instance().setLaunchPanel(this.tabbedPane.selectedTabId);
-    if (Host6.InspectorFrontendHost.isUnderTest()) {
+    if (Host7.InspectorFrontendHost.isUnderTest()) {
       this.tabbedPane.setAutoSelectFirstItemOnShow(false);
     }
     this.drawerSplitWidget.setMainWidget(this.tabbedPane);
     this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
     this.keyDownBound = this.keyDown.bind(this);
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host6.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
+    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
     function showPanel({ data: panelName }) {
       void this.showPanel(panelName);
     }
@@ -8133,7 +8284,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (this.#drawerView.drawerVisible() && this.drawerSplitWidget.sidebarIsShowing()) {
       if (focus && this.isDrawerMinimized()) {
         this.setDrawerMinimized(false);
-        LiveAnnouncer.alert(i18nString8(UIStrings8.drawerExpanded));
+        LiveAnnouncer.alert(i18nString9(UIStrings9.drawerExpanded));
       }
       return;
     }
@@ -8146,7 +8297,7 @@ var InspectorView = class _InspectorView extends VBox {
       this.#mainPanelAtDrawerFocus = null;
     }
     this.#applyDrawerOrientationForDockSide();
-    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerShown));
+    LiveAnnouncer.alert(i18nString9(UIStrings9.drawerShown));
   }
   drawerVisible() {
     return this.#drawerView.drawerVisible();
@@ -8158,7 +8309,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.focusRestorer = null;
     this.#mainPanelAtDrawerFocus = null;
     this.setDrawerMinimized(true);
-    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerMinimized));
+    LiveAnnouncer.alert(i18nString9(UIStrings9.drawerMinimized));
   }
   closeDrawer() {
     if (!this.#drawerView.drawerVisible()) {
@@ -8172,7 +8323,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.#mainPanelAtDrawerFocus = null;
     this.#drawerView.hide();
     this.#restoreMainPanelScrollState(scrollState);
-    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerHidden));
+    LiveAnnouncer.alert(i18nString9(UIStrings9.drawerHidden));
   }
   toggleDrawerOrientation({ force } = {}) {
     if (!this.drawerTabbedPane.isShowing()) {
@@ -8268,9 +8419,9 @@ var InspectorView = class _InspectorView extends VBox {
     }
     this.setDrawerMinimized(!minimized);
     if (!minimized) {
-      LiveAnnouncer.alert(i18nString8(UIStrings8.drawerMinimized));
+      LiveAnnouncer.alert(i18nString9(UIStrings9.drawerMinimized));
     } else {
-      LiveAnnouncer.alert(i18nString8(UIStrings8.drawerExpanded));
+      LiveAnnouncer.alert(i18nString9(UIStrings9.drawerExpanded));
     }
   }
   isDrawerOrientationVertical() {
@@ -8278,7 +8429,7 @@ var InspectorView = class _InspectorView extends VBox {
   }
   #expandDrawerFromInteraction() {
     this.setDrawerMinimized(false);
-    LiveAnnouncer.alert(i18nString8(UIStrings8.drawerExpanded));
+    LiveAnnouncer.alert(i18nString9(UIStrings9.drawerExpanded));
   }
   keyDown(event) {
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
@@ -8336,7 +8487,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.#debuggedTabReloadRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
-          text: i18nString8(UIStrings8.reloadDebuggedTab),
+          text: i18nString9(UIStrings9.reloadDebuggedTab),
           delegate: () => {
             reloadDebuggedTab();
             this.removeDebuggedTabReloadRequiredWarning();
@@ -8365,7 +8516,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
-          text: i18nString8(UIStrings8.reloadDevtools),
+          text: i18nString9(UIStrings9.reloadDevtools),
           delegate: () => reloadDevTools(),
           dismiss: false,
           buttonVariant: "primary",
@@ -8387,10 +8538,10 @@ var InspectorView = class _InspectorView extends VBox {
     if (!this.#chromeRestartRequiredInfobar) {
       const infobar = new Infobar("info", message, [
         {
-          text: i18nString8(UIStrings8.restartChrome),
+          text: i18nString9(UIStrings9.restartChrome),
           delegate: () => {
-            if (confirm(i18nString8(UIStrings8.areYouSureYouWantToRestartChrome))) {
-              Host6.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+            if (confirm(i18nString9(UIStrings9.areYouSureYouWantToRestartChrome))) {
+              Host7.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
             }
           },
           dismiss: false,
@@ -8408,9 +8559,9 @@ var InspectorView = class _InspectorView extends VBox {
   }
   displaySelectOverrideFolderInfobar(callback) {
     if (!this.#selectOverrideFolderInfobar) {
-      const infobar = new Infobar("info", i18nString8(UIStrings8.selectOverrideFolder), [
+      const infobar = new Infobar("info", i18nString9(UIStrings9.selectOverrideFolder), [
         {
-          text: i18nString8(UIStrings8.selectFolder),
+          text: i18nString9(UIStrings9.selectFolder),
           delegate: () => callback(),
           dismiss: true,
           buttonVariant: "tonal",
@@ -8448,17 +8599,17 @@ function shouldShowLocaleInfobar() {
   if (languageSettingValue !== "en-US") {
     return false;
   }
-  return !i18n15.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n15.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
+  return !i18n17.DevToolsLocale.localeLanguagesMatch(navigator.language, languageSettingValue) && i18n17.DevToolsLocale.DevToolsLocale.instance().languageIsSupportedByDevTools(navigator.language);
 }
 function createLocaleInfobar() {
-  const devtoolsLocale = i18n15.DevToolsLocale.DevToolsLocale.instance();
+  const devtoolsLocale = i18n17.DevToolsLocale.DevToolsLocale.instance();
   const closestSupportedLocale = devtoolsLocale.lookupClosestDevToolsLocale(navigator.language);
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
   const languageSetting = Common11.Settings.Settings.instance().moduleSetting("language");
-  return new Infobar("info", i18nString8(UIStrings8.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
+  return new Infobar("info", i18nString9(UIStrings9.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
     {
-      text: i18nString8(UIStrings8.setToBrowserLanguage),
+      text: i18nString9(UIStrings9.setToBrowserLanguage),
       delegate: () => {
         languageSetting.set("browserLanguage");
         getDisableLocaleInfoBarSetting().set(true);
@@ -8468,7 +8619,7 @@ function createLocaleInfobar() {
       jslogContext: "set-to-browser-language"
     },
     {
-      text: i18nString8(UIStrings8.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
+      text: i18nString9(UIStrings9.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
       delegate: () => {
         languageSetting.set(closestSupportedLocale);
         getDisableLocaleInfoBarSetting().set(true);
@@ -8481,10 +8632,10 @@ function createLocaleInfobar() {
 }
 function reloadDevTools() {
   if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked") {
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
+    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
     });
   }
-  Host6.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
+  Host7.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
 }
 function reloadDebuggedTab() {
   void ActionRegistry.instance().getAction("inspector-main.reload").execute();
@@ -8522,11 +8673,11 @@ var InspectorViewTabDelegate = class {
     tabbedPane.closeTabs(ids, true);
   }
   moveToDrawer(tabId) {
-    Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.TabMovedToDrawer);
+    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.TabMovedToDrawer);
     ViewManager.instance().moveView(tabId, "drawer-view");
   }
   moveToMainTabBar(tabId) {
-    Host6.userMetrics.actionTaken(Host6.UserMetrics.Action.TabMovedToMainPanel);
+    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.TabMovedToMainPanel);
     ViewManager.instance().moveView(tabId, "panel");
   }
   onContextMenu(tabId, contextMenu) {
@@ -8535,9 +8686,9 @@ var InspectorViewTabDelegate = class {
     }
     const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === "drawer-view") {
-      contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.moveToMainTabBar), this.moveToMainTabBar.bind(this, tabId), { jslogContext: "move-to-top" });
+      contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.moveToMainTabBar), this.moveToMainTabBar.bind(this, tabId), { jslogContext: "move-to-top" });
     } else {
-      contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.moveToDrawer), this.moveToDrawer.bind(this, tabId), { jslogContext: "move-to-bottom" });
+      contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.moveToDrawer), this.moveToDrawer.bind(this, tabId), { jslogContext: "move-to-bottom" });
     }
   }
 };
@@ -8698,7 +8849,7 @@ var softContextMenu_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./softContextMenu.css")} */`;
 
 // gen/front_end/ui/legacy/SoftContextMenu.js
-var UIStrings9 = {
+var UIStrings10 = {
   /**
    * @description Text exposed to screen readers on checked items.
    */
@@ -8725,8 +8876,8 @@ var UIStrings9 = {
    */
   newFeature: "This is a new feature"
 };
-var str_9 = i18n17.i18n.registerUIStrings("ui/legacy/SoftContextMenu.ts", UIStrings9);
-var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
+var str_10 = i18n19.i18n.registerUIStrings("ui/legacy/SoftContextMenu.ts", UIStrings10);
+var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var SoftContextMenu = class _SoftContextMenu {
   items;
   itemSelectedCallback;
@@ -8924,17 +9075,17 @@ var SoftContextMenu = class _SoftContextMenu {
     detailsForElement.actionId = item8.id;
     let accessibleName = item8.label || "";
     if (item8.type === "checkbox") {
-      const checkedState = item8.checked ? i18nString9(UIStrings9.checked) : i18nString9(UIStrings9.unchecked);
+      const checkedState = item8.checked ? i18nString10(UIStrings10.checked) : i18nString10(UIStrings10.unchecked);
       if (item8.shortcut) {
-        accessibleName = i18nString9(UIStrings9.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState });
+        accessibleName = i18nString10(UIStrings10.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState });
       } else {
-        accessibleName = i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: checkedState });
+        accessibleName = i18nString10(UIStrings10.sS, { PH1: String(item8.label), PH2: checkedState });
       }
     } else if (item8.shortcut) {
-      accessibleName = i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: item8.shortcut });
+      accessibleName = i18nString10(UIStrings10.sS, { PH1: String(item8.label), PH2: item8.shortcut });
     }
     if (item8.element?.className === "new-badge") {
-      accessibleName = i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: i18nString9(UIStrings9.newFeature) });
+      accessibleName = i18nString10(UIStrings10.sS, { PH1: String(item8.label), PH2: i18nString10(UIStrings10.newFeature) });
     }
     setLabel(menuItemElement, accessibleName);
     if (item8.isExperimentalFeature) {
@@ -9004,8 +9155,8 @@ var SoftContextMenu = class _SoftContextMenu {
     } else {
       element.removeAttribute("checked");
     }
-    const checkedState = item8.checked ? i18nString9(UIStrings9.checked) : i18nString9(UIStrings9.unchecked);
-    const accessibleName = item8.shortcut ? i18nString9(UIStrings9.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState }) : i18nString9(UIStrings9.sS, { PH1: String(item8.label), PH2: checkedState });
+    const checkedState = item8.checked ? i18nString10(UIStrings10.checked) : i18nString10(UIStrings10.unchecked);
+    const accessibleName = item8.shortcut ? i18nString10(UIStrings10.sSS, { PH1: String(item8.label), PH2: item8.shortcut, PH3: checkedState }) : i18nString10(UIStrings10.sS, { PH1: String(item8.label), PH2: checkedState });
     setLabel(element, accessibleName);
   }
   triggerAction(menuItemElement, event) {
@@ -9649,7 +9800,7 @@ var SubMenu = class extends Item {
       return order1 - order2;
     });
     for (const item8 of items) {
-      if (item8.experiment && !Root5.Runtime.experiments.isEnabled(item8.experiment)) {
+      if (item8.experiment && !Root6.Runtime.experiments.isEnabled(item8.experiment)) {
         continue;
       }
       const itemLocation = item8.location;
@@ -9722,7 +9873,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
    * commands from the host to toggle soft menu usage.
    */
   static initialize() {
-    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
     function setUseSoftMenu(event) {
       _ContextMenu.useSoftMenu = event.data;
     }
@@ -9821,7 +9972,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     }
     const menuObject = this.buildMenuDescriptors();
     const ownerDocument = this.eventTarget.ownerDocument;
-    let useSoftMenu = this.useSoftMenu || _ContextMenu.useSoftMenu || Host7.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+    let useSoftMenu = this.useSoftMenu || _ContextMenu.useSoftMenu || Host8.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
     if (!this.useSoftMenu && _ContextMenu.useSoftMenu && this.event.altKey) {
       useSoftMenu = false;
     }
@@ -9835,10 +9986,10 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       }
     } else {
       let listenToEvents = function() {
-        Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
-        Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
+        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       };
-      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
+      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
       VisualLogging10.registerLoggable(menuObject, `${VisualLogging10.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
@@ -9912,14 +10063,14 @@ var ContextMenu = class _ContextMenu extends SubMenu {
         void VisualLogging10.logClick(item8, new MouseEvent("click"));
       }
       if (item8 && featuresUsed.length > 0) {
-        featuresUsed.map((feature) => Host7.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
+        featuresUsed.map((feature) => Host8.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
       }
     }
     this.menuCleared();
   }
   menuCleared() {
-    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
-    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host7.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
     if (this.openHostedMenu) {
       void VisualLogging10.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
     }
@@ -10073,7 +10224,7 @@ var MenuButton = class extends HTMLElement {
     if (!this.iconName) {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
-    render3(html2`
+    render4(html3`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
                          .variant=${"icon"}
@@ -10091,7 +10242,7 @@ function registerProvider(registration) {
 async function loadApplicableRegisteredProviders(target) {
   const providers = [];
   for (const providerRegistration of registeredProviders) {
-    if (!Root5.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
+    if (!Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
       continue;
     }
     if (providerRegistration.contextTypes) {
@@ -10136,7 +10287,7 @@ var SuggestBox_exports = {};
 __export(SuggestBox_exports, {
   SuggestBox: () => SuggestBox
 });
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as Geometry4 from "./../../models/geometry/geometry.js";
 import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
@@ -10890,7 +11041,7 @@ var suggestBox_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./suggestBox.css")} */`;
 
 // gen/front_end/ui/legacy/SuggestBox.js
-var UIStrings10 = {
+var UIStrings11 = {
   /**
    * @description Aria alert to read the suggestion for the suggestion box when typing in text editor
    * @example {name} PH1
@@ -10904,8 +11055,8 @@ var UIStrings10 = {
    */
   sSuggestionSSelected: "{PH1}, suggestion selected"
 };
-var str_10 = i18n19.i18n.registerUIStrings("ui/legacy/SuggestBox.ts", UIStrings10);
-var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var str_11 = i18n21.i18n.registerUIStrings("ui/legacy/SuggestBox.ts", UIStrings11);
+var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
 var SuggestBox = class {
   suggestBoxDelegate;
   maxItemsHeight;
@@ -10995,17 +11146,17 @@ var SuggestBox = class {
   }
   applySuggestion(isIntermediateSuggestion) {
     if (this.onlyCompletion) {
-      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSOfS, { PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length })) : LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSSelected, { PH1: this.onlyCompletion.text }));
+      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSOfS, { PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length })) : LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSSelected, { PH1: this.onlyCompletion.text }));
       this.suggestBoxDelegate.applySuggestion(this.onlyCompletion, isIntermediateSuggestion);
       return true;
     }
     const suggestion = this.list.selectedItem();
     if (suggestion?.text) {
-      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSOfS, {
+      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSOfS, {
         PH1: suggestion.title || suggestion.text,
         PH2: this.list.selectedIndex() + 1,
         PH3: this.items.length
-      })) : LiveAnnouncer.alert(i18nString10(UIStrings10.sSuggestionSSelected, { PH1: suggestion.title || suggestion.text }));
+      })) : LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSSelected, { PH1: suggestion.title || suggestion.text }));
     }
     this.suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
     return this.visible() && Boolean(suggestion);
@@ -12127,7 +12278,7 @@ devtools-toolbar-input {
 /*# sourceURL=${import.meta.resolve("./toolbar.css")} */`;
 
 // gen/front_end/ui/legacy/Toolbar.js
-var UIStrings11 = {
+var UIStrings12 = {
   /**
    * @description Announced screen reader message for ToolbarSettingToggle when the setting is toggled on.
    */
@@ -12149,8 +12300,8 @@ var UIStrings11 = {
    */
   useRegularExpression: "Use regular expression"
 };
-var str_11 = i18n21.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings11);
-var i18nString11 = i18n21.i18n.getLocalizedString.bind(void 0, str_11);
+var str_12 = i18n23.i18n.registerUIStrings("ui/legacy/Toolbar.ts", UIStrings12);
+var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var Toolbar = class _Toolbar extends HTMLElement {
   #shadowRoot = this.attachShadow({ mode: "open" });
   items = [];
@@ -12716,7 +12867,7 @@ var ToolbarInput = class extends ToolbarItem {
     if (shrinkFactor) {
       this.element.style.flexShrink = String(shrinkFactor);
     }
-    const clearButtonText = i18nString11(UIStrings11.clearInput);
+    const clearButtonText = i18nString12(UIStrings12.clearInput);
     const clearButton = new Buttons5.Button.Button();
     clearButton.data = {
       variant: "icon",
@@ -12790,7 +12941,7 @@ var ToolbarInput = class extends ToolbarItem {
 };
 var ToolbarFilter = class extends ToolbarInput {
   constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
-    const filterPlaceholder = filterBy ? filterBy : i18nString11(UIStrings11.filter);
+    const filterPlaceholder = filterBy ? filterBy : i18nString12(UIStrings12.filter);
     super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || "filter", element);
     const filterIcon = createIcon6("filter");
     this.element.prepend(filterIcon);
@@ -12805,10 +12956,10 @@ var ToolbarFilter = class extends ToolbarInput {
         toggledIconName: regexIconName,
         toggleType: "primary-toggle",
         toggled: false,
-        title: i18nString11(UIStrings11.useRegularExpression),
+        title: i18nString12(UIStrings12.useRegularExpression),
         jslogContext: regexIconName
       };
-      setLabel(regexButton, i18nString11(UIStrings11.useRegularExpression));
+      setLabel(regexButton, i18nString12(UIStrings12.useRegularExpression));
       regexButton.addEventListener("click", () => {
         onRegexToggle?.();
       });
@@ -13085,7 +13236,7 @@ var ToolbarSettingToggle = class extends ToolbarToggle {
   settingChanged() {
     const toggled = this.setting.get();
     this.setToggled(toggled);
-    const toggleAnnouncement = toggled ? i18nString11(UIStrings11.pressed) : i18nString11(UIStrings11.notPressed);
+    const toggleAnnouncement = toggled ? i18nString12(UIStrings12.pressed) : i18nString12(UIStrings12.notPressed);
     if (this.willAnnounceState) {
       LiveAnnouncer.alert(toggleAnnouncement);
     }
@@ -13287,13 +13438,13 @@ function registerToolbarItem(registration) {
   registeredToolbarItems.push(registration);
 }
 function getRegisteredToolbarItems() {
-  return registeredToolbarItems.filter((item8) => Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
+  return registeredToolbarItems.filter((item8) => Root7.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
 }
 
 // gen/front_end/ui/legacy/UIUtils.js
 import * as Common15 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n25 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as Geometry5 from "./../../models/geometry/geometry.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
@@ -14805,8 +14956,8 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // gen/front_end/ui/legacy/UIUtils.js
-var { Directives: Directives2, render: render4 } = Lit2;
-var UIStrings12 = {
+var { Directives: Directives3, render: render5 } = Lit2;
+var UIStrings13 = {
   /**
    * @description label to open link externally
    */
@@ -14856,8 +15007,8 @@ var UIStrings12 = {
    */
   new: "NEW"
 };
-var str_12 = i18n23.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings12);
-var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/UIUtils.ts", UIStrings13);
+var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 function installDragHandle(element, elementDragStart2, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, mouseDownPreventDefault = true) {
   function onMouseDown(event) {
     const dragHandler = new DragHandler();
@@ -14929,7 +15080,7 @@ var DragHandler = class _DragHandler {
   }
   elementDragStart(targetElement, elementDragStart2, elementDrag, elementDragEnd, cursor, ev, preventDefault = true) {
     const event = ev;
-    if (event.button || Host8.Platform.isMac() && event.ctrlKey) {
+    if (event.button || Host9.Platform.isMac() && event.ctrlKey) {
       return;
     }
     if (this.elementDraggingEventListener) {
@@ -15247,27 +15398,27 @@ function handleElementValueModifications(event, element, finishHandler, suggesti
   return false;
 }
 function openLinkExternallyLabel() {
-  return i18nString12(UIStrings12.openInNewTab);
+  return i18nString13(UIStrings13.openInNewTab);
 }
 function copyLinkAddressLabel() {
-  return i18nString12(UIStrings12.copyLinkAddress);
+  return i18nString13(UIStrings13.copyLinkAddress);
 }
 function copyFileNameLabel() {
-  return i18nString12(UIStrings12.copyFileName);
+  return i18nString13(UIStrings13.copyFileName);
 }
 function anotherProfilerActiveLabel() {
-  return i18nString12(UIStrings12.anotherProfilerIsAlreadyActive);
+  return i18nString13(UIStrings13.anotherProfilerIsAlreadyActive);
 }
 function asyncFragmentLabel(stackTrace, asyncFragment) {
   const description = asyncFragment.description;
   if (!description) {
-    return i18nString12(UIStrings12.asyncCall);
+    return i18nString13(UIStrings13.asyncCall);
   }
   if (description === "Promise.resolve") {
-    return i18nString12(UIStrings12.promiseResolvedAsync);
+    return i18nString13(UIStrings13.promiseResolvedAsync);
   }
   if (description === "Promise.reject") {
-    return i18nString12(UIStrings12.promiseRejectedAsync);
+    return i18nString13(UIStrings13.promiseRejectedAsync);
   }
   if (description === "await") {
     const asyncFragments = stackTrace.asyncFragments;
@@ -15287,12 +15438,12 @@ function asyncFragmentLabel(stackTrace, asyncFragment) {
   return description;
 }
 function addPlatformClass(element) {
-  element.classList.add("platform-" + Host8.Platform.platform());
+  element.classList.add("platform-" + Host9.Platform.platform());
 }
 function installComponentRootStyles(element) {
   appendStyle(element, inspectorCommon_css_default);
   appendStyle(element, Buttons6.textButtonStyles);
-  if (!Host8.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
+  if (!Host9.Platform.isMac() && measuredScrollbarWidth(element.ownerDocument) === 0) {
     element.classList.add("overlay-scrollbar-enabled");
   }
 }
@@ -15522,7 +15673,7 @@ function initializeUIUtils(document2) {
   GlassPane.setContainer(body);
 }
 function beautifyFunctionName(name) {
-  return name || i18nString12(UIStrings12.anonymous);
+  return name || i18nString13(UIStrings13.anonymous);
 }
 var createTextChild = (element, text) => {
   const textNode = element.ownerDocument.createTextNode(text);
@@ -15835,8 +15986,8 @@ var DevToolsCloseButton = class extends HTMLElement {
     this.#button.data = { variant: "icon", iconName: "cross" };
     this.#button.classList.add("close-button");
     this.#button.setAttribute("jslog", `${VisualLogging15.close().track({ click: true })}`);
-    Tooltip.install(this.#button, i18nString12(UIStrings12.close));
-    setLabel(this.#button, i18nString12(UIStrings12.close));
+    Tooltip.install(this.#button, i18nString13(UIStrings13.close));
+    setLabel(this.#button, i18nString13(UIStrings13.close));
     root.appendChild(this.#button);
   }
   setAccessibleName(name) {
@@ -16002,7 +16153,7 @@ var MessageDialog = class {
     const shadowRoot = createShadowRootWithCoreStyles(dialog3.contentElement, { cssFile: confirmDialog_css_default });
     const content = shadowRoot.createChild("div", "widget");
     await new Promise((resolve) => {
-      const okButton = createTextButton(i18nString12(UIStrings12.ok), resolve, {
+      const okButton = createTextButton(i18nString13(UIStrings13.ok), resolve, {
         jslogContext: "confirm",
         variant: "primary"
         /* Buttons.Button.Variant.PRIMARY */
@@ -16039,7 +16190,7 @@ var ConfirmDialog = class {
     const result = await new Promise((resolve) => {
       const okButton = createTextButton(
         /* text= */
-        options?.okButtonLabel || i18nString12(UIStrings12.ok),
+        options?.okButtonLabel || i18nString13(UIStrings13.ok),
         /* clickHandler= */
         () => resolve(true),
         {
@@ -16049,7 +16200,7 @@ var ConfirmDialog = class {
         }
       );
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(createTextButton(options?.cancelButtonLabel || i18nString12(UIStrings12.cancel), () => resolve(false), { jslogContext: "cancel" }));
+      buttonsBar.appendChild(createTextButton(options?.cancelButtonLabel || i18nString13(UIStrings13.cancel), () => resolve(false), { jslogContext: "cancel" }));
       dialog3.setOutsideClickCallback((event) => {
         event.consume();
         resolve(false);
@@ -16273,7 +16424,7 @@ function maybeCreateNewBadge(promotionId) {
   if (promotionManager.maybeShowPromotion(promotionId)) {
     const badge2 = document.createElement("div");
     badge2.className = "new-badge";
-    badge2.textContent = i18nString12(UIStrings12.new);
+    badge2.textContent = i18nString13(UIStrings13.new);
     badge2.setAttribute("jslog", `${VisualLogging15.badge("new-badge")}`);
     return badge2;
   }
@@ -16286,7 +16437,7 @@ function bindToAction(actionName) {
   function actionEnabledChanged(event) {
     setEnabled(event.data);
   }
-  return Directives2.ref((e) => {
+  return Directives3.ref((e) => {
     if (!e || !(e instanceof Buttons6.Button.Button)) {
       action6.removeEventListener("Enabled", actionEnabledChanged);
       action6.removeEventListener("Toggled", toggled);
@@ -16470,7 +16621,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       this.#mutationObserver.observe(this.#contentTemplate.content, { childList: true, attributes: true, subtree: true, characterData: true });
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render4(template, this.#contentTemplate.content);
+    render5(template, this.#contentTemplate.content);
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
@@ -16506,7 +16657,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   }
 };
 function copyTextToClipboard(text, alert) {
-  Host8.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
+  Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text);
   if (alert) {
     LiveAnnouncer.alert(alert);
   }
@@ -16524,13 +16675,13 @@ var bindCheckboxImpl = function(input, apply, metric) {
   function onInputChanged() {
     apply(input.checked);
     if (input.checked && metric?.enable) {
-      Host8.userMetrics.actionTaken(metric.enable);
+      Host9.userMetrics.actionTaken(metric.enable);
     }
     if (!input.checked && metric?.disable) {
-      Host8.userMetrics.actionTaken(metric.disable);
+      Host9.userMetrics.actionTaken(metric.disable);
     }
     if (metric?.toggle) {
-      Host8.userMetrics.actionTaken(metric.toggle);
+      Host9.userMetrics.actionTaken(metric.toggle);
     }
   }
   return function setValue(value) {
@@ -16558,7 +16709,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
   if (setting.type() === "boolean" || typeof setting.defaultValue === "boolean") {
     let attachedButton;
     let clickListener;
-    return Directives2.ref((e) => {
+    return Directives3.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         if (attachedButton && clickListener) {
@@ -16590,7 +16741,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
   }
   const jslogBuilder = jslog ? VisualLogging15.toggle(setting.name).track({ change: true }) : null;
   if (setting.type() === "regex" || setting instanceof Common15.Settings.RegExpSetting) {
-    return Directives2.ref((e) => {
+    return Directives3.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
@@ -16617,7 +16768,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     });
   }
   if (typeof setting.defaultValue === "string") {
-    return Directives2.ref((e) => {
+    return Directives3.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
@@ -16919,14 +17070,14 @@ var panes = /* @__PURE__ */ new Set();
 var GlassPanePanes = panes;
 
 // gen/front_end/ui/legacy/Dialog.js
-var UIStrings13 = {
+var UIStrings14 = {
   /**
    * @description Text to close the dialog
    */
   close: "Close"
 };
-var str_13 = i18n25.i18n.registerUIStrings("ui/legacy/Dialog.ts", UIStrings13);
-var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/Dialog.ts", UIStrings14);
+var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) {
   tabIndexBehavior = "DisableAllTabIndex";
   tabIndexMap = /* @__PURE__ */ new Map();
@@ -17020,7 +17171,7 @@ var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) 
     button.data = {
       variant: "icon",
       iconName: "cross",
-      accessibleLabel: i18nString13(UIStrings13.close),
+      accessibleLabel: i18nString14(UIStrings14.close),
       jslogContext: "dialog-close"
     };
     button.classList.add("dialog-close-button");
@@ -17578,8 +17729,8 @@ __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
 import "./../kit/kit.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
-import { Directives as Directives3, html as html3, render as render5 } from "./../lit/lit.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
+import { Directives as Directives4, html as html4, render as render6 } from "./../lit/lit.js";
 import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -17596,17 +17747,17 @@ var emptyWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
 
 // gen/front_end/ui/legacy/EmptyWidget.js
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Text that is usually a hyperlink to more documentation
    */
   learnMore: "Learn more"
 };
-var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings14);
-var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var { ref } = Directives3;
+var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
+var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var { ref } = Directives4;
 var DEFAULT_VIEW = (input, output, target) => {
-  render5(html3`
+  render6(html4`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging17.section("empty-view")}
@@ -17616,7 +17767,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
-        ${input.link ? html3`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString14(UIStrings14.learnMore)}</devtools-link>` : ""}
+        ${input.link ? html4`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
       ${input.extraElements}
     </div>`, target, { container: { classes: ["empty-view-scroller"] } });
@@ -17681,8 +17832,8 @@ __export(FilterBar_exports, {
   filterStyles: () => filter_css_default
 });
 import * as Common17 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as Host10 from "./../../core/host/host.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform18 from "./../../core/platform/platform.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
@@ -17871,7 +18022,7 @@ var filter_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./filter.css")} */`;
 
 // gen/front_end/ui/legacy/FilterBar.js
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Text to filter result items
    */
@@ -17890,8 +18041,8 @@ var UIStrings15 = {
    */
   allStrings: "All"
 };
-var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings15);
-var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings16);
+var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
   enabled;
   stateSetting;
@@ -17906,7 +18057,7 @@ var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
     this.element.classList.add("filter-bar");
     this.element.setAttribute("jslog", `${VisualLogging18.toolbar("filter-bar")}`);
     this.stateSetting = Common17.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
-    this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString15(UIStrings15.filter), "filter-filled", "filter");
+    this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString16(UIStrings16.filter), "filter-filled", "filter");
     this.#filterButton.element.style.setProperty("--dot-toggle-top", "13px");
     this.#filterButton.element.style.setProperty("--dot-toggle-left", "14px");
     this.filters = [];
@@ -17998,7 +18149,7 @@ var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
     this.filterElement.classList.add("text-filter");
     const filterToolbar = this.filterElement.createChild("devtools-toolbar");
     filterToolbar.style.borderBottom = "none";
-    this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString15(UIStrings15.egSmalldUrlacomb), this.completions.bind(this));
+    this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString16(UIStrings16.egSmalldUrlacomb), this.completions.bind(this));
     filterToolbar.appendToolbarItem(this.#filter);
     this.#filter.addEventListener("TextChanged", () => this.valueChanged());
     this.suggestionProvider = null;
@@ -18084,10 +18235,10 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
     this.filtersElement.setAttribute("jslog", `${VisualLogging18.section("filter-bitset")}`);
     markAsListBox(this.filtersElement);
     markAsMultiSelectable(this.filtersElement);
-    Tooltip.install(this.filtersElement, i18nString15(UIStrings15.sclickToSelectMultipleTypes, {
+    Tooltip.install(this.filtersElement, i18nString16(UIStrings16.sclickToSelectMultipleTypes, {
       PH1: KeyboardShortcut.shortcutToString("", Modifiers.CtrlOrMeta.value)
     }));
-    this.addBit(_NamedBitSetFilterUI.ALL_TYPES, i18nString15(UIStrings15.allStrings), _NamedBitSetFilterUI.ALL_TYPES);
+    this.addBit(_NamedBitSetFilterUI.ALL_TYPES, i18nString16(UIStrings16.allStrings), _NamedBitSetFilterUI.ALL_TYPES);
     this.typeFilterElements[0].tabIndex = 0;
     this.filtersElement.createChild("div", "filter-bitset-filter-divider");
     for (let i = 0; i < items.length; ++i) {
@@ -18165,7 +18316,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
   onTypeFilterClicked(event) {
     const e = event;
     let toggle6;
-    if (Host9.Platform.isMac()) {
+    if (Host10.Platform.isMac()) {
       toggle6 = e.metaKey && !e.ctrlKey && !e.altKey && !e.shiftKey;
     } else {
       toggle6 = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
@@ -18353,10 +18504,10 @@ var ForwardedInputEventHandler_exports = {};
 __export(ForwardedInputEventHandler_exports, {
   ForwardedInputEventHandler: () => ForwardedInputEventHandler
 });
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 var ForwardedInputEventHandler = class {
   constructor() {
-    Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host10.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
+    Host11.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host11.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
   }
   async onKeyEventUnhandled(event) {
     const { type, key, keyCode, modifiers } = event.data;
@@ -18551,7 +18702,7 @@ var LinkContextMenuProvider_exports = {};
 __export(LinkContextMenuProvider_exports, {
   LinkContextMenuProvider: () => LinkContextMenuProvider
 });
-import * as Host11 from "./../../core/host/host.js";
+import * as Host12 from "./../../core/host/host.js";
 import * as UIHelpers from "./../helpers/helpers.js";
 import { Link } from "./../kit/kit.js";
 var LinkContextMenuProvider = class {
@@ -18571,7 +18722,7 @@ var LinkContextMenuProvider = class {
     }, { jslogContext: "open-in-new-tab" });
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {
       if (node.href) {
-        Host11.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
+        Host12.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(node.href);
       }
     }, { jslogContext: "copy-link-address" });
   }
@@ -18583,10 +18734,10 @@ __export(ListWidget_exports, {
   Editor: () => Editor,
   ListWidget: () => ListWidget
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html4, render as render6 } from "./../lit/lit.js";
+import { html as html5, render as render7 } from "./../lit/lit.js";
 import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -18758,7 +18909,7 @@ var listWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./listWidget.css")} */`;
 
 // gen/front_end/ui/legacy/ListWidget.js
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Text on a button to start editing text
    */
@@ -18788,8 +18939,8 @@ var UIStrings16 = {
    */
   removedItem: "Item has been removed"
 };
-var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings16);
-var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/ListWidget.ts", UIStrings17);
+var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var ListWidget = class extends VBox {
   delegate;
   list;
@@ -18922,20 +19073,20 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render6(html4`
+    render7(html5`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
           <devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
-                           .title=${controlLabels?.edit ?? i18nString16(UIStrings16.editString)}
+                           .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
                            .variant=${"icon"}
                            @click=${onEditClicked}></devtools-button>
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}
-                           .title=${controlLabels?.delete ?? i18nString16(UIStrings16.removeString)}
+                           .title=${controlLabels?.delete ?? i18nString17(UIStrings17.removeString)}
                            .variant=${"icon"}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>
@@ -18950,7 +19101,7 @@ var ListWidget = class extends VBox {
       const index = this.elements.indexOf(element);
       this.element.focus();
       this.delegate.removeItemRequested(this.#items[index], index);
-      LiveAnnouncer.alert(i18nString16(UIStrings16.removedItem));
+      LiveAnnouncer.alert(i18nString17(UIStrings17.removedItem));
       if (this.elements.length >= 1) {
         this.elements[Math.min(index, this.elements.length - 1)].focus();
       }
@@ -18987,7 +19138,7 @@ var ListWidget = class extends VBox {
     this.editor = this.delegate.beginEdit(item8);
     this.updatePlaceholder();
     this.list.insertBefore(this.editor.element, insertionPoint);
-    this.editor.beginEdit(item8, index, element ? i18nString16(UIStrings16.saveString) : i18nString16(UIStrings16.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
+    this.editor.beginEdit(item8, index, element ? i18nString17(UIStrings17.saveString) : i18nString17(UIStrings17.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
   }
   commitEditing() {
     const editItem = this.editItem;
@@ -18997,7 +19148,7 @@ var ListWidget = class extends VBox {
     this.stopEditing();
     if (editItem !== null) {
       this.delegate.commitEdit(editItem, editor, isNew);
-      LiveAnnouncer.alert(i18nString16(UIStrings16.changesSaved));
+      LiveAnnouncer.alert(i18nString17(UIStrings17.changesSaved));
       if (this.elements[focusElementIndex]) {
         this.elements[focusElementIndex].focus();
       }
@@ -19050,7 +19201,7 @@ var Editor = class {
       return true;
     }, this.commitClicked.bind(this)), false);
     const buttonsRow = this.element.createChild("div", "editor-buttons");
-    this.cancelButton = createTextButton(i18nString16(UIStrings16.cancelString), this.cancelClicked.bind(this), {
+    this.cancelButton = createTextButton(i18nString17(UIStrings17.cancelString), this.cancelClicked.bind(this), {
       jslogContext: "cancel",
       variant: "outlined"
     });
@@ -19621,9 +19772,9 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Buttons9 from "./../components/buttons/buttons.js";
-import { html as html5, render as render7 } from "./../lit/lit.js";
+import { html as html6, render as render8 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -19658,7 +19809,7 @@ var remoteDebuggingTerminatedScreen_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./remoteDebuggingTerminatedScreen.css")} */`;
 
 // gen/front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Text in a dialog box in DevTools stating that remote debugging has been terminated.
    * "Remote debugging" here means that DevTools on a PC is inspecting a website running on an actual mobile device
@@ -19685,20 +19836,20 @@ var UIStrings17 = {
    */
   reconnectDevtools: "Reconnect `DevTools`"
 };
-var str_17 = i18n33.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings17);
-var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
+var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render7(html5`
+  render8(html6`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
-    <div class="header">${i18nString17(UIStrings17.debuggingConnectionWasClosed)}</div>
+    <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
-      <div class="reason">${i18nString17(UIStrings17.connectionClosedReason, { PH1: input.reason })}</div>
-      <div class="message">${i18nString17(UIStrings17.reconnectWhenReadyByReopening)}</div>
+      <div class="reason">${i18nString18(UIStrings18.connectionClosedReason, { PH1: input.reason })}</div>
+      <div class="message">${i18nString18(UIStrings18.reconnectWhenReadyByReopening)}</div>
     </div>
     <div class="button-container">
       <div class="button">
         <devtools-button @click=${input.onReconnect} .jslogContext=${"reconnect"}
-            .variant=${"outlined"}>${i18nString17(UIStrings17.reconnectDevtools)}</devtools-button>
+            .variant=${"outlined"}>${i18nString18(UIStrings18.reconnectDevtools)}</devtools-button>
       </div>
     </div>`, target);
 };
@@ -20120,7 +20271,7 @@ __export(SearchableView_exports, {
   SearchableView: () => SearchableView
 });
 import * as Common18 from "./../../core/common/common.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform22 from "./../../core/platform/platform.js";
 import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
 import * as Buttons10 from "./../components/buttons/buttons.js";
@@ -20293,7 +20444,7 @@ var searchableView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
 // gen/front_end/ui/legacy/SearchableView.js
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Text on a button to replace one instance with input text for the ctrl+F search bar
    */
@@ -20364,18 +20515,18 @@ var UIStrings18 = {
    */
   clearInput: "Clear"
 };
-var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings18);
-var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SearchableView.ts", UIStrings19);
+var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function createClearButton(jslogContext) {
   const button = new Buttons10.Button.Button();
   button.data = {
     variant: "icon",
     size: "SMALL",
     jslogContext,
-    title: i18nString18(UIStrings18.clearInput),
+    title: i18nString19(UIStrings19.clearInput),
     iconName: "cross-circle-filled"
   };
-  button.ariaLabel = i18nString18(UIStrings18.clearInput);
+  button.ariaLabel = i18nString19(UIStrings19.clearInput);
   button.classList.add("clear-button");
   button.tabIndex = -1;
   return button;
@@ -20419,8 +20570,8 @@ var SearchableView = class extends VBox {
     this.footerElement = this.footerElementContainer.createChild("div", "toolbar-search");
     this.footerElement.setAttribute("jslog", `${VisualLogging23.toolbar("search").track({ resize: true })}`);
     const replaceToggleToolbar = this.footerElement.createChild("devtools-toolbar", "replace-toggle-toolbar");
-    this.replaceToggleButton = new ToolbarToggle(i18nString18(UIStrings18.enableFindAndReplace), "replace", void 0, "replace");
-    setLabel(this.replaceToggleButton.element, i18nString18(UIStrings18.enableFindAndReplace));
+    this.replaceToggleButton = new ToolbarToggle(i18nString19(UIStrings19.enableFindAndReplace), "replace", void 0, "replace");
+    setLabel(this.replaceToggleButton.element, i18nString19(UIStrings19.enableFindAndReplace));
     this.replaceToggleButton.addEventListener("Click", this.toggleReplace, this);
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
     const searchInputElements = this.footerElement.createChild("div", "search-inputs");
@@ -20430,7 +20581,7 @@ var SearchableView = class extends VBox {
     this.searchInputElement = createHistoryInput("search", "search-replace search");
     this.searchInputElement.id = "search-input-field";
     this.searchInputElement.autocomplete = "off";
-    this.searchInputElement.placeholder = i18nString18(UIStrings18.findString);
+    this.searchInputElement.placeholder = i18nString19(UIStrings19.findString);
     this.searchInputElement.setAttribute("jslog", `${VisualLogging23.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
     this.searchInputElement.addEventListener("keydown", this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener("input", this.onInput.bind(this), false);
@@ -20438,7 +20589,7 @@ var SearchableView = class extends VBox {
     const replaceInputElements = searchInputElements.createChild("div", "replace-element input-line");
     this.replaceInputElement = replaceInputElements.createChild("input", "search-replace");
     this.replaceInputElement.addEventListener("keydown", this.onReplaceKeyDown.bind(this), true);
-    this.replaceInputElement.placeholder = i18nString18(UIStrings18.replace);
+    this.replaceInputElement.placeholder = i18nString19(UIStrings19.replace);
     this.replaceInputElement.setAttribute("jslog", `${VisualLogging23.textField("replace").track({ change: true, keydown: "Enter" })}`);
     const replaceInputClearButton = createClearButton("clear-replace-input");
     replaceInputClearButton.addEventListener("click", () => {
@@ -20468,10 +20619,10 @@ var SearchableView = class extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: "primary-toggle",
-        title: i18nString18(UIStrings18.matchCase),
+        title: i18nString19(UIStrings19.matchCase),
         jslogContext: iconName
       };
-      setLabel(this.caseSensitiveButton, i18nString18(UIStrings18.matchCase));
+      setLabel(this.caseSensitiveButton, i18nString19(UIStrings19.matchCase));
       this.caseSensitiveButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.caseSensitiveButton);
     }
@@ -20485,10 +20636,10 @@ var SearchableView = class extends VBox {
         toggledIconName: iconName,
         toggled: false,
         toggleType: "primary-toggle",
-        title: i18nString18(UIStrings18.matchWholeWord),
+        title: i18nString19(UIStrings19.matchWholeWord),
         jslogContext: iconName
       };
-      setLabel(this.wholeWordButton, i18nString18(UIStrings18.matchWholeWord));
+      setLabel(this.wholeWordButton, i18nString19(UIStrings19.matchWholeWord));
       this.wholeWordButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.wholeWordButton);
     }
@@ -20503,9 +20654,9 @@ var SearchableView = class extends VBox {
         toggleType: "primary-toggle",
         toggled: false,
         jslogContext: iconName,
-        title: i18nString18(UIStrings18.useRegularExpression)
+        title: i18nString19(UIStrings19.useRegularExpression)
       };
-      setLabel(this.regexButton, i18nString18(UIStrings18.useRegularExpression));
+      setLabel(this.regexButton, i18nString19(UIStrings19.useRegularExpression));
       this.regexButton.addEventListener("click", saveSettingAndPerformSearch);
       searchConfigButtons.appendChild(this.regexButton);
     }
@@ -20513,13 +20664,13 @@ var SearchableView = class extends VBox {
     const buttonsContainer = this.footerElement.createChild("div", "toolbar-search-buttons");
     const firstRowButtons = buttonsContainer.createChild("div", "first-row-buttons");
     const toolbar5 = firstRowButtons.createChild("devtools-toolbar", "toolbar-search-options");
-    this.searchNavigationPrevElement = new ToolbarButton(i18nString18(UIStrings18.searchPrevious), "chevron-up", void 0, "select-previous");
+    this.searchNavigationPrevElement = new ToolbarButton(i18nString19(UIStrings19.searchPrevious), "chevron-up", void 0, "select-previous");
     this.searchNavigationPrevElement.addEventListener("Click", () => this.onPrevButtonSearch());
     toolbar5.appendToolbarItem(this.searchNavigationPrevElement);
-    setLabel(this.searchNavigationPrevElement.element, i18nString18(UIStrings18.searchPrevious));
-    this.searchNavigationNextElement = new ToolbarButton(i18nString18(UIStrings18.searchNext), "chevron-down", void 0, "select-next");
+    setLabel(this.searchNavigationPrevElement.element, i18nString19(UIStrings19.searchPrevious));
+    this.searchNavigationNextElement = new ToolbarButton(i18nString19(UIStrings19.searchNext), "chevron-down", void 0, "select-next");
     this.searchNavigationNextElement.addEventListener("Click", () => this.onNextButtonSearch());
-    setLabel(this.searchNavigationNextElement.element, i18nString18(UIStrings18.searchNext));
+    setLabel(this.searchNavigationNextElement.element, i18nString19(UIStrings19.searchNext));
     toolbar5.appendToolbarItem(this.searchNavigationNextElement);
     const matchesText = new ToolbarText();
     this.matchesElement = matchesText.element;
@@ -20536,20 +20687,20 @@ var SearchableView = class extends VBox {
       variant: "toolbar",
       size: "REGULAR",
       iconName: "cross",
-      title: i18nString18(UIStrings18.closeSearchBar),
+      title: i18nString19(UIStrings19.closeSearchBar),
       jslogContext: "close-search"
     };
     cancelButtonElement.classList.add("close-search-button");
     cancelButtonElement.addEventListener("click", () => this.closeSearch());
     firstRowButtons.appendChild(cancelButtonElement);
     const secondRowButtons = buttonsContainer.createChild("div", "second-row-buttons replace-element");
-    this.replaceButtonElement = createTextButton(i18nString18(UIStrings18.replace), this.replace.bind(this), {
+    this.replaceButtonElement = createTextButton(i18nString19(UIStrings19.replace), this.replace.bind(this), {
       className: "search-action-button",
       jslogContext: "replace"
     });
     this.replaceButtonElement.disabled = true;
     secondRowButtons.appendChild(this.replaceButtonElement);
-    this.replaceAllButtonElement = createTextButton(i18nString18(UIStrings18.replaceAll), this.replaceAll.bind(this), {
+    this.replaceAllButtonElement = createTextButton(i18nString19(UIStrings19.replaceAll), this.replaceAll.bind(this), {
       className: "search-action-button",
       jslogContext: "replace-all"
     });
@@ -20568,7 +20719,7 @@ var SearchableView = class extends VBox {
   }
   toggleReplace() {
     const replaceEnabled = this.replaceToggleButton.isToggled();
-    const label = replaceEnabled ? i18nString18(UIStrings18.disableFindAndReplace) : i18nString18(UIStrings18.enableFindAndReplace);
+    const label = replaceEnabled ? i18nString19(UIStrings19.disableFindAndReplace) : i18nString19(UIStrings19.enableFindAndReplace);
     setLabel(this.replaceToggleButton.element, label);
     this.replaceToggleButton.element.title = label;
     this.updateSecondRowVisibility();
@@ -20694,14 +20845,14 @@ var SearchableView = class extends VBox {
     if (!this.currentQuery) {
       this.matchesElementValue.textContent = "";
     } else if (matches === 0 || currentMatchIndex >= 0) {
-      this.matchesElementValue.textContent = i18nString18(UIStrings18.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
-      setLabel(this.matchesElement, i18nString18(UIStrings18.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
+      this.matchesElementValue.textContent = i18nString19(UIStrings19.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
+      setLabel(this.matchesElement, i18nString19(UIStrings19.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
     } else if (matches === 1) {
-      this.matchesElementValue.textContent = i18nString18(UIStrings18.matchString);
-      setLabel(this.matchesElement, i18nString18(UIStrings18.matchString));
+      this.matchesElementValue.textContent = i18nString19(UIStrings19.matchString);
+      setLabel(this.matchesElement, i18nString19(UIStrings19.matchString));
     } else {
-      this.matchesElementValue.textContent = i18nString18(UIStrings18.dMatches, { PH1: matches });
-      setLabel(this.matchesElement, i18nString18(UIStrings18.dMatches, { PH1: matches }));
+      this.matchesElementValue.textContent = i18nString19(UIStrings19.dMatches, { PH1: matches });
+      setLabel(this.matchesElement, i18nString19(UIStrings19.dMatches, { PH1: matches }));
     }
     this.updateSearchNavigationButtonState(matches > 0);
   }
@@ -20891,7 +21042,7 @@ var SoftDropDown_exports = {};
 __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
 });
-import * as i18n37 from "./../../core/i18n/i18n.js";
+import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
 import { createIcon as createIcon8 } from "./../kit/kit.js";
 import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
@@ -20997,14 +21148,14 @@ button.soft-dropdown:hover:not(:active) > .title {
 /*# sourceURL=${import.meta.resolve("./softDropDownButton.css")} */`;
 
 // gen/front_end/ui/legacy/SoftDropDown.js
-var UIStrings19 = {
+var UIStrings20 = {
   /**
    * @description Placeholder text in Soft Drop Down
    */
   noItemSelected: "(no item selected)"
 };
-var str_19 = i18n37.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings19);
-var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("ui/legacy/SoftDropDown.ts", UIStrings20);
+var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var SoftDropDown = class {
   delegate;
   selectedItem;
@@ -21020,7 +21171,7 @@ var SoftDropDown = class {
     this.delegate = delegate;
     this.selectedItem = null;
     this.model = model;
-    this.placeholderText = i18nString19(UIStrings19.noItemSelected);
+    this.placeholderText = i18nString20(UIStrings20.noItemSelected);
     this.element = document.createElement("button");
     if (jslogContext) {
       this.element.setAttribute("jslog", `${VisualLogging24.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
@@ -21271,8 +21422,8 @@ __export(TargetCrashedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
-import * as i18n39 from "./../../core/i18n/i18n.js";
-import { html as html6, render as render8 } from "./../lit/lit.js";
+import * as i18n41 from "./../../core/i18n/i18n.js";
+import { html as html7, render as render9 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -21295,7 +21446,7 @@ var targetCrashedScreen_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./targetCrashedScreen.css")} */`;
 
 // gen/front_end/ui/legacy/TargetCrashedScreen.js
-var UIStrings20 = {
+var UIStrings21 = {
   /**
    * @description Text in dialog box when the target page crashed
    */
@@ -21305,13 +21456,13 @@ var UIStrings20 = {
    */
   oncePageIsReloadedDevtoolsWill: "Once page is reloaded, DevTools will automatically reconnect."
 };
-var str_20 = i18n39.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings20);
-var i18nString20 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
+var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render8(html6`
+  render9(html7`
     <style>${targetCrashedScreen_css_default}</style>
-    <div class="message">${i18nString20(UIStrings20.devtoolsWasDisconnectedFromThe)}</div>
-    <div class="message">${i18nString20(UIStrings20.oncePageIsReloadedDevtoolsWill)}</div>`, target);
+    <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
+    <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`, target);
 };
 var TargetCrashedScreen = class extends VBox {
   hideCallback;
@@ -21671,7 +21822,7 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 
 // gen/front_end/ui/legacy/Treeoutline.js
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render9 } = Lit3;
+var { render: render10 } = Lit3;
 var Events2;
 (function(Events3) {
   Events3["ElementAttached"] = "ElementAttached";
@@ -22307,7 +22458,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render9(icons, this.leadingIconsElement);
+    render10(icons, this.leadingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;
@@ -23328,6 +23479,7 @@ export {
   ListModel_exports as ListModel,
   ListWidget_exports as ListWidget,
   Panel_exports as Panel,
+  PlusButton_exports as PlusButton,
   PopoverHelper_exports as PopoverHelper,
   ProgressIndicator_exports as ProgressIndicator,
   RemoteDebuggingTerminatedScreen_exports as RemoteDebuggingTerminatedScreen,

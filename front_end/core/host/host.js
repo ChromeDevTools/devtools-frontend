@@ -2339,7 +2339,7 @@ var UserMetrics = class {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
       "DevTools.IssuesPanelOpenedFrom",
       issueOpener,
-      6
+      7
       /* IssueOpener.MAX_VALUE */
     );
   }
@@ -3006,7 +3006,8 @@ var DevtoolsExperiments;
   DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["durable-messages"] = 110] = "durable-messages";
   DevtoolsExperiments2[DevtoolsExperiments2["jpeg-xl"] = 111] = "jpeg-xl";
-  DevtoolsExperiments2[DevtoolsExperiments2["MAX_VALUE"] = 112] = "MAX_VALUE";
+  DevtoolsExperiments2[DevtoolsExperiments2["plus-button"] = 112] = "plus-button";
+  DevtoolsExperiments2[DevtoolsExperiments2["MAX_VALUE"] = 113] = "MAX_VALUE";
 })(DevtoolsExperiments || (DevtoolsExperiments = {}));
 var IssueExpanded;
 (function(IssueExpanded2) {

@@ -12956,6 +12956,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   // ClearNode param is used to clean DOM after in-place editing..
   performUpdate(clearNode = false) {
+    if (this.editing && !this.#editorState) {
+      return;
+    }
     const output = {};
     DEFAULT_VIEW3({
       node: !clearNode ? this.nodeInternal : null,

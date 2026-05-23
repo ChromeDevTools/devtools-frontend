@@ -33,8 +33,8 @@ export class PerformanceInsightFormatter {
     #traceFormatter;
     #insight;
     #parsedTrace;
-    constructor(focus, insight) {
-        this.#traceFormatter = new PerformanceTraceFormatter(focus);
+    constructor(focus, insight, deviceScope = null) {
+        this.#traceFormatter = new PerformanceTraceFormatter(focus, deviceScope);
         this.#insight = insight;
         this.#parsedTrace = focus.parsedTrace;
     }

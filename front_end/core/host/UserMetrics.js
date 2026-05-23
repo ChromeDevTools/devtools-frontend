@@ -27,7 +27,7 @@ export class UserMetrics {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeyboardShortcutFired" /* EnumeratedHistogram.KeyboardShortcutFired */, action, KeyboardShortcutAction.MAX_VALUE);
     }
     issuesPanelOpenedFrom(issueOpener) {
-        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelOpenedFrom" /* EnumeratedHistogram.IssuesPanelOpenedFrom */, issueOpener, 6 /* IssueOpener.MAX_VALUE */);
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelOpenedFrom" /* EnumeratedHistogram.IssuesPanelOpenedFrom */, issueOpener, 7 /* IssueOpener.MAX_VALUE */);
     }
     issuesPanelIssueExpanded(issueExpandedCategory) {
         if (issueExpandedCategory === undefined) {
@@ -665,9 +665,10 @@ export var DevtoolsExperiments;
     DevtoolsExperiments[DevtoolsExperiments["use-source-map-scopes"] = 76] = "use-source-map-scopes";
     DevtoolsExperiments[DevtoolsExperiments["durable-messages"] = 110] = "durable-messages";
     DevtoolsExperiments[DevtoolsExperiments["jpeg-xl"] = 111] = "jpeg-xl";
+    DevtoolsExperiments[DevtoolsExperiments["plus-button"] = 112] = "plus-button";
     /* eslint-enable @typescript-eslint/naming-convention */
     // Increment this when new experiments are added.
-    DevtoolsExperiments[DevtoolsExperiments["MAX_VALUE"] = 112] = "MAX_VALUE";
+    DevtoolsExperiments[DevtoolsExperiments["MAX_VALUE"] = 113] = "MAX_VALUE";
 })(DevtoolsExperiments || (DevtoolsExperiments = {}));
 /** Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added. **/
 export var IssueExpanded;

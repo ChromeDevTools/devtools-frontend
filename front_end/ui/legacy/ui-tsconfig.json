@@ -62,6 +62,7 @@
     "../../../../../../front_end/ui/legacy/ListModel.ts",
     "../../../../../../front_end/ui/legacy/ListWidget.ts",
     "../../../../../../front_end/ui/legacy/Panel.ts",
+    "../../../../../../front_end/ui/legacy/PlusButton.ts",
     "../../../../../../front_end/ui/legacy/PopoverHelper.ts",
     "../../../../../../front_end/ui/legacy/ProgressIndicator.ts",
     "../../../../../../front_end/ui/legacy/RemoteDebuggingTerminatedScreen.ts",

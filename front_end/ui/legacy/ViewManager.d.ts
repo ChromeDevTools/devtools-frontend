@@ -1,8 +1,9 @@
 import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
-import type * as Root from '../../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
 import { type TemplateResult } from '../lit/lit.js';
+import * as PlusButton from './PlusButton.js';
 import { TabbedPane } from './TabbedPane.js';
 import { type ToolbarItem } from './Toolbar.js';
 import type { TabbedViewLocation, View, ViewLocation } from './View.js';
@@ -80,7 +81,7 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
     showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void>;
     isViewVisible(viewId: string): boolean;
     resolveLocation(location?: string): Promise<Location | null>;
-    createTabbedLocation(revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean, defaultTab?: string | null, isLocationVisible?: (() => boolean), tabbedPaneFactory?: TabbedPaneFactory): TabbedViewLocation;
+    createTabbedLocation(revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean, options?: TabbedLocationOptions): TabbedViewLocation;
     createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation;
     hasViewsForLocation(location: string): boolean;
     viewsForLocation(location: string): View[];
@@ -103,5 +104,15 @@ declare class Location {
     showView(_view: View, _insertBefore?: View | null, _userGesture?: boolean, _omitFocus?: boolean, _shouldSelectTab?: boolean): Promise<void>;
     removeView(_view: View): void;
     isViewVisible(_view: View): boolean;
+}
+export interface TabbedLocationOptions {
+    defaultTab?: string | null;
+    isLocationVisible?: () => boolean;
+    tabbedPaneFactory?: TabbedPaneFactory;
+    /**
+     * Installed into the `TabbedPane`'s `trailing-button` slot before any
+     * tabs are appended, so the very first layout pass reserves width for it.
+     */
+    plusButton?: PlusButton.PlusButtonOptions;
 }
 export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, ViewRegistration, };

@@ -1752,12 +1752,13 @@ async function makeLighthouseReportWidget(widgetData) {
     if (!reportEl) {
         return null;
     }
+    const snapshotReport = widgetData.data.snapshotReport;
     return {
         renderedWidget: html `<div class="lighthouse-report-widget">${reportEl}</div>`,
         revealable: new Lighthouse.LighthousePanel.ActiveLighthouseReport(widgetData.data.report),
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLighthouse),
         title: lockedString(UIStringsNotTranslate.lighthouseReport),
-        jslogContext: 'lighthouse-report-widget',
+        jslogContext: snapshotReport ? 'lighthouse-snapshot-report-widget' : 'lighthouse-report-widget',
     };
 }
 //# sourceMappingURL=ChatMessage.js.map

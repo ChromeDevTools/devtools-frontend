@@ -266,6 +266,9 @@ interface DevToolsProtocolMonitor {
 interface DevToolsWebMCPSupport {
     enabled: boolean;
 }
+interface DevToolsPlusButton {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -320,6 +323,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsProtocolMonitor: DevToolsProtocolMonitor;
     devToolsWebMCPSupport: DevToolsWebMCPSupport;
     devToolsUseGcaApi: UseGcaApi;
+    devToolsPlusButton: DevToolsPlusButton;
 }>;
 /**
  * The host configuration for this DevTools instance.

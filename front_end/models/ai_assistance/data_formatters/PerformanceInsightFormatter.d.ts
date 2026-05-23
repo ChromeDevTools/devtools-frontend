@@ -1,9 +1,10 @@
+import type * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Trace from '../../trace/trace.js';
 import type { ConversationSuggestions } from '../agents/AiAgent.js';
 import type { AgentFocus } from '../performance/AIContext.js';
 export declare class PerformanceInsightFormatter {
     #private;
-    constructor(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel);
+    constructor(focus: AgentFocus, insight: Trace.Insights.Types.InsightModel, deviceScope?: CrUXManager.DeviceScope | null);
     insightIsSupported(): boolean;
     getSuggestions(): ConversationSuggestions;
     /**

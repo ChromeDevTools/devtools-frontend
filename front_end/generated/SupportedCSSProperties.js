@@ -667,6 +667,7 @@ export const generatedProperties = [
    "rx",
    "ry",
    "scale",
+   "scroll-axis-lock",
    "scroll-behavior",
    "scroll-initial-target",
    "scroll-margin-block-end",
@@ -1968,6 +1969,18 @@ export const generatedProperties = [
   "name": "corner"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-end-start-radius",
+   "corner-end-start-shape",
+   "border-end-end-radius",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-block-end"
+ },
+ {
   "longhands": [
    "corner-end-start-shape",
    "corner-end-end-shape"
@@ -1975,11 +1988,45 @@ export const generatedProperties = [
   "name": "corner-block-end-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-start-start-radius",
+   "corner-start-start-shape",
+   "border-start-end-radius",
+   "corner-start-end-shape"
+  ],
+  "name": "corner-block-start"
+ },
+ {
   "longhands": [
    "corner-start-start-shape",
    "corner-start-end-shape"
   ],
   "name": "corner-block-start-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-bottom-left-radius",
+   "corner-bottom-left-shape",
+   "border-bottom-right-radius",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-bottom"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-bottom-left-radius",
+   "corner-bottom-left-shape"
+  ],
+  "name": "corner-bottom-left"
  },
  {
   "keywords": [
@@ -1991,6 +2038,16 @@ export const generatedProperties = [
    "square"
   ],
   "name": "corner-bottom-left-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-bottom-right-radius",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-bottom-right"
  },
  {
   "keywords": [
@@ -2011,10 +2068,42 @@ export const generatedProperties = [
   "name": "corner-bottom-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-end-end-radius",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-end-end"
+ },
+ {
   "name": "corner-end-end-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-end-start-radius",
+   "corner-end-start-shape"
+  ],
+  "name": "corner-end-start"
+ },
+ {
   "name": "corner-end-start-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-start-end-radius",
+   "corner-start-end-shape",
+   "border-end-end-radius",
+   "corner-end-end-shape"
+  ],
+  "name": "corner-inline-end"
  },
  {
   "longhands": [
@@ -2024,6 +2113,18 @@ export const generatedProperties = [
   "name": "corner-inline-end-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-start-start-radius",
+   "corner-start-start-shape",
+   "border-end-start-radius",
+   "corner-end-start-shape"
+  ],
+  "name": "corner-inline-start"
+ },
+ {
   "longhands": [
    "corner-start-start-shape",
    "corner-end-start-shape"
@@ -2031,11 +2132,35 @@ export const generatedProperties = [
   "name": "corner-inline-start-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-top-left-radius",
+   "corner-top-left-shape",
+   "border-bottom-left-radius",
+   "corner-bottom-left-shape"
+  ],
+  "name": "corner-left"
+ },
+ {
   "longhands": [
    "corner-top-left-shape",
    "corner-bottom-left-shape"
   ],
   "name": "corner-left-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-top-right-radius",
+   "corner-top-right-shape",
+   "border-bottom-right-radius",
+   "corner-bottom-right-shape"
+  ],
+  "name": "corner-right"
  },
  {
   "longhands": [
@@ -2054,10 +2179,52 @@ export const generatedProperties = [
   "name": "corner-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-start-end-radius",
+   "corner-start-end-shape"
+  ],
+  "name": "corner-start-end"
+ },
+ {
   "name": "corner-start-end-shape"
  },
  {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-start-start-radius",
+   "corner-start-start-shape"
+  ],
+  "name": "corner-start-start"
+ },
+ {
   "name": "corner-start-start-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-top-left-radius",
+   "corner-top-left-shape",
+   "border-top-right-radius",
+   "corner-top-right-shape"
+  ],
+  "name": "corner-top"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-top-left-radius",
+   "corner-top-left-shape"
+  ],
+  "name": "corner-top-left"
  },
  {
   "keywords": [
@@ -2069,6 +2236,16 @@ export const generatedProperties = [
    "square"
   ],
   "name": "corner-top-left-shape"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "longhands": [
+   "border-top-right-radius",
+   "corner-top-right-shape"
+  ],
+  "name": "corner-top-right"
  },
  {
   "keywords": [
@@ -3246,7 +3423,7 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "none"
+   "auto"
   ],
   "name": "max-lines"
  },
@@ -4079,6 +4256,13 @@ export const generatedProperties = [
  },
  {
   "name": "scale"
+ },
+ {
+  "keywords": [
+   "auto",
+   "none"
+  ],
+  "name": "scroll-axis-lock"
  },
  {
   "keywords": [
@@ -5777,6 +5961,26 @@ export const generatedPropertyValues = {
    "normal"
   ]
  },
+ "corner-block-end": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-block-start": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-bottom": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-bottom-left": {
+  "values": [
+   "normal"
+  ]
+ },
  "corner-bottom-left-shape": {
   "values": [
    "notch",
@@ -5785,6 +5989,11 @@ export const generatedPropertyValues = {
    "round",
    "squircle",
    "square"
+  ]
+ },
+ "corner-bottom-right": {
+  "values": [
+   "normal"
   ]
  },
  "corner-bottom-right-shape": {
@@ -5797,6 +6006,56 @@ export const generatedPropertyValues = {
    "square"
   ]
  },
+ "corner-end-end": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-end-start": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-inline-end": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-inline-start": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-left": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-right": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-start-end": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-start-start": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-top": {
+  "values": [
+   "normal"
+  ]
+ },
+ "corner-top-left": {
+  "values": [
+   "normal"
+  ]
+ },
  "corner-top-left-shape": {
   "values": [
    "notch",
@@ -5805,6 +6064,11 @@ export const generatedPropertyValues = {
    "round",
    "squircle",
    "square"
+  ]
+ },
+ "corner-top-right": {
+  "values": [
+   "normal"
   ]
  },
  "corner-top-right-shape": {
@@ -6505,7 +6769,7 @@ export const generatedPropertyValues = {
  },
  "max-lines": {
   "values": [
-   "none"
+   "auto"
   ]
  },
  "max-width": {
@@ -6908,6 +7172,12 @@ export const generatedPropertyValues = {
  "ry": {
   "values": [
    "auto"
+  ]
+ },
+ "scroll-axis-lock": {
+  "values": [
+   "auto",
+   "none"
   ]
  },
  "scroll-behavior": {

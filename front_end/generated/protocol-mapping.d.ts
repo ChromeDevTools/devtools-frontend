@@ -2660,22 +2660,12 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * TODO: OBSOLETE: To remove when setPressureDataOverride is merged.
      * Provides a given pressure state that will be processed and eventually be
      * delivered to PressureObserver users. |source| must have been previously
      * overridden by setPressureSourceOverrideEnabled.
      */
     'Emulation.setPressureStateOverride': {
       paramsType: [Protocol.Emulation.SetPressureStateOverrideRequest];
-      returnType: void;
-    };
-    /**
-     * Provides a given pressure data set that will be processed and eventually be
-     * delivered to PressureObserver users. |source| must have been previously
-     * overridden by setPressureSourceOverrideEnabled.
-     */
-    'Emulation.setPressureDataOverride': {
-      paramsType: [Protocol.Emulation.SetPressureDataOverrideRequest];
       returnType: void;
     };
     /**

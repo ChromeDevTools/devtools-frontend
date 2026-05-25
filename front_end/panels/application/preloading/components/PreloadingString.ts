@@ -12,11 +12,6 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 
 const UIStrings = {
   /**
-   * @description Descrption text for Prefetch status PrefetchCancelledOnUserNavigation.
-   */
-  PrefetchCancelledOnUserNavigation:
-      'The prefetch was cancelled because the user navigated the page before the prefetch finished',
-  /**
    * @description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
    */
   PrefetchFailedIneligibleRedirect: 'The prefetch was redirected, but the redirect URL is not eligible for prefetch.',
@@ -459,7 +454,6 @@ export const PrefetchReasonDescription: Record<string, {name: () => Platform.UIS
   PrefetchNotEligibleRedirectFromServiceWorker: {name: () => i18n.i18n.lockedString('Unknown')},
   PrefetchNotEligibleRedirectToServiceWorker: {name: () => i18n.i18n.lockedString('Unknown')},
   PrefetchEvictedAfterBrowsingDataRemoved: {name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved)},
-  PrefetchCancelledOnUserNavigation: {name: i18nLazyString(UIStrings.PrefetchCancelledOnUserNavigation)},
 };
 
 /** Decoding PrefetchFinalStatus prefetchAttempt to failure description. **/
@@ -546,8 +540,6 @@ export function prefetchFailureReason(
       return PrefetchReasonDescription['PrefetchNotEligibleRedirectToServiceWorker'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchEvictedAfterBrowsingDataRemoved:
       return PrefetchReasonDescription['PrefetchEvictedAfterBrowsingDataRemoved'].name();
-    case Protocol.Preload.PrefetchStatus.PrefetchCancelledOnUserNavigation:
-      return PrefetchReasonDescription['PrefetchCancelledOnUserNavigation'].name();
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

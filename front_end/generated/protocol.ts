@@ -7395,12 +7395,6 @@ export namespace Emulation {
     state: PressureState;
   }
 
-  export interface SetPressureDataOverrideRequest {
-    source: PressureSource;
-    state: PressureState;
-    ownContributionEstimate?: number;
-  }
-
   export interface SetIdleOverrideRequest {
     /**
      * Mock isUserActive
@@ -17136,7 +17130,6 @@ export namespace Preload {
     PrefetchResponseUsed = 'PrefetchResponseUsed',
     PrefetchSuccessfulButNotUsed = 'PrefetchSuccessfulButNotUsed',
     PrefetchNotUsedProbeFailed = 'PrefetchNotUsedProbeFailed',
-    PrefetchCancelledOnUserNavigation = 'PrefetchCancelledOnUserNavigation',
   }
 
   /**
@@ -19100,6 +19093,11 @@ export namespace Target {
      * the type of "page", this may be set to "prerender".
      */
     subtype?: string;
+    /**
+     * Embedder-specific target metadata. This is only set for targets of
+     * type "tab".
+     */
+    embedderData?: any;
   }
 
   /**

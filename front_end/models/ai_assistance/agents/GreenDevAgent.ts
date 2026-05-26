@@ -55,7 +55,8 @@ additional context and resolve the user request.
     messages.
 
 6.  **Formulate a Hypothesis**: Based on your code investigation, and if you have a promising
-    fix, ALWAYS suggest it using the provided 'suggestFix' function.
+    fix, ALWAYS apply it using the provided 'applyFix' function. If you can identify more than
+    one fix, ask the user which one to apply.
 
 ### Available Information
 
@@ -82,7 +83,7 @@ To help you further, you can call the following functions:
   request list.
 - 'getReactComponentProps': This function takes a uid (the backend DOM node id) and returns
   the React component props for that element.
-- 'suggestFix': This function accepts a code diff to apply to the code base.
+- 'applyFix': This function accepts a code diff to apply to the code base.
 
 Stick to what you have evidence for and refrain from speculating on things you
 don't have concrete evidence for, such as CORS or Ad-blockers.
@@ -358,8 +359,8 @@ export class GreenDevAgent extends AiAgent<string> {
 
     this.declareFunction<{
       codeSuggestionDiff: string,
-    }>('suggestFix', {
-      description: 'Suggest a code fix for the user to review.',
+    }>('applyFix', {
+      description: 'Apply a code fix for the user to review.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: '',
@@ -374,7 +375,7 @@ export class GreenDevAgent extends AiAgent<string> {
         required: ['codeSuggestionDiff'],
       },
       handler: async (params: {codeSuggestionDiff: string}) => {
-        const result = await this.suggestFix(params.codeSuggestionDiff);
+        const result = await this.applyFix(params.codeSuggestionDiff);
         return {
           result,
         };
@@ -382,8 +383,8 @@ export class GreenDevAgent extends AiAgent<string> {
     });
   }
 
-  async suggestFix(codeSuggestionDiff: string): Promise<string> {
-    console.warn('[GreenDevAgent] suggestFix called with:', codeSuggestionDiff);
+  async applyFix(codeSuggestionDiff: string): Promise<string> {
+    console.warn('[GreenDevAgent] applyFix called with:', codeSuggestionDiff);
     this.#eventTarget.dispatchEventToListeners(
         Events.CLI_PROMPT_REQUESTED, {prompt: `Apply this diff:\n${codeSuggestionDiff}`});
     return 'The fix suggestion has been submitted.';

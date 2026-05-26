@@ -316,6 +316,13 @@ class GreenDevFloaty {
                       markdown.data = {
                         tokens: Marked.Marked.lexer(responseText),
                       };
+
+                      const style = document.createElement('style');
+                      style.textContent =
+                          '.message { font-size: 1.0rem; } .message code { font-size: 1.0rem; font-family: \'Roboto Mono\', ' +
+                          'monospace; color: green; } .message ul { margin-left: 20px; }';
+                      markdown.shadowRoot?.appendChild(style);
+
                       this.#updateAiMessage(aiContent, markdown, responseText);
                     });
               } else {

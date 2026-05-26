@@ -5528,9 +5528,6 @@
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingString.ts | PrefetchCancelledOnUserNavigation": {
-    "message": "The prefetch was cancelled because the user navigated the page before the prefetch finished"
-  },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchEvictedAfterBrowsingDataRemoved": {
     "message": "The prefetch was discarded because browsing data was removed."
   },
@@ -17860,6 +17857,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Save image as…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "This image is too big to display in DevTools. Click here to open it in a new tab."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Find"

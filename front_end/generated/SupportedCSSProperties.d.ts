@@ -338,13 +338,61 @@ export const generatedPropertyValues: {
     corner: {
         values: string[];
     };
+    "corner-block-end": {
+        values: string[];
+    };
+    "corner-block-start": {
+        values: string[];
+    };
+    "corner-bottom": {
+        values: string[];
+    };
+    "corner-bottom-left": {
+        values: string[];
+    };
     "corner-bottom-left-shape": {
+        values: string[];
+    };
+    "corner-bottom-right": {
         values: string[];
     };
     "corner-bottom-right-shape": {
         values: string[];
     };
+    "corner-end-end": {
+        values: string[];
+    };
+    "corner-end-start": {
+        values: string[];
+    };
+    "corner-inline-end": {
+        values: string[];
+    };
+    "corner-inline-start": {
+        values: string[];
+    };
+    "corner-left": {
+        values: string[];
+    };
+    "corner-right": {
+        values: string[];
+    };
+    "corner-start-end": {
+        values: string[];
+    };
+    "corner-start-start": {
+        values: string[];
+    };
+    "corner-top": {
+        values: string[];
+    };
+    "corner-top-left": {
+        values: string[];
+    };
     "corner-top-left-shape": {
+        values: string[];
+    };
+    "corner-top-right": {
         values: string[];
     };
     "corner-top-right-shape": {
@@ -786,6 +834,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     ry: {
+        values: string[];
+    };
+    "scroll-axis-lock": {
         values: string[];
     };
     "scroll-behavior": {

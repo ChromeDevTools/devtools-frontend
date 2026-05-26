@@ -11,6 +11,7 @@ export declare class ImageView extends UI.View.SimpleView {
     private readonly mimeTypeLabel;
     private readonly container;
     private imagePreviewElement;
+    private imageUnavailableElement;
     private cachedContent?;
     constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider);
     toolbarItems(): Promise<UI.Toolbar.ToolbarItem[]>;

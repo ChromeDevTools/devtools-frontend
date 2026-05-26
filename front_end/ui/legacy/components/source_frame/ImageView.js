@@ -35,6 +35,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
+import { createIcon } from '../../../kit/kit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import imageViewStyles from './imageView.css.js';
@@ -78,6 +79,10 @@ const UIStrings = {
      * @description The default file name when downloading a file
      */
     download: 'download',
+    /**
+     * @description Text indicating an image is too large to display and offering to open it in a new tab
+     */
+    thisImageIsTooBig: 'This image is too big to display in DevTools. Click here to open it in a new tab.',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -92,6 +97,7 @@ export class ImageView extends UI.View.SimpleView {
     mimeTypeLabel;
     container;
     imagePreviewElement;
+    imageUnavailableElement;
     cachedContent;
     constructor(mimeType, contentProvider) {
         super({
@@ -117,6 +123,13 @@ export class ImageView extends UI.View.SimpleView {
         this.container = this.element.createChild('div', 'image');
         this.imagePreviewElement = this.container.createChild('img', 'resource-image-view');
         this.imagePreviewElement.addEventListener('contextmenu', this.contextMenu.bind(this), true);
+        const link = document.createElement('devtools-link');
+        link.setAttribute('href', this.url);
+        link.classList.add('resource-image-unavailable', 'hidden');
+        link.appendChild(createIcon('open-externally'));
+        link.appendChild(document.createTextNode(i18nString(UIStrings.thisImageIsTooBig)));
+        this.container.appendChild(link);
+        this.imageUnavailableElement = link;
     }
     async toolbarItems() {
         await this.updateContentIfNeeded();
@@ -150,8 +163,10 @@ export class ImageView extends UI.View.SimpleView {
         this.cachedContent = content;
         const imageSrc = content.asImagePreviewUrl();
         if (imageSrc === null) {
+            this.imageUnavailableElement.classList.remove('hidden');
             return;
         }
+        this.imageUnavailableElement.classList.add('hidden');
         const loadPromise = new Promise(x => {
             this.imagePreviewElement.onload = x;
         });

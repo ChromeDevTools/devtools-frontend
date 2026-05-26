@@ -6823,11 +6823,6 @@ export declare namespace Emulation {
         source: PressureSource;
         state: PressureState;
     }
-    interface SetPressureDataOverrideRequest {
-        source: PressureSource;
-        state: PressureState;
-        ownContributionEstimate?: number;
-    }
     interface SetIdleOverrideRequest {
         /**
          * Mock isUserActive
@@ -15902,8 +15897,7 @@ export declare namespace Preload {
         PrefetchProxyNotAvailable = "PrefetchProxyNotAvailable",
         PrefetchResponseUsed = "PrefetchResponseUsed",
         PrefetchSuccessfulButNotUsed = "PrefetchSuccessfulButNotUsed",
-        PrefetchNotUsedProbeFailed = "PrefetchNotUsedProbeFailed",
-        PrefetchCancelledOnUserNavigation = "PrefetchCancelledOnUserNavigation"
+        PrefetchNotUsedProbeFailed = "PrefetchNotUsedProbeFailed"
     }
     /**
      * Information of headers to be displayed when the header mismatch occurred.
@@ -17699,6 +17693,11 @@ export declare namespace Target {
          * the type of "page", this may be set to "prerender".
          */
         subtype?: string;
+        /**
+         * Embedder-specific target metadata. This is only set for targets of
+         * type "tab".
+         */
+        embedderData?: any;
     }
     /**
      * A filter used by target query/discovery/auto-attach operations.

@@ -27,4 +27,17 @@ export default `/*
   -webkit-user-drag: auto;
 }
 
+.resource-image-unavailable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sys-size-4);
+}
+
+.resource-image-unavailable devtools-icon {
+  color: var(--sys-color-primary);
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
+}
+
 /*# sourceURL=${import.meta.resolve('./imageView.css')} */`;

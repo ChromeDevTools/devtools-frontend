@@ -1,14 +1,14 @@
-### [Agentic extensions debugging](extension-debugging)
+### [DevTools for agents](devtools-for-agents)
 
-You can now debug extensions through a coding agent using new tools in DevTools for agents,
-available through the MCP server.
+DevTools for agents is now stable at version 1.0, bringing support for third-party developer tools
+provided by the inspected page, WebMCP debugging, and an improved CLI experience.
 
-### [Sort network requests](sort-network-requests)
+### [AI assistance](ai-assistance)
 
-The Network panel introduces a new Request # column, allowing you to sort requests by their
-absolute chronological order of occurrence, independent of priority or duration.
+The AI assistance panel now integrates with Lighthouse data and offers interactive, widget-based agent walkthroughs.
+Supported by an upgrade to Gemini 3 and other optimizations, responses are now more concise and actionable.
 
-### [Accessibility tree](accessibility-tree)
+### [CSS code completion](css-code-completion)
 
-To streamline the Elements panel, the Accessibility tree toggle has moved from the DOM tree
-to the Accessibility tab within the panel.
+The Styles tab in the Elements panel now features enhanced, Gemini-powered code completion.
+Experience smarter, real-time CSS suggestions that adapt dynamically as you type.

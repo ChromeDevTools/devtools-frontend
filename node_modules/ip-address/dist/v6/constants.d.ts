@@ -42,4 +42,3 @@ export declare const RE_SUBNET_STRING: RegExp;
 export declare const RE_ZONE_STRING: RegExp;
 export declare const RE_URL: RegExp;
 export declare const RE_URL_WITH_PORT: RegExp;
-//# sourceMappingURL=constants.d.ts.map

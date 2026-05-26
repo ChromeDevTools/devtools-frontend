@@ -95,14 +95,5 @@
     "webidl2": "24.5.0",
     "yargs": "17.7.2",
     "js-rouge": "3.2.0"
-  },
-  "overrides": {
-    "electron-to-chromium": "1.5.335",
-    "bare-os": "3.9.0",
-    "bare-stream": "2.13.0",
-    "tar-stream": "3.1.5",
-    "socks": "2.8.7",
-    "ip-address": "10.1.0",
-    "basic-ftp": "5.2.2"
   }
 }

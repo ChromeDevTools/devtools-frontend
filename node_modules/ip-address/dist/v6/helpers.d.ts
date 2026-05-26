@@ -1,3 +1,4 @@
+export declare function escapeHtml(s: string): string;
 /**
  * @returns {String} the string with all zeroes contained in a <span>
  */
@@ -15,4 +16,3 @@ export declare function spanLeadingZeroes(address: string): string;
  * @returns {String} a grouped address
  */
 export declare function simpleGroup(addressString: string, offset?: number): string[];
-//# sourceMappingURL=helpers.d.ts.map

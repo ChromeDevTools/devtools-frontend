@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
+
 import type {DebugId, SourceMapV3} from './SourceMap.js';
 
 /** A thin wrapper around the Cache API to store source map JSONs keyed on Debug IDs */
@@ -28,14 +30,14 @@ export class SourceMapCache {
     this.#name = name;
   }
 
-  async set(debugId: DebugId, sourceMap: SourceMapV3): Promise<void> {
+  async set(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString, sourceMap: SourceMapV3): Promise<void> {
     const cache = await this.#cache();
-    await cache.put(SourceMapCache.#urlForDebugId(debugId), new Response(JSON.stringify(sourceMap)));
+    await cache.put(SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
   }
 
-  async get(debugId: DebugId): Promise<SourceMapV3|null> {
+  async get(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString): Promise<SourceMapV3|null> {
     const cache = await this.#cache();
-    const response = await cache.match(SourceMapCache.#urlForDebugId(debugId));
+    const response = await cache.match(SourceMapCache.#urlForDebugId(debugId, securityOrigin));
     return await response?.json() ?? null;
   }
 
@@ -49,8 +51,8 @@ export class SourceMapCache {
   }
 
   /** The Cache API only allows URL as keys, so we construct a simple one. Given that we have our own cache, we have no risk of conflicting URLs */
-  static #urlForDebugId(debugId: DebugId): string {
-    return 'http://debug.id/' + encodeURIComponent(debugId);
+  static #urlForDebugId(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString): string {
+    return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(securityOrigin)}`;
   }
 
   async disposeForTest(): Promise<void> {
@@ -59,14 +61,14 @@ export class SourceMapCache {
 }
 
 const IN_MEMORY_INSTANCE = new (class implements Pick<SourceMapCache, 'get'|'set'|'disposeForTest'> {
-  readonly #cache = new Map<DebugId, SourceMapV3>();
+  readonly #cache = new Map<string, SourceMapV3>();
 
-  async set(debugId: DebugId, sourceMap: SourceMapV3): Promise<void> {
-    this.#cache.set(debugId, sourceMap);
+  async set(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString, sourceMap: SourceMapV3): Promise<void> {
+    this.#cache.set(`${debugId}|${securityOrigin}`, sourceMap);
   }
 
-  async get(debugId: DebugId): Promise<SourceMapV3|null> {
-    return this.#cache.get(debugId) ?? null;
+  async get(debugId: DebugId, securityOrigin: Platform.DevToolsPath.UrlString): Promise<SourceMapV3|null> {
+    return this.#cache.get(`${debugId}|${securityOrigin}`) ?? null;
   }
 
   async disposeForTest(): Promise<void> {

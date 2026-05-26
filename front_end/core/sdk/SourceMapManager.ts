@@ -190,7 +190,9 @@ async function loadSourceMap(
     initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
   try {
     if (debugId) {
-      const cachedSourceMap = await SourceMapCache.instance().get(debugId);
+      const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
+                                                      Platform.DevToolsPath.EmptyUrlString;
+      const cachedSourceMap = await SourceMapCache.instance().get(debugId, securityOrigin);
       if (cachedSourceMap) {
         return cachedSourceMap;
       }
@@ -198,9 +200,11 @@ async function loadSourceMap(
 
     const {content} = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
-    if ('debugId' in sourceMap && sourceMap.debugId) {
+    if (debugId && 'debugId' in sourceMap && sourceMap.debugId === debugId) {
       // In case something goes wrong with updating the cache, we still want to use the source map.
-      await SourceMapCache.instance().set(sourceMap.debugId as DebugId, sourceMap).catch();
+      const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
+                                                      Platform.DevToolsPath.EmptyUrlString;
+      await SourceMapCache.instance().set(sourceMap.debugId as DebugId, securityOrigin, sourceMap).catch();
     }
     return sourceMap;
   } catch (cause) {

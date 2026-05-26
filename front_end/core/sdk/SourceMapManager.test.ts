@@ -103,15 +103,17 @@ describe('SourceMapManager', () => {
   });
 
   class MockClient implements SDK.FrameAssociated.FrameAssociated {
-    constructor(private target: SDK.Target.Target) {
+    constructor(
+        private target: SDK.Target.Target, private debugIdInternal: SDK.SourceMap.DebugId|null = null,
+        private initiatorUrl: Platform.DevToolsPath.UrlString|null = null) {
     }
 
     createPageResourceLoadInitiator(): SDK.PageResourceLoader.PageResourceLoadInitiator {
-      return {target: this.target, frameId: null, initiatorUrl: null};
+      return {target: this.target, frameId: null, initiatorUrl: this.initiatorUrl};
     }
 
     debugId(): SDK.SourceMap.DebugId|null {
-      return null;
+      return this.debugIdInternal;
     }
   }
 
@@ -332,6 +334,83 @@ describe('SourceMapManager', () => {
       assert.strictEqual(sourceMapAttached.callCount, 1, 'SourceMapAttached events');
       sinon.assert.calledWith(sourceMapAttached, sinon.match.hasNested('data.client', client));
       sinon.assert.calledWith(sourceMapAttached, sinon.match.hasNested('data.sourceMap', sourceMap));
+    });
+  });
+
+  describe('SourceMapCache integration', () => {
+    let sourceMapCache: SDK.SourceMapCache.SourceMapCache;
+
+    beforeEach(async () => {
+      sourceMapCache = SDK.SourceMapCache.SourceMapCache.instance();
+      await sourceMapCache.disposeForTest();
+    });
+
+    afterEach(async () => {
+      await sourceMapCache.disposeForTest();
+    });
+
+    it('uses cached source map when debugId matches and origin matches', async () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const origin = urlString`https://example.com`;
+      const client = new MockClient(target, debugId, origin);
+
+      const cachedMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['cached.ts'],
+        mappings: '',
+      };
+
+      await sourceMapCache.set(debugId, origin, cachedMap);
+
+      const loadResourceStub = sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource');
+
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      const sourceMap = await sourceMapManager.sourceMapForClientPromise(client);
+
+      assert.isNotNull(sourceMap);
+      assert.deepEqual(sourceMap?.sourceURLs(), [urlString`http://localhost/cached.ts`]);
+      assert.strictEqual(loadResourceStub.callCount, 0, 'loadResource should not have been called');
+    });
+
+    it('does NOT use cached source map when debugId matches but origin does NOT match', async () => {
+      const target = createTarget();
+      const sourceMapManager = new SDK.SourceMapManager.SourceMapManager(target);
+      const debugId = 'test-debug-id' as SDK.SourceMap.DebugId;
+      const cachedOrigin = urlString`https://example.com`;
+      const clientOrigin = urlString`https://malicious.com`;
+      const client = new MockClient(target, debugId, clientOrigin);
+
+      const cachedMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['cached.ts'],
+        mappings: '',
+      };
+
+      const networkMap: SDK.SourceMap.SourceMapV3 = {
+        version: 3,
+        sources: ['network.ts'],
+        mappings: '',
+        debugId,
+      };
+
+      await sourceMapCache.set(debugId, cachedOrigin, cachedMap);
+
+      const loadResourceStub =
+          sinon.stub(SDK.PageResourceLoader.PageResourceLoader.instance(), 'loadResource').resolves({
+            content: JSON.stringify(networkMap)
+          });
+
+      sourceMapManager.attachSourceMap(client, sourceURL, sourceMappingURL);
+      const sourceMap = await sourceMapManager.sourceMapForClientPromise(client);
+
+      assert.isNotNull(sourceMap);
+      assert.deepEqual(sourceMap?.sourceURLs(), [urlString`http://localhost/network.ts`]);
+      assert.strictEqual(loadResourceStub.callCount, 1, 'loadResource should have been called');
+
+      const storedMap = await sourceMapCache.get(debugId, clientOrigin);
+      assert.deepEqual(storedMap, networkMap);
     });
   });
 });

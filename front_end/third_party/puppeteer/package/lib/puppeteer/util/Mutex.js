@@ -8,19 +8,23 @@ import { disposeSymbol } from './disposable.js';
 /**
  * @internal
  */
+class MutexGuard {
+    #mutex;
+    #onRelease;
+    constructor(mutex, onRelease) {
+        this.#mutex = mutex;
+        this.#onRelease = onRelease;
+    }
+    [disposeSymbol]() {
+        this.#onRelease?.();
+        return this.#mutex.release();
+    }
+}
+/**
+ * @internal
+ */
 export class Mutex {
-    static Guard = class Guard {
-        #mutex;
-        #onRelease;
-        constructor(mutex, onRelease) {
-            this.#mutex = mutex;
-            this.#onRelease = onRelease;
-        }
-        [disposeSymbol]() {
-            this.#onRelease?.();
-            return this.#mutex.release();
-        }
-    };
+    static Guard = MutexGuard;
     #locked = false;
     #acquirers = [];
     // This is FIFO.

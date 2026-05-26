@@ -3,28 +3,28 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type Debug from 'debug';
+import type { debuglog } from 'node:util';
 declare global {
     const __PUPPETEER_DEBUG: string;
 }
 /**
  * @internal
  */
-export declare function importDebug(): Promise<typeof Debug>;
+export declare function importDebug(): Promise<typeof debuglog>;
 /**
  * A debug function that can be used in any environment.
  *
  * @remarks
- * If used in Node, it falls back to the
- * {@link https://www.npmjs.com/package/debug | debug module}. In the browser it
+ * If used in Node, it falls back to Node's built-in
+ * {@link https://nodejs.org/api/util.html#utildebuglogsection-callback | util.debuglog}. In the browser it
  * uses `console.log`.
  *
- * In Node, use the `DEBUG` environment variable to control logging:
+ * In Node, use the `NODE_DEBUG` environment variable to control logging:
  *
  * ```
- * DEBUG=* // logs all channels
- * DEBUG=foo // logs the `foo` channel
- * DEBUG=foo* // logs any channels starting with `foo`
+ * NODE_DEBUG=* // logs all channels
+ * NODE_DEBUG=foo // logs the `foo` channel
+ * NODE_DEBUG=foo* // logs any channels starting with `foo`
  * ```
  *
  * In the browser, set `window.__PUPPETEER_DEBUG` to a string:

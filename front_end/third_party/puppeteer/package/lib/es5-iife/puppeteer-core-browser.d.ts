@@ -1580,7 +1580,7 @@ export declare interface CookieData {
   /**
    * Cookie SameSite type.
    */
-  sameSite?: CookieSameSite;
+  sameSite?: CookieSameSite_2;
   /**
    * Cookie expiration date, session cookie if not set
    */
@@ -1641,7 +1641,7 @@ export declare interface CookieParam {
   /**
    * Cookie SameSite type.
    */
-  sameSite?: CookieSameSite;
+  sameSite?: CookieSameSite_2;
   /**
    * Cookie expiration date, session cookie if not set
    */
@@ -1704,7 +1704,8 @@ export declare type CookiePriority = 'Low' | 'Medium' | 'High';
  *
  * @public
  */
-export declare type CookieSameSite = 'Strict' | 'Lax' | 'None' | 'Default';
+declare type CookieSameSite_2 = 'Strict' | 'Lax' | 'None' | 'Default';
+export type {CookieSameSite_2 as CookieSameSite};
 
 /**
  * Represents the source scheme of the origin that originally set the cookie. A value of
@@ -1889,6 +1890,7 @@ declare interface CustomQuerySelector {
 
 /**
  * This class mimics the injected {@link CustomQuerySelectorRegistry}.
+ *
  */
 declare class CustomQuerySelectorRegistry {
   
@@ -1900,6 +1902,7 @@ declare class CustomQuerySelectorRegistry {
 
 declare namespace CustomQuerySelectors {
   export type {CustomQuerySelector};
+  export {CustomQuerySelectorRegistry};
 }
 
 /**
@@ -8249,7 +8252,7 @@ declare namespace Puppeteer_2 {
     ConnectOptions,
     ConsoleMessageLocation,
     ConsoleMessageType,
-    CookieSameSite,
+    CookieSameSite_2 as CookieSameSite,
     CookiePriority,
     CookieSourceScheme,
     CookiePartitionKey,
@@ -8388,7 +8391,7 @@ export declare type PuppeteerLifeCycleEvent =
  * fetching and downloading browsers.
  *
  * If you're using Puppeteer in a Node environment, this is the class you'll get
- * when you run `require('puppeteer')` (or the equivalent ES `import`).
+ * when you run `import puppeteer from 'puppeteer'`.
  *
  * @remarks
  * The most common method to use is {@link PuppeteerNode.launch | launch}, which

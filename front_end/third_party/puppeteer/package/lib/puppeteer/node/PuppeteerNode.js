@@ -13,7 +13,7 @@ import { FirefoxLauncher } from './FirefoxLauncher.js';
  * fetching and downloading browsers.
  *
  * If you're using Puppeteer in a Node environment, this is the class you'll get
- * when you run `require('puppeteer')` (or the equivalent ES `import`).
+ * when you run `import puppeteer from 'puppeteer'`.
  *
  * @remarks
  * The most common method to use is {@link PuppeteerNode.launch | launch}, which

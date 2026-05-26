@@ -5,8 +5,9 @@
  */
 /**
  * This class mimics the injected {@link CustomQuerySelectorRegistry}.
+ *
  */
-class CustomQuerySelectorRegistry {
+export class CustomQuerySelectorRegistry {
     #selectors = new Map();
     register(name, handler) {
         if (!handler.queryOne && handler.queryAll) {

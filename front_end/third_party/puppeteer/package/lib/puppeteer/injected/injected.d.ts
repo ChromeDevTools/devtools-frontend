@@ -30,13 +30,8 @@ declare const PuppeteerUtil: Readonly<{
     pQuerySelector: (root: Node, selector: string) => Promise<Node | null>;
     pierceQuerySelector: (root: Node, selector: string) => Element | null;
     pierceQuerySelectorAll: (element: Node, selector: string) => Element[];
-    customQuerySelectors: {
-        "__#208@#selectors": Map<string, CustomQuerySelectors.CustomQuerySelector>;
-        register(name: string, handler: import("../index-browser.js").CustomQueryHandler): void;
-        unregister(name: string): void;
-        get(name: string): CustomQuerySelectors.CustomQuerySelector | undefined;
-        clear(): void;
-    };
+    CustomQuerySelectorRegistry: typeof CustomQuerySelectors.CustomQuerySelectorRegistry;
+    customQuerySelectors: CustomQuerySelectors.CustomQuerySelectorRegistry;
     ariaQuerySelector: (root: Node, selector: string) => Promise<Node | null>;
     ariaQuerySelectorAll: (root: Node, selector: string) => AsyncIterable<Node>;
 }>;

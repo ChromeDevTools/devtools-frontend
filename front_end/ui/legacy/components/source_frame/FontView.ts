@@ -31,7 +31,7 @@
  */
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Platform from '../../../../core/platform/platform.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {Directives, html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -133,8 +133,16 @@ export class FontView extends UI.View.SimpleView {
     this.#fontFamily = `WebInspectorFontPreview${++fontId}`;
     void this.contentProvider.requestContentData().then(contentData => {
       const url = TextUtils.ContentData.ContentData.isError(contentData) ? this.url : contentData.asDataUrl();
-      this.#fontFaceRule =
-          Platform.StringUtilities.sprintf('@font-face { font-family: "%s"; src: url(%s); }', this.#fontFamily, url);
+      if (url) {
+        const sheet = new CSSStyleSheet();
+        sheet.insertRule('@font-face {}');
+        const rule = sheet.cssRules[0] as CSSFontFaceRule;
+        rule.style.setProperty('font-family', this.#fontFamily);
+        rule.style.setProperty('src', `url(${JSON.stringify(url)})`);
+        this.#fontFaceRule = rule.cssText;
+      } else {
+        this.#fontFaceRule = '';
+      }
       this.#previewVisible = true;
       this.requestUpdate();
     });

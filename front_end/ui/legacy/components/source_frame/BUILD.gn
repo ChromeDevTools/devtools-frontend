@@ -102,6 +102,7 @@ devtools_ui_module("unittests") {
 
   sources = [
     "BinaryResourceViewFactory.test.ts",
+    "FontView.test.ts",
     "JSONView.test.ts",
     "ResourceSourceFrame.test.ts",
     "SourceFrame.test.ts",

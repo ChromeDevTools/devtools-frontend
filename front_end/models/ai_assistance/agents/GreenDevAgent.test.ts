@@ -33,10 +33,16 @@ describeWithEnvironment('GreenDevAgent', () => {
     } as unknown as Greendev.Prototypes);
 
     try {
-      isEnabledStub.withArgs('beyondStyling').returns(true);
+      isEnabledStub.withArgs('beyondStylingGemini').returns(true);
+      isEnabledStub.withArgs('beyondStylingAntigravity').returns(false);
       assert.isTrue(GreenDevAgent.GreenDevAgent.isEnabled());
 
-      isEnabledStub.withArgs('beyondStyling').returns(false);
+      isEnabledStub.withArgs('beyondStylingGemini').returns(false);
+      isEnabledStub.withArgs('beyondStylingAntigravity').returns(true);
+      assert.isTrue(GreenDevAgent.GreenDevAgent.isEnabled());
+
+      isEnabledStub.withArgs('beyondStylingGemini').returns(false);
+      isEnabledStub.withArgs('beyondStylingAntigravity').returns(false);
       assert.isFalse(GreenDevAgent.GreenDevAgent.isEnabled());
     } finally {
       instanceStub.restore();

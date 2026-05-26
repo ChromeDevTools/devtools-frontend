@@ -10,6 +10,8 @@ import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as ConversationSummaryAgent from './agents/ConversationSummaryAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as GreenDevAgent from './agents/GreenDevAgent.js';
+import * as GreenDevAgentAntigravityCliSocketClient from './agents/GreenDevAgentAntigravityCliSocketClient.js';
+import * as GreenDevAgentGeminiCliSocketClient from './agents/GreenDevAgentGeminiCliSocketClient.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
 import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
@@ -57,6 +59,8 @@ export {
   FileAgent,
   FileFormatter,
   GreenDevAgent,
+  GreenDevAgentAntigravityCliSocketClient,
+  GreenDevAgentGeminiCliSocketClient,
   Injected,
   LighthouseFormatter,
   NetworkAgent,

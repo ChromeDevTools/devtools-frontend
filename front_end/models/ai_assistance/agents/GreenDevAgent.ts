@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -53,9 +54,8 @@ additional context and resolve the user request.
     directly relevant to the user's problem. Do not get distracted by generic framework
     messages.
 
-6.  **Formulate a Hypothesis**: Based on your code investigation, explain the likely root
-    cause to the user and suggest a concrete fix or next step. If you suspect an issue in a
-    JavaScript function, point it out.
+6.  **Formulate a Hypothesis**: Based on your code investigation, and if you have a promising
+    fix, ALWAYS suggest it using the provided 'suggestFix' function.
 
 ### Available Information
 
@@ -82,6 +82,7 @@ To help you further, you can call the following functions:
   request list.
 - 'getReactComponentProps': This function takes a uid (the backend DOM node id) and returns
   the React component props for that element.
+- 'suggestFix': This function accepts a code diff to apply to the code base.
 
 Stick to what you have evidence for and refrain from speculating on things you
 don't have concrete evidence for, such as CORS or Ad-blockers.
@@ -112,11 +113,38 @@ export class GreenDevContext extends ConversationContext<string> {
   }
 }
 
+export const enum Events {
+  CLI_PROMPT_REQUESTED = 'CliPromptRequested',
+}
+
+export interface EventTypes {
+  [Events.CLI_PROMPT_REQUESTED]: {prompt: string};
+}
+
+export const enum RemoteEndpoint {
+  GEMINI_CLI_SOCKET = 'GeminiCliSocket',
+  ANTIGRAVITY_CLI_SOCKET = 'AntigravityCliSocket',
+}
+
 /**
  * This agent is a general-purpose web page troubleshooting agent for GreenDev
  * prototypes.
  */
 export class GreenDevAgent extends AiAgent<string> {
+  #eventTarget = new Common.ObjectWrapper.ObjectWrapper<EventTypes>();
+
+  addEventListener<T extends keyof EventTypes>(
+      eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T]>) => void,
+      thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T> {
+    return this.#eventTarget.addEventListener(eventType, listener, thisObject);
+  }
+
+  removeEventListener<T extends keyof EventTypes>(
+      eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T]>) => void,
+      thisObject?: Object): void {
+    this.#eventTarget.removeEventListener(eventType, listener, thisObject);
+  }
+
   constructor(options: AgentOptions) {
     super(options);
 
@@ -327,6 +355,38 @@ export class GreenDevAgent extends AiAgent<string> {
         };
       },
     });
+
+    this.declareFunction<{
+      codeSuggestionDiff: string,
+    }>('suggestFix', {
+      description: 'Suggest a code fix for the user to review.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          codeSuggestionDiff: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The diff of the suggested code change.',
+            nullable: false,
+          },
+        },
+        required: ['codeSuggestionDiff'],
+      },
+      handler: async (params: {codeSuggestionDiff: string}) => {
+        const result = await this.suggestFix(params.codeSuggestionDiff);
+        return {
+          result,
+        };
+      },
+    });
+  }
+
+  async suggestFix(codeSuggestionDiff: string): Promise<string> {
+    console.warn('[GreenDevAgent] suggestFix called with:', codeSuggestionDiff);
+    this.#eventTarget.dispatchEventToListeners(
+        Events.CLI_PROMPT_REQUESTED, {prompt: `Apply this diff:\n${codeSuggestionDiff}`});
+    return 'The fix suggestion has been submitted.';
   }
 
   override preamble = preamble;
@@ -377,8 +437,10 @@ export class GreenDevAgent extends AiAgent<string> {
   }
 
   static isEnabled(): boolean {
-    console.warn('BeyondStyling prototype is enabled:', Greendev.Prototypes.instance().isEnabled('beyondStyling'));
-    return Greendev.Prototypes.instance().isEnabled('beyondStyling');
+    const isGeminiEnabled = Greendev.Prototypes.instance().isEnabled('beyondStylingGemini');
+    const isAntigravityEnabled = Greendev.Prototypes.instance().isEnabled('beyondStylingAntigravity');
+    console.warn('BeyondStyling prototype is enabled:', isGeminiEnabled || isAntigravityEnabled);
+    return isGeminiEnabled || isAntigravityEnabled;
   }
 
   static formatConsoleMessage(message: SDK.ConsoleModel.ConsoleMessage, index: number): string {

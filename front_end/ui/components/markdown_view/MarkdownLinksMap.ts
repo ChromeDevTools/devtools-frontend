@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Greendev from '../../../models/greendev/greendev.js';
+
 /**
  * To use links in markdown, add key here with the link and
  * use the added key in markdown.
@@ -106,6 +108,11 @@ export const getMarkdownLink = (key: string): string => {
   }
   const link = markdownLinks.get(key);
   if (!link) {
+    if (Greendev.Prototypes.instance().isEnabled('beyondStylingAntigravity') ||
+        Greendev.Prototypes.instance().isEnabled('beyondStylingGemini')) {
+      return key;
+    }
+
     throw new Error(`Markdown link with key '${key}' is not available, please check MarkdownLinksMap.ts`);
   }
   return link;

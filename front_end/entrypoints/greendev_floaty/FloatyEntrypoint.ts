@@ -45,6 +45,9 @@ class GreenDevFloaty {
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   #syncChannel: BroadcastChannel;
   #isFloatyWindow: boolean;
+  #socketClient:
+      AiAssistance.GreenDevAgentAntigravityCliSocketClient.GreenDevAgentAntigravityCliSocketClient|
+      AiAssistance.GreenDevAgentGeminiCliSocketClient.GreenDevAgentGeminiCliSocketClient;
 
   constructor(document: Document) {
     const params = new URLSearchParams(window.location.hash.substring(1));
@@ -57,6 +60,12 @@ class GreenDevFloaty {
     };
 
     this.#initFloatyMode(document);
+    if (Greendev.Prototypes.instance().isEnabled('beyondStylingAntigravity')) {
+      this.#socketClient =
+          new AiAssistance.GreenDevAgentAntigravityCliSocketClient.GreenDevAgentAntigravityCliSocketClient();
+    } else {
+      this.#socketClient = new AiAssistance.GreenDevAgentGeminiCliSocketClient.GreenDevAgentGeminiCliSocketClient();
+    }
   }
 
   #initFloatyMode(doc: Document): void {
@@ -269,12 +278,60 @@ class GreenDevFloaty {
     const query = this.#textField.value || this.#textField.placeholder;
     this.#textField.value = '';
 
-    const useGreenDevAgent = Greendev.Prototypes.instance().isEnabled('beyondStyling');
+    const useAntigravity = Greendev.Prototypes.instance().isEnabled('beyondStylingAntigravity');
+    const useGemini = Greendev.Prototypes.instance().isEnabled('beyondStylingGemini');
+    const useGreenDevAgent = useAntigravity || useGemini;
+    const isAntigravity = useAntigravity;
 
     if (!this.#agent) {
       const aidaClient = new AidaClient();
       if (useGreenDevAgent) {
+        if (isAntigravity) {
+          this.#socketClient =
+              new AiAssistance.GreenDevAgentAntigravityCliSocketClient.GreenDevAgentAntigravityCliSocketClient();
+        } else {
+          this.#socketClient = new AiAssistance.GreenDevAgentGeminiCliSocketClient.GreenDevAgentGeminiCliSocketClient();
+        }
+
         this.#agent = new AiAssistance.GreenDevAgent.GreenDevAgent({aidaClient});
+        this.#agent.addEventListener(
+            AiAssistance.GreenDevAgent.Events.CLI_PROMPT_REQUESTED,
+            async (
+                event: Common.EventTarget.EventTargetEvent<
+                    AiAssistance.GreenDevAgent.EventTypes[AiAssistance.GreenDevAgent.Events.CLI_PROMPT_REQUESTED]>) => {
+              const {prompt} = event.data;
+              const remoteName = isAntigravity ? 'Antigravity' : 'Gemini';
+              const aiContent =
+                  this.#addMessageInternal(`Fix has been submitted to ${remoteName} CLI, please wait...`, false);
+
+              if (isAntigravity) {
+                let fullResponse = '';
+                void (
+                    this.#socketClient as
+                    AiAssistance.GreenDevAgentAntigravityCliSocketClient.GreenDevAgentAntigravityCliSocketClient)
+                    .sendPrompt(prompt, (chunk: string) => {
+                      fullResponse += chunk;
+                      const responseText = `Antigravity CLI responds: ${fullResponse}`;
+                      const markdown = new MarkdownView.MarkdownView.MarkdownView();
+                      markdown.data = {
+                        tokens: Marked.Marked.lexer(responseText),
+                      };
+                      this.#updateAiMessage(aiContent, markdown, responseText);
+                    });
+              } else {
+                const response =
+                    await (this.#socketClient as
+                           AiAssistance.GreenDevAgentGeminiCliSocketClient.GreenDevAgentGeminiCliSocketClient)
+                        .sendPrompt(prompt);
+
+                const responseText = `Gemini CLI responds: ${response}`;
+                const markdown = new MarkdownView.MarkdownView.MarkdownView();
+                markdown.data = {
+                  tokens: Marked.Marked.lexer(responseText),
+                };
+                this.#updateAiMessage(aiContent, markdown, responseText);
+              }
+            });
       } else {
         this.#agent = new AiAssistance.StylingAgent.StylingAgent({aidaClient});
         this.#nodeContext = new AiAssistance.StylingAgent.NodeContext(this.#node);
@@ -282,22 +339,7 @@ class GreenDevFloaty {
     }
 
     this.#addMessageInternal(query, true);
-    this.#syncChannel.postMessage({
-      type: 'new-message',
-      text: query,
-      isUser: true,
-      sessionId: this.#backendNodeId,
-      nodeDescription: document.querySelector('.green-dev-floaty-dialog-node-description')?.textContent,
-    });
-
     const aiContent = this.#addMessageInternal('Thinking...', false);
-    this.#syncChannel.postMessage({
-      type: 'new-message',
-      text: 'Thinking...',
-      isUser: false,
-      sessionId: this.#backendNodeId,
-      nodeDescription: document.querySelector('.green-dev-floaty-dialog-node-description')?.textContent,
-    });
 
     let agentFinished = false;
     let steps = 0;
@@ -433,7 +475,8 @@ ${axTree}`;
             markdown.data = {
               tokens: Marked.Marked.lexer(sanitizedText),
             };
-            aiContent.append(markdown);
+            this.#updateAiMessage(aiContent, markdown, result.text);
+
             void new Promise(resolve => setTimeout(resolve, 0)).then(() => {
               const style = document.createElement('style');
               style.textContent =
@@ -456,15 +499,12 @@ ${axTree}`;
                 }
               }
             });
-            this.#syncChannel.postMessage(
-                {type: 'update-last-message', text: result.text, sessionId: this.#backendNodeId});
             agentFinished = true;
             break;
           }
           case ResponseType.ERROR:
-            aiContent.textContent = this.#formatError(result.error);
-            this.#syncChannel.postMessage(
-                {type: 'update-last-message', text: this.#formatError(result.error), sessionId: this.#backendNodeId});
+            this.#updateAiMessage(
+                aiContent, document.createTextNode(this.#formatError(result.error)), this.#formatError(result.error));
             agentFinished = true;
             break;
           case ResponseType.SIDE_EFFECT:
@@ -503,7 +543,22 @@ ${axTree}`;
       this.#chatContainer.appendChild(messageElement);
       this.#chatContainer.scrollTop = this.#chatContainer.scrollHeight;
     }
+
+    this.#syncChannel.postMessage({
+      type: 'new-message',
+      text,
+      isUser,
+      sessionId: this.#backendNodeId,
+      nodeDescription: document.querySelector('.green-dev-floaty-dialog-node-description')?.textContent,
+    });
+
     return content;
+  }
+
+  #updateAiMessage(aiContentElement: HTMLDivElement, newContent: Node, newText: string): void {
+    aiContentElement.textContent = '';
+    aiContentElement.append(newContent);
+    this.#syncChannel.postMessage({type: 'update-last-message', text: newText, sessionId: this.#backendNodeId});
   }
 }
 

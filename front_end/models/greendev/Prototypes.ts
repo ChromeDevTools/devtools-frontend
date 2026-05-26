@@ -9,7 +9,8 @@ let instance: Prototypes|null = null;
 
 export interface GreenDevSettings {
   aiAnnotations: Common.Settings.Setting<boolean>;
-  beyondStyling: Common.Settings.Setting<boolean>;
+  beyondStylingGemini: Common.Settings.Setting<boolean>;
+  beyondStylingAntigravity: Common.Settings.Setting<boolean>;
   breakpointDebuggerAgent: Common.Settings.Setting<boolean>;
   emulationCapabilities: Common.Settings.Setting<boolean>;
 }
@@ -42,10 +43,15 @@ export class Prototypes {
         false,
         Common.Settings.SettingStorageType.LOCAL,
     );
-    const beyondStyling = settings.createSetting(
-        'greendev-beyond-styling-enabled',
+    const beyondStylingGemini = settings.createSetting(
+        'greendev-beyond-styling-gemini-enabled',
         false,
-        Common.Settings.SettingStorageType.LOCAL,
+        Common.Settings.SettingStorageType.GLOBAL,
+    );
+    const beyondStylingAntigravity = settings.createSetting(
+        'greendev-beyond-styling-antigravity-enabled',
+        false,
+        Common.Settings.SettingStorageType.GLOBAL,
     );
     const breakpointDebuggerAgent = settings.createSetting(
         'greendev-breakpoint-debugger-agent-enabled',
@@ -58,6 +64,12 @@ export class Prototypes {
         Common.Settings.SettingStorageType.LOCAL,
     );
 
-    return {aiAnnotations, beyondStyling, breakpointDebuggerAgent, emulationCapabilities};
+    return {
+      aiAnnotations,
+      beyondStylingGemini,
+      beyondStylingAntigravity,
+      breakpointDebuggerAgent,
+      emulationCapabilities
+    };
   }
 }

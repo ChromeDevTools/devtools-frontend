@@ -27,6 +27,8 @@ devtools_module("ai_assistance") {
     "agents/ExecuteJavascript.ts",
     "agents/FileAgent.ts",
     "agents/GreenDevAgent.ts",
+    "agents/GreenDevAgentAntigravityCliSocketClient.ts",
+    "agents/GreenDevAgentGeminiCliSocketClient.ts",
     "agents/NetworkAgent.ts",
     "agents/PatchAgent.ts",
     "agents/PerformanceAgent.ts",

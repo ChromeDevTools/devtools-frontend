@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import glob from 'glob';
+import {globSync} from 'node:fs';
 import * as path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
@@ -68,9 +68,9 @@ for (const directory of inputDirectories) {
     ...collectAllStringsInDir(directory),
   };
 
-  const fs = glob.sync('**/*.{js,ts,gn}', {
+  const fs = globSync('**/*.{js,ts,gn}', {
     cwd: directory,
-    ignore: IGNORED_PATH_COMPONENTS,
+    exclude: IGNORED_PATH_COMPONENTS,
   });
   files.push(...fs.map(f => path.join(directory, f)));
 }

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as glob from 'glob';
 import * as childProcess from 'node:child_process';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -323,7 +322,7 @@ function main() {
                           return t.replace('e2e_non_hosted', 'e2e');
                         })
                         .flatMap(t => {
-                          const globbed = glob.glob.sync(t);
+                          const globbed = fs.globSync(t);
                           return globbed.length > 0 ? globbed : t;
                         });
   for (const t of testFiles) {

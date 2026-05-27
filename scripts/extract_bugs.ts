@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import glob from 'glob';
-import {readFileSync} from 'node:fs';
+import {globSync, readFileSync} from 'node:fs';
 import * as ts from 'typescript';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
@@ -89,8 +88,8 @@ function extract(sourceFile: ts.SourceFile) {
 
 if (argv.sources.includes('devtools')) {
   const files = [
-    ...glob.sync('front_end/**/*.test.ts'),
-    ...glob.sync('test/**/*test.ts'),
+    ...globSync('front_end/**/*.test.ts'),
+    ...globSync('test/**/*test.ts'),
   ];
 
   for (const file of files) {

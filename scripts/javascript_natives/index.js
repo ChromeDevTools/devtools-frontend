@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import glob from 'glob';
 import * as fs from 'node:fs';
 import ts from 'typescript';
 import * as WebIDL2 from 'webidl2';
@@ -41,7 +40,7 @@ for (const file of program.getSourceFiles()) {
 // Assume the DevTools front-end repository is at
 // `devtools/devtools-frontend`, where `devtools` is on the same level
 // as `chromium`. This matches `scripts/npm_test.js`.
-const files = glob.sync(
+const files = fs.globSync(
     `${chromiumSource}/third_party/blink/renderer/+(core|modules)/**/*.idl`,
     {cwd: process.env.PWD},
 );

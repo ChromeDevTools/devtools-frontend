@@ -5,9 +5,8 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import glob from 'glob';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 import * as tsc from 'typescript';
 
@@ -648,9 +647,9 @@ export function collectAllStringsInDir(directory) {
   // *all* paths will be ignored. To avoid this, make the directory relative to
   // CWD.
   directory = path.relative(process.cwd(), directory);
-  const files = glob.sync('**/*.{js,ts}', {
+  const files = fs.globSync('**/*.{js,ts}', {
     cwd: directory,
-    ignore: IGNORED_PATH_COMPONENTS,
+    exclude: IGNORED_PATH_COMPONENTS,
   });
   for (const pathRelativeToDirectory of files) {
     const absolutePath = path.join(directory, pathRelativeToDirectory);
@@ -696,7 +695,7 @@ export function collectAllStringsInDir(directory) {
         ctc.meaning = meaning;
       }
 
-      const messageKey = `${pathRelativeToDirectory} | ${key}`;
+      const messageKey = `${pathRelativeToDirectory.replace(/\\/g, '/')} | ${key}`;
       if (strings[messageKey] !== undefined) {
         throw new Error(
             `Duplicate message key '${messageKey}', please rename the '${key}' property.`,

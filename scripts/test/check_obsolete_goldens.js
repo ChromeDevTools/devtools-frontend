@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import glob from 'glob';
 import childProcess from 'node:child_process';
 import fs from 'node:fs';
+import {glob} from 'node:fs/promises';
 import path from 'node:path';
 import {promisify} from 'node:util';
 import yargs from 'yargs';
@@ -24,7 +24,8 @@ const shouldRemoveFiles = yargsObject.removeFiles === true;
 const SOURCE_ROOT = path.resolve(import.meta.dirname, path.join('..', '..'));
 const unitTestRoot = path.join(SOURCE_ROOT, 'front_end');
 const GOLDENS_LOCATION = path.join(SOURCE_ROOT, 'test', 'goldens');
-const unitTestFiles = glob.sync('**/*.test.ts', {cwd: unitTestRoot}).map(file => path.join(unitTestRoot, file));
+const unitTestFiles =
+    (await Array.fromAsync(glob('**/*.test.ts', {cwd: unitTestRoot}))).map(file => path.join(unitTestRoot, file));
 
 function findScreenshotsToCheck(folder) {
   const filesToCheck = [];

@@ -1093,7 +1093,16 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const key = `getEventByKey('${params.eventKey}')`;
         this.#cacheFunctionResult(focus, key, details);
-        return {result: {details}};
+        return {
+          result: {details},
+          widgets: [{
+            name: 'TIMELINE_EVENT_SUMMARY',
+            data: {
+              event,
+              parsedTrace,
+            },
+          }],
+        };
       },
     });
 
@@ -1493,7 +1502,16 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
           const revealable = new SDK.TraceObject.RevealableEvent(event);
           await Common.Revealer.reveal(revealable);
-          return {result: {success: true}};
+          return {
+            result: {success: true},
+            widgets: [{
+              name: 'TIMELINE_EVENT_SUMMARY',
+              data: {
+                event,
+                parsedTrace,
+              },
+            }],
+          };
         },
       });
     }

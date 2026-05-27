@@ -93,6 +93,38 @@ export class TimelineDetailsPane extends
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
 
+  static makeEventWidget(
+      event: Trace.Types.Events.Event,
+      parsedTrace: Trace.TraceModel.ParsedTrace,
+      ): TimelineDetailsPane {
+    // Provide a mock delegate to satisfy the constructor requirements.
+    // These delegate interactions are not relevant for an AI assistant widget.
+    const mockDelegate = {
+      select: () => {},
+      zoomEvent: () => {},
+      element: document.createElement('div'),
+      set3PCheckboxDisabled: () => {},
+      selectEntryAtTime: () => {},
+      highlightEvent: () => {},
+    };
+    const pane = new TimelineDetailsPane(mockDelegate);
+    pane.hideHeader();
+    const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+    void pane
+        .setModel({
+          parsedTrace,
+          selectedEvents: [event],
+          eventToRelatedInsightsMap: null,
+          entityMapper,
+        })
+        .then(() => {
+          void pane.setSelection({
+            event,
+          });
+        });
+    return pane;
+  }
+
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.registerRequiredCSS(detailsViewStyles);
@@ -341,6 +373,10 @@ export class TimelineDetailsPane extends
 
   headerElement(): Element {
     return this.tabbedPane.headerElement();
+  }
+
+  hideHeader(): void {
+    this.tabbedPane.headerElement().classList.add('hidden');
   }
 
   setPreferredTab(tabId: string): void {

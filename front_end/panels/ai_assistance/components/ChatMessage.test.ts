@@ -305,6 +305,20 @@ describeWithEnvironment('ChatMessage', () => {
         } as unknown as AIAssistanceModel.AiAgent.AiWidget;
         assert.strictEqual(AiAssistance.ChatMessage.getWidgetSignature(widget), 'LIGHTHOUSE_REPORT:123456');
       });
+
+      it('should correctly handle TIMELINE_EVENT_SUMMARY widget', () => {
+        const widget = {
+          name: 'TIMELINE_EVENT_SUMMARY',
+          data: {
+            event: {
+              ts: 1000000,
+              name: 'MyTraceEvent',
+            },
+          },
+        } as unknown as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(
+            AiAssistance.ChatMessage.getWidgetSignature(widget), 'TIMELINE_EVENT_SUMMARY:1000000:MyTraceEvent');
+      });
     });
   });
 

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../../core/common/common.js';
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -611,6 +611,75 @@ code
       assert.strictEqual(action.output, expectedOutput);
       assert.isFalse(action.canceled);
       assert.strictEqual(action.type, 'action');
+    });
+
+    it('can call getEventByKey and yields TIMELINE_EVENT_SUMMARY widget', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const event = allThreadEntriesInTrace(parsedTrace)[0];
+      assert.exists(event);
+      const eventKey = 'r-0';
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient(
+            [[{explanation: '', functionCalls: [{name: 'getEventByKey', args: {eventKey}}]}], [{explanation: 'done'}]])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      sinon.stub(context.getItem(), 'lookupEvent').withArgs(eventKey).returns(event);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 1);
+      const widget = action.widgets[0] as AiAgent.TimelineEventSummaryAiWidget;
+      assert.strictEqual(widget.name, 'TIMELINE_EVENT_SUMMARY');
+      assert.strictEqual(widget.data.event, event);
+      assert.strictEqual(widget.data.parsedTrace, parsedTrace);
+    });
+
+    it('can call selectEventByKey and yields TIMELINE_EVENT_SUMMARY widget', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const event = allThreadEntriesInTrace(parsedTrace)[0];
+      assert.exists(event);
+      const eventKey = 'r-0';
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{explanation: '', functionCalls: [{name: 'selectEventByKey', args: {eventKey}}]}], [{explanation: 'done'}]
+        ])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      sinon.stub(context.getItem(), 'lookupEvent').withArgs(eventKey).returns(event);
+      const revealStub = sinon.stub();
+      Common.Revealer.registerRevealer({
+        contextTypes: () => [SDK.TraceObject.RevealableEvent],
+        loadRevealer: async () => ({
+          reveal: revealStub,
+        }),
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 1);
+      const widget = action.widgets[0] as AiAgent.TimelineEventSummaryAiWidget;
+      assert.strictEqual(widget.name, 'TIMELINE_EVENT_SUMMARY');
+      assert.strictEqual(widget.data.event, event);
+      assert.strictEqual(widget.data.parsedTrace, parsedTrace);
+
+      sinon.assert.calledOnce(revealStub);
+      Common.Revealer.RevealerRegistry.removeInstance();
     });
 
     it('will not send facts from a previous insight if the context changes', async function() {

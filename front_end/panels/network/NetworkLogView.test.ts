@@ -160,6 +160,48 @@ describeWithMockConnection('NetworkLogView', () => {
     );
   });
 
+  it('generates a valid curl command for nameless cookies without an equal sign', async () => {
+    const request = createNetworkRequest(urlString`http://localhost`, {
+      requestHeaders: [{name: 'cookie', value: 'namelesscookie'}],
+    });
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl \'http://localhost\' -H \'cookie: namelesscookie\'',
+    );
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        'curl ^"http://localhost^" -H ^"cookie: namelesscookie^"',
+    );
+  });
+
+  it('generates a valid curl command using -b for cookies with an equal sign', async () => {
+    const request = createNetworkRequest(urlString`http://localhost`, {
+      requestHeaders: [{name: 'cookie', value: 'name=value'}],
+    });
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl \'http://localhost\' -b \'name=value\'',
+    );
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        'curl ^"http://localhost^" -b ^"name=value^"',
+    );
+  });
+
+  it('generates a valid curl command using -b for nameless cookies containing an equal sign', async () => {
+    const request = createNetworkRequest(urlString`http://localhost`, {
+      requestHeaders: [{name: 'cookie', value: '\\\\attacker.com\\share\\leak=foo'}],
+    });
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl \'http://localhost\' -b \'\\\\attacker.com\\share\\leak=foo\'',
+    );
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        'curl ^"http://localhost^" -b ^"^\\^\\^\\^\\attacker.com^\\^\\share^\\^\\leak=foo^"',
+    );
+  });
+
   it('generates a valid curl command when header values contain percentages', async () => {
     const request = createNetworkRequest(urlString`http://localhost`, {
       requestHeaders: [{name: 'cookie', value: 'eva=%22Sg4%3D%22'}],

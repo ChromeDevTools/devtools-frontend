@@ -2534,7 +2534,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         // value tells curl to not set the header at all. To post an empty
         // header, you have to terminate it with a semicolon.
         command.push('-H ' + escapeString(name + ';'));
-      } else if (name.toLowerCase() === 'cookie') {
+      } else if (name.toLowerCase() === 'cookie' && value.includes('=')) {
+        // If value contains no '=', curl treats it as a filename to read
+        // cookies from, which would be a security risk. Fall back to -H in
+        // that case.
         command.push('-b ' + escapeString(value));
       } else {
         command.push('-H ' + escapeString(name + ': ' + value));

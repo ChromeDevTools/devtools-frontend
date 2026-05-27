@@ -94,4 +94,96 @@ describe('ContextMenuProvider', () => {
       /* forceSaveAs=*/ true,
     ]);
   });
+
+  describe('Open in containing folder', () => {
+    function createMockUISourceCode(
+        url: Platform.DevToolsPath.UrlString, projectType: Workspace.Workspace.projectTypes):
+        sinon.SinonStubbedInstance<Workspace.UISourceCode.UISourceCode> {
+      const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode, {
+        contentURL: url,
+        contentType: Common.ResourceType.resourceTypes.Script,
+      });
+      const stubProject = sinon.createStubInstance(
+          Bindings.ContentProviderBasedProject.ContentProviderBasedProject, {type: projectType});
+      uiSourceCode.project.returns(stubProject);
+      return uiSourceCode;
+    }
+
+    function setupSingletons(
+        uiSourceCode: Workspace.UISourceCode.UISourceCode|null,
+        binding: Persistence.Persistence.PersistenceBinding|null): void {
+      const mockWorkspaceImpl = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
+      sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(mockWorkspaceImpl);
+      mockWorkspaceImpl.uiSourceCodeForURL.returns(uiSourceCode);
+
+      const mockPersistenceImpl = sinon.createStubInstance(Persistence.Persistence.PersistenceImpl);
+      sinon.stub(Persistence.Persistence.PersistenceImpl, 'instance').returns(mockPersistenceImpl);
+      mockPersistenceImpl.binding.returns(binding);
+    }
+
+    async function getOpenInFolderMenuItem(targetUiSourceCode: Workspace.UISourceCode.UISourceCode):
+        Promise<UI.ContextMenu.Item|undefined> {
+      const event = new Event('contextmenu');
+      sinon.stub(event, 'target').value(document);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      const menuProvider = new Sources.PersistenceActions.ContextMenuProvider();
+
+      menuProvider.appendApplicableItems(event, contextMenu, targetUiSourceCode);
+      await contextMenu.show();
+
+      return contextMenu.revealSection().items.find(
+          item => item.buildDescriptor().label === 'Open in containing folder');
+    }
+
+    it('appends the item for direct workspace files (FileSystem project type)', async () => {
+      const uiSourceCode = createMockUISourceCode(
+          urlString`file:///path/to/project/file.js`, Workspace.Workspace.projectTypes.FileSystem);
+      setupSingletons(uiSourceCode, null);
+
+      const openFolderItem = await getOpenInFolderMenuItem(uiSourceCode);
+      assert.exists(openFolderItem);
+    });
+
+    it('appends the item for network files mapped to workspace files (persistence binding exists)', async () => {
+      const networkUiSourceCode =
+          createMockUISourceCode(urlString`https://example.com/file.js`, Workspace.Workspace.projectTypes.Network);
+      const fileSystemUiSourceCode = createMockUISourceCode(
+          urlString`file:///path/to/project/file.js`, Workspace.Workspace.projectTypes.FileSystem);
+
+      const binding = new Persistence.Persistence.PersistenceBinding(networkUiSourceCode, fileSystemUiSourceCode);
+      setupSingletons(networkUiSourceCode, binding);
+
+      const openFolderItem = await getOpenInFolderMenuItem(networkUiSourceCode);
+      assert.exists(openFolderItem);
+    });
+
+    it('does not append the item for local file page resources that are not in a FileSystem project type', async () => {
+      const uiSourceCode =
+          createMockUISourceCode(urlString`file:///path/to/project/file.js`, Workspace.Workspace.projectTypes.Network);
+      setupSingletons(uiSourceCode, null);
+
+      const openFolderItem = await getOpenInFolderMenuItem(uiSourceCode);
+      assert.isUndefined(openFolderItem);
+    });
+
+    it('appends the item if contentProvider is a FileSystem UISourceCode but uiSourceCodeForURL returns a Network UISourceCode (same URL, not bound)',
+       async () => {
+         const fileSystemUiSourceCode = createMockUISourceCode(
+             urlString`file:///path/to/project/file.js`, Workspace.Workspace.projectTypes.FileSystem);
+         const networkUiSourceCode = createMockUISourceCode(
+             urlString`file:///path/to/project/file.js`, Workspace.Workspace.projectTypes.Network);
+
+         // uiSourceCodeForURL returns the Network UISourceCode due to order.
+         const mockWorkspaceImpl = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
+         sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(mockWorkspaceImpl);
+         mockWorkspaceImpl.uiSourceCodeForURL.returns(networkUiSourceCode);
+
+         const mockPersistenceImpl = sinon.createStubInstance(Persistence.Persistence.PersistenceImpl);
+         sinon.stub(Persistence.Persistence.PersistenceImpl, 'instance').returns(mockPersistenceImpl);
+         mockPersistenceImpl.binding.returns(null);
+
+         const openFolderItem = await getOpenInFolderMenuItem(fileSystemUiSourceCode);
+         assert.exists(openFolderItem);
+       });
+  });
 });

@@ -56,8 +56,6 @@ devtools_module("ai_assistance") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
-    "../../models/computed_style:bundle",
     "../../models/network_time_calculator:bundle",
     "../../models/persistence:bundle",
     "../../services/tracing:bundle",
@@ -75,7 +73,6 @@ devtools_module("ai_assistance") {
     "../source_map_scopes:bundle",
     "../text_utils:bundle",
     "../trace:bundle",
-    "../trace/insights:bundle",
     "../trace_source_maps_resolver:bundle",
     "../workspace:bundle",
   ]
@@ -142,7 +139,6 @@ ts_library("unittests") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
     "../bindings:bundle",
@@ -154,7 +150,6 @@ ts_library("unittests") {
     "../trace:bundle",
     "../trace/types:bundle",
     "../workspace:bundle",
-    "./data_formatters:unittests",
   ]
 }
 

@@ -26,7 +26,6 @@ devtools_ui_module("animation") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/geometry:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",

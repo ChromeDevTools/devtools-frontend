@@ -41,8 +41,5 @@ devtools_foundation_module("unittests") {
 
   sources = [ "heap_snapshot.test.ts" ]
 
-  deps = [
-    ":bundle",
-    "../../testing",
-  ]
+  deps = [ ":bundle" ]
 }

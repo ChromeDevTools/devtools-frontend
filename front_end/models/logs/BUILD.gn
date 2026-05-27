@@ -20,7 +20,6 @@ devtools_module("logs") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
   ]
 }
 

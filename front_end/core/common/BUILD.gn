@@ -51,7 +51,8 @@ devtools_module("common") {
     "../../core/root:bundle",
   ]
 
-  # Add files built by ColorUtils ts_library so that they are included in layout tests.
+  # Add files built by ColorUtils ts_library so that they are included in layout
+  # tests.
   data = filter_include(get_target_outputs(":ColorUtils"),
                         [
                           "*.js",
@@ -107,7 +108,6 @@ devtools_foundation_module("foundation_unittests") {
   deps = [
     ":bundle",
     "../../testing",
-    "../i18n:bundle",
     "../platform:bundle",
     "../root:bundle",
   ]

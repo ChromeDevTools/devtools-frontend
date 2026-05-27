@@ -33,7 +33,6 @@ devtools_ui_module("text_editor") {
     "../../../models/ai_code_completion:bundle",
     "../../../models/ai_code_generation:bundle",
     "../../../models/bindings:bundle",
-    "../../../models/formatter:bundle",
     "../../../models/javascript_metadata:bundle",
     "../../../models/source_map_scopes:bundle",
     "../../../models/text_utils:bundle",
@@ -42,10 +41,8 @@ devtools_ui_module("text_editor") {
     "../../kit:bundle",
     "../../legacy:bundle",
     "../../legacy/theme_support:bundle",
-    "../../lit:bundle",
     "../../visual_logging:bundle",
     "../code_highlighter:bundle",
-    "../helpers:bundle",
   ]
 }
 

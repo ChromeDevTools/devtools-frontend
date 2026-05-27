@@ -24,7 +24,6 @@ devtools_ui_module("report_view") {
   sources = [ "ReportView.ts" ]
   deps = [
     "../../../core/platform:bundle",
-    "../../kit:bundle",
     "../../legacy/components/utils:bundle",
     "../../lit:bundle",
   ]

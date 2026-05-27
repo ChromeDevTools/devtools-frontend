@@ -28,6 +28,5 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../models/trace:bundle",
-    "../../testing",
   ]
 }

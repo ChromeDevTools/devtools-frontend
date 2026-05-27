@@ -14,7 +14,6 @@ devtools_ui_module("theme_support") {
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/root:bundle",
-    "../../lit:bundle",
   ]
 }
 
@@ -48,7 +47,6 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../testing",
   ]

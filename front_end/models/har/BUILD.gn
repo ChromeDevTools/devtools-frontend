@@ -20,7 +20,6 @@ devtools_module("har") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../text_utils:bundle",
   ]
 }
@@ -53,7 +52,6 @@ ts_library("unittests") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../testing",
     "../text_utils:bundle",
   ]

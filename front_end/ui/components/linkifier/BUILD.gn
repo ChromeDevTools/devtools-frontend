@@ -22,7 +22,6 @@ devtools_ui_module("linkifier") {
     "../../../models/bindings:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit:bundle",
-    "../helpers:bundle",
   ]
 }
 

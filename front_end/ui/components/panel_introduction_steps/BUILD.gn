@@ -14,14 +14,8 @@ generate_css("css_files") {
 devtools_ui_module("panel_introduction_steps") {
   sources = [ "PanelIntroductionSteps.ts" ]
   deps = [
-    "../../../core/host:bundle",
-    "../../../core/i18n:bundle",
-    "../../../core/root:bundle",
     "../../../ui/components/helpers:bundle",
-    "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit:bundle",
-    "../buttons:bundle",
-    "../input:bundle",
   ]
 }
 

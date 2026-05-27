@@ -15,11 +15,7 @@ generate_css("css_files") {
 devtools_ui_module("node_text") {
   sources = [ "NodeText.ts" ]
 
-  deps = [
-    "../../../core/sdk:bundle",
-    "../../../ui/lit:bundle",
-    "../helpers:bundle",
-  ]
+  deps = [ "../../../ui/lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

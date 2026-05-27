@@ -15,8 +15,6 @@ devtools_foundation_module("protocol_client") {
   ]
 
   deps = [
-    "../../core/common:bundle",
-    "../../core/host:bundle",
     "../../generated",
     "../../generated:protocol",
     "../platform:bundle",
@@ -41,7 +39,7 @@ devtools_foundation_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../generated",
+    "../../generated:protocol",
     "../../testing",
   ]
 }

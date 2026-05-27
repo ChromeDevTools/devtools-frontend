@@ -30,16 +30,13 @@ devtools_ui_module("coverage") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/bindings:bundle",
-    "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
-    "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
@@ -87,7 +84,6 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",

@@ -27,8 +27,5 @@ ts_library("unittests") {
 
   sources = [ "i18n.test.ts" ]
 
-  deps = [
-    ":bundle",
-    "../../testing",
-  ]
+  deps = [ ":bundle" ]
 }

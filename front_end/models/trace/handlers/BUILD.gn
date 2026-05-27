@@ -50,7 +50,6 @@ devtools_module("handlers") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
     "../../../third_party/third-party-web:bundle",
     "../../cpu_profile:bundle",
     "../helpers:bundle",
@@ -108,12 +107,9 @@ ts_library("unittests") {
   ]
 
   deps = [
-    "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
     "../../../models/trace:bundle",
-    "../../../panels/timeline:bundle",
     "../../../testing",
     "../../cpu_profile:bundle",
   ]

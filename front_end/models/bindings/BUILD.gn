@@ -118,6 +118,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../../extension-api",
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
@@ -125,7 +126,6 @@ ts_library("unittests") {
     "../../generated",
     "../../testing",
     "../../third_party/source-map-scopes-codec:bundle",
-    "../persistence:bundle",
     "../stack_trace:bundle",
     "../stack_trace:impl",
     "../text_utils:bundle",

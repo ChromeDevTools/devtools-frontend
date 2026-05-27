@@ -9,8 +9,5 @@ devtools_ui_module("unittests") {
 
   sources = [ "CSSSelector.test.ts" ]
 
-  deps = [
-    "..",
-    "..:bundle",
-  ]
+  deps = [ "..:bundle" ]
 }

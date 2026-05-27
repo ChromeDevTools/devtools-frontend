@@ -55,7 +55,6 @@ devtools_ui_module("components") {
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/node_text:bundle",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/components/survey_link:bundle",
     "../../../ui/components/tree_outline:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",

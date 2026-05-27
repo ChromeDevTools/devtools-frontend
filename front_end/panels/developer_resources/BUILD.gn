@@ -28,12 +28,10 @@ devtools_ui_module("developer_resources") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/text_utils:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
-    "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]

@@ -16,7 +16,6 @@ devtools_ui_module("text_prompt") {
   sources = [ "TextPrompt.ts" ]
   deps = [
     "../../../core/platform:bundle",
-    "../../../ui/components/helpers:bundle",
     "../../../ui/lit:bundle",
   ]
 }

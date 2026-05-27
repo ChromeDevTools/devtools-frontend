@@ -43,10 +43,8 @@ devtools_ui_module("perf_ui") {
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
-    "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
     "../../../../generated",
-    "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
     "../../../../models/cpu_profile:bundle",
     "../../../../models/network_time_calculator:bundle",
@@ -54,7 +52,6 @@ devtools_ui_module("perf_ui") {
     "../../../../models/workspace:bundle",
     "../../../../services/trace_bounds:bundle",
     "../../../../ui/legacy:bundle",
-    "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/theme_support:bundle",
     "../../../../ui/lit:bundle",
     "../../../components/buttons:bundle",
@@ -134,7 +131,6 @@ devtools_ui_module("unittests") {
     "../../../../models/workspace:bundle",
     "../../../../panels/timeline/extensions:bundle",
     "../../../../testing",
-    "../../../../ui/legacy:bundle",
     "../../../visual_logging:bundle",
   ]
 }

@@ -20,7 +20,6 @@ devtools_ui_module("tree_outline") {
   deps = [
     "../../../core/platform:bundle",
     "../../../ui/components/buttons:bundle",
-    "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",

@@ -30,25 +30,6 @@ import {
 } from './ExecuteJavascript.js';
 
 /**
- * The subset of computed CSS properties relevant to accessibility audits.
- * These are used to filter the Computed Styles widget in the AI Chat panel to keep it focused and minimal.
- */
-const ACCESSIBILITY_CSS_PROPERTIES = [
-  'color',
-  'background-color',
-  'display',
-  'visibility',
-  'opacity',
-  'clip',
-  'clip-path',
-  'font-size',
-  'font-weight',
-  'line-height',
-  'letter-spacing',
-  'text-transform',
-];
-
-/**
  * WARNING: preamble defined in code is only used when userTier is
  * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
@@ -486,20 +467,13 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
         };
 
         const widgets: AiWidget[] = [];
-        const cssModel = node.domModel().cssModel();
-        const styles = await cssModel.getComputedStyle(node.id);
-        const matchedStyles = await cssModel.getMatchedStyles(node.id);
-        if (styles && matchedStyles) {
-          widgets.push({
-            name: 'COMPUTED_STYLES',
-            data: {
-              computedStyles: styles,
-              backendNodeId: node.backendNodeId(),
-              matchedCascade: matchedStyles,
-              properties: ACCESSIBILITY_CSS_PROPERTIES,
-            },
-          });
-        }
+        const snapshot = await node.takeSnapshot();
+        widgets.push({
+          name: 'DOM_TREE',
+          data: {
+            root: snapshot,
+          },
+        });
 
         return {
           result: JSON.stringify(result, null, 2),

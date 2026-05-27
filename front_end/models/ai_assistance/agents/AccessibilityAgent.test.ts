@@ -134,7 +134,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.strictEqual(titleResponse.title, 'Reading accessibility details');
   });
 
-  it('getElementAccessibilityDetails yields a ComputedStyleAiWidget if styles and matched styles are found',
+  it('getElementAccessibilityDetails yields a DomTreeAiWidget containing the node snapshot',
      async () => {
        const target = createTarget();
        const aidaClient = mockAidaClient([[{
@@ -152,7 +152,6 @@ describeWithMockConnection('AccessibilityAgent', () => {
 
        const domModel = target.model(SDK.DOMModel.DOMModel)!;
        const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel)!;
-       const cssModel = domModel.cssModel();
        const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
 
        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
@@ -162,17 +161,12 @@ describeWithMockConnection('AccessibilityAgent', () => {
        mockNode.attributes.returns([]);
        mockNode.frameId.returns('main' as Protocol.Page.FrameId);
 
+       const mockSnapshot = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
+       mockNode.takeSnapshot.resolves(mockSnapshot);
+
        sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
        sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
        resourceTreeModel.mainFrame = {id: 'main' as Protocol.Page.FrameId} as SDK.ResourceTreeModel.ResourceTreeFrame;
-
-       const styles = new Map<string, string>([
-         ['color', 'rgb(0, 0, 0)'],
-         ['background-color', 'rgb(255, 255, 255)'],
-       ]);
-       sinon.stub(cssModel, 'getComputedStyle').resolves(styles);
-       const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
-       sinon.stub(cssModel, 'getMatchedStyles').resolves(matchedStyles);
 
        sinon.stub(accessibilityModel, 'requestAndLoadSubTreeToNode').resolves();
        const mockAxNode = sinon.createStubInstance(SDK.AccessibilityModel.AccessibilityNode);
@@ -190,26 +184,9 @@ describeWithMockConnection('AccessibilityAgent', () => {
        const actions = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
        assert.lengthOf(actions, 1);
        assert.exists(actions[0].widgets);
-       const widget =
-           actions[0].widgets?.find(w => w.name === 'COMPUTED_STYLES') as AiAssistance.AiAgent.ComputedStyleAiWidget;
+       const widget = actions[0].widgets?.find(w => w.name === 'DOM_TREE') as AiAssistance.AiAgent.DomTreeAiWidget;
        assert.exists(widget);
-       assert.strictEqual(widget.data.backendNodeId, 100 as Protocol.DOM.BackendNodeId);
-       assert.strictEqual(widget.data.computedStyles, styles);
-       assert.strictEqual(widget.data.matchedCascade, matchedStyles);
-       assert.deepEqual(widget.data.properties, [
-         'color',
-         'background-color',
-         'display',
-         'visibility',
-         'opacity',
-         'clip',
-         'clip-path',
-         'font-size',
-         'font-weight',
-         'line-height',
-         'letter-spacing',
-         'text-transform',
-       ]);
+       assert.strictEqual(widget.data.root, mockSnapshot);
      });
 
   it('getElementAccessibilityDetails returns an error if the node is in a different frame', async () => {

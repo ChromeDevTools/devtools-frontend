@@ -20625,13 +20625,13 @@ var SourceMapCache = class _SourceMapCache {
   constructor(name) {
     this.#name = name;
   }
-  async set(debugId, sourceMap) {
+  async set(debugId, securityOrigin, sourceMap) {
     const cache = await this.#cache();
-    await cache.put(_SourceMapCache.#urlForDebugId(debugId), new Response(JSON.stringify(sourceMap)));
+    await cache.put(_SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
   }
-  async get(debugId) {
+  async get(debugId, securityOrigin) {
     const cache = await this.#cache();
-    const response = await cache.match(_SourceMapCache.#urlForDebugId(debugId));
+    const response = await cache.match(_SourceMapCache.#urlForDebugId(debugId, securityOrigin));
     return await response?.json() ?? null;
   }
   async #cache() {
@@ -20642,8 +20642,8 @@ var SourceMapCache = class _SourceMapCache {
     return await this.#cachePromise;
   }
   /** The Cache API only allows URL as keys, so we construct a simple one. Given that we have our own cache, we have no risk of conflicting URLs */
-  static #urlForDebugId(debugId) {
-    return "http://debug.id/" + encodeURIComponent(debugId);
+  static #urlForDebugId(debugId, securityOrigin) {
+    return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(securityOrigin)}`;
   }
   async disposeForTest() {
     await window.caches.delete(this.#name);
@@ -20651,11 +20651,11 @@ var SourceMapCache = class _SourceMapCache {
 };
 var IN_MEMORY_INSTANCE = new class {
   #cache = /* @__PURE__ */ new Map();
-  async set(debugId, sourceMap) {
-    this.#cache.set(debugId, sourceMap);
+  async set(debugId, securityOrigin, sourceMap) {
+    this.#cache.set(`${debugId}|${securityOrigin}`, sourceMap);
   }
-  async get(debugId) {
-    return this.#cache.get(debugId) ?? null;
+  async get(debugId, securityOrigin) {
+    return this.#cache.get(`${debugId}|${securityOrigin}`) ?? null;
   }
   async disposeForTest() {
   }
@@ -20797,15 +20797,17 @@ var SourceMapManager = class _SourceMapManager extends Common12.ObjectWrapper.Ob
 async function loadSourceMap(resourceLoader, url, debugId, initiator) {
   try {
     if (debugId) {
-      const cachedSourceMap = await SourceMapCache.instance().get(debugId);
+      const securityOrigin = initiator.initiatorUrl ? Common12.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform9.DevToolsPath.EmptyUrlString;
+      const cachedSourceMap = await SourceMapCache.instance().get(debugId, securityOrigin);
       if (cachedSourceMap) {
         return cachedSourceMap;
       }
     }
     const { content } = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
-    if ("debugId" in sourceMap && sourceMap.debugId) {
-      await SourceMapCache.instance().set(sourceMap.debugId, sourceMap).catch();
+    if (debugId && "debugId" in sourceMap && sourceMap.debugId === debugId) {
+      const securityOrigin = initiator.initiatorUrl ? Common12.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform9.DevToolsPath.EmptyUrlString;
+      await SourceMapCache.instance().set(sourceMap.debugId, securityOrigin, sourceMap).catch();
     }
     return sourceMap;
   } catch (cause) {

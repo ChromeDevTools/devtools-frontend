@@ -163,16 +163,20 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
 async function loadSourceMap(resourceLoader, url, debugId, initiator) {
     try {
         if (debugId) {
-            const cachedSourceMap = await SourceMapCache.instance().get(debugId);
+            const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
+                Platform.DevToolsPath.EmptyUrlString;
+            const cachedSourceMap = await SourceMapCache.instance().get(debugId, securityOrigin);
             if (cachedSourceMap) {
                 return cachedSourceMap;
             }
         }
         const { content } = await resourceLoader.loadResource(url, initiator);
         const sourceMap = parseSourceMap(content);
-        if ('debugId' in sourceMap && sourceMap.debugId) {
+        if (debugId && 'debugId' in sourceMap && sourceMap.debugId === debugId) {
             // In case something goes wrong with updating the cache, we still want to use the source map.
-            await SourceMapCache.instance().set(sourceMap.debugId, sourceMap).catch();
+            const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
+                Platform.DevToolsPath.EmptyUrlString;
+            await SourceMapCache.instance().set(sourceMap.debugId, securityOrigin, sourceMap).catch();
         }
         return sourceMap;
     }

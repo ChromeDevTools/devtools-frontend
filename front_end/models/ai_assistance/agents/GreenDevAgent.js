@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -42,9 +43,9 @@ additional context and resolve the user request.
     directly relevant to the user's problem. Do not get distracted by generic framework
     messages.
 
-6.  **Formulate a Hypothesis**: Based on your code investigation, explain the likely root
-    cause to the user and suggest a concrete fix or next step. If you suspect an issue in a
-    JavaScript function, point it out.
+6.  **Formulate a Hypothesis**: Based on your code investigation, and if you have a promising
+    fix, ALWAYS apply it using the provided 'applyFix' function. If you can identify more than
+    one fix, ask the user which one to apply.
 
 ### Available Information
 
@@ -71,6 +72,7 @@ To help you further, you can call the following functions:
   request list.
 - 'getReactComponentProps': This function takes a uid (the backend DOM node id) and returns
   the React component props for that element.
+- 'applyFix': This function accepts a code diff to apply to the code base.
 
 Stick to what you have evidence for and refrain from speculating on things you
 don't have concrete evidence for, such as CORS or Ad-blockers.
@@ -101,6 +103,13 @@ export class GreenDevContext extends ConversationContext {
  * prototypes.
  */
 export class GreenDevAgent extends AiAgent {
+    #eventTarget = new Common.ObjectWrapper.ObjectWrapper();
+    addEventListener(eventType, listener, thisObject) {
+        return this.#eventTarget.addEventListener(eventType, listener, thisObject);
+    }
+    removeEventListener(eventType, listener, thisObject) {
+        this.#eventTarget.removeEventListener(eventType, listener, thisObject);
+    }
     constructor(options) {
         super(options);
         this.declareFunction('getSourceLine', {
@@ -281,6 +290,33 @@ export class GreenDevAgent extends AiAgent {
                 };
             },
         });
+        this.declareFunction('applyFix', {
+            description: 'Apply a code fix for the user to review.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {
+                    codeSuggestionDiff: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The diff of the suggested code change.',
+                        nullable: false,
+                    },
+                },
+                required: ['codeSuggestionDiff'],
+            },
+            handler: async (params) => {
+                const result = await this.applyFix(params.codeSuggestionDiff);
+                return {
+                    result,
+                };
+            },
+        });
+    }
+    async applyFix(codeSuggestionDiff) {
+        console.warn('[GreenDevAgent] applyFix called with:', codeSuggestionDiff);
+        this.#eventTarget.dispatchEventToListeners("CliPromptRequested" /* Events.CLI_PROMPT_REQUESTED */, { prompt: `Apply this diff:\n${codeSuggestionDiff}` });
+        return 'The fix suggestion has been submitted.';
     }
     preamble = preamble;
     get clientFeature() {
@@ -322,8 +358,10 @@ export class GreenDevAgent extends AiAgent {
         return fullQuery;
     }
     static isEnabled() {
-        console.warn('BeyondStyling prototype is enabled:', Greendev.Prototypes.instance().isEnabled('beyondStyling'));
-        return Greendev.Prototypes.instance().isEnabled('beyondStyling');
+        const isGeminiEnabled = Greendev.Prototypes.instance().isEnabled('beyondStylingGemini');
+        const isAntigravityEnabled = Greendev.Prototypes.instance().isEnabled('beyondStylingAntigravity');
+        console.warn('BeyondStyling prototype is enabled:', isGeminiEnabled || isAntigravityEnabled);
+        return isGeminiEnabled || isAntigravityEnabled;
     }
     static formatConsoleMessage(message, index) {
         const url = message.url ? ` (${message.url}:${message.line}:${message.column})` : '';

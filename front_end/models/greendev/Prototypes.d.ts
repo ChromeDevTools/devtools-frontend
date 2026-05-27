@@ -1,7 +1,8 @@
 import * as Common from '../../core/common/common.js';
 export interface GreenDevSettings {
     aiAnnotations: Common.Settings.Setting<boolean>;
-    beyondStyling: Common.Settings.Setting<boolean>;
+    beyondStylingGemini: Common.Settings.Setting<boolean>;
+    beyondStylingAntigravity: Common.Settings.Setting<boolean>;
     breakpointDebuggerAgent: Common.Settings.Setting<boolean>;
     emulationCapabilities: Common.Settings.Setting<boolean>;
 }

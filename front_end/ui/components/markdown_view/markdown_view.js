@@ -489,6 +489,7 @@ __export(MarkdownLinksMap_exports, {
   getMarkdownLink: () => getMarkdownLink,
   markdownLinks: () => markdownLinks
 });
+import * as Greendev from "./../../../models/greendev/greendev.js";
 var markdownLinks = /* @__PURE__ */ new Map([
   ["issuesContrastWCAG21AA", "https://www.w3.org/TR/WCAG21/#contrast-minimum"],
   ["issuesContrastWCAG21AAA", "https://www.w3.org/TR/WCAG21/#contrast-enhanced"],
@@ -580,6 +581,9 @@ var getMarkdownLink = (key) => {
   }
   const link3 = markdownLinks.get(key);
   if (!link3) {
+    if (Greendev.Prototypes.instance().isEnabled("beyondStylingAntigravity") || Greendev.Prototypes.instance().isEnabled("beyondStylingGemini")) {
+      return key;
+    }
     throw new Error(`Markdown link with key '${key}' is not available, please check MarkdownLinksMap.ts`);
   }
   return link3;

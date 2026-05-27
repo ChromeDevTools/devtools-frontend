@@ -776,6 +776,7 @@ ui/legacy/components/quick_open/FilteredListWidget.test.js
 ui/legacy/components/quick_open/QuickOpen.test.js
 ui/legacy/components/settings_ui/SettingsUI.test.js
 ui/legacy/components/source_frame/BinaryResourceViewFactory.test.js
+ui/legacy/components/source_frame/FontView.test.js
 ui/legacy/components/source_frame/JSONView.test.js
 ui/legacy/components/source_frame/ResourceSourceFrame.test.js
 ui/legacy/components/source_frame/SourceFrame.test.js

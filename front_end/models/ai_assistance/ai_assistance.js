@@ -9295,6 +9295,7 @@ __export(GreenDevAgent_exports, {
   GreenDevAgent: () => GreenDevAgent,
   GreenDevContext: () => GreenDevContext
 });
+import * as Common7 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as Root10 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
@@ -9335,9 +9336,9 @@ additional context and resolve the user request.
     directly relevant to the user's problem. Do not get distracted by generic framework
     messages.
 
-6.  **Formulate a Hypothesis**: Based on your code investigation, explain the likely root
-    cause to the user and suggest a concrete fix or next step. If you suspect an issue in a
-    JavaScript function, point it out.
+6.  **Formulate a Hypothesis**: Based on your code investigation, and if you have a promising
+    fix, ALWAYS apply it using the provided 'applyFix' function. If you can identify more than
+    one fix, ask the user which one to apply.
 
 ### Available Information
 
@@ -9364,6 +9365,7 @@ To help you further, you can call the following functions:
   request list.
 - 'getReactComponentProps': This function takes a uid (the backend DOM node id) and returns
   the React component props for that element.
+- 'applyFix': This function accepts a code diff to apply to the code base.
 
 Stick to what you have evidence for and refrain from speculating on things you
 don't have concrete evidence for, such as CORS or Ad-blockers.
@@ -9390,6 +9392,13 @@ var GreenDevContext = class extends ConversationContext {
   }
 };
 var GreenDevAgent = class _GreenDevAgent extends AiAgent {
+  #eventTarget = new Common7.ObjectWrapper.ObjectWrapper();
+  addEventListener(eventType, listener, thisObject) {
+    return this.#eventTarget.addEventListener(eventType, listener, thisObject);
+  }
+  removeEventListener(eventType, listener, thisObject) {
+    this.#eventTarget.removeEventListener(eventType, listener, thisObject);
+  }
   constructor(options) {
     super(options);
     this.declareFunction("getSourceLine", {
@@ -9569,6 +9578,34 @@ var GreenDevAgent = class _GreenDevAgent extends AiAgent {
         };
       }
     });
+    this.declareFunction("applyFix", {
+      description: "Apply a code fix for the user to review.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          codeSuggestionDiff: {
+            type: 1,
+            description: "The diff of the suggested code change.",
+            nullable: false
+          }
+        },
+        required: ["codeSuggestionDiff"]
+      },
+      handler: async (params) => {
+        const result = await this.applyFix(params.codeSuggestionDiff);
+        return {
+          result
+        };
+      }
+    });
+  }
+  async applyFix(codeSuggestionDiff) {
+    console.warn("[GreenDevAgent] applyFix called with:", codeSuggestionDiff);
+    this.#eventTarget.dispatchEventToListeners("CliPromptRequested", { prompt: `Apply this diff:
+${codeSuggestionDiff}` });
+    return "The fix suggestion has been submitted.";
   }
   preamble = preamble9;
   get clientFeature() {
@@ -9607,8 +9644,10 @@ ${context?.getItem() ?? ""}`;
     return fullQuery;
   }
   static isEnabled() {
-    console.warn("BeyondStyling prototype is enabled:", Greendev3.Prototypes.instance().isEnabled("beyondStyling"));
-    return Greendev3.Prototypes.instance().isEnabled("beyondStyling");
+    const isGeminiEnabled = Greendev3.Prototypes.instance().isEnabled("beyondStylingGemini");
+    const isAntigravityEnabled = Greendev3.Prototypes.instance().isEnabled("beyondStylingAntigravity");
+    console.warn("BeyondStyling prototype is enabled:", isGeminiEnabled || isAntigravityEnabled);
+    return isGeminiEnabled || isAntigravityEnabled;
   }
   static formatConsoleMessage(message, index) {
     const url = message.url ? ` (${message.url}:${message.line}:${message.column})` : "";
@@ -9925,6 +9964,156 @@ ${context?.getItem() ?? ""}`;
       console.warn("[GreenDevAgent] getReactComponentProps returning", reactComponentProps);
     }
     return reactComponentProps;
+  }
+};
+
+// gen/front_end/models/ai_assistance/agents/GreenDevAgentAntigravityCliSocketClient.js
+var GreenDevAgentAntigravityCliSocketClient_exports = {};
+__export(GreenDevAgentAntigravityCliSocketClient_exports, {
+  GreenDevAgentAntigravityCliSocketClient: () => GreenDevAgentAntigravityCliSocketClient
+});
+var GreenDevAgentAntigravityCliSocketClient = class {
+  #websocket;
+  sessionReady;
+  #sessionReadyResolve = null;
+  constructor() {
+    this.sessionReady = new Promise((resolve) => {
+      this.#sessionReadyResolve = resolve;
+    });
+    this.#websocket = new WebSocket("ws://localhost:5566");
+    this.#websocket.onopen = this.#onOpen.bind(this);
+    this.#websocket.onmessage = this.#onMessage.bind(this);
+    this.#websocket.onclose = this.#onClose.bind(this);
+    this.#websocket.onerror = this.#onError.bind(this);
+  }
+  #onOpen() {
+    console.warn("WebSocket connected (Antigravity).");
+    if (this.#sessionReadyResolve) {
+      this.#sessionReadyResolve();
+      this.#sessionReadyResolve = null;
+    }
+  }
+  #onMessage(event) {
+    console.warn("Antigravity WebSocket message received:", event.data);
+    if (this.#onChunkCallback) {
+      this.#onChunkCallback(event.data);
+    }
+  }
+  #onClose() {
+    console.warn("WebSocket disconnected (Antigravity).");
+  }
+  #onError(error) {
+    console.error("WebSocket error (Antigravity):", error);
+  }
+  #onChunkCallback = null;
+  sendPrompt(promptText, onChunk) {
+    this.#onChunkCallback = onChunk;
+    console.warn(`Sending Antigravity prompt: "${promptText}"`);
+    this.#websocket.send(promptText);
+    return Promise.resolve();
+  }
+};
+
+// gen/front_end/models/ai_assistance/agents/GreenDevAgentGeminiCliSocketClient.js
+var GreenDevAgentGeminiCliSocketClient_exports = {};
+__export(GreenDevAgentGeminiCliSocketClient_exports, {
+  GreenDevAgentGeminiCliSocketClient: () => GreenDevAgentGeminiCliSocketClient
+});
+var GreenDevAgentGeminiCliSocketClient = class {
+  #websocket;
+  #sessionId;
+  #activeMessage = "";
+  #messageLog = [];
+  #promptResolve = null;
+  sessionReady;
+  #sessionReadyResolve = null;
+  constructor() {
+    this.sessionReady = new Promise((resolve) => {
+      this.#sessionReadyResolve = resolve;
+    });
+    this.#websocket = new WebSocket("ws://localhost:6655");
+    this.#websocket.onopen = this.#onOpen.bind(this);
+    this.#websocket.onmessage = this.#onMessage.bind(this);
+    this.#websocket.onclose = this.#onClose.bind(this);
+    this.#websocket.onerror = this.#onError.bind(this);
+  }
+  #onOpen() {
+    console.warn("WebSocket connected.");
+    this.#websocket.send(JSON.stringify({ jsonrpc: "2.0", method: "session/new", params: { cwd: ".", mcpServers: [] }, id: 14 }));
+  }
+  #onMessage(event) {
+    this.#messageLog.push(event.data);
+    try {
+      const data = JSON.parse(event.data);
+      if (data?.result?.sessionId && !this.#sessionId) {
+        this.#sessionId = data.result.sessionId;
+        console.warn(`Successfully created new session with ID: ${this.#sessionId}`);
+        if (this.#sessionReadyResolve) {
+          this.#sessionReadyResolve();
+          this.#sessionReadyResolve = null;
+        }
+      }
+      const update = data?.params?.update;
+      if (update?.sessionUpdate === "agent_message_chunk") {
+        this.#activeMessage += update.content?.text || "";
+      }
+      if (data?.result?.stopReason) {
+        if (this.#activeMessage) {
+          console.warn(this.#activeMessage);
+        }
+        console.warn(`Stop Reason: ${data.result.stopReason}`, this.#messageLog);
+        if (this.#promptResolve) {
+          this.#promptResolve(this.#activeMessage);
+          this.#promptResolve = null;
+        }
+        this.#activeMessage = "";
+        this.#messageLog = [];
+      } else if (data?.method === "session/request_permission") {
+        this.#websocket.send(JSON.stringify({
+          jsonrpc: "2.0",
+          id: data.id,
+          result: {
+            outcome: {
+              selected: {
+                optionId: "proceed_always"
+              }
+            }
+          }
+        }));
+      }
+    } catch (e) {
+      console.error("Failed to parse WebSocket message or process data:", event.data, e);
+    }
+  }
+  #onClose() {
+    console.warn("WebSocket disconnected.");
+  }
+  #onError(error) {
+    console.error("WebSocket error:", error);
+  }
+  sendPrompt(promptText) {
+    return new Promise((resolve, reject) => {
+      if (this.#promptResolve) {
+        reject(new Error("Another prompt is already in progress."));
+        return;
+      }
+      if (!this.#sessionId) {
+        reject(new Error("Cannot send prompt without a session ID."));
+        return;
+      }
+      this.#promptResolve = resolve;
+      console.warn(`Sending prompt: "${promptText}"`);
+      console.warn("Thinking...");
+      this.#websocket.send(JSON.stringify({
+        jsonrpc: "2.0",
+        method: "session/prompt",
+        params: {
+          prompt: [{ type: "text", text: promptText }],
+          sessionId: this.#sessionId
+        },
+        id: 15
+      }));
+    });
   }
 };
 
@@ -10559,7 +10748,7 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as Host15 from "./../../core/host/host.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
@@ -10573,22 +10762,22 @@ __export(AiHistoryStorage_exports, {
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var MAX_RECENT_PROMPTS_COUNT = 20;
 var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
-var AiHistoryStorage = class _AiHistoryStorage extends Common7.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common8.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
   #recentPromptsSetting;
-  #mutex = new Common7.Mutex.Mutex();
+  #mutex = new Common8.Mutex.Mutex();
   #maxStorageSize;
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
-    this.#historySetting = Common7.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
-    this.#imageHistorySettings = Common7.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
-    this.#recentPromptsSetting = Common7.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
+    this.#historySetting = Common8.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
+    this.#imageHistorySettings = Common8.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
+    this.#recentPromptsSetting = Common8.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
     this.#maxStorageSize = maxStorageSize;
   }
   clearForTest() {
@@ -11143,7 +11332,7 @@ function isAiAssistanceContextSelectionAgentEnabled() {
 function getPrimaryPageOrigin() {
   const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? new Common8.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+  return inspectedURL ? new Common9.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
 }
 
 // gen/front_end/models/ai_assistance/AiUtils.js
@@ -11153,7 +11342,7 @@ __export(AiUtils_exports, {
   getIconName: () => getIconName,
   isGeminiBranding: () => isGeminiBranding
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as Host16 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root15 from "./../../core/root/root.js";
@@ -11196,7 +11385,7 @@ function getDisabledReasons(aidaAvailability) {
       }
     }
   }
-  reasons.push(...Common9.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
+  reasons.push(...Common10.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
   return reasons;
 }
 function isGeminiBranding() {
@@ -11211,11 +11400,11 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Common10 from "./../../core/common/common.js";
+import * as Common11 from "./../../core/common/common.js";
 import * as Host17 from "./../../core/host/host.js";
 import * as Root16 from "./../../core/root/root.js";
 var builtInAiInstance;
-var BuiltInAi = class _BuiltInAi extends Common10.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common11.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;
@@ -11498,6 +11687,8 @@ export {
   FileAgent_exports as FileAgent,
   FileFormatter_exports as FileFormatter,
   GreenDevAgent_exports as GreenDevAgent,
+  GreenDevAgentAntigravityCliSocketClient_exports as GreenDevAgentAntigravityCliSocketClient,
+  GreenDevAgentGeminiCliSocketClient_exports as GreenDevAgentGeminiCliSocketClient,
   injected_exports as Injected,
   LighthouseFormatter_exports as LighthouseFormatter,
   NetworkAgent_exports as NetworkAgent,

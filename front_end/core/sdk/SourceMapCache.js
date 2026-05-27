@@ -19,13 +19,13 @@ export class SourceMapCache {
     constructor(name) {
         this.#name = name;
     }
-    async set(debugId, sourceMap) {
+    async set(debugId, securityOrigin, sourceMap) {
         const cache = await this.#cache();
-        await cache.put(SourceMapCache.#urlForDebugId(debugId), new Response(JSON.stringify(sourceMap)));
+        await cache.put(SourceMapCache.#urlForDebugId(debugId, securityOrigin), new Response(JSON.stringify(sourceMap)));
     }
-    async get(debugId) {
+    async get(debugId, securityOrigin) {
         const cache = await this.#cache();
-        const response = await cache.match(SourceMapCache.#urlForDebugId(debugId));
+        const response = await cache.match(SourceMapCache.#urlForDebugId(debugId, securityOrigin));
         return await response?.json() ?? null;
     }
     async #cache() {
@@ -36,8 +36,8 @@ export class SourceMapCache {
         return await this.#cachePromise;
     }
     /** The Cache API only allows URL as keys, so we construct a simple one. Given that we have our own cache, we have no risk of conflicting URLs */
-    static #urlForDebugId(debugId) {
-        return 'http://debug.id/' + encodeURIComponent(debugId);
+    static #urlForDebugId(debugId, securityOrigin) {
+        return `http://debug.id/${encodeURIComponent(debugId)}?origin=${encodeURIComponent(securityOrigin)}`;
     }
     async disposeForTest() {
         await window.caches.delete(this.#name);
@@ -45,11 +45,11 @@ export class SourceMapCache {
 }
 const IN_MEMORY_INSTANCE = new (class {
     #cache = new Map();
-    async set(debugId, sourceMap) {
-        this.#cache.set(debugId, sourceMap);
+    async set(debugId, securityOrigin, sourceMap) {
+        this.#cache.set(`${debugId}|${securityOrigin}`, sourceMap);
     }
-    async get(debugId) {
-        return this.#cache.get(debugId) ?? null;
+    async get(debugId, securityOrigin) {
+        return this.#cache.get(`${debugId}|${securityOrigin}`) ?? null;
     }
     async disposeForTest() {
         // Do nothing.

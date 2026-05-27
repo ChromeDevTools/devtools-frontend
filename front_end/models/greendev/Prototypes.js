@@ -24,10 +24,17 @@ export class Prototypes {
     settings() {
         const settings = Common.Settings.Settings.instance();
         const aiAnnotations = settings.createSetting('greendev-ai-annotations-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        const beyondStyling = settings.createSetting('greendev-beyond-styling-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
+        const beyondStylingGemini = settings.createSetting('greendev-beyond-styling-gemini-enabled', false, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
+        const beyondStylingAntigravity = settings.createSetting('greendev-beyond-styling-antigravity-enabled', false, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         const breakpointDebuggerAgent = settings.createSetting('greendev-breakpoint-debugger-agent-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
         const emulationCapabilities = settings.createSetting('greendev-emulation-capabilities-enabled', false, "Local" /* Common.Settings.SettingStorageType.LOCAL */);
-        return { aiAnnotations, beyondStyling, breakpointDebuggerAgent, emulationCapabilities };
+        return {
+            aiAnnotations,
+            beyondStylingGemini,
+            beyondStylingAntigravity,
+            breakpointDebuggerAgent,
+            emulationCapabilities
+        };
     }
 }
 //# sourceMappingURL=Prototypes.js.map

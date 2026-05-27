@@ -130,6 +130,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
       iconName: 'cross',
       accessibleLabel: i18nString(UIStrings.close),
       jslogContext: 'dialog-close',
+      title: i18nString(UIStrings.close),
     };
     button.classList.add('dialog-close-button');
     button.addEventListener('click', this.hide.bind(this));

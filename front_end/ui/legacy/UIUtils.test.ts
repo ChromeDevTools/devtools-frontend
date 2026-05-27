@@ -15,6 +15,38 @@ import * as UI from './legacy.js';
 const {html, nothing} = Lit;
 
 describe('UIUtils', () => {
+  describe('isEditing', () => {
+    it('returns true if an element is marked as being edited', () => {
+      const el = document.createElement('div');
+      UI.UIUtils.markBeingEdited(el, true);
+      assert.isTrue(UI.UIUtils.isEditing());
+      UI.UIUtils.markBeingEdited(el, false);
+      assert.isFalse(UI.UIUtils.isEditing());
+    });
+
+    it('returns true if an input is focused', () => {
+      const input = document.createElement('input');
+      renderElementIntoDOM(input);
+      input.focus();
+      assert.isTrue(UI.UIUtils.isEditing());
+    });
+
+    it('returns true if a textarea is focused', () => {
+      const textarea = document.createElement('textarea');
+      renderElementIntoDOM(textarea);
+      textarea.focus();
+      assert.isTrue(UI.UIUtils.isEditing());
+    });
+
+    it('returns true if a contentEditable element is focused', () => {
+      const el = document.createElement('div');
+      el.contentEditable = 'true';
+      renderElementIntoDOM(el);
+      el.focus();
+      assert.isTrue(UI.UIUtils.isEditing());
+    });
+  });
+
   describe('LongClickController', () => {
     it('does not invoke callback when disposed', () => {
       const clock = sinon.useFakeTimers({toFake: ['setTimeout']});

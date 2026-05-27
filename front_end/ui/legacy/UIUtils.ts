@@ -382,6 +382,10 @@ export function markBeingEdited(element: Element, value: boolean): boolean {
   return true;
 }
 
+export function resetElementsBeingEditedForTest(): void {
+  elementsBeingEdited.clear();
+}
+
 const elementsBeingEdited = new Set<Element>();
 
 // Avoids Infinity, NaN, and scientific notation (e.g. 1e20), see crbug.com/81165.

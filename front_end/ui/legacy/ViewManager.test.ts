@@ -247,8 +247,18 @@ describeWithEnvironment('ViewManager', () => {
       assert.notProperty(
           Common.Settings.Settings.instance().settingForTest('closeable-tabs').get(),
           'transient-view',
-          'Transient views must never be included in `closeable-tabs`',
+          'Transient views must never be included in `closeable-tabs` while they are shown',
       );
+    });
+
+    it('allows retrieving the materialized widget for a tabbed view', async () => {
+      const viewId = 'view-2';
+      const tabbedLocation = viewManager.createTabbedLocation(() => {}, '');
+      const view = viewManager.view(viewId);
+      await tabbedLocation.showView(view);
+
+      const widget = viewManager.materializedWidget(viewId);
+      assert.isNotNull(widget, 'materializedWidget should return the widget for a tabbed view');
     });
 
     it('installs the plus button BEFORE appending tabs so the very first overflow detection reserves its width', () => {
@@ -283,6 +293,35 @@ describeWithEnvironment('ViewManager', () => {
       assert.isTrue(
           tabbedPane.plusButtonPresentAtFirstAppendTab,
           'installPlusButton must run before appendApplicableItems mounts any tabs');
+    });
+  });
+
+  describe('createStackLocation', () => {
+    it('allows retrieving the materialized widget for a stacked view', async () => {
+      const viewId = 'view-3';
+      const stackLocation = viewManager.createStackLocation();
+      const view = viewManager.view(viewId);
+      await stackLocation.showView(view);
+
+      const widget = viewManager.materializedWidget(viewId);
+      assert.isNotNull(widget, 'materializedWidget should return the widget for a stacked view');
+    });
+
+    it('correctly manages view registration in ViewManager.views', async () => {
+      const viewId = 'dynamic-view';
+      const view = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('Dynamic View'),
+        viewId,
+      });
+      const stackLocation = viewManager.createStackLocation();
+
+      assert.isFalse(viewManager.views.has(viewId), 'view should not be registered before showView');
+
+      await stackLocation.showView(view);
+      assert.isTrue(viewManager.views.has(viewId), 'view should be registered in ViewManager.views after showView');
+
+      stackLocation.removeView(view);
+      assert.isFalse(viewManager.views.has(viewId), 'view should be removed from ViewManager.views after removeView');
     });
   });
 });

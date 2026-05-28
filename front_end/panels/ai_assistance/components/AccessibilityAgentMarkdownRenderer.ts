@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
@@ -27,9 +29,14 @@ type ParsedLink = {
 
 export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
   constructor(
-      private mainFrameId = '',
+      private mainDocumentURL: Platform.DevToolsPath.UrlString = '' as Platform.DevToolsPath.UrlString,
   ) {
     super();
+  }
+
+  #isSameOrigin(node: SDK.DOMModel.DOMNode): boolean {
+    const nodeDocumentURL = node.ownerDocument?.documentURL ?? '' as Platform.DevToolsPath.UrlString;
+    return AiAssistanceModel.AiUtils.isSameOrigin(this.mainDocumentURL, nodeDocumentURL);
   }
 
   override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {
@@ -98,7 +105,7 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
       return;
     }
 
-    if (node.frameId() !== this.mainFrameId) {
+    if (!this.#isSameOrigin(node)) {
       return;
     }
 
@@ -123,7 +130,7 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
     if (!node) {
       return;
     }
-    if (node.frameId() !== this.mainFrameId) {
+    if (!this.#isSameOrigin(node)) {
       return;
     }
     const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {textContent: label});

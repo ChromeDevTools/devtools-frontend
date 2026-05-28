@@ -4,9 +4,11 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
+import {isSameOrigin} from '../AiUtils.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 import {debugLog} from '../debug.js';
@@ -222,9 +224,14 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       return null;
     }
 
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const mainFrameId = resourceTreeModel?.mainFrame?.id;
-    if (node.frameId() !== mainFrameId) {
+    const mainDocument = domModel.existingDocument();
+    if (!mainDocument) {
+      return null;
+    }
+    const mainDocumentURL = mainDocument.documentURL;
+    const nodeDocumentURL = node.ownerDocument?.documentURL ?? '' as Platform.DevToolsPath.UrlString;
+
+    if (!isSameOrigin(mainDocumentURL, nodeDocumentURL)) {
       return null;
     }
 

@@ -111,6 +111,7 @@ ts_library("unittests") {
     "AgentProject.test.ts",
     "AiConversation.test.ts",
     "AiHistoryStorage.test.ts",
+    "AiUtils.test.ts",
     "BuiltInAi.test.ts",
     "ChangeManager.test.ts",
     "EvaluateAction.test.ts",

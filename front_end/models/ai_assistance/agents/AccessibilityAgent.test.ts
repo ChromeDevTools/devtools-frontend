@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
@@ -9,6 +10,8 @@ import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('AccessibilityAgent', () => {
   const mockReport = {
@@ -134,62 +137,7 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.strictEqual(titleResponse.title, 'Reading accessibility details');
   });
 
-  it('getElementAccessibilityDetails yields a DomTreeAiWidget containing the node snapshot',
-     async () => {
-       const target = createTarget();
-       const aidaClient = mockAidaClient([[{
-         explanation: '',
-         functionCalls:
-             [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
-         metadata: {
-           rpcGlobalId: 123,
-         },
-       }]]);
-       const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
-         aidaClient,
-       });
-       const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
-
-       const domModel = target.model(SDK.DOMModel.DOMModel)!;
-       const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel)!;
-       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
-
-       const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-       mockNode.domModel.returns(domModel);
-       mockNode.id = 42 as Protocol.DOM.NodeId;
-       mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
-       mockNode.attributes.returns([]);
-       mockNode.frameId.returns('main' as Protocol.Page.FrameId);
-
-       const mockSnapshot = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
-       mockNode.takeSnapshot.resolves(mockSnapshot);
-
-       sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
-       sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
-       resourceTreeModel.mainFrame = {id: 'main' as Protocol.Page.FrameId} as SDK.ResourceTreeModel.ResourceTreeFrame;
-
-       sinon.stub(accessibilityModel, 'requestAndLoadSubTreeToNode').resolves();
-       const mockAxNode = sinon.createStubInstance(SDK.AccessibilityModel.AccessibilityNode);
-       mockAxNode.role.returns({value: 'button', type: 'role' as Protocol.Accessibility.AXValueType});
-       mockAxNode.name.returns({
-         value: 'Click me',
-         type: 'string' as Protocol.Accessibility.AXValueType,
-         sources: [{type: 'attribute' as Protocol.Accessibility.AXValueSourceType}],
-       });
-       mockAxNode.ignored.returns(false);
-       mockAxNode.ignoredReasons.returns([]);
-       sinon.stub(accessibilityModel, 'axNodeForDOMNode').withArgs(mockNode).returns(mockAxNode);
-
-       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-       const actions = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
-       assert.lengthOf(actions, 1);
-       assert.exists(actions[0].widgets);
-       const widget = actions[0].widgets?.find(w => w.name === 'DOM_TREE') as AiAssistance.AiAgent.DomTreeAiWidget;
-       assert.exists(widget);
-       assert.strictEqual(widget.data.root, mockSnapshot);
-     });
-
-  it('getElementAccessibilityDetails returns an error if the node is in a different frame', async () => {
+  it('getElementAccessibilityDetails yields a DomTreeAiWidget containing the node snapshot', async () => {
     const target = createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
@@ -204,16 +152,152 @@ describeWithMockConnection('AccessibilityAgent', () => {
     const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
 
     const domModel = target.model(SDK.DOMModel.DOMModel)!;
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
+    const accessibilityModel = target.model(SDK.AccessibilityModel.AccessibilityModel)!;
+    const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockNode.domModel.returns(domModel);
+    mockNode.id = 42 as Protocol.DOM.NodeId;
+    mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
+    mockNode.attributes.returns([]);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mockDocument.documentURL = urlString`https://example.com`;
+    mockNode.ownerDocument = mockDocument;
+
+    const mockSnapshot = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
+    mockNode.takeSnapshot.resolves(mockSnapshot);
+
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
+    sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+
+    const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mainDocument.documentURL = urlString`https://example.com`;
+    sinon.stub(domModel, 'existingDocument').returns(mainDocument);
+
+    sinon.stub(accessibilityModel, 'requestAndLoadSubTreeToNode').resolves();
+    const mockAxNode = sinon.createStubInstance(SDK.AccessibilityModel.AccessibilityNode);
+    mockAxNode.role.returns({value: 'button', type: 'role' as Protocol.Accessibility.AXValueType});
+    mockAxNode.name.returns({
+      value: 'Click me',
+      type: 'string' as Protocol.Accessibility.AXValueType,
+      sources: [{type: 'attribute' as Protocol.Accessibility.AXValueSourceType}],
+    });
+    mockAxNode.ignored.returns(false);
+    mockAxNode.ignoredReasons.returns([]);
+    sinon.stub(accessibilityModel, 'axNodeForDOMNode').withArgs(mockNode).returns(mockAxNode);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actions = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.lengthOf(actions, 1);
+    assert.exists(actions[0].widgets);
+    const widget = actions[0].widgets?.find(w => w.name === 'DOM_TREE') as AiAssistance.AiAgent.DomTreeAiWidget;
+    assert.exists(widget);
+    assert.strictEqual(widget.data.root, mockSnapshot);
+  });
+
+  it('getElementAccessibilityDetails returns an error if the node is in a different origin', async () => {
+    const target = createTarget();
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
 
     const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     mockNode.domModel.returns(domModel);
     mockNode.id = 42 as Protocol.DOM.NodeId;
-    mockNode.frameId.returns('different-frame' as Protocol.Page.FrameId);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mockDocument.documentURL = urlString`https://cross-origin.com`;
+    mockNode.ownerDocument = mockDocument;
 
     sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
     sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
-    resourceTreeModel.mainFrame = {id: 'main' as Protocol.Page.FrameId} as SDK.ResourceTreeModel.ResourceTreeFrame;
+
+    const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mainDocument.documentURL = urlString`https://example.com`;
+    sinon.stub(domModel, 'existingDocument').returns(mainDocument);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Could not find the element with path: 1,HTML,1,BODY');
+  });
+
+  it('getElementAccessibilityDetails proceeds if both are identical data URLs', async () => {
+    const target = createTarget();
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+
+    const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockNode.domModel.returns(domModel);
+    mockNode.id = 42 as Protocol.DOM.NodeId;
+    mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
+    mockNode.attributes.returns([]);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mockDocument.documentURL = urlString`data:text/html,foo`;
+    mockNode.ownerDocument = mockDocument;
+
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
+    sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+
+    const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mainDocument.documentURL = urlString`data:text/html,foo`;
+    sinon.stub(domModel, 'existingDocument').returns(mainDocument);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Could not find accessibility node for the element.');
+  });
+
+  it('getElementAccessibilityDetails returns an error if they are different data URLs', async () => {
+    const target = createTarget();
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+
+    const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockNode.domModel.returns(domModel);
+    mockNode.id = 42 as Protocol.DOM.NodeId;
+    mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
+    mockNode.attributes.returns([]);
+    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mockDocument.documentURL = urlString`data:text/html,bar`;
+    mockNode.ownerDocument = mockDocument;
+
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
+    sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+
+    const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mainDocument.documentURL = urlString`data:text/html,foo`;
+    sinon.stub(domModel, 'existingDocument').returns(mainDocument);
 
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));
     const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);

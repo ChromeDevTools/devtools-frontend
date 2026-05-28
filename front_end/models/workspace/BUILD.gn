@@ -116,7 +116,6 @@ devtools_foundation_module("foundation_unittests") {
     "../../generated",
     "../../testing",
     "../bindings:bundle",
-    "../persistence:bundle",
     "../text_utils:bundle",
   ]
 }

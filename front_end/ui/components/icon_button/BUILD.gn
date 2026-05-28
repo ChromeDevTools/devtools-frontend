@@ -24,8 +24,6 @@ devtools_ui_module("icon_button") {
 
   deps = [
     "../../../Images:optimize_images",
-    "../../../ui/components/helpers:bundle",
-    "../../../ui/components/render_coordinator:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/lit:bundle",
   ]
@@ -63,6 +61,5 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../testing",
     "../../kit:bundle",
-    "../../lit:bundle",
   ]
 }

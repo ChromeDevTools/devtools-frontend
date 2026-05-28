@@ -31,8 +31,6 @@ devtools_ui_module("recorder") {
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../../generated:protocol",
-    "../../../models/persistence:bundle",
-    "../../../panels/elements:bundle",
     "../../../services/puppeteer:bundle",
     "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",
@@ -83,7 +81,7 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
-    "../../../generated:protocol",
+    "../../../core/platform:bundle",
     "../../../testing",
     "../testing",
   ]

@@ -19,7 +19,6 @@ devtools_ui_module("snippets") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",

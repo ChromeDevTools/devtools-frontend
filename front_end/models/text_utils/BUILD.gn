@@ -24,7 +24,6 @@ devtools_module("text_utils") {
   deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../third_party/codemirror.next:bundle",
   ]
 }

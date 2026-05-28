@@ -20,15 +20,9 @@ devtools_ui_module("utils") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
-    "../../../models/ai_assistance:bundle",
-    "../../../models/bindings:bundle",
-    "../../../models/source_map_scopes:bundle",
     "../../../models/trace:bundle",
     "../../../models/trace_source_maps_resolver:bundle",
     "../../../models/workspace:bundle",
-    "../../../panels/mobile_throttling:bundle",
-    "../../../ui/legacy:bundle",
   ]
 }
 
@@ -68,7 +62,6 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
-    "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../../models/bindings:bundle",

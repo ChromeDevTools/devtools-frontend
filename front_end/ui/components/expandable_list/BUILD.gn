@@ -18,7 +18,6 @@ devtools_ui_module("expandable_list") {
   deps = [
     "../../lit:bundle",
     "../../visual_logging:bundle",
-    "../helpers:bundle",
   ]
 }
 

@@ -18,17 +18,13 @@ devtools_ui_module("components") {
   deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
-    "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
     "../../../models/persistence:bundle",
     "../../../models/text_utils:bundle",
     "../../../models/workspace:bundle",
     "../../../ui/components/buttons:bundle",
     "../../../ui/components/helpers:bundle",
-    "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/legacy:bundle",
-    "../../../ui/legacy/components/utils:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]
@@ -57,15 +53,10 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
-    "../../../core/sdk:bundle",
-    "../../../models/bindings:bundle",
-    "../../../models/breakpoints:bundle",
     "../../../models/workspace:bundle",
     "../../../testing",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/legacy:bundle",
   ]
 }

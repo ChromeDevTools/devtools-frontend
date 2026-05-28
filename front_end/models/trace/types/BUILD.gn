@@ -21,7 +21,6 @@ devtools_module("types") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
     "../../crux-manager:bundle",
     "../lantern:bundle",
   ]
@@ -48,7 +47,6 @@ ts_library("unittests") {
   ]
 
   deps = [
-    "../../../core/platform:bundle",
     "../../../generated",
     "../../../models/trace:bundle",
     "../../../testing",

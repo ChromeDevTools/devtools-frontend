@@ -33,7 +33,6 @@ devtools_ui_module("layer_viewer") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/geometry:bundle",
     "../../ui/i18n:bundle",
     "../../ui/kit:bundle",

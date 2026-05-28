@@ -19,9 +19,7 @@ devtools_ui_module("components") {
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
     "../../../../generated",
-    "../../../../generated:protocol",
     "../../../../ui/components/buttons:bundle",
-    "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/input:bundle",
     "../../../../ui/kit:bundle",
     "../../../../ui/legacy:bundle",
@@ -57,7 +55,6 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../../../core/platform:bundle",
     "../../../../generated",
     "../../../../testing",
     "../../../../ui/components/buttons:bundle",

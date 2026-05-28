@@ -34,14 +34,12 @@ devtools_ui_module("css_overview") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../generated:protocol",
     "../../models/geometry:bundle",
     "../../models/text_utils:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/components/helpers:bundle",
     "../../ui/components/panel_feedback:bundle",
     "../../ui/components/panel_introduction_steps:bundle",
     "../../ui/kit:bundle",
@@ -91,12 +89,8 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../core/common:bundle",
-    "../../core/protocol_client:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../testing",
-    "../../ui/legacy:bundle",
   ]
 }

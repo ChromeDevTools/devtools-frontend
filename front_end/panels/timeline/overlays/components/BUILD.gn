@@ -43,7 +43,6 @@ devtools_ui_module("components") {
     "../../../../ui/legacy/theme_support:bundle",
     "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",
-    "../../utils:bundle",
   ]
 }
 
@@ -72,6 +71,5 @@ devtools_ui_module("unittests") {
     ":bundle",
     "../../../../models/trace:bundle",
     "../../../../testing",
-    "../../../../ui/components/render_coordinator:bundle",
   ]
 }

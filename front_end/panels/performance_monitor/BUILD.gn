@@ -21,7 +21,6 @@ devtools_ui_module("performance_monitor") {
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit:bundle",

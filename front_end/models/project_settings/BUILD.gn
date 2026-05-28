@@ -42,6 +42,5 @@ ts_library("unittests") {
     ":bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
-    "../../testing",
   ]
 }

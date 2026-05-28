@@ -21,7 +21,6 @@ devtools_ui_module("emulation") {
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/visual_logging:bundle",
-    "../../emulation:bundle",
     "./components:bundle",
   ]
 }

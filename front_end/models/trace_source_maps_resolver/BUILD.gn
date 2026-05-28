@@ -13,7 +13,6 @@ devtools_module("trace_source_maps_resolver") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../bindings:bundle",
     "../source_map_scopes:bundle",
     "../trace:bundle",
@@ -42,6 +41,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../../extension-api",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",

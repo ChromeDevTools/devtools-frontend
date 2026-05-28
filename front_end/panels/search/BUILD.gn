@@ -32,7 +32,6 @@ devtools_ui_module("search") {
     "../../ui/components/buttons:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
@@ -67,7 +66,6 @@ devtools_ui_module("unittests") {
   deps = [
     ":bundle",
     "../../core/common:bundle",
-    "../../core/platform:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../testing",

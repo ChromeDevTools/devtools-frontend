@@ -31,10 +31,8 @@ devtools_ui_module("object_ui") {
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
-    "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
     "../../../../generated",
-    "../../../../generated:protocol",
     "../../../../models/formatter:bundle",
     "../../../../models/geometry:bundle",
     "../../../../models/source_map_scopes:bundle",
@@ -107,7 +105,6 @@ devtools_ui_module("unittests") {
     "../../../../core/host:bundle",
     "../../../../core/sdk:bundle",
     "../../../../generated",
-    "../../../../generated:protocol",
     "../../../../testing",
     "../../../legacy:bundle",
   ]

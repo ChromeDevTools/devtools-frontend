@@ -19,12 +19,10 @@ devtools_ui_module("diff_view") {
     ":css_files",
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
-    "../../../core/sdk:bundle",
     "../../../third_party/diff:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",
     "../code_highlighter:bundle",
-    "../helpers:bundle",
   ]
 }
 

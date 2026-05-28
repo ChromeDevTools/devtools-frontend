@@ -40,8 +40,5 @@ ts_library("unittests") {
     "PageDependencyGraph.test.ts",
   ]
 
-  deps = [
-    "../:bundle",
-    "../testing:bundle",
-  ]
+  deps = [ "../:bundle" ]
 }

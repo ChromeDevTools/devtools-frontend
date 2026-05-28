@@ -11,7 +11,6 @@ devtools_ui_module("legacy_wrapper") {
   deps = [
     "../../../core/platform:bundle",
     "../../../ui/legacy:bundle",
-    "../../../ui/lit:bundle",
     "../../visual_logging:bundle",
   ]
 }

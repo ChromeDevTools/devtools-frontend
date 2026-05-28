@@ -29,7 +29,6 @@ devtools_ui_module("settings") {
     "../../lit:bundle",
     "../../visual_logging:bundle",
     "../buttons:bundle",
-    "../helpers:bundle",
     "../input:bundle",
     "../tooltips:bundle",
   ]

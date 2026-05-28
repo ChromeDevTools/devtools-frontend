@@ -30,14 +30,10 @@ devtools_ui_module("accessibility") {
 
   deps = [
     "../../core/common:bundle",
-    "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
-    "../../ui/components/panel_feedback:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",

@@ -12,12 +12,10 @@ devtools_module("breakpoints") {
 
   deps = [
     "../../core/common:bundle",
-    "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../bindings:bundle",
     "../formatter:bundle",
     "../source_map_scopes:bundle",
@@ -56,6 +54,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../../extension-api",
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",

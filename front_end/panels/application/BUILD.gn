@@ -86,7 +86,6 @@ devtools_ui_module("application") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
-    "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
@@ -128,7 +127,6 @@ devtools_ui_module("application") {
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
-    "../network/components:bundle",
     "./components:bundle",
     "./preloading/components:bundle",
     "./preloading/helper:bundle",
@@ -211,6 +209,7 @@ devtools_ui_module("unittests") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/logs:bundle",
     "../../models/web_mcp:bundle",
@@ -222,8 +221,6 @@ devtools_ui_module("unittests") {
     "../../ui/legacy:ui",
     "../../ui/legacy/components/object_ui:bundle",
     "../protocol_monitor:bundle",
-    "./components",
-    "./preloading/components",
     "preloading/components:bundle",
   ]
 }

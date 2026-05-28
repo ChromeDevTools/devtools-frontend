@@ -23,10 +23,7 @@ devtools_ui_module("components") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
-    "../../../models/issues_manager:bundle",
     "../../../ui/components/buttons:bundle",
-    "../../../ui/components/helpers:bundle",
-    "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",

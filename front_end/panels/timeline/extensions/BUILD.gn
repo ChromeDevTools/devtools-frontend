@@ -10,15 +10,8 @@ devtools_ui_module("extensions") {
   sources = [ "ExtensionUI.ts" ]
 
   deps = [
-    "../../../core/i18n:bundle",
-    "../../../generated",
     "../../../models/trace:bundle",
-    "../../../ui/components/helpers:bundle",
-    "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/kit:bundle",
-    "../../../ui/legacy:bundle",
     "../../../ui/legacy/theme_support:bundle",
-    "../../../ui/lit:bundle",
   ]
 }
 

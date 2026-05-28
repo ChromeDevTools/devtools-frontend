@@ -17,7 +17,6 @@ devtools_module("lists") {
 
   deps = [
     "../../../core/i18n:bundle",
-    "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
     "../buttons:bundle",
   ]

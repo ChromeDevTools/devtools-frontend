@@ -17,8 +17,6 @@ devtools_ui_module("helpers") {
 
   deps = [
     "../../../core/common:bundle",
-    "../../../core/platform:bundle",
-    "../../../core/root:bundle",
     "../../../ui/legacy/theme_support:bundle",
     "../render_coordinator:bundle",
   ]
@@ -45,9 +43,6 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../../testing",
-    "../../legacy/theme_support:bundle",
-    "../../lit:bundle",
     "../render_coordinator:bundle",
   ]
 }

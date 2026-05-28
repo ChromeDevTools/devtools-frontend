@@ -16,11 +16,8 @@ devtools_ui_module("adorners") {
   sources = [ "Adorner.ts" ]
 
   deps = [
-    "../../../core/platform:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
-    "../../../ui/visual_logging:bundle",
-    "../helpers:bundle",
   ]
 }
 
@@ -42,8 +39,6 @@ devtools_ui_module("unittests") {
 
   deps = [
     ":bundle",
-    "../../../core/common:bundle",
     "../../../core/platform:bundle",
-    "../../../testing",
   ]
 }

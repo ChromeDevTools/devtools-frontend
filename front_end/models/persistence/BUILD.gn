@@ -28,7 +28,6 @@ devtools_module("persistence") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
     "../../models/project_settings:bundle",

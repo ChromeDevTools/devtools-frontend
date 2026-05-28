@@ -17,10 +17,8 @@ devtools_module("source_map_scopes") {
   deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/formatter:bundle",
     "../../models/text_utils:bundle",
@@ -63,8 +61,6 @@ ts_library("unittests") {
     "../../core/sdk:bundle",
     "../../testing",
     "../bindings:bundle",
-    "../formatter:bundle",
-    "../text_utils:bundle",
     "../workspace:bundle",
   ]
 }

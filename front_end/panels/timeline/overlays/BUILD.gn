@@ -15,12 +15,10 @@ devtools_ui_module("overlays") {
     "../../../core/platform:bundle",
     "../../../models/ai_assistance:bundle",
     "../../../models/trace:bundle",
-    "../../../services/trace_bounds:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
-    "../utils:bundle",
     "./components:bundle",
   ]
 }
@@ -47,7 +45,6 @@ devtools_ui_module("unittests") {
     ":bundle",
     "..:bundle",
     "../../../core/common:bundle",
-    "../../../core/sdk:bundle",
     "../../../models/ai_assistance:bundle",
     "../../../models/trace:bundle",
     "../../../testing",

@@ -27,6 +27,7 @@ devtools_ui_module("markdown_view") {
   ]
   deps = [
     "../../../core/i18n:bundle",
+    "../../../models/greendev:bundle",
     "../../../third_party/codemirror.next:bundle",
     "../../../third_party/marked:bundle",
     "../../../ui/components/buttons:bundle",

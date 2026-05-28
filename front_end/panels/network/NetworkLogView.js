@@ -2126,7 +2126,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
                 // header, you have to terminate it with a semicolon.
                 command.push('-H ' + escapeString(name + ';'));
             }
-            else if (name.toLowerCase() === 'cookie') {
+            else if (name.toLowerCase() === 'cookie' && value.includes('=')) {
+                // If value contains no '=', curl treats it as a filename to read
+                // cookies from, which would be a security risk. Fall back to -H in
+                // that case.
                 command.push('-b ' + escapeString(value));
             }
             else {

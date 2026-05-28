@@ -12529,7 +12529,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       const value = header.value;
       if (!value.trim()) {
         command.push("-H " + escapeString(name + ";"));
-      } else if (name.toLowerCase() === "cookie") {
+      } else if (name.toLowerCase() === "cookie" && value.includes("=")) {
         command.push("-b " + escapeString(value));
       } else {
         command.push("-H " + escapeString(name + ": " + value));

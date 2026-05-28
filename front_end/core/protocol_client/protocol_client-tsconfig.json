@@ -45,12 +45,6 @@
   ],
   "references": [
     {
-      "path": "../common/bundle-tsconfig.json"
-    },
-    {
-      "path": "../host/bundle-tsconfig.json"
-    },
-    {
       "path": "../../generated/generated-tsconfig.json"
     },
     {

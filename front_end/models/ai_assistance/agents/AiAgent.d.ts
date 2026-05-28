@@ -250,7 +250,14 @@ export interface LighthouseReportAiWidget {
         snapshotReport?: boolean;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget;
+export interface TimelineEventSummaryAiWidget {
+    name: 'TIMELINE_EVENT_SUMMARY';
+    data: {
+        event: Trace.Types.Events.Event;
+        parsedTrace: Trace.TraceModel.ParsedTrace;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

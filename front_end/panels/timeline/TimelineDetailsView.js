@@ -75,6 +75,34 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
     #eventToRelatedInsightsMap = null;
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
     #entityMapper = null;
+    static makeEventWidget(event, parsedTrace) {
+        // Provide a mock delegate to satisfy the constructor requirements.
+        // These delegate interactions are not relevant for an AI assistant widget.
+        const mockDelegate = {
+            select: () => { },
+            zoomEvent: () => { },
+            element: document.createElement('div'),
+            set3PCheckboxDisabled: () => { },
+            selectEntryAtTime: () => { },
+            highlightEvent: () => { },
+        };
+        const pane = new TimelineDetailsPane(mockDelegate);
+        pane.hideHeader();
+        const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
+        void pane
+            .setModel({
+            parsedTrace,
+            selectedEvents: [event],
+            eventToRelatedInsightsMap: null,
+            entityMapper,
+        })
+            .then(() => {
+            void pane.setSelection({
+                event,
+            });
+        });
+        return pane;
+    }
     constructor(delegate) {
         super();
         this.registerRequiredCSS(detailsViewStyles);
@@ -278,6 +306,9 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
     }
     headerElement() {
         return this.tabbedPane.headerElement();
+    }
+    hideHeader() {
+        this.tabbedPane.headerElement().classList.add('hidden');
     }
     setPreferredTab(tabId) {
         this.preferredTabId = tabId;

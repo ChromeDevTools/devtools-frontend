@@ -45,9 +45,6 @@
       "path": "../../../core/common/bundle-tsconfig.json"
     },
     {
-      "path": "../helpers/bundle-tsconfig.json"
-    },
-    {
       "path": "../render_coordinator/bundle-tsconfig.json"
     },
     {

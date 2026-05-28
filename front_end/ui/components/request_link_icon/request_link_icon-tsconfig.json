@@ -57,9 +57,6 @@
       "path": "../../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../../generated/protocol-tsconfig.json"
-    },
-    {
       "path": "../../../models/logs/bundle-tsconfig.json"
     },
     {
@@ -73,9 +70,6 @@
     },
     {
       "path": "../../kit/bundle-tsconfig.json"
-    },
-    {
-      "path": "../helpers/bundle-tsconfig.json"
     },
     {
       "path": "../render_coordinator/bundle-tsconfig.json"

@@ -46,16 +46,7 @@
   ],
   "references": [
     {
-      "path": "../../../core/common/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../core/i18n/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../core/platform/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
@@ -65,12 +56,6 @@
     },
     {
       "path": "../buttons/bundle-tsconfig.json"
-    },
-    {
-      "path": "../helpers/bundle-tsconfig.json"
-    },
-    {
-      "path": "../render_coordinator/bundle-tsconfig.json"
     },
     {
       "path": "../text_editor/bundle-tsconfig.json"

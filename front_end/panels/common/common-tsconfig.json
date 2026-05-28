@@ -58,6 +58,9 @@
   ],
   "references": [
     {
+      "path": "../../../extension-api/extension-api-tsconfig.json"
+    },
+    {
       "path": "../../core/common/bundle-tsconfig.json"
     },
     {
@@ -80,9 +83,6 @@
     },
     {
       "path": "../../generated/generated-tsconfig.json"
-    },
-    {
-      "path": "../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
@@ -112,9 +112,6 @@
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/greendev/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/har/bundle-tsconfig.json"
     },
     {
@@ -128,12 +125,6 @@
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/workspace_diff/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../third_party/diff/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.json"

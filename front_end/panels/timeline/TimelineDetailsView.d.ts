@@ -27,6 +27,7 @@ export declare class TimelineDetailsPane extends TimelineDetailsPane_base {
     private selection?;
     private updateContentsScheduled;
     private lazySelectorStatsView;
+    static makeEventWidget(event: Trace.Types.Events.Event, parsedTrace: Trace.TraceModel.ParsedTrace): TimelineDetailsPane;
     constructor(delegate: TimelineModeViewDelegate);
     /**
      * This selects a given tabbedPane tab.
@@ -51,6 +52,7 @@ export declare class TimelineDetailsPane extends TimelineDetailsPane_base {
     private updateContents;
     private appendTab;
     headerElement(): Element;
+    hideHeader(): void;
     setPreferredTab(tabId: string): void;
     /**
      * This forces a recalculation and rerendering of the timings

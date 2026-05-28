@@ -49,9 +49,6 @@
     },
     {
       "path": "../../../core/root/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../lit/bundle-tsconfig.json"
     }
   ]
 }

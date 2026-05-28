@@ -21,6 +21,7 @@ export declare function elementDragStart(targetElement: Element, elementDragStar
 export declare function isBeingEdited(node?: Node | null): boolean;
 export declare function isEditing(): boolean;
 export declare function markBeingEdited(element: Element, value: boolean): boolean;
+export declare function resetElementsBeingEditedForTest(): void;
 export declare const StyleValueDelimiters = " \u00A0\t\n\"':;,/()";
 export declare function getValueModificationDirection(event: Event): string | null;
 export declare function modifiedFloatNumber(number: number, event: Event, modifierMultiplier?: number, range?: {

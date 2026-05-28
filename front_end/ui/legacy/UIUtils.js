@@ -326,6 +326,9 @@ export function markBeingEdited(element, value) {
     }
     return true;
 }
+export function resetElementsBeingEditedForTest() {
+    elementsBeingEdited.clear();
+}
 const elementsBeingEdited = new Set();
 // Avoids Infinity, NaN, and scientific notation (e.g. 1e20), see crbug.com/81165.
 const numberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;

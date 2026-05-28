@@ -3858,6 +3858,14 @@ var UIStringsNotTranslate4 = {
    */
   revealLighthouse: "Reveal Lighthouse report",
   /**
+   * @description Title for the Timeline event summary widget.
+   */
+  timelineEventSummary: "Event summary",
+  /**
+   * @description Accessible label for the reveal button in the Timeline event summary widget.
+   */
+  revealTimelineEventSummary: "Reveal event",
+  /**
    * @description Title for the LCP breakdown widget.
    */
   lcpBreakdown: "LCP breakdown",
@@ -4714,6 +4722,8 @@ function getWidgetSignature(widget6) {
       return `${widget6.name}:${widget6.data.uiSourceCode.url()}`;
     case "LIGHTHOUSE_REPORT":
       return `${widget6.name}:${widget6.data.report.fetchTime}`;
+    case "TIMELINE_EVENT_SUMMARY":
+      return `${widget6.name}:${widget6.data.event.ts}:${widget6.data.event.name}`;
     default:
       Platform5.assertNever(widget6, "Unknown AiWidget name");
   }
@@ -4789,6 +4799,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "LIGHTHOUSE_REPORT":
         response = await makeLighthouseReportWidget(widgetData);
+        break;
+      case "TIMELINE_EVENT_SUMMARY":
+        response = await makeTimelineEventSummaryWidget(widgetData);
         break;
       default:
         Platform5.assertNever(widgetData, "Unknown AiWidget name");
@@ -5274,6 +5287,18 @@ async function makeLighthouseReportWidget(widgetData) {
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLighthouse),
     title: lockedString5(UIStringsNotTranslate4.lighthouseReport),
     jslogContext: snapshotReport ? "lighthouse-snapshot-report-widget" : "lighthouse-report-widget"
+  };
+}
+async function makeTimelineEventSummaryWidget(widgetData) {
+  const renderedWidget = html7`<devtools-widget class="timeline-event-summary-widget" ${widget3(() => {
+    return Timeline.TimelineDetailsView.TimelineDetailsPane.makeEventWidget(widgetData.data.event, widgetData.data.parsedTrace);
+  })}></devtools-widget>`;
+  return {
+    renderedWidget,
+    revealable: new SDK3.TraceObject.RevealableEvent(widgetData.data.event),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealTimelineEventSummary),
+    title: lockedString5(UIStringsNotTranslate4.timelineEventSummary),
+    jslogContext: "timeline-event-summary-widget"
   };
 }
 

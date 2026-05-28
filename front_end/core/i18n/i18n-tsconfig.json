@@ -57,9 +57,6 @@
     },
     {
       "path": "../../third_party/i18n/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../third_party/intl-messageformat/bundle-tsconfig.json"
     }
   ]
 }

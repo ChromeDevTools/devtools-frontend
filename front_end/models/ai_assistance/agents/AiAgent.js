@@ -355,6 +355,10 @@ export class AiAgent {
                         ...options,
                         explanation: textResponse,
                     });
+                    if ('result' in result && result.result === 'BLOCKED_CROSS_ORIGIN') {
+                        yield this.#createErrorResponse("cross-origin" /* ErrorType.CROSS_ORIGIN */);
+                        break;
+                    }
                     if (options.signal?.aborted) {
                         yield this.#createErrorResponse("abort" /* ErrorType.ABORT */);
                         break;
@@ -468,6 +472,15 @@ export class AiAgent {
                 };
                 return {
                     result: 'Error: User denied code execution with side effects.',
+                };
+            }
+            // Re-check allowed origin after the approval await to prevent a TOCTOU (Time-of-Check
+            // to Time-of-Use) race condition where the page might have navigated cross-origin
+            // while the user was confirming the action.
+            const allowedOriginResult = this.#allowedOrigin?.();
+            if (allowedOriginResult && 'blocked' in allowedOriginResult) {
+                return {
+                    result: 'BLOCKED_CROSS_ORIGIN',
                 };
             }
             result = await call.handler(args, {

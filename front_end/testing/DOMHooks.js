@@ -61,6 +61,7 @@ export const cleanTestDOM = (testName = '') => {
     removeTextEditorTooltip();
     removeAnnouncer();
     removeCSSEvaluationElement();
+    UI.UIUtils.resetElementsBeingEditedForTest();
     // Verify that nothing was left behind
     for (const child of document.body.children) {
         if (!documentBodyElements.has(child)) {

@@ -234,6 +234,14 @@ const UIStringsNotTranslate = {
      */
     revealLighthouse: 'Reveal Lighthouse report',
     /**
+     * @description Title for the Timeline event summary widget.
+     */
+    timelineEventSummary: 'Event summary',
+    /**
+     * @description Accessible label for the reveal button in the Timeline event summary widget.
+     */
+    revealTimelineEventSummary: 'Reveal event',
+    /**
      * @description Title for the LCP breakdown widget.
      */
     lcpBreakdown: 'LCP breakdown',
@@ -1192,6 +1200,8 @@ export function getWidgetSignature(widget) {
             return `${widget.name}:${widget.data.uiSourceCode.url()}`;
         case 'LIGHTHOUSE_REPORT':
             return `${widget.name}:${widget.data.report.fetchTime}`;
+        case 'TIMELINE_EVENT_SUMMARY':
+            return `${widget.name}:${widget.data.event.ts}:${widget.data.event.name}`;
         default:
             Platform.assertNever(widget, 'Unknown AiWidget name');
     }
@@ -1272,6 +1282,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'LIGHTHOUSE_REPORT':
                 response = await makeLighthouseReportWidget(widgetData);
+                break;
+            case 'TIMELINE_EVENT_SUMMARY':
+                response = await makeTimelineEventSummaryWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -1759,6 +1772,18 @@ async function makeLighthouseReportWidget(widgetData) {
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLighthouse),
         title: lockedString(UIStringsNotTranslate.lighthouseReport),
         jslogContext: snapshotReport ? 'lighthouse-snapshot-report-widget' : 'lighthouse-report-widget',
+    };
+}
+async function makeTimelineEventSummaryWidget(widgetData) {
+    const renderedWidget = html `<devtools-widget class="timeline-event-summary-widget" ${widget(() => {
+        return Timeline.TimelineDetailsView.TimelineDetailsPane.makeEventWidget(widgetData.data.event, widgetData.data.parsedTrace);
+    })}></devtools-widget>`;
+    return {
+        renderedWidget,
+        revealable: new SDK.TraceObject.RevealableEvent(widgetData.data.event),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealTimelineEventSummary),
+        title: lockedString(UIStringsNotTranslate.timelineEventSummary),
+        jslogContext: 'timeline-event-summary-widget',
     };
 }
 //# sourceMappingURL=ChatMessage.js.map

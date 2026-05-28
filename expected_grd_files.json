@@ -841,7 +841,6 @@
   "front_end/ui/components/spinners/spinners.js",
   "front_end/ui/components/srgb_overlay/srgb_overlay.js",
   "front_end/ui/components/suggestion_input/suggestion_input.js",
-  "front_end/ui/components/survey_link/survey_link.js",
   "front_end/ui/components/switch/switch.js",
   "front_end/ui/components/text_editor/text_editor.js",
   "front_end/ui/components/text_prompt/text_prompt.js",

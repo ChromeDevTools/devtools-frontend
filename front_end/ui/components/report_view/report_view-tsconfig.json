@@ -45,9 +45,6 @@
       "path": "../../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../kit/bundle-tsconfig.json"
-    },
-    {
       "path": "../../legacy/components/utils/bundle-tsconfig.json"
     },
     {

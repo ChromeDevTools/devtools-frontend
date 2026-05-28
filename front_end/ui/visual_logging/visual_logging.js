@@ -4030,6 +4030,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "timeline-dim-unrelated-events",
   "timeline-disable-js-sampling",
   "timeline-enhanced-traces",
+  "timeline-event-summary-widget",
   "timeline-experimental-insights",
   "timeline-flamechart-main-view-group-expansion",
   "timeline-flamechart-network-view-group-expansion",

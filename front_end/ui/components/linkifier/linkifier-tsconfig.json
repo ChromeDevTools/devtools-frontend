@@ -53,9 +53,6 @@
     },
     {
       "path": "../../lit/bundle-tsconfig.json"
-    },
-    {
-      "path": "../helpers/bundle-tsconfig.json"
     }
   ]
 }

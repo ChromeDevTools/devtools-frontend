@@ -99,12 +99,6 @@
       "path": "../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.json"
-    },
-    {
-      "path": "../computed_style/bundle-tsconfig.json"
-    },
-    {
       "path": "../network_time_calculator/bundle-tsconfig.json"
     },
     {
@@ -154,9 +148,6 @@
     },
     {
       "path": "../trace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../trace/insights/bundle-tsconfig.json"
     },
     {
       "path": "../trace_source_maps_resolver/bundle-tsconfig.json"

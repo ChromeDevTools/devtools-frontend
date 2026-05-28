@@ -106,10 +106,24 @@ export class ContextMenuProvider {
         const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
         const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
         const binding = uiSourceCode && Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
-        const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
-        if (Common.ParsedURL.schemeIs(fileURL, 'file:')) {
-            const path = Common.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host.Platform.isWin());
-            contextMenu.revealSection().appendItem(i18nString(UIStrings.openInContainingFolder), () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: 'open-in-containing-folder' });
+        // If contentProvider is already a FileSystem UISourceCode, there's a small chance that uiSourceCodeForURL
+        // might return a Network UISourceCode instead (e.g. if they share the same URL but aren't currently bound
+        // and the Network project represents the URL first in the lookup list).
+        // In this case, the binding will be null. To ensure "Open in containing folder" is still appended when
+        // right-clicking the FileSystem file in the Workspace tree, we fall back to contentProvider.
+        const fileSystemUISourceCode = binding ?
+            binding.fileSystem :
+            (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
+                contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem ?
+                contentProvider :
+                uiSourceCode);
+        if (fileSystemUISourceCode &&
+            fileSystemUISourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
+            const fileURL = fileSystemUISourceCode.contentURL();
+            if (Common.ParsedURL.schemeIs(fileURL, 'file:')) {
+                const path = Common.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host.Platform.isWin());
+                contextMenu.revealSection().appendItem(i18nString(UIStrings.openInContainingFolder), () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: 'open-in-containing-folder' });
+            }
         }
         if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
             (contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem)) {

@@ -94,9 +94,6 @@
       "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
     },
     {
-      "path": "../../../ui/components/survey_link/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../ui/components/tree_outline/bundle-tsconfig.json"
     },
     {

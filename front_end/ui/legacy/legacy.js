@@ -713,6 +713,7 @@ __export(UIUtils_exports, {
   modifiedFloatNumber: () => modifiedFloatNumber,
   openLinkExternallyLabel: () => openLinkExternallyLabel,
   registerRenderer: () => registerRenderer,
+  resetElementsBeingEditedForTest: () => resetElementsBeingEditedForTest,
   resetMeasuredScrollbarWidthForTest: () => resetMeasuredScrollbarWidthForTest,
   runCSSAnimationOnce: () => runCSSAnimationOnce,
   setTitle: () => setTitle,
@@ -15224,6 +15225,9 @@ function markBeingEdited(element, value) {
   }
   return true;
 }
+function resetElementsBeingEditedForTest() {
+  elementsBeingEdited.clear();
+}
 var elementsBeingEdited = /* @__PURE__ */ new Set();
 var numberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;
 var StyleValueDelimiters = ` \xA0	
@@ -17172,7 +17176,8 @@ var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) 
       variant: "icon",
       iconName: "cross",
       accessibleLabel: i18nString14(UIStrings14.close),
-      jslogContext: "dialog-close"
+      jslogContext: "dialog-close",
+      title: i18nString14(UIStrings14.close)
     };
     button.classList.add("dialog-close-button");
     button.addEventListener("click", this.hide.bind(this));

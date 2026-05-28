@@ -13294,10 +13294,13 @@ var ContextMenuProvider = class {
     const uiSourceCode = Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
     const networkPersistenceManager = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const binding = uiSourceCode && Persistence16.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
-    const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
-    if (Common17.ParsedURL.schemeIs(fileURL, "file:")) {
-      const path = Common17.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
-      contextMenu.revealSection().appendItem(i18nString22(UIStrings23.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
+    const fileSystemUISourceCode = binding ? binding.fileSystem : contentProvider instanceof Workspace28.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace28.Workspace.projectTypes.FileSystem ? contentProvider : uiSourceCode;
+    if (fileSystemUISourceCode && fileSystemUISourceCode.project().type() === Workspace28.Workspace.projectTypes.FileSystem) {
+      const fileURL = fileSystemUISourceCode.contentURL();
+      if (Common17.ParsedURL.schemeIs(fileURL, "file:")) {
+        const path = Common17.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
+        contextMenu.revealSection().appendItem(i18nString22(UIStrings23.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
+      }
     }
     if (contentProvider instanceof Workspace28.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace28.Workspace.projectTypes.FileSystem) {
       return;

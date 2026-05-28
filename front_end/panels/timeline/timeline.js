@@ -14094,7 +14094,7 @@ var UIStrings24 = {
 var str_24 = i18n47.i18n.registerUIStrings("panels/timeline/TimelineDetailsView.ts", UIStrings24);
 var i18nString24 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var { widget } = UI15.Widget;
-var TimelineDetailsPane = class extends Common15.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
+var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
   detailsLinkifier;
   tabbedPane;
   defaultDetailsWidget;
@@ -14111,6 +14111,35 @@ var TimelineDetailsPane = class extends Common15.ObjectWrapper.eventMixin(UI15.W
   #eventToRelatedInsightsMap = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #entityMapper = null;
+  static makeEventWidget(event, parsedTrace) {
+    const mockDelegate = {
+      select: () => {
+      },
+      zoomEvent: () => {
+      },
+      element: document.createElement("div"),
+      set3PCheckboxDisabled: () => {
+      },
+      selectEntryAtTime: () => {
+      },
+      highlightEvent: () => {
+      }
+    };
+    const pane7 = new _TimelineDetailsPane(mockDelegate);
+    pane7.hideHeader();
+    const entityMapper = new Trace30.EntityMapper.EntityMapper(parsedTrace);
+    void pane7.setModel({
+      parsedTrace,
+      selectedEvents: [event],
+      eventToRelatedInsightsMap: null,
+      entityMapper
+    }).then(() => {
+      void pane7.setSelection({
+        event
+      });
+    });
+    return pane7;
+  }
   constructor(delegate) {
     super();
     this.registerRequiredCSS(timelineDetailsView_css_default);
@@ -14294,6 +14323,9 @@ var TimelineDetailsPane = class extends Common15.ObjectWrapper.eventMixin(UI15.W
   }
   headerElement() {
     return this.tabbedPane.headerElement();
+  }
+  hideHeader() {
+    this.tabbedPane.headerElement().classList.add("hidden");
   }
   setPreferredTab(tabId) {
     this.preferredTabId = tabId;

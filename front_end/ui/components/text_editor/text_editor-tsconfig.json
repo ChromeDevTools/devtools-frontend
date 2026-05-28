@@ -78,9 +78,6 @@
       "path": "../../../models/bindings/bundle-tsconfig.json"
     },
     {
-      "path": "../../../models/formatter/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../models/javascript_metadata/bundle-tsconfig.json"
     },
     {
@@ -105,16 +102,10 @@
       "path": "../../legacy/theme_support/bundle-tsconfig.json"
     },
     {
-      "path": "../../lit/bundle-tsconfig.json"
-    },
-    {
       "path": "../../visual_logging/bundle-tsconfig.json"
     },
     {
       "path": "../code_highlighter/bundle-tsconfig.json"
-    },
-    {
-      "path": "../helpers/bundle-tsconfig.json"
     }
   ]
 }

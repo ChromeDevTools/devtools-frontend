@@ -310,17 +310,10 @@ describe('NetworkAnalyzer', () => {
       assert.deepEqual(result.get('https://example.com'), expected);
     });
 
-    it('should compute rtts when not provided', () => {
-      const timing = {connectStart: 5, connectEnd: 55, sendEnd: 100, receiveHeadersEnd: 200};
-      const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
-      const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin([request]);
-      const expected = {min: 50, max: 50, avg: 50, median: 50};
-      assert.deepEqual(result.get('https://example.com'), expected);
-    });
-
     it('should work on a real trace', async () => {
       const requests = await createRequests(this, trace);
-      const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests);
+      const rttByOrigin = NetworkAnalyzer.estimateMinimumRTTByOrigin(requests);
+      const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests, {rttByOrigin});
       assertCloseEnough(result.get('https://www.paulirish.com')?.avg ?? 0, 35);
       assertCloseEnough(result.get('https://www.googletagmanager.com')?.avg ?? 0, 8);
       assertCloseEnough(result.get('https://www.google-analytics.com')?.avg ?? 0, 8);
@@ -328,19 +321,20 @@ describe('NetworkAnalyzer', () => {
 
     it('should approximate well with either method', async () => {
       const requests = await createRequests(this, trace);
-      const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests).get(
-          NetworkAnalyzer.summary,
-      );
-      const resultApprox = NetworkAnalyzer
-                               .estimateServerResponseTimeByOrigin(requests, {
-                                 forceCoarseEstimates: true,
-                               })
-                               .get(NetworkAnalyzer.summary);
+      const rttByOrigin = NetworkAnalyzer.estimateMinimumRTTByOrigin(requests);
+      const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests, {rttByOrigin})
+                         .get(
+                             NetworkAnalyzer.summary,
+                         );
+      const rttByOriginCoarse = NetworkAnalyzer.estimateMinimumRTTByOrigin(requests, {forceCoarseEstimates: true});
+      const resultCoarse =
+          NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests, {rttByOrigin: rttByOriginCoarse})
+              .get(NetworkAnalyzer.summary);
       assert.isOk(result);
-      assert.isOk(resultApprox);
-      assertCloseEnough(result.min, resultApprox.min, 20);
-      assertCloseEnough(result.avg, resultApprox.avg, 30);
-      assertCloseEnough(result.median, resultApprox.median, 30);
+      assert.isOk(resultCoarse);
+      assertCloseEnough(result.min, resultCoarse.min, 20);
+      assertCloseEnough(result.avg, resultCoarse.avg, 30);
+      assertCloseEnough(result.median, resultCoarse.median, 30);
     });
   });
 

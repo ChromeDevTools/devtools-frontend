@@ -66,7 +66,7 @@ export class CdpBrowserContext extends BrowserContext {
           return target.page();
         }),
     );
-    return pages.filter((page): page is Page => {
+    return pages.filter(page => {
       return !!page;
     });
   }
@@ -150,8 +150,6 @@ export class CdpBrowserContext extends BrowserContext {
               hasCrossSiteAncestor: cookie.partitionKey.hasCrossSiteAncestor,
             }
           : undefined,
-        // TODO: remove sameParty as it is removed from Chrome.
-        sameParty: false,
       };
     });
   }

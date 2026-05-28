@@ -50,7 +50,7 @@ export async function getLineNumberElement(lineNumber: number|string, devToolsPa
 }
 
 export async function doubleClickSourceTreeItem(selector: string, devToolsPage: DevToolsPage) {
-  await devToolsPage.click(selector, {clickOptions: {clickCount: 2, offset: {x: 40, y: 10}}});
+  await devToolsPage.click(selector, {clickOptions: {count: 2, offset: {x: 40, y: 10}}});
 }
 
 export async function waitForSourcesPanel(devToolsPage: DevToolsPage): Promise<void> {

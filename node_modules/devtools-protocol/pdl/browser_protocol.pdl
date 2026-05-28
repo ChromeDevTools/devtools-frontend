@@ -18,6 +18,7 @@ include domains/Browser.pdl
 include domains/CSS.pdl
 include domains/CacheStorage.pdl
 include domains/Cast.pdl
+include domains/CrashReportContext.pdl
 include domains/DOM.pdl
 include domains/DOMDebugger.pdl
 include domains/DOMSnapshot.pdl
@@ -56,3 +57,4 @@ include domains/Tethering.pdl
 include domains/Tracing.pdl
 include domains/WebAudio.pdl
 include domains/WebAuthn.pdl
+include domains/WebMCP.pdl

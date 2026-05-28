@@ -679,32 +679,22 @@ export abstract class Browser extends EventEmitter<BrowserEvents> {
 
   /**
    * Whether Puppeteer is connected to this {@link Browser | browser}.
-   *
-   * @deprecated Use {@link Browser | Browser.connected}.
-   */
-  isConnected(): boolean {
-    return this.connected;
-  }
-
-  /**
-   * Whether Puppeteer is connected to this {@link Browser | browser}.
    */
   abstract get connected(): boolean;
 
   /** @internal */
   override [disposeSymbol](): void {
-    if (this.process()) {
-      return void this.close().catch(debugError);
-    }
-    return void this.disconnect().catch(debugError);
+    return void this[asyncDisposeSymbol]().catch(debugError);
   }
 
   /** @internal */
-  [asyncDisposeSymbol](): Promise<void> {
+  override async [asyncDisposeSymbol](): Promise<void> {
     if (this.process()) {
-      return this.close();
+      await this.close();
+    } else {
+      await this.disconnect();
     }
-    return this.disconnect();
+    await super[asyncDisposeSymbol]();
   }
 
   /**

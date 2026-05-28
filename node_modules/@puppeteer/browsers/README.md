@@ -8,6 +8,9 @@ Manage and launch browsers/drivers from a CLI or programmatically.
 - For Firefox downloads:
   - Linux builds: `xz` and `bzip2` utilities are required to unpack `.tar.gz` and `.tar.bz2` archives.
   - MacOS builds: `hdiutil` is required to unpack `.dmg` archives.
+- For Chrome downloads:
+  - On Linux/MacOS: `unzip`.
+  - On Windows: `tar.exe`.
 
 ## CLI
 
@@ -83,6 +86,14 @@ npx puppeteer browsers install chrome --install-deps
 
 1. Launching the system browsers is only possible for Chrome/Chromium.
 
+## Proxies
+
+The library and CLI respect `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables. For them to work, you must have the `proxy-agent` package installed:
+
+```bash
+npm install proxy-agent
+```
+
 ## Custom Providers
 
 You can implement custom browser providers to download from alternative sources like corporate mirrors, private repositories, or specialized browser builds.
@@ -157,4 +168,4 @@ Custom providers are NOT officially supported by Puppeteer. You accept full resp
 
 ## API
 
-The programmatic API allows installing and launching browsers from your code. See the `test` folder for examples on how to use the `install`, `canInstall`, `launch`, `computeExecutablePath`, `computeSystemExecutablePath` and other methods.
+The programmatic API allows installing and launching browsers from your code. See the `test` folder for examples on how to use the `install`, `canInstall`, `launch`, `computeExecutablePath`, `computeSystemExecutablePath`, and other methods.

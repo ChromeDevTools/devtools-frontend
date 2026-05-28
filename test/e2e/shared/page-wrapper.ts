@@ -322,7 +322,7 @@ export class PageWrapper {
     const passedClickOptions = (options?.clickOptions) || {};
     const clickOptionsWithDoubleClick: puppeteer.ClickOptions = {
       ...passedClickOptions,
-      clickCount: 2,
+      count: 2,
     };
     return await this.click(selector, {
       ...options,

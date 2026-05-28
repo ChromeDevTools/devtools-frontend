@@ -45,7 +45,7 @@ describe('hardwareConcurrency emulation on Sensors panel', () => {
     assert.deepEqual(initialValue, concurrency);
 
     // Check setting a different value works:
-    await input.click({clickCount: 3});
+    await input.click({count: 3});
     await input.type(`${initialValue + 1}`);
     concurrency = await waitForChangedConcurrency(concurrency, devToolsPage, inspectedPage);
     assert.deepEqual(concurrency, initialValue + 1);

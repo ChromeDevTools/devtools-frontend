@@ -12,7 +12,6 @@ import os from 'node:os';
 import path from 'node:path';
 
 import type * as ProgressBar from 'progress';
-import ProgressBarClass from 'progress';
 
 import {
   Browser,
@@ -42,7 +41,7 @@ function debugTimeEnd(label: string) {
   }
   const duration =
     end[0] * 1000 + end[1] / 1e6 - (start[0] * 1000 + start[1] / 1e6); // calculate duration in milliseconds
-  debugInstall(`Duration for ${label}: ${duration}ms`);
+  debugInstall?.(`Duration for ${label}: ${duration}ms`);
 }
 
 /**
@@ -209,7 +208,7 @@ async function installWithProviders(
     try {
       // Check: does this provider support this browser/platform?
       if (!(await provider.supports(downloadOptions))) {
-        debugInstall(
+        debugInstall?.(
           `Provider ${provider.getName()} does not support ${options.browser} on ${options.platform}`,
         );
         continue;
@@ -217,26 +216,26 @@ async function installWithProviders(
 
       // Warn if using non-default provider
       if (!(provider instanceof DefaultProvider)) {
-        debugInstall(`⚠️  Using custom downloader: ${provider.getName()}`);
-        debugInstall(
+        debugInstall?.(`⚠️  Using custom downloader: ${provider.getName()}`);
+        debugInstall?.(
           `⚠️  Puppeteer does not guarantee compatibility with non-default providers`,
         );
       }
 
-      debugInstall(
+      debugInstall?.(
         `Trying provider: ${provider.getName()} for ${options.browser} ${options.buildId}`,
       );
 
       // Get download URL from provider
       const url = await provider.getDownloadUrl(downloadOptions);
       if (!url) {
-        debugInstall(
+        debugInstall?.(
           `Provider ${provider.getName()} returned no URL for ${options.browser} ${options.buildId}`,
         );
         continue;
       }
 
-      debugInstall(`Successfully got URL from ${provider.getName()}: ${url}`);
+      debugInstall?.(`Successfully got URL from ${provider.getName()}: ${url}`);
 
       if (!existsSync(browserRoot)) {
         await mkdir(browserRoot, {recursive: true});
@@ -245,7 +244,7 @@ async function installWithProviders(
       // Download and install using the URL from the provider
       return await installUrl(url, options, provider);
     } catch (err) {
-      debugInstall(
+      debugInstall?.(
         `Provider ${provider.getName()} failed: ${(err as Error).message}`,
       );
       errors.push({
@@ -318,7 +317,7 @@ async function installDeps(installedBrowser: InstalledBrowser) {
     'deb.deps',
   );
   if (!existsSync(depsPath)) {
-    debugInstall(`deb.deps file was not found at ${depsPath}`);
+    debugInstall?.(`deb.deps file was not found at ${depsPath}`);
     return;
   }
   const data = readFileSync(depsPath, 'utf-8').split('\n').join(',');
@@ -331,7 +330,7 @@ async function installDeps(installedBrowser: InstalledBrowser) {
       'Failed to install system dependencies: apt-get does not seem to be available',
     );
   }
-  debugInstall(`Trying to install dependencies: ${data}`);
+  debugInstall?.(`Trying to install dependencies: ${data}`);
   result = spawnSync('apt-get', [
     'satisfy',
     '-y',
@@ -343,7 +342,7 @@ async function installDeps(installedBrowser: InstalledBrowser) {
       `Failed to install system dependencies: status=${result.status},error=${result.error},stdout=${result.stdout.toString('utf8')},stderr=${result.stderr.toString('utf8')}`,
     );
   }
-  debugInstall(`Installed system dependencies ${data}`);
+  debugInstall?.(`Installed system dependencies ${data}`);
 }
 
 async function installUrl(
@@ -380,7 +379,7 @@ async function installUrl(
     if (existsSync(archivePath)) {
       return archivePath;
     }
-    debugInstall(`Downloading binary from ${url}`);
+    debugInstall?.(`Downloading binary from ${url}`);
     debugTime('download');
     await downloadFile(url, archivePath, downloadProgressCallback);
     debugTimeEnd('download');
@@ -399,7 +398,7 @@ async function installUrl(
     buildId: options.buildId,
     platform: options.platform,
   });
-  debugInstall(
+  debugInstall?.(
     `Using executable path from provider: ${relativeExecutablePath}`,
   );
 
@@ -436,7 +435,7 @@ async function installUrl(
 
     // Check if archive already exists (e.g., from a custom provider)
     if (!existsSync(archivePath)) {
-      debugInstall(`Downloading binary from ${url}`);
+      debugInstall?.(`Downloading binary from ${url}`);
       try {
         debugTime('download');
         await downloadFile(url, archivePath, downloadProgressCallback);
@@ -444,10 +443,10 @@ async function installUrl(
         debugTimeEnd('download');
       }
     } else {
-      debugInstall(`Using existing archive at ${archivePath}`);
+      debugInstall?.(`Using existing archive at ${archivePath}`);
     }
 
-    debugInstall(`Installing ${archivePath} to ${outputPath}`);
+    debugInstall?.(`Installing ${archivePath} to ${outputPath}`);
     try {
       debugTime('extract');
       await unpackArchive(archivePath, outputPath);
@@ -492,7 +491,7 @@ async function runSetup(installedBrowser: InstalledBrowser): Promise<void> {
         path.join(browserDir, 'setup.exe'),
         [`--configure-browser-in-directory=` + browserDir],
         {
-          shell: true,
+          shell: false,
         },
       );
       // TODO: Handle error here. Currently the setup.exe sometimes
@@ -620,13 +619,26 @@ export function getDownloadUrl(
   return new URL(downloadUrls[browser](platform, buildId, baseUrl));
 }
 
+let ProgressBarClass: new (
+  format: string,
+  options: ProgressBar.ProgressBarOptions,
+) => ProgressBar;
+const importProgressBarIfNeeded = async () => {
+  if (!ProgressBarClass) {
+    ProgressBarClass = (await import('progress')).default;
+  }
+
+  return ProgressBarClass;
+};
+
 /**
- * @public
+ * @internal
  */
-export function makeProgressCallback(
+export async function makeProgressCallback(
   browser: Browser,
   buildId: string,
-): (downloadedBytes: number, totalBytes: number) => void {
+): Promise<(downloadedBytes: number, totalBytes: number) => void> {
+  const ProgressBarClass = await importProgressBarIfNeeded();
   let progressBar: ProgressBar;
 
   let lastDownloadedBytes = 0;

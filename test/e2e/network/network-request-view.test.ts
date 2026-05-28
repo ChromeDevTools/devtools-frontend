@@ -649,7 +649,7 @@ describe('The Network Request view', () => {
       assert.isOk(inputElement, 'Unable to find search input field');
 
       await inputElement.focus();
-      await inputElement.click({clickCount: 3});  // Select all text.
+      await inputElement.click({count: 3});  // Select all text.
       await inputElement.type(query);
 
       await devToolsPage.waitForFunction(async () => {

@@ -111,8 +111,7 @@ describe('Recorder', function() {
     await inspectedPage.page.click('#mouse-button', {button: 'right'});
     await inspectedPage.page.click('#mouse-button', {button: 'forward'});
     await inspectedPage.page.click('#mouse-button', {button: 'back'});
-    await inspectedPage.page.click('#mouse-button', {clickCount: 1});
-    await inspectedPage.page.click('#mouse-button', {clickCount: 2});
+    await inspectedPage.page.click('#mouse-button', {count: 2});
 
     const recording = await stopRecording(devToolsPage);
     assert.deepEqual(processAndVerifyBaseRecording(recording), {

@@ -40,6 +40,7 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
   #sessions = new Map<string, CdpCDPSession>();
   #closed = false;
   #manuallyAttached = new Set<string>();
+  #rejectEmulateNetworkConditionsCalls = false;
   #callbacks: CallbackRegistry;
   #rawErrors = false;
   #idGenerator: GetIdFn;
@@ -78,6 +79,17 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
 
   get timeout(): number {
     return this.#timeout;
+  }
+
+  /**
+   * @internal
+   */
+  get rejectEmulateNetworkConditionsCalls(): boolean {
+    return this.#rejectEmulateNetworkConditionsCalls;
+  }
+
+  set rejectEmulateNetworkConditionsCalls(value: boolean) {
+    this.#rejectEmulateNetworkConditionsCalls = value;
   }
 
   /**
@@ -147,6 +159,16 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
     if (this.#closed) {
       return Promise.reject(new ConnectionClosedError('Connection closed.'));
     }
+    if (
+      method === 'Network.emulateNetworkConditions' &&
+      this.rejectEmulateNetworkConditionsCalls
+    ) {
+      return Promise.reject(
+        new Error(
+          'Cannot reset network conditions: rule-based emulation is enabled.',
+        ),
+      );
+    }
     return callbacks.create(method, options?.timeout ?? this.#timeout, id => {
       const stringifiedMessage = JSON.stringify({
         method,
@@ -210,18 +232,27 @@ export class Connection extends EventEmitter<CDPSessionEvents> {
         session.onMessage(object);
       }
     } else if (object.id) {
-      if (object.error) {
-        if (this.#rawErrors) {
-          this.#callbacks.rejectRaw(object.id, object.error);
+      if (this.#callbacks.has(object.id)) {
+        if (object.error) {
+          if (this.#rawErrors) {
+            this.#callbacks.rejectRaw(object.id, object.error);
+          } else {
+            this.#callbacks.reject(
+              object.id,
+              createProtocolErrorMessage(object),
+              object.error.message,
+            );
+          }
         } else {
-          this.#callbacks.reject(
-            object.id,
-            createProtocolErrorMessage(object),
-            object.error.message,
-          );
+          this.#callbacks.resolve(object.id, object.result);
         }
       } else {
-        this.#callbacks.resolve(object.id, object.result);
+        for (const session of this.#sessions.values()) {
+          if (session.hasCallback(object.id)) {
+            session.onMessage(object);
+            break;
+          }
+        }
       }
     } else {
       this.emit(object.method, object.params);

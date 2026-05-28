@@ -73,7 +73,10 @@ class Sink extends Writable {
     }
 
     if (this._isVoid) {
-      return cb(new Error('No body allowed for this entry'))
+      if (data.byteLength > 0) {
+        return cb(new Error('No body allowed for this entry'))
+      }
+      return cb()
     }
 
     this.written += data.byteLength

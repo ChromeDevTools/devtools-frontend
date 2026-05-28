@@ -87,7 +87,7 @@ def main():
     pkg_json = {
         "name": package_name,
         "version":
-        "4.53.5",  # This can be generic, Rollup checks the existence mostly
+        "4.60.4",  # This can be generic, Rollup checks the existence mostly
         "main": dest_file_name,
         "files": [dest_file_name]
     }

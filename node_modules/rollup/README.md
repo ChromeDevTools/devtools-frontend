@@ -9,8 +9,8 @@
   <a href="https://nodejs.org/en/about/previous-releases">
     <img src="https://img.shields.io/node/v/rollup.svg" alt="node compatibility">
   </a>
-  <a href="https://packagephobia.now.sh/result?p=rollup">
-    <img src="https://packagephobia.now.sh/badge?p=rollup" alt="install size" >
+  <a href="https://packagephobia.com/result?p=rollup">
+    <img src="https://packagephobia.com/badge?p=rollup" alt="install size" >
   </a>
   <a href="https://codecov.io/gh/rollup/rollup">
     <img src="https://codecov.io/gh/rollup/rollup/graph/badge.svg" alt="code coverage" >
@@ -125,7 +125,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 ## Special Sponsor
 
-<a href="https://www.tngtech.com/en/index.html" target="_blank"><img src="https://www.tngtech.com/fileadmin/Public/Images/Logos/TNG_Logo_medium_400x64.svg" alt="TNG Logo" width="280"/></a>
+<a href="https://www.tngtech.com/en/index.html" target="_blank"><img src="https://avatars.githubusercontent.com/u/432256?s=200&v=4" alt="TNG Logo"/></a>
 
 TNG has been supporting the work of [Lukas Taegert-Atkinson](https://github.com/lukastaegert) on Rollup since 2017.
 

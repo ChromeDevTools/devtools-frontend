@@ -68,7 +68,16 @@ export class CdpCDPSession extends CDPSession {
         if (this.detached) {
             return Promise.reject(new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${this.#targetType} has been closed.`));
         }
-        return this.#connection._rawSend(this.#callbacks, method, params, this.#sessionId, options);
+        return this.#connection
+            ._rawSend(this.#callbacks, method, params, this.#sessionId, options)
+            .catch(error => {
+            if (error instanceof Error &&
+                error.message.includes('Session with given id not found')) {
+                this.onClosed();
+                throw new TargetCloseError(`Protocol error (${method}): Session with given id not found.`);
+            }
+            throw error;
+        });
     }
     /**
      * @internal

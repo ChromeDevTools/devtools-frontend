@@ -1,0 +1,33 @@
+{
+  "name": "serialize-javascript",
+  "version": "7.0.5",
+  "description": "Serialize JavaScript to a superset of JSON that includes regular expressions and functions.",
+  "main": "index.js",
+  "scripts": {
+    "benchmark": "node -v && node test/benchmark/serialize.js",
+    "test": "node --test test/unit/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yahoo/serialize-javascript.git"
+  },
+  "keywords": [
+    "serialize",
+    "serialization",
+    "javascript",
+    "js",
+    "json"
+  ],
+  "author": "Eric Ferraiuolo <edf@ericf.me>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/yahoo/serialize-javascript/issues"
+  },
+  "homepage": "https://github.com/yahoo/serialize-javascript",
+  "devDependencies": {
+    "benchmark": "^2.1.4"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

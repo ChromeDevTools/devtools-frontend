@@ -39,7 +39,6 @@ declare namespace Declaration {
     value: string
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   export { Declaration_ as default }
 }
 

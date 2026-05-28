@@ -1,5 +1,17 @@
 'use strict'
 
+// Escapes sequences that could break out of an HTML <style> context.
+// Uses CSS unicode escaping (\3c = '<') which is valid CSS and parsed
+// correctly by all compliant CSS consumers.
+const STYLE_TAG = /(<)(\/?style\b)/gi
+const COMMENT_OPEN = /(<)(!--)/g
+
+function escapeHTMLInCSS(str) {
+  if (typeof str !== 'string') return str
+  if (!str.includes('<')) return str
+  return str.replace(STYLE_TAG, '\\3c $2').replace(COMMENT_OPEN, '\\3c $2')
+}
+
 const DEFAULT_RAW = {
   after: '\n',
   beforeClose: '\n',
@@ -25,11 +37,12 @@ class Stringifier {
   }
 
   atrule(node, semicolon) {
+    let raws = node.raws
     let name = '@' + node.name
     let params = node.params ? this.rawValue(node, 'params') : ''
 
-    if (typeof node.raws.afterName !== 'undefined') {
-      name += node.raws.afterName
+    if (typeof raws.afterName !== 'undefined') {
+      name += raws.afterName
     } else if (params) {
       name += ' '
     }
@@ -37,8 +50,8 @@ class Stringifier {
     if (node.nodes) {
       this.block(node, name + params)
     } else {
-      let end = (node.raws.between || '') + (semicolon ? ';' : '')
-      this.builder(name + params + end, node)
+      let end = (raws.between || '') + (semicolon ? ';' : '')
+      this.builder(escapeHTMLInCSS(name + params + end), node)
     }
   }
 
@@ -73,7 +86,7 @@ class Stringifier {
 
   block(node, start) {
     let between = this.raw(node, 'between', 'beforeOpen')
-    this.builder(start + between + '{', node, 'start')
+    this.builder(escapeHTMLInCSS(start + between) + '{', node, 'start')
 
     let after
     if (node.nodes && node.nodes.length) {
@@ -83,22 +96,24 @@ class Stringifier {
       after = this.raw(node, 'after', 'emptyBody')
     }
 
-    if (after) this.builder(after)
+    if (after) this.builder(escapeHTMLInCSS(after))
     this.builder('}', node, 'end')
   }
 
   body(node) {
-    let last = node.nodes.length - 1
+    let nodes = node.nodes
+    let last = nodes.length - 1
     while (last > 0) {
-      if (node.nodes[last].type !== 'comment') break
+      if (nodes[last].type !== 'comment') break
       last -= 1
     }
 
     let semicolon = this.raw(node, 'semicolon')
-    for (let i = 0; i < node.nodes.length; i++) {
-      let child = node.nodes[i]
+    let isDocument = node.type === 'document'
+    for (let i = 0; i < nodes.length; i++) {
+      let child = nodes[i]
       let before = this.raw(child, 'before')
-      if (before) this.builder(before)
+      if (before) this.builder(isDocument ? before : escapeHTMLInCSS(before))
       this.stringify(child, last !== i || semicolon)
     }
   }
@@ -106,19 +121,21 @@ class Stringifier {
   comment(node) {
     let left = this.raw(node, 'left', 'commentLeft')
     let right = this.raw(node, 'right', 'commentRight')
-    this.builder('/*' + left + node.text + right + '*/', node)
+    this.builder(escapeHTMLInCSS('/*' + left + node.text + right + '*/'), node)
   }
 
   decl(node, semicolon) {
+    let raws = node.raws
     let between = this.raw(node, 'between', 'colon')
+
     let string = node.prop + between + this.rawValue(node, 'value')
 
     if (node.important) {
-      string += node.raws.important || ' !important'
+      string += raws.important || ' !important'
     }
 
     if (semicolon) string += ';'
-    this.builder(string, node)
+    this.builder(escapeHTMLInCSS(string), node)
   }
 
   document(node) {
@@ -154,9 +171,9 @@ class Stringifier {
 
     // Detect style by other nodes
     let root = node.root()
-    if (!root.rawCache) root.rawCache = {}
-    if (typeof root.rawCache[detect] !== 'undefined') {
-      return root.rawCache[detect]
+    let cache = root.rawCache || (root.rawCache = {})
+    if (typeof cache[detect] !== 'undefined') {
+      return cache[detect]
     }
 
     if (detect === 'before' || detect === 'after') {
@@ -175,7 +192,7 @@ class Stringifier {
 
     if (typeof value === 'undefined') value = DEFAULT_RAW[detect]
 
-    root.rawCache[detect] = value
+    cache[detect] = value
     return value
   }
 
@@ -324,13 +341,17 @@ class Stringifier {
 
   root(node) {
     this.body(node)
-    if (node.raws.after) this.builder(node.raws.after)
+    if (node.raws.after) {
+      let after = node.raws.after
+      let isDocument = node.parent && node.parent.type === 'document'
+      this.builder(isDocument ? after : escapeHTMLInCSS(after))
+    }
   }
 
   rule(node) {
     this.block(node, this.rawValue(node, 'selector'))
     if (node.raws.ownSemicolon) {
-      this.builder(node.raws.ownSemicolon, node, 'end')
+      this.builder(escapeHTMLInCSS(node.raws.ownSemicolon), node, 'end')
     }
   }
 

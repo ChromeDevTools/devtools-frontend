@@ -475,14 +475,14 @@ export class UsedPreloadingView extends UI.Widget.VBox {
     if (prerenderLike?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE &&
         prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED;
-    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
-      kind = UsedKind.PREFETCH_USED;
     } else if (prerenderLike?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
       kind = UsedKind.PRERENDER_USED;
-    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
-      kind = UsedKind.PREFETCH_FAILED;
+    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
+      kind = UsedKind.PREFETCH_USED;
     } else if (prerenderLike?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
       kind = UsedKind.PRERENDER_FAILED;
+    } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
+      kind = UsedKind.PREFETCH_FAILED;
     } else {
       kind = UsedKind.NO_PRELOADS;
     }

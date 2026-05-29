@@ -5,10 +5,7 @@
 import("../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("mcp") {
-  sources = [
-    "HostBindings.ts",
-    "mcp.ts",
-  ]
+  sources = [ "mcp.ts" ]
 
   es_target = "es2023"
   es_libs = []

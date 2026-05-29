@@ -103,16 +103,10 @@
       "path": "../../../../models/trace/insights/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../services/trace_bounds/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../../third_party/marked/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/buttons/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
       "path": "../../../../ui/components/linkifier/bundle-tsconfig.json"

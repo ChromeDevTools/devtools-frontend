@@ -88,6 +88,7 @@ export declare class Breakpoint implements SDK.TargetManager.SDKModelObserver<SD
     uiLocationRemoved(uiLocation: Workspace.UISourceCode.UILocation): void;
     enabled(): boolean;
     bound(): boolean;
+    getClosestResolvedLocation(): Workspace.UISourceCode.UILocation | null;
     setEnabled(enabled: boolean): void;
     /**
      * The breakpoint condition as entered by the user.

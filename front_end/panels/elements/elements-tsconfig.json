@@ -93,9 +93,6 @@
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/protocol_client/bundle-tsconfig.json"
-    },
-    {
       "path": "../../core/root/bundle-tsconfig.json"
     },
     {
@@ -126,22 +123,13 @@
       "path": "../../models/elements/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/extensions/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/issues_manager/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/stack_trace/bundle-tsconfig.json"
     },
     {
       "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/workspace_diff/bundle-tsconfig.json"
     },
     {
       "path": "../common/bundle-tsconfig.json"
@@ -153,13 +141,7 @@
       "path": "../event_listeners/bundle-tsconfig.json"
     },
     {
-      "path": "../issues/bundle-tsconfig.json"
-    },
-    {
       "path": "../media/bundle-tsconfig.json"
-    },
-    {
-      "path": "../mobile_throttling/bundle-tsconfig.json"
     },
     {
       "path": "../utils/bundle-tsconfig.json"

@@ -61,9 +61,6 @@
       "path": "../../core/root/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/sdk/bundle-tsconfig.json"
-    },
-    {
       "path": "../../third_party/marked/bundle-tsconfig.json"
     },
     {
@@ -92,9 +89,6 @@
     },
     {
       "path": "../console/bundle-tsconfig.json"
-    },
-    {
-      "path": "../sources/bundle-tsconfig.json"
     }
   ]
 }

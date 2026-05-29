@@ -331,9 +331,8 @@ function getMarkdownRenderer(conversation) {
     }
     else if (conversation?.type === "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */) {
         const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
-        const resourceTreeModel = domModel?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-        const mainFrameId = resourceTreeModel?.mainFrame?.id;
-        return new AccessibilityAgentMarkdownRenderer(mainFrameId);
+        const mainDocumentURL = domModel?.existingDocument()?.documentURL;
+        return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);
     }
     return new MarkdownRendererWithCodeBlock();
 }

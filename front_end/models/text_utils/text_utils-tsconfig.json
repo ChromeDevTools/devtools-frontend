@@ -57,9 +57,6 @@
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/root/bundle-tsconfig.json"
-    },
-    {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"
     }
   ]

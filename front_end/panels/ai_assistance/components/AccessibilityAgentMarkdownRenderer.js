@@ -2,16 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
 import { MarkdownRendererWithCodeBlock } from './MarkdownRendererWithCodeBlock.js';
 const { html } = Lit.StaticHtml;
 const { until } = Lit.Directives;
 export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
-    mainFrameId;
-    constructor(mainFrameId = '') {
+    mainDocumentURL;
+    constructor(mainDocumentURL = '') {
         super();
-        this.mainFrameId = mainFrameId;
+        this.mainDocumentURL = mainDocumentURL;
+    }
+    #isSameOrigin(node) {
+        const nodeDocumentURL = node.ownerDocument?.documentURL ?? '';
+        return AiAssistanceModel.AiUtils.isSameOrigin(this.mainDocumentURL, nodeDocumentURL);
     }
     templateForToken(token) {
         if (token.type === 'link' && token.href.startsWith('#')) {
@@ -71,7 +76,7 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
         if (!node) {
             return;
         }
-        if (node.frameId() !== this.mainFrameId) {
+        if (!this.#isSameOrigin(node)) {
             return;
         }
         const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
@@ -94,7 +99,7 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
         if (!node) {
             return;
         }
-        if (node.frameId() !== this.mainFrameId) {
+        if (!this.#isSameOrigin(node)) {
             return;
         }
         const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });

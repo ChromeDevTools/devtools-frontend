@@ -82,12 +82,12 @@ declare class NetworkAnalyzer {
      * is unavailable.
      */
     static estimateRTTByOrigin(records: Lantern.NetworkRequest[], options?: RTTEstimateOptions): Map<string, Summary>;
+    static estimateMinimumRTTByOrigin(records: Lantern.NetworkRequest[], options?: RTTEstimateOptions): Map<string, number>;
     /**
-     * Estimates the server response time of each origin. RTT times can be passed in or will be
-     * estimated automatically if not provided.
+     * Estimates the server response time of each origin. RTT times must be passed in.
      */
-    static estimateServerResponseTimeByOrigin(records: Lantern.NetworkRequest[], options?: RTTEstimateOptions & {
-        rttByOrigin?: Map<string, number>;
+    static estimateServerResponseTimeByOrigin(records: Lantern.NetworkRequest[], options: {
+        rttByOrigin: Map<string, number>;
     }): Map<string, Summary>;
     /**
      * Computes the average throughput for the given requests in bits/second.

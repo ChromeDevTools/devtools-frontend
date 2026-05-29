@@ -111,9 +111,6 @@
       "path": "../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.json"
-    },
-    {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
     },
     {
@@ -123,25 +120,16 @@
       "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/cpu_profile/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/crux-manager/bundle-tsconfig.json"
     },
     {
       "path": "../../models/emulation/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/extensions/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {
       "path": "../../models/live-metrics/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/source_map_scopes/bundle-tsconfig.json"
     },
     {
       "path": "../../models/text_utils/bundle-tsconfig.json"
@@ -159,16 +147,10 @@
       "path": "../common/bundle-tsconfig.json"
     },
     {
-      "path": "../coverage/bundle-tsconfig.json"
-    },
-    {
       "path": "../layer_viewer/bundle-tsconfig.json"
     },
     {
       "path": "../mobile_throttling/bundle-tsconfig.json"
-    },
-    {
-      "path": "../profiler/bundle-tsconfig.json"
     },
     {
       "path": "../../services/trace_bounds/bundle-tsconfig.json"
@@ -192,16 +174,10 @@
       "path": "../../ui/components/helpers/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/linkifier/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/menus/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/components/snackbars/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/i18n/bundle-tsconfig.json"

@@ -55,4 +55,12 @@ export function isGeminiBranding() {
 export function getIconName() {
     return isGeminiBranding() ? 'spark' : 'smart-assistant';
 }
+export function isSameOrigin(url1, url2) {
+    if (url1.startsWith('data:') || url2.startsWith('data:')) {
+        return url1 === url2;
+    }
+    const origin1 = Common.ParsedURL.ParsedURL.extractOrigin(url1);
+    const origin2 = Common.ParsedURL.ParsedURL.extractOrigin(url2);
+    return origin1 !== '' && origin1 === origin2;
+}
 //# sourceMappingURL=AiUtils.js.map

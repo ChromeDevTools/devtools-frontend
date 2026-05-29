@@ -115,19 +115,10 @@
       "path": "../../foundation/bundle-tsconfig.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.json"
-    },
-    {
       "path": "../../models/annotations/bundle-tsconfig.json"
     },
     {
       "path": "../../models/geometry/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/greendev/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/logs/bundle-tsconfig.json"
     },
     {
       "path": "../../models/stack_trace/bundle-tsconfig.json"
@@ -136,16 +127,7 @@
       "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/trace/bundle-tsconfig.json"
-    },
-    {
-      "path": "theme_support/bundle-tsconfig.json"
-    },
-    {
       "path": "../components/buttons/bundle-tsconfig.json"
-    },
-    {
-      "path": "../components/helpers/bundle-tsconfig.json"
     },
     {
       "path": "../components/highlighting/bundle-tsconfig.json"

@@ -63,9 +63,6 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/badges/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/crux-manager/bundle-tsconfig.json"
     },
     {

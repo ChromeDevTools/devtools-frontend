@@ -156,6 +156,7 @@ entrypoints/wasmparser_worker/wasmparser_worker.test.js
 models/ai_assistance/AgentProject.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
+models/ai_assistance/AiUtils.test.js
 models/ai_assistance/BuiltInAi.test.js
 models/ai_assistance/ChangeManager.test.js
 models/ai_assistance/EvaluateAction.test.js
@@ -420,19 +421,6 @@ panels/coverage/CoverageView.test.js
 panels/css_overview/CSSOverviewPanel.test.js
 panels/developer_resources/DeveloperResourcesView.test.js
 panels/developer_resources/developer_resources.test.js
-panels/elements/components/AccessibilityTreeNode.test.js
-panels/elements/components/AdornerManager.test.js
-panels/elements/components/CSSHintDetailsView.test.js
-panels/elements/components/CSSPropertyDocsView.test.js
-panels/elements/components/CSSPropertyIconResolver.test.js
-panels/elements/components/CSSQuery.test.js
-panels/elements/components/CSSVariableValueView.test.js
-panels/elements/components/ComputedStyleProperty.test.js
-panels/elements/components/ComputedStyleTrace.test.js
-panels/elements/components/ElementsBreadcrumbs.test.js
-panels/elements/components/ElementsTreeExpandButton.test.js
-panels/elements/components/QueryContainer.test.js
-panels/elements/components/StylePropertyEditor.test.js
 panels/elements/AccessibilityTreeView.test.js
 panels/elements/AdoptedStyleSheetTreeElement.test.js
 panels/elements/CSSRuleValidator.test.js

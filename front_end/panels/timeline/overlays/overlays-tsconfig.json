@@ -57,9 +57,6 @@
       "path": "../../../models/trace/bundle-tsconfig.json"
     },
     {
-      "path": "../../../services/trace_bounds/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../ui/legacy/bundle-tsconfig.json"
     },
     {
@@ -70,9 +67,6 @@
     },
     {
       "path": "../../../ui/visual_logging/bundle-tsconfig.json"
-    },
-    {
-      "path": "../utils/bundle-tsconfig.json"
     },
     {
       "path": "components/bundle-tsconfig.json"

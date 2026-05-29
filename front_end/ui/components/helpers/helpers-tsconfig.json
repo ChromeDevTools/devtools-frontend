@@ -47,12 +47,6 @@
       "path": "../../../core/common/bundle-tsconfig.json"
     },
     {
-      "path": "../../../core/platform/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../core/root/bundle-tsconfig.json"
-    },
-    {
       "path": "../../legacy/theme_support/bundle-tsconfig.json"
     },
     {

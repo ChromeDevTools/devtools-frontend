@@ -59,16 +59,10 @@
       "path": "../../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../../core/root/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../core/sdk/bundle-tsconfig.json"
     },
     {
       "path": "../../../generated/generated-tsconfig.json"
-    },
-    {
-      "path": "../../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../../models/issues_manager/bundle-tsconfig.json"
@@ -86,9 +80,6 @@
       "path": "../../sources/bundle-tsconfig.json"
     },
     {
-      "path": "../../utils/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../third_party/chromium/client-variations/bundle-tsconfig.json"
     },
     {
@@ -96,15 +87,6 @@
     },
     {
       "path": "../../../ui/components/helpers/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../ui/components/input/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/components/report_view/bundle-tsconfig.json"

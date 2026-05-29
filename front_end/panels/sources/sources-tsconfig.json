@@ -94,16 +94,10 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
-      "path": "../../entrypoints/formatter_worker/bundle-tsconfig.json"
-    },
-    {
       "path": "../../entrypoints/formatter_worker/formatter_actions-tsconfig.json"
     },
     {
       "path": "../../generated/generated-tsconfig.json"
-    },
-    {
-      "path": "../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
@@ -122,9 +116,6 @@
     },
     {
       "path": "../../models/breakpoints/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/extensions/bundle-tsconfig.json"
     },
     {
       "path": "../../models/formatter/bundle-tsconfig.json"
@@ -149,12 +140,6 @@
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/workspace_diff/bundle-tsconfig.json"
-    },
-    {
-      "path": "../console_counters/bundle-tsconfig.json"
     },
     {
       "path": "../coverage/bundle-tsconfig.json"
@@ -215,9 +200,6 @@
     },
     {
       "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/legacy/components/perf_ui/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/legacy/components/quick_open/bundle-tsconfig.json"

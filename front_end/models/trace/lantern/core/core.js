@@ -49,6 +49,9 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     const grouped = /* @__PURE__ */ new Map();
     records.forEach((item) => {
       const key = item.parsedURL.securityOrigin;
+      if (key.startsWith("chrome-extension:")) {
+        return;
+      }
       const group = grouped.get(key) || [];
       group.push(item);
       grouped.set(key, group);
@@ -324,25 +327,20 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
         estimatesByOrigin.set(origin, originEstimates);
       }
     }
-    if (!estimatesByOrigin.size) {
-      throw new LanternError("No timing information available");
-    }
     return _NetworkAnalyzer.summarize(estimatesByOrigin);
   }
+  static estimateMinimumRTTByOrigin(records, options) {
+    const rttByOrigin = /* @__PURE__ */ new Map();
+    for (const [origin, summary] of _NetworkAnalyzer.estimateRTTByOrigin(records, options).entries()) {
+      rttByOrigin.set(origin, summary.min);
+    }
+    return rttByOrigin;
+  }
   /**
-   * Estimates the server response time of each origin. RTT times can be passed in or will be
-   * estimated automatically if not provided.
+   * Estimates the server response time of each origin. RTT times must be passed in.
    */
   static estimateServerResponseTimeByOrigin(records, options) {
-    let rttByOrigin = options?.rttByOrigin;
-    if (!rttByOrigin) {
-      rttByOrigin = /* @__PURE__ */ new Map();
-      const rttSummaryByOrigin = _NetworkAnalyzer.estimateRTTByOrigin(records, options);
-      for (const [origin, summary] of rttSummaryByOrigin.entries()) {
-        rttByOrigin.set(origin, summary.min);
-      }
-    }
-    const estimatesByOrigin = _NetworkAnalyzer.estimateResponseTimeByOrigin(records, rttByOrigin);
+    const estimatesByOrigin = _NetworkAnalyzer.estimateResponseTimeByOrigin(records, options.rttByOrigin);
     return _NetworkAnalyzer.summarize(estimatesByOrigin);
   }
   /**
@@ -384,11 +382,8 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     return totalBytes * 8 / totalDuration;
   }
   static computeRTTAndServerResponseTime(records) {
-    const rttByOrigin = /* @__PURE__ */ new Map();
-    for (const [origin, summary] of _NetworkAnalyzer.estimateRTTByOrigin(records).entries()) {
-      rttByOrigin.set(origin, summary.min);
-    }
-    const minimumRtt = Math.min(...Array.from(rttByOrigin.values()));
+    const rttByOrigin = _NetworkAnalyzer.estimateMinimumRTTByOrigin(records);
+    const minimumRtt = rttByOrigin.size ? Math.min(...Array.from(rttByOrigin.values())) : 0;
     const responseTimeSummaries = _NetworkAnalyzer.estimateServerResponseTimeByOrigin(records, {
       rttByOrigin
     });

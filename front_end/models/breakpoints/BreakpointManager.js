@@ -595,6 +595,32 @@ export class Breakpoint {
     bound() {
         return this.#uiLocations.size !== 0;
     }
+    getClosestResolvedLocation() {
+        if (this.#uiLocations.size === 0) {
+            return null;
+        }
+        let closestLocation = null;
+        let minLineDiff = Infinity;
+        let minColDiff = Infinity;
+        const breakpointLine = this.lineNumber();
+        const breakpointColumn = this.columnNumber() ?? 0;
+        for (const uiLocation of this.#uiLocations) {
+            const lineDiff = Math.abs(uiLocation.lineNumber - breakpointLine);
+            const colDiff = Math.abs((uiLocation.columnNumber ?? 0) - breakpointColumn);
+            if (lineDiff < minLineDiff) {
+                minLineDiff = lineDiff;
+                minColDiff = colDiff;
+                closestLocation = uiLocation;
+            }
+            else if (lineDiff === minLineDiff) {
+                if (colDiff < minColDiff) {
+                    minColDiff = colDiff;
+                    closestLocation = uiLocation;
+                }
+            }
+        }
+        return closestLocation;
+    }
     setEnabled(enabled) {
         this.updateState({ ...this.#storageState, enabled });
     }

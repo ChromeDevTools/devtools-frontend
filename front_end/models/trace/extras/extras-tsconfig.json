@@ -52,13 +52,7 @@
       "path": "../../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../../core/sdk/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../generated/generated-tsconfig.json"
-    },
-    {
-      "path": "../../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../../third_party/third-party-web/bundle-tsconfig.json"

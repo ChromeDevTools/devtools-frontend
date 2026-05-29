@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { LanternError } from './LanternError.js';
 class UrlUtils {
     /**
      * There is fancy URL rewriting logic for the chrome://settings page that we need to work around.
@@ -56,6 +55,10 @@ class NetworkAnalyzer {
         const grouped = new Map();
         records.forEach(item => {
             const key = item.parsedURL.securityOrigin;
+            // We never care about requests for extensions.
+            if (key.startsWith('chrome-extension:')) {
+                return;
+            }
             const group = grouped.get(key) || [];
             group.push(item);
             grouped.set(key, group);
@@ -355,25 +358,20 @@ class NetworkAnalyzer {
                 estimatesByOrigin.set(origin, originEstimates);
             }
         }
-        if (!estimatesByOrigin.size) {
-            throw new LanternError('No timing information available');
-        }
         return NetworkAnalyzer.summarize(estimatesByOrigin);
     }
+    static estimateMinimumRTTByOrigin(records, options) {
+        const rttByOrigin = new Map();
+        for (const [origin, summary] of NetworkAnalyzer.estimateRTTByOrigin(records, options).entries()) {
+            rttByOrigin.set(origin, summary.min);
+        }
+        return rttByOrigin;
+    }
     /**
-     * Estimates the server response time of each origin. RTT times can be passed in or will be
-     * estimated automatically if not provided.
+     * Estimates the server response time of each origin. RTT times must be passed in.
      */
     static estimateServerResponseTimeByOrigin(records, options) {
-        let rttByOrigin = options?.rttByOrigin;
-        if (!rttByOrigin) {
-            rttByOrigin = new Map();
-            const rttSummaryByOrigin = NetworkAnalyzer.estimateRTTByOrigin(records, options);
-            for (const [origin, summary] of rttSummaryByOrigin.entries()) {
-                rttByOrigin.set(origin, summary.min);
-            }
-        }
-        const estimatesByOrigin = NetworkAnalyzer.estimateResponseTimeByOrigin(records, rttByOrigin);
+        const estimatesByOrigin = NetworkAnalyzer.estimateResponseTimeByOrigin(records, options.rttByOrigin);
         return NetworkAnalyzer.summarize(estimatesByOrigin);
     }
     /**
@@ -428,13 +426,10 @@ class NetworkAnalyzer {
     }
     static computeRTTAndServerResponseTime(records) {
         // First pass compute the estimated observed RTT to each origin's servers.
-        const rttByOrigin = new Map();
-        for (const [origin, summary] of NetworkAnalyzer.estimateRTTByOrigin(records).entries()) {
-            rttByOrigin.set(origin, summary.min);
-        }
+        const rttByOrigin = NetworkAnalyzer.estimateMinimumRTTByOrigin(records);
         // We'll use the minimum RTT as the assumed connection latency since we care about how much addt'l
         // latency each origin introduces as Lantern will be simulating with its own connection latency.
-        const minimumRtt = Math.min(...Array.from(rttByOrigin.values()));
+        const minimumRtt = rttByOrigin.size ? Math.min(...Array.from(rttByOrigin.values())) : 0;
         // We'll use the observed RTT information to help estimate the server response time
         const responseTimeSummaries = NetworkAnalyzer.estimateServerResponseTimeByOrigin(records, {
             rttByOrigin,

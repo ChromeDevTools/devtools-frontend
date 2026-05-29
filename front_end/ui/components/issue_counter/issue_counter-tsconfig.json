@@ -55,9 +55,6 @@
       "path": "../../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../../generated/protocol-tsconfig.json"
-    },
-    {
       "path": "../../../models/issues_manager/bundle-tsconfig.json"
     },
     {
@@ -68,9 +65,6 @@
     },
     {
       "path": "../../kit/bundle-tsconfig.json"
-    },
-    {
-      "path": "../helpers/bundle-tsconfig.json"
     },
     {
       "path": "../icon_button/bundle-tsconfig.json"

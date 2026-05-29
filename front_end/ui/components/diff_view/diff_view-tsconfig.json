@@ -51,9 +51,6 @@
       "path": "../../../core/i18n/bundle-tsconfig.json"
     },
     {
-      "path": "../../../core/sdk/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../third_party/diff/bundle-tsconfig.json"
     },
     {
@@ -64,9 +61,6 @@
     },
     {
       "path": "../code_highlighter/bundle-tsconfig.json"
-    },
-    {
-      "path": "../helpers/bundle-tsconfig.json"
     }
   ]
 }

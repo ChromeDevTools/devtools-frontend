@@ -66,13 +66,7 @@
       "path": "../../../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../models/bindings/bundle-tsconfig.json"
-    },
-    {
       "path": "../../../../models/geometry/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../../../third_party/codemirror.next/bundle-tsconfig.json"
@@ -81,13 +75,7 @@
       "path": "../../../components/buttons/bundle-tsconfig.json"
     },
     {
-      "path": "../../../components/helpers/bundle-tsconfig.json"
-    },
-    {
       "path": "../../bundle-tsconfig.json"
-    },
-    {
-      "path": "../utils/bundle-tsconfig.json"
     },
     {
       "path": "../../../lit/bundle-tsconfig.json"

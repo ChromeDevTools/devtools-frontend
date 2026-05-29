@@ -45,9 +45,6 @@
       "path": "../../core/common/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/host/bundle-tsconfig.json"
-    },
-    {
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
@@ -58,9 +55,6 @@
     },
     {
       "path": "../../generated/generated-tsconfig.json"
-    },
-    {
-      "path": "../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../bindings/bundle-tsconfig.json"

@@ -87,9 +87,6 @@
       "path": "../../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../../generated/protocol-tsconfig.json"
-    },
-    {
       "path": "../../../models/ai_assistance/bundle-tsconfig.json"
     },
     {
@@ -124,9 +121,6 @@
     },
     {
       "path": "../../../ui/components/input/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/components/menus/bundle-tsconfig.json"
@@ -177,13 +171,7 @@
       "path": "../../common/bundle-tsconfig.json"
     },
     {
-      "path": "../../emulation/bundle-tsconfig.json"
-    },
-    {
       "path": "../../mobile_throttling/bundle-tsconfig.json"
-    },
-    {
-      "path": "../overlays/bundle-tsconfig.json"
     },
     {
       "path": "../utils/bundle-tsconfig.json"

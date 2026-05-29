@@ -82,9 +82,6 @@
       "path": "../../generated/generated-tsconfig.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.json"
-    },
-    {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
     },
     {
@@ -109,9 +106,6 @@
       "path": "../../models/logs/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/network_time_calculator/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/persistence/bundle-tsconfig.json"
     },
     {
@@ -119,12 +113,6 @@
     },
     {
       "path": "../../models/trace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/trace/helpers/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/trace/insights/bundle-tsconfig.json"
     },
     {
       "path": "../../models/workspace/bundle-tsconfig.json"

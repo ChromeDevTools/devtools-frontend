@@ -260,7 +260,7 @@ interface ConsoleInsightsTeasers {
 interface UseGcaApi {
     enabled: boolean;
 }
-interface DevToolsAIV2Architecture {
+interface DevToolsAiV2Architecture {
     enabled: boolean;
 }
 interface DevToolsProtocolMonitor {
@@ -298,7 +298,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAiAssistanceAccessibilityAgent: HostConfigAiAssistanceAccessibilityAgent;
     devToolsAiAssistanceStorageAgent: HostConfigAiAssistanceStorageAgent;
     devToolsAiAssistanceV2: HostConfigAiAssistanceV2;
-    devToolsAIV2Architecture: DevToolsAIV2Architecture;
+    devToolsAiV2Architecture: DevToolsAiV2Architecture;
     devToolsAiCodeCompletion: HostConfigAiCodeCompletion;
     devToolsAiCodeGeneration: HostConfigAiCodeGeneration;
     devToolsAiCodeCompletionStyles: HostConfigAiCodeCompletionStyles;

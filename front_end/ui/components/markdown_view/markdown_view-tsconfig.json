@@ -49,6 +49,9 @@
       "path": "../../../core/i18n/bundle-tsconfig.json"
     },
     {
+      "path": "../../../models/greendev/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../third_party/codemirror.next/bundle-tsconfig.json"
     },
     {

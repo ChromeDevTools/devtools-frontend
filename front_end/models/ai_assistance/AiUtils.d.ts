@@ -3,3 +3,4 @@ import type * as Platform from '../../core/platform/platform.js';
 export declare function getDisabledReasons(aidaAvailability: Host.AidaClient.AidaAccessPreconditions): Platform.UIString.LocalizedString[];
 export declare function isGeminiBranding(): boolean;
 export declare function getIconName(): string;
+export declare function isSameOrigin(url1: Platform.DevToolsPath.UrlString, url2: Platform.DevToolsPath.UrlString): boolean;

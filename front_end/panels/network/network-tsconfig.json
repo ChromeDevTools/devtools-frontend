@@ -81,16 +81,10 @@
       "path": "../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/root/bundle-tsconfig.json"
-    },
-    {
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
       "path": "../../generated/generated-tsconfig.json"
-    },
-    {
-      "path": "../../generated/protocol-tsconfig.json"
     },
     {
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
@@ -103,9 +97,6 @@
     },
     {
       "path": "../../models/har/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/issues_manager/bundle-tsconfig.json"
     },
     {
       "path": "../../models/logs/bundle-tsconfig.json"
@@ -132,12 +123,6 @@
       "path": "../common/bundle-tsconfig.json"
     },
     {
-      "path": "../elements/bundle-tsconfig.json"
-    },
-    {
-      "path": "../linear_memory_inspector/bundle-tsconfig.json"
-    },
-    {
       "path": "../mobile_throttling/bundle-tsconfig.json"
     },
     {
@@ -162,13 +147,7 @@
       "path": "../../ui/components/buttons/bundle-tsconfig.json"
     },
     {
-      "path": "../../ui/components/expandable_list/bundle-tsconfig.json"
-    },
-    {
       "path": "../../ui/components/input/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../ui/components/legacy_wrapper/bundle-tsconfig.json"
     },
     {
       "path": "../../ui/components/render_coordinator/bundle-tsconfig.json"

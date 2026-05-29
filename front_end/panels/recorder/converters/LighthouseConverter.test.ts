@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as Models from '../models/models.js';
 
 import * as Converters from './converters.js';
 
-describe('LighthouseConverter', () => {
-  it('should stringify a flow', async () => {
+describe('LighthouseConverter', function() {
+  const snapshotTester = new SnapshotTester(this, import.meta);
+  it('should stringify a flow', async function() {
     const converter = new Converters.LighthouseConverter.LighthouseConverter(
         '  ',
     );
@@ -18,62 +20,18 @@ describe('LighthouseConverter', () => {
         {type: Models.Schema.StepType.Scroll, selectors: [['.cls']]},
       ],
     });
-    const expected = `const fs = require('fs');
-const puppeteer = require('puppeteer'); // v23.0.0 or later
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const timeout = 5000;
-  page.setDefaultTimeout(timeout);
-
-  const lhApi = await import('lighthouse'); // v10.0.0 or later
-  const flags = {
-    screenEmulation: {
-      disabled: true
-    }
-  }
-  const config = lhApi.desktopConfig;
-  const lhFlow = await lhApi.startFlow(page, {name: 'test', config, flags});
-  await lhFlow.startNavigation();
-  {
-    const targetPage = page;
-    await targetPage.goto('https://example.com');
-  }
-  await lhFlow.endNavigation();
-  await lhFlow.startTimespan();
-  {
-    const targetPage = page;
-    await puppeteer.Locator.race([
-      targetPage.locator('.cls')
-    ])
-      .setTimeout(timeout)
-      .scroll({ scrollTop: undefined, scrollLeft: undefined});
-  }
-  await lhFlow.endTimespan();
-  const lhFlowReport = await lhFlow.generateReport();
-  fs.writeFileSync(__dirname + '/flow.report.html', lhFlowReport)
-
-  await browser.close();`;
-    const actual = result.substring(0, expected.length);
-    assert.strictEqual(actual, expected, `Unexpected start of generated result:\n${actual}`);
-    assert.deepEqual(sourceMap, [1, 17, 6, 23, 9]);
+    snapshotTester.assert(this, result);
+    assert.deepEqual(sourceMap, [1, 16, 6, 22, 9]);
   });
 
-  it('should stringify a step', async () => {
+  it('should stringify a step', async function() {
     const converter = new Converters.LighthouseConverter.LighthouseConverter(
         '  ',
     );
     const result = await converter.stringifyStep({
       type: Models.Schema.StepType.Scroll,
     });
-    assert.strictEqual(
-        result,
-        `{
-  const targetPage = page;
-  await targetPage.evaluate((x, y) => { window.scroll(x, y); }, undefined, undefined)
-}
-`,
-    );
+    snapshotTester.assert(this, result);
   });
 });

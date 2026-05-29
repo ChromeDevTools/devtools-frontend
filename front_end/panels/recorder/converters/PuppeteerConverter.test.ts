@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as Models from '../models/models.js';
 
 import * as Converters from './converters.js';
 
-describe('PuppeteerConverter', () => {
-  it('should stringify a flow', async () => {
+describe('PuppeteerConverter', function() {
+  const snapshotTester = new SnapshotTester(this, import.meta);
+  it('should stringify a flow', async function() {
     const converter = new Converters.PuppeteerConverter.PuppeteerConverter(
         '  ',
     );
@@ -15,47 +17,22 @@ describe('PuppeteerConverter', () => {
       title: 'test',
       steps: [{type: Models.Schema.StepType.Scroll, selectors: [['.cls']]}],
     });
-    const expected = `const puppeteer = require('puppeteer'); // v23.0.0 or later
 
-(async () => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  const timeout = 5000;
-  page.setDefaultTimeout(timeout);
-
-  {
-    const targetPage = page;
-    await puppeteer.Locator.race([
-      targetPage.locator('.cls')
-    ])
-      .setTimeout(timeout)
-      .scroll({ scrollTop: undefined, scrollLeft: undefined});
-  }
-
-  await browser.close();`;
-    const actual = result.substring(0, expected.length);
-    assert.strictEqual(actual, expected, `Unexpected start of generated result:\n${actual}`);
-    assert.deepEqual(sourceMap, [1, 8, 8]);
+    snapshotTester.assert(this, result);
+    assert.deepEqual(sourceMap, [1, 7, 8]);
   });
 
-  it('should stringify a step', async () => {
+  it('should stringify a step', async function() {
     const converter = new Converters.PuppeteerConverter.PuppeteerConverter(
         '  ',
     );
     const result = await converter.stringifyStep({
       type: Models.Schema.StepType.Scroll,
     });
-    assert.strictEqual(
-        result,
-        `{
-  const targetPage = page;
-  await targetPage.evaluate((x, y) => { window.scroll(x, y); }, undefined, undefined)
-}
-`,
-    );
+    snapshotTester.assert(this, result);
   });
 
-  it('should stringify a flow for Firefox', async () => {
+  it('should stringify a flow for Firefox', async function() {
     const converter = new Converters.PuppeteerFirefoxConverter.PuppeteerFirefoxConverter(
         '  ',
     );
@@ -63,26 +40,8 @@ describe('PuppeteerConverter', () => {
       title: 'test',
       steps: [{type: Models.Schema.StepType.Scroll, selectors: [['.cls']]}],
     });
-    const expected = `const puppeteer = require('puppeteer'); // v23.0.0 or later
 
-(async () => {
-  const browser = await puppeteer.launch({browser: 'firefox'});
-  const page = await browser.newPage();
-  const timeout = 5000;
-  page.setDefaultTimeout(timeout);
-
-  {
-    const targetPage = page;
-    await puppeteer.Locator.race([
-      targetPage.locator('.cls')
-    ])
-      .setTimeout(timeout)
-      .scroll({ scrollTop: undefined, scrollLeft: undefined});
-  }
-
-  await browser.close();`;
-    const actual = result.substring(0, expected.length);
-    assert.strictEqual(actual, expected, `Unexpected start of generated result:\n${actual}`);
-    assert.deepEqual(sourceMap, [1, 8, 8]);
+    snapshotTester.assert(this, result);
+    assert.deepEqual(sourceMap, [1, 7, 8]);
   });
 });

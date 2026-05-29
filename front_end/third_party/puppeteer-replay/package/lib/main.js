@@ -1,17 +1,7 @@
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 var SelectorType;
 (function (SelectorType) {
@@ -51,19 +41,9 @@ var Schema = /*#__PURE__*/Object.freeze({
 });
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 function assertAllStepTypesAreHandled(s) {
     throw new Error(`Unknown step type: ${s.type}`);
@@ -577,19 +557,9 @@ function selectorToPElementSelector(selector) {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 class StringifyExtension {
     async beforeAllSteps(out, flow) { }
@@ -600,19 +570,9 @@ class StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * Stringifies a user flow to JSON with source maps.
@@ -653,19 +613,9 @@ class JSONStringifyExtension extends StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 class InMemoryLineWriter {
     #indentation;
@@ -708,19 +658,9 @@ class InMemoryLineWriter {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * Copyright (c) 2020 The Chromium Authors. All rights reserved.
@@ -851,19 +791,9 @@ const formatAsJSLiteral = (content) => {
 };
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 class PuppeteerStringifyExtension extends StringifyExtension {
     #shouldAppendWaitForElementHelper = false;
@@ -873,14 +803,13 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         this.#targetBrowser = targetBrowser;
     }
     async beforeAllSteps(out, flow) {
-        out.appendLine("const puppeteer = require('puppeteer'); // v23.0.0 or later");
+        out.appendLine("import { Locator, launch } from 'puppeteer'; // v25.0.0 or later");
         out.appendLine('');
-        out.appendLine('(async () => {').startBlock();
         if (this.#targetBrowser === 'firefox') {
-            out.appendLine(`const browser = await puppeteer.launch({browser: 'firefox'});`);
+            out.appendLine(`const browser = await launch({browser: 'firefox'});`);
         }
         else {
-            out.appendLine('const browser = await puppeteer.launch();');
+            out.appendLine('const browser = await launch();');
         }
         out.appendLine('const page = await browser.newPage();');
         out.appendLine(`const timeout = ${flow.timeout || defaultTimeout};`);
@@ -897,10 +826,6 @@ class PuppeteerStringifyExtension extends StringifyExtension {
                 out.appendLine(line);
             }
         }
-        out.endBlock().appendLine('})().catch(err => {').startBlock();
-        out.appendLine('console.error(err);');
-        out.appendLine('process.exit(1);');
-        out.endBlock().appendLine('});');
     }
     async stringifyStep(out, step, flow) {
         out.appendLine('{').startBlock();
@@ -955,7 +880,7 @@ class PuppeteerStringifyExtension extends StringifyExtension {
         }
     }
     #appendLocators(out, step, action) {
-        out.appendLine('await puppeteer.Locator.race([').startBlock();
+        out.appendLine('await Locator.race([').startBlock();
         out.appendLine(step.selectors
             .map((s) => {
             return `${step.frame ? 'frame' : 'targetPage'}.locator(${formatJSONAsJS(selectorToPElementSelector(s), out.getIndent())})`;
@@ -1220,19 +1145,9 @@ async function waitForFunction(fn, timeout) {
 }`;
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const charToIdx = alpha.split('').reduce((acc, char, idx) => {
@@ -1293,19 +1208,9 @@ function decode(str) {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 const SOURCE_MAP_PREFIX = '//# recorderSourceMap=';
 /**
@@ -1381,19 +1286,9 @@ function stripSourceMap(text) {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 class RunnerExtension {
     async beforeAllSteps(flow) { }
@@ -1759,19 +1654,9 @@ async function waitForFunction(fn, timeout) {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 async function _runStepWithHooks(extension, step, flow) {
     await extension.beforeEachStep?.(step, flow);
@@ -1853,19 +1738,9 @@ async function createPuppeteerRunnerOwningBrowserExtension() {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * Stringifies a user flow to a script that uses \@puppeteer/replay's own API.
@@ -1901,19 +1776,9 @@ class PuppeteerReplayStringifyExtension extends StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 function isNavigationStep(step) {
     return Boolean(step.type === StepType.Navigate ||
@@ -1929,24 +1794,14 @@ function isMobileFlow(flow) {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
     #isProcessingTimespan = false;
     async beforeAllSteps(out, flow) {
-        out.appendLine(`const fs = require('fs');`);
+        out.appendLine(`import fs from 'fs';`);
         await super.beforeAllSteps(out, flow);
         out.appendLine(`const lhApi = await import('lighthouse'); // v10.0.0 or later`);
         const flags = {
@@ -1990,25 +1845,15 @@ class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
             out.appendLine(`await lhFlow.endTimespan();`);
         }
         out.appendLine(`const lhFlowReport = await lhFlow.generateReport();`);
-        out.appendLine(`fs.writeFileSync(__dirname + '/flow.report.html', lhFlowReport)`);
+        out.appendLine(`fs.writeFileSync(import.meta.dirname + '/flow.report.html', lhFlowReport)`);
         await super.afterAllSteps(out, flow);
     }
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 class LighthouseRunnerExtension extends PuppeteerRunnerExtension {
     #isTimespanRunning = false;

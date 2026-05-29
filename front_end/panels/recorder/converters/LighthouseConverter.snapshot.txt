@@ -1,0 +1,47 @@
+Title: LighthouseConverter should stringify a flow
+Content:
+import fs from 'fs';
+import { Locator, launch } from 'puppeteer'; // v25.0.0 or later
+
+const browser = await launch();
+const page = await browser.newPage();
+const timeout = 5000;
+page.setDefaultTimeout(timeout);
+
+const lhApi = await import('lighthouse'); // v10.0.0 or later
+const flags = {
+  screenEmulation: {
+    disabled: true
+  }
+}
+const config = lhApi.desktopConfig;
+const lhFlow = await lhApi.startFlow(page, {name: 'test', config, flags});
+await lhFlow.startNavigation();
+{
+  const targetPage = page;
+  await targetPage.goto('https://example.com');
+}
+await lhFlow.endNavigation();
+await lhFlow.startTimespan();
+{
+  const targetPage = page;
+  await Locator.race([
+    targetPage.locator('.cls')
+  ])
+    .setTimeout(timeout)
+    .scroll({ scrollTop: undefined, scrollLeft: undefined});
+}
+await lhFlow.endTimespan();
+const lhFlowReport = await lhFlow.generateReport();
+fs.writeFileSync(import.meta.dirname + '/flow.report.html', lhFlowReport)
+
+await browser.close();
+=== end content
+
+Title: LighthouseConverter should stringify a step
+Content:
+{
+  const targetPage = page;
+  await targetPage.evaluate((x, y) => { window.scroll(x, y); }, undefined, undefined)
+}
+=== end content

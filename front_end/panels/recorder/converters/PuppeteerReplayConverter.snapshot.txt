@@ -1,0 +1,33 @@
+Title: PuppeteerReplayConverter should stringify a flow
+Content:
+import url from 'url';
+import { createRunner } from '@puppeteer/replay';
+
+export async function run(extension) {
+  const runner = await createRunner(extension);
+
+  await runner.runBeforeAllSteps();
+
+  await runner.runStep({
+    type: 'scroll',
+    selectors: [
+      [
+        '.cls'
+      ]
+    ]
+  });
+
+  await runner.runAfterAllSteps();
+}
+
+if (process && import.meta.url === url.pathToFileURL(process.argv[1]).href) {
+  run()
+}
+=== end content
+
+Title: PuppeteerReplayConverter should stringify a step
+Content:
+await runner.runStep({
+  type: 'scroll'
+});
+=== end content

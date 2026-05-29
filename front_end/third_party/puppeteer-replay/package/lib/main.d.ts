@@ -13,19 +13,9 @@ type JSONArray = JSONValue[];
 type JSONSerializable<Object extends object> = PickType<Object, JSONValue>;
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 type Target = string;
@@ -321,23 +311,14 @@ type Schema_UserStep = UserStep;
 type Schema_WaitForElementStep = WaitForElementStep;
 type Schema_WaitForExpressionStep = WaitForExpressionStep;
 declare namespace Schema {
-  export { type Schema_AssertedEvent as AssertedEvent, Schema_AssertedEventType as AssertedEventType, type Schema_AssertionStep as AssertionStep, type Schema_BaseStep as BaseStep, type Schema_ChangeStep as ChangeStep, type Schema_ClickAttributes as ClickAttributes, type Schema_ClickStep as ClickStep, type Schema_CloseStep as CloseStep, type Schema_CustomStep as CustomStep, type Schema_CustomStepParams as CustomStepParams, type Schema_DoubleClickStep as DoubleClickStep, type Schema_EmulateNetworkConditionsStep as EmulateNetworkConditionsStep, type Schema_FrameSelector as FrameSelector, type Schema_HoverStep as HoverStep, type Schema_Key as Key, type Schema_KeyDownStep as KeyDownStep, type Schema_KeyUpStep as KeyUpStep, type Schema_NavigateStep as NavigateStep, type Schema_NavigationEvent as NavigationEvent, type Schema_Pattern as Pattern, type Schema_PointerButtonType as PointerButtonType, type Schema_PointerDeviceType as PointerDeviceType, type Schema_ScrollElementStep as ScrollElementStep, type Schema_ScrollPageStep as ScrollPageStep, type Schema_ScrollStep as ScrollStep, type Schema_Selector as Selector, Schema_SelectorType as SelectorType, type Schema_SetViewportStep as SetViewportStep, type Schema_Step as Step, Schema_StepType as StepType, type Schema_StepWithFrame as StepWithFrame, type Schema_StepWithSelectors as StepWithSelectors, type Schema_StepWithTarget as StepWithTarget, type Schema_Target as Target, type Schema_UserFlow as UserFlow, type Schema_UserStep as UserStep, type Schema_WaitForElementStep as WaitForElementStep, type Schema_WaitForExpressionStep as WaitForExpressionStep };
+  export { Schema_AssertedEventType as AssertedEventType, Schema_SelectorType as SelectorType, Schema_StepType as StepType };
+  export type { Schema_AssertedEvent as AssertedEvent, Schema_AssertionStep as AssertionStep, Schema_BaseStep as BaseStep, Schema_ChangeStep as ChangeStep, Schema_ClickAttributes as ClickAttributes, Schema_ClickStep as ClickStep, Schema_CloseStep as CloseStep, Schema_CustomStep as CustomStep, Schema_CustomStepParams as CustomStepParams, Schema_DoubleClickStep as DoubleClickStep, Schema_EmulateNetworkConditionsStep as EmulateNetworkConditionsStep, Schema_FrameSelector as FrameSelector, Schema_HoverStep as HoverStep, Schema_Key as Key, Schema_KeyDownStep as KeyDownStep, Schema_KeyUpStep as KeyUpStep, Schema_NavigateStep as NavigateStep, Schema_NavigationEvent as NavigationEvent, Schema_Pattern as Pattern, Schema_PointerButtonType as PointerButtonType, Schema_PointerDeviceType as PointerDeviceType, Schema_ScrollElementStep as ScrollElementStep, Schema_ScrollPageStep as ScrollPageStep, Schema_ScrollStep as ScrollStep, Schema_Selector as Selector, Schema_SetViewportStep as SetViewportStep, Schema_Step as Step, Schema_StepWithFrame as StepWithFrame, Schema_StepWithSelectors as StepWithSelectors, Schema_StepWithTarget as StepWithTarget, Schema_Target as Target, Schema_UserFlow as UserFlow, Schema_UserStep as UserStep, Schema_WaitForElementStep as WaitForElementStep, Schema_WaitForExpressionStep as WaitForExpressionStep };
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 declare function assertAllStepTypesAreHandled(s: never): never;
@@ -365,19 +346,9 @@ declare function getSelectorType(selector: string): SelectorType;
 declare function selectorToPElementSelector(selector: string[] | string): string;
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 interface LineWriter {
     appendLine(line: string): LineWriter;
@@ -388,19 +359,9 @@ interface LineWriter {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 declare class StringifyExtension {
@@ -412,19 +373,9 @@ declare class StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -440,19 +391,9 @@ declare class JSONStringifyExtension extends StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 interface StringifyOptions {
@@ -487,19 +428,9 @@ declare function parseSourceMap(text: string): SourceMap | undefined;
 declare function stripSourceMap(text: string): string;
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 declare class RunnerExtension {
@@ -511,19 +442,9 @@ declare class RunnerExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 declare class Runner {
@@ -549,19 +470,9 @@ declare function createRunner(extension: RunnerExtension): Promise<Runner>;
 declare function createRunner(flow: UserFlow, extension: RunnerExtension): Promise<Runner>;
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 declare class PuppeteerRunnerExtension extends RunnerExtension {
@@ -579,19 +490,9 @@ declare class PuppeteerRunnerOwningBrowserExtension extends PuppeteerRunnerExten
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 type TargetBrowser = 'chrome' | 'firefox';
@@ -604,19 +505,9 @@ declare class PuppeteerStringifyExtension extends StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -629,19 +520,9 @@ declare class PuppeteerReplayStringifyExtension extends StringifyExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 declare class LighthouseStringifyExtension extends PuppeteerStringifyExtension {
@@ -661,19 +542,9 @@ declare class LighthouseRunnerExtension extends PuppeteerRunnerExtension {
 }
 
 /**
-    Copyright 2022 Google LLC
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-        https://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
  */
 /**
  * Copyright (c) 2020 The Chromium Authors. All rights reserved.
@@ -683,4 +554,5 @@ declare class LighthouseRunnerExtension extends PuppeteerRunnerExtension {
 declare function formatJSONAsJS(json: unknown, indent: string): string;
 declare const formatAsJSLiteral: (content: string) => string;
 
-export { type AssertedEvent, AssertedEventType, type AssertionStep, type BaseStep, type ChangeStep, type ClickAttributes, type ClickStep, type CloseStep, type CustomStep, type CustomStepParams, type DoubleClickStep, type EmulateNetworkConditionsStep, type FrameSelector, type HoverStep, JSONStringifyExtension, type Key, type KeyDownStep, type KeyUpStep, LighthouseRunnerExtension, LighthouseStringifyExtension, type LineWriter, type NavigateStep, type NavigationEvent, type Pattern, type PointerButtonType, type PointerDeviceType, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, type ScrollElementStep, type ScrollPageStep, type ScrollStep, type Selector, SelectorType, type SetViewportStep, type SourceMap, type Step, StepType, type StepWithFrame, type StepWithSelectors, type StepWithTarget, StringifyExtension, type StringifyOptions, type Target, type UserFlow, type UserStep, type WaitForElementStep, type WaitForExpressionStep, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, selectorToPElementSelector, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };
+export { AssertedEventType, JSONStringifyExtension, LighthouseRunnerExtension, LighthouseStringifyExtension, PuppeteerReplayStringifyExtension, PuppeteerRunnerExtension, PuppeteerRunnerOwningBrowserExtension, PuppeteerStringifyExtension, Runner, RunnerExtension, Schema, SelectorType, StepType, StringifyExtension, assertAllStepTypesAreHandled, createRunner, formatAsJSLiteral, formatJSONAsJS, getSelectorType, maxTimeout, minTimeout, mouseButtonMap, parse, parseSourceMap, parseStep, pointerDeviceTypes, selectorToPElementSelector, stringify, stringifyStep, stripSourceMap, typeableInputTypes, validTimeout };
+export type { AssertedEvent, AssertionStep, BaseStep, ChangeStep, ClickAttributes, ClickStep, CloseStep, CustomStep, CustomStepParams, DoubleClickStep, EmulateNetworkConditionsStep, FrameSelector, HoverStep, Key, KeyDownStep, KeyUpStep, LineWriter, NavigateStep, NavigationEvent, Pattern, PointerButtonType, PointerDeviceType, ScrollElementStep, ScrollPageStep, ScrollStep, Selector, SetViewportStep, SourceMap, Step, StepWithFrame, StepWithSelectors, StepWithTarget, StringifyOptions, Target, UserFlow, UserStep, WaitForElementStep, WaitForExpressionStep };

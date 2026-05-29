@@ -1,0 +1,49 @@
+Title: PuppeteerConverter should stringify a flow
+Content:
+import { Locator, launch } from 'puppeteer'; // v25.0.0 or later
+
+const browser = await launch();
+const page = await browser.newPage();
+const timeout = 5000;
+page.setDefaultTimeout(timeout);
+
+{
+  const targetPage = page;
+  await Locator.race([
+    targetPage.locator('.cls')
+  ])
+    .setTimeout(timeout)
+    .scroll({ scrollTop: undefined, scrollLeft: undefined});
+}
+
+await browser.close();
+=== end content
+
+Title: PuppeteerConverter should stringify a step
+Content:
+{
+  const targetPage = page;
+  await targetPage.evaluate((x, y) => { window.scroll(x, y); }, undefined, undefined)
+}
+=== end content
+
+Title: PuppeteerConverter should stringify a flow for Firefox
+Content:
+import { Locator, launch } from 'puppeteer'; // v25.0.0 or later
+
+const browser = await launch({browser: 'firefox'});
+const page = await browser.newPage();
+const timeout = 5000;
+page.setDefaultTimeout(timeout);
+
+{
+  const targetPage = page;
+  await Locator.race([
+    targetPage.locator('.cls')
+  ])
+    .setTimeout(timeout)
+    .scroll({ scrollTop: undefined, scrollLeft: undefined});
+}
+
+await browser.close();
+=== end content

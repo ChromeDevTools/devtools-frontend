@@ -236,6 +236,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPaneStyles);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.requestUpdate, this);
+    Common.Settings.Settings.instance()
+        .moduleSetting('collapse-non-contributing-css-rules')
+        .addChangeListener(this.updateCollapsedSectionsSetting, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);
@@ -361,6 +364,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.#swatchPopoverHelper.hide();
     this.resetCache();
     this.requestUpdate();
+  }
+
+  private updateCollapsedSectionsSetting(): void {
+    for (const section of this.allSections()) {
+      section.updateCollapsedState();
+    }
   }
 
   private sectionsContainerKeyDown(event: Event): void {

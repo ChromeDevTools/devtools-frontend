@@ -343,7 +343,7 @@ export class StylePropertiesSection {
     this.#isCollapsed = false;
     this.markSelectorMatches();
     this.onpopulate();
-    this.#updateCollapsedState();
+    this.updateCollapsedState();
   }
 
   setComputedStyles(computedStyles: Map<string, string>|null): void {
@@ -1317,6 +1317,10 @@ export class StylePropertiesSection {
    * since the user intentionally toggled them off and they should remain visible.
    */
   #shouldCollapse(): boolean {
+    if (!Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').get()) {
+      return false;
+    }
+
     const style = this.styleInternal;
     const properties = style.leadingProperties();
 
@@ -1343,7 +1347,7 @@ export class StylePropertiesSection {
     return allOverloaded;
   }
 
-  #updateCollapsedState(): void {
+  updateCollapsedState(): void {
     const shouldCollapse = this.#shouldCollapse();
     // Mark as collapsible so the toggle icon is always shown for
     // sections that can be collapsed, even after manual expansion.

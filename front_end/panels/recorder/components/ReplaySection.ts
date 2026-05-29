@@ -72,6 +72,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const REPLAY_EXTENSION_PREFIX = 'extension';
 
+function isPlayRecordingSpeed(string: string): string is PlayRecordingSpeed {
+  return string === PlayRecordingSpeed.NORMAL || string === PlayRecordingSpeed.SLOW ||
+      string === PlayRecordingSpeed.VERY_SLOW || string === PlayRecordingSpeed.EXTREMELY_SLOW;
+}
+
 interface Item {
   value: string;
   buttonIconName: string;
@@ -274,9 +279,9 @@ export class ReplaySection extends UI.Widget.Widget {
     if (this.#replayExtensions.length) {
       groups.push({
         name: i18nString(UIStrings.extensionGroup),
-        items: this.#replayExtensions.map((extension, idx) => {
+        items: this.#replayExtensions.map(extension => {
           return {
-            value: (REPLAY_EXTENSION_PREFIX + idx),
+            value: REPLAY_EXTENSION_PREFIX + extension.getOrigin(),
             buttonIconName: 'play',
             buttonLabel: () => extension.getName() as Platform.UIString.LocalizedString,
             label: () => extension.getName() as Platform.UIString.LocalizedString,
@@ -301,28 +306,35 @@ export class ReplaySection extends UI.Widget.Widget {
 
   #onStartReplay(): void {
     const value = this.#settings?.replayExtension || this.#settings?.speed || '';
-    if (value?.startsWith(REPLAY_EXTENSION_PREFIX)) {
-      const extensionIdx = Number(
-          value.substring(REPLAY_EXTENSION_PREFIX.length),
-      );
-      const extension = this.#replayExtensions[extensionIdx];
-      if (this.#settings) {
-        this.#settings.replayExtension = REPLAY_EXTENSION_PREFIX + extensionIdx;
+    if (value.startsWith(REPLAY_EXTENSION_PREFIX)) {
+      const origin = value.substring(REPLAY_EXTENSION_PREFIX.length);
+      const extension = this.#replayExtensions.find(ext => ext.getOrigin() === origin);
+      if (extension) {
+        if (this.#settings) {
+          this.#settings.replayExtension = REPLAY_EXTENSION_PREFIX + extension.getOrigin();
+        }
+        if (this.onStartReplay) {
+          this.onStartReplay(PlayRecordingSpeed.NORMAL, extension);
+        }
+        this.performUpdate();
+        return;
       }
-      if (this.onStartReplay) {
-        this.onStartReplay(PlayRecordingSpeed.NORMAL, extension);
-      }
-    } else if (this.onStartReplay) {
+    }
+    if (this.onStartReplay) {
       this.onStartReplay(this.#settings ? this.#settings.speed : PlayRecordingSpeed.NORMAL);
     }
     this.performUpdate();
   }
 
   #onItemSelected(item: string): void {
-    const speed = item as PlayRecordingSpeed;
-    if (this.#settings && speed) {
-      this.#settings.speed = speed;
+    if (!this.#settings) {
+      return;
+    }
+    if (isPlayRecordingSpeed(item)) {
+      this.#settings.speed = item;
       this.#settings.replayExtension = '';
+    } else {
+      this.#settings.replayExtension = item;
     }
     this.performUpdate();
   }

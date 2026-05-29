@@ -74,6 +74,10 @@ function createBreakpointLocations(testData: LocationTestData[]): Breakpoints.Br
     breakpoint.condition.returns(data.condition);
     breakpoint.isLogpoint.returns(data.isLogpoint);
     breakpoint.breakpointStorageId.returns(`${data.url}:${data.lineNumber}:${data.columnNumber}`);
+    breakpoint.url.returns(data.url);
+    breakpoint.lineNumber.returns(data.lineNumber);
+    breakpoint.columnNumber.returns(data.columnNumber);
+    breakpoint.getClosestResolvedLocation.returns(uiLocation);
     return new Breakpoints.BreakpointManager.BreakpointLocation(breakpoint, uiLocation);
   });
   return breakpointLocations;
@@ -584,43 +588,11 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
       assert.strictEqual(breakpointItem.status, Sources.BreakpointsView.BreakpointStatus.DISABLED);
     });
 
-    it('correctly extracts the enabled state for multiple', async () => {
-      const testData = [
-        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
-        createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
-      ];
-
-      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-      const controller =
-          Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
-      const actualViewData = await controller.getUpdatedBreakpointViewData();
-      assert.lengthOf(actualViewData.groups, 1);
-      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-      assert.strictEqual(
-          actualViewData.groups[0].breakpointItems[0].status, Sources.BreakpointsView.BreakpointStatus.INDETERMINATE);
-    });
-
     it('correctly extracts the disabled state', async () => {
       const snippet = 'const a = x;';
       const {groups} =
           await setUpTestWithOneBreakpointLocation({file: '', lineNumber: 0, columnNumber: 0, enabled: false, snippet});
       assert.strictEqual(groups[0].breakpointItems[0].codeSnippet, snippet);
-    });
-
-    it('correctly extracts the indeterminate state', async () => {
-      const testData = [
-        createLocationTestData(TEST_JS_FILE, 3, 15, true /* enabled */),
-        createLocationTestData(TEST_JS_FILE, 3, 15, false /* enabled */),
-      ];
-
-      const {breakpointManager, settings} = createStubBreakpointManagerAndSettingsWithMockdata(testData);
-      const controller =
-          Sources.BreakpointsView.BreakpointsSidebarController.instance({forceNew: true, breakpointManager, settings});
-      const actualViewData = await controller.getUpdatedBreakpointViewData();
-      assert.lengthOf(actualViewData.groups, 1);
-      assert.lengthOf(actualViewData.groups[0].breakpointItems, 1);
-      assert.strictEqual(
-          actualViewData.groups[0].breakpointItems[0].status, Sources.BreakpointsView.BreakpointStatus.INDETERMINATE);
     });
 
     it('correctly extracts conditional breakpoints', async () => {

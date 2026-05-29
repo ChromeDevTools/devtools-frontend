@@ -376,7 +376,7 @@ This is the bottom-up summary for the entire trace. Only the top 20 activities (
 
 # Third parties
 
-- name: Yahoo!, main thread time: 214 ms, network transfer size: 2.4 MB
+- name: Yahoo!, main thread time: 214 ms, network transfer size: 1.6 MB
 - name: Taboola, main thread time: 41 ms, network transfer size: 391.7 kB
 - name: Google/Doubleclick Ads, main thread time: 41 ms, network transfer size: 225.7 kB
 - name: Google Tag Manager, main thread time: 19 ms, network transfer size: 123.8 kB
@@ -932,7 +932,7 @@ Title: PerformanceTraceFormatter formatThirdPartySummary yahoo-news.json.gz
 Content:
 # 3rd party summary
 
-- name: Yahoo!, main thread time: 270 ms, network transfer size: 2.4 MB
+- name: Yahoo!, main thread time: 270 ms, network transfer size: 1.6 MB
 - name: Google/Doubleclick Ads, main thread time: 53 ms, network transfer size: 258.6 kB
 - name: Taboola, main thread time: 43 ms, network transfer size: 393.6 kB
 - name: Google Tag Manager, main thread time: 19 ms, network transfer size: 123.8 kB

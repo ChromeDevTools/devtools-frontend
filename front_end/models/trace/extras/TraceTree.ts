@@ -406,6 +406,17 @@ export class BottomUpRootNode extends Node {
     const eventGroupIdCallback = this.eventGroupIdCallback;
     const forceGroupIdCallback = this.forceGroupIdCallback;
 
+    const idToIsCacheHit = new Map<string, boolean>();
+    for (const e of this.events) {
+      if (Types.Events.isReceivedDataEvent(e) && e.name === 'ResourceReceiveResponse') {
+        let id = generateEventID(e);
+        if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
+          id = `${id}-${this.eventGroupIdCallback(e)}`;
+        }
+        idToIsCacheHit.set(id, e.args.data.fromCache || false);
+      }
+    }
+
     // encodedDataLength is provided solely on instant events.
     const sumTransferSizeOfInstantEvent = (e: Types.Events.Event): void => {
       if (Types.Events.isReceivedDataEvent(e)) {
@@ -424,7 +435,15 @@ export class BottomUpRootNode extends Node {
         // ResourceReceivedData events tally up the transfer size over time, but the
         // ResourceReceiveResponse / ResourceFinish events hold the final result.
         if (e.name === 'ResourceReceivedData') {
-          node.transferSize += e.args.data.encodedDataLength;
+          if (idToIsCacheHit.get(id)) {
+            // It's a cache hit, so the actual network transfer size is 0.
+            // We overwrite the tallied sum (which is uncompressed body size) with 0.
+            node.transferSize = 0;
+          } else {
+            node.transferSize += e.args.data.encodedDataLength;
+          }
+        } else if (e.name === 'ResourceFinish' && e.args.data.encodedDataLength === 0 && idToIsCacheHit.get(id)) {
+          node.transferSize = 0;
         } else if (e.args.data.encodedDataLength > 0) {
           // For some reason, ResourceFinish can be zero even if data was sent.
           // Ignore that case.

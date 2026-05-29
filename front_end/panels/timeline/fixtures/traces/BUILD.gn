@@ -14,6 +14,7 @@ copy_to_gen("traces") {
     "basic.cpuprofile.gz",
     "basic.json.gz",
     "byte-efficiency.json.gz",
+    "cached-request-unpkg.json.gz",
     "changing-priority.json.gz",
     "chrome-ext-sourcemap-script-content.json.gz",
     "cls-cluster-max-duration.json.gz",

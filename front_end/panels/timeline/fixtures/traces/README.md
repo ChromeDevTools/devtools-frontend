@@ -377,3 +377,23 @@ A trace of https://developer.chrome.com/docs/web-platform/soft-navigations-exper
 ### resource-initiators
 
 A trace created from https://github.com/ChromeDevTools/performance-stories/tree/main/resource-initiators which contains a bunch of different resources that get injected in different ways, so we can test our initiator logic.
+
+### cached-request-unpkg
+
+Simple page where the same resource is fetched from a script tag and a JS fetch call. The second one is cached.
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test</title>
+</head>
+<body>
+  <h1>Test</h1>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script>
+    fetch('https://unpkg.com/react@18.2.0/umd/react.production.min.js');
+  </script>
+</body>
+</html>
+```

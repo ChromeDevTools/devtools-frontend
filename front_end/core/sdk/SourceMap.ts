@@ -356,10 +356,15 @@ export class SourceMap {
     return reverseMappings.slice(startIndex, endIndex);
   }
 
-  findReverseEntries(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):
-      SourceMapEntry[] {
+  findReverseEntries(
+      sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number,
+      filterContiguous = false): SourceMapEntry[] {
     const mappings = this.mappings();
-    return this.findReverseIndices(sourceURL, lineNumber, columnNumber).map(i => mappings[i]);
+    let indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+    if (filterContiguous) {
+      indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
+    }
+    return indices.map(i => mappings[i]);
   }
 
   findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number):

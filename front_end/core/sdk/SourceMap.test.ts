@@ -265,6 +265,29 @@ describeWithEnvironment('SourceMap', () => {
     ]);
   });
 
+  it('can do reverse lookups with contiguous filtering', () => {
+    const mappingPayload = encodeSourceMap([
+      // clang-format off
+      '0:0 => example.js:1:0',
+      '1:0 => example.js:1:0',
+      '2:0 => example.js:1:0',
+      '3:0 => example.js:2:0',
+      '4:0 => example.js:1:0',
+      '5:0 => example.js:1:0',
+      // clang-format on
+    ]);
+
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
+
+    // Without filtering, we should get all entries.
+    assert.deepEqual(sourceMap.findReverseEntries(sourceUrlExample, 1, 0).map(e => e.lineNumber), [0, 1, 2, 4, 5]);
+
+    // With filtering, we should only get the first of contiguous blocks:
+    // - Block 1: 0, 1, 2 (contiguous) -> keep 0
+    // - Block 2: 4, 5 (contiguous) -> keep 4
+    assert.deepEqual(sourceMap.findReverseEntries(sourceUrlExample, 1, 0, true).map(e => e.lineNumber), [0, 4]);
+  });
+
   it('can parse source maps with segments that contain no mapping information', () => {
     const mappingPayload = {
       mappings: 'AAAA,C,CAAE;',

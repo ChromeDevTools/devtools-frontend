@@ -1090,6 +1090,7 @@ export namespace Audits {
     WriteErrorNonSecureContext = 'WriteErrorNonSecureContext',
     WriteErrorNonStringIdField = 'WriteErrorNonStringIdField',
     WriteErrorNonStringInMatchDestList = 'WriteErrorNonStringInMatchDestList',
+    WriteErrorInvalidMatchDestList = 'WriteErrorInvalidMatchDestList',
     WriteErrorNonStringMatchField = 'WriteErrorNonStringMatchField',
     WriteErrorNonTokenTypeField = 'WriteErrorNonTokenTypeField',
     WriteErrorRequestAborted = 'WriteErrorRequestAborted',
@@ -1356,6 +1357,40 @@ export namespace Audits {
     NoReturningUserFromFetchedAccounts = 'NoReturningUserFromFetchedAccounts',
   }
 
+  export interface EmailVerificationRequestIssueDetails {
+    emailVerificationRequestIssueReason: EmailVerificationRequestIssueReason;
+  }
+
+  /**
+   * Represents the failure reason when an email verification request fails.
+   * Should be updated alongside EmailVerificationRequestResult in
+   * third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+   */
+  export const enum EmailVerificationRequestIssueReason {
+    InvalidEmail = 'InvalidEmail',
+    DnsFetchFailed = 'DnsFetchFailed',
+    DnsInvalidRecord = 'DnsInvalidRecord',
+    WellKnownHttpNotFound = 'WellKnownHttpNotFound',
+    WellKnownNoResponse = 'WellKnownNoResponse',
+    WellKnownInvalidResponse = 'WellKnownInvalidResponse',
+    WellKnownListEmpty = 'WellKnownListEmpty',
+    WellKnownInvalidContentType = 'WellKnownInvalidContentType',
+    WellKnownMissingIssuanceEndpoint = 'WellKnownMissingIssuanceEndpoint',
+    WellKnownIssuanceEndpointCrossOrigin = 'WellKnownIssuanceEndpointCrossOrigin',
+    WellKnownUnsupportedSigningAlgorithm = 'WellKnownUnsupportedSigningAlgorithm',
+    TokenHttpNotFound = 'TokenHttpNotFound',
+    TokenNoResponse = 'TokenNoResponse',
+    TokenInvalidResponse = 'TokenInvalidResponse',
+    TokenInvalidContentType = 'TokenInvalidContentType',
+    TokenMalformedSdJwt = 'TokenMalformedSdJwt',
+    TokenInvalidSdJwt = 'TokenInvalidSdJwt',
+    KeyBindingSigningFailed = 'KeyBindingSigningFailed',
+    RpOriginIsOpaque = 'RpOriginIsOpaque',
+    WellKnownMissingAccountsEndpoint = 'WellKnownMissingAccountsEndpoint',
+    UserLoggedOut = 'UserLoggedOut',
+    WellKnownAccountsEndpointCrossOrigin = 'WellKnownAccountsEndpointCrossOrigin',
+  }
+
   /**
    * This issue tracks client hints related issues. It's used to deprecate old
    * features, encourage the use of new ones, and provide general guidance.
@@ -1596,6 +1631,7 @@ export namespace Audits {
     PermissionElementIssue = 'PermissionElementIssue',
     PerformanceIssue = 'PerformanceIssue',
     SelectivePermissionsInterventionIssue = 'SelectivePermissionsInterventionIssue',
+    EmailVerificationRequestIssue = 'EmailVerificationRequestIssue',
   }
 
   /**
@@ -1636,6 +1672,7 @@ export namespace Audits {
     permissionElementIssueDetails?: PermissionElementIssueDetails;
     performanceIssueDetails?: PerformanceIssueDetails;
     selectivePermissionsInterventionIssueDetails?: SelectivePermissionsInterventionIssueDetails;
+    emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
   }
 
   /**
@@ -11900,6 +11937,7 @@ export namespace Network {
     InvalidFederatedSessionProviderFailedToRestoreKey = 'InvalidFederatedSessionProviderFailedToRestoreKey',
     FailedToUnwrapKey = 'FailedToUnwrapKey',
     SessionDeletedDuringRefresh = 'SessionDeletedDuringRefresh',
+    CrossOriginRegistrationSiteNotIncluded = 'CrossOriginRegistrationSiteNotIncluded',
   }
 
   /**
@@ -19430,8 +19468,8 @@ export namespace Target {
     targetId: TargetID;
     /**
      * The id of the panel we want DevTools to open initially. Currently
-     * supported panels are elements, console, network, sources, resources
-     * and performance.
+     * supported panels are elements, console, network, sources, resources,
+     * timeline, chrome-recorder, heap-profiler, lighthouse, and security.
      */
     panelId?: string;
   }

@@ -1560,6 +1560,7 @@
                         "WriteErrorNonSecureContext",
                         "WriteErrorNonStringIdField",
                         "WriteErrorNonStringInMatchDestList",
+                        "WriteErrorInvalidMatchDestList",
                         "WriteErrorNonStringMatchField",
                         "WriteErrorNonTokenTypeField",
                         "WriteErrorRequestAborted",
@@ -1972,6 +1973,45 @@
                     ]
                 },
                 {
+                    "id": "EmailVerificationRequestIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "emailVerificationRequestIssueReason",
+                            "$ref": "EmailVerificationRequestIssueReason"
+                        }
+                    ]
+                },
+                {
+                    "id": "EmailVerificationRequestIssueReason",
+                    "description": "Represents the failure reason when an email verification request fails.\nShould be updated alongside EmailVerificationRequestResult in\nthird_party/blink/public/mojom/devtools/inspector_issue.mojom.",
+                    "type": "string",
+                    "enum": [
+                        "InvalidEmail",
+                        "DnsFetchFailed",
+                        "DnsInvalidRecord",
+                        "WellKnownHttpNotFound",
+                        "WellKnownNoResponse",
+                        "WellKnownInvalidResponse",
+                        "WellKnownListEmpty",
+                        "WellKnownInvalidContentType",
+                        "WellKnownMissingIssuanceEndpoint",
+                        "WellKnownIssuanceEndpointCrossOrigin",
+                        "WellKnownUnsupportedSigningAlgorithm",
+                        "TokenHttpNotFound",
+                        "TokenNoResponse",
+                        "TokenInvalidResponse",
+                        "TokenInvalidContentType",
+                        "TokenMalformedSdJwt",
+                        "TokenInvalidSdJwt",
+                        "KeyBindingSigningFailed",
+                        "RpOriginIsOpaque",
+                        "WellKnownMissingAccountsEndpoint",
+                        "UserLoggedOut",
+                        "WellKnownAccountsEndpointCrossOrigin"
+                    ]
+                },
+                {
                     "id": "ClientHintIssueDetails",
                     "description": "This issue tracks client hints related issues. It's used to deprecate old\nfeatures, encourage the use of new ones, and provide general guidance.",
                     "type": "object",
@@ -2294,7 +2334,8 @@
                         "UserReidentificationIssue",
                         "PermissionElementIssue",
                         "PerformanceIssue",
-                        "SelectivePermissionsInterventionIssue"
+                        "SelectivePermissionsInterventionIssue",
+                        "EmailVerificationRequestIssue"
                     ]
                 },
                 {
@@ -2447,6 +2488,11 @@
                             "name": "selectivePermissionsInterventionIssueDetails",
                             "optional": true,
                             "$ref": "SelectivePermissionsInterventionIssueDetails"
+                        },
+                        {
+                            "name": "emailVerificationRequestIssueDetails",
+                            "optional": true,
+                            "$ref": "EmailVerificationRequestIssueDetails"
                         }
                     ]
                 },
@@ -17869,7 +17915,8 @@
                         "InvalidConfigJson",
                         "InvalidFederatedSessionProviderFailedToRestoreKey",
                         "FailedToUnwrapKey",
-                        "SessionDeletedDuringRefresh"
+                        "SessionDeletedDuringRefresh",
+                        "CrossOriginRegistrationSiteNotIncluded"
                     ]
                 },
                 {
@@ -29260,7 +29307,7 @@
                         },
                         {
                             "name": "panelId",
-                            "description": "The id of the panel we want DevTools to open initially. Currently\nsupported panels are elements, console, network, sources, resources\nand performance.",
+                            "description": "The id of the panel we want DevTools to open initially. Currently\nsupported panels are elements, console, network, sources, resources,\ntimeline, chrome-recorder, heap-profiler, lighthouse, and security.",
                             "optional": true,
                             "type": "string"
                         }

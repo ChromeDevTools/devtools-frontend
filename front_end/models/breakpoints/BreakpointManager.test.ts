@@ -230,6 +230,105 @@ describeWithMockConnection('BreakpointManager', () => {
     });
   });
 
+  describe('Breakpoint#getClosestResolvedLocation()', () => {
+    it('can select the closest resolved location', async () => {
+      const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+
+      // Create a breakpoint at line 10, column 5.
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 10, 5, ...DEFAULT_BREAKPOINT);
+      assert.exists(breakpoint);
+
+      // If no locations are bound, it should return null.
+      assert.isNull(breakpoint.getClosestResolvedLocation());
+
+      // Add some bound locations.
+      // 1. Location at line 10, column 5 (exact match)
+      const locExact = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, 5);
+      // 2. Location at line 10, column 10 (same line, different column)
+      const locSameLine = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, 10);
+      // 3. Location at line 11, column 5 (different line, same column)
+      const locDiffLine = new Workspace.UISourceCode.UILocation(uiSourceCode, 11, 5);
+      // 4. Location at line 12, column 5 (further line)
+      const locFar = new Workspace.UISourceCode.UILocation(uiSourceCode, 12, 5);
+
+      // Test 1: Only locFar is bound.
+      breakpoint.uiLocationAdded(locFar);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), locFar);
+
+      // Test 2: Add locDiffLine (closer line).
+      breakpoint.uiLocationAdded(locDiffLine);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), locDiffLine);
+
+      // Test 3: Add locSameLine (same line is closer than different line).
+      breakpoint.uiLocationAdded(locSameLine);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), locSameLine);
+
+      // Test 4: Add locExact (exact match is closest).
+      breakpoint.uiLocationAdded(locExact);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), locExact);
+
+      // Clean up
+      breakpoint.uiLocationRemoved(locExact);
+      breakpoint.uiLocationRemoved(locSameLine);
+      breakpoint.uiLocationRemoved(locDiffLine);
+      breakpoint.uiLocationRemoved(locFar);
+    });
+
+    it('can select closest location based on column when lines are equal', async () => {
+      const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+
+      // Create a breakpoint at line 10, column 5.
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 10, 5, ...DEFAULT_BREAKPOINT);
+      assert.exists(breakpoint);
+
+      const loc1 = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, 2);  // diff 3
+      const loc2 = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, 9);  // diff 4
+      const loc3 = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, 6);  // diff 1
+
+      breakpoint.uiLocationAdded(loc2);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), loc2);
+
+      breakpoint.uiLocationAdded(loc1);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), loc1);  // loc1 is closer than loc2 (3 < 4)
+
+      breakpoint.uiLocationAdded(loc3);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), loc3);  // loc3 is closer than loc1 (1 < 3)
+
+      // Clean up
+      breakpoint.uiLocationRemoved(loc1);
+      breakpoint.uiLocationRemoved(loc2);
+      breakpoint.uiLocationRemoved(loc3);
+    });
+
+    it('defaults column to 0 if undefined when calculating distance', async () => {
+      const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});
+
+      // Create a breakpoint at line 10, column 5.
+      const breakpoint = await breakpointManager.setBreakpoint(uiSourceCode, 10, 5, ...DEFAULT_BREAKPOINT);
+      assert.exists(breakpoint);
+
+      // UILocation with undefined column. It should be treated as column 0.
+      // Distance to breakpoint (10, 5) is line diff 0, col diff |0 - 5| = 5.
+      const locUndefinedCol = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, undefined);
+
+      // UILocation with column 6.
+      // Distance to breakpoint (10, 5) is line diff 0, col diff |6 - 5| = 1.
+      const locCol6 = new Workspace.UISourceCode.UILocation(uiSourceCode, 10, 6);
+
+      breakpoint.uiLocationAdded(locUndefinedCol);
+      assert.strictEqual(breakpoint.getClosestResolvedLocation(), locUndefinedCol);
+
+      breakpoint.uiLocationAdded(locCol6);
+      assert.strictEqual(
+          breakpoint.getClosestResolvedLocation(),
+          locCol6);  // locCol6 (diff 1) is closer than locUndefinedCol (diff 5)
+
+      // Clean up
+      breakpoint.uiLocationRemoved(locUndefinedCol);
+      breakpoint.uiLocationRemoved(locCol6);
+    });
+  });
+
   describe('Breakpoint#backendCondition()', () => {
     function createBreakpoint(condition: string, isLogpoint: boolean): Breakpoints.BreakpointManager.Breakpoint {
       const {uiSourceCode} = createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript'});

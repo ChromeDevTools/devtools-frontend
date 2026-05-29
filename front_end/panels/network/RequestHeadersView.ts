@@ -106,8 +106,8 @@ interface ViewInput {
   toReveal?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string};
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
-export const DEFAULT_VIEW: View = (input, output, target) => {
-  const requestHeadersText = input.request.requestHeadersText();
+
+export function renderGeneralRows(input: ViewInput): Lit.LitTemplate {
   const statusClasses = ['status'];
   if (input.request.statusCode < 300 || input.request.statusCode === 304) {
     statusClasses.push('green-circle');
@@ -137,28 +137,42 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   }
 
   const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(' ');
+
+  // clang-format off
+  return html`<div jslog=${VisualLogging.section('general')}>
+    ${renderGeneralRow(input, i18nString(UIStrings.requestUrl), input.request.url(), 'request-url')}
+    ${input.request.statusCode ? renderGeneralRow(input, i18nString(UIStrings.requestMethod), input.request.requestMethod, 'request-method') :
+      Lit.nothing}
+    ${input.request.statusCode ? renderGeneralRow(input, i18nString(UIStrings.statusCode), statusText, 'status-code', statusClasses) :
+      Lit.nothing}
+    ${input.request.remoteAddress()? renderGeneralRow(input, i18nString(UIStrings.remoteAddress), input.request.remoteAddress(), 'remote-address') :
+      Lit.nothing}
+    ${input.request.referrerPolicy()? renderGeneralRow(input, i18nString(UIStrings.referrerPolicy), String(input.request.referrerPolicy()), 'referrer-policy') :
+      Lit.nothing}
+  </div>`;
+  // clang-format on
+}
+
+export function renderGeneralSection(input: ViewInput, forceOpen: boolean): Lit.LitTemplate {
+  // Rendered in a walkthrough widget where we only want rows without the ability to collapse the section.
+  return renderCategory({
+    name: 'general',
+    title: i18nString(UIStrings.general),
+    forceOpen,
+    loggingContext: 'general',
+    contents: renderGeneralRows(input),
+  });
+}
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  const requestHeadersText = input.request.requestHeadersText();
+
   // clang-format off
   render(
       html`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input.checkboxStyles}</style>
-        ${renderCategory({
-          name: 'general',
-          title: i18nString(UIStrings.general),
-          forceOpen: input.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL,
-          loggingContext: 'general',
-          contents: html`<div jslog=${VisualLogging.section('general')}>
-            ${renderGeneralRow(input, i18nString(UIStrings.requestUrl), input.request.url(), 'request-url')}
-            ${input.request.statusCode? renderGeneralRow(input, i18nString(UIStrings.requestMethod),
-                input.request.requestMethod, 'request-method') : Lit.nothing}
-            ${input.request.statusCode? renderGeneralRow(input, i18nString(UIStrings.statusCode),
-                statusText, 'status-code', statusClasses) : Lit.nothing}
-            ${input.request.remoteAddress()? renderGeneralRow(input, i18nString(UIStrings.remoteAddress),
-                input.request.remoteAddress(), 'remote-address') : Lit.nothing}
-            ${input.request.referrerPolicy()? renderGeneralRow(input, i18nString(UIStrings.referrerPolicy),
-              String(input.request.referrerPolicy()), 'referrer-policy') : Lit.nothing}
-            </div>`
-        })}
+        ${renderGeneralSection(input, input.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL)}
         ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0
           ? Lit.nothing
           : renderCategory({
@@ -221,6 +235,22 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       target, {container: {attributes: {jslog: `${VisualLogging.pane('headers').track({resize: true})}`}}});
 };
 
+/**
+ * View used by the AI Assistance walkthrough's NetworkRequestGeneralHeaders widget
+ * to display only the General section of the network headers.
+ */
+export const GENERAL_HEADERS_ONLY_VIEW: View = (input, _output, target) => {
+  // clang-format off
+  render(
+      html`
+        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
+        <style>${Input.checkboxStyles}</style>
+        ${renderGeneralRows(input)}
+      `,
+      target, {container: {attributes: {jslog: `${VisualLogging.pane('headers').track({resize: true})}`}}});
+  // clang-format on
+};
+
 export class RequestHeadersView extends UI.Widget.Widget {
   #request?: SDK.NetworkRequest.NetworkRequest;
   #showResponseHeadersText = false;
@@ -241,6 +271,12 @@ export class RequestHeadersView extends UI.Widget.Widget {
   constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
     super();
     this.#view = view;
+  }
+
+  static createGeneralHeadersView(request: SDK.NetworkRequest.NetworkRequest): RequestHeadersView {
+    const view = new RequestHeadersView(undefined, GENERAL_HEADERS_ONLY_VIEW);
+    view.request = request;
+    return view;
   }
 
   #addEventListeners(): void {

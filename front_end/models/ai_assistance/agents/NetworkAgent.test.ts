@@ -14,7 +14,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
-import {NetworkAgent} from '../ai_assistance.js';
+import {AiAgent, NetworkAgent} from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -163,6 +163,28 @@ describeWithMockConnection('NetworkAgent', function() {
       const responses = await Array.fromAsync(
           agent.run('test', {selected: new NetworkAgent.RequestContext(selectedNetworkRequest, calculator)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
+    });
+
+    it('yields a ContextResponse containing a NETWORK_REQUEST_GENERAL_HEADERS widget', async function() {
+      const agent = new NetworkAgent.NetworkAgent({
+        aidaClient: mockAidaClient([[{
+          explanation: 'This is the answer',
+          metadata: {
+            rpcGlobalId: 123,
+          },
+        }]]),
+      });
+
+      const responses = await Array.fromAsync(
+          agent.run('test', {selected: new NetworkAgent.RequestContext(selectedNetworkRequest, calculator)}));
+
+      const contextResponse = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT);
+      assert.exists(contextResponse);
+      assert.exists(contextResponse.widgets);
+      assert.lengthOf(contextResponse.widgets, 1);
+      assert.strictEqual(contextResponse.widgets[0].name, 'NETWORK_REQUEST_GENERAL_HEADERS');
+      const widget = contextResponse.widgets[0] as AiAgent.NetworkRequestGeneralHeadersAiWidget;
+      assert.strictEqual(widget.data.request, selectedNetworkRequest);
     });
 
     it('builds historical contexts', async function() {

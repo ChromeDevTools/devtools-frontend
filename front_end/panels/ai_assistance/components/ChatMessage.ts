@@ -14,8 +14,9 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
   AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LighthouseReportAiWidget,
-  PerfInsightAiWidget, PerformanceTraceAiWidget, SourceFileAiWidget, StylePropertiesAiWidget,
-  TimelineEventSummaryAiWidget, TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
+  NetworkRequestGeneralHeadersAiWidget, PerfInsightAiWidget, PerformanceTraceAiWidget, SourceFileAiWidget,
+  StylePropertiesAiWidget, TimelineEventSummaryAiWidget,
+  TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Trace from '../../../models/trace/trace.js';
@@ -32,6 +33,8 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
 import * as Lighthouse from '../../lighthouse/lighthouse.js';
+import * as NetworkForward from '../../network/forward/forward.js';
+import * as Network from '../../network/network.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
 import type {BaseInsightComponent} from '../../timeline/components/insights/BaseInsightComponent.js';
 import * as TimelineInsights from '../../timeline/components/insights/insights.js';
@@ -384,6 +387,14 @@ const UIStringsNotTranslate = {
    * @description Title for the viewport optimization widget.
    */
   viewport: 'Viewport optimization',
+  /**
+   * @description Accessible label for the reveal button in the network request general headers widget.
+   */
+  revealNetworkRequest: 'Reveal network request',
+  /**
+   * @description Title for the network request general headers widget.
+   */
+  networkRequest: 'Network request',
   /**
    * @description Accessible label for the reveal button in the modern HTTP usage widget.
    */
@@ -1464,6 +1475,8 @@ export function getWidgetSignature(widget: AiWidget): string {
       return `${widget.name}:${widget.data.report.fetchTime}`;
     case 'TIMELINE_EVENT_SUMMARY':
       return `${widget.name}:${widget.data.event.ts}:${widget.data.event.name}`;
+    case 'NETWORK_REQUEST_GENERAL_HEADERS':
+      return `${widget.name}:${widget.data.request.requestId()}`;
     default:
       Platform.assertNever(widget, 'Unknown AiWidget name');
   }
@@ -1555,6 +1568,9 @@ async function renderWidgets(
         break;
       case 'TIMELINE_EVENT_SUMMARY':
         response = await makeTimelineEventSummaryWidget(widgetData);
+        break;
+      case 'NETWORK_REQUEST_GENERAL_HEADERS':
+        response = await makeNetworkRequestGeneralHeadersWidget(widgetData);
         break;
       default:
         Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -2129,5 +2145,23 @@ async function makeTimelineEventSummaryWidget(widgetData: TimelineEventSummaryAi
     accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealTimelineEventSummary),
     title: lockedString(UIStringsNotTranslate.timelineEventSummary),
     jslogContext: 'timeline-event-summary-widget',
+  };
+}
+
+async function makeNetworkRequestGeneralHeadersWidget(widgetData: NetworkRequestGeneralHeadersAiWidget):
+    Promise<WidgetMakerResponse|null> {
+  const renderedWidget = html`<devtools-widget class="network-request-general-headers-widget" ${widget(() => {
+    return Network.RequestHeadersView.RequestHeadersView.createGeneralHeadersView(widgetData.data.request);
+  })}></devtools-widget>`;
+
+  return {
+    renderedWidget,
+    revealable: NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+        widgetData.data.request,
+        NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+        ),
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealNetworkRequest),
+    title: lockedString(UIStringsNotTranslate.networkRequest),
+    jslogContext: 'network-request-general-headers-widget',
   };
 }

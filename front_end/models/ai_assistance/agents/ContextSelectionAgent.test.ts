@@ -661,6 +661,11 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       assert.exists(contextChange);
       assert.instanceOf(contextChange.context, NetworkAgent.RequestContext);
       assert.strictEqual(contextChange.context.getItem(), request);
+      assert.exists(contextChange.widgets);
+      assert.lengthOf(contextChange.widgets, 1);
+      const widget = contextChange.widgets[0] as AiAgent.NetworkRequestGeneralHeadersAiWidget;
+      assert.strictEqual(widget.name, 'NETWORK_REQUEST_GENERAL_HEADERS');
+      assert.strictEqual(widget.data.request, request);
     });
 
     it('returns an error when selecting cross-origin network request', async () => {
@@ -789,8 +794,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
-      const contextChange =
-          responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE) as AiAgent.ContextChangeResponse;
+      const contextChange = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE);
       assert.exists(contextChange);
       assert.instanceOf(contextChange.context, FileAgent.FileContext);
       assert.strictEqual(contextChange.context.getItem(), file);

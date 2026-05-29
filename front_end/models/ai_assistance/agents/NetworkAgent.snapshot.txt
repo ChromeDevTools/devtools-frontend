@@ -20,6 +20,25 @@ Content:
         "title": "Request initiator chain",
         "text": "- URL: <redacted cross-origin initiator URL>\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2"
       }
+    ],
+    "widgets": [
+      {
+        "name": "NETWORK_REQUEST_GENERAL_HEADERS",
+        "data": {
+          "request": {
+            "statusCode": 200,
+            "statusText": "",
+            "requestMethod": "",
+            "requestTime": 0,
+            "protocol": "",
+            "mixedContentType": "none",
+            "connectionId": "0",
+            "connectionReused": false,
+            "hasNetworkData": false,
+            "localizedFailDescription": null
+          }
+        }
+      }
     ]
   },
   {

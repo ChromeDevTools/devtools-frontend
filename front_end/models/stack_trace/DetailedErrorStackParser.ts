@@ -180,7 +180,7 @@ export function parseMessage(stack: string): string {
  */
 export function augmentRawFramesWithScriptIds(
     rawFrames: RawFrame[], protocolStackTrace: Protocol.Runtime.StackTrace): void {
-  for (const rawFrame of rawFrames) {
+  function augmentFrame(rawFrame: RawFrame): void {
     const isWasm = rawFrame.parsedFrameInfo?.isWasm;
     const protocolFrame = protocolStackTrace.callFrames.find(frame => {
       if (isWasm) {
@@ -196,5 +196,13 @@ export function augmentRawFramesWithScriptIds(
       // @ts-expect-error scriptId is a readonly property.
       rawFrame.scriptId = protocolFrame.scriptId;
     }
+
+    if (rawFrame.parsedFrameInfo?.evalOrigin) {
+      augmentFrame(rawFrame.parsedFrameInfo.evalOrigin);
+    }
+  }
+
+  for (const rawFrame of rawFrames) {
+    augmentFrame(rawFrame);
   }
 }

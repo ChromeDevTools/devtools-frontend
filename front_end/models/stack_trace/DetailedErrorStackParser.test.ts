@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('DetailedErrorStackParser', () => {
   describe('parseRawFramesFromErrorStack', () => {
@@ -499,5 +502,78 @@ more details
       assert.strictEqual(frames[0].scriptId, '123');
       assert.isUndefined(frames[1].scriptId);
     });
+
+    it('recursively augments nested eval origin raw frames with script IDs', () => {
+      const nestedEvalOrigin: StackTraceImpl.Trie.RawFrame = {
+        url: urlString`http://www.example.org/base.js`,
+        functionName: 'baseCaller',
+        lineNumber: 9,
+        columnNumber: 4,
+      };
+
+      const evalOrigin: StackTraceImpl.Trie.RawFrame = {
+        url: urlString`http://www.example.org/inter.js`,
+        functionName: 'intermediate',
+        lineNumber: 19,
+        columnNumber: 0,
+        parsedFrameInfo: {
+          isAsync: false,
+          isConstructor: false,
+          isEval: true,
+          evalOrigin: nestedEvalOrigin,
+          isWasm: false,
+        },
+      };
+
+      const frames: StackTraceImpl.Trie.RawFrame[] = [
+        {
+          url: urlString`http://www.example.org/main.js`,
+          functionName: 'eval',
+          lineNumber: 0,
+          columnNumber: 10,
+          parsedFrameInfo: {
+            isAsync: false,
+            isConstructor: false,
+            isEval: true,
+            evalOrigin,
+            isWasm: false,
+          },
+        },
+      ];
+
+      const protocolStackTrace: Protocol.Runtime.StackTrace = {
+        callFrames: [
+          {
+            functionName: 'eval',
+            scriptId: 'main-script-id' as Protocol.Runtime.ScriptId,
+            url: 'http://www.example.org/main.js',
+            lineNumber: 0,
+            columnNumber: 10,
+          },
+          {
+            functionName: 'intermediate',
+            scriptId: 'inter-script-id' as Protocol.Runtime.ScriptId,
+            url: 'http://www.example.org/inter.js',
+            lineNumber: 19,
+            columnNumber: 0,
+          },
+          {
+            functionName: 'baseCaller',
+            scriptId: 'base-script-id' as Protocol.Runtime.ScriptId,
+            url: 'http://www.example.org/base.js',
+            lineNumber: 9,
+            columnNumber: 4,
+          },
+        ],
+      };
+
+      StackTraceImpl.DetailedErrorStackParser.augmentRawFramesWithScriptIds(frames, protocolStackTrace);
+
+      assert.strictEqual(frames[0].scriptId, 'main-script-id');
+      assert.strictEqual(frames[0].parsedFrameInfo?.evalOrigin?.scriptId, 'inter-script-id');
+      assert.strictEqual(
+          frames[0].parsedFrameInfo?.evalOrigin?.parsedFrameInfo?.evalOrigin?.scriptId, 'base-script-id');
+    });
   });
+
 });

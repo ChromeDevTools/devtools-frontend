@@ -23,7 +23,6 @@ import {
   ResponseType,
   type UserQuery
 } from './agents/AiAgent.js';
-import {BreakpointDebuggerAgent} from './agents/BreakpointDebuggerAgent.js';
 import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
 import {FileAgent, FileContext} from './agents/FileAgent.js';
 import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
@@ -372,13 +371,6 @@ export class AiConversation {
       }
       case ConversationType.PERFORMANCE: {
         this.#agent = new PerformanceAgent(options);
-        break;
-      }
-      case ConversationType.BREAKPOINT: {
-        const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
-        if (breakpointAgentEnabled) {
-          this.#agent = new BreakpointDebuggerAgent(options);
-        }
         break;
       }
       case ConversationType.ACCESSIBILITY: {

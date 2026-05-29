@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as Greendev from '../../greendev/greendev.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as TextUtils from '../../text_utils/text_utils.js';
 import type * as Trace from '../../trace/trace.js';
@@ -682,11 +681,7 @@ export abstract class AiAgent<T> {
 
     yield* this.handleContextDetails(options.selected);
 
-    const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
-    const isBreakpointDebuggerAgent = this.constructor.name === 'BreakpointDebuggerAgent';
-    const finalMaxSteps = (isBreakpointDebuggerAgent && breakpointAgentEnabled) ? 1000 : MAX_STEPS;
-
-    for (let i = 0; i < finalMaxSteps; i++) {
+    for (let i = 0; i < MAX_STEPS; i++) {
       yield {
         type: ResponseType.QUERYING,
       };

@@ -20,8 +20,6 @@ devtools_module("ai_assistance") {
     "StorageItem.ts",
     "agents/AccessibilityAgent.ts",
     "agents/AiAgent.ts",
-    "agents/BreakpointDebuggerAgent.ts",
-    "agents/BreakpointDebuggerAgentOverlay.ts",
     "agents/ContextSelectionAgent.ts",
     "agents/ConversationSummaryAgent.ts",
     "agents/ExecuteJavascript.ts",

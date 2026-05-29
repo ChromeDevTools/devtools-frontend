@@ -11,7 +11,6 @@ export interface GreenDevSettings {
   aiAnnotations: Common.Settings.Setting<boolean>;
   beyondStylingGemini: Common.Settings.Setting<boolean>;
   beyondStylingAntigravity: Common.Settings.Setting<boolean>;
-  breakpointDebuggerAgent: Common.Settings.Setting<boolean>;
   emulationCapabilities: Common.Settings.Setting<boolean>;
 }
 
@@ -53,11 +52,6 @@ export class Prototypes {
         false,
         Common.Settings.SettingStorageType.GLOBAL,
     );
-    const breakpointDebuggerAgent = settings.createSetting(
-        'greendev-breakpoint-debugger-agent-enabled',
-        false,
-        Common.Settings.SettingStorageType.LOCAL,
-    );
     const emulationCapabilities = settings.createSetting(
         'greendev-emulation-capabilities-enabled',
         false,
@@ -68,7 +62,6 @@ export class Prototypes {
       aiAnnotations,
       beyondStylingGemini,
       beyondStylingAntigravity,
-      breakpointDebuggerAgent,
       emulationCapabilities
     };
   }

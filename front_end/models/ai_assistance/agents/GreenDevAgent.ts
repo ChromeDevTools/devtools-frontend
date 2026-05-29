@@ -393,8 +393,6 @@ export class GreenDevAgent extends AiAgent<string> {
   override preamble = preamble;
 
   get clientFeature(): Host.AidaClient.ClientFeature {
-    // Reuse CHROME_NETWORK_AGENT similar to how we reuse CHROME_FILE_AGENT
-    // in BreakpointDebuggerAgent.ts.
     return Host.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   }
 

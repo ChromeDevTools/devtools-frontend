@@ -294,7 +294,7 @@ export class StylePropertiesSection {
         this.#isCollapsed = false;
         this.markSelectorMatches();
         this.onpopulate();
-        this.#updateCollapsedState();
+        this.updateCollapsedState();
     }
     setComputedStyles(computedStyles) {
         this.computedStyles = computedStyles;
@@ -1128,6 +1128,9 @@ export class StylePropertiesSection {
      * since the user intentionally toggled them off and they should remain visible.
      */
     #shouldCollapse() {
+        if (!Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').get()) {
+            return false;
+        }
         const style = this.styleInternal;
         const properties = style.leadingProperties();
         // Never collapse the element's own inline style section.
@@ -1148,7 +1151,7 @@ export class StylePropertiesSection {
         const allOverloaded = properties.every(p => this.matchedStyles.propertyState(p) === "Overloaded" /* SDK.CSSMatchedStyles.PropertyState.OVERLOADED */);
         return allOverloaded;
     }
-    #updateCollapsedState() {
+    updateCollapsedState() {
         const shouldCollapse = this.#shouldCollapse();
         // Mark as collapsible so the toggle icon is always shown for
         // sections that can be collapsed, even after manual expansion.

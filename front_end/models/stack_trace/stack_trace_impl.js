@@ -153,7 +153,7 @@ function parseMessage(stack) {
   return stack;
 }
 function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
-  for (const rawFrame of rawFrames) {
+  function augmentFrame(rawFrame) {
     const isWasm = rawFrame.parsedFrameInfo?.isWasm;
     const protocolFrame = protocolStackTrace.callFrames.find((frame) => {
       if (isWasm) {
@@ -164,6 +164,12 @@ function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
     if (protocolFrame) {
       rawFrame.scriptId = protocolFrame.scriptId;
     }
+    if (rawFrame.parsedFrameInfo?.evalOrigin) {
+      augmentFrame(rawFrame.parsedFrameInfo.evalOrigin);
+    }
+  }
+  for (const rawFrame of rawFrames) {
+    augmentFrame(rawFrame);
   }
 }
 

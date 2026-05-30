@@ -47,6 +47,7 @@
     "../../../../../../front_end/models/issues_manager/CrossOriginEmbedderPolicyIssue.ts",
     "../../../../../../front_end/models/issues_manager/DeprecationIssue.ts",
     "../../../../../../front_end/models/issues_manager/ElementAccessibilityIssue.ts",
+    "../../../../../../front_end/models/issues_manager/EmailVerificationRequestIssue.ts",
     "../../../../../../front_end/models/issues_manager/FederatedAuthRequestIssue.ts",
     "../../../../../../front_end/models/issues_manager/FederatedAuthUserInfoRequestIssue.ts",
     "../../../../../../front_end/models/issues_manager/GenericIssue.ts",

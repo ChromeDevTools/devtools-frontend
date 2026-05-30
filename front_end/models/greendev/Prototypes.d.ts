@@ -3,7 +3,6 @@ export interface GreenDevSettings {
     aiAnnotations: Common.Settings.Setting<boolean>;
     beyondStylingGemini: Common.Settings.Setting<boolean>;
     beyondStylingAntigravity: Common.Settings.Setting<boolean>;
-    breakpointDebuggerAgent: Common.Settings.Setting<boolean>;
     emulationCapabilities: Common.Settings.Setting<boolean>;
 }
 export declare class Prototypes {

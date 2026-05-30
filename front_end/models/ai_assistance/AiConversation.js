@@ -8,7 +8,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Greendev from '../greendev/greendev.js';
 import { AccessibilityAgent, AccessibilityContext } from './agents/AccessibilityAgent.js';
-import { BreakpointDebuggerAgent } from './agents/BreakpointDebuggerAgent.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent, FileContext } from './agents/FileAgent.js';
 import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
@@ -302,13 +301,6 @@ export class AiConversation {
             }
             case "drjones-performance-full" /* ConversationType.PERFORMANCE */: {
                 this.#agent = new PerformanceAgent(options);
-                break;
-            }
-            case "breakpoint" /* ConversationType.BREAKPOINT */: {
-                const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
-                if (breakpointAgentEnabled) {
-                    this.#agent = new BreakpointDebuggerAgent(options);
-                }
                 break;
             }
             case "accessibility" /* ConversationType.ACCESSIBILITY */: {

@@ -24,7 +24,7 @@ import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as Lit10 from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as LighthousePanel2 from "./../lighthouse/lighthouse.js";
-import * as NetworkForward from "./../network/forward/forward.js";
+import * as NetworkForward2 from "./../network/forward/forward.js";
 import * as NetworkPanel from "./../network/network.js";
 import * as TimelinePanel2 from "./../timeline/timeline.js";
 
@@ -2458,6 +2458,8 @@ import * as Lit5 from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as Elements from "./../elements/elements.js";
 import * as Lighthouse from "./../lighthouse/lighthouse.js";
+import * as NetworkForward from "./../network/forward/forward.js";
+import * as Network from "./../network/network.js";
 import * as TimelineComponents from "./../timeline/components/components.js";
 import * as TimelineInsights from "./../timeline/components/insights/insights.js";
 import * as Timeline from "./../timeline/timeline.js";
@@ -3999,6 +4001,14 @@ var UIStringsNotTranslate4 = {
    */
   viewport: "Viewport optimization",
   /**
+   * @description Accessible label for the reveal button in the network request general headers widget.
+   */
+  revealNetworkRequest: "Reveal network request",
+  /**
+   * @description Title for the network request general headers widget.
+   */
+  networkRequest: "Network request",
+  /**
    * @description Accessible label for the reveal button in the modern HTTP usage widget.
    */
   revealModernHttp: "Reveal modern HTTP usage",
@@ -4729,6 +4739,8 @@ function getWidgetSignature(widget6) {
       return `${widget6.name}:${widget6.data.report.fetchTime}`;
     case "TIMELINE_EVENT_SUMMARY":
       return `${widget6.name}:${widget6.data.event.ts}:${widget6.data.event.name}`;
+    case "NETWORK_REQUEST_GENERAL_HEADERS":
+      return `${widget6.name}:${widget6.data.request.requestId()}`;
     default:
       Platform5.assertNever(widget6, "Unknown AiWidget name");
   }
@@ -4807,6 +4819,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "TIMELINE_EVENT_SUMMARY":
         response = await makeTimelineEventSummaryWidget(widgetData);
+        break;
+      case "NETWORK_REQUEST_GENERAL_HEADERS":
+        response = await makeNetworkRequestGeneralHeadersWidget(widgetData);
         break;
       default:
         Platform5.assertNever(widgetData, "Unknown AiWidget name");
@@ -5304,6 +5319,22 @@ async function makeTimelineEventSummaryWidget(widgetData) {
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealTimelineEventSummary),
     title: lockedString5(UIStringsNotTranslate4.timelineEventSummary),
     jslogContext: "timeline-event-summary-widget"
+  };
+}
+async function makeNetworkRequestGeneralHeadersWidget(widgetData) {
+  const renderedWidget = html7`<devtools-widget class="network-request-general-headers-widget" ${widget3(() => {
+    return Network.RequestHeadersView.RequestHeadersView.createGeneralHeadersView(widgetData.data.request);
+  })}></devtools-widget>`;
+  return {
+    renderedWidget,
+    revealable: NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+      widgetData.data.request,
+      "headers-component"
+      /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
+    ),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealNetworkRequest),
+    title: lockedString5(UIStringsNotTranslate4.networkRequest),
+    jslogContext: "network-request-general-headers-widget"
   };
 }
 
@@ -7501,13 +7532,6 @@ async function getEmptyStateSuggestions(conversation) {
         { title: "What performance issues exist with my page?", jslogContext: "performance-default" }
       ];
     }
-    case "breakpoint": {
-      return [
-        { title: "Why did the code pause here?" },
-        { title: "What function does this breakpoint belong to?" },
-        { title: "Why is this error thrown?" }
-      ];
-    }
     case "none": {
       return [
         { title: "What can you help me with?", jslogContext: "empty" },
@@ -7635,7 +7659,7 @@ function defaultView(input, output, target) {
                     </devtools-widget>`;
     }
   }
-  if (Root8.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent")) {
+  if (Root8.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
     const shouldShowWalkthrough = input.state === "chat-view" && input.props.walkthrough.isExpanded;
     let walkthroughIsForLastMessage = false;
     if (input.state === "chat-view") {
@@ -7686,12 +7710,6 @@ function createFileContext(file) {
   }
   return new AiAssistanceModel8.FileAgent.FileContext(file);
 }
-function createBreakpointContext(uiLocation) {
-  if (!uiLocation) {
-    return null;
-  }
-  return new AiAssistanceModel8.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
-}
 function createAccessibilityContext(report) {
   if (!report) {
     return null;
@@ -7735,7 +7753,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
   #selectedElement = null;
   #selectedPerformanceTrace = null;
   #selectedRequest = null;
-  #selectedBreakpoint = null;
   #selectedAccessibility = null;
   #selectedStorage = null;
   // Messages displayed in the `ChatView` component.
@@ -8002,8 +8019,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       targetConversationType = "freestyler";
     } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
       targetConversationType = "drjones-network-request";
-    } else if (isSourcesPanelVisible && this.#conversation?.type === "breakpoint") {
-      targetConversationType = "breakpoint";
     } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
       targetConversationType = "drjones-file";
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
@@ -8086,28 +8101,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
     this.requestUpdate();
   }
-  async handleBreakpointConversation(uiLocation, errorMsg) {
-    const context = new AiAssistanceModel8.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
-    this.#selectedBreakpoint = context;
-    const conversation = new AiAssistanceModel8.AiConversation.AiConversation({
-      type: "breakpoint",
-      data: [],
-      isReadOnly: false,
-      aidaClient: this.#aidaClient,
-      changeManager: this.#changeManager,
-      isExternal: false,
-      performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
-      onInspectElement: this.#handleInspectElement.bind(this),
-      networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
-      lighthouseRecording: this.#handleLighthouseRun.bind(this)
-    });
-    this.#updateConversationState(conversation);
-    this.#conversation?.setContext(context);
-    this.requestUpdate();
-    await UI11.ViewManager.ViewManager.instance().showView(_AiAssistancePanel.panelName);
-    const prompt = errorMsg ? `debug the error "${errorMsg}" using breakpoint debugging agent` : "debug the error using breakpoint debugging agent";
-    await this.#startConversation(prompt);
-  }
   wasShown() {
     super.wasShown();
     this.#viewOutput.chatView?.restoreScrollPosition();
@@ -8117,7 +8110,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#selectedRequest = createRequestContext(UI11.Context.Context.instance().flavor(SDK6.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI11.Context.Context.instance().flavor(AiAssistanceModel8.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI11.Context.Context.instance().flavor(Workspace6.UISourceCode.UISourceCode));
-    this.#selectedBreakpoint = createBreakpointContext(UI11.Context.Context.instance().flavor(Workspace6.UISourceCode.UILocation));
     this.#selectedAccessibility = createAccessibilityContext(UI11.Context.Context.instance().flavor(LighthousePanel2.LighthousePanel.ActiveLighthouseReport));
     this.#selectedStorage = createStorageContext(UI11.Context.Context.instance().flavor(AiAssistanceModel8.StorageItem.StorageItem));
     this.#updateConversationState(this.#conversation);
@@ -8129,7 +8121,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel8.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel8.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI11.Context.Context.instance().addFlavorChangeListener(Workspace6.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(LighthousePanel2.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI11.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     SDK6.TargetManager.TargetManager.instance().addModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
@@ -8212,14 +8203,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       return;
     }
     this.#selectedFile = new AiAssistanceModel8.FileAgent.FileContext(ev.data);
-    this.#updateConversationState(this.#conversation);
-  };
-  #handleBreakpointFlavorChange = (ev) => {
-    const newBreakpoint = ev.data;
-    if (!newBreakpoint || this.#selectedBreakpoint?.getItem() === newBreakpoint) {
-      return;
-    }
-    this.#selectedBreakpoint = new AiAssistanceModel8.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
     this.#updateConversationState(this.#conversation);
   };
   #handleLighthouseReportFlavorChange = (ev) => {
@@ -8305,8 +8288,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
         }
         return lockedString8(UIStringsNotTranslate7.inputPlaceholderForPerformanceWithNoRecording);
       }
-      case "breakpoint":
-        return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContext);
       case "accessibility":
         return this.#conversation.selectedContext ? lockedString8(UIStringsNotTranslate7.inputPlaceholderForAccessibility) : lockedString8(UIStringsNotTranslate7.inputPlaceholderForAccessibilityNoContext);
       case "storage":
@@ -8357,7 +8338,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
           return lockedString8(UIStringsNotTranslate7.inputDisclaimerForAccessibility);
         }
         return lockedString8(UIStringsNotTranslate7.inputDisclaimerForAccessibilityEnterpriseNoLogging);
-      case "breakpoint":
       case "storage":
       case "none":
         if (loggingEnabled) {
@@ -8386,7 +8366,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
     const context = this.#conversation.selectedContext;
     if (context instanceof AiAssistanceModel8.NetworkAgent.RequestContext) {
-      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+      const requestLocation = NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         "headers-component"
         /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
@@ -8577,8 +8557,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
         return this.#selectedRequest;
       case "drjones-performance-full":
         return this.#selectedPerformanceTrace;
-      case "breakpoint":
-        return this.#selectedBreakpoint;
       case "accessibility":
         return this.#selectedAccessibility;
       case "storage":
@@ -8597,8 +8575,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-    } else if (data instanceof AiAssistanceModel8.BreakpointDebuggerAgent.BreakpointContext) {
-      this.#selectedBreakpoint = data;
     } else if (data instanceof AiAssistanceModel8.AccessibilityAgent.AccessibilityContext) {
       this.#selectedAccessibility = data;
     } else if (data instanceof AiAssistanceModel8.StorageAgent.StorageContext) {
@@ -8713,7 +8689,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
             };
             this.#messages.push(systemMessage);
             const isSidebarWalkthroughOpen = this.#walkthrough.isExpanded && !this.#walkthrough.isInlined;
-            if (isSidebarWalkthroughOpen || Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent") && this.#conversation?.type === "breakpoint") {
+            if (isSidebarWalkthroughOpen) {
               this.#openWalkthrough(systemMessage);
             }
             break;

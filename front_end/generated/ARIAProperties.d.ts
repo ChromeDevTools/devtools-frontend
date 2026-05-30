@@ -2,67 +2,67 @@ export namespace config {
     let attributes: ({
         isGlobal: boolean;
         name: string;
-        type: string;
-        supportedOnRoles?: undefined;
-        default?: undefined;
-        enum?: undefined;
-        preventedOnRoles?: undefined;
-    } | {
-        name: string;
-        supportedOnRoles: string[];
-        type: string;
-        isGlobal?: undefined;
-        default?: undefined;
-        enum?: undefined;
-        preventedOnRoles?: undefined;
-    } | {
-        default: string;
-        isGlobal: boolean;
-        name: string;
-        type: string;
-        supportedOnRoles?: undefined;
-        enum?: undefined;
-        preventedOnRoles?: undefined;
-    } | {
-        default: string;
-        enum: string[];
-        name: string;
-        supportedOnRoles: string[];
-        type: string;
-        isGlobal?: undefined;
-        preventedOnRoles?: undefined;
-    } | {
-        isGlobal: boolean;
-        name: string;
         preventedOnRoles: string[];
         type: string;
         supportedOnRoles?: undefined;
         default?: undefined;
         enum?: undefined;
     } | {
+        name: string;
+        supportedOnRoles: string[];
+        type: string;
+        isGlobal?: undefined;
+        preventedOnRoles?: undefined;
+        default?: undefined;
+        enum?: undefined;
+    } | {
+        default: string;
+        isGlobal: boolean;
+        name: string;
+        type: string;
+        preventedOnRoles?: undefined;
+        supportedOnRoles?: undefined;
+        enum?: undefined;
+    } | {
+        default: string;
+        enum: string[];
+        name: string;
+        supportedOnRoles: string[];
+        type: string;
+        isGlobal?: undefined;
+        preventedOnRoles?: undefined;
+    } | {
+        isGlobal: boolean;
+        name: string;
+        type: string;
+        preventedOnRoles?: undefined;
+        supportedOnRoles?: undefined;
+        default?: undefined;
+        enum?: undefined;
+    } | {
         default: string;
         enum: string[];
         isGlobal: boolean;
         name: string;
         type: string;
-        supportedOnRoles?: undefined;
         preventedOnRoles?: undefined;
+        supportedOnRoles?: undefined;
     } | {
         default: string;
         name: string;
         supportedOnRoles: string[];
         type: string;
         isGlobal?: undefined;
-        enum?: undefined;
         preventedOnRoles?: undefined;
+        enum?: undefined;
     } | {
         name: string;
         type: string;
         isGlobal?: undefined;
+        preventedOnRoles?: undefined;
         supportedOnRoles?: undefined;
         default?: undefined;
         enum?: undefined;
-        preventedOnRoles?: undefined;
     })[];
     namespace metadata {
         export let attrsNullNamespace: boolean;

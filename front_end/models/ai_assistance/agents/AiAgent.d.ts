@@ -257,7 +257,13 @@ export interface TimelineEventSummaryAiWidget {
         parsedTrace: Trace.TraceModel.ParsedTrace;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget;
+export interface NetworkRequestGeneralHeadersAiWidget {
+    name: 'NETWORK_REQUEST_GENERAL_HEADERS';
+    data: {
+        request: SDK.NetworkRequest.NetworkRequest;
+    };
+}
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

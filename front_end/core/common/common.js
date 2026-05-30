@@ -93,7 +93,6 @@ var CharacterIdMap = class {
 var Color_exports = {};
 __export(Color_exports, {
   ColorFunction: () => ColorFunction,
-  ColorMixRegex: () => ColorMixRegex,
   Generator: () => Generator,
   HSL: () => HSL,
   HWB: () => HWB,
@@ -106,7 +105,6 @@ __export(Color_exports, {
   Oklab: () => Oklab,
   Oklch: () => Oklch,
   PageHighlight: () => PageHighlight,
-  Regex: () => Regex,
   ShortHex: () => ShortHex,
   SourceOrderHighlight: () => SourceOrderHighlight,
   approachColorValue: () => approachColorValue,
@@ -3201,8 +3199,6 @@ var Legacy = class _Legacy {
     return equals(toRgbValue(this.#rgba[0]), toRgbValue(legacy.#rgba[0]), WIDE_RANGE_EPSILON) && equals(toRgbValue(this.#rgba[1]), toRgbValue(legacy.#rgba[1]), WIDE_RANGE_EPSILON) && equals(toRgbValue(this.#rgba[2]), toRgbValue(legacy.#rgba[2]), WIDE_RANGE_EPSILON) && equals(this.#rgba[3], legacy.#rgba[3]);
   }
 };
-var Regex = /((?:rgba?|hsla?|hwba?|lab|lch|oklab|oklch|color)\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
-var ColorMixRegex = /color-mix\(.*,\s*(?<firstColor>.+)\s*,\s*(?<secondColor>.+)\s*\)/g;
 var COLOR_TO_RGBA_ENTRIES = [
   ["aliceblue", [240, 248, 255]],
   ["antiquewhite", [250, 235, 215]],

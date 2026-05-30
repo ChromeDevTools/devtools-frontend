@@ -554,9 +554,16 @@ var Breakpoint = class {
       }
     }
     if (this.bound()) {
+      const removedUILocations = /* @__PURE__ */ new Map();
       for (const uiLocation of this.#uiLocations) {
         if (uiLocation.uiSourceCode === uiSourceCode) {
           this.#uiLocations.delete(uiLocation);
+          removedUILocations.set(uiLocation.id(), uiLocation);
+        }
+      }
+      for (const uiLocation of removedUILocations.values()) {
+        const isGoneLogically = !Array.from(this.#uiLocations).some((loc) => loc.id() === uiLocation.id());
+        if (isGoneLogically) {
           this.breakpointManager.uiLocationRemoved(uiLocation);
         }
       }
@@ -581,13 +588,19 @@ var Breakpoint = class {
     if (!this.bound()) {
       this.removeAllUnboundLocations();
     }
+    const isNewLogicalLocation = !Array.from(this.#uiLocations).some((loc) => loc.id() === uiLocation.id());
     this.#uiLocations.add(uiLocation);
-    this.breakpointManager.uiLocationAdded(this, uiLocation);
+    if (isNewLogicalLocation) {
+      this.breakpointManager.uiLocationAdded(this, uiLocation);
+    }
   }
   uiLocationRemoved(uiLocation) {
     if (this.#uiLocations.has(uiLocation)) {
       this.#uiLocations.delete(uiLocation);
-      this.breakpointManager.uiLocationRemoved(uiLocation);
+      const isGoneLogically = !Array.from(this.#uiLocations).some((loc) => loc.id() === uiLocation.id());
+      if (isGoneLogically) {
+        this.breakpointManager.uiLocationRemoved(uiLocation);
+      }
       if (!this.bound() && !this.isRemoved) {
         this.addAllUnboundLocations();
       }

@@ -77,6 +77,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     jumpToFontPaletteDefinition(paletteName: string): void;
     jumpToCounterStyleDefinition(counterStyleName: string): void;
     forceUpdate(): void;
+    private updateCollapsedSectionsSetting;
     private sectionsContainerKeyDown;
     private sectionsContainerFocusChanged;
     resetFocus(): void;

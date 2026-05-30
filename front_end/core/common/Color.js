@@ -1798,8 +1798,6 @@ export class Legacy {
             equals(this.#rgba[3], legacy.#rgba[3]);
     }
 }
-export const Regex = /((?:rgba?|hsla?|hwba?|lab|lch|oklab|oklch|color)\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
-export const ColorMixRegex = /color-mix\(.*,\s*(?<firstColor>.+)\s*,\s*(?<secondColor>.+)\s*\)/g;
 const COLOR_TO_RGBA_ENTRIES = [
     ['aliceblue', [240, 248, 255]],
     ['antiquewhite', [250, 235, 215]],

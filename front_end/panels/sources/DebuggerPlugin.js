@@ -1024,13 +1024,18 @@ export class DebuggerPlugin extends Plugin {
         }
         const { editor } = this;
         const breakpointLocations = this.breakpointManager.breakpointLocationsForUISourceCode(this.uiSourceCode);
-        return breakpointLocations.map(({ uiLocation, breakpoint }) => {
-            const editorLocation = this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
-            return {
+        // Group by breakpoint to de-duplicate
+        const uniqueBreakpoints = Map.groupBy(breakpointLocations, loc => loc.breakpoint);
+        const result = [];
+        for (const [breakpoint, locations] of uniqueBreakpoints) {
+            const closestUILoc = breakpoint.getClosestResolvedLocation() || locations[0].uiLocation;
+            const editorLocation = this.transformer.uiLocationToEditorLocation(closestUILoc.lineNumber, closestUILoc.columnNumber);
+            result.push({
                 position: editor.toOffset(editorLocation),
                 breakpoint,
-            };
-        });
+            });
+        }
+        return result;
     }
     lineBreakpoints(line) {
         return this.breakpoints.filter(b => b.position >= line.from && b.position <= line.to).map(b => b.breakpoint);

@@ -285,13 +285,6 @@ async function getEmptyStateSuggestions(conversation) {
                 { title: 'What performance issues exist with my page?', jslogContext: 'performance-default' },
             ];
         }
-        case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */: {
-            return [
-                { title: 'Why did the code pause here?' },
-                { title: 'What function does this breakpoint belong to?' },
-                { title: 'Why is this error thrown?' },
-            ];
-        }
         case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */: {
             return [
                 { title: 'What can you help me with?', jslogContext: 'empty' },
@@ -430,8 +423,7 @@ function defaultView(input, output, target) {
                     </devtools-widget>`;
         }
     }
-    if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled ||
-        Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent')) {
+    if (Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled) {
         const shouldShowWalkthrough = input.state === "chat-view" /* ViewState.CHAT_VIEW */ && input.props.walkthrough.isExpanded;
         /**
          * We want to mark the walkthrough as loading only if it's showing the last
@@ -489,12 +481,6 @@ function createFileContext(file) {
     }
     return new AiAssistanceModel.FileAgent.FileContext(file);
 }
-function createBreakpointContext(uiLocation) {
-    if (!uiLocation) {
-        return null;
-    }
-    return new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
-}
 function createAccessibilityContext(report) {
     if (!report) {
         return null;
@@ -538,7 +524,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     #selectedElement = null;
     #selectedPerformanceTrace = null;
     #selectedRequest = null;
-    #selectedBreakpoint = null;
     #selectedAccessibility = null;
     #selectedStorage = null;
     // Messages displayed in the `ChatView` component.
@@ -828,10 +813,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
             targetConversationType = "drjones-network-request" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NETWORK */;
         }
-        else if (isSourcesPanelVisible &&
-            this.#conversation?.type === "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */) {
-            targetConversationType = "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */;
-        }
         else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
             targetConversationType = "drjones-file" /* AiAssistanceModel.AiHistoryStorage.ConversationType.FILE */;
         }
@@ -928,29 +909,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         this.requestUpdate();
     }
-    async handleBreakpointConversation(uiLocation, errorMsg) {
-        const context = new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(uiLocation);
-        this.#selectedBreakpoint = context;
-        const conversation = new AiAssistanceModel.AiConversation.AiConversation({
-            type: "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */,
-            data: [],
-            isReadOnly: false,
-            aidaClient: this.#aidaClient,
-            changeManager: this.#changeManager,
-            isExternal: false,
-            performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
-            onInspectElement: this.#handleInspectElement.bind(this),
-            networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
-            lighthouseRecording: this.#handleLighthouseRun.bind(this),
-        });
-        this.#updateConversationState(conversation);
-        this.#conversation?.setContext(context);
-        this.requestUpdate();
-        await UI.ViewManager.ViewManager.instance().showView(AiAssistancePanel.panelName);
-        const prompt = errorMsg ? `debug the error "${errorMsg}" using breakpoint debugging agent` :
-            'debug the error using breakpoint debugging agent';
-        await this.#startConversation(prompt);
-    }
     wasShown() {
         super.wasShown();
         this.#viewOutput.chatView?.restoreScrollPosition();
@@ -963,8 +921,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#selectedPerformanceTrace =
             createPerformanceTraceContext(UI.Context.Context.instance().flavor(AiAssistanceModel.AIContext.AgentFocus));
         this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
-        this.#selectedBreakpoint =
-            createBreakpointContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UILocation));
         this.#selectedAccessibility = createAccessibilityContext(UI.Context.Context.instance().flavor(LighthousePanel.LighthousePanel.ActiveLighthouseReport));
         this.#selectedStorage =
             createStorageContext(UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem));
@@ -977,7 +933,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         UI.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-        UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UILocation, this.#handleBreakpointFlavorChange);
         UI.Context.Context.instance().addFlavorChangeListener(LighthousePanel.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
         UI.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged" /* UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED */, this.#selectDefaultAgentIfNeeded, this);
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
@@ -1065,14 +1020,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(ev.data);
-        this.#updateConversationState(this.#conversation);
-    };
-    #handleBreakpointFlavorChange = (ev) => {
-        const newBreakpoint = ev.data;
-        if (!newBreakpoint || this.#selectedBreakpoint?.getItem() === newBreakpoint) {
-            return;
-        }
-        this.#selectedBreakpoint = new AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext(newBreakpoint);
         this.#updateConversationState(this.#conversation);
     };
     #handleLighthouseReportFlavorChange = (ev) => {
@@ -1165,8 +1112,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 }
                 return lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceWithNoRecording);
             }
-            case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
-                return lockedString(UIStringsNotTranslate.inputPlaceholderForNoContext);
             case "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */:
                 return this.#conversation.selectedContext ?
                     lockedString(UIStringsNotTranslate.inputPlaceholderForAccessibility) :
@@ -1220,7 +1165,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibility);
                 }
                 return lockedString(UIStringsNotTranslate.inputDisclaimerForAccessibilityEnterpriseNoLogging);
-            case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
             case "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */:
             case "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */:
                 if (loggingEnabled) {
@@ -1437,8 +1381,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 return this.#selectedRequest;
             case "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */:
                 return this.#selectedPerformanceTrace;
-            case "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */:
-                return this.#selectedBreakpoint;
             case "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */:
                 return this.#selectedAccessibility;
             case "storage" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE */:
@@ -1460,9 +1402,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
         else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
             this.#selectedPerformanceTrace = data;
-        }
-        else if (data instanceof AiAssistanceModel.BreakpointDebuggerAgent.BreakpointContext) {
-            this.#selectedBreakpoint = data;
         }
         else if (data instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext) {
             this.#selectedAccessibility = data;
@@ -1596,9 +1535,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         // This ensures that when a user asks a new question, the sidebar updates
                         // immediately to show the "loading" state of the new walkthrough.
                         const isSidebarWalkthroughOpen = this.#walkthrough.isExpanded && !this.#walkthrough.isInlined;
-                        if (isSidebarWalkthroughOpen ||
-                            (Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent') &&
-                                this.#conversation?.type === "breakpoint" /* AiAssistanceModel.AiHistoryStorage.ConversationType.BREAKPOINT */)) {
+                        if (isSidebarWalkthroughOpen) {
                             this.#openWalkthrough(systemMessage);
                         }
                         break;

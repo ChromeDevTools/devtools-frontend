@@ -14,6 +14,7 @@ import { CorsIssue } from './CorsIssue.js';
 import { CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue } from './CrossOriginEmbedderPolicyIssue.js';
 import { DeprecationIssue } from './DeprecationIssue.js';
 import { ElementAccessibilityIssue } from './ElementAccessibilityIssue.js';
+import { EmailVerificationRequestIssue } from './EmailVerificationRequestIssue.js';
 import { FederatedAuthRequestIssue } from './FederatedAuthRequestIssue.js';
 import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
@@ -90,6 +91,10 @@ const issueCodeHandlers = new Map([
     [
         "ClientHintIssue" /* Protocol.Audits.InspectorIssueCode.ClientHintIssue */,
         ClientHintIssue.fromInspectorIssue,
+    ],
+    [
+        "EmailVerificationRequestIssue" /* Protocol.Audits.InspectorIssueCode.EmailVerificationRequestIssue */,
+        EmailVerificationRequestIssue.fromInspectorIssue,
     ],
     [
         "FederatedAuthRequestIssue" /* Protocol.Audits.InspectorIssueCode.FederatedAuthRequestIssue */,

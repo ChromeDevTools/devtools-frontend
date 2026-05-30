@@ -6025,7 +6025,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.#isCollapsed = false;
     this.markSelectorMatches();
     this.onpopulate();
-    this.#updateCollapsedState();
+    this.updateCollapsedState();
   }
   setComputedStyles(computedStyles) {
     this.computedStyles = computedStyles;
@@ -6835,6 +6835,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
    * since the user intentionally toggled them off and they should remain visible.
    */
   #shouldCollapse() {
+    if (!Common3.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").get()) {
+      return false;
+    }
     const style = this.styleInternal;
     const properties = style.leadingProperties();
     if (style.type === SDK7.CSSStyleDeclaration.Type.Inline) {
@@ -6853,7 +6856,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     );
     return allOverloaded;
   }
-  #updateCollapsedState() {
+  updateCollapsedState() {
     const shouldCollapse = this.#shouldCollapse();
     this.element.classList.toggle("collapsible", shouldCollapse);
     this.#setCollapsed(shouldCollapse);
@@ -8309,6 +8312,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS(stylesSidebarPane_css_default);
     Common5.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
+    Common5.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").addChangeListener(this.updateCollapsedSectionsSetting, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message hidden");
     this.noMatchesElement.textContent = i18nString6(UIStrings6.noMatchingSelectorOrStyle);
@@ -8407,6 +8411,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.#swatchPopoverHelper.hide();
     this.resetCache();
     this.requestUpdate();
+  }
+  updateCollapsedSectionsSetting() {
+    for (const section5 of this.allSections()) {
+      section5.updateCollapsedState();
+    }
   }
   sectionsContainerKeyDown(event) {
     const activeElement = UI10.DOMUtilities.deepActiveElement(this.sectionsContainer.contentElement.ownerDocument);

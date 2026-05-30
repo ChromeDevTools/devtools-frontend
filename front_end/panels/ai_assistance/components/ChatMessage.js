@@ -23,6 +23,8 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Elements from '../../elements/elements.js';
 import * as Lighthouse from '../../lighthouse/lighthouse.js';
+import * as NetworkForward from '../../network/forward/forward.js';
+import * as Network from '../../network/network.js';
 import * as TimelineComponents from '../../timeline/components/components.js';
 import * as TimelineInsights from '../../timeline/components/insights/insights.js';
 import * as Timeline from '../../timeline/timeline.js';
@@ -369,6 +371,14 @@ const UIStringsNotTranslate = {
      * @description Title for the viewport optimization widget.
      */
     viewport: 'Viewport optimization',
+    /**
+     * @description Accessible label for the reveal button in the network request general headers widget.
+     */
+    revealNetworkRequest: 'Reveal network request',
+    /**
+     * @description Title for the network request general headers widget.
+     */
+    networkRequest: 'Network request',
     /**
      * @description Accessible label for the reveal button in the modern HTTP usage widget.
      */
@@ -1202,6 +1212,8 @@ export function getWidgetSignature(widget) {
             return `${widget.name}:${widget.data.report.fetchTime}`;
         case 'TIMELINE_EVENT_SUMMARY':
             return `${widget.name}:${widget.data.event.ts}:${widget.data.event.name}`;
+        case 'NETWORK_REQUEST_GENERAL_HEADERS':
+            return `${widget.name}:${widget.data.request.requestId()}`;
         default:
             Platform.assertNever(widget, 'Unknown AiWidget name');
     }
@@ -1285,6 +1297,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'TIMELINE_EVENT_SUMMARY':
                 response = await makeTimelineEventSummaryWidget(widgetData);
+                break;
+            case 'NETWORK_REQUEST_GENERAL_HEADERS':
+                response = await makeNetworkRequestGeneralHeadersWidget(widgetData);
                 break;
             default:
                 Platform.assertNever(widgetData, 'Unknown AiWidget name');
@@ -1784,6 +1799,18 @@ async function makeTimelineEventSummaryWidget(widgetData) {
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealTimelineEventSummary),
         title: lockedString(UIStringsNotTranslate.timelineEventSummary),
         jslogContext: 'timeline-event-summary-widget',
+    };
+}
+async function makeNetworkRequestGeneralHeadersWidget(widgetData) {
+    const renderedWidget = html `<devtools-widget class="network-request-general-headers-widget" ${widget(() => {
+        return Network.RequestHeadersView.RequestHeadersView.createGeneralHeadersView(widgetData.data.request);
+    })}></devtools-widget>`;
+    return {
+        renderedWidget,
+        revealable: NetworkForward.UIRequestLocation.UIRequestLocation.tab(widgetData.data.request, "headers-component" /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealNetworkRequest),
+        title: lockedString(UIStringsNotTranslate.networkRequest),
+        jslogContext: 'network-request-general-headers-widget',
     };
 }
 //# sourceMappingURL=ChatMessage.js.map

@@ -4827,6 +4827,7 @@ var generatedProperties = [
     "name": "text-emphasis-style"
   },
   {
+    "inherited": true,
     "name": "text-fit"
   },
   {
@@ -20192,9 +20193,13 @@ var SourceMap = class {
     }
     return reverseMappings.slice(startIndex, endIndex);
   }
-  findReverseEntries(sourceURL, lineNumber, columnNumber) {
+  findReverseEntries(sourceURL, lineNumber, columnNumber, filterContiguous = false) {
     const mappings = this.mappings();
-    return this.findReverseIndices(sourceURL, lineNumber, columnNumber).map((i) => mappings[i]);
+    let indices = this.findReverseIndices(sourceURL, lineNumber, columnNumber);
+    if (filterContiguous) {
+      indices = indices.filter((index, i) => i === 0 || index !== indices[i - 1] + 1);
+    }
+    return indices.map((i) => mappings[i]);
   }
   findReverseRanges(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();

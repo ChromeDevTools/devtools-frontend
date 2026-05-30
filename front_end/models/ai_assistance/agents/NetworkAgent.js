@@ -136,6 +136,12 @@ export class NetworkAgent extends AiAgent {
         yield {
             type: "context" /* ResponseType.CONTEXT */,
             details: await createContextDetailsForNetworkAgent(selectedNetworkRequest),
+            widgets: [{
+                    name: 'NETWORK_REQUEST_GENERAL_HEADERS',
+                    data: {
+                        request: selectedNetworkRequest.getItem(),
+                    },
+                }],
         };
     }
     async enhanceQuery(query, selectedNetworkRequest) {

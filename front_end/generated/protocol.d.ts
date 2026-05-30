@@ -1014,6 +1014,7 @@ export declare namespace Audits {
         WriteErrorNonSecureContext = "WriteErrorNonSecureContext",
         WriteErrorNonStringIdField = "WriteErrorNonStringIdField",
         WriteErrorNonStringInMatchDestList = "WriteErrorNonStringInMatchDestList",
+        WriteErrorInvalidMatchDestList = "WriteErrorInvalidMatchDestList",
         WriteErrorNonStringMatchField = "WriteErrorNonStringMatchField",
         WriteErrorNonTokenTypeField = "WriteErrorNonTokenTypeField",
         WriteErrorRequestAborted = "WriteErrorRequestAborted",
@@ -1259,6 +1260,38 @@ export declare namespace Audits {
         InvalidAccountsResponse = "InvalidAccountsResponse",
         NoReturningUserFromFetchedAccounts = "NoReturningUserFromFetchedAccounts"
     }
+    interface EmailVerificationRequestIssueDetails {
+        emailVerificationRequestIssueReason: EmailVerificationRequestIssueReason;
+    }
+    /**
+     * Represents the failure reason when an email verification request fails.
+     * Should be updated alongside EmailVerificationRequestResult in
+     * third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+     */
+    const enum EmailVerificationRequestIssueReason {
+        InvalidEmail = "InvalidEmail",
+        DnsFetchFailed = "DnsFetchFailed",
+        DnsInvalidRecord = "DnsInvalidRecord",
+        WellKnownHttpNotFound = "WellKnownHttpNotFound",
+        WellKnownNoResponse = "WellKnownNoResponse",
+        WellKnownInvalidResponse = "WellKnownInvalidResponse",
+        WellKnownListEmpty = "WellKnownListEmpty",
+        WellKnownInvalidContentType = "WellKnownInvalidContentType",
+        WellKnownMissingIssuanceEndpoint = "WellKnownMissingIssuanceEndpoint",
+        WellKnownIssuanceEndpointCrossOrigin = "WellKnownIssuanceEndpointCrossOrigin",
+        WellKnownUnsupportedSigningAlgorithm = "WellKnownUnsupportedSigningAlgorithm",
+        TokenHttpNotFound = "TokenHttpNotFound",
+        TokenNoResponse = "TokenNoResponse",
+        TokenInvalidResponse = "TokenInvalidResponse",
+        TokenInvalidContentType = "TokenInvalidContentType",
+        TokenMalformedSdJwt = "TokenMalformedSdJwt",
+        TokenInvalidSdJwt = "TokenInvalidSdJwt",
+        KeyBindingSigningFailed = "KeyBindingSigningFailed",
+        RpOriginIsOpaque = "RpOriginIsOpaque",
+        WellKnownMissingAccountsEndpoint = "WellKnownMissingAccountsEndpoint",
+        UserLoggedOut = "UserLoggedOut",
+        WellKnownAccountsEndpointCrossOrigin = "WellKnownAccountsEndpointCrossOrigin"
+    }
     /**
      * This issue tracks client hints related issues. It's used to deprecate old
      * features, encourage the use of new ones, and provide general guidance.
@@ -1483,7 +1516,8 @@ export declare namespace Audits {
         UserReidentificationIssue = "UserReidentificationIssue",
         PermissionElementIssue = "PermissionElementIssue",
         PerformanceIssue = "PerformanceIssue",
-        SelectivePermissionsInterventionIssue = "SelectivePermissionsInterventionIssue"
+        SelectivePermissionsInterventionIssue = "SelectivePermissionsInterventionIssue",
+        EmailVerificationRequestIssue = "EmailVerificationRequestIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1523,6 +1557,7 @@ export declare namespace Audits {
         permissionElementIssueDetails?: PermissionElementIssueDetails;
         performanceIssueDetails?: PerformanceIssueDetails;
         selectivePermissionsInterventionIssueDetails?: SelectivePermissionsInterventionIssueDetails;
+        emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -11031,7 +11066,8 @@ export declare namespace Network {
         InvalidConfigJson = "InvalidConfigJson",
         InvalidFederatedSessionProviderFailedToRestoreKey = "InvalidFederatedSessionProviderFailedToRestoreKey",
         FailedToUnwrapKey = "FailedToUnwrapKey",
-        SessionDeletedDuringRefresh = "SessionDeletedDuringRefresh"
+        SessionDeletedDuringRefresh = "SessionDeletedDuringRefresh",
+        CrossOriginRegistrationSiteNotIncluded = "CrossOriginRegistrationSiteNotIncluded"
     }
     /**
      * Details about a failed device bound session network request.
@@ -18000,8 +18036,8 @@ export declare namespace Target {
         targetId: TargetID;
         /**
          * The id of the panel we want DevTools to open initially. Currently
-         * supported panels are elements, console, network, sources, resources
-         * and performance.
+         * supported panels are elements, console, network, sources, resources,
+         * timeline, chrome-recorder, heap-profiler, lighthouse, and security.
          */
         panelId?: string;
     }

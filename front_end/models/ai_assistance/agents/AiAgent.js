@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import * as Greendev from '../../greendev/greendev.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 const MAX_SUGGESTION_LENGTH = 200;
 /**
@@ -274,10 +273,7 @@ export class AiAgent {
         // Request is built here to capture history up to this point.
         let request = this.buildRequest(query, Host.AidaClient.Role.USER);
         yield* this.handleContextDetails(options.selected);
-        const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled('breakpointDebuggerAgent');
-        const isBreakpointDebuggerAgent = this.constructor.name === 'BreakpointDebuggerAgent';
-        const finalMaxSteps = (isBreakpointDebuggerAgent && breakpointAgentEnabled) ? 1000 : MAX_STEPS;
-        for (let i = 0; i < finalMaxSteps; i++) {
+        for (let i = 0; i < MAX_STEPS; i++) {
             yield {
                 type: "querying" /* ResponseType.QUERYING */,
             };

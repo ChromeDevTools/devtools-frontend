@@ -39,12 +39,6 @@ var Prototypes = class _Prototypes {
       "Global"
       /* Common.Settings.SettingStorageType.GLOBAL */
     );
-    const breakpointDebuggerAgent = settings.createSetting(
-      "greendev-breakpoint-debugger-agent-enabled",
-      false,
-      "Local"
-      /* Common.Settings.SettingStorageType.LOCAL */
-    );
     const emulationCapabilities = settings.createSetting(
       "greendev-emulation-capabilities-enabled",
       false,
@@ -55,7 +49,6 @@ var Prototypes = class _Prototypes {
       aiAnnotations,
       beyondStylingGemini,
       beyondStylingAntigravity,
-      breakpointDebuggerAgent,
       emulationCapabilities
     };
   }

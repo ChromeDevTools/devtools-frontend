@@ -335,8 +335,6 @@ export declare class Legacy implements Color {
     setFormat(format: LegacyColor): void;
     equal(other: Color): boolean;
 }
-export declare const Regex: RegExp;
-export declare const ColorMixRegex: RegExp;
 export declare const Nicknames: Map<string, number[]>;
 export declare const PageHighlight: {
     Content: Legacy;

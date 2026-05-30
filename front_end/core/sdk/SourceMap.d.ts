@@ -102,7 +102,7 @@ export declare class SourceMap {
     } | null;
     sourceLineMapping(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): SourceMapEntry | null;
     private findReverseIndices;
-    findReverseEntries(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): SourceMapEntry[];
+    findReverseEntries(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number, filterContiguous?: boolean): SourceMapEntry[];
     findReverseRanges(sourceURL: Platform.DevToolsPath.UrlString, lineNumber: number, columnNumber: number): TextUtils.TextRange.TextRange[];
     mappings(): SourceMapEntry[];
     private reversedMappings;

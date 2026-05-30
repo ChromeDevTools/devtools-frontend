@@ -17,12 +17,20 @@ interface ViewInput {
     };
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare function renderGeneralRows(input: ViewInput): Lit.LitTemplate;
+export declare function renderGeneralSection(input: ViewInput, forceOpen: boolean): Lit.LitTemplate;
 export declare const DEFAULT_VIEW: View;
+/**
+ * View used by the AI Assistance walkthrough's NetworkRequestGeneralHeaders widget
+ * to display only the General section of the network headers.
+ */
+export declare const GENERAL_HEADERS_ONLY_VIEW: View;
 export declare class RequestHeadersView extends UI.Widget.Widget {
     #private;
     get request(): SDK.NetworkRequest.NetworkRequest | undefined;
     set request(val: SDK.NetworkRequest.NetworkRequest | undefined);
     constructor(target?: HTMLElement, view?: View);
+    static createGeneralHeadersView(request: SDK.NetworkRequest.NetworkRequest): RequestHeadersView;
     wasShown(): void;
     willHide(): void;
     revealHeader(section: NetworkForward.UIRequestLocation.UIHeaderSection, header?: string): void;

@@ -2209,20 +2209,292 @@ var issueDescriptions5 = /* @__PURE__ */ new Map([
   ]
 ]);
 
+// gen/front_end/models/issues_manager/EmailVerificationRequestIssue.js
+var EmailVerificationRequestIssue_exports = {};
+__export(EmailVerificationRequestIssue_exports, {
+  EmailVerificationRequestIssue: () => EmailVerificationRequestIssue
+});
+import * as i18n19 from "./../../core/i18n/i18n.js";
+var UIStrings11 = {
+  /**
+   * @description Title for Email Verification Protocol specification url link
+   */
+  emailVerification: "Email Verification Protocol"
+};
+var str_10 = i18n19.i18n.registerUIStrings("models/issues_manager/EmailVerificationRequestIssue.ts", UIStrings11);
+var i18nLazyString7 = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
+var EmailVerificationRequestIssue = class _EmailVerificationRequestIssue extends Issue {
+  constructor(issueDetails, issuesModel) {
+    super({
+      code: "EmailVerificationRequestIssue",
+      umaCode: [
+        "EmailVerificationRequestIssue",
+        issueDetails.emailVerificationRequestIssueReason
+      ].join("::")
+    }, issueDetails, issuesModel);
+  }
+  getCategory() {
+    return "Other";
+  }
+  getDescription() {
+    const description = issueDescriptions6.get(this.details().emailVerificationRequestIssueReason);
+    if (!description) {
+      return null;
+    }
+    return resolveLazyDescription(description);
+  }
+  primaryKey() {
+    return JSON.stringify(this.details());
+  }
+  getKind() {
+    return "PageError";
+  }
+  static fromInspectorIssue(issuesModel, inspectorIssue) {
+    const details = inspectorIssue.details.emailVerificationRequestIssueDetails;
+    if (!details) {
+      console.warn("Email verification request issue without details received.");
+      return [];
+    }
+    return [new _EmailVerificationRequestIssue(details, issuesModel)];
+  }
+};
+var issueDescriptions6 = /* @__PURE__ */ new Map([
+  [
+    "InvalidEmail",
+    {
+      file: "emailVerificationRequestInvalidEmail.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "DnsFetchFailed",
+    {
+      file: "emailVerificationRequestDnsFetchFailed.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "DnsInvalidRecord",
+    {
+      file: "emailVerificationRequestDnsInvalidRecord.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownHttpNotFound",
+    {
+      file: "emailVerificationRequestWellKnownHttpNotFound.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownNoResponse",
+    {
+      file: "emailVerificationRequestWellKnownNoResponse.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownInvalidResponse",
+    {
+      file: "emailVerificationRequestWellKnownInvalidResponse.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownListEmpty",
+    {
+      file: "emailVerificationRequestWellKnownListEmpty.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownInvalidContentType",
+    {
+      file: "emailVerificationRequestWellKnownInvalidContentType.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownMissingIssuanceEndpoint",
+    {
+      file: "emailVerificationRequestWellKnownMissingIssuanceEndpoint.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownIssuanceEndpointCrossOrigin",
+    {
+      file: "emailVerificationRequestWellKnownIssuanceEndpointCrossOrigin.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownUnsupportedSigningAlgorithm",
+    {
+      file: "emailVerificationRequestWellKnownUnsupportedSigningAlgorithm.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "TokenHttpNotFound",
+    {
+      file: "emailVerificationRequestTokenHttpNotFound.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "TokenNoResponse",
+    {
+      file: "emailVerificationRequestTokenNoResponse.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "TokenInvalidResponse",
+    {
+      file: "emailVerificationRequestTokenInvalidResponse.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "TokenInvalidContentType",
+    {
+      file: "emailVerificationRequestTokenInvalidContentType.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "TokenMalformedSdJwt",
+    {
+      file: "emailVerificationRequestTokenMalformedSdJwt.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "TokenInvalidSdJwt",
+    {
+      file: "emailVerificationRequestTokenInvalidSdJwt.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "KeyBindingSigningFailed",
+    {
+      file: "emailVerificationRequestKeyBindingSigningFailed.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "RpOriginIsOpaque",
+    {
+      file: "emailVerificationRequestRpOriginIsOpaque.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownMissingAccountsEndpoint",
+    {
+      file: "emailVerificationRequestWellKnownMissingAccountsEndpoint.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "UserLoggedOut",
+    {
+      file: "emailVerificationRequestUserLoggedOut.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ],
+  [
+    "WellKnownAccountsEndpointCrossOrigin",
+    {
+      file: "emailVerificationRequestWellKnownAccountsEndpointCrossOrigin.md",
+      links: [{
+        link: "https://github.com/WICG/email-verification-protocol",
+        linkTitle: i18nLazyString7(UIStrings11.emailVerification)
+      }]
+    }
+  ]
+]);
+
 // gen/front_end/models/issues_manager/FederatedAuthUserInfoRequestIssue.js
 var FederatedAuthUserInfoRequestIssue_exports = {};
 __export(FederatedAuthUserInfoRequestIssue_exports, {
   FederatedAuthUserInfoRequestIssue: () => FederatedAuthUserInfoRequestIssue
 });
-import * as i18n19 from "./../../core/i18n/i18n.js";
-var UIStrings11 = {
+import * as i18n21 from "./../../core/i18n/i18n.js";
+var UIStrings12 = {
   /**
    * @description Title for Client Hint specification url link
    */
   fedCmUserInfo: "Federated Credential Management User Info API"
 };
-var str_10 = i18n19.i18n.registerUIStrings("models/issues_manager/FederatedAuthUserInfoRequestIssue.ts", UIStrings11);
-var i18nLazyString7 = i18n19.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
+var str_11 = i18n21.i18n.registerUIStrings("models/issues_manager/FederatedAuthUserInfoRequestIssue.ts", UIStrings12);
+var i18nLazyString8 = i18n21.i18n.getLazilyComputedLocalizedString.bind(void 0, str_11);
 var FederatedAuthUserInfoRequestIssue = class _FederatedAuthUserInfoRequestIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super({
@@ -2237,7 +2509,7 @@ var FederatedAuthUserInfoRequestIssue = class _FederatedAuthUserInfoRequestIssue
     return "Other";
   }
   getDescription() {
-    const description = issueDescriptions6.get(this.details().federatedAuthUserInfoRequestIssueReason);
+    const description = issueDescriptions7.get(this.details().federatedAuthUserInfoRequestIssueReason);
     if (!description) {
       return null;
     }
@@ -2258,14 +2530,14 @@ var FederatedAuthUserInfoRequestIssue = class _FederatedAuthUserInfoRequestIssue
     return [new _FederatedAuthUserInfoRequestIssue(details, issuesModel)];
   }
 };
-var issueDescriptions6 = /* @__PURE__ */ new Map([
+var issueDescriptions7 = /* @__PURE__ */ new Map([
   [
     "NotSameOrigin",
     {
       file: "federatedAuthUserInfoRequestNotSameOrigin.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2275,7 +2547,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestNotIframe.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2285,7 +2557,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestNotPotentiallyTrustworthy.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2295,7 +2567,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestNoApiPermission.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2305,7 +2577,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestNotSignedInWithIdp.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2315,7 +2587,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestNoAccountSharingPermission.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2325,7 +2597,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestInvalidConfigOrWellKnown.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2335,7 +2607,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestInvalidAccountsResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ],
@@ -2345,7 +2617,7 @@ var issueDescriptions6 = /* @__PURE__ */ new Map([
       file: "federatedAuthUserInfoRequestNoReturningUserFromFetchedAccounts.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString7(UIStrings11.fedCmUserInfo)
+        linkTitle: i18nLazyString8(UIStrings12.fedCmUserInfo)
       }]
     }
   ]
@@ -2374,8 +2646,8 @@ __export(GenericIssue_exports, {
   genericNavigationEntryMarkedSkippable: () => genericNavigationEntryMarkedSkippable,
   genericResponseWasBlockedbyORB: () => genericResponseWasBlockedbyORB
 });
-import * as i18n21 from "./../../core/i18n/i18n.js";
-var UIStrings12 = {
+import * as i18n23 from "./../../core/i18n/i18n.js";
+var UIStrings13 = {
   /**
    * @description title for autofill documentation page
    */
@@ -2405,8 +2677,8 @@ var UIStrings12 = {
    */
   backToAdInterventionPageTitle: "Back-to-ad intervention explainer"
 };
-var str_11 = i18n21.i18n.registerUIStrings("models/issues_manager/GenericIssue.ts", UIStrings12);
-var i18nLazyString8 = i18n21.i18n.getLazilyComputedLocalizedString.bind(void 0, str_11);
+var str_12 = i18n23.i18n.registerUIStrings("models/issues_manager/GenericIssue.ts", UIStrings13);
+var i18nLazyString9 = i18n23.i18n.getLazilyComputedLocalizedString.bind(void 0, str_12);
 var GenericIssue = class _GenericIssue extends Issue {
   constructor(issueDetails, issuesModel, issueId) {
     const issueCode = [
@@ -2431,7 +2703,7 @@ var GenericIssue = class _GenericIssue extends Issue {
     return `${this.code()}-(${details.frameId})-(${details.violatingNodeId})-(${details.violatingNodeAttribute})-(${requestId})`;
   }
   getDescription() {
-    const description = issueDescriptions7.get(this.details().errorType);
+    const description = issueDescriptions8.get(this.details().errorType);
     if (!description) {
       return null;
     }
@@ -2455,7 +2727,7 @@ var genericFormLabelForNameError = {
     link: "https://html.spec.whatwg.org/multipage/forms.html#attr-label-for",
     // Since the link points to a page with the same title, the 'HTML Standard'
     // string doesn't need to be translated.
-    linkTitle: i18n21.i18n.lockedLazyString("HTML Standard")
+    linkTitle: i18n23.i18n.lockedLazyString("HTML Standard")
   }]
 };
 var genericFormInputWithNoLabelError = {
@@ -2470,70 +2742,70 @@ var genericFormDuplicateIdForInputError = {
   file: "genericFormDuplicateIdForInputError.md",
   links: [{
     link: "https://web.dev/learn/forms/autofill/#how-does-autofill-work",
-    linkTitle: i18nLazyString8(UIStrings12.howDoesAutofillWorkPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.howDoesAutofillWorkPageTitle)
   }]
 };
 var genericFormAriaLabelledByToNonExistingIdError = {
   file: "genericFormAriaLabelledByToNonExistingIdError.md",
   links: [{
     link: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label",
-    linkTitle: i18nLazyString8(UIStrings12.labelFormlementsPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.labelFormlementsPageTitle)
   }]
 };
 var genericFormEmptyIdAndNameAttributesForInputError = {
   file: "genericFormEmptyIdAndNameAttributesForInputError.md",
   links: [{
     link: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input",
-    linkTitle: i18nLazyString8(UIStrings12.inputFormElementPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.inputFormElementPageTitle)
   }]
 };
 var genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError = {
   file: "genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError.md",
   links: [{
     link: "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values",
-    linkTitle: i18nLazyString8(UIStrings12.autocompleteAttributePageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.autocompleteAttributePageTitle)
   }]
 };
 var genericFormInputHasWrongButWellIntendedAutocompleteValue = {
   file: "genericFormInputHasWrongButWellIntendedAutocompleteValueError.md",
   links: [{
     link: "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values",
-    linkTitle: i18nLazyString8(UIStrings12.autocompleteAttributePageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.autocompleteAttributePageTitle)
   }]
 };
 var genericFormLabelForMatchesNonExistingIdError = {
   file: "genericFormLabelForMatchesNonExistingIdError.md",
   links: [{
     link: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label",
-    linkTitle: i18nLazyString8(UIStrings12.labelFormlementsPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.labelFormlementsPageTitle)
   }]
 };
 var genericFormLabelHasNeitherForNorNestedInputError = {
   file: "genericFormLabelHasNeitherForNorNestedInputError.md",
   links: [{
     link: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label",
-    linkTitle: i18nLazyString8(UIStrings12.labelFormlementsPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.labelFormlementsPageTitle)
   }]
 };
 var genericResponseWasBlockedbyORB = {
   file: "genericResponseWasBlockedByORB.md",
   links: [{
     link: "https://www.chromium.org/Home/chromium-security/corb-for-developers/",
-    linkTitle: i18nLazyString8(UIStrings12.corbExplainerPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.corbExplainerPageTitle)
   }]
 };
 var genericNavigationEntryMarkedSkippable = {
   file: "genericNavigationEntryMarkedSkippable.md",
   links: [{
     link: "https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md",
-    linkTitle: i18nLazyString8(UIStrings12.historyManipulationInterventionPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.historyManipulationInterventionPageTitle)
   }]
 };
 var genericBackUINavigationWouldSkipAd = {
   file: "genericBackUINavigationWouldSkipAd.md",
   links: [{
     link: "https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md",
-    linkTitle: i18nLazyString8(UIStrings12.backToAdInterventionPageTitle)
+    linkTitle: i18nLazyString9(UIStrings13.backToAdInterventionPageTitle)
   }]
 };
 var genericFormModelContextMissingToolName = {
@@ -2556,7 +2828,7 @@ var genericFormModelContextParameterMissingName = {
   file: "genericFormModelContextParameterMissingName.md",
   links: []
 };
-var issueDescriptions7 = /* @__PURE__ */ new Map([
+var issueDescriptions8 = /* @__PURE__ */ new Map([
   ["FormLabelForNameError", genericFormLabelForNameError],
   ["FormInputWithNoLabelError", genericFormInputWithNoLabelError],
   [
@@ -2703,15 +2975,15 @@ var HeavyAdIssue_exports = {};
 __export(HeavyAdIssue_exports, {
   HeavyAdIssue: () => HeavyAdIssue
 });
-import * as i18n23 from "./../../core/i18n/i18n.js";
-var UIStrings13 = {
+import * as i18n25 from "./../../core/i18n/i18n.js";
+var UIStrings14 = {
   /**
    * @description Title for a learn more link in Heavy Ads issue description
    */
   handlingHeavyAdInterventions: "Handling Heavy Ad Interventions"
 };
-var str_12 = i18n23.i18n.registerUIStrings("models/issues_manager/HeavyAdIssue.ts", UIStrings13);
-var i18nString4 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n25.i18n.registerUIStrings("models/issues_manager/HeavyAdIssue.ts", UIStrings14);
+var i18nString4 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 var HeavyAdIssue = class _HeavyAdIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     const umaCode = ["HeavyAdIssue", issueDetails.reason].join("::");
@@ -2726,7 +2998,7 @@ var HeavyAdIssue = class _HeavyAdIssue extends Issue {
       links: [
         {
           link: "https://developers.google.com/web/updates/2020/05/heavy-ad-interventions",
-          linkTitle: i18nString4(UIStrings13.handlingHeavyAdInterventions)
+          linkTitle: i18nString4(UIStrings14.handlingHeavyAdInterventions)
         }
       ]
     };
@@ -2765,15 +3037,15 @@ var MixedContentIssue_exports = {};
 __export(MixedContentIssue_exports, {
   MixedContentIssue: () => MixedContentIssue
 });
-import * as i18n25 from "./../../core/i18n/i18n.js";
-var UIStrings14 = {
+import * as i18n27 from "./../../core/i18n/i18n.js";
+var UIStrings15 = {
   /**
    * @description Label for the link for Mixed Content Issues
    */
   preventingMixedContent: "Preventing mixed content"
 };
-var str_13 = i18n25.i18n.registerUIStrings("models/issues_manager/MixedContentIssue.ts", UIStrings14);
-var i18nString5 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n27.i18n.registerUIStrings("models/issues_manager/MixedContentIssue.ts", UIStrings15);
+var i18nString5 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var MixedContentIssue = class _MixedContentIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("MixedContentIssue", issueDetails, issuesModel);
@@ -2791,7 +3063,7 @@ var MixedContentIssue = class _MixedContentIssue extends Issue {
   getDescription() {
     return {
       file: "mixedContent.md",
-      links: [{ link: "https://web.dev/what-is-mixed-content/", linkTitle: i18nString5(UIStrings14.preventingMixedContent) }]
+      links: [{ link: "https://web.dev/what-is-mixed-content/", linkTitle: i18nString5(UIStrings15.preventingMixedContent) }]
     };
   }
   primaryKey() {
@@ -2822,8 +3094,8 @@ var PartitioningBlobURLIssue_exports = {};
 __export(PartitioningBlobURLIssue_exports, {
   PartitioningBlobURLIssue: () => PartitioningBlobURLIssue
 });
-import * as i18n27 from "./../../core/i18n/i18n.js";
-var UIStrings15 = {
+import * as i18n29 from "./../../core/i18n/i18n.js";
+var UIStrings16 = {
   /**
    * @description Title for Partitioning BlobURL explainer url link.
    */
@@ -2833,8 +3105,8 @@ var UIStrings15 = {
    */
   chromeStatusEntry: "Chrome Status Entry"
 };
-var str_14 = i18n27.i18n.registerUIStrings("models/issues_manager/PartitioningBlobURLIssue.ts", UIStrings15);
-var i18nString6 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("models/issues_manager/PartitioningBlobURLIssue.ts", UIStrings16);
+var i18nString6 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("PartitioningBlobURLIssue", issueDetails, issuesModel);
@@ -2849,11 +3121,11 @@ var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
       links: [
         {
           link: "https://developers.google.com/privacy-sandbox/cookies/storage-partitioning",
-          linkTitle: i18nString6(UIStrings15.partitioningBlobURL)
+          linkTitle: i18nString6(UIStrings16.partitioningBlobURL)
         },
         {
           link: "https://chromestatus.com/feature/5130361898795008",
-          linkTitle: i18nString6(UIStrings15.chromeStatusEntry)
+          linkTitle: i18nString6(UIStrings16.chromeStatusEntry)
         }
       ]
     };
@@ -3124,15 +3396,15 @@ var QuirksModeIssue_exports = {};
 __export(QuirksModeIssue_exports, {
   QuirksModeIssue: () => QuirksModeIssue
 });
-import * as i18n29 from "./../../core/i18n/i18n.js";
-var UIStrings16 = {
+import * as i18n31 from "./../../core/i18n/i18n.js";
+var UIStrings17 = {
   /**
    * @description Link title for the Quirks Mode issue in the Issues panel
    */
   documentCompatibilityMode: "Document compatibility mode"
 };
-var str_15 = i18n29.i18n.registerUIStrings("models/issues_manager/QuirksModeIssue.ts", UIStrings16);
-var i18nString7 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("models/issues_manager/QuirksModeIssue.ts", UIStrings17);
+var i18nString7 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var QuirksModeIssue = class _QuirksModeIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     const mode = issueDetails.isLimitedQuirksMode ? "LimitedQuirksMode" : "QuirksMode";
@@ -3151,7 +3423,7 @@ var QuirksModeIssue = class _QuirksModeIssue extends Issue {
       links: [
         {
           link: "https://web.dev/doctype/",
-          linkTitle: i18nString7(UIStrings16.documentCompatibilityMode)
+          linkTitle: i18nString7(UIStrings17.documentCompatibilityMode)
         }
       ]
     };
@@ -3174,15 +3446,15 @@ var SelectivePermissionsInterventionIssue_exports = {};
 __export(SelectivePermissionsInterventionIssue_exports, {
   SelectivePermissionsInterventionIssue: () => SelectivePermissionsInterventionIssue
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
-var UIStrings17 = {
+import * as i18n33 from "./../../core/i18n/i18n.js";
+var UIStrings18 = {
   /**
    * @description Title for a learn more link in Selective Permissions Intervention issue description
    */
   selectivePermissionsIntervention: "Selective Permissions Intervention"
 };
-var str_16 = i18n31.i18n.registerUIStrings("models/issues_manager/SelectivePermissionsInterventionIssue.ts", UIStrings17);
-var i18nString8 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("models/issues_manager/SelectivePermissionsInterventionIssue.ts", UIStrings18);
+var i18nString8 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var SelectivePermissionsInterventionIssue = class _SelectivePermissionsInterventionIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("SelectivePermissionsInterventionIssue", issueDetails, issuesModel);
@@ -3196,7 +3468,7 @@ var SelectivePermissionsInterventionIssue = class _SelectivePermissionsIntervent
       links: [
         {
           link: "https://crbug.com/435223477",
-          linkTitle: i18nString8(UIStrings17.selectivePermissionsIntervention)
+          linkTitle: i18nString8(UIStrings18.selectivePermissionsIntervention)
         }
       ]
     };
@@ -3222,16 +3494,16 @@ var SharedArrayBufferIssue_exports = {};
 __export(SharedArrayBufferIssue_exports, {
   SharedArrayBufferIssue: () => SharedArrayBufferIssue
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
-var UIStrings18 = {
+import * as i18n35 from "./../../core/i18n/i18n.js";
+var UIStrings19 = {
   /**
    * @description Label for the link for SharedArrayBuffer Issues. The full text reads "Enabling `SharedArrayBuffer`"
    * and is the title of an article that describes how to enable a JavaScript feature called SharedArrayBuffer.
    */
   enablingSharedArrayBuffer: "Enabling `SharedArrayBuffer`"
 };
-var str_17 = i18n33.i18n.registerUIStrings("models/issues_manager/SharedArrayBufferIssue.ts", UIStrings18);
-var i18nString9 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("models/issues_manager/SharedArrayBufferIssue.ts", UIStrings19);
+var i18nString9 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     const umaCode = ["SharedArrayBufferIssue", issueDetails.type].join("::");
@@ -3245,7 +3517,7 @@ var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
       file: "sharedArrayBuffer.md",
       links: [{
         link: "https://developer.chrome.com/blog/enabling-shared-array-buffer/",
-        linkTitle: i18nString9(UIStrings18.enablingSharedArrayBuffer)
+        linkTitle: i18nString9(UIStrings19.enablingSharedArrayBuffer)
       }]
     };
   }
@@ -3589,15 +3861,15 @@ import * as Common5 from "./../../core/common/common.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/issues_manager/BounceTrackingIssue.js
-import * as i18n35 from "./../../core/i18n/i18n.js";
-var UIStrings19 = {
+import * as i18n37 from "./../../core/i18n/i18n.js";
+var UIStrings20 = {
   /**
    * @description Title for Bounce Tracking Mitigation explainer url link.
    */
   bounceTrackingMitigations: "Bounce tracking mitigations"
 };
-var str_18 = i18n35.i18n.registerUIStrings("models/issues_manager/BounceTrackingIssue.ts", UIStrings19);
-var i18nString10 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("models/issues_manager/BounceTrackingIssue.ts", UIStrings20);
+var i18nString10 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("BounceTrackingIssue", issueDetails, issuesModel);
@@ -3611,7 +3883,7 @@ var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
       links: [
         {
           link: "https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations",
-          linkTitle: i18nString10(UIStrings19.bounceTrackingMitigations)
+          linkTitle: i18nString10(UIStrings20.bounceTrackingMitigations)
         }
       ]
     };
@@ -3636,15 +3908,15 @@ var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
 };
 
 // gen/front_end/models/issues_manager/FederatedAuthRequestIssue.js
-import * as i18n37 from "./../../core/i18n/i18n.js";
-var UIStrings20 = {
+import * as i18n39 from "./../../core/i18n/i18n.js";
+var UIStrings21 = {
   /**
    * @description Title for Client Hint specification url link
    */
   fedCm: "Federated Credential Management API"
 };
-var str_19 = i18n37.i18n.registerUIStrings("models/issues_manager/FederatedAuthRequestIssue.ts", UIStrings20);
-var i18nLazyString9 = i18n37.i18n.getLazilyComputedLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("models/issues_manager/FederatedAuthRequestIssue.ts", UIStrings21);
+var i18nLazyString10 = i18n39.i18n.getLazilyComputedLocalizedString.bind(void 0, str_20);
 var FederatedAuthRequestIssue = class _FederatedAuthRequestIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super({
@@ -3659,7 +3931,7 @@ var FederatedAuthRequestIssue = class _FederatedAuthRequestIssue extends Issue {
     return "Other";
   }
   getDescription() {
-    const description = issueDescriptions8.get(this.details().federatedAuthRequestIssueReason);
+    const description = issueDescriptions9.get(this.details().federatedAuthRequestIssueReason);
     if (!description) {
       return null;
     }
@@ -3680,14 +3952,14 @@ var FederatedAuthRequestIssue = class _FederatedAuthRequestIssue extends Issue {
     return [new _FederatedAuthRequestIssue(details, issuesModel)];
   }
 };
-var issueDescriptions8 = /* @__PURE__ */ new Map([
+var issueDescriptions9 = /* @__PURE__ */ new Map([
   [
     "TooManyRequests",
     {
       file: "federatedAuthRequestTooManyRequests.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3697,7 +3969,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestManifestHttpNotFound.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3707,7 +3979,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestManifestNoResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3717,7 +3989,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestManifestInvalidResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3727,7 +3999,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestErrorFetchingSignin.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3737,7 +4009,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestInvalidSigninResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3747,7 +4019,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestAccountsHttpNotFound.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3757,7 +4029,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestAccountsNoResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3767,7 +4039,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestAccountsInvalidResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3777,7 +4049,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenHttpNotFound.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3787,7 +4059,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenNoResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3797,7 +4069,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenInvalidResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3807,7 +4079,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenInvalidRequest.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3817,7 +4089,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestErrorIdToken.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ],
@@ -3827,7 +4099,7 @@ var issueDescriptions8 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestCanceled.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString9(UIStrings20.fedCm)
+        linkTitle: i18nLazyString10(UIStrings21.fedCm)
       }]
     }
   ]
@@ -3898,15 +4170,15 @@ var SharedDictionaryIssue_exports = {};
 __export(SharedDictionaryIssue_exports, {
   SharedDictionaryIssue: () => SharedDictionaryIssue
 });
-import * as i18n39 from "./../../core/i18n/i18n.js";
-var UIStrings21 = {
+import * as i18n41 from "./../../core/i18n/i18n.js";
+var UIStrings22 = {
   /**
    * @description Title for Compression Dictionary Transport specification url link
    */
   compressionDictionaryTransport: "Compression Dictionary Transport"
 };
-var str_20 = i18n39.i18n.registerUIStrings("models/issues_manager/SharedDictionaryIssue.ts", UIStrings21);
-var i18nLazyString10 = i18n39.i18n.getLazilyComputedLocalizedString.bind(void 0, str_20);
+var str_21 = i18n41.i18n.registerUIStrings("models/issues_manager/SharedDictionaryIssue.ts", UIStrings22);
+var i18nLazyString11 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
 function getIssueCode3(details) {
   switch (details.sharedDictionaryError) {
     case "UseErrorCrossOriginNoCorsRequest":
@@ -3983,7 +4255,7 @@ var SharedDictionaryIssue = class _SharedDictionaryIssue extends Issue {
     return "Other";
   }
   getDescription() {
-    const description = issueDescriptions9.get(this.details().sharedDictionaryError);
+    const description = issueDescriptions10.get(this.details().sharedDictionaryError);
     if (!description) {
       return null;
     }
@@ -4006,9 +4278,9 @@ var SharedDictionaryIssue = class _SharedDictionaryIssue extends Issue {
 };
 var specLinks = [{
   link: "https://datatracker.ietf.org/doc/draft-ietf-httpbis-compression-dictionary/",
-  linkTitle: i18nLazyString10(UIStrings21.compressionDictionaryTransport)
+  linkTitle: i18nLazyString11(UIStrings22.compressionDictionaryTransport)
 }];
-var issueDescriptions9 = /* @__PURE__ */ new Map([
+var issueDescriptions10 = /* @__PURE__ */ new Map([
   [
     "UseErrorCrossOriginNoCorsRequest",
     {
@@ -4334,8 +4606,8 @@ var SRIMessageSignatureIssue_exports = {};
 __export(SRIMessageSignatureIssue_exports, {
   SRIMessageSignatureIssue: () => SRIMessageSignatureIssue
 });
-import * as i18n41 from "./../../core/i18n/i18n.js";
-var UIStrings22 = {
+import * as i18n43 from "./../../core/i18n/i18n.js";
+var UIStrings23 = {
   /**
    * @description Title for HTTP Message Signatures specification url
    */
@@ -4345,8 +4617,8 @@ var UIStrings22 = {
    */
   signatureBasedIntegrity: "Signature-based Integrity"
 };
-var str_21 = i18n41.i18n.registerUIStrings("models/issues_manager/SRIMessageSignatureIssue.ts", UIStrings22);
-var i18nLazyString11 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
+var str_22 = i18n43.i18n.registerUIStrings("models/issues_manager/SRIMessageSignatureIssue.ts", UIStrings23);
+var i18nLazyString12 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
 function generateGroupingIssueCode(details) {
   const issueCode = `${"SRIMessageSignatureIssue"}::${details.error}`;
   if (details.error === "ValidationFailedSignatureMismatch") {
@@ -4375,11 +4647,11 @@ var SRIMessageSignatureIssue = class _SRIMessageSignatureIssue extends Issue {
       links: [
         {
           link: "https://www.rfc-editor.org/rfc/rfc9421.html",
-          linkTitle: i18nLazyString11(UIStrings22.httpMessageSignatures)
+          linkTitle: i18nLazyString12(UIStrings23.httpMessageSignatures)
         },
         {
           link: "https://wicg.github.io/signature-based-sri/",
-          linkTitle: i18nLazyString11(UIStrings22.signatureBasedIntegrity)
+          linkTitle: i18nLazyString12(UIStrings23.signatureBasedIntegrity)
         }
       ],
       substitutions: /* @__PURE__ */ new Map()
@@ -4419,8 +4691,8 @@ var UnencodedDigestIssue_exports = {};
 __export(UnencodedDigestIssue_exports, {
   UnencodedDigestIssue: () => UnencodedDigestIssue
 });
-import * as i18n43 from "./../../core/i18n/i18n.js";
-var UIStrings23 = {
+import * as i18n45 from "./../../core/i18n/i18n.js";
+var UIStrings24 = {
   /**
    *@description Title for HTTP Unencoded Digest specification url
    */
@@ -4430,8 +4702,8 @@ var UIStrings23 = {
    */
   integrityIntegration: "Server-Initiated Integrity Checks"
 };
-var str_22 = i18n43.i18n.registerUIStrings("models/issues_manager/UnencodedDigestIssue.ts", UIStrings23);
-var i18nLazyString12 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
+var str_23 = i18n45.i18n.registerUIStrings("models/issues_manager/UnencodedDigestIssue.ts", UIStrings24);
+var i18nLazyString13 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
 var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super({
@@ -4448,11 +4720,11 @@ var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
       links: [
         {
           link: "https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html",
-          linkTitle: i18nLazyString12(UIStrings23.unencodedDigestHeader)
+          linkTitle: i18nLazyString13(UIStrings24.unencodedDigestHeader)
         },
         {
           link: "https://wicg.github.io/signature-based-sri/#unencoded-digest-validation",
-          linkTitle: i18nLazyString12(UIStrings23.integrityIntegration)
+          linkTitle: i18nLazyString13(UIStrings24.integrityIntegration)
         }
       ]
     };
@@ -4539,6 +4811,10 @@ var issueCodeHandlers = /* @__PURE__ */ new Map([
   [
     "ClientHintIssue",
     ClientHintIssue.fromInspectorIssue
+  ],
+  [
+    "EmailVerificationRequestIssue",
+    EmailVerificationRequestIssue.fromInspectorIssue
   ],
   [
     "FederatedAuthRequestIssue",
@@ -4944,6 +5220,7 @@ export {
   CrossOriginEmbedderPolicyIssue_exports as CrossOriginEmbedderPolicyIssue,
   DeprecationIssue_exports as DeprecationIssue,
   ElementAccessibilityIssue_exports as ElementAccessibilityIssue,
+  EmailVerificationRequestIssue_exports as EmailVerificationRequestIssue,
   FederatedAuthUserInfoRequestIssue_exports as FederatedAuthUserInfoRequestIssue,
   GenericIssue_exports as GenericIssue,
   HeavyAdIssue_exports as HeavyAdIssue,

@@ -110,6 +110,7 @@ export declare class StylePropertiesSection {
     isPropertyOverloaded(property: SDK.CSSProperty.CSSProperty): boolean;
     updateFilter(): boolean;
     isHidden(): boolean;
+    updateCollapsedState(): void;
     /**
      * Expand a collapsed section, e.g. when navigating to a property
      * via a var() link.

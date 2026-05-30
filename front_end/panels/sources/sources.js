@@ -1547,7 +1547,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
       };
     }
     const locationsGroupedById = this.#groupBreakpointLocationsById(breakpointLocations);
-    const locationIdsByLineId = this.#getLocationIdsByLineId(breakpointLocations);
+    const locationIdsByLineId = this.#getLocationIdsByLineId(locationsGroupedById);
     const [content, selectedUILocation] = await Promise.all([
       this.#getContent(locationsGroupedById),
       this.#getHitUILocation()
@@ -1556,9 +1556,9 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     for (let idx = 0; idx < locationsGroupedById.length; idx++) {
       const locations = locationsGroupedById[idx];
       const fstLocation = locations[0];
-      const sourceURL = fstLocation.uiLocation.uiSourceCode.url();
-      const scriptId = fstLocation.uiLocation.uiSourceCode.canonicalScriptId();
-      const uiLocation = fstLocation.uiLocation;
+      const uiLocation = fstLocation.breakpoint.getClosestResolvedLocation() || fstLocation.uiLocation;
+      const sourceURL = uiLocation.uiSourceCode.url();
+      const scriptId = uiLocation.uiSourceCode.canonicalScriptId();
       const isHit = selectedUILocation !== null && locations.some((location) => location.uiLocation.id() === selectedUILocation.id());
       const numBreakpointsOnLine = locationIdsByLineId.get(uiLocation.lineId()).size;
       const showColumn = numBreakpointsOnLine > 1;
@@ -1570,8 +1570,8 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
         this.#saveSettings();
       }
       const expanded = !this.#collapsedFiles.has(sourceURL);
-      const status = this.#getBreakpointState(locations);
-      const { type, hoverText } = this.#getBreakpointTypeAndDetails(locations);
+      const status = this.#getBreakpointState(fstLocation.breakpoint);
+      const { type, hoverText } = this.#getBreakpointTypeAndDetails(fstLocation.breakpoint);
       const item = {
         id: fstLocation.breakpoint.breakpointStorageId(),
         location: locationText,
@@ -1628,16 +1628,14 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
   #saveSettings() {
     this.#collapsedFilesSettings.set(Array.from(this.#collapsedFiles.values()));
   }
-  #getBreakpointTypeAndDetails(locations) {
-    const breakpointWithCondition = locations.find((location) => Boolean(location.breakpoint.condition()));
-    const breakpoint = breakpointWithCondition?.breakpoint;
-    if (!breakpoint?.condition()) {
+  #getBreakpointTypeAndDetails(breakpoint) {
+    const condition = breakpoint.condition();
+    if (!condition) {
       return {
         type: "REGULAR_BREAKPOINT"
         /* SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT */
       };
     }
-    const condition = breakpoint.condition();
     if (breakpoint.isLogpoint()) {
       return { type: "LOGPOINT", hoverText: condition };
     }
@@ -1671,42 +1669,26 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     return result;
   }
   #groupBreakpointLocationsById(breakpointLocations) {
-    const map = new Platform2.MapUtilities.Multimap();
-    for (const breakpointLocation of breakpointLocations) {
-      const uiLocation = breakpointLocation.uiLocation;
-      map.set(uiLocation.id(), breakpointLocation);
-    }
-    const arr = [];
-    for (const id of map.keysArray()) {
-      const locations = Array.from(map.get(id));
-      if (locations.length) {
-        arr.push(locations);
-      }
-    }
-    return arr;
+    const map = Map.groupBy(breakpointLocations, (loc) => loc.breakpoint.breakpointStorageId());
+    return Array.from(map.values());
   }
-  #getLocationIdsByLineId(breakpointLocations) {
+  #getLocationIdsByLineId(locationsGroupedById) {
     const result = new Platform2.MapUtilities.Multimap();
-    for (const breakpointLocation of breakpointLocations) {
-      const uiLocation = breakpointLocation.uiLocation;
-      result.set(uiLocation.lineId(), uiLocation.id());
+    for (const locations of locationsGroupedById) {
+      const breakpoint = locations[0].breakpoint;
+      const uiLocation = breakpoint.getClosestResolvedLocation() || locations[0].uiLocation;
+      result.set(uiLocation.lineId(), breakpoint.breakpointStorageId());
     }
     return result;
   }
-  #getBreakpointState(locations) {
-    const hasEnabled = locations.some((location) => location.breakpoint.enabled());
-    const hasDisabled = locations.some((location) => !location.breakpoint.enabled());
-    let status;
-    if (hasEnabled) {
-      status = hasDisabled ? "INDETERMINATE" : "ENABLED";
-    } else {
-      status = "DISABLED";
-    }
-    return status;
+  #getBreakpointState(breakpoint) {
+    return breakpoint.enabled() ? "ENABLED" : "DISABLED";
   }
-  #getContent(locations) {
-    return Promise.all(locations.map(async ([{ uiLocation: { uiSourceCode } }]) => {
-      const contentData = await uiSourceCode.requestContentData({ cachedWasmOnly: true });
+  #getContent(locationsGroupedById) {
+    return Promise.all(locationsGroupedById.map(async (locations) => {
+      const fstLocation = locations[0];
+      const uiLocation = fstLocation.breakpoint.getClosestResolvedLocation() || fstLocation.uiLocation;
+      const contentData = await uiLocation.uiSourceCode.requestContentData({ cachedWasmOnly: true });
       return TextUtils.ContentData.ContentData.contentDataOrEmpty(contentData);
     }));
   }
@@ -7061,13 +7043,17 @@ var DebuggerPlugin = class extends Plugin {
     }
     const { editor } = this;
     const breakpointLocations = this.breakpointManager.breakpointLocationsForUISourceCode(this.uiSourceCode);
-    return breakpointLocations.map(({ uiLocation, breakpoint }) => {
-      const editorLocation = this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber);
-      return {
+    const uniqueBreakpoints = Map.groupBy(breakpointLocations, (loc) => loc.breakpoint);
+    const result = [];
+    for (const [breakpoint, locations] of uniqueBreakpoints) {
+      const closestUILoc = breakpoint.getClosestResolvedLocation() || locations[0].uiLocation;
+      const editorLocation = this.transformer.uiLocationToEditorLocation(closestUILoc.lineNumber, closestUILoc.columnNumber);
+      result.push({
         position: editor.toOffset(editorLocation),
         breakpoint
-      };
-    });
+      });
+    }
+    return result;
   }
   lineBreakpoints(line) {
     return this.breakpoints.filter((b) => b.position >= line.from && b.position <= line.to).map((b) => b.breakpoint);

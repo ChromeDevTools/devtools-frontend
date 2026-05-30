@@ -3837,8 +3837,11 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
 var RequestHeadersView_exports = {};
 __export(RequestHeadersView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  GENERAL_HEADERS_ONLY_VIEW: () => GENERAL_HEADERS_ONLY_VIEW,
   RequestHeadersView: () => RequestHeadersView,
-  renderCategory: () => renderCategory
+  renderCategory: () => renderCategory,
+  renderGeneralRows: () => renderGeneralRows,
+  renderGeneralSection: () => renderGeneralSection
 });
 import "./../../ui/kit/kit.js";
 import * as Common6 from "./../../core/common/common.js";
@@ -4005,8 +4008,7 @@ var UIStrings9 = {
 };
 var str_9 = i18n17.i18n.registerUIStrings("panels/network/RequestHeadersView.ts", UIStrings9);
 var i18nString9 = i18n17.i18n.getLocalizedString.bind(void 0, str_9);
-var DEFAULT_VIEW5 = (input, output, target) => {
-  const requestHeadersText = input.request.requestHeadersText();
+function renderGeneralRows(input) {
   const statusClasses = ["status"];
   if (input.request.statusCode < 300 || input.request.statusCode === 304) {
     statusClasses.push("green-circle");
@@ -4033,23 +4035,34 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     statusClasses.push("status-with-comment");
   }
   const statusText = [input.request.statusCode, input.request.getInferredStatusText(), comment].join(" ");
+  return html5`<div jslog=${VisualLogging6.section("general")}>
+    ${renderGeneralRow(input, i18nString9(UIStrings9.requestUrl), input.request.url(), "request-url")}
+    ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
+    ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
+    ${input.request.remoteAddress() ? renderGeneralRow(input, i18nString9(UIStrings9.remoteAddress), input.request.remoteAddress(), "remote-address") : Lit3.nothing}
+    ${input.request.referrerPolicy() ? renderGeneralRow(input, i18nString9(UIStrings9.referrerPolicy), String(input.request.referrerPolicy()), "referrer-policy") : Lit3.nothing}
+  </div>`;
+}
+function renderGeneralSection(input, forceOpen) {
+  return renderCategory({
+    name: "general",
+    title: i18nString9(UIStrings9.general),
+    forceOpen,
+    loggingContext: "general",
+    contents: renderGeneralRows(input)
+  });
+}
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  const requestHeadersText = input.request.requestHeadersText();
   render6(
     html5`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
         <style>${Input.checkboxStyles}</style>
-        ${renderCategory({
-      name: "general",
-      title: i18nString9(UIStrings9.general),
-      forceOpen: input.toReveal?.section === "General",
-      loggingContext: "general",
-      contents: html5`<div jslog=${VisualLogging6.section("general")}>
-            ${renderGeneralRow(input, i18nString9(UIStrings9.requestUrl), input.request.url(), "request-url")}
-            ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.requestMethod), input.request.requestMethod, "request-method") : Lit3.nothing}
-            ${input.request.statusCode ? renderGeneralRow(input, i18nString9(UIStrings9.statusCode), statusText, "status-code", statusClasses) : Lit3.nothing}
-            ${input.request.remoteAddress() ? renderGeneralRow(input, i18nString9(UIStrings9.remoteAddress), input.request.remoteAddress(), "remote-address") : Lit3.nothing}
-            ${input.request.referrerPolicy() ? renderGeneralRow(input, i18nString9(UIStrings9.referrerPolicy), String(input.request.referrerPolicy()), "referrer-policy") : Lit3.nothing}
-            </div>`
-    })}
+        ${renderGeneralSection(
+      input,
+      input.toReveal?.section === "General"
+      /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */
+    )}
         ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0 ? Lit3.nothing : renderCategory({
       name: "early-hints-headers",
       onToggleRawHeaders: input.toggleShowRawResponseHeaders,
@@ -4102,7 +4115,14 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     { container: { attributes: { jslog: `${VisualLogging6.pane("headers").track({ resize: true })}` } } }
   );
 };
-var RequestHeadersView = class extends UI9.Widget.Widget {
+var GENERAL_HEADERS_ONLY_VIEW = (input, _output, target) => {
+  render6(html5`
+        <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
+        <style>${Input.checkboxStyles}</style>
+        ${renderGeneralRows(input)}
+      `, target, { container: { attributes: { jslog: `${VisualLogging6.pane("headers").track({ resize: true })}` } } });
+};
+var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
   #request;
   #showResponseHeadersText = false;
   #showRequestHeadersText = false;
@@ -4120,6 +4140,11 @@ var RequestHeadersView = class extends UI9.Widget.Widget {
   constructor(target, view = DEFAULT_VIEW5) {
     super();
     this.#view = view;
+  }
+  static createGeneralHeadersView(request) {
+    const view = new _RequestHeadersView(void 0, GENERAL_HEADERS_ONLY_VIEW);
+    view.request = request;
+    return view;
   }
   #addEventListeners() {
     this.#request?.addEventListener(SDK7.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);

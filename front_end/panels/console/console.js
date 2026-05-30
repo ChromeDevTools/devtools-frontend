@@ -854,8 +854,6 @@ import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
-import * as Breakpoints from "./../../models/breakpoints/breakpoints.js";
-import * as Greendev from "./../../models/greendev/greendev.js";
 import * as Logs from "./../../models/logs/logs.js";
 import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
@@ -981,7 +979,6 @@ import * as Components from "./../../ui/legacy/components/utils/utils.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
 import { nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
-import * as AiAssistancePanel from "./../ai_assistance/ai_assistance.js";
 
 // gen/front_end/panels/console/consoleView.css.js
 var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
@@ -2935,10 +2932,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
       this.consoleRowWrapper.append(this.#createHoverButton());
     }
-    const breakpointAgentEnabled = Greendev.Prototypes.instance().isEnabled("breakpointDebuggerAgent");
-    if (breakpointAgentEnabled && this.message.level === "error") {
-      this.consoleRowWrapper.append(this.#createBreakpointButton());
-    }
     if (this.repeatCountInternal > 1) {
       this.showRepeatCountElement();
     }
@@ -3016,78 +3009,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     button.tabIndex = 0;
     button.setAttribute("jslog", `${VisualLogging.action(EXPLAIN_HOVER_ACTION_ID).track({ click: true })}`);
     hoverButtonObserver.observe(button);
-    return button;
-  }
-  #createBreakpointButton() {
-    const button = document.createElement("button");
-    const icon = new Icon();
-    icon.name = "bug";
-    icon.style.color = "var(--devtools-icon-color)";
-    icon.classList.add("medium");
-    button.append(icon);
-    const label = document.createElement("div");
-    label.classList.add("button-label");
-    const text = document.createElement("div");
-    text.setAttribute("data-text", "Debug with breakpoint AI");
-    label.append(text);
-    button.append(label);
-    button.classList.add("hover-button");
-    if (this.shouldShowInsights()) {
-      button.style.right = "36px";
-    }
-    button.ariaLabel = "Debug with breakpoint AI";
-    button.tabIndex = 0;
-    button.onclick = async (event) => {
-      event.stopPropagation();
-      const runtimeModel = this.message.runtimeModel();
-      if (!runtimeModel) {
-        return;
-      }
-      const debuggerModel = runtimeModel.debuggerModel();
-      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-      let uiLocation = null;
-      if (this.message.stackTrace?.callFrames.length) {
-        const callFrame = this.message.stackTrace.callFrames[0];
-        if (callFrame.scriptId) {
-          const script = debuggerModel.scriptForId(callFrame.scriptId);
-          if (script) {
-            const rawLocation = new SDK3.DebuggerModel.Location(debuggerModel, callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
-            uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-          }
-        }
-      }
-      if (!uiLocation && this.message.scriptId) {
-        const script = debuggerModel.scriptForId(this.message.scriptId);
-        if (script) {
-          const rawLocation = new SDK3.DebuggerModel.Location(debuggerModel, this.message.scriptId, this.message.line, this.message.column);
-          uiLocation = await debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-        }
-      }
-      if (!uiLocation && this.message.url) {
-        const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(this.message.url);
-        if (uiSourceCode) {
-          uiLocation = uiSourceCode.uiLocation(this.message.line, this.message.column);
-        }
-      }
-      if (uiLocation) {
-        await Common3.Revealer.reveal(uiLocation);
-        const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
-        await breakpointManager.setBreakpoint(
-          uiLocation.uiSourceCode,
-          uiLocation.lineNumber,
-          uiLocation.columnNumber,
-          Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
-          /* enabled */
-          true,
-          /* isLogpoint */
-          false,
-          "RESTORED"
-          /* Breakpoints.BreakpointManager.BreakpointOrigin.OTHER */
-        );
-        const aiPanel = await AiAssistancePanel.AiAssistancePanel.instance();
-        void aiPanel.handleBreakpointConversation(uiLocation, this.text);
-      }
-    };
     return button;
   }
   shouldRenderAsWarning() {

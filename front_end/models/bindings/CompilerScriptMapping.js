@@ -187,16 +187,22 @@ export class CompilerScriptMapping {
     uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
         const locations = [];
         for (const sourceMap of this.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
-            const entry = sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, columnNumber);
-            if (!entry) {
+            const firstEntry = sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, columnNumber);
+            if (!firstEntry) {
+                continue;
+            }
+            const entries = sourceMap.findReverseEntries(uiSourceCode.url(), firstEntry.sourceLineNumber, firstEntry.sourceColumnNumber, true);
+            if (entries.length === 0) {
                 continue;
             }
             const script = this.#sourceMapManager.clientForSourceMap(sourceMap);
             if (!script) {
                 continue;
             }
-            const location = script.relativeLocationToRawLocation(entry);
-            locations.push(script.debuggerModel.createRawLocation(script, location.lineNumber, location.columnNumber));
+            for (const entry of entries) {
+                const location = script.relativeLocationToRawLocation(entry);
+                locations.push(script.debuggerModel.createRawLocation(script, location.lineNumber, location.columnNumber));
+            }
         }
         return locations;
     }

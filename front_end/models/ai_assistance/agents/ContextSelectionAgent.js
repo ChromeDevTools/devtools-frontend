@@ -190,6 +190,12 @@ export class ContextSelectionAgent extends AiAgent {
                     return {
                         context: new RequestContext(request, calculator),
                         description: 'User selected a network request',
+                        widgets: [{
+                                name: 'NETWORK_REQUEST_GENERAL_HEADERS',
+                                data: {
+                                    request,
+                                },
+                            }],
                     };
                 }
                 return {

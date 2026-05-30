@@ -13,6 +13,7 @@ import * as CorsIssue from './CorsIssue.js';
 import * as CrossOriginEmbedderPolicyIssue from './CrossOriginEmbedderPolicyIssue.js';
 import * as DeprecationIssue from './DeprecationIssue.js';
 import * as ElementAccessibilityIssue from './ElementAccessibilityIssue.js';
+import * as EmailVerificationRequestIssue from './EmailVerificationRequestIssue.js';
 import * as FederatedAuthUserInfoRequestIssue from './FederatedAuthUserInfoRequestIssue.js';
 import * as GenericIssue from './GenericIssue.js';
 import * as HeavyAdIssue from './HeavyAdIssue.js';
@@ -47,6 +48,7 @@ export {
   CrossOriginEmbedderPolicyIssue,
   DeprecationIssue,
   ElementAccessibilityIssue,
+  EmailVerificationRequestIssue,
   FederatedAuthUserInfoRequestIssue,
   GenericIssue,
   HeavyAdIssue,

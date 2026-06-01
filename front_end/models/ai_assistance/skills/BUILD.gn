@@ -1,0 +1,43 @@
+# Copyright 2026 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/timestamp.gni")
+import("../../../../scripts/build/ninja/vars.gni")
+
+# This nested BUILD.gn exists to scope target_gen_dir to this directory. This
+# ensures generated files are placed in
+# gen/front_end/models/ai_assistance/skills/
+# so they can be imported relatively by files in this directory.
+
+action_foreach("generate_skills") {
+  script = "//third_party/node/node.py"
+
+  sources = [ "styling.md" ]
+
+  inputs = [
+    "../../../../scripts/build/build_ai_skills.mjs",
+    "../../../../scripts/build/ninja/write-if-changed.js",
+  ]
+
+  outputs = [ "$target_gen_dir/{{source_name_part}}.skill.js" ]
+
+  args = [
+    rebase_path("../../../../scripts/build/build_ai_skills.mjs",
+                root_build_dir),
+    build_timestamp,
+    "{{source}}",
+    rebase_path("$target_gen_dir/{{source_name_part}}.skill.js",
+                root_build_dir),
+  ]
+
+  if (!devtools_bundle) {
+    metadata = {
+      grd_files = []
+      foreach(src, sources) {
+        grd_files +=
+            [ "$target_gen_dir/" + get_path_info(src, "name") + ".skill.js" ]
+      }
+    }
+  }
+}

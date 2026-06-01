@@ -22,6 +22,22 @@ When the user begins a conversation with the AI, we want to include information 
 
 To deal with the work to take an object that is the AI agent's context and turn it into a text representation that can be sent to the AI, we use _formatters_. These are typically classes with `static` methods that can take in objects and return their text representation that we want to pass to the AI.
 
+## Future Architecture (V2) - WIP
+
+We are currently working on migrating the DevTools AI Assistance from a siloed multi-agent architecture to a unified, skill-based single-agent architecture (`AIAgent2`).
+
+In this new architecture:
+- A single agent (`AIAgent2`) handles multiple domains.
+- Capabilities are defined as **Skills** in Markdown files.
+- The agent can dynamically load skills as needed via a `learnSkill` tool.
+
+This work is currently in progress and behind a feature flag.
+
+### Skills Build System
+
+To support dynamic loading of skills, we generate JavaScript files from Markdown files containing skill definitions.
+We use a nested `BUILD.gn` file in the `skills/` subdirectory specifically for this purpose. This ensures that GN's `target_gen_dir` points to `gen/front_end/models/ai_assistance/skills/`, placing the generated `.skill.js` files in the same relative structure as their source `.md` files. This allows TypeScript files in the `skills/` directory (like `map.ts`) to import the generated files using relative paths (e.g., `./styling.skill.js`) seamlessly.
+
 ## Performance specific documentation
 
 ### `TimelineUtils.AIContext.AgentFocus`

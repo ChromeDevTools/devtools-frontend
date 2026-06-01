@@ -12,6 +12,19 @@ declare module '*.css.js' {
   export default styles;
 }
 
+declare module '*.skill.js' {
+  // Duplicated from front_end/models/ai_assistance/skills/Skill.ts
+  // to avoid importing from the source tree in a global declaration file,
+  // which was causing build artifacts to be generated in the source tree.
+  interface Skill {
+    name: 'styling';
+    description: string;
+    allowedTools: string[];
+    instructions: string;
+  }
+  export const skill: Skill;
+}
+
 // TODO: remove once URLPattern types are available in TypeScript (see https://github.com/microsoft/TypeScript-DOM-lib-generator/issues/1199).
 declare class URLPattern {
   constructor(input: string);

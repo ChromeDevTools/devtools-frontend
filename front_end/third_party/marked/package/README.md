@@ -5,7 +5,6 @@
 # Marked
 
 [![npm](https://badgen.net/npm/v/marked)](https://www.npmjs.com/package/marked)
-[![gzip size](https://badgen.net/badgesize/gzip/https://cdn.jsdelivr.net/npm/marked/marked.min.js)](https://cdn.jsdelivr.net/npm/marked/marked.min.js)
 [![install size](https://badgen.net/packagephobia/install/marked)](https://packagephobia.now.sh/result?p=marked)
 [![downloads](https://badgen.net/npm/dt/marked)](https://www.npmjs.com/package/marked)
 [![github actions](https://github.com/markedjs/marked/workflows/Tests/badge.svg)](https://github.com/markedjs/marked/actions)
@@ -18,7 +17,7 @@
 
 ## Demo
 
-Checkout the [demo page](https://marked.js.org/demo/) to see marked in action ⛹️
+Check out the [demo page](https://marked.js.org/demo/) to see Marked in action ⛹️
 
 ## Docs
 
@@ -33,7 +32,7 @@ Also read about:
 
 **Node.js:** Only [current and LTS](https://nodejs.org/en/about/releases/) Node.js versions are supported. End of life Node.js versions may become incompatible with Marked at any point in time.
 
-**Browser:** Not IE11 :)
+**Browser:** [Baseline Widely Available](https://developer.mozilla.org/en-US/docs/Glossary/Baseline/Compatibility)
 
 ## Installation
 
@@ -84,7 +83,7 @@ $ marked --help
 </head>
 <body>
   <div id="content"></div>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
   <script>
     document.getElementById('content').innerHTML =
       marked.parse('# Marked in the browser\n\nRendered by **marked**.');
@@ -104,4 +103,5 @@ or import esm module
 
 ## License
 
-Copyright (c) 2011-2022, Christopher Jeffrey. (MIT License)
+Copyright (c) 2018+, MarkedJS. (MIT License)
+Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)

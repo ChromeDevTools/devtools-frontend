@@ -47,8 +47,9 @@ describeWithEnvironment('MarkdownView', () => {
           tokens: [
             {
               raw: '\'',
-              text: '&#39;',
+              text: '\'',
               type: 'text',
+              escaped: false,
             },
             {
               href: 'https://example.test',
@@ -65,8 +66,9 @@ describeWithEnvironment('MarkdownView', () => {
             },
             {
               raw: '\'',
-              text: '&#39;',
+              text: '\'',
               type: 'text',
+              escaped: false,
             },
           ],
           type: 'paragraph',

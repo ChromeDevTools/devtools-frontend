@@ -2,13 +2,15 @@
 
 /**
  * Marked CLI
- * Copyright (c) 2011-2013, Christopher Jeffrey (MIT License)
+ * Copyright (c) 2018+, MarkedJS. (MIT License)
+ * Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
  */
 
 import { promises } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { marked } from '../lib/marked.esm.js';
 
 const { access, readFile, writeFile } = promises;
@@ -28,18 +30,21 @@ export async function main(nodeProcess) {
     const options = {
       cwd: nodeProcess.cwd(),
       env: nodeProcess.env,
-      stdio: 'inherit'
+      stdio: 'inherit',
     };
 
     const __dirname = dirname(fileURLToPath(import.meta.url));
     const helpText = await readFile(resolve(__dirname, '../man/marked.1.md'), 'utf8');
 
-    // eslint-disable-next-line promise/param-names
     await new Promise(res => {
-      spawn('man', [resolve(__dirname, '../man/marked.1')], options)
-        .on('error', () => {
-          console.log(helpText);
-        })
+      const manProcess = spawn('man', [resolve(__dirname, '../man/marked.1')], options);
+      nodeProcess.on('SIGINT', () => {
+        manProcess.kill('SIGINT');
+      });
+
+      manProcess.on('error', () => {
+        console.log(helpText);
+      })
         .on('close', res);
     });
   }
@@ -128,7 +133,7 @@ export async function main(nodeProcess) {
         default:
           if (arg.indexOf('--') === 0) {
             opt = camelize(arg.replace(/^--(no-)?/, ''));
-            if (!marked.defaults.hasOwnProperty(opt)) {
+            if (!(opt in marked.defaults)) {
               continue;
             }
             if (arg.indexOf('--no-') === 0) {
@@ -148,16 +153,16 @@ export async function main(nodeProcess) {
     }
 
     async function getData() {
-      if (!input) {
-        if (files.length <= 2) {
-          if (string) {
-            return string;
-          }
-          return await getStdin();
-        }
-        input = files.pop();
+      if (string) {
+        return string;
       }
-      return await readFile(input, 'utf8');
+      if (input) {
+        return await readFile(input, 'utf8');
+      }
+      if (files.length > 0) {
+        return await readFile(files.pop(), 'utf8');
+      }
+      return await getStdin();
     }
 
     function resolveFile(file) {
@@ -174,12 +179,12 @@ export async function main(nodeProcess) {
       try {
         // try require for json
         markedConfig = require(configFile);
-      } catch (err) {
+      } catch(err) {
         if (err.code !== 'ERR_REQUIRE_ESM') {
           throw err;
         }
         // must import esm
-        markedConfig = await import('file:///' + configFile);
+        markedConfig = await import(pathToFileURL(configFile).href);
       }
 
       if (markedConfig.default) {
@@ -205,7 +210,7 @@ export async function main(nodeProcess) {
       const defaultConfig = [
         '~/.marked.json',
         '~/.marked.js',
-        '~/.marked/index.js'
+        '~/.marked/index.js',
       ];
 
       for (const configFile of defaultConfig) {
@@ -266,9 +271,9 @@ export async function main(nodeProcess) {
   }
 
   try {
-    await start(nodeProcess.argv.slice());
+    await start(nodeProcess.argv.slice(2));
     nodeProcess.exit(0);
-  } catch (err) {
+  } catch(err) {
     if (err.code === 'ENOENT') {
       nodeProcess.stderr.write('marked: ' + err.path + ': No such file or directory');
     } else {

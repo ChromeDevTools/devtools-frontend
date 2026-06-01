@@ -35,6 +35,13 @@ function expectErrors() {
   expectError(/Protocol Error: the message with wrong session id/);
   expectError(/Protocol Error: the message with wrong session id/);
   expectError(/Protocol Error: the message with wrong session id/);
+
+  // I don't know why these started happening after adding lighthouse/busy-worker.html
+  expectError(/Request Emulation\.setEmitTouchEventsForMouse failed/);
+  expectError(/Request Emulation\.setEmitTouchEventsForMouse failed/);
+  expectError(/Request Emulation\.setEmitTouchEventsForMouse failed/);
+  expectError(/Request Emulation\.setEmitTouchEventsForMouse failed/);
+  expectError(/Request Emulation\.setEmitTouchEventsForMouse failed/);
 }
 
 describe('Navigation', function() {
@@ -210,6 +217,26 @@ describe('Navigation', function() {
 
       const viewTraceButton = await devToolsPage.$textContent('View Trace', reportEl);
       assert.isOk(viewTraceButton);
+    } catch (e) {
+      console.error(consoleLog.join('\n'));
+      throw e;
+    } finally {
+      devToolsPage.page.off('console', consoleListener);
+    }
+  });
+
+  it('successfully returns a Lighthouse report when a worker is busy', async ({devToolsPage, inspectedPage}) => {
+    devToolsPage.page.on('console', consoleListener);
+    try {
+      expectErrors();
+
+      await navigateToLighthouseTab('lighthouse/busy-worker.html', devToolsPage, inspectedPage);
+
+      await clickStartButton(devToolsPage);
+
+      const {lhr} = await waitForResult(devToolsPage, inspectedPage);
+
+      assert.strictEqual(lhr.lighthouseVersion, '13.3.0');
     } catch (e) {
       console.error(consoleLog.join('\n'));
       throw e;

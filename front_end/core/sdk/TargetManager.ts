@@ -105,13 +105,26 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     await Promise.all(suspendPromises);
   }
 
+  async #waitForPromiseWithTimeout(promise: Promise<void>, timeoutMessage: string): Promise<void> {
+    const {promise: timeoutPromise, resolve: timeoutResolve} = Promise.withResolvers<void>();
+    const timeoutId = globalThis.setTimeout(() => {
+      Common.Console.Console.instance().warn(timeoutMessage);
+      timeoutResolve();
+    }, 2000);
+    await Promise.race([promise, timeoutPromise]);
+    globalThis.clearTimeout(timeoutId);
+    timeoutResolve();  // avoids "pending async operations" error from test harness.
+  }
+
   async resumeAllTargets(): Promise<void> {
     if (!this.#isSuspended) {
       return;
     }
     this.#isSuspended = false;
     this.dispatchEventToListeners(Events.SUSPEND_STATE_CHANGED);
-    const resumePromises = Array.from(this.#targets.values(), target => target.resume());
+    const resumePromises = Array.from(this.#targets.values(), async target => {
+      await this.#waitForPromiseWithTimeout(target.resume(), `Timeout waiting for target ${target.name()} to resume`);
+    });
     await Promise.all(resumePromises);
   }
 

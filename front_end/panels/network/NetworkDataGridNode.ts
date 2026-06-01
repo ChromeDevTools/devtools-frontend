@@ -932,6 +932,20 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue > bValue ? 1 : -1;
   }
 
+  static OverrideTypesComparator(a: NetworkNode, b: NetworkNode): number {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      if (!aRequest && !bRequest) {
+        return 0;
+      }
+      return !aRequest ? -1 : 1;
+    }
+    const aValue = aRequest.overrideTypes.join(', ');
+    const bValue = bRequest.overrideTypes.join(', ');
+    return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
+  }
+
   override showingInitiatorChainChanged(): void {
     const showInitiatorChain = this.showingInitiatorChain();
 

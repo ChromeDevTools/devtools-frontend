@@ -471,4 +471,78 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconImage = iconElement.getAttribute('name');
     assert.strictEqual('warning-filled', iconImage);
   });
+
+  describe('OverrideTypesComparator', () => {
+    it('should sort correctly based on override types', () => {
+      const createRequest = (hasContent: boolean, hasHeaders: boolean, id: string) => {
+        const request = SDK.NetworkRequest.NetworkRequest.create(
+            id as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
+        request.statusCode = 200;
+        if (hasContent || hasHeaders) {
+          request.setWasIntercepted(true);
+        }
+        if (hasContent) {
+          request.hasOverriddenContent = true;
+        }
+        if (hasHeaders) {
+          request.responseHeaders = [{name: 'foo', value: 'overridden'}];
+          request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
+        }
+        return new Network.NetworkDataGridNode.NetworkRequestNode(
+            {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+      };
+
+      const nodeNone = createRequest(false, false, 'none');
+      const nodeContent = createRequest(true, false, 'content');
+      const nodeHeaders = createRequest(false, true, 'headers');
+      const nodeBoth = createRequest(true, true, 'both');
+
+      // Sort order should be: "" < "content" < "content, headers" < "headers"
+      assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeNone, nodeContent), 0);
+      assert.isAbove(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeContent, nodeNone), 0);
+
+      assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeContent, nodeBoth), 0);
+      assert.isAbove(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeBoth, nodeContent), 0);
+
+      assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeBoth, nodeHeaders), 0);
+      assert.isAbove(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeHeaders, nodeBoth), 0);
+
+      assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeNone, nodeHeaders), 0);
+
+      const nodeNone2 = createRequest(false, false, 'none2');
+      assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeNone, nodeNone2), 0);
+      assert.isAbove(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeNone2, nodeNone), 0);
+    });
+
+    it('should handle null requests correctly', () => {
+      const nodeA = new Network.NetworkDataGridNode.NetworkRequestNode(
+          {} as Network.NetworkDataGridNode.NetworkLogViewInterface,
+          SDK.NetworkRequest.NetworkRequest.create(
+              'a' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null));
+
+      const nodeNull1 = new Network.NetworkDataGridNode.NetworkRequestNode(
+          {} as Network.NetworkDataGridNode.NetworkLogViewInterface,
+          SDK.NetworkRequest.NetworkRequest.create(
+              'null1' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null,
+              null));
+      sinon.stub(nodeNull1, 'requestOrFirstKnownChildRequest').returns(null);
+
+      const nodeNull2 = new Network.NetworkDataGridNode.NetworkRequestNode(
+          {} as Network.NetworkDataGridNode.NetworkLogViewInterface,
+          SDK.NetworkRequest.NetworkRequest.create(
+              'null2' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null,
+              null));
+      sinon.stub(nodeNull2, 'requestOrFirstKnownChildRequest').returns(null);
+
+      // null vs null -> 0
+      assert.strictEqual(
+          Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeNull1, nodeNull2), 0);
+
+      // null vs valid -> -1
+      assert.isBelow(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeNull1, nodeA), 0);
+
+      // valid vs null -> 1
+      assert.isAbove(Network.NetworkDataGridNode.NetworkRequestNode.OverrideTypesComparator(nodeA, nodeNull1), 0);
+    });
+  });
 });

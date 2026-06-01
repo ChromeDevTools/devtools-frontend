@@ -28,7 +28,7 @@
         }
       }
     ],
-    "types": ["chai", "mocha", "sinon", "karma-chai-sinon"]
+    "types": ["mocha", "sinon"]
   },
   "exclude": ["devtools_compatibility.js"],
   "references": [{ "path": "./tsconfig.compatibility.json" }]

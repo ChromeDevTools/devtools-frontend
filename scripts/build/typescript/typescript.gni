@@ -120,9 +120,9 @@ template("ts_library") {
                   get_label_info(dep, "name") + "-tsconfig.json" ]
       }
 
-      # We need to expose our deps in the Ninja chain, to allow `generate_devtools_grd`
-      # to eventually roll up all files. If these are not public, Ninja complains that
-      # the files are not reachable.
+      # We need to expose our deps in the Ninja chain, to allow
+      # `generate_devtools_grd` to eventually roll up all files. If these are
+      # not public, Ninja complains that the files are not reachable.
       public_deps += deps
     }
 
@@ -137,11 +137,8 @@ template("ts_library") {
     if (_test_only) {
       args += [ "--test-only" ]
       inputs += [
-        devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
         devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
         devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
-        devtools_location_prepend +
-            "node_modules/@types/karma-chai-sinon/index.d.ts",
       ]
     }
 

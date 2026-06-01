@@ -105,7 +105,7 @@ window[Spec.INTERNAL_KILL_SWITCH] = () => {
 
 function sendEventToDevTools(event: Spec.WebVitalsEvent): void {
   const payload = JSON.stringify(event);
-  window[Spec.EVENT_BINDING_NAME](payload);
+  window[Spec.EVENT_BINDING_NAME]?.(payload);
 }
 
 /**

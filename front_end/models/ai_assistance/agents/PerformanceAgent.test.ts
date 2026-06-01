@@ -23,6 +23,7 @@ import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Logs from '../../logs/logs.js';
+import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
 import type {SerializableKey} from '../../trace/types/File.js';
@@ -563,6 +564,74 @@ code
         code: 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})',
         canceled: false,
       });
+    });
+
+    it('can call getResourceContent and yields SOURCE_CODE widget', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const url = 'https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html';
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient(
+            [[{explanation: '', functionCalls: [{name: 'getResourceContent', args: {url}}]}], [{explanation: 'done'}]])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      // Mock scripts in trace
+      parsedTrace.data.Scripts.scripts.push({
+        url,
+        content: 'console.log("hello world");',
+      } as unknown as Trace.Handlers.ModelHandlers.Scripts.Script);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 1);
+      const widget = action.widgets[0] as AiAgent.SourceCodeAiWidget;
+      assert.strictEqual(widget.name, 'SOURCE_CODE');
+      assert.strictEqual(widget.data.url, url);
+      assert.strictEqual(widget.data.code, 'console.log("hello world");');
+    });
+
+    it('can call getFunctionCode and yields SOURCE_CODE widget', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const scriptUrl = 'https://chromedevtools.github.io/performance-stories/lcp-large-image/app.js';
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{explanation: '', functionCalls: [{name: 'getFunctionCode', args: {scriptUrl, line: 10, column: 5}}]}],
+          [{explanation: 'done'}]
+        ])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      // Stub prototype methods of PerformanceTraceFormatter
+      sinon.stub(PerformanceTraceFormatter.PerformanceTraceFormatter.prototype, 'resolveFunctionCodeAtLocation')
+          .resolves({
+            code: 'function test() {}',
+            codeWithContext: '<FUNCTION_START>function test() {}<FUNCTION_END>',
+            formattedCost: [],
+          } as unknown as SourceMapScopes.FunctionCodeResolver.FunctionCode);
+      sinon.stub(PerformanceTraceFormatter.PerformanceTraceFormatter.prototype, 'formatFunctionCode')
+          .returns('function test() {}');
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 1);
+      const widget = action.widgets[0] as AiAgent.SourceCodeAiWidget;
+      assert.strictEqual(widget.name, 'SOURCE_CODE');
+      assert.strictEqual(widget.data.url, scriptUrl);
+      assert.strictEqual(widget.data.line, 10);
+      assert.strictEqual(widget.data.column, 5);
+      assert.strictEqual(widget.data.code, 'function test() {}');
     });
 
     it('can call getMainThreadTrackSummaryByLabel', async function() {

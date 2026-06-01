@@ -321,6 +321,32 @@ describeWithEnvironment('ChatMessage', () => {
         assert.strictEqual(
             AiAssistance.ChatMessage.getWidgetSignature(widget), 'TIMELINE_EVENT_SUMMARY:1000000:MyTraceEvent');
       });
+
+      it('should correctly handle SOURCE_CODE widget without line/column', () => {
+        const widget = {
+          name: 'SOURCE_CODE',
+          data: {
+            url: 'https://example.com/script.js',
+            code: 'console.log("hello");',
+          },
+        } as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(
+            AiAssistance.ChatMessage.getWidgetSignature(widget), 'SOURCE_CODE:https://example.com/script.js::');
+      });
+
+      it('should correctly handle SOURCE_CODE widget with line/column', () => {
+        const widget = {
+          name: 'SOURCE_CODE',
+          data: {
+            url: 'https://example.com/script.js',
+            line: 42,
+            column: 7,
+            code: 'const x = 1;',
+          },
+        } as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(
+            AiAssistance.ChatMessage.getWidgetSignature(widget), 'SOURCE_CODE:https://example.com/script.js:42:7');
+      });
     });
   });
 

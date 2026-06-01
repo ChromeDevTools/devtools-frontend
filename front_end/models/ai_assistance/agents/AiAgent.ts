@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import type {UrlString} from '../../../core/platform/DevToolsPath.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
@@ -344,9 +345,20 @@ export interface NetworkRequestGeneralHeadersAiWidget {
   };
 }
 
+// If the line and column are not provided, we assume the whole file was sent to the agent.s
+export interface SourceCodeAiWidget {
+  name: 'SOURCE_CODE';
+  data: {
+    url: UrlString,
+    code: string,
+    line?: number,
+    column?: number,
+  };
+}
+
 export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
     PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|
-    LighthouseReportAiWidget|TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget;
+    LighthouseReportAiWidget|TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget|SourceCodeAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

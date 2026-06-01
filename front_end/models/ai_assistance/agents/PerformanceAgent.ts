@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type {UrlString} from '../../../core/platform/DevToolsPath.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -1350,7 +1351,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       });
     }
 
-    this.declareFunction<{scriptUrl: string, line: number, column: number}, {result: string}>('getFunctionCode', {
+    this.declareFunction<{scriptUrl: UrlString, line: number, column: number}, {result: string}>('getFunctionCode', {
       description:
           'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
       parameters: {
@@ -1412,14 +1413,25 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
         this.#cacheFunctionResult(focus, key, result);
-        return {result: {result}};
+        return {
+          result: {result},
+          widgets: [{
+            name: 'SOURCE_CODE',
+            data: {
+              url: args.scriptUrl,
+              line: args.line,
+              column: args.column,
+              code: code.code,
+            },
+          }],
+        };
       },
     });
 
     const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
     const isTraceApp = Root.Runtime.Runtime.isTraceApp();
 
-    this.declareFunction<{url: string}, {content: string}>('getResourceContent', {
+    this.declareFunction<{url: UrlString}, {content: string}>('getResourceContent', {
       description:
           'Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.',
       parameters: {
@@ -1469,7 +1481,16 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
 
         const key = `getResourceContent(${args.url})`;
         this.#cacheFunctionResult(focus, key, content);
-        return {result: {content}};
+        return {
+          result: {content},
+          widgets: [{
+            name: 'SOURCE_CODE',
+            data: {
+              url: args.url,
+              code: content,
+            },
+          }],
+        };
       },
     });
 

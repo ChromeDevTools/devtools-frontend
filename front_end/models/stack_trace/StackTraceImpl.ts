@@ -7,7 +7,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
 import type * as StackTrace from './stack_trace.js';
-import type {FrameNode, ParsedFrameInfo} from './Trie.js';
+import type {EvalOrigin, FrameNode, ParsedFrameInfo} from './Trie.js';
 
 export type AnyStackTraceImpl = StackTraceImpl<FragmentImpl|DebuggableFragmentImpl|ParsedErrorStackFragmentImpl>;
 
@@ -102,6 +102,28 @@ export class FrameImpl implements StackTrace.StackTrace.Frame {
   }
 }
 
+/**
+ * Converts the internal recursive `EvalOrigin` trie representation into the public-facing
+ * linear `ParsedErrorStackFrameImpl` representation.
+ *
+ * NOTE: The V8 Error#stack format only allows serializing a single location descriptor
+ * per nested eval origin level (e.g. `eval at functionName (location)`). Therefore, the
+ * public-facing API only surfaces the top-most logical frame (`evalOrigin.frames[0]`) at each
+ * eval level. Any other inlined caller frames at that specific level are technically dropped
+ * in the public API, but they are fully preserved in the internal trie representation for
+ * debugging, navigation, and ignore list correlation.
+ */
+function createParsedErrorStackFrameImplFromEvalOrigin(
+    evalOrigin: EvalOrigin|undefined, parsedFrameInfo?: ParsedFrameInfo): ParsedErrorStackFrameImpl|undefined {
+  if (!evalOrigin || evalOrigin.frames.length === 0) {
+    return undefined;
+  }
+  const frame = evalOrigin.frames[0];
+  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(
+      evalOrigin.evalOrigin, parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
+  return new ParsedErrorStackFrameImpl(frame, parsedFrameInfo?.evalOrigin?.parsedFrameInfo, nestedOrigin);
+}
+
 export class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.ParsedErrorStackFragment {
   constructor(readonly fragment: FragmentImpl) {
   }
@@ -114,8 +136,9 @@ export class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.Parse
     const frames: ParsedErrorStackFrameImpl[] = [];
 
     for (const node of this.fragment.node.getCallStack()) {
+      const evalOrigin = createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo);
       for (const frame of node.frames) {
-        frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, node.evalOriginFrames));
+        frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, evalOrigin));
       }
     }
 
@@ -126,12 +149,12 @@ export class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.Parse
 export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedErrorStackFrame {
   readonly #frame: FrameImpl;
   readonly #parsedFrameInfo?: ParsedFrameInfo;
-  readonly #evalOriginFrames?: FrameImpl[];
+  readonly #evalOrigin?: ParsedErrorStackFrameImpl;
 
-  constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOriginFrames?: FrameImpl[]) {
+  constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOrigin?: ParsedErrorStackFrameImpl) {
     this.#frame = frame;
     this.#parsedFrameInfo = parsedFrameInfo;
-    this.#evalOriginFrames = evalOriginFrames;
+    this.#evalOrigin = evalOrigin;
   }
 
   get url(): string|undefined {
@@ -166,10 +189,7 @@ export class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedEr
     return this.#parsedFrameInfo?.isEval;
   }
   get evalOrigin(): ParsedErrorStackFrameImpl|undefined {
-    if (!this.#evalOriginFrames || this.#evalOriginFrames.length === 0) {
-      return undefined;
-    }
-    return new ParsedErrorStackFrameImpl(this.#evalOriginFrames[0], this.#parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
+    return this.#evalOrigin;
   }
   get isWasm(): boolean|undefined {
     return this.#parsedFrameInfo?.isWasm;

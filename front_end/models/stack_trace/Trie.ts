@@ -41,6 +41,16 @@ export function isBuiltinFrame(rawFrame: RawFrame): boolean {
       !Boolean(rawFrame.url);
 }
 
+export class EvalOrigin {
+  readonly frames: FrameImpl[];
+  readonly evalOrigin?: EvalOrigin;
+
+  constructor(frames: FrameImpl[], evalOrigin?: EvalOrigin) {
+    this.frames = frames;
+    this.evalOrigin = evalOrigin;
+  }
+}
+
 interface FrameNodeBase<ChildT, ParentT> {
   readonly parent: ParentT;
   readonly children: ChildT[];
@@ -58,7 +68,22 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
 
   fragment?: FragmentImpl;
   parsedFrameInfo?: ParsedFrameInfo;
-  evalOriginFrames?: FrameImpl[];
+  #evalOrigin?: EvalOrigin;
+  evalOriginFrames?: FrameImpl[];  // Deprecated: Temporary compatibility fallback to keep StackTraceModel compiling
+
+  get evalOrigin(): EvalOrigin|undefined {
+    if (this.#evalOrigin) {
+      return this.#evalOrigin;
+    }
+    if (this.evalOriginFrames && this.evalOriginFrames.length > 0) {
+      return new EvalOrigin(this.evalOriginFrames);
+    }
+    return undefined;
+  }
+
+  set evalOrigin(value: EvalOrigin|undefined) {
+    this.#evalOrigin = value;
+  }
 
   constructor(rawFrame: RawFrame, parent: AnyFrameNode) {
     this.rawFrame = rawFrame;

@@ -78,3 +78,53 @@ describe('FragmentImpl', () => {
     });
   });
 });
+
+describe('ParsedErrorStackFragmentImpl', () => {
+  const {ParsedErrorStackFragmentImpl, FragmentImpl, FrameImpl} = StackTraceImpl.StackTraceImpl;
+  const {EvalOrigin} = StackTraceImpl.Trie;
+
+  it('recursively exposes nested evalOrigin frames pointing only to index-0 inlined frames', () => {
+    const trie = new StackTraceImpl.Trie.Trie();
+    const node = trie.insert([protocolCallFrame('foo.js:1:foo:1:10')]);
+
+    // 1. Setup translated frames for the main call frame
+    node.frames = [new FrameImpl('foo.js', undefined, 'foo', 1, 10)];
+
+    // 2. Setup nested recursively structured evalOrigin contexts
+    // Level 2 (parent eval): intermediateCaller (has inlined frames)
+    const level2Origin = new EvalOrigin([
+      new FrameImpl('inlined_base.ts', undefined, 'inlinedBaseFn', 8, 80),
+      new FrameImpl('base.ts', undefined, 'baseFn', 12, 120),
+    ]);
+    // Level 1 (immediate eval): evalCaller
+    const level1Origin = new EvalOrigin(
+        [new FrameImpl('eval_caller.ts', undefined, 'evalCallerFn', 4, 40)],
+        level2Origin,
+    );
+
+    node.evalOrigin = level1Origin;
+
+    const fragment = new ParsedErrorStackFragmentImpl(FragmentImpl.getOrCreate(node));
+    const parsedFrames = fragment.frames;
+
+    assert.lengthOf(parsedFrames, 1);
+    assert.strictEqual(parsedFrames[0].url, 'foo.js');
+
+    // Level 1 evaluation: evalCaller
+    const origin1 = parsedFrames[0].evalOrigin;
+    assert.exists(origin1);
+    assert.strictEqual(origin1?.url, 'eval_caller.ts');
+    assert.strictEqual(origin1?.name, 'evalCallerFn');
+    assert.strictEqual(origin1?.line, 4);
+
+    // Level 2 evaluation: base (maps to index 0 of the level 2 frames array: inlinedBaseFn!)
+    const origin2 = origin1?.evalOrigin;
+    assert.exists(origin2);
+    assert.strictEqual(origin2?.url, 'inlined_base.ts');
+    assert.strictEqual(origin2?.name, 'inlinedBaseFn');
+    assert.strictEqual(origin2?.line, 8);
+
+    // Outermost level: undefined
+    assert.isUndefined(origin2?.evalOrigin);
+  });
+});

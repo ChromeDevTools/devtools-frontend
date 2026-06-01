@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace, getMainThread} from '../../testing/TraceHelpers.js';

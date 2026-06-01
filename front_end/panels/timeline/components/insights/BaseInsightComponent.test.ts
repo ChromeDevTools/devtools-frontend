@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import type * as Common from '../../../../core/common/common.js';
 import * as Root from '../../../../core/root/root.js';
 import * as AIAssistance from '../../../../models/ai_assistance/ai_assistance.js';

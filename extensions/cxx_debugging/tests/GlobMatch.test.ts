@@ -4,8 +4,6 @@
 
 import {globMatch} from '../src/GlobMatch.js';
 
-const {expect} = chai;
-
 describe('globMatch', () => {
   it('correctly matches basename *-patterns', () => {
     expect(globMatch('*.txt', 'http://server/file.txt')).to.be.true;

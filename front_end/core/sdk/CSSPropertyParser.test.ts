@@ -1,6 +1,8 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {assert} from 'chai';
+
 import {Printer} from '../../testing/PropertyParser.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 

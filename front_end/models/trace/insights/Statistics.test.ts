@@ -10,6 +10,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {expect} from 'chai';
+
 import * as Insights from './insights.js';
 
 const {getLogNormalScore} = Insights.Statistics;

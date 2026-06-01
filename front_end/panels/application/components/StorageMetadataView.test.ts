@@ -4,6 +4,8 @@
 
 import '../../../ui/kit/kit.js';
 
+import {assert} from 'chai';
+
 import * as Common from '../../../core/common/common.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';

@@ -254,6 +254,7 @@ module.exports = function(config: any) {
 
     files: [
       // Global hooks in test_setup must go first
+      {pattern: path.join(SOURCE_ROOT, 'node_modules/chai/**/*'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_setup.js'), type: 'module'},
       ...tests.map(pattern => ({pattern, type: 'module'})),
       ...tests.map(pattern => ({pattern: `${pattern}.map`, served: true, included: false, watched: true})),
@@ -287,7 +288,7 @@ module.exports = function(config: any) {
       },
     },
 
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'sinon'],
 
     client: {
       mocha: {
@@ -302,7 +303,6 @@ module.exports = function(config: any) {
       {[`launcher:${CustomChrome.prototype.name}`]: ['type', CustomChrome]},
       require('karma-mocha'),
       require('karma-mocha-reporter'),
-      require('karma-chai'),
       require('karma-sinon'),
       require('karma-sourcemap-loader'),
       require('karma-spec-reporter'),

@@ -66,14 +66,14 @@ export function relativePathname(url: URL, base: URL): string {
 }
 
 export function nonNull<T>(value?: T|null): T {
-  chai.assert.exists(value);
+  assert.exists(value);
   return value;
 }
 
 export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null):
     Chrome.DevTools.RemoteObject {
-  chai.assert.exists(value);
-  chai.assert(value.type !== 'reftype');
+  assert.exists(value);
+  assert(value.type !== 'reftype');
   return value;
 }
 

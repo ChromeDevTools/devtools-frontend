@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as LinearMemoryInspectorComponents from '../../../../panels/linear_memory_inspector/components/components.js';
 import {raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';

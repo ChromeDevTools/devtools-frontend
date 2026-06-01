@@ -4,6 +4,8 @@
 
 import './dom_extension.js';
 
+import {assert} from 'chai';
+
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 function createSlot(parent: HTMLElement, name?: string) {

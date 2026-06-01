@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import type * as SDK from '../../core/sdk/sdk.js';
 import {StubIssue} from '../../testing/StubIssue.js';
 import * as IssueManager from '../issues_manager/issues_manager.js';

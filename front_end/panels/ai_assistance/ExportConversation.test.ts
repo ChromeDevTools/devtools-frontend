@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';

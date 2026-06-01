@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {applyMatrixToPoint, buildPath, emptyBounds} from './highlight_common.js';
 
 describe('highlight common helper', () => {

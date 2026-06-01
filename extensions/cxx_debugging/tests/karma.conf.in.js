@@ -76,6 +76,7 @@ module.exports = function(config) {
     // Test Inputs:
     '@THIRD_PARTY_DIR@/lldb-eval/src/testdata/test_binary.cc',
     '@THIRD_PARTY_DIR@/lldb-eval/src/testdata/test_library.cc',
+    path.join(basePath, 'node_modules/chai/**/*'),
   ].map(pattern => ({pattern, type: 'module', served: true, included: false, watched: true}));
 
   const workerBuildArtifactProxy = {};
@@ -96,7 +97,7 @@ module.exports = function(config) {
 
     browsers: ['ChromeWS'],
 
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'sinon'],
 
     client: {
       basePath,
@@ -105,7 +106,6 @@ module.exports = function(config) {
 
     plugins: [
       requireInternal('karma-mocha'),
-      requireInternal('karma-chai'),
       requireInternal('karma-sinon'),
       requireInternal('karma-sourcemap-loader'),
       requireInternal('karma-spec-reporter'),

@@ -9,6 +9,8 @@
  * Note that `resetTestDOM` is automatically run before each test (see `test_setup.ts`).
  **/
 
+import {assert} from 'chai';
+
 import type * as Platform from '../core/platform/platform.js';
 import * as Buttons from '../ui/components/buttons/buttons.js';
 import type * as NodeText from '../ui/components/node_text/node_text.js';

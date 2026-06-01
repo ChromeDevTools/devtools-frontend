@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import type * as Trace from '../../trace/trace.js';

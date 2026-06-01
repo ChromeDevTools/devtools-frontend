@@ -1,6 +1,49 @@
-# AssertionError [![Build Status](https://travis-ci.org/chaijs/assertion-error.png?branch=master)](https://travis-ci.org/chaijs/assertion-error)
+<p align=center>
+  AssertionError and AssertionResult classes.
+</p>
 
-> Error constructor for test and validation frameworks that implements standardized AssertionError specification.
+<p align=center>
+  <a href="https://github.com/chaijs/assertion-error/actions">
+    <img
+      alt="build:?"
+      src="https://github.com/chaijs/assertion-error/actions/workflows/nodejs.yml/badge.svg"
+    />
+  </a><a href="https://www.npmjs.com/package/assertion-error">
+    <img
+      alt="downloads:?"
+      src="https://img.shields.io/npm/dm/assertion-error.svg"
+    />
+  </a><a href="">
+    <img
+      alt="devDependencies:none"
+      src="https://img.shields.io/badge/dependencies-none-brightgreen"
+    />
+  </a>
+</p>
+
+## What is AssertionError?
+
+Assertion Error is a module that contains two classes: `AssertionError`, which
+is an instance of an `Error`, and `AssertionResult` which is not an instance of
+Error.
+
+These can be useful for returning from a function - if the function "succeeds"
+return an `AssertionResult` and if the function fails return (or throw) an
+`AssertionError`.
+
+Both `AssertionError` and `AssertionResult` implement the `Result` interface:
+
+```typescript
+interface Result {
+  name: "AssertionError" | "AssertionResult";
+  ok: boolean;
+  toJSON(...args: unknown[]): Record<string, unknown>;
+}
+```
+
+So if a function returns `AssertionResult | AssertionError` it is easy to check
+_which_ one is returned by checking either `.name` or `.ok`, or check
+`instanceof Error`.
 
 ## Installation
 
@@ -8,34 +51,18 @@
 
 `assertion-error` is available on [npm](http://npmjs.org).
 
-    $ npm install assertion-error
+```
+$ npm install --save assertion-error
+```
 
-### Component
+### Deno
 
-`assertion-error` is available as a [component](https://github.com/component/component).
+`assertion_error` is available on
+[Deno.land](https://deno.land/x/assertion_error)
 
-    $ component install chaijs/assertion-error
-
-## License
-
-(The MIT License)
-
-Copyright (c) 2013 Jake Luer <jake@qualiancy.com> (http://qualiancy.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+```typescript
+import {
+  AssertionError,
+  AssertionResult,
+} from "https://deno.land/x/assertion_error@2.0.0/mod.ts";
+```

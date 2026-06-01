@@ -4,9 +4,14 @@
   found in the LICENSE file.
 -->
 <script type="importmap">
-{
-  "imports": {
-    "lit-html": "/base/extensions/cxx_debugging/third_party/lit-html/lit-html.js"
+  {
+    "imports": {
+      "lit-html": "/base/extensions/cxx_debugging/third_party/lit-html/lit-html.js"
+    }
   }
-}
+</script>
+<script type="module">
+  const { assert, expect } = await import('/base/node_modules/chai/index.js');
+  window.assert = assert;
+  window.expect = expect;
 </script>

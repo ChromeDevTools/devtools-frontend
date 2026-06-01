@@ -7,7 +7,8 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
-devtools_module("lantern") {
+devtools_entrypoint("bundle") {
+  entrypoint = "lantern.ts"
   deps = [
     "core:bundle",
     "graph:bundle",
@@ -15,11 +16,6 @@ devtools_module("lantern") {
     "simulation:bundle",
     "types:bundle",
   ]
-}
-
-devtools_entrypoint("bundle") {
-  entrypoint = "lantern.ts"
-  deps = [ ":lantern" ]
   visibility = [
     ":*",
     "../*",

@@ -13385,15 +13385,16 @@ function getScript(contentProvider) {
 // gen/front_end/panels/sources/ScopeChainSidebarPane.js
 var ScopeChainSidebarPane_exports = {};
 __export(ScopeChainSidebarPane_exports, {
+  DEFAULT_VIEW: () => DEFAULT_VIEW6,
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
 import * as i18n47 from "./../../core/i18n/i18n.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as SourceMapScopes2 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
+import { html as html12, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -13460,31 +13461,95 @@ var UIStrings24 = {
 var str_24 = i18n47.i18n.registerUIStrings("panels/sources/ScopeChainSidebarPane.ts", UIStrings24);
 var i18nString23 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var scopeChainSidebarPaneInstance;
+var DEFAULT_VIEW6 = (input, output, target) => {
+  const createScopeSectionTreeElement = (scope, objectTree) => {
+    let emptyPlaceholder = null;
+    if (scope.type() === "local" || scope.type() === "closure") {
+      emptyPlaceholder = i18nString23(UIStrings24.noVariables);
+    }
+    const icon = scope.icon();
+    const { title, subtitle } = scopeTitle(scope);
+    const section6 = new ObjectUI3.ObjectPropertiesSection.RootElement(objectTree, input.linkifier, emptyPlaceholder);
+    section6.listItemElement.classList.add("scope-chain-sidebar-pane-section");
+    section6.listItemElement.setAttribute("aria-label", title);
+    const titleNode = document.createDocumentFragment();
+    render8(html12`<div class='scope-chain-sidebar-pane-section-header tree-element-title'>${icon ? html12`<img class=scope-chain-sidebar-pane-section-icon src=${icon}>` : nothing6}
+                   <div class=scope-chain-sidebar-pane-section-subtitle>${subtitle}</div>
+                   <div class=scope-chain-sidebar-pane-section-title>${title}</div>
+                 </div>`, titleNode);
+    section6.title = titleNode;
+    if (scope === input.scopeChain?.[0]?.scope) {
+      section6.select(
+        /* omitFocus */
+        true
+      );
+    }
+    return html12`<devtools-tree-wrapper .treeElement=${section6}></devtools-tree-wrapper>`;
+  };
+  render8(
+    // clang-format off
+    html12`
+    <style>${scopeChainSidebarPane_css_default}</style>
+    ${input.scopeChain ? html12`
+      <devtools-tree autofocus hide-overflow show-selection-on-keyboard-focus .template=${html12`<ul role=tree class="source-code object-properties-section">
+          <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
+          <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
+          <style>${scopeChainSidebarPane_css_default}</style>
+          ${input.scopeChain?.map(({ scope, objectTree }) => createScopeSectionTreeElement(scope, objectTree)) ?? nothing6}
+        </ul>`}>
+      </devtools-tree>` : html12`
+      <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
+    `,
+    // clang-format on
+    target
+  );
+};
+function scopeTitle(scope) {
+  let title = scope.typeName();
+  if (scope.type() === "closure") {
+    const scopeName = scope.name();
+    if (scopeName) {
+      title = i18nString23(UIStrings24.closureS, { PH1: UI24.UIUtils.beautifyFunctionName(scopeName) });
+    } else {
+      title = i18nString23(UIStrings24.closure);
+    }
+  }
+  let subtitle = scope.description();
+  if (!title || title === subtitle) {
+    subtitle = null;
+  }
+  return { title, subtitle };
+}
+function scopeKey(scope) {
+  let title = scope.typeName();
+  if (scope.type() === "closure") {
+    const scopeName = scope.name();
+    if (scopeName) {
+      title = `Closure: ${UI24.UIUtils.beautifyFunctionName(scopeName)}`;
+    } else {
+      title = "Closure";
+    }
+  }
+  let subtitle = scope.description();
+  if (!title || title === subtitle) {
+    subtitle = null;
+  }
+  return title + (subtitle ? ":" + subtitle : "");
+}
 var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBox {
-  treeOutline;
-  expandController;
-  linkifier;
-  infoElement;
+  #linkifier;
+  #expansionTrackers = /* @__PURE__ */ new Map();
   #scopeChainModel = null;
-  constructor() {
-    super({
+  #scopeChain = null;
+  #view;
+  constructor(target, view = DEFAULT_VIEW6) {
+    super(target, {
       jslog: `${VisualLogging13.section("sources.scope-chain")}`,
       useShadowDom: true
     });
-    this.registerRequiredCSS(scopeChainSidebarPane_css_default);
-    this.treeOutline = new ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
-    this.treeOutline.registerRequiredCSS(scopeChainSidebarPane_css_default);
-    this.treeOutline.setHideOverflow(true);
-    this.treeOutline.setShowSelectionOnKeyboardFocus(
-      /* show */
-      true
-    );
-    this.expandController = new ObjectUI3.ObjectPropertiesSection.ObjectPropertiesSectionsTreeExpandController(this.treeOutline);
-    this.linkifier = new Components3.Linkifier.Linkifier();
-    this.infoElement = document.createElement("div");
-    this.infoElement.className = "gray-info-message";
-    this.infoElement.tabIndex = -1;
+    this.#linkifier = new Components3.Linkifier.Linkifier();
     this.flavorChanged(UI24.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
+    this.#view = view;
   }
   static instance() {
     if (!scopeChainSidebarPaneInstance) {
@@ -13492,96 +13557,76 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBo
     }
     return scopeChainSidebarPaneInstance;
   }
-  treeOutlineForTest() {
-    return this.treeOutline;
+  /**
+   * @deprecated Required for legacy web tests via DebuggerTestRunner.js
+   */
+  get treeOutline() {
+    const devtoolsTree = this.contentElement.querySelector("devtools-tree");
+    if (devtoolsTree) {
+      return devtoolsTree.getInternalTreeOutlineForTest();
+    }
+    return null;
   }
   flavorChanged(callFrame) {
     this.#scopeChainModel?.dispose();
     this.#scopeChainModel = null;
-    this.linkifier.reset();
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.infoElement);
+    this.#scopeChain = null;
+    this.#linkifier.reset();
     if (callFrame) {
-      this.infoElement.textContent = i18nString23(UIStrings24.loading);
-      this.#scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame);
-      this.#scopeChainModel.addEventListener("ScopeChainUpdated", (event) => this.buildScopeTreeOutline(event.data), this);
-    } else {
-      this.infoElement.textContent = i18nString23(UIStrings24.notPaused);
+      const scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame);
+      this.#scopeChainModel = scopeChainModel;
+      this.#scopeChainModel.addEventListener("ScopeChainUpdated", (event) => {
+        if (this.#scopeChainModel === scopeChainModel) {
+          this.#buildScopeChain(event.data);
+        }
+      });
     }
+    this.requestUpdate();
   }
-  focus() {
-    if (this.hasFocus()) {
-      return;
-    }
-    if (UI24.Context.Context.instance().flavor(SDK13.DebuggerModel.DebuggerPausedDetails)) {
-      this.treeOutline.forceSelect();
-    }
+  performUpdate() {
+    this.#view({
+      linkifier: this.#linkifier,
+      isPaused: Boolean(this.#scopeChainModel),
+      scopeChain: this.#scopeChain
+    }, {}, this.contentElement);
   }
-  buildScopeTreeOutline(eventScopeChain) {
-    const { scopeChain } = eventScopeChain;
-    this.treeOutline.removeChildren();
-    this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.treeOutline.element);
-    let foundLocalScope = false;
-    for (const [i, scope] of scopeChain.entries()) {
-      if (scope.type() === "local") {
-        foundLocalScope = true;
+  #buildScopeChain({ scopeChain }) {
+    const oldExpansionTrackers = this.#expansionTrackers;
+    this.#expansionTrackers = /* @__PURE__ */ new Map();
+    this.#scopeChain = [];
+    for (const scope of scopeChain) {
+      const key = scopeKey(scope);
+      let expansionTracker = this.#expansionTrackers.get(key);
+      if (!expansionTracker) {
+        expansionTracker = oldExpansionTrackers.get(key) ?? new ObjectUI3.ObjectPropertiesSection.ObjectTreeExpansionTracker();
+        this.#expansionTrackers.set(key, expansionTracker);
       }
-      const section6 = this.createScopeSectionTreeElement(scope);
+      const objectTree = new ObjectUI3.ObjectPropertiesSection.ObjectTree(scope.object(), {
+        propertiesMode: 0,
+        readOnly: false,
+        expansionTracker
+      });
+      void expansionTracker.apply(objectTree);
+      objectTree.addExtraProperties(...scope.extraProperties());
       if (scope.type() === "global") {
-        section6.collapse();
-      } else if (!foundLocalScope || scope.type() === "local") {
-        section6.expand();
+        objectTree.expanded = false;
       }
-      this.treeOutline.appendChild(section6);
-      if (i === 0) {
-        section6.select(
-          /* omitFocus */
-          true
-        );
+      this.#scopeChain.push({ scope, objectTree });
+    }
+    for (const { scope, objectTree } of this.#scopeChain) {
+      if (scope.type() !== "global") {
+        objectTree.expanded = true;
+      }
+      if (scope.type() === "local") {
+        break;
       }
     }
-    this.sidebarPaneUpdatedForTest();
+    this.requestUpdate();
+    void this.updateComplete.then(() => this.sidebarPaneUpdatedForTest());
   }
-  createScopeSectionTreeElement(scope) {
-    let emptyPlaceholder = null;
-    if (scope.type() === "local" || scope.type() === "closure") {
-      emptyPlaceholder = i18nString23(UIStrings24.noVariables);
-    }
-    let title = scope.typeName();
-    if (scope.type() === "closure") {
-      const scopeName = scope.name();
-      if (scopeName) {
-        title = i18nString23(UIStrings24.closureS, { PH1: UI24.UIUtils.beautifyFunctionName(scopeName) });
-      } else {
-        title = i18nString23(UIStrings24.closure);
-      }
-    }
-    let subtitle = scope.description();
-    if (!title || title === subtitle) {
-      subtitle = null;
-    }
-    const icon = scope.icon();
-    const titleElement = document.createElement("div");
-    titleElement.classList.add("scope-chain-sidebar-pane-section-header");
-    titleElement.classList.add("tree-element-title");
-    if (icon) {
-      const iconElement = document.createElement("img");
-      iconElement.classList.add("scope-chain-sidebar-pane-section-icon");
-      iconElement.src = icon;
-      titleElement.appendChild(iconElement);
-    }
-    titleElement.createChild("div", "scope-chain-sidebar-pane-section-subtitle").textContent = subtitle;
-    titleElement.createChild("div", "scope-chain-sidebar-pane-section-title").textContent = title;
-    const root = new ObjectUI3.ObjectPropertiesSection.ObjectTree(scope.object(), { propertiesMode: 0, readOnly: false });
-    root.addExtraProperties(...scope.extraProperties());
-    const section6 = new ObjectUI3.ObjectPropertiesSection.RootElement(root, this.linkifier, emptyPlaceholder);
-    section6.title = titleElement;
-    section6.listItemElement.classList.add("scope-chain-sidebar-pane-section");
-    section6.listItemElement.setAttribute("aria-label", title);
-    this.expandController.watchSection(title + (subtitle ? ":" + subtitle : ""), section6);
-    return section6;
-  }
+  /**
+   * @deprecated Hook for legacy web tests
+   */
   sidebarPaneUpdatedForTest() {
   }
 };
@@ -13601,7 +13646,7 @@ import * as Common18 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
 import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Bindings11 from "./../../models/bindings/bindings.js";
 import * as Persistence18 from "./../../models/persistence/persistence.js";
 import * as TextUtils13 from "./../../models/text_utils/text_utils.js";
@@ -13728,9 +13773,9 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   constructor() {
     super("navigator-network", true);
     this.registerRequiredCSS(sourcesNavigator_css_default);
-    SDK14.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
+    SDK13.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
     UI25.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
-    SDK14.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    SDK13.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
@@ -13740,7 +13785,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK14.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
+    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
   }
   onScopeChange() {
     for (const project of Workspace30.Workspace.WorkspaceImpl.instance().projects()) {
@@ -13752,7 +13797,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     }
   }
   inspectedURLChanged(event) {
-    const mainTarget = SDK14.TargetManager.TargetManager.instance().scopeTarget();
+    const mainTarget = SDK13.TargetManager.TargetManager.instance().scopeTarget();
     if (event.data !== mainTarget) {
       return;
     }
@@ -13767,7 +13812,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     }
   }
   uiSourceCodeAdded(uiSourceCode) {
-    const mainTarget = SDK14.TargetManager.TargetManager.instance().scopeTarget();
+    const mainTarget = SDK13.TargetManager.TargetManager.instance().scopeTarget();
     const inspectedURL = mainTarget?.inspectedURL();
     if (!inspectedURL) {
       return;
@@ -13995,7 +14040,7 @@ var ActionDelegate5 = class {
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 var WatchExpressionsSidebarPane_exports = {};
 __export(WatchExpressionsSidebarPane_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  DEFAULT_VIEW: () => DEFAULT_VIEW7,
   WatchExpression: () => WatchExpression,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
 });
@@ -14003,7 +14048,7 @@ import * as Common19 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform16 from "./../../core/platform/platform.js";
-import * as SDK15 from "./../../core/sdk/sdk.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as Formatter3 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes3 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace9 from "./../../models/stack_trace/stack_trace.js";
@@ -14122,7 +14167,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html12, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives5, html as html13, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -14333,7 +14378,7 @@ var str_26 = i18n51.i18n.registerUIStrings("panels/sources/WatchExpressionsSideb
 var i18nString25 = i18n51.i18n.getLocalizedString.bind(void 0, str_26);
 var watchExpressionsSidebarPaneInstance;
 var { repeat: repeat2 } = Directives5;
-var DEFAULT_VIEW6 = (input, output, target) => {
+var DEFAULT_VIEW7 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
     const contextMenu = new UI26.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.isEditing());
@@ -14359,17 +14404,17 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     watchExpression.treeElement().listItemElement.oncontextmenu = onContextMenu.bind(void 0, watchExpression);
     watchExpression.treeElement().childrenListElement.oncontextmenu = onContextMenu.bind(void 0, watchExpression);
   }
-  render8(
+  render9(
     // clang-format off
-    html12`
-      ${input.watchExpressions.length === 0 ? html12`<div class=gray-info-message tabindex=-1 >
+    html13`
+      ${input.watchExpressions.length === 0 ? html13`<div class=gray-info-message tabindex=-1 >
         ${i18nString25(UIStrings26.noWatchExpressions)}
-        </div>` : html12`<devtools-tree hide-overflow show-selection-on-keyboard-focus .template=${html12`
+        </div>` : html13`<devtools-tree hide-overflow show-selection-on-keyboard-focus .template=${html13`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI4.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI4.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${watchExpressionsSidebarPane_css_default}</style>
-          ${repeat2(input.watchExpressions, (e) => html12`<devtools-tree-wrapper .treeElement=${e.treeElement()}></devtools-tree-wrapper>`)}
+          ${repeat2(input.watchExpressions, (e) => html13`<devtools-tree-wrapper .treeElement=${e.treeElement()}></devtools-tree-wrapper>`)}
         </ul>`}>
       </devtools-tree>`}`,
     // clang-format on
@@ -14397,10 +14442,10 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
     this.#watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
-    UI26.Context.Context.instance().addFlavorChangeListener(SDK15.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
+    UI26.Context.Context.instance().addFlavorChangeListener(SDK14.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
     UI26.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
     this.linkifier = new Components4.Linkifier.Linkifier();
-    this.#view = DEFAULT_VIEW6;
+    this.#view = DEFAULT_VIEW7;
     this.#refreshExpressions();
   }
   static instance() {
@@ -14413,7 +14458,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     return this.#watchExpressions;
   }
   toolbarItems() {
-    return html12`
+    return html13`
       <devtools-button .data=${{
       variant: "toolbar",
       iconName: "plus",
@@ -14617,7 +14662,7 @@ var WatchExpression = class _WatchExpression extends Common19.ObjectWrapper.Obje
     );
   }
   update() {
-    const currentExecutionContext = UI26.Context.Context.instance().flavor(SDK15.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI26.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
     if (currentExecutionContext && this.#expression) {
       this.#updateComplete = this.#evaluateExpression(currentExecutionContext, this.#expression).then(async (result) => {
         if ("object" in result) {

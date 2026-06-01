@@ -74,6 +74,25 @@ export class FrameImpl {
         this.rawName = rawName;
     }
 }
+/**
+ * Converts the internal recursive `EvalOrigin` trie representation into the public-facing
+ * linear `ParsedErrorStackFrameImpl` representation.
+ *
+ * NOTE: The V8 Error#stack format only allows serializing a single location descriptor
+ * per nested eval origin level (e.g. `eval at functionName (location)`). Therefore, the
+ * public-facing API only surfaces the top-most logical frame (`evalOrigin.frames[0]`) at each
+ * eval level. Any other inlined caller frames at that specific level are technically dropped
+ * in the public API, but they are fully preserved in the internal trie representation for
+ * debugging, navigation, and ignore list correlation.
+ */
+function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameInfo) {
+    if (!evalOrigin || evalOrigin.frames.length === 0) {
+        return undefined;
+    }
+    const frame = evalOrigin.frames[0];
+    const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin.evalOrigin, parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
+    return new ParsedErrorStackFrameImpl(frame, parsedFrameInfo?.evalOrigin?.parsedFrameInfo, nestedOrigin);
+}
 export class ParsedErrorStackFragmentImpl {
     fragment;
     constructor(fragment) {
@@ -85,8 +104,9 @@ export class ParsedErrorStackFragmentImpl {
         }
         const frames = [];
         for (const node of this.fragment.node.getCallStack()) {
+            const evalOrigin = createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo);
             for (const frame of node.frames) {
-                frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, node.evalOriginFrames));
+                frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, evalOrigin));
             }
         }
         return frames;
@@ -95,11 +115,11 @@ export class ParsedErrorStackFragmentImpl {
 export class ParsedErrorStackFrameImpl {
     #frame;
     #parsedFrameInfo;
-    #evalOriginFrames;
-    constructor(frame, parsedFrameInfo, evalOriginFrames) {
+    #evalOrigin;
+    constructor(frame, parsedFrameInfo, evalOrigin) {
         this.#frame = frame;
         this.#parsedFrameInfo = parsedFrameInfo;
-        this.#evalOriginFrames = evalOriginFrames;
+        this.#evalOrigin = evalOrigin;
     }
     get url() {
         return this.#frame.url;
@@ -132,10 +152,7 @@ export class ParsedErrorStackFrameImpl {
         return this.#parsedFrameInfo?.isEval;
     }
     get evalOrigin() {
-        if (!this.#evalOriginFrames || this.#evalOriginFrames.length === 0) {
-            return undefined;
-        }
-        return new ParsedErrorStackFrameImpl(this.#evalOriginFrames[0], this.#parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
+        return this.#evalOrigin;
     }
     get isWasm() {
         return this.#parsedFrameInfo?.isWasm;

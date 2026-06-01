@@ -9,6 +9,14 @@ export function isBuiltinFrame(rawFrame) {
     return rawFrame.lineNumber === -1 && rawFrame.columnNumber === -1 && !Boolean(rawFrame.scriptId) &&
         !Boolean(rawFrame.url);
 }
+export class EvalOrigin {
+    frames;
+    evalOrigin;
+    constructor(frames, evalOrigin) {
+        this.frames = frames;
+        this.evalOrigin = evalOrigin;
+    }
+}
 export class FrameNode {
     parent;
     children = [];
@@ -16,7 +24,20 @@ export class FrameNode {
     frames = [];
     fragment;
     parsedFrameInfo;
-    evalOriginFrames;
+    #evalOrigin;
+    evalOriginFrames; // Deprecated: Temporary compatibility fallback to keep StackTraceModel compiling
+    get evalOrigin() {
+        if (this.#evalOrigin) {
+            return this.#evalOrigin;
+        }
+        if (this.evalOriginFrames && this.evalOriginFrames.length > 0) {
+            return new EvalOrigin(this.evalOriginFrames);
+        }
+        return undefined;
+    }
+    set evalOrigin(value) {
+        this.#evalOrigin = value;
+    }
     constructor(rawFrame, parent) {
         this.rawFrame = rawFrame;
         this.parent = parent;

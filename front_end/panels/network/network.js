@@ -6003,7 +6003,6 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   position: absolute;
   min-width: 1px;
   inset: 0 attr(data-right %) 0 attr(data-left %); /* stylelint-disable-line declaration-property-value-no-unknown */
-  background-color: attr(data-background <color>); /* stylelint-disable-line declaration-property-value-no-unknown */
 }
 
 .network-timing-bar-title {
@@ -6142,9 +6141,8 @@ td.throttled {
   background: var(--sys-color-surface1);
 }
 
-.network-timing-bar.server-timing,
-.-theme-preserve {
-  background-color: var(--sys-color-neutral-container);
+.network-timing-bar.server-timing {
+  background-color: attr(data-background type(<color>), var(--sys-color-neutral-container)); /* stylelint-disable-line declaration-property-value-no-unknown */
 }
 
 tr.synthetic {

@@ -45,7 +45,7 @@ export declare class ParsedErrorStackFragmentImpl implements StackTrace.StackTra
 }
 export declare class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.ParsedErrorStackFrame {
     #private;
-    constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOriginFrames?: FrameImpl[]);
+    constructor(frame: FrameImpl, parsedFrameInfo?: ParsedFrameInfo, evalOrigin?: ParsedErrorStackFrameImpl);
     get url(): string | undefined;
     get uiSourceCode(): Workspace.UISourceCode.UISourceCode | undefined;
     get name(): string | undefined;

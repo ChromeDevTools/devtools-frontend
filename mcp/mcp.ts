@@ -14,7 +14,7 @@ import '../front_end/models/workspace/workspace-meta.js';
  * example.
  */
 export * as Common from '../front_end/core/common/common.js';
-export {installInspectorFrontendHost} from '../front_end/core/host/InspectorFrontendHost.js';
+export * as Host from '../front_end/core/host/host.js';
 export * as I18n from '../front_end/core/i18n/i18n.js';
 export type * as CDPConnection from '../front_end/core/protocol_client/CDPConnection.js';
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';

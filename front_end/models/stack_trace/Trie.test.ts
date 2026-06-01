@@ -129,7 +129,7 @@ describe('Trie', () => {
     });
   });
 
-  describe('FrameNode.evalOrigin with backward compatibility fallback', () => {
+  describe('FrameNode.evalOrigin', () => {
     const {FrameNode, EvalOrigin} = StackTraceImpl.Trie;
     const {FrameImpl} = StackTraceImpl.StackTraceImpl;
 
@@ -139,23 +139,6 @@ describe('Trie', () => {
       node.evalOrigin = origin;
 
       assert.strictEqual(node.evalOrigin, origin);
-    });
-
-    it('correctly constructs and returns EvalOrigin dynamically from evalOriginFrames fallback', () => {
-      const node = new FrameNode(protocolCallFrame('foo.js:1:foo:1:10'), {parent: null, children: []});
-      const fallbackFrame = new FrameImpl('fallback.js', undefined, 'fallbackFn', 8, 8);
-      node.evalOriginFrames = [fallbackFrame];
-
-      assert.exists(node.evalOrigin);
-      assert.lengthOf(node.evalOrigin!.frames, 1);
-      assert.strictEqual(node.evalOrigin!.frames[0], fallbackFrame);
-      assert.isUndefined(node.evalOrigin!.evalOrigin);
-    });
-
-    it('returns undefined if neither evalOrigin nor evalOriginFrames is set', () => {
-      const node = new FrameNode(protocolCallFrame('foo.js:1:foo:1:10'), {parent: null, children: []});
-
-      assert.isUndefined(node.evalOrigin);
     });
   });
 });

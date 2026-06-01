@@ -18,7 +18,7 @@ import {
   ParsedErrorStackFragmentImpl,
   StackTraceImpl
 } from './StackTraceImpl.js';
-import {type FrameNode, type RawFrame, Trie} from './Trie.js';
+import {EvalOrigin, type FrameNode, type RawFrame, Trie} from './Trie.js';
 
 /**
  * A stack trace translation function.
@@ -135,7 +135,6 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
       stackTraceOrPausedEvent: Protocol.Runtime.StackTrace|SDK.DebuggerModel.DebuggerPausedDetails,
       rawFramesToUIFrames: TranslateRawFrames): Promise<AsyncFragmentImpl[]> {
     const asyncFragments: Array<Promise<AsyncFragmentImpl>> = [];
-
     const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
     if (debuggerModel) {
       for await (
@@ -185,15 +184,16 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
     console.assert(rawFrames.length === uiFrames.length, 'Broken rawFramesToUIFrames implementation');
 
-    const evalOriginPromises: Array<ReturnType<TranslateRawFrames>> = [];
+    const evalOriginPromises: Array<Promise<EvalOrigin|undefined>> = [];
     for (const node of fragment.node.getCallStack()) {
       if (node.parsedFrameInfo?.evalOrigin) {
         // Evaluate each eval origin individually, as they are not a contiguous stack trace.
-        evalOriginPromises.push(rawFramesToUIFrames([node.parsedFrameInfo.evalOrigin], this.target()));
+        evalOriginPromises.push(
+            translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target()));
       }
     }
 
-    const evalUiFrames = await Promise.all(evalOriginPromises);
+    const evalOrigins = await Promise.all(evalOriginPromises);
 
     let i = 0;
     let evalI = 0;
@@ -204,12 +204,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
               node.rawFrame.functionName));
 
       if (node.parsedFrameInfo?.evalOrigin) {
-        const evalOriginRawFrame = node.parsedFrameInfo.evalOrigin;
-        // evalUiFrames[evalI] is Array<Array<Frame>>, and since we passed a 1-element array, we take [0]
-        node.evalOriginFrames = evalUiFrames[evalI++][0].map(
-            frame => new FrameImpl(
-                frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo,
-                evalOriginRawFrame.functionName));
+        node.evalOrigin = evalOrigins[evalI++];
       }
     }
   }
@@ -239,6 +234,23 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     }
     return fragments;
   }
+}
+
+async function translateEvalOrigin(
+    rawFrame: RawFrame, rawFramesToUIFrames: TranslateRawFrames,
+    target: SDK.Target.Target): Promise<EvalOrigin|undefined> {
+  const uiFrames = await rawFramesToUIFrames([rawFrame], target);
+  const frames = uiFrames[0].map(
+      frame => new FrameImpl(
+          frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo,
+          rawFrame.functionName));
+
+  let parentEvalOrigin: EvalOrigin|undefined;
+  if (rawFrame.parsedFrameInfo?.evalOrigin) {
+    parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
+  }
+
+  return new EvalOrigin(frames, parentEvalOrigin);
 }
 
 SDK.SDKModel.SDKModel.register(StackTraceModel, {capabilities: SDK.Target.Capability.NONE, autostart: false});

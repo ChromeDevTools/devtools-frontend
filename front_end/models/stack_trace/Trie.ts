@@ -68,22 +68,7 @@ export class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
 
   fragment?: FragmentImpl;
   parsedFrameInfo?: ParsedFrameInfo;
-  #evalOrigin?: EvalOrigin;
-  evalOriginFrames?: FrameImpl[];  // Deprecated: Temporary compatibility fallback to keep StackTraceModel compiling
-
-  get evalOrigin(): EvalOrigin|undefined {
-    if (this.#evalOrigin) {
-      return this.#evalOrigin;
-    }
-    if (this.evalOriginFrames && this.evalOriginFrames.length > 0) {
-      return new EvalOrigin(this.evalOriginFrames);
-    }
-    return undefined;
-  }
-
-  set evalOrigin(value: EvalOrigin|undefined) {
-    this.#evalOrigin = value;
-  }
+  evalOrigin?: EvalOrigin;
 
   constructor(rawFrame: RawFrame, parent: AnyFrameNode) {
     this.rawFrame = rawFrame;

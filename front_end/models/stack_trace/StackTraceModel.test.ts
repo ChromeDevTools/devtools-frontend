@@ -616,5 +616,68 @@ describe('StackTraceModel', () => {
       // the remaining inlined frames ('outerEval' at 'foo.js:10:5') are technically dropped in the public API!
       // This is a known limitation of having evalOrigin as a single frame rather than an array.
     });
+
+    it('correctly translates complex recursive nested evalOrigin frames', async () => {
+      const {model} = setup();
+
+      const translateFn: StackTraceImpl.StackTraceModel.TranslateRawFrames = (frames, _target) => {
+        // Expand baseCaller into 2 frames to simulate inlining.
+        return Promise.resolve(frames.map(f => {
+          if (f.functionName === 'baseCaller') {
+            return [
+              {url: 'inlined_base.js', name: 'inlinedBaseFn', line: 12, column: 12},
+              {url: f.url, name: f.functionName, line: f.lineNumber, column: f.columnNumber},
+            ];
+          }
+          if (f.functionName === 'intermediate1') {
+            return [{url: 'inter1.js', name: 'inter1Fn', line: 20, column: 20}];
+          }
+          if (f.functionName === 'intermediate2') {
+            return [{url: 'inter2.js', name: 'inter2Fn', line: 30, column: 30}];
+          }
+          return [{
+            url: f.url,
+            name: f.functionName,
+            line: f.lineNumber,
+            column: f.columnNumber,
+          }];
+        }));
+      };
+
+      const stackTrace = await model.createFromErrorStackLikeString(
+          `Error: foo
+              at end (eval at intermediate2 (eval at intermediate1 (eval at baseCaller (foo.js:10:5))), <anonymous>:1:1)`,
+          translateFn);
+
+      assert.exists(stackTrace);
+      const {frames} = stackTrace.syncFragment;
+      assert.lengthOf(frames, 1);
+      assert.strictEqual(frames[0].url, '<anonymous>');
+      assert.strictEqual(frames[0].line, 0);
+
+      // Level 1: intermediate2
+      const origin1 = frames[0].evalOrigin;
+      assert.exists(origin1);
+      assert.strictEqual(origin1?.url, 'inter2.js');
+      assert.strictEqual(origin1?.name, 'inter2Fn');
+      assert.strictEqual(origin1?.line, 30);
+
+      // Level 2: intermediate1
+      const origin2 = origin1?.evalOrigin;
+      assert.exists(origin2);
+      assert.strictEqual(origin2?.url, 'inter1.js');
+      assert.strictEqual(origin2?.name, 'inter1Fn');
+      assert.strictEqual(origin2?.line, 20);
+
+      // Level 3: baseCaller
+      const origin3 = origin2?.evalOrigin;
+      assert.exists(origin3);
+      assert.strictEqual(origin3?.url, 'inlined_base.js');
+      assert.strictEqual(origin3?.name, 'inlinedBaseFn');
+      assert.strictEqual(origin3?.line, 12);
+
+      // Level 4 (Outermost): undefined
+      assert.isUndefined(origin3?.evalOrigin);
+    });
   });
 });

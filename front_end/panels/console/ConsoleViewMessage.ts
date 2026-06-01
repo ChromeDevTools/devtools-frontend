@@ -512,16 +512,17 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       }
     } else {
       const messageText = this.message.messageText;
-      const fragment = this.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
-        const linkElement = url === request.url() ?
-            Components.Linkifier.Linkifier.linkifyRevealable(
-                (request), url, request.url(), undefined, undefined, 'network-request') :
-            Components.Linkifier.Linkifier.linkifyURL(
-                url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
-        linkElement.tabIndex = -1;
-        this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
-        return linkElement;
-      });
+      const fragment =
+          ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
+            const linkElement = url === request.url() ?
+                Components.Linkifier.Linkifier.linkifyRevealable(
+                    (request), url, request.url(), undefined, undefined, 'network-request') :
+                Components.Linkifier.Linkifier.linkifyURL(
+                    url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
+            linkElement.tabIndex = -1;
+            this.selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
+            return linkElement;
+          });
       appendOrShow(messageElement, fragment);
     }
     return messageElement;
@@ -1939,7 +1940,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return formattedResult;
   }
 
-  private linkifyWithCustomLinkifier(
+  static linkifyWithCustomLinkifier(
       string: string,
       linkifier: (arg0: string, arg1: Platform.DevToolsPath.UrlString, arg2?: number, arg3?: number) => Node):
       DocumentFragment|UI.Widget.Widget {
@@ -1987,7 +1988,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   private linkifyStringAsFragment(string: string): DocumentFragment|UI.Widget.Widget {
-    return this.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
+    return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const options = {text, lineNumber, columnNumber};
       const linkElement =
           Components.Linkifier.Linkifier.linkifyURL(url, (options as Components.Linkifier.LinkifyURLOptions));

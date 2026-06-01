@@ -192,6 +192,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
     Common.Settings.Settings.instance()
         .moduleSetting('enable-ignore-listing')
         .addChangeListener(this.requestUpdate.bind(this));
+    this.requestUpdate();
   }
 
   #getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {

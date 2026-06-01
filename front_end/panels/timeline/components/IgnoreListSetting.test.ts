@@ -24,7 +24,6 @@ describeWithEnvironment('Ignore List Setting', () => {
   async function renderIgnoreListSetting(): Promise<HTMLElement> {
     const component = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
     renderElementIntoDOM(component);
-    component.requestUpdate();
     await component.updateComplete;
     return component.element;
   }

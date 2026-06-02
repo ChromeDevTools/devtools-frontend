@@ -2,7 +2,7 @@ Name: Marked
 Short Name: marked
 URL: https://github.com/markedjs/marked
 Version: 18.0.4
-Revision: N/A
+Revision: 0a2cd54cbe91911890e4460ae4fd7b9966e05654
 Update Mechanism: Manual
 License: BSD-3-Clause, MIT
 License File: LICENSE

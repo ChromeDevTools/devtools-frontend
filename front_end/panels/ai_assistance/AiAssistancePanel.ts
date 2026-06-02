@@ -186,6 +186,10 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForNoContextBranded: 'Ask Gemini',
   /**
+   * @description Placeholder text for the chat UI input when AIAgent2 is enabled.
+   */
+  inputPlaceholderForV2: 'Ask a question (AIAgent2 enabled)',
+  /**
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStyling:
@@ -1361,6 +1365,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #getChatInputPlaceholder(): Platform.UIString.LocalizedString {
     if (!this.#conversation) {
       return i18nString(UIStrings.followTheSteps);
+    }
+
+    if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
+      return lockedString(UIStringsNotTranslate.inputPlaceholderForV2);
     }
 
     if (this.#conversation && this.#conversation.isBlockedByOrigin) {

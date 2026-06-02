@@ -29,16 +29,18 @@ export interface Content {
   role: Role;
 }
 
+export interface FunctionResponsePart {
+  functionResponse: {
+    name: string,
+    response: Record<string, unknown>,
+  };
+}
+
 export type Part = {
   text: string,
 }|{
   functionCall: AidaFunctionCall,
-}|{
-  functionResponse: {
-    name: string,
-    response: Record<string, unknown>,
-  },
-}|{
+}|FunctionResponsePart|{
   /** Inline media bytes. */
   inlineData: MediaBlob,
 };

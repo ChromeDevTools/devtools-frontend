@@ -13,6 +13,7 @@ import type * as NetworkTimeCalculator from '../network_time_calculator/network_
 
 import {AccessibilityAgent, AccessibilityContext} from './agents/AccessibilityAgent.js';
 import {
+  type AgentOptions,
   type AiAgent,
   type AllowedOriginResult,
   type ContextDetail,
@@ -29,6 +30,7 @@ import {NetworkAgent, RequestContext} from './agents/NetworkAgent.js';
 import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {StorageAgent, StorageContext} from './agents/StorageAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
+import {AiAgent2} from './AiAgent2.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import type {ChangeManager} from './ChangeManager.js';
 
@@ -356,35 +358,27 @@ export class AiConversation {
       allowedOrigin: this.allowedOrigin,
       history,
     };
+
+    this.#agent = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) :
+                                                                              this.#createV1Agent(type, options);
+  }
+
+  #createV1Agent(type: ConversationType, options: AgentOptions): AiAgent<unknown> {
     switch (type) {
-      case ConversationType.STYLING: {
-        this.#agent = new StylingAgent(options);
-        break;
-      }
-      case ConversationType.NETWORK: {
-        this.#agent = new NetworkAgent(options);
-        break;
-      }
-      case ConversationType.FILE: {
-        this.#agent = new FileAgent(options);
-        break;
-      }
-      case ConversationType.PERFORMANCE: {
-        this.#agent = new PerformanceAgent(options);
-        break;
-      }
-      case ConversationType.ACCESSIBILITY: {
-        this.#agent = new AccessibilityAgent(options);
-        break;
-      }
-      case ConversationType.STORAGE: {
-        this.#agent = new StorageAgent(options);
-        break;
-      }
-      case ConversationType.NONE: {
-        this.#agent = new ContextSelectionAgent(options);
-        break;
-      }
+      case ConversationType.STYLING:
+        return new StylingAgent(options);
+      case ConversationType.NETWORK:
+        return new NetworkAgent(options);
+      case ConversationType.FILE:
+        return new FileAgent(options);
+      case ConversationType.PERFORMANCE:
+        return new PerformanceAgent(options);
+      case ConversationType.ACCESSIBILITY:
+        return new AccessibilityAgent(options);
+      case ConversationType.STORAGE:
+        return new StorageAgent(options);
+      case ConversationType.NONE:
+        return new ContextSelectionAgent(options);
       default:
         Platform.assertNever(type, 'Unknown conversation type');
     }

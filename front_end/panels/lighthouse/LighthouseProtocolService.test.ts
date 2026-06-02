@@ -46,7 +46,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
 
   it('suspends all targets', async () => {
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
-    await service.attach();
+    await service.attach(urlString`https://example.com/page`);
     sinon.assert.calledOnce(suspendAllTargets);
   });
 
@@ -55,7 +55,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
     setMockConnectionResponseHandler('Target.attachToTarget', attachedToTargetStub);
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
 
-    await service.attach();
+    await service.attach(urlString`https://example.com/page`);
 
     sinon.assert.calledOnceWithExactly(
         attachedToTargetStub, {targetId: rootTarget.targetInfo()?.targetId, flatten: true});
@@ -63,7 +63,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
 
   it('resumes all targets', async () => {
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
-    await service.attach();
+    await service.attach(urlString`https://example.com/page`);
     await service.detach();
     sinon.assert.calledOnce(resumeAllTargets);
   });
@@ -79,7 +79,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
       setMockConnectionResponseHandler(
           'Target.attachToTarget', () => ({sessionId: 'mock-session-id' as Protocol.Target.SessionID}));
       const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
-      await service.attach();
+      await service.attach(urlString`https://example.com/page`);
 
       // Start a request. It will wait for the worker to be ready.
       const requestPromise = service.startTimespan({
@@ -115,7 +115,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
   it('auto-accepts same-origin dialogs and blocks cross-origin dialogs', async () => {
     sinon.stub(primaryTarget, 'inspectedURL').returns(urlString`https://example.com/page`);
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
-    await service.attach();
+    await service.attach(urlString`https://example.com/page`);
 
     const resourceTreeModel = primaryTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);

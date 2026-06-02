@@ -86,7 +86,9 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
    */
   readonly #pendingRequests = new Map<number, (reason: Error) => void>();
 
-  async attach(): Promise<void> {
+  async attach(inspectedURL: Platform.DevToolsPath.UrlString): Promise<void> {
+    const parsedInitialOrigin = Common.ParsedURL.ParsedURL.extractOrigin(inspectedURL);
+
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -130,8 +132,6 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
     // To ensure the teardown operations can proceed, we need a dialog handler which lasts until
     // the LighthouseProtocolService detaches.
 
-    const initialInspectedUrl = mainTarget.inspectedURL();
-    const parsedInitialOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initialInspectedUrl);
     const dialogHandler =
         (event: Common.EventTarget.EventTargetEvent<Protocol.Page.JavascriptDialogOpeningEvent>): void => {
           const parsedEventOrigin =
@@ -139,7 +139,7 @@ export class ProtocolService implements ProtocolClient.CDPConnection.CDPConnecti
           if (!parsedInitialOrigin || parsedEventOrigin !== parsedInitialOrigin) {
             // See http://crbug.com/513728809.
             console.warn(`Lighthouse auto-accept for dialog on ${
-                event.data.url} blocked as it was not from the original audit origin ${initialInspectedUrl}.`);
+                event.data.url} blocked as it was not from the original audit origin ${inspectedURL}.`);
             return;
           }
 

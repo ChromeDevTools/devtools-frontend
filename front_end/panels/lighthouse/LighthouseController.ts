@@ -310,7 +310,7 @@ class LighthouseRun {
       }
     }
 
-    await this.protocolService.attach();
+    await this.protocolService.attach(this.inspectedURL);
   }
 
   private async restoreEmulationAndProtocolConnection(): Promise<void> {

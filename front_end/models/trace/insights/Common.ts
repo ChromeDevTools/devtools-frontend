@@ -417,6 +417,15 @@ export function calculateDocFirstByteTs(docRequest: Types.Events.SyntheticNetwor
     return docRequest.ts;
   }
 
+  // @ts-expect-error
+  const isLightrider = globalThis.isLightrider;
+  if (isLightrider) {
+    const lrServerResponseTime = docRequest.args.data.lrServerResponseTime;
+    if (lrServerResponseTime !== undefined) {
+      return Types.Timing.Micro(docRequest.ts + Helpers.Timing.milliToMicro(lrServerResponseTime));
+    }
+  }
+
   const timing = docRequest.args.data.timing;
   if (!timing) {
     // Older traces do not have timings.

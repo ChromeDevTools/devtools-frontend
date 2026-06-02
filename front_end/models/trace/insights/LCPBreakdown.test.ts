@@ -5,8 +5,15 @@
 import {assert} from 'chai';
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
+import {
+  createContextForNavigation,
+  getFirstOrError,
+  getInsightOrError,
+  processTrace,
+} from '../../../testing/InsightHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Helpers from '../helpers/helpers.js';
+import * as Trace from '../trace.js';
 import * as Types from '../types/types.js';
 
 describeWithEnvironment('LCPBreakdown', function() {
@@ -76,6 +83,54 @@ describeWithEnvironment('LCPBreakdown', function() {
       renderDelay: Helpers.Timing.microToMilli(insight.subparts.renderDelay?.range).toFixed(2),
     };
     assert.deepEqual(subparts, {ttfb: '61.47', loadTime: '0.19', loadDelay: '47.74', renderDelay: '9.28'});
+  });
+
+  describe('Lightrider', () => {
+    before(() => {
+      // @ts-expect-error
+      globalThis.isLightrider = true;
+    });
+
+    after(() => {
+      // @ts-expect-error
+      delete globalThis.isLightrider;
+    });
+
+    it('calculates lcp breakdown', async function() {
+      const traceEvents = [...await TraceLoader.rawEvents(this, 'lantern/paul/trace.json.gz')];
+      const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+
+      const mainRequestEventIndex = traceEvents.findIndex(e => e.name === 'ResourceReceiveResponse');
+      const mainRequestEvent = structuredClone(traceEvents[mainRequestEventIndex]);
+      assert(Types.Events.isResourceReceiveResponse(mainRequestEvent));
+      assert.strictEqual(mainRequestEvent.args.data.requestId, '1000C0FDC0A75327167272FC7438E999');
+
+      delete mainRequestEvent.args.data.timing;
+      mainRequestEvent.args.data.headers = [
+        {name: 'X-ResponseMs', value: '1234'},
+      ];
+
+      traceEvents[mainRequestEventIndex] = mainRequestEvent;
+
+      await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
+      const data = processor.data;
+      if (!data) {
+        throw new Error('missing data');
+      }
+
+      const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+      const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
+      const insight = Trace.Insights.Models.LCPBreakdown.generateInsight(data, context);
+
+      if (!insight.subparts) {
+        throw new Error('No LCP subparts');
+      }
+
+      const subparts = {
+        ttfb: Helpers.Timing.microToMilli(insight.subparts.ttfb?.range).toFixed(2),
+      };
+      assert.deepEqual(subparts, {ttfb: '1234.81'});
+    });
   });
 
   describe('warnings', function() {

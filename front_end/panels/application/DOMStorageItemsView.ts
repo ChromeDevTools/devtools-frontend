@@ -190,13 +190,18 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     const origin = parsedKey.origin;
     const storageType = this.domStorage.isLocalStorage ? 'localStorage' : 'sessionStorage';
 
-    if (!item) {
-      const storageItem = new AiAssistanceModel.StorageItem.StorageItem({origin, storageKey});
-      UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin =
+        target?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : '';
+
+    if (!mainPageOrigin) {
+      // If we don't have a primary target origin, we shouldn't allow the AI assistance context to be attached.
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
 
-    const storageItem = new AiAssistanceModel.StorageItem.StorageItem({origin, storageKey, storageType, key: item.key});
+    const storageItem = new AiAssistanceModel.StorageItem.DOMStorageItem(
+        mainPageOrigin, origin, storageKey, storageType, item ? item.key : undefined);
     UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
 

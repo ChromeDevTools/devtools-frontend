@@ -2,35 +2,33 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-interface StorageItemOriginOnly {
-  origin: string;
-  storageKey?: string;
-  storageType?: never;
-  key?: never;
-}
-
-interface StorageItemWithKey {
-  origin: string;
-  storageKey?: string;
-  storageType: 'cookie'|'localStorage'|'sessionStorage';
-  key: string;
-}
-
-export type StorageItemData = StorageItemOriginOnly|StorageItemWithKey;
-
-// The StorageItem is used as context for the Ai Assistance.
-// If the user selects a row in e.g. the cookies table, the storageType and key
-// will be populated.
 export class StorageItem {
-  readonly origin: string;
-  readonly storageKey?: string;
-  readonly storageType?: 'cookie'|'localStorage'|'sessionStorage';
-  readonly key?: string;
+  constructor(
+      /**
+       * The origin of the top-level primary page target being inspected.
+       * Used to restrict AI agent tools from accessing unauthorized pages.
+       */
+      readonly primaryTargetOrigin: string,
+      /**
+       * The origin of the selected storage or cookie item (if any).
+       * If no item is selected, this is the same as primaryTargetOrigin.
+       */
+      readonly origin: string,
+  ) {
+  }
+}
 
-  constructor(data: StorageItemData) {
-    this.origin = data.origin;
-    this.storageKey = data.storageKey;
-    this.storageType = data.storageType;
-    this.key = data.key;
+export class DOMStorageItem extends StorageItem {
+  constructor(
+      primaryTargetOrigin: string,
+      origin: string,
+      /** The storage key partition identifier used by the browser storage engine. */
+      readonly storageKey: string,
+      /** The sub-category of DOM storage: 'localStorage' or 'sessionStorage'. */
+      readonly type: string,
+      /** The optional specific key of the selected item in this storage partition. */
+      readonly key?: string,
+  ) {
+    super(primaryTargetOrigin, origin);
   }
 }

@@ -59,7 +59,7 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
     return DOMStorage.storageId(this.#storageKey, this.#isLocalStorage);
   }
 
-  get storageKey(): string|null {
+  get storageKey(): string {
     return this.#storageKey;
   }
 

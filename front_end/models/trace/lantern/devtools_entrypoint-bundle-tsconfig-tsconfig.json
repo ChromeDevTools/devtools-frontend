@@ -42,7 +42,19 @@
   ],
   "references": [
     {
-      "path": "./lantern-tsconfig.json"
+      "path": "core/bundle-tsconfig.json"
+    },
+    {
+      "path": "graph/bundle-tsconfig.json"
+    },
+    {
+      "path": "metrics/bundle-tsconfig.json"
+    },
+    {
+      "path": "simulation/bundle-tsconfig.json"
+    },
+    {
+      "path": "types/bundle-tsconfig.json"
     }
   ]
 }

@@ -57,6 +57,12 @@ export class ConversationContext {
         return;
     }
 }
+class CrossOriginError extends Error {
+    constructor() {
+        super('Cross-origin navigation detected');
+        this.name = 'CrossOriginError';
+    }
+}
 /**
  * AiAgent is a base class for implementing an interaction with AIDA
  * that involves one or more requests being sent to AIDA optionally
@@ -351,10 +357,6 @@ export class AiAgent {
                         ...options,
                         explanation: textResponse,
                     });
-                    if ('result' in result && result.result === 'BLOCKED_CROSS_ORIGIN') {
-                        yield this.#createErrorResponse("cross-origin" /* ErrorType.CROSS_ORIGIN */);
-                        break;
-                    }
                     if (options.signal?.aborted) {
                         yield this.#createErrorResponse("abort" /* ErrorType.ABORT */);
                         break;
@@ -378,6 +380,10 @@ export class AiAgent {
                     request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
                 }
                 catch (err) {
+                    if (err instanceof CrossOriginError) {
+                        yield this.#createErrorResponse("cross-origin" /* ErrorType.CROSS_ORIGIN */);
+                        break;
+                    }
                     debugLog('Error handling function call', err);
                     yield this.#createErrorResponse("unknown" /* ErrorType.UNKNOWN */);
                     break;
@@ -433,7 +439,16 @@ export class AiAgent {
                 };
             }
         }
+        const isOriginBlocked = () => {
+            const allowedOriginResult = this.#allowedOrigin?.();
+            return Boolean(allowedOriginResult && 'blocked' in allowedOriginResult);
+        };
         let result = await call.handler(args, options);
+        // Check 1: After first handler execution.
+        // Navigation could have occurred during the async handler execution.
+        if (isOriginBlocked()) {
+            throw new CrossOriginError();
+        }
         if ('requiresApproval' in result) {
             if (code) {
                 yield {
@@ -473,16 +488,19 @@ export class AiAgent {
             // Re-check allowed origin after the approval await to prevent a TOCTOU (Time-of-Check
             // to Time-of-Use) race condition where the page might have navigated cross-origin
             // while the user was confirming the action.
-            const allowedOriginResult = this.#allowedOrigin?.();
-            if (allowedOriginResult && 'blocked' in allowedOriginResult) {
-                return {
-                    result: 'BLOCKED_CROSS_ORIGIN',
-                };
+            // Check 2: After waiting for user approval.
+            if (isOriginBlocked()) {
+                throw new CrossOriginError();
             }
             result = await call.handler(args, {
                 ...options,
                 approved: true,
             });
+            // Check 3: After second handler execution (approved run).
+            // Navigation could have occurred during the async execution of the approved action.
+            if (isOriginBlocked()) {
+                throw new CrossOriginError();
+            }
         }
         if ('result' in result) {
             yield {

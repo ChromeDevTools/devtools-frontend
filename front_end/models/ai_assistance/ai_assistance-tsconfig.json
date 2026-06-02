@@ -36,6 +36,7 @@
   },
   "files": [
     "../../../../../../front_end/models/ai_assistance/AgentProject.ts",
+    "../../../../../../front_end/models/ai_assistance/AiAgent2.ts",
     "../../../../../../front_end/models/ai_assistance/AiConversation.ts",
     "../../../../../../front_end/models/ai_assistance/AiHistoryStorage.ts",
     "../../../../../../front_end/models/ai_assistance/AiUtils.ts",
@@ -70,6 +71,8 @@
     "../../../../../../front_end/models/ai_assistance/performance/AICallTree.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIContext.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIQueries.ts",
+    "../../../../../../front_end/models/ai_assistance/skills/Skill.ts",
+    "../../../../../../front_end/models/ai_assistance/skills/SkillRegistry.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"

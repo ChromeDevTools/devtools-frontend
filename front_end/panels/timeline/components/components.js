@@ -2583,6 +2583,7 @@ var IgnoreListSetting = class _IgnoreListSetting extends UI7.Widget.Widget {
     this.element.classList.remove("vbox", "flex-auto");
     Common3.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern").addChangeListener(this.requestUpdate.bind(this));
     Common3.Settings.Settings.instance().moduleSetting("enable-ignore-listing").addChangeListener(this.requestUpdate.bind(this));
+    this.requestUpdate();
   }
   #getSkipStackFramesPatternSetting() {
     return Common3.Settings.Settings.instance().moduleSetting("skip-stack-frames-pattern");

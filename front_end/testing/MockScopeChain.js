@@ -1,6 +1,7 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import { assert } from 'chai';
 import { assertNotNullOrUndefined } from '../core/platform/platform.js';
 import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import * as SDK from '../core/sdk/sdk.js';

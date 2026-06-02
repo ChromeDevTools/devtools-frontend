@@ -2082,7 +2082,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       }
     } else {
       const messageText = this.message.messageText;
-      const fragment = this.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
+      const fragment = _ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
         const linkElement = url === request.url() ? Components.Linkifier.Linkifier.linkifyRevealable(request, url, request.url(), void 0, void 0, "network-request") : Components.Linkifier.Linkifier.linkifyURL(url, { text, lineNumber, columnNumber });
         linkElement.tabIndex = -1;
         this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
@@ -3280,7 +3280,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     return formattedResult;
   }
-  linkifyWithCustomLinkifier(string, linkifier) {
+  static linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > getMaxTokenizableStringLength()) {
       const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue();
       propertyValue.text = string;
@@ -3324,7 +3324,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return container;
   }
   linkifyStringAsFragment(string) {
-    return this.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
+    return _ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const options = { text, lineNumber, columnNumber };
       const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
       linkElement.tabIndex = -1;

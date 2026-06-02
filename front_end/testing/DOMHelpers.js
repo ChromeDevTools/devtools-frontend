@@ -1,6 +1,13 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/**
+ * These helpers are designed to be used when testing components or other code that renders into the DOM.
+ * By using these helpers we ensure the DOM is correctly cleaned between test runs.
+ *
+ * Note that `resetTestDOM` is automatically run before each test (see `test_setup.ts`).
+ **/
+import { assert } from 'chai';
 import * as Buttons from '../ui/components/buttons/buttons.js';
 import * as UI from '../ui/legacy/legacy.js';
 import { checkForPendingActivity } from './TrackAsyncOperations.js';

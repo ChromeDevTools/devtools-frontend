@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -129,7 +130,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private expandInlineStackFrames;
     private createScriptLocationLinkForSyntaxError;
     private tryFormatAsError;
-    private linkifyWithCustomLinkifier;
+    static linkifyWithCustomLinkifier(string: string, linkifier: (arg0: string, arg1: Platform.DevToolsPath.UrlString, arg2?: number, arg3?: number) => Node): DocumentFragment | UI.Widget.Widget;
     private linkifyStringAsFragment;
     private static tokenizeMessageText;
     groupKey(): string;

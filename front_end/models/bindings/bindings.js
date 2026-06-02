@@ -444,21 +444,7 @@ var FrameNode = class {
   frames = [];
   fragment;
   parsedFrameInfo;
-  #evalOrigin;
-  evalOriginFrames;
-  // Deprecated: Temporary compatibility fallback to keep StackTraceModel compiling
-  get evalOrigin() {
-    if (this.#evalOrigin) {
-      return this.#evalOrigin;
-    }
-    if (this.evalOriginFrames && this.evalOriginFrames.length > 0) {
-      return new EvalOrigin(this.evalOriginFrames);
-    }
-    return void 0;
-  }
-  set evalOrigin(value) {
-    this.#evalOrigin = value;
-  }
+  evalOrigin;
   constructor(rawFrame, parent) {
     this.rawFrame = rawFrame;
     this.parent = parent;
@@ -673,17 +659,16 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     const evalOriginPromises = [];
     for (const node of fragment.node.getCallStack()) {
       if (node.parsedFrameInfo?.evalOrigin) {
-        evalOriginPromises.push(rawFramesToUIFrames([node.parsedFrameInfo.evalOrigin], this.target()));
+        evalOriginPromises.push(translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target()));
       }
     }
-    const evalUiFrames = await Promise.all(evalOriginPromises);
+    const evalOrigins = await Promise.all(evalOriginPromises);
     let i = 0;
     let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
       node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
       if (node.parsedFrameInfo?.evalOrigin) {
-        const evalOriginRawFrame = node.parsedFrameInfo.evalOrigin;
-        node.evalOriginFrames = evalUiFrames[evalI++][0].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, evalOriginRawFrame.functionName));
+        node.evalOrigin = evalOrigins[evalI++];
       }
     }
   }
@@ -709,6 +694,15 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
   }
 };
 _a = StackTraceModel;
+async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
+  const uiFrames = await rawFramesToUIFrames([rawFrame], target);
+  const frames = uiFrames[0].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName));
+  let parentEvalOrigin;
+  if (rawFrame.parsedFrameInfo?.evalOrigin) {
+    parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
+  }
+  return new EvalOrigin(frames, parentEvalOrigin);
+}
 SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0, autostart: false });
 
 // gen/front_end/models/bindings/CompilerScriptMapping.js

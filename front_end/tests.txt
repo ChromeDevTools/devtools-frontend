@@ -154,6 +154,7 @@ entrypoints/main/MainImpl.test.js
 entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
 models/ai_assistance/AgentProject.test.js
+models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
 models/ai_assistance/AiUtils.test.js

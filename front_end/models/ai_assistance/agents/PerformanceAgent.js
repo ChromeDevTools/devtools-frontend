@@ -1202,7 +1202,18 @@ export class PerformanceAgent extends AiAgent {
                 const result = this.#formatter.formatFunctionCode(code);
                 const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
                 this.#cacheFunctionResult(focus, key, result);
-                return { result: { result } };
+                return {
+                    result: { result },
+                    widgets: [{
+                            name: 'SOURCE_CODE',
+                            data: {
+                                url: args.scriptUrl,
+                                line: args.line,
+                                column: args.column,
+                                code: code.code,
+                            },
+                        }],
+                };
             },
         });
         const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
@@ -1253,7 +1264,16 @@ export class PerformanceAgent extends AiAgent {
                 }
                 const key = `getResourceContent(${args.url})`;
                 this.#cacheFunctionResult(focus, key, content);
-                return { result: { content } };
+                return {
+                    result: { content },
+                    widgets: [{
+                            name: 'SOURCE_CODE',
+                            data: {
+                                url: args.url,
+                                code: content,
+                            },
+                        }],
+                };
             },
         });
         if (!context.external) {

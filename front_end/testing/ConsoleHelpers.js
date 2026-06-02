@@ -1,3 +1,7 @@
+// Copyright 2023 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+import { assert } from 'chai';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Console from '../panels/console/console.js';

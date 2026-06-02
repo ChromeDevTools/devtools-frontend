@@ -1297,6 +1297,12 @@ var ConversationContext = class {
     return;
   }
 };
+var CrossOriginError = class extends Error {
+  constructor() {
+    super("Cross-origin navigation detected");
+    this.name = "CrossOriginError";
+  }
+};
 var AiAgent = class {
   #sessionId;
   #aidaClient;
@@ -1569,13 +1575,6 @@ var AiAgent = class {
             ...options,
             explanation: textResponse
           });
-          if ("result" in result && result.result === "BLOCKED_CROSS_ORIGIN") {
-            yield this.#createErrorResponse(
-              "cross-origin"
-              /* ErrorType.CROSS_ORIGIN */
-            );
-            break;
-          }
           if (options.signal?.aborted) {
             yield this.#createErrorResponse(
               "abort"
@@ -1601,6 +1600,13 @@ var AiAgent = class {
           };
           request = this.buildRequest(query, Host2.AidaClient.Role.ROLE_UNSPECIFIED);
         } catch (err) {
+          if (err instanceof CrossOriginError) {
+            yield this.#createErrorResponse(
+              "cross-origin"
+              /* ErrorType.CROSS_ORIGIN */
+            );
+            break;
+          }
           debugLog("Error handling function call", err);
           yield this.#createErrorResponse(
             "unknown"
@@ -1661,7 +1667,14 @@ var AiAgent = class {
         };
       }
     }
+    const isOriginBlocked = () => {
+      const allowedOriginResult = this.#allowedOrigin?.();
+      return Boolean(allowedOriginResult && "blocked" in allowedOriginResult);
+    };
     let result = await call.handler(args, options);
+    if (isOriginBlocked()) {
+      throw new CrossOriginError();
+    }
     if ("requiresApproval" in result) {
       if (code) {
         yield {
@@ -1697,16 +1710,16 @@ var AiAgent = class {
           result: "Error: User denied code execution with side effects."
         };
       }
-      const allowedOriginResult = this.#allowedOrigin?.();
-      if (allowedOriginResult && "blocked" in allowedOriginResult) {
-        return {
-          result: "BLOCKED_CROSS_ORIGIN"
-        };
+      if (isOriginBlocked()) {
+        throw new CrossOriginError();
       }
       result = await call.handler(args, {
         ...options,
         approved: true
       });
+      if (isOriginBlocked()) {
+        throw new CrossOriginError();
+      }
     }
     if ("result" in result) {
       yield {
@@ -6869,7 +6882,18 @@ ${result}`,
         const result = this.#formatter.formatFunctionCode(code);
         const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
         this.#cacheFunctionResult(focus, key, result);
-        return { result: { result } };
+        return {
+          result: { result },
+          widgets: [{
+            name: "SOURCE_CODE",
+            data: {
+              url: args.scriptUrl,
+              line: args.line,
+              column: args.column,
+              code: code.code
+            }
+          }]
+        };
       }
     });
     const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
@@ -6914,7 +6938,16 @@ ${result}`,
         }
         const key = `getResourceContent(${args.url})`;
         this.#cacheFunctionResult(focus, key, content);
-        return { result: { content } };
+        return {
+          result: { content },
+          widgets: [{
+            name: "SOURCE_CODE",
+            data: {
+              url: args.url,
+              code: content
+            }
+          }]
+        };
       }
     });
     if (!context.external) {
@@ -9773,6 +9806,75 @@ ${query}`;
   }
 };
 
+// gen/front_end/models/ai_assistance/AiAgent2.js
+var AiAgent2_exports = {};
+__export(AiAgent2_exports, {
+  AiAgent2: () => AiAgent2
+});
+import * as Host15 from "./../../core/host/host.js";
+
+// gen/front_end/models/ai_assistance/skills/styling.skill.js
+var skill = {
+  "name": "styling",
+  "description": "Helping with CSS and styling",
+  "allowedTools": [],
+  "instructions": "You are a CSS expert helping the user style elements."
+};
+
+// gen/front_end/models/ai_assistance/skills/SkillRegistry.js
+var SKILLS = {
+  styling: skill
+};
+
+// gen/front_end/models/ai_assistance/AiAgent2.js
+var AiAgent2 = class extends AiAgent {
+  preamble = "You are a unified AI assistant in Chrome DevTools. You can learn skills to help the user.";
+  clientFeature = Host15.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  // Placeholder
+  userTier = "TESTERS";
+  get options() {
+    return {};
+  }
+  #activeSkills = /* @__PURE__ */ new Set();
+  async *handleContextDetails(_select) {
+    yield {
+      type: "context",
+      details: [{
+        title: "Status",
+        text: "Minimal agent initialized."
+      }]
+    };
+  }
+  async learnSkill(names) {
+    let response = "";
+    for (const name of names) {
+      debugLog(`AiAgent2: Attempting to load skill ${name}`);
+      if (this.#activeSkills.has(name)) {
+        debugLog(`AiAgent2: Skill ${name} is already loaded`);
+        response += `Skill ${name} is already loaded.
+`;
+        continue;
+      }
+      const skillObj = SKILLS[name];
+      if (skillObj) {
+        this.#activeSkills.add(name);
+        debugLog(`AiAgent2: Skill ${name} loaded successfully`);
+        response += `Skill ${name} loaded. Instructions:
+${skillObj.instructions}
+`;
+      } else {
+        debugLog(`AiAgent2: Failed to load skill ${name}`);
+        response += `Failed to load skill ${name}.
+`;
+      }
+    }
+    return response.trim();
+  }
+  get activeSkills() {
+    return this.#activeSkills;
+  }
+};
+
 // gen/front_end/models/ai_assistance/AiConversation.js
 var AiConversation_exports = {};
 __export(AiConversation_exports, {
@@ -9783,7 +9885,7 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as Host15 from "./../../core/host/host.js";
+import * as Host16 from "./../../core/host/host.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root15 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
@@ -9989,7 +10091,7 @@ var AiConversation = class _AiConversation {
   #onInspectElement;
   #networkTimeCalculator;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host15.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host16.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -10368,7 +10470,7 @@ __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
 import * as Common11 from "./../../core/common/common.js";
-import * as Host16 from "./../../core/host/host.js";
+import * as Host17 from "./../../core/host/host.js";
 import * as Root16 from "./../../core/root/root.js";
 var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi extends Common11.ObjectWrapper.ObjectWrapper {
@@ -10549,31 +10651,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -10582,31 +10684,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host16.userMetrics.builtInAiAvailability(
+          Host17.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -10640,6 +10742,7 @@ export {
   AccessibilityAgent_exports as AccessibilityAgent,
   AgentProject_exports as AgentProject,
   AiAgent_exports as AiAgent,
+  AiAgent2_exports as AiAgent2,
   AiConversation_exports as AiConversation,
   AiHistoryStorage_exports as AiHistoryStorage,
   AiUtils_exports as AiUtils,

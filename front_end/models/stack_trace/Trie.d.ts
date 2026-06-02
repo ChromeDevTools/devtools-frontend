@@ -40,16 +40,13 @@ interface FrameNodeBase<ChildT, ParentT> {
 type RootFrameNode = FrameNodeBase<WeakRef<FrameNode>, null>;
 type AnyFrameNode = FrameNode | RootFrameNode;
 export declare class FrameNode implements FrameNodeBase<FrameNode, AnyFrameNode> {
-    #private;
     readonly parent: AnyFrameNode;
     readonly children: FrameNode[];
     readonly rawFrame: RawFrame;
     frames: FrameImpl[];
     fragment?: FragmentImpl;
     parsedFrameInfo?: ParsedFrameInfo;
-    evalOriginFrames?: FrameImpl[];
-    get evalOrigin(): EvalOrigin | undefined;
-    set evalOrigin(value: EvalOrigin | undefined);
+    evalOrigin?: EvalOrigin;
     constructor(rawFrame: RawFrame, parent: AnyFrameNode);
     /**
      * Produces the ancestor chain. Including `this` but excluding the `RootFrameNode`.

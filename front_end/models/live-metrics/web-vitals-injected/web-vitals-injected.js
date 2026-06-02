@@ -77,7 +77,7 @@ window[Spec.INTERNAL_KILL_SWITCH] = () => {
 };
 function sendEventToDevTools(event) {
     const payload = JSON.stringify(event);
-    window[Spec.EVENT_BINDING_NAME](payload);
+    window[Spec.EVENT_BINDING_NAME]?.(payload);
 }
 /**
  * The data sent over the event binding needs to be JSON serializable, so we

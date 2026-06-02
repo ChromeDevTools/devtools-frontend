@@ -119,6 +119,7 @@ export declare class NetworkRequestNode extends NetworkNode {
     static readonly RequestHeaderStringComparator: (propertyName: string, a: NetworkNode, b: NetworkNode) => number;
     static ResponseHeaderNumberComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
     static ResponseHeaderDateComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
+    static OverrideTypesComparator(a: NetworkNode, b: NetworkNode): number;
     showingInitiatorChainChanged(): void;
     private setIsOnInitiatorPath;
     isOnInitiatorPath(): boolean;

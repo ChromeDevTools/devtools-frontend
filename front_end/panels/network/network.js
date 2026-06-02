@@ -2848,6 +2848,19 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
     return aValue > bValue ? 1 : -1;
   }
+  static OverrideTypesComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      if (!aRequest && !bRequest) {
+        return 0;
+      }
+      return !aRequest ? -1 : 1;
+    }
+    const aValue = aRequest.overrideTypes.join(", ");
+    const bValue = bRequest.overrideTypes.join(", ");
+    return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
+  }
   showingInitiatorChainChanged() {
     const showInitiatorChain = this.showingInitiatorChain();
     const initiatorGraph = Logs2.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.requestInternal);
@@ -10456,9 +10469,9 @@ var DEFAULT_COLUMNS = [
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, "etag")
   },
   {
-    id: "response-header-has-overrides",
+    id: "has-overrides",
     title: i18nLazyString3(UIStrings21.hasOverrides),
-    sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, "has-overrides")
+    sortingFunction: NetworkRequestNode.OverrideTypesComparator
   },
   {
     id: "response-header-keep-alive",

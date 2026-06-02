@@ -1270,6 +1270,16 @@ var BottomUpRootNode = class extends Node {
     const totalTimeById = /* @__PURE__ */ new Map();
     const eventGroupIdCallback = this.eventGroupIdCallback;
     const forceGroupIdCallback = this.forceGroupIdCallback;
+    const idToIsCacheHit = /* @__PURE__ */ new Map();
+    for (const e of this.events) {
+      if (Types7.Events.isReceivedDataEvent(e) && e.name === "ResourceReceiveResponse") {
+        let id = generateEventID(e);
+        if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
+          id = `${id}-${this.eventGroupIdCallback(e)}`;
+        }
+        idToIsCacheHit.set(id, e.args.data.fromCache || false);
+      }
+    }
     const sumTransferSizeOfInstantEvent = (e) => {
       if (Types7.Events.isReceivedDataEvent(e)) {
         let id = generateEventID(e);
@@ -1284,7 +1294,13 @@ var BottomUpRootNode = class extends Node {
           node.events.push(e);
         }
         if (e.name === "ResourceReceivedData") {
-          node.transferSize += e.args.data.encodedDataLength;
+          if (idToIsCacheHit.get(id)) {
+            node.transferSize = 0;
+          } else {
+            node.transferSize += e.args.data.encodedDataLength;
+          }
+        } else if (e.name === "ResourceFinish" && e.args.data.encodedDataLength === 0 && idToIsCacheHit.get(id)) {
+          node.transferSize = 0;
         } else if (e.args.data.encodedDataLength > 0) {
           node.transferSize = e.args.data.encodedDataLength;
         }

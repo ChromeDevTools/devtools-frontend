@@ -1,9 +1,3 @@
-/**
- * These helpers are designed to be used when testing components or other code that renders into the DOM.
- * By using these helpers we ensure the DOM is correctly cleaned between test runs.
- *
- * Note that `resetTestDOM` is automatically run before each test (see `test_setup.ts`).
- **/
 import type * as Platform from '../core/platform/platform.js';
 import type * as NodeText from '../ui/components/node_text/node_text.js';
 import * as UI from '../ui/legacy/legacy.js';

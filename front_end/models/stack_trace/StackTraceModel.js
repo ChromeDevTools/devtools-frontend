@@ -8,7 +8,7 @@ import { augmentRawFramesWithScriptIds, parseRawFramesFromErrorStack } from './D
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
 import { AsyncFragmentImpl, DebuggableFragmentImpl, FragmentImpl, FrameImpl, ParsedErrorStackFragmentImpl, StackTraceImpl } from './StackTraceImpl.js';
-import { Trie } from './Trie.js';
+import { EvalOrigin, Trie } from './Trie.js';
 /**
  * The {@link StackTraceModel} is a thin wrapper around a fragment trie.
  *
@@ -135,18 +135,16 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         for (const node of fragment.node.getCallStack()) {
             if (node.parsedFrameInfo?.evalOrigin) {
                 // Evaluate each eval origin individually, as they are not a contiguous stack trace.
-                evalOriginPromises.push(rawFramesToUIFrames([node.parsedFrameInfo.evalOrigin], this.target()));
+                evalOriginPromises.push(translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target()));
             }
         }
-        const evalUiFrames = await Promise.all(evalOriginPromises);
+        const evalOrigins = await Promise.all(evalOriginPromises);
         let i = 0;
         let evalI = 0;
         for (const node of fragment.node.getCallStack()) {
             node.frames = uiFrames[i++].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
             if (node.parsedFrameInfo?.evalOrigin) {
-                const evalOriginRawFrame = node.parsedFrameInfo.evalOrigin;
-                // evalUiFrames[evalI] is Array<Array<Frame>>, and since we passed a 1-element array, we take [0]
-                node.evalOriginFrames = evalUiFrames[evalI++][0].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, evalOriginRawFrame.functionName));
+                node.evalOrigin = evalOrigins[evalI++];
             }
         }
     }
@@ -176,5 +174,14 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
     }
 }
 _a = StackTraceModel;
+async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
+    const uiFrames = await rawFramesToUIFrames([rawFrame], target);
+    const frames = uiFrames[0].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName));
+    let parentEvalOrigin;
+    if (rawFrame.parsedFrameInfo?.evalOrigin) {
+        parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
+    }
+    return new EvalOrigin(frames, parentEvalOrigin);
+}
 SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0 /* SDK.Target.Capability.NONE */, autostart: false });
 //# sourceMappingURL=StackTraceModel.js.map

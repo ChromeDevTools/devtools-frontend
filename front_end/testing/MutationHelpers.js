@@ -1,6 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import { assert } from 'chai';
 export const TEXT_NODE = 'TEXT_NODE';
 const nodeShouldBeIgnored = (node) => {
     const isCommentNode = node.nodeType === Node.COMMENT_NODE;

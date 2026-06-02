@@ -1,6 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import { assert } from 'chai';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';

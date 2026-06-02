@@ -185,9 +185,20 @@ export class RemoteObjectPreviewFormatter {
         }
     }
     renderPropertyPreview(type, subtype, className, description) {
-        const title = type === 'accessor' ? i18nString(UIStrings.thePropertyIsComputedWithAGetter) :
-            (type === 'object' && !subtype) ? description :
-                undefined;
+        let title;
+        switch (type) {
+            case 'accessor':
+                title = i18nString(UIStrings.thePropertyIsComputedWithAGetter);
+                break;
+            case 'string':
+                title = description;
+                break;
+            case 'object':
+                if (!subtype) {
+                    title = description;
+                }
+                break;
+        }
         const abbreviateFullQualifiedClassName = (description) => {
             const abbreviatedDescription = description.split('.');
             for (let i = 0; i < abbreviatedDescription.length - 1; ++i) {
@@ -239,6 +250,6 @@ export function renderNodeTitle(nodeTitle) {
     return html `<span class=webkit-html-tag-name>${match[1]}</span>${match[2] && html `<span class=webkit-html-attribute-value>${match[2]}</span>`}${match[3] && html `<span class=webkit-html-attribute-name>${match[3]}</span>`}`;
 }
 export function renderTrustedType(description, className) {
-    return html `${className} <span class=object-value-string>"${description.replace(/\n/g, '\u21B5')}"</span>`;
+    return html `${className} <span class=object-value-string title=${description}>"${description.replace(/\n/g, '\u21B5')}"</span>`;
 }
 //# sourceMappingURL=RemoteObjectPreviewFormatter.js.map

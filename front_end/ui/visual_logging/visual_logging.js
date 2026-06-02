@@ -3764,6 +3764,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "some_id",
   "sort-by",
   "source-code",
+  "source-code-widget",
   "source-file",
   "source-file-widget",
   "source-line",

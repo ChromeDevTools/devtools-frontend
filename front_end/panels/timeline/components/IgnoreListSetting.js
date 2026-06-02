@@ -149,6 +149,7 @@ export class IgnoreListSetting extends UI.Widget.Widget {
         Common.Settings.Settings.instance()
             .moduleSetting('enable-ignore-listing')
             .addChangeListener(this.requestUpdate.bind(this));
+        this.requestUpdate();
     }
     #getSkipStackFramesPatternSetting() {
         return Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern');

@@ -10470,6 +10470,16 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
     const suspendPromises = Array.from(this.#targets.values(), (target) => target.suspend(reason));
     await Promise.all(suspendPromises);
   }
+  async #waitForPromiseWithTimeout(promise, timeoutMessage) {
+    const { promise: timeoutPromise, resolve: timeoutResolve } = Promise.withResolvers();
+    const timeoutId = globalThis.setTimeout(() => {
+      Common4.Console.Console.instance().warn(timeoutMessage);
+      timeoutResolve();
+    }, 2e3);
+    await Promise.race([promise, timeoutPromise]);
+    globalThis.clearTimeout(timeoutId);
+    timeoutResolve();
+  }
   async resumeAllTargets() {
     if (!this.#isSuspended) {
       return;
@@ -10479,7 +10489,9 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
       "SuspendStateChanged"
       /* Events.SUSPEND_STATE_CHANGED */
     );
-    const resumePromises = Array.from(this.#targets.values(), (target) => target.resume());
+    const resumePromises = Array.from(this.#targets.values(), async (target) => {
+      await this.#waitForPromiseWithTimeout(target.resume(), `Timeout waiting for target ${target.name()} to resume`);
+    });
     await Promise.all(resumePromises);
   }
   allTargetsSuspended() {

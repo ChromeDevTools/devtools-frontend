@@ -1108,7 +1108,7 @@
   };
   function sendEventToDevTools(event) {
       const payload = JSON.stringify(event);
-      window[EVENT_BINDING_NAME](payload);
+      window[EVENT_BINDING_NAME]?.(payload);
   }
   /**
    * The data sent over the event binding needs to be JSON serializable, so we

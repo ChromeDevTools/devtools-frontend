@@ -24,20 +24,7 @@ export class FrameNode {
     frames = [];
     fragment;
     parsedFrameInfo;
-    #evalOrigin;
-    evalOriginFrames; // Deprecated: Temporary compatibility fallback to keep StackTraceModel compiling
-    get evalOrigin() {
-        if (this.#evalOrigin) {
-            return this.#evalOrigin;
-        }
-        if (this.evalOriginFrames && this.evalOriginFrames.length > 0) {
-            return new EvalOrigin(this.evalOriginFrames);
-        }
-        return undefined;
-    }
-    set evalOrigin(value) {
-        this.#evalOrigin = value;
-    }
+    evalOrigin;
     constructor(rawFrame, parent) {
         this.rawFrame = rawFrame;
         this.parent = parent;

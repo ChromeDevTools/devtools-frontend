@@ -448,7 +448,7 @@ export class ConsoleViewMessage {
         }
         else {
             const messageText = this.message.messageText;
-            const fragment = this.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
+            const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
                 const linkElement = url === request.url() ?
                     Components.Linkifier.Linkifier.linkifyRevealable((request), url, request.url(), undefined, undefined, 'network-request') :
                     Components.Linkifier.Linkifier.linkifyURL(url, { text, lineNumber, columnNumber });
@@ -1695,7 +1695,7 @@ export class ConsoleViewMessage {
         }
         return formattedResult;
     }
-    linkifyWithCustomLinkifier(string, linkifier) {
+    static linkifyWithCustomLinkifier(string, linkifier) {
         if (string.length > getMaxTokenizableStringLength()) {
             const propertyValue = new ObjectUI.ObjectPropertiesSection.ExpandableTextPropertyValue();
             propertyValue.text = string;
@@ -1740,7 +1740,7 @@ export class ConsoleViewMessage {
         return container;
     }
     linkifyStringAsFragment(string) {
-        return this.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
+        return ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
             const options = { text, lineNumber, columnNumber };
             const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
             linkElement.tabIndex = -1;

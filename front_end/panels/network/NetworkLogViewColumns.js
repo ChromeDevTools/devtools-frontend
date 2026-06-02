@@ -964,9 +964,9 @@ const DEFAULT_COLUMNS = [
         sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'etag'),
     },
     {
-        id: 'response-header-has-overrides',
+        id: 'has-overrides',
         title: i18nLazyString(UIStrings.hasOverrides),
-        sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'has-overrides'),
+        sortingFunction: NetworkRequestNode.OverrideTypesComparator,
     },
     {
         id: 'response-header-keep-alive',

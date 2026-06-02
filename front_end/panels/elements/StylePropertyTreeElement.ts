@@ -2063,6 +2063,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   #gridNames: Set<string>|undefined = undefined;
   #tooltipKeyCounts = new Map<string, number>();
 
+  #lazyRender?: boolean;
+
   constructor(
       {stylesContainer, section, matchedStyles, property, isShorthand, inherited, overloaded, newProperty}:
           StylePropertyTreeElementParams,
@@ -2080,6 +2082,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.#parentSection = section;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
+    this.#lazyRender = stylesContainer.shouldRenderLazily();
     if (this.newProperty) {
       this.listItemElement.textContent = '';
     }
@@ -2088,6 +2091,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override onunbind(): void {
+    this.#stylesContainer.untrackForLazyRendering(this.listItemElement);
+    this.#lazyRender = false;
     this.property.removeEventListener(SDK.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
     super.onunbind();
   }
@@ -2371,7 +2376,31 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   override onattach(): void {
-    this.updateTitle();
+    if (this.#lazyRender) {
+      this.nameElement = Renderer.renderNameElement(this.name);
+      this.valueElement = Renderer.renderValueElement(this.property, null, []).valueElement;
+
+      // Add a placeholder to maintain alignment with eager rendering.
+      if (this.parent?.root || !this.property.parsedOk) {
+        const placeholder = document.createElement('span');
+        placeholder.classList.add('enabled-button');
+        this.listItemElement.appendChild(placeholder);
+      }
+
+      this.listItemElement.classList.toggle('inactive', !this.property.activeInStyle());
+      this.listItemElement.appendChild(this.nameElement);
+      const lineBreakValue = this.valueElement.firstElementChild?.tagName === 'BR';
+      this.listItemElement.createChild('span', 'styles-name-value-separator').textContent = lineBreakValue ? ':' : ': ';
+      this.listItemElement.appendChild(this.valueElement);
+      this.listItemElement.createChild('span', 'styles-semicolon').textContent = ';';
+
+      this.#stylesContainer.trackForLazyRendering(this.listItemElement, () => {
+        this.#lazyRender = false;
+        this.updateTitle();
+      });
+    } else {
+      this.updateTitle();
+    }
 
     this.listItemElement.addEventListener('mousedown', event => {
       if (event.button === 0) {

@@ -327,4 +327,14 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
   removeStyleUpdateListener(listener: () => void): void {
     this.removeEventListener(Events.STYLES_UPDATE_COMPLETED, listener);
   }
+
+  trackForLazyRendering(_element: Element, _callback: () => void): void {
+  }
+
+  shouldRenderLazily(): boolean {
+    return false;
+  }
+
+  untrackForLazyRendering(_element: Element): void {
+  }
 }

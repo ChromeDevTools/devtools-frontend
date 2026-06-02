@@ -13,8 +13,8 @@ import * as AiAssistance from '../ai_assistance.js';
 
 function mockConversationContext(): AiAssistance.AiAgent.ConversationContext<unknown> {
   return new (class extends AiAssistance.AiAgent.ConversationContext<unknown>{
-    override getOrigin(): string {
-      return 'origin';
+    override getURL(): string {
+      return 'https://origin.test';
     }
 
     override getItem(): unknown {
@@ -371,13 +371,13 @@ describeWithEnvironment('AiAgent', () => {
   });
 
   describe('ConversationContext', () => {
-    function getTestContext(origin: string) {
+    function getTestContext(url: string) {
       class TestContext extends AiAssistance.AiAgent.ConversationContext<undefined> {
         override getTitle(): string {
           throw new Error('Method not implemented.');
         }
-        override getOrigin(): string {
-          return origin;
+        override getURL(): string {
+          return url;
         }
         override getItem(): undefined {
           return undefined;
@@ -447,22 +447,22 @@ describeWithEnvironment('AiAgent', () => {
           establishedOrigin: 'detached',
           isAllowed: false,
         },
+        {
+          dataOrigin: 'trace-1-10',
+          establishedOrigin: 'trace-1-10',
+          isAllowed: true,
+        },
+        {
+          dataOrigin: 'trace-1-10',
+          establishedOrigin: 'trace-1-20',
+          isAllowed: false,
+        },
       ];
       for (const test of tests) {
         assert.strictEqual(
             getTestContext(test.dataOrigin).isOriginAllowed(test.establishedOrigin), test.isAllowed,
             `Checking origin ${test.dataOrigin} against ${test.establishedOrigin}`);
       }
-    });
-
-    it('identifies opaque origins', () => {
-      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('null'));
-      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('data:'));
-      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('about://'));
-      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('about:srcdoc'));
-      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('detached'));
-      assert.isTrue(AiAssistance.AiAgent.isOpaqueOrigin('detached:123'));
-      assert.isFalse(AiAssistance.AiAgent.isOpaqueOrigin('https://google.com'));
     });
   });
 

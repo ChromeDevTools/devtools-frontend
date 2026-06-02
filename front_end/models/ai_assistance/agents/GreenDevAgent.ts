@@ -101,7 +101,7 @@ export class GreenDevContext extends ConversationContext<string> {
     this.#context = context;
   }
 
-  getOrigin(): string {
+  override getURL(): string {
     return 'devtools://ai-assistance';
   }
 

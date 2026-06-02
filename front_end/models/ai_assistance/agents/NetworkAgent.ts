@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
@@ -111,13 +110,13 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
   }
 
   /**
-   * Note: this is not the literal origin of the network request. This origin
+   * Note: this is not the literal origin of the network request. This URL
    * is used to determine when we should force the user to start a new AI
    * conversation when the context changes. We allow a single AI conversation to
    * inspect all network requests that were made for that given target URL.
    */
-  override getOrigin(): string {
-    return Common.ParsedURL.ParsedURL.extractOrigin(this.#request.documentURL);
+  override getURL(): string {
+    return this.#request.documentURL;
   }
 
   override getItem(): SDK.NetworkRequest.NetworkRequest {

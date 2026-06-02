@@ -353,7 +353,7 @@ describeWithEnvironment('ChatInput', () => {
       getItem() {
         return 'test';
       }
-      getOrigin() {
+      override getURL() {
         return '';
       }
     }

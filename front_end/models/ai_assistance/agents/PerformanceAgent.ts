@@ -246,10 +246,11 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     this.#focus = focus;
   }
 
-  override getOrigin(): string {
+  override getURL(): string {
+    const url = this.#focus.parsedTrace.data.Meta.mainFrameURL;
     try {
-      const url = new URL(this.#focus.parsedTrace.data.Meta.mainFrameURL);
-      return url.origin;
+      new URL(url);
+      return url;
     } catch {
       const {min, max} = this.#focus.parsedTrace.data.Meta.traceBounds;
       return `trace-${min}-${max}`;

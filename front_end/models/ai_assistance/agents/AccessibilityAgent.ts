@@ -93,8 +93,8 @@ export class AccessibilityContext extends ConversationContext<LHModel.ReporterTy
     return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
   }
 
-  override getOrigin(): string {
-    return new URL(this.#url()).origin;
+  override getURL(): string {
+    return this.#url();
   }
 
   override getItem(): LHModel.ReporterTypes.ReportJSON {

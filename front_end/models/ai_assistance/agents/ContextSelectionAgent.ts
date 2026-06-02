@@ -12,6 +12,7 @@ import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
+import {isOpaqueOrigin} from '../AiOrigins.js';
 import {debugLog} from '../debug.js';
 
 import {AccessibilityContext} from './AccessibilityAgent.js';
@@ -20,7 +21,6 @@ import {
   AiAgent,
   type AllowedOriginResult,
   type ContextResponse,
-  isOpaqueOrigin,
   type RequestOptions,
 } from './AiAgent.js';
 import {FileContext} from './FileAgent.js';

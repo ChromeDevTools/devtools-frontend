@@ -75,7 +75,7 @@ export class StorageContext extends ConversationContext<StorageItem> {
     this.#item = item;
   }
 
-  override getOrigin(): string {
+  override getURL(): string {
     return this.#item.primaryTargetOrigin;
   }
 

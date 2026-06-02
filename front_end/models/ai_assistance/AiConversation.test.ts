@@ -586,7 +586,7 @@ describeWithEnvironment('AiConversation', () => {
     });
 
     class OpaqueContext extends AiAssistance.AiAgent.ConversationContext<unknown> {
-      override getOrigin(): string {
+      override getURL(): string {
         return 'null';
       }
       override getItem(): unknown {

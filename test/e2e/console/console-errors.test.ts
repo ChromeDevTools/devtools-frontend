@@ -135,4 +135,32 @@ performActions @ resource-errors.html:8
     at caller (error-with-cause.html:18:7)
     at error-with-cause.html:24:3`);
   });
+
+  it('renders caught SyntaxError inline with location fallback', async ({
+                                                                   devToolsPage,
+                                                                   inspectedPage,
+                                                                 }) => {
+    await navigateToConsoleTab(devToolsPage);
+    await inspectedPage.evaluate(() => {
+      try {
+        eval('function syntaxErrorDemo() { const class = 1; } \n//# sourceURL=http://example.com/buggy-script.js');
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    await waitForConsoleMessagesToBeNonEmpty(1, devToolsPage);
+    const messages = await getStructuredConsoleMessages(devToolsPage);
+    assert.lengthOf(messages, 1);
+    const firstMessage = messages[0];
+    assert.exists(firstMessage);
+    const message = firstMessage.message;
+    assert.exists(message);
+    const lines = message.split('\n');
+    assert.isAtLeast(lines.length, 2);
+    assert.strictEqual(lines[0], 'SyntaxError: Unexpected token \'class\' (at buggy-script.js:1:36)');
+    for (let i = 1; i < lines.length; i++) {
+      assert.notInclude(lines[i], '(at buggy-script.js:1:36)');
+    }
+  });
 });

@@ -200,6 +200,26 @@ describeWithMockConnection('StorageAgent', function() {
     assert.notInclude(output, 'A'.repeat(15000), 'Should not contain the full untruncated value');
   });
 
+  it('can list active page origins using listPageOrigins', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{name: 'listPageOrigins', args: {}}],
+        explanation: '',
+      }],
+      [{explanation: 'Here are the active origins.'}]
+    ]);
+
+    const agent = new AiAssistance.StorageAgent.StorageAgent({aidaClient});
+    const context = new AiAssistance.StorageAgent.StorageContext(new AiAssistance.StorageItem.DOMStorageItem(
+        'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage'));
+
+    const responses = await Array.fromAsync(agent.run('list origins', {selected: context}));
+
+    const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.exists(actionResponse, 'Expected an action response');
+    assert.strictEqual(actionResponse.code, 'listPageOrigins()');
+    assert.include(actionResponse.output, 'https://example.com');
+  });
   describe('resolveDOMStorages', () => {
     it('returns active matching DOM storage instances in the active tab', () => {
       const context = new AiAssistance.StorageAgent.StorageContext(new AiAssistance.StorageItem.DOMStorageItem(

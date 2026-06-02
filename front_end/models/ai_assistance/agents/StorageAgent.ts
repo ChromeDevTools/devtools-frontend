@@ -23,7 +23,7 @@ const lockedString = i18n.i18n.lockedString;
 const preamble =
     `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage and SessionStorage.
 
- You have access to the site's storage using tools like \`listStorageKeys\` and \`getStorageValues\`.
+ You have access to the site's storage using tools like \`listPageOrigins\`, \`listStorageKeys\`, and \`getStorageValues\`.
 
  # Goals
 
@@ -35,7 +35,8 @@ const preamble =
 
  -   **Prioritize Top-Level Context**: Always initiate your investigation from the top-level page's storage. Explicitly state if you are analyzing storage from a different context (e.g., an iframe).
  -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this key set?"), focus your response on that specific item.
- -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
+ -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
+ -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
  -   **Storage Partitioning (LocalStorage / SessionStorage)**:
      -   Use \`listStorageKeys\` to survey keys. The results are grouped into **partitions** characterized by unique \`storageKey\` strings.
      -   Be aware that the same origin can have multiple storage partitions depending on frame ancestry.
@@ -110,6 +111,43 @@ export class StorageAgent extends AiAgent<StorageItem> {
 
   constructor(opts: AgentOptions) {
     super(opts);
+
+    this.declareFunction<Record<string, never>, {origins: string[]}>('listPageOrigins', {
+      description:
+          'Lists all active, non-empty frame origins loaded by the page. Use this first to discover what other targets/iframes exist on the page for querying their storage.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {},
+        required: [],
+      },
+      displayInfoFromArgs: () => {
+        return {
+          title: lockedString('Listing page origins'),
+          action: 'listPageOrigins()',
+        };
+      },
+      handler: async () => {
+        if (!isSamePrimaryPageOrigin(this.context)) {
+          return {error: 'No origin available or not allowed.'};
+        }
+
+        const origins = new Set<string>();
+        for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames()) {
+          if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
+            continue;
+          }
+          const origin = frame.securityOrigin;
+          if (!origin || origins.has(origin)) {
+            continue;
+          }
+          origins.add(origin);
+        }
+
+        return {result: {origins: Array.from(origins)}};
+      },
+    });
 
     this.declareFunction<
         {

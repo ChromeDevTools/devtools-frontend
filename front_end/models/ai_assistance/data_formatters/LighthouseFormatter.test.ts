@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
-import type {ReportJSON} from '../../lighthouse/LighthouseReporterTypes.js';
+import type * as Lighthouse from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describe('LighthouseFormatter', function() {
@@ -40,7 +40,7 @@ describe('LighthouseFormatter', function() {
         score: 1,
       },
     },
-  } as unknown as ReportJSON;
+  } as unknown as Lighthouse.ReporterTypes.ReportJSON;
 
   it('generates a summary', function() {
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
@@ -107,7 +107,7 @@ describe('LighthouseFormatter', function() {
           },
         },
       },
-    } as unknown as ReportJSON;
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(tableReport, 'performance');
     snapshotTester.assert(this, output);
@@ -146,7 +146,7 @@ describe('LighthouseFormatter', function() {
           },
         },
       },
-    } as unknown as ReportJSON;
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(opportunityReport, 'performance');
     snapshotTester.assert(this, output);
@@ -183,7 +183,7 @@ describe('LighthouseFormatter', function() {
           },
         },
       },
-    } as unknown as ReportJSON;
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(summaryReport, 'performance');
     snapshotTester.assert(this, output);
@@ -243,7 +243,7 @@ describe('LighthouseFormatter', function() {
           },
         },
       },
-    } as unknown as ReportJSON;
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(reportWithLandmark, 'accessibility');
     snapshotTester.assert(this, output);
@@ -292,7 +292,7 @@ describe('LighthouseFormatter', function() {
           },
         },
       },
-    } as unknown as ReportJSON;
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(subItemsReport, 'performance');
     snapshotTester.assert(this, output);
@@ -422,7 +422,7 @@ describe('LighthouseFormatter', function() {
           },
         },
       },
-    } as unknown as ReportJSON;
+    } as unknown as Lighthouse.ReporterTypes.ReportJSON;
     const formatter = new AiAssistance.LighthouseFormatter.LighthouseFormatter();
     const output = formatter.audits(imageInsightReport, 'performance');
     snapshotTester.assert(this, output);

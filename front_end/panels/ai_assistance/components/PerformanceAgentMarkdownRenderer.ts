@@ -17,8 +17,7 @@ const {until} = Lit.Directives;
 
 export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
   constructor(
-      private mainFrameId = '',
-      private lookupEvent: (key: Trace.Types.File.SerializableKey) => Trace.Types.Events.Event | null = () => null) {
+      private mainFrameId = '', private lookupEvent: (key: string) => Trace.Types.Events.Event | null = () => null) {
     super();
   }
 
@@ -31,7 +30,7 @@ export class PerformanceAgentMarkdownRenderer extends MarkdownRendererWithCodeBl
             until(this.#linkifyNode(nodeId, token.text).then(node => node || token.text), token.text)}</span>`;
       }
 
-      const event = this.lookupEvent(token.href.slice(1) as Trace.Types.File.SerializableKey);
+      const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
         return html`${token.text}`;
       }

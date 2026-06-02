@@ -124,15 +124,14 @@ export class AgentFocus {
     return focus;
   }
 
-  lookupEvent(key: Trace.Types.File.SerializableKey): Trace.Types.Events.Event|null {
+  lookupEvent(key: string): Trace.Types.Events.Event|null {
     try {
-      return this.eventsSerializer.eventForKey(key, this.#data.parsedTrace);
-    } catch (err) {
-      if (err.toString().includes('Unknown trace event') || err.toString().includes('Unknown profile call')) {
-        return null;
-      }
-
-      throw err;
+      return this.eventsSerializer.eventForKey(key as Trace.Types.File.SerializableKey, this.#data.parsedTrace) ?? null;
+    } catch {
+      // We must silence all lookup and serialization errors here. Otherwise,
+      // any malformed link or invalid event key in the LLM response will throw
+      // an unhandled exception, breaking the panel's markdown rendering entirely.
+      return null;
     }
   }
 

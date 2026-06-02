@@ -611,7 +611,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return `[${linkText}](#${eventKey})`;
         }
 
-        const event = focus.lookupEvent(linkDest as Trace.Types.File.SerializableKey);
+        const event = focus.lookupEvent(linkDest);
         if (event) {
           return `[${linkText}](#${linkDest})`;
         }
@@ -1057,7 +1057,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       },
       handler: async params => {
         debugLog('Function call: getEventByKey', params);
-        const event = focus.lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
+        const event = focus.lookupEvent(params.eventKey);
         if (!event) {
           return {error: 'Invalid eventKey'};
         }
@@ -1247,7 +1247,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           throw new Error('missing formatter');
         }
 
-        const event = focus.lookupEvent(args.eventKey as Trace.Types.File.SerializableKey);
+        const event = focus.lookupEvent(args.eventKey);
         if (!event) {
           return {error: 'Invalid eventKey'};
         }
@@ -1517,7 +1517,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         },
         handler: async params => {
           debugLog('Function call: selectEventByKey', params);
-          const event = focus.lookupEvent(params.eventKey as Trace.Types.File.SerializableKey);
+          const event = focus.lookupEvent(params.eventKey);
           if (!event) {
             return {error: 'Invalid eventKey'};
           }
@@ -1627,7 +1627,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     let requestId = undefined;
     const focus = this.context?.getItem();
     if (focus) {
-      const event = focus.lookupEvent(eventKey as Trace.Types.File.SerializableKey);
+      const event = focus.lookupEvent(eventKey);
       if (event && Trace.Types.Events.isSyntheticNetworkRequest(event)) {
         requestId = event.args.data.requestId;
       }

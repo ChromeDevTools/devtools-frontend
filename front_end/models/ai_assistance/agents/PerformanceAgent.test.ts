@@ -26,7 +26,6 @@ import * as Logs from '../../logs/logs.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
-import type {SerializableKey} from '../../trace/types/File.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {
   AiAgent,
@@ -422,7 +421,7 @@ code
       const focus = context.getItem();
       assert.exists(focus);
       sinon.stub(focus, 'lookupEvent').callsFake(key => {
-        if (key === 'valid-event-key' as SerializableKey) {
+        if (key === 'valid-event-key') {
           return {} as Trace.Types.Events.Event;
         }
         return null;
@@ -1830,7 +1829,7 @@ code
       };
 
       sinon.stub(focus, 'lookupEvent').callsFake(key => {
-        if (key === 'valid-event-key' as SerializableKey) {
+        if (key === 'valid-event-key') {
           return mockNetworkEvent as unknown as Trace.Types.Events.Event;
         }
         return null;
@@ -1900,7 +1899,7 @@ code
       };
 
       sinon.stub(focus, 'lookupEvent').callsFake(key => {
-        if (key === 'valid-event-key' as SerializableKey) {
+        if (key === 'valid-event-key') {
           return mockResourceEvent as unknown as Trace.Types.Events.Event;
         }
         return null;

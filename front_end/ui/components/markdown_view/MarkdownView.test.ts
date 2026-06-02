@@ -303,6 +303,25 @@ describeWithEnvironment('MarkdownView', () => {
       result = renderer.detectCodeLanguage({text: '{\n"test": "test"\n}', lang: ''} as Marked.Marked.Tokens.Code);
       assert.strictEqual(result, '');
     });
+
+    it('gracefully catches errors thrown during token rendering and falls back to raw text', () => {
+      class TestRenderer extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
+        override templateForToken(): Lit.LitTemplate|null {
+          throw new Error('Mock rendering error');
+        }
+      }
+      const errorRenderer = new TestRenderer();
+
+      const consoleErrorStub = sinon.stub(console, 'error');
+      const token =
+          {type: 'link', text: 'learn more', href: 'https://example.test', raw: '[learn more](https://example.test)'} as
+          Marked.Marked.Token;
+
+      const result = errorRenderer.renderToken(token) as Lit.TemplateResult;
+
+      assert.strictEqual(result.values[0], '[learn more](https://example.test)');
+      sinon.assert.calledOnce(consoleErrorStub);
+    });
   });
 
   const paragraphText =

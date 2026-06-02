@@ -4,11 +4,13 @@
 
 import {assert, expect} from 'chai';
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
+import type * as Workspace from '../../../models/workspace/workspace.js';
 import {assertScreenshot, querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -346,6 +348,34 @@ describeWithEnvironment('ChatMessage', () => {
         } as AIAssistanceModel.AiAgent.AiWidget;
         assert.strictEqual(
             AiAssistance.ChatMessage.getWidgetSignature(widget), 'SOURCE_CODE:https://example.com/script.js:42:7');
+      });
+
+      it('should correctly handle SOURCE_FILE widget', () => {
+        const widget = {
+          name: 'SOURCE_FILE',
+          data: {
+            uiSourceCode: {
+              url: () => 'https://example.com/script.js',
+            },
+          },
+        } as unknown as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(
+            AiAssistance.ChatMessage.getWidgetSignature(widget), 'SOURCE_FILE:https://example.com/script.js');
+      });
+
+      it('should correctly handle SOURCE_FILES_LIST widget', () => {
+        const widget = {
+          name: 'SOURCE_FILES_LIST',
+          data: {
+            uiSourceCodes: [
+              {url: () => 'https://example.com/script1.js'},
+              {url: () => 'https://example.com/script2.js'},
+            ],
+          },
+        } as unknown as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(
+            AiAssistance.ChatMessage.getWidgetSignature(widget),
+            'SOURCE_FILES_LIST:https://example.com/script1.js,https://example.com/script2.js');
       });
     });
   });
@@ -1290,5 +1320,104 @@ describeWithEnvironment('ChatMessage', () => {
       const modelMessage = querySelectorErrorOnMissing(modelTarget, '.chat-message');
       assert.isTrue(modelMessage.classList.contains('is-first-message'));
     });
+
+    it('renders SOURCE_FILES_LIST widget with correct dynamic title', async () => {
+      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
+      function createMockFile(name: string) {
+        return {
+          name: () => name,
+          fullDisplayName: () => `example.com/path/to/${name}`,
+          url: () => `https://example.com/path/to/${name}`,
+        } as unknown as Workspace.UISourceCode.UISourceCode;
+      }
+
+      const uiSourceCodes = [createMockFile('file1.js'), createMockFile('file2.js')];
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'SOURCE_FILES_LIST',
+            data: {
+              uiSourceCodes,
+            },
+          }],
+        }],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      const widgetHeader = await waitFor('.widget-header', targetElement);
+      assert.isNotNull(widgetHeader);
+      assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'Inspected file names');
+
+      // Inspected list items (all 2 files should be visible)
+      const listItems = targetElement.querySelectorAll('.source-files-widget .visible-file');
+      assert.lengthOf(listItems, 2);
+
+      const fileNames = Array.from(listItems).map(item => item.textContent?.trim());
+      assert.deepEqual(fileNames, ['example.com/path/to/file1.js', 'example.com/path/to/file2.js']);
+
+      // No details element since there are <= 10 files. We show collapse files list only if there are over 10 of them
+      assert.isNull(targetElement.querySelector('.source-files-details'));
+    });
+
+    it('renders SOURCE_FILES_LIST widget with more than 10 files, limiting to 10 and using details element for the rest',
+       async () => {
+         updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
+         function createMockFile(name: string) {
+           return {
+             name: () => name,
+             fullDisplayName: () => `example.com/path/to/${name}`,
+             url: () => `https://example.com/path/to/${name}`,
+           } as unknown as Workspace.UISourceCode.UISourceCode;
+         }
+
+         const uiSourceCodes = Array.from({length: 12}, (_, i) => createMockFile(`file${i + 1}.js`));
+         const message: AiAssistance.ChatMessage.ModelChatMessage = {
+           entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+           parts: [{
+             type: 'widget',
+             widgets: [{
+               name: 'SOURCE_FILES_LIST',
+               data: {
+                 uiSourceCodes,
+               },
+             }],
+           }],
+           rpcId: 99,
+           id: '1',
+         };
+
+         const targetElement = renderView({message});
+         const widgetHeader = await waitFor('.widget-header', targetElement) as HTMLElement;
+         assert.isNotNull(widgetHeader);
+         assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'Inspected file names');
+
+         // Header reveal button click should reveal the first file
+         const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+         const revealBtn =
+             querySelectorErrorOnMissing(widgetHeader, 'devtools-button.widget-reveal-button') as HTMLElement;
+         revealBtn.click();
+         sinon.assert.calledWith(revealStub, uiSourceCodes[0]);
+         revealStub.restore();
+
+         // Outer list should contain 10 items directly, and 2 items nested inside details
+         const details = targetElement.querySelector('.source-files-details');
+         assert.isNotNull(details);
+
+         // Assert expand button has count within text
+         const summaryText = details?.querySelector('.show-more-summary')?.textContent?.trim();
+         assert.strictEqual(summaryText, 'Show all 12 files');
+
+         // Verify that there are exactly 10 visible files (with the class "visible-file").
+         const outerListItems = targetElement.querySelectorAll('.source-files-widget .visible-file');
+         assert.lengthOf(outerListItems, 10);
+
+         // Verify that the remaining 2 files are nested inside details and have the "collapsed-file" class.
+         const innerListItems = details?.querySelectorAll('.collapsed-file');
+         assert.lengthOf(innerListItems ?? [], 2);
+       });
   });
 });

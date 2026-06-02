@@ -322,6 +322,13 @@ export interface SourceFileAiWidget {
   };
 }
 
+export interface SourceFilesListAiWidget {
+  name: 'SOURCE_FILES_LIST';
+  data: {
+    uiSourceCodes: Workspace.UISourceCode.UISourceCode[],
+  };
+}
+
 export interface LighthouseReportAiWidget {
   name: 'LIGHTHOUSE_REPORT';
   data: {
@@ -356,9 +363,10 @@ export interface SourceCodeAiWidget {
   };
 }
 
-export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
-    PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|
-    LighthouseReportAiWidget|TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget|SourceCodeAiWidget;
+export type AiWidget =
+    ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|PerformanceTraceAiWidget|
+    PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|LighthouseReportAiWidget|
+    TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget|SourceCodeAiWidget|SourceFilesListAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

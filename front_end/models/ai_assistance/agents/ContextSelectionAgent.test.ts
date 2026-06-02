@@ -881,7 +881,22 @@ describeWithMockConnection('ContextSelectionAgent', function() {
         ]),
       });
 
-      await Array.fromAsync(agent.run('test', {selected: null}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const actionResponse = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(actionResponse);
+      assert.deepEqual(actionResponse, {
+        type: AiAgent.ResponseType.ACTION,
+        code: 'listSourceFiles()',
+        output: '[{"file":"script.js","id":1}]',
+        widgets: [{
+          name: 'SOURCE_FILES_LIST',
+          data: {
+            uiSourceCodes: [file],
+          },
+        }],
+        canceled: false,
+      });
 
       const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
       assert.isOk(requestToAida.historical_contexts);
@@ -932,7 +947,22 @@ describeWithMockConnection('ContextSelectionAgent', function() {
         allowedOrigin: () => ({origin: 'https://example.com'}),
       });
 
-      await Array.fromAsync(agent.run('test', {selected: null}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const actionResponse = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(actionResponse);
+      assert.deepEqual(actionResponse, {
+        type: AiAgent.ResponseType.ACTION,
+        code: 'listSourceFiles()',
+        output: '[{"file":"script.js","id":1}]',
+        widgets: [{
+          name: 'SOURCE_FILES_LIST',
+          data: {
+            uiSourceCodes: [file1],
+          },
+        }],
+        canceled: false,
+      });
 
       const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
       assert.isOk(requestToAida.historical_contexts);

@@ -15,7 +15,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type {
   AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LighthouseReportAiWidget,
   NetworkRequestGeneralHeadersAiWidget, PerfInsightAiWidget, PerformanceTraceAiWidget, SourceCodeAiWidget,
-  SourceFileAiWidget, StylePropertiesAiWidget, TimelineEventSummaryAiWidget,
+  SourceFileAiWidget, SourceFilesListAiWidget, StylePropertiesAiWidget, TimelineEventSummaryAiWidget,
   TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
@@ -414,6 +414,10 @@ const UIStringsNotTranslate = {
    * @description Title for the character set declaration widget.
    */
   characterSet: 'Character set declaration',
+  /**
+   * @description Title for the source files list widget.
+   */
+  inspectedFileNames: 'Inspected file names',
 } as const;
 
 export interface Step {
@@ -1411,6 +1415,57 @@ async function makeSourceCodeWidget(widgetData: SourceCodeAiWidget): Promise<Wid
   };
 }
 
+function renderFileRevealButton(
+    file: Workspace.UISourceCode.UISourceCode,
+    collapsed: boolean,
+    ): Lit.TemplateResult {
+  const onReveal = (): void => {
+    void Common.Revealer.reveal(file);
+  };
+  const accessibleLabel = i18n.i18n.lockedString(`Show ${file.fullDisplayName()}`);
+  const className = `widget-reveal-button ${collapsed ? 'collapsed-file' : 'visible-file'}`;
+  return html`
+    <devtools-button class=${className}
+      .variant=${Buttons.Button.Variant.TEXT}
+      .accessibleLabel=${accessibleLabel}
+      .jslogContext=${'reveal'}
+      @click=${onReveal}>
+      ${file.fullDisplayName()}
+      <devtools-icon name='tab-move'></devtools-icon>
+    </devtools-button>
+  `;
+}
+
+async function makeSourceFilesListWidget(widgetData: SourceFilesListAiWidget): Promise<WidgetMakerResponse|null> {
+  const files = widgetData.data.uiSourceCodes;
+  if (files.length === 0) {
+    return null;
+  }
+
+  // If there are more than 10 files, only show the first 10, and hide the rest unless "Show all" is clicked.
+  // clang-format off
+  const renderedWidget = html`
+    <div class="source-files-widget">
+      ${files.slice(0, 10).map(file => renderFileRevealButton(file, /* collapsed */ false))}
+      ${files.length > 10 ? html`
+        <details class="source-files-details">
+          <summary class="show-more-summary">${i18n.i18n.lockedString(`Show all ${files.length} files`)}</summary>
+          ${files.slice(10).map(file => renderFileRevealButton(file, /* collapsed */ true))}
+        </details> ` : Lit.nothing}
+    </div>`;
+  // clang-format on
+
+  const title = lockedString(UIStringsNotTranslate.inspectedFileNames);
+
+  return {
+    renderedWidget,
+    title,
+    revealable: files[0],
+    accessibleRevealLabel: i18n.i18n.lockedString('Reveal first file in Sources panel'),
+    jslogContext: 'source-files-list-widget',
+  };
+}
+
 function renderNetworkRequestPreview(networkRequest: NonNullable<DomTreeAiWidget['data']['networkRequest']>):
     Lit.TemplateResult {
   const filename = networkRequest.url.split('/').pop() || networkRequest.url;
@@ -1518,6 +1573,8 @@ export function getWidgetSignature(widget: AiWidget): string {
       return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
     case 'SOURCE_FILE':
       return `${widget.name}:${widget.data.uiSourceCode.url()}`;
+    case 'SOURCE_FILES_LIST':
+      return `${widget.name}:${widget.data.uiSourceCodes.map(f => f.url()).join(',')}`;
     case 'LIGHTHOUSE_REPORT':
       return `${widget.name}:${widget.data.report.fetchTime}`;
     case 'TIMELINE_EVENT_SUMMARY':
@@ -1611,6 +1668,9 @@ async function renderWidgets(
         break;
       case 'SOURCE_FILE':
         response = await makeSourceFileWidget(widgetData);
+        break;
+      case 'SOURCE_FILES_LIST':
+        response = await makeSourceFilesListWidget(widgetData);
         break;
       case 'LIGHTHOUSE_REPORT':
         response = await makeLighthouseReportWidget(widgetData);

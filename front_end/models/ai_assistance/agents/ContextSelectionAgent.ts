@@ -261,6 +261,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
         const origin = allowedOriginResult.origin;
 
         const files: Array<{file: string, id: number | undefined}> = [];
+        const uiSourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
         for (const file of ContextSelectionAgent.getUISourceCodes()) {
           const fileUrl = file.url();
           const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
@@ -273,10 +274,17 @@ export class ContextSelectionAgent extends AiAgent<never> {
             file: file.fullDisplayName(),
             id: ContextSelectionAgent.uiSourceCodeId.get(file),
           });
+          uiSourceCodes.push(file);
         }
 
         return {
           result: files,
+          widgets: [{
+            name: 'SOURCE_FILES_LIST',
+            data: {
+              uiSourceCodes,
+            },
+          }],
         };
       },
     });

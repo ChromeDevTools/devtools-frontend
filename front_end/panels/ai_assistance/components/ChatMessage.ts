@@ -1401,7 +1401,7 @@ async function makeSourceCodeWidget(widgetData: SourceCodeAiWidget): Promise<Wid
       .displayLimit=${20}
       .code=${code}
       .codeLang=${fileExtension}
-      .header=${' '}
+      .displayToolbar=${false}
       .displayNotice=${false}
     ></devtools-code-block>
   `;

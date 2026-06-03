@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import type {Value, WasmInterface} from '../src/CustomFormatters.js';
 import {WorkerPlugin} from '../src/DevToolsPluginHost.js';

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert, expect} from 'chai';
+
 import {WorkerPlugin} from '../src/DevToolsPluginHost.js';
 import {createPlugin} from '../src/DWARFSymbols.js';
 import {ResourceLoader} from '../src/MEMFSResourceLoader.js';

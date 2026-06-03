@@ -4,6 +4,7 @@
 
 import '../src/CreditsItem.js';
 
+import {expect} from 'chai';
 import {html, render, type TemplateResult} from 'lit-html';
 
 import type {CreditsItem, CreditsItemData} from '../src/CreditsItem.js';

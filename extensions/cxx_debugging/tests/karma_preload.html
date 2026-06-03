@@ -6,12 +6,8 @@
 <script type="importmap">
   {
     "imports": {
-      "lit-html": "/base/extensions/cxx_debugging/third_party/lit-html/lit-html.js"
+      "lit-html": "/base/extensions/cxx_debugging/third_party/lit-html/lit-html.js",
+      "chai": "/base/node_modules/chai/index.js"
     }
   }
-</script>
-<script type="module">
-  const { assert, expect } = await import('/base/node_modules/chai/index.js');
-  window.assert = assert;
-  window.expect = expect;
 </script>

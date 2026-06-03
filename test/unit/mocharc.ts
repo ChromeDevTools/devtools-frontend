@@ -9,11 +9,7 @@ import {loadTests, TestConfig} from '../conductor/test_config.js';
 
 module.exports = {
   allowUncaught : false,
-  require :
-          [
-            'source-map-support/register', 'chai/register-assert', 'sinon/pkg/sinon.js',
-            path.join(GEN_DIR, 'test', 'unit', 'mocha-hooks.js')
-          ],
+  require : ['source-map-support/register', 'sinon/pkg/sinon.js', path.join(GEN_DIR, 'test', 'unit', 'mocha-hooks.js')],
   spec :
        [
          ...loadTests(path.join(GEN_DIR, 'front_end'), 'foundation_tests.txt'),

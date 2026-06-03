@@ -924,11 +924,16 @@ var MarkdownInsightRenderer = class extends MarkdownLitRenderer {
     this.addCustomClasses({ heading: "insight" });
   }
   renderToken(token) {
-    const template = this.templateForToken(token);
-    if (template === null) {
+    try {
+      const template = this.templateForToken(token);
+      if (template === null) {
+        return html5`${token.raw}`;
+      }
+      return template;
+    } catch (error) {
+      console.error("Failed to render markdown token:", error);
       return html5`${token.raw}`;
     }
-    return template;
   }
   sanitizeUrl(maybeUrl) {
     try {

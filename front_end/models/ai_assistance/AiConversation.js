@@ -14,6 +14,7 @@ import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
 import { PerformanceAgent, PerformanceTraceContext } from './agents/PerformanceAgent.js';
 import { StorageAgent, StorageContext } from './agents/StorageAgent.js';
 import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
+import { AiAgent2 } from './AiAgent2.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 export const CONTEXT_TITLE = 'Analyzing data';
@@ -286,35 +287,25 @@ export class AiConversation {
             allowedOrigin: this.allowedOrigin,
             history,
         };
+        this.#agent = Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) :
+            this.#createV1Agent(type, options);
+    }
+    #createV1Agent(type, options) {
         switch (type) {
-            case "freestyler" /* ConversationType.STYLING */: {
-                this.#agent = new StylingAgent(options);
-                break;
-            }
-            case "drjones-network-request" /* ConversationType.NETWORK */: {
-                this.#agent = new NetworkAgent(options);
-                break;
-            }
-            case "drjones-file" /* ConversationType.FILE */: {
-                this.#agent = new FileAgent(options);
-                break;
-            }
-            case "drjones-performance-full" /* ConversationType.PERFORMANCE */: {
-                this.#agent = new PerformanceAgent(options);
-                break;
-            }
-            case "accessibility" /* ConversationType.ACCESSIBILITY */: {
-                this.#agent = new AccessibilityAgent(options);
-                break;
-            }
-            case "storage" /* ConversationType.STORAGE */: {
-                this.#agent = new StorageAgent(options);
-                break;
-            }
-            case "none" /* ConversationType.NONE */: {
-                this.#agent = new ContextSelectionAgent(options);
-                break;
-            }
+            case "freestyler" /* ConversationType.STYLING */:
+                return new StylingAgent(options);
+            case "drjones-network-request" /* ConversationType.NETWORK */:
+                return new NetworkAgent(options);
+            case "drjones-file" /* ConversationType.FILE */:
+                return new FileAgent(options);
+            case "drjones-performance-full" /* ConversationType.PERFORMANCE */:
+                return new PerformanceAgent(options);
+            case "accessibility" /* ConversationType.ACCESSIBILITY */:
+                return new AccessibilityAgent(options);
+            case "storage" /* ConversationType.STORAGE */:
+                return new StorageAgent(options);
+            case "none" /* ConversationType.NONE */:
+                return new ContextSelectionAgent(options);
             default:
                 Platform.assertNever(type, 'Unknown conversation type');
         }

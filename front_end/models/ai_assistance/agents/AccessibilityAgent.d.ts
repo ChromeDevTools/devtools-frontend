@@ -6,7 +6,7 @@ import { type ExecuteJsAgentOptions } from './ExecuteJavascript.js';
 export declare class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
     #private;
     constructor(report: LHModel.ReporterTypes.ReportJSON);
-    getOrigin(): string;
+    getURL(): string;
     getItem(): LHModel.ReporterTypes.ReportJSON;
     getTitle(): string;
 }

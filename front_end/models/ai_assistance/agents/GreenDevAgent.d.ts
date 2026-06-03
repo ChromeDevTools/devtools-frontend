@@ -5,7 +5,7 @@ import { type AgentOptions, AiAgent, type ContextResponse, ConversationContext, 
 export declare class GreenDevContext extends ConversationContext<string> {
     #private;
     constructor(context: string);
-    getOrigin(): string;
+    getURL(): string;
     getItem(): string;
     getTitle(): string;
 }

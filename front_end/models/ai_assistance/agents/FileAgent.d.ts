@@ -4,7 +4,7 @@ import { AiAgent, type ContextResponse, ConversationContext, type RequestOptions
 export declare class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
     #private;
     constructor(file: Workspace.UISourceCode.UISourceCode);
-    getOrigin(): string;
+    getURL(): string;
     getItem(): Workspace.UISourceCode.UISourceCode;
     getTitle(): string;
     refresh(): Promise<void>;

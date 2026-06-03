@@ -70,8 +70,8 @@ export class AccessibilityContext extends ConversationContext {
     #url() {
         return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
     }
-    getOrigin() {
-        return new URL(this.#url()).origin;
+    getURL() {
+        return this.#url();
     }
     getItem() {
         return this.#lh;

@@ -6,12 +6,12 @@ export declare class RequestContext extends ConversationContext<SDK.NetworkReque
     #private;
     constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator);
     /**
-     * Note: this is not the literal origin of the network request. This origin
+     * Note: this is not the literal origin of the network request. This URL
      * is used to determine when we should force the user to start a new AI
      * conversation when the context changes. We allow a single AI conversation to
      * inspect all network requests that were made for that given target URL.
      */
-    getOrigin(): string;
+    getURL(): string;
     getItem(): SDK.NetworkRequest.NetworkRequest;
     get calculator(): NetworkTimeCalculator.NetworkTimeCalculator;
     getTitle(): string;

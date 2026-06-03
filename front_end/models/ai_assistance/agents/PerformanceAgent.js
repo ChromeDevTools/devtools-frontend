@@ -208,10 +208,11 @@ export class PerformanceTraceContext extends ConversationContext {
         super();
         this.#focus = focus;
     }
-    getOrigin() {
+    getURL() {
+        const url = this.#focus.parsedTrace.data.Meta.mainFrameURL;
         try {
-            const url = new URL(this.#focus.parsedTrace.data.Meta.mainFrameURL);
-            return url.origin;
+            new URL(url);
+            return url;
         }
         catch {
             const { min, max } = this.#focus.parsedTrace.data.Meta.traceBounds;

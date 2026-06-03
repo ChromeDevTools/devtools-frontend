@@ -19,16 +19,17 @@ export interface Content {
     /** The producer of the content. */
     role: Role;
 }
-export type Part = {
-    text: string;
-} | {
-    functionCall: AidaFunctionCall;
-} | {
+export interface FunctionResponsePart {
     functionResponse: {
         name: string;
         response: Record<string, unknown>;
     };
+}
+export type Part = {
+    text: string;
 } | {
+    functionCall: AidaFunctionCall;
+} | FunctionResponsePart | {
     /** Inline media bytes. */
     inlineData: MediaBlob;
 };

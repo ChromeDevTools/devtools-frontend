@@ -232,12 +232,6 @@ export declare class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement
     static bucketThreshold: number;
     static sparseIterationThreshold: number;
 }
-export declare class ObjectPropertiesSectionsTreeExpandController {
-    #private;
-    constructor(treeOutline: UI.TreeOutline.TreeOutline);
-    watchSection(id: string, section: RootElement): void;
-    stopWatchSectionsWithId(id: string): void;
-}
 export declare class Renderer implements UI.UIUtils.Renderer {
     static instance(opts?: {
         forceNew: boolean;

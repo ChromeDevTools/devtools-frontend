@@ -57,7 +57,7 @@ ul {
   margin-block: 0;
 }
 
-.devtools-link.link-margin {
+.devtools-link.link-margin, .devtools-link.link-margin:hover {
   margin: 8px;
   display: inline-block;
 }

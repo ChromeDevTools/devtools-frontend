@@ -26,7 +26,7 @@ export declare class ProtocolService implements ProtocolClient.CDPConnection.CDP
     private removeDialogHandler?;
     private configForTesting?;
     private connection?;
-    attach(): Promise<void>;
+    attach(inspectedURL: Platform.DevToolsPath.UrlString): Promise<void>;
     getLocales(): readonly string[];
     startTimespan(currentLighthouseRun: LighthouseRun): Promise<void>;
     collectLighthouseResults(currentLighthouseRun: LighthouseRun): Promise<LighthouseModel.ReporterTypes.RunnerResult>;

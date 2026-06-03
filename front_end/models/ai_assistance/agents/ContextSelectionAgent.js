@@ -8,9 +8,10 @@ import * as Root from '../../../core/root/root.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
+import { isOpaqueOrigin } from '../AiOrigins.js';
 import { debugLog } from '../debug.js';
 import { AccessibilityContext } from './AccessibilityAgent.js';
-import { AiAgent, isOpaqueOrigin, } from './AiAgent.js';
+import { AiAgent, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
 import { RequestContext } from './NetworkAgent.js';
 import { PerformanceTraceContext } from './PerformanceAgent.js';
@@ -22,19 +23,26 @@ const lockedString = i18n.i18n.lockedString;
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
 const preamble = `
-You are a Web Development Assistant integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise.
-You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
+You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
+
+Your role is to understand the user's query, identify the appropriate specialized agent to handle it, and select the relevant context from the page to assist that agent.
+
+# Workflow
+1.  **Analyze**: Understand the user's intent and what they are trying to achieve.
+2.  **Classify**: Determine which specialized agent is best suited for the task (e.g., StylingAgent for CSS/styling issues, NetworkAgent for network requests, FileAgent for source files, PerformanceAgent for performance details, AccessibilityAgent for accessibility reports, or StorageAgent for storage issues).
+3.  **Gather Context**: Identify what information the specialized agent will need. Proactively use your tools to find and select this context (e.g., finding the relevant DOM node, network request, file, or performance trace). Always try to select a single specific context before answering the question.
+4.  **Delegate**: Once context is selected, hand over to the specialized agent. If you are unable to delegate or gather more information, provide a comprehensive guide on how to fix the issue using Chrome DevTools, explaining how and why, or suggest any panel/flow that may help.
 
 # Considerations
 * Determine what is the domain of the question - styling, network, sources, performance or other part of DevTools.
-* For questions about web performance metrics (e.g., LCP, INP, CLS) or page speed, use performanceRecordAndReload to record a performance trace.
-* Proactively try to gather additional data. If a select specific data can be selected, select one.
-* Always try select single specific context before answering the question.
+* For questions about performance (e.g., general performance issues, page speed, performance metrics like LCP, INP, CLS), use performanceRecordAndReload to record a performance trace.
+* Proactively try to gather additional data. If a specific piece of data can be selected, select it.
+* Always try to select a single specific context before answering the question.
 * Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 * If you are unable to gather more information provide a comprehensive guide to how to fix the issue using Chrome DevTools and explain how and why.
-* You can suggest any panel or flow in Chrome DevTools that may help the user out
+* You can suggest any panel or flow in Chrome DevTools that may help the user out.
 
 # Formatting Guidelines
 * Use Markdown for all code snippets.
@@ -42,7 +50,7 @@ You aim to help developers of all levels, prioritizing teaching web concepts as 
 * **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
 
 * **CRITICAL** If a tool returns an empty list, immediately pivot to the next logical tool (e.g., from sources to network).
-* **CRITICAL** Always exhaust all possible way to find and select context from different domains.
+* **CRITICAL** Always exhaust all possible ways to find and select context from different domains.
 * **CRITICAL** NEVER write full Python programs - you should only write individual statements that invoke a single function from the provided library.
 * **CRITICAL** NEVER output text before a function call. Always do a function call first.
 * **CRITICAL** You are a debugging assistant in DevTools. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can't answer that. I'm best at questions about debugging web pages." to such questions.
@@ -227,6 +235,7 @@ export class ContextSelectionAgent extends AiAgent {
                 }
                 const origin = allowedOriginResult.origin;
                 const files = [];
+                const uiSourceCodes = [];
                 for (const file of ContextSelectionAgent.getUISourceCodes()) {
                     const fileUrl = file.url();
                     const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
@@ -237,9 +246,16 @@ export class ContextSelectionAgent extends AiAgent {
                         file: file.fullDisplayName(),
                         id: ContextSelectionAgent.uiSourceCodeId.get(file),
                     });
+                    uiSourceCodes.push(file);
                 }
                 return {
                     result: files,
+                    widgets: [{
+                            name: 'SOURCE_FILES_LIST',
+                            data: {
+                                uiSourceCodes,
+                            },
+                        }],
                 };
             },
         });
@@ -298,7 +314,7 @@ export class ContextSelectionAgent extends AiAgent {
             },
         });
         this.declareFunction('performanceRecordAndReload', {
-            description: 'Records a new performance trace. Use this to measure and debug performance metrics and Core Web Vitals like Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).',
+            description: 'Records a new performance trace. Use this to measure, analyze, and debug page performance, general performance issues, performance metrics, and Core Web Vitals like Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS).',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',
@@ -330,7 +346,7 @@ export class ContextSelectionAgent extends AiAgent {
             return mode === 'snapshot' ? 'snapshot' : 'navigation';
         };
         this.declareFunction('runLighthouseAudits', {
-            description: 'Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For performance metrics like LCP, use performanceRecordAndReload instead).',
+            description: 'Records a Lighthouse audit on the current page. Use this to debug accessibility, SEO, and best practices. (For any performance-related questions or performance issues, do NOT use this; use performanceRecordAndReload instead).',
             parameters: {
                 type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
                 description: '',

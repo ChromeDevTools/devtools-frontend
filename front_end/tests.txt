@@ -157,6 +157,7 @@ models/ai_assistance/AgentProject.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
+models/ai_assistance/AiOrigins.test.js
 models/ai_assistance/AiUtils.test.js
 models/ai_assistance/BuiltInAi.test.js
 models/ai_assistance/ChangeManager.test.js
@@ -175,6 +176,7 @@ models/ai_assistance/agents/PerformanceAnnotationsAgent.test.js
 models/ai_assistance/agents/StorageAgent.test.js
 models/ai_assistance/agents/StylingAgent.test.js
 models/ai_assistance/performance/AICallTree.test.js
+models/ai_assistance/performance/AIContext.test.js
 models/ai_assistance/performance/AIQueries.test.js
 models/ai_code_completion/AiCodeCompletion.test.js
 models/ai_code_generation/AiCodeGeneration.test.js

@@ -602,6 +602,29 @@ export default `/*
       }
     }
   }
+
+
+  .source-files-details {
+    display: contents;
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 4px 12px;
+      border: 1px solid var(--sys-color-neutral-outline);
+      border-radius: var(--sys-shape-corner-small);
+      color: var(--sys-color-primary);
+      width: fit-content;
+
+      &:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+      }
+    }
+
+    &[open] summary {
+      display: none;
+    }
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('././components/chatMessage.css')} */`;

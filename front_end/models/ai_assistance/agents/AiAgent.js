@@ -3,24 +3,14 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import { areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin } from '../AiOrigins.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 const MAX_SUGGESTION_LENGTH = 200;
-/**
- * Returns true if the origin is considered opaque and should be blocked from
- * AI assistance to prevent potential data leakage.
- *
- * @see https://crbug.com/513732588
- */
-export function isOpaqueOrigin(origin) {
-    /**
-     * Origins starting with 'about' (like about:blank or about:srcdoc) are
-     * considered opaque. 'about://' is the sentinel used by DevTools
-     * ParsedURL.securityOrigin() for these.
-     */
-    return origin === 'null' || origin === 'data:' || origin.startsWith('about') || origin.startsWith('detached');
-}
 export const MAX_STEPS = 10;
 export class ConversationContext {
+    getOrigin() {
+        return extractContextOrigin(this.getURL());
+    }
     /**
      * Returns true if this data context (e.g., a DOM node or Network Request) is
      * allowed to be included in a conversation that is locked to the provided
@@ -34,17 +24,14 @@ export class ConversationContext {
      * If undefined, the conversation has not yet been locked to an origin.
      */
     isOriginAllowed(establishedOrigin) {
-        const dataOrigin = this.getOrigin();
-        // Opaque origins are never allowed to be used as context.
-        if (isOpaqueOrigin(dataOrigin)) {
-            return false;
-        }
+        const origin = this.getOrigin();
         // If no origin is established yet, this context will be the one to lock the conversation.
+        // Opaque origins are never allowed to be used as context.
         if (!establishedOrigin) {
-            return true;
+            return !isOpaqueOrigin(origin);
         }
         // Only allow data that matches the origin the conversation is already locked to.
-        return dataOrigin === establishedOrigin;
+        return areOriginsEquivalent(origin, establishedOrigin);
     }
     /**
      * This method is called at the start of `AiAgent.run`.

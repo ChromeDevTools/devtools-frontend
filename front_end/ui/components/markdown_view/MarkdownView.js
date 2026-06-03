@@ -234,11 +234,21 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         this.addCustomClasses({ heading: 'insight' });
     }
     renderToken(token) {
-        const template = this.templateForToken(token);
-        if (template === null) {
+        try {
+            const template = this.templateForToken(token);
+            if (template === null) {
+                return html `${token.raw}`;
+            }
+            return template;
+        }
+        catch (error) {
+            // We catch any rendering/lookup errors here so that one bad or malformed
+            // token (e.g. an invalid trace link or broken custom reference) does not
+            // crash the entire markdown renderer or cause it to fallback completely.
+            // Instead, we gracefully fallback to rendering the raw token text.
+            console.error('Failed to render markdown token:', error);
             return html `${token.raw}`;
         }
-        return template;
     }
     sanitizeUrl(maybeUrl) {
         try {

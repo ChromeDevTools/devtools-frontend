@@ -19,6 +19,7 @@ import * as StylingAgent from './agents/StylingAgent.js';
 import * as AiAgent2 from './AiAgent2.js';
 import * as AiConversation from './AiConversation.js';
 import * as AiHistoryStorage from './AiHistoryStorage.js';
+import * as AiOrigins from './AiOrigins.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
@@ -36,5 +37,5 @@ import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
 import * as StorageItem from './StorageItem.js';
-export { AccessibilityAgent, AgentProject, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummaryAgent, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, GreenDevAgent, GreenDevAgentAntigravityCliSocketClient, GreenDevAgentGeminiCliSocketClient, Injected, LighthouseFormatter, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StorageAgent, StorageItem, StylingAgent, UnitFormatters, };
+export { AccessibilityAgent, AgentProject, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummaryAgent, Debug, EvaluateAction, ExtensionScope, FileAgent, FileFormatter, GreenDevAgent, GreenDevAgentAntigravityCliSocketClient, GreenDevAgentGeminiCliSocketClient, Injected, LighthouseFormatter, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotationsAgent, PerformanceInsightFormatter, PerformanceTraceFormatter, StorageAgent, StorageItem, StylingAgent, UnitFormatters, };
 //# sourceMappingURL=ai_assistance.prebundle.js.map

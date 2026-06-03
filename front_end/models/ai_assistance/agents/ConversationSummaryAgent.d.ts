@@ -3,7 +3,7 @@ import { AiAgent, type ContextResponse, ConversationContext, type RequestOptions
 export declare class ConversationSummaryContext extends ConversationContext<string> {
     #private;
     constructor(conversation: string);
-    getOrigin(): string;
+    getURL(): string;
     getItem(): string;
     getTitle(): string;
 }

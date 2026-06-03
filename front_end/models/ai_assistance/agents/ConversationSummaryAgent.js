@@ -100,7 +100,7 @@ export class ConversationSummaryContext extends ConversationContext {
         super();
         this.#conversation = conversation;
     }
-    getOrigin() {
+    getURL() {
         return 'devtools://ai-assistance';
     }
     getItem() {

@@ -125,13 +125,13 @@ export class NodeContext extends ConversationContext {
         super();
         this.#node = node;
     }
-    getOrigin() {
+    getURL() {
         const ownerDocument = this.#node.ownerDocument;
         if (!ownerDocument) {
             // The node is detached from a document.
             return 'detached';
         }
-        return new URL(ownerDocument.documentURL).origin;
+        return ownerDocument.documentURL;
     }
     getItem() {
         return this.#node;

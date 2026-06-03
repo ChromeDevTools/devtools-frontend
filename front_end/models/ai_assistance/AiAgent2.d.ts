@@ -1,5 +1,5 @@
 import * as Host from '../../core/host/host.js';
-import { AiAgent, type ContextResponse, type ConversationContext, type RequestOptions } from './agents/AiAgent.js';
+import { type AgentOptions, AiAgent, type ContextResponse, type ConversationContext, type RequestOptions } from './agents/AiAgent.js';
 import type { SkillName } from './skills/Skill.js';
 export declare class AiAgent2 extends AiAgent<unknown> {
     #private;
@@ -7,6 +7,8 @@ export declare class AiAgent2 extends AiAgent<unknown> {
     readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
     readonly userTier = "TESTERS";
     get options(): RequestOptions;
+    constructor(opts: AgentOptions);
+    enhanceQuery(query: string): Promise<string>;
     handleContextDetails(_select: ConversationContext<unknown> | null): AsyncGenerator<ContextResponse, void, void>;
     learnSkill(names: SkillName[]): Promise<string>;
     get activeSkills(): Set<SkillName>;

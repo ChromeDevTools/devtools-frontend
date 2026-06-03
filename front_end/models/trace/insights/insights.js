@@ -405,6 +405,13 @@ function calculateDocFirstByteTs(docRequest) {
   if (docRequest.args.data.protocol === "file") {
     return docRequest.ts;
   }
+  const isLightrider = globalThis.isLightrider;
+  if (isLightrider) {
+    const lrServerResponseTime = docRequest.args.data.lrServerResponseTime;
+    if (lrServerResponseTime !== void 0) {
+      return Types.Timing.Micro(docRequest.ts + Helpers.Timing.milliToMicro(lrServerResponseTime));
+    }
+  }
   const timing = docRequest.args.data.timing;
   if (!timing) {
     return null;

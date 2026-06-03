@@ -26,13 +26,6 @@ export declare const enum ErrorType {
     BLOCK = "block",
     CROSS_ORIGIN = "cross-origin"
 }
-/**
- * Returns true if the origin is considered opaque and should be blocked from
- * AI assistance to prevent potential data leakage.
- *
- * @see https://crbug.com/513732588
- */
-export declare function isOpaqueOrigin(origin: string): boolean;
 export declare const enum MultimodalInputType {
     SCREENSHOT = "screenshot",
     UPLOADED_IMAGE = "uploaded-image"
@@ -151,9 +144,10 @@ export interface ConversationSuggestion {
 /** At least one. */
 export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
 export declare abstract class ConversationContext<T> {
-    abstract getOrigin(): string;
+    abstract getURL(): string;
     abstract getItem(): T;
     abstract getTitle(): string;
+    getOrigin(): string;
     /**
      * Returns true if this data context (e.g., a DOM node or Network Request) is
      * allowed to be included in a conversation that is locked to the provided
@@ -244,6 +238,12 @@ export interface SourceFileAiWidget {
         uiSourceCode: Workspace.UISourceCode.UISourceCode;
     };
 }
+export interface SourceFilesListAiWidget {
+    name: 'SOURCE_FILES_LIST';
+    data: {
+        uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
+    };
+}
 export interface LighthouseReportAiWidget {
     name: 'LIGHTHOUSE_REPORT';
     data: {
@@ -273,7 +273,7 @@ export interface SourceCodeAiWidget {
         column?: number;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget;
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget | SourceFilesListAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**

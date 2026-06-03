@@ -68,8 +68,8 @@ export class FileContext extends ConversationContext {
         super();
         this.#file = file;
     }
-    getOrigin() {
-        return new URL(this.#file.url()).origin;
+    getURL() {
+        return this.#file.url();
     }
     getItem() {
         return this.#file;

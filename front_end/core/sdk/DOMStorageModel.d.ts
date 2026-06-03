@@ -9,7 +9,7 @@ export declare class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMSt
     constructor(model: DOMStorageModel, storageKey: string, isLocalStorage: boolean);
     static storageId(storageKey: string, isLocalStorage: boolean): Protocol.DOMStorage.StorageId;
     get id(): Protocol.DOMStorage.StorageId;
-    get storageKey(): string | null;
+    get storageKey(): string;
     get isLocalStorage(): boolean;
     getItems(): Promise<Protocol.DOMStorage.Item[] | null>;
     setItem(key: string, value: string): void;

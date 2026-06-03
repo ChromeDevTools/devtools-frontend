@@ -7,7 +7,7 @@ export declare const AI_ASSISTANCE_FILTER_REGEX = "\\.ai-style-change-.*&";
 export declare class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     #private;
     constructor(node: SDK.DOMModel.DOMNode);
-    getOrigin(): string;
+    getURL(): string;
     getItem(): SDK.DOMModel.DOMNode;
     getTitle(): string;
     getSuggestions(): Promise<ConversationSuggestions | undefined>;

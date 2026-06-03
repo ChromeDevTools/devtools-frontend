@@ -15,7 +15,7 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
     static fromCallTree(callTree: AICallTree): PerformanceTraceContext;
     external: boolean;
     constructor(focus: AgentFocus);
-    getOrigin(): string;
+    getURL(): string;
     getItem(): AgentFocus;
     getTitle(): string;
     /**

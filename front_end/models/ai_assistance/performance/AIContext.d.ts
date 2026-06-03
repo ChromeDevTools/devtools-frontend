@@ -25,7 +25,7 @@ export declare class AgentFocus {
     get insight(): Trace.Insights.Types.InsightModel | null;
     withInsight(insight: Trace.Insights.Types.InsightModel | null): AgentFocus;
     withEvent(event: Trace.Types.Events.Event | null): AgentFocus;
-    lookupEvent(key: Trace.Types.File.SerializableKey): Trace.Types.Events.Event | null;
+    lookupEvent(key: string): Trace.Types.Events.Event | null;
 }
 export declare function getPerformanceAgentFocusFromModel(model: Trace.TraceModel.Model): AgentFocus | null;
 export {};

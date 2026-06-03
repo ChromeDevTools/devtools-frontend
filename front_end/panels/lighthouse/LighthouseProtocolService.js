@@ -65,7 +65,8 @@ export class ProtocolService {
      * This is used to gracefully cancel hanging promises if the ProtocolService is detached before the worker replies.
      */
     #pendingRequests = new Map();
-    async attach() {
+    async attach(inspectedURL) {
+        const parsedInitialOrigin = Common.ParsedURL.ParsedURL.extractOrigin(inspectedURL);
         await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
         const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!mainTarget) {
@@ -104,13 +105,11 @@ export class ProtocolService {
         //
         // To ensure the teardown operations can proceed, we need a dialog handler which lasts until
         // the LighthouseProtocolService detaches.
-        const initialInspectedUrl = mainTarget.inspectedURL();
-        const parsedInitialOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initialInspectedUrl);
         const dialogHandler = (event) => {
             const parsedEventOrigin = Common.ParsedURL.ParsedURL.extractOrigin(event.data.url);
             if (!parsedInitialOrigin || parsedEventOrigin !== parsedInitialOrigin) {
                 // See http://crbug.com/513728809.
-                console.warn(`Lighthouse auto-accept for dialog on ${event.data.url} blocked as it was not from the original audit origin ${initialInspectedUrl}.`);
+                console.warn(`Lighthouse auto-accept for dialog on ${event.data.url} blocked as it was not from the original audit origin ${inspectedURL}.`);
                 return;
             }
             void mainTarget.pageAgent().invoke_handleJavaScriptDialog({ accept: true });

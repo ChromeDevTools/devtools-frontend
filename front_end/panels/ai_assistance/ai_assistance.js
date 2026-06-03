@@ -3069,6 +3069,29 @@ var chatMessage_css_default = `/*
       }
     }
   }
+
+
+  .source-files-details {
+    display: contents;
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 4px 12px;
+      border: 1px solid var(--sys-color-neutral-outline);
+      border-radius: var(--sys-shape-corner-small);
+      color: var(--sys-color-primary);
+      width: fit-content;
+
+      &:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+      }
+    }
+
+    &[open] summary {
+      display: none;
+    }
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("././components/chatMessage.css")} */`;
@@ -4026,7 +4049,11 @@ var UIStringsNotTranslate4 = {
   /**
    * @description Title for the character set declaration widget.
    */
-  characterSet: "Character set declaration"
+  characterSet: "Character set declaration",
+  /**
+   * @description Title for the source files list widget.
+   */
+  inspectedFileNames: "Inspected file names"
 };
 var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
@@ -4699,6 +4726,54 @@ async function makeSourceCodeWidget(widgetData) {
     jslogContext: "source-code-widget"
   };
 }
+function renderFileRevealButton(file, collapsed) {
+  const onReveal = () => {
+    void Common4.Revealer.reveal(file);
+  };
+  const accessibleLabel = i18n9.i18n.lockedString(`Show ${file.fullDisplayName()}`);
+  const className = `widget-reveal-button ${collapsed ? "collapsed-file" : "visible-file"}`;
+  return html7`
+    <devtools-button class=${className}
+      .variant=${"text"}
+      .accessibleLabel=${accessibleLabel}
+      .jslogContext=${"reveal"}
+      @click=${onReveal}>
+      ${file.fullDisplayName()}
+      <devtools-icon name='tab-move'></devtools-icon>
+    </devtools-button>
+  `;
+}
+async function makeSourceFilesListWidget(widgetData) {
+  const files = widgetData.data.uiSourceCodes;
+  if (files.length === 0) {
+    return null;
+  }
+  const renderedWidget = html7`
+    <div class="source-files-widget">
+      ${files.slice(0, 10).map((file) => renderFileRevealButton(
+    file,
+    /* collapsed */
+    false
+  ))}
+      ${files.length > 10 ? html7`
+        <details class="source-files-details">
+          <summary class="show-more-summary">${i18n9.i18n.lockedString(`Show all ${files.length} files`)}</summary>
+          ${files.slice(10).map((file) => renderFileRevealButton(
+    file,
+    /* collapsed */
+    true
+  ))}
+        </details> ` : Lit5.nothing}
+    </div>`;
+  const title = lockedString5(UIStringsNotTranslate4.inspectedFileNames);
+  return {
+    renderedWidget,
+    title,
+    revealable: files[0],
+    accessibleRevealLabel: i18n9.i18n.lockedString("Reveal first file in Sources panel"),
+    jslogContext: "source-files-list-widget"
+  };
+}
 function renderNetworkRequestPreview(networkRequest) {
   const filename = networkRequest.url.split("/").pop() || networkRequest.url;
   const size = i18n9.ByteUtilities.bytesToString(networkRequest.size);
@@ -4771,6 +4846,8 @@ function getWidgetSignature(widget6) {
       return `${widget6.name}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
     case "SOURCE_FILE":
       return `${widget6.name}:${widget6.data.uiSourceCode.url()}`;
+    case "SOURCE_FILES_LIST":
+      return `${widget6.name}:${widget6.data.uiSourceCodes.map((f) => f.url()).join(",")}`;
     case "LIGHTHOUSE_REPORT":
       return `${widget6.name}:${widget6.data.report.fetchTime}`;
     case "TIMELINE_EVENT_SUMMARY":
@@ -4851,6 +4928,9 @@ async function renderWidgets(widgets, options = {}) {
         break;
       case "SOURCE_FILE":
         response = await makeSourceFileWidget(widgetData);
+        break;
+      case "SOURCE_FILES_LIST":
+        response = await makeSourceFilesListWidget(widgetData);
         break;
       case "LIGHTHOUSE_REPORT":
         response = await makeLighthouseReportWidget(widgetData);
@@ -7454,6 +7534,10 @@ var UIStringsNotTranslate7 = {
    */
   inputPlaceholderForNoContextBranded: "Ask Gemini",
   /**
+   * @description Placeholder text for the chat UI input when AIAgent2 is enabled.
+   */
+  inputPlaceholderForV2: "Ask a question (AIAgent2 enabled)",
+  /**
    * @description Disclaimer text right after the chat input.
    */
   inputDisclaimerForStyling: "Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
@@ -8311,6 +8395,9 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
   #getChatInputPlaceholder() {
     if (!this.#conversation) {
       return i18nString6(UIStrings6.followTheSteps);
+    }
+    if (Root8.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
+      return lockedString8(UIStringsNotTranslate7.inputPlaceholderForV2);
     }
     if (this.#conversation && this.#conversation.isBlockedByOrigin) {
       return lockedString8(UIStringsNotTranslate7.crossOriginError);

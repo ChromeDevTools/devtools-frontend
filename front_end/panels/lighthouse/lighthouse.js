@@ -493,7 +493,7 @@ var LighthouseRun = class {
         }
       }
     }
-    await this.protocolService.attach();
+    await this.protocolService.attach(this.inspectedURL);
   }
   async restoreEmulationAndProtocolConnection() {
     await this.protocolService.detach();
@@ -1157,7 +1157,8 @@ var ProtocolService = class {
    * This is used to gracefully cancel hanging promises if the ProtocolService is detached before the worker replies.
    */
   #pendingRequests = /* @__PURE__ */ new Map();
-  async attach() {
+  async attach(inspectedURL) {
+    const parsedInitialOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(inspectedURL);
     await SDK2.TargetManager.TargetManager.instance().suspendAllTargets();
     const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -1187,12 +1188,10 @@ var ProtocolService = class {
     const { sessionId } = await rootTarget.targetAgent().invoke_attachToTarget({ targetId: rootTargetId, flatten: true });
     this.connection = connection;
     this.connection.observe(this);
-    const initialInspectedUrl = mainTarget.inspectedURL();
-    const parsedInitialOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(initialInspectedUrl);
     const dialogHandler = (event) => {
       const parsedEventOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(event.data.url);
       if (!parsedInitialOrigin || parsedEventOrigin !== parsedInitialOrigin) {
-        console.warn(`Lighthouse auto-accept for dialog on ${event.data.url} blocked as it was not from the original audit origin ${initialInspectedUrl}.`);
+        console.warn(`Lighthouse auto-accept for dialog on ${event.data.url} blocked as it was not from the original audit origin ${inspectedURL}.`);
         return;
       }
       void mainTarget.pageAgent().invoke_handleJavaScriptDialog({ accept: true });

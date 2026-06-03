@@ -88,7 +88,7 @@ export class GreenDevContext extends ConversationContext {
         super();
         this.#context = context;
     }
-    getOrigin() {
+    getURL() {
         return 'devtools://ai-assistance';
     }
     getItem() {

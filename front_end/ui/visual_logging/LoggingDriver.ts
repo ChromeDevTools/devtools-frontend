@@ -80,6 +80,12 @@ export async function addDocument(document: Document): Promise<void> {
   }
   document.addEventListener('visibilitychange', scheduleProcessing);
   document.addEventListener('scroll', scheduleProcessing);
+  const resizeListener = (): void => {
+    viewportRects.delete(document);
+    scheduleProcessing();
+  };
+  document.defaultView?.addEventListener('resize', resizeListener);
+  resizeListeners.set(document, resizeListener);
   observeMutations([document.body]);
 }
 
@@ -90,12 +96,18 @@ export async function stopLogging(): Promise<void> {
   for (const document of documents) {
     document.removeEventListener('visibilitychange', scheduleProcessing);
     document.removeEventListener('scroll', scheduleProcessing);
+    const resizeListener = resizeListeners.get(document);
+    if (resizeListener) {
+      document.defaultView?.removeEventListener('resize', resizeListener);
+      resizeListeners.delete(document);
+    }
   }
   mutationObserver.disconnect();
   resizeObserver.disconnect();
   intersectionObserver.disconnect();
   documents.length = 0;
   viewportRects.clear();
+  resizeListeners.clear();
   processingThrottler = noOpThrottler;
   pendingResize.clear();
   pendingChange.clear();
@@ -130,6 +142,7 @@ export function scheduleProcessing(): void {
 }
 
 const viewportRects = new Map<Document, DOMRect>();
+const resizeListeners = new Map<Document, () => void>();
 const viewportRectFor = (element: Element): DOMRect => {
   const ownerDocument = element.ownerDocument;
   const viewportRect = viewportRects.get(ownerDocument) ||

@@ -384,6 +384,33 @@ console.log('test')
           }());
       assert.strictEqual(codeBlock.innerText, 'overriden');
     });
+
+    it('renders a table', () => {
+      const component = new MarkdownView.MarkdownView.MarkdownView();
+      renderElementIntoDOM(component);
+      const markdownTable = `
+| Header 1 | Header 2 |
+| :--- | :---: |
+| Cell 1 | Cell 2 |
+`;
+      component.data = {tokens: Marked.Marked.lexer(markdownTable)};
+      assert.isNotNull(component.shadowRoot);
+      const table = component.shadowRoot.querySelector('table');
+      assert.isNotNull(table);
+      const headers = Array.from(table!.querySelectorAll('th'));
+      assert.lengthOf(headers, 2);
+      assert.strictEqual(headers[0].textContent?.trim(), 'Header 1');
+      assert.strictEqual(headers[0].style.textAlign, 'left');
+      assert.strictEqual(headers[1].textContent?.trim(), 'Header 2');
+      assert.strictEqual(headers[1].style.textAlign, 'center');
+
+      const cells = Array.from(table!.querySelectorAll('td'));
+      assert.lengthOf(cells, 2);
+      assert.strictEqual(cells[0].textContent?.trim(), 'Cell 1');
+      assert.strictEqual(cells[0].style.textAlign, 'left');
+      assert.strictEqual(cells[1].textContent?.trim(), 'Cell 2');
+      assert.strictEqual(cells[1].style.textAlign, 'center');
+    });
   });
 
   describe('escaping', () => {

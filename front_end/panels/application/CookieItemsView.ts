@@ -34,6 +34,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_table.js';
@@ -260,6 +261,7 @@ export class CookieItemsView extends UI.Widget.VBox {
     this.cookieDomain = domain;
     this.refreshItems();
     this.model.addEventListener(SDK.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
+    this.updateAiAssistanceContext(null);
   }
 
   override performUpdate(): void {
@@ -302,6 +304,7 @@ export class CookieItemsView extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
     this.refreshItems();
+    this.updateAiAssistanceContext(this.selectedCookie);
   }
 
   private showPreview(cookie: SDK.Cookie.Cookie|null): void {
@@ -310,6 +313,27 @@ export class CookieItemsView extends UI.Widget.VBox {
     }
     this.selectedCookie = cookie;
     this.requestUpdate();
+    this.updateAiAssistanceContext(cookie);
+  }
+
+  private updateAiAssistanceContext(cookie: SDK.Cookie.Cookie|null): void {
+    if (!cookie || cookie.httpOnly()) {
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      return;
+    }
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin =
+        target?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : '';
+
+    if (!mainPageOrigin) {
+      // If we don't have a primary target origin, we shouldn't allow the AI assistance context to be attached.
+      UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
+      return;
+    }
+
+    const storageItem = new AiAssistanceModel.StorageItem.CookieItem(mainPageOrigin, this.cookieDomain, cookie.name());
+    UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
 
   private handleCookieSelected(selectedCookie: SDK.Cookie.Cookie|null): void {

@@ -32,3 +32,9 @@ export class DOMStorageItem extends StorageItem {
     super(primaryTargetOrigin, origin);
   }
 }
+
+export class CookieItem extends StorageItem {
+  constructor(primaryTargetOrigin: string, origin: string, readonly name?: string) {
+    super(primaryTargetOrigin, origin);
+  }
+}

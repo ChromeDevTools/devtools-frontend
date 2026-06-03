@@ -4,11 +4,16 @@
 
 import {assert} from 'chai';
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {getMainFrame, navigate} from '../../../testing/ResourceTreeHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('StorageAgent', function() {
   let activeStorages: SDK.DOMStorageModel.DOMStorage[] = [];
@@ -27,16 +32,8 @@ describeWithMockConnection('StorageAgent', function() {
     sinon.stub(domStorageModel, 'storages').callsFake(() => activeStorages);
     activeStorages = [mockStorage];
 
-    const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
-    sinon.stub(mockFrame, 'securityOrigin').get(() => 'https://example.com');
-    mockFrame.isPrimaryFrame.returns(true);
-    mockFrame.parentFrame.returns(null);
-
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    assert.exists(resourceTreeModel);
-    mockFrame.resourceTreeModel.returns(resourceTreeModel);
-
-    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([mockFrame]);
+    const mainFrame = getMainFrame(target);
+    navigate(mainFrame, {securityOrigin: 'https://example.com'});
   });
 
   it('can list keys for local storage', async () => {
@@ -153,6 +150,202 @@ describeWithMockConnection('StorageAgent', function() {
     assert.include(actionResponse.output, 'key1-keypass');
   });
 
+  it('can list cookies for the origin, excluding HttpOnly ones', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{name: 'listCookies', args: {origin: 'https://example.com'}}],
+        explanation: '',
+      }],
+      [{explanation: 'Here are the cookies.'}]
+    ]);
+
+    const agent = new AiAssistance.StorageAgent.StorageAgent({aidaClient});
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    assert.exists(target);
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel);
+
+    // Mock normal cookie
+    const mockCookie = new SDK.Cookie.Cookie('session-cookie', 'session-value');
+    mockCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    mockCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+
+    // Mock HttpOnly cookie
+    const httpOnlyCookie = new SDK.Cookie.Cookie('http-only-cookie', 'secret-value');
+    httpOnlyCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    httpOnlyCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+    httpOnlyCookie.addAttribute(SDK.Cookie.Attribute.HTTP_ONLY);
+
+    const getCookiesStub = sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([
+      mockCookie, httpOnlyCookie
+    ]);
+
+    const responses = await Array.fromAsync(agent.run('list cookies', {selected: context}));
+
+    const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.exists(actionResponse, 'Expected an action response');
+    assert.strictEqual(actionResponse.code, 'listCookies(\'https://example.com\')');
+    assert.include(actionResponse.output, 'session-cookie');
+    assert.notInclude(actionResponse.output, 'session-value', 'Cookie values must be hidden in listCookies()');
+    assert.notInclude(actionResponse.output, 'http-only-cookie', 'HttpOnly cookies must be strictly filtered out');
+    sinon.assert.calledOnce(getCookiesStub);
+  });
+
+  it('can get cookie values with approval', async () => {
+    const cookieName = 'session-cookie';
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{name: 'getCookieValues', args: {cookieNames: [cookieName], origin: 'https://example.com'}}],
+        explanation: '',
+      }],
+      [{explanation: 'Here is the value.'}]
+    ]);
+
+    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const agent = new AiAssistance.StorageAgent.StorageAgent({
+      aidaClient,
+      confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
+    });
+
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    assert.exists(target);
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel);
+    const mockCookie = new SDK.Cookie.Cookie('session-cookie', 'session-value');
+    mockCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    mockCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+
+    const getCookiesStub =
+        sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([mockCookie]);
+
+    sideEffectPromise.resolve(true);
+    const responses = await Array.fromAsync(agent.run('get value of session-cookie', {selected: context}));
+
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
+
+    assert.strictEqual(actionResponses[0].code, 'getCookieValues(["session-cookie"], \'https://example.com\')');
+    assert.isUndefined(actionResponses[0].output, 'Pre-approval yield should not contain execution output');
+
+    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session-cookie"], \'https://example.com\')');
+    assert.include(actionResponses[1].output, 'session-value', 'Post-approval yield should contain cookie value');
+    assert.include(
+        actionResponses[1].output, 'example.com', 'Post-approval yield should contain cookie domain metadata');
+    assert.include(actionResponses[1].output, 'path', 'Post-approval yield should contain cookie path metadata');
+    sinon.assert.calledOnce(getCookiesStub);
+  });
+
+  it('can resolve duplicate same-name cookies with different metadata', async () => {
+    const cookieName = 'session-cookie';
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{name: 'getCookieValues', args: {cookieNames: [cookieName], origin: 'https://example.com'}}],
+        explanation: '',
+      }],
+      [{explanation: 'Here are the values.'}]
+    ]);
+
+    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const agent = new AiAssistance.StorageAgent.StorageAgent({
+      aidaClient,
+      confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
+    });
+
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    assert.exists(target);
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel);
+
+    // Mock duplicate cookies
+    const cookie1 = new SDK.Cookie.Cookie('session-cookie', 'value-host');
+    cookie1.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    cookie1.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+
+    const cookie2 = new SDK.Cookie.Cookie('session-cookie', 'value-wildcard');
+    cookie2.addAttribute(SDK.Cookie.Attribute.DOMAIN, '.example.com');
+    cookie2.addAttribute(SDK.Cookie.Attribute.PATH, '/sub');
+
+    sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([cookie1, cookie2]);
+
+    sideEffectPromise.resolve(true);
+    const responses = await Array.fromAsync(agent.run('get value of session-cookie', {selected: context}));
+
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2, 'Expected exactly two action responses for approval flow');
+
+    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session-cookie"], \'https://example.com\')');
+    assert.include(actionResponses[1].output, 'value-host');
+    assert.include(actionResponses[1].output, 'value-wildcard');
+    assert.include(actionResponses[1].output, 'example.com');
+    assert.include(actionResponses[1].output, '.example.com');
+    assert.include(actionResponses[1].output, '/sub');
+  });
+
+  it('strictly filters out HttpOnly cookies from getCookieValues requested names', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{
+          name: 'getCookieValues',
+          args: {cookieNames: ['secret-cookie', 'public-cookie'], origin: 'https://example.com'}
+        }],
+        explanation: '',
+      }],
+      [{explanation: 'Here is the value.'}]
+    ]);
+
+    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const agent = new AiAssistance.StorageAgent.StorageAgent({
+      aidaClient,
+      confirmSideEffectForTest: (<T>() => sideEffectPromise as unknown as PromiseWithResolvers<T>),
+    });
+
+    const context = new AiAssistance.StorageAgent.StorageContext(
+        new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com'));
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    assert.exists(target);
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    assert.exists(cookieModel);
+
+    // Regular cookie
+    const publicCookie = new SDK.Cookie.Cookie('public-cookie', 'public-value');
+    publicCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    publicCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+
+    // HttpOnly cookie
+    const secretCookie = new SDK.Cookie.Cookie('secret-cookie', 'secret-value');
+    secretCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    secretCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+    secretCookie.addAttribute(SDK.Cookie.Attribute.HTTP_ONLY);
+
+    sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([
+      publicCookie, secretCookie
+    ]);
+
+    sideEffectPromise.resolve(true);
+    const responses = await Array.fromAsync(agent.run('get cookies', {selected: context}));
+
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 2);
+    assert.strictEqual(
+        actionResponses[1].code, 'getCookieValues(["secret-cookie","public-cookie"], \'https://example.com\')');
+
+    // Verify that public cookie data is returned
+    assert.include(actionResponses[1].output, 'public-value');
+
+    // Verify that the secret/HttpOnly cookie's value is strictly filtered out
+    assert.notInclude(actionResponses[1].output, 'secret-value');
+  });
+
   it('getStorageValues truncates large values to 10000 characters', async () => {
     const aidaClient = mockAidaClient([
       [{
@@ -220,6 +413,69 @@ describeWithMockConnection('StorageAgent', function() {
     assert.strictEqual(actionResponse.code, 'listPageOrigins()');
     assert.include(actionResponse.output, 'https://example.com');
   });
+
+  describe('findFrameForOrigin', () => {
+    it('returns the frame if it belongs to the same page target and has the primary origin', () => {
+      const PRIMARY_ORIGIN = 'https://example.com';
+      const context = new AiAssistance.StorageAgent.StorageContext(
+          new AiAssistance.StorageItem.CookieItem(PRIMARY_ORIGIN, PRIMARY_ORIGIN));
+
+      const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(primaryTarget);
+
+      const frame = AiAssistance.StorageAgent.findFrameForOrigin(context, PRIMARY_ORIGIN);
+      assert.exists(frame);
+      assert.strictEqual(frame.securityOrigin, PRIMARY_ORIGIN);
+    });
+
+    it('returns the frame if it has a different origin but belongs to the same page target (iframe)', () => {
+      const PRIMARY_ORIGIN = 'https://example.com';
+      const DIFFERENT_ORIGIN = 'https://different.com';
+      const context = new AiAssistance.StorageAgent.StorageContext(
+          new AiAssistance.StorageItem.CookieItem(PRIMARY_ORIGIN, PRIMARY_ORIGIN));
+
+      const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(primaryTarget);
+
+      const resourceTreeModel = primaryTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel);
+
+      // Create a subframe and navigate it to set its origin
+      const differentFrame =
+          resourceTreeModel.frameAttached('different' as Protocol.Page.FrameId, 'main' as Protocol.Page.FrameId);
+      assert.exists(differentFrame);
+      navigate(differentFrame, {url: urlString`${DIFFERENT_ORIGIN}/`, securityOrigin: DIFFERENT_ORIGIN});
+
+      const frame = AiAssistance.StorageAgent.findFrameForOrigin(context, DIFFERENT_ORIGIN);
+      assert.exists(frame);
+      assert.strictEqual(frame.securityOrigin, DIFFERENT_ORIGIN);
+      assert.deepEqual(differentFrame, frame);
+    });
+
+    it('returns null if the origin frame belongs to a different page target', () => {
+      const PRIMARY_ORIGIN = 'https://example.com';
+      const DIFFERENT_ORIGIN = 'https://different.com';
+      const context = new AiAssistance.StorageAgent.StorageContext(
+          new AiAssistance.StorageItem.CookieItem(PRIMARY_ORIGIN, PRIMARY_ORIGIN));
+
+      const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(primaryTarget);
+
+      // 1. Create a new target representing a different page target
+      const differentTarget = SDK.TargetManager.TargetManager.instance().createTarget(
+          'different' as Protocol.Target.TargetID, 'different', SDK.Target.Type.FRAME, null);
+      differentTarget.setInspectedURL(urlString`${DIFFERENT_ORIGIN}`);
+
+      // 2. Create a main frame on the different target and navigate it
+      const differentFrame = getMainFrame(differentTarget);
+      navigate(differentFrame, {url: urlString`${DIFFERENT_ORIGIN}/`, securityOrigin: DIFFERENT_ORIGIN});
+
+      // 3. Verify it returns null because DIFFERENT_ORIGIN is on differentTarget
+      const frame = AiAssistance.StorageAgent.findFrameForOrigin(context, DIFFERENT_ORIGIN);
+      assert.isNull(frame);
+    });
+  });
+
   describe('resolveDOMStorages', () => {
     it('returns active matching DOM storage instances in the active tab', () => {
       const context = new AiAssistance.StorageAgent.StorageContext(new AiAssistance.StorageItem.DOMStorageItem(
@@ -249,6 +505,61 @@ describeWithMockConnection('StorageAgent', function() {
       const nonMatching = AiAssistance.StorageAgent.resolveDOMStorages(
           context, 'localStorage', 'https://example.com', 'https://different-partition/');
       assert.lengthOf(nonMatching, 0);
+    });
+  });
+
+  describe('getCookiesForDomain', () => {
+    it('returns cookies for domain, strictly filtering out HttpOnly ones', async () => {
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      assert.exists(target);
+      const cookieModel = target.model(SDK.CookieModel.CookieModel);
+      assert.exists(cookieModel);
+
+      const publicCookie = new SDK.Cookie.Cookie('public-cookie', 'public-value');
+      publicCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+      publicCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+
+      const secretCookie = new SDK.Cookie.Cookie('secret-cookie', 'secret-value');
+      secretCookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+      secretCookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+      secretCookie.addAttribute(SDK.Cookie.Attribute.HTTP_ONLY);
+
+      sinon.stub(cookieModel, 'getCookiesForDomain').withArgs('https://example.com').resolves([
+        publicCookie, secretCookie
+      ]);
+
+      const cookies = await AiAssistance.StorageAgent.getCookiesForDomain(target, 'https://example.com');
+      assert.exists(cookies);
+      assert.lengthOf(cookies, 1, 'HttpOnly cookies must be filtered out');
+      assert.strictEqual(cookies[0].name(), 'public-cookie');
+    });
+  });
+
+  describe('StorageContext', () => {
+    it('correctly formats the title for DOMStorageItem with a key', () => {
+      const item = new AiAssistance.StorageItem.DOMStorageItem(
+          'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage', 'key1');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      assert.strictEqual(context.getTitle(), 'entry: key1 https://example.com');
+    });
+
+    it('correctly formats the title for DOMStorageItem without a key', () => {
+      const item = new AiAssistance.StorageItem.DOMStorageItem(
+          'https://example.com', 'https://example.com', 'https://example.com/', 'localStorage');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      assert.strictEqual(context.getTitle(), 'storage: https://example.com');
+    });
+
+    it('correctly formats the title for CookieItem with a name', () => {
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com', 'cookie1');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      assert.strictEqual(context.getTitle(), 'cookie: cookie1 https://example.com');
+    });
+
+    it('correctly formats the title for CookieItem without a name', () => {
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      assert.strictEqual(context.getTitle(), 'cookies: https://example.com');
     });
   });
 });

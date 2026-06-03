@@ -140,6 +140,7 @@ devtools_entrypoint("bundle") {
     ":application",
     ":css_files",
     "../../ui/legacy:css_files",
+    "../../ui/legacy/components/data_grid:css_files",
   ]
 
   visibility = [

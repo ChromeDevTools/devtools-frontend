@@ -1,0 +1,20 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.data-grid-data-grid-node .ai-button-container {
+  display: none;
+  float: right;
+
+  devtools-floating-button {
+    position: absolute;
+    z-index: 999;
+    margin-left: -17px;
+  }
+}
+
+.data-grid-data-grid-node:hover .ai-button-container {
+  display: inline-flex;
+}

@@ -4,11 +4,12 @@
 
 import {assert} from 'chai';
 
+import * as i18n from '../../core/i18n/i18n.js';
 import {
   raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -16,6 +17,15 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Application from './application.js';
 
 describeWithEnvironment('KeyValueStorageItemsView', () => {
+  before(() => {
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'ai-assistance.storage-floating-button',
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+      title: i18n.i18n.lockedLazyString('Ask AI'),
+    });
+  });
+  setupActionRegistry();
+
   let keyValueStorageItemsView: Application.KeyValueStorageItemsView.KeyValueStorageItemsView;
   let viewFunction: ViewFunctionStub<typeof Application.KeyValueStorageItemsView.KeyValueStorageItemsView>;
 
@@ -46,6 +56,9 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     }
     override createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
       return createPreviewFunc(key, value);
+    }
+    override isAiButtonEnabled(): boolean {
+      return UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.storage-floating-button');
     }
   }
 
@@ -114,5 +127,20 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     // Check preview was updated.
     await raf();
     assert.include(viewFunction.input.preview.element.innerText, `${key}:newValue`);
+  });
+
+  it('clicking Ask AI button triggers the action', () => {
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+    const action = actionRegistry.getAction('ai-assistance.storage-floating-button');
+    const executeStub = sinon.stub(action, 'execute');
+
+    keyValueStorageItemsView.performUpdate();
+
+    const dummyEvent = new Event('click');
+    viewFunction.input.onAiButtonClick?.(MOCK_ITEMS[0], dummyEvent);
+
+    sinon.assert.calledOnce(executeStub);
+
+    executeStub.restore();
   });
 });

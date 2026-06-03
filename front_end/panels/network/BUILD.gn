@@ -120,6 +120,7 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":network",
+    "../../ui/legacy/components/data_grid:css_files",
     "../../ui/legacy/components/object_ui:css_files",
   ]
 

@@ -2732,6 +2732,7 @@ grd_files_unbundled_sources = [
   "front_end/ui/legacy/components/data_grid/SortableDataGrid.js",
   "front_end/ui/legacy/components/data_grid/ViewportDataGrid.js",
   "front_end/ui/legacy/components/data_grid/dataGrid.css.js",
+  "front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js",
   "front_end/ui/legacy/components/inline_editor/AnimationTimingModel.js",
   "front_end/ui/legacy/components/inline_editor/AnimationTimingUI.js",
   "front_end/ui/legacy/components/inline_editor/BezierEditor.js",

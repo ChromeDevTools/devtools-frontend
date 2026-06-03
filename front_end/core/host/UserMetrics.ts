@@ -496,7 +496,8 @@ export enum Action {
   AiCodeGenerationRequestTriggeredFromSources = 205,
   AiCodeCompletionFreCompletedFromConsole = 206,
   AiCodeCompletionFreCompletedFromSources = 207,
-  MAX_VALUE = 208,
+  AiAssistanceOpenedFromStoragePanelFloatingButton = 208,
+  MAX_VALUE = 209,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

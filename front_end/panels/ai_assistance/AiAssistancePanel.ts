@@ -1576,6 +1576,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.FILE;
         break;
       }
+      case 'ai-assistance.storage-floating-button': {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromStoragePanelFloatingButton);
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE;
+        break;
+      }
     }
 
     if (!targetConversationType) {

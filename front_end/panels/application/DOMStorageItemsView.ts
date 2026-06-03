@@ -205,6 +205,10 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
     UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
 
+  protected override isAiButtonEnabled(): boolean {
+    return UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.storage-floating-button');
+  }
+
   protected removeItem(key: string): void {
     this.domStorage?.removeItem(key);
   }

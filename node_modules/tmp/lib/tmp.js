@@ -466,7 +466,7 @@ function _resolvePath(name, tmpDir, cb) {
         cb(null, path.join(parentDir, path.basename(pathToResolve)));
       });
     } else {
-      fs.realpath(path, cb);
+      fs.realpath(pathToResolve, cb);
     }
   });
 }

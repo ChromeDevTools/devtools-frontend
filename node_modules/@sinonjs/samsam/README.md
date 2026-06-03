@@ -8,6 +8,16 @@ Value identification and comparison functions
 
 Documentation: http://sinonjs.github.io/samsam/
 
+## Compatibility
+
+Follows the same compatibility approach as the rest of the Sinon libraries: essentially the last 2 versions of evergreen browsers and the maintained runtimes of Node. See the [compatibility docs for the main Sinon project](https://github.com/sinonjs/sinon/blob/main/COMPATIBILITY.md) for detailed information.
+
+## Testing
+
+- Run `npm test` for the Node.js test suite.
+- Run `npm run test-headless` for the browser-bundled `@mochify/cli` suite.
+- In restricted environments, `npm run test-headless` may need unsandboxed access to launch Chrome through Puppeteer. If the browser fails to start before any specs run, retry it with normal system browser access.
+
 ## Backers
 
 Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/sinon#backer)]

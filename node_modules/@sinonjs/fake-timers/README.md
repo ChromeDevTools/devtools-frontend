@@ -16,18 +16,12 @@ clock - and a `process.hrtime` shim that works with the clock.
 situations where you want the scheduling semantics, but don't want to actually
 wait.
 
-`@sinonjs/fake-timers` is extracted from [Sinon.JS](https://github.com/sinonjs/sinon.js) and targets
-the [same runtimes](https://sinonjs.org/releases/latest/#supported-runtimes).
+`@sinonjs/fake-timers` is an integral part of [Sinon.JS](https://github.com/sinonjs/sinon.js) and targets
+the [same runtimes](https://sinonjs.org/releases/latest#compatibility-and-supported-runtimes).
 
 ## Autocomplete, IntelliSense and TypeScript definitions
 
-Version 7 introduced JSDoc to the codebase. This should provide autocomplete and type suggestions in supporting IDEs. If
-you need more elaborate type support, TypeScript definitions for the Sinon projects are independently maintained by the
-Definitely Types community:
-
-```
-npm install -D @types/sinonjs__fake-timers
-```
+`@sinonjs/fake-timers` ships with built-in type definitions generated from JSDoc. This provides autocomplete and type suggestions in supporting IDEs and TypeScript projects without requiring external `@types` packages.
 
 ## Installation
 
@@ -146,6 +140,12 @@ setTimeout(() => {
 }, 50);
 ```
 
+In addition to the above, mocked time can be configured to advance more quickly
+using `clock.setTickMode({ mode: "nextAsync" });`. With this mode, the clock
+advances to the first scheduled timer and fires it, in a loop. Between each timer,
+it will also break the event loop, allowing any scheduled promise
+callbacks to execute _before_ running the next one.
+
 ## API Reference
 
 ### `var clock = FakeTimers.createClock([now[, loopLimit]])`
@@ -153,7 +153,7 @@ setTimeout(() => {
 Creates a clock. The default
 [epoch](https://en.wikipedia.org/wiki/Epoch_%28reference_date%29) is `0`.
 
-The `now` argument may be a number (in milliseconds) or a Date object.
+The `now` argument may be a number (in milliseconds), a `Date` object, a `Temporal.Instant`, or a `Temporal.ZonedDateTime`.
 
 The `loopLimit` argument sets the maximum number of timers that will be run when calling `runAll()` before assuming that
 we have an infinite loop and throwing an error. The default is `1000`.
@@ -166,15 +166,39 @@ and [timers/promises](https://nodejs.org/api/timers.html#timers-promises-api) mo
 using global scope.
 The following configuration options are available
 
-| Parameter                        | Type        | Default                                                                                                                                                                                                                        | Description                                                                                                                                                                                                                                                            |
-| -------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config.now`                     | Number/Date | 0                                                                                                                                                                                                                              | installs FakeTimers with the specified unix epoch                                                                                                                                                                                                                      |
-| `config.toFake`                  | String[]    | ["setTimeout", "clearTimeout", "setImmediate", "clearImmediate","setInterval", "clearInterval", "Date", "requestAnimationFrame", "cancelAnimationFrame", "requestIdleCallback", "cancelIdleCallback", "hrtime", "performance"] | an array with explicit function names (or objects, in the case of "performance") to hijack. \_When not set, FakeTimers will automatically fake all methods e.g., `FakeTimers.install({ toFake: ["setTimeout","nextTick"]})` will fake only `setTimeout` and `nextTick` |
-| `config.loopLimit`               | Number      | 1000                                                                                                                                                                                                                           | the maximum number of timers that will be run when calling runAll()                                                                                                                                                                                                    |
-| `config.shouldAdvanceTime`       | Boolean     | false                                                                                                                                                                                                                          | tells FakeTimers to increment mocked time automatically based on the real system time shift (e.g. the mocked time will be incremented by 20ms for every 20ms change in the real system time)                                                                           |
-| `config.advanceTimeDelta`        | Number      | 20                                                                                                                                                                                                                             | relevant only when using with `shouldAdvanceTime: true`. increment mocked time by `advanceTimeDelta` ms every `advanceTimeDelta` ms change in the real system time.                                                                                                    |
-| `config.shouldClearNativeTimers` | Boolean     | false                                                                                                                                                                                                                          | tells FakeTimers to clear 'native' (i.e. not fake) timers by delegating to their respective handlers. These are not cleared by default, leading to potentially unexpected behavior if timers existed prior to installing FakeTimers.                                   |
-| `config.ignoreMissingTimers`     | Boolean     | false                                                                                                                                                                                                                          | tells FakeTimers to ignore missing timers that might not exist in the given environment                                                                                                                                                                                |
+| Parameter                        | Type                                                | Default                                                                                                                                                                                                                                                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| -------------------------------- | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config.now`                     | Number/Date/Temporal.Instant/Temporal.ZonedDateTime | 0                                                                                                                                                                                                                                                                                                               | installs FakeTimers with the specified unix epoch                                                                                                                                                                                                                                                                                                                                                                                     |
+| `config.toFake`                  | String[]                                            | ["setTimeout", "clearTimeout", "setInterval", "clearInterval", "Date"] plus, when natively available: "setImmediate", "clearImmediate", "hrtime", "nextTick", "performance", "requestAnimationFrame", "queueMicrotask", "cancelAnimationFrame", "requestIdleCallback", "cancelIdleCallback", "Intl", "Temporal" | an array with explicit function names (or objects, in the case of "performance") to hijack. When not set, FakeTimers will automatically fake all methods e.g., `FakeTimers.install({ toFake: ["setTimeout","nextTick"]})` will fake only `setTimeout` and `nextTick`. Cannot be combined with `config.toNotFake`. `"Temporal"` fakes all `Temporal.Now.*` methods (requires Node 26+ or an environment with native Temporal support). |
+| `config.toNotFake`               | String[]                                            | []                                                                                                                                                                                                                                                                                                              | an array with explicit function names that should remain native. When set, FakeTimers will fake every other supported method e.g., `FakeTimers.install({ toNotFake: ["Date"] })` fakes all supported methods except `Date`. Cannot be combined with `config.toFake`.                                                                                                                                                                  |
+| `config.loopLimit`               | Number                                              | 1000                                                                                                                                                                                                                                                                                                            | the maximum number of timers that will be run when calling runAll()                                                                                                                                                                                                                                                                                                                                                                   |
+| `config.shouldAdvanceTime`       | Boolean                                             | false                                                                                                                                                                                                                                                                                                           | tells FakeTimers to increment mocked time automatically based on the real system time shift (e.g. the mocked time will be incremented by 20ms for every 20ms change in the real system time)                                                                                                                                                                                                                                          |
+| `config.advanceTimeDelta`        | Number                                              | 20                                                                                                                                                                                                                                                                                                              | relevant only when using with `shouldAdvanceTime: true`. increment mocked time by `advanceTimeDelta` ms every `advanceTimeDelta` ms change in the real system time.                                                                                                                                                                                                                                                                   |
+| `config.shouldClearNativeTimers` | Boolean                                             | false                                                                                                                                                                                                                                                                                                           | tells FakeTimers to clear 'native' (i.e. not fake) timers by delegating to their respective handlers. These are not cleared by default, leading to potentially unexpected behavior if timers existed prior to installing FakeTimers.                                                                                                                                                                                                  |
+| `config.ignoreMissingTimers`     | Boolean                                             | false                                                                                                                                                                                                                                                                                                           | tells FakeTimers to ignore missing timers that might not exist in the given environment                                                                                                                                                                                                                                                                                                                                               |
+
+### `clock.setTickMode(mode)`
+
+Allows configuring how the clock advances time, automatically or manually.
+
+There are 3 different types of modes for advancing timers:
+
+- `{mode: 'manual'}`: Timers do not advance without explicit, manual calls to the tick
+  APIs (`clock.nextAsync`, `clock.runAllAsync`, etc). This mode is equivalent to `false`.
+- `{mode: 'nextAsync'}`: The clock will continuously break the event loop, then run the next timer until the mode changes.
+  As a result, tests can be written in a way that is independent from whether fake timers are installed.
+  Tests can always be written to wait for timers to resolve, even when using fake timers.
+- `{mode: 'interval', delta?: <number>}`: This is the same as specifying `shouldAdvanceTime: true` with an `advanceTimeDelta`. If the delta is
+  not specified, 20 will be used by default.
+
+The 'nextAsync' mode differs from `interval` in two key ways:
+
+1.  The microtask queue is allowed to empty between each timer execution,
+    as would be the case without fake timers installed.
+1.  It advances as quickly and as far as necessary. If the next timer in
+    the queue is at 1000ms, it will advance 1000ms immediately whereas interval,
+    without manually advancing time in the test, would take `1000 / advanceTimeDelta`
+    real time to reach and execute the timer.
 
 ### `var id = clock.setTimeout(callback, timeout)`
 
@@ -262,9 +286,10 @@ Only available in browser environments, mimicks performance.now().
 ### `clock.tick(time)` / `await clock.tickAsync(time)`
 
 Advance the clock, firing callbacks if necessary. `time` may be the number of
-milliseconds to advance the clock by or a human-readable string. Valid string
-formats are `"08"` for eight seconds, `"01:00"` for one minute and `"02:34:10"`
-for two hours, 34 minutes and ten seconds.
+milliseconds to advance the clock by, a human-readable string, or a
+`Temporal.Duration` (requires Node 26+ or an environment with native Temporal
+support). Valid string formats are `"08"` for eight seconds, `"01:00"` for one
+minute and `"02:34:10"` for two hours, 34 minutes and ten seconds.
 
 The `tickAsync()` will also break the event loop, allowing any scheduled promise
 callbacks to execute _before_ running the timers.
@@ -332,7 +357,8 @@ callbacks to execute _before_ running the timers.
 This simulates a user changing the system clock while your program is running.
 It affects the current time but it does not in itself cause e.g. timers to fire;
 they will fire exactly as they would have done without the call to
-setSystemTime().
+setSystemTime(). The `now` argument may be a number (in milliseconds), a `Date`
+object, a `Temporal.Instant`, or a `Temporal.ZonedDateTime`.
 
 ### `clock.uninstall()`
 
@@ -392,3 +418,13 @@ npm test-headless
 ## License
 
 BSD 3-clause "New" or "Revised" License (see LICENSE file)
+
+## Contributing
+
+`@sinonjs/fake-timers` uses JSDoc in `src/fake-timers-src.js` as the source of truth for its public types.
+TypeScript declarations are automatically generated from this file. When contributing changes:
+
+- Update JSDoc annotations in `src/fake-timers-src.js` if the public API changes.
+- Run `npm run types:build` to regenerate the declarations in `types/`.
+- Ensure `npm run types:smoke` still passes to validate the generated types.
+- `tsgo` is used as a parallel validation lane to ensure compatibility with future TypeScript versions.

@@ -267,3 +267,23 @@ export class Location {
     this.columnNumber = columnNumber;
   }
 }
+
+export interface RetainingEdge {
+  edgeIndex: number;
+  edgeName: string;
+  edgeType: string;
+  nodeId: number;
+  nodeIndex: number;
+  nodeName: string;
+  distance: number;
+  children: RetainingEdge[];
+}
+
+export interface RetainingPaths {
+  paths: RetainingEdge[];
+  limitsReached: {
+    depth?: boolean,
+    nodes?: boolean,
+    siblings?: boolean,
+  };
+}

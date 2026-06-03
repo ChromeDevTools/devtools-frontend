@@ -363,6 +363,11 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('ignoreNodeInRetainersView', nodeIndex);
   }
 
+  getRetainingPaths(nodeIndex: number, maxDepth?: number, maxNodes?: number, maxSiblings?: number):
+      Promise<HeapSnapshotModel.RetainingPaths> {
+    return this.callMethodPromise('getRetainingPaths', nodeIndex, maxDepth, maxNodes, maxSiblings);
+  }
+
   unignoreNodeInRetainersView(nodeIndex: number): Promise<void> {
     return this.callMethodPromise('unignoreNodeInRetainersView', nodeIndex);
   }

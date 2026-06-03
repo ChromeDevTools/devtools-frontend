@@ -587,6 +587,327 @@ describe('HeapSnapshot', () => {
     }
   });
 
+  async function createMockSnapshotWithGCRoots() {
+    //                  [ root ]
+    //                     |
+    //                     v
+    //                [ (GC roots) ]
+    //                     |
+    //                     v
+    //              [ (Stack roots) ]
+    //               /               \
+    //              /                 \
+    //             v                   v
+    //           [ A ]               [ B ]
+    //             |                 /   \
+    //             v                /     \
+    //          [ A1 ]             /       \
+    //             |              /         \
+    //             v             /           \
+    //          [ A2 ]          /             \
+    //             \           /               \
+    //              v         v                 v
+    //                [ C ]                  [ D ]
+    //                  |
+    //                  v
+    //                [ E ]
+    //
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const gcRoots = new HeapNode('(GC roots)', 0, 'synthetic');
+    const stackRoots = new HeapNode('(Stack roots)', 0, 'synthetic');
+    const aNode = new HeapNode('A');
+    const a1Node = new HeapNode('A1');
+    const a2Node = new HeapNode('A2');
+    const bNode = new HeapNode('B');
+    const cNode = new HeapNode('C');
+    const dNode = new HeapNode('D');
+    const eNode = new HeapNode('E');
+
+    root.linkNode(gcRoots, 'element', 1);
+    gcRoots.linkNode(stackRoots, 'element', 1);
+    stackRoots.linkNode(aNode, 'element', 1);
+    stackRoots.linkNode(bNode, 'element', 2);
+
+    aNode.linkNode(a1Node, 'property', 'aa1');
+    a1Node.linkNode(a2Node, 'property', 'a1a2');
+    a2Node.linkNode(cNode, 'property', 'a2c');
+    bNode.linkNode(cNode, 'property', 'bc');
+    bNode.linkNode(dNode, 'property', 'bd');
+    cNode.linkNode(eNode, 'property', 'ce');
+
+    return await builder.createJSHeapSnapshot();
+  }
+
+  function findNodeIndexByName(snapshot: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot, name: string): number {
+    const nodeIterator = new HeapSnapshotWorker.HeapSnapshot.HeapSnapshotNodeIterator(snapshot.createNode(0));
+    for (; nodeIterator.hasNext(); nodeIterator.next()) {
+      const node = nodeIterator.item();
+      if (node.name() === name) {
+        return node.nodeIndex;
+      }
+    }
+    throw new Error(`Node with name "${name}" not found in snapshot`);
+  }
+
+  it('heapSnapshotRetainingPaths', async () => {
+    const snapshot = await createMockSnapshotWithGCRoots();
+
+    const eNodeIndex = findNodeIndexByName(snapshot, 'E');
+    const {paths: forest, limitsReached} = snapshot.getRetainingPaths(eNodeIndex);
+    assert.deepEqual(limitsReached, {});
+    assert.lengthOf(forest, 1);
+
+    const cNode = forest[0];
+    assert.strictEqual(cNode.nodeName, 'C');
+    // Target E (5) -> C (4) -> B (3) -> stackRoots (2) -> gcRoots (1)
+    // The other path is E (5) -> C (4) -> A2 (5) -> A1 (4) -> A (3) -> stackRoots (2) -> gcRoots (1)
+    assert.strictEqual(cNode.distance, 4);
+    assert.strictEqual(cNode.edgeName, 'ce');
+    assert.isNumber(cNode.edgeIndex);
+    assert.lengthOf(cNode.children, 2);
+
+    cNode.children.sort((a, b) => a.nodeName.localeCompare(b.nodeName));
+
+    // A2 Node (direct child of C, alphabetically first) - distance 5
+    const a2Node = cNode.children[0];
+    assert.strictEqual(a2Node.nodeName, 'A2');
+    assert.strictEqual(a2Node.distance, 5);
+    assert.strictEqual(a2Node.edgeName, 'a2c');
+    assert.lengthOf(a2Node.children, 1);
+
+    // A2's child: A1 Node - distance 4
+    const a1Node = a2Node.children[0];
+    assert.strictEqual(a1Node.nodeName, 'A1');
+    assert.strictEqual(a1Node.distance, 4);
+    assert.strictEqual(a1Node.edgeName, 'a1a2');
+    assert.lengthOf(a1Node.children, 1);
+
+    // A1's child: A Node - distance 3
+    const aNode = a1Node.children[0];
+    assert.strictEqual(aNode.nodeName, 'A');
+    assert.strictEqual(aNode.distance, 3);
+    assert.strictEqual(aNode.edgeName, 'aa1');
+    assert.lengthOf(aNode.children, 1);
+
+    // A's child: (Stack roots) (dist 2)
+    const stackRootsFromA = aNode.children[0];
+    assert.strictEqual(stackRootsFromA.nodeName, '(Stack roots)');
+    assert.strictEqual(stackRootsFromA.distance, 2);
+    assert.strictEqual(stackRootsFromA.edgeName, '1');
+    assert.lengthOf(stackRootsFromA.children, 0);
+
+    // B Node (direct child of C) - distance 3
+    const bNode = cNode.children[1];
+    assert.strictEqual(bNode.nodeName, 'B');
+    assert.strictEqual(bNode.distance, 3);
+    assert.strictEqual(bNode.edgeName, 'bc');
+    assert.lengthOf(bNode.children, 1);  // B has 1 child: stackRoots (dist 2)
+
+    // B's child 1: (Stack roots) (dist 2)
+    const stackRootsFromB = bNode.children[0];
+    assert.strictEqual(stackRootsFromB.nodeName, '(Stack roots)');
+    assert.strictEqual(stackRootsFromB.distance, 2);
+    assert.strictEqual(stackRootsFromB.edgeName, '2');
+    assert.lengthOf(stackRootsFromB.children, 0);
+  });
+
+  it('heapSnapshotRetainingPathsIgnoresWeakEdges', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const gcRootsNode = new HeapNode('(GC roots)', 0, 'synthetic');
+    const stackRootsNode = new HeapNode('(Stack roots)', 0, 'synthetic');
+    const aNode = new HeapNode('A');
+    const bNode = new HeapNode('B');
+    const cNode = new HeapNode('C');
+    const weakParent = new HeapNode('WeakParent');
+    const target = new HeapNode('Target');
+
+    root.linkNode(gcRootsNode, 'shortcut', 'gc_roots');
+
+    // Strong path: gcRoots -> stackRoots -> A -> B -> C -> target
+    gcRootsNode.linkNode(stackRootsNode, 'element', 1);
+    stackRootsNode.linkNode(aNode, 'element', 1);
+    aNode.linkNode(bNode, 'property', 'strong_to_b');
+    bNode.linkNode(cNode, 'property', 'strong_to_c');
+    cNode.linkNode(target, 'property', 'strong_to_target');
+
+    // Weak shortcut path: stackRootsNode -> weakParent -> target (weak link to target)
+    stackRootsNode.linkNode(weakParent, 'property', 'weak_to_parent_retaining_edge');
+    weakParent.linkNode(target, 'weak', 'weak_shortcut_to_target');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const targetNodeIndex = findNodeIndexByName(snapshot, 'Target');
+
+    const {paths: forest, limitsReached} = snapshot.getRetainingPaths(targetNodeIndex);
+    assert.deepEqual(limitsReached, {});
+
+    // Target -> C -> B -> A -> stackRoots
+    assert.lengthOf(forest, 1);
+
+    const cRetainer = forest[0];
+    assert.strictEqual(cRetainer.nodeName, 'C');
+    assert.strictEqual(cRetainer.distance, 5);
+    assert.strictEqual(cRetainer.edgeName, 'strong_to_target');
+    assert.lengthOf(cRetainer.children, 1);
+
+    const bRetainer = cRetainer.children[0];
+    assert.strictEqual(bRetainer.nodeName, 'B');
+    assert.strictEqual(bRetainer.distance, 4);
+    assert.strictEqual(bRetainer.edgeName, 'strong_to_c');
+    assert.lengthOf(bRetainer.children, 1);
+
+    const aRetainer = bRetainer.children[0];
+    assert.strictEqual(aRetainer.nodeName, 'A');
+    assert.strictEqual(aRetainer.distance, 3);
+    assert.strictEqual(aRetainer.edgeName, 'strong_to_b');
+    assert.lengthOf(aRetainer.children, 1);
+
+    const stackRootsRetainer = aRetainer.children[0];
+    assert.strictEqual(stackRootsRetainer.nodeName, '(Stack roots)');
+    assert.strictEqual(stackRootsRetainer.distance, 2);
+    assert.strictEqual(stackRootsRetainer.edgeName, '1');
+    assert.lengthOf(stackRootsRetainer.children, 0);
+  });
+
+  it('heapSnapshotRetainingPathsMaxNodes', async () => {
+    const snapshot = await createMockSnapshotWithGCRoots();
+    const targetNodeIndex = findNodeIndexByName(snapshot, 'E');
+
+    // Set maxNodes limit to 4.
+    // E (1) -> C (2) -> B (3) -> stackRoots (4) are allowed.
+    // A2 (5) is reached but truncated.
+    //
+    // Forest produced:
+    //
+    //          [ C (4) ] (edge: ce)
+    //            /
+    //    (bc)   /
+    //          v
+    //      [ B (3) ]
+    //        /
+    //       v
+    //  [ (Stack roots) (2) ]
+    //
+    const {paths: forest, limitsReached} = snapshot.getRetainingPaths(targetNodeIndex, 15, 4);
+    assert.deepEqual(limitsReached, {nodes: true});
+
+    assert.lengthOf(forest, 1);
+
+    const cNode = forest[0];
+    assert.strictEqual(cNode.nodeName, 'C');
+    assert.strictEqual(cNode.distance, 4);
+    assert.lengthOf(cNode.children, 1, 'C should only have B as child, A2 should be truncated');
+
+    const bNode = cNode.children[0];
+    assert.strictEqual(bNode.nodeName, 'B');
+    assert.strictEqual(bNode.distance, 3);
+    assert.lengthOf(bNode.children, 1);
+
+    const stackRoots = bNode.children[0];
+    assert.strictEqual(stackRoots.nodeName, '(Stack roots)');
+    assert.strictEqual(stackRoots.distance, 2);
+    assert.lengthOf(stackRoots.children, 0);
+  });
+
+  it('heapSnapshotRetainingPathsMaxDepth', async () => {
+    const snapshot = await createMockSnapshotWithGCRoots();
+    const targetNodeIndex = findNodeIndexByName(snapshot, 'E');
+
+    // 1. With maxDepth = 3, the path E -> C -> B -> stackRoots (3 edges) should be found.
+    const {paths: forest, limitsReached} = snapshot.getRetainingPaths(targetNodeIndex, 3);
+    assert.deepEqual(limitsReached, {depth: true});
+    assert.lengthOf(forest, 1, 'Should find the path with maxDepth = 3');
+
+    const cNode = forest[0];
+    assert.strictEqual(cNode.nodeName, 'C');
+    assert.lengthOf(cNode.children, 1);
+    const bNode = cNode.children[0];
+    assert.strictEqual(bNode.nodeName, 'B');
+    assert.lengthOf(bNode.children, 1);
+    const stackRoots = bNode.children[0];
+    assert.strictEqual(stackRoots.nodeName, '(Stack roots)');
+
+    // 2. With maxDepth = 2, the path should be truncated (empty forest because C is rejected at depth 0).
+    const {paths: truncatedForest, limitsReached: truncatedLimits} = snapshot.getRetainingPaths(targetNodeIndex, 2);
+    assert.deepEqual(truncatedLimits, {depth: true});
+    assert.lengthOf(truncatedForest, 0, 'Should not find the path with maxDepth = 2');
+  });
+
+  it('heapSnapshotRetainingPathsMaxSiblings', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+    const gcRoots = new HeapNode('(GC roots)', 0, 'synthetic');
+    const stackRoots = new HeapNode('(Stack roots)', 0, 'synthetic');
+    root.linkNode(gcRoots, 'element', 1);
+    gcRoots.linkNode(stackRoots, 'element', 1);
+    const target = new HeapNode('Target');
+
+    const siblingCount = 105;
+    for (let i = 0; i < siblingCount; i++) {
+      const parentNode = new HeapNode('Parent' + i);
+      stackRoots.linkNode(parentNode, 'property', 'stack_to_p' + i);
+      parentNode.linkNode(target, 'property', 'p' + i + '_to_target');
+    }
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const targetNodeIndex = findNodeIndexByName(snapshot, 'Target');
+
+    // 1. Test Default Sibling Limit (should be 100)
+    const {paths: defaultForest, limitsReached: defaultLimits} = snapshot.getRetainingPaths(targetNodeIndex);
+    assert.deepEqual(defaultLimits, {siblings: true});
+    assert.lengthOf(defaultForest, 100, 'Children count should be capped at default 100');
+
+    // 2. Test Custom Sibling Limit (setting maxSiblings explicitly to 5)
+    const {paths: customForest, limitsReached: customLimits} = snapshot.getRetainingPaths(targetNodeIndex, 15, 5000, 5);
+    assert.deepEqual(customLimits, {siblings: true});
+    assert.lengthOf(customForest, 5, 'Children count should be capped at custom 5');
+  });
+
+  it('heapSnapshotRetainingPathsMaxSiblingsWithMiddle', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+    const gcRoots = new HeapNode('(GC roots)', 0, 'synthetic');
+    const stackRoots = new HeapNode('(Stack roots)', 0, 'synthetic');
+    root.linkNode(gcRoots, 'element', 1);
+    gcRoots.linkNode(stackRoots, 'element', 1);
+    const target = new HeapNode('Target');
+    const middle = new HeapNode('Middle');
+    stackRoots.linkNode(middle, 'property', 'stack_to_middle');
+
+    const siblingCount = 105;
+    for (let i = 0; i < siblingCount; i++) {
+      const parentNode = new HeapNode('Parent' + i);
+      middle.linkNode(parentNode, 'property', 'middle_to_p' + i);
+      parentNode.linkNode(target, 'property', 'p' + i + '_to_target');
+    }
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const targetNodeIndex = findNodeIndexByName(snapshot, 'Target');
+
+    const {paths: forest, limitsReached} = snapshot.getRetainingPaths(targetNodeIndex);
+    assert.deepEqual(limitsReached, {siblings: true});
+    // Here we should only have one retaining path. Non-root edges get deduplicated.
+    assert.lengthOf(forest, 1, 'Should only get 1 retaining path due to shared Middle node');
+
+    const parentNode = forest[0];
+    assert.strictEqual(parentNode.nodeName, 'Parent104');
+    assert.lengthOf(parentNode.children, 1);
+
+    const middleNode = parentNode.children[0];
+    assert.strictEqual(middleNode.nodeName, 'Middle');
+    assert.lengthOf(middleNode.children, 1);
+
+    const stackRootsNode = middleNode.children[0];
+    assert.strictEqual(stackRootsNode.nodeName, '(Stack roots)');
+    assert.lengthOf(stackRootsNode.children, 0);
+  });
+
   it('heapSnapshotAggregates', async () => {
     const snapshot = await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(createHeapSnapshotMock());
     const expectedAggregates: Record<string, Partial<HeapSnapshotModel.HeapSnapshotModel.AggregatedInfo>> = {

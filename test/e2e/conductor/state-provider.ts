@@ -133,13 +133,28 @@ export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E
     return Array.from(new Set(arr1 ?? []).union(new Set(arr2 ?? [])));
   }
 
+  const enableScreenshotAssertion = s1.enableScreenshotAssertion ?? s2.enableScreenshotAssertion;
+  let dockingMode = s1.dockingMode ?? s2.dockingMode;
+
+  if (enableScreenshotAssertion) {
+    // We explicitly check `s1.dockingMode` (the suite-specific settings) rather than the merged
+    // `dockingMode` variable. This is because the default fallback setting is 'right', and we
+    // only want to throw an error if the user explicitly requested a conflicting mode in their setup().
+    if (s1.dockingMode && s1.dockingMode !== 'undocked') {
+      throw new Error(`Cannot enable screenshot assertions with explicitly set docking mode '${
+          s1.dockingMode}'. Screenshot assertions require 'undocked' mode.`);
+    }
+    dockingMode = 'undocked';
+  }
+
   return {
     enabledFeatures: mergeAsSet(s1.enabledFeatures, s2.enabledFeatures),
     disabledFeatures: mergeAsSet(s1.disabledFeatures, s2.disabledFeatures),
     enabledDevToolsExperiments: mergeAsSet(s1.enabledDevToolsExperiments, s2.enabledDevToolsExperiments),
     disabledDevToolsExperiments: mergeAsSet(s1.disabledDevToolsExperiments, s2.disabledDevToolsExperiments),
     devToolsSettings: {...(s2.devToolsSettings ?? {}), ...(s1.devToolsSettings ?? {})},
-    dockingMode: s1.dockingMode ?? s2.dockingMode,
+    dockingMode,
     panel: s1.panel ?? s2.panel,
+    enableScreenshotAssertion,
   };
 }

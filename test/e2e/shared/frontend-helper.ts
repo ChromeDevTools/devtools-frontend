@@ -28,6 +28,7 @@ interface DevToolsReloadParams {
 let heapSnapshotCounter = 0;
 export class DevToolsPage extends PageWrapper {
   screenshotLog: Record<string, string> = {};
+  screenshotAssertionsEnabled = false;
   #currentHighlightedElement?: HighlightedElement;
   #cdpSession?: puppeteer.CDPSession;
 
@@ -65,6 +66,9 @@ export class DevToolsPage extends PageWrapper {
   override async reload(options?: puppeteer.WaitForOptions) {
     await super.reload(options);
     await this.ensureReadyForTesting();
+    if (this.screenshotAssertionsEnabled) {
+      await setupTestFonts(this);
+    }
   }
 
   /**
@@ -464,6 +468,11 @@ export interface DevtoolsSettings {
    * To reload into a panel use {@link DevToolsPage.reloadWithParams}
    */
   panel?: string;
+  /**
+   * When enabled, enforces 'undocked' mode and installs the Roboto test fonts
+   * to ensure visual consistency across different environments.
+   */
+  enableScreenshotAssertion?: boolean;
 }
 
 export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
@@ -473,6 +482,7 @@ export const DEFAULT_DEVTOOLS_SETTINGS: DevtoolsSettings = {
     veLogsTestMode: true,
   },
   dockingMode: 'right',
+  enableScreenshotAssertion: false,
 };
 
 /**
@@ -550,11 +560,64 @@ async function setDockingSide(devToolsPage: DevToolsPage, side: string) {
   `);
 }
 
+async function setupTestFonts(devToolsPage: DevToolsPage) {
+  await devToolsPage.evaluate(async () => {
+    document.documentElement.classList.add('platform-screenshot-test');
+
+    await new Promise((resolve, reject) => {
+      const timer = window.setTimeout(
+          () => reject(new Error('Failing loading the fonts from the network')),
+          5000,
+      );
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap';
+      link.onload = ev => {
+        clearTimeout(timer);
+        resolve(ev);
+      };
+      link.onerror = ev => {
+        clearTimeout(timer);
+        reject(ev);
+      };
+      document.head.appendChild(link);
+    });
+
+    const loadFontsPromise = Promise
+                                 .all([
+                                   document.fonts.load('400 16px "Roboto"'),  // Normal
+                                   document.fonts.load('500 16px "Roboto"'),  // Medium
+                                   document.fonts.load('700 16px "Roboto"'),  // Bold
+                                   document.fonts.load('italic 400 16px "Roboto"'),
+                                   document.fonts.load('italic 500 16px "Roboto"'),
+                                   document.fonts.load('italic 700 16px "Roboto"'),
+                                 ])
+                                 .then(async () => {
+                                   return await document.fonts.ready;
+                                 });
+    await Promise.race([
+      loadFontsPromise,
+      new Promise(
+          (_res, rej) => setTimeout(
+              () => rej(new Error('Failing loading the fonts from the network')),
+              5000,
+              )),
+    ]);
+  });
+}
+
 export async function setupDevToolsPage(
     inspectedPage: InspectedPage,
     settings: DevtoolsSettings,
 ) {
   const frontend = await inspectedPage.page.openDevTools();
+  if (settings.enableScreenshotAssertion) {
+    // DevTools has a strict Content Security Policy. We need to bypass it to load
+    // the external Roboto fonts for visually consistent screenshot assertions.
+    // We need to set it before the 'reload' as afterwards the strict CSP of the
+    // page is final.
+    await frontend.setBypassCSP(true);
+  }
   installPageErrorHandlers(frontend);
   const devToolsPage = new DevToolsPage(frontend);
   await devToolsPage.ensureReadyForTesting();
@@ -574,6 +637,12 @@ export async function setupDevToolsPage(
   ]);
 
   await setDockingSide(devToolsPage, settings.dockingMode);
+
+  if (settings.enableScreenshotAssertion) {
+    devToolsPage.screenshotAssertionsEnabled = true;
+    await setupTestFonts(devToolsPage);
+  }
+
   return devToolsPage;
 }
 

@@ -26,6 +26,7 @@ node_ts_library("helpers") {
     "performance-helpers.ts",
     "quick_open-helpers.ts",
     "recorder-helpers.ts",
+    "screenshot-helpers.ts",
     "security-helpers.ts",
     "settings-helpers.ts",
     "settings-shortcuts-helpers.ts",

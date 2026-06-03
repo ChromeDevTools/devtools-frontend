@@ -3,19 +3,20 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,
   showVerboseMessages,
   waitForConsoleMessagesToBeNonEmpty,
+  waitForLastConsoleMessageToHaveContent,
 } from '../helpers/console-helpers.js';
-import {
-  increaseTimeoutForPerfPanel,
-} from '../helpers/performance-helpers.js';
+import {assertScreenshot} from '../helpers/screenshot-helpers.js';
 
 describe('The Console\'s errors', function() {
-  increaseTimeoutForPerfPanel(this);
+  setup({enableScreenshotAssertion: true});
+
   it('picks up custom exception names ending with \'Error\' and symbolizes stack traces according to source maps',
      async ({
        devToolsPage,
@@ -161,6 +162,55 @@ performActions @ resource-errors.html:8
     assert.strictEqual(lines[0], 'SyntaxError: Unexpected token \'class\' (at buggy-script.js:1:36)');
     for (let i = 1; i < lines.length; i++) {
       assert.notInclude(lines[i], '(at buggy-script.js:1:36)');
+    }
+  });
+
+  it('screenshots various error stack traces from error-demo.html', async ({devToolsPage, inspectedPage}) => {
+    // Make the viewport tall enough to fit all messages so we bypass virtualized scrolling entirely
+    await devToolsPage.page.setViewport({width: 800, height: 3000});
+
+    await inspectedPage.goToResource('console/error-demo.html');
+    await navigateToConsoleTab(devToolsPage);
+    await showVerboseMessages(devToolsPage);
+
+    await waitForLastConsoleMessageToHaveContent(
+        'Demo finished. Please inspect the errors in the Console panel.', devToolsPage);
+
+    // Spell out all the screenshot names so the PRESUBMIT doesn't flag them as obsolete.
+    const errorMatchers = [
+      {matcher: 'Standard Error occurred', file: 'e2e/console/error-demo-1.png'},
+      {matcher: 'Error from ignore-listed library', file: 'e2e/console/error-demo-2.png'},
+      {matcher: 'Error from nested eval', file: 'e2e/console/error-demo-3.png'},
+      {matcher: 'The main error that the user saw', file: 'e2e/console/error-demo-4.png'},
+      {matcher: 'buggy-script.js', file: 'e2e/console/error-demo-5.png'},
+      {matcher: 'Unparsable Error Demo', file: 'e2e/console/error-demo-6.png'},
+      {matcher: 'JS error called from Wasm', file: 'e2e/console/error-demo-7.png'},
+      {matcher: 'Top-level application error', file: 'e2e/console/error-demo-8.png'},
+      {matcher: 'Class and Method Error', file: 'e2e/console/error-demo-9.png'},
+      {matcher: 'Direct stack log error', file: 'e2e/console/error-demo-10.png'},
+      {matcher: 'Source map Class and Method Error', file: 'e2e/console/error-demo-11.png'},
+    ];
+
+    for (const {matcher, file} of errorMatchers) {
+      const isCase9 = matcher === 'Class and Method Error';
+
+      // We use evaluateHandle instead of a standard text selector to efficiently
+      // filter out a substring conflict (the 'Source map' error contains the same text).
+      const element = await devToolsPage.page.evaluateHandle((text, isCase9) => {
+        const elements = Array.from(document.querySelectorAll('.console-message-wrapper'));
+        for (const el of elements) {
+          const content = el.textContent || '';
+          if (content.includes(text)) {
+            if (isCase9 && content.includes('Source map')) {
+              continue;
+            }
+            return el as HTMLElement;
+          }
+        }
+        throw new Error(`Could not find element with text: ${text}`);
+      }, matcher, isCase9);
+
+      await assertScreenshot(devToolsPage, element as puppeteer.ElementHandle, file);
     }
   });
 });

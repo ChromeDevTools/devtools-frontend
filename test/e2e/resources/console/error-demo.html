@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DevTools Error Rendering Demo</title>
+</head>
+<body>
+    <h1>Error Rendering Demo</h1>
+    <p>This page generates various types of errors to test DevTools console error rendering.</p>
+    <script>
+/**
+ * DevTools Error Rendering Demo Snippet
+ *
+ * This snippet generates various types of errors to test the SymbolizedErrorWidget.
+ * Best run on a clean page like 'about:blank' to avoid CSP issues.
+ * Ensure "Automatically ignore third party scripts" is enabled in DevTools Settings
+ * (usually enabled by default for node_modules).
+ */
+(async function() {
+  console.clear();
+  console.log("%cStarting Error Rendering Demo...", "font-weight: bold; font-size: 1.2em; color: #4caf50;");
+
+  // Helper to run code in a script tag (creates "real" script frames instead of eval)
+  function runInScriptTag(filename, code) {
+    const script = document.createElement('script');
+    script.textContent = `${code}\n//# sourceURL=${filename}`;
+    document.body.appendChild(script);
+    script.remove();
+  }
+
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  // 1. Standard Error
+  console.log("Testing simple error with standard stack frames.");
+  try {
+    (function standardErrorDemo() {
+      function nested3() { throw new Error("Standard Error occurred"); }
+      function nested2() { nested3(); }
+      function nested1() { nested2(); }
+      nested1();
+    })();
+  } catch(e) {
+    console.error(e);
+  }
+
+  // 2. Ignore-listed Frames
+  console.log("Testing ignore-listing. The frames from 'my-lib' (in node_modules) should be hidden by default.");
+  runInScriptTag('http://example.com/node_modules/my-lib/index.js', `
+    window.triggerIgnoredError = function() {
+      function ignoredFunc() {
+        throw new Error("Error from ignore-listed library");
+      }
+      function middleFunc() {
+        ignoredFunc();
+      }
+      middleFunc();
+    }
+  `);
+  try {
+    window.triggerIgnoredError();
+  } catch(e) {
+    console.error(e);
+  }
+  delete window.triggerIgnoredError;
+
+  // 3. Nested Eval Errors
+  console.log("Testing 'eval at' rendering with multiple levels of nesting.");
+  try {
+    eval(`
+      function evalLevel1() {
+        eval(\`
+          function evalLevel2() {
+            throw new Error("Error from nested eval");
+          }
+          evalLevel2();
+          //# sourceURL=http://example.com/internal/eval_level2.js
+        \`);
+      }
+      evalLevel1();
+      //# sourceURL=http://example.com/internal/eval_level1.js
+    `);
+  } catch(e) {
+    console.error(e);
+  }
+
+  // 4. Error with Cause
+  console.log("Testing nested errors using Error.cause.");
+  try {
+    const causeOfCause = new Error("The absolute root cause");
+    const cause = new Error("The intermediate cause", { cause: causeOfCause });
+    throw new Error("The main error that the user saw", { cause: cause });
+  } catch(e) {
+    console.error(e);
+  }
+
+  // 5. SyntaxError
+  console.log("Testing SyntaxError rendering, which should point to the syntax error location.");
+  try {
+    // This will throw a SyntaxError because 'class' is a reserved word and cannot be a variable name
+    eval("function syntaxErrorDemo() { const class = 1; } \n//# sourceURL=http://example.com/buggy-script.js");
+  } catch(e) {
+    console.error(e);
+  }
+
+  // 6. Unparsable Error
+  console.log("Testing fallback for stack traces that do not follow standard formats.");
+  try {
+    const err = new Error("Unparsable Error Demo");
+    Object.defineProperty(err, 'stack', {
+      value: "StrangeError: Something weird happened\n" +
+             "   [custom protocol] -> raw_action_3948\n" +
+             "   at weird-location-without-parens http://example.com/weird:99:99\n" +
+             "   !!! random debug dump !!!"
+    });
+    throw err;
+  } catch(e) {
+    console.error(e);
+  }
+
+  // 7. Wasm Error
+  console.log("Testing WebAssembly frame rendering.");
+  try {
+    // Pre-compiled Wasm module that imports a JS function and calls it to throw an error
+    const hex = "0061736d01000000010401600000020f0103656e76077468726f774a5300000302010007090105637261736800010a0601040010000b";
+    const bytes = new Uint8Array(hex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    const importObject = {
+      env: {
+        throwJS: function() {
+          throw new Error("JS error called from Wasm");
+        }
+      }
+    };
+    const { instance } = await WebAssembly.instantiate(bytes, importObject);
+    instance.exports.crash();
+  } catch(e) {
+    console.error(e);
+  }
+
+  // 8. Mixed Constellation
+  console.log("Testing a complex mix: Main error has cause, cause is in eval, which is inside an ignore-listed file.");
+  runInScriptTag('http://example.com/node_modules/third-party/lib.js', `
+    window.triggerMixedError = function() {
+      try {
+        eval(\`
+          function evalInThirdParty() {
+            const cause = new Error("Root cause inside eval in third-party");
+            throw new Error("Intermediate error inside eval in third-party", { cause });
+          }
+          evalInThirdParty();
+          //# sourceURL=http://example.com/node_modules/third-party/eval.js
+        \`);
+      } catch(e) {
+        throw e;
+      }
+    }
+  `);
+  try {
+    window.triggerMixedError();
+  } catch(e) {
+    console.error(new Error("Top-level application error", { cause: e }));
+  }
+  delete window.triggerMixedError;
+
+  // 9. Class & Method Stack Trace
+  console.log("Testing stack trace containing methods, accessors, private methods, and static variants.");
+  try {
+    class StackTest {
+      static get #staticPrivateAccessor() {
+        throw new Error("Class and Method Error");
+      }
+      static get staticPublicAccessor() {
+        return StackTest.#staticPrivateAccessor;
+      }
+      static #staticPrivateMethod() {
+        return StackTest.staticPublicAccessor;
+      }
+      static staticPublicMethod() {
+        return StackTest.#staticPrivateMethod();
+      }
+
+      get #privateAccessor() {
+        return StackTest.staticPublicMethod();
+      }
+      get publicAccessor() {
+        return this.#privateAccessor;
+      }
+      #privateMethod() {
+        return this.publicAccessor;
+      }
+      publicMethod() {
+        this.#privateMethod();
+      }
+    }
+    const testInstance = new StackTest();
+    testInstance.publicMethod();
+  } catch (e) {
+    console.error(e);
+  }
+
+  // 10. Direct Stack Log (console.log(e.stack))
+  console.log("Testing stack trace logging using console.log(e.stack) directly instead of console.error(e).");
+  try {
+    (function directStackLogDemo() {
+      function step3() { throw new Error("Direct stack log error"); }
+      function step2() { step3(); }
+      function step1() { step2(); }
+      step1();
+    })();
+  } catch (e) {
+    console.log(e.stack);
+  }
+
+  // 11. Source Map Class & Method (eval)
+  console.log("Testing source maps for class/method error.");
+  try {
+    eval(`class StackTest{static get#t(){throw new Error("Source map Class and Method Error")}static get staticPublicAccessor(){return StackTest.#t}static#s(){return StackTest.staticPublicAccessor}static staticPublicMethod(){return StackTest.#s()}get#c(){return StackTest.staticPublicMethod()}get publicAccessor(){return this.#c}#e(){return this.publicAccessor}publicMethod(){this.#e()}}function startClassChain(){new StackTest().publicMethod()}startClassChain();\n//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiY2xhc3NfbWV0aG9kX3NvdXJjZV9tYXAuanMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNsYXNzIFN0YWNrVGVzdCB7XG4gIHN0YXRpYyBnZXQgI3N0YXRpY1ByaXZhdGVBY2Nlc3NvcigpIHtcbiAgICB0aHJvdyBuZXcgRXJyb3IoXCJTb3VyY2UgbWFwIENsYXNzIGFuZCBNZXRob2QgRXJyb3JcIik7XG4gIH1cbiAgc3RhdGljIGdldCBzdGF0aWNQdWJsaWNBY2Nlc3NvcigpIHtcbiAgICByZXR1cm4gU3RhY2tUZXN0LiNzdGF0aWNQcml2YXRlQWNjZXNzb3I7XG4gIH1cbiAgc3RhdGljICNzdGF0aWNQcml2YXRlTWV0aG9kKCkge1xuICAgIHJldHVybiBTdGFja1Rlc3Quc3RhdGljUHVibGljQWNjZXNzb3I7XG4gIH1cbiAgc3RhdGljIHN0YXRpY1B1YmxpY01ldGhvZCgpIHtcbiAgICByZXR1cm4gU3RhY2tUZXN0LiNzdGF0aWNQcml2YXRlTWV0aG9kKCk7XG4gIH1cblxuICBnZXQgI3ByaXZhdGVBY2Nlc3NvcigpIHtcbiAgICByZXR1cm4gU3RhY2tUZXN0LnN0YXRpY1B1YmxpY01ldGhvZCgpO1xuICB9XG4gIGdldCBwdWJsaWNBY2Nlc3NvcigpIHtcbiAgICByZXR1cm4gdGhpcy4jcHJpdmF0ZUFjY2Vzc29yO1xuICB9XG4gICNwcml2YXRlTWV0aG9kKCkge1xuICAgIHJldHVybiB0aGlzLnB1YmxpY0FjY2Vzc29yO1xuICB9XG4gIHB1YmxpY01ldGhvZCgpIHtcbiAgICB0aGlzLiNwcml2YXRlTWV0aG9kKCk7XG4gIH1cbn1cblxuZnVuY3Rpb24gc3RhcnRDbGFzc0NoYWluKCkge1xuICBjb25zdCB0ZXN0SW5zdGFuY2UgPSBuZXcgU3RhY2tUZXN0KCk7XG4gIHRlc3RJbnN0YW5jZS5wdWJsaWNNZXRob2QoKTtcbn1cblxuc3RhcnRDbGFzc0NoYWluKCk7XG4iXSwKICAibWFwcGluZ3MiOiAiQUFBQSxNQUFNLFNBQVUsQ0FDZCxVQUFXQSxJQUF5QixDQUNsQyxNQUFNLElBQUksTUFBTSxtQ0FBbUMsQ0FDckQsQ0FDQSxXQUFXLHNCQUF1QixDQUNoQyxPQUFPLFVBQVVBLEVBQ25CLENBQ0EsTUFBT0MsSUFBdUIsQ0FDNUIsT0FBTyxVQUFVLG9CQUNuQixDQUNBLE9BQU8sb0JBQXFCLENBQzFCLE9BQU8sVUFBVUEsR0FBcUIsQ0FDeEMsQ0FFQSxHQUFJQyxJQUFtQixDQUNyQixPQUFPLFVBQVUsbUJBQW1CLENBQ3RDLENBQ0EsSUFBSSxnQkFBaUIsQ0FDbkIsT0FBTyxLQUFLQSxFQUNkLENBQ0FDLElBQWlCLENBQ2YsT0FBTyxLQUFLLGNBQ2QsQ0FDQSxjQUFlLENBQ2IsS0FBS0EsR0FBZSxDQUN0QixDQUNGLENBRUEsU0FBUyxpQkFBa0IsQ0FDSixJQUFJLFVBQVUsRUFDdEIsYUFBYSxDQUM1QixDQUVBLGdCQUFnQiIsCiAgIm5hbWVzIjogWyIjc3RhdGljUHJpdmF0ZUFjY2Vzc29yIiwgIiNzdGF0aWNQcml2YXRlTWV0aG9kIiwgIiNwcml2YXRlQWNjZXNzb3IiLCAiI3ByaXZhdGVNZXRob2QiXQp9Cg==\n//# sourceURL=http://example.com/class_method_source_map.min.js`);
+  } catch (e) {
+    console.error(e);
+  }
+
+  console.log("%cDemo finished. Please inspect the errors in the Console panel.", "font-weight: bold; color: #4caf50;");
+})();
+
+
+    </script>
+</body>
+</html>

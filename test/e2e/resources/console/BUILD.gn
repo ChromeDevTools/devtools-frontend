@@ -20,6 +20,7 @@ copy_to_gen("console") {
     "data-url-exceptions.html",
     "document-write.html",
     "dom-interactions.html",
+    "error-demo.html",
     "error-with-async-frame.html",
     "escaping.html",
     "focus-interaction.html",

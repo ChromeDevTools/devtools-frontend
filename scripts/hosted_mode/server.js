@@ -4,9 +4,12 @@
 const fs = require('node:fs');
 const https = require('node:https');
 const path = require('node:path');
-const parseURL = require('node:url').parse;
 const promisify = require('node:util').promisify;
 const WebSocketServer = require('ws').Server;
+
+function parseURL(url) {
+  return new URL(url, 'http://localhost');
+}
 
 const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
 const port = parseInt(process.env.PORT, 10);

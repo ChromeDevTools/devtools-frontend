@@ -8,14 +8,13 @@ import http from 'node:http';
 import https from 'node:https';
 import path from 'node:path';
 import {Transform as Stream} from 'node:stream';
-import {parse as parseURL} from 'node:url';
 
 export function fetch(url) {
   return new Promise(fetchPromise);
 
   function fetchPromise(resolve, reject) {
     let request;
-    const protocol = parseURL(url).protocol;
+    const protocol = new URL(url).protocol;
     const handleResponse = getCallback.bind(null, resolve, reject);
     if (protocol === 'https:') {
       request = https.get(url, handleResponse);

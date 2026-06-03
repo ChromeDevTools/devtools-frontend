@@ -244,6 +244,44 @@ describe('Navigation', function() {
       devToolsPage.page.off('console', consoleListener);
     }
   });
+
+  // protocol-error.html is designed to get Lighthouse to send a `DOM.resolveNode` command
+  // that will fail to find a node. This should generate a specific error message that gets
+  // passed through from Puppeteer's connection abstraction into Lighthouse's.
+  //
+  // The link-text and crawlable-anchors audits use the AnchorElements gatherer, so these
+  // audits would error unless we handle protocol errors in a way Puppeteer expects. If we
+  // do handle them, Lighthouse sees the error message and decides to ignore "No node found"
+  // as an expected error case.
+  //
+  // See:
+  //   https://crbug.com/519314068
+  //   https://github.com/GoogleChrome/lighthouse/blob/main/core/gather/driver/dom.js
+  it('successfully returns a Lighthouse report even with expected protocol errors',
+     async ({devToolsPage, inspectedPage}) => {
+       devToolsPage.page.on('console', consoleListener);
+       try {
+         expectErrors();
+
+         await navigateToLighthouseTab('lighthouse/protocol-error.html', devToolsPage, inspectedPage);
+
+         await selectCategories(['seo'], devToolsPage);
+
+         await clickStartButton(devToolsPage);
+
+         const {lhr} = await waitForResult(devToolsPage, inspectedPage);
+
+         const {erroredAudits} = getAuditsBreakdown(lhr);
+         assert.deepEqual(erroredAudits, []);
+
+         assert.strictEqual(lhr.lighthouseVersion, '13.3.0');
+       } catch (e) {
+         console.error(consoleLog.join('\n'));
+         throw e;
+       } finally {
+         devToolsPage.page.off('console', consoleListener);
+       }
+     });
 });
 
 describe('with changed settings', function() {

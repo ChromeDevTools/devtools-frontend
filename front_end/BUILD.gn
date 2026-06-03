@@ -215,6 +215,7 @@ group("unittests") {
     "panels/web_audio:unittests",
     "panels/webauthn:unittests",
     "panels/whats_new:unittests",
+    "services/puppeteer:unittests",
     "services/trace_bounds:unittests",
     "services/tracing:unittests",
     "testing:unittests",

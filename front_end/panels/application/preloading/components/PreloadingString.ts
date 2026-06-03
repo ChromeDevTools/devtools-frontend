@@ -454,6 +454,8 @@ export const PrefetchReasonDescription: Record<string, {name: () => Platform.UIS
   PrefetchNotEligibleRedirectFromServiceWorker: {name: () => i18n.i18n.lockedString('Unknown')},
   PrefetchNotEligibleRedirectToServiceWorker: {name: () => i18n.i18n.lockedString('Unknown')},
   PrefetchEvictedAfterBrowsingDataRemoved: {name: i18nLazyString(UIStrings.PrefetchEvictedAfterBrowsingDataRemoved)},
+  PrefetchNotEligibleBlockedByConnectionAllowlist: {name: () => i18n.i18n.lockedString('Unknown')},
+  PrefetchCancelledOnUserNavigation: {name: () => i18n.i18n.lockedString('Unknown')},
 };
 
 /** Decoding PrefetchFinalStatus prefetchAttempt to failure description. **/
@@ -540,6 +542,10 @@ export function prefetchFailureReason(
       return PrefetchReasonDescription['PrefetchNotEligibleRedirectToServiceWorker'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchEvictedAfterBrowsingDataRemoved:
       return PrefetchReasonDescription['PrefetchEvictedAfterBrowsingDataRemoved'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleBlockedByConnectionAllowlist:
+      return PrefetchReasonDescription['PrefetchNotEligibleBlockedByConnectionAllowlist'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchCancelledOnUserNavigation:
+      return PrefetchReasonDescription['PrefetchCancelledOnUserNavigation'].name();
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

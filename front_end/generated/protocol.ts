@@ -435,6 +435,49 @@ export namespace Accessibility {
   }
 }
 
+/**
+ * A domain for ad-related metrics and data.
+ */
+export namespace Ads {
+
+  /**
+   * Ad metrics for a page.
+   */
+  export interface AdMetrics {
+    /**
+     * The viewport ad density by area, represented as a percentage (an integer
+     * between 0 and 100).
+     */
+    viewportAdDensityByArea: integer;
+    /**
+     * The time-weighted average of the viewport ad density by area, measured
+     * across the duration of the page.
+     */
+    averageViewportAdDensityByArea: number;
+    /**
+     * The number of ads currently visible within the viewport.
+     */
+    viewportAdCount: integer;
+    /**
+     * The time-weighted average of the viewport ad count, measured across the
+     * duration of the page.
+     */
+    averageViewportAdCount: number;
+    /**
+     * The total ad CPU usage, in milliseconds.
+     */
+    totalAdCpuTime: number;
+    /**
+     * The total ad network bytes.
+     */
+    totalAdNetworkBytes: number;
+  }
+
+  export interface GetAdMetricsResponse extends ProtocolResponseWithError {
+    metrics: AdMetrics;
+  }
+}
+
 export namespace Animation {
 
   export const enum AnimationType {
@@ -1389,6 +1432,40 @@ export namespace Audits {
     WellKnownMissingAccountsEndpoint = 'WellKnownMissingAccountsEndpoint',
     UserLoggedOut = 'UserLoggedOut',
     WellKnownAccountsEndpointCrossOrigin = 'WellKnownAccountsEndpointCrossOrigin',
+    AccountsHttpNotFound = 'AccountsHttpNotFound',
+    AccountsNoResponse = 'AccountsNoResponse',
+    AccountsInvalidResponse = 'AccountsInvalidResponse',
+    AccountsInvalidContentType = 'AccountsInvalidContentType',
+    AccountsEmptyList = 'AccountsEmptyList',
+    EmailVerificationWellKnownHttpNotFound = 'EmailVerificationWellKnownHttpNotFound',
+    EmailVerificationWellKnownNoResponse = 'EmailVerificationWellKnownNoResponse',
+    EmailVerificationWellKnownInvalidResponse = 'EmailVerificationWellKnownInvalidResponse',
+    EmailVerificationWellKnownInvalidContentType = 'EmailVerificationWellKnownInvalidContentType',
+    JwksHttpNotFound = 'JwksHttpNotFound',
+    JwksInvalidResponse = 'JwksInvalidResponse',
+    TokenVerificationSdJwtUnsupportedHeaderAlg = 'TokenVerificationSdJwtUnsupportedHeaderAlg',
+    TokenVerificationSdJwtMissingIss = 'TokenVerificationSdJwtMissingIss',
+    TokenVerificationSdJwtMissingIat = 'TokenVerificationSdJwtMissingIat',
+    TokenVerificationSdJwtMissingCnf = 'TokenVerificationSdJwtMissingCnf',
+    TokenVerificationSdJwtMissingEmail = 'TokenVerificationSdJwtMissingEmail',
+    TokenVerificationSdJwtInvalidIssuedAt = 'TokenVerificationSdJwtInvalidIssuedAt',
+    TokenVerificationSdJwtInvalidIssuer = 'TokenVerificationSdJwtInvalidIssuer',
+    TokenVerificationSdJwtJwksMissingKeys = 'TokenVerificationSdJwtJwksMissingKeys',
+    TokenVerificationSdJwtSignatureFailed = 'TokenVerificationSdJwtSignatureFailed',
+    TokenVerificationSdJwtInvalidEmailVerified = 'TokenVerificationSdJwtInvalidEmailVerified',
+    TokenVerificationSdJwtInvalidEmail = 'TokenVerificationSdJwtInvalidEmail',
+    TokenVerificationSdJwtInvalidHolderKey = 'TokenVerificationSdJwtInvalidHolderKey',
+    TokenVerificationKbInvalidTyp = 'TokenVerificationKbInvalidTyp',
+    TokenVerificationKbMissingAud = 'TokenVerificationKbMissingAud',
+    TokenVerificationKbMissingNonce = 'TokenVerificationKbMissingNonce',
+    TokenVerificationKbMissingIat = 'TokenVerificationKbMissingIat',
+    TokenVerificationKbMissingSdHash = 'TokenVerificationKbMissingSdHash',
+    TokenVerificationKbInvalidIssuedAt = 'TokenVerificationKbInvalidIssuedAt',
+    TokenVerificationKbInvalidAudience = 'TokenVerificationKbInvalidAudience',
+    TokenVerificationKbInvalidNonce = 'TokenVerificationKbInvalidNonce',
+    TokenVerificationKbInvalidSdHash = 'TokenVerificationKbInvalidSdHash',
+    TokenVerificationKbMissingCnf = 'TokenVerificationKbMissingCnf',
+    TokenVerificationKbSignatureFailed = 'TokenVerificationKbSignatureFailed',
   }
 
   /**
@@ -4702,6 +4779,7 @@ export namespace DOM {
     Picker = 'picker',
     PermissionIcon = 'permission-icon',
     OverscrollAreaParent = 'overscroll-area-parent',
+    Skeleton = 'skeleton',
   }
 
   /**
@@ -17147,6 +17225,7 @@ export namespace Preload {
     PrefetchIneligibleRetryAfter = 'PrefetchIneligibleRetryAfter',
     PrefetchIsPrivacyDecoy = 'PrefetchIsPrivacyDecoy',
     PrefetchIsStale = 'PrefetchIsStale',
+    PrefetchNotEligibleBlockedByConnectionAllowlist = 'PrefetchNotEligibleBlockedByConnectionAllowlist',
     PrefetchNotEligibleBrowserContextOffTheRecord = 'PrefetchNotEligibleBrowserContextOffTheRecord',
     PrefetchNotEligibleDataSaverEnabled = 'PrefetchNotEligibleDataSaverEnabled',
     PrefetchNotEligibleExistingProxy = 'PrefetchNotEligibleExistingProxy',
@@ -17168,6 +17247,7 @@ export namespace Preload {
     PrefetchResponseUsed = 'PrefetchResponseUsed',
     PrefetchSuccessfulButNotUsed = 'PrefetchSuccessfulButNotUsed',
     PrefetchNotUsedProbeFailed = 'PrefetchNotUsedProbeFailed',
+    PrefetchCancelledOnUserNavigation = 'PrefetchCancelledOnUserNavigation',
   }
 
   /**

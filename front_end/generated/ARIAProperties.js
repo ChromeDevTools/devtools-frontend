@@ -762,10 +762,6 @@ export const config = {
     "spinbutton"
    ],
    "type": "string"
-  },
-  {
-   "name": "aria-virtualcontent",
-   "type": "string"
   }
  ],
  "metadata": {

@@ -599,6 +599,67 @@
             ]
         },
         {
+            "domain": "Ads",
+            "description": "A domain for ad-related metrics and data.",
+            "experimental": true,
+            "dependencies": [
+                "Network",
+                "Page",
+                "Runtime"
+            ],
+            "types": [
+                {
+                    "id": "AdMetrics",
+                    "description": "Ad metrics for a page.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "viewportAdDensityByArea",
+                            "description": "The viewport ad density by area, represented as a percentage (an integer\nbetween 0 and 100).",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "averageViewportAdDensityByArea",
+                            "description": "The time-weighted average of the viewport ad density by area, measured\nacross the duration of the page.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "viewportAdCount",
+                            "description": "The number of ads currently visible within the viewport.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "averageViewportAdCount",
+                            "description": "The time-weighted average of the viewport ad count, measured across the\nduration of the page.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "totalAdCpuTime",
+                            "description": "The total ad CPU usage, in milliseconds.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "totalAdNetworkBytes",
+                            "description": "The total ad network bytes.",
+                            "type": "number"
+                        }
+                    ]
+                }
+            ],
+            "commands": [
+                {
+                    "name": "getAdMetrics",
+                    "description": "Retrieves ad metrics for the current page.",
+                    "returns": [
+                        {
+                            "name": "metrics",
+                            "$ref": "AdMetrics"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "domain": "Animation",
             "experimental": true,
             "dependencies": [
@@ -2008,7 +2069,41 @@
                         "RpOriginIsOpaque",
                         "WellKnownMissingAccountsEndpoint",
                         "UserLoggedOut",
-                        "WellKnownAccountsEndpointCrossOrigin"
+                        "WellKnownAccountsEndpointCrossOrigin",
+                        "AccountsHttpNotFound",
+                        "AccountsNoResponse",
+                        "AccountsInvalidResponse",
+                        "AccountsInvalidContentType",
+                        "AccountsEmptyList",
+                        "EmailVerificationWellKnownHttpNotFound",
+                        "EmailVerificationWellKnownNoResponse",
+                        "EmailVerificationWellKnownInvalidResponse",
+                        "EmailVerificationWellKnownInvalidContentType",
+                        "JwksHttpNotFound",
+                        "JwksInvalidResponse",
+                        "TokenVerificationSdJwtUnsupportedHeaderAlg",
+                        "TokenVerificationSdJwtMissingIss",
+                        "TokenVerificationSdJwtMissingIat",
+                        "TokenVerificationSdJwtMissingCnf",
+                        "TokenVerificationSdJwtMissingEmail",
+                        "TokenVerificationSdJwtInvalidIssuedAt",
+                        "TokenVerificationSdJwtInvalidIssuer",
+                        "TokenVerificationSdJwtJwksMissingKeys",
+                        "TokenVerificationSdJwtSignatureFailed",
+                        "TokenVerificationSdJwtInvalidEmailVerified",
+                        "TokenVerificationSdJwtInvalidEmail",
+                        "TokenVerificationSdJwtInvalidHolderKey",
+                        "TokenVerificationKbInvalidTyp",
+                        "TokenVerificationKbMissingAud",
+                        "TokenVerificationKbMissingNonce",
+                        "TokenVerificationKbMissingIat",
+                        "TokenVerificationKbMissingSdHash",
+                        "TokenVerificationKbInvalidIssuedAt",
+                        "TokenVerificationKbInvalidAudience",
+                        "TokenVerificationKbInvalidNonce",
+                        "TokenVerificationKbInvalidSdHash",
+                        "TokenVerificationKbMissingCnf",
+                        "TokenVerificationKbSignatureFailed"
                     ]
                 },
                 {
@@ -7146,7 +7241,8 @@
                         "details-content",
                         "picker",
                         "permission-icon",
-                        "overscroll-area-parent"
+                        "overscroll-area-parent",
+                        "skeleton"
                     ]
                 },
                 {
@@ -25605,6 +25701,7 @@
                         "PrefetchIneligibleRetryAfter",
                         "PrefetchIsPrivacyDecoy",
                         "PrefetchIsStale",
+                        "PrefetchNotEligibleBlockedByConnectionAllowlist",
                         "PrefetchNotEligibleBrowserContextOffTheRecord",
                         "PrefetchNotEligibleDataSaverEnabled",
                         "PrefetchNotEligibleExistingProxy",
@@ -25625,7 +25722,8 @@
                         "PrefetchProxyNotAvailable",
                         "PrefetchResponseUsed",
                         "PrefetchSuccessfulButNotUsed",
-                        "PrefetchNotUsedProbeFailed"
+                        "PrefetchNotUsedProbeFailed",
+                        "PrefetchCancelledOnUserNavigation"
                     ]
                 },
                 {

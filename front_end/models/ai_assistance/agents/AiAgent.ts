@@ -518,6 +518,14 @@ export abstract class AiAgent<T> {
     this.#facts.clear();
   }
 
+  /**
+   * Clears any subclass-specific caches. This is called when a run encounters
+   * an error (e.g., cross-origin navigation, abort, or execution error) to
+   * prevent unvalidated cached data from being replayed in subsequent runs.
+   */
+  clearCache(): void {
+  }
+
   popPendingMultimodalInput(): MultimodalInput|undefined {
     return undefined;
   }
@@ -1040,6 +1048,7 @@ export abstract class AiAgent<T> {
 
   #createErrorResponse(error: ErrorType): ResponseData {
     this.#removeLastRunParts();
+    this.clearCache();
     if (error !== ErrorType.ABORT) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
     }

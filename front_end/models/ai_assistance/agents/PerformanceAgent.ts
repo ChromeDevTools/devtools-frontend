@@ -729,6 +729,13 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
     yield* super.run(initialQuery, options);
   }
 
+  override clearCache(): void {
+    // Clear the function call cache to prevent stashed tool execution results
+    // (which might contain cross-origin resource content fetched before navigation
+    // was detected) from being replayed as facts in subsequent runs.
+    this.#functionCallCacheForFocus.clear();
+  }
+
   #createFactForTraceSummary(): void {
     if (!this.#formatter) {
       return;

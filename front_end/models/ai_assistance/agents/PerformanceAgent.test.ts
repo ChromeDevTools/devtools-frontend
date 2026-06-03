@@ -760,7 +760,14 @@ code
       const renderBlocking = getInsightOrError('RenderBlocking', parsedTrace.insights, firstNav);
       const agent = createAgentForConversation({
         aidaClient: mockAidaClient([
-          [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}],
+          [
+            {explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}
+          ],                        // Run 1 ('test 1 LCP'), step 1: LLM requests tool execution
+          [{explanation: 'done'}],  // Run 1 ('test 1 LCP'), step 2: LLM receives tool output and finishes
+          [{explanation: 'done'}],  // Run 2 ('test 2 LCP'), step 1: LLM answers immediately (uses cached fact)
+          [
+            {explanation: 'done'}
+          ],  // Run 3 ('test 1 RenderBlocking'), step 1: LLM answers immediately (context changed, no cache)
         ])
       });
       const lcpContext = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
@@ -782,8 +789,10 @@ code
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
       const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
       const agent = createAgentForConversation({
-        aidaClient: mockAidaClient(
-            [[{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}], [{explanation: 'done'}]])
+        aidaClient: mockAidaClient([
+          [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}], [{explanation: 'done'}],
+          [{explanation: 'done'}]
+        ])
       });
       const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
       await Array.fromAsync(agent.run('test 1', {selected: context}));
@@ -800,6 +809,46 @@ code
             'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools', 'devtools',
             'getNetworkTrackSummary({min: 197695826524, max: 197698633660})'
           ]);
+    });
+
+    it('will clear cache on error', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      let originBlocked = false;
+      const agent = new PerformanceAgent.PerformanceAgent({
+        aidaClient: mockAidaClient([
+          // Run 1: calls function
+          [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}], [{explanation: 'done'}],
+          // Run 2: starts, but we will block origin.
+          [{explanation: '', functionCalls: [{name: 'getNetworkTrackSummary', args: {}}]}],
+          // Run 3: after error, we try again.
+          [{explanation: 'done'}]
+        ]),
+        allowedOrigin: () => originBlocked ? {blocked: true} : {origin: 'https://google.com'},
+      });
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      // Run 1: Succeeds.
+      await Array.fromAsync(agent.run('test 1', {selected: context}));
+      const initialFactsCount = agent.currentFacts().size;
+      assert.isTrue(initialFactsCount > 7);
+
+      // Run 2: Simulates navigation before function call.
+      originBlocked = true;
+      const responses = await Array.fromAsync(agent.run('test 2', {selected: context}));
+      const errorResponse = responses.find(r => r.type === AiAgent.ResponseType.ERROR) as AiAgent.ErrorResponse;
+      assert.isOk(errorResponse);
+      assert.strictEqual(errorResponse.error, AiAgent.ErrorType.CROSS_ORIGIN);
+
+      // Run 3: Restore origin.
+      originBlocked = false;
+      await Array.fromAsync(agent.run('test 3', {selected: context}));
+      // Facts should NOT contain the cached function call from Run 1.
+      assert.strictEqual(agent.currentFacts().size, initialFactsCount);
     });
 
     it('yields multiple DOM tree widgets within a single response for the same node', async function() {

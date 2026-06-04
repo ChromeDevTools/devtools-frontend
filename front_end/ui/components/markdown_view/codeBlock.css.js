@@ -56,6 +56,17 @@ export default `/*
   padding-bottom: 10px;
 }
 
+.codeblock.no-toolbar .editor-wrapper {
+  position: relative;
+}
+
+.codeblock.no-toolbar .copy-button-container {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+}
+
 .heading {
   display: flex;
   justify-content: space-between;

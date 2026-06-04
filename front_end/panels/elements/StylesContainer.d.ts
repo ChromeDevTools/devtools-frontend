@@ -42,4 +42,7 @@ export interface StylesContainer {
     setActiveProperty(treeElement: StylePropertyTreeElement | null): void;
     addStyleUpdateListener(listener: () => void): void;
     removeStyleUpdateListener(listener: () => void): void;
+    trackForLazyRendering(element: Element, callback: () => void): void;
+    untrackForLazyRendering(element: Element): void;
+    shouldRenderLazily(): boolean;
 }

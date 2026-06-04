@@ -16,6 +16,7 @@ export declare class CodeBlock extends HTMLElement {
     set header(header: string);
     set showCopyButton(show: boolean);
     set citations(citations: Citation[]);
+    set displayToolbar(value: boolean);
     set displayLimit(value: number);
     get displayLimit(): number;
 }

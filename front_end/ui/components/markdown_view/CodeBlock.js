@@ -118,6 +118,7 @@ export class CodeBlock extends HTMLElement {
     #displayNotice = false;
     #header;
     #showCopyButton = true;
+    #displayToolbar = true;
     #citations = [];
     #displayLimit = Number.MAX_VALUE;
     connectedCallback() {
@@ -130,6 +131,7 @@ export class CodeBlock extends HTMLElement {
             extensions: [
                 TextEditor.Config.baseConfiguration(this.#code),
                 CodeMirror.EditorState.readOnly.of(true),
+                CodeMirror.EditorView.editable.of(false),
                 CodeMirror.EditorView.lineWrapping,
                 this.#languageConf.of(CodeMirror.javascript.javascript()),
                 this.#truncationConf.of([]),
@@ -162,6 +164,10 @@ export class CodeBlock extends HTMLElement {
     }
     set citations(citations) {
         this.#citations = citations;
+    }
+    set displayToolbar(value) {
+        this.#displayToolbar = value;
+        void this.#render();
     }
     set displayLimit(value) {
         this.#displayLimit = value;
@@ -232,16 +238,20 @@ export class CodeBlock extends HTMLElement {
         const linesCount = this.#editorState.doc.lines;
         const isTruncated = linesCount > this.#displayLimit;
         // clang-format off
-        Lit.render(html `<div class='codeblock' jslog=${VisualLogging.section('code')}>
+        Lit.render(html `<div class=${Lit.Directives.classMap({ codeblock: true, 'no-toolbar': !this.#displayToolbar })} jslog=${VisualLogging.section('code')}>
       <style>${styles}</style>
         <div class="editor-wrapper">
-        <div class="heading">
-          <div class="heading-text-wrapper">
-            <h4 class="heading-text">${header}</h4>
-            ${this.#maybeRenderCitations()}
+        ${this.#displayToolbar ? html `
+          <div class="heading">
+            <div class="heading-text-wrapper">
+              <h4 class="heading-text">${header}</h4>
+              ${this.#maybeRenderCitations()}
+            </div>
+            ${this.#showCopyButton ? this.#renderCopyButton() : Lit.nothing}
           </div>
+        ` : html `
           ${this.#showCopyButton ? this.#renderCopyButton() : Lit.nothing}
-        </div>
+        `}
         <div class="code">
           <devtools-text-editor .state=${this.#editorState}></devtools-text-editor>
         </div>

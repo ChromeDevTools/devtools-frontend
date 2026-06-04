@@ -2753,6 +2753,10 @@ var chatMessage_css_default = `/*
     gap: var(--sys-size-2);
   }
 
+  .show-all-container {
+    padding-bottom: 0;
+  }
+
   .js-code-output {
     devtools-code-block {
       --code-block-max-code-height: 50px;
@@ -4714,7 +4718,7 @@ async function makeSourceCodeWidget(widgetData) {
       .displayLimit=${20}
       .code=${code}
       .codeLang=${fileExtension}
-      .header=${" "}
+      .displayToolbar=${false}
       .displayNotice=${false}
     ></devtools-code-block>
   `;

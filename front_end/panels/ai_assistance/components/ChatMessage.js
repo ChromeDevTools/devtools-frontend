@@ -1142,7 +1142,7 @@ async function makeSourceCodeWidget(widgetData) {
       .displayLimit=${20}
       .code=${code}
       .codeLang=${fileExtension}
-      .header=${' '}
+      .displayToolbar=${false}
       .displayNotice=${false}
     ></devtools-code-block>
   `;

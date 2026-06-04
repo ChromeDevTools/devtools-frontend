@@ -126,6 +126,9 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     removeStyleUpdateListener(listener: () => void): void;
     private startToolbarPaneAnimation;
     private createRenderingShortcuts;
+    trackForLazyRendering(element: Element, callback: () => void): void;
+    shouldRenderLazily(): boolean;
+    untrackForLazyRendering(element: Element): void;
 }
 export declare const enum Events {
     INITIAL_UPDATE_COMPLETED = "InitialUpdateCompleted",

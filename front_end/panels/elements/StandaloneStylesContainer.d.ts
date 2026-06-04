@@ -70,5 +70,8 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     jumpToDeclaration(_valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
     addStyleUpdateListener(listener: () => void): void;
     removeStyleUpdateListener(listener: () => void): void;
+    trackForLazyRendering(_element: Element, _callback: () => void): void;
+    shouldRenderLazily(): boolean;
+    untrackForLazyRendering(_element: Element): void;
 }
 export {};

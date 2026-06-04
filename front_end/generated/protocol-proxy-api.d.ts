@@ -20,6 +20,8 @@ declare namespace ProtocolProxyApi {
   export interface ProtocolApi {
     Accessibility: AccessibilityApi;
 
+    Ads: AdsApi;
+
     Animation: AnimationApi;
 
     Audits: AuditsApi;
@@ -132,6 +134,8 @@ declare namespace ProtocolProxyApi {
 
   export interface ProtocolDispatchers {
     Accessibility: AccessibilityDispatcher;
+
+    Ads: AdsDispatcher;
 
     Animation: AnimationDispatcher;
 
@@ -306,6 +310,16 @@ declare namespace ProtocolProxyApi {
      */
     nodesUpdated(params: Protocol.Accessibility.NodesUpdatedEvent): void;
 
+  }
+
+  export interface AdsApi {
+    /**
+     * Retrieves ad metrics for the current page.
+     */
+    invoke_getAdMetrics(): Promise<Protocol.Ads.GetAdMetricsResponse>;
+
+  }
+  export interface AdsDispatcher {
   }
 
   export interface AnimationApi {

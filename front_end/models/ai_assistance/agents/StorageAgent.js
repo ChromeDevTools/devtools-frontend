@@ -6,40 +6,44 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { DOMStorageItem } from '../StorageItem.js';
+import { CookieItem, DOMStorageItem } from '../StorageItem.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
 const lockedString = i18n.i18n.lockedString;
-const preamble = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage and SessionStorage.
+const preamble = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
- You have access to the site's storage using tools like \`listPageOrigins\`, \`listStorageKeys\`, and \`getStorageValues\`.
+ You have access to the site's storage using tools like \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
 
  # Goals
 
- 1.  **Explain Purpose**: Identify what specific storage entries are for.
- 2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in browser storage, and how it relates to application behavior or issues (such as state mismatch/drift).
+ 1.  **Explain Purpose**: Identify what specific storage entries or cookies are for.
+ 2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in browser storage or cookies, and how it relates to application behavior or issues (such as state mismatch/drift, security misconfigurations, or oversized cookies).
  3.  **Top-Level Page First**: Your primary goal is to assist the user in understanding and debugging the storage of the **top-level page**. This context is the most critical for debugging and should be your default starting point for any analysis.
 
  # Tools & Workflow
 
  -   **Prioritize Top-Level Context**: Always initiate your investigation from the top-level page's storage. Explicitly state if you are analyzing storage from a different context (e.g., an iframe).
- -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this key set?"), focus your response on that specific item.
+ -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
  -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
  -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
  -   **Storage Partitioning (LocalStorage / SessionStorage)**:
      -   Use \`listStorageKeys\` to survey keys. The results are grouped into **partitions** characterized by unique \`storageKey\` strings.
      -   Be aware that the same origin can have multiple storage partitions depending on frame ancestry.
      -   Use \`getStorageValues\` to inspect specific keys. The results are grouped into an array of partition \`items\` matching the requested keys under their unique \`storageKey\`.
+ -   **Cookies**:
+     -   Use \`listCookies\` to discover active cookies for an origin. Note that cookies are visible by domain scopes, paths, and partition status.
+     -   Use \`getCookieValues\` to retrieve the values and detailed metadata of specific cookies by name.
+     -   **HttpOnly Protection**: You don't have access to \`HttpOnly\` cookies. They are filtered out from both discovery and retrieval tools for security reasons.
  -   **Active Context**: Start by inspecting the active context's origin (provided in the '# Active Context' section of the prompt).
- -   **Value Minimization**: Only request values using \`getStorageValues\` when key names and metadata alone are insufficient, and you have a clear hypothesis.
+ -   **Value Minimization**: Only request values using \`getStorageValues\` or \`getCookieValues\` when key names/cookie names alone are insufficient.
 
  # Considerations
 
- -   **Strictly Read-Only**: You cannot write, clear, delete, or edit storage.
+ -   **Strictly Read-Only**: You cannot write, clear, delete, or edit storage or cookies.
  -   **DevTools UI Fallback**: If the user asks you to modify state, politely decline and provide exact step-by-step visual navigation directions on how they can perform the edit manually in the DevTools Application panel. Do NOT supply Console scripts.
  -   **Raw Evidence**: Treat storage data as raw evidence. Do not make assumptions about values without reading them first.
  -   **Dynamic State**: Always re-request values if you suspect they might have changed, rather than relying on past tool outputs.
  -   **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
- -   **CRITICAL**: You are a storage debugging assistant. NEVER answer unrelated topics (legal, financial, race, sexuality medical, religion, politics). If asked, respond: "Sorry, I can't answer that. I'm best at questions about debugging web pages."
+ -   **CRITICAL**: You are a storage debugging assistant. NEVER answer unrelated topics (legal, financial, race, sexuality, medical, religion, politics). If asked, respond: "Sorry, I can't answer that. I'm best at questions about debugging web pages."
  `;
 function isSamePrimaryPageOrigin(context) {
     const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -65,12 +69,17 @@ export class StorageContext extends ConversationContext {
         return this.#item;
     }
     getTitle() {
+        if (this.#item instanceof CookieItem) {
+            return `${this.#item.name ? `cookie: ${this.#item.name}` : 'cookies:'} ${this.#item.origin}`;
+        }
         if (this.#item instanceof DOMStorageItem) {
             return `${this.#item.key ? `entry: ${this.#item.key}` : 'storage:'} ${this.#item.origin}`;
         }
         return `Storage: ${this.getOrigin()}`;
     }
 }
+// Maximum character length of values allowed.
+const MAX_NUM_CHAR_LENGTH = 10000;
 export class StorageAgent extends AiAgent {
     preamble = preamble;
     clientFeature = Host.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
@@ -231,7 +240,6 @@ export class StorageAgent extends AiAgent {
                     };
                 }
                 const itemsResult = [];
-                const MAX_VALUE_SIZE = 10000;
                 const keyAndItems = await Promise.all(storages.map(async (storage) => {
                     const items = await storage.getItems();
                     return { storageKey: storage.storageKey, items };
@@ -247,7 +255,9 @@ export class StorageAgent extends AiAgent {
                         if (value === undefined) {
                             continue;
                         }
-                        const truncatedValue = value.length > MAX_VALUE_SIZE ? value.substring(0, MAX_VALUE_SIZE) + '... <truncated>' : value;
+                        const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ?
+                            value.substring(0, MAX_NUM_CHAR_LENGTH) + '... <truncated>' :
+                            value;
                         storageValues[key] = truncatedValue;
                     }
                     itemsResult.push({ storageKey, values: storageValues });
@@ -255,9 +265,116 @@ export class StorageAgent extends AiAgent {
                 return { result: { items: itemsResult } };
             },
         });
+        this.declareFunction('listCookies', {
+            description: 'Lists all cookies for the requested origin, strictly excluding their values.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {
+                    origin: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'Origin to list cookies for.',
+                        nullable: false,
+                    }
+                },
+                required: ['origin'],
+            },
+            displayInfoFromArgs: args => {
+                return {
+                    title: lockedString('Reading cookies'),
+                    action: `listCookies('${args.origin}')`,
+                };
+            },
+            handler: async (args) => {
+                if (!isSamePrimaryPageOrigin(this.context)) {
+                    return { error: 'No origin available or not allowed.' };
+                }
+                const frame = findFrameForOrigin(this.context, args.origin);
+                if (!frame) {
+                    return { result: { cookies: [] } };
+                }
+                const target = frame.resourceTreeModel().target();
+                const cookies = await getCookiesForDomain(target, args.origin);
+                const uniqueNames = Array.from(new Set(cookies?.map(c => c.name())));
+                return { result: { cookies: uniqueNames } };
+            },
+        });
+        this.declareFunction('getCookieValues', {
+            description: 'Retrieve the values and detailed metadata of specific cookies by their names.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {
+                    cookieNames: {
+                        type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
+                        description: 'A list of cookie names to retrieve values and metadata for.',
+                        items: { type: 1 /* Host.AidaClient.ParametersTypes.STRING */, description: 'A cookie name.' },
+                        nullable: false,
+                    },
+                    origin: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The specific origin the cookies belong to.',
+                        nullable: false,
+                    }
+                },
+                required: ['cookieNames', 'origin'],
+            },
+            displayInfoFromArgs: args => {
+                return {
+                    title: lockedString('Reading cookie values and metadata'),
+                    action: `getCookieValues(${JSON.stringify(args.cookieNames)}, '${args.origin}')`,
+                };
+            },
+            handler: async (args, options) => {
+                if (!isSamePrimaryPageOrigin(this.context)) {
+                    return { error: 'No origin available or not allowed.' };
+                }
+                const frame = findFrameForOrigin(this.context, args.origin);
+                if (!frame) {
+                    return { result: { cookies: [] } };
+                }
+                const target = frame.resourceTreeModel().target();
+                if (options?.approved !== true) {
+                    return {
+                        requiresApproval: true,
+                        description: lockedString(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map(name => `\`${name}\``).join(', ')} on ${args.origin}.`),
+                    };
+                }
+                const cookies = await getCookiesForDomain(target, args.origin);
+                if (!cookies) {
+                    return { result: { cookies: [] } };
+                }
+                const matchingCookies = cookies.filter(c => args.cookieNames.includes(c.name()));
+                const cookieData = matchingCookies.map(cookie => {
+                    const value = cookie.value();
+                    const truncatedValue = value.length > MAX_NUM_CHAR_LENGTH ? value.substring(0, MAX_NUM_CHAR_LENGTH) + '... <truncated>' : value;
+                    return {
+                        value: truncatedValue,
+                        domain: cookie.domain(),
+                        path: cookie.path(),
+                        expires: cookie.expires(),
+                        size: cookie.size(),
+                        secure: cookie.secure(),
+                        sameSite: cookie.sameSite(),
+                        partitioned: cookie.partitioned(),
+                        priority: cookie.priority(),
+                        sourcePort: cookie.sourcePort(),
+                        sourceScheme: cookie.sourceScheme(),
+                    };
+                });
+                return { result: { cookies: cookieData } };
+            },
+        });
     }
     static #formatContext(item) {
         const primaryTargetOrigin = `Primary target: ${item.primaryTargetOrigin}`;
+        if (item instanceof CookieItem) {
+            const parsedURL = Common.ParsedURL.ParsedURL.fromString(item.origin);
+            const domain = parsedURL ? parsedURL.host : item.origin;
+            return `${primaryTargetOrigin}\nUser-selected Context: Cookies\nDomain: ${domain}${item.name ? `\nCookie Name: ${item.name}` : ''}`;
+        }
         if (item instanceof DOMStorageItem) {
             return `${primaryTargetOrigin}\nUser-selected Context: DOM Storage\n Type: ${item.type}\nStorageKey: ${item.storageKey}\nOrigin: ${item.origin}${item.key ? `\nKey: ${item.key}` : ''}`;
         }
@@ -293,6 +410,28 @@ export class StorageAgent extends AiAgent {
  * @param origin The partition origin to match.
  * @param storageKey Optional. If specified, resolves only the partition exactly matching this unique key, bypassing origin comparison.
  */
+export async function getCookiesForDomain(target, origin) {
+    const cookieModel = target.model(SDK.CookieModel.CookieModel);
+    if (!cookieModel) {
+        return null;
+    }
+    const allCookies = await cookieModel.getCookiesForDomain(origin);
+    if (!allCookies) {
+        return null;
+    }
+    return allCookies.filter(cookie => !cookie.httpOnly());
+}
+export function findFrameForOrigin(context, origin) {
+    for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames()) {
+        if (frame.securityOrigin === origin) {
+            const target = frame.resourceTreeModel().target();
+            if (isSamePageOrigin(target.outermostTarget(), context)) {
+                return frame;
+            }
+        }
+    }
+    return null;
+}
 export function resolveDOMStorages(context, type, origin, storageKey) {
     const resolvedStorages = [];
     const isLocalStorage = type === 'localStorage';

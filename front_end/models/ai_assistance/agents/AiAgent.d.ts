@@ -367,6 +367,12 @@ export declare abstract class AiAgent<T> {
     addFact(fact: Host.AidaClient.RequestFact): ReadonlySet<Host.AidaClient.RequestFact>;
     removeFact(fact: Host.AidaClient.RequestFact): boolean;
     clearFacts(): void;
+    /**
+     * Clears any subclass-specific caches. This is called when a run encounters
+     * an error (e.g., cross-origin navigation, abort, or execution error) to
+     * prevent unvalidated cached data from being replayed in subsequent runs.
+     */
+    clearCache(): void;
     popPendingMultimodalInput(): MultimodalInput | undefined;
     preambleFeatures(): string[];
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;

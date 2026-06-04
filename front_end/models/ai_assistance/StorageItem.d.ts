@@ -36,3 +36,7 @@ export declare class DOMStorageItem extends StorageItem {
     /** The optional specific key of the selected item in this storage partition. */
     key?: string | undefined);
 }
+export declare class CookieItem extends StorageItem {
+    readonly name?: string | undefined;
+    constructor(primaryTargetOrigin: string, origin: string, name?: string | undefined);
+}

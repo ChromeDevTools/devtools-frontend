@@ -111,4 +111,21 @@ h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
   margin: var(--sys-size-1) 0 10px;
 }
 
+.message table {
+  border-collapse: collapse;
+  margin: var(--sys-size-5) 0;
+  width: 100%;
+}
+
+.message th,
+.message td {
+  border: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-4) var(--sys-size-5);
+}
+
+.message th {
+  background-color: var(--sys-color-surface2);
+  font-weight: bold;
+}
+
 /*# sourceURL=${import.meta.resolve('./markdownView.css')} */`;

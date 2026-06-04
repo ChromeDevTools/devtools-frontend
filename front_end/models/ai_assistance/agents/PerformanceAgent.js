@@ -621,6 +621,12 @@ export class PerformanceAgent extends AiAgent {
         }
         yield* super.run(initialQuery, options);
     }
+    clearCache() {
+        // Clear the function call cache to prevent stashed tool execution results
+        // (which might contain cross-origin resource content fetched before navigation
+        // was detected) from being replayed as facts in subsequent runs.
+        this.#functionCallCacheForFocus.clear();
+    }
     #createFactForTraceSummary() {
         if (!this.#formatter) {
             return;

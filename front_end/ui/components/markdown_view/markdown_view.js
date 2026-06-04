@@ -73,6 +73,17 @@ var codeBlock_css_default = `/*
   padding-bottom: 10px;
 }
 
+.codeblock.no-toolbar .editor-wrapper {
+  position: relative;
+}
+
+.codeblock.no-toolbar .copy-button-container {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+}
+
 .heading {
   display: flex;
   justify-content: space-between;
@@ -245,6 +256,7 @@ var CodeBlock = class extends HTMLElement {
   #displayNotice = false;
   #header;
   #showCopyButton = true;
+  #displayToolbar = true;
   #citations = [];
   #displayLimit = Number.MAX_VALUE;
   connectedCallback() {
@@ -257,6 +269,7 @@ var CodeBlock = class extends HTMLElement {
       extensions: [
         TextEditor.Config.baseConfiguration(this.#code),
         CodeMirror.EditorState.readOnly.of(true),
+        CodeMirror.EditorView.editable.of(false),
         CodeMirror.EditorView.lineWrapping,
         this.#languageConf.of(CodeMirror.javascript.javascript()),
         this.#truncationConf.of([])
@@ -289,6 +302,10 @@ var CodeBlock = class extends HTMLElement {
   }
   set citations(citations) {
     this.#citations = citations;
+  }
+  set displayToolbar(value) {
+    this.#displayToolbar = value;
+    void this.#render();
   }
   set displayLimit(value) {
     this.#displayLimit = value;
@@ -352,16 +369,20 @@ var CodeBlock = class extends HTMLElement {
     }
     const linesCount = this.#editorState.doc.lines;
     const isTruncated = linesCount > this.#displayLimit;
-    Lit.render(html2`<div class='codeblock' jslog=${VisualLogging.section("code")}>
+    Lit.render(html2`<div class=${Lit.Directives.classMap({ codeblock: true, "no-toolbar": !this.#displayToolbar })} jslog=${VisualLogging.section("code")}>
       <style>${codeBlock_css_default}</style>
         <div class="editor-wrapper">
-        <div class="heading">
-          <div class="heading-text-wrapper">
-            <h4 class="heading-text">${header}</h4>
-            ${this.#maybeRenderCitations()}
+        ${this.#displayToolbar ? html2`
+          <div class="heading">
+            <div class="heading-text-wrapper">
+              <h4 class="heading-text">${header}</h4>
+              ${this.#maybeRenderCitations()}
+            </div>
+            ${this.#showCopyButton ? this.#renderCopyButton() : Lit.nothing}
           </div>
+        ` : html2`
           ${this.#showCopyButton ? this.#renderCopyButton() : Lit.nothing}
-        </div>
+        `}
         <div class="code">
           <devtools-text-editor .state=${this.#editorState}></devtools-text-editor>
         </div>
@@ -709,6 +730,23 @@ h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
   margin: var(--sys-size-1) 0 10px;
 }
 
+.message table {
+  border-collapse: collapse;
+  margin: var(--sys-size-5) 0;
+  width: 100%;
+}
+
+.message th,
+.message td {
+  border: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-4) var(--sys-size-5);
+}
+
+.message th {
+  background-color: var(--sys-color-surface2);
+  font-weight: bold;
+}
+
 /*# sourceURL=${import.meta.resolve("./markdownView.css")} */`;
 
 // gen/front_end/ui/components/markdown_view/MarkdownView.js
@@ -903,6 +941,33 @@ var MarkdownLitRenderer = class {
         return html5`<strong class=${this.customClassMapForToken("strong")}>${this.renderText(token)}</strong>`;
       case "em":
         return html5`<em class=${this.customClassMapForToken("em")}>${this.renderText(token)}</em>`;
+      case "table": {
+        const tableToken = token;
+        return html5`
+          <table class=${this.customClassMapForToken("table")}>
+            <thead>
+              <tr>
+                ${tableToken.header.map((cell) => html5`
+                  <th style=${cell.align ? `text-align: ${cell.align}` : ""}>
+                    ${cell.tokens.map((t) => this.renderToken(t))}
+                  </th>
+                `)}
+              </tr>
+            </thead>
+            <tbody>
+              ${tableToken.rows.map((row) => html5`
+                <tr>
+                  ${row.map((cell) => html5`
+                    <td style=${cell.align ? `text-align: ${cell.align}` : ""}>
+                      ${cell.tokens.map((t) => this.renderToken(t))}
+                    </td>
+                  `)}
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        `;
+      }
       default:
         return null;
     }

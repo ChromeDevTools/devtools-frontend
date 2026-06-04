@@ -131,6 +131,8 @@ const lockedString = i18n.i18n.lockedString;
 const FILTER_IDLE_PERIOD = 500;
 // Minimum number of @property rules for the @property section block to be folded initially
 const MIN_FOLDED_SECTIONS_COUNT = 5;
+// The number of properties required in a matched styles cascade to trigger IntersectionObserver lazy rendering.
+const LAZY_RENDER_THRESHOLD = 200;
 /** Title of the registered properties section **/
 export const REGISTERED_PROPERTY_SECTION_NAME = '@property';
 /** Title of the function section **/
@@ -197,6 +199,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     aiCodeCompletionProvider;
     #aiCodeCompletionSummaryToolbarContainer;
     #aiCodeCompletionSummaryToolbar;
+    #shouldRenderLazily = false;
+    #lazyRenderObserver;
+    #lazyRenderCallbacks = new WeakMap();
     constructor(computedStyleModel) {
         super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ['flex-none'] });
         this.setMinimumSize(96, 26);
@@ -471,7 +476,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         // so we need to bind both scroll events.
         const scrollerElementLists = this?.contentElement?.enclosingNodeOrSelfWithClass('style-panes-wrapper')
             ?.parentElement?.querySelectorAll('.style-panes-wrapper');
-        if (scrollerElementLists.length > 0) {
+        if (scrollerElementLists && scrollerElementLists.length > 0) {
             for (const element of scrollerElementLists) {
                 this.scrollerElement = element;
                 this.scrollerElement.addEventListener('scroll', this.boundOnScroll, false);
@@ -905,6 +910,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
         LayersWidget.ButtonProvider.instance().item().setVisible(false);
         const animationsPanelVisible = UI.ViewManager.ViewManager.instance().isViewVisible('animations');
         const cssAnimationsOnlyWhenAnimationsTabOpen = Common.Settings.Settings.instance().moduleSetting('css-animations-only-when-animations-tab-open').get();
+        let totalProperties = 0;
+        for (const style of matchedStyles.nodeStyles()) {
+            totalProperties += style.leadingProperties().length;
+        }
+        // Always render eagerly for layout tests.
+        this.#shouldRenderLazily = !Host.InspectorFrontendHost.isUnderTest() && totalProperties > LAZY_RENDER_THRESHOLD;
         for (const style of matchedStyles.nodeStyles()) {
             const isTransitionOrAnimationStyle = style.type === SDK.CSSStyleDeclaration.Type.Transition ||
                 style.type === SDK.CSSStyleDeclaration.Type.Animation;
@@ -1320,6 +1331,32 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     }
     #onAiCodeCompletionResponseReceived() {
         this.#aiCodeCompletionSummaryToolbar?.setLoading(false);
+    }
+    trackForLazyRendering(element, callback) {
+        if (!this.#lazyRenderObserver) {
+            this.#lazyRenderObserver = new IntersectionObserver(entries => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        const cb = this.#lazyRenderCallbacks.get(entry.target);
+                        if (cb) {
+                            cb();
+                            this.untrackForLazyRendering(entry.target);
+                        }
+                    }
+                }
+            }, { rootMargin: '100px' });
+        }
+        this.#lazyRenderCallbacks.set(element, callback);
+        this.#lazyRenderObserver.observe(element);
+    }
+    shouldRenderLazily() {
+        return this.#shouldRenderLazily;
+    }
+    untrackForLazyRendering(element) {
+        if (this.#lazyRenderObserver) {
+            this.#lazyRenderObserver.unobserve(element);
+        }
+        this.#lazyRenderCallbacks.delete(element);
     }
 }
 const MAX_LINK_LENGTH = 23;

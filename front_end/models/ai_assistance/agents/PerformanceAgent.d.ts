@@ -46,6 +46,7 @@ export declare class PerformanceAgent extends AiAgent<AgentFocus> {
         selected: PerformanceTraceContext | null;
         signal?: AbortSignal;
     }): AsyncGenerator<ResponseData, void, void>;
+    clearCache(): void;
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
     addNetworkRequestAnnotation(eventKey: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
 }

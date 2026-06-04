@@ -6691,7 +6691,7 @@ var NativeFunctions = [
   },
   {
     name: "copyElementImageToTexture",
-    signatures: [["source", "destination"], ["source", "width", "height", "destination"], ["source", "sx", "sy", "swidth", "sheight", "destination"], ["source", "sx", "sy", "swidth", "sheight", "width", "height", "destination"]]
+    signatures: [["source", "destination"]]
   },
   {
     name: "multiDrawIndirect",
@@ -6775,7 +6775,7 @@ var NativeFunctions = [
   },
   {
     name: "texElementImage2D",
-    signatures: [["target", "level", "internalformat", "format", "type", "element"], ["target", "level", "internalformat", "width", "height", "format", "type", "element"], ["target", "level", "internalformat", "sx", "sy", "swidth", "sheight", "format", "type", "element"], ["target", "level", "internalformat", "sx", "sy", "swidth", "sheight", "width", "height", "format", "type", "element"]]
+    signatures: [["target", "internalformat", "element", "?config"]]
   },
   {
     name: "drawingBufferStorage",
@@ -8412,6 +8412,10 @@ var NativeFunctions = [
   {
     name: "registerTool",
     signatures: [["tool", "?options"]]
+  },
+  {
+    name: "getTools",
+    signatures: [["?options"]]
   },
   {
     name: "executeTool",

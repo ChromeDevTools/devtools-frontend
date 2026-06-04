@@ -36,4 +36,11 @@ export class DOMStorageItem extends StorageItem {
         this.key = key;
     }
 }
+export class CookieItem extends StorageItem {
+    name;
+    constructor(primaryTargetOrigin, origin, name) {
+        super(primaryTargetOrigin, origin);
+        this.name = name;
+    }
+}
 //# sourceMappingURL=StorageItem.js.map

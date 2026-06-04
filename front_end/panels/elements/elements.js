@@ -4303,6 +4303,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   contextForTest;
   #gridNames = void 0;
   #tooltipKeyCounts = /* @__PURE__ */ new Map();
+  #lazyRender;
   constructor({ stylesContainer, section: section5, matchedStyles, property, isShorthand, inherited, overloaded, newProperty }) {
     const jslogContext = property.name.startsWith("--") ? "custom-property" : property.name;
     super("", isShorthand, jslogContext);
@@ -4316,12 +4317,15 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.#parentSection = section5;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
+    this.#lazyRender = stylesContainer.shouldRenderLazily();
     if (this.newProperty) {
       this.listItemElement.textContent = "";
     }
     this.property.addEventListener("localValueUpdated", this.updateTitle, this);
   }
   onunbind() {
+    this.#stylesContainer.untrackForLazyRendering(this.listItemElement);
+    this.#lazyRender = false;
     this.property.removeEventListener("localValueUpdated", this.updateTitle, this);
     super.onunbind();
   }
@@ -4551,7 +4555,27 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     }
   }
   onattach() {
-    this.updateTitle();
+    if (this.#lazyRender) {
+      this.nameElement = Renderer.renderNameElement(this.name);
+      this.valueElement = Renderer.renderValueElement(this.property, null, []).valueElement;
+      if (this.parent?.root || !this.property.parsedOk) {
+        const placeholder = document.createElement("span");
+        placeholder.classList.add("enabled-button");
+        this.listItemElement.appendChild(placeholder);
+      }
+      this.listItemElement.classList.toggle("inactive", !this.property.activeInStyle());
+      this.listItemElement.appendChild(this.nameElement);
+      const lineBreakValue = this.valueElement.firstElementChild?.tagName === "BR";
+      this.listItemElement.createChild("span", "styles-name-value-separator").textContent = lineBreakValue ? ":" : ": ";
+      this.listItemElement.appendChild(this.valueElement);
+      this.listItemElement.createChild("span", "styles-semicolon").textContent = ";";
+      this.#stylesContainer.trackForLazyRendering(this.listItemElement, () => {
+        this.#lazyRender = false;
+        this.updateTitle();
+      });
+    } else {
+      this.updateTitle();
+    }
     this.listItemElement.addEventListener("mousedown", (event) => {
       if (event.button === 0) {
         parentMap.set(this.#stylesContainer, this);
@@ -8241,6 +8265,7 @@ var i18nString6 = i18n12.i18n.getLocalizedString.bind(void 0, str_6);
 var lockedString = i18n12.i18n.lockedString;
 var FILTER_IDLE_PERIOD = 500;
 var MIN_FOLDED_SECTIONS_COUNT = 5;
+var LAZY_RENDER_THRESHOLD = 200;
 var REGISTERED_PROPERTY_SECTION_NAME = "@property";
 var FUNCTION_SECTION_NAME = "@function";
 var HIGHLIGHTABLE_PROPERTIES = [
@@ -8307,6 +8332,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   aiCodeCompletionProvider;
   #aiCodeCompletionSummaryToolbarContainer;
   #aiCodeCompletionSummaryToolbar;
+  #shouldRenderLazily = false;
+  #lazyRenderObserver;
+  #lazyRenderCallbacks = /* @__PURE__ */ new WeakMap();
   constructor(computedStyleModel) {
     super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ["flex-none"] });
     this.setMinimumSize(96, 26);
@@ -8572,7 +8600,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   async performUpdate(signal) {
     await this.#innerDoUpdate(signal);
     const scrollerElementLists = this?.contentElement?.enclosingNodeOrSelfWithClass("style-panes-wrapper")?.parentElement?.querySelectorAll(".style-panes-wrapper");
-    if (scrollerElementLists.length > 0) {
+    if (scrollerElementLists && scrollerElementLists.length > 0) {
       for (const element of scrollerElementLists) {
         this.scrollerElement = element;
         this.scrollerElement.addEventListener("scroll", this.boundOnScroll, false);
@@ -8976,6 +9004,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     ButtonProvider.instance().item().setVisible(false);
     const animationsPanelVisible = UI10.ViewManager.ViewManager.instance().isViewVisible("animations");
     const cssAnimationsOnlyWhenAnimationsTabOpen = Common5.Settings.Settings.instance().moduleSetting("css-animations-only-when-animations-tab-open").get();
+    let totalProperties = 0;
+    for (const style of matchedStyles.nodeStyles()) {
+      totalProperties += style.leadingProperties().length;
+    }
+    this.#shouldRenderLazily = !Host4.InspectorFrontendHost.isUnderTest() && totalProperties > LAZY_RENDER_THRESHOLD;
     for (const style of matchedStyles.nodeStyles()) {
       const isTransitionOrAnimationStyle = style.type === SDK8.CSSStyleDeclaration.Type.Transition || style.type === SDK8.CSSStyleDeclaration.Type.Animation;
       if (isTransitionOrAnimationStyle && cssAnimationsOnlyWhenAnimationsTabOpen && !animationsPanelVisible) {
@@ -9388,6 +9421,32 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   }
   #onAiCodeCompletionResponseReceived() {
     this.#aiCodeCompletionSummaryToolbar?.setLoading(false);
+  }
+  trackForLazyRendering(element, callback) {
+    if (!this.#lazyRenderObserver) {
+      this.#lazyRenderObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const cb = this.#lazyRenderCallbacks.get(entry.target);
+            if (cb) {
+              cb();
+              this.untrackForLazyRendering(entry.target);
+            }
+          }
+        }
+      }, { rootMargin: "100px" });
+    }
+    this.#lazyRenderCallbacks.set(element, callback);
+    this.#lazyRenderObserver.observe(element);
+  }
+  shouldRenderLazily() {
+    return this.#shouldRenderLazily;
+  }
+  untrackForLazyRendering(element) {
+    if (this.#lazyRenderObserver) {
+      this.#lazyRenderObserver.unobserve(element);
+    }
+    this.#lazyRenderCallbacks.delete(element);
   }
 };
 var MAX_LINK_LENGTH = 23;
@@ -21153,6 +21212,13 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   }
   removeStyleUpdateListener(listener) {
     this.removeEventListener("StylesUpdateCompleted", listener);
+  }
+  trackForLazyRendering(_element, _callback) {
+  }
+  shouldRenderLazily() {
+    return false;
+  }
+  untrackForLazyRendering(_element) {
   }
 };
 export {

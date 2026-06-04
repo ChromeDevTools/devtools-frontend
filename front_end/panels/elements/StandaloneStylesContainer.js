@@ -240,5 +240,12 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
     removeStyleUpdateListener(listener) {
         this.removeEventListener("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, listener);
     }
+    trackForLazyRendering(_element, _callback) {
+    }
+    shouldRenderLazily() {
+        return false;
+    }
+    untrackForLazyRendering(_element) {
+    }
 }
 //# sourceMappingURL=StandaloneStylesContainer.js.map

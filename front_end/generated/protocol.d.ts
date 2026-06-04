@@ -407,6 +407,46 @@ export declare namespace Accessibility {
         nodes: AXNode[];
     }
 }
+/**
+ * A domain for ad-related metrics and data.
+ */
+export declare namespace Ads {
+    /**
+     * Ad metrics for a page.
+     */
+    interface AdMetrics {
+        /**
+         * The viewport ad density by area, represented as a percentage (an integer
+         * between 0 and 100).
+         */
+        viewportAdDensityByArea: integer;
+        /**
+         * The time-weighted average of the viewport ad density by area, measured
+         * across the duration of the page.
+         */
+        averageViewportAdDensityByArea: number;
+        /**
+         * The number of ads currently visible within the viewport.
+         */
+        viewportAdCount: integer;
+        /**
+         * The time-weighted average of the viewport ad count, measured across the
+         * duration of the page.
+         */
+        averageViewportAdCount: number;
+        /**
+         * The total ad CPU usage, in milliseconds.
+         */
+        totalAdCpuTime: number;
+        /**
+         * The total ad network bytes.
+         */
+        totalAdNetworkBytes: number;
+    }
+    interface GetAdMetricsResponse extends ProtocolResponseWithError {
+        metrics: AdMetrics;
+    }
+}
 export declare namespace Animation {
     const enum AnimationType {
         CSSTransition = "CSSTransition",
@@ -1290,7 +1330,41 @@ export declare namespace Audits {
         RpOriginIsOpaque = "RpOriginIsOpaque",
         WellKnownMissingAccountsEndpoint = "WellKnownMissingAccountsEndpoint",
         UserLoggedOut = "UserLoggedOut",
-        WellKnownAccountsEndpointCrossOrigin = "WellKnownAccountsEndpointCrossOrigin"
+        WellKnownAccountsEndpointCrossOrigin = "WellKnownAccountsEndpointCrossOrigin",
+        AccountsHttpNotFound = "AccountsHttpNotFound",
+        AccountsNoResponse = "AccountsNoResponse",
+        AccountsInvalidResponse = "AccountsInvalidResponse",
+        AccountsInvalidContentType = "AccountsInvalidContentType",
+        AccountsEmptyList = "AccountsEmptyList",
+        EmailVerificationWellKnownHttpNotFound = "EmailVerificationWellKnownHttpNotFound",
+        EmailVerificationWellKnownNoResponse = "EmailVerificationWellKnownNoResponse",
+        EmailVerificationWellKnownInvalidResponse = "EmailVerificationWellKnownInvalidResponse",
+        EmailVerificationWellKnownInvalidContentType = "EmailVerificationWellKnownInvalidContentType",
+        JwksHttpNotFound = "JwksHttpNotFound",
+        JwksInvalidResponse = "JwksInvalidResponse",
+        TokenVerificationSdJwtUnsupportedHeaderAlg = "TokenVerificationSdJwtUnsupportedHeaderAlg",
+        TokenVerificationSdJwtMissingIss = "TokenVerificationSdJwtMissingIss",
+        TokenVerificationSdJwtMissingIat = "TokenVerificationSdJwtMissingIat",
+        TokenVerificationSdJwtMissingCnf = "TokenVerificationSdJwtMissingCnf",
+        TokenVerificationSdJwtMissingEmail = "TokenVerificationSdJwtMissingEmail",
+        TokenVerificationSdJwtInvalidIssuedAt = "TokenVerificationSdJwtInvalidIssuedAt",
+        TokenVerificationSdJwtInvalidIssuer = "TokenVerificationSdJwtInvalidIssuer",
+        TokenVerificationSdJwtJwksMissingKeys = "TokenVerificationSdJwtJwksMissingKeys",
+        TokenVerificationSdJwtSignatureFailed = "TokenVerificationSdJwtSignatureFailed",
+        TokenVerificationSdJwtInvalidEmailVerified = "TokenVerificationSdJwtInvalidEmailVerified",
+        TokenVerificationSdJwtInvalidEmail = "TokenVerificationSdJwtInvalidEmail",
+        TokenVerificationSdJwtInvalidHolderKey = "TokenVerificationSdJwtInvalidHolderKey",
+        TokenVerificationKbInvalidTyp = "TokenVerificationKbInvalidTyp",
+        TokenVerificationKbMissingAud = "TokenVerificationKbMissingAud",
+        TokenVerificationKbMissingNonce = "TokenVerificationKbMissingNonce",
+        TokenVerificationKbMissingIat = "TokenVerificationKbMissingIat",
+        TokenVerificationKbMissingSdHash = "TokenVerificationKbMissingSdHash",
+        TokenVerificationKbInvalidIssuedAt = "TokenVerificationKbInvalidIssuedAt",
+        TokenVerificationKbInvalidAudience = "TokenVerificationKbInvalidAudience",
+        TokenVerificationKbInvalidNonce = "TokenVerificationKbInvalidNonce",
+        TokenVerificationKbInvalidSdHash = "TokenVerificationKbInvalidSdHash",
+        TokenVerificationKbMissingCnf = "TokenVerificationKbMissingCnf",
+        TokenVerificationKbSignatureFailed = "TokenVerificationKbSignatureFailed"
     }
     /**
      * This issue tracks client hints related issues. It's used to deprecate old
@@ -4343,7 +4417,8 @@ export declare namespace DOM {
         DetailsContent = "details-content",
         Picker = "picker",
         PermissionIcon = "permission-icon",
-        OverscrollAreaParent = "overscroll-area-parent"
+        OverscrollAreaParent = "overscroll-area-parent",
+        Skeleton = "skeleton"
     }
     /**
      * Shadow root type.
@@ -15913,6 +15988,7 @@ export declare namespace Preload {
         PrefetchIneligibleRetryAfter = "PrefetchIneligibleRetryAfter",
         PrefetchIsPrivacyDecoy = "PrefetchIsPrivacyDecoy",
         PrefetchIsStale = "PrefetchIsStale",
+        PrefetchNotEligibleBlockedByConnectionAllowlist = "PrefetchNotEligibleBlockedByConnectionAllowlist",
         PrefetchNotEligibleBrowserContextOffTheRecord = "PrefetchNotEligibleBrowserContextOffTheRecord",
         PrefetchNotEligibleDataSaverEnabled = "PrefetchNotEligibleDataSaverEnabled",
         PrefetchNotEligibleExistingProxy = "PrefetchNotEligibleExistingProxy",
@@ -15933,7 +16009,8 @@ export declare namespace Preload {
         PrefetchProxyNotAvailable = "PrefetchProxyNotAvailable",
         PrefetchResponseUsed = "PrefetchResponseUsed",
         PrefetchSuccessfulButNotUsed = "PrefetchSuccessfulButNotUsed",
-        PrefetchNotUsedProbeFailed = "PrefetchNotUsedProbeFailed"
+        PrefetchNotUsedProbeFailed = "PrefetchNotUsedProbeFailed",
+        PrefetchCancelledOnUserNavigation = "PrefetchCancelledOnUserNavigation"
     }
     /**
      * Information of headers to be displayed when the header mismatch occurred.

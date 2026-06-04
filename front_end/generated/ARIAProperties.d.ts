@@ -55,14 +55,6 @@ export namespace config {
         isGlobal?: undefined;
         preventedOnRoles?: undefined;
         enum?: undefined;
-    } | {
-        name: string;
-        type: string;
-        isGlobal?: undefined;
-        preventedOnRoles?: undefined;
-        supportedOnRoles?: undefined;
-        default?: undefined;
-        enum?: undefined;
     })[];
     namespace metadata {
         export let attrsNullNamespace: boolean;

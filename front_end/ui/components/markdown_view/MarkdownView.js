@@ -211,6 +211,33 @@ export class MarkdownLitRenderer {
                 return html `<strong class=${this.customClassMapForToken('strong')}>${this.renderText(token)}</strong>`;
             case 'em':
                 return html `<em class=${this.customClassMapForToken('em')}>${this.renderText(token)}</em>`;
+            case 'table': {
+                const tableToken = token;
+                return html `
+          <table class=${this.customClassMapForToken('table')}>
+            <thead>
+              <tr>
+                ${tableToken.header.map(cell => html `
+                  <th style=${cell.align ? `text-align: ${cell.align}` : ''}>
+                    ${cell.tokens.map(t => this.renderToken(t))}
+                  </th>
+                `)}
+              </tr>
+            </thead>
+            <tbody>
+              ${tableToken.rows.map(row => html `
+                <tr>
+                  ${row.map(cell => html `
+                    <td style=${cell.align ? `text-align: ${cell.align}` : ''}>
+                      ${cell.tokens.map(t => this.renderToken(t))}
+                    </td>
+                  `)}
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        `;
+            }
             default:
                 return null;
         }

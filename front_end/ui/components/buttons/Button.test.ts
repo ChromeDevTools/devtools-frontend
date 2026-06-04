@@ -274,4 +274,85 @@ describe('Button', () => {
       assert.strictEqual(state.input.value, '');
     });
   });
+
+  describe('forced-colors high contrast support', () => {
+    function getButtonStylesheet(button: Buttons.Button.Button): CSSStyleSheet {
+      const styleElement = button.shadowRoot!.querySelector('style');
+      assert.instanceOf(styleElement, HTMLStyleElement);
+      assert.instanceOf(styleElement.sheet, CSSStyleSheet);
+      return styleElement.sheet;
+    }
+
+    function collectToggledIconRules(stylesheet: CSSStyleSheet): CSSStyleRule[] {
+      const matches: CSSStyleRule[] = [];
+      const visit = (rules: CSSRuleList|undefined): void => {
+        if (!rules) {
+          return;
+        }
+        for (const rule of rules) {
+          if (rule instanceof CSSStyleRule) {
+            if (rule.selectorText.split(',').some(s => /(^|\s|\.)toggled\s+devtools-icon\b/.test(s.trim()))) {
+              matches.push(rule);
+            }
+            visit(rule.cssRules);
+          } else if (rule instanceof CSSMediaRule || rule instanceof CSSSupportsRule) {
+            visit(rule.cssRules);
+          }
+        }
+      };
+      visit(stylesheet.cssRules);
+      return matches;
+    }
+
+    function forcedColorsMediaRules(stylesheet: CSSStyleSheet): CSSMediaRule[] {
+      return [...stylesheet.cssRules].filter(
+          (r): r is CSSMediaRule => r instanceof CSSMediaRule && r.media.mediaText.includes('forced-colors'));
+    }
+
+    it('does not set a background-color on the toggled icon host', () => {
+      const stylesheet = getButtonStylesheet(renderButton());
+      for (const rule of collectToggledIconRules(stylesheet)) {
+        assert.strictEqual(
+            rule.style.getPropertyValue('background-color').trim(), '',
+            `Unexpected background-color on \`${rule.selectorText}\`; opaque backgrounds make ` +
+                'the masked glyph invisible in HC mode.');
+      }
+    });
+
+    it('keeps the toggled icon host transparent so the glyph stays visible when forced-colors is active', () => {
+      // Karma's Chrome can't enter forced-colors mode, so promote every rule
+      // inside `@media (forced-colors: active)` to an unconditional rule on
+      // the button's shadow root to exercise the real cascade.
+      const button = renderButton({
+        variant: Buttons.Button.Variant.TOOLBAR,
+        iconName,
+        toggled: true,
+        toggleType: Buttons.Button.ToggleType.PRIMARY,
+      });
+
+      const promoted = forcedColorsMediaRules(getButtonStylesheet(button))
+                           .flatMap(media => [...media.cssRules])
+                           .map(r => r.cssText)
+                           .join('\n');
+      const simulatedHcStyle = document.createElement('style');
+      simulatedHcStyle.textContent = promoted;
+      button.shadowRoot!.append(simulatedHcStyle);
+
+      const iconHost = button.shadowRoot!.querySelector('devtools-icon');
+      assert.instanceOf(iconHost, HTMLElement);
+      const glyph = iconHost.shadowRoot!.querySelector('span');
+      assert.instanceOf(glyph, HTMLElement);
+
+      const hostStyle = getComputedStyle(iconHost);
+      const glyphStyle = getComputedStyle(glyph);
+      const alphaOf = (rgba: string): number => Number(rgba.match(/[\d.]+(?=\)$)/)?.[0] ?? '1');
+
+      assert.strictEqual(
+          alphaOf(hostStyle.backgroundColor), 0,
+          `Expected the toggled icon host to stay transparent, got ${hostStyle.backgroundColor}`);
+      assert.isAbove(
+          alphaOf(glyphStyle.backgroundColor), 0,
+          `Expected the masked glyph to be painted, got ${glyphStyle.backgroundColor}`);
+    });
+  });
 });

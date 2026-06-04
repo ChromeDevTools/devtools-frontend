@@ -358,9 +358,3 @@ button {
     transform: rotate(360deg);
   }
 }
-
-@media(forced-colors: active) {
-  .toggled devtools-icon {
-    background-color: canvas;
-  }
-}

@@ -290,4 +290,344 @@ const issueDescriptions = new Map<Protocol.Audits.EmailVerificationRequestIssueR
       }],
     },
   ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.AccountsHttpNotFound,
+    {
+      file: 'emailVerificationRequestAccountsHttpNotFound.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.AccountsNoResponse,
+    {
+      file: 'emailVerificationRequestAccountsNoResponse.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.AccountsInvalidResponse,
+    {
+      file: 'emailVerificationRequestAccountsInvalidResponse.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.AccountsInvalidContentType,
+    {
+      file: 'emailVerificationRequestAccountsInvalidContentType.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.AccountsEmptyList,
+    {
+      file: 'emailVerificationRequestAccountsEmptyList.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.EmailVerificationWellKnownHttpNotFound,
+    {
+      file: 'emailVerificationRequestEmailVerificationWellKnownHttpNotFound.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.EmailVerificationWellKnownNoResponse,
+    {
+      file: 'emailVerificationRequestEmailVerificationWellKnownNoResponse.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.EmailVerificationWellKnownInvalidResponse,
+    {
+      file: 'emailVerificationRequestEmailVerificationWellKnownInvalidResponse.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.EmailVerificationWellKnownInvalidContentType,
+    {
+      file: 'emailVerificationRequestEmailVerificationWellKnownInvalidContentType.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.JwksHttpNotFound,
+    {
+      file: 'emailVerificationRequestJwksHttpNotFound.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.JwksInvalidResponse,
+    {
+      file: 'emailVerificationRequestJwksInvalidResponse.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtUnsupportedHeaderAlg,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtUnsupportedHeaderAlg.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtMissingIss,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtMissingIss.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtMissingIat,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtMissingIat.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtMissingCnf,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtMissingCnf.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtMissingEmail,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtMissingEmail.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtInvalidIssuedAt,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtInvalidIssuedAt.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtInvalidIssuer,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtInvalidIssuer.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtJwksMissingKeys,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtJwksMissingKeys.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtSignatureFailed,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtSignatureFailed.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtInvalidEmailVerified,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtInvalidEmailVerified.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtInvalidEmail,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtInvalidEmail.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationSdJwtInvalidHolderKey,
+    {
+      file: 'emailVerificationRequestTokenVerificationSdJwtInvalidHolderKey.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbInvalidTyp,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbInvalidTyp.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbMissingAud,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbMissingAud.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbMissingNonce,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbMissingNonce.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbMissingIat,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbMissingIat.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbMissingSdHash,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbMissingSdHash.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbInvalidIssuedAt,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbInvalidIssuedAt.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbInvalidAudience,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbInvalidAudience.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbInvalidNonce,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbInvalidNonce.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbInvalidSdHash,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbInvalidSdHash.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbMissingCnf,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbMissingCnf.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
+  [
+    Protocol.Audits.EmailVerificationRequestIssueReason.TokenVerificationKbSignatureFailed,
+    {
+      file: 'emailVerificationRequestTokenVerificationKbSignatureFailed.md',
+      links: [{
+        link: 'https://github.com/WICG/email-verification-protocol',
+        linkTitle: i18nLazyString(UIStrings.emailVerification),
+      }],
+    },
+  ],
 ]);

@@ -57,6 +57,7 @@ devtools_ui_module("ai_assistance") {
     "../../models/annotations:bundle",
     "../../models/badges:bundle",
     "../../models/computed_style:bundle",
+    "../../models/formatter:bundle",
     "../../models/geometry:bundle",
     "../../models/greendev:bundle",
     "../../models/lighthouse:bundle",

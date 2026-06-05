@@ -16,7 +16,6 @@ devtools_foundation_module("stack_trace") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../workspace:bundle",
   ]
 }

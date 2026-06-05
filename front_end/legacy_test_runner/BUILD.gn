@@ -22,8 +22,6 @@ ts_library("legacy_test_runner-source") {
 
   deps = [
     "../entrypoints/devtools_app:entrypoint",
-    "../panels/console_counters:bundle",
-    "../panels/event_listeners:bundle",
     "test_runner:bundle",
   ]
 }

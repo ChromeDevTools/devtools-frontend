@@ -17,11 +17,13 @@ devtools_module("live-metrics") {
     "../../core/sdk:bundle",
     "../../generated",
     "../emulation:bundle",
-    "./web-vitals-injected",
     "./web-vitals-injected/spec:bundle",
   ]
 
-  public_deps = [ "./web-vitals-injected:bundled_library" ]
+  public_deps = [
+    "./web-vitals-injected",
+    "./web-vitals-injected:bundled_library",
+  ]
 }
 
 devtools_entrypoint("bundle") {

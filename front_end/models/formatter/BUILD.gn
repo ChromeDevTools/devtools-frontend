@@ -39,6 +39,7 @@ devtools_entrypoint("bundle") {
     "../../models/breakpoints/*",
     "../../models/source_map_scopes/*",
     "../../models/workspace_diff/*",
+    "../../panels/ai_assistance/*",
     "../../panels/application/*",
     "../../panels/console/*",
     "../../panels/coverage/*",

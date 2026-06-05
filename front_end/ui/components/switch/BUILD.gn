@@ -45,8 +45,5 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [ "Switch.docs.ts" ]
-  deps = [
-    ":bundle",
-    "../../../testing",
-  ]
+  deps = [ ":bundle" ]
 }

@@ -234,6 +234,7 @@ component_doc("docs") {
   ]
   deps = [
     ":bundle",
+    "../../core/platform:bundle",
     "../lit:bundle",
     "../visual_logging:bundle",
   ]

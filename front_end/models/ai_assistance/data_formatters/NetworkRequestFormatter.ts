@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Annotations from '../../annotations/annotations.js';
@@ -68,17 +70,16 @@ export class NetworkRequestFormatter {
     return `${title}\n<binary data>`;
   }
 
-  static formatInitiatorUrl(initiatorUrl: string, allowedOrigin: string): string {
-    try {
-      // Some scheme or URLs might cause errors depending on the runtime environment.
-      const initiatorOrigin = new URL(initiatorUrl).origin;
-      if (initiatorOrigin === allowedOrigin) {
-        return initiatorUrl;
-      }
-      return '<redacted cross-origin initiator URL>';
-    } catch {
-      return '<redacted cross-origin initiator URL>';
+  static formatInitiatorUrl(
+      initiatorUrl: Platform.DevToolsPath.UrlString,
+      allowedOrigin: Platform.DevToolsPath.UrlString,
+      ): string {
+    // We extract the origin, and if it is invalid/empty we default to redacting.
+    const initiatorOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initiatorUrl);
+    if (initiatorOrigin && initiatorOrigin === allowedOrigin) {
+      return initiatorUrl;
     }
+    return '<redacted cross-origin initiator URL>';
   }
 
   static formatStatus(status: {
@@ -196,7 +197,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
    * the request's origin.
    */
   formatRequestInitiatorChain(): string {
-    const allowedOrigin = new URL(this.#request.url()).origin;
+    const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
     let initiatorChain = '';
     let lineStart = '- URL: ';
     const graph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
@@ -268,7 +269,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
       parentRequest: SDK.NetworkRequest.NetworkRequest,
       initiatorChain: string,
       lineStart: string,
-      allowedOrigin: string,
+      allowedOrigin: Platform.DevToolsPath.UrlString,
       ): string {
     const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
 

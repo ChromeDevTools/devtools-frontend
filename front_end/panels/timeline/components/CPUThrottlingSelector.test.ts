@@ -177,7 +177,8 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
       background-color: aqua;
     `;
 
-  it('renders hint correctly', async () => {
+  // Passes locally, but fails on the bots.
+  it.skip('[crbug.com/520434324] renders hint correctly', async () => {
     const container = document.createElement('div');
     container.style.cssText = containerCss;
     renderElementIntoDOM(container, {includeCommonStyles: true});

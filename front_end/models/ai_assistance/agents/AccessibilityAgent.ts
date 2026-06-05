@@ -161,10 +161,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
     };
   }
 
-  override preambleFeatures(): string[] {
-    return ['function_calling'];
-  }
-
   protected override async preRun(): Promise<void> {
     this.#currentTurnId++;
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

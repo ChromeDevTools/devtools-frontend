@@ -254,10 +254,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
   }
 
-  override preambleFeatures(): string[] {
-    return ['function_calling'];
-  }
-
   #execJs: typeof executeJsCode;
   #javascriptExecutor: JavascriptExecutor;
 

@@ -154,7 +154,7 @@ Content:
     "disable_user_content_logging": false,
     "string_session_id": "sessionId",
     "user_tier": 3,
-    "client_version": "unit_test+function_calling"
+    "client_version": "unit_test"
   },
   "functionality_type": 5,
   "client_feature": 2

@@ -231,6 +231,18 @@ function inFileEditRequestToSourceFile(request: AIDA.CompletionRequest): GCA.Sou
   return sourceFile;
 }
 
+/**
+ * Sanitizes a label value to conform to the GCP label value regex constraint:
+ * `[\p{Ll}\p{Lo}\p{N}_-]{0,63}`
+ *
+ * This converts the value to lowercase, replaces any character that is not a
+ * lowercase letter, digit, underscore, or hyphen with an underscore, and
+ * truncates the value to 63 characters.
+ */
+function sanitizeLabelValue(value: string): string {
+  return value.toLowerCase().replace(/[^\p{Ll}\p{Lo}\p{N}_-]/gu, '_').substring(0, 63);
+}
+
 /* eslint-disable @typescript-eslint/naming-convention */
 function buildLabels(request: AidaRequest, gcaRequest: GCA.GenerateContentRequest): void {
   const labels: Record<string, string> = {};
@@ -270,7 +282,11 @@ function buildLabels(request: AidaRequest, gcaRequest: GCA.GenerateContentReques
   }
 
   if (Object.keys(labels).length > 0) {
-    gcaRequest.labels = labels;
+    const sanitizedLabels: Record<string, string> = {};
+    for (const [key, value] of Object.entries(labels)) {
+      sanitizedLabels[key] = sanitizeLabelValue(value);
+    }
+    gcaRequest.labels = sanitizedLabels;
   }
 }
 /* eslint-enable @typescript-eslint/naming-convention */

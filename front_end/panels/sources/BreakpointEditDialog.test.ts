@@ -54,7 +54,7 @@ describeWithEnvironment('BreakpointEditDialog', function() {
             const {editor, dialog} = await getDialogAndEditor(0, '', false, resolve);
             setCodeMirrorContent(editor, 'x === 5');
 
-            renderElementIntoDOM(dialog);
+            renderElementIntoDOM(dialog, {includeCommonStyles: true});
             await assertScreenshot('sources/breakpoint-edit-dialog.png');
 
             dispatchKeyDownEvent(editor.contentDOM, {key: 'Enter'});

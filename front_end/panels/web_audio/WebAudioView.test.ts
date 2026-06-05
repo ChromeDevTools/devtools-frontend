@@ -53,7 +53,7 @@ describeWithMockConnection('WebAudioView', () => {
   it('shows placeholder', async () => {
     const viewFunction = WebAudio.WebAudioView.DEFAULT_VIEW;
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     viewFunction(
         {
           contexts: [],
@@ -69,7 +69,7 @@ describeWithMockConnection('WebAudioView', () => {
   it('shows contexts', async () => {
     const viewFunction = WebAudio.WebAudioView.DEFAULT_VIEW;
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     viewFunction(
         {
           contexts: [context1, context2],
@@ -84,7 +84,7 @@ describeWithMockConnection('WebAudioView', () => {
 
   it('starts empty', async () => {
     const view = createViewFunctionStub(WebAudio.WebAudioView.WebAudioView);
-    renderElementIntoDOM(new WebAudio.WebAudioView.WebAudioView(undefined, view));
+    renderElementIntoDOM(new WebAudio.WebAudioView.WebAudioView(undefined, view), {includeCommonStyles: true});
     assert.isEmpty(view.input.contexts);
     assert.strictEqual(view.input.selectedContextIndex, -1);
   });

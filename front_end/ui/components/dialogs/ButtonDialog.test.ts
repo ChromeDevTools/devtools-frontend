@@ -118,7 +118,7 @@ describeWithEnvironment('ButtonDialog', () => {
   it('renders the dialog button (with the dialog closed)', async () => {
     const {container} = prepareButtonDialogForScreenshot();
 
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     await RenderCoordinator.done();
     await assertScreenshot('dialog/button_dialog_closed.png');
   });
@@ -126,7 +126,7 @@ describeWithEnvironment('ButtonDialog', () => {
   it('renders the button dialog', async () => {
     const {buttonDialog, container} = prepareButtonDialogForScreenshot();
 
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     await RenderCoordinator.done();
 
     const dialog = getDialogFromButtonDialog(buttonDialog);
@@ -147,7 +147,7 @@ describeWithEnvironment('ButtonDialog', () => {
   it('click the close button and close the button dialog', async () => {
     const {buttonDialog, container} = prepareButtonDialogForScreenshot();
 
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     await RenderCoordinator.done();
 
     const dialog = getDialogFromButtonDialog(buttonDialog);

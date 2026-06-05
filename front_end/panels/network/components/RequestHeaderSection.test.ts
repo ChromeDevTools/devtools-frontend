@@ -122,7 +122,7 @@ describeWithEnvironment('RequestHeaderSection', () => {
 
   it('renders correctly', async () => {
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     NetworkComponents.RequestHeaderSection.DEFAULT_VIEW(
         {
           headers: [

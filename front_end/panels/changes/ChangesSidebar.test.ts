@@ -52,7 +52,7 @@ describeWithEnvironment('ChangesSidebar', () => {
     const {uiSourceCodes} = getSourceCodes();
     uiSourceCodes.splice(2, 1);
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     Changes.ChangesSidebar.DEFAULT_VIEW(
         {onSelect: () => {}, sourceCodes: new Set(uiSourceCodes), selectedSourceCode: null}, {}, container);
     await assertScreenshot('changes/ChangesSidebar.png');
@@ -94,7 +94,7 @@ describeWithEnvironment('ChangesSidebar', () => {
   it('selects source codes', async () => {
     const {uiSourceCodes} = getSourceCodes();
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     uiSourceCodes.splice(5, 1);
     uiSourceCodes.splice(3, 1);
     Changes.ChangesSidebar.DEFAULT_VIEW(

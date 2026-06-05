@@ -791,7 +791,7 @@ describe('visual appearance', () => {
       }
     }
 
-    renderElementIntoDOM(root);
+    renderElementIntoDOM(root, {includeCommonStyles: true});
 
     return root;
   }

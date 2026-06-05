@@ -30,7 +30,7 @@ describe('RequestInitiatorView', () => {
 
   it('renders empty request initiator view correctly', async () => {
     const component = document.createElement('div');
-    renderElementIntoDOM(component);
+    renderElementIntoDOM(component, {includeCommonStyles: true});
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
@@ -51,7 +51,7 @@ describe('RequestInitiatorView', () => {
 
   it('renders the initiator view with stack trace correctly', async () => {
     const component = document.createElement('div');
-    renderElementIntoDOM(component);
+    renderElementIntoDOM(component, {includeCommonStyles: true});
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
@@ -77,7 +77,7 @@ describe('RequestInitiatorView', () => {
 
   it('renders the initiator view with initiator chain correctly', async () => {
     const component = document.createElement('div');
-    renderElementIntoDOM(component);
+    renderElementIntoDOM(component, {includeCommonStyles: true});
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
@@ -102,7 +102,7 @@ describe('RequestInitiatorView', () => {
 
   it('renders the initiator view with both stack trace and initiator chain correctly', async () => {
     const component = document.createElement('div');
-    renderElementIntoDOM(component);
+    renderElementIntoDOM(component, {includeCommonStyles: true});
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,

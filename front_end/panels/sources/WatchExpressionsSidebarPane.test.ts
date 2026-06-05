@@ -153,7 +153,7 @@ describeWithEnvironment('WatchExpression', () => {
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     pane.element.style.width = '300px';
     pane.element.style.height = '200px';
-    renderElementIntoDOM(pane);
+    renderElementIntoDOM(pane, {includeCommonStyles: true});
     await pane.updateComplete;
 
     await assertScreenshot('sources/watch-expressions-empty.png');
@@ -184,7 +184,7 @@ describeWithEnvironment('WatchExpression', () => {
 
     pane.element.style.width = '300px';
     pane.element.style.height = '200px';
-    renderElementIntoDOM(pane);
+    renderElementIntoDOM(pane, {includeCommonStyles: true});
     await pane.updateComplete;
 
     const watchExpressions = pane.watchExpressions;

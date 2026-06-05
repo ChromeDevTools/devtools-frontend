@@ -48,7 +48,7 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const component = new AiAssistance.SelectWorkspaceDialog({dialog, onProjectSelected}, view);
     component.markAsRoot();
     const container = document.createElement('div');
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     component.show(container);
     await view.nextInput;
     sinon.assert.callCount(view, 1);
@@ -70,7 +70,7 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
       target.style.maxWidth = '420px';
       target.style.maxHeight = '600px';
       target.style.padding = '12px';
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       AiAssistance.SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW(
           {
             folders: [

@@ -180,7 +180,7 @@ describeWithEnvironment('CPUThrottlingSelector view', () => {
   it('renders hint correctly', async () => {
     const container = document.createElement('div');
     container.style.cssText = containerCss;
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     DEFAULT_VIEW(
         {...DEFAULT_INPUT, recommendedOption: SDK.CPUThrottlingManager.LowTierThrottlingOption},
         undefined,

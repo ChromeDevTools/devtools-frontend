@@ -1168,7 +1168,7 @@ describeWithEnvironment('ChatMessage', () => {
   describe('view', () => {
     it('renders a minimal model message', async () => {
       const target = document.createElement('div');
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       AiAssistance.ChatMessage.DEFAULT_VIEW(
           {
             onRatingClick: () => {},
@@ -1208,7 +1208,7 @@ describeWithEnvironment('ChatMessage', () => {
 
     it('renders a complete user message', async () => {
       const target = document.createElement('div');
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       AiAssistance.ChatMessage.DEFAULT_VIEW(
           {
             onRatingClick: () => {},

@@ -43,7 +43,7 @@ describe('ShortcutDialog', () => {
       open
     };
     container.append(shortcutDialog);
-    renderElementIntoDOM(container);
+    renderElementIntoDOM(container, {includeCommonStyles: true});
     await RenderCoordinator.done();
     await raf();
 

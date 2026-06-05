@@ -18,7 +18,7 @@ const {urlString} = Platform.DevToolsPath;
 describeWithEnvironment('EditFileSystemView view', () => {
   it('renders excluded sub-directories', async () => {
     const target = document.createElement('div');
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
 
     DEFAULT_VIEW(
         {
@@ -38,7 +38,7 @@ describeWithEnvironment('EditFileSystemView view', () => {
 
   it('renders errors for invalid sub-directories', async () => {
     const target = document.createElement('div');
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
 
     DEFAULT_VIEW(
         {

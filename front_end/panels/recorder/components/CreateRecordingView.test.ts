@@ -110,7 +110,7 @@ describeWithEnvironment('CreateRecordingView', () => {
   describe('view', () => {
     it('renders default view', async () => {
       const target = document.createElement('div');
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       Components.CreateRecordingView.DEFAULT_VIEW(
           {
             name: 'test',
@@ -132,7 +132,7 @@ describeWithEnvironment('CreateRecordingView', () => {
     });
     it('renders the error view', async () => {
       const target = document.createElement('div');
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       Components.CreateRecordingView.DEFAULT_VIEW(
           {
             name: 'test',

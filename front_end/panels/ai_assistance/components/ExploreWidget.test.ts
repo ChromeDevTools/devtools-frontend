@@ -101,7 +101,7 @@ describe('ExploreWidget', () => {
   describe('view', () => {
     it('looks fine', async () => {
       const target = document.createElement('div');
-      renderElementIntoDOM(target);
+      renderElementIntoDOM(target, {includeCommonStyles: true});
       AiAssistance.ExploreWidget.DEFAULT_VIEW(
           {
             featureCards: [{

@@ -74,7 +74,7 @@ async function renderHeadersComponent(request: SDK.NetworkRequest.NetworkRequest
   Object.setPrototypeOf(request, SDK.NetworkRequest.NetworkRequest.prototype);
   const component = new Network.RequestHeadersView.RequestHeadersView();
   component.request = request;
-  renderElementIntoDOM(component);
+  renderElementIntoDOM(component, {includeCommonStyles: true});
   await UI.Widget.Widget.allUpdatesComplete;
   await RenderCoordinator.done();
   return component;

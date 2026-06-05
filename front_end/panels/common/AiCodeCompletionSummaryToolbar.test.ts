@@ -142,7 +142,7 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
       target.style.height = '200px';
 
       container.appendChild(target);
-      renderElementIntoDOM(container);
+      renderElementIntoDOM(container, {includeCommonStyles: true});
 
       return target;
     }

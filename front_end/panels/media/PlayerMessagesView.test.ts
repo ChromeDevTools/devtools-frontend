@@ -11,7 +11,7 @@ import * as Media from './media.js';
 describeWithEnvironment('PlayerMessagesView', () => {
   it('renders messages and errors correctly', async () => {
     const view = new Media.PlayerMessagesView.PlayerMessagesView();
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
 
     view.addMessage({
       level: Protocol.Media.PlayerMessageLevel.Info,

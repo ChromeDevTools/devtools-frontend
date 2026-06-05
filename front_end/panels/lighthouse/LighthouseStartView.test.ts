@@ -32,7 +32,7 @@ describeWithEnvironment('LighthouseStartView', () => {
 
   it('renders correctly', async () => {
     const view = createStartView();
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
 
     await assertScreenshot('lighthouse/LighthouseStartView.png');
   });

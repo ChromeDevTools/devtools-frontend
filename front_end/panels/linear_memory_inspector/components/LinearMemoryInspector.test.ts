@@ -24,7 +24,7 @@ describe('LinearMemoryInspector', () => {
     const target = document.createElement('div');
     target.style.width = 'var(--sys-size-40)';
     target.style.height = 'var(--sys-size-30)';
-    renderElementIntoDOM(target);
+    renderElementIntoDOM(target, {includeCommonStyles: true});
     const array = [];
     const string = 'Hello this is a string from the memory buffer!';
 

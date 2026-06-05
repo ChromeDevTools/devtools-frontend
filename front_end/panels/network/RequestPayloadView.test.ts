@@ -62,7 +62,7 @@ describeWithEnvironment('RequestPayloadView', () => {
         null, null, null);
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await assertScreenshot('network/request-payload-query-params.png');
@@ -77,7 +77,7 @@ describeWithEnvironment('RequestPayloadView', () => {
 
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await view.updateComplete;
@@ -90,7 +90,7 @@ describeWithEnvironment('RequestPayloadView', () => {
         null, null);
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await view.updateComplete;
@@ -125,7 +125,7 @@ describeWithEnvironment('RequestPayloadView', () => {
         null);
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await view.updateComplete;
@@ -178,7 +178,7 @@ describeWithEnvironment('RequestPayloadView', () => {
         null, null);
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await view.updateComplete;
@@ -211,7 +211,7 @@ describeWithEnvironment('RequestPayloadView', () => {
 
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await view.updateComplete;
@@ -265,7 +265,7 @@ describeWithEnvironment('RequestPayloadView', () => {
 
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     view.wasShown();
 
     await view.updateComplete;

@@ -379,6 +379,14 @@ export class StylePropertiesSection {
     return this.sectionIdx;
   }
 
+  treeScopeDistance(): number {
+    const treeScope = this.styleInternal.parentRule?.treeScope;
+    if (!treeScope) {
+      return -1;
+    }
+    return SDK.CSSMatchedStyles.distanceToTreeScope(this.matchedStyles.node(), treeScope);
+  }
+
   static createRuleOriginNode(
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
       rule: SDK.CSSRule.CSSRule|null): LitTemplate {

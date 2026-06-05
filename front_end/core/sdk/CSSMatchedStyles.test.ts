@@ -949,6 +949,130 @@ describe('CSSMatchedStyles', () => {
     }
   });
 
+  describe('function rules', () => {
+    it('returns function rules', async () => {
+      const treeScope = 1 as Protocol.DOM.BackendNodeId;
+      const functionRules: Protocol.CSS.CSSFunctionRule[] = [{
+        name: {text: '--my-function'},
+        parameters: [{name: '--arg', type: '*'}],
+        children: [{
+          style: {
+            cssProperties: [{name: 'color', value: 'red'}],
+            shorthandEntries: [],
+          }
+        }],
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        styleSheetId: '0' as Protocol.DOM.StyleSheetId,
+        originTreeScopeNodeId: treeScope,
+      }];
+
+      const matchedStyles = await getMatchedStyles({
+        functionRules,
+      });
+      assert.lengthOf(matchedStyles.functionRules(), 1);
+      const [functionRule] = matchedStyles.functionRules();
+      assert.strictEqual(functionRule.functionName().text, '--my-function');
+      assert.strictEqual(functionRule.nameWithParameters(), '--my-function(--arg)');
+      assert.lengthOf(functionRule.children(), 1);
+      assert.property(functionRule.children()[0], 'style');
+      const child = functionRule.children()[0] as SDK.CSSRule.CSSNestedStyleLeaf;
+      assert.lengthOf(child.style.allProperties(), 1);
+      const [property] = child.style.allProperties();
+      assert.strictEqual(property.name, 'color');
+      assert.strictEqual(property.value, 'red');
+      assert.strictEqual(property.ownerStyle.parentRule, functionRule);
+      assert.strictEqual(functionRule.treeScope, treeScope);
+    });
+
+    it('returns the correct registered function', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 10 as Protocol.DOM.NodeId;
+      node.backendNodeId.returns(1 as Protocol.DOM.BackendNodeId);
+      node.getTreeRoot.returns(node);
+      const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent.id = 20 as Protocol.DOM.NodeId;
+      parent.backendNodeId.returns(2 as Protocol.DOM.BackendNodeId);
+      node.parentNode = parent;
+      const parent2 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent2.id = 30 as Protocol.DOM.NodeId;
+      parent2.backendNodeId.returns(3 as Protocol.DOM.BackendNodeId);
+      parent.parentNode = parent2;
+      const parent3 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent3.id = 40 as Protocol.DOM.NodeId;
+      parent3.backendNodeId.returns(4 as Protocol.DOM.BackendNodeId);
+      parent2.parentNode = parent3;
+      const parent4 = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent4.id = 50 as Protocol.DOM.NodeId;
+      parent4.backendNodeId.returns(5 as Protocol.DOM.BackendNodeId);
+      parent3.parentNode = parent4;
+
+      const functionRules: Protocol.CSS.CSSFunctionRule[] = [
+        {
+          name: {text: '--my-function'},
+          parameters: [],
+          children: [],
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          styleSheetId: '0' as Protocol.DOM.StyleSheetId,
+          originTreeScopeNodeId: 4 as Protocol.DOM.BackendNodeId,
+        },
+        {
+          name: {text: '--my-function'},
+          parameters: [{name: '--arg', type: '*'}],
+          children: [],
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          styleSheetId: '1' as Protocol.DOM.StyleSheetId,
+          originTreeScopeNodeId: 2 as Protocol.DOM.BackendNodeId,
+        },
+      ];
+
+      const matchedStyles = await getMatchedStyles({
+        node,
+        functionRules,
+      });
+
+      const testCases = [
+        {
+          treeScope: 1,
+          expectedDistance: 1,
+          expectedRegisteredFunction: '--my-function(--arg)',
+        },
+        {
+          treeScope: 2,
+          expectedDistance: 1,
+          expectedRegisteredFunction: '--my-function(--arg)',
+        },
+        {
+          treeScope: 3,
+          expectedDistance: 3,
+          expectedRegisteredFunction: '--my-function()',
+        },
+        {
+          treeScope: 4,
+          expectedDistance: 3,
+          expectedRegisteredFunction: '--my-function()',
+        },
+        {
+          treeScope: 5,
+          expectedDistance: -1,
+          expectedRegisteredFunction: undefined,
+        },
+      ];
+
+      for (const {treeScope, expectedDistance, expectedRegisteredFunction} of testCases) {
+        const stubStyle = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+        const parentRule = sinon.createStubInstance(SDK.CSSRule.CSSStyleRule);
+        (parentRule as {treeScope: number}).treeScope = treeScope;
+        stubStyle.parentRule = parentRule;
+        const sourceProperty =
+            new SDK.CSSProperty.CSSProperty(stubStyle, 0, 'dummy', 'dummy', true, false, true, false, '', undefined);
+
+        const result = matchedStyles.getRegisteredFunction('--my-function', sourceProperty);
+        assert.strictEqual(result.treeScopeDistance, expectedDistance);
+        assert.strictEqual(result.registeredFunction, expectedRegisteredFunction);
+      }
+    });
+  });
+
   describe('NodeCascade', () => {
     it('correctly marks custom properties as Overloaded if they are registered as inherits: false', async () => {
       const connection = new MockCDPConnection();

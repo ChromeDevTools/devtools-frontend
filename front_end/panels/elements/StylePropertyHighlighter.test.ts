@@ -99,6 +99,28 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
     sinon.assert.calledOnceWithExactly(highlightSpy, block.sections[0].element);
   });
 
+  it('highlights sections with tree scope distance', async () => {
+    const {stylesSidebarPane, matchedStyles} = await setupStylesPane();
+    const getSectionBlockByName = sinon.stub(stylesSidebarPane, 'getSectionBlockByName');
+
+    const block = createBlockAndSection(stylesSidebarPane, matchedStyles, 'sectionname');
+    const otherSection = createSection(stylesSidebarPane, matchedStyles, 'sectionname');
+    sinon.stub(block.sections[0], 'treeScopeDistance').returns(1);
+    sinon.stub(otherSection, 'treeScopeDistance').returns(2);
+    block.sections.push(otherSection);
+
+    const blockExpandSpy = sinon.spy(block, 'expand');
+
+    getSectionBlockByName.callsFake(name => name === 'blockname' ? block : undefined);
+
+    const highlighter = new Elements.StylePropertyHighlighter.StylePropertyHighlighter(stylesSidebarPane);
+    const highlightSpy = sinon.stub(PanelUtils.PanelUtils, 'highlightElement');
+    highlighter.findAndHighlightSection('sectionname', 'blockname', 2);
+
+    sinon.assert.called(blockExpandSpy);
+    sinon.assert.calledOnceWithExactly(highlightSpy, block.sections[1].element);
+  });
+
   it('highlights properties in sections in blocks', async () => {
     const {stylesSidebarPane, matchedStyles} = await setupStylesPane();
     const getSectionBlockByName = sinon.stub(stylesSidebarPane, 'getSectionBlockByName');

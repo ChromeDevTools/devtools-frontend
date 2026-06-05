@@ -344,16 +344,16 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
-  jumpToSection(sectionName: string, blockName: string): void {
-    this.decorator.findAndHighlightSection(sectionName, blockName);
+  jumpToSection(sectionName: string, blockName: string, treeScopeDistance?: number): void {
+    this.decorator.findAndHighlightSection(sectionName, blockName, treeScopeDistance);
   }
 
   jumpToSectionBlock(section: string): void {
     this.decorator.findAndHighlightSectionBlock(section);
   }
 
-  jumpToFunctionDefinition(functionName: string): void {
-    this.jumpToSection(functionName, FUNCTION_SECTION_NAME);
+  jumpToFunctionDefinition(functionName: string, treeScopeDistance: number): void {
+    this.jumpToSection(functionName, FUNCTION_SECTION_NAME, treeScopeDistance);
   }
 
   jumpToFontPaletteDefinition(paletteName: string): void {

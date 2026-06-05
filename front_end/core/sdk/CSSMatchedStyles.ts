@@ -196,6 +196,36 @@ function queryMatches(style: CSSStyleDeclaration): boolean {
   return true;
 }
 
+function treeScopeDistance(node: DOMNode, property: CSSProperty): number {
+  if (!property.ownerStyle.parentRule && property.ownerStyle.type !== Type.Inline) {
+    return -1;
+  }
+  const root = node.getTreeRoot();
+  const nodeId = property.ownerStyle.parentRule?.treeScope ?? root?.backendNodeId();
+  if (nodeId === undefined) {
+    return -1;
+  }
+  return distanceToTreeScope(node, nodeId);
+}
+
+/**
+ * Distance from node to parent that is the tree scope. Returns -1 if tree scope is not found.
+ *
+ * @param node The child node to start from.
+ * @param treeScope The tree scope node ID.
+ * @returns The distance to the tree scope node, or -1 if not found.
+ */
+export function distanceToTreeScope(node: DOMNode, treeScope: Protocol.DOM.BackendNodeId): number {
+  let distance = 0;
+  for (let ancestor: DOMNode|null = node; ancestor; ancestor = ancestor.parentNode) {
+    if (ancestor.backendNodeId() === treeScope) {
+      return distance;
+    }
+    distance++;
+  }
+  return -1;
+}
+
 export interface CSSMatchedStylesPayload {
   cssModel: CSSModel;
   node: DOMNode;
@@ -307,7 +337,7 @@ export class CSSMatchedStyles {
   #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
   #functionRules: CSSFunctionRule[];
   #atRules: CSSAtRule[];
-  #functionRuleMap = new Map<string, CSSFunctionRule>();
+  #functionRuleMap = new Map<string, CSSFunctionRule[]>();
   #environmentVariables: Record<string, string> = {};
 
   static async create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles> {
@@ -381,7 +411,9 @@ export class CSSMatchedStyles {
     }
 
     for (const rule of this.#functionRules) {
-      this.#functionRuleMap.set(rule.functionName().text, rule);
+      const rules = this.#functionRuleMap.get(rule.functionName().text) ?? [];
+      rules.push(rule);
+      this.#functionRuleMap.set(rule.functionName().text, rules);
     }
   }
 
@@ -790,9 +822,25 @@ export class CSSMatchedStyles {
     return this.#registeredPropertyMap.get(name);
   }
 
-  getRegisteredFunction(name: string): string|undefined {
-    const functionRule = this.#functionRuleMap.get(name);
-    return functionRule ? functionRule.nameWithParameters() : undefined;
+  getRegisteredFunction(name: string, sourceProperty: CSSProperty):
+      {treeScopeDistance: number, registeredFunction?: string} {
+    const minTreeScopeDistance = treeScopeDistance(this.#node, sourceProperty);
+    const functionRules = this.#functionRuleMap.get(name) ?? [];
+    let result: {treeScopeDistance: number, registeredFunction?: string} = {treeScopeDistance: -1};
+    for (const functionRule of functionRules) {
+      if (!functionRule.treeScope) {
+        continue;
+      }
+      const distance = distanceToTreeScope(this.#node, functionRule.treeScope);
+      if (distance === -1 || distance < minTreeScopeDistance) {
+        continue;
+      }
+
+      if (result.treeScopeDistance === -1 || distance < result.treeScopeDistance) {
+        result = {registeredFunction: functionRule.nameWithParameters(), treeScopeDistance: distance};
+      }
+    }
+    return result;
   }
 
   functionRules(): CSSFunctionRule[] {
@@ -1045,26 +1093,6 @@ class NodeCascade {
     }
   }
 
-  #treeScopeDistance(property: CSSProperty): number {
-    if (!property.ownerStyle.parentRule && property.ownerStyle.type !== Type.Inline) {
-      return -1;
-    }
-    const root = this.#node.getTreeRoot();
-    const nodeId = property.ownerStyle.parentRule?.treeScope ?? root?.backendNodeId();
-    if (nodeId === undefined) {
-      return -1;
-    }
-
-    let distance = 0;
-    for (let ancestor: DOMNode|null = this.#node; ancestor; ancestor = ancestor.parentNode) {
-      if (ancestor.backendNodeId() === nodeId) {
-        return distance;
-      }
-      distance++;
-    }
-    return -1;
-  }
-
   #needsCascadeContextStep(): boolean {
     if (!this.#node.isInShadowTree()) {
       return false;
@@ -1084,7 +1112,8 @@ class NodeCascade {
     const activeProperty = this.activeProperties.get(canonicalName);
     if (activeProperty?.important && !propertyWithHigherSpecificity.important ||
         activeProperty && this.#needsCascadeContextStep() &&
-            this.#treeScopeDistance(activeProperty) > this.#treeScopeDistance(propertyWithHigherSpecificity)) {
+            treeScopeDistance(this.#node, activeProperty) >
+                treeScopeDistance(this.#node, propertyWithHigherSpecificity)) {
       this.propertiesState.set(propertyWithHigherSpecificity, PropertyState.OVERLOADED);
       return;
     }

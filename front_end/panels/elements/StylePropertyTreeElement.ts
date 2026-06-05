@@ -2661,10 +2661,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return container;
   }
 
-  #getLinkableFunction(functionName: string, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles):
-      InlineEditor.LinkSwatch.LinkSwatch {
+  #getLinkableFunction(
+      functionName: string, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      property: SDK.CSSProperty.CSSProperty): InlineEditor.LinkSwatch.LinkSwatch {
     const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-    const registeredFunction = matchedStyles.getRegisteredFunction(functionName);
+    const {registeredFunction, treeScopeDistance} = matchedStyles.getRegisteredFunction(functionName, property);
     const isDefined = Boolean(registeredFunction);
     swatch.data = {
       jslogContext: 'css-function',
@@ -2675,7 +2676,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (!registeredFunction) {
           return;
         }
-        this.#stylesContainer.jumpToFunctionDefinition(registeredFunction);
+        this.#stylesContainer.jumpToFunctionDefinition(registeredFunction, treeScopeDistance);
       },
     };
     return swatch;
@@ -2696,7 +2697,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const tooltipId = this.getTooltipId(`${functionName}-trace`);
     // clang-format off
     return html`
-        <span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName.startsWith('--') ? this.#getLinkableFunction(functionName, matchedStyles) : functionName}</span>
+        <span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName.startsWith('--') ? this.#getLinkableFunction(functionName, matchedStyles, context.property) : functionName}</span>
         <devtools-tooltip
             id=${tooltipId}
             use-hotkey

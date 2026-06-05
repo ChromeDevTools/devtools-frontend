@@ -37,7 +37,7 @@ export interface StylesContainer {
       computedValue: string|null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
   getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
       ElementsComponents.CSSVariableValueView.CSSVariableParserError|null;
-  jumpToFunctionDefinition(functionName: string): void;
+  jumpToFunctionDefinition(functionName: string, treeScopeDistance: number): void;
   continueEditingElement(sectionIndex: number, propertyIndex: number): void;
   revealProperty(cssProperty: SDK.CSSProperty.CSSProperty): void;
   resetFocus(): void;

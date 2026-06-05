@@ -276,7 +276,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<E
     return null;
   }
 
-  jumpToFunctionDefinition(_functionName: string): void {
+  jumpToFunctionDefinition(_functionName: string, _treeScopeDistance: number): void {
   }
 
   continueEditingElement(_sectionIndex: number, _propertyIndex: number): void {

@@ -1068,6 +1068,17 @@ export abstract class HeapSnapshot {
     this.#progress.updateStatus('Finished processing.');
   }
 
+  nodeIndexForId(nodeId: number): number|undefined {
+    const nodesLength = this.nodes.length;
+    const {nodes, nodeFieldCount, nodeIdOffset} = this;
+    for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
+      if (nodes.getValue(nodeIndex + nodeIdOffset) === nodeId) {
+        return nodeIndex;
+      }
+    }
+    return undefined;
+  }
+
   private startInitStep1InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort):
       Promise<ResultsFromSecondWorker> {
     const resultsFromSecondWorker = new Promise<ResultsFromSecondWorker>((resolve, reject) => {

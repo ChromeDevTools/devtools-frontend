@@ -1027,4 +1027,32 @@ describe('HeapSnapshot', () => {
 
     assert.strictEqual(JSON.stringify(referenceToCompare), JSON.stringify(resultToCompare));
   });
+
+  it('heapSnapshotNodeIndexForId', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const zeroSizeNode = new HeapNode('ZeroSizeNode', 0, 'object', 42);
+    root.linkNode(zeroSizeNode, 'element');
+
+    const normalNode = new HeapNode('NormalNode', 100, 'object', 99);
+    root.linkNode(normalNode, 'element');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const zeroSizeIndex = snapshot.nodeIndexForId(42);
+    assert.isDefined(zeroSizeIndex);
+    const resolvedZeroSizeNode = snapshot.createNode(zeroSizeIndex!);
+    assert.strictEqual(resolvedZeroSizeNode.name(), 'ZeroSizeNode');
+    assert.strictEqual(resolvedZeroSizeNode.id(), 42);
+
+    const normalIndex = snapshot.nodeIndexForId(99);
+    assert.isDefined(normalIndex);
+    const resolvedNormalNode = snapshot.createNode(normalIndex!);
+    assert.strictEqual(resolvedNormalNode.name(), 'NormalNode');
+    assert.strictEqual(resolvedNormalNode.id(), 99);
+
+    const nonExistentIndex = snapshot.nodeIndexForId(999);
+    assert.isUndefined(nonExistentIndex);
+  });
 });

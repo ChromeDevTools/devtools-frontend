@@ -224,7 +224,7 @@ export const NativeFunctions = [
     {
         name: "create",
         signatures: [["?options"]],
-        receivers: ["CredentialsContainer", "Classifier"]
+        receivers: ["CredentialsContainer", "Classifier", "SemanticEmbedder"]
     },
     {
         name: "defineProperty",
@@ -8240,6 +8240,11 @@ export const NativeFunctions = [
         signatures: [["animatorName", "effects", "?timeline", "?options"]]
     },
     {
+        name: "availability",
+        signatures: [["?options"]],
+        receivers: ["SemanticEmbedder"]
+    },
+    {
         name: "classify",
         signatures: [["input", "?options"]]
     },
@@ -8254,6 +8259,10 @@ export const NativeFunctions = [
     {
         name: "LanguageModelToolError",
         signatures: [["init"]]
+    },
+    {
+        name: "embed",
+        signatures: [["input", "?options"]]
     },
     {
         name: "queryFeatureSupport",

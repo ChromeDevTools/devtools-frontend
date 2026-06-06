@@ -63,9 +63,6 @@
       "path": "../emulation/bundle-tsconfig.json"
     },
     {
-      "path": "web-vitals-injected/web-vitals-injected-tsconfig.json"
-    },
-    {
       "path": "web-vitals-injected/spec/bundle-tsconfig.json"
     }
   ]

@@ -202,6 +202,17 @@ function inFileEditRequestToSourceFile(request) {
     }
     return sourceFile;
 }
+/**
+ * Sanitizes a label value to conform to the GCP label value regex constraint:
+ * `[\p{Ll}\p{Lo}\p{N}_-]{0,63}`
+ *
+ * This converts the value to lowercase, replaces any character that is not a
+ * lowercase letter, digit, underscore, or hyphen with an underscore, and
+ * truncates the value to 63 characters.
+ */
+function sanitizeLabelValue(value) {
+    return value.toLowerCase().replace(/[^\p{Ll}\p{Lo}\p{N}_-]/gu, '_').substring(0, 63);
+}
 /* eslint-disable @typescript-eslint/naming-convention */
 function buildLabels(request, gcaRequest) {
     const labels = {};
@@ -237,7 +248,11 @@ function buildLabels(request, gcaRequest) {
         labels['client_version'] = request.metadata.client_version;
     }
     if (Object.keys(labels).length > 0) {
-        gcaRequest.labels = labels;
+        const sanitizedLabels = {};
+        for (const [key, value] of Object.entries(labels)) {
+            sanitizedLabels[key] = sanitizeLabelValue(value);
+        }
+        gcaRequest.labels = sanitizedLabels;
     }
 }
 /* eslint-enable @typescript-eslint/naming-convention */

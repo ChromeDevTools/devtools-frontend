@@ -94,6 +94,9 @@
       "path": "../../models/computed_style/bundle-tsconfig.json"
     },
     {
+      "path": "../../models/formatter/bundle-tsconfig.json"
+    },
+    {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {

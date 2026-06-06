@@ -364,10 +364,4 @@ button {
   }
 }
 
-@media(forced-colors: active) {
-  .toggled devtools-icon {
-    background-color: canvas;
-  }
-}
-
 /*# sourceURL=${import.meta.resolve('./button.css')} */`;

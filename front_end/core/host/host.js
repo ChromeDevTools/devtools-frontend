@@ -467,6 +467,9 @@ function inFileEditRequestToSourceFile(request) {
   }
   return sourceFile;
 }
+function sanitizeLabelValue(value) {
+  return value.toLowerCase().replace(/[^\p{Ll}\p{Lo}\p{N}_-]/gu, "_").substring(0, 63);
+}
 function buildLabels(request, gcaRequest) {
   const labels = {};
   if (request.client) {
@@ -501,7 +504,11 @@ function buildLabels(request, gcaRequest) {
     labels["client_version"] = request.metadata.client_version;
   }
   if (Object.keys(labels).length > 0) {
-    gcaRequest.labels = labels;
+    const sanitizedLabels = {};
+    for (const [key, value] of Object.entries(labels)) {
+      sanitizedLabels[key] = sanitizeLabelValue(value);
+    }
+    gcaRequest.labels = sanitizedLabels;
   }
 }
 var AidaReasonToGcaInclusionReason = {

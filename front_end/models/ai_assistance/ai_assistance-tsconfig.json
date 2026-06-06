@@ -119,16 +119,10 @@
       "path": "../bindings/bundle-tsconfig.json"
     },
     {
-      "path": "../breakpoints/bundle-tsconfig.json"
-    },
-    {
       "path": "../crux-manager/bundle-tsconfig.json"
     },
     {
       "path": "../emulation/bundle-tsconfig.json"
-    },
-    {
-      "path": "../formatter/bundle-tsconfig.json"
     },
     {
       "path": "../greendev/bundle-tsconfig.json"

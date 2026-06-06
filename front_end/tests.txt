@@ -645,6 +645,7 @@ panels/web_audio/web_audio.test.js
 panels/webauthn/WebauthnPane.test.js
 panels/whats_new/ReleaseNote.test.js
 panels/whats_new/ReleaseNoteView.test.js
+services/puppeteer/PuppeteerConnection.test.js
 services/trace_bounds/TraceBounds.test.js
 services/tracing/FreshRecording.test.js
 services/tracing/TracingManager.test.js

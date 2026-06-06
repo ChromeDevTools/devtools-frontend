@@ -14655,6 +14655,7 @@ export namespace Page {
     UsbUnrestricted = 'usb-unrestricted',
     VerticalScroll = 'vertical-scroll',
     WebAppInstallation = 'web-app-installation',
+    Webnn = 'webnn',
     WebPrinting = 'web-printing',
     WebShare = 'web-share',
     WindowManagement = 'window-management',

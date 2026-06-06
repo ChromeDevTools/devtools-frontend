@@ -12,7 +12,7 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '74fc7f28a3bfdda5d1c93730064ff8018af16f27',
+  'build_revision': 'b2bf19407235dfd71987eaac3bd875cab0416f96',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '209bc1193da58ef0ba94430d8345070d67618dfb',
@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:6f8c0328ee29c76e3566a216f2f0cf2992daa6ed',
+  'gn_version': 'git_revision:bac66cfc3254aabcd8640c8ebbeb6d62a198d454',
 
   'cmake_version': 'version:2@3.21.3',
 

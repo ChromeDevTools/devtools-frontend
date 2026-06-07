@@ -1866,6 +1866,14 @@ var UIStrings9 = {
    */
   WebBluetoothRemoteCharacteristicWriteValue: "`BluetoothRemoteGATTCharacteristic.writeValue()` is deprecated. Use `writeValueWithResponse()` or `writeValueWithoutResponse()` instead.",
   /**
+   * @description Warning for using the deprecated 'incomingHighWaterMark' attribute on WebTransportDatagramDuplexStream. Developers should use 'incomingMaxBufferedDatagrams' instead.
+   */
+  WebTransportDatagramDuplexStreamIncomingHighWaterMark: "WebTransportDatagramDuplexStream.incomingHighWaterMark has been renamed to incomingMaxBufferedDatagrams. incomingHighWaterMark will be removed in a future version of Chrome.",
+  /**
+   * @description Warning for using the deprecated 'outgoingHighWaterMark' attribute on WebTransportDatagramDuplexStream. Developers should use 'outgoingMaxBufferedDatagrams' instead.
+   */
+  WebTransportDatagramDuplexStreamOutgoingHighWaterMark: "WebTransportDatagramDuplexStream.outgoingHighWaterMark has been renamed to outgoingMaxBufferedDatagrams. outgoingHighWaterMark will be removed in a future version of Chrome.",
+  /**
    * @description Warning displayed to developers that they are using `XMLHttpRequest` API in a way that they expect an unsupported character encoding `UTF-16` could be used in the server reply.
    */
   XHRJSONEncodingDetection: "UTF-16 is not supported by response json in `XMLHttpRequest`",
@@ -2023,6 +2031,14 @@ var DEPRECATIONS_METADATA = {
   },
   "WebBluetoothRemoteCharacteristicWriteValue": {
     "chromeStatusFeature": 5088568590598144
+  },
+  "WebTransportDatagramDuplexStreamIncomingHighWaterMark": {
+    "chromeStatusFeature": 5143839699501056,
+    "milestone": 156
+  },
+  "WebTransportDatagramDuplexStreamOutgoingHighWaterMark": {
+    "chromeStatusFeature": 5143839699501056,
+    "milestone": 156
   },
   "XHRJSONEncodingDetection": {
     "milestone": 93

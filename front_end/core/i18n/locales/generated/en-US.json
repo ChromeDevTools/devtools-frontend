@@ -1508,6 +1508,12 @@
   "generated/Deprecation.ts | WebBluetoothRemoteCharacteristicWriteValue": {
     "message": "BluetoothRemoteGATTCharacteristic.writeValue() is deprecated. Use writeValueWithResponse() or writeValueWithoutResponse() instead."
   },
+  "generated/Deprecation.ts | WebTransportDatagramDuplexStreamIncomingHighWaterMark": {
+    "message": "WebTransportDatagramDuplexStream.incomingHighWaterMark has been renamed to incomingMaxBufferedDatagrams. incomingHighWaterMark will be removed in a future version of Chrome."
+  },
+  "generated/Deprecation.ts | WebTransportDatagramDuplexStreamOutgoingHighWaterMark": {
+    "message": "WebTransportDatagramDuplexStream.outgoingHighWaterMark has been renamed to outgoingMaxBufferedDatagrams. outgoingHighWaterMark will be removed in a future version of Chrome."
+  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response json in XMLHttpRequest"
   },

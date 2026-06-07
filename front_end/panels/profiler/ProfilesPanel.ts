@@ -357,7 +357,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   reset(): void {
     this.profileTypes.forEach(type => type.reset());
 
-    delete this.visibleView;
+    this.closeVisibleView();
 
     this.profileGroups = {};
     this.updateToggleRecordAction(false);
@@ -365,8 +365,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     this.sidebarTree.element.classList.remove('some-expandable');
 
-    this.launcherView.detach();
-    this.profileViews.removeChildren();
     this.profileViewToolbar.removeToolbarItems();
 
     this.profilesItemTreeElement.select();

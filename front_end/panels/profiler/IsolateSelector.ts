@@ -66,8 +66,10 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
   totalValueDiv: HTMLElement;
   readonly totalTrendDiv: HTMLElement;
 
-  constructor() {
-    super();
+  // `devtools-widget` passes its host element into widget constructors.
+  // Accept and forward it so this widget attaches to that host element.
+  constructor(element?: HTMLElement) {
+    super(element);
 
     this.items = new UI.ListModel.ListModel();
     this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);

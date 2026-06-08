@@ -535,6 +535,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     return this.#scripts.get(scriptId) || null;
   }
 
+  isWasm(scriptId: string): boolean {
+    const script = this.scriptForId(scriptId);
+    return script ? script.isWasm() : false;
+  }
+
   /**
    * Returns all `Script` objects with the same provided `sourceURL`. The
    * resulting array is sorted by time with the newest `Script` in the front.

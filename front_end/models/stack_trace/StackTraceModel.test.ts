@@ -206,7 +206,7 @@ describe('StackTraceModel', () => {
 
       await model.createFromProtocolRuntime({callFrames}, translateSpy);
 
-      sinon.assert.calledOnceWithMatch(translateSpy, callFrames, model.target());
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames.map(f => ({...f, isWasm: false})), model.target());
     });
 
     it('translates identical stack traces only once', async () => {
@@ -273,7 +273,7 @@ describe('StackTraceModel', () => {
       const stackTracePromise2 = model.createFromProtocolRuntime({callFrames: callFrames2}, translateSpy);
 
       await new Promise(r => setTimeout(r, 0));  // Run microtask queue as far as possible.
-      sinon.assert.calledOnceWithExactly(translateSpy, callFrames1, model.target());
+      sinon.assert.calledOnceWithExactly(translateSpy, callFrames1.map(f => ({...f, isWasm: false})), model.target());
 
       resolveTranslate();
       await stackTracePromise1;
@@ -281,7 +281,7 @@ describe('StackTraceModel', () => {
       // Now the second call should have happened.
       await new Promise(r => setTimeout(r, 0));  // Run microtask queue as far as possible.
       sinon.assert.calledTwice(translateSpy);
-      sinon.assert.calledWith(translateSpy, callFrames2, model.target());
+      sinon.assert.calledWith(translateSpy, callFrames2.map(f => ({...f, isWasm: false})), model.target());
 
       await stackTracePromise2;
     });
@@ -307,7 +307,7 @@ describe('StackTraceModel', () => {
       await model.scriptInfoChanged(script, translateSpy);
 
       sinon.assert.calledOnce(updatedSpy);
-      sinon.assert.calledOnceWithMatch(translateSpy, callFrames, model.target());
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames.map(f => ({...f, isWasm: false})), model.target());
     });
 
     it('only re-translates affected fragments and notifies affected stack traces', async () => {
@@ -327,7 +327,7 @@ describe('StackTraceModel', () => {
 
       await model.scriptInfoChanged(script, translateSpy);
 
-      sinon.assert.calledOnceWithMatch(translateSpy, callFrames1, model.target());
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames1.map(f => ({...f, isWasm: false})), model.target());
       sinon.assert.calledOnce(updatedSpy1);
       sinon.assert.notCalled(updatedSpy2);
     });
@@ -367,7 +367,7 @@ describe('StackTraceModel', () => {
 
       await model.scriptInfoChanged(script, translateSpy);
 
-      sinon.assert.calledOnceWithMatch(translateSpy, callFrames);
+      sinon.assert.calledOnceWithMatch(translateSpy, callFrames.map(f => ({...f, isWasm: false})));
       sinon.assert.calledOnce(updatedSpy);
     });
 
@@ -406,7 +406,8 @@ describe('StackTraceModel', () => {
 
          await model.scriptInfoChanged(script, translateSpy);
 
-         sinon.assert.calledOnceWithMatch(translateSpy, fullCallFrames, model.target());
+         sinon.assert.calledOnceWithMatch(
+             translateSpy, fullCallFrames.map(f => ({...f, isWasm: false})), model.target());
          sinon.assert.calledOnce(updatedSpyFull);
          sinon.assert.calledOnce(updatedSpySubSet);
        });
@@ -430,6 +431,27 @@ describe('StackTraceModel', () => {
 
       const frame = stackTrace.syncFragment.frames[0];
       assert.strictEqual(frame.missingDebugInfo?.type, StackTrace.StackTrace.MissingDebugInfoType.NO_INFO);
+    });
+
+    it('resolves isWasm using DebuggerModel for protocol stack trace frames', async () => {
+      const {model, debuggerModel} = setup();
+      sinon.stub(debuggerModel, 'scriptForId').callsFake(scriptId => {
+        return {
+          isWasm: () => scriptId === 'wasmScriptId',
+        } as SDK.Script.Script;
+      });
+
+      const stackTrace = await model.createFromProtocolRuntime(
+          {
+            callFrames: [
+              'foo.js:jsScriptId:foo:10:20',
+              'bar.wasm:wasmScriptId:bar:0:30',
+            ].map(protocolCallFrame),
+          },
+          identityTranslateFn);
+
+      assert.isFalse(Boolean(stackTrace.syncFragment.frames[0].isWasm));
+      assert.isTrue(stackTrace.syncFragment.frames[1].isWasm);
     });
   });
 

@@ -48,8 +48,14 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
 
   async createFromProtocolRuntime(stackTrace: Protocol.Runtime.StackTrace, rawFramesToUIFrames: TranslateRawFrames):
       Promise<StackTrace.StackTrace.StackTrace> {
+    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
+    const syncFrames = stackTrace.callFrames.map((frame): RawFrame => {
+      const isWasm = debuggerModel?.isWasm(frame.scriptId) ?? false;
+      return {...frame, isWasm};
+    });
+
     const [syncFragment, asyncFragments] = await Promise.all([
-      this.#createFragment(stackTrace.callFrames, rawFramesToUIFrames),
+      this.#createFragment(syncFrames, rawFramesToUIFrames),
       this.#createAsyncFragments(stackTrace, rawFramesToUIFrames),
     ]);
 
@@ -145,8 +151,14 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
           continue;
         }
         const model = StackTraceModel.#modelForTarget(target);
+        const targetDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+        const asyncFrames = asyncStackTrace.callFrames.map((frame): RawFrame => {
+          const isWasm = targetDebuggerModel?.isWasm(frame.scriptId) ?? false;
+          return {...frame, isWasm};
+        });
+
         const asyncFragmentPromise =
-            model.#createFragment(asyncStackTrace.callFrames, rawFramesToUIFrames)
+            model.#createFragment(asyncFrames, rawFramesToUIFrames)
                 .then(fragment => new AsyncFragmentImpl(asyncStackTrace.description ?? '', fragment));
         asyncFragments.push(asyncFragmentPromise);
       }

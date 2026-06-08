@@ -1970,6 +1970,138 @@ code
         {name: 'content-type', value: 'text/html'},
       ]);
     });
+
+    it('redacts sourceText for RundownScriptSource events', async function() {
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getEventByKey', args: {eventKey: 'valid-event-key'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {
+          cpuThrottling: undefined,
+          networkThrottling: undefined,
+        },
+        data: {
+          Meta: {
+            mainFrameNavigations: [],
+            traceBounds: {min: 0, max: 100},
+            mainFrameURL: 'https://example.com',
+          }
+        }
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      await agent.run('test', {selected: context}).next();
+
+      const focus = context.getItem();
+      assert.exists(focus);
+
+      const mockRundownSourceEvent = {
+        cat: 'disabled-by-default-devtools.v8-source-rundown-sources',
+        name: 'ScriptCatchup',
+        args: {
+          data: {
+            isolate: 1,
+            scriptId: 2,
+            sourceText: 'console.log("sensitive");',
+          },
+        },
+      };
+
+      sinon.stub(focus, 'lookupEvent').callsFake(key => {
+        if (key === 'valid-event-key') {
+          return mockRundownSourceEvent as unknown as Trace.Types.Events.Event;
+        }
+        return null;
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 1);
+
+      const action = actions[0] as AiAgent.ActionResponse;
+      assert.exists(action.output);
+
+      const parsedOutput = JSON.parse(action.output);
+      const details = JSON.parse(parsedOutput.details);
+      assert.isUndefined(details.args.data.sourceText);
+    });
+
+    it('redacts sourceText for RundownScriptSourceLarge events', async function() {
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [
+              {name: 'getEventByKey', args: {eventKey: 'valid-event-key'}},
+            ]
+          }],
+          [{explanation: 'done'}]
+        ])
+      });
+
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {
+          cpuThrottling: undefined,
+          networkThrottling: undefined,
+        },
+        data: {
+          Meta: {
+            mainFrameNavigations: [],
+            traceBounds: {min: 0, max: 100},
+            mainFrameURL: 'https://example.com',
+          }
+        }
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      await agent.run('test', {selected: context}).next();
+
+      const focus = context.getItem();
+      assert.exists(focus);
+
+      const mockRundownSourceLargeEvent = {
+        cat: 'disabled-by-default-devtools.v8-source-rundown-sources',
+        name: 'LargeScriptCatchup',
+        args: {
+          data: {
+            isolate: 1,
+            scriptId: 2,
+            splitIndex: 0,
+            splitCount: 1,
+            sourceText: 'console.log("sensitive large");',
+          },
+        },
+      };
+
+      sinon.stub(focus, 'lookupEvent').callsFake(key => {
+        if (key === 'valid-event-key') {
+          return mockRundownSourceLargeEvent as unknown as Trace.Types.Events.Event;
+        }
+        return null;
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actions = responses.filter(r => r.type === AiAgent.ResponseType.ACTION);
+      assert.lengthOf(actions, 1);
+
+      const action = actions[0] as AiAgent.ActionResponse;
+      assert.exists(action.output);
+
+      const parsedOutput = JSON.parse(action.output);
+      const details = JSON.parse(parsedOutput.details);
+      assert.isUndefined(details.args.data.sourceText);
+    });
   });
 
   describe('getLabelName', () => {

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "ມຸມມອງບັນຫາ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "ແຜງ Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "ແຜງຕົວກວດສອບໜ່ວຍຄວາມຈຳ"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ໃຊ້ຄຸນສົມບັດທີ່ເຊົາສະໜັບສະໜຸນແລ້ວ"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ໂປຣໂຕຄໍການຢັ້ງຢືນອີເມວ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "ຄຸນສົມບັດ HTML: ຕື່ມຂໍ້ມູນອັດຕະໂນມັດ"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "ຄຳອະທິບາຍການແຊກແຊງກັບຄືນໄປຫາໂຄສະນາ"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "ຕົວອະທິບາຍ CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ລຶບ [ໂມດູນ JavaScript ທີ່ຊ້ຳກັນ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ແລະ ຂະໜາດໃຫຍ່ອອກຈາກແພັກເກດເພື່ອຫຼຸດຈຳນວນໄບຕ໌ທີ່ບໍ່ຈຳເປັນທີ່ການເຄື່ອນໄຫວເຄືອຂ່າຍໃຊ້."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ບໍ່ພົບ JavaScript ທີ່ຊ້ຳກັນ"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript ທີ່ຊ້ຳກັນ"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ຟອນ"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ບໍ່ພົບຟອນທີ່ມີການສະແດງຟອນທີ່ຕ່ຳກວ່າມາດຕະຖານ"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ການສະແດງຟອນ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfills ແລະ ການປ່ຽນຮູບແບບຊ່ວຍໃຫ້ໂປຣແກຣມທ່ອງເວັບເກົ່າໃຊ້ຄຸນສົມບັດ JavaScript ໃໝ່ໄດ້. ແນວໃດກໍຕາມ, ສ່ວນຫຼາຍຈະບໍ່ຈຳເປັນສຳລັບໂປຣແກຣມທ່ອງເວັບສະໄໝໃໝ່. ລອງແກ້ໄຂຂະບວນການ build JavaScript ເພື່ອບໍ່ໃຫ້ເຮັດການ Transpile ຄຸນສົມບັດ [Baseline](https://web.dev/articles/baseline-and-polyfills), ເວັ້ນແຕ່ທ່ານຈະຮູ້ວ່າທ່ານຕ້ອງຮອງຮັບໂປຣແກຣມທ່ອງເວັບເກົ່າ. [ສຶກສາສາເຫດທີ່ເວັບໄຊສ່ວນໃຫຍ່ສາມາດຕິດຕັ້ງການນຳໃຊ້ໂຄດ ES6+ ໄດ້ໂດຍບໍ່ຕ້ອງເຮັດການ Transpile](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ບໍ່ພົບ JavaScript ແບບເກົ່າ"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript ແບບເກົ່າ"
@@ -3201,10 +3219,10 @@
     "message": "ເປີດ {PH1} ເພື່ອຮັບຄວາມຊ່ວຍເຫຼືອຕໍ່ກັບຮູບແບບ, ຄຳຮ້ອງຂໍເຄືອຂ່າຍ, ປະສິດທິພາບ ແລະ ໄຟລ໌"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "ເປັນ Markdown"
+    "message": "ການສົນທະນາແບບເຕັມ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ເປັນພຣອມ"
+    "message": "ພຣອມສະຫຼຸບ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ສຳເນົາໄປໃສ່ຄລິບບອດແລ້ວ"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "ຍົກເລີກແລ້ວ {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ເກີດຈາກ:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ລຶບລ້າງຕົວກັ່ນຕອງ"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "ບໍລິບົດ JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ອະນຸຍາດໃຫ້ວາງ"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "ຢ່າວາງໂຄດທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງໃສ່ໃນ DevTools. ເນື່ອງຈາກອາດເຮັດໃຫ້ຜູ້ໂຈມຕີສວມຮອຍເປັນທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ “{PH1}” ຢູ່ທາງລຸ່ມເພື່ອອະນຸຍາດໃຫ້ວາງໄດ້."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ທ່ານເຊື່ອໂຄດນີ້ບໍ?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ປະເມີນ, ໂດຍອະນຸຍາດໃຫ້ເກີດຜົນຂ້າງຄຽງ"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ລຶບການສະແດງອອກ: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "ພິມ “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ອະນຸຍາດໃຫ້ວາງ"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "ເຊື່ອງອົງປະກອບແລ້ວ"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ບໍ່ມີການຕິດຕາມແບບຊ້ອນກັນທີ່ສາມາດໃຊ້ໄດ້"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ຮູບຕົວອັກສອນ)}other{(# ຮູບຕົວອັກສອນ)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} ຍອມຮັບຄຳແນະນຳແລ້ວ."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "@ກົດລະບຽບອື່ນໆ"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ໂໝດມືດອັດຕະໂນມັດ"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ບັນທຶກຮູບໜ້າຈໍຂອງພື້ນທີ່ທີ່ເລືອກ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "ຫຍໍ້ກົດລະບຽບ CSS ທີ່ບໍ່ໄດ້ປະກອບສ່ວນລົງ"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ສຳເນົາຮູບແບບ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "ສະແດງຄຸນສົມບັດ"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ສະແດງການຕິດຕາມແບບຊ້ອນກັນ"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ສະແດງຮູບແບບ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ການຕິດຕາມແບບຊ້ອນກັນ"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "ສະຫຼັບແຜນຜັງການຊ່ວຍເຂົ້າເຖິງ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ຢຸດ"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "ໂໝດດີບັກຂອງທາມລາຍ (ລາຍລະອຽດເຫດການການຕິດຕາມ ແລະ ອື່ນໆ)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ສະແດງກິດຈະກຳທັງໝົດ"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ເຫດຜົນຂອງການປະກອບ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ການຊ່ວຍເຂົ້າເຖິງ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ການທ່ອງເວັບແບບຕົວແທນ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ການກວດສອບເຫຼົ່ານີ້ຊ່ວຍຮັບຮອງວ່າຕົວແທນ AI ສາມາດເຂົ້າເຖິງເວັບໄຊທີ່ມີຄຸນນະພາບສູງ ແລະ ເລືອກເບິ່ງໄດ້ ຮວມທັງກວດສອບຄວາມຖືກຕ້ອງຂອງການປະສານຮວມ WebMCP. ໝວດໝູ່ນີ້ຍັງຢູ່ລະຫວ່າງການພັດທະນາ ແລະ ອາດມີການປ່ຽນແປງ."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ໃຊ້ການຈຳລອງເດັສທັອບໃນລະຫວ່າງທີ່ກວດສອບ"
@@ -9747,7 +9789,7 @@
     "message": "ຜິດພາດ"
   },
   "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
-    "message": "ມີສາເຫດມາຈາກ:"
+    "message": "ເກີດຈາກ:"
   },
   "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
     "message": "ລະຫັດຂໍ້ຜິດພາດ:"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ຢຸດ"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "ໂໝດດີບັກຂອງທາມລາຍ (ລາຍລະອຽດເຫດການການຕິດຕາມ ແລະ ອື່ນໆ)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "ການຕິດຕາມການລະບຸວ່າບໍ່ຖືກຕ້ອງ"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "ສະແດງກິດຈະກຳທັງໝົດ"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ບັນທຶກ"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ເຄື່ອງມືເພີ່ມເຕີມ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "ເຫດຜົນ: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ບັນທຶກຮູບເປັນ…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ຮູບນີ້ໃຫຍ່ເກີນກວ່າທີ່ຈະສະແດງໃນ DevTools. ຄລິກບ່ອນນີ້ເພື່ອເປີດມັນໃນແຖບໃໝ່."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ຊອກຫາ"
   },
@@ -18165,10 +18219,10 @@
     "message": "{PH1} ຂອບເຂດການເລືອກ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "ຢ່າວາງລະຫັດທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງໃສ່ໃນ DevTools. ສິ່ງນີ້ສາມາດເຮັດໃຫ້ຜູ້ໂຈມຕີສາມາດລັກຂໍ້ມູນຢັ້ງຢືນຕົວຕົນຂອງທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ “{PH1}” ທາງລຸ່ມເພື່ອອະນຸຍາດໃຫ້ວາງ."
+    "message": "ຢ່າວາງໂຄດທີ່ທ່ານບໍ່ເຂົ້າໃຈ ຫຼື ຍັງບໍ່ໄດ້ກວດສອບດ້ວຍຕົນເອງໃສ່ໃນ DevTools. ເນື່ອງຈາກອາດເຮັດໃຫ້ຜູ້ໂຈມຕີສວມຮອຍເປັນທ່ານ ຫຼື ຄວບຄຸມຄອມພິວເຕີຂອງທ່ານໄດ້. ກະລຸນາພິມ “{PH1}” ຢູ່ທາງລຸ່ມເພື່ອອະນຸຍາດໃຫ້ວາງໄດ້."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
-    "message": "ທ່ານເຊື່ອລະຫັດນີ້ບໍ?"
+    "message": "ທ່ານເຊື່ອໂຄດນີ້ບໍ?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "ແຖວ {PH1}, ຖັນ {PH2}"

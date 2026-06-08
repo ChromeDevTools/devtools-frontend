@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Ақауларды көру"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse панелі"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Memory Inspector панелі"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Қолданыстан шығару функциясы пайдаланылды"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Электрондық поштаны растау протоколы"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML төлсипаты: автотолтыру"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Жарнамаға қайта бағыттау функциясының түсіндірмесі"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB түсіндіргіші"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Желіні пайдалану дерегі тұтынатын қажетсіз байт санын азайту үшін пакеттерден үлкен, [қайталанатын JavaScript модульдерін](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) өшіріңіз."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Қайталанатын JavaScript табылмады"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Қайталанатын JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Қаріп"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "font-display параметрі оңтайлы емес қаріптер табылмады."
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Қаріп көрсету"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Полифилдер мен түрлендіру параметрлері ескі браузерлерде жаңа JavaScript функцияларын пайдалануға мүмкіндік береді. Дегенмен олардың көпшілігі заманауи браузерлер үшін қажет емес. Ескі браузерлердің қолдауын қалдырғыңыз келмесе, JavaScript құру процесін [негізгі](https://web.dev/articles/baseline-and-polyfills) функцияларға компиляция жасамайтындай етіп өзгертуге кеңес береміз. [Көптеген сайтқа ES6+ кодын қолдану үшін неліктен компиляция жасау керек еместігі туралы ақпарат алыңыз.](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Ескірген JavaScript табылмады"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Ескірген JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Стильдер, желі сұраулары, өнімділік және файлдар туралы анықтама алу үшін {PH1} функциясын қосыңыз."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Форматтау ретінде"
+    "message": "Толық әңгіме"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Нұсқау ретінде"
+    "message": "Қорытынды нұсқау"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Буферге көшірілді."
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} тоқтатылды"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Себебі:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Сүзгілерді тазалау"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript контексі: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "қоюға рұқсат беру"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Өзіңіз түсінбеген немесе тексермеген кодты әзірлеуші құралдарына қоймаңыз. Бұл — шабуылдаушылардың жеке басыңызға тиесілі деректерді ұрлауына немесе компьютеріңізді басқаруына мүмкіндік беруі мүмкін. Қоюға рұқсат беру үшін төменде \"{PH1}\" деп теріңіз."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Бұл кодқа сенесіз бе?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Бағалау, жанама әсерлерге рұқсат ету"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Өрнекті өшіру: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "\"{PH1}\" деп теріңіз"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "қоюға рұқсат беру"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Элемент жасырулы"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Трассаланған стэк ізі жоқ"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# глиф)}other{(# глиф)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Ұсыныс қабылданды."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Басқа @ережелер"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автоматты қараңғы режим"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Аймақ скриншотын түсіру"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Үлес қоспайтын CSS ережелерін жию"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Стильдерді көшіру"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "\"Сипаттар\" құралын көрсету"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Трассаланған стэкті көрсету"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Стильдерді көрсету"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Стэкті трассалау"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Арнайы мүмкіндіктер тармағын көрсету/жасыру"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Тоқтату"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Хронологияны түзету режимі (бақылау оқиғасы туралы мәліметтер және т.б.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Барлық оқиғаны көрсету"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Құрастыру себептері"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Арнайы мүмкіндіктер"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агенттік шолу"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Бұл тексерістер жасанды интеллектілі агенттерге арналған жоғары сапалы, шолуға болатын веб-сайттарды қамтамасыз етеді және WebMCP интеграцияларының дұрыстығын тексереді. Бұл санат әлі әзірленіп жатыр және өзгеруі мүмкін."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Тексеру барысында компьютерлік эмуляция қолдану"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Тоқтату"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Хронологияны түзету режимі (бақылау оқиғасы туралы мәліметтер және т.б.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Жарамсыз деп танылғандарды бақылау"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Барлық оқиғаны көрсету"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сақтау"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Басқа құралдар"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Себебі: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Суретті басқаша сақтау…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Бұл сурет әзірлеуші құралдарында көрсету үшін тым үлкен. Оны жаңа қойындыда ашу үшін осы жерді басыңыз."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Табу"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} таңдау аймағы"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Өзіңіз түсінбеген немесе тексермеген кодты әзірлеуші құралдарына қоймаңыз. Бұл — шабуылдаушылардың жеке басыңызға тиесілі деректерді ұрлауына немесе компьютеріңізді басқаруына мүмкіндік беруі ықтимал. Қоюға рұқсат беру үшін төменде \"{PH1}\" деп теріңіз."
+    "message": "Өзіңіз түсінбеген немесе тексермеген кодты әзірлеуші құралдарына қоймаңыз. Бұл — шабуылдаушылардың жеке басыңызға тиесілі деректерді ұрлауына немесе компьютеріңізді басқаруына мүмкіндік беруі мүмкін. Қоюға рұқсат беру үшін төменде \"{PH1}\" деп теріңіз."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Бұл кодқа сенесіз бе?"

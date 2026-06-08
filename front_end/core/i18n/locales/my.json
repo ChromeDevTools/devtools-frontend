@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "ပြဿနာများ မြင်ကွင်း"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse အကန့်"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "မှတ်ဉာဏ်စိစစ်သူ အကန့်"
   },
@@ -1080,7 +1083,7 @@
     "message": "ကွန်ဆိုးလ်အံဆွဲ ဖျောက်ရန်"
   },
   "entrypoints/main/MainImpl.ts | moreTools": {
-    "message": "နောက်ထပ် တူးလ်များ"
+    "message": "နောက်ထပ်တူးလ်များ"
   },
   "entrypoints/main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
     "message": "စာမျက်နှာနှင့် ဆက်စပ်သော DevTools နေရာချထားမှု။ (နောက်ဆုံး အနေအထား ပြန်ပြောင်းရန် {PH1})"
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ရပ်ဆိုင်းထားသည့် ဝန်ဆောင်မှုကို သုံးထားသည်"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "အီးမေးလ်ဖြင့် စိစစ်ခြင်း ပရိုတိုကော"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ရည်ညွှန်းချက်- အလိုအလျောက်ဖြည့်ခြင်း"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "ကြော်ငြာသို့ ပြန်သွားခြင်းဆိုင်ရာ ကြားဝင်ဆောင်ရွက်မှု ရှင်းပြချက်"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB ရှင်းပြစနစ်"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ကွန်ရက်လုပ်ဆောင်ချက်၏ မလိုအပ်သော ဘိုက်အသုံးပြုမှုကို လျှော့ချရန်အတွက် ကြီးမားပြီး [ထပ်နေသော JavaScript မော်ဂျူးများ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ကို အတွဲများမှ ဖယ်ရှားနိုင်သည်။"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ထပ်နေသော JavaScript မတွေ့ပါ"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ထပ်နေသော JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ဖောင့်"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "အကောင်းဆုံးမဟုတ်သော ဖောင့်ပြကွက်ပါသည့် ဖောင့်များ မတွေ့ပါ"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ဖောင့်ပြကွက်"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill နှင့် ကုဒ်ပြောင်းလဲမှုများသည် ဘရောင်ဇာအဟောင်းများအား JavaScript တူးလ်အသစ်များကို ပံ့ပိုးသည်။ သို့သော် ဘရောင်ဇာသစ်များအတွက် အများအပြား မလိုအပ်ပါ။ ဘရောင်ဇာအဟောင်းများကို ပံ့ပိုးရန်လိုအပ်ကြောင်း မသိပါက [Baseline](https://web.dev/articles/baseline-and-polyfills) တူးလ်များ ကုဒ်မပြောင်းစေရန် JavaScript တည်ဆောက်မှု လုပ်ငန်းစဉ်ကို မွမ်းမံကြည့်ပါ။ [ဝဘ်ဆိုက်အများစုက ES6+ ကုဒ်ကို ပြောင်းရန်မလိုဘဲ ထည့်သွင်းနိုင်သည့် အကြောင်းရင်းကို လေ့လာရန်](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "JavaScript ဗားရှင်းအဟောင်း မတွေ့ပါ"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript ဗားရှင်းဟောင်း"
@@ -3201,10 +3219,10 @@
     "message": "ပုံစံ၊ ကွန်ရက် တောင်းဆိုချက်၊ စွမ်းဆောင်ရည်၊ ဖိုင်များနှင့် ပတ်သက်၍ အကူအညီရယူရန် {PH1} ကို ဖွင့်ပါ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdown အဖြစ်"
+    "message": "စကားဝိုင်းအပြည့်အစုံ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ညွှန်ကြားချက်အဖြစ်"
+    "message": "အနှစ်ချုပ် ညွှန်ကြားချက်"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ကလစ်ဘုတ်သို့ မိတ္တူကူးပြီးပြီ"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ခု ပယ်ဖျက်ထားသည်"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ဖြစ်ပေါ်စေသည့်အကြောင်းရင်း-"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "စစ်ထုတ်မှုများ ရှင်းရန်"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript နောက်ခံအကြောင်းအရာ- {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ကူးထည့်ခြင်း ခွင့်ပြုရန်"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "နားမလည်သော (သို့) သင်ကိုယ်တိုင် မစစ်ဆေးရသေးသော ကုဒ်ကို ‘ဆောဖ့်ဝဲတူးလ်များ’ ထဲသို့ ကူးမထည့်ပါနှင့်။ ၎င်းသည် တိုက်ခိုက်သူများအား သင့်အထောက်အထားကို ခိုးယူခွင့်ပြုနိုင်သည် (သို့) သင့်ကွန်ပျူတာကို ထိန်းချုပ်ခွင့်ပေးနိုင်သည်။ ကူးထည့်ခြင်းခွင့်ပြုရန် အောက်တွင် “{PH1}” ဟု ရိုက်ပါ။"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ဤကုဒ်ကို သင်ယုံကြည်ပါသလား"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "အကဲဖြတ်ရန်၊ ဘေးထွက်ဆိုးကျိုးများ ခွင့်ပြုထားသည်"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ဖော်ပြချက် ဖယ်ရှားရန်- {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” ဟု ရိုက်ပါ"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ကူးထည့်ခြင်း ခွင့်ပြုရန်"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "အစိတ်အပိုင်းကို ဖျောက်ထားသည်"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ဖြစ်စဉ်မှတ်တမ်း မရနိုင်ပါ"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyph)}other{(# glyphs)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} အကြံပြုချက်ကို လက်ခံထားသည်။"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "အခြား @စည်းမျဉ်းများ"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "အလိုအလျောက် အမှောင်မုဒ်"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ရွေးထားသောနေရာ၏ ဖန်သားပြင်ပုံ ရိုက်ကူးရန်"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "ပံ့ပိုးပါဝင်မှုမရှိသော CSS စည်းမျဉ်းများကို ချုံ့ရန်"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ပုံစံများကို မိတ္တူကူးရန်"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "သတ်မှတ်ချက်များ ပြရန်"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ဖြစ်စဉ်မှတ်တမ်း ပြရန်"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ပုံစံများ ပြပါ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ဖြစ်စဉ်မှတ်တမ်း"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "အများသုံးနိုင်မှု ဖွဲ့စည်းပုံသို့ ပြောင်းရန်"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ရပ်ရန်"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "အချိန်မှတ်တမ်း အမှားရှာပြင်ခြင်းမုဒ် (လုပ်ဆောင်ချက်မှတ်တမ်း ဖြစ်ရပ်အသေးစိတ် စသည်)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ဖြစ်ရပ်အားလုံး ပြပါ"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "အကြောင်းရင်းများ ပေါင်းစပ်နေသည်"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "အများသုံးနိုင်မှု"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "အေးဂျင့်အဖြစ် ဘရောက်စ်လုပ်ခြင်း"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ဤစစ်ဆေးမှုများသည် AI အေးဂျင့်များအတွက် အရည်အသွေးမြင့်၊ ဘရောက်စ်လုပ်နိုင်သော ဝဘ်ဆိုက်များဖြစ်ကြောင်း သေချာစေပြီး WebMCP ပေါင်းစည်းမှုများ၏ မှန်ကန်မှုကို အတည်ပြုသည်။ ဤအမျိုးအစားကို ရေးဆွဲနေဆဲဖြစ်ပြီး အပြောင်းအလဲရှိနိုင်သည်။"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "စစ်ဆေးစဉ်အတွင်း ဒက်စ်တော့ပုံတူထုတ်လုပ်ခြင်း အသုံးပြုရန်"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ရပ်ရန်"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "အချိန်မှတ်တမ်း အမှားရှာပြင်ခြင်းမုဒ် (လုပ်ဆောင်ချက်မှတ်တမ်း ဖြစ်ရပ်အသေးစိတ် စသည်)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "မမှန်ကန်ကြောင်း ခြေရာခံခြင်း"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "ဖြစ်ရပ်အားလုံး ပြပါ"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "သိမ်းရန်"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "နောက်ထပ်တူးလ်များ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "အကြောင်းရင်း- {PH1}။"
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ပုံကို အောက်ပါအဖြစ်သိမ်းရန်…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ဤပုံသည် ‘ဆောဖ့်ဝဲတူးလ်များ’ တွင် ပြရန် ကြီးလွန်းနေသည်။ တဘ်အသစ်တွင် ၎င်းကိုဖွင့်ရန် ဤနေရာကို နှိပ်ပါ။"
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ရှာရန်"
   },
@@ -18165,10 +18219,10 @@
     "message": "လက်ရွေးစင်နယ်ပယ် {PH1} ခု"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "နားမလည်သော (သို့) သင်ကိုယ်တိုင် မစစ်ဆေးရသေးသော ကုဒ်ကို ‘ဆောဖ့်ဝဲတူးလ်များ’ ထဲသို့ ကူးမထည့်ပါနှင့်။ ၎င်းသည် တိုက်ခိုက်သူများအား သင့်အထောက်အထားကို ခိုးယူခွင့်ပြုသည် (သို့) သင့်ကွန်ပျူတာကို ထိန်းချုပ်ခွင့်ပေးသည်။ ကူးထည့်ခြင်းခွင့်ပြုရန် အောက်တွင် “{PH1}” ဟု ရိုက်ပါ။"
+    "message": "နားမလည်သော (သို့) သင်ကိုယ်တိုင် မစစ်ဆေးရသေးသော ကုဒ်ကို ‘ဆောဖ့်ဝဲတူးလ်များ’ ထဲသို့ ကူးမထည့်ပါနှင့်။ ၎င်းသည် တိုက်ခိုက်သူများအား သင့်အထောက်အထားကို ခိုးယူခွင့်ပြုနိုင်သည် (သို့) သင့်ကွန်ပျူတာကို ထိန်းချုပ်ခွင့်ပေးနိုင်သည်။ ကူးထည့်ခြင်းခွင့်ပြုရန် အောက်တွင် “{PH1}” ဟု ရိုက်ပါ။"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
-    "message": "ဤကုဒ်ကို သင်ယုံကြည်ပါသလား။"
+    "message": "ဤကုဒ်ကို သင်ယုံကြည်ပါသလား"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "လိုင်း {PH1}၊ ကော်လံ {PH2}"

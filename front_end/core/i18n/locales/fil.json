@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "View ng Mga Isyu"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panel ng Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel na Inspector ng memory"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Gumagamit ng hindi na ginagamit na feature"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protocol sa Email sa Pag-verify"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML attribute: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Explainer ng interbensyon sa pagbalik sa ad"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB explainer"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Alisin ang malalaking [duplicate na module ng JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) sa mga bundle para mabawasan ang mga hindi kinakailangang byte na nakokonsumo ng aktibidad ng network."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Walang nakitang na-duplicate na JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Na-duplicate na JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Walang nakitang font na may suboptimal na font-display"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Font display"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Nagbibigay-daan ang mga polyfill at transform na magamit ng mga mas lumang browser ang mga bagong feature ng JavaScript. Gayunpaman, marami ang hindi kinakailangan para sa mga modernong browser. Pag-isipang baguhin ang iyong proseso ng pagbuo sa JavaScript para hindi ma-transpile ang mga [Baseline](https://web.dev/articles/baseline-and-polyfills) na feature, maliban kung alam mong dapat mong masuportahan ang mga mas lumang browser. [Alamin kung bakit puwedeng mag-deploy ang karamihan ng mga site ng ES6+ na code nang hindi nagta-transpile](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Walang nakitang legacy na JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Legacy na JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "I-on ang {PH1} para makakuha ng tulong sa mga istilo, request sa network, performance, at file"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Bilang markdown"
+    "message": "Buong pag-uusap"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Bilang prompt"
+    "message": "Prompt ng buod"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Nakopya sa clipboard"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} (na) Nakansela"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Dulot ng:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "I-clear ang mga filter"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Konteksto ng JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "payagan ang pag-paste"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Huwag mag-paste ng code na hindi mo nauunawaan o hindi mo pa mismo nasusuri sa DevTools. Puwede nitong mabigyang-daan ang mga attacker na nakawin ang iyong pagkakakilanlan o kontrolin ang computer mo. Paki-type ang “{PH1}” sa ibaba para payagan ang pag-paste."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Pinagkakatiwalaan mo ba ang code na ito?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Suriin, nang pinapayagan ang mga side effect"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Alisin ang expression: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "I-type ang “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "payagan ang pag-paste"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Nakatago ang element"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Walang available na stack trace"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyph)}one{(# glyph)}other{(# na glyph)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Tinanggap ang suhestyon."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Iba pa @mga panuntunan"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Awtomatikong dark mode"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Mag-capture ng screenshot ng area"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "I-collapse ang mga panuntunan sa CSS na hindi nakakatulong"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopyahin ang mga istilo"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Ipakita ang Mga Property"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Ipakita ang Stack Trace"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Ipakita ang Mga Istilo"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stack Trace"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "I-toggle ang accessibility tree"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Ihinto"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Debug mode ng timeline (mga detalye ng event ng pag-trace, atbp.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Ipakita ang lahat ng event"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Mga Dahilan sa Pag-composite"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Pagiging Accessible"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentic na pag-browse"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Tinitiyak ng mga pagsusuring ito ang mga mataas na kalidad at naba-browse na website para sa mga AI agent at vina-validate ang katumpakan ng mga pag-integrate ng WebMCP. Kasalukuyang binubuo pa ang kategoryang ito at napapailalim ito sa pagbabago."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "I-apply ang pag-emulate ng desktop sa panahon ng pag-audit"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Ihinto"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Debug mode ng timeline (mga detalye ng event ng pag-trace, atbp.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Pag-track sa pag-invalidate"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Ipakita ang lahat ng mga event"
+    "message": "Ipakita ang lahat ng event"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Minarkahan ng ignoreList sa source map"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "I-save"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Higit pang tool"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Dahilan: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "I-save ang larawan bilang…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Masyadong malaki ang larawang ito para maipakita sa DevTools. Mag-click dito para buksan ito sa bagong tab."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Maghanap"

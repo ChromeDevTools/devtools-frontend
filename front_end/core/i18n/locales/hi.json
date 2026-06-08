@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "समस्याओं का व्यू"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "लाइटहाउस पैनल"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "मेमोरी इंस्पेक्टर पैनल"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ऐसी सुविधा का इस्तेमाल किया गया जो अब काम नहीं करती"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ईमेल पते की पुष्टि करने का प्रोटोकॉल"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "फ़ेडरेटेड क्रेडेंशियल मैनेजमेंट एपीआई"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "एचटीएमएल एट्रिब्यूट: ऑटोकंप्लीट"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "'वापस जाएं' बटन दबाने पर विज्ञापन पर रीडायरेक्ट करने से रोकने वाली सुविधा के बारे में जानकारी"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "सीओआरबी एक्सप्लेनर"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "बंडल से बड़े और [डुप्लीकेट JavaScript मॉड्यूल](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) हटाएं. ऐसा करके, नेटवर्क पर की जाने वाली गतिविधि में खर्च होने वाले गैर-ज़रूरी बाइट कम किए जा सकते हैं."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "कोई डुप्लीकेट JavaScript नहीं मिली"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "डुप्लीकेट JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "फ़ॉन्ट"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ऐसा कोई फ़ॉन्ट नहीं मिला जो फ़ॉन्ट-डिसप्ले की सेटिंग के मुताबिक न हो"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "फ़ॉन्ट डिसप्ले"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfills और Transforms की मदद से, पुराने ब्राउज़र पर JavaScript की नई सुविधाएं इस्तेमाल की जा सकती हैं. हालांकि, मॉडर्न ब्राउज़र को इनमें से कई सुविधाओं की ज़रूरत नहीं पड़ती. [बेसलाइन](https://web.dev/articles/baseline-and-polyfills) सुविधाओं को ट्रांसपाइल न करने के लिए, JavaScript की बिल्ड प्रोसेस में बदलाव किया जा सकता है. यह बदलाव सिर्फ़ तब न करें, जब आपके लिए पुराने ब्राउज़र का इस्तेमाल करना ज़रूरी हो. [जानें कि क्यों ज़्यादातर साइटें ट्रांसपाइल किए बिना ES6+ कोड को डिप्लॉय कर सकती हैं](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "कोई लेगसी JavaScript नहीं मिली"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "लेगसी JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "स्टाइल, नेटवर्क के अनुरोध, परफ़ॉर्मेंस, और फ़ाइलों से जुड़ी मदद पाने के लिए, {PH1} को चालू करें"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "मार्कडाउन के तौर पर"
+    "message": "पूरी बातचीत"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "प्रॉम्प्ट के तौर पर"
+    "message": "खास जानकारी पाने के लिए प्रॉम्प्ट"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "क्लिपबोर्ड पर कॉपी किया गया"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} टूल कॉल की प्रोसेस रद्द की गई"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "वजह:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "फ़िल्टर हटाएं"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript कॉन्टैक्स्ट: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "चिपकाने की अनुमति दें"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "DevTools कंसोल में ऐसा कोड न चिपकाएं जिसके बारे में आपको जानकारी नहीं है या फिर जिसकी आपने जांच नहीं की है. इससे हमलावर आपकी पहचान चुरा सकते हैं या आपके कंप्यूटर को कंट्रोल कर सकते हैं. कोड चिपकाने की अनुमति देने के लिए, कृपया यहां “{PH1}” टाइप करें."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "क्या आपको इस कोड पर भरोसा है?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "खराब असर के लिए अनुमति देकर, मूल्यांकन करें"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "एक्सप्रेशन हटाएं: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” टाइप करें"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "चिपकाने की अनुमति दें"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "एलिमेंट छिपा हुआ है"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "कोई स्टैक ट्रेस उपलब्ध नहीं है"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ग्लिफ़)}one{(# ग्लिफ़)}other{(# ग्लिफ़)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} सुझाव स्वीकार किया गया."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "अन्य @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "गहरे रंग वाला मोड अपने-आप चालू होने की सुविधा"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "एरिया स्क्रीनशॉट लें"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "ऐसे सीएसएस नियमों को छिपाएं जिनका कोई योगदान नहीं है"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "स्टाइल कॉपी करें"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "प्रॉपर्टी दिखाएं"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "स्टैक ट्रेस दिखाएं"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "स्टाइल दिखाएं"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "स्टैक ट्रेस"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "सुलभता ट्री को टॉगल करें"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "रोकें"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "टाइमलाइन डीबग मोड (ट्रेस इवेंट की जानकारी वगैरह)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "सभी इवेंट दिखाएं"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "कंपोज़िट करने की वजहें"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "सुलभता"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "एजेंटिक ब्राउज़िंग"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "इन जांचों से यह पक्का किया जाता है कि एआई एजेंट के लिए, ब्राउज़ की जा सकने वाली अच्छी क्वालिटी की वेबसाइटें उपलब्ध हों. साथ ही, यह पुष्टि की जाती है कि WebMCP इंटिग्रेशन सही से हुआ हो. इस कैटगरी पर अब भी काम चल रहा है और इसमें बदलाव हो सकते हैं."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ऑडिट करने के दौरान डेस्कटॉप एम्युलेशन लागू करें"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "रोकें"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "टाइमलाइन डीबग मोड (ट्रेस इवेंट की जानकारी वगैरह)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "अमान्य होने की ट्रैकिंग"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "सभी इवेंट दिखाएं"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "सेव करें"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ज़्यादा टूल"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "वजह: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "इमेज को इस तौर पर सेव करें…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "यह इमेज, DevTools में दिखाने के लिए बहुत बड़ी है. इसे नए टैब में खोलने के लिए यहां क्लिक करें."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ढूंढें"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} चुने जाने वाले रीज़न"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "DevTools कंसोल में ऐसा कोड न चिपकाएं जिसे आपने नहीं समझा है या फिर जिसकी आपने जांच नहीं की है. इससे हमलावर आपकी पहचान चुरा सकते हैं या आपके कंप्यूटर को कंट्रोल कर सकते हैं. कोड चिपकाने की अनुमति देने के लिए, कृपया यहां “{PH1}” टाइप करें."
+    "message": "DevTools कंसोल में ऐसा कोड न चिपकाएं जिसके बारे में आपको जानकारी नहीं है या फिर जिसकी आपने जांच नहीं की है. इससे हमलावर आपकी पहचान चुरा सकते हैं या आपके कंप्यूटर को कंट्रोल कर सकते हैं. कोड चिपकाने की अनुमति देने के लिए, कृपया यहां “{PH1}” टाइप करें."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "क्या आपको इस कोड पर भरोसा है?"

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Маселелер көрүнүшү"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse панели"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Эстутумду иликтегич панели"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Жоюлган функция колдонулду"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Электрондук почтаны текшерүү протоколу"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML атрибуту: автотолтуруу"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Жарнамага кайтууну көзөмөлдөө функциясы боюнча колдонмо"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB түшүндүргүчү"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Тармактагы аракеттер керектей турган керексиз байттарды азайтуу үчүн топтомдордон ири жана [кайталанма JavaScript модулдарын](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) өчүрүп салыңыз."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Кайталанма JavaScript табылган жок"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Кайталанган JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Арип"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Көрсөтүлүшүнө байланыштуу жөндөөсү ылайыксыз болгон ариптер табылган жок"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Ариптердин көрүнүшү"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Полифил жана трансформациялар эски серепчилерге JavaScript'тин жаңы функцияларын колдонууга мүмкүнчүлүк берет. Бирок, алардын көбү заманбап серепчилер үчүн зарыл эмес. Эски серепчилерди колдошуңуз керек болбосо, [Baseline](https://web.dev/articles/baseline-and-polyfills) функцияларын көчүрбөө үчүн JavaScript куруу процессиңизди өзгөртүп көрүңүз. [Эмне үчүн көпчүлүк сайттар ES6+ кодун көчүрбөстөн жайгаштыра аларын билип алыңыз](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Эскирген JavaScript табылган жок"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Эски JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Стилдер, тармак сурамдары, майнаптуулугу жана файлдары боюнча жардам алуу үчүн {PH1} күйгүзүңүз"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Белгилөө катары"
+    "message": "Толук маек"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Сурам катары"
+    "message": "Кыскача маалымат сурамы"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Алмашуу буферине көчүрүлдү"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Жокко чыгарылды: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Себеби:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Чыпкаларды тазалоо"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript контексти: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "чаптоого уруксат берүү"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Сиз түшүнбөгөн же өзүңүз текшербеген кодду Иштеп чыгуучунун куралдар консолуна чаптабаңыз. Болбосо, чабуулчулар жеке маалыматыңызды уурдап же компьютериңизди башкарышы мүмкүн. Чаптоого уруксат берүү үчүн төмөндө \"{PH1}\" деп териңиз."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Бул код ишеничтүүбү?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Терс таасирлери менен баалоо"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Туюнтманы өчүрүү: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "\"{PH1}\" түрү"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "чаптоого уруксат берүү"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Элемент жашырылган"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Стекти трассирлөө жок"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# глиф)}other{(# глиф)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Сунуш кабыл алынды."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Башка @эрежелер"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Караңгы теманын автоматтык графиги"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Аймактын скриншотун тартып алуу"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Салым кошпогон CSS эрежелерин жыйыштыруу"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Стилдерди көчүрүү"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Мүнөздөмөлөр көрүнүп турсун"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Стекти трассирлөө көрсөтүлсүн"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Стилдерди көрсөтүү"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Стекти трассирлөө"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Атайын мүмкүнчүлүктөр дарагын өчүрүү/күйгүзүү"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Токтотуу"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Убакыт түрмөгүнүн мүчүлүштүктөрүн аныктоо режими (окуяга тиешелүү майда-барат нерселерди көзөмөлдөө ж.б.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Бардык иш-чараларды көрсөтүү"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Түзүлүштүн себептери"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Атайын мүмкүнчүлүктөр"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агенттик серептөө"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Бул текшерүү иши веб-сайттардын ЖИ агенттери үчүн сапаттуу жана колдонууга ыңгайлуу болушун камсыздайт, ошондой эле WebMCP менен шайкештештирүү кадамынын туура аткарылганын текшерет. Бул категория дагы эле иштелип жатат, андыктан өзгөрүшү мүмкүн."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Текшерүү учурунда иш тактаны эмуляциялоо"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Токтотуу"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Убакыт түрмөгүнүн мүчүлүштүктөрүн аныктоо режими (окуяга тиешелүү майда-барат нерселерди көзөмөлдөө ж.б.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Маалыматтардын жараксыздыгына көз салуу"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Бардык иш-чараларды көрсөтүү"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сактоо"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Көбүрөөк куралдар"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Себеп: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Сүрөттү төмөнкүдөй сактоо…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Бул сүрөт Иштеп чыгуучунун куралдарында көрсөтүү үчүн өтө чоң. Аны жаңы өтмөктө ачуу үчүн бул жерди чыкылдатыңыз."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Табуу"

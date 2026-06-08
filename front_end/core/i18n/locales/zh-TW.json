@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "問題檢視畫面"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse 面板"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "「記憶體檢查工具」面板"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "使用已淘汰的功能"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "電子郵件驗證通訊協定"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 屬性：自動完成"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "「返回廣告」介入措施說明"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB 說明"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "從套件中移除大型的[重複 JavaScript 模組](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)，減少網路活動消耗的非必要頻寬。"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "未發現重複的 JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "重複的 JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "字型"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "未發現 font-display 設定不佳的字型"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "字型顯示"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill 和轉換作業可讓舊版瀏覽器使用新版 JavaScript 的功能，但對新式瀏覽器來說，很多都是不需要的功能。除非你認為必須支援舊版瀏覽器，否則建議修改 JavaScript 建構程序，不要轉譯[基準](https://web.dev/articles/baseline-and-polyfills)功能。[瞭解為何大多數網站不需要轉譯，就能部署 ES6+ 程式碼](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "未發現舊版 JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "舊版 JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "開啟{PH1}，取得樣式、網路要求、效能和檔案相關協助"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "匯出為 Markdown 格式"
+    "message": "完整對話"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "匯出為提示詞"
+    "message": "摘要提示詞"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "已複製到剪貼簿"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "取消：{PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "原因："
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "清除篩選條件"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript 內容：{PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "允許貼上"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "如果不瞭解或未親自檢查過程式碼，請勿貼到開發人員工具，攻擊者可能會藉此盜用你的身分或掌控電腦。假如確定要貼上，請在下方輸入 “{PH1}”。"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "你是否信任此程式碼？"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "評估 (允許副作用)"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "移除運算式：{PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "輸入 “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "允許貼上"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "已隱藏元素"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "沒有可用的堆疊追蹤"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# 個字符)}other{(# 個字符)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1}已接受建議。"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "其他 @規則"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "自動深色模式"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "擷取指定區域的螢幕截圖"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "收合無作用的 CSS 規則"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "複製樣式"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "顯示屬性"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "顯示「堆疊追蹤」工具"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "顯示樣式"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "堆疊追蹤"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "切換無障礙功能樹狀結構"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "停止"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "時間軸偵錯模式 (追蹤事件詳細資料等)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "顯示所有事件"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "合成原因"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "無障礙功能"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "代理瀏覽"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "這些檢查可確保網站品質優良且適合 AI 代理瀏覽，並驗證 WebMCP 整合正確性。這個類別仍在開發階段，可能會有變動。"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "稽核期間套用電腦模擬"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "時間軸偵錯模式 (追蹤事件詳細資料等)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "失效原因追蹤"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "顯示所有事件"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "儲存"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "更多工具"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "原因：{PH1}。"
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "另存圖片…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "這張圖片過大，無法在開發人員工具中顯示，按這裡即可在新分頁中開啟。"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "尋找"

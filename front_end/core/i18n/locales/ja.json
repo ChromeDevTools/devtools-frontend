@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "問題を表示"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse パネル"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Memory Inspector パネル"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "非推奨の機能が使用されています"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "メール確認プロトコル"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 属性: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "広告に戻る介入に関する説明"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB の解説"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "大きい[重複する JavaScript モジュール](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)をバンドルから削除すると、ネットワーク アクティビティで不必要に消費されるデータ量を減らすことができます。"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "重複する JavaScript は見つかりませんでした"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "重複する JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "フォント"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "フォント表示が最適でないフォントは見つかりませんでした"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "フォント表示"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "ポリフィルと変換を使用すると、従来のブラウザで新しい JavaScript 機能を使用できるようになります。ただし、その機能の多くは最新ブラウザでは必要ありません。従来のブラウザをサポートする必要がある場合を除き、[Baseline](https://web.dev/articles/baseline-and-polyfills) の機能をトランスパイルしないように JavaScript ビルドプロセスを変更することを検討してください。[ほとんどのサイトでトランスパイルせずに ES6+ コードをデプロイできる理由](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "従来の JavaScript は見つかりませんでした"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "以前の JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "スタイル、ネットワーク リクエスト、パフォーマンス、ファイルについてサポートを利用するには、{PH1} をオンにしてください"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "マークダウンとして"
+    "message": "スレッド全体"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "プロンプトとして"
+    "message": "要約プロンプト"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "クリップボードにコピーしました"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "キャンセル: {PH1} 件"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "原因:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "フィルタをクリア"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript コンテキスト: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "貼り付けを許可"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "理解できないコードや自分で確認していないコードを DevTools に貼り付けないでください。攻撃者に個人情報を盗まれたり、パソコンを乗っ取られたりする恐れがあります。貼り付けを許可するには、下に「{PH1}」と入力してください。"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "このコードを信頼しますか？"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "評価（副反応の許容）"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "式を削除: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "「{PH1}」と入力してください"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "貼り付けを許可"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "要素: 非表示"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "利用できるスタック トレースがありません"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{（# 件のグリフ）}other{（# 件のグリフ）}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} 提案が承認されました。"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "その他の@ルール"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ダークモードを自動的に設定する"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "領域のスクリーンショットをキャプチャ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "適用されない CSS ルールを折りたたむ"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "スタイルをコピー"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "プロパティを表示"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "スタック トレースを表示"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "スタイルを表示"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "スタック トレース"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "アクセシビリティ ツリーを切り替え"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "停止"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "タイムライン デバッグモード（トレース イベントの詳細など）"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "すべてのイベントを表示"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "合成理由"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ユーザー補助"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "エージェントによるブラウジング"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "これらのチェックを行うことで、AI エージェントによるブラウジングが可能な質の高いウェブサイトであるかどうかと、WebMCP が正確に統合されているかどうかを検証できます。このカテゴリは現在開発中で、変更される可能性があります。"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "監査中にデスクトップ エミュレーションを適用します"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "タイムライン デバッグモード（トレース イベントの詳細など）"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "無効化のトラッキング"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "すべてのイベントを表示"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "保存"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "その他のツール"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "理由: {PH1}。"
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "名前を付けて画像を保存..."
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "この画像は大きすぎるため、DevTools で表示できません。新しいタブで開くには、ここをクリックしてください。"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "検索"

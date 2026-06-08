@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Problēmu skats"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse panelis"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panelis Atmiņas pārbaudītājs"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Tiek izmantota novecojusi funkcija"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "E-pasta verifikācijas protokols"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atribūts: automātiskā pabeigšana"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Skaidrojums par novirzīšanu atpakaļ uz reklāmu"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Paskaidrojums par citas izcelsmes datu lasīšanas bloķēšanu (CORB)"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Noņemiet no komplektiem lielus, [dublētus JavaScript moduļus](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), lai samazinātu nevajadzīgu baitu apjomu, ko patērē tīkla darbība."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Netika atrasti JavaScript kodu dublikāti"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript kodu dublikāti"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fonts"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Netika atrasti fonti ar neoptimāliem fontu attēlošanas iestatījumiem."
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Fonta attēlojums"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Pārlūka ielikumi un pārveidošanas kodi ļauj vecākos pārlūkos izmantot jaunas JavaScript funkcijas. Tomēr modernos pārlūkos daudzi no tiem nav nepieciešami. Ieteicams mainīt JavaScript būvēšanas procesu, lai netiktu transpilētas [pamata līmeņa](https://web.dev/articles/baseline-and-polyfills) funkcijas, ja vien nezināt, ka jums ir jāatbalsta vecāki pārlūki. [Uzziniet, kāpēc lielākajā daļā vietņu var izvietot ES6+ kodu bez transpilēšanas](https://developer.chrome.com/docs/performance/insights/legacy-javascript)."
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Netika atrasts mantotais JavaScript kods"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Mantotais JavaScript kods"
@@ -3201,10 +3219,10 @@
     "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem, veiktspēju un failiem, ieslēdziet funkciju {PH1}."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Kā Markdown"
+    "message": "Pilna saruna"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Kā uzvedne"
+    "message": "Kopsavilkuma uzvedne"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Izmaiņas kopētas starpliktuvē"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Atcelts: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Iemesls:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Notīrīt filtrus"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript konteksts: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "atļaut ielīmēšanu"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Neielīmējiet Izstrādātāja rīkos kodu, ko nesaprotat vai neesat pats pārskatījis. Citādi uzbrucēji var nozagt jūsu identitāti vai pārņemt kontroli pār jūsu datoru. Lai atļautu ielīmēšanu, tālāk esošajā laukā ierakstiet “{PH1}”."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Vai šis kods jums šķiet uzticams?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Izvērtēt, tiek atļautas blakusparādības"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Noņemt izteiksmi: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Veids “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "atļaut ielīmēšanu"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elements ir paslēpts"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nav pieejams neviens steka trasējums"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifs)}zero{(# glifu)}one{(# glifs)}other{(# glifi)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Ieteikums ir pieņemts."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Citas @kārtulas"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automātisks tumšais režīms"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Izveidot apgabala ekrānuzņēmumu"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Sakļaut CSS kārtulas, kas neveicina satura atbilstību"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopēt stilus"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Rādīt rīku Īpašumi"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Rādīt steka trasējumu"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Rādīt rīku Stili"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Steka trasēšana"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Pārslēgt pieejamības koku"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Apturēt"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Laika skalas atkļūdošanas režīms (izsekošanas notikumu informācija u. c.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Rādīt visus notikumus"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Salikšanas iemesli"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Pieejamība"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Aģentiska pārlūkošana"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Šīs pārbaudes nodrošina augstas kvalitātes, pārlūkojamas tīmekļa vietnes MI aģentiem un apstiprina WebMCP integrāciju pareizību. Šī kategorija joprojām ir izstrādes stadijā un var tikt mainīta."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Pārbaudes laikā lietot datora emulāciju"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Apturēt"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Laika skalas atkļūdošanas režīms (izsekošanas notikumu informācija u. c.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Nederīguma izsekošana"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Rādīt visus notikumus"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Saglabāt"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Vairāk rīku"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Iemesls: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Saglabāt attēlu kā…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Šis attēls ir pārāk liels, lai to rādītu izstrādātāja rīkos. Noklikšķiniet šeit, lai atvērtu to jaunā cilnē."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Atrast"

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Vista del panel de problemas"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panel de Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel Inspector de memoria"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Función obsoleta usada"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protocolo de verificación por correo electrónico"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Federated Credential Management"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atributo HTML: autocompletar"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Explicación de la intervención de volver al anuncio"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Mensaje explicativo sobre CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Quita los [módulos de JavaScript grandes y duplicados](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) de los paquetes para reducir el número de bytes innecesarios que consume la actividad de red."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "No se ha encontrado JavaScript duplicado"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript duplicado"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fuente"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "No se han encontrado fuentes con una propiedad font-display subóptima"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Visualización de fuentes"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Los polyfills y los transforms permiten que los navegadores antiguos utilicen las nuevas funciones de JavaScript. Sin embargo, muchos de estos polyfills y transforms no son necesarios para los navegadores modernos. Te recomendamos que modifiques tu proceso de compilación de JavaScript para que no transpile las funciones de [Baseline](https://web.dev/articles/baseline-and-polyfills), a menos que sepas que debes admitir navegadores antiguos. [Descubre por qué la mayoría de los sitios pueden implementar código ES6+ sin transpilación](https://developer.chrome.com/docs/performance/insights/legacy-javascript)."
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "No se ha encontrado JavaScript antiguo"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript antiguo"
@@ -3201,10 +3219,10 @@
     "message": "Activa la {PH1} para obtener ayuda con los estilos, las solicitudes de red, el rendimiento y los archivos"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Como Markdown"
+    "message": "Conversación completa"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Como petición"
+    "message": "Petición de resumen"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Copiado en el portapapeles"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Canceladas: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Causado por:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Borrar filtros"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Contexto de JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "permitir pegado"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "No pegues código que no entiendas o que no hayas revisado en DevTools. Podría permitir a los atacantes robar tu identidad o tomar el control de tu ordenador. Escribe \"{PH1}\" a continuación para permitir el pegado."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "¿Confías en este código?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evaluar permitiendo efectos secundarios"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Quitar expresión: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Escribe \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "permitir pegado"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "El elemento está oculto"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "No hay rastreos de la pila disponibles"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifo)}other{(# glifos)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Sugerencia aceptada."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Otras @reglas"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Modo Oscuro automático"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Hacer una captura de pantalla del área"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Ocultar reglas de CSS que no contribuyen"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copiar estilos"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Mostrar propiedades"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Mostrar rastreo de la pila"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Mostrar estilos"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Rastreo de la pila"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Mostrar/ocultar árbol de accesibilidad"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Detener"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Modo de depuración de cronología (detalles de eventos de rastreo, etc.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Mostrar todos los eventos"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Motivos de composición"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accesibilidad"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Navegación agéntica"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Estas comprobaciones aseguran unos sitios web de alta calidad en los que los agentes de IA puedan navegar, y validan que las integraciones de WebMCP sean correctas. Esta categoría aún está en desarrollo y puede cambiar."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Aplicar emulación de ordenador durante la auditoría"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Detener"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Modo de depuración de cronología (detalles de eventos de rastreo, etc.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Seguimiento de invalidaciones"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Mostrar todos los eventos"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Guardar"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Más herramientas"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Motivo: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Guardar imagen como…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Esta imagen es demasiado grande para mostrarse en DevTools. Haz clic aquí para abrirla en una pestaña nueva."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Buscar"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} regiones de selección"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "No pegues código que no entiendas o que no hayas revisado en DevTools. Podría permitir a los atacantes robar tu identidad o tomar el control de tu ordenador. Introduce \"{PH1}\" a continuación para permitir el pegado."
+    "message": "No pegues código que no entiendas o que no hayas revisado en DevTools. Podría permitir a los atacantes robar tu identidad o tomar el control de tu ordenador. Escribe \"{PH1}\" a continuación para permitir el pegado."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "¿Confías en este código?"

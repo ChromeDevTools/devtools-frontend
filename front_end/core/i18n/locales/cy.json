@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Gwedd problemau"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panel goleudy"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel arolygydd Cof"
   },
@@ -1449,7 +1452,7 @@
     "message": "Mae HTMLVideoElement.webkitSupportsFullscreen wedi'i anghymeradwyo. Defnyddiwch Document.fullscreenEnabled yn lle hynny."
   },
   "generated/Deprecation.ts | PreventSvgFilterPaint": {
-    "message": "Ni ellir cymhwyso hidlwyr SVG i iframes traws-darddiad, iframes cyfyngedig (e.e., sandboxed), nah ategion."
+    "message": "Ni ellir cymhwyso hidlwyr SVG i iframes traws-darddiad, iframes cyfyngedig (e.e., sandboxed), nag ategion."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "Mae'r cyfyngiad DtlsSrtpKeyAgreement wedi'i dynnu. Rydych wedi nodi gwerth false ar gyfer y cyfyngiad hwn, sy'n cael ei ddehongli fel ymgais i ddefnyddio'r dull SDES key negotiation sydd wedi'i dynnu. Mae'r swyddogaeth hon wedi'i thynnu; defnyddiwch wasanaeth sy'n cefnogi DTLS key negotiation yn lle."
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Nodwedd anghymeradwy wedi'i defnyddio"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protocol Dilysu E-bost"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Rheolaeth Credyd Ffederal"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Priodwedd HTML: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Eglurydd ymyrraeth yn ôl i'r hysbyseb"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Eglurydd CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Tynnwch [fodiwlau JavaScript dyblyg](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) mawr o fwndeli i leihau beitiau diangen a ddefnyddir gan weithgarwch rhwydwaith."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Ni chanfuwyd unrhyw JavaScript dyblyg"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript dyblyg"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Ffont"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Ni ddaethpwyd o hyd i unrhyw ffontiau sydd â ffont-arddangos is-optimaidd"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Sgrîn ffontiau"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Mae polyfills a thrawsnewidiadau yn galluogi porwyr hŷn i ddefnyddio nodweddion JavaScript newydd. Fodd bynnag, nid oes angen llawer ohonynt ar gyfer porwyr modern. Ystyriwch addasu eich proses adeiladu JavaScript i beidio â thraws-grynhoi nodweddion [Baseline](https://web.dev/articles/baseline-and-polyfills) oni bai eich bod yn gwybod bod yn rhaid i chi gefnogi porwyr hŷn. [Dysgu pam y gall y rhan fwyaf o wefannau ddefnyddio cod ES6+ heb draws-grynhoi](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Ni chanfuwyd unrhyw JavaScript etifeddol"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript Etifeddol"
@@ -3201,10 +3219,10 @@
     "message": "Trowch {PH1} ymlaen i gael help gydag arddulliau, ceisiadau rhwydwaith, perfformiad, a ffeiliau"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Fel markdown"
+    "message": "Sgwrs lawn"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Fel anogwr"
+    "message": "Anogwr crynodeb"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Wedi'i gopïo i'r clipfwrdd"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Canslwyd {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Wedi'i achosi gan:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Clirio hidlyddion"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Cyd-destun JavaScript {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "caniatáu gludo"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Peidiwch â gludo cod nad ydych yn ei ddeall neu nad ydych wedi adolygu eich hun i DevTools. Gallai hyn ganiatáu i ymosodwyr ddwyn eich hunaniaeth neu gymryd rheolaeth o'ch cyfrifiadur. Teipiwch “{PH1}” isod i ganiatáu gludo."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Ydych chi'n ymddiried yn y cod hwn?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Gwerthuso, gan ganiatáu sgîl-effeithiau"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Tynnu'r mynegiad: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Teipio “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "caniatáu gludo"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Mae'r elfen wedi'i chuddio"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Does dim ôl pentyrru ar gael"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyff)}zero{(# glyff)}two{(# glyff)}few{(# glyff)}many{(# glyff)}other{(# glyff)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "Wedi derbyn yr awgrym {PH1}."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "@Rheolau eraill"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Modd tywyll awtomatig"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Tynnu sgrinlun o'r ardal"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Crebachu rheolau CSS nad ydynt yn cyfrannu"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copïo arddulliau"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Dangos Priodweddau"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Dangos Olion Pentwr"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Dangos Arddulliau"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Ôl Pentwr"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Toglo coeden hygyrchedd"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stopio"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Modd dadfygio llinell amser (manylion digwyddiad olrhain, ac ati)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Gweld yr holl ddigwyddiadau"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Rhesymau Cyfuno"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Hygyrchedd"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Pori asiantaidd"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Mae'r gwiriadau hyn yn sicrhau gwefannau o ansawdd uchel, y gellir eu pori ar gyfer asiantau AI ac yn dilysu cywirdeb integreiddiadau WebMCP. Mae’r categori hwn yn dal i gael ei ddatblygu ac yn destun newid."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Cymhwyso dynwarediad bwrdd gwaith yn ystod yr archwiliad"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stopio"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Modd dadfygio llinell amser (manylion digwyddiad olrhain, ac ati)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Olrhain annilysiad"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Gweld yr holl ddigwyddiadau"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Cadw"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Rhagor o offer"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Rheswm: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Cadw'r llun fel…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Mae’r llun hwn yn rhy fawr i’w arddangos yn DevTools. Cliciwch yma i’w agor mewn tab newydd."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Chwilio"

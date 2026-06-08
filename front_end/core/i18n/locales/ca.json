@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Visualització de problemes"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Tauler de Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Tauler Inspector de memòria"
   },
@@ -1410,7 +1413,7 @@
     "message": "Si s'especifica \"overflow: visible\" en les etiquetes img, video i canvas, pot ser que produeixin contingut visual fora dels límits de l'element. Consulta https://github.com/WICG/shared-element-transitions/blob/main/debugging_overflow_on_images.md."
   },
   "generated/Deprecation.ts | OverrideFlashEmbedwithHTML": {
-    "message": "La inserció de vídeo Flash heretat s'ha reescrit en iframe HTML. Fa temps que Flash va desaparèixer. Aquest truc de reescriptura està obsolet i és possible que se suprimeixi en el futur."
+    "message": "La incrustació de vídeo Flash heretat s'ha reescrit en iframe HTML. Fa temps que Flash va desaparèixer. Aquest truc de reescriptura està obsolet i és possible que se suprimeixi en el futur."
   },
   "generated/Deprecation.ts | PaymentInstruments": {
     "message": "paymentManager.instruments està obsoleta. Utilitza la instal·lació Just-In-Time per als gestors de pagaments."
@@ -1467,7 +1470,7 @@
     "message": "La funció Related Website Sets està obsoleta i se suprimirà. Consulta https://privacysandbox.com/news/update-on-plans-for-privacy-sandbox-technologies/ per obtenir més informació."
   },
   "generated/Deprecation.ts | RequestedSubresourceWithEmbeddedCredentials": {
-    "message": "Les sol·licituds de subrecursos amb URL que contenen credencials inserides (per exemple, https://user:pass@host/) estan bloquejades."
+    "message": "Les sol·licituds de subrecursos amb URL que contenen credencials incrustades (per exemple, https://user:pass@host/) estan bloquejades."
   },
   "generated/Deprecation.ts | RtcpMuxPolicyNegotiate": {
     "message": "L'opció rtcpMuxPolicy està obsoleta i se suprimirà."
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "S'ha utilitzat una funció obsoleta"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protocol de verificació d'adreça electrònica"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Federated Credential Management"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: compleció automàtica"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Explicació de la intervenció per tornar a l'anunci"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Missatge explicatiu de CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Suprimeix els [mòduls de JavaScript duplicats](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) i grans dels paquets per reduir el consum innecessari de bytes durant l'activitat de xarxa."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "No s'ha trobat JavaScript duplicat"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript duplicat"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "No s'ha trobat cap font amb una propietat font-display subòptim"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Visualització de la font"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Els polyfills i les transformacions permeten als navegadors més antics fer servir funcions de JavaScript noves. No obstant això, molts no són necessaris per als navegadors moderns. Et recomanem que modifiquis el procés de compilació de JavaScript perquè no transpili les funcions de [referència](https://web.dev/articles/baseline-and-polyfills), tret que sàpigues que has de donar suport als navegadors més antics. [Obtén informació sobre per què la majoria dels llocs web poden implementar codi ES6+ sense transpilar](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "No s'ha trobat JavaScript heretat"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript heretat"
@@ -3201,10 +3219,10 @@
     "message": "Activa {PH1} per obtenir ajuda amb els estils, les sol·licituds de xarxa, el rendiment i els fitxers"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Com a Markdown"
+    "message": "Tota la conversa"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Com a indicació"
+    "message": "Indicació de resum"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "S'ha copiat al porta-retalls"
@@ -4964,6 +4982,9 @@
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "S'han cancel·lat: {PH1}"
   },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Causa:"
+  },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Esborra els filtres"
   },
@@ -5238,7 +5259,7 @@
     "message": "Actualment, les pàgines que han donat accés a la transmissió de contingut multimèdia no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | haveInnerContents": {
-    "message": "Actualment, les pàgines que tenen determinats tipus de contingut inserit (p. ex., PDF) no són aptes per a la memòria cau endavant/enrere."
+    "message": "Actualment, les pàgines que tenen determinats tipus de contingut incrustat (p. ex., PDF) no són aptes per a la memòria cau endavant/enrere."
   },
   "panels/application/components/BackForwardCacheStrings.ts | idleManager": {
     "message": "Actualment, les pàgines que utilitzen IdleManager no són aptes per a la memòria cau endavant/enrere."
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Context de JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "permet enganxar"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "No enganxis a DevTools codi que no entenguis o que no hagis revisat. Això podria permetre que els atacants et robessin la identitat o prenguessin el control del teu ordinador. Escriu ''{PH1}'' a continuació per permetre l'enganxament."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Confies en aquest codi?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Avalua permetent els efectes secundaris"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Suprimeix l'expressió: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Tipus \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "permet enganxar"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "L'element està amagat"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Cap traça de pila disponible"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glif)}other{(# glifs)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} El suggeriment s'ha acceptat."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Altres @regles"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Mode fosc automàtic"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Captura una part de la pantalla"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Replega les regles CSS que no contribueixen"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copia els estils"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Mostra les propietats"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Mostra la traça de la pila"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Mostra els estils"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Traça de la pila"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Commuta l'arbre d'accessibilitat"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Atura"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Mode de depuració de la cronologia (detalls dels esdeveniments de traça, etc.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Mostra tots els esdeveniments"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Motius de composició"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accessibilitat"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Navegació agentiva"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Aquestes comprovacions garanteixen llocs web navegables d'alta qualitat per als agents d'IA i validen la correcció de les integracions de WebMCP. Aquesta categoria encara està en desenvolupament i subjecta a canvis."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Aplica l'emulació d'ordinador durant l'auditoria"
@@ -9747,7 +9789,7 @@
     "message": "Error"
   },
   "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
-    "message": "Motiu:"
+    "message": "Causa:"
   },
   "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
     "message": "Codi d'error:"
@@ -10146,7 +10188,7 @@
     "message": "Copia al porta-retalls"
   },
   "panels/network/BinaryResourceView.ts | hexViewer": {
-    "message": "Hex espectador"
+    "message": "Visor Hex"
   },
   "panels/network/EventSourceMessagesView.ts | clearAll": {
     "message": "Esborra-ho tot"
@@ -11604,7 +11646,7 @@
     "message": "El document no es pot carregar en una finestra emergent oberta per un iframe de zona de proves perquè aquest document ha especificat una política de mètode d'obertura en diferents orígens."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
-    "message": "Per inserir aquest marc al teu document, la resposta ha d'activar la política d'inserció de diversos orígens especificant la capçalera de resposta següent:"
+    "message": "Per incrustar aquest marc al teu document, la resposta ha d'activar la política d'incrustació de diversos orígens especificant la capçalera de resposta següent:"
   },
   "panels/network/components/ResponseHeaderSection.ts | toUseThisResourceFromADifferent": {
     "message": "Per utilitzar aquest recurs des d'un altre origen, el servidor ha d'especificar una política de recursos de diversos orígens a les capçaleres de resposta:"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Atura"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Mode de depuració de la cronologia (detalls dels esdeveniments de traça, etc.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Seguiment d'invalidacions"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Mostra tots els esdeveniments"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Desa"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Més eines"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Motiu: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Desa la imatge com a…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Aquesta imatge és massa gran per mostrar-se a DevTools. Fes clic aquí per obrir-la en una pestanya nova."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Cerca"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} regions seleccionades"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "No enganxis a DevTools codi que no entenguis o que no hagis revisat. Això pot permetre que els atacants et robin la identitat o prenguin el control del teu ordinador. Escriu ''{PH1}'' a continuació per permetre que l'enganxament."
+    "message": "No enganxis a DevTools codi que no entenguis o que no hagis revisat. Això podria permetre que els atacants et robessin la identitat o prenguessin el control del teu ordinador. Escriu ''{PH1}'' a continuació per permetre l'enganxament."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Confies en aquest codi?"

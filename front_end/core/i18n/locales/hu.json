@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Problémák nézet"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-panel"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Memóriavizsgáló panel"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Megszüntetett funkció használata"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Az e-mail-cím igazolásának protokollja"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attribútum: automatikus kiegészítés"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "A hirdetéshez való visszatérés beavatkozásának magyarázata"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-magyarázó"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Távolítsa el a csomagjaiból a nagy méretű, [ismétlődően előforduló JavaScript-modulokat](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), hogy kevesebb hálózati tevékenységet okozzanak."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nem található ismétlődő JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Ismétlődő JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Betűtípus"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nem található olyan betűtípus, amelynél a font-display tulajdonság nem optimális"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Betűtípus megjelenítése"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "A polyfillek és az átalakítások lehetővé teszik, hogy a régi böngészők is használhassák az újabb JavaScript-funkciókat. A modern böngészők esetében azonban sok polyfill és átalakítás szükségtelen. Fontolja meg a JavaScript-buildkészítési folyamat módosítását, hogy az ne alakítsa át a [Baseline](https://web.dev/articles/baseline-and-polyfills) funkciókat, kivéve, ha tudja, hogy támogatnia kell a régi böngészőket. [További információ arról, hogy a legtöbb webhely miért tud átalakítás nélkül ES6+ kódot telepíteni](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nem található régi JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Régi JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Ha szeretne segítséget kapni a stílusokkal, a hálózati kérelmekkel, a teljesítménnyel és a fájlokkal kapcsolatban, kapcsolja be a következőt: {PH1}"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdownként"
+    "message": "Teljes beszélgetés"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Utasításként"
+    "message": "Összegzésre vonatkozó utasítás"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Vágólapra másolva"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} megszakított eszközhívás"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Kiváltó ok:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Szűrők törlése"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-környezet: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "beillesztés engedélyezése"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Ne illesszen be olyan kódot, amelyet nem ért, vagy amelyet még nem vizsgált felül a DevTools segítségével. A támadók így eltulajdoníthatják az Ön személyazonosságát, vagy átvehetik az irányítást a számítógépe felett. A beillesztés engedélyezéséhez írja be alább a következőt: „{PH1}”."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Megbízik ebben a kódban?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Értékelés, mellékhatásokat megengedve"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Kifejezés eltávolítása: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Írja be a következőt: „{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "beillesztés engedélyezése"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Az elem el van rejtve"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nincs rendelkezésre álló veremkivonat"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# karakterjel)}other{(# karakterjel)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Javaslat elfogadva."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Egyéb @-szabályok"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatikus sötét mód"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Képernyőkép készítése kiválasztott területről"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "A nem hozzájáruló CSS-szabályok összecsukása"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stílusok másolása"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Tulajdonságok megjelenítése"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Veremkivonat megjelenítése"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Stílusok megjelenítése"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Veremkivonat"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Kisegítő lehetőségek fájának be- vagy kikapcsolása"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Leállítás"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Idővonal hibakeresési módja (nyomon követési események részletei stb.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Az összes esemény megjelenítése"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Indokok összeállítása"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Kisegítő lehetőségek"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Ügynöki böngészés"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Ezek az ellenőrzések biztosítják az AI-ügynökök számára a jó minőségű, böngészhető webhelyeket, és ellenőrzik a WebMCP-integrációk helyességét. Ez a kategória még fejlesztés alatt áll, és módosulhat."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Asztali emuláció alkalmazása auditálás során"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Leállítás"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Idővonal hibakeresési módja (nyomon követési események részletei stb.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Érvénytelenítés nyomon követése"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Az összes esemény megjelenítése"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Mentés"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "További eszközök"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Ok: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Kép mentése másként…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "A kép túl nagy ahhoz, hogy megjelenjen a DevTools felületén. Kattintson ide az új lapon való megnyitáshoz."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Keresés"

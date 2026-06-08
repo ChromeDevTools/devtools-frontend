@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "문제 보기"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse 패널"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "메모리 검사기 패널"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "지원 중단된 기능이 사용됨"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "이메일 확인 프로토콜"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 속성: 자동 완성"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "광고로 돌아가기 개입 설명서"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB 설명"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "번들에서 크고 [중복된 JavaScript 모듈](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)을 삭제하여 네트워크 활동이 소비하는 불필요한 바이트 수를 줄입니다."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "중복된 JavaScript가 발견되지 않음"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "중복된 JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "글꼴"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "글꼴 표시가 최적이 아닌 글꼴 없음"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "글꼴 표시"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "폴리필 및 변환을 통해 이전 브라우저에서 새로운 JavaScript 기능을 사용할 수 있습니다. 하지만 최신 브라우저에서는 대부분 필요하지 않습니다. 이전 브라우저를 지원해야 하는 경우가 아니라면 [Baseline](https://web.dev/articles/baseline-and-polyfills) 기능을 트랜스파일하지 않도록 JavaScript 빌드 프로세스를 수정해 보세요. [대부분의 사이트에서 트랜스파일링 없이 ES6+ 코드를 배포할 수 있는 이유 알아보기](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "기존 JavaScript가 발견되지 않음"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "레거시 JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "{PH1}를 사용 설정하여 스타일, 네트워크 요청, 성능, 파일에 관한 도움을 받으세요."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "마크다운 형식"
+    "message": "전체 대화"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "프롬프트 형식"
+    "message": "요약 프롬프트"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "클립보드에 복사됨"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1}개 취소됨"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "원인:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "필터 지우기"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "자바스크립트 컨텍스트: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "붙여넣기 허용"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "이해하지 못했거나 직접 확인하지 않은 코드를 DevTools에 붙여넣지 마세요. 이렇게 하면 공격자가 신원을 도용하거나 내 컴퓨터를 제어할 수 있습니다. 붙여넣기를 허용하려면 아래에 “{PH1}” 문구를 입력하세요."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "이 코드를 신뢰할 수 있나요?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "평가, 부작용 허용"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "표현식 삭제: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” 입력"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "붙여넣기 허용"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "요소가 숨겨짐"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "사용 가능한 스택 트레이스 없음"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(글리프 #개)}other{(글리프 #개)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} 추천이 적용되었습니다."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "기타 @규칙"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "자동 어두운 모드"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "영역 스크린샷 캡처"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "기여하지 않는 CSS 규칙 접기"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "스타일 복사"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "속성 표시"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "스택 트레이스 표시"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "스타일 표시"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "스택 트레이스"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "접근성 트리 전환"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "중지"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "타임라인 디버그 모드(트레이스 이벤트 세부정보 등)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "모든 이벤트 표시"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "합성 이유"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "접근성"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "에이전트형 브라우징"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "이러한 검사를 통해 AI 에이전트가 탐색할 수 있는 고품질 웹사이트를 보장하고 WebMCP 통합의 정확성을 검증합니다. 이 카테고리는 아직 개발 중이며, 변경될 수 있습니다."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "감사 중 데스크톱 에뮬레이션 적용"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "중지"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "타임라인 디버그 모드(트레이스 이벤트 세부정보 등)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "무효화 추적"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "모든 이벤트 표시"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "저장"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "도구 더보기"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "이유: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "이미지를 다른 이름으로 저장…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "이 이미지는 너무 커서 DevTools에 표시할 수 없습니다. 새 탭에서 열려면 여기를 클릭하세요."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "찾기"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} 선택 지역"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "이해하지 못했거나 직접 확인하지 않은 코드를 DevTools에 붙여넣지 마세요. 이렇게 하면 공격자가 신원을 도용하거나 내 컴퓨터를 제어할 수 있습니다. 붙여넣기를 허용하려면 아래에 “{PH1}”을 입력하세요."
+    "message": "이해하지 못했거나 직접 확인하지 않은 코드를 DevTools에 붙여넣지 마세요. 이렇게 하면 공격자가 신원을 도용하거나 내 컴퓨터를 제어할 수 있습니다. 붙여넣기를 허용하려면 아래에 “{PH1}” 문구를 입력하세요."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "이 코드를 신뢰할 수 있나요?"

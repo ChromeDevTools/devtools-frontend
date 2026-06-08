@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "มุมมองปัญหา"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "แผง Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "แผงเครื่องมือตรวจสอบหน่วยความจำ"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ใช้ฟีเจอร์ที่เลิกใช้งานแล้ว"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "โปรโตคอลการยืนยันอีเมล"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "แอตทริบิวต์ HTML: เติมข้อความอัตโนมัติ"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "คำอธิบายการแทรกแซง \"กลับไปที่โฆษณา\""
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "ข้อความอธิบาย CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "นำ[โมดูล JavaScript ที่ซ้ำกัน](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)และขนาดใหญ่ออกจากแพ็กเกจเพื่อลดจำนวนไบต์ที่ไม่จำเป็นที่กิจกรรมเครือข่ายใช้"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ไม่พบ JavaScript ที่ซ้ำกัน"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript ที่ซ้ำกัน"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "แบบอักษร"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ไม่พบแบบอักษรที่มี font-display ที่ต่ำกว่ามาตรฐาน"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "การแสดงแบบอักษร"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill และการเปลี่ยนรูปแบบช่วยให้เบราว์เซอร์เดิมใช้ฟีเจอร์ JavaScript ใหม่ได้ แต่ส่วนมากจะไม่จำเป็นสำหรับเบราว์เซอร์ที่ทันสมัย ลองแก้ไขกระบวนการบิลด์ JavaScript เพื่อไม่ให้ทำการ Transpile ฟีเจอร์ [Baseline](https://web.dev/articles/baseline-and-polyfills) เว้นแต่คุณจะรู้ว่าต้องรองรับเบราว์เซอร์เดิม [ดูสาเหตุที่เว็บไซต์ส่วนใหญ่สามารถติดตั้งใช้งานโค้ด ES6+ ได้โดยไม่ต้องทำการ Transpile](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ไม่พบ JavaScript เดิม"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript เดิม"
@@ -3201,10 +3219,10 @@
     "message": "เปิด{PH1}เพื่อรับความช่วยเหลือเกี่ยวกับรูปแบบ คำขอเครือข่าย ประสิทธิภาพ และไฟล์"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "เป็นมาร์กดาวน์"
+    "message": "การสนทนาแบบเต็ม"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ตามพรอมต์"
+    "message": "พรอมต์สรุป"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "ยกเลิกแล้ว {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "เกิดจาก:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ล้างตัวกรอง"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "บริบท JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "อนุญาตให้วาง"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "อย่าวางโค้ดที่คุณไม่เข้าใจหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่างเพื่ออนุญาตให้วางได้"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "คุณเชื่อถือโค้ดนี้ไหม"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ประเมินโดยอนุญาตให้เกิดผลข้างเคียง"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "นำนิพจน์ออก: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "พิมพ์ \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "อนุญาตให้วาง"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "องค์ประกอบถูกซ่อนไว้"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ไม่มีสแต็กเทรซ"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# รูปอักขระ)}other{(# รูปอักขระ)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} ยอมรับคำแนะนำแล้ว"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "@กฎอื่นๆ"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "โหมดมืดอัตโนมัติ"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "บันทึกภาพหน้าจอของพื้นที่ที่เลือก"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "ยุบกฎ CSS ที่ไม่มีส่วนช่วย"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "คัดลอกรูปแบบ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "แสดงพร็อพเพอร์ตี้"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "แสดงสแต็กเทรซ"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "แสดงสไตล์"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "สแต็กเทรซ"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "สลับแผนผังการช่วยเหลือพิเศษ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "หยุด"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "โหมดแก้ไขข้อบกพร่องของไทม์ไลน์ (รายละเอียดเหตุการณ์การติดตาม ฯลฯ)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "แสดงกิจกรรมทั้งหมด"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "เหตุผลของการประกอบ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "การช่วยเหลือพิเศษ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "การท่องเว็บด้วย Agent"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "การตรวจสอบเหล่านี้ช่วยรับรองว่า AI Agent จะเข้าถึงเว็บไซต์ที่มีคุณภาพสูงและเลือกดูได้ รวมถึงตรวจสอบความถูกต้องของการผสานรวม WebMCP หมวดหมู่นี้ยังอยู่ระหว่างการพัฒนาและอาจมีการเปลี่ยนแปลง"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ใช้การจำลองเดสก์ท็อปในระหว่างที่ตรวจสอบ"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "หยุด"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "โหมดแก้ไขข้อบกพร่องของไทม์ไลน์ (รายละเอียดเหตุการณ์การติดตาม ฯลฯ)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "การติดตามการระบุว่าไม่ถูกต้อง"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "แสดงกิจกรรมทั้งหมด"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "บันทึก"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "เครื่องมืออื่นๆ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "เหตุผล: {PH1}"
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "บันทึกรูปภาพเป็น…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "รูปภาพนี้มีขนาดใหญ่เกินกว่าจะแสดงในเครื่องมือสำหรับนักพัฒนาเว็บ คลิกที่นี่เพื่อเปิดในแท็บใหม่"
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ค้นหา"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} ภูมิภาคการเลือก"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "อย่าวางโค้ดที่คุณไม่รู้จักดีหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่างเพื่ออนุญาตให้วางได้"
+    "message": "อย่าวางโค้ดที่คุณไม่เข้าใจหรือยังไม่ได้ตรวจสอบด้วยตนเองลงในเครื่องมือสำหรับนักพัฒนาเว็บ เนื่องจากอาจทำให้ผู้โจมตีสวมรอยเป็นคุณหรือควบคุมคอมพิวเตอร์ของคุณได้ โปรดพิมพ์ \"{PH1}\" ด้านล่างเพื่ออนุญาตให้วางได้"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "คุณเชื่อถือโค้ดนี้ไหม"

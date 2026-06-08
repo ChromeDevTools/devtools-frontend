@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "პრობლემების ხედი"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-ის არე"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "მეხსიერების ინსპექტორის პანელი"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "გამოყენებულია მოძველებული ფუნქცია"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ელფოსტის დადასტურების პროტოკოლი"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ატრიბუტი: ავტომატური შევსება"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "რეკლამაზე დაბრუნების ჩარევის განმმარტებელი"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-ის განმარტებითი ხელსაწყო"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ამოშალეთ [JavaScript-ის დიდი, დუბლირებული მოდულები](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ნაკრებებიდან, რომ შეამციროთ ქსელის აქტივობის მიერ მოხმარებული არასაჭირო ბაიტები."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "დუბლირებული JavaScript ვერ მოიძებნა"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "დუბლირებული JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "შრიფტი"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "შრიფტები შრიფტის ჩვენების სუბოპტიმალური პარამეტრებით ვერ მოიძებნა"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "შრიფტის ჩვენება"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "პოლიფილებისა და გარდაქმნების საშუალებით მოძველებული ბრაუზერები JavaScript-ის ახალ ფუნქციებს იყენებს. მიუხედავად ამისა, ბევრი მათგანი არ არის საჭირო თანამედროვე ბრაუზერებისთვის. განიხილეთ JavaScript-ის აწყობის პროცესის მოდიფიცირება, რათა არ მოხდეს [საბაზისო](https://web.dev/articles/baseline-and-polyfills) ფუნქციების კოდების ტრანსპილირება, თუ არ იცით, რომ მოძველებულ ბრაუზერებს უნდა დაუჭიროთ მხარი. [შეიტყვეთ, რატომ შეუძლია საიტების უმეტესობას ES6+ კოდის ჩასმა ტრანსპილირების გარეშე](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "მოძველებული JavaScript ვერ მოიძებნა"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "მოძველებული JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "ჩართეთ {PH1}, რომ მიიღოთ დახმარება სტილებთან, ქსელის მოთხოვნებთან, ეფექტურობასა და ფაილებთან დაკავშირებით"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdown-ის სახით"
+    "message": "სრული საუბარი"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "მოთხოვნის სახით"
+    "message": "შეჯამების მოთხოვნა"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "დაკოპირდა გაცვლის ბუფერში"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} გაუქმდა"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "მიზეზი:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ფილტრების გასუფთავება"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript კონტექსტი: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ჩასმის დაშვება"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "არ ჩასვათ DevTools-ში კოდი, რომელიც არ გესმით ან რომელიც თავად არ შეგიმოწმებიათ. აღნიშნულმა ქმედებამ, შესაძლოა, საშუალება მისცეს თავდამსხმელებს, მიითვისონ თქვენი ვინაობა ან ხელში ჩაიგდონ თქვენი კომპიუტერის მართვის სადავეები. ჩასმის დასაშვებად ქვემოთ აკრიფეთ „{PH1}“."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ენდობით ამ კოდს?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "შეფასება, გვერდითი ეფექტების დაშვებით"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "გამოსახულების ამოშლა: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "აკრიფეთ „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ჩასმის დაშვება"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "ელემენტი დამალულია"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "სტეკის ტრასირება მიუწვდომელია"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# გლიფი)}other{(# გლიფი)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} შეთავაზება მიღებულია."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "სხვა @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ავტომატური მუქი რეჟიმი"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "არის სკრინშოტის აღბეჭდვა"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "CSS-ის არადამხმარე წესების ჩაკეცვა"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "სტილების კოპირება"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "თვისებების ჩვენება"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "სტეკის ტრასირების ჩვენება"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "სტილების ჩვენება"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "სტეკის ტრასირება"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "მარტივი წვდომის ხის გადართვა"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "შეწყვეტა"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "ქრონოლოგიის გამართვის რეჟიმი (მოვლენის დეტალების თვალის მიდევნება და ა.შ.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ყველა ღონისძიების ჩვენება"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "შედგენის მიზეზები"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "მარტივი წვდომა"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "აგენტის ტიპის დათვალიერება"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ამ შემოწმებებით უზრუნველყოფილია მაღალი ხარისხის, დათვალიერებადი ვებსაიტები ხელოვნური ინტელექტის აგენტებისთვის და დასტურდება WebMCP ინტეგრაციების სისწორე. ამ კატეგორიის განვითარება ჯერ კიდევ მიმდინარეობს და ექვემდებარება ცვლილებას."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "აუდიტის დროს დესკტოპის ემულაციის გამოყენება"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "შეწყვეტა"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "ქრონოლოგიის გამართვის რეჟიმი (მოვლენის დეტალების თვალის მიდევნება და ა.შ.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "გაბათილებაზე თვალყურის დევნება"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "ყველა ღონისძიების ჩვენება"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "შენახვა"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "სხვა ხელსაწყოები"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "მიზეზი: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "შეინახეთ სურათი, როგორც…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ეს სურათი ძალიან დიდია DevTools-ში საჩვენებლად. დაწკაპუნებით გახსენით ის ახალ ჩანართში."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "პოვნა"
   },
@@ -18165,7 +18219,7 @@
     "message": "არჩევის {PH1} რეგიონი"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "არ ჩასვათ DevTools-ში კოდი, რომელიც არ გესმით, ან რომელიც თავად არ შეგიმოწმებიათ. აღნიშნულმა ქმედებამ, შესაძლოა, საშუალება მისცეს თავდამსხმელებს, მიითვისონ თქვენი ვინაობა ან ხელში ჩაიგდონ თქვენი კომპიუტერის მართვის სადავეები. ჩასმის დასაშვებად ქვემოთ აკრიფეთ „{PH1}“."
+    "message": "არ ჩასვათ DevTools-ში კოდი, რომელიც არ გესმით ან რომელიც თავად არ შეგიმოწმებიათ. აღნიშნულმა ქმედებამ, შესაძლოა, საშუალება მისცეს თავდამსხმელებს, მიითვისონ თქვენი ვინაობა ან ხელში ჩაიგდონ თქვენი კომპიუტერის მართვის სადავეები. ჩასმის დასაშვებად ქვემოთ აკრიფეთ „{PH1}“."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "ენდობით ამ კოდს?"

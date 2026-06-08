@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Ansicht „Probleme“"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-Bereich"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Bereich „Arbeitsspeicher-Prüftool“"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Eingestellte Funktion verwendet"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "E‑Mail-Bestätigungsprotokoll"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-Attribut: „autocomplete“"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Erklärung zur Intervention „Zurück zur Anzeige“"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-Erklärung"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Du kannst große, [doppelt vorhandene JavaScript-Module](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) aus Bundles entfernen, um unnötige Datenübertragungen im Netzwerk zu reduzieren."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Kein dupliziertes JavaScript gefunden"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Dupliziertes JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Schriftart"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Keine Schriftarten mit suboptimaler „font-display“-Eigenschaft gefunden"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Schriftart-Anzeige"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Dank Polyfills und Transformationen können ältere Browser die neuen JavaScript-Funktionen nutzen. Bei modernen Browsern hingegen sind viele davon nicht erforderlich. Du solltest den Build-Prozess deines JavaScripts so anpassen, dass [Baseline](https://web.dev/articles/baseline-and-polyfills)-Funktionen nicht transpiliert werden, es sei denn, du weißt, dass du ältere Browser unterstützen musst. [Hier erfährst du, warum die meisten Websites ES6+ Code ohne Transpilierung bereitstellen können](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Kein altes JavaScript gefunden"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Veraltetes JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Aktiviere die {PH1}, um Hilfe zu Stilen, Netzwerkanfragen, Leistung und Dateien zu erhalten"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Als Markdown"
+    "message": "Vollständige Unterhaltung"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Als Prompt"
+    "message": "Prompt für Zusammenfassung"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "In Zwischenablage kopiert"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} abgebrochen"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Ursache:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Filter entfernen"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-Kontext: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "Einfügen erlauben"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Füge keinen Code in die Entwicklertools ein, den du nicht verstehst oder nicht selbst geprüft hast. Dies könnte Angreifern ermöglichen, deine Identität zu stehlen oder die Kontrolle über deinen Computer zu erlangen. Gib unten „{PH1}“ ein, um das Einfügen zu erlauben."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Ist dieser Code vertrauenswürdig?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Bewerten und Nebenwirkungen zulassen"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Ausdruck entfernen: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Gib „{PH1}“ ein"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "Einfügen erlauben"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element ist ausgeblendet"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Kein Stacktrace verfügbar"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# Glyphe)}other{(# Glyphen)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Vorschlag angenommen"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Weitere „@rules“"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatischer dunkler Modus"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Screenshot vom Bereich aufnehmen"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Nicht beitragende CSS-Regeln minimieren"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stile kopieren"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Properties anzeigen"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Stacktrace anzeigen"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Stile anzeigen"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stacktrace"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Baumansicht für Barrierefreiheit ein-/ausschalten"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stopp"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Debug-Modus für die Zeitachse (Details zu Trace-Ereignissen usw.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Alle Ereignisse anzeigen"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Compositing-Gründe"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Bedienungshilfen"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentisches Browsing"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Diese Prüfungen helfen dabei, hochwertige, durchsuchbare Websites für KI-Agenten bereitzustellen und die Richtigkeit von WebMCP-Integrationen zu bestätigen. Diese Kategorie befindet sich noch in der Entwicklungsphase und kann daher Änderungen unterliegen."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Desktopemulation während der Prüfung anwenden"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stopp"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Debug-Modus für die Zeitachse (Details zu Trace-Ereignissen usw.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Tracking von Außerkraftsetzungen"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Alle Ereignisse anzeigen"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Speichern"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Weitere Tools"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Grund: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Bild speichern als…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Dieses Bild ist zu groß, um in den Entwicklertools angezeigt zu werden. Klicke hier, um es in einem neuen Tab zu öffnen."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Suchen"

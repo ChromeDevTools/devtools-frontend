@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "ಸಂಚಿಕೆಗಳ ವೀಕ್ಷಣೆ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "ಲೈಟ್‌ಹೌಸ್ ಪ್ಯಾನೆಲ್"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "ಮೆಮೊರಿ ಇನ್ಸ್‌ಪೆಕ್ಟರ್ ಪ್ಯಾನೆಲ್"
   },
@@ -1080,7 +1083,7 @@
     "message": "ಕನ್ಸೋಲ್ ಡ್ರಾಯರ್ ಅನ್ನು ಮರೆಮಾಡಿ"
   },
   "entrypoints/main/MainImpl.ts | moreTools": {
-    "message": "ಇನ್ನಷ್ಟು ಟೂಲ್‌ಗಳು"
+    "message": "ಇನ್ನಷ್ಟು ಪರಿಕರಗಳು"
   },
   "entrypoints/main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
     "message": "ಪುಟಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಹಾಗೆ DevTools ನಿಯೋಜನೆ (ಕೊನೆಯ ಸ್ಥಾನವನ್ನು ಮರುಸ್ಥಾಪಿಸಲು {PH1})"
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ತಡೆಹಿಡಿಯುವಿಕೆ ಫೀಚರ್ ಅನ್ನು ಬಳಸಲಾಗಿದೆ"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ಇಮೇಲ್ ದೃಢೀಕರಣ ಪ್ರೋಟೋಕಾಲ್"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ಗುಣಲಕ್ಷಣ: ಆಟೋಕಂಪ್ಲೀಟ್"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "ಜಾಹೀರಾತಿಗೆ ಹಿಂತಿರುಗುವ ಮಧ್ಯಸ್ಥಿಕೆಯ ಎಕ್ಸ್‌ಪ್ಲೇನರ್"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB ವಿವರಣೆ"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಚಟುವಟಿಕೆಯಿಂದ ಅನಗತ್ಯ ಬೈಟ್‌ಗಳು ಬಳಕೆಯಾಗುವುದನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಬಂಡಲ್‌ಗಳಿಂದ ದೊಡ್ಡ, [ನಕಲಿ JavaScript ಮಾಡ್ಯುಲ್‌ಗಳನ್ನು](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ತೆಗೆದುಹಾಕಿ."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ಯಾವುದೇ ನಕಲಿ JavaScript ಕಂಡುಬಂದಿಲ್ಲ"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ನಕಲಿ JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ಫಾಂಟ್"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ಉಪ-ಆಪ್ಟಿಮಲ್ ಫಾಂಟ್-ಡಿಸ್‌ಪ್ಲೇ ಹೊಂದಿರುವ ಯಾವುದೇ ಫಾಂಟ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ಫಾಂಟ್ ಡಿಸ್‌ಪ್ಲೇ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "ಪಾಲಿಫಿಲ್‌ಗಳು ಮತ್ತು ರೂಪಾಂತರಗಳು ಹೊಸ JavaScript ಫೀಚರ್‌ಗಳನ್ನು ಬಳಸಲು ಹಳೆಯದಾದ ಬ್ರೌಸರ್‌ಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತವೆ. ಹಾಗಿದ್ದರೂ, ಆಧುನಿಕ ಬ್ರೌಸರ್‌ಗಳಿಗೆ ಹೆಚ್ಚಿನವುಗಳ ಅಗತ್ಯವಿಲ್ಲ. ನೀವು ಹಳೆಯದಾದ ಬ್ರೌಸರ್‌ಗಳನ್ನು ಬೆಂಬಲಿಸಬೇಕು ಎಂದು ನಿಮಗೆ ತಿಳಿದಿಲ್ಲದಿದ್ದರೆ, [ಬೇಸ್‌ಲೈನ್](https://web.dev/articles/baseline-and-polyfills) ಫೀಚರ್‌ಗಳನ್ನು ಟ್ರಾನ್ಸ್‌ಪಿಲ್ ಮಾಡದಂತೆ ನಿಮ್ಮ JavaScript ಬಿಲ್ಡ್ ಪ್ರಾಸೆಸ್ ಅನ್ನು ಮಾರ್ಪಡಿಸುವುದನ್ನು ಪರಿಗಣಿಸಿ. [ಹೆಚ್ಚಿನ ಸೈಟ್‌ಗಳು ಟ್ರಾನ್ಸ್‌ಪಿಲ್ ಮಾಡದೆಯೇ ES6+ ಕೋಡ್ ಅನ್ನು ಏಕೆ ನಿಯೋಜಿಸಬಹುದು ಎಂಬುದನ್ನು ತಿಳಿಯಿರಿ](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ಯಾವುದೇ ಲೆಗಸಿ JavaScript ಕಂಡುಬಂದಿಲ್ಲ"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ಲೆಗಸಿ JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "ಶೈಲಿಗಳು, ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳು, ಪರ್ಫಾರ್ಮೆನ್ಸ್‌ ಮತ್ತು ಫೈಲ್‌ಗಳ ಸಹಾಯ ಪಡೆಯಲು {PH1} ಆನ್‌ ಮಾಡಿ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "ಮಾರ್ಕ್‌ಡೌನ್ ಆಗಿ"
+    "message": "ಸಂಪೂರ್ಣ ಸಂವಾದ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ಪ್ರಾಂಪ್ಟ್ ಆಗಿ"
+    "message": "ಸಾರಾಂಶದ ಪ್ರಾಂಪ್ಟ್"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ಕಾಪಿ ಮಾಡಲಾಗಿದೆ"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ಈ ಕಾರಣದಿಂದ ಉಂಟಾಗಿದೆ:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript ಸನ್ನಿವೇಶ: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ಕೋಡ್ ಪೇಸ್ಟ್ ಮಾಡಲು ಅನುಮತಿಸಿ"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "DevTools ನಲ್ಲಿ ನಿಮಗೆ ಅರ್ಥವಾಗದ ಅಥವಾ ನಿಮ್ಮನ್ನು ಪರಿಶೀಲಿಸದೇ ಇರುವ ಕೋಡ್ ಅನ್ನು ಪೇಸ್ಟ್ ಮಾಡಬೇಡಿ. ಮೋಸಗಾರರು ನಿಮ್ಮ ಗುರುತನ್ನು ಕದಿಯಲು ಅಥವಾ ನಿಮ್ಮ ಕಂಪ್ಯೂಟರ್‌ನ ನಿಯಂತ್ರಣವನ್ನು ತೆಗೆದುಕೊಳ್ಳಲು ಇದು ಅನುಮತಿಸಬಹುದು. ಪೇಸ್ಟ್ ಮಾಡಲು ಅನುಮತಿಸಲು ಕೆಳಗೆ “{PH1}” ಎಂದು ಟೈಪ್ ಮಾಡಿ."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ನೀವು ಈ ಕೋಡ್ ಅನ್ನು ನಂಬುತ್ತೀರಾ?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ಅಡ್ಡ ಪರಿಣಾಮಗಳನ್ನು ಅನುಮತಿಸಿ, ಮೌಲ್ಯಮಾಪನ ಮಾಡಿ"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ಅನ್ನು ತೆಗೆದುಹಾಕಿ: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "ಪ್ರಕಾರ “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ಕೋಡ್ ಪೇಸ್ಟ್ ಮಾಡಲು ಅನುಮತಿಸಿ"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "ಘಟಕವನ್ನು ಮರೆಮಾಡಲಾಗಿದೆ"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್ ಲಭ್ಯವಿಲ್ಲ"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ಗ್ಲಿಫ್)}one{(# ಗ್ಲಿಫ್‌ಗಳು)}other{(# ಗ್ಲಿಫ್‌ಗಳು)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} ಸಲಹೆಯನ್ನು ಅಂಗೀಕರಿಸಲಾಗಿದೆ."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "ಇತರ @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ಸ್ವಯಂಚಾಲಿತ ಕತ್ತಲೆ ಮೋಡ್"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ಕ್ಷೇತ್ರದ ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಕ್ಯಾಪ್ಚರ್ ಮಾಡಿ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "ಯಾವುದೇ ಪರಿಣಾಮ ಬೀರದ CSS ನಿಯಮಗಳನ್ನು ಕುಗ್ಗಿಸಿ"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ಶೈಲಿಗಳನ್ನು ಕಾಪಿ ಮಾಡಿ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "ಪ್ರಾಪರ್ಟಿಗಳನ್ನು ತೋರಿಸಿ"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್ ತೋರಿಸಿ"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ಶೈಲಿಗಳನ್ನು ತೋರಿಸಿ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ಸ್ಟ್ಯಾಕ್ ಟ್ರೇಸ್"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "ಆ್ಯಕ್ಸೆಸಿಬಿಲಿಟಿ ಟ್ರೀ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ನಿಲ್ಲಿಸಿ"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "ಟೈಮ್‌ಲೈನ್ ಡೀಬಗ್ ಮೋಡ್ (ಟ್ರೇಸ್ ಈವೆಂಟ್ ವಿವರಗಳು, ಇತ್ಯಾದಿ)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ಎಲ್ಲಾ ಈವೆಂಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ಸಂಯೋಜನೆಯ ಕಾರಣಗಳು"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ಅಕ್ಸೆಸಿಬಿಲಿಟಿ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ಏಜೆಂಟಿಕ್ ಬ್ರೌಸಿಂಗ್"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ಈ ಪರಿಶೀಲನೆಗಳು AI ಏಜೆಂಟ್‌ಗಳಿಗೆ ಉನ್ನತ ಗುಣಮಟ್ಟದ ಮತ್ತು ಸುಲಭವಾಗಿ ಬ್ರೌಸ್ ಮಾಡಬಹುದಾದ ವೆಬ್‌ಸೈಟ್‌ಗಳನ್ನು ಖಚಿತಪಡಿಸುವುದಲ್ಲದೆ, WebMCP ಇಂಟಿಗ್ರೇಶನ್‌ಗಳ ನಿಖರತೆಯನ್ನು ದೃಢೀಕರಿಸುತ್ತವೆ. ಈ ವರ್ಗವು ಇನ್ನೂ ಅಭಿವೃದ್ಧಿ ಹಂತದಲ್ಲಿದೆ ಮತ್ತು ಬದಲಾವಣೆಗೆ ಒಳಪಟ್ಟಿರುತ್ತದೆ."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ಆಡಿಟ್ ಮಾಡುವಾಗ ಡೆಸ್ಕ್‌ಟಾಪ್ ಅನುಕರಣೆಯನ್ನು ಅನ್ವಯಿಸಿ"
@@ -12474,7 +12516,7 @@
     "message": "ಇನ್ನೂ ಏನನ್ನೂ ದಾಖಲಿಸಿಲ್ಲ"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
-    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಇಂಪೋರ್ಟ್ ಮಾಡಿ"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ನಿಲ್ಲಿಸಿ"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "ಟೈಮ್‌ಲೈನ್ ಡೀಬಗ್ ಮೋಡ್ (ಟ್ರೇಸ್ ಈವೆಂಟ್ ವಿವರಗಳು, ಇತ್ಯಾದಿ)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "ಅಮಾನ್ಯಗೊಳಿಸುವಿಕೆ ಟ್ರ್ಯಾಕಿಂಗ್"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "ಎಲ್ಲಾ ಈವೆಂಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ಸೇವ್ ಮಾಡಿ"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ಇನ್ನಷ್ಟು ಪರಿಕರಗಳು"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "ಕಾರಣ: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ಚಿತ್ರವನ್ನು ಈ ರೀತಿ ಸೇವ್ ಮಾಡಿ…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ಈ ಚಿತ್ರವು DevTools ನಲ್ಲಿ ಪ್ರದರ್ಶಿಸಲು ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ. ಅದನ್ನು ಹೊಸ ಟ್ಯಾಬ್‌ನಲ್ಲಿ ತೆರೆಯಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ಹುಡುಕಿ"

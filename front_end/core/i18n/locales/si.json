@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "ගැටළු දසුන"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "ප්‍රදීපාගාරයේ පැනලය"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "මතක පරීක්ෂක පැනලය"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "අත් හරින ලද විශේෂාංගය භාවිත කරන ලදි"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ඉ-තැපැල් සත්‍යාපන ප්‍රොටෝකෝලය"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML උපලක්ෂණය: ස්වයං සම්පූර්ණ කිරීම"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "දැන්වීම වෙත ආපසු මැදිහත් වීම පැහැදිලි කරන්නා"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB පැහැදිලි කරන්නා"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ජාල ක්‍රියාකාරකම් මඟින් පරිභෝජනය කරන අනවශ්‍ය බයිට් අඩු කිරීම සඳහා පොදි වලින් විශාල, [අනුපත් JavaScript මොඩියුල](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ඉවත් කරන්න."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "අනුපත් ජාවාස්ක්‍රිප්ට් හමු නොවුණි"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "අනුපිටපත් කළ ජාවාස්ක්‍රිප්ට්"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ෆොන්ටය"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "උප ප්‍රශස්ත අකුරු සංදර්ශකය සහිත අකුරු හමු නොවුණි"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "අකුරු සංදර්ශකය"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "පොලිෆිල් සහ පරිවර්තන මඟින් පැරණි බ්‍රව්සර්වලට නව ජාවාස්ක්‍රිප්ට් විශේෂාංග භාවිතා කිරීමට හැකියාව ලැබේ. කෙසේ වෙතත්, බොහෝ ඒවා නවීන බ්‍රව්සර් සඳහා අවශ්‍ය නොවේ. ඔබ පැරණි බ්‍රව්සර් සඳහා සහාය දැක්විය යුතු බව ඔබ දන්නේ නම් මිස, [මූලික රේඛා](https://web.dev/articles/baseline-and-polyfills) විශේෂාංග විකෘති නොකිරීමට ඔබේ ජාවාස්ක්‍රිප්ට් ගොඩනැගීමේ ක්‍රියාවලිය වෙනස් කිරීම සලකා බලන්න. [බොහෝ අඩවි වලට ES6+ කේතය පරිවර්තනයකින් තොරව යෙදවිය හැක්කේ ඇයි දැයි දැන ගන්න](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ලෙගසි ජාවාස්ක්‍රිප්ට් හමු නොවිණි"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ලෙගසි ජාවාස්ක්‍රිප්ට්"
@@ -3201,10 +3219,10 @@
     "message": "මෝස්තර, ජාල ඉල්ලීම්, කාර්ය සාධනය සහ ගොනු සමග උදවු ලබා ගැනීමට {PH1} ක්‍රියාත්මක කරන්න"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "සලකුණු කිරීම ලෙස"
+    "message": "සම්පූර්ණ සංවාදය"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ප්‍රේරකය ලෙස"
+    "message": "සාරාංශ විමසුම"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "පසුරු පුවරුවට පිටපත් කරන ලදි"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} අවලංගු කළා"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "සිදු කළේ:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "පෙරහන් හිස් කරන්න"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "ජාවාස්ක්‍රිප්ට සන්දර්භය: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ඇලවීමට ඉඩ දෙන්න"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "DevTools තුළට ඔබට නොතේරෙන හෝ ඔබ සමාලෝචන කර නැති කේතය අලවන්න එපා. මෙය, ප්‍රහාරකය'න්ට ඔබේ අනන්‍යතාව සොරකම් කිරීමට හෝ ඔබේ පරිගණකය පාලන කිරීමට ඉඩ දිය හැක. ඇලවීමට ඉඩ දීමට පහතින් \"{PH1}\" ටයිප් කරන්න."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ඔබට මෙම කේතය විශ්වාස ද?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "තක්සේරු කරන්න, අතුරු ආබාධවලට ඉඩ දීම"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ප්‍රකාශනය ඉවත් කරන්න: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "වර්ගය \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ඇලවීමට ඉඩ දෙන්න"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "මූලාංගය සඟවා ඇත"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ඇමතුම් අට්ටි අනුසාර ලබා ගත නොහැකිය"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(ග්ලයිෆ් #)}one{(ග්ලයිෆ් #)}other{(ග්ලයිෆ් #)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} යෝජනාව පිළිගන්නා ලදි"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "වෙනත් @රීති"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ස්වයංක්‍රිය අඳුරු ප්‍රකාරය"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ප්‍රදේශ තිර රුවක් ගන්න"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "දායක නොවන CSS රීති හකුළන්න"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "මෝස්තර පිටපත් කරන්න"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "දේපළ පෙන්වන්න"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ඇමතුම් අට්ටි අනුසාරය පෙන්වන්න"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "විලාස පෙන්වන්න"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ඇමතුම් අට්ටි අනුසාරය"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "ප්‍රවේශ්‍යතා රුක ටොගල් කරන්න"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "නවත්වන්න"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "කාලරේඛා නිදොස් කිරීමේ ප්‍රකාරය (සිදුවීම් විස්තර හඹා යන්න, ආදිය)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "සියලු සිද්ධි පෙන්වන්න"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "සංයුක්ත හේතු"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ප්‍රවේශ්‍යතාව"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "නියෝජිත බ්‍රවුස් කිරීම"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "මෙම පරීක්ෂාවන් AI නියෝජිතයින් සඳහා උසස් තත්ත්වයේ, බ්‍රවුස් කළ හැකි වෙබ් අඩවි සහතික කරන අතර WebMCP ඒකාබද්ධ කිරීම්වල නිවැරදි බව වලංගු කරයි. මෙම ප්‍රවර්ගය තවමත් සංවර්ධනය වෙමින් පවතින අතර වෙනස් වීමට යටත් වේ."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "විගණනය අතරතුර ඩෙස්ක්ටොප් අනුකරණය යොදන්න"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "නවත්වන්න"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "කාලරේඛා නිදොස් කිරීමේ ප්‍රකාරය (සිදුවීම් විස්තර හඹා යන්න, ආදිය)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "අවලංගු කිරීම් ලුහුබැඳීම"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "සියලු සිද්ධි පෙන්වන්න"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "සුරකින්න"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "තවත් මෙවලම්"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "හේතුව: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "රූපය මෙලෙස සුරකින්න…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "මෙම රූපය DevTools තුළ සංදර්ශනය කිරීමට අවශ්‍ය පමණට වඩා විශාලයි. එය නව පටිත්තක විවෘත කිරීමට මෙහි ක්ලික් කරන්න."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "සොයන්න"
   },
@@ -18168,7 +18222,7 @@
     "message": "DevTools තුළට ඔබට නොතේරෙන හෝ ඔබ සමාලෝචන කර නැති කේතය අලවන්න එපා. මෙය, ප්‍රහාරකය'න්ට ඔබේ අනන්‍යතාව සොරකම් කිරීමට හෝ ඔබේ පරිගණකය පාලන කිරීමට ඉඩ දිය හැක. ඇලවීමට ඉඩ දීමට පහතින් \"{PH1}\" ටයිප් කරන්න."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
-    "message": "ඔබට මෙම කේතය විශ්වාසද?"
+    "message": "ඔබට මෙම කේතය විශ්වාස ද?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "පේළිය {PH1}, තීරුව {PH2}"

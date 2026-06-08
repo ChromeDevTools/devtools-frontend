@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "“问题”视图"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse 面板"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "“内存检查器”面板"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "使用了已弃用的功能"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "邮箱验证协议"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 属性：自动补全"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "“返回广告”干预措施说明"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB 解释器"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "从软件包中移除[重复的大型 JavaScript 模块](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)，即可避免网络活动带来不必要的字节消耗。"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "未找到重复的 JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "重复的 JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "字体"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "未找到 font-display 设置不当的字体"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "字体显示"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill 和 transform 让旧版浏览器能够使用新的 JavaScript 功能。不过，其中的很多函数对现代浏览器而言并不是必需的。请考虑修改 JavaScript 构建流程，以便不转译 [Baseline](https://web.dev/articles/baseline-and-polyfills) 功能，除非您知道必须支持旧版浏览器。[了解为什么大多数网站可以部署 ES6+ 代码而无需转译](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "未找到旧版 JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "旧版 JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "开启{PH1}即可获取有关样式、网络请求、性能和文件的帮助"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "导出为 Markdown 文件"
+    "message": "完整会话"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "导出为提示"
+    "message": "摘要提示"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "已复制到剪贴板"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} 项已取消"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "原因："
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "清除过滤条件"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript 上下文：{PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "允许粘贴"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "请勿将您不理解或未自行检查的代码粘贴到开发者工具中。这可能会导致攻击者趁机窃取您的身份信息或控制您的电脑。请在下方输入“{PH1}”以允许粘贴。"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "您信任此代码吗？"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "评估，允许有副作用"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "移除表达式：{PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "输入“{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "允许粘贴"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "元素处于隐藏状态"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "无可用堆栈轨迹"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{（# 个字形）}other{（# 个字形）}}"
   },
@@ -8220,7 +8250,10 @@
     "message": "查看计算得出的值"
   },
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
-    "message": "“{PH1}”建议被采纳。"
+    "message": "{PH1} 建议被采纳。"
+  },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "其他 @规则"
   },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "自动深色模式"
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "截取区域屏幕截图"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "收起不生效的 CSS 规则"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "复制样式"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "显示“属性”工具"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "显示“堆栈轨迹”工具"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "显示样式"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "堆栈轨迹"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "切换无障碍功能树视图"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "停止"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "时间轴调试模式（跟踪事件详情等）"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "显示所有事件"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "合成原因"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "无障碍功能"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "智能体浏览"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "这些检查可确保网站具备高品质且适合 AI 智能体浏览，并验证 WebMCP 集成的正确性。此类别仍在开发中，可能会发生变化。"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "在审核期间应用桌面设备模拟"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "时间轴调试模式（跟踪事件详情等）"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "失效追踪"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "显示所有事件"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "保存"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "更多工具"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "原因：{PH1}。"
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "图片另存为…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "此图片过大，无法在开发者工具中显示。点击此处可在新标签页中打开此图片。"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "查找"

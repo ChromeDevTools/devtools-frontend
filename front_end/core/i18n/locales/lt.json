@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Problemų rodinys"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "„Lighthouse“ skydelis"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Atminties tikrinimo skydelis"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Naudojama funkcija, kurios teikimas nutrauktas"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "El. pašto patvirtinimo protokolas"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Sietinio prisijungimo duomenų valdymo API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atributas: automatinis užbaigimas"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Grįžimo į skelbimą intervencijos paaiškinimo priemonė"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB paaiškinimo priemonė"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Pašalinkite didelius, [pasikartojančius „JavaScript“ modulius](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) iš grupių, kad tinklo veikla be reikalo nenaudotų baitų."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nerasta jokių tikslių „JavaScript“ kopijų"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Tiksli „JavaScript“ kopija"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Šriftas"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nerasta jokių šriftų su neoptimaliu šrifto rodymo nustatymu"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Šrifto pateikimas"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Naudojant kodus ir transformacijas senesnėse naršyklėse galima naudoti naujas „JavaScript“ funkcijas. Tačiau dauguma jų nereikalingi modernioms naršyklėms. Apsvarstykite galimybę pakeisti „JavaScript“ kompiliavimo procesą, kad nebūtų transpiliuojamos [pagrindinės](https://web.dev/articles/baseline-and-polyfills) funkcijos, nebent žinote, kad turite palaikyti senesnes naršykles. [Sužinokite, kodėl dauguma svetainių gali diegti ES6+ kodą be transpiliavimo](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nerasta jokių pasenusių „JavaScript“"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Pasenusi „JavaScript“"
@@ -3201,10 +3219,10 @@
     "message": "Įjunkite „{PH1}“, kad gautumėte pagalbos dėl stilių, tinklo užklausų, našumo ir failų"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Kaip žymėjimas"
+    "message": "Visas pokalbis"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Kaip užklausa"
+    "message": "Suvestinės užklausa"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Nukopijuota į iškarpinę"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Atšaukta: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Priežastis:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Išvalyti filtrus"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "„JavaScript“ kontekstas: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "leisti įklijuoti"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Neįklijuokite kodo, kurio nesuprantate arba kurio neperžiūrėjote, į kūrėjo įrankius. Tai gali leisti atakų vykdytojams pavogti jūsų tapatybę arba valdyti kompiuterį. Toliau įveskite „{PH1}“, kad leistumėte įklijuoti."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Ar pasitikite šiuo kodu?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Įvertinti, leidžiant šalutinį poveikį"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Pašalinti išraišką: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Įveskite „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "leisti įklijuoti"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementas paslėptas"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nepasiekiamas joks dėklo pėdsakas"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifas)}one{(# glifas)}few{(# glifai)}many{(# glifo)}other{(# glifų)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Pasiūlymas priimtas."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Kitos @taisyklės"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatinis tamsus režimas"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Užfiksuoti srities ekrano kopiją"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Sutraukti neprisidedančias CSS kalbos taisykles"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopijuoti stilius"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Rodyti nuosavybes"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Rodyti dėklo pėdsaką"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Rodyti stilius"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Dėklo pėdsakas"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Perjungti pritaikomumo medį"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Sustabdyti"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Laiko juostos derinimo režimas (pėdsako įvykio išsami informacija ir kt.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Rodyti visus įvykius"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Komponavimo priežastys"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Pritaikomumas"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Tarpininkaujantis naršymas"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Šios patikros užtikrina aukštos kokybės, naršomas svetaines DI tarpininkams ir patvirtina „WebMCP“ integravimų tinkamumą. Ši kategorija vis dar kuriama ir gali būti pakeista."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Tikrinant naudoti kompiuterio emuliaciją"
@@ -9747,7 +9789,7 @@
     "message": "Klaida"
   },
   "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
-    "message": "Sukėlė:"
+    "message": "Priežastis:"
   },
   "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
     "message": "Klaidos kodas:"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Sustabdyti"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Laiko juostos derinimo režimas (pėdsako įvykio išsami informacija ir kt.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Nepatvirtinimų stebėjimas"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Rodyti visus įvykius"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Išsaugoti"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Daugiau įrankių"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Priežastis: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Išsaugoti vaizdą kaip…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Šis vaizdas per didelis, kad būtų rodomas kūrėjo įrankiuose. Spustelėkite čia, kad atidarytumėte jį naujame skirtuke."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Rasti"

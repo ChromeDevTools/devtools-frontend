@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Zobrazenie problémov"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panel nástroja Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel nástroja na kontrolu pamäte"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Používa sa funkcia s ukončenou podporou"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokol overenia e‑mailu"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribút HTML: automatické dopĺňanie"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Vysvetlenie preventívneho opatrenia pri návrate k reklame"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Vysvetlenie blokovania CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Odstráňte z balíkov veľké [duplicitné moduly JavaScriptu](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), aby ste zredukovali nepotrebné bajty spotrebované aktivitou siete."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nenašiel sa žiadny duplicitný JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplicitný JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Písmo"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nenašli sa žiadne písma s neoptimálnym nastavením font-display"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Zobrazenie písma"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Viacnásobné vyplnenia a transformácie umožňujú starším prehliadačom používať nové funkcie JavaScriptu. Mnohé z nich však nie sú pre moderné prehliadače potrebné. Ak nutne nemusíte podporovať staršie prehliadače, zvážte úpravu procesu kompilácie JavaScriptu tak, aby nedochádzalo k transpilovaniu [základných](https://web.dev/articles/baseline-and-polyfills) funkcií. [Prečo väčšina webov môže nasadiť kód ES6+ bez transpilácie](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nenašiel sa žiadny starý JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Starý JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Zapnite {PH1} a získate pomoc so štýlmi, požiadavkami siete, výkonom a súbormi"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Ako markdown"
+    "message": "Celá konverzácia"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Ako pokyn"
+    "message": "Pokyn na vytvorenie súhrnu"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Skopírované do schránky"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Zrušené: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Príčina:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Vymazať filtre"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Obsah JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "povoliť prilepovanie"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Do nástrojov pre vývojárov neprilepujte kód, ktorému nerozumiete alebo ktorý ste neskontrolovali. Útočníci by mohli ukradnúť vašu totožnosť alebo ovládnuť váš počítač. Ak chcete povoliť prilepovanie, nižšie zadajte {PH1}."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Dôverujete tomuto kódu?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Hodnotenie, povoľujúce vedľajšie účinky"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Odstrániť výraz: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Napíšte {PH1}"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "povoliť prilepovanie"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Prvok je skrytý"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nie je k dispozícii žiadne sledovanie zásobníka"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyf)}few{(# glyfy)}many{(# glyphs)}other{(# glyfov)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Návrh bol prijatý."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Ďalšie @pravidlá"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatický tmavý režim"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Vytvoriť snímku obrazovky oblasti"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Zbaliť pravidlá CSS, ktoré sa neuplatňujú"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopírovať štýly"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Zobraziť vlastnosti"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Zobraziť sledovanie zásobníka"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Zobraziť štýly"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Sledovanie zásobníka"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Prepnúť strom dostupnosti"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Ukončiť"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Režim ladenia časovej osi (podrobnosti o udalosti sledovania atď.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Zobraziť všetky udalosti"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Dôvody skladania"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Dostupnosť"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentské prehliadanie"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Tieto kontroly zaisťujú vysokokvalitné prehliadateľné weby pre agentov umelej inteligencie a overujú správnosť integrácií WebMCP. Táto kategória je stále vo vývoji a môže sa zmeniť."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Počas kontroly používať emuláciu počítača"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Ukončiť"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Režim ladenia časovej osi (podrobnosti o udalosti sledovania atď.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Sledovanie zrušenia platnosti"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Zobraziť všetky udalosti"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Uložiť"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Ďalšie nástroje"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Dôvod: {PH1}"
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Uložiť obrázok ako…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Tento obrázok je príliš veľký na zobrazenie v nástrojoch pre vývojárov. Ak ho chcete otvoriť na novej karte, kliknite tu."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Nájsť"
   },
@@ -18165,7 +18219,7 @@
     "message": "Oblasti výberu: {PH1}"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Do nástrojov pre vývojárov neprilepujte kód, ktorému nerozumiete alebo ste neskontrolovali. Útočníci by mohli ukradnúť vašu totožnosť alebo ovládnuť váš počítač. Ak chcete povoliť prilepovanie, nižšie zadajte {PH1}."
+    "message": "Do nástrojov pre vývojárov neprilepujte kód, ktorému nerozumiete alebo ktorý ste neskontrolovali. Útočníci by mohli ukradnúť vašu totožnosť alebo ovládnuť váš počítač. Ak chcete povoliť prilepovanie, nižšie zadajte {PH1}."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Dôverujete tomuto kódu?"

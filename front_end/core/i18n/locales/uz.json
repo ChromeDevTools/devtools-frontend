@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Muammolarni ochish"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse paneli"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Xotira instektori paneli"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Tugatilgan funksiyadan foydalanilmoqda"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Emailni tasdiqlash protokoli"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atributi: avtomatik kiritish"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Reklamaga qaytish aralashuvi haqida izoh"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB bildirgisi"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Tarmoq faolligida sarflangan keraksiz baytlar sonini kamaytirish uchun paketlardan yirik va [takrorlanuvchi JavaScript modullarini](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) olib tashlang."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Takroriy JavaScript topilmadi"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Takroriy JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Shrift"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Suboptimal shrift-display mavjud hech qanday shrift topilmadi"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Ishlatilgan shriftlar"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polifill va transform parametrlari eskirgan brauzerlarga yangi JavaScript funksiyalaridan foydalanish imkonini beradi. Ammo, ular zamonaviy brauzerlarda talab etilmaydi. Eskirgan brauzerlarni dastaklash kerak boʻlmasa, JavaScript ishlab chiqish jarayonida [Baseline](https://web.dev/articles/baseline-and-polyfills) funksiyalarini transpil qilmaslikni hisobga oling. [Aksariyat saytlar nima uchun ES6+ kodni transpil qilmasdan ishlatishi mumkinligi haqida batafsil](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Eskirgan JavaScript topilmadi"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Eskirgan JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Uslublar, tarmoq soʻrovlari, unumdorlik va fayllar yuzasidan yordam kerak boʻlsa, {PH1} funksiyasini yoqing"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdown sifatida"
+    "message": "Toʻliq suhbat"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Prompt sifatida"
+    "message": "Xulosa prompti"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Vaqtinchalik xotiraga nusxalandi"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Bekor qilindi ({PH1})"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Sababi:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Filtrlarni tozalash"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript konteksti: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "joylashga ruxsat berish"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Tushunarsiz yoki sinalmagan kodni DevTools konsoliga joylashtirmang. Bunda firibgarlar kompyuterdagi shaxsiy axborotingizni oʻgʻirlashi yoki qoʻlga kiritishi mumkin. Joylashga ruxsat berish uchun quyida “'{PH1}” deb yozing."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Bu kodga ishonasizmi?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Baholash (salbiy oqibatlari bilan)"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Ifodani olib tashlash: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” kiriting"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "joylashga ruxsat berish"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element berkitildi"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Stek trassirovkasi topilmadi"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ta naqsh)}other{(# ta naqsh)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Taklif qabul qilindi."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Boshqa @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Avtomatik tungi rejim"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Qisman skrinshot olish"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "CSS qoidalarini yigʻish"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stillarni nusxalash"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Xususiyatlarni ochish"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Stek trassirovkasini ochish"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Uslublarni koʻrsatish"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stek trassirovkasi"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Qulaylik daraxtini chiqarish yoki berkitish"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Yilnoma nosozliklarni aniqlash rejimi (trassirovka hodisasi tafsilotlari va boshqalar)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Barcha tadbirlarni chiqarish"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Tartiblash sababi"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Qulayliklar"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentik kezish"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Bu tekshiruvlar AI agentlari uchun yuqori sifatli, keziladigan veb-saytlarni taʼminlaydi va WebMCP integratsiyalari toʻgʻriligini tasdiqlaydi. Bu turkum hali ishlab chiqilmoqda va oʻzgarishi mumkin."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Tekshiruv vaqtida kompyuter versiyasini emulyatsiya qilish"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Yilnoma nosozliklarni aniqlash rejimi (trassirovka hodisasi tafsilotlari va boshqalar)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Bekor qilishni kuzatish"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Barcha tadbirlarni chiqarish"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Saqlash"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Yana"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Sababi: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Rasmni saqlash…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Bu rasm DevTools vositasida chiqarish uchun juda katta. Uni yangi varaqda ochish uchun bu yerga bosing."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Qidirish"

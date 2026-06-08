@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Прагляд праблем"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Панэль Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Панэль \"Інспектар памяці\""
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Выкарыстоўваецца састарэлая функцыя"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Пратакол спраўджання адраса электроннай пошты"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Атрыбут HTML: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Тлумачэнне пра прадухіленне вяртання да рэкламы"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Тлумачэнне блакіроўкі чытання з розных крыніц (CORB)"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Выдаліце з пакетаў [копіі модуляў JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) вялікага памеру, каб паменшыць аб’ём лішніх даных, якія спажываюцца сеткавай актыўнасцю."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Дубліраваны код JavaScript не знойдзены"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Дубліраваны JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Шрыфт"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Шрыфты з неаптымальным параметрам font-display не знойдзены"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Адлюстраванне шрыфтоў"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Паліфілы і пераўтварэнні дазваляюць больш старым браўзерам выкарыстоўваць новыя функцыі JavaScript. Аднак многія з іх не з’яўляюцца неабходнымі для сучасных браўзераў. Калі вы ведаеце, што падтрымка больш старых браўзераў не патрабуецца, падумайце над тым, каб змяніць свой працэс зборкі JavaScript, каб не кампіляваць [базавыя функцыі](https://web.dev/articles/baseline-and-polyfills) ў код на іншай мове праграмавання. [Даведайцеся, чаму большасць сайтаў могуць разгарнуць код ES6+ без кампілявання ў код на іншай мове праграмавання.](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Устарэлы JavaScript не знойдзены"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Устарэлы JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Каб атрымаць дапамогу па стылях, сеткавых запытах, прадукцыйнасці і файлах, уключыце наступную функцыю: {PH1}"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Як разметка"
+    "message": "Поўная размова"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Як запыт"
+    "message": "Запыт на зводку"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Скапіравана ў буфер абмену"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Скасавана ({PH1})"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Прычына:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Ачысціць фільтры"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Кантэкст JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "дазволіць устаўку"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Не ўстаўляйце ў інструменты распрацоўшчыка код, які вы не разумееце або не правяралі. Так зламыснікі могуць украсці вашы даныя або атрымаць кантроль над вашым камп’ютарам. Каб дазволіць устаўку кода, увядзіце \"{PH1}\" ніжэй."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Ці давяраеце вы гэтаму коду?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Выконваць, дазволіўшы пабочныя эфекты"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Выдаліць выраз: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Тып \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "дазволіць устаўку"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Элемент схаваны"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Трасіроўкі стэкаў недаступныя"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# гліф)}one{(# гліф)}few{(# гліфы)}many{(# гліфаў)}other{(# гліфа)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Прапанова прынята."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Іншыя @правілы"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Аўтаматычнае ўключэнне цёмнага рэжыму"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Зрабіць здымак вобласці экрана"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Згарнуць правілы CSS, якія не ўплываюць на вынік"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Скапіраваць стылі"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Паказаць інструмент \"Уласцівасці\""
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Паказаць інструмент \"Трасіроўка стэка\""
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Паказаць інструмент \"Стылі\""
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Трасіроўка стэка"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Уключыць або выключыць дрэва даступнасці"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Спыніць"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Рэжым адладкі храналогіі (падрабязныя звесткі пра падзеі трасіроўкі і г. д.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Паказаць усе падзеі"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Прычыны кампаноўкі"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Даступнасць"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Прагляд з дапамогай агента"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Гэтыя праверкі забяспечваюць высокі ўзровень якасці вэб-сайтаў, прыдатных для прагляду AI-агентамі, і пацвярджаюць правільнасць інтэграцыі WebMCP. Гэта катэгорыя пакуль што знаходзіцца ў распрацоўцы і можа змяняцца."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Прымяняць эмуляцыю камп’ютара падчас вядзення аўдыту"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Спыніць"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Рэжым адладкі храналогіі (падрабязныя звесткі пра падзеі трасіроўкі і г. д.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Адсочванне несапраўднасцей"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Паказаць усе падзеі"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Захаваць"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Іншыя інструменты"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Прычына: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Захаваць відарыс як…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Не ўдаецца паказаць відарыс у інструментах распрацоўшчыка, бо яго памер занадта вялікі. Націсніце тут, каб адкрыць відарыс у новай укладцы."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Пошук"

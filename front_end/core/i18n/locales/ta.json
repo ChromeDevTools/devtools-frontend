@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "சிக்கல்கள் காட்சி"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse பேனல்"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "நினைவகக் கண்காணிப்புப் பேனல்"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "நிறுத்தப்பட்ட அம்சம் பயன்படுத்தப்பட்டுள்ளது"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ஈமெயில் சரிபார்ப்பு நெறிமுறை"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML பண்புக்கூறு: தானே நிரப்புதல்"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "பின்செல்லும்போது-விளம்பரக் குறுக்கீடு தொடர்பான விளக்கம்"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB எக்ஸ்ப்ளெயினர்"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "நெட்வொர்க் செயல்பாடு தேவையில்லாமல் பைட்களைப் பயன்படுத்துவதைக் குறைக்க, தொகுப்புகளில் இருந்து பெரிய, [நகலெடுக்கப்பட்ட JavaScript மாடியூல்களை](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) அகற்றவும்."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "நகல் JavaScript எதுவுமில்லை"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "நகல் JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "எழுத்து வடிவம்"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "காட்டப்படும் எழுத்து வடிவம் மோசமானதாக உள்ள எழுத்து வடிவங்கள் இல்லை"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "எழுத்து வடிவக் காட்சி"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "பழைய பிரவுசர்கள் புதிய JavaScript அம்சங்களைப் பயன்படுத்த பாலிஃபில்களும் ட்ரான்ஸ்ஃபார்ம்களும் உதவுகின்றன. நவீன பிரவுசர்களுக்கு இவற்றுள் பல தேவைப்படுவதில்லை. பழைய பிரவுசர்களைப் பயன்படுத்த வேண்டிய கட்டாயம் இல்லாதபோது, [பேஸ்லைன்](https://web.dev/articles/baseline-and-polyfills) அம்சங்களை டிரான்ஸ்பைல் செய்யாமல் இருக்கும்படி உங்கள் JavaScript பதிப்புச் செயல்முறையை மாற்றுவது நல்லது. [பெரும்பாலான தளங்கள் ES6+ குறியீட்டை ஏன் டிரான்ஸ்பைல் செய்யாமல் செயல்படுத்த முடியும் என்று தெரிந்துகொள்ளுங்கள்](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "பழைய JavaScript எதுவுமில்லை"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "பழைய JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "ஸ்டைல்கள், நெட்வொர்க் கோரிக்கைகள், செயல்திறன் மற்றும் ஃபைல்கள் தொடர்பான உதவியைப் பெற {PH1} என்பதை இயக்கவும்"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "மார்க்டவுனாக"
+    "message": "முழு உரையாடல்"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ப்ராம்ப்ட்டாக"
+    "message": "சுருக்க விவர ப்ராம்ப்ட்"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
@@ -4905,7 +4923,7 @@
     "message": "அக & அமர்வு சேமிப்பகம்"
   },
   "panels/application/StorageView.ts | mb": {
-    "message": "மெ.பை."
+    "message": "MB"
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "எண் நேர்மறையானதாக இருக்க வேண்டும்"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ரத்துசெய்யப்பட்டது"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "பிழைக்கான காரணம்:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ஃபில்டர்களை அழிக்கும்"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript காண்டெக்ஸ்ட்: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ஒட்டுவதை அனுமதி"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "உங்களுக்குப் புரியாத அல்லது டெவெலப்பர் கருவிகளில் நீங்கள் சரிபார்க்காத குறியீட்டை ஒட்ட வேண்டாம். தீங்கிழைப்போர் உங்கள் அடையாளத்தைத் திருடவும் உங்கள் கம்ப்யூட்டரை தங்கள் கட்டுப்பாட்டில் எடுக்கவும் இது அனுமதிக்கக்கூடும். ஒட்டுவதை அனுமதிக்க “{PH1}” என்று கீழே டைப் செய்யவும்."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "இந்தக் குறியீட்டை நம்புகிறீர்களா?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "மதிப்பிடு, சைடு எஃபெக்ட்டுகளை அனுமதிக்கிறது"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "எக்ஸ்ப்ரெஷனை அகற்றும்: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” என்று டைப் செய்யவும்"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ஒட்டுவதை அனுமதி"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "உறுப்பு மறைக்கப்பட்டுள்ளது"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ஸ்டாக் ட்ரேஸ்கள் எதுவுமில்லை"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# கிளிஃப்)}other{(# கிளிஃப்கள்)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} பரிந்துரை ஏற்கப்பட்டது."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "பிற @விதிகள்"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "தானியங்கு டார்க் பயன்முறை"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "தேர்ந்தெடுத்த பகுதியை ஸ்கிரீன்ஷாட் எடு"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "பங்களிக்காத CSS விதிகளைச் சுருக்கு"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ஸ்டைல்களை நகலெடு"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "உடைமைகளைக் காட்டு"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ஸ்டாக் டிரேஸைக் காட்டு"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Stylesஸைக் காட்டு"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ஸ்டாக் டிரேஸ்"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "மாற்றுத்திறன் வசதி ட்ரீயை காட்டு/மறை"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "நிறுத்து"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "காலப்பதிவு பிழைதிருத்தப் பயன்முறை (டிரேஸ் நிகழ்வு விவரங்கள் போன்றவை)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "எல்லா நிகழ்வுகளையும் காட்டு"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ஒட்டுமொத்தக் காரணங்கள்"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "மாற்றுத்திறன் வசதி"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ஏஜெண்ட்டிக் பிரவுசிங்"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "இந்தச் சரிபார்ப்புகள் AI ஏஜெண்ட்டுகளுக்கு உயர்தரத்திலான, பிரவுசிங் செய்யக்கூடிய இணையதளங்களை உறுதிசெய்வதுடன், WebMCP ஒருங்கிணைப்புகளின் உண்மைத்தன்மையையும் சரிபார்க்கும். இந்த வகை இன்னும் மேம்பாட்டு நிலையில் உள்ளதால் இது மாற்றத்திற்கு உட்பட்டது."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "தணிக்கையின்போது டெஸ்க்டாப் எமுலேஷனைப் பயன்படுத்து"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "நிறுத்து"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "காலப்பதிவு பிழைதிருத்தப் பயன்முறை (டிரேஸ் நிகழ்வு விவரங்கள் போன்றவை)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "இன்வேலிடேஷன் கண்காணிப்பு"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "எல்லா நிகழ்வுகளையும் காட்டு"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "சேமி"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "கூடுதல் கருவிகள்"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "காரணம்: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "படத்தை இப்படிச் சேமி…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "இந்தப் படம் டெவெலப்பர் கருவிகளில் காட்ட முடியாத அளவிற்குப் பெரியதாக உள்ளது. புதிய பக்கத்தில் திறக்க இங்கே கிளிக் செய்யவும்."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "தேடு"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} தேர்வுசெய்யப்பட்ட பிராந்தியங்கள்"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "உங்களுக்குப் புரியாத அல்லது டெவெலப்பர் கருவிகளில் நீங்கள் சரிபார்க்காத குறியீட்டை ஒட்ட வேண்டாம். அப்படிச் செய்தால், ஹேக்கர்கள் உங்கள் அடையாளத்தைத் திருடக்கூடும், உங்கள் கம்ப்யூட்டரைக் கட்டுப்படுத்தக்கூடும். ஒட்டுவதை அனுமதிக்க “{PH1}” என்று கீழே டைப் செய்யவும்."
+    "message": "உங்களுக்குப் புரியாத அல்லது டெவெலப்பர் கருவிகளில் நீங்கள் சரிபார்க்காத குறியீட்டை ஒட்ட வேண்டாம். தீங்கிழைப்போர் உங்கள் அடையாளத்தைத் திருடவும் உங்கள் கம்ப்யூட்டரை தங்கள் கட்டுப்பாட்டில் எடுக்கவும் இது அனுமதிக்கக்கூடும். ஒட்டுவதை அனுமதிக்க “{PH1}” என்று கீழே டைப் செய்யவும்."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "இந்தக் குறியீட்டை நம்புகிறீர்களா?"

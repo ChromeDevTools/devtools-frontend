@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Arazoen ikuspegia"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-ren panela"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Memoria-ikuskatzailearen panela"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Zaharkituta dagoen eginbide bat erabili da"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Helbide elektronikoa egiaztatzeko protokoloa"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atributua: osatze automatikoa"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Iragarkira itzultzeko esku-hartzearen azalpena"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Beste jatorrietako irakurketa blokeatzeari (CORB) buruzko azalpena"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Kendu [JavaScript darabilten modulu handi eta bikoiztuak](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) multzoetatik, sareko jarduerek kontsumitutako alferrikako byteak murrizteko."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Ez da aurkitu JavaScript bikoizturik"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript bikoiztua"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Letra"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Ez da aurkitu letren bistaratze optimoa ez duen letrarik"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Letren bistaratzea"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill eta transform-ei esker, arakatzaile zaharragoek JavaScript-en eginbide berriak erabil ditzakete. Hala ere, haietako asko ez dira beharrezkoak arakatzaile modernoetarako. Aldatu JavaScript-en garatzeko prozesua [Baseline](https://web.dev/articles/baseline-and-polyfills) eginbideak ez transpilatzeko, arakatzaile zaharragoekiko bateragarritasuna gorde behar duzula jakin ezean. [Jakin zergatik webgune gehienek ES6+ kodea transpilatu gabe inplementatu ahal duten](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Ez da aurkitu aurreko bertsioko JavaScript-ik"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Aurreko bertsioko JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Aktibatu {PH1} estiloen, sareko eskaeren, errendimenduaren eta fitxategien inguruko laguntza jasotzeko"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdown gisa"
+    "message": "Elkarrizketa osoa"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Eskaera-mezu gisa"
+    "message": "Laburpenaren eskaera-mezua"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Kopiatu da arbelean"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Bertan behera utzitako {PH1} dei"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Errorearen eragilea:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Garbitu iragazkiak"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-eko testuingurua: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "eman itsasteko baimena"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Ez itsatsi ulertzen ez duzun edo berrikusi ez duzun koderik garatzaileentzako tresnetan. Bestela, baliteke erasotzaileek zure identitatea lapurtzea edo ordenagailua kontrolatzea. Idatzi \"{PH1}\" azpian itsatsi ahal izateko."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Fidagarria iruditzen zaizu kode hau?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Ebaluatu, albo-efektuak onartuta"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Kendu adierazpen hau: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Idatzi \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "eman itsasteko baimena"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementua ezkutatuta dago"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Ez dago pilaren arrastorik eskuragarri"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifo)}other{(# glifo)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Iradokizuna onartu da."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Beste @arauak"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Gai ilun automatikoa"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Atera eremuaren pantaila-argazkia"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Tolestu aplikagarriak ez diren eta CSS darabilten arauak"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiatu estiloak"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Erakutsi propietateak"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Erakutsi pilaren arrastoa"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Erakutsi estiloak"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Pilaren arrastoa"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Aldatu erabilerraztasun-zuhaitza"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Gelditu"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Kronologiaren arazketa modua (arakatu gertaeren xehetasunak, etab.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Erakutsi gertaera guztiak"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Konposatzeko arrazoiak"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Erabilerraztasuna"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Arakatze agentikoa"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Egiaztapen horiei esker, AA bidezko agenteek kalitate handiko webguneetan nabiga dezakete, eta WebMCP-ren integrazioak zuzenak direla baliozkotzen da. Kategoria garatzen ari gara oraindik, eta litekeena da aldatzea."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Aplikatu mahaigaineko simulazioa auditatu bitartean"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Gelditu"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Kronologiaren arazketa modua (arakatu gertaeren xehetasunak, etab.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Baliogabetzeen jarraipena"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Erakutsi gertaera guztiak"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Gorde"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Tresna gehiago"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Arrazoia: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Gorde irudia honela…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Irudia handiegia da garatzaileentzako tresnetan bistaratzeko. Hura beste fitxa batean irekitzeko, sakatu hau."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Bilatu"

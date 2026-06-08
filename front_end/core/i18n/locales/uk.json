@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Перегляд проблем"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Панель Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Панель \"Інспектор пам’яті\""
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Використовується функція, яка більше не підтримується"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Протокол підтвердження електронної адреси"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Атрибут HTML: автозавершення"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Пояснення щодо засобів для запобігання поверненню на сторінку реклами"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Пояснення щодо CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Видаліть великі [копії модулів JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) із пакетів, щоб зменшити кількість непотрібних байтів під час мережевої активності."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Повторюваний код JavaScript не знайдено"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Повторювані джерела JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Шрифт"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Не знайдено шрифтів із неоптимальним значенням властивості font-display"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Відображення шрифту"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Поліфіли й перетворення дають вебпереглядачам старіших версій змогу використовувати нові функції JavaScript. Однак багато з них не потрібні для сучасних вебпереглядачів. Змініть процес складання JavaScript, щоб не транспілювати функції [базового набору](https://web.dev/articles/baseline-and-polyfills), якщо вам не потрібно підтримувати вебпереглядачі старіших версій. [Дізнайтеся, чому більшість сайтів можуть розгортати код ES6+ без транспілювання](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Застарілий код JavaScript не знайдено"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Застарілі функції JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Щоб отримувати допомогу зі стилями, запитами мережі, ефективністю й файлами, увімкніть {PH1}"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Як у розмітці"
+    "message": "Повна розмова"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Як у запиті"
+    "message": "Запит на створення підсумку"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Скопійовано в буфер обміну"
@@ -4964,6 +4982,9 @@
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Скасовано: {PH1}"
   },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Причина:"
+  },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Очистити фільтри"
   },
@@ -6504,7 +6525,7 @@
     "message": "Вікно"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
-    "message": "Працівник"
+    "message": "Worker"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
     "message": "XHR"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Контекст JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "дозволити вставлення"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Не вставляйте в Інструменти розробника код, який ви не зрозуміли або не перевірили самостійно, інакше зловмисники зможуть викрасти вашу особисту інформацію чи отримати контроль над вашим комп’ютером. Щоб дозволити вставлення, введіть \"{PH1}\" нижче."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Ви довіряєте цьому коду?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Оцінити, дозволяючи побічні ефекти"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Видалити вираз: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Введіть \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "дозволити вставлення"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Елемент приховано"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Немає трасування стека"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# гліф)}one{(# гліф)}few{(# гліфи)}many{(# гліфів)}other{(# гліфу)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Пропозицію прийнято."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Інші @правила"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автоматичний темний режим"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Зробити знімок області"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Згорнути правила CSS, які не застосовуються"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Копіювати стилі"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Показати властивості"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Показати трасування стека"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Показати стилі"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Трасування стека"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Увімкнути або вимкнути дерево доступності"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Зупинити"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим налагодження часової шкали (відомості про події трасування тощо)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Показати всі події"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Причини компонування"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Доступність"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агентний вебперегляд"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Ці перевірки забезпечують високу якість вебсайтів і їх доступність для агентів на основі ШІ, а також підтверджують правильність інтеграції WebMCP. Ця категорія ще на стадії розробки, тому може змінюватися."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Застосувати емуляцію комп’ютера під час перевірки"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Зупинити"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим налагодження часової шкали (відомості про події трасування тощо)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Відстеження анулювання"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Показати всі події"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Зберегти"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Інші інструменти"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Причина: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Зберегти зображення як…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Це зображення завелике, щоб показуватися в Інструментах розробника. Натисніть тут, щоб відкрити його в новій вкладці."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Пошук"

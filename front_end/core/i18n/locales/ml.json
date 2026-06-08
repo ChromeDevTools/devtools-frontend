@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "പ്രശ്‌നങ്ങൾ കാഴ്‌ച"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse പാനൽ"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "മെമ്മറി ഇൻസ്പെക്‌ടർ പാനൽ"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "അവസാനിപ്പിച്ച ഫീച്ചർ ഉപയോഗിച്ചു"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ഇമെയിൽ പരിശോധിച്ചുറപ്പിക്കൽ പ്രോട്ടോക്കോൾ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ആട്രിബ്യൂട്ട്: സ്വയംപൂർത്തിയാക്കൽ"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "'പരസ്യത്തിലേക്ക് മടങ്ങുക' ഇടപെടൽ സംബന്ധിച്ച വിശദീകരണം"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB വിശകലനം"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "നെറ്റ്‌വർക്ക് ആക്റ്റിവിറ്റി ഉപയോഗിക്കുന്ന അനാവശ്യ ബൈറ്റുകൾ കുറയ്ക്കുന്നതിന് ബണ്ടിലുകളിൽ നിന്ന് വലുതും, [ഡ്യൂപ്ലിക്കേറ്റുമായ JavaScript മൊഡ്യൂളുകൾ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) നീക്കം ചെയ്യുക."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ഡ്യൂപ്ലിക്കേറ്റ് ചെയ്ത JavaScript ഒന്നും കണ്ടെത്തിയില്ല"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ഡ്യൂപ്ലിക്കേറ്റ് ചെയ്ത JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ഫോണ്ട്"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "സബ്ഒപ്റ്റിമൽ അല്ലാത്ത ഫോണ്ട്-ഡിസ്പ്ലേ ഉള്ള ഫോണ്ടുകളൊന്നും കണ്ടെത്തിയില്ല"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ഫോണ്ട് ഡിസ്‌പ്ലേ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill-കളും ട്രാൻസ്‌ഫോമുകളും, പുതിയ JavaScript ഫീച്ചറുകൾ ഉപയോഗിക്കാൻ പഴയ ബ്രൗസറുകളെ പ്രവർത്തനക്ഷമമാക്കുന്നു. എന്നിരുന്നാലും, ആധുനിക ബ്രൗസറുകൾക്ക് പല ഫീച്ചറുകളും ആവശ്യമില്ല. നിങ്ങൾക്ക് പഴയ ബ്രൗസറുകളെ പിന്തുണയ്ക്കണമെന്നറിയില്ലെങ്കിൽ [ബേസ്‌ലൈൻ](https://web.dev/articles/baseline-and-polyfills) ഫീച്ചറുകൾ ട്രാൻസ്‌പൈൽ ചെയ്യാതിരിക്കാൻ, 'JavaScript ബിൽഡ് പ്രോസസ്' പരിഷ്‌കരിക്കുന്നത് പരിഗണിക്കുക. [എന്തുകൊണ്ടാണ് മിക്ക സൈറ്റുകൾക്കും ട്രാൻസ്‌പൈൽ ചെയ്യാതെ തന്നെ ES6+ കോഡ് വിന്യസിക്കാൻ കഴിയുന്നതെന്ന് മനസ്സിലാക്കുക](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ലെഗസി JavaScript ഒന്നും കണ്ടെത്തിയില്ല"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ലെഗസി JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "സ്റ്റൈലുകൾ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ, പ്രകടനം, ഫയലുകൾ എന്നിവ സംബന്ധിച്ച് സഹായം ലഭിക്കുന്നതിന് {PH1} ഓണാക്കുക"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "മാർക്ക്ഡൗൺ ആയി"
+    "message": "പൂർണ്ണമായ സംഭാഷണം"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "പ്രോംപ്റ്റ് ആയി"
+    "message": "സംഗ്രഹ പ്രോംപ്റ്റ്"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} റദ്ദാക്കി"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "കാരണം:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ഫിൽട്ടറുകൾ മായ്‌ക്കുക"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript സന്ദർഭം: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ഒട്ടിക്കൽ അനുവദിക്കുക"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "നിങ്ങൾക്ക് മനസ്സിലാകാത്തതോ സ്വയം അവലോകനം ചെയ്യാത്തതോ ആയ കോഡ് DevTools-ൽ ഒട്ടിക്കരുത്. ഇത് നിങ്ങളുടെ ഐഡന്റിറ്റി അപഹരിക്കാനോ നിങ്ങളുടെ കമ്പ്യൂട്ടറിന്റെ നിയന്ത്രണം ഏറ്റെടുക്കാനോ അക്രമികളെ അനുവദിച്ചേക്കാം. ഒട്ടിക്കാൻ അനുവദിക്കുന്നതിന് ചുവടെ “{PH1}” എന്ന് ടൈപ്പ് ചെയ്യുക."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "നിങ്ങൾക്ക് ഈ കോഡിൽ വിശ്വാസമുണ്ടോ?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "പാർശ്വഫലങ്ങൾ അനുവദിച്ച് മൂല്യനിർണ്ണയം നടത്തുക"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "എക്‌സ്‌പ്രഷൻ നീക്കം ചെയ്യുക: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” എന്ന് ടൈപ്പ് ചെയ്യുക"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ഒട്ടിക്കൽ അനുവദിക്കുക"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "എലമെന്റ് മറച്ചിരിക്കുന്നു"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "സ്റ്റാക്ക് ട്രെയ്സ് ലഭ്യമില്ല"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ഗ്ലിഫ്)}other{(# ഗ്ലിഫുകൾ)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} നിർദ്ദേശം അംഗീകരിച്ചു."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "മറ്റ് @നയങ്ങൾ"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "സ്വയമേവയുള്ള ഡാർക്ക് മോഡ്"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "പ്രദേശത്തിന്റെ സ്ക്രീന്‍ഷോട്ട് ക്യാപ്‌ചർ ചെയ്യുക"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "സംഭാവന നൽകാത്ത CSS നയങ്ങൾ ചുരുക്കുക"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "സ്റ്റൈലുകൾ പകർത്തുക"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "പ്രോപ്പർട്ടികൾ കാണിക്കുക"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "സ്റ്റാക്ക് ട്രെയ്സ് കാണിക്കുക"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "സ്റ്റൈലുകൾ കാണിക്കുക"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "സ്റ്റാക്ക് ട്രെയ്സ്"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "ആക്‌സസിബിലിറ്റി ട്രീ ടോഗിൾ ചെയ്യുക"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "നിർത്തുക"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "ടൈംലൈൻ ഡീബഗ് മോഡ് (ഇവന്റ് വിശദാംശങ്ങൾ ട്രെയ്‌സ് ചെയ്യുക മുതലായവ)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "എല്ലാ ഇവന്റുകളും കാണിക്കുക"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "കമ്പോസിറ്റ് ചെയ്യാനുള്ള കാരണങ്ങൾ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ഉപയോഗസഹായി"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ഏജന്റിക് ബ്രൗസിംഗ്"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ഈ പരിശോധനകൾ AI ഏജന്റുകൾക്ക് ഉയർന്ന നിലവാരമുള്ളതും ബ്രൗസ് ചെയ്യാവുന്നതുമായ വെബ്സൈറ്റുകൾ ഉറപ്പാക്കുകയും WebMCP ഇന്റഗ്രേഷനുകളുടെ കൃത്യത സാധൂകരിക്കുകയും ചെയ്യുന്നു. ഈ വിഭാഗം ഇപ്പോഴും വികസിപ്പിച്ചുകൊണ്ടിരിക്കുകയാണ്, മാറ്റത്തിന് വിധേയവുമാണ്."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ഓഡിറ്റ് ചെയ്യുമ്പോൾ ഡെസ്ക്ടോപ്പ് അനുകരണം പ്രയോഗിക്കുക"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "നിർത്തുക"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "ടൈംലൈൻ ഡീബഗ് മോഡ് (ഇവന്റ് വിശദാംശങ്ങൾ ട്രെയ്‌സ് ചെയ്യുക മുതലായവ)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "അസാധുവാക്കൽ ട്രാക്കിംഗ്"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "എല്ലാ ഇവന്റുകളും കാണിക്കുക"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "സംരക്ഷിക്കുക"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "കൂടുതൽ ടൂളുകൾ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "കാരണം: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ചിത്രം ഇനിപ്പറയുന്നതായി സംരക്ഷിക്കുക…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "DevTools-ൽ പ്രദർശിപ്പിക്കാൻ കഴിയാത്തത്ര വലുതാണ് ഈ ചിത്രം. പുതിയ ടാബിൽ ഇത് തുറക്കാൻ ഇവിടെ ക്ലിക്ക് ചെയ്യുക."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "കണ്ടെത്തുക"

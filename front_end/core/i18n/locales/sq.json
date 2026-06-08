@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Pamja e \"Problemeve\""
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Paneli i Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Paneli i \"Inspektorit të memories\""
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Është përdorur një veçori e zhvlerësuar"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokolli i verifikimit të email-it"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atributi i protokollit HTML: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Shpjeguesi i ndërhyrjes për kthim te reklamat"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Shpjeguesi i CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Hiq [modulet e mëdha dublikatë të JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) nga paketat për të reduktuar bajtet e konsumuara nga aktiviteti i rrjetit."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nuk u gjet JavaScript e dublikuar"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript i dublikuar"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fonti"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nuk u gjet asnjë font me shfaqje fonti suboptimale"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Shfaqja e fontit"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Kodet polifil dhe transformimet bëjnë të mundur që shfletuesit më të vjetër të përdorin veçoritë e reja të JavaScript. Sidoqoftë, shumë prej tyre nuk janë të nevojshëm për shfletuesit modernë. Ki parasysh ta modifikosh procesin e ndërtimit të JavaScript që të mos transformohen veçoritë [bazë](https://web.dev/articles/baseline-and-polyfills), përveçse nëse e di që duhet të mbështeten shfletuesit më të vjetër. [Mëso se pse shumica e sajteve mund të përdorin kodin ES6+ pa kryer transformimin e gjuhës së programimit](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nuk u gjet asnjë version i vjetër i JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Versioni i vjetër i JavaScript"
@@ -3180,7 +3198,7 @@
     "message": "Ndihma e IA-së nuk ofrohet në modalitetin \"I fshehtë\" ose në modalitetin \"Vizitor\""
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
-    "message": "Kjo veçori ofrohet vetëm kur je identifikuar në Chrome me \"Llogarinë tënde të Google\"."
+    "message": "Kjo veçori ofrohet vetëm kur je i identifikuar në Chrome me \"Llogarinë tënde të Google\"."
   },
   "panels/ai_assistance/components/DisabledWidget.ts | offline": {
     "message": "Kontrollo lidhjen e internetit dhe provo përsëri"
@@ -3201,10 +3219,10 @@
     "message": "Aktivizo \"{PH1}\" për të marrë ndihmë për stilet, kërkesat e rrjetit, performancën dhe skedarët"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Si shënim formati"
+    "message": "Bisedë e plotë"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Si kërkesë"
+    "message": "Kërkesa për përmbledhje"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "U kopjua në kujtesën e fragmenteve"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} anuluar"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Shkaktuar nga:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Pastro filtrat"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Konteksti i JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "lejo ngjitjen"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Mos e ngjit kodin që nuk e kupton ose që nuk e ke shqyrtuar vetë në DevTools. Kjo mund t'i lejojë sulmuesit që të vjedhin identitetin tënd ose të marrin kontrollin e kompjuterit tënd. Shkruaj “{PH1}” më poshtë për të lejuar ngjitjen."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "A i beson këtij kodi?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Vlerësim, duke lejuar efekte anësore"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Hiq shprehjen: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Lloji “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "lejo ngjitjen"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementi është i fshehur"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nuk ka gjurmim të stivës"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# simbol)}other{(# simbole)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "Sugjerimi i {PH1} u pranua."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "@rregulla të tjera"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Modaliteti i errët automatik"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Regjistro pamjen e ekranit të zonës"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Palos rregullat e CSS-së që nuk kontribuojnë"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopjo stilet"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Shfaq atributet"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Shfaq gjurmimin e stivës"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Shfaq stilet"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Gjurmimi i stivës"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Aktivizo/çaktivizo pemën e qasshmërisë"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Ndalo"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Modaliteti i korrigjimit sipas kronologjisë (detajet e ngjarjes së gjurmës etj.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Shfaq të gjitha ngjarjet"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Arsyet e përbërjes"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Qasshmëria"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Shfletimi agjentik"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Këto kontrolle sigurojnë uebsajte të shfletueshme me cilësi të lartë për agjentët e IA-së dhe vërtetojnë saktësinë e integrimeve WebMCP. Kjo kategori është ende në zhvillim dhe mund të ndryshojë."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Zbato imitimin për desktop gjatë auditimit"
@@ -13848,7 +13890,7 @@
     "message": "Regjistrohu"
   },
   "panels/settings/components/SyncSection.ts | signedIn": {
-    "message": "Identifikuar në Chrome si:"
+    "message": "I identifikuar në Chrome si:"
   },
   "panels/settings/components/SyncSection.ts | syncDisabled": {
     "message": "Për ta aktivizuar këtë cilësim, duhet të aktivizosh sinkronizimin e Chrome."
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Ndalo"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Modaliteti i korrigjimit sipas kronologjisë (detajet e ngjarjes së gjurmës etj.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Monitorimi i zhvlerësimit"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Shfaq të gjitha ngjarjet"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Ruaj"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Mjete të tjera"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Arsyeja: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Ruaje imazhin si…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Ky imazh është shumë i madh për t'u shfaqur në DevTools. Kliko këtu për ta hapur në një skedë të re."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Gjej"

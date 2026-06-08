@@ -10,7 +10,6 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 import * as Platform from '../platform/platform.js';
-import * as Root from '../root/root.js';
 
 import * as SDK from './sdk.js';
 
@@ -812,13 +811,13 @@ describeWithEnvironment('SourceMap', () => {
 
     for (const {sourceRoot, sourceURL, sourceMapURL, expected} of cases) {
       it(`can resolve sourceURL "${sourceURL}" with sourceRoot "${sourceRoot}" and sourceMapURL "${sourceMapURL}"`,
-         () => {
-           const mappingPayload = {mappings: 'AAAA;;;CACA', sourceRoot, sources: [sourceURL], version: 3};
-           const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, urlString`${sourceMapURL}`, mappingPayload);
-           const sourceURLs = sourceMap.sourceURLs();
-           assert.lengthOf(sourceURLs, 1, 'unexpected number of original source URLs');
-           assert.strictEqual(sourceURLs[0], expected);
-         });
+          () => {
+            const mappingPayload = {mappings: 'AAAA;;;CACA', sourceRoot, sources: [sourceURL], version: 3};
+            const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, urlString`${sourceMapURL}`, mappingPayload);
+            const sourceURLs = sourceMap.sourceURLs();
+            assert.lengthOf(sourceURLs, 1, 'unexpected number of original source URLs');
+            assert.strictEqual(sourceURLs[0], expected);
+          });
     }
 
     it('does not touch sourceURLs that conflict with the compiled URL', () => {
@@ -1264,7 +1263,6 @@ describeWithEnvironment('SourceMap', () => {
 
   describe('findEntry', () => {
     it('can resolve generated positions with inlineFrameIndex', () => {
-      Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
       const builder = new ScopesCodec.ScopeInfoBuilder();
       builder.startScope(0, 0, {kind: 'global', key: 'global'})
@@ -1306,7 +1304,6 @@ describeWithEnvironment('SourceMap', () => {
   });
 
   it('combines "scopes" proposal scopes appropriately for index maps', () => {
-    Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
     const info1 = new ScopesCodec.ScopeInfoBuilder()
                       .startScope(0, 0, {kind: 'global', key: 'global'})
                       .startScope(10, 0, {name: 'foo', key: 'foo', kind: 'function', isStackFrame: true})
@@ -1375,16 +1372,6 @@ describeWithEnvironment('SourceMap', () => {
   });
 
   it('builds scopes fallback when the source map does not have any scope information', async () => {
-    // TODO: this test fails when this experiment is on, because "hasScopeInfo"
-    // returns true, because addOriginalScopes is called in parseMap. Explicitly
-    // disable the experiment for now because otherwise it will be enabled incidentally
-    // from previous tests in this file, which results in different results when
-    // running this test directly vs all together.
-    //
-    // This should be resolved: presently it seems that when this experiment is on,
-    // the "fallback" scopes are never generated (only blank ones are).
-    Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
-
     const scopeTreeStub = sinon.stub(Formatter.FormatterWorkerPool.formatterWorkerPool(), 'javaScriptScopeTree')
                               .returns(Promise.resolve({start: 0, end: 38, variables: [], kind: 1, children: []}));
     const script = sinon.createStubInstance(SDK.Script.Script, {

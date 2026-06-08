@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -424,8 +423,6 @@ describeWithMockConnection('NameResolver', () => {
 
   describe('Function name resolving from scopes', () => {
     it('resolves function scope name at scope start for a debugger frame', async () => {
-      Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
-
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const sourceMapContent = JSON.stringify({
         version: 3,
@@ -457,7 +454,6 @@ describeWithMockConnection('NameResolver', () => {
 
       const functionName = await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame);
       assert.strictEqual(functionName, 'main');
-      Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
     });
   });
 

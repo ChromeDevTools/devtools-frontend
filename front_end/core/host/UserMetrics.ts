@@ -767,7 +767,6 @@ export enum DevtoolsExperiments {
   /* eslint-disable @typescript-eslint/naming-convention */
   'protocol-monitor' = 13,
   'instrumentation-breakpoints' = 61,
-  'use-source-map-scopes' = 76,
   'durable-messages' = 110,
   'jpeg-xl' = 111,
   'plus-button' = 112,

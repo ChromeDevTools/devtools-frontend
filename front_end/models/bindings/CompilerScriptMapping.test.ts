@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
@@ -603,8 +602,6 @@ describe('CompilerScriptMapping', () => {
     });
 
     it('translates a single frame using "proposal scopes" information', async () => {
-      Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
-
       const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
@@ -646,8 +643,6 @@ describe('CompilerScriptMapping', () => {
                          uiSourceCode: await uiSourceCodePromise,
                          url: undefined,
                        }]]);
-
-      Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
     });
 
     it('translates a single frame using "fallback" scope information (created from AST and mappigns)', async () => {
@@ -688,8 +683,6 @@ describe('CompilerScriptMapping', () => {
     });
 
     it('expands inlined frames and populates UISourceCode', async () => {
-      Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
-
       const target = backend.createTarget();
       const compilerScriptMapping = new Bindings.CompilerScriptMapping.CompilerScriptMapping(
           target.model(SDK.DebuggerModel.DebuggerModel)!, workspace, debuggerWorkspaceBinding);
@@ -753,8 +746,6 @@ describe('CompilerScriptMapping', () => {
       assert.strictEqual(translatedFrames[0][0].uiSourceCode, uiSourceCode);
       assert.strictEqual(translatedFrames[0][1].uiSourceCode, uiSourceCode);
       assert.strictEqual(translatedFrames[0][2].uiSourceCode, uiSourceCode);
-
-      Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES);
     });
   });
 });

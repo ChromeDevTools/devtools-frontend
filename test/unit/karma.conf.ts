@@ -245,6 +245,7 @@ const coveragePreprocessors = TestConfig.coverage ? {
 
 module.exports = function(config: any) {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
+  const devToolsRoot = path.relative(CHECKOUT_ROOT, SOURCE_ROOT);
   const options = {
     basePath: CHECKOUT_ROOT,
     autoWatchBatchDelay: 1000,
@@ -322,6 +323,7 @@ module.exports = function(config: any) {
       '/Images': `/base/${targetDir}/front_end/Images`,
       '/locales': `/base/${targetDir}/front_end/core/i18n/locales`,
       '/front_end': `/base/${targetDir}/front_end`,
+      '/chai': `/base/${devToolsRoot}/node_modules/chai`,
     },
 
     middleware: ['snapshotTester'],

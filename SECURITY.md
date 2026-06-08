@@ -22,6 +22,7 @@ Chrome DevTools is a privileged web app running in a sandboxed renderer process,
 * **Legitimate Data Exposure:** Displaying local user data, cookies, tokens, or auth headers within UI panels.
 * **Local Data Persistence:** Saving user-initiated traces, heaps, profiles, or logs to disk.
 * **Correctness & Availability:** Stale, misleading, or missing UI information (classified as functional bugs).
+* **Denial of Service:** Chrome extensions or debug targets that disrupt DevTools' availability, e.g. through performance degradation.
 * **Disabled-by-default Experimental Features:** Experimental features or capabilities that are disabled by default, e.g. requiring a command-line flag to be activated, or a specific runtime setting within DevTools to be manually turned on.
 
 ## Specific Severity Classification Rules (S1–S4)

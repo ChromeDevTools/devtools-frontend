@@ -22,7 +22,17 @@ export const TEST_CONTAINER_ID = '__devtools-test-container-id';
 
 interface RenderOptions {
   allowMultipleChildren?: boolean;
+  /**
+   * Injects standard Inspector and text button stylesheets into the test DOM.
+   * This is typically needed for testing legacy components or widget wrappers that do
+   * not use Shadow DOM and instead rely on global stylesheets.
+   */
   includeCommonStyles?: boolean;
+  /**
+   * Additional stylesheets to inject into the test DOM container. Use this to supply
+   * component-specific stylesheet strings during DOM/screenshot testing.
+   */
+  extraStyles?: CSSInJS[];
 }
 
 /**
@@ -44,6 +54,11 @@ export function renderElementIntoDOM<E extends Node|UI.Widget.AnyWidget>(
   if (renderOptions.includeCommonStyles) {
     container.appendChild(document.createElement('style')).textContent = UI.inspectorCommonStyles;
     container.appendChild(document.createElement('style')).textContent = Buttons.textButtonStyles;
+  }
+  if (renderOptions.extraStyles) {
+    for (const style of renderOptions.extraStyles) {
+      container.appendChild(document.createElement('style')).textContent = style;
+    }
   }
   if (element instanceof Node) {
     container.appendChild(element);

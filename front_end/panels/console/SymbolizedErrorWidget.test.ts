@@ -4,10 +4,11 @@
 
 import {assert} from 'chai';
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -15,6 +16,16 @@ import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Console from './console.js';
+// eslint-disable-next-line @devtools/es-modules-import
+import consoleViewStyles from './consoleView.css.js';
+// eslint-disable-next-line @devtools/es-modules-import
+import symbolizedErrorWidgetStyles from './symbolizedErrorWidget.css.js';
+
+const {urlString} = Platform.DevToolsPath;
+
+function getRenderedText(widget: Console.SymbolizedErrorWidget.SymbolizedErrorWidget): string {
+  return widget.contentElement.innerText.replace(/\s+/g, ' ').trim();
+}
 
 describe('SymbolizedErrorWidget', function() {
   setupLocaleHooks();
@@ -62,6 +73,33 @@ describe('SymbolizedErrorWidget', function() {
     assert.exists(error);
     return error;
   }
+
+  it('renders an error without a cause', async () => {
+    const error = await createError('Error: simple error\n    at foo (http://example.com/a.js:1:1)');
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(
+        widget, {includeCommonStyles: true, extraStyles: [consoleViewStyles, symbolizedErrorWidgetStyles]});
+
+    await assertScreenshot('console/symbolized-error-without-cause.png');
+  });
+
+  it('renders an error with a cause and various types of frames', async () => {
+    const causeStack = 'Error: cause error\n    at bar (http://example.com/b.js:2:2)\n    at Promise.all (index 2)';
+    const errorStack =
+        'Error: main error\n    at async asyncFunc (http://example.com/a.js:1:1)\n    at new Constructor (http://example.com/a.js:2:2)\n    at Type.method [as alias] (http://example.com/a.js:3:3)\n    at wasmFunc (http://example.com/a.wasm:wasm-function[12]:0xabc)\n    at Array.map (<anonymous>)';
+    const error = await createError(errorStack, causeStack);
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(
+        widget, {includeCommonStyles: true, extraStyles: [consoleViewStyles, symbolizedErrorWidgetStyles]});
+
+    await assertScreenshot('console/symbolized-error-with-cause.png');
+  });
 
   it('triggers a re-render when the SymbolizedError updates', async () => {
     const error = await createError('Error: simple error\n    at foo (http://example.com/a.js:1:1)');
@@ -133,5 +171,40 @@ describe('SymbolizedErrorWidget', function() {
 
     const input = await view.nextInput;
     assert.strictEqual(input.ignoreListManager, universe.ignoreListManager);
+  });
+
+  it('correctly renders aliased frames with spaces', async () => {
+    const stack = 'Error: alias error\n    at Object.foo [as aliased method] (http://example.com/a.js:1:1)';
+    const error = await createError(stack);
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(widget);
+    await widget.updateComplete;
+
+    const text = getRenderedText(widget);
+    assert.include(text, 'at Object.foo [as aliased method] (');
+  });
+
+  describe('ignore-listing', () => {
+    it('hides ignored frames and shows them when show-hidden-rows is set', async () => {
+      const url1 = urlString`http://example.com/a.js`;
+      const url2 = 'http://example.com/b.js';
+      universe.ignoreListManager.ignoreListURL(url1);
+
+      const error = await createError(`Error: some error\n    at foo (${url1}:1:1)\n    at bar (${url2}:2:2)`);
+
+      const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+      widget.ignoreListManager = universe.ignoreListManager;
+      widget.error = error;
+      renderElementIntoDOM(
+          widget, {includeCommonStyles: true, extraStyles: [consoleViewStyles, symbolizedErrorWidgetStyles]});
+
+      await assertScreenshot('console/symbolized-error-with-ignored-frame-hidden.png');
+
+      widget.contentElement.querySelector('.symbolized-error-widget')?.classList.add('show-hidden-rows');
+      await assertScreenshot('console/symbolized-error-with-ignored-frame-shown.png');
+    });
   });
 });

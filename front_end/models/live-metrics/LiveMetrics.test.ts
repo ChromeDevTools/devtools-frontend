@@ -30,39 +30,39 @@ describeWithMockConnection('LiveMetrics', () => {
   });
 
   describe('prerender navigation', () => {
-    it('handles target removal gracefully', async () => {
-      await liveMetrics.targetRemoved(primaryTarget);
-
-      assert.strictEqual(liveMetrics.interactions.size, 0);
-      assert.lengthOf(liveMetrics.layoutShifts, 0);
-    });
-
-    it('re-enables on a new target after target removal', async () => {
-      await liveMetrics.targetRemoved(primaryTarget);
-
-      const newPrimaryTarget = createTarget({
-        parentTarget: tabTarget,
-        type: SDK.Target.Type.FRAME,
+    it('resets metrics on prerender activation', async () => {
+      liveMetrics.setStatusForTesting({
+        lcp: {
+          value: 100 as Milli,
+          phases: {
+            timeToFirstByte: 0 as Milli,
+            resourceLoadDelay: 0 as Milli,
+            resourceLoadTime: 0 as Milli,
+            elementRenderDelay: 0 as Milli
+          }
+        },
+        cls: {value: 0.1, clusterShiftIds: []},
+        inp: {
+          value: 50 as Milli,
+          phases: {inputDelay: 0 as Milli, processingDuration: 0 as Milli, presentationDelay: 0 as Milli},
+          interactionId: 'interaction-1-1'
+        },
+        interactions:
+            new Map([['interaction-1-1', {interactionId: 'interaction-1-1'} as unknown as LiveMetrics.Interaction]]),
+        layoutShifts: [{score: 0.1} as unknown as LiveMetrics.LayoutShift],
       });
 
-      await liveMetrics.targetAdded(newPrimaryTarget);
+      const resourceTreeModel = primaryTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      assert.exists(resourceTreeModel?.mainFrame);
+
+      resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+        frame: resourceTreeModel.mainFrame,
+        type: SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION,
+      });
 
       assert.isUndefined(liveMetrics.lcpValue);
       assert.isUndefined(liveMetrics.clsValue);
       assert.isUndefined(liveMetrics.inpValue);
-    });
-
-    it('handles rapid target swap during prerender activation', async () => {
-      const removePromise = liveMetrics.targetRemoved(primaryTarget);
-
-      const prerenderTarget = createTarget({
-        parentTarget: tabTarget,
-        type: SDK.Target.Type.FRAME,
-      });
-
-      await removePromise;
-      await liveMetrics.targetAdded(prerenderTarget);
-
       assert.strictEqual(liveMetrics.interactions.size, 0);
       assert.lengthOf(liveMetrics.layoutShifts, 0);
     });

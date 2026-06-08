@@ -129,6 +129,17 @@ Content:
         "required": [],
         "properties": {}
       }
+    },
+    {
+      "name": "analyzeStorage",
+      "description": "Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.",
+      "parameters": {
+        "type": 6,
+        "description": "",
+        "nullable": true,
+        "required": [],
+        "properties": {}
+      }
     }
   ],
   "options": {},

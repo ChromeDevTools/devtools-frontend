@@ -28,6 +28,8 @@ import {
   FileAgent,
   NetworkAgent,
   PerformanceAgent,
+  StorageAgent,
+  StorageItem,
 } from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -38,6 +40,9 @@ describeWithMockConnection('ContextSelectionAgent', function() {
   function mockHostConfig() {
     updateHostConfig({
       devToolsAiAssistanceContextSelectionAgent: {
+        enabled: true,
+      },
+      devToolsAiAssistanceStorageAgent: {
         enabled: true,
       },
     });
@@ -981,6 +986,42 @@ describeWithMockConnection('ContextSelectionAgent', function() {
           },
         },
       });
+    });
+
+    it('delegates to StorageAgent via analyzeStorage', async () => {
+      updateHostConfig({
+        devToolsAiAssistanceContextSelectionAgent: {
+          enabled: true,
+        },
+        devToolsAiAssistanceStorageAgent: {
+          enabled: true,
+        },
+      });
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'analyzeStorage',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => ({origin: 'https://example.com'}),
+      });
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const contextChange = responses.find(response => response.type === AiAgent.ResponseType.CONTEXT_CHANGE);
+      assert.exists(contextChange);
+      assert.instanceOf(contextChange.context, StorageAgent.StorageContext);
+      const storageContext = contextChange.context as StorageAgent.StorageContext;
+      assert.strictEqual(storageContext.getItem().constructor, StorageItem.StorageItem);
+      assert.strictEqual(storageContext.getItem().origin, 'https://example.com');
+      assert.strictEqual(storageContext.getItem().primaryTargetOrigin, 'https://example.com');
+      assert.strictEqual(contextChange.description, 'User selected page storage');
     });
   });
 });

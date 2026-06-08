@@ -34,6 +34,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 import '../data_grid/data_grid.js';
+import '../../../components/buttons/buttons.js';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -43,12 +44,15 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as IssuesManager from '../../../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../../../panels/network/forward/forward.js';
 import {Icon} from '../../../kit/kit.js';
-import {Directives, html, render} from '../../../lit/lit.js';
+import {Directives, html, nothing, render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
+import dataGridAiButtonStyles from '../data_grid/dataGridAiButton.css.js';
 
 import cookiesTableStyles from './cookiesTable.css.js';
 
-interface ViewInput {
+const STORAGE_FLOATING_BUTTON_ACTION_ID = 'ai-assistance.storage-floating-button';
+
+export interface ViewInput {
   data: CookieData[];
   selectedKey?: string;
   editable?: boolean;
@@ -61,6 +65,9 @@ interface ViewInput {
   onDelete: (data: CookieData) => void;
   onContextMenu: (data: CookieData, menu: UI.ContextMenu.ContextMenu) => void;
   onSelect: (key: string|undefined) => void;
+  showAiButton?: boolean;
+  aiButtonTitle?: string;
+  onAiButtonClick?: (cookie: CookieData, event: Event) => void;
 }
 type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME|SDK.Cookie.Attribute.VALUE|SDK.Cookie.Attribute.DOMAIN|
@@ -219,6 +226,7 @@ export class CookiesTable extends UI.Widget.VBox {
                @deselect=${() => input.onSelect(undefined)}
           >
             <table>
+              ${input.showAiButton ? html`<style>${dataGridAiButtonStyles}</style>` : nothing}
                <tr>
                  <th id=${SDK.Cookie.Attribute.NAME} sortable ?disclosure=${input.editable} ?editable=${input.editable} long weight="24">
                    ${i18nString(UIStrings.name)}
@@ -275,7 +283,15 @@ export class CookiesTable extends UI.Widget.VBox {
                     @delete=${()=> input.onDelete(cookie)}
                     @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(cookie, e.detail)}
                     @select=${() => input.onSelect(cookie.key)}>
-                  <td>${cookie.icons?.name}${cookie.name}</td>
+                  <td>${input.showAiButton && !Boolean(cookie['http-only']) ? html`
+                      <span class="ai-button-container">
+                        <devtools-floating-button
+                          icon-name=${Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? 'spark' : 'smart-assistant'}
+                          title=${ifDefined(input.aiButtonTitle)}
+                          @click=${(e: Event) => input.onAiButtonClick?.(cookie, e)}
+                        ></devtools-floating-button>
+                      </span>
+                    ` : nothing}${cookie.icons?.name}${cookie.name}</td>
                   <td>${cookie.value}</td>
                   <td>${cookie.icons?.domain}${cookie.domain}</td>
                   <td>${cookie.icons?.path}${cookie.path}</td>
@@ -404,6 +420,19 @@ export class CookiesTable extends UI.Widget.VBox {
       onDelete: this.onDeleteCookie.bind(this),
       onSelect: this.onSelect.bind(this),
       onContextMenu: this.populateContextMenu.bind(this),
+      showAiButton: this.isAiButtonEnabled(),
+      aiButtonTitle: this.isAiButtonEnabled() &&
+              UI.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ?
+          UI.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() :
+          undefined,
+      onAiButtonClick: (cookie: CookieData, event: Event) => {
+        event.stopPropagation();
+        this.onSelect(cookie.key);
+        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+        if (actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID)) {
+          void actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).execute();
+        }
+      },
     };
     const output = {};
     this.view(input, output, this.element);
@@ -412,6 +441,10 @@ export class CookiesTable extends UI.Widget.VBox {
   private onSelect(key: string|undefined): void {
     this.selectedKey = key;
     this.#selectedCallback?.(this.selectedCookie());
+  }
+
+  private isAiButtonEnabled(): boolean {
+    return UI.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID);
   }
 
   private onDeleteCookie(data: CookieData): void {

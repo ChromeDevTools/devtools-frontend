@@ -48,3 +48,15 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_ui_legacy_visibility
 }
+
+devtools_ui_module("unittests") {
+  testonly = true
+
+  sources = [ "CookiesTable.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../..:bundle",
+    "../../../../testing",
+  ]
+}

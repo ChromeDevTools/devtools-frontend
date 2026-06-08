@@ -961,7 +961,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     }
 
     for (const registration of linkHandlers.values().filter(r => r.handler)) {
-      const {title, handler, shouldHandleOpenResource} = registration;
+      const {title, origin, handler, shouldHandleOpenResource} = registration;
       if (url && !shouldHandleOpenResource(url, specificSchemeHandlers)) {
         continue;
       }
@@ -971,7 +971,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
         jslogContext: 'open-using',
         handler: handler.bind(null, contentProviderOrUrl, lineNumber, columnNumber),
       };
-      if (title === Linkifier.linkHandlerSetting().get()) {
+      if (origin === Linkifier.linkHandlerSetting().get()) {
         result.unshift(action);
       } else {
         result.push(action);

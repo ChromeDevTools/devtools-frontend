@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Թողարկումների դիտում"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-ի վահանակ"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Հիշողության հսկիչի վահանակ"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Հնացած գործառույթ է օգտագործվում"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Էլ․ հասցեի հաստատման հաղորդակարգ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML հատկանիշ․ ինքնալրացում"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Գովազդի վերահասցեավորման դեմ պաշտպանության մեխանիզմի բացատրություն"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB բացատրող"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Հեռացրեք մեծ [կրկնվող JavaScript մոդուլները](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) հավաքածուներից՝ ցանցային ակտիվության ժամանակ ավելորդ բայթերի ծախսը նվազեցնելու համար։"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Կրկնվող JavaScript կոդ չի գտնվել"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Կրկնվող JavaScript կոդ"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Տառատեսակ"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Ոչ օպտիմալ font-display արժեքով տառատեսակներ չեն գտնվել"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Օգտագործվող տառատեսակներ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Պոլիֆիլները և փոխակերպումները թույլ են տալիս հնացած դիտարկիչներին օգտագործել JavaScript-ի նոր գործառույթներ։ Այնուամենայնիվ, շատ պոլիֆիլներ և փոխակերպումներ պետք չեն արդիական դիտարկիչների համար։ Եթե ձեզ անհրաժեշտ չէ աջակցել հնացած դիտարկիչները, խորհուրդ ենք տալիս փոխել JavaScript-ի կառուցման գործընթացը, որպեսզի [Baseline](https://web.dev/articles/baseline-and-polyfills) գործառույթները տրանսպիլյացիայի ենթարկելու կարիք չլինի։ [Ինչու կայքերի մեծամասնությունը կարող է օգտագործել ES6+ կոդն առանց տրանսպիլյացիայի](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "JavaScript-ի հնացած կոդ չի գտնվել"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript-ի հնացած կոդ"
@@ -3201,10 +3219,10 @@
     "message": "Միացրեք {PH1}՝ ոճերի, ցանցի հարցումների, արտադրողականության և ֆայլերի հետ կապված օգնություն ստանալու համար"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Որպես Markdown"
+    "message": "Ամբողջ խոսակցությունը"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Որպես հարցում"
+    "message": "Ամփոփագրի ստեղծման հարցում"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Պատճենվեց սեղմատախտակին"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1}-ը չեղարկվել է"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Պատճառը՝"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Մաքրել զտիչները"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-ի համատեքստ՝ {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "թույլատրել տեղադրումը"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Մի՛ տեղադրեք կոդ, որը չեք հասկանում կամ ինքներդ չեք ստուգել ծրագրավորողի գործիքների միջոցով։ Սա կարող է թույլ տալ հաքերներին գողանալ ձեր անձնական տվյալները կամ իրենց վերահսկողության տակ առնել ձեր համակարգիչը։ Ներքևում մուտքագրեք «{PH1}»՝ տեղադրումը թույլատրելու համար։"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Դուք վստահո՞ւմ եք այս կոդին"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Գնահատել՝ թույլ տալով կողմնակի ազդեցությունները"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Հեռացնել արտահայտությունը՝ {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Տեսակ «{PH1}»"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "թույլատրել տեղադրումը"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Տարրը թաքցված է"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Սթեքի հասանելի ժամանակագրություն չկա"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# գլիֆ)}one{(# գլիֆ)}other{(# գլիֆ)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Առաջարկն ընդունված է։"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Այլ @կանոններ"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Ավոտմատ մուգ ռեժիմ"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Ստեղծել ընտրված տարածքի սքրինշոթ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Ծալել CSS-ի չօգտագործվող կանոնները"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Պատճենել ոճերը"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Ցույց տալ հատկանիշները"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Ցուցադրել սթեքի ժամանակագրությունը"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Ցույց տալ «Ոճեր» վահանակը"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Սթեքի ժամանակագրություն"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Ցույց տալ/թաքցնել հատուկ գործառույթների ծառը"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Կանգնեցնել"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Ժամանակագրության վրիպազերծման ռեժիմ (հետագծման իրադարձությունների մանրամասներ և այլն)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Բոլոր իրադարձությունները"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Պատճառների հավաքում"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Հատուկ գործառույթներ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Ագենտային դիտարկում"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Այս ստուգումներն ապահովում են բարձր որակի, դիտարկելի կայքեր ԱԲ ագենտների համար և հաստատում են WebMCP-ի ինտեգրումների ճշգրտությունը։ Այս կատեգորիան դեռ մշակման փուլում է և կարող է փոփոխվել։"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Ստուգման ընթացքում կիրառել համակարգչի էմուլյացիան"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Կանգնեցնել"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Ժամանակագրության վրիպազերծման ռեժիմ (հետագծման իրադարձությունների մանրամասներ և այլն)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Անվավեր ճանաչման հետագծում"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Ցույց տալ բոլոր միջոցառումները"
+    "message": "Բոլոր իրադարձությունները"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Ներառված է անտեսվածների ցանկում՝ սկզբնական կոդի քարտեզում"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Պահել"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Այլ գործիքներ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Պատճառը՝ {PH1}։"
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Պահել պատկերը որպես…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Այս պատկերը չափազանց մեծ է ծրագրավորողի գործիքներում ցուցադրելու համար։ Սեղմեք այստեղ՝ այն նոր ներդիրում բացելու համար։"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Գտնել"

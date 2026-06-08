@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Problemvisning"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-panel"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panelet Hukommelsesinspektør"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Brug af en udfaset funktion"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokol til verificering via mail"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attribut: Autofuldførelse"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Forklaring af intervention vedrørende tilbagevenden til annonce"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Forklarende meddelelse om CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Fjern store, [dublerede JavaScript-moduler](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) fra pakker for at reducere antallet af unødvendige bytes, der anvendes i forbindelse med netværksaktivitet."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Der blev ikke fundet duplikeret JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplikeret JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Skrifttype"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Der blev ikke fundet nogen skrifttyper med suboptimal skrifttypevisning"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Skrifttypevisning"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill-koder og transformeringer gør det muligt for ældre browsere at anvende nye JavaScript-funktioner. Mange af dem er dog ikke nødvendige til moderne browsere. Du kan vælge at ændre din JavaScript-buildproces, så den ikke transpilerer [Baseline](https://web.dev/articles/baseline-and-polyfills)-funktioner, medmindre du ved, at du skal understøtte ældre browsere. [Se, hvorfor de fleste websites kan implementere ES6+-kode uden transpilering](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Der blev ikke fundet forældet JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Forældet JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Aktivér {PH1} for at få hjælp til stile, netværksanmodninger, ydeevne og filer"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Som markdown"
+    "message": "Hel samtale"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Som prompt"
+    "message": "Prompt til oversigt"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Kopieret til udklipsholderen"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} er annulleret"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Årsag:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Ryd filtre"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-kontekst: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "tillad indsættelse"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Undlad at indsætte kode, som du ikke forstår, eller som du ikke selv har tjekket, i Udviklerværktøjer. Dette kan give hackere mulighed for at stjæle din identitet eller tage kontrollen over din computer. Angiv \"{PH1}\" nedenfor for at tillade indsættelse."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Har du tillid til denne kode?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evaluer med mulighed for bivirkninger"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Fjern udtryk: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Angiv \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "tillad indsættelse"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementet er skjult"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Ingen tilgængelig staksporing"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyf)}one{(# glyf)}other{(# glyffer)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Forslaget er accepteret"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Andre @regler"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatisk mørk tilstand"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Tag screenshot af område"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Skjul CSS-regler, der ikke bidrager"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiér stile"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Vis egenskaber"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Vis staksporing"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Vis stile"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Staksporing"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Slå tilgængelighedstræ til/fra"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Fejlretningstilstand for Tidslinje (oplysninger om sporingshændelser osv.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Vis alle hændelser"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Årsager til sammensætning"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Hjælpefunktioner"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentisk browsing"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Disse tjek sikrer, at AI-agenter kan browse websites af høj kvalitet, og validerer, at WebMCP-integrationer er korrekte. Denne kategori er stadig under udvikling og kan blive ændret."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Anvend computeremulering under kontrol"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Fejlretningstilstand for Tidslinje (oplysninger om sporingshændelser osv.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Sporing af ugyldiggørelse"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Vis alle hændelser"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Gem"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Flere værktøjer"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Årsag: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Gem billede som…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Dette billede er for stort til at blive vist i Udviklerværktøjer. Klik her for at åbne det på en ny fane."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Find"

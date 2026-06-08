@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "የችግሮች ዕይታ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "የብርሃን ማማ ፓነል"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "የማህደረ ትውስታ መርማሪ ፓነል"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "የተቋረጠ ባህሪ ሥራ ላይ ውሏል"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "የኢሜይል ማረጋገጫ ፕሮቶኮል"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "የፌዴሬትድ የመግቢያ ማስረጃ አስተዳደር ኤፒአይ"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "የHTML መገለጫ ባህሪ፦ ራስሰር አጠናቅ"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "ወደ ማስታወቂያ ጣልቃ ገብነት ማብራሪያ"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "የCORB አስረጂ"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "በአውታረ መረብ እንቅስቃሴ ጥቅም ላይ የሚውሉትን አላስፈላጊ ባይቶች ለመቀነስ ትልቅ፣ [የተባዙ የጃቫስክሪፕት ሞዱሎችን](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ከቅርቅቦች ያስወግዱ።"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ምንም የተባዛ ጃቫስክሪፕት አልተገኘም"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ጃቫስክሪፕት ተባዝቷል"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ቅርጸ-ቁምፊ"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ከንዑስ ምቹ ቅርጸ-ቁምፊ ማሳያ ጋር ምንም ቅርጸ-ቁምፊዎች አልተገኙም"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "የቅርጸ-ቁምፊ ማሳያ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "ፖሊፊሎች እና ቅያሪዎች የቆዩ አሳሾች አዳዲስ የጃቫስክሪፕት ባህሪያትን እንዲጠቀሙ ያስችላሉ። ሆኖም ግን ብዙዎቹ ለዘመናዊ አሳሾች አስፈላጊ አይደሉም። የቆዩ አሳሾችን መደገፍ እንዳለብዎት ካላወቁ በስተቀር [የመነሻ ካስማ](https://web.dev/articles/baseline-and-polyfills) ባህሪያትን ኮዱን ወደ ሌላ ቋንቋ ላለመቀየር የእርስዎን ጃቫስክሪፕት ግንብ ሂደት ማስተካከልን ከግምት ውስጥ ያስገቡ። [አብዛኛዎቹ ጣቢያዎች ኮድን ወደ ሌላ ቋንቋ ሳይቀይሩ ለምን ES6+ ኮድ ማሰማራት እንደሚችሉ ይወቁ](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ምንም የቆየ ጃቫስክሪፕት አልተገኘም"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "የቆየ ጃቫስክሪፕት"
@@ -3201,10 +3219,10 @@
     "message": "በቅጦች፣ የአውታረ መረብ ጥያቄዎች፣ አፈጻጸም እና ፋይሎች ላይ እገዛ ለማግኘት {PH1} ያብሩ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "እንደ Markdown"
+    "message": "ሙሉ ውይይት"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "እንደ ጥያቄ"
+    "message": "የማጠቃለያ ጥያቄ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ተሰርዟል"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "የተከሰተው በ፦"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ማጣሪያዎችን አጽዳ"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "የጃቫስክሪፕት ዓውድ፦ {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "መለጠፍ ይፍቀዱ"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "ያልተረዱትን ወይም ራስዎ ያልገመገሙትን ኮድ በDevTools ውስጥ አይለጥፉ። ይህ አጥቂዎች ማንነትዎን እንዲሰርቁ ወይም የእርስዎን ኮምፒውተር እንዲቆጣጠሩ ሊፈቅድ ይችላል። መለጠፍን ለመፍቀድ እባክዎ ከታች «{PH1}» ይተይቡ።"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ይህን ኮድ ያምኑታል?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ገምግም፣ የጎንዮሽ ጉዳቶችን መፍቀድ"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "መግለጫዎች አስወግድ፦ {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "ዓይነት “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "መለጠፍ ይፍቀዱ"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "አባለ ነገር ተደብቋል"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ምንም የመከታተያ ቁልል የለም"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# የፊደል ምልክት)}one{(# የፊደል ምልክቶች)}other{(# የፊደል ምልክቶች)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} የአስተያየት ጥቆማ ተቀባይነት አግኝቷል።"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "ሌላ @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ራስ-ሰር የጨለማ ሁነታ"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "የአካባቢ ቅጽበታዊ ገፅ እይታን ያንሱ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "አስተዋጽዖ የማያበረክቱ የሲኤስኤስ ደንቦችን ሰብስብ"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ቅጦችን ቅዳ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "ባህሪያትን አሳይ"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "የመከታተያ ቁልልን አሳይ"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ቅጦችን አሳይ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "የመከታተያ ቁልል"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "የተደራሽነት ዛፍን ይቀያይሩ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "አቁም"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "የጊዜ መስመር ስሕተት ማረም ሁነታ (የክስተት ዝርዝሮችን መከታተል፣ ወዘተ)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ሁሉንም ክስተቶች ያሳዩ"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ምክንያቶችን በማጠናከር ላይ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ተደራሽነት"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "የወኪል አሰሳ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "እነዚህ ፍተሻዎች ለሰው ሠራሽ አስተውሎት ወኪሎች ከፍተኛ ጥራት ያላቸው፣ ሊታሰሱ የሚችሉ ድር ጣቢያዎችን ያረጋግጣሉ እና የWebMCP ውህደቶችን ትክክለኛነት ያረጋግጣሉ። ይህ ምድብ አሁንም በመገንባት ላይ ነው እና ለለውጥ ተገዢ ነው።"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "በኦዲት ወቅት የዴስክቶፕ ማስመሰልን ይተግብሩ"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "አቁም"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "የጊዜ መስመር ስሕተት ማረም ሁነታ (የክስተት ዝርዝሮችን መከታተል፣ ወዘተ)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "የማፍረስ መከታተያ"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "ሁሉንም ክስተቶች አሳይ"
+    "message": "ሁሉንም ክስተቶች ያሳዩ"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "በምንጭ ካርታ ውስጥ በችላ በል ዝርዝር ምልክት ተደርጎበታል"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "አስቀምጥ"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ተጨማሪ መሣሪያዎች"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "ምክንያት፦ {PH1}።"
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ምስልን አስቀምጥ እንደ…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ይህ ምስል DevTools ውስጥ ለማሳየት በጣም ትልቅ ነው። በአዲስ ትር ውስጥ ለመክፈት እዚህ ጠቅ ያድርጉ።"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "አግኝ"

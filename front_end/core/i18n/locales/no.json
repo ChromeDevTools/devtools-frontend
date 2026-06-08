@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Problemer-visning"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-panel"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Minneinspektørpanel"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "En avviklet funksjon ble brukt"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokoll for e-postbekreftelse"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attributt: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Forklaring av inngrep for «Tilbake til annonsen»"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-forklaringsmelding"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Fjern store, [dupliserte JavaScript-moduler](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) fra pakker for å redusere antall byte som brukes unødvendig av nettverksaktiviteten."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Fant ingen duplisert JavaScript-kode"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplisert JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Skrifttype"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Fant ingen skrifttyper med ikke-optimal font-display"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Visning av skrifttype"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill- og forvandlinger-kode gjør det mulig for nettlesere i eldre versjoner å bruke nye JavaScript-funksjoner. Mange former for slik kode trengs imidlertid ikke i moderne nettlesere. Vurder å endre JavaScript-kodebyggingsprosessen din slik at den ikke transkompilerer [Baseline](https://web.dev/articles/baseline-and-polyfills)-funksjoner, med mindre du vet at du må støtte eldre nettlesere. [Finn ut hvorfor de fleste nettsteder kan implementere ES6+-kode uten transkompilering](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Fant ingen eldre JavaScript-kode"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript i en eldre versjon"
@@ -3201,10 +3219,10 @@
     "message": "Slå på {PH1} for å få hjelp med stiler, nettverksforespørsler, ytelse og filer"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Som Markdown"
+    "message": "Fullstendig samtale"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Som forespørsel"
+    "message": "Sammendragsforespørsel"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Kopiert til utklippstavlen"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ble avbrutt"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Forårsaket av:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Fjern filtrene"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-kontekst: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "tillat innliming"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Ikke lim inn kode du ikke forstår, eller som du ikke har gjennomgått selv, i Utviklerverktøy. Dette kan gjøre det mulig for angripere å stjele identiteten din eller ta kontroll over datamaskinen din. Skriv inn «{PH1}» under for å tillate innliming."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Stoler du på denne koden?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evaluer, og tillat bivirkninger"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Fjern uttrykk: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Skriv «{PH1}»"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "tillat innliming"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementet er skjult"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Ingen stabelsporing er tilgjengelig"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyf)}other{(# glyfer)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Forslaget er godtatt."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Andre @-regler"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatisk mørk modus"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Ta skjermbilde av område"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Skjul CSS-regler som ikke bidrar"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopier stiler"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Vis egenskaper"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Vis stabelsporing"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Vis stiler"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stabelspor"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Slå av/på tilgjengelighetstre"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stopp"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Feilsøkingsmodus for tidslinjen (detaljer om trace-hendelser osv.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Vis alle hendelser"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Sammensettingsgrunner"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Tilgjengelighet"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentisk surfing"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Disse kontrollene sikrer nettsteder av høy kvalitet som AI-agenter kan gjennomsøke, og de bekrefter at WebMCP-integreringer er riktige. Denne kategorien er fortsatt under utvikling og kan endres."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Bruk datamaskinemulering under revisjon"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stopp"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Feilsøkingsmodus for tidslinjen (detaljer om trace-hendelser osv.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Sporing av ugyldiggjøring"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Vis alle aktiviteter"
+    "message": "Vis alle hendelser"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Merket med ignoreList i kildekartet"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Lagre"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Flere verktøy"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Årsak: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Lagre bildet som …"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Dette bildet er for stort til å vises i utviklerverktøyene. Klikk her for å åpne den i en ny fane."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Finn"

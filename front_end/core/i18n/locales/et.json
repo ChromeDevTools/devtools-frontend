@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Probleemide vaade"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse'i paneel"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Mäluinspektori paneel"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Kasutati katkestatud toega funktsiooni"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "E-posti kinnitamise protokoll"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-i atribuut: automaatne täitmine"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Reklaamile naasmise sekkumise selgitus"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Selgitus CORB-i kohta"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Eemaldage pakettidest suured [topelt JavaScripti moodulid](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), et vähendada võrgutegevuse tarbetut baidikulu."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "JavaScripti duplikaatskripti ei leitud."
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplikaat-JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Ühtegi suboptimaalse font-display atribuudiga fonti ei leitud."
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Fontide kuvamine"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfillid ja teisendused võimaldavad vanematel brauseritel kasutada uusi JavaScripti funktsioone. Paljud neist ei ole aga tänapäevaste brauserite jaoks vajalikud. Kaaluge oma JavaScripti arendusprotsessi muutmist selliselt, et mitte transpileerida [võrdlusaluseks olevaid](https://web.dev/articles/baseline-and-polyfills) funktsioone (välja arvatud juhul, kui teate, et peate toetama vanemaid brausereid). [Vaadake, miks enamik saite saavad juurutada ES6+ koodi ilma transpileerimata](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Pärand-JavaScripti ei leitud."
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Pärand-JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Lülitage sisse {PH1}, et saada abi stiilide, võrgupäringute, jõudluse ja failidega"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdownina"
+    "message": "Kogu vestlus"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Viibana"
+    "message": "Kokkuvõtte päring"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Lõikelauale kopeeritud"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} on tühistatud"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Põhjus:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Eemalda filtrid"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScripti kontekst: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "luba kleepimine"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Ärge kleepige arendaja tööriistadesse koodi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle kontrolli võtta. Kleepimise lubamiseks sisestage allpool „{PH1}“."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Kas usaldate seda koodi?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Hinda, lubades kõrvalmõjud"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Eemalda avaldis: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Sisestage „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "luba kleepimine"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element on peidetud"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Ühtki virna jälge ei ole saadaval"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glüüf)}other{(# glüüfi)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Soovitus võeti vastu."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Teised @reeglid"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automaatne tume režiim"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Jäädvusta piirkonna ekraanipilt"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Ahenda mittepanustavad CSS-reeglid"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopeeri stiilid"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Kuva atribuudid"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Kuva virna jälg"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Kuva tööriist Stiilid"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Virna jälg"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Juurdepääsetavuspuu vahetamine"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Katkesta"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Ajaskaala silumisrežiim (jälgimissündmuse üksikasjad jne)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Kuva kõik sündmused"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Liitmise põhjused"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Juurdepääsetavus"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agendipõhine sirvimine"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Kõnealused kontrollid tagavad AI-agentidele kvaliteetsed ja sirvitavad veebisaidid ning valideerivad WebMCP integratsioonide õigsuse. See kategooria on endiselt arendamisel ja võib muutuda."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Rakenda auditeerimise ajal lauaarvuti emuleerimine"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Katkesta"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Ajaskaala silumisrežiim (jälgimissündmuse üksikasjad jne)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Sobimatuks märkimise jälgimine"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Kuva kõik sündmused"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Salvesta"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Rohkem tööriistu"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Põhjus: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Salvesta pilt nimega…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "See pilt on arendaja tööriistades kuvamiseks liiga suur. Klõpsake siin, et avada see uuel vahelehel."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Otsi"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} valitud piirkonda"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Ärge kleepige arendaja tööriistadesse koodi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle võtta. Kleepimise lubamiseks sisestage allpool „{PH1}“."
+    "message": "Ärge kleepige arendaja tööriistadesse koodi, millest te aru ei saa või mida te pole kontrollinud. See võib lubada ründajatel teie identiteedi varastada või teie arvuti üle kontrolli võtta. Kleepimise lubamiseks sisestage allpool „{PH1}“."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Kas usaldate seda koodi?"

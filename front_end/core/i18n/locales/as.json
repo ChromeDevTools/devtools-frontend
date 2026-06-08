@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "সমস্যাৰ ভিউ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouseৰ পেনেল"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "মেম’ৰি পৰীক্ষকৰ পেনেল"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "অপ্ৰচলিত সুবিধা ব্যৱহাৰ কৰা হৈছে"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ইমেইল সত্যাপন প্ৰ’ট’কল"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML এট্ৰিবিউট: স্বয়ংক্ৰিয়ভাৱে সম্পূৰ্ণ কৰক"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "বিজ্ঞাপনলৈ উভতি যোৱাৰ হস্তক্ষেপ সম্পৰ্কীয় ব্যাখ্যা"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB ব্যাখ্যাকাৰী"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "নেটৱৰ্কৰ কাৰ্যকলাপে অপ্ৰয়োজনীয়ভাৱে ব্যৱহাৰ কৰা বাইট কমাবৰ বাবে বাণ্ডলৰ পৰা ডাঙৰ, [ডুপ্লিকেট JavaScript মডিউল](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) আঁতৰাওক।"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "কোনো ডুপ্লিকেট JavaScript পোৱা নগ’ল"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ডুপ্লিকেট কৰা JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ফণ্ট"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "উপযুক্ত নোহোৱা ফণ্ট-ডিছপ্লে’ থকা কোনো ফণ্ট পোৱা নগ’ল"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ফণ্ট ডিছপ্লে’"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "পলিফিল আৰু ৰূপান্তৰণসমূহে পুৰণি ব্ৰাউজাৰক নতুন JavaScriptৰ সুবিধাসমূহ ব্যৱহাৰ কৰিবলৈ সক্ষম কৰি তোলে। অৱশ্যে, বেছিভাগেই আধুনিক ব্ৰাউজাৰৰ বাবে প্ৰয়োজনীয় নহয়। আপোনাৰ JavaScriptৰ বিল্ডৰ প্ৰক্ৰিয়া [বে’ছলাইন](https://web.dev/articles/baseline-and-polyfills) সুবিধাসমূহ ট্ৰেন্সপাইল নকৰিবলৈ সংশোধন কৰাৰ বিষয়ে বিবেচনা কৰক, যদিহে আপুনি পুৰণি ব্ৰাউজাৰসমূহ সমৰ্থন কৰিবই লাগিব বুলি নাজানে। [বেছিভাগ ছাইটে কিয় ট্ৰেন্সপাইল নকৰাকৈ ES6+ ক’ড ডিপ্ল’ই কৰিব পাৰে সেয়া জানক](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "কোনো লিগেচী JavaScript পোৱা নগ’ল"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "লিগেচী JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ, কাৰ্যদক্ষতা আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "মাৰ্কডাউন হিচাপে"
+    "message": "সম্পূৰ্ণ বাৰ্তালাপ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "প্ৰ’ম্পট্‌ হিচাপে"
+    "message": "সাৰাংশৰ প্ৰ’ম্পট্‌"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ক্লিপব’ৰ্ডলৈ প্ৰতিলিপি কৰা হ’ল"
@@ -4905,7 +4923,7 @@
     "message": "স্থানীয় আৰু ছেশ্বন ষ্ট’ৰেজ"
   },
   "panels/application/StorageView.ts | mb": {
-    "message": "এমবি"
+    "message": "MB"
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "সংখ্যাটো অ-ঋণাত্মক হ’বই লাগিব"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} টা বাতিল কৰা হৈছে"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ইয়াৰ কাৰণ:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ফিল্টাৰ মচক"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScriptৰ প্ৰসংগ: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "পে’ষ্ট কৰাৰ অনুমতি দিয়ক"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "আপুনি বুজি নোপোৱা বা বিকাশকৰ্তাৰ সঁজুলিত নিজে পৰীক্ষা নকৰা ক’ড পে’ষ্ট নকৰিব। ইয়াৰ ফলত আক্ৰমণকাৰীয়ে আপোনাৰ পৰিচয় চুৰি কৰিব পাৰে বা আপোনাৰ কম্পিউটাৰটো নিজৰ নিয়ন্ত্ৰণলৈ নিব পাৰে। পে’ষ্ট কৰাৰ অনুমতি দিবলৈ অনুগ্ৰহ কৰি তলত “{PH1}” টাইপ কৰক।"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "আপুনি এই ক’ডটো বিশ্বাস কৰে নেকি?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "বেয়া প্ৰভাৱসমূহক অনুমতি দি মূল্যাংকন কৰক"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "অভিব্যক্তি আঁতৰাওক: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” টাইপ কৰক"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "পে’ষ্ট কৰাৰ অনুমতি দিয়ক"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "উপাদান লুকুওৱা হৈছে"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "কোনো ষ্টেক ট্রে’চ উপলব্ধ নহয়"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# টা গ্লিফ)}one{(# টা গ্লিফ)}other{(# টা গ্লিফ)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} পৰামৰ্শ গ্ৰহণ কৰা হ’ল।"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "আন @নিয়মসমূহ"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "স্বয়ংক্ৰিয় গাঢ় ম’ড"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "অঞ্চলৰ স্ক্ৰীনশ্বট লওক"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "অৱদান আগনবঢ়োৱা CSSৰ নিয়ম সংকোচন কৰক"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "শৈলী প্ৰতিলিপি কৰক"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "সম্পদ দেখুৱাওক"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ষ্টেক ট্ৰে’চ দেখুৱাওক"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ষ্টাইল দেখুৱাওক"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ষ্টেক ট্ৰে’চ"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "সাধ্য সুবিধাৰ ট্ৰী ট’গল কৰক"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "বন্ধ কৰক"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "টাইমলাইনৰ ডিবাগ ম’ড (ট্ৰে’চ ইভেণ্টৰ সবিশেষ আদি)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "আটাইবোৰ অনুষ্ঠান দেখুৱাওক"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "একত্ৰিত কৰাৰ কাৰণ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "সাধ্য সুবিধা"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "এজেণ্টিক ব্ৰাউজিং"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "এই পৰীক্ষাসমূহে AI এজেণ্টৰ বাবে উচ্চ-গুণগত মানৰ, ব্ৰাউজ কৰিব পৰা ৱেবছাইটসমূহ নিশ্চিত কৰে আৰু WebMCP একত্ৰীকৰণৰ সঠিকতাৰ মান্যতা নিৰূপণ কৰে। এই শিতানটো এতিয়াও বিকাশ কৰি থকা হৈছে আৰু সলনি হ’ব পাৰে।"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "অডিট কৰি থকাৰ সময়ত ডেস্কটপ এমুলেশ্বন প্ৰয়োগ কৰক"
@@ -9747,7 +9789,7 @@
     "message": "আসোঁৱাহ"
   },
   "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
-    "message": "ইয়াৰ বাবে আসোঁৱাহ হ’ল:"
+    "message": "ইয়াৰ কাৰণ:"
   },
   "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
     "message": "আসোঁৱাহ ক’ড:"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "বন্ধ কৰক"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "টাইমলাইনৰ ডিবাগ ম’ড (ট্ৰে’চ ইভেণ্টৰ সবিশেষ আদি)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "অমান্যকৰণ ট্ৰেকিং"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "আটাইবোৰ অনুষ্ঠান দেখুৱাওক"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ছেভ কৰক"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "অধিক সঁজুলি"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "কাৰণ: {PH1}।"
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "প্ৰতিচ্ছবি এই হিচাপে ছেভ কৰক…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "এই প্ৰতিচ্ছবিখন বিকাশকৰ্তাৰ সঁজুলিত প্ৰদৰ্শন কৰিবলৈ বেছি ডাঙৰ। এইটো এটা নতুন টেবত খুলিবলৈ ইয়াত ক্লিক কৰক।"
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "বিচাৰক"
   },
@@ -18165,10 +18219,10 @@
     "message": "{PH1} বাছনি কৰা অংশ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "আপুনি বুজি নোপোৱা অথবা নিজে বিকাশকৰ্তাৰ সঁজুলিত নিজে পৰীক্ষা নকৰা ক’ডটো পে’ষ্ট নকৰিব। এইটোৱে আক্ৰমণকাৰীসকলক আপোনাৰ পৰিচয় চুৰি কৰিবলৈ বা আপোনাৰ কম্পিউটাৰৰ নিয়ন্ত্ৰণ ৰাখিবলৈ অনুমতি দিব পাৰে। পে’ষ্ট কৰাৰ অনুমতি দিবলৈ অনুগ্ৰহ কৰি তলত ''{PH1}’' টাইপ কৰক।"
+    "message": "আপুনি বুজি নোপোৱা বা বিকাশকৰ্তাৰ সঁজুলিত নিজে পৰীক্ষা নকৰা ক’ড পে’ষ্ট নকৰিব। ইয়াৰ ফলত আক্ৰমণকাৰীয়ে আপোনাৰ পৰিচয় চুৰি কৰিব পাৰে বা আপোনাৰ কম্পিউটাৰটো নিজৰ নিয়ন্ত্ৰণলৈ নিব পাৰে। পে’ষ্ট কৰাৰ অনুমতি দিবলৈ অনুগ্ৰহ কৰি তলত “{PH1}” টাইপ কৰক।"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
-    "message": "আপুনি এই ক'ডটো বিশ্বাস কৰেনে?"
+    "message": "আপুনি এই ক’ডটো বিশ্বাস কৰে নেকি?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "শাৰী {PH1}, স্তম্ভ {PH2}"

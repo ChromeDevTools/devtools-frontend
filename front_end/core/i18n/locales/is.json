@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Vandamálayfirlit"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-svæði"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Svæði minnisskoðunar"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Úreltur eiginleiki notaður"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Samskiptareglur tölvupósts"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Forritaskil stjórnunar Federated Credential"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-eigind: Sjálfvirk útfylling"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Útskýring á inngripi vegna „Til baka í auglýsingu“"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-skýring"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Fjarlægðu stórar [tvíteknar JavaScript-einingar](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) úr pökkum til að draga úr óþarfa bætanotkun vegna netvirkni."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Ekkert afritað JavaScript fannst"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Afritað JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Letur"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Engar leturgerðir með óhagstæðri leturgerðarsýn fundust"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Leturbirting"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill-kóðar og umbreytingar gera eldri vöfrum kleift að nota nýja JavaScript-eiginleika. Hins vegar þurfa nútímavafrar yfirleitt ekki á þeim að halda. Íhugaðu að breyta JavaScript-kóðunarferlinu þínu þannig að þú umbreytir ekki og vistþýðir eiginleika á [grunnlínunni](https://web.dev/articles/baseline-and-polyfills) nema þú vitir að þú munir þurfa að styðja eldri vafra. [Kynntu þér hvers vegna flest vefsvæði geta notað ES6+ kóða án umbreytingar og vistþýðingar](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Ekkert eldra JavaScript fannst"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Eldra JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Kveiktu á {PH1} til að fá hjálp með stíla, netbeiðnir, afköst og skrár"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Sem lækkun"
+    "message": "Allt samtalið"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Sem skipun"
+    "message": "Samantektarbeiðni"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Afritað á klippiborð"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Hætt við {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Vegna:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Hreinsa síur"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-keyrsluumhverfi: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "leyfa að líma"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Ekki líma kóða sem þú skilur ekki eða hefur ekki yfirfarið sjálf(ur) í DevTools. Það gæti gert árásaraðilum kleift að stela auðkenni þínu eða ná stjórn yfir tölvunni þinni. Sláðu inn „{PH1}“ hér fyrir neðan til að leyfa að líma."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Treystir þú þessum kóða?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Keyra, leyfa hliðarverkanir"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Fjarlægja segð: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Sláðu inn „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "leyfa að líma"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Einingin er falin"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Engin staflaröð er tiltæk"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# tákn)}one{(# tákn)}other{(# tákn)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Tillaga samþykkt."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Aðrar @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Sjálfvirk dökk stilling"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Taka skjámynd af svæði"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Draga saman CSS-reglur sem ekki skipta máli"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Afrita stíla"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Sýna eiginleika"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Sýna staflaröð"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Sýna stíla"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Staflaröð"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Breyta aðgengistré"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stöðva"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Villuleitarstilling tímalínu (upplýsingar um rakningarviðburði o.s.frv.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Sýna alla viðburði"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Ástæður samsetningar"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Aðgengi"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Sjálfstýrð fletting"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Þessar athuganir tryggja hágæða vefsvæði sem gervigreindarfulltrúar geta skoðað og staðfesta réttmæti WebMCP-samþættingar. Þessi flokkur er enn í þróun og gæti breyst."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Nota skjáborðshermi við greiningu"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stöðva"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Villuleitarstilling tímalínu (upplýsingar um rakningarviðburði o.s.frv.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Rakning ógildingar"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Sýna alla viðburði"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Vista"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Fleiri verkfæri"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Ástæða: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Vista mynd sem…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Þessi mynd er of stór fyrir birtingu í DevTools. Smelltu hér til að opna hana á nýjum flipa."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Finna"

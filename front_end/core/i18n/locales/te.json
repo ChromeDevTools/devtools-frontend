@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "సమస్యల వీక్షణ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse ప్యానెల్"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "మెమరీ ఇన్స్‌పెక్టర్ ప్యానెల్"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "విస్మరించబడిన ఫీచర్ ఉపయోగించబడింది"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ఈమెయిల్ వెరిఫికేషన్ ప్రోటోకాల్"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "ఫెడరేటెడ్ క్రెడెన్షియల్ మేనేజ్‌మెంట్ API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML లక్షణం: ఆటో-కంప్లీట్"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "యాడ్‌కు తిరిగి వెళ్లడానికి సంబంధించిన ఇంటర్‌వెన్షన్ ఎక్స్‌ప్లయినర్"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "వివరణాత్మక CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "నెట్‌వర్క్ యాక్టివిటీలో అనవసరమైన బైట్‌ల వినియోగం తగ్గించడానికి బండిల్స్ నుండి పెద్దగా ఉండే, [డూప్లికేట్ JavaScript మాడ్యూల్స్](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)‌ను తీసివేయండి."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "డూప్లికేట్ JavaScript ఏదీ కనుగొనబడలేదు"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "డూప్లికేట్ చేయబడిన JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ఫాంట్"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "సబ్‌ఆప్టిమల్ ఫాంట్-డిస్‌ప్లే కలిగిన ఫాంట్‌లేవీ కనిపించలేదు"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ఫాంట్ డిస్‌ప్లే"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "పాలీఫిల్స్, ఇంకా ట్రాన్స్‌ఫామ్‌లు, కొత్త JavaScript ఫీచర్‌లను ఉపయోగించగలిగేలా పాత బ్రౌజర్‌లను ఎనేబుల్ చేస్తాయి. అయితే, ఆధునిక బ్రౌజర్‌లకు వాటిలో చాలా వరకు అవసరం ఉండదు. మీరు మరింత పాత బ్రౌజర్‌లకు సపోర్ట్ అందించాలని మీకు ఖచ్చితంగా తెలిస్తే తప్ప, [బేస్‌లైన్](https://web.dev/articles/baseline-and-polyfills) ఫీచర్‌లను ట్రాన్స్‌పైల్ చేయకుండా మీ JavaScript బిల్డ్ ప్రాసెస్‌ను సవరించేలా పరిగణించండి. [చాలా సైట్‌లు ట్రాన్స్‌పైలింగ్ లేకుండా ES6+ కోడ్‌ను ఎందుకు అమలు చేయగలవో తెలుసుకోండి](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "లెగసీ JavaScript ఏదీ కనుగొనబడలేదు"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "లెగసీ JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "స్టయిల్స్, నెట్‌వర్క్ రిక్వెస్ట్‌లు, పనితీరు, ఇంకా ఫైల్స్‌తో సహాయం పొందడానికి {PH1}‌ను ఆన్ చేయండి"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "మార్క్‌డౌన్‌గా"
+    "message": "పూర్తి సంభాషణ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ప్రాంప్ట్‌గా"
+    "message": "సారాంశం ప్రాంప్ట్"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
@@ -4905,7 +4923,7 @@
     "message": "స్థానిక, సెషన్ స్టోరేజ్"
   },
   "panels/application/StorageView.ts | mb": {
-    "message": "MB"
+    "message": "ఎమ్‌బి"
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "నంబర్ ఋణాత్మకమైనది కాకూడదు"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} రద్దయింది"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "దీని వలన ఏర్పడింది:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ఫిల్టర్‌లను క్లియర్ చేయండి"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript కాంటెక్స్ట్: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "పేస్ట్ చేయడాన్ని అనుమతించండి"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను DevToolsలో పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడం కోసం, దిగువున దయచేసి “{PH1}” అని టైప్ చేయండి."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "మీరు ఈ కోడ్‌ను విశ్వసిస్తున్నారా?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "సైడ్ ఎఫెక్ట్‌లను అనుమతిస్తూ పరిశీలించండి"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ఎక్స్‌ప్రెషన్‌ను తీసివేయండి: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” రకం"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "పేస్ట్ చేయడాన్ని అనుమతించండి"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "ఎలిమెంట్ దాచబడింది"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "స్టాక్ ట్రేస్ ఏదీ అందుబాటులో లేదు"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# గ్లిఫ్)}other{(# గ్లిఫ్‌లు)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} సూచన ఆమోదం పొందింది."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "ఇతర @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ఆటోమేటిక్ డార్క్ మోడ్"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ప్రాంత స్క్రీన్‌షాట్‌ను క్యాప్చర్ చేయండి"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "కంట్రిబ్యూట్ చేయని CSS నియమాలను కుదించండి"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "కాపీ స్టయిల్‌లు"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "ప్రాపర్టీలను చూపండి"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "స్టాక్ ట్రేస్‌ను చూపండి"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "స్టయిల్స్‌ను చూపించు"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "స్టాక్ ట్రేస్"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "టోగుల్ యాక్సెసిబిలిటీ ట్రీ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ఆపివేయండి"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "టైమ్‌లైన్ డీబగ్ మోడ్ (ట్రేస్ ఈవెంట్ వివరాలు మొదలైనవి)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "అన్ని ఈవెంట్‌లను చూడండి"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "కూర్పుకు కారణాలు"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "యాక్సెసిబిలిటీ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ఏజెంటిక్ బ్రౌజింగ్"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ఈ చెకప్ దశలు, AI ఏజెంట్‌ల కోసం హై-క్వాలిటీ గల, బ్రౌజ్ చేయదగిన వెబ్‌సైట్‌లను నిర్ధారిస్తాయి, అలాగే WebMCP ఇంటిగ్రేషన్‌ల కరెక్ట్‌నెస్‌ను ధృవీకరిస్తాయి. ఈ కేటగిరీ ఇంకా డెవలప్‌మెంట్ దశలోనే ఉంది, కాబట్టి ఇందులో మార్పులు జరిగే అవకాశం ఉంది."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ఆడిట్ చేసేటప్పుడు మొబైల్ అనుకరణను వర్తింపజేయండి"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ఆపివేయండి"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "టైమ్‌లైన్ డీబగ్ మోడ్ (ట్రేస్ ఈవెంట్ వివరాలు మొదలైనవి)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "ఇన్‌వాలిడేషన్ ట్రాకింగ్"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "అన్ని ఈవెంట్‌లను చూడండి"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "సేవ్ చేయండి"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "మరిన్ని టూల్స్"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "కారణం: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ఇమేజ్‌ను ఇలా సేవ్ చేయాలి…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ఈ ఇమేజ్ DevToolsలో డిస్‌ప్లే చేయడానికి చాలా పెద్దదిగా ఉంది. దీన్ని కొత్త ట్యాబ్‌లో తెరవడానికి ఇక్కడ క్లిక్ చేయండి."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "కనుగొనండి"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} ఎంపిక ప్రాంతాలు"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను DevToolsలో పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసే వారు మీ ఐడెంటిటీని దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడం కోసం, దిగువున దయచేసి “{PH1}” అని టైప్ చేయండి."
+    "message": "మీకు అర్థం కాని, లేదా మీ అంతట మీరు రివ్యూ చేయని కోడ్‌ను DevToolsలో పేస్ట్ చేయవద్దు. అలా చేయడం వలన, అటాక్ చేసేవారు మీ గుర్తింపును దొంగిలించవచ్చు లేదా మీ కంప్యూటర్‌ను కంట్రోల్ చేసే అవకాశం పొందవచ్చు. పేస్ట్ చేయడాన్ని అనుమతించడం కోసం, దిగువున దయచేసి “{PH1}” అని టైప్ చేయండి."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "మీరు ఈ కోడ్‌ను విశ్వసిస్తున్నారా?"

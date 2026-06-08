@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Zobrazení problémů"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panel Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel Inspektor paměti"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Byla použita zastaralá funkce"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokol ověření e‑mailu"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Vysvětlení zásahu proti návratu k reklamě"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Vysvětlení CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Omezte zbytečné zatížení sítě tím, že z balíčků odstraníte velké [duplicitní moduly JavaScriptu](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nebyl nalezen žádný duplicitní JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplicitní JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Písmo"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nebyla nalezena žádná písma se suboptimálním atributem font-display"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Zobrazení písma"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Doplňující kódy polyfill a transformace umožňují starším prohlížečům používat nové funkce JavaScriptu. Moderní prohlížeče ale řadu z nich nepotřebují. Pokud nutně nepotřebujete podporovat starší prohlížeče, zvažte úpravu procesu sestavování JavaScriptu tak, aby se netranspilovaly základní ([Baseline](https://web.dev/articles/baseline-and-polyfills)) funkce. [Proč většina webů může implementovat kód ES6+ bez transpilace](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nebyl nalezen žádný starší JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Starší JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Pokud chcete získat nápovědu ke stylům, síťovým požadavkům, výkonu a souborům, zapněte {PH1}."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Jako Markdown"
+    "message": "Celá konverzace"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Jako pokyn"
+    "message": "Prompt pro shrnutí"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Zkopírováno do schránky"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Zrušeno: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Příčina:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Zrušit filtry"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Kontext JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "povolit vkládání"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Do Nástrojů pro vývojáře nevkládejte kód, kterému nerozumíte nebo který jste nezkontrolovali. Mohlo by to útočníkům umožnit ukrást vaši identitu nebo převzít kontrolu nad vaším počítačem. Pokud chcete povolit vkládání, zadejte níže „{PH1}“."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Důvěřujete tomuto kódu?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Vyhodnotit, povolit vedlejší účinky"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Odstranit výraz: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Zadejte „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "povolit vkládání"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Prvek je skrytý"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Žádné trasování zásobníku není k dispozici"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# znak)}few{(# znaky)}many{(# znaku)}other{(# znaků)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Návrh byl přijat."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Jiná pravidla @"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatický tmavý režim"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Pořídit snímek oblasti"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Sbalit pravidla CSS, která nemají vliv na vykreslování"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopírovat styly"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Zobrazit vlastnosti"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Zobrazit trasování zásobníku"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Zobrazit styly"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Trasování zásobníku"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Přepnout strom přístupnosti"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Ukončit"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Režim ladění časové osy (podrobnosti o událostech trasování atd.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Zobrazit všechny události"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Důvody skládání"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Přístupnost"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Procházení agenty"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Tyto kontroly zajišťují vysoce kvalitní, prohledávatelné weby pro AI agenty a ověřují správnost integrací WebMCP. Tato kategorie je stále ve vývoji a může se změnit."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Při auditování emulovat počítač"
@@ -9747,7 +9789,7 @@
     "message": "Chyba"
   },
   "panels/media/PlayerMessagesView.ts | errorCauseLabel": {
-    "message": "Příčina chyby:"
+    "message": "Příčina:"
   },
   "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
     "message": "Kód chyby:"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Ukončit"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Režim ladění časové osy (podrobnosti o událostech trasování atd.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Sledování zneplatnění"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Zobrazit všechny události"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Uložit"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Další nástroje"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Důvod: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Uložit obrázek jako…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Tento obrázek je na zobrazení v nástrojích pro vývojáře příliš velký. Kliknutím sem ho otevřete na nové kartě."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Najít"

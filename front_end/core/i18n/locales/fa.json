@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "نمای مشکلات"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "پانل Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "پانل «ابزار تست حافظه»"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "از ویژگی منسوخ استفاده شده است"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "پروتکل درستی‌سنجی ایمیل"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "مشخصه HTML: تکمیل خودکار"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "توضیح‌دهنده مداخله بازگشت به آگهی"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "توضیح‌دهنده CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "[واحدهای جاوا اسکریپت تکراری](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) و بزرگ را از بسته‌ها حذف کنید تا بایت‌های غیرضروری مصرف‌شده توسط فعالیت شبکه کاهش پیدا کند."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "جاوا اسکریپت تکراری پیدا نشد"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "جاوا اسکریپت تکراری"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "قلم"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "هیچ قلمی با نمایش قلم غیربهینه پیدا نشد"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "نمایشگر قلم"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "تبدیل‌ها و شبیه‌سازهای مرورگر به مرورگرهای قدیمی امکان می‌دهند از ویژگی‌های جدید جاوا اسکریپت استفاده کنند. بااین‌حال، بسیاری از آن‌ها برای مرورگرهای نو ضروری نیستند. بهتر است فرایند ساخت جاوا اسکریپت خود را اصلاح کنید تا ویژگی‌های [Baseline](https://web.dev/articles/baseline-and-polyfills) را ترجمه مبدأ به مبدأ نکند، مگراینکه بدانید که حتماً باید از مرورگرهای قدیمی پشتیبانی کنید. [با دلیل اینکه چرا اکثر سایت‌ها می‌توانند کد ES6+‎ را بدون ترجمه مبدأ به مبدأ پیاده‌سازی کنند آشنا شوید](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "نسخه قدیمی جاوا اسکریپت پیدا نشد"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "جاوا اسکریپت قدیمی"
@@ -3201,10 +3219,10 @@
     "message": "برای دریافت راهنمایی درخصوص سبک‌ها، درخواست‌های شبکه، عملکرد، و فایل‌ها، {PH1} را روشن کنید"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "به‌عنوان Markdown"
+    "message": "مکالمه کامل"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "به‌عنوان پیام‌واره"
+    "message": "پیام‌واره خلاصه"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "در بریده‌دان کپی شد"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} مورد لغوشده"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ناشی از:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "پاک کردن فیلترها"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "بافت جاوا اسکریپت: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "مجاز کردن جای‌گذاری"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "کدهایی را که درک نمی‌کنید یا خودتان آن‌ها را بازبینی نکرده‌اید در DevTools جای‌گذاری نکنید. این کار می‌تواند به مهاجمان امکان دهد هویت شما را سرقت کنند یا کنترل رایانه‌تان را دردست بگیرند. برای اجازه جای‌گذاری دادن، لطفاً «{PH1}» را در پایین تایپ کنید."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "آیا به این کد اعتماد دارید؟"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ارزیابی (با امکان مشکلات جانبی)"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "برداشتن عبارت: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "‫«{PH1}» را تایپ کنید"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "مجاز کردن جای‌گذاری"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "عنصر پنهان است"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "هیچ‌گونه ردیابی پشته‌ای دردسترس نیست"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# گلیف)}one{(# گلیف)}other{(# گلیف)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} پیشنهاد پذیرفته شد"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "سایر @دستورات"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "حالت تاریک خودکار"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ضبط نماگرفت از ناحیه"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "جمع کردن قوانین غیرهمیاری «سرویس مقایسه قیمت» (CSS)"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "کپی کردن سبک‌ها"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "نمایش دارایی‌ها"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "نمایش ردیابی پشته‌ای"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "نمایش سبک‌ها"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ردیابی پشته‌ای"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "روشن/خاموش کردن درخت دسترس‌پذیری"
@@ -8658,7 +8688,7 @@
     "message": "برای ایجاد اطلاعات آماری بهتر، صفحه را مجدداً بار کنید تا داده‌های درخواست شبکه مرتبط برای این پیام ضبط شود."
   },
   "panels/explain/components/ConsoleInsight.ts | report": {
-    "message": "گزارش کردن مشکل حقوقی"
+    "message": "گزارش کردن مسئله حقوقی"
   },
   "panels/explain/components/ConsoleInsight.ts | search": {
     "message": "درعوض از جستجو استفاده شود"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ایست"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "حالت اشکال‌زدایی خط زمان (جزئیات رویداد ردیابی، و غیره)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "نشان دادن همه رویدادها"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "دلایل ترکیب‌بندی"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "دسترس‌پذیری"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "مرور عامل‌گرا"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "این بررسی‌ها تضمین می‌کند وب‌سایت‌های باکیفیت بالا و قابل‌مرور برای عامل‌های هوشواره ارائه می‌شود و صحت یکپارچه‌سازی‌های WebMCP را نیز اعتبارسنجی می‌کند. این دسته هنوز درحال توسعه است و ممکن است تغییر کند."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "اعمال شبیه‌سازی رایانه درحین بررسی"
@@ -10269,7 +10311,7 @@
     "message": "راهنماهای اولیه"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
-    "message": "(انجام نشد)"
+    "message": "(ناموفق)"
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "تمام شد"
@@ -13722,7 +13764,7 @@
     "message": "تأیید تغییرات"
   },
   "panels/settings/KeybindsSettingsTab.ts | discardChanges": {
-    "message": "صرف‌نظر کردن از تغییرات"
+    "message": "صرف‌نظر از تغییرات"
   },
   "panels/settings/KeybindsSettingsTab.ts | editShortcut": {
     "message": "ویرایش میان‌بر"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ایست"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "حالت اشکال‌زدایی خط زمان (جزئیات رویداد ردیابی، و غیره)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "ردگیری ابطال"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "نمایش همه رویدادها"
+    "message": "نشان دادن همه رویدادها"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "در نگاشت منبع با ignoreList علامت‌گذاری شده است."
@@ -17385,7 +17433,7 @@
     "message": "بستن"
   },
   "ui/legacy/Infobar.ts | dontShowAgain": {
-    "message": "دیگر نشان داده نشود"
+    "message": "دیگر نشان ندادن"
   },
   "ui/legacy/InspectorDrawerView.ts | closeDrawer": {
     "message": "بستن کشو"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ذخیره"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ابزارهای بیشتر"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "دلیل: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ذخیره کردن تصویر به‌عنوان…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "این تصویر برای نمایش دادن در DevTools خیلی بزرگ است. برای باز کردن آن در زبانه جدید اینجا کلیک کنید."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "یافتن"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} منطقه انتخابی"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "کدهایی را که درک نمی‌کنید یا خودتان آن‌ها را بررسی نکرده‌اید در DevTools جای‌گذاری نکنید. این کار می‌تواند به مهاجمان اجازه دهد از هویت شما استفاده کنند یا کنترل رایانه‌تان را دردست بگیرند. برای اجازه جای‌گذاری دادن، لطفاً «{PH1}» را در پایین تایپ کنید."
+    "message": "کدهایی را که درک نمی‌کنید یا خودتان آن‌ها را بازبینی نکرده‌اید در DevTools جای‌گذاری نکنید. این کار می‌تواند به مهاجمان امکان دهد هویت شما را سرقت کنند یا کنترل رایانه‌تان را دردست بگیرند. برای اجازه جای‌گذاری دادن، لطفاً «{PH1}» را در پایین تایپ کنید."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "آیا به این کد اعتماد دارید؟"

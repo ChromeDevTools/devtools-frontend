@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "ସମସ୍ୟା ସମ୍ବନ୍ଧିତ ଭ୍ୟୁ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "ଲାଇଟହାଉସ ପେନେଲ"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "ମେମୋରୀ ଇନ୍ସପେକ୍ଟର ପେନେଲ"
   },
@@ -1080,7 +1083,7 @@
     "message": "କନସୋଲ୍ ଡ୍ରୟରକୁ ଲୁଚାନ୍ତୁ"
   },
   "entrypoints/main/MainImpl.ts | moreTools": {
-    "message": "ଅଧିକ ଟୁଲ୍"
+    "message": "ଅଧିକ ଟୁଲ"
   },
   "entrypoints/main/MainImpl.ts | placementOfDevtoolsRelativeToThe": {
     "message": "ପୃଷ୍ଠା ସହ ସମ୍ପର୍କିତ DevToolsର ପ୍ଲେସମେଣ୍ଟ। (ଗତ ଅବସ୍ଥିତିକୁ ରିଷ୍ଟୋର୍ କରିବା ପାଇଁ {PH1})"
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ଅସମର୍ଥିତ ଫିଚର ବ୍ୟବହାର କରାଯାଇଛି"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ଇମେଲ ଯାଞ୍ଚକରଣ ପ୍ରୋଟୋକଲ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ଆଟ୍ରିବ୍ୟୁଟ ଅଟୋକମ୍ପ୍ଲିଟ ହୋଇଛି"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "କିଜ୍ଞାପନ ଉପରେ ପୁଣି ହସ୍ତକ୍ଷେପ ବିଷୟରେ ସୂଚିତ କରୁଥିବା ବ୍ୟାଖ୍ୟାକାରୀ"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB ବ୍ୟାଖ୍ୟାକାରୀ"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ନେଟୱାର୍କ କାର୍ଯ୍ୟକଳାପ ଦ୍ୱାରା ବ୍ୟବହୃତ ଅନାବଶ୍ୟକ ବାଇଟଗୁଡ଼ିକୁ ହ୍ରାସ କରିବା ପାଇଁ ବଣ୍ଡଲଗୁଡ଼ିକରୁ ବଡ଼, [ଡୁପ୍ଲିକେଟ JavaScript ମଡ୍ୟୁଲଗୁଡ଼ିକୁ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) କାଢ଼ି ଦିଅନ୍ତୁ।"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "କୌଣସି ଡୁପ୍ଲିକେଟ JavaScript ମିଳିଲା ନାହିଁ"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ଡୁପ୍ଲିକେଟ କରାଯାଇଥିବା JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ଫଣ୍ଟ"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ସବଅପ୍ଟିମାଲ ଫଣ୍ଟ-ଡିସପ୍ଲେ ଥିବା କୌଣସି ଫଣ୍ଟ ମିଳିଲା ନାହିଁ"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ଫଣ୍ଟ ଡିସପ୍ଲେ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "ନୂଆ JavaScript ଫିଚର ବ୍ୟବହାର କରିବାକୁ ପଲିଫିଲ ଏବଂ ଟ୍ରାନ୍ସଫର୍ମ ପୁରୁଣା ବ୍ରାଉଜରଗୁଡ଼ିକୁ ସକ୍ଷମ କରିଥାଏ। କିନ୍ତୁ, ଆଧୁନିକ ବ୍ରାଉଜର ପାଇଁ ଅନେକ ଆବଶ୍ୟକ ନୁହେଁ। ଆପଣଙ୍କୁ ପୁରୁଣା ବ୍ରାଉଜରଗୁଡ଼ିକୁ ସପୋର୍ଟ କରିବାକୁ ହେବ ବୋଲି ଆପଣ ନଜାଣିବା ପର୍ଯ୍ୟନ୍ତ [ବେସଲାଇନ](https://web.dev/articles/baseline-and-polyfills) ଫିଚରଗୁଡ଼ିକୁ ଟ୍ରାନ୍ସପିଲ ନକରିବା ପାଇଁ ଆପଣଙ୍କର JavaScript ବିଲ୍ଡ ପ୍ରକ୍ରିୟାକୁ ପରିବର୍ତ୍ତନ କରିବା ବିଷୟରେ ବିଚାର କରନ୍ତୁ। [ଅଧିକାଂଶ ସାଇଟ ଟ୍ରାନ୍ସପିଲ ନକରି କାହିଁକି ES6+ କୋଡ କାର୍ଯ୍ୟକାରୀ କରିପାରିବେ ତାହା ଜାଣନ୍ତୁ](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "କୌଣସି ଲିଗାସୀ JavaScript ମିଳିଲା ନାହିଁ"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ଲିଗାସୀ JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "ଷ୍ଟାଇଲ, ନେଟୱାର୍କ ଅନୁରୋଧ, ପରଫରମାନ୍ସ ଏବଂ ଫାଇଲ୍ସ ପାଇଁ ସହାୟତା ପାଇବାକୁ {PH1}କୁ ଚାଲୁ କରନ୍ତୁ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "ମାର୍କଡାଉନ ଭାବେ"
+    "message": "ସମ୍ପୂର୍ଣ୍ଣ ବାର୍ତ୍ତାଳାପ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ପ୍ରମ୍ପ୍ଟ ଭାବେ"
+    "message": "ସାରାଂଶ ପ୍ରମ୍ପ୍ଟ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "କ୍ଲିପବୋର୍ଡକୁ କପି କରାଯାଇଛି"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ବାତିଲ କରାଯାଇଛି"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ଏହା ଯୋଗୁଁ ହୋଇଛି:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ଫିଲ୍ଟରଗୁଡ଼ିକୁ ଖାଲି କରନ୍ତୁ"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript ପ୍ରସଙ୍ଗ: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ପେଷ୍ଟ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "ଆପଣ ବୁଝିପାରୁନଥିବା କିମ୍ବା ନିଜେ ରିଭ୍ୟୁ କରିନଥିବା କୋଡକୁ DevToolsରେ ପେଷ୍ଟ କରନ୍ତୁ ନାହିଁ। ଏହା ଆପଣଙ୍କ ପରିଚୟକୁ ଚୋରି କରିବା କିମ୍ବା ଆପଣଙ୍କ କମ୍ପ୍ୟୁଟରର ନିୟନ୍ତ୍ରଣ ନେବା ପାଇଁ ଆକ୍ରମଣକାରୀମାନଙ୍କୁ ଅନୁମତି ଦେଇପାରେ। ପେଷ୍ଟ କରିବା ପାଇଁ ଅନୁମତି ଦେବାକୁ ଦୟାକରି ନିମ୍ନରେ “{PH1}” ଟାଇପ କରନ୍ତୁ।"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ଆପଣ ଏହି କୋଡକୁ ବିଶ୍ୱାସ କରନ୍ତି?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ଖରାପ ପ୍ରଭାବଗୁଡ଼ିକୁ ଅନୁମତି ଦେଇ ମୂଲ୍ୟାଙ୍କନ କରନ୍ତୁ"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ଏକ୍ସପ୍ରେସନକୁ କାଢ଼ି ଦିଅନ୍ତୁ: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "ପ୍ରକାର “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ପେଷ୍ଟ କରିବାକୁ ଅନୁମତି ଦିଅନ୍ତୁ"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "ଉପାଦାନଟି ଲୁକ୍କାୟିତ ଅଛି"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "କୌଣସି ଷ୍ଟାକ୍ ଟ୍ରେସ୍ ଉପଲବ୍ଧ ନାହିଁ"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(#ଟି ଗ୍ଲିଫ୍)}other{(#ଟି ଗ୍ଲିଫ୍)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} ସୁପାରିଶ ଗ୍ରହଣ କରାଯାଇଛି।"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "ଅନ୍ୟ @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ସ୍ୱଚାଳିତ ଡାର୍କ ମୋଡ"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ଏରିଆ ସ୍କ୍ରିନସଟ୍ କ୍ୟାପଟର୍ କରନ୍ତୁ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "କଣ୍ଟ୍ରିବ୍ୟୁଟ କରୁନଥିବା CSS ନିୟମଗୁଡ଼ିକୁ ସଙ୍କୁଚିତ କରନ୍ତୁ"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ଷ୍ଟାଇଲଗୁଡ଼ିକୁ କପି କରନ୍ତୁ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "ପ୍ରୋପର୍ଟିଗୁଡ଼ିକୁ ଦେଖାନ୍ତୁ"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ଷ୍ଟାକ୍ ଟ୍ରେସ୍ ଦେଖାନ୍ତୁ"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ଷ୍ଟାଇଲଗୁଡ଼ିକ ଦେଖାନ୍ତୁ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ଷ୍ଟାକ ଟ୍ରେସ"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "ଆକ୍ସେସିବିଲିଟୀ ଟ୍ରିକୁ ଟୋଗଲ କରନ୍ତୁ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ବନ୍ଦ କରନ୍ତୁ"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "ଟାଇମଲାଇନ ଡିବଗ ମୋଡ (ଟ୍ରେସ ଇଭେଣ୍ଟର ବିବରଣୀ, ଇତ୍ୟାଦି)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ସମସ୍ତ ଇଭେଣ୍ଟ ଦେଖାନ୍ତୁ"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "କମ୍ପୋଜିଟ୍ କରିବାର କାରଣଗୁଡ଼ିକ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ଆକ୍ସେସିବିଲିଟୀ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ଏଜେଣ୍ଟିକ ବ୍ରାଉଜିଂ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ଏହି ଯାଞ୍ଚଗୁଡ଼ିକ AI ଏଜେଣ୍ଟଗୁଡ଼ିକ ପାଇଁ ଉଚ୍ଚ-ଗୁଣବତ୍ତା, ବ୍ରାଉଜ କରିହେଉଥିବା ୱେବସାଇଟଗୁଡ଼ିକ ସୁନିଶ୍ଚିତ କରେ ଏବଂ WebMCP ଇଣ୍ଟିଗ୍ରେସନର ସଠିକତାକୁ ବୈଧ କରେ। ଏହି ବର୍ଗର ଏବେ ବି ଡେଭେଲପମେଣ୍ଟ ଚାଲିଛି ଏବଂ ଏଥିରେ ପରିବର୍ତ୍ତନ ହୋଇପାରେ।"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ଅଡିଟ କରିବା ସମୟରେ ଡେସ୍କଟପ ଏମ୍ୟୁଲେସନ ଲାଗୁ କରନ୍ତୁ"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ବନ୍ଦ କରନ୍ତୁ"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "ଟାଇମଲାଇନ ଡିବଗ ମୋଡ (ଟ୍ରେସ ଇଭେଣ୍ଟର ବିବରଣୀ, ଇତ୍ୟାଦି)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "ଅବୈଧକରଣ ଟ୍ରାକିଂ"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "ସମସ୍ତ ଇଭେଣ୍ଟ ଦେଖାନ୍ତୁ"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ସେଭ୍ କରନ୍ତୁ"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ଅଧିକ ଟୁଲ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "କାରଣ: {PH1}।"
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ଏହି ଭାବେ ଇମେଜ ସେଭ କରନ୍ତୁ…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "DevToolsରେ ଡିସପ୍ଲେ କରିବା ପାଇଁ ଏହି ଇମେଜ ବହୁତ ବଡ଼ ଅଟେ। ଏକ ନୂଆ ଟାବରେ ଏହାକୁ ଖୋଲିବା ପାଇଁ ଏଠାରେ କ୍ଲିକ କରନ୍ତୁ।"
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ଖୋଜନ୍ତୁ"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1}ଟି ଚୟନ କରାଯାଇଥିବା ଅଞ୍ଚଳ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "ଆପଣ ବୁଝିପାରୁନଥିବା କିମ୍ବା ନିଜେ ରିଭ୍ୟୁ କରିନଥିବା କୋଡକୁ DevToolsରେ ପେଷ୍ଟ କରନ୍ତୁ ନାହିଁ। ଏହା ଆପଣଙ୍କ ପରିଚୟକୁ ଚୋରି କରିବା କିମ୍ବା ଆପଣଙ୍କ କମ୍ପ୍ୟୁଟରର ନିୟନ୍ତ୍ରଣ ନେବା ପାଇଁ ଆକ୍ରମଣକାରୀମାନଙ୍କୁ ଅନୁମତି ଦେଇପାରେ। ପେଷ୍ଟ କରିବା ପାଇଁ ଅନୁମତି ଦେବାକୁ ନିମ୍ନରେ ଦୟାକରି “{PH1}” ଟାଇପ କରନ୍ତୁ।"
+    "message": "ଆପଣ ବୁଝିପାରୁନଥିବା କିମ୍ବା ନିଜେ ରିଭ୍ୟୁ କରିନଥିବା କୋଡକୁ DevToolsରେ ପେଷ୍ଟ କରନ୍ତୁ ନାହିଁ। ଏହା ଆପଣଙ୍କ ପରିଚୟକୁ ଚୋରି କରିବା କିମ୍ବା ଆପଣଙ୍କ କମ୍ପ୍ୟୁଟରର ନିୟନ୍ତ୍ରଣ ନେବା ପାଇଁ ଆକ୍ରମଣକାରୀମାନଙ୍କୁ ଅନୁମତି ଦେଇପାରେ। ପେଷ୍ଟ କରିବା ପାଇଁ ଅନୁମତି ଦେବାକୁ ଦୟାକରି ନିମ୍ନରେ “{PH1}” ଟାଇପ କରନ୍ତୁ।"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "ଆପଣ ଏହି କୋଡକୁ ବିଶ୍ୱାସ କରନ୍ତି?"

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Преглед на проблемите"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Панел на Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Панел на инструмента за проверка на паметта"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Използвана е оттеглена функция"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Протокол за потвърждаване на имейла"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API за управление на идентификационни данни за федерирано удостоверяване"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML атрибут: автоматично довършване"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Обяснение за интервенцията при опит за връщане към рекламата"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Обяснение за CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Премахнете големите [дублиращи се JavaScript модули](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) от пакетите, за да намалите ненужното използване на данни в мрежата."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Не е намерен дублиран JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Дублиран JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Шрифт"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Няма намерени шрифтове с неоптимално свойство font-display"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Показване на шрифта"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Полифиловете и трансформациите дават възможност на по-старите браузъри да използват нови функции на JavaScript, но в голяма степен не са необходими за съвременните браузъри. Добре е да промените процеса на компилиране на JavaScript, така че да не се транскомпилират функциите на [Baseline](https://web.dev/articles/baseline-and-polyfills), освен ако не знаете, че трябва да поддържате по-стари браузъри. [Научете защо повечето сайтове могат да внедряват код ES6+ без транскомпилиране](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Няма намерен наследен JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Наследен JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Включете {PH1}, за да получите помощ за стиловете, заявките в мрежата, ефективността и файловете"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Като Markdown файл"
+    "message": "Целият разговор"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Като подкана"
+    "message": "Подкана за обобщение"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Копирано в буферната памет"
@@ -4905,7 +4923,7 @@
     "message": "Локално хранилище и хранилище за сесията"
   },
   "panels/application/StorageView.ts | mb": {
-    "message": "МБ"
+    "message": "MB"
   },
   "panels/application/StorageView.ts | numberMustBeNonNegative": {
     "message": "Числото не трябва да е отрицателно"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Анулирани: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Причинена от:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Изчистване на филтрите"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript контекст: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "разрешаване на поставянето"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Не поставяйте в DevTools код, който не разбирате или не сте проверили. Това може да даде възможност на хакерите да откраднат самоличността ви или да поемат контрол над компютъра ви. Въведете „{PH1}“ по-долу, за да разрешите поставянето."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Имате ли доверие на този код?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Анализиране, възможно е да има странични ефекти"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Премахване на израза: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Въведете „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "разрешаване на поставянето"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Елементът е скрит"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Няма трасиране на стека"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# глиф)}other{(# глифа)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "Предложението за {PH1} бе прието."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Други @правила"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автоматичен тъмен режим"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Създаване на екранна снимка на областта"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Свиване на неоказващите влияние правила на CSS"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Копиране на стиловете"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Показване на свойствата"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Показване на трасирането на стека"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Показване на стиловете"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Трасиране на стека"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Превключване на дървото за достъпност"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Спиране"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим за отстраняване на грешки в хронологията (подробности за събитията от трасирането и др.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Показване на всички събития"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Причини за композитинг"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Достъпност"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агентно сърфиране"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Тези проверки осигуряват висококачествени уебсайтове с възможност за сърфиране от агенти с AI и потвърждават правилността на интегрирането на WebMCP. Тази категория все още се разработва и е предмет на промени."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Прилагане на емулация на настолен компютър по време на проверката"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Спиране"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим за отстраняване на грешки в хронологията (подробности за събитията от трасирането и др.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Проследяване на анулирането на валидността"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Показване на всички събития"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Запазване"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Още инструменти"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Причина: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Запазване на изображението като…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Това изображение е твърде голямо, за да се покаже в DevTools. Кликнете тук, за да го отворите в нов раздел."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Търсене"

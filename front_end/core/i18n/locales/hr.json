@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Pregled poteškoća"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Ploča Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Ploča nadzornika memorije"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Koristi se obustavljena značajka"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokol za potvrdu e-pošte"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atribut: samodovršavanje"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Objašnjenje intervencije za povratak na oglas"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB – objašnjenje"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Uklonite velike [duplicirane JavaScript module](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) iz paketa kako biste smanjili nepotrebne bajtove koje troši mrežna aktivnost."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nije pronađen duplicirani JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplicirani JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nije pronađen nijedan font s neoptimalnim prikazom fonta"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Prikaz fonta"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Kodovi polyfill i transform omogućuju starijim preglednicima da upotrebljavaju nove značajke JavaScripta. Međutim, mnogi nisu potrebni za moderne preglednike. Razmislite o izmjeni procesa izrade JavaScripta kako ne bi transpilirao značajke [Baseline](https://web.dev/articles/baseline-and-polyfills), osim ako znate da morate podržavati starije preglednike. [Saznajte zašto većina web-lokacija može implementirati ES6+ kôd bez transpiliranja](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nije pronađen stari JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Stari JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Uključite {PH1} da biste dobili pomoć sa stilovima, zahtjevima mreže, izvedbom i datotekama"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Kao markdown"
+    "message": "Čitav razgovor"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Kao upit"
+    "message": "Upit za sažetak"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Kopirano u međuspremnik"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Broj otkazanih poziva: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Uzrok:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Izbriši filtre"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Kontekst JavaScripta: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "dopusti lijepljenje"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "U razvojne alate nemojte lijepiti kôd koji ne razumijete ili niste pregledali. Na taj način napadači mogu ukrasti vaš identitet ili preuzeti kontrolu nad vašim računalom. U nastavku unesite {PH1} da biste omogućili lijepljenje."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Smatrate li taj kôd pouzdanim?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Procijenite dopuštajući nuspojave"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Ukloni izraz: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Vrsta \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "dopusti lijepljenje"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element je skriven"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Praćenje stoga nije dostupno"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ideogram)}one{(# ideogram)}few{(# ideograma)}other{(# ideograma)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Prijedlog je prihvaćen."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Drugo: @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatski tamni način rada"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Snimi snimku zaslona područja"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Sažmi CSS pravila koja ne doprinose"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiraj stilove"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Prikaži entitete"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Prikaži praćenje stoga"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Prikaži Stilove"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Praćenje snopa"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Uključivanje/isključivanje stabla pristupačnosti"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Zaustavi"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Način otklanjanja pogrešaka na vremenskoj traci (pojedinosti o praćenju događaja itd.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Prikaži sve događaje"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Razlozi sastavljanja"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Pristupačnost"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentsko pregledavanje"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Ove provjere osiguravaju kvalitetne web-lokacije koje se mogu pregledavati za AI agente i potvrđuju ispravnost integracija WebMCP-a. Ova je kategorija još u razvoju i podložna je promjenama."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Primijeni emulaciju računala tijekom revizije"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Zaustavi"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Način otklanjanja pogrešaka na vremenskoj traci (pojedinosti o praćenju događaja itd.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Praćenje poništenja"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Prikaži sve događaje"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Spremi"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Više alata"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Razlog: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Spremi sliku kao…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Ova je slika prevelika za prikaz u razvojnim alatima. Kliknite ovdje da biste je otvorili na novoj kartici."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Potraži"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} regije odabira"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "U razvojne alate nemojte lijepiti kôd koji ne razumijete ili niste pregledali. Na taj način napadači mogu ukrasti vaš identitet ili preuzeti kontrolu nad vašim računalom. U nastavku unesite \"{PH1}\" da biste omogućili lijepljenje."
+    "message": "U razvojne alate nemojte lijepiti kôd koji ne razumijete ili niste pregledali. Na taj način napadači mogu ukrasti vaš identitet ili preuzeti kontrolu nad vašim računalom. U nastavku unesite {PH1} da biste omogućili lijepljenje."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Smatrate li taj kôd pouzdanim?"

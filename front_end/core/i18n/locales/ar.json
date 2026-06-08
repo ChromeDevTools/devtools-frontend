@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "عرض المشاكل"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "لوحة Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "لوحة \"أداة فحص الذاكرة\""
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "تم استخدام ميزة متوقّفة نهائيًا"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "بروتوكول تأكيد عنوان البريد الإلكتروني"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "سمة HTML: الإكمال التلقائي"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "شرح مفصّل لطريقة التدخّل للعودة إلى الإعلان"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "أداة لتفسير خوارزمية CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "يمكنك إزالة [وحدات JavaScript الكبيرة المكرّرة](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) من الحِزم لتقليل وحدات البايت غير الضرورية التي يستهلكها نشاط الشبكة."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "لم يتم العثور على ملفات JavaScript مكرّرة"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "مصادر JavaScript المكرّرة"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "الخط"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "لم يتم العثور على أي خطوط ذات قيمة font-display غير مثالية"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "عرض الخط"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "تساعد الرموز البرمجية polyfill وtransform المتصفّحات القديمة في استخدام ميزات JavaScript الجديدة. ومع ذلك، يكون العديد منها غير ضروري للمتصفّحات الحديثة. من الأفضل تعديل عملية تصميم رموز JavaScript لتجنُّب تحويل رموز ميزات [Baseline](https://web.dev/articles/baseline-and-polyfills)، إلّا إذا كان من الضروري التوافق مع المتصفِّحات القديمة. [التعرُّف على سبب إمكانية نشر معظم المواقع الإلكترونية لرمز ES6+‎ بدون تحويله](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "لم يتم العثور على أي ملفات JavaScript قديمة"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ميزات JavaScript القديمة"
@@ -3201,10 +3219,10 @@
     "message": "فعِّل \"{PH1}\" للحصول على مساعدة بشأن الأنماط وطلبات الشبكة والأداء والملفات"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "بتنسيق Markdown"
+    "message": "محادثة كاملة"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "بتنسيق طلب"
+    "message": "طلب الملخّص"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "تم النسخ إلى الحافظة"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "عدد الطلبات التي تم إلغاؤها: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "السبب:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "محو الفلاتر"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "سياق JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "السماح باللصق"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "يُرجى عدم لصق أي رمز برمجي غير مفهوم لك أو لم تتم مراجعته من قِبلك في \"أدوات مطوّري البرامج\". فقد يسمح هذا للمهاجمين بسرقة هويتك أو التحكّم في جهاز الكمبيوتر لديك. يُرجى كتابة \"{PH1}\" أدناه للسماح باللصق."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "هل هذا الرمز موثوق به؟"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "التقييم مع السماح بالآثار الجانبية"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "إزالة التعبير: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "يُرجى كتابة \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "السماح باللصق"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "العنصر مخفي."
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "لا تتوفر عمليات تتبُّع تسلسل استدعاء الدوال البرمجية."
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(حرف رسومي واحد)}zero{(# حرف رسومي)}two{(حرفان رسوميّان)}few{(# أحرف رسومية)}many{(# حرفًا رسوميًّا)}other{(# حرف رسومي)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} تمّ قبول الاقتراح."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "‫@قواعد أخرى"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "الوضع الداكن التلقائي"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "التقاط لقطة شاشة للمنطقة المحدّدة"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "تصغير قواعد CSS غير المؤثرة"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "نسْخ الأنماط"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "إظهار الخصائص"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "عرض تتبُّع تسلسل استدعاء الدوال البرمجية"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "عرض الأنماط"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "تتبُّع تسلسل استدعاء الدوال البرمجية"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "إيقاف أو تبديل شجرة تسهيل الاستخدام"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "إيقاف"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "وضع تصحيح الأخطاء في \"المخطط الزمني\" (تفاصيل حدث التتبُّع وغير ذلك)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "عرض جميع الأحداث"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "أسباب التركيب"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "تسهيل الاستخدام"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "التصفّح المستنِد إلى الذكاء الاصطناعي الوكيل"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "تضمن عمليات التحقّق هذه توفّر مواقع إلكترونية عالية الجودة يمكن لوكلاء الذكاء الاصطناعي تصفّحها، كما تتحقّق من صحة عمليات دمج WebMCP. لا تزال هذه الفئة قيد التطوير وقد تخضع للتغيير لاحقًا."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "تطبيق عملية محاكاة الكمبيوتر المكتبي أثناء التدقيق"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "إيقاف"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "وضع تصحيح الأخطاء في \"المخطط الزمني\" (تفاصيل حدث التتبُّع وغير ذلك)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "تتبُّع الإبطال"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "عرض جميع الأحداث"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "حفظ"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "مزيد من الأدوات"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "السبب: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "حفظ الصورة باسم…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "هذه الصورة كبيرة جدًا ولا يمكن عرضها في \"أدوات مطوّري البرامج\". يمكنك النقر هنا لفتحها في علامة تبويب جديدة."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "بحث"
   },
@@ -18165,10 +18219,10 @@
     "message": "النصوص المُختارة في {PH1}"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "يُرجى عدم لصق أي رمز برمجي غير مفهوم لك أو لم تتم مراجعته من قِبلك في \"أدوات مطوّري البرامج\". فقد يسمح هذا للمهاجمين بسرقة هويتك أو التحكم في جهاز الكمبيوتر الخاص بك. يُرجى كتابة \"{PH1}\" أدناه للسماح باللصق."
+    "message": "يُرجى عدم لصق أي رمز برمجي غير مفهوم لك أو لم تتم مراجعته من قِبلك في \"أدوات مطوّري البرامج\". فقد يسمح هذا للمهاجمين بسرقة هويتك أو التحكّم في جهاز الكمبيوتر لديك. يُرجى كتابة \"{PH1}\" أدناه للسماح باللصق."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
-    "message": "هل تثق بهذا الرمز؟"
+    "message": "هل هذا الرمز موثوق به؟"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "السطر {PH1}، العمود {PH2}"

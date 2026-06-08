@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "תצוגת בעיות"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "חלונית Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "החלונית של בודק הזיכרון"
   },
@@ -1449,7 +1452,7 @@
     "message": "ה-API‏ HTMLVideoElement.webkitSupportsFullscreen הוצא משימוש. במקומו צריך להשתמש ב-Document.fullscreenEnabled."
   },
   "generated/Deprecation.ts | PreventSvgFilterPaint": {
-    "message": "אי אפשר להחיל פילטרים של SVG על רכיבי iframe ממקורות צולבים, על רכיבי iframe מוגבלים (למשל, בארגז חול) או על פלאגינים."
+    "message": "אי אפשר להחיל פילטרים של SVG על רכיבי iframe ממקור חיצוני, על רכיבי iframe מוגבלים (למשל, בארגז חול) או על פלאגינים."
   },
   "generated/Deprecation.ts | RTCConstraintEnableDtlsSrtpFalse": {
     "message": "המגבלה DtlsSrtpKeyAgreement הוסרה. ציינת ערך false למגבלה הזו, והוא מפורש כניסיון להשתמש בשיטה SDES key negotiation שהוסרה. הפונקציונליות הזו הוסרה. במקומה יש להשתמש בשירות שתומך ב-DTLS key negotiation."
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "נעשה שימוש בתכונה שהוצאה משימוש"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "פרוטוקול לאימות אימייל"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Management API של פרטי הכניסה המשותפים"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "מאפיין HTML: השלמה אוטומטית"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "הסבר על התערבות במקרה של חזרה למודעה"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "הסבר על CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "אם קיימים [מודולים כפולים גדולים בחבילות JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), צריך להסיר אותם מהחבילות האלה כדי לצמצם צריכה של בייטים מיותרים על ידי הפעילות ברשת."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "לא נמצא קוד JavaScript כפול"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "‫JavaScript כפול"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "גופן"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "לא נמצאו גופנים עם מאפיין font-display לא אופטימלי"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "תצוגת גופן"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "רכיבי Polyfill וטרנספורמציות מאפשרים לדפדפנים ישנים יותר להשתמש בתכונות JavaScript חדשות. עם זאת, רבים מהם לא נחוצים לדפדפנים מודרניים. כדאי לשקול לשנות את תהליך ה-build של JavaScript כדי לא לבצע טרנספילציה של [תכונות בסיסיות](https://web.dev/articles/baseline-and-polyfills), אלא אם ידוע לך שנדרשת תמיכה בדפדפנים ישנים יותר. [למה רוב האתרים יכולים לפרוס קוד ES6+‎ ללא טרנספילציה](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "לא נמצא קוד JavaScript מדור קודם"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "‫JavaScript מדור קודם"
@@ -3201,10 +3219,10 @@
     "message": "כדי לקבל עזרה לגבי עיצובים, בקשות רשת, ביצועים וקבצים, אפשר להפעיל את {PH1}"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "כקובץ Markdown"
+    "message": "שיחה מלאה"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "כהנחיה"
+    "message": "הנחיה ליצירת סיכום"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "התוכן הועתק ללוח"
@@ -4956,13 +4974,16 @@
     "message": "טוקנים של מצב פרטי"
   },
   "panels/application/WebMCPView.ts | cancelCall": {
-    "message": "לבטל"
+    "message": "ביטול"
   },
   "panels/application/WebMCPView.ts | canceled": {
     "message": "הקריאה בוטלה"
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "‫{PH1} קריאות בוטלו"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "גורם השגיאה:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "מחיקת המסננים"
@@ -5031,7 +5052,7 @@
     "message": "פלט"
   },
   "panels/application/WebMCPView.ts | paste": {
-    "message": "להדביק"
+    "message": "הדבקה"
   },
   "panels/application/WebMCPView.ts | pending": {
     "message": "בתהליך"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "הקשר ל-JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "יש אישור להדבקה"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "אסור לך להדביק בכלי הפיתוח קוד שלא מובן לך או שלא בדקת בעצמך. פעולה כזאת עלולה לאפשר לתוקפים לגנוב את הזהות שלך או להשתלט על המחשב שלך. כדי לאפשר הדבקה, צריך להקליד בהמשך \"{PH1}\"."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "הקוד הזה מהימן?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ביצוע הערכה, אפקטים נלווים מותרים"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "הסרת ביטוי: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "כאן צריך להקליד \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "יש אישור להדבקה"
@@ -6861,7 +6894,7 @@
     "message": "השלמה אוטומטית מההיסטוריה"
   },
   "panels/console/ConsoleView.ts | collapseAll": {
-    "message": "לכווץ הכול"
+    "message": "כיווץ הכול"
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "נתוני המסוף נוקו"
@@ -6903,7 +6936,7 @@
     "message": "שגיאות"
   },
   "panels/console/ConsoleView.ts | expandAll": {
-    "message": "להרחיב הכול"
+    "message": "הרחבת הכול"
   },
   "panels/console/ConsoleView.ts | filteredMessagesInConsole": {
     "message": "{PH1} הודעות במסוף"
@@ -7932,7 +7965,7 @@
     "message": "מעבר לחלונית המדיה"
   },
   "panels/elements/ElementsTreeElement.ts | paste": {
-    "message": "להדביק"
+    "message": "הדבקה"
   },
   "panels/elements/ElementsTreeElement.ts | removeScrollbars": {
     "message": "הסרת סרגלי הגלילה"
@@ -8062,9 +8095,6 @@
   },
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "הרכיב מוסתר"
-  },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "אין דוחות קריסות זמינים"
   },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(גליף אחד)}one{(# גליפים)}two{(# גליפים)}other{(# גליפים)}}"
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} ההצעה התקבלה"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "כללי @ אחרים"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "מצב כהה אוטומטי"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "יצירת צילום מסך של האזור"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "כיווץ של כללי CSS שלא משפיעים"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "העתקת הסגנונות"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "הצגת המאפיינים"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "הצגת דוח קריסות"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "הצגת הסגנונות"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "דוח קריסות"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "החלפת המצב של עץ הנגישות"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "הפסקה"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "מצב ניפוי באגים בציר הזמן (פירוט אירועי המעקב וכו')"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "לכל האירועים"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "איחוד סיבות"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "נגישות"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "עיון באמצעות סוכנים"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "הבדיקות האלו מוודאות שהאתרים באיכות גבוהה ושסוכני ה-AI יכולים לעיין בהם, וכן מאמתות את תקינות האינטגרציות של WebMCP. הקטגוריה הזו עדיין נמצאת בתהליכי פיתוח וכפופה לשינויים."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "החלת אמולציה למחשב במהלך הביקורת"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "הפסקה"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "מצב ניפוי באגים בציר הזמן (פירוט אירועי המעקב וכו')"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "מעקב ביטולי תוקף"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "הצגת כל האירועים"
+    "message": "לכל האירועים"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "מסומן ברשימת הפריטים להתעלמות במפת המקור"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "שמירה"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "כלים נוספים"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "הסיבה: {PH1}"
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "שמירת התמונה בשם…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "התמונה הזו גדולה מדי להצגה בכלי הפיתוח. כדי לפתוח אותה בכרטיסייה חדשה, צריך ללחוץ כאן."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "חיפוש"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} אזורי בחירה"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "אסור לך להדביק בכלי הפיתוח קוד שלא מובן לך או שלא בדקת בעצמך. זו דרך שבה תוקפים יכולים לגנוב את הזהות שלך או להשתלט על המחשב שלך. כדי לאפשר הדבקה, צריך להקליד בהמשך \"{PH1}\"."
+    "message": "אסור לך להדביק בכלי הפיתוח קוד שלא מובן לך או שלא בדקת בעצמך. פעולה כזאת עלולה לאפשר לתוקפים לגנוב את הזהות שלך או להשתלט על המחשב שלך. כדי לאפשר הדבקה, צריך להקליד בהמשך \"{PH1}\"."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "הקוד הזה מהימן?"

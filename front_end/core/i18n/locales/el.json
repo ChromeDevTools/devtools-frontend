@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Προβολή προβλημάτων"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Πλαίσιο Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Πλαίσιο Επιθεώρηση μνήμης"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Χρησιμοποιήθηκε λειτουργία που έχει καταργηθεί"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Πρωτόκολλο επαλήθευσης διεύθυνσης ηλεκτρονικού ταχυδρομείου"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Χαρακτηριστικό HTML: αυτόματη συμπλήρωση"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Επεξήγηση παρέμβασης επιστροφής στη διαφήμιση"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Επεξηγηματικό CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Καταργήστε τις μεγάλες, [διπλότυπες λειτουργικές μονάδες JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) από τα πακέτα, για να μειώσετε τα μη απαραίτητα byte που καταναλώνονται από τη δραστηριότητα δικτύου."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Δεν βρέθηκε διπλότυπο JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Διπλότυπο JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Γραμματοσειρά"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Δεν βρέθηκαν γραμματοσειρές με μη βέλτιστη προβολή γραμματοσειράς"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Προβολή γραμματοσειράς"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Τα polyfill και οι μετασχηματισμοί επιτρέπουν στα προγράμματα περιήγησης παλαιού τύπου να χρησιμοποιούν νέες λειτουργίες JavaScript. Ωστόσο, πολλές από αυτές δεν είναι απαραίτητες για σύγχρονα προγράμματα περιήγησης. Εξετάστε το ενδεχόμενο να τροποποιήσετε τη διαδικασία κατασκευής JavaScript, ώστε να μην μετατρέπονται οι λειτουργίες [Baseline](https://web.dev/articles/baseline-and-polyfills), εκτός εάν γνωρίζετε ότι πρέπει να υποστηρίζετε παλαιότερα προγράμματα περιήγησης. [Μάθετε γιατί οι περισσότεροι ιστότοποι μπορούν να αναπτύξουν κώδικα ES6+ χωρίς μετατροπή](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Δεν βρέθηκε JavaScript παλαιού τύπου"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript παλαιού τύπου"
@@ -3201,10 +3219,10 @@
     "message": "Ενεργοποιήστε τη {PH1}, για να λάβετε βοήθεια με τα στιλ, τα αιτήματα δικτύου, την απόδοση και τα αρχεία"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Σε μορφή Markdown"
+    "message": "Πλήρης συζήτηση"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Σε μορφή προτροπής"
+    "message": "Προτροπή σύνοψης"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Αντιγράφηκε στο πρόχειρο"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Ακύρωση {PH1} κλήσεων"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Προκλήθηκε από:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Διαγραφή φίλτρων"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Περιβάλλον JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "να επιτρέπεται η επικόλληση"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Μην επικολλήσετε κώδικα που δεν κατανοείτε ή δεν έχετε ελέγξει στα Εργαλεία για προγραμματιστές. Αυτό μπορεί να επιτρέψει σε υπευθύνους επίθεσης να υποκλέψουν την ταυτότητά σας ή να αποκτήσουν τον έλεγχο του υπολογιστή σας. Πληκτρολογήστε \"{PH1}\" παρακάτω, για να επιτρέψετε την επικόλληση."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Εμπιστεύεστε αυτόν τον κώδικα;"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Αξιολόγηση, επιτρέπονται οι παρενέργειες"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Κατάργηση έκφρασης: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Πληκτρολογήστε “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "να επιτρέπεται η επικόλληση"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Το στοιχείο είναι κρυφό"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Δεν υπάρχει διαθέσιμη ιχνηλάτηση στοίβας"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# σύμβολο)}other{(# σύμβολα)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Η πρόταση έγινε αποδεκτή."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Άλλοι @κανόνες"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Αυτόματη λειτουργία χαμηλού φωτισμού"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Λήψη στιγμιότυπου οθόνης περιοχής"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Σύμπτυξη κανόνων CSS που δεν συνεισφέρουν"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Αντιγραφή στιλ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Εμφάνιση εργαλείου ιδιοτήτων"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Εμφάνιση εργαλείου ιχνηλάτησης στοίβας"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Εμφάνιση στιλ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Ιχνηλάτηση στοίβας"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Εναλλαγή δέντρου προσβασιμότητας"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Διακοπή"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Λειτουργία αποσφαλμάτωσης χρονολογίου (λεπτομέρειες συμβάντος ίχνους κ.λπ.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Εμφάνιση όλων των συμβάντων"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Λόγοι σύνθεσης"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Προσβασιμότητα"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Περιήγηση μέσω agent"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Αυτοί οι έλεγχοι διασφαλίζουν ιστοτόπους υψηλής ποιότητας με δυνατότητα περιήγησης για agent AI και επικυρώνουν την ορθότητα των ενσωματώσεων WebMCP. Αυτή η κατηγορία βρίσκεται ακόμα σε φάση ανάπτυξης και υπόκειται σε αλλαγές."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Εφαρμογή προσομοίωσης υπολογιστή κατά τη διάρκεια ελέγχου"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Διακοπή"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Λειτουργία αποσφαλμάτωσης χρονολογίου (λεπτομέρειες συμβάντος ίχνους κ.λπ.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Παρακολούθηση ακυρώσεων"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Εμφάνιση όλων των συμβάντων"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Αποθήκευση"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Περισσότερα εργαλεία"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Αιτία: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Αποθήκευση εικόνας ως…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Αυτή η εικόνα είναι πολύ μεγάλη για να εμφανιστεί στα Εργαλεία για προγραμματιστές. Κάντε κλικ εδώ για να την ανοίξετε σε νέα καρτέλα."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Εύρεση"

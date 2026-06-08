@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Weergave Problemen"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-deelvenster"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Deelvenster Geheugeninspector"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Beëindigde functie gebruikt"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "E-mailverificatieprotocol"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-kenmerk: automatisch aanvullen"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Uitleg over interventie voor terug naar advertentie"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-informatiebericht"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Verwijder grote, [dubbele JavaScript-modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) uit bundels, zodat er minder onnodige bytes worden verbruikt door netwerkactiviteit."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Geen gedupliceerd JavaScript gevonden"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Gedupliceerd JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Lettertype"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Geen lettertypen met suboptimale font-display gevonden"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Lettertypeweergave"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Met polyfills en transformaties kunnen oudere browsers nieuwe JavaScript-functies gebruiken. Voor moderne browsers is dit meestal niet nodig. Overweeg om je JavaScript-buildproces aan te passen zodat [Baseline](https://web.dev/articles/baseline-and-polyfills)-functies niet worden getranspileerd, tenzij je weet dat je oudere browsers moet ondersteunen. [Meer informatie over waarom de meeste sites ES6+-code kunnen implementeren zonder transpileren](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Geen verouderde JavaScript-code gevonden"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Verouderde JavaScript-code"
@@ -3201,10 +3219,10 @@
     "message": "Zet {PH1} aan voor hulp bij stijlen, netwerkverzoeken, prestaties en bestanden"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Als markdown"
+    "message": "Volledige conversatie"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Als prompt"
+    "message": "Prompt voor overzicht"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Gekopieerd naar klembord"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} geannuleerd"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Veroorzaakt door:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Filters wissen"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-context: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "plakken toestaan"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Plak geen code in DevTools die je niet begrijpt of die je niet hebt gecontroleerd. Met zulke code kunnen aanvallers je identiteit stelen of je computer overnemen. Typ hieronder “{PH1}” om plakken toe te staan."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Vertrouw je deze code?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evalueren en bijwerkingen toestaan"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Expressie verwijderen: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Typ “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "plakken toestaan"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element is verborgen"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Geen stacktrace beschikbaar"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glief)}other{(# gliefen)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Suggestie geaccepteerd"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Andere @regels"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatische donkere modus"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Screenshot maken van gebied"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Niet-bijdragende css-regels samenvouwen"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stijlen kopiëren"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Property's bekijken"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Stacktrace bekijken"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Stijlen tonen"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stacktrace"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Toegankelijkheidsstructuur aan- of uitzetten"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stoppen"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Foutopsporingsmodus voor tijdlijn (details van trace-gebeurtenissen, enzovoort)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Alle evenementen weergeven"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Redenen voor compositing"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Toegankelijkheid"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentisch browsen"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Deze checks zorgen voor websites van hoge kwaliteit die AI-agents kunnen doorzoeken en valideren de correctheid van WebMCP-integraties. Deze categorie is nog in ontwikkeling en kan worden gewijzigd."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Desktop-emulatie toepassen tijdens audit"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stoppen"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Foutopsporingsmodus voor tijdlijn (details van trace-gebeurtenissen, enzovoort)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Tracking van ongeldig maken"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Alle evenementen weergeven"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Opslaan"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Meer tools"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Reden: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Afbeelding opslaan als…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Deze afbeelding is te groot om weer te geven in DevTools. Klik hier om deze te openen in een nieuw tabblad."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Zoeken"

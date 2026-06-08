@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Приказ на проблеми"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Табла за Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Табла за „Алатката за проверка на меморијата“"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Се користи неподдржана функција"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Протокол за потврда на е-пошта"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API за Federated Credential Management"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-атрибут: автоматско довршување"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Документ што ја објаснува интервенцијата за враќање на рекламата"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Објаснувач на CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Отстранете ги големите, [дупликат JavaScript-модули](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) од пакетите за да ги намалите непотребните бајти што ги троши мрежната активност."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Не е најден дупликат JavaScript"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Дупликат JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Фонт"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Не се најдени фонтови со подоптимален приказ на фонт"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Приказ на фонтови"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Полифилите и трансформациите им овозможуваат на постарите прелистувачи да ги користат новите функции на JavaScript. Сепак, многу не се потребни за модерните прелистувачи. Сменете го вашиот процес на создавање JavaScript за да не се транспилираат функции на [Основната линија](https://web.dev/articles/baseline-and-polyfills), освен ако знаете дека мора да поддржувате постари прелистувачи. [Дознајте зошто повеќето од сајтовите може да извршуваат код ES6+ без транспилирање](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Не е најдена постара верзија на JavaScript"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Постара верзија на JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Вклучете {PH1} за да добивате помош со стилови, мрежни барања, изведба и датотеки"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Како markdown"
+    "message": "Целосен разговор"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Како барање"
+    "message": "Барање за резиме"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Копирано во привремената меморија"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Откажани: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Предизвикано од:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Избриши ги филтрите"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Контекст на JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "дозволи лепење"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Не лепете код што не го разбирате или не сте го прегледале лично во DevTools. Тоа би можело да им овозможи на напаѓачите да го украдат вашиот идентитет или да ја преземат контролата над вашиот компјутер. Напишете „{PH1}“ подолу за да дозволите лепење."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Дали имате доверба во кодов?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Процени, дозволувајќи нуспојави"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Отстрани го изразот: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Напишете „{PH1}“"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "дозволи лепење"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Елементот е скриен"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Нема достапен stack trace"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# глиф)}one{(# глиф)}other{(# глифа)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Предлогот е прифатен."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Други @правила"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автоматски темен режим"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Сними слика од екранот на областа"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Собери ги правилата за CSS што не вршат никакво влијание"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Копирај ги стиловите"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Прикажи ги својствата"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Прикажи stack trace"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Прикажи стилови"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stack Trace"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Прикажи/скриј го дрвото на пристапност"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Запри"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим за отстранување грешки на хронолошката оска (детали за настани за следење итн.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Прикажи ги сите настани"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Причини за составување"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Пристапност"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агентско прелистување"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Овие проверки обезбедуваат висококвалитетни вебсајтови што може да се прелистуваат за AI-агентите и ја потврдуваат точноста на WebMCP-интеграциите. Категоријава сѐ уште е во развој и подлежи на промени."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Примени компјутерска емулација при проверката"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Запри"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим за отстранување грешки на хронолошката оска (детали за настани за следење итн.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Следење на поништувањето"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Прикажи ги сите настани"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Зачувај"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Повеќе алатки"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Причина: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Зачувај ја сликата како…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Сликава е преголема за да се прикаже во DevTools. Кликнете овде за да ја отворите во нова картичка."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Најди"

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Chế độ xem vấn đề"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Bảng điều khiển Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Bảng điều khiển Trình kiểm tra bộ nhớ"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Đang dùng một tính năng không dùng nữa"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Giao thức xác minh email"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Thuộc tính HTML: tự động hoàn thành"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Thông tin giải thích về biện pháp can thiệp đối với hành vi quay lại quảng cáo"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Nội dung giải thích của CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Xoá [các mô-đun JavaScript trùng lặp](https://developer.chrome.com/docs/performance/insights/duplicated-javascript), lớn khỏi gói để giảm số byte không cần thiết mà hoạt động mạng sử dụng."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Không tìm thấy JavaScript trùng lặp"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript trùng lặp"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Phông chữ"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Không tìm thấy phông chữ nào có thuộc tính hiển thị phông chữ chưa tối ưu"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Hiển thị phông chữ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Mã Polyfill và Transform cho phép các trình duyệt cũ sử dụng những tính năng mới của JavaScript. Tuy nhiên, có nhiều tính năng không cần thiết cho trình duyệt hiện đại. Hãy cân nhắc sửa đổi quy trình xây dựng JavaScript để không chuyển đổi mã nguồn các tính năng [Đường cơ sở](https://web.dev/articles/baseline-and-polyfills), trừ phi bạn biết rằng mình phải hỗ trợ các trình duyệt cũ. [Tìm hiểu lý do hầu hết các trang web có thể triển khai mã ES6+ mà không cần chuyển đổi mã nguồn](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Không tìm thấy JavaScript cũ"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript cũ"
@@ -3201,10 +3219,10 @@
     "message": "Bật {PH1} để được trợ giúp về kiểu, yêu cầu mạng, hiệu suất và tệp"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Dưới dạng markdown"
+    "message": "Toàn bộ cuộc hội thoại"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Dưới dạng câu lệnh"
+    "message": "Câu lệnh tóm tắt"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Đã sao chép vào bảng nhớ tạm"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} lệnh gọi công cụ đã huỷ"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Nguyên nhân:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Xoá bộ lọc"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Ngữ cảnh JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "cho phép dán"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Không dán mã mà bạn không nắm rõ hoặc chưa tự xem xét vào Công cụ cho nhà phát triển. Hành động này có thể tạo điều kiện cho kẻ tấn công đánh cắp danh tính của bạn hoặc kiểm soát máy tính của bạn. Vui lòng nhập \"{PH1}\" vào bên dưới để cho phép dán."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Bạn có tin tưởng mã này không?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Đánh giá, cho phép hiệu ứng phụ"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Xóa biểu thức: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Nhập \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "cho phép dán"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Phần tử đã bị ẩn"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Không có dấu vết ngăn xếp nào"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ký tự)}other{(# ký tự)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Đã chấp nhận đề xuất."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Quy tắc @ khác"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Chế độ tối tự động"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Chụp ảnh màn hình khu vực"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Thu gọn các quy tắc CSS không đóng góp"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Sao chép kiểu"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Hiển thị thuộc tính"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Hiển thị dấu vết ngăn xếp"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Hiện kiểu"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Dấu vết ngăn xếp"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Bật/tắt cây hỗ trợ tiếp cận"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Dừng"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Chế độ gỡ lỗi dòng thời gian (thông tin chi tiết về sự kiện theo dõi, v.v.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Hiển thị tất cả sự kiện"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Đang tổng hợp lý do"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Hỗ trợ tiếp cận"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Duyệt web bằng tác nhân"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Các hoạt động kiểm tra này đảm bảo rằng các trang web có chất lượng cao và có thể xem được đối với các tác nhân AI, đồng thời xác thực tính chính xác của các phần tích hợp WebMCP. Danh mục này vẫn đang trong giai đoạn phát triển và có thể thay đổi."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Áp dụng quy trình mô phỏng trên máy tính trong khi kiểm tra"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Dừng"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Chế độ gỡ lỗi dòng thời gian (thông tin chi tiết về sự kiện theo dõi, v.v.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Theo dõi việc vô hiệu hoá"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Hiển thị tất cả sự kiện"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Lưu"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Công cụ khác"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Lý do: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Lưu hình ảnh dưới dạng…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Hình ảnh này quá lớn nên không hiển thị được trong Công cụ cho nhà phát triển. Hãy nhấp vào đây để mở hình ảnh trong một thẻ mới."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Tìm"

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Mwonekano wa matatizo"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Kidirisha cha Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Kidirisha cha Kikagua hifadhi"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Umetumia kipengele kilichoacha kuendesha huduma"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Itifaki ya Uthibitishaji wa Anwani za Barua Pepe"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API Iliyoshirikishwa ya Usimamizi wa Vitambulisho"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Sifa ya HTML: imejazwa kiotomatiki"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Ufafanuzi kuhusu hatua za kurudi kwenye tangazo"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Kifafanuzi cha CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Ondoa sehemu kubwa [za nakala za JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) kwenye vifurushi ili kupunguza baiti zisizohitajika ambazo zinatumika katika shughuli za mtandao."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Hakuna JavaScript inayojirudia iliyopatikana"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript inayojirudia"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fonti"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Hakuna fonti zenye mwonekano usio bora zilizopatikana"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Mwonekano wa fonti"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Misimbo ya kuwezesha utendaji wa kivinjari na mabadiliko huwezesha vivinjari vilivyopitwa na wakati kutumia vipengele vipya vya JavaScript. Hata hivyo, vivinjari vya kisasa havihitaji vipengele hivyo. Zingatia kuboresha mchakato wako wa kuunda JavaScript ili usibadilishe vipengele vya [Kisasa](https://web.dev/articles/baseline-and-polyfills), isipokuwa uwe unafahamu kuwa ni sharti utumie vivinjari vilivyopitwa na wakati. [Pata maelezo kwa nini tovuti nyingi zinaweza kutumia msimbo wa ES6+ bila kubadilisha vipengele](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Hakuna JavaScript ya kitambo iliyopatikana"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript iliyopitwa na wakati"
@@ -3201,10 +3219,10 @@
     "message": "Washa {PH1} ili upate usaidizi wa miundo, maombi ya mtandao, utendaji na faili"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Kama alama maalum za muundo"
+    "message": "Mazungumzo kamili"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Kama kidokezo"
+    "message": "Kidokezo cha muhtasari"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Yamenakiliwa kwenye ubao wa kunakili"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} zimekatishwa"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Imesababishwa na:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Ondoa vichujio"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Muktadha wa JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ruhusu kubandika"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Usibandike msimbo usiouelewa au ambao hujaukagua kwenye Zana za Wasanidi Programu. Hali hii inaweza kuwapa nafasi washambuliaji kuiba utambulisho wako au kudhibiti kompyuta yako. Tafadhali andika “{PH1}” hapa chini ili uruhusu kubandika."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Je, unauamini msimbo huu?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Kipengele cha kutathmini, kuruhusu athari"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Ondoa kilinganishi: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Aina “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ruhusu kubandika"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Kipengee kimefichwa"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Hakuna ufuatiliaji wa rafu uliopatikana"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(Glifu #)}other{(Glifu #)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Pendekezo limekubaliwa."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Nyingine @kanuni"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Hali nyeusi inayowekwa kiotomatiki"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Piga picha ya skrini ya sehemu hii"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Kunja amri za CSS zisizochangia"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Nakili miundo"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Onyesha Vipengele"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Onyesha Ufuatiliaji wa Rafu"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Onyesha Miundo"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Ufuatiliaji wa Rafu"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Geuza mfumo wa ngazi ya ufikivu"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Komesha"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Hali ya utatuzi wa matukio (maelezo ya tukio la kufuatilia, nk.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Onyesha matukio yote"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Sababu za Kuchanganya"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Ufikivu"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Kuvinjari kwa uwezo wa kutekeleza majukumu"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Ukaguzi huu huhakikisha mifumo tekelezi ya AI inapata tovuti za ubora wa juu ambazo inaweza kuvinjari na pia huthibitisha usahihi wa ujumuishaji wa WebMCP. Aina hii bado inasanidiwa na inaweza kubadilika."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Tumia uigaji wa kompyuta ya mezani wakati wa ukaguzi"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Komesha"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Hali ya utatuzi wa matukio (maelezo ya tukio la kufuatilia, nk.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Kufuatilia ubatilishaji"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Onyesha matukio yote"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Hifadhi"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Zana zaidi"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Sababu: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Hifadhi picha ikiwa…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Picha hii ni kubwa mno, kwa hivyo haiwezi kuonyeshwa kwenye Zana za Wasanidi Programu. Bofya hapa ili uifungue katika kichupo kipya."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Tafuta"
   },
@@ -18165,7 +18219,7 @@
     "message": "Maeneo {PH1} ya uteuzi"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Usibandike msimbo usiouelewa au ambao hujaukagua kwenye Zana za Wasanidi Programu. Hali hii inaweza kuwaruhusu wadukuzi kuiba utambulisho wako au kudhibiti kompyuta yako. Tafadhali andika “{PH1}” hapa chini ili uruhusu kubandika."
+    "message": "Usibandike msimbo usiouelewa au ambao hujaukagua kwenye Zana za Wasanidi Programu. Hali hii inaweza kuwapa nafasi washambuliaji kuiba utambulisho wako au kudhibiti kompyuta yako. Tafadhali andika “{PH1}” hapa chini ili uruhusu kubandika."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Je, unauamini msimbo huu?"

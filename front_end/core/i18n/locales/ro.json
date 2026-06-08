@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Afișarea Probleme"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panoul Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panoul Inspector de memorie"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "S-a folosit o funcție învechită"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protocol de verificare a adresei de e-mail"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API-ul Federated Credential Management"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: completare automată"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Explicație privind intervenția de revenire la anunț"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Mesaj explicativ despre CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Elimină [modulele JavaScript dublate](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) și mari din grupuri pentru a reduce consumul inutil de byți prin activitatea din rețea."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Nu s-a găsit JavaScript dublat"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript dublură"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Nu s-au găsit fonturi cu afișare a fontului sub nivelul optim"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Afișarea fontului"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Codurile polyfill și transformările fac posibilă folosirea noilor funcții JavaScript în browserele vechi. Însă pentru browserele moderne, majoritatea nu sunt necesare. Poți să modifici procesul versiunii JavaScript astfel încât să nu transpileze funcțiile [Baseline](https://web.dev/articles/baseline-and-polyfills), cu excepția cazului în care știi că trebuie să accepti browserele mai vechi. [Află de ce majoritatea site-urilor pot implementa cod ES6+ fără transpilare](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Nu s-a găsit JavaScript vechi"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript vechi"
@@ -3201,10 +3219,10 @@
     "message": "Activează {PH1} pentru ajutor cu stilurile, solicitările de rețea, performanța și fișierele"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Ca marcaj"
+    "message": "Conversație completă"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Ca solicitare"
+    "message": "Rezumatul solicitării"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "S-a copiat în clipboard"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Anulate: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Cauzată de:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Șterge filtrele"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Context JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "permite inserarea"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Nu insera cod pe care nu îl înțelegi sau pe care nu l-ai examinat în DevTools. Acest lucru le poate permite atacatorilor să îți fure identitatea sau să preia controlul asupra computerului tău. Introdu {PH1} mai jos pentru a permite inserarea."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Ai încredere în acest cod?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evaluează și permite efectele secundare"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Elimină expresia: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Tastează {PH1}"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "permite inserarea"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementul este ascuns"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Nu este disponibilă nicio urmărire a stivei"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glifă)}few{(# glife)}other{(# de glife)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Sugestia a fost acceptată."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Alte @reguli"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Modul întunecat automat"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Realizează o captură de ecran a zonei"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Restrânge regulile CSS care nu contribuie"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Copiază stilurile"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Afișează proprietățile"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Afișează urmărirea stivei"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Afișează Stiluri"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Urmărirea stivei"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Activează / dezactivează structura arbore pentru accesibilitate"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Oprește"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Modul de remediere a erorilor din Cronologie (detalii despre evenimentele de urmărire etc.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Afișează toate evenimentele"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Motivele compunerii"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accesibilitate"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Navigare autonomă"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Aceste verificări asigură site-uri de înaltă calitate, care pot fi răsfoite de agenții AI, și validează corectitudinea integrărilor WebMCP. Această categorie este încă în dezvoltare și poate suferi modificări."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Aplică simularea computerelor în timpul auditului"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Oprește"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Modul de remediere a erorilor din Cronologie (detalii despre evenimentele de urmărire etc.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Urmărirea invalidărilor"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Afișează toate evenimentele"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Salvează"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Mai multe instrumente"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Motiv: {PH1}"
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Salvează imaginea ca…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Imaginea este prea mare pentru a fi afișată în DevTools. Dă clic aici pentru a o deschide într-o filă nouă."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Caută"

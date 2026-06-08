@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Tampilan masalah"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Panel Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel Pemeriksa memori"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Menggunakan fitur yang tidak digunakan lagi"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokol Verifikasi Email"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: pelengkapan otomatis"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Penjelasan intervensi kembali ke iklan"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Penjelasan CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Menghapus [modul JavaScript duplikat](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) yang besar dari paket untuk mengurangi byte tidak perlu yang digunakan oleh aktivitas jaringan."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Tidak ada JavaScript duplikat yang ditemukan"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "JavaScript Duplikat"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Tidak ditemukan font dengan font-display yang kurang optimal"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Tampilan font"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill dan transformasi memungkinkan browser lama menggunakan fitur JavaScript yang baru. Namun, banyak di antara fitur tersebut yang tidak diperlukan browser modern. Pertimbangkan untuk mengubah proses build JavaScript Anda agar tidak mentranspilasi fitur [Baseline](https://web.dev/articles/baseline-and-polyfills), kecuali jika Anda tahu bahwa Anda harus mendukung browser lama. [Pelajari alasan sebagian besar situs dapat men-deploy kode ES6+ tanpa mentranspilasi](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Tidak ada JavaScript versi lama yang ditemukan"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "JavaScript Versi Lama"
@@ -3201,10 +3219,10 @@
     "message": "Aktifkan {PH1} untuk mendapatkan bantuan terkait gaya, permintaan jaringan, performa, dan file"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Sebagai markdown"
+    "message": "Percakapan lengkap"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Sebagai perintah"
+    "message": "Perintah ringkasan"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Disalin ke papan klip"
@@ -4964,6 +4982,9 @@
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} Dibatalkan"
   },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Disebabkan oleh:"
+  },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Hapus filter"
   },
@@ -5691,7 +5712,7 @@
     "message": "Penyimpanan bersama"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorageDescription": {
-    "message": "Di halaman ini, Anda dapat melihat, menambahkan, mengedit, dan menghapus pasangan nilai kunci penyimpanan bersama serta melihat peristiwa penyimpanan bersama."
+    "message": "Di halaman ini, Anda dapat melihat, menambahkan, mengedit, dan menghapus pasangan kunci-nilai penyimpanan bersama serta melihat peristiwa penyimpanan bersama."
   },
   "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
     "message": "Kebocoran data yang tersisa diizinkan dalam periode 24 jam untuk origin ini di bit entropi"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Konteks JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "izinkan penempelan"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Jangan menempelkan kode yang tidak Anda pahami atau belum Anda tinjau sendiri ke DevTools. Hal ini dapat memungkinkan penyerang mencuri identitas Anda atau mengambil alih komputer Anda. Ketik “{PH1}” di bawah untuk mengizinkan penempelan."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Apakah Anda memercayai kode ini?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evaluasi, mengizinkan efek samping"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Hapus ekspresi: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Ketik “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "izinkan penempelan"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elemen disembunyikan"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Tidak ada pelacakan tumpukan yang tersedia"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyph)}other{(# glyph)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "Saran {PH1} diterima."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Aturan @rules lainnya"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Mode gelap otomatis"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Ambil screenshot area"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Ciutkan aturan CSS yang tidak berkontribusi"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Salin gaya"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Tampilkan Properti"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Tampilkan Pelacakan Tumpukan"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Tampilkan Gaya"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stack Trace"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Aktifkan/nonaktifkan hierarki aksesibilitas"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Hentikan"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Mode debug linimasa (detail peristiwa pelacakan, dll.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Tampilkan semua peristiwa"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Menggabungkan Alasan"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Aksesibilitas"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Penjelajahan agentic"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Pemeriksaan ini memastikan situs berkualitas tinggi yang dapat dijelajahi oleh agen AI, serta memvalidasi ketepatan integrasi WebMCP. Kategori ini masih dalam pengembangan dan dapat berubah sewaktu-waktu."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Terapkan emulasi desktop selama proses audit"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Hentikan"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Mode debug linimasa (detail peristiwa pelacakan, dll.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Pelacakan pembatalan"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Tampilkan semua acara"
+    "message": "Tampilkan semua peristiwa"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Ditandai dengan ignoreList di peta sumber"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Simpan"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Alat lainnya"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Alasan: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Simpan gambar sebagai…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Gambar ini terlalu besar untuk ditampilkan di DevTools. Klik di sini untuk membukanya di tab baru."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Temukan"

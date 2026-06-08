@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Асуудлын харагдах байдал"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-н түр зуурын самбар"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Санах ой шалгагчийн түр зуурын самбар"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Зогсоосон онцлог ашигласан"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Имэйлээр баталгаажуулах протокол"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Нэгдсэн мандат үнэмлэхийн менежментийн API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML атрибут: автоматаар гүйцээх"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Зарын хөндлөнгийн оролцооны тайлбарлагч"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB тайлбарлагч"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Сүлжээний үйл ажиллагаанаас зарцуулах шаардлагагүй байтыг багасгахын тулд том, [хуулбар JavaScript-н модулийг](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) багцаас хасна уу."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Ямар ч давхардсан JavaScript олдсонгүй"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Давхардсан JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Фонт"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Фонт үзүүлэх оновчтой бус тохиргоотой фонт олдсонгүй"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Фонт үзүүлэх"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill, хувиргалт нь хуучин хөтчид JavaScript-н шинэ онцлогуудыг ашиглах боломжийг олгодог. Гэсэн хэдий ч ихэнх нь орчин үеийн хөтчид шаардлагагүй. Та хуучин хөтчийг дэмжих ёстойг мэдэж байгаагаас бусад тохиолдолд JavaScript-н бүтээх процессоо [Суурь](https://web.dev/articles/baseline-and-polyfills) онцлогуудыг хөрвүүлэхгүй байхаар өөрчлөх талаар бодож үзнэ үү. [Ихэнх сайт яагаад ES6+ кодыг хөрвүүлэхгүйгээр түгээн байрлуулж чаддаг талаар мэдэж авах](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Ямар ч уламжлалт JavaScript олдсонгүй"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Уламжлалт JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Загвар, сүлжээний хүсэлт, гүйцэтгэл, файлуудтай холбоотой тусламж авахын тулд {PH1}-г асаана уу"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdown хэлбэрээр"
+    "message": "Бүтэн харилцан яриа"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Заавар хэлбэрээр"
+    "message": "Хураангуйн заавар"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Түр санах ойд хуулсан"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1}-г цуцалсан"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Шалтгаан:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Шүүлтүүр арилгах"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript хам сэдэв: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "буулгахыг зөвшөөрөх"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Та ойлгохгүй байгаа эсвэл өөрөө шалгаагүй кодоо DevTools-д бүү буулгаарай. Энэ нь халдагчид таны хувийн мэдээллийг хулгайлах, компьютерыг тань хянах боломжийг олгож болзошгүй. Буулгахыг зөвшөөрөхийн тулд доор “{PH1}” гэж бичнэ үү."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Та энэ кодод итгэдэг үү?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Үнэлэх, гаж нөлөөг зөвшөөрөх"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Илэрхийлэл хасах: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” гэж бичих"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "буулгахыг зөвшөөрөх"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Элементийг нуусан байна"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Боломжтой стекийн мөр байхгүй"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# глиф)}other{(# глиф)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1}-н зөвлөмжийг зөвшөөрсөн."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Бусад @дүрэм"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автомат бараан горим"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Хэсгийн дэлгэцийн агшныг авах"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Хувь нэмэр оруулаагүй CSS дүрмийг хураах"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Загварыг хуулах"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Өмчийг харуулах"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Стекийн мөрийг харуул"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Загваруудыг харуулах"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Стекийн мөр"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Хүртээмжтэй модыг асаах/унтраах"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Зогсоох"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Он цагийн хэлхээсний дебаг хийх горим (ул мөрийн үйл явдлын дэлгэрэнгүй мэдээлэл гэх мэт)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Бүх үйл явдлыг харуулах"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Нэгтгэх шалтгаан"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Хүртээмж"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агент ашиглан үзэх"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Эдгээр шалгалт нь ХОУ-ы агентуудад зориулсан өндөр чанартай, үзэх боломжтой вебсайтуудыг баталгаажуулж, WebMCP-н нэгтгэлийн зөв байдлыг баталгаажуулдаг. Энэ ангиллыг хөгжүүлсээр байгаа бөгөөд өөрчлөгдөж болно."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Аудитын үеэр дэлгэцийн эмуляцыг ашиглах"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Зогсоох"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Он цагийн хэлхээсний дебаг хийх горим (ул мөрийн үйл явдлын дэлгэрэнгүй мэдээлэл гэх мэт)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Хүчингүй болгох хяналт"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Бүх үйл явдлыг харуулах"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Хадгалах"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Бусад хэрэгсэл"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Шалтгаан: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Зургийг дараах хэлбэрээр хадгалах…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Энэ зургийг DevTools-д үзүүлэхэд хэт том байна. Үүнийг шинэ табд нээхийн тулд энд товшино уу."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Олох"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} сонголтын бүс"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Өөрөө ойлгохгүй байгаа, өөрөө хянаагүй кодыг DevTools-д бүү буулгаарай. Энэ нь халдагчид таны хувийн мэдээллийг хулгайлах, компьютерыг тань хянах боломжийг олгож болзошгүй. Буулгахыг зөвшөөрөхийн тулд доор “{PH1}” гэж бичнэ үү."
+    "message": "Та ойлгохгүй байгаа эсвэл өөрөө шалгаагүй кодоо DevTools-д бүү буулгаарай. Энэ нь халдагчид таны хувийн мэдээллийг хулгайлах, компьютерыг тань хянах боломжийг олгож болзошгүй. Буулгахыг зөвшөөрөхийн тулд доор “{PH1}” гэж бичнэ үү."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Та энэ кодод итгэдэг үү?"

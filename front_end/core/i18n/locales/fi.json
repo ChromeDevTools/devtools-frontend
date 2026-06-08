@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Ongelmanäkymä"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-paneeli"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Muistin tarkistimen paneeli"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Käytöstä poistettua ominaisuutta käytetty"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Sähköpostin vahvistusprotokolla"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attribuutti: automaattinen täydennys"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Takaisin mainokseen ‑toiminnon selitys"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-pohjustusviesti"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Poista suuret, [kopioidut JavaScript-moduulit](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) paketeista pienentääksesi verkkotoiminnan tarpeetonta tavunkulutusta."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Päällekkäistä JavaScriptiä ei löydy"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Päällekkäinen JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Fontti"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Optimaalisen font-display-arvon ulkopuolisia fontteja ei löytynyt"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Fontin näyttö"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill- ja transform-merkintöjen avulla vanhemmat selaimet voivat käyttää uusia JavaScript-ominaisuuksia. Monia ei kuitenkaan tarvita nykyaikaisissa selaimissa. Harkitse JavaScript-käännösprosessin muuttamista niin, että [Baseline](https://web.dev/articles/baseline-and-polyfills)-ominaisuuksien ohjelmkointikoodin kieltä ei käännetä, ellet tiedä, että sinun on tuettava vanhempia selaimia. [Lue lisää siitä, miksi useimmat sivustot voivat ottaa käyttöön ES6+-koodin ilman ohjelmointikoodin kielen kääntämistä](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Vanhaa JavaScriptiä ei löydy"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Vanha JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Laita {PH1} päälle, niin saat apua tyylien, verkkopyyntöjen, suorituskyvyn ja tiedostojen kanssa"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdownina"
+    "message": "Täysi keskustelu"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Kehotteena"
+    "message": "Yhteenvetokehote"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Kopioitu leikepöydälle"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} peruttu"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Aiheuttaja:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Tyhjennä suodattimet"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-konteksti: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "salli liittäminen"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Älä liitä DevToolsiin koodia, jota et ymmärrä tai et ole tarkistanut. Tämä voi sallia hyökkääjien varastaa henkilöllisyytesi tai ottaa tietokoneesi haltuun. Salli liittäminen kirjoittamalla alle \"{PH1}\"."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Luotatko tähän koodiin?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Arvioi, sivuvaikutukset sallittu"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Poista lauseke: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Kirjoita \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "salli liittäminen"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementti on piilotettu"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Jäljityslistaa ei käytettävissä"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyyfi)}other{(# glyyfiä)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Ehdotus hyväksytty."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Muut @säännöt"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automaattinen tumma tila"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Ota aluekuvakaappaus"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Tiivistä CSS-säännöt, jotka eivät vaikuta"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopioi tyylit"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Näytä ominaisuudet"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Näytä jäljityslista"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Näytä tyylit"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Jäljityslista"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Esteettömyyspuu päälle/pois"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Lopeta"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Aikajanan virheenkorjaustila (jäljitystapahtuman tiedot jne.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Näytä kaikki tapahtumat"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Yhdistämissyyt"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Esteettömyys"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agenttiselaus"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Näillä tarkistuksilla varmistetaan, että tekoälyagentit käyttävät laadukkaita ja selattavissa olevia verkkosivustoja, ja todennetaan WebMCP-integraatioiden oikeellisuus. Kategoriaa kehitetään yhä, ja se voi vielä muuttua."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Käytä tietokone-emulointia tarkastuksen aikana"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Lopeta"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Aikajanan virheenkorjaustila (jäljitystapahtuman tiedot jne.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Kumoamisen seuranta"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Näytä kaikki tapahtumat"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Tallenna"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Lisää työkaluja"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Syy: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Tallenna kuva nimellä…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Kuva on liian suuri näytettäväksi DevToolsissa. Avaa se uudella välilehdellä klikkaamalla tästä."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Hae"

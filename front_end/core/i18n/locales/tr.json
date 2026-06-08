@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Sorun görünümü"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse paneli"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Bellek denetleyicisi paneli"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Desteği sonlandırılan özellik kullanıldı"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "E-posta Doğrulaması Protokolü"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML özelliği: otomatik tamamlama"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Reklama dönüş müdahalesi açıklayıcısı"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB açıklayıcısı"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Ağ etkinliğinin kullandığı bayt sayısını azaltmak için paketlerden büyük, [yinelenen JavaScript modüllerini](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) kaldırın."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Yinelenen JavaScript dosyası bulunamadı"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Yinelenen JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Yazı tipi"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "İdeal olmayan yazı tipi görüntüleme ayarına sahip yazı tipi bulunamadı"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Yazı tipi görüntüleme"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfill'ler ve dönüşümler, daha eski tarayıcıların yeni JavaScript özelliklerini kullanmasını sağlar. Ancak, çoğu modern tarayıcılar için gerekli değildir. Daha eski tarayıcıları desteklemeniz gerekmediğinden eminseniz JavaScript derleme işleminizi [Baseline](https://web.dev/articles/baseline-and-polyfills) özelliklerini çevirecek şekilde değiştirmeyi düşünün. [Çoğu sitenin neden ES6+ kodunu çevirmeden dağıtabildiğini öğrenin](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Eski JavaScript dosyası bulunamadı"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Eski JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Stiller, ağ istekleri, performans ve dosyalarla ilgili yardım almak için {PH1} özelliğini etkinleştirin"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Markdown olarak"
+    "message": "Tam sohbet"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "İstem olarak"
+    "message": "Özet istemi"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Panoya kopyalandı"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} İptal Edildi"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Yol açan neden:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Filtreleri temizle"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript bağlamı: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "yapıştırmaya izin ver"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Anlamadığınız veya kendiniz incelemediğiniz kodu Geliştirici Araçları'na yapıştırmayın. Aksi takdirde, saldırganlar kimliğinizi çalabilir veya bilgisayarınızın kontrolünü ele geçirebilir. Yapıştırmaya izin vermek için lütfen aşağıya '{PH1}' yazın."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Bu koda güveniyor musunuz?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Yan etkilere izin vererek değerlendir"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "İfadeyi kaldır: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "\"{PH1}\" türü"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "yapıştırmaya izin ver"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Nesne gizli"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Kullanılabilir yığın izleme (stack trace) yok"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glif)}other{(# glif)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Öneri kabul edildi."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Diğer kurallar"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Otomatik koyu mod"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Alan ekran görüntüsü al"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Katkıda bulunmayan CSS kurallarını daralt"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Stilleri kopyala"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Özellikleri Göster"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Yığın İzleme'yi (Stack Trace) göster"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Stilleri Göster"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Yığın izleme (stack trace)"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Erişilebilirlik ağacını aç/kapat"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Durdur"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Zaman çizelgesi hata ayıklama modu (izleme etkinliği ayrıntıları vb.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Tüm etkinlikleri göster"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Birleştirilme Nedenleri"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Erişilebilirlik"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Ajan tabanlı göz atma"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Bu kontroller, yapay zeka ajanları için yüksek kaliteli, göz atılabilir web siteleri sağlar ve WebMCP entegrasyonlarının doğruluğunu onaylar. Bu kategori hâlâ geliştirme aşamasında olduğundan değişebilir."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Denetleme sırasında masaüstü emülasyonunu uygula"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Durdur"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Zaman çizelgesi hata ayıklama modu (izleme etkinliği ayrıntıları vb.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Geçersiz kılma takibi"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Tüm etkinlikleri göster"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Kaydet"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Diğer araçlar"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Neden: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Resmi farklı kaydet…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Bu resim, Geliştirici Araçları'nda gösterilemeyecek kadar büyük. Yeni sekmede açmak için burayı tıklayın."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Bul"

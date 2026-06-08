@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Kwessies-aansig"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-paneel"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Geheuekontroleerder-paneel"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Opgeskorte kenmerk word gebruik"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "E-posverifikasieprotokol"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-kenmerk: outovoltooi"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Verduideliking van terug-na-advertensie-ingryping"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB-verduideliker"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Verwyder groot [duplikaat-JavaScript-modules](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) uit bondels om onnodige grepe te verminder wat deur netwerkaktiwiteit verbruik word."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Geen gedupliseerde JavaScript gevind nie"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Gedupliseerde JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Lettertipe"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Geen lettertipes met suboptimale font-display gevind nie"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Lettertipeskerm"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Polyfills en omskeppings maak dit vir ouer blaaiers moontlik om nuwe JavaScript-kenmerke te gebruik. Baie daarvan is egter nie vir moderne blaaiers nodig nie. Oorweeg dit om jou JavaScript-bouproses te wysig om nie [Basislyn](https://web.dev/articles/baseline-and-polyfills)-kenmerke bron-tot-bron oor te dra nie, tensy jy weet dat jy ouer blaaiers moet steun. [Vind uit hoekom meeste werwe ES6+-kode kan ontplooi sonder om bron-tot-bron oor te dra](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Geen vorige JavaScript gevind nie"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Vorige JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Skakel {PH1} aan om hulp te kry met style, netwerkversoeke, werkverrigting en lêers"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "As markdown"
+    "message": "Volledige gesprek"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "As instruksieteks"
+    "message": "Opsomminginstruksieteks"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Gekopieer na knipbord"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} is gekanselleer"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Veroorsaak deur:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Maak filters skoon"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-konteks: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "laat plak toe"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Moenie kode plak wat jy nie verstaan nie of nie self in die Ontwikkelaarnutsgoed hersien het nie. Dit kan aanvallers in staat stel om jou identiteit te steel of beheer oor jou rekenaar te neem. Tik \"{PH1}\" hier onder om plak toe te laat."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Vertrou jy hierdie kode?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Evalueer, laat newe-effekte toe"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Verwyder uitdrukking: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Tik “{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "laat plak toe"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Element word versteek"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Geen stapelspoor is beskikbaar nie"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glief)}other{(# gliewe)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Voorstel aanvaar."
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Ander @reëls"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Outomatiese donkermodus"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Vang areaskermkiekie vas"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Vou niebydraende CSS-reëls in"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopieer style"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Wys eienskappe"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Wys stapelspoor"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Wys style"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stapelspoor"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Wissel toeganklikheidboom"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Tydlynontfoutmodus (spoorgevalbesonderhede, ens.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Wys alle gevalle"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Stel tans redes saam"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Toeganklikheid"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentiese blaai"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Hierdie kontroles verseker webwerwe van hoë gehalte wat deur KI-agente geblaai kan word, en bekragtig die korrektheid van WebMCP-integrasies. Hierdie kategorie word nog ontwikkel en is onderworpe aan verandering."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Pas rekenaaremulering toe tydens oudit"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stop"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Tydlynontfoutmodus (spoorgevalbesonderhede, ens.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Nasporing van ongeldigmaking"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Wys alle gebeurtenisse"
+    "message": "Wys alle gevalle"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Gemerk met ignoreList in bronafbeelding"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Stoor"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Meer nutsgoed"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Rede: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Stoor prent as …"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Hierdie prent is te groot om in Ontwikkelaarnutsgoed te wys. Klik hier om dit in ’n nuwe oortjie oop te maak."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Vind"
   },
@@ -18165,7 +18219,7 @@
     "message": "{PH1} seleksiegebiede"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Moenie kode in ontwikkelaarnutsgoed plak wat jy nie verstaan nie of nie self nagegaan het nie. Dit kan aanvallers in staat stel om jou identiteit te steel of beheer oor jou rekenaar te neem. Tik \"{PH1}\" hier onder om plak toe te laat."
+    "message": "Moenie kode plak wat jy nie verstaan nie of nie self in die Ontwikkelaarnutsgoed hersien het nie. Dit kan aanvallers in staat stel om jou identiteit te steel of beheer oor jou rekenaar te neem. Tik \"{PH1}\" hier onder om plak toe te laat."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Vertrou jy hierdie kode?"

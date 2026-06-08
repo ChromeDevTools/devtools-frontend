@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Вид \"Проблемы\""
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Панель Lighthouse"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Панель \"Инспектор памяти\""
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "Используется устаревшая функция"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Протокол подтверждения адреса электронной почты"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-атрибут: автозаполнение"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Механизм защиты от переадресации на рекламу: пояснительная записка"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Описание CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Чтобы сократить расход трафика, удалите из пакетов большие [повторяющиеся модули JavaScript](https://developer.chrome.com/docs/performance/insights/duplicated-javascript)."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Дублирующийся код JavaScript не найден."
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Дублирующийся код JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Шрифт"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Шрифты с неоптимальным значением font-display не найдены."
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Используемые шрифты"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Полифилы и преобразования позволяют работать с новыми возможностями JavaScript в более старых браузерах. Однако для современных браузеров большинство из них не требуется. Если поддержка более старых браузеров не требуется, возможно стоит изменить процесс сборки JavaScript, чтобы не транспилировать функции [Baseline](https://web.dev/articles/baseline-and-polyfills). Узнайте, [почему большинство сайтов могут использовать код ES6+ без транспилирования](https://developer.chrome.com/docs/performance/insights/legacy-javascript)."
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Устаревший код JavaScript не найден."
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Устаревший код JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Если вам нужна помощь со стилями, сетевыми запросами, производительностью или файлами, включите {PH1}."
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Как в Markdown"
+    "message": "Весь чат"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Как в запросе"
+    "message": "Запрос на создание пересказа"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Скопировано в буфер обмена."
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "Отменено: {PH1}"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Причина:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Сбросить фильтры"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "Контекст JavaScript: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "разрешить вставку"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Не вставляйте в инструменты разработчика код, который вы не понимаете или не проверяли. С его помощью злоумышленники могут украсть у вас личные данные или получить контроль над вашим компьютером. Чтобы разрешить вставку, введите \"{PH1}\" ниже."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Вы доверяете этому коду?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Оценить, разрешены побочные эффекты"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Удалить выражение: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Введите \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "разрешить вставку"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Элемент скрыт"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Нет доступных трассировок стека."
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# глиф)}one{(# глиф)}few{(# глифа)}many{(# глифов)}other{(# глифа)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Предложение принято"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Другие правила (@rules)"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Автоматическая тёмная тема"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Сделать скриншот области"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Свернуть неиспользуемые правила CSS"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Копировать стили"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Показать \"Свойства\""
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Показать трассировку стека"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Показать панель \"Стили\""
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Трассировка стека"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Показать или скрыть дерево доступности"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Остановить"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим отладки временной шкалы (сведения о событиях отслеживания и т. д.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Все события"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Причины компоновки"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Специальные возможности"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Агентный просмотр"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Эти проверки гарантируют высокое качество сайтов для ИИ-агентов и правильность интеграции WebMCP. Эта категория находится на этапе разработки и может быть изменена."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Эмулировать компьютер во время аудита"
@@ -16967,8 +17009,14 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Остановить"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Режим отладки временной шкалы (сведения о событиях отслеживания и т. д.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Отслеживание аннулирований"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
-    "message": "Все мероприятия"
+    "message": "Все события"
   },
   "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
     "message": "Входит в список игнорирования для карты исходного кода"
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сохранить"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Другие инструменты"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Причина: {PH1}."
@@ -18134,6 +18185,9 @@
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Сохранить изображение как…"
   },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Это изображение слишком большое для просмотра в инструментах разработчика. Нажмите здесь, чтобы открыть его в новой вкладке."
+  },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Найти"
   },
@@ -18165,7 +18219,7 @@
     "message": "Области выбора: {PH1}"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Не вставляйте в инструменты разработчика код, который вы не понимаете или не проверяли самостоятельно. С его помощью злоумышленники могут украсть у вас личные данные или получить контроль над вашим компьютером. Чтобы разрешить вставку, введите ''{PH1}'' ниже."
+    "message": "Не вставляйте в инструменты разработчика код, который вы не понимаете или не проверяли. С его помощью злоумышленники могут украсть у вас личные данные или получить контроль над вашим компьютером. Чтобы разрешить вставку, введите \"{PH1}\" ниже."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Вы доверяете этому коду?"

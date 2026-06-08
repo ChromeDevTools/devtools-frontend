@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "Vyn Problem"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "Lighthouse-panel"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "Panel för minnesgranskning"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "En utfasad funktion användes"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "Protokoll för e-postverifiering"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attribut: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "Förklaring av åtgärd för återgång till annons"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "Förklaring av CORB"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "Ta bort stora, [duplicerade JavaScript-moduler](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) från paket för att minska onödig nätverksaktivitet."
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "Inget duplicerat JavaScript hittades"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "Duplicerad JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "Font"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "Inga fonter med suboptimal font-display hittades"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Fontvisning"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "Med polyfill-koder och transformeringar går det att använda nya JavaScript-funktioner i äldre webbläsare. Många av dem är dock inte nödvändiga för moderna webbläsare. Överväg att ändra JavaScript-byggprocessen så att du inte transpilerar [Baseline](https://web.dev/articles/baseline-and-polyfills)-funktioner, förutom om du vet att du måste ha stöd för äldre webbläsare. [Läs mer om varför de flesta webbplatser kan implementera ES6+-kod utan transpilering](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "Inget äldre JavaScript hittades"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "Äldre JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "Aktivera {PH1} för att få hjälp med format, nätverksbegäranden, prestanda och filer"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "Som markdown"
+    "message": "Hel konversation"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "Som prompt"
+    "message": "Sammanfattningsprompt"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "Kopierat till urklipp"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} avbröts"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "Orsakades av:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Rensa filter"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript-kontext: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "tillåt inklistring"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "Klistra inte in kod som du inte förstår eller som du inte har granskat själv i Verktyg för programmerare. Detta kan göra det möjligt för angripare att stjäla din identitet eller ta kontroll över din dator. Skriv ”{PH1}” nedan för att tillåta inklistring."
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "Litar du på den här koden?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "Utvärdera, tillåt sidoeffekter"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Ta bort uttryck: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "Skriv ”{PH1}”"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "tillåt inklistring"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "Elementet har dolts"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "Ingen tillgänglig stackspårning"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# glyf)}other{(# glyfer)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} Förslaget har godkänts"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "Andra @-regler"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "Automatiskt mörkt läge"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "Ta skärmbild på området"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "Komprimera CSS-regler som inte bidrar"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "Kopiera format"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "Visa egendomar"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "Visa stackspårning"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "Visa format"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "Stackspårning"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "Aktivera eller inaktivera tillgänglighetsträd"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "Stoppa"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "Felsökningsläge för tidslinje (information om spårningshändelser osv.)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "Visa alla händelser"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "Orsaker till sammansättning"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Tillgänglighet"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "Agentisk webbsökning"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "Dessa kontroller säkerställer att webbplatser är högkvalitativa och kan läsas av AI-agenter samt validerar korrektheten i WebMCP-integrationer. Den här kategorin är fortfarande under utveckling och kan komma att ändras."
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "Tillämpa datoremulering under granskning"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Stoppa"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "Felsökningsläge för tidslinje (information om spårningshändelser osv.)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "Spårning av ogiltigförklaringar"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "Visa alla händelser"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Spara"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "Fler verktyg"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "Orsak: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "Spara bild som …"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "Den här bilden är för stor för att visas i DevTools. Klicka här för att öppna den på en ny flik."
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "Sök"

@@ -101,6 +101,9 @@
   "core/common/Revealer.ts | issuesView": {
     "message": "ਸਮੱਸਿਆਵਾਂ ਦੇਖੋ"
   },
+  "core/common/Revealer.ts | lighthousePanel": {
+    "message": "ਲਾਈਟਹਾਊਸ ਪੈਨਲ"
+  },
   "core/common/Revealer.ts | memoryInspectorPanel": {
     "message": "ਮੈਮੋਰੀ ਨਿਰੀਖਕ ਪੈਨਲ"
   },
@@ -1655,6 +1658,9 @@
   "models/issues_manager/DeprecationIssue.ts | title": {
     "message": "ਨਾਪਸੰਦ ਕੀਤੀ ਹੋਈ ਵਿਸ਼ੇਸ਼ਤਾ ਵਰਤੀ ਗਈ"
   },
+  "models/issues_manager/EmailVerificationRequestIssue.ts | emailVerification": {
+    "message": "ਈਮੇਲ ਪੁਸ਼ਟੀਕਰਨ ਪ੍ਰੋਟੋਕੋਲ"
+  },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
@@ -1663,6 +1669,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ਵਿਸ਼ੇਸ਼ਤਾ: ਸਵੈ-ਮੁਕੰਮਲ"
+  },
+  "models/issues_manager/GenericIssue.ts | backToAdInterventionPageTitle": {
+    "message": "ਵਿਗਿਆਪਨ 'ਤੇ ਵਾਪਸ ਜਾਣ ਸੰਬੰਧੀ ਦਖਲਅੰਦਾਜ਼ੀ ਵਿਆਖਿਆਕਾਰ"
   },
   "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
     "message": "CORB ਵਰਣਨਕਰਤਾ"
@@ -2360,6 +2369,9 @@
   "models/trace/insights/DuplicatedJavaScript.ts | description": {
     "message": "ਨੈੱਟਵਰਕ ਸਰਗਰਮੀ ਕਰਕੇ ਖਪਤ ਕੀਤੀਆਂ ਬੇਲੋੜੀਆਂ ਬਾਈਟਾਂ ਨੂੰ ਘਟਾਉਣ ਲਈ ਬੰਡਲਾਂ ਤੋਂ ਵੱਡੇ, [ਡੁਪਲੀਕੇਟ JavaScript ਮਾਡਿਊਲਾਂ](https://developer.chrome.com/docs/performance/insights/duplicated-javascript) ਨੂੰ ਹਟਾਓ।"
   },
+  "models/trace/insights/DuplicatedJavaScript.ts | noDuplicatedJavaScript": {
+    "message": "ਕੋਈ ਡੁਪਲੀਕੇਟ JavaScript ਨਹੀਂ ਮਿਲੀ"
+  },
   "models/trace/insights/DuplicatedJavaScript.ts | title": {
     "message": "ਡੁਪਲੀਕੇਟ JavaScript"
   },
@@ -2368,6 +2380,9 @@
   },
   "models/trace/insights/FontDisplay.ts | fontColumn": {
     "message": "ਫੌਂਟ"
+  },
+  "models/trace/insights/FontDisplay.ts | noFonts": {
+    "message": "ਕੋਈ ਵੀ ਅਜਿਹਾ ਫ਼ੌਂਟ ਨਹੀਂ ਮਿਲਿਆ, ਜੋ ਫ਼ੌਂਟ-ਡਿਸਪਲੇ ਦੀ ਸੈਟਿੰਗ ਮੁਤਾਬਕ ਨਾ ਹੋਵੇ"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ਫ਼ੌਂਟ ਡਿਸਪਲੇ"
@@ -2518,6 +2533,9 @@
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
     "message": "ਪੌਲੀਫ਼ਿਲ ਅਤੇ ਰੂਪਾਂਤਰਨ ਪੁਰਾਣੇ ਬ੍ਰਾਊਜ਼ਰਾਂ ਨੂੰ ਨਵੀਆਂ JavaScript ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਦੀ ਵਰਤੋਂ ਕਰਨ ਦੇ ਯੋਗ ਬਣਾਉਂਦੇ ਹਨ। ਹਾਲਾਂਕਿ, ਇਨ੍ਹਾਂ ਵਿੱਚੋਂ ਕਈ ਆਧੁਨਿਕ ਬ੍ਰਾਊਜ਼ਰਾਂ ਲਈ ਜ਼ਰੂਰੀ ਨਹੀਂ ਹਨ। [ਬੇਸਲਾਈਨ](https://web.dev/articles/baseline-and-polyfills) ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਨੂੰ ਟ੍ਰਾਂਸਪਾਈਲ ਨਾ ਕਰਨ ਲਈ ਆਪਣੀ JavaScript ਬਿਲਡ ਪ੍ਰਕਿਰਿਆ ਨੂੰ ਸੋਧਣ 'ਤੇ ਵਿਚਾਰ ਕਰੋ, ਇਹ ਸੋਧ ਉਦੋਂ ਨਾ ਕਰੋ ਜਦੋਂ ਤੁਹਾਡੇ ਲਈ ਪੁਰਾਣੇ ਬ੍ਰਾਊਜ਼ਰਾਂ ਦਾ ਸਮਰਥਨ ਕਰਨਾ ਲਾਜ਼ਮੀ ਹੋਵੇ। [ਜਾਣੋ ਕਿ ਜ਼ਿਆਦਾਤਰ ਸਾਈਟਾਂ ਟ੍ਰਾਂਸਪਾਈਲ ਕੀਤੇ ਬਿਨਾਂ ES6+ ਕੋਡ ਨੂੰ ਕਿਉਂ ਲਾਗੂ ਕਰ ਸਕਦੀਆਂ ਹਨ](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+  },
+  "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
+    "message": "ਕੋਈ ਵਿਰਾਸਤੀ JavaScript ਨਹੀਂ ਮਿਲੀ"
   },
   "models/trace/insights/LegacyJavaScript.ts | title": {
     "message": "ਵਿਰਾਸਤੀ JavaScript"
@@ -3201,10 +3219,10 @@
     "message": "ਸਟਾਈਲਾਂ, ਨੈੱਟਵਰਕ ਬੇਨਤੀਆਂ, ਕਾਰਗੁਜ਼ਾਰੀ, ਅਤੇ ਫ਼ਾਈਲਾਂ ਸੰਬੰਧੀ ਮਦਦ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ {PH1} ਨੂੰ ਚਾਲੂ ਕਰੋ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asMarkdown": {
-    "message": "ਮਾਰਕਡਾਊਨ ਵਜੋਂ"
+    "message": "ਪੂਰੀ ਗੱਲਬਾਤ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | asPrompt": {
-    "message": "ਪ੍ਰੋਂਪਟ ਵਜੋਂ"
+    "message": "ਸਾਰਾਂਸ਼ ਸੰਬੰਧੀ ਪ੍ਰੋਂਪਟ"
   },
   "panels/ai_assistance/components/ExportForAgentsDialog.ts | copiedToClipboard": {
     "message": "ਕਲਿੱਪਬੋਰਡ 'ਤੇ ਕਾਪੀ ਕੀਤਾ ਗਿਆ"
@@ -4963,6 +4981,9 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} ਰੱਦ ਕੀਤਾ ਗਿਆ"
+  },
+  "panels/application/WebMCPView.ts | causedBy": {
+    "message": "ਗੜਬੜ ਦਾ ਕਾਰਨ:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "ਫਿਲਟਰ ਕਲੀਅਰ ਕਰੋ"
@@ -6800,6 +6821,15 @@
   "panels/console/ConsoleContextSelector.ts | javascriptContextS": {
     "message": "JavaScript ਸੰਦਰਭ: {PH1}"
   },
+  "panels/console/ConsolePinPane.ts | allowPasting": {
+    "message": "ਪੇਸਟ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿਓ"
+  },
+  "panels/console/ConsolePinPane.ts | doNotPaste": {
+    "message": "ਅਜਿਹਾ ਕੋਡ ਪੇਸਟ ਨਾ ਕਰੋ, ਜਿਸਨੂੰ ਤੁਸੀਂ ਨਹੀਂ ਸਮਝਦੇ ਜਾਂ ਜਿਸਦੀ ਤੁਸੀਂ DevTools ਵਿੱਚ ਖੁਦ ਸਮੀਖਿਆ ਨਹੀਂ ਕੀਤੀ ਹੈ। ਇਹ ਹਮਲਾਵਰਾਂ ਨੂੰ ਤੁਹਾਡੀ ਪਛਾਣ ਚੋਰੀ ਕਰਨ ਜਾਂ ਤੁਹਾਡੇ ਕੰਪਿਊਟਰ ਨੂੰ ਕੰਟਰੋਲ ਕਰਨ ਦੀ ਆਗਿਆ ਦੇ ਸਕਦਾ ਹੈ। ਪੇਸਟ ਕਰਨ ਦੀ ਆਗਿਆ ਦੇਣ ਲਈ, ਕਿਰਪਾ ਕਰਕੇ ਹੇਠਾਂ “{PH1}” ਟਾਈਪ ਕਰੋ।"
+  },
+  "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
+    "message": "ਕੀ ਤੁਹਾਨੂੰ ਇਸ ਕੋਡ 'ਤੇ ਭਰੋਸਾ ਹੈ?"
+  },
   "panels/console/ConsolePinPane.ts | evaluateAllowingSideEffects": {
     "message": "ਮਾੜੇ ਪ੍ਰਭਾਵਾਂ ਨੂੰ ਇਜਾਜ਼ਤ ਦੇ ਕੇ ਮੁਲਾਂਕਣ ਕਰੋ"
   },
@@ -6823,6 +6853,9 @@
   },
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ਐਕਸਪ੍ਰੈਸ਼ਨ ਹਟਾਓ: {PH1}"
+  },
+  "panels/console/ConsolePinPane.ts | typeAllowPasting": {
+    "message": "“{PH1}” ਟਾਈਪ ਕਰੋ"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "ਪੇਸਟ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿਓ"
@@ -8063,9 +8096,6 @@
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "ਤੱਤ ਲੁਕਿਆ ਹੋਇਆ ਹੈ"
   },
-  "panels/elements/NodeStackTraceWidget.ts | noStackTraceAvailable": {
-    "message": "ਕੋਈ ਸਟੈਕ ਟ੍ਰੇਸ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"
-  },
   "panels/elements/PlatformFontsWidget.ts | dGlyphs": {
     "message": "{n,plural, =1{(# ਗਲਿਫ਼)}one{(# ਗਲਿਫ਼)}other{(# ਗਲਿਫ਼)}}"
   },
@@ -8222,6 +8252,9 @@
   "panels/elements/StylesSidebarPane.ts | aiSuggestionAccepted": {
     "message": "{PH1} ਸੁਝਾਅ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ।"
   },
+  "panels/elements/StylesSidebarPane.ts | atRuleSection": {
+    "message": "ਹੋਰ @rules"
+  },
   "panels/elements/StylesSidebarPane.ts | automaticDarkMode": {
     "message": "ਸਵੈਚਲਿਤ ਗੂੜ੍ਹਾ ਮੋਡ"
   },
@@ -8324,6 +8357,9 @@
   "panels/elements/elements-meta.ts | captureAreaScreenshot": {
     "message": "ਚੁਣੇ ਹੋਏ ਖੇਤਰ ਦੇ ਸਕ੍ਰੀਨਸ਼ਾਟ ਨੂੰ ਕੈਪਚਰ ਕਰੋ"
   },
+  "panels/elements/elements-meta.ts | collapseNonContributingCSSRules": {
+    "message": "ਗੈਰ-ਯੋਗਦਾਨੀ CSS ਨਿਯਮਾਂ ਨੂੰ ਸਮੇਟੋ"
+  },
   "panels/elements/elements-meta.ts | copyStyles": {
     "message": "ਸਟਾਈਲਾਂ ਨੂੰ ਕਾਪੀ ਕਰੋ"
   },
@@ -8393,14 +8429,8 @@
   "panels/elements/elements-meta.ts | showProperties": {
     "message": "ਵਿਸ਼ੇਸ਼ਤਾਵਾਂ ਦਿਖਾਓ"
   },
-  "panels/elements/elements-meta.ts | showStackTrace": {
-    "message": "ਸਟੈਕ ਟ੍ਰੇਸ ਦਿਖਾਓ"
-  },
   "panels/elements/elements-meta.ts | showStyles": {
     "message": "ਸਟਾਈਲ ਦਿਖਾਓ"
-  },
-  "panels/elements/elements-meta.ts | stackTrace": {
-    "message": "ਸਟੈਕ ਟ੍ਰੇਸ"
   },
   "panels/elements/elements-meta.ts | toggleA11yTree": {
     "message": "ਪਹੁੰਚਯੋਗਤਾ ਟ੍ਰੀ ਨੂੰ ਟੌਗਲ ਕਰੋ"
@@ -9134,6 +9164,12 @@
   "panels/js_timeline/js_timeline-meta.ts | stop": {
     "message": "ਬੰਦ ਕਰੋ"
   },
+  "panels/js_timeline/js_timeline-meta.ts | timelineDebugMode": {
+    "message": "ਟਾਈਮਲਾਈਨ ਡੀਬੱਗ ਮੋਡ (ਟ੍ਰੇਸ ਇਵੈਂਟ ਦੇ ਵੇਰਵੇ, ਆਦਿ)"
+  },
+  "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
+    "message": "ਸਾਰੇ ਇਵੈਂਟ ਦਿਖਾਓ"
+  },
   "panels/layer_viewer/LayerDetailsView.ts | compositingReasons": {
     "message": "ਕੰਪੋਜ਼ਿਟ ਕਰਨ ਦੇ ਕਾਰਨ"
   },
@@ -9316,6 +9352,12 @@
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "ਪਹੁੰਚਯੋਗਤਾ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsing": {
+    "message": "ਏਜੰਟਿਕ ਬ੍ਰਾਊਜ਼ਿੰਗ"
+  },
+  "panels/lighthouse/LighthouseController.ts | agenticBrowsingDescription": {
+    "message": "ਇਹ ਜਾਂਚਾਂ AI ਏਜੰਟਾਂ ਲਈ ਬਿਹਤਰੀਨ ਕੁਆਲਿਟੀ, ਬ੍ਰਾਊਜ਼ ਕਰਨਯੋਗ ਵੈੱਬਸਾਈਟਾਂ ਨੂੰ ਪੱਕਾ ਕਰਦੀਆਂ ਹਨ ਅਤੇ WebMCP ਏਕੀਕਰਨਾਂ ਦੀ ਸੁਧਾਈ ਨੂੰ ਪ੍ਰਮਾਣਿਤ ਕਰਦੀਆਂ ਹਨ। ਇਹ ਸ਼੍ਰੇਣੀ ਹਾਲੇ ਵੀ ਵਿਕਾਸ ਅਧੀਨ ਹੈ ਅਤੇ ਇਸ ਵਿੱਚ ਤਬਦੀਲੀ ਕੀਤੀ ਜਾ ਸਕਦੀ ਹੈ।"
   },
   "panels/lighthouse/LighthouseController.ts | applyDesktopEmulationDuring": {
     "message": "ਆਡਿਟ ਕਰਨ ਦੌਰਾਨ ਡੈਸਕਟਾਪ ਬਰਾਬਰੀ ਲਾਗੂ ਕਰੋ"
@@ -16967,6 +17009,12 @@
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "ਬੰਦ ਕਰੋ"
   },
+  "panels/timeline/timeline-meta.ts | timelineDebugMode": {
+    "message": "ਟਾਈਮਲਾਈਨ ਡੀਬੱਗ ਮੋਡ (ਟ੍ਰੇਸ ਇਵੈਂਟ ਦੇ ਵੇਰਵੇ, ਆਦਿ)"
+  },
+  "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
+    "message": "ਅਪ੍ਰਮਾਣਿਤ ਹੋਣ ਦੀ ਟਰੈਕਿੰਗ"
+  },
   "panels/timeline/timeline-meta.ts | timelineShowAllEvents": {
     "message": "ਸਾਰੇ ਇਵੈਂਟ ਦਿਖਾਓ"
   },
@@ -17476,6 +17524,9 @@
   },
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "ਰੱਖਿਅਤ ਕਰੋ"
+  },
+  "ui/legacy/PlusButton.ts | moreTools": {
+    "message": "ਹੋਰ ਟੂਲ"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
     "message": "ਕਾਰਨ: {PH1}."
@@ -18133,6 +18184,9 @@
   },
   "ui/legacy/components/source_frame/ImageView.ts | saveImageAs": {
     "message": "ਚਿੱਤਰ ਨੂੰ ਇਸ ਵਜੋਂ ਰੱਖਿਅਤ ਕਰੋ…"
+  },
+  "ui/legacy/components/source_frame/ImageView.ts | thisImageIsTooBig": {
+    "message": "ਇਹ ਚਿੱਤਰ DevTools ਵਿੱਚ ਦਿਖਾਉਣ ਲਈ ਬਹੁਤ ਵੱਡਾ ਹੈ। ਇਸਨੂੰ ਨਵੀਂ ਟੈਬ ਵਿੱਚ ਖੋਲ੍ਹਣ ਲਈ ਇੱਥੇ ਕਲਿੱਕ ਕਰੋ।"
   },
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "ਲੱਭੋ"

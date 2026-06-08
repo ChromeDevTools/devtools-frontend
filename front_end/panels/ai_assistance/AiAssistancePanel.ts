@@ -570,11 +570,11 @@ function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElem
   // clang-format on
 }
 
-function createNodeContext(node: SDK.DOMModel.DOMNode|null): AiAssistanceModel.StylingAgent.NodeContext|null {
+function createDOMNodeContext(node: SDK.DOMModel.DOMNode|null): AiAssistanceModel.DOMNodeContext.DOMNodeContext|null {
   if (!node) {
     return null;
   }
-  return new AiAssistanceModel.StylingAgent.NodeContext(node);
+  return new AiAssistanceModel.DOMNodeContext.DOMNodeContext(node);
 }
 
 function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAssistanceModel.FileAgent.FileContext|
@@ -668,7 +668,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #conversation?: AiAssistanceModel.AiConversation.AiConversation;
 
   #selectedFile: AiAssistanceModel.FileAgent.FileContext|null = null;
-  #selectedElement: AiAssistanceModel.StylingAgent.NodeContext|null = null;
+  #selectedElement: AiAssistanceModel.DOMNodeContext.DOMNodeContext|null = null;
   #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
   #selectedRequest: AiAssistanceModel.NetworkAgent.RequestContext|null = null;
 
@@ -1117,7 +1117,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#viewOutput.chatView?.focusTextInput();
     void this.#handleAidaAvailabilityChange();
     this.#selectedElement =
-        createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)));
+        createDOMNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)));
     this.#selectedRequest =
         createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace =
@@ -1225,7 +1225,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
+    this.#selectedElement = createDOMNodeContext(selectedElementFilter(ev.data));
     this.#updateConversationState(this.#conversation);
   };
 
@@ -1727,7 +1727,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #handleConversationContextChange = (data: unknown): void => {
     if (data instanceof AiAssistanceModel.FileAgent.FileContext) {
       this.#selectedFile = data;
-    } else if (data instanceof AiAssistanceModel.StylingAgent.NodeContext) {
+    } else if (data instanceof AiAssistanceModel.DOMNodeContext.DOMNodeContext) {
       this.#selectedElement = data;
     } else if (data instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
       this.#selectedRequest = data;

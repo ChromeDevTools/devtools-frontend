@@ -35,6 +35,7 @@ devtools_module("ai_assistance") {
     "agents/PerformanceAnnotationsAgent.ts",
     "agents/StorageAgent.ts",
     "agents/StylingAgent.ts",
+    "contexts/DOMNodeContext.ts",
     "data_formatters/FileFormatter.ts",
     "data_formatters/LighthouseFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",
@@ -48,6 +49,9 @@ devtools_module("ai_assistance") {
     "performance/AIQueries.ts",
     "skills/Skill.ts",
     "skills/SkillRegistry.ts",
+    "tools/GetStyles.ts",
+    "tools/Tool.ts",
+    "tools/ToolRegistry.ts",
   ]
 
   # We use public_deps here to avoid ts_library.py looking for a tsconfig
@@ -138,6 +142,8 @@ ts_library("unittests") {
     "performance/AICallTree.test.ts",
     "performance/AIContext.test.ts",
     "performance/AIQueries.test.ts",
+    "tools/GetStyles.test.ts",
+    "tools/ToolRegistry.test.ts",
   ]
 
   deps = [

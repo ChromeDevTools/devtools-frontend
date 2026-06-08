@@ -20,7 +20,8 @@ import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 
 const {AidaClient} = Host.AidaClient;
 const {ResponseType} = AiAssistance.AiAgent;
-const {NodeContext, StylingAgent} = AiAssistance.StylingAgent;
+const {DOMNodeContext} = AiAssistance.DOMNodeContext;
+const {StylingAgent} = AiAssistance.StylingAgent;
 
 class GreenDevFloaty {
   #chatContainer: HTMLDivElement;
@@ -28,7 +29,7 @@ class GreenDevFloaty {
   #playButton: HTMLButtonElement;
   #node?: SDK.DOMModel.DOMNode;
   #agent?: StylingAgent;
-  #nodeContext?: NodeContext;
+  #nodeContext?: DOMNodeContext;
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   // Switching this to false can help while investigating tool conflicts.
   #highlightNodeOnWindowFocus = false;
@@ -170,7 +171,7 @@ class GreenDevFloaty {
     if (!this.#agent) {
       const aidaClient = new AidaClient();
       this.#agent = new StylingAgent({aidaClient});
-      this.#nodeContext = new NodeContext(this.#node);
+      this.#nodeContext = new DOMNodeContext(this.#node);
     }
 
     this.#addMessage(query, true);

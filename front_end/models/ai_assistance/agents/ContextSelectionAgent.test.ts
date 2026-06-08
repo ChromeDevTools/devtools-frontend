@@ -24,10 +24,10 @@ import * as Workspace from '../../workspace/workspace.js';
 import {
   AiAgent,
   ContextSelectionAgent,
+  DOMNodeContext,
   FileAgent,
   NetworkAgent,
   PerformanceAgent,
-  StylingAgent,
 } from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -622,7 +622,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
 
       sinon.assert.calledOnce(onInspectElement);
       assert.exists(contextChange);
-      assert.instanceOf(contextChange.context, StylingAgent.NodeContext);
+      assert.instanceOf(contextChange.context, DOMNodeContext.DOMNodeContext);
       assert.strictEqual(contextChange.context.getItem(), node);
     });
   });

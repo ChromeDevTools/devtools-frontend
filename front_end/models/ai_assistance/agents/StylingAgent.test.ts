@@ -210,10 +210,10 @@ describeWithEnvironment('StylingAgent', function() {
       const controller = new AbortController();
       controller.abort();
       await Array.fromAsync(agent.run('test', {
-        selected: new AiAssistance.StylingAgent.NodeContext(element),
+        selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element),
         signal: controller.signal,
       }));
-      await Array.fromAsync(agent.run('test2', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+      await Array.fromAsync(agent.run('test2', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
       const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
       assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
@@ -245,7 +245,7 @@ describeWithEnvironment('StylingAgent', function() {
         });
 
         promise.resolve(true);
-        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
         sinon.assert.match(execJs.getCall(0).args[1], sinon.match({throwOnSideEffect: true}));
       });
@@ -273,7 +273,7 @@ describeWithEnvironment('StylingAgent', function() {
 
         });
         promise.resolve(true);
-        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
         assert.lengthOf(execJs.getCalls(), 2);
         sinon.assert.match(execJs.getCall(1).args[1], sinon.match({throwOnSideEffect: false}));
@@ -301,8 +301,8 @@ describeWithEnvironment('StylingAgent', function() {
 
         });
         promise.resolve(false);
-        const responses =
-            await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+        const responses = await Array.fromAsync(
+            agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
         const actionStep = responses.findLast(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
 
         assert.strictEqual(actionStep.output, 'Error: User denied code execution with side effects.');
@@ -310,7 +310,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       it('returns error when side effect is aborted', async () => {
-        const selected = new AiAssistance.StylingAgent.NodeContext(element);
+        const selected = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
         const execJs = sinon.mock().once().throws(
             new AiAssistance.EvaluateAction.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
         const sideEffectConfirmationPromise = Promise.withResolvers();
@@ -364,8 +364,8 @@ describeWithEnvironment('StylingAgent', function() {
           execJs,
         });
 
-        const result =
-            await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+        const result = await Array.fromAsync(
+            agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
         const actionSteps = result.filter(step => {
           return step.type === AiAssistance.AiAgent.ResponseType.ACTION;
         }) as AiAssistance.AiAgent.ActionResponse[];
@@ -383,7 +383,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
       sinon.assert.notCalled(execJs);
     });
@@ -395,7 +395,7 @@ describeWithEnvironment('StylingAgent', function() {
         execJs,
       });
 
-      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(
           this, JSON.stringify(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, null, 2));
     });
@@ -421,7 +421,7 @@ describeWithEnvironment('StylingAgent', function() {
         execJs,
       });
 
-      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
       const requests: Host.AidaClient.DoConversationRequest[] =
           (aidaClient.doConversation as sinon.SinonStub).args.map(arg => arg[0]);
@@ -463,7 +463,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
 
@@ -487,7 +487,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
 
@@ -508,7 +508,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
     });
 
@@ -519,7 +519,7 @@ describeWithEnvironment('StylingAgent', function() {
         execJs,
       });
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
       sinon.assert.notCalled(execJs);
       assert.isUndefined(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts);
@@ -547,7 +547,7 @@ describeWithEnvironment('StylingAgent', function() {
 
       });
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       snapshotTester.assert(this, JSON.stringify(responses, null, 2));
       sinon.assert.calledOnce(execJs);
     });
@@ -584,7 +584,7 @@ describeWithEnvironment('StylingAgent', function() {
 
       });
 
-      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+      await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
 
       snapshotTester.assert(
           this, JSON.stringify(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, null, 2));
@@ -623,8 +623,8 @@ describeWithEnvironment('StylingAgent', function() {
 
       const controller = new AbortController();
       controller.abort();
-      await Array.fromAsync(
-          agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element), signal: controller.signal}));
+      await Array.fromAsync(agent.run(
+          'test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element), signal: controller.signal}));
 
       assert.isUndefined(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts);
     });
@@ -644,7 +644,7 @@ describeWithEnvironment('StylingAgent', function() {
     it('does not add multimodal input evaluation prompt when multimodal is disabled', async function() {
       mockHostConfig('test model');
       const enhancedQuery = await agent.enhanceQuery(
-          'test query', new AiAssistance.StylingAgent.NodeContext(element),
+          'test query', new AiAssistance.DOMNodeContext.DOMNodeContext(element),
           AiAssistance.AiAgent.MultimodalInputType.SCREENSHOT);
 
       snapshotTester.assert(this, enhancedQuery);
@@ -654,7 +654,7 @@ describeWithEnvironment('StylingAgent', function() {
        async function() {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
          const enhancedQuery =
-             await agent.enhanceQuery('test query', new AiAssistance.StylingAgent.NodeContext(element));
+             await agent.enhanceQuery('test query', new AiAssistance.DOMNodeContext.DOMNodeContext(element));
 
          snapshotTester.assert(this, enhancedQuery);
        });
@@ -663,7 +663,7 @@ describeWithEnvironment('StylingAgent', function() {
        async function() {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
          const enhancedQuery = await agent.enhanceQuery(
-             'test query', new AiAssistance.StylingAgent.NodeContext(element),
+             'test query', new AiAssistance.DOMNodeContext.DOMNodeContext(element),
              AiAssistance.AiAgent.MultimodalInputType.SCREENSHOT);
 
          snapshotTester.assert(this, enhancedQuery);
@@ -673,7 +673,7 @@ describeWithEnvironment('StylingAgent', function() {
        async function() {
          mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
          const enhancedQuery = await agent.enhanceQuery(
-             'test query', new AiAssistance.StylingAgent.NodeContext(element),
+             'test query', new AiAssistance.DOMNodeContext.DOMNodeContext(element),
              AiAssistance.AiAgent.MultimodalInputType.UPLOADED_IMAGE);
 
          snapshotTester.assert(this, enhancedQuery);
@@ -705,8 +705,8 @@ describeWithEnvironment('StylingAgent', function() {
           createExtensionScope,
           execJs,
         });
-        const responses =
-            await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+        const responses = await Array.fromAsync(
+            agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
         const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
         assert.strictEqual(actionStep.output, 'Error: JavaScript execution is currently disabled.');
         assert.lengthOf(execJs.getCalls(), 0);
@@ -728,7 +728,7 @@ describeWithEnvironment('StylingAgent', function() {
           createExtensionScope,
           execJs,
         });
-        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+        await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
         assert.lengthOf(execJs.getCalls(), 1);
       });
     });
@@ -772,7 +772,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
       assert.exists(actionStep);
       assert.strictEqual(
@@ -822,7 +822,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
       assert.exists(actionStep);
       assert.strictEqual(actionStep.output, 'Error: Node does not belong to the current origin.');
@@ -883,7 +883,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
       assert.exists(actionStep);
       assert.strictEqual(actionStep.output, 'Error: Could not find the element with uid=42');
@@ -920,7 +920,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
       assert.exists(actionStep);
       assert.strictEqual(actionStep.output, 'Error: Could not get computed styles.');
@@ -960,7 +960,7 @@ describeWithEnvironment('StylingAgent', function() {
       });
 
       const responses =
-          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.StylingAgent.NodeContext(element)}));
+          await Array.fromAsync(agent.run('test', {selected: new AiAssistance.DOMNodeContext.DOMNodeContext(element)}));
       const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
       assert.exists(actionStep);
       assert.strictEqual(actionStep.output, 'Error: Could not get authored styles.');

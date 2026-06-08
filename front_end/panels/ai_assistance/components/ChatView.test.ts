@@ -28,7 +28,7 @@ describeWithEnvironment('ChatView', () => {
   function getProp(options: Partial<AiAssistancePanel.Props>): AiAssistancePanel.Props {
     const noop = () => {};
     const messages = options.messages ?? [];
-    const context = sinon.createStubInstance(AiAssistanceModel.StylingAgent.NodeContext);
+    const context = sinon.createStubInstance(AiAssistanceModel.DOMNodeContext.DOMNodeContext);
     context.getTitle.returns('');
     return {
       onTextSubmit: noop,

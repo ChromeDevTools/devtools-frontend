@@ -55,7 +55,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     await createNetworkPanelForMockConnection();
     Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
     Common.Settings.moduleSetting('ai-assistance-v2-opt-in-change-dialog-seen').set(true);
-    sinon.stub(AiAssistanceModel.StylingAgent.NodeContext.prototype, 'getSuggestions')
+    sinon.stub(AiAssistanceModel.DOMNodeContext.DOMNodeContext.prototype, 'getSuggestions')
         .returns(Promise.resolve([{title: 'test suggestion'}]));
     const featureFlags =
         [
@@ -308,7 +308,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
             nodeType: Node.ELEMENT_NODE,
           });
-          return new AiAssistanceModel.StylingAgent.NodeContext(node);
+          return new AiAssistanceModel.DOMNodeContext.DOMNodeContext(node);
         },
         action: 'freestyler.elements-floating-button',
       },

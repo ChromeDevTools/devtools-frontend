@@ -41,7 +41,7 @@ class GreenDevFloaty {
   #playButton!: HTMLButtonElement;
   #node?: SDK.DOMModel.DOMNode;
   #agent?: AiAssistance.GreenDevAgent.GreenDevAgent|AiAssistance.StylingAgent.StylingAgent;
-  #nodeContext?: AiAssistance.StylingAgent.NodeContext;
+  #nodeContext?: AiAssistance.DOMNodeContext.DOMNodeContext;
   #backendNodeId?: Protocol.DOM.BackendNodeId;
   #syncChannel: BroadcastChannel;
   #isFloatyWindow: boolean;
@@ -341,7 +341,7 @@ class GreenDevFloaty {
             });
       } else {
         this.#agent = new AiAssistance.StylingAgent.StylingAgent({aidaClient});
-        this.#nodeContext = new AiAssistance.StylingAgent.NodeContext(this.#node);
+        this.#nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(this.#node);
       }
     }
 

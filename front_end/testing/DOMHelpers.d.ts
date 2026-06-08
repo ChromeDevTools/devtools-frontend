@@ -4,7 +4,17 @@ import * as UI from '../ui/legacy/legacy.js';
 export declare const TEST_CONTAINER_ID = "__devtools-test-container-id";
 interface RenderOptions {
     allowMultipleChildren?: boolean;
+    /**
+     * Injects standard Inspector and text button stylesheets into the test DOM.
+     * This is typically needed for testing legacy components or widget wrappers that do
+     * not use Shadow DOM and instead rely on global stylesheets.
+     */
     includeCommonStyles?: boolean;
+    /**
+     * Additional stylesheets to inject into the test DOM container. Use this to supply
+     * component-specific stylesheet strings during DOM/screenshot testing.
+     */
+    extraStyles?: CSSInJS[];
 }
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.

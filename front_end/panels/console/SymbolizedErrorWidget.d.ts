@@ -5,7 +5,7 @@ export interface ViewInput {
     error: Bindings.SymbolizedError.SymbolizedError;
     ignoreListManager?: Workspace.IgnoreListManager.IgnoreListManager;
 }
-declare const DEFAULT_VIEW: (_input: ViewInput, _output: object, _target: HTMLElement) => void;
+declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: HTMLElement) => void;
 export declare class SymbolizedErrorWidget extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);

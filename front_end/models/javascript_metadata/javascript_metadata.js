@@ -6494,6 +6494,22 @@ var NativeFunctions = [
     signatures: [["type", "eventInitDict"]]
   },
   {
+    name: "XRMediaBinding",
+    signatures: [["session"]]
+  },
+  {
+    name: "createQuadLayer",
+    signatures: [["video", "init"]]
+  },
+  {
+    name: "createCylinderLayer",
+    signatures: [["video", "init"]]
+  },
+  {
+    name: "createEquirectLayer",
+    signatures: [["video", "init"]]
+  },
+  {
     name: "XRRay",
     signatures: [["transform"], ["?origin", "?direction"]]
   },

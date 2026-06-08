@@ -1,3 +1,4 @@
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
@@ -19,7 +20,7 @@ export declare class NetworkRequestFormatter {
         value: string;
     }>, addListPrefixToEachLine?: boolean): string;
     static formatBody(title: string, request: SDK.NetworkRequest.NetworkRequest, maxBodySize: number): Promise<string>;
-    static formatInitiatorUrl(initiatorUrl: string, allowedOrigin: string): string;
+    static formatInitiatorUrl(initiatorUrl: Platform.DevToolsPath.UrlString, allowedOrigin: Platform.DevToolsPath.UrlString): string;
     static formatStatus(status: {
         statusCode: number;
         statusText: string;

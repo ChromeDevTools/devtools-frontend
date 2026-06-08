@@ -374,7 +374,6 @@ export declare abstract class AiAgent<T> {
      */
     clearCache(): void;
     popPendingMultimodalInput(): MultimodalInput | undefined;
-    preambleFeatures(): string[];
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;
     get sessionId(): string;
     /**

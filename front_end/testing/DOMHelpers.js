@@ -28,6 +28,11 @@ export function renderElementIntoDOM(element, renderOptions = {}) {
         container.appendChild(document.createElement('style')).textContent = UI.inspectorCommonStyles;
         container.appendChild(document.createElement('style')).textContent = Buttons.textButtonStyles;
     }
+    if (renderOptions.extraStyles) {
+        for (const style of renderOptions.extraStyles) {
+            container.appendChild(document.createElement('style')).textContent = style;
+        }
+    }
     if (element instanceof Node) {
         container.appendChild(element);
     }

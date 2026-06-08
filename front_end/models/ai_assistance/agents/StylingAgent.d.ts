@@ -24,7 +24,6 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     get executionMode(): Root.Runtime.HostConfigFreestylerExecutionMode;
     get options(): RequestOptions;
     get multimodalInputEnabled(): boolean;
-    preambleFeatures(): string[];
     constructor(opts: ExecuteJsAgentOptions);
     static describeElement(element: SDK.DOMModel.DOMNode): Promise<string>;
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;

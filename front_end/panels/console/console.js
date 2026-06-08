@@ -8264,15 +8264,91 @@ __export(SymbolizedErrorWidget_exports, {
   SymbolizedErrorWidget: () => SymbolizedErrorWidget
 });
 import * as Bindings4 from "./../../models/bindings/bindings.js";
+import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-var DEFAULT_VIEW5 = (_input, _output, _target) => {
+import * as Lit4 from "./../../ui/lit/lit.js";
+var { html: html5, render: render6 } = Lit4;
+function renderHeader(content, isCause) {
+  if (isCause) {
+    return html5`<div class="symbolized-error-header"><span>Caused by: </span><span class="error-message-text">${content}</span></div>`;
+  }
+  return html5`<span class="error-message-text">${content}</span>`;
+}
+function renderFramePrefix(frame, _options) {
+  const asyncPrefix = frame.isAsync ? "async " : "";
+  if (frame.promiseIndex !== void 0) {
+    const name2 = frame.name || "Promise.all";
+    return html5`${asyncPrefix}${name2} (index ${frame.promiseIndex})`;
+  }
+  const constructorPrefix = frame.isConstructor ? "new " : "";
+  let name = frame.name || "";
+  const isInline = Boolean(frame.rawName) && frame.name !== frame.rawName;
+  if (!isInline && frame.methodName && name && name !== frame.methodName && !name.endsWith("." + frame.methodName) && !name.endsWith(" " + frame.methodName)) {
+    name += ` [as ${frame.methodName}]`;
+  }
+  if (name) {
+    return html5`${asyncPrefix}${constructorPrefix}${name} (`;
+  }
+  return html5`${asyncPrefix}${constructorPrefix}`;
+}
+function renderFrameSuffix(frame) {
+  if (frame.promiseIndex !== void 0) {
+    return Lit4.nothing;
+  }
+  if (frame.name) {
+    return html5`)`;
+  }
+  return Lit4.nothing;
+}
+var DEFAULT_VIEW5 = (input, _output, target) => {
+  const renderError2 = (error, isCause) => {
+    if (!(error instanceof Bindings4.SymbolizedError.SymbolizedErrorObject)) {
+      console.error("SymbolizedErrorWidget received an unsupported error type:", error);
+      return Lit4.nothing;
+    }
+    const linkOptions = {
+      showColumnNumber: true,
+      inlineFrameIndex: 0,
+      maxLength: UI11.UIUtils.MaxLengthForDisplayedURLsInConsole,
+      ignoreListManager: input.ignoreListManager
+    };
+    const headerContent = html5`${error.message}`;
+    const header = renderHeader(headerContent, isCause);
+    const syncFrames = error.stackTrace.syncFragment.frames;
+    return html5`
+      <span class=${isCause ? "console-message-stack-trace-wrapper" : ""}
+      >${header}${syncFrames.length > 0 ? "\n" : ""}${syncFrames.map((frame, i) => {
+      let linkElement = Lit4.nothing;
+      let isBuiltin = false;
+      if (frame.promiseIndex !== void 0) {
+        isBuiltin = true;
+      } else if (frame.url || frame.uiSourceCode) {
+        const link = Components5.Linkifier.Linkifier.linkifyStackTraceFrame(frame, linkOptions);
+        link.tabIndex = -1;
+        linkElement = link;
+      } else {
+        linkElement = html5`<span>&lt;anonymous&gt;</span>`;
+        isBuiltin = true;
+      }
+      const newline = i < error.stackTrace.syncFragment.frames.length - 1 ? "\n" : "";
+      const frameClass = isBuiltin ? "formatted-builtin-stack-frame" : "formatted-stack-frame";
+      return html5`
+            <span class=${frameClass}>${"    at "}${renderFramePrefix(frame, linkOptions)}${linkElement}${renderFrameSuffix(frame)}${newline}</span>
+          `;
+    })}
+      </span>
+      ${error.cause ? renderError2(error.cause, true) : Lit4.nothing}
+    `;
+  };
+  render6(html5`<span class="symbolized-error-widget">${renderError2(input.error, false)}</span>`, target);
 };
 var SymbolizedErrorWidget = class extends UI11.Widget.Widget {
   #error;
   #view;
   #ignoreListManager;
   constructor(element, view = DEFAULT_VIEW5) {
-    super(element);
+    const host = element || document.createElement("span");
+    super(host, { classes: ["symbolized-error-widget-host"] });
     this.#view = view;
   }
   set ignoreListManager(ignoreListManager) {

@@ -5762,6 +5762,12 @@ async function addDocument(document2) {
   }
   document2.addEventListener("visibilitychange", scheduleProcessing);
   document2.addEventListener("scroll", scheduleProcessing);
+  const resizeListener = () => {
+    viewportRects.delete(document2);
+    scheduleProcessing();
+  };
+  document2.defaultView?.addEventListener("resize", resizeListener);
+  resizeListeners.set(document2, resizeListener);
   observeMutations([document2.body]);
 }
 async function stopLogging() {
@@ -5776,12 +5782,18 @@ async function stopLogging() {
   for (const document2 of documents) {
     document2.removeEventListener("visibilitychange", scheduleProcessing);
     document2.removeEventListener("scroll", scheduleProcessing);
+    const resizeListener = resizeListeners.get(document2);
+    if (resizeListener) {
+      document2.defaultView?.removeEventListener("resize", resizeListener);
+      resizeListeners.delete(document2);
+    }
   }
   mutationObserver.disconnect();
   resizeObserver.disconnect();
   intersectionObserver.disconnect();
   documents.length = 0;
   viewportRects.clear();
+  resizeListeners.clear();
   processingThrottler = noOpThrottler;
   pendingResize.clear();
   pendingChange.clear();
@@ -5811,6 +5823,7 @@ function scheduleProcessing() {
   void processingThrottler.schedule(() => RenderCoordinator.read("processForLogging", process));
 }
 var viewportRects = /* @__PURE__ */ new Map();
+var resizeListeners = /* @__PURE__ */ new Map();
 var viewportRectFor = (element) => {
   const ownerDocument = element.ownerDocument;
   const viewportRect = viewportRects.get(ownerDocument) || new DOMRect(0, 0, ownerDocument.defaultView?.innerWidth || 0, ownerDocument.defaultView?.innerHeight || 0);

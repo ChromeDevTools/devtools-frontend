@@ -5,7 +5,6 @@ export interface ParsedFrameInfo {
     readonly isConstructor?: boolean;
     readonly isEval?: boolean;
     readonly evalOrigin?: RawFrame;
-    readonly isWasm?: boolean;
     readonly wasmModuleName?: string;
     readonly wasmFunctionIndex?: number;
     readonly typeName?: string;
@@ -22,6 +21,7 @@ export interface RawFrame {
     readonly lineNumber: number;
     readonly columnNumber: number;
     readonly parsedFrameInfo?: ParsedFrameInfo;
+    readonly isWasm?: boolean;
 }
 /**
  * @returns whether the frame is a V8 builtin frame e.g. Array.map. Builtin frames

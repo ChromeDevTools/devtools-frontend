@@ -9,6 +9,7 @@
         "consolePinPane.css.js",
         "consolePrompt.css.js",
         "consoleSidebar.css.js",
-        "consoleView.css.js"
+        "consoleView.css.js",
+        "symbolizedErrorWidget.css.js"
     ]
 }

@@ -127,9 +127,6 @@ export class AiAgent {
     popPendingMultimodalInput() {
         return undefined;
     }
-    preambleFeatures() {
-        return [];
-    }
     buildRequest(part, role) {
         const parts = Array.isArray(part) ? part : [part];
         const currentMessage = {
@@ -169,7 +166,7 @@ export class AiAgent {
                 disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
                 string_session_id: this.#sessionId,
                 user_tier: userTier,
-                client_version: Root.Runtime.getChromeVersion() + this.preambleFeatures().map(feature => `+${feature}`).join(''),
+                client_version: Root.Runtime.getChromeVersion(),
             },
             functionality_type: enableAidaFunctionCalling ? Host.AidaClient.FunctionalityType.AGENTIC_CHAT :
                 Host.AidaClient.FunctionalityType.CHAT,

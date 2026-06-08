@@ -22,7 +22,6 @@ export declare class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.Re
     get userTier(): string | undefined;
     get executionMode(): Root.Runtime.HostConfigFreestylerExecutionMode;
     get options(): RequestOptions;
-    preambleFeatures(): string[];
     protected preRun(): Promise<void>;
     handleContextDetails(lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON> | null): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string, lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON> | null): Promise<string>;

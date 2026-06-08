@@ -86,6 +86,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
             functionName: frame.functionName,
             lineNumber: frame.location().lineNumber,
             columnNumber: frame.location().columnNumber,
+            isWasm: frame.script.isWasm(),
         })), rawFramesToUIFrames);
         return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
     }
@@ -142,7 +143,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         let i = 0;
         let evalI = 0;
         for (const node of fragment.node.getCallStack()) {
-            node.frames = uiFrames[i++].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
+            node.frames = uiFrames[i++].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName, node.rawFrame.isWasm));
             if (node.parsedFrameInfo?.evalOrigin) {
                 node.evalOrigin = evalOrigins[evalI++];
             }
@@ -176,7 +177,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
 _a = StackTraceModel;
 async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
     const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-    const frames = uiFrames[0].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName));
+    const frames = uiFrames[0].map(frame => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName, rawFrame.isWasm));
     let parentEvalOrigin;
     if (rawFrame.parsedFrameInfo?.evalOrigin) {
         parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);

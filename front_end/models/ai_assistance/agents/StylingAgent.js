@@ -208,9 +208,6 @@ export class StylingAgent extends AiAgent {
     get multimodalInputEnabled() {
         return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
     }
-    preambleFeatures() {
-        return ['function_calling'];
-    }
     #execJs;
     #javascriptExecutor;
     #changes;

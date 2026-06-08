@@ -125,9 +125,6 @@ export class AccessibilityAgent extends AiAgent {
             modelId,
         };
     }
-    preambleFeatures() {
-        return ['function_calling'];
-    }
     async preRun() {
         this.#currentTurnId++;
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 var _a;
+import * as Common from '../../../core/common/common.js';
 import * as Annotations from '../../annotations/annotations.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
@@ -50,17 +51,12 @@ export class NetworkRequestFormatter {
         return `${title}\n<binary data>`;
     }
     static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-        try {
-            // Some scheme or URLs might cause errors depending on the runtime environment.
-            const initiatorOrigin = new URL(initiatorUrl).origin;
-            if (initiatorOrigin === allowedOrigin) {
-                return initiatorUrl;
-            }
-            return '<redacted cross-origin initiator URL>';
+        // We extract the origin, and if it is invalid/empty we default to redacting.
+        const initiatorOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initiatorUrl);
+        if (initiatorOrigin && initiatorOrigin === allowedOrigin) {
+            return initiatorUrl;
         }
-        catch {
-            return '<redacted cross-origin initiator URL>';
-        }
+        return '<redacted cross-origin initiator URL>';
     }
     static formatStatus(status) {
         let responseStatus = '';
@@ -155,7 +151,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
      * the request's origin.
      */
     formatRequestInitiatorChain() {
-        const allowedOrigin = new URL(this.#request.url()).origin;
+        const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
         let initiatorChain = '';
         let lineStart = '- URL: ';
         const graph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);

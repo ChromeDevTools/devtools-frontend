@@ -143,12 +143,12 @@ function parseRawFramesFromErrorStack(stack) {
       functionName,
       lineNumber,
       columnNumber,
+      isWasm,
       parsedFrameInfo: {
         isAsync,
         isConstructor,
         isEval,
         evalOrigin,
-        isWasm,
         wasmModuleName,
         wasmFunctionIndex,
         typeName,
@@ -172,7 +172,7 @@ function parseMessage(stack) {
 }
 function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
   function augmentFrame(rawFrame) {
-    const isWasm = rawFrame.parsedFrameInfo?.isWasm;
+    const isWasm = rawFrame.isWasm;
     const protocolFrame = protocolStackTrace.callFrames.find((frame) => {
       if (isWasm) {
         return rawFrame.url === frame.url && rawFrame.columnNumber === frame.columnNumber;
@@ -261,7 +261,8 @@ var FrameImpl = class {
   column;
   missingDebugInfo;
   rawName;
-  constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName) {
+  isWasm;
+  constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName, isWasm) {
     this.url = url;
     this.uiSourceCode = uiSourceCode;
     this.name = name;
@@ -269,6 +270,7 @@ var FrameImpl = class {
     this.column = column;
     this.missingDebugInfo = missingDebugInfo;
     this.rawName = rawName;
+    this.isWasm = isWasm;
   }
 };
 function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameInfo) {
@@ -341,7 +343,7 @@ var ParsedErrorStackFrameImpl = class {
     return this.#evalOrigin;
   }
   get isWasm() {
-    return this.#parsedFrameInfo?.isWasm;
+    return this.#frame.isWasm;
   }
   get wasmModuleName() {
     return this.#parsedFrameInfo?.wasmModuleName;
@@ -409,6 +411,9 @@ var DebuggableFrameImpl = class {
   }
   get rawName() {
     return this.#frame.rawName;
+  }
+  get isWasm() {
+    return this.#frame.isWasm;
   }
   get sdkFrame() {
     return this.#sdkFrame;
@@ -613,7 +618,8 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
       url: frame.script.sourceURL,
       functionName: frame.functionName,
       lineNumber: frame.location().lineNumber,
-      columnNumber: frame.location().columnNumber
+      columnNumber: frame.location().columnNumber,
+      isWasm: frame.script.isWasm()
     })), rawFramesToUIFrames);
     return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
   }
@@ -666,7 +672,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     let i = 0;
     let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
-      node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName));
+      node.frames = uiFrames[i++].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName, node.rawFrame.isWasm));
       if (node.parsedFrameInfo?.evalOrigin) {
         node.evalOrigin = evalOrigins[evalI++];
       }
@@ -696,7 +702,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
 _a = StackTraceModel;
 async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
   const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-  const frames = uiFrames[0].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName));
+  const frames = uiFrames[0].map((frame) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName, rawFrame.isWasm));
   let parentEvalOrigin;
   if (rawFrame.parsedFrameInfo?.evalOrigin) {
     parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);

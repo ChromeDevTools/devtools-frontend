@@ -142,12 +142,12 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[]|null {
       functionName,
       lineNumber,
       columnNumber,
+      isWasm,
       parsedFrameInfo: {
         isAsync,
         isConstructor,
         isEval,
         evalOrigin,
-        isWasm,
         wasmModuleName,
         wasmFunctionIndex,
         typeName,
@@ -181,7 +181,7 @@ export function parseMessage(stack: string): string {
 export function augmentRawFramesWithScriptIds(
     rawFrames: RawFrame[], protocolStackTrace: Protocol.Runtime.StackTrace): void {
   function augmentFrame(rawFrame: RawFrame): void {
-    const isWasm = rawFrame.parsedFrameInfo?.isWasm;
+    const isWasm = rawFrame.isWasm;
     const protocolFrame = protocolStackTrace.callFrames.find(frame => {
       if (isWasm) {
         // The parser parses Wasm offsets into the `columnNumber` field. The `lineNumber` is always -1.

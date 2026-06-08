@@ -11,7 +11,6 @@ export interface ParsedFrameInfo {
   readonly isConstructor?: boolean;
   readonly isEval?: boolean;
   readonly evalOrigin?: RawFrame;
-  readonly isWasm?: boolean;
   readonly wasmModuleName?: string;
   readonly wasmFunctionIndex?: number;
   readonly typeName?: string;
@@ -30,6 +29,7 @@ export interface RawFrame {
   readonly columnNumber: number;
 
   readonly parsedFrameInfo?: ParsedFrameInfo;
+  readonly isWasm?: boolean;
 }
 
 /**

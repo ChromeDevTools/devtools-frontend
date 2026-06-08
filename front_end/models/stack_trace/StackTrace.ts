@@ -44,6 +44,10 @@ export interface Frame {
    * of the containing function.
    */
   readonly rawName?: string;
+  /**
+   * Whether the corresponding raw frame is JS or WASM.
+   */
+  readonly isWasm?: boolean;
 }
 
 export interface ParsedErrorStackFrame extends Frame {
@@ -51,7 +55,6 @@ export interface ParsedErrorStackFrame extends Frame {
   readonly isConstructor?: boolean;
   readonly isEval?: boolean;
   readonly evalOrigin?: ParsedErrorStackFrame;
-  readonly isWasm?: boolean;
   readonly wasmModuleName?: string;
   readonly wasmFunctionIndex?: number;
   readonly typeName?: string;

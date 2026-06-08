@@ -436,7 +436,7 @@ describe('StackTraceModel', () => {
   describe('createFromDebuggerPaused', () => {
     it('assigns the right DebuggerModel.CallFrame to the right StackTrace.Frame', async () => {
       const {model, debuggerModel} = setup();
-      sinon.stub(debuggerModel, 'scriptForId').returns({} as SDK.Script.Script);
+      sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => false} as unknown as SDK.Script.Script);
 
       const details = new SDK.DebuggerModel.DebuggerPausedDetails(
           debuggerModel,
@@ -454,7 +454,7 @@ describe('StackTraceModel', () => {
 
     it('assigns the same DebuggerModel.CallFrame to inlined StackTrace.Frame', async () => {
       const {model, debuggerModel} = setup();
-      sinon.stub(debuggerModel, 'scriptForId').returns({} as SDK.Script.Script);
+      sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => false} as unknown as SDK.Script.Script);
 
       const details = new SDK.DebuggerModel.DebuggerPausedDetails(
           debuggerModel, [debuggerCallFrame('foo.js:id1:foo:1:10')], Protocol.Debugger.PausedEventReason.Other,
@@ -473,6 +473,19 @@ describe('StackTraceModel', () => {
 
       assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.inlineFrameIndex, 2);
       assert.strictEqual(stackTrace.syncFragment.frames[2].sdkFrame.functionName, 'baz');
+    });
+
+    it('sets isWasm on StackTrace.Frame when paused in Wasm', async () => {
+      const {model, debuggerModel} = setup();
+      sinon.stub(debuggerModel, 'scriptForId').returns({isWasm: () => true} as unknown as SDK.Script.Script);
+
+      const details = new SDK.DebuggerModel.DebuggerPausedDetails(
+          debuggerModel, [debuggerCallFrame('foo.wasm:id1:wasmFunc:1:10')], Protocol.Debugger.PausedEventReason.Other,
+          undefined, []);
+
+      const stackTrace = await model.createFromDebuggerPaused(details, identityTranslateFn);
+
+      assert.isTrue(stackTrace.syncFragment.frames[0].isWasm);
     });
 
     it('preserves the raw function name', async () => {

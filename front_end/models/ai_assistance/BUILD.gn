@@ -139,6 +139,7 @@ ts_library("unittests") {
     "agents/PerformanceAnnotationsAgent.test.ts",
     "agents/StorageAgent.test.ts",
     "agents/StylingAgent.test.ts",
+    "contexts/DOMNodeContext.test.ts",
     "performance/AICallTree.test.ts",
     "performance/AIContext.test.ts",
     "performance/AIQueries.test.ts",

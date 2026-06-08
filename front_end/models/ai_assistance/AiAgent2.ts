@@ -9,12 +9,19 @@ import {
   AiAgent,
   type ContextResponse,
   type ConversationContext,
+  type MultimodalInputType,
   type RequestOptions,
   ResponseType
 } from './agents/AiAgent.js';
 import {debugLog} from './debug.js';
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
+import type {Tool} from './tools/Tool.js';
+import {ToolRegistry} from './tools/ToolRegistry.js';
+
+const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
+  styling: 'CSS and styling',
+};
 
 export class AiAgent2 extends AiAgent<unknown> {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
@@ -29,9 +36,11 @@ export class AiAgent2 extends AiAgent<unknown> {
   }
 
   readonly #activeSkills = new Set<SkillName>();
+  readonly #declaredTools = new Set<string>();
 
   constructor(opts: AgentOptions) {
     super(opts);
+    this.#declaredTools.add('learnSkills');
     const skillsList = Object.keys(SKILLS).join(', ');
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
       description: `Load skills to help with the task. Available skills: ${skillsList}.`,
@@ -51,8 +60,12 @@ export class AiAgent2 extends AiAgent<unknown> {
         required: ['skills'],
       },
       displayInfoFromArgs: args => {
+        const isSingular = args.skills.length === 1;
+        const prefix = isSingular ? 'Learning skill' : 'Learning skills';
+        const names = args.skills.map(name => SKILL_DISPLAY_NAMES[name] ?? name).join(', ');
         return {
-          title: `Learning skills: ${args.skills.join(', ')}`,
+          title: `${prefix}: ${names}`,
+          action: `learnSkills(${args.skills.map(name => `'${name}'`).join(', ')})`,
         };
       },
       handler: async args => {
@@ -62,33 +75,58 @@ export class AiAgent2 extends AiAgent<unknown> {
     });
   }
 
-  override async enhanceQuery(query: string): Promise<string> {
+  override async enhanceQuery(
+      query: string,
+      selected: ConversationContext<unknown>|null = null,
+      // TODO: support multimodal input in AiAgent2.
+      _multimodalInputType?: MultimodalInputType,
+      ): Promise<string> {
+    let enhancedQuery = query;
+    if (selected) {
+      const promptDetails = await selected.getPromptDetails();
+      if (promptDetails) {
+        enhancedQuery = `${promptDetails}
+
+# User request
+
+QUERY: ${query}`;
+      }
+    }
+
     if (this.#skillsInjected) {
-      return query;
+      return enhancedQuery;
     }
     this.#skillsInjected = true;
-    const skillsManifest = Object.entries(SKILLS).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
+    const skillsManifest =
+        Object.entries(this.getSkills()).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
     return `Available skills:
 ${skillsManifest}
 
 You must call \`learnSkills\` to load a skill before you can use it.
 
-User query: ${query}`;
+User query: ${enhancedQuery}`;
   }
 
-  async *
-      handleContextDetails(_select: ConversationContext<unknown>|null): AsyncGenerator<ContextResponse, void, void> {
-    yield {
-      type: ResponseType.CONTEXT,
-      details: [{
-        title: 'Status',
-        text: 'Minimal agent initialized.',
-      }],
-    };
+  override async *
+      handleContextDetails(selected: ConversationContext<unknown>|null): AsyncGenerator<ContextResponse, void, void> {
+    if (selected) {
+      const details = await selected.getUserFacingDetails();
+      if (details) {
+        yield {
+          type: ResponseType.CONTEXT,
+          details,
+        };
+      }
+    }
+  }
+
+  getSkills(): Record<SkillName, Skill> {
+    return SKILLS;
   }
 
   async learnSkill(names: SkillName[]): Promise<string> {
     let response = '';
+    const skills = this.getSkills();
     for (const name of names) {
       debugLog(`AiAgent2: Attempting to load skill ${name}`);
       if (this.#activeSkills.has(name)) {
@@ -97,17 +135,43 @@ User query: ${query}`;
         continue;
       }
 
-      const skillObj: Skill = SKILLS[name];
+      const skillObj: Skill = skills[name];
       if (skillObj) {
         this.#activeSkills.add(name);
         debugLog(`AiAgent2: Skill ${name} loaded successfully`);
         response += `Skill ${name} loaded. Instructions:\n${skillObj.instructions}\n`;
+        for (const toolName of skillObj.allowedTools) {
+          const tool = ToolRegistry.get(toolName);
+          if (tool) {
+            this.#declareTool(tool);
+          }
+        }
       } else {
         debugLog(`AiAgent2: Failed to load skill ${name}`);
-        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(', ')}.\n`;
+        response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(skills).join(', ')}.\n`;
       }
     }
     return response.trim();
+  }
+
+  /**
+   * Declares a tool to be available to the agent model, verifying first that
+   * it hasn't already been declared to prevent duplicate declaration errors.
+   */
+  #declareTool(tool: Tool): void {
+    if (this.#declaredTools.has(tool.name)) {
+      debugLog(`AiAgent2: Tool ${tool.name} is already declared`);
+      return;
+    }
+    this.#declaredTools.add(tool.name);
+    this.declareFunction(tool.name, {
+      description: tool.description,
+      parameters: tool.parameters,
+      displayInfoFromArgs: tool.displayInfoFromArgs,
+      handler: args => tool.handler(args, {
+        conversationContext: this.context ?? null,
+      }),
+    });
   }
 
   get activeSkills(): Set<SkillName> {

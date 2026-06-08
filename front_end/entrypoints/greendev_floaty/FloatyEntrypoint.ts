@@ -428,7 +428,8 @@ class GreenDevFloaty {
             'Could not get the backendNodeId for the selected element.';
 
         // --- Get some context information about the selected node ---
-        const elementContext = await AiAssistance.StylingAgent.StylingAgent.describeElement(this.#node);
+        const domNodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(this.#node);
+        const elementContext = await domNodeContext.describe();
 
         // Now construct the full context.
         const context = `# Page URL

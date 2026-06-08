@@ -1,28 +1,3 @@
-Title: StylingAgent describeElement should describe an element with no children, siblings, or parent
-Content:
-* Element's uid is 99.
-* Its selector is `div#myElement`
-=== end content
-
-Title: StylingAgent describeElement should describe an element with child element and text nodes
-Content:
-* Element's uid is 99.
-* Its selector is `div#parentElement`
-* It has 2 child element nodes: `span.child1` (uid=undefined), `span.child2` (uid=undefined)
-* It only has 1 child text node
-=== end content
-
-Title: StylingAgent describeElement should describe an element with siblings and a parent
-Content:
-* Element's uid is 99.
-* Its selector is `div#parentElement`
-* It has a next sibling and it is an element (uid=undefined) node
-* It has a previous sibling and it is a non element node
-* Its parent's selector is `div#grandparentElement` (uid=undefined)
-* Its parent is a non element node
-* Its parent has only 1 child element node
-* Its parent has only 1 child text node
-=== end content
 
 Title: StylingAgent buildRequest structure matches the snapshot
 Content:

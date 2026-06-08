@@ -226,6 +226,22 @@ export abstract class ConversationContext<T> {
   async getSuggestions(): Promise<ConversationSuggestions|undefined> {
     return;
   }
+
+  /**
+   * Returns a detailed description of the context item for inclusion in the AI model prompt.
+   * Currently only used by AiAgent2.
+   */
+  async getPromptDetails(): Promise<string|null> {
+    return null;
+  }
+
+  /**
+   * Returns a list of context details to display to the user in the UI.
+   * Currently only used by AiAgent2.
+   */
+  async getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]]|null> {
+    return null;
+  }
 }
 
 export interface ComputedStyleAiWidget {

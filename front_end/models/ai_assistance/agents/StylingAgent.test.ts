@@ -65,66 +65,6 @@ describeWithEnvironment('StylingAgent', function() {
     element.backendNodeId.returns(99 as unknown as ReturnType<SDK.DOMModel.DOMNode['backendNodeId']>);
   });
 
-  describe('describeElement', () => {
-    it('should describe an element with no children, siblings, or parent', async function() {
-      element.simpleSelector.returns('div#myElement');
-      element.getChildNodesPromise.resolves(null);
-
-      const result = await StylingAgent.StylingAgent.describeElement(element);
-
-      snapshotTester.assert(this, result);
-    });
-
-    it('should describe an element with child element and text nodes', async function() {
-      const childNodes: Array<sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>> = [
-        sinon.createStubInstance(SDK.DOMModel.DOMNode),
-        sinon.createStubInstance(SDK.DOMModel.DOMNode),
-        sinon.createStubInstance(SDK.DOMModel.DOMNode),
-      ];
-      childNodes[0].nodeType.returns(Node.ELEMENT_NODE);
-      childNodes[0].simpleSelector.returns('span.child1');
-      childNodes[1].nodeType.returns(Node.TEXT_NODE);
-      childNodes[2].nodeType.returns(Node.ELEMENT_NODE);
-      childNodes[2].simpleSelector.returns('span.child2');
-
-      element.simpleSelector.returns('div#parentElement');
-      element.getChildNodesPromise.resolves(childNodes);
-      element.nextSibling = null;
-      element.previousSibling = null;
-      element.parentNode = null;
-
-      const result = await StylingAgent.StylingAgent.describeElement(element);
-      snapshotTester.assert(this, result);
-    });
-
-    it('should describe an element with siblings and a parent', async function() {
-      const nextSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      nextSibling.nodeType.returns(Node.ELEMENT_NODE);
-      const previousSibling = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      previousSibling.nodeType.returns(Node.TEXT_NODE);
-
-      const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      parentNode.simpleSelector.returns('div#grandparentElement');
-      const parentChildNodes: Array<sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>> = [
-        sinon.createStubInstance(SDK.DOMModel.DOMNode),
-        sinon.createStubInstance(SDK.DOMModel.DOMNode),
-      ];
-      parentChildNodes[0].nodeType.returns(Node.ELEMENT_NODE);
-      parentChildNodes[0].simpleSelector.returns('span.sibling1');
-      parentChildNodes[1].nodeType.returns(Node.TEXT_NODE);
-      parentNode.getChildNodesPromise.resolves(parentChildNodes);
-
-      element.simpleSelector.returns('div#parentElement');
-      element.getChildNodesPromise.resolves(null);
-      element.nextSibling = nextSibling;
-      element.previousSibling = previousSibling;
-      element.parentNode = parentNode;
-
-      const result = await StylingAgent.StylingAgent.describeElement(element);
-      snapshotTester.assert(this, result);
-    });
-  });
-
   describe('buildRequest', () => {
     beforeEach(() => {
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
@@ -204,8 +144,12 @@ describeWithEnvironment('StylingAgent', function() {
         createExtensionScope,
         execJs,
       });
-
-      sinon.stub(StylingAgent.StylingAgent, 'describeElement').resolves('element-description');
+      sinon.stub(AiAssistance.DOMNodeContext.DOMNodeContext.prototype, 'getPromptDetails')
+          .resolves('# Inspected element\n\nelement-description');
+      sinon.stub(AiAssistance.DOMNodeContext.DOMNodeContext.prototype, 'getUserFacingDetails').resolves([{
+        title: 'Data used',
+        text: 'element-description',
+      }]);
 
       const controller = new AbortController();
       controller.abort();

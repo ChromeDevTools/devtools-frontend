@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {GetStylesTool} from './GetStyles.js';
-import {type BaseTool, ToolName} from './Tool.js';
+import {type Tool, ToolName} from './Tool.js';
 
 /**
  * Plain object registry containing concrete instantiated tools.
@@ -27,8 +27,8 @@ export class ToolRegistry {
   /**
    * Fallback retrieval signature for general or runtime string lookups.
    */
-  static get(name: string): BaseTool|undefined;
-  static get(name: string): BaseTool|undefined {
-    return Object.prototype.hasOwnProperty.call(TOOLS, name) ? TOOLS[name as keyof typeof TOOLS] : undefined;
+  static get(name: string): Tool|undefined;
+  static get(name: string): Tool|undefined {
+    return Object.prototype.hasOwnProperty.call(TOOLS, name) ? TOOLS[name as keyof typeof TOOLS] as Tool : undefined;
   }
 }

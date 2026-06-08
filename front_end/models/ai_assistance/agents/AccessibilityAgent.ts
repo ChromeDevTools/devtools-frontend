@@ -126,17 +126,15 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   #javascriptExecutor: JavascriptExecutor;
   #changes: ChangeManager;
   #createExtensionScope: CreateExtensionScopeFunction;
-  #currentTurnId = 0;
 
   constructor(opts: ExecuteJsAgentOptions) {
     super(opts);
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#createExtensionScope =
-        opts.createExtensionScope ?? ((changes: ChangeManager) => {
-          return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode(), this.#currentTurnId);
-        });
+    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
+                                   return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode());
+                                 });
     this.#javascriptExecutor = new JavascriptExecutor(
         {
           executionMode: this.executionMode,
@@ -168,7 +166,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   }
 
   protected override async preRun(): Promise<void> {
-    this.#currentTurnId++;
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const domModel = target?.model(SDK.DOMModel.DOMModel);
     // We need to ensure the document is requested so that #getDocumentBodyNode()

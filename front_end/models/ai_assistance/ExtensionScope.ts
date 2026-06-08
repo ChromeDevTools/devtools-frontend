@@ -34,7 +34,6 @@ export class ExtensionScope {
                     }) => Promise<void>> = [];
   #changeManager: ChangeManager;
   #agentId: string;
-  #turnId?: number;
   /** Don't use directly use the getter */
   #frameId?: Protocol.Page.FrameId|null;
   /** Don't use directly use the getter */
@@ -42,12 +41,11 @@ export class ExtensionScope {
 
   readonly #bindingMutex = new Common.Mutex.Mutex();
 
-  constructor(changes: ChangeManager, agentId: string, selectedNode: SDK.DOMModel.DOMNode|null, turnId?: number) {
+  constructor(changes: ChangeManager, agentId: string, selectedNode: SDK.DOMModel.DOMNode|null) {
     this.#changeManager = changes;
     const frameId = selectedNode?.frameId();
     const target = selectedNode?.domModel().target();
     this.#agentId = agentId;
-    this.#turnId = turnId;
     this.#target = target;
     this.#frameId = frameId;
   }
@@ -357,7 +355,6 @@ export class ExtensionScope {
         const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
         const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
           groupId: this.#agentId,
-          turnId: this.#turnId,
           sourceLocation: context.sourceLocation,
           selector: context.selector,
           simpleSelector: context.simpleSelector,

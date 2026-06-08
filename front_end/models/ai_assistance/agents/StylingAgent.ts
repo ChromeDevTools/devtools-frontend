@@ -176,17 +176,15 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   #greenDevEmulationScreenshot: string|null = null;
   #greenDevEmulationAxTree: string|null = null;
   #hasAddedEmulationInstructions = false;
-  #currentTurnId = 0;
 
   constructor(opts: ExecuteJsAgentOptions) {
     super(opts);
 
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#createExtensionScope =
-        opts.createExtensionScope ?? ((changes: ChangeManager) => {
-          return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null, this.#currentTurnId);
-        });
+    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
+                                   return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
+                                 });
     this.#javascriptExecutor = new JavascriptExecutor(
         {
           executionMode: this.executionMode,
@@ -513,10 +511,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         };
       }
     }
-  }
-
-  protected override async preRun(): Promise<void> {
-    this.#currentTurnId++;
   }
 
   override async enhanceQuery(

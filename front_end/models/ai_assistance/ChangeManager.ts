@@ -9,8 +9,6 @@ import type * as Protocol from '../../generated/protocol.js';
 
 export interface Change {
   groupId: string;
-  // Optional turn ID to group changes from the same turn.
-  turnId?: number;
   // Optional about where in the source the selector was defined.
   sourceLocation?: string;
   // Selector used by the page or a simple selector as the fallback.
@@ -104,7 +102,6 @@ export class ChangeManager {
       // it currently causes crashes in the Styles tab when duplicate selectors exist (crbug.com/393515428).
       // This workaround avoids that crash.
       existingChange.groupId = change.groupId;
-      existingChange.turnId = change.turnId;
     } else {
       changes.push({
         ...change,
@@ -126,11 +123,11 @@ export class ChangeManager {
         .join('\n\n');
   }
 
-  getChangedNodesForGroupId(groupId: string, turnId?: number): Protocol.DOM.BackendNodeId[] {
+  getChangedNodesForGroupId(groupId: string): Protocol.DOM.BackendNodeId[] {
     const nodes = new Set<Protocol.DOM.BackendNodeId>();
     for (const changes of this.#stylesheetChanges.values()) {
       for (const change of changes) {
-        if (change.groupId === groupId && change.backendNodeId && (turnId === undefined || change.turnId === turnId)) {
+        if (change.groupId === groupId && change.backendNodeId) {
           nodes.add(change.backendNodeId);
         }
       }

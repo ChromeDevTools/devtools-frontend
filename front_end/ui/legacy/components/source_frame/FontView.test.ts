@@ -23,6 +23,8 @@ describeWithEnvironment('FontView', () => {
         () => Promise.resolve(contentData));
 
     const fontView = new SourceFrame.FontView.FontView('text/plain', contentProvider);
+    fontView.element.style.width = '100px';
+    fontView.element.style.height = '100px';
     renderElementIntoDOM(fontView);
 
     // Wait for the content to be loaded and update requested.

@@ -399,7 +399,12 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       jslogContext: options?.jslogContext || 'script-location',
       omitOrigin: options?.omitOrigin,
     } satisfies LinkifyURLOptions;
-    const fallbackAnchor = Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, linkifyURLOptions);
+    const fallbackOptions = {
+      ...linkifyURLOptions,
+      showColumnNumber: frame.isWasm || Boolean(options?.showColumnNumber),
+      omitLineAndRenderColumnAsHex: frame.isWasm,
+    };
+    const fallbackAnchor = Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, fallbackOptions);
     if (!frame.uiSourceCode) {
       const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance())
                                  .isUserIgnoreListedURL(frame.url as Platform.DevToolsPath.UrlString);
@@ -602,6 +607,11 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
     const omitOrigin = options.omitOrigin;
+    const omitLineAndRenderColumnAsHex = options.omitLineAndRenderColumnAsHex;
+
+    if (omitLineAndRenderColumnAsHex && showColumnNumber === false) {
+      throw new Error('omitLineAndRenderColumnAsHex requires showColumnNumber to not be explicitly false');
+    }
 
     if (!url || Common.ParsedURL.schemeIs(url, 'javascript:')) {
       // clang-format off
@@ -619,7 +629,11 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
 
-    if (typeof lineNumber === 'number' && !text) {
+    if (omitLineAndRenderColumnAsHex && !text) {
+      if (typeof columnNumber === 'number') {
+        linkText += ':0x' + columnNumber.toString(16);
+      }
+    } else if (typeof lineNumber === 'number' && !text) {
       linkText += ':' + (lineNumber + 1);
       if (showColumnNumber && typeof columnNumber === 'number') {
         linkText += ':' + (columnNumber + 1);
@@ -1182,6 +1196,7 @@ export interface LinkifyURLOptions {
   jslogContext?: string;
   omitOrigin?: boolean;
   onRef?: (el: HTMLElement) => void;
+  omitLineAndRenderColumnAsHex?: boolean;
 }
 
 export interface LinkifyOptions {

@@ -94,6 +94,28 @@ describeWithMockConnection('Linkifier', () => {
       });
       assert.strictEqual(link.innerText, '(unknown)');
     });
+
+    it('omits line number and renders column number as hex if omitLineAndRenderColumnAsHex is true', async () => {
+      const url = urlString`http://www.example.com/script.js`;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url, {
+        lineNumber: 10,
+        columnNumber: 33,
+        omitLineAndRenderColumnAsHex: true,
+      });
+      assert.strictEqual(link.innerText, 'www.example.com/script.js:0x21');
+    });
+
+    it('throws an error if omitLineAndRenderColumnAsHex is true and showColumnNumber is explicitly false', async () => {
+      const url = urlString`http://www.example.com/script.js`;
+      assert.throws(() => {
+        Components.Linkifier.Linkifier.linkifyURL(url, {
+          lineNumber: 10,
+          columnNumber: 33,
+          omitLineAndRenderColumnAsHex: true,
+          showColumnNumber: false,
+        });
+      }, 'omitLineAndRenderColumnAsHex requires showColumnNumber to not be explicitly false');
+    });
   });
 
   it('creates an empty placeholder anchor if the debugger is disabled and no url exists', () => {

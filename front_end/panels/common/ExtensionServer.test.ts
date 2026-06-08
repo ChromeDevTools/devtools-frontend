@@ -230,6 +230,36 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     assert.isFunction(unregistration.handler);
     assert.isFunction(unregistration.shouldHandleOpenResource);
   });
+});
+
+describeWithDevtoolsExtension('Extensions', {}, context => {
+  expectConsoleLogs({
+    error: [
+      'Extension server error: Invalid argument urlScheme: Scheme is forbidden',
+      'Extension server error: Invalid argument urlScheme: Scheme is forbidden'
+    ],
+  });
+  beforeEach(() => {
+    createTarget().setInspectedURL(Platform.DevToolsPath.urlString`http://example.com`);
+  });
+
+  it('cannot register an open resource handler for forbidden schemes', async () => {
+    const registerLinkHandlerSpy = sinon.spy(Components.Linkifier.Linkifier, 'registerLinkHandler');
+
+    context.chrome.devtools?.panels.setOpenResourceHandler(() => {}, 'chrome:');
+    context.chrome.devtools?.panels.setOpenResourceHandler(() => {}, 'file:');
+
+    // Wait for the messages to be processed by sending a dummy eval request
+    await new Promise(resolve => context.chrome.devtools?.inspectedWindow.eval('1', undefined, resolve));
+
+    sinon.assert.notCalled(registerLinkHandlerSpy);
+  });
+});
+
+describeWithDevtoolsExtension('Extensions', {}, context => {
+  beforeEach(() => {
+    createTarget().setInspectedURL(Platform.DevToolsPath.urlString`http://example.com`);
+  });
 
   it('can register and unregister a scheme specific open resource handler', async () => {
     const registerLinkHandlerSpy = spyCall(Components.Linkifier.Linkifier, 'registerLinkHandler');

@@ -27,7 +27,13 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {ExtensionButton, ExtensionPanel, ExtensionSidebarPane} from './ExtensionPanel.js';
 
 const extensionOrigins = new WeakMap<MessagePort, Platform.DevToolsPath.UrlString>();
-const kPermittedSchemes = ['http:', 'https:', 'file:', 'data:', 'chrome-extension:', 'about:'];
+const kForbiddenSchemes = [
+  'chrome:',
+  'chrome-untrusted:',
+  'chrome-error:',
+  'chrome-search:',
+  'devtools:',
+];
 
 declare global {
   interface Window {
@@ -78,7 +84,6 @@ export class HostsPolicy {
 }
 
 class RegisteredExtension {
-  openResourceScheme: null|string = null;
   constructor(readonly name: string, readonly hostsPolicy: HostsPolicy, readonly allowFileAccess: boolean) {
   }
 
@@ -91,8 +96,11 @@ class RegisteredExtension {
       return false;
     }
 
-    if (this.openResourceScheme && inspectedURL.startsWith(this.openResourceScheme)) {
-      return true;
+    let parsedURL;
+    try {
+      parsedURL = new URL(inspectedURL);
+    } catch {
+      return false;
     }
 
     if (!ExtensionServer.canInspectURL(inspectedURL)) {
@@ -104,12 +112,6 @@ class RegisteredExtension {
     }
 
     if (!this.allowFileAccess) {
-      let parsedURL;
-      try {
-        parsedURL = new URL(inspectedURL);
-      } catch {
-        return false;
-      }
       return parsedURL.protocol !== 'file:';
     }
 
@@ -863,18 +865,27 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!extension) {
       throw new Error('Received a message from an unregistered extension');
     }
-    if (message.urlScheme) {
-      extension.openResourceScheme = message.urlScheme;
+    let validScheme = message.urlScheme;
+    if (validScheme) {
+      try {
+        const urlToParse = validScheme.replace(/:?(\/\/)?$/, '') + '://test';
+        validScheme = new URL(urlToParse).protocol;
+      } catch {
+        return this.status.E_BADARG('urlScheme', 'Invalid scheme');
+      }
+      if (kForbiddenSchemes.includes(validScheme) || validScheme === 'file:') {
+        return this.status.E_BADARG('urlScheme', 'Scheme is forbidden');
+      }
     }
     const extensionOrigin = this.getExtensionOrigin(port);
     const {name} = extension;
     const registration = {
       title: name,
       origin: extensionOrigin,
-      scheme: message.urlScheme,
+      scheme: validScheme,
       handler: this.handleOpenURL.bind(this, port),
       shouldHandleOpenResource: (url: Platform.DevToolsPath.UrlString, schemes: Set<string>) =>
-          Components.Linkifier.Linkifier.shouldHandleOpenResource(extension.openResourceScheme, url, schemes),
+          Components.Linkifier.Linkifier.shouldHandleOpenResource(validScheme || null, url, schemes),
     };
     if (message.handlerPresent) {
       Components.Linkifier.Linkifier.registerLinkHandler(registration);
@@ -1645,7 +1656,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return false;
     }
 
-    if (!kPermittedSchemes.includes(parsedURL.protocol)) {
+    if (kForbiddenSchemes.includes(parsedURL.protocol)) {
       return false;
     }
 

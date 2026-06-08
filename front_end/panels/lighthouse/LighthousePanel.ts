@@ -374,11 +374,12 @@ export class LighthousePanel extends UI.Panel.Panel {
   }
 
   private loadedFromFile(report: string): void {
-    const data = JSON.parse(report);
-    if (!data['lighthouseVersion']) {
+    const data = JSON.parse(report) as LighthouseModel.ReporterTypes.ReportJSON;
+    if (!data.lighthouseVersion) {
       return;
     }
-    this.buildReportUI(data as LighthouseModel.ReporterTypes.ReportJSON);
+    data.isImported = true;
+    this.buildReportUI(data);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {

@@ -9,6 +9,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as Tracing from '../../../services/tracing/tracing.js';
 import {createNetworkRequest, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   createTarget,
@@ -163,6 +164,8 @@ describeWithMockConnection('PerformanceAgent', function() {
         workspace,
       });
       createTarget();
+      // For call tree focus tests, we want to simulate a fresh trace by default.
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
     });
 
     describe('run', function() {
@@ -469,6 +472,11 @@ code
   });
 
   describe('enhanceQuery', () => {
+    beforeEach(() => {
+      // For enhanceQuery tests, we want to simulate a fresh trace to avoid the SECURITY_WARNING.
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
+    });
+
     it('adds the context to the query from the user', async () => {
       const agent = createAgentForConversation({
         aidaClient: {} as Host.AidaClient.AidaClient,
@@ -596,6 +604,9 @@ code
     });
 
     it('can call getFunctionCode and yields SOURCE_CODE widget', async function() {
+      // Stub recordingIsFresh to return true to allow the tool to be declared.
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
+
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(parsedTrace.insights);
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
@@ -631,6 +642,32 @@ code
       assert.strictEqual(widget.data.line, 10);
       assert.strictEqual(widget.data.column, 5);
       assert.strictEqual(widget.data.code, 'function test() {}');
+    });
+
+    it('cannot resolve function code if the trace is not fresh', async function() {
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const scriptUrl = 'https://chromedevtools.github.io/performance-stories/lcp-large-image/app.js';
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{explanation: '', functionCalls: [{name: 'getFunctionCode', args: {scriptUrl, line: 10, column: 5}}]}],
+          [{explanation: 'done'}]
+        ])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      // Stub recordingIsFresh to return false
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(false);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const errorResponse = responses.find(response => response.type === AiAgent.ResponseType.ERROR);
+      assert.exists(errorResponse);
+      if (errorResponse && 'error' in errorResponse) {
+        assert.strictEqual(errorResponse.error, AiAgent.ErrorType.UNKNOWN);
+      }
     });
 
     it('can call getMainThreadTrackSummaryByLabel', async function() {

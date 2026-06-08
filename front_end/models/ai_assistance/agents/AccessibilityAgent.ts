@@ -81,6 +81,12 @@ If the user asks a question that requires an investigation of a problem, use thi
     - [Suggestion 2]
 `;
 
+const SECURITY_WARNING = `**CRITICAL CONSTRAINT**: This Lighthouse report was imported from a file and is static.
+You do NOT have access to the inspected page.
+Tools like \`executeJavaScript\`, \`getStyles\`, or \`runAccessibilityAudits\` are disabled.
+Do NOT attempt to use them or instruct the user that you will use them.
+Rely ONLY on the static report data below.`;
+
 export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
   #lh: LHModel.ReporterTypes.ReportJSON;
 
@@ -235,6 +241,49 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
   }
 
   #declareFunctions(): void {
+    const isImported = this.context?.getItem().isImported;
+
+    this.declareFunction<{categoryId: LHModel.RunTypes.CategoryId}, {audits: string}>('getLighthouseAudits', {
+      description:
+          'Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          categoryId: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description:
+                'The category of audits to retrieve. Valid values are "performance", "accessibility", "best-practices", "seo".',
+            nullable: false,
+          },
+        },
+        required: ['categoryId'],
+      },
+      displayInfoFromArgs: params => {
+        return {
+          title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          action: `getLighthouseAudits('${params.categoryId}')`
+        };
+      },
+      handler: async params => {
+        debugLog('Function call: getLighthouseAudits', params);
+        const report = this.context?.getItem();
+        if (!report) {
+          return {error: 'No Lighthouse report available.'};
+        }
+        const audits = new LighthouseFormatter().audits(report, params.categoryId);
+        return {
+          result: {audits},
+          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report}}],
+        };
+      }
+    });
+
+    if (isImported) {
+      return;
+    }
+
     this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
 
     this.declareFunction<{explanation: string}, {audits: string}>('runAccessibilityAudits', {
@@ -277,43 +326,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
         return {
           result: {audits},
           widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report, snapshotReport: true}}],
-        };
-      }
-    });
-
-    this.declareFunction<{categoryId: LHModel.RunTypes.CategoryId}, {audits: string}>('getLighthouseAudits', {
-      description:
-          'Returns the audits for a specific Lighthouse category. Use this to get more information about the performance, accessibility, best-practices, or seo audits.',
-      parameters: {
-        type: Host.AidaClient.ParametersTypes.OBJECT,
-        description: '',
-        nullable: false,
-        properties: {
-          categoryId: {
-            type: Host.AidaClient.ParametersTypes.STRING,
-            description:
-                'The category of audits to retrieve. Valid values are "performance", "accessibility", "best-practices", "seo".',
-            nullable: false,
-          },
-        },
-        required: ['categoryId'],
-      },
-      displayInfoFromArgs: params => {
-        return {
-          title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
-          action: `getLighthouseAudits('${params.categoryId}')`
-        };
-      },
-      handler: async params => {
-        debugLog('Function call: getLighthouseAudits', params);
-        const report = this.context?.getItem();
-        if (!report) {
-          return {error: 'No Lighthouse report available.'};
-        }
-        const audits = new LighthouseFormatter().audits(report, params.categoryId);
-        return {
-          result: {audits},
-          widgets: [{name: 'LIGHTHOUSE_REPORT', data: {report}}],
         };
       }
     });
@@ -510,7 +522,10 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
     if (lhr) {
       this.#declareFunctions();
     }
-    const enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}\n# User request:\n\n` : '';
+    let enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}\n# User request:\n\n` : '';
+    if (lhr?.getItem().isImported) {
+      enhancedQuery = `${SECURITY_WARNING}\n\n${enhancedQuery}`;
+    }
     return `${enhancedQuery}${query}`;
   }
 

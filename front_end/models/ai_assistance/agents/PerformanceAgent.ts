@@ -63,6 +63,12 @@ export type MainThreadSectionLabel = 'nav-to-lcp'|'lcp-ttfb'|'lcp-render-delay'|
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
 
+const SECURITY_WARNING = `**CRITICAL CONSTRAINT**: This performance trace was loaded from a file and is static.
+You do NOT have access to the live page.
+The tool \`getFunctionCode\` is disabled.
+Do NOT attempt to use it or instruct the user that you will use it.
+Rely only on the trace data and other available tools.`;
+
 const GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).
@@ -239,7 +245,6 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   #focus: AgentFocus;
-  external = false;
 
   constructor(focus: AgentFocus) {
     super();
@@ -456,7 +461,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
    * so we can show it in the disclosure UI. This is cleared and then populated
    * on each prompt.
    */
-  #additionalSelectionsForQuery: string[] = [];
+  #additionalSelectionsForDisclosure: string[] = [];
 
   get clientFeature(): Host.AidaClient.ClientFeature {
     return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
@@ -490,7 +495,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       }
       contextDisclosure.push(fact.text);
     }
-    contextDisclosure.push(...this.#additionalSelectionsForQuery);
+    contextDisclosure.push(...this.#additionalSelectionsForDisclosure);
 
     const focus = context.getItem();
     const widgets = this.#getWidgetsForFocus(focus);
@@ -705,13 +710,18 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       }
     }
 
-    this.#additionalSelectionsForQuery = selected;
+    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
+
     if (!selected.length) {
-      return query;
+      this.#additionalSelectionsForDisclosure = [];
+      const finalQuery = query;
+      return isFresh ? finalQuery : `${SECURITY_WARNING}\n\n${finalQuery}`;
     }
 
     selected.push(`# User query\n\n${query}`);
-    return selected.join('');
+    this.#additionalSelectionsForDisclosure = [...selected];
+    const finalQuery = selected.join('');
+    return isFresh ? finalQuery : `${SECURITY_WARNING}\n\n${finalQuery}`;
   }
 
   override async * run(initialQuery: string, options: {
@@ -818,9 +828,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   async #addFacts(context: PerformanceTraceContext): Promise<void> {
     const focus = context.getItem();
 
-    if (!context.external) {
-      this.addFact(this.#notExternalExtraPreambleFact);
-    }
+    this.addFact(this.#notExternalExtraPreambleFact);
 
     const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
     if (annotationsEnabled) {
@@ -847,7 +855,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       this.#formatter = new PerformanceTraceFormatter(focus);
       this.#formatter.resolveFunctionCode =
           async (url: Platform.DevToolsPath.UrlString, line: number, column: number) => {
-        if (!target) {
+        if (!target || !isFresh) {
           return null;
         }
 
@@ -932,6 +940,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
   #declareFunctions(context: PerformanceTraceContext): void {
     const focus = context.getItem();
     const {parsedTrace} = focus;
+    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
 
     this.declareFunction<{insightSetId: string, insightName: string}, {details: string}>('getInsightDetails', {
       description:
@@ -1331,84 +1340,85 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       });
     }
 
-    this.declareFunction<{scriptUrl: UrlString, line: number, column: number}, {result: string}>('getFunctionCode', {
-      description:
-          'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
-      parameters: {
-        type: Host.AidaClient.ParametersTypes.OBJECT,
-        description: '',
-        nullable: false,
-        properties: {
-          scriptUrl: {
-            type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'The url of the function.',
-            nullable: false,
-          },
-          line: {
-            type: Host.AidaClient.ParametersTypes.INTEGER,
-            description: 'The line number where the function is defined.',
-            nullable: false,
-          },
-          column: {
-            type: Host.AidaClient.ParametersTypes.INTEGER,
-            description: 'The column number where the function is defined.',
-            nullable: false,
-          },
-        },
-        required: ['scriptUrl', 'line', 'column']
-      },
-      displayInfoFromArgs: args => {
-        return {
-          title: lockedString('Looking up function code'),
-          action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
-        };
-      },
-      handler: async args => {
-        debugLog('Function call: getFunctionCode');
-
-        if (args.line === undefined) {
-          return {error: 'Missing arg: line'};
-        }
-
-        if (args.column === undefined) {
-          return {error: 'Missing arg: column'};
-        }
-
-        if (!this.#formatter) {
-          throw new Error('missing formatter');
-        }
-
-        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-        if (!target) {
-          throw new Error('missing target');
-        }
-
-        const url = args.scriptUrl as Platform.DevToolsPath.UrlString;
-        const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
-        if (!code) {
-          return {error: 'Could not find code'};
-        }
-
-        const result = this.#formatter.formatFunctionCode(code);
-
-        const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
-        this.#cacheFunctionResult(focus, key, result);
-        return {
-          result: {result},
-          widgets: [{
-            name: 'SOURCE_CODE',
-            data: {
-              url: args.scriptUrl,
-              line: args.line,
-              column: args.column,
-              code: code.code,
+    if (isFresh) {
+      this.declareFunction<{scriptUrl: UrlString, line: number, column: number}, {result: string}>('getFunctionCode', {
+        description:
+            'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
+        parameters: {
+          type: Host.AidaClient.ParametersTypes.OBJECT,
+          description: '',
+          nullable: false,
+          properties: {
+            scriptUrl: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'The url of the function.',
+              nullable: false,
             },
-          }],
-        };
-      },
-    });
+            line: {
+              type: Host.AidaClient.ParametersTypes.INTEGER,
+              description: 'The line number where the function is defined.',
+              nullable: false,
+            },
+            column: {
+              type: Host.AidaClient.ParametersTypes.INTEGER,
+              description: 'The column number where the function is defined.',
+              nullable: false,
+            },
+          },
+          required: ['scriptUrl', 'line', 'column']
+        },
+        displayInfoFromArgs: args => {
+          return {
+            title: lockedString('Looking up function code'),
+            action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+          };
+        },
+        handler: async args => {
+          debugLog('Function call: getFunctionCode');
 
-    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+          if (args.line === undefined) {
+            return {error: 'Missing arg: line'};
+          }
+
+          if (args.column === undefined) {
+            return {error: 'Missing arg: column'};
+          }
+
+          if (!this.#formatter) {
+            throw new Error('missing formatter');
+          }
+
+          const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+          if (!target) {
+            throw new Error('missing target');
+          }
+
+          const url = args.scriptUrl as Platform.DevToolsPath.UrlString;
+          const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
+          if (!code) {
+            return {error: 'Could not find code'};
+          }
+
+          const result = this.#formatter.formatFunctionCode(code);
+
+          const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
+          this.#cacheFunctionResult(focus, key, result);
+          return {
+            result: {result},
+            widgets: [{
+              name: 'SOURCE_CODE',
+              data: {
+                url: args.scriptUrl,
+                line: args.line,
+                column: args.column,
+                code: code.code,
+              },
+            }],
+          };
+        },
+      });
+    }
+
     const isTraceApp = Root.Runtime.Runtime.isTraceApp();
 
     this.declareFunction<{url: UrlString}, {content: string}>('getResourceContent', {
@@ -1474,48 +1484,46 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       },
     });
 
-    if (!context.external) {
-      this.declareFunction<{eventKey: string}, {success: boolean}>('selectEventByKey', {
-        description:
-            'Selects the event in the flamechart for the user. If the user asks to show them something, it\'s likely a good idea to call this function.',
-        parameters: {
-          type: Host.AidaClient.ParametersTypes.OBJECT,
-          description: '',
-          nullable: false,
-          properties: {
-            eventKey: {
-              type: Host.AidaClient.ParametersTypes.STRING,
-              description: 'The key for the event.',
-              nullable: false,
-            }
-          },
-          required: ['eventKey']
-        },
-        displayInfoFromArgs: params => {
-          return {title: lockedString('Selecting event'), action: `selectEventByKey('${params.eventKey}')`};
-        },
-        handler: async params => {
-          debugLog('Function call: selectEventByKey', params);
-          const event = focus.lookupEvent(params.eventKey);
-          if (!event) {
-            return {error: 'Invalid eventKey'};
+    this.declareFunction<{eventKey: string}, {success: boolean}>('selectEventByKey', {
+      description:
+          'Selects the event in the flamechart for the user. If the user asks to show them something, it\'s likely a good idea to call this function.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          eventKey: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The key for the event.',
+            nullable: false,
           }
-
-          const revealable = new SDK.TraceObject.RevealableEvent(event);
-          await Common.Revealer.reveal(revealable);
-          return {
-            result: {success: true},
-            widgets: [{
-              name: 'TIMELINE_EVENT_SUMMARY',
-              data: {
-                event,
-                parsedTrace,
-              },
-            }],
-          };
         },
-      });
-    }
+        required: ['eventKey']
+      },
+      displayInfoFromArgs: params => {
+        return {title: lockedString('Selecting event'), action: `selectEventByKey('${params.eventKey}')`};
+      },
+      handler: async params => {
+        debugLog('Function call: selectEventByKey', params);
+        const event = focus.lookupEvent(params.eventKey);
+        if (!event) {
+          return {error: 'Invalid eventKey'};
+        }
+
+        const revealable = new SDK.TraceObject.RevealableEvent(event);
+        await Common.Revealer.reveal(revealable);
+        return {
+          result: {success: true},
+          widgets: [{
+            name: 'TIMELINE_EVENT_SUMMARY',
+            data: {
+              event,
+              parsedTrace,
+            },
+          }],
+        };
+      },
+    });
   }
 
   #getBoundsForLabel(label: MainThreadSectionLabel, focus: AgentFocus): Trace.Types.Timing.TraceWindowMicro|null {

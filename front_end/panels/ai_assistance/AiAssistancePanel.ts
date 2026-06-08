@@ -362,23 +362,22 @@ function getMarkdownRenderer(conversation?: AiAssistanceModel.AiConversation.AiC
   const context = conversation?.selectedContext;
 
   if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
-    if (!context.external) {
-      const focus = context.getItem();
-      return new PerformanceAgentMarkdownRenderer(
-          focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
-    }
-  } else if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE) {
+    const focus = context.getItem();
+    return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
+  }
+  if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE) {
     // Handle historical conversations (can't linkify anything).
     return new PerformanceAgentMarkdownRenderer();
-  } else if (
-      Greendev.Prototypes.instance().isEnabled('emulationCapabilities') &&
+  }
+  if (Greendev.Prototypes.instance().isEnabled('emulationCapabilities') &&
       conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING &&
       SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel)) {
     const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
     const resourceTreeModel = domModel?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
     const mainFrameId = resourceTreeModel?.mainFrame?.id;
     return new StylingAgentMarkdownRenderer(mainFrameId);
-  } else if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY) {
+  }
+  if (conversation?.type === AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY) {
     const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
     const mainDocumentURL = domModel?.existingDocument()?.documentURL;
     return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);

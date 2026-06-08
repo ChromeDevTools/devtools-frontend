@@ -382,4 +382,105 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.strictEqual(actionResponse.output, 'test data');
     sinon.assert.calledOnce(execJs);
   });
+
+  it('cannot call executeJavaScript if the report is imported', async () => {
+    const target = createTarget();
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: 'thought',
+        functionCalls: [{
+          name: 'executeJavaScript',
+          args: {code: 'document.body.id', explanation: 'explaining', title: 'titling'},
+        }],
+      }],
+    ]);
+
+    const execJs = sinon.stub().resolves('test data');
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+      execJs,
+      createExtensionScope,
+    });
+
+    const importedReport: LHModel.ReporterTypes.ReportJSON = {
+      ...mockReport,
+      isImported: true,
+    };
+
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+    const documentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    documentNode.domModel.returns(domModel);
+    const document = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    document.body = documentNode;
+    sinon.stub(domModel, 'existingDocument').returns(document);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const errorResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ERROR);
+    assert.exists(errorResponse);
+    if (errorResponse && 'error' in errorResponse) {
+      assert.strictEqual(errorResponse.error, AiAssistance.AiAgent.ErrorType.UNKNOWN);
+    }
+    sinon.assert.notCalled(execJs);
+  });
+
+  it('can still call getLighthouseAudits if the report is imported', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getLighthouseAudits', args: {categoryId: 'accessibility'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+
+    const importedReport: LHModel.ReporterTypes.ReportJSON = {
+      ...mockReport,
+      isImported: true,
+    };
+
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const titleResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.TITLE);
+    assert.exists(titleResponse);
+    assert.strictEqual(titleResponse.title, 'Getting Lighthouse audits for accessibility');
+
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+  });
+
+  describe('enhanceQuery', () => {
+    it('prepends security warning if the report is imported', async () => {
+      const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+        aidaClient: mockAidaClient([]),
+      });
+
+      const importedReport: LHModel.ReporterTypes.ReportJSON = {
+        ...mockReport,
+        isImported: true,
+      };
+      const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
+
+      const enhancedQuery = await agent.enhanceQuery('user query', context);
+
+      assert.include(enhancedQuery, 'imported from a file and is static');
+      assert.include(enhancedQuery, 'user query');
+    });
+
+    it('does not prepend security warning if the report is not imported', async () => {
+      const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+        aidaClient: mockAidaClient([]),
+      });
+
+      const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
+
+      const enhancedQuery = await agent.enhanceQuery('user query', context);
+
+      assert.notInclude(enhancedQuery, 'imported from a file and is static');
+      assert.include(enhancedQuery, 'user query');
+    });
+  });
 });

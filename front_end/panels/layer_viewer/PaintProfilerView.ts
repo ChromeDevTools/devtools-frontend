@@ -11,8 +11,12 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import paintProfilerStyles from './paintProfiler.css.js';
+
+const {html, render, nothing} = Lit;
+const {repeat} = Lit.Directives;
 
 const UIStrings = {
   /**
@@ -397,40 +401,117 @@ export interface EventTypes {
   [Events.WINDOW_CHANGED]: void;
 }
 
-export class PaintProfilerCommandLogView extends UI.Widget.VBox {
-  private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;
-  private log: SDK.PaintProfiler.PaintProfilerLogItem[];
-  private readonly treeItemCache: Map<SDK.PaintProfiler.PaintProfilerLogItem, LogTreeElement>;
-  private selectionWindow?: {left: number, right: number}|null;
-  constructor() {
-    super();
-    this.setMinimumSize(100, 25);
-    this.element.classList.add('overflow-auto');
+export interface CommandLogViewInput {
+  visibleLogItems: SDK.PaintProfiler.PaintProfilerLogItem[];
+}
 
-    this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    UI.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString(UIStrings.commandLog));
-    this.element.appendChild(this.treeOutline.element);
-    this.setDefaultFocusedElement(this.treeOutline.contentElement);
+function paramToString(param: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue, name: string): string {
+  if (typeof param !== 'object') {
+    return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);
+  }
+  let str = '';
+  let keyCount = 0;
+  for (const key in param) {
+    const paramKey = param[key];
+    if (++keyCount > 4 || typeof paramKey === 'object' || (typeof paramKey === 'string' && paramKey.length > 100)) {
+      return name;
+    }
+    if (str) {
+      str += ', ';
+    }
+    str += paramKey;
+  }
+  return str;
+}
+
+function paramsToString(params: SDK.PaintProfiler.RawPaintProfilerLogItemParams|null): string {
+  let str = '';
+  for (const key in params) {
+    if (str) {
+      str += ', ';
+    }
+    str += paramToString(params[key], key);
+  }
+  return str;
+}
+
+function renderProperty(name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue): Lit.LitTemplate {
+  const isObject = value !== null && typeof value === 'object';
+
+  // clang-format off
+  return html`
+    <li role="treeitem">
+      <span>${name}: </span>${
+        isObject ? html`
+          <ul role="group">
+            ${Object.entries(value).map(([key, val]) => renderProperty(key, val))}
+          </ul>` : html`
+          <span>${JSON.stringify(value)}</span>`
+      }
+    </li>
+  `;
+  // clang-format on
+}
+
+function renderLogItem(logItem: SDK.PaintProfiler.PaintProfilerLogItem): Lit.LitTemplate {
+  const hasParams = Boolean(logItem.params && Object.keys(logItem.params).length > 0);
+  const titleText = logItem.method + '(' + paramsToString(logItem.params) + ')';
+
+  // clang-format off
+  return html`
+    <li role="treeitem">
+      ${titleText}
+      ${hasParams ? html`
+        <ul role="group">
+          ${Object.entries(logItem.params || {}).map(([key, val]) => renderProperty(key, val))}
+        </ul>` : nothing}
+    </li>
+  `;
+  // clang-format on
+}
+
+// clang-format off
+export const COMMAND_LOG_DEFAULT_VIEW = (input: CommandLogViewInput, _output: undefined, target: HTMLElement): void => {
+  render(html`
+    <div class="overflow-auto flex-auto vbox">
+      <devtools-tree
+          autofocus
+          aria-label=${i18nString(UIStrings.commandLog)}
+          .template=${html`
+        <ul role="tree">
+          ${repeat(input.visibleLogItems,
+               item => item.commandIndex,
+               item => renderLogItem(item))}
+        </ul>`}>
+      </devtools-tree>
+    </div>`,
+    target);
+};
+// clang-format on
+
+type CommandLogView = typeof COMMAND_LOG_DEFAULT_VIEW;
+
+export class PaintProfilerCommandLogView extends UI.Widget.VBox {
+  private log: SDK.PaintProfiler.PaintProfilerLogItem[];
+  private selectionWindow?: {left: number, right: number}|null;
+  readonly #view: CommandLogView;
+
+  constructor(element?: HTMLElement, view: CommandLogView = COMMAND_LOG_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
+    this.setMinimumSize(100, 25);
 
     this.log = [];
-    this.treeItemCache = new Map();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
   }
 
   setCommandLog(log: SDK.PaintProfiler.PaintProfilerLogItem[]): void {
     this.log = log;
-
     this.updateWindow({left: 0, right: this.log.length});
-  }
-
-  private appendLogItem(logItem: SDK.PaintProfiler.PaintProfilerLogItem): void {
-    let treeElement = this.treeItemCache.get(logItem);
-    if (!treeElement) {
-      treeElement = new LogTreeElement(logItem);
-      this.treeItemCache.set(logItem, treeElement);
-    } else if (treeElement.parent) {
-      return;
-    }
-    this.treeOutline.appendChild(treeElement);
   }
 
   updateWindow(selectionWindow: {left: number, right: number}|null): void {
@@ -439,119 +520,12 @@ export class PaintProfilerCommandLogView extends UI.Widget.VBox {
   }
 
   override performUpdate(): Promise<void> {
-    if (!this.selectionWindow || !this.log.length) {
-      this.treeOutline.removeChildren();
-      return Promise.resolve();
-    }
-    const root = this.treeOutline.rootElement();
-    for (;;) {
-      const child = root.firstChild() as LogTreeElement;
-      if (!child || child.logItem.commandIndex >= this.selectionWindow.left) {
-        break;
-      }
-      root.removeChildAtIndex(0);
-    }
-    for (;;) {
-      const child = root.lastChild() as LogTreeElement;
-      if (!child || child.logItem.commandIndex < this.selectionWindow.right) {
-        break;
-      }
-      root.removeChildAtIndex(root.children().length - 1);
-    }
-    for (let i = this.selectionWindow.left, right = this.selectionWindow.right; i < right; ++i) {
-      this.appendLogItem(this.log[i]);
-    }
+    const visibleLogItems = this.selectionWindow && this.log.length ?
+        this.log.slice(this.selectionWindow.left, this.selectionWindow.right) :
+        [];
+
+    this.#view({visibleLogItems}, undefined, this.contentElement);
     return Promise.resolve();
-  }
-}
-
-export class LogTreeElement extends UI.TreeOutline.TreeElement {
-  readonly logItem: SDK.PaintProfiler.PaintProfilerLogItem;
-
-  constructor(logItem: SDK.PaintProfiler.PaintProfilerLogItem) {
-    super('', Boolean(logItem.params));
-    this.logItem = logItem;
-  }
-
-  override onattach(): void {
-    this.update();
-  }
-
-  override async onpopulate(): Promise<void> {
-    for (const param in this.logItem.params) {
-      LogPropertyTreeElement.appendLogPropertyItem(this, param, this.logItem.params[param]);
-    }
-  }
-
-  private paramToString(param: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue, name: string): string {
-    if (typeof param !== 'object') {
-      return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);
-    }
-    let str = '';
-    let keyCount = 0;
-    for (const key in param) {
-      const paramKey = param[key];
-      if (++keyCount > 4 || paramKey === 'object' || (paramKey === 'string' && paramKey.length > 100)) {
-        return name;
-      }
-      if (str) {
-        str += ', ';
-      }
-      str += paramKey;
-    }
-    return str;
-  }
-
-  private paramsToString(params: SDK.PaintProfiler.RawPaintProfilerLogItemParams|null): string {
-    let str = '';
-    for (const key in params) {
-      if (str) {
-        str += ', ';
-      }
-      str += this.paramToString(params[key], key);
-    }
-    return str;
-  }
-
-  private update(): void {
-    const title = document.createDocumentFragment();
-    UI.UIUtils.createTextChild(title, this.logItem.method + '(' + this.paramsToString(this.logItem.params) + ')');
-    this.title = title;
-  }
-}
-
-export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
-  private property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue};
-
-  constructor(property: {name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue}) {
-    super();
-    this.property = property;
-  }
-
-  static appendLogPropertyItem(
-      element: UI.TreeOutline.TreeElement, name: string,
-      value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue): void {
-    const treeElement = new LogPropertyTreeElement({name, value});
-    element.appendChild(treeElement);
-    if (value && typeof value === 'object') {
-      for (const property in value) {
-        LogPropertyTreeElement.appendLogPropertyItem(treeElement, property, value[property]);
-      }
-    }
-  }
-
-  override onattach(): void {
-    const title = document.createDocumentFragment();
-    const nameElement = title.createChild('span', 'name');
-    nameElement.textContent = this.property.name;
-    const separatorElement = title.createChild('span', 'separator');
-    separatorElement.textContent = ': ';
-    if (this.property.value === null || typeof this.property.value !== 'object') {
-      const valueElement = title.createChild('span', 'value');
-      valueElement.textContent = JSON.stringify(this.property.value);
-      valueElement.classList.add('cm-js-' + (this.property.value === null ? 'null' : typeof this.property.value));
-    }
-    this.title = title;
   }
 }
 

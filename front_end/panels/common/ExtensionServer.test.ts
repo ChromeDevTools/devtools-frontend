@@ -94,8 +94,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
 
     await Promise.all(targets);
 
-    const resources =
-        await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools!.inspectedWindow.getResources(r));
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
 
     assert.deepEqual(resources.map(r => r.url), ['https://example.com/', 'http://example.com']);
   });
@@ -734,6 +733,34 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.deepEqual(result.result, 4);
   });
 
+  it('evaluates expression via Promise return', async () => {
+    const parentFrameUrl = allowedUrl;
+    const childFrameUrl = urlString`${`${allowedUrl}/2`}`;
+    const childExeContextOrigin = blockedUrl;
+    const parentFrame = await setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    const childFrame = await setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
+
+    const runtimeModel = childFrame.resourceTreeModel()?.target().model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+    runtimeModel.executionContextCreated({
+      id: 1 as Protocol.Runtime.ExecutionContextId,
+      origin: window.location.origin,
+      name: window.location.origin,
+      uniqueId: window.location.origin,
+      auxData: {frameId: childFrame.id, isDefault: false},
+    });
+    const contentScriptExecutionContext = runtimeModel.executionContext(1);
+    assert.exists(contentScriptExecutionContext);
+    sinon.stub(contentScriptExecutionContext, 'evaluate').returns(Promise.resolve({
+      object: SDK.RemoteObject.RemoteObject.fromLocalObject(4),
+    }));
+
+    const result = await context.chrome.devtools!.inspectedWindow.eval(
+        '4', {frameURL: childFrameUrl, useContentScriptContext: true});
+
+    assert.strictEqual(result, 4);
+  });
+
   it('blocks evaluation on blocked sub-executioncontexts with explicit scriptExecutionContextOrigin', async () => {
     assert.isUndefined(context.chrome.devtools);
 
@@ -806,15 +833,23 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     await createUISourceCode(project, allowedUrl);
 
     assert.exists(context.chrome.devtools);
-    const resources =
-        await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
     assert.deepEqual(resources.map(r => r.url), [allowedUrl]);
 
-    const resourceContents = await Promise.all(resources.map(
-        resource => new Promise<{url: string, content?: string, encoding?: string}>(
-            r => resource.getContent((content, encoding) => r({url: resource.url, content, encoding})))));
+    const resourceContentsWithCallback = await Promise.all(
+        resources.map(resource => new Promise<{url: string, content?: string, encoding?: string}>(
+                          r => resource.getContent((content, encoding) => r({url: resource.url, content, encoding})))));
 
-    assert.deepEqual(resourceContents, [
+    assert.deepEqual(resourceContentsWithCallback, [
+      {url: allowedUrl, content: 'content', encoding: ''},
+    ]);
+
+    const resourceContentsWithPromise = await Promise.all(resources.map(async resource => {
+      const {content, encoding} = await resource.getContent();
+      return {url: resource.url, content, encoding};
+    }));
+
+    assert.deepEqual(resourceContentsWithPromise, [
       {url: allowedUrl, content: 'content', encoding: ''},
     ]);
   });
@@ -899,20 +934,26 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     await createUISourceCode(project, allowedUrl);
 
     assert.exists(context.chrome.devtools);
-    const resources =
-        await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
     assert.deepEqual(resources.map(r => r.url), [allowedUrl]);
 
     assert.deepEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'content');
     assert.deepEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
-    const responses = await Promise.all(resources.map(
-                          resource => new Promise<Object|undefined>(r => resource.setContent('modified', true, r)))) as
+    const responsesWithCallback =
+        await Promise.all(
+            resources.map(resource => new Promise<object|undefined>(r => resource.setContent('modified', true, r)))) as
         Array<undefined|{code: string, details: string[]}>;
 
-    assert.deepEqual(responses.map(response => response?.code), ['OK']);
-    assert.deepEqual(responses.map(response => response?.details), [[]]);
+    assert.deepEqual(responsesWithCallback.map(response => response?.code), ['OK']);
+    assert.deepEqual(responsesWithCallback.map(response => response?.details), [[]]);
 
     assert.deepEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'modified');
+    assert.deepEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
+
+    // Test promise version
+    await Promise.all(resources.map(resource => resource.setContent('modified_again', true)));
+
+    assert.deepEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'modified_again');
     assert.deepEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
   });
 
@@ -1263,9 +1304,7 @@ describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
 
     assert.exists(context.chrome.devtools);
 
-    const resources = await new Promise<Chrome.DevTools.Resource[]>(r => {
-      context.chrome.devtools?.inspectedWindow.getResources(r);
-    });
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
 
     // Validate that resource is registered.
     assert.isTrue(resources && resources.length > 0);

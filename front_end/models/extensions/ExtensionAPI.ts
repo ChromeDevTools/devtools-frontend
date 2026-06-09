@@ -1067,6 +1067,46 @@ self.injectedExtensionAPI = function(
     return typeof lastArgument === 'function' ? lastArgument as (...args: unknown[]) => unknown : undefined;
   }
 
+  /**
+   * Helper to support both callback and Promise-based APIs.
+   *
+   * @param args The arguments object of the calling function.
+   * @returns An object containing either the `callback` function, or the
+   *    `promise` and its `resolve`/`reject` functions.
+   */
+  function callbackOrPromise<ResolveT, CallbackArgsT extends unknown[] = [ResolveT]>(args: IArguments): {
+    callback?: (...args: CallbackArgsT) => void,
+    promise?: Promise<ResolveT>,
+    resolve?: (value: ResolveT) => void,
+    reject?: (error: unknown) => void,
+  } {
+    const callback = extractCallbackArgument(args);
+    if (callback) {
+      return {callback: callback as (...args: CallbackArgsT) => void};
+    }
+    const {promise, resolve, reject} = Promise.withResolvers<ResolveT>();
+    return {promise, resolve, reject};
+  }
+
+  /**
+   * Checks if the `response` from the ExtensionServer indicates an error. If an
+   * error occurred and a `Promise` `reject` function is provided, this function
+   * will reject the promise with a generic 'DevTools API encountered an error' Error.
+   *
+   * @param response The response object from the ExtensionServer.
+   * @param reject The promise reject function, if applicable.
+   * @returns `true` if an error occurred and the promise was rejected, `false`
+   *    otherwise.
+   */
+  function checkErrorAndReject(response: unknown, reject?: (error: Error) => void): boolean {
+    const res = response as {isError?: boolean, description?: string, details?: unknown[]};
+    if (res.isError && reject) {
+      reject(new Error('DevTools API encountered an error'));
+      return true;
+    }
+    return false;
+  }
+
   const LanguageServicesAPI = declareInterfaceClass(LanguageServicesAPIImpl);
   const RecorderServicesAPI = declareInterfaceClass(RecorderServicesAPIImpl);
   const Performance = declareInterfaceClass(PerformanceImpl);
@@ -1247,43 +1287,68 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest({command: PrivateAPI.Commands.Reload, options});
     },
 
-    eval: function(
-              expression: string,
-              evaluateOptions: {scriptExecutionContext?: string, frameURL?: string, useContentScriptContext?: boolean}):
-              Object |
-        null {
-          const callback = extractCallbackArgument(arguments);
+    eval: function<E = unknown>(this: PublicAPI.Chrome.DevTools.InspectedWindow, expression: string,
+                                optionsOrCallback?: unknown,
+                                _callback?: (result: unknown, exceptionInfo: object) => void): Promise<E>|
+        void {
+          const options = (typeof optionsOrCallback === 'object' && optionsOrCallback !== null) ?
+              optionsOrCallback as PrivateAPI.EvaluateOptions :
+              undefined;
+
+          const {callback: callbackArg, promise, resolve, reject} = callbackOrPromise<E, [unknown, object?]>(arguments);
+
           function callbackWrapper(result: unknown): void {
-            const {isError, isException, value} = result as {
-              value: unknown,
+            if (checkErrorAndReject(result, reject)) {
+              return;
+            }
+
+            const res = result as {
+              value?: unknown,
               isError?: boolean,
               isException?: boolean,
             };
-            if (isError || isException) {
-              callback?.(undefined, result);
+
+            if (res.isException) {
+              reject?.(res);
             } else {
-              callback?.(value);
+              resolve?.(res.value as E);
+            }
+
+            if (res.isError || res.isException) {
+              callbackArg?.(undefined, res);
+            } else {
+              callbackArg?.(res.value);
             }
           }
           extensionServer.sendRequest(
-              {
-                command: PrivateAPI.Commands.EvaluateOnInspectedPage,
-                expression,
-                evaluateOptions: (typeof evaluateOptions === 'object' ? evaluateOptions : undefined),
-              },
-              callback && callbackWrapper);
-          return null;
-        },
+              {command: PrivateAPI.Commands.EvaluateOnInspectedPage, expression, evaluateOptions: options},
+              callbackWrapper);
 
-    getResources: function(callback?: (resources: PublicAPI.Chrome.DevTools.Resource[]) => unknown): void {
-      function wrapResource(resourceData: APIImpl.ResourceData): APIImpl.Resource {
-        return new (Constructor(Resource))(resourceData);
-      }
-      function callbackWrapper(resources: unknown): void {
-        callback?.((resources as APIImpl.ResourceData[]).map(wrapResource));
-      }
-      extensionServer.sendRequest({command: PrivateAPI.Commands.GetPageResources}, callback && callbackWrapper);
-    },
+          return promise;
+        } as PublicAPI.Chrome.DevTools.InspectedWindow['eval'],
+
+    getResources: function(this: PublicAPI.Chrome.DevTools.InspectedWindow,
+                           _callback?: (resources: PublicAPI.Chrome.DevTools.Resource[]) => void):
+                      Promise<PublicAPI.Chrome.DevTools.Resource[]>|
+        void {
+          const {callback: callbackArg, promise, resolve, reject} =
+              callbackOrPromise<PublicAPI.Chrome.DevTools.Resource[]>(arguments);
+
+          function callbackWrapper(response: unknown): void {
+            if (checkErrorAndReject(response, reject)) {
+              return;
+            }
+
+            const wrappedResources =
+                ((response || []) as APIImpl.ResourceData[]).map(r => new (Constructor(Resource))(r));
+            resolve?.(wrappedResources);
+            callbackArg?.(wrappedResources);
+          }
+
+          extensionServer.sendRequest({command: PrivateAPI.Commands.GetPageResources}, callbackWrapper);
+
+          return promise;
+        } as PublicAPI.Chrome.DevTools.InspectedWindow['getResources'],
   };
 
   function ResourceImpl(this: APIImpl.Resource, resourceData: APIImpl.ResourceData): void {
@@ -1292,9 +1357,9 @@ self.injectedExtensionAPI = function(
     this._buildId = resourceData.buildId;
   }
 
-  (ResourceImpl.prototype as Pick<
-       APIImpl.Resource,
-       'url'|'type'|'buildId'|'getContent'|'setContent'|'setFunctionRangesForScript'|'attachSourceMapURL'>) = {
+  (ResourceImpl.prototype as
+   Pick<APIImpl.Resource,
+        'url'|'type'|'buildId'|'getContent'|'setContent'|'setFunctionRangesForScript'|'attachSourceMapURL'>) = {
     get url(): string {
       return (this as APIImpl.Resource)._url;
     },
@@ -1307,25 +1372,51 @@ self.injectedExtensionAPI = function(
       return (this as APIImpl.Resource)._buildId;
     },
 
-    getContent: function(this: APIImpl.Resource, callback?: (content: string, encoding: string) => unknown): void {
-      function callbackWrapper(response: unknown): void {
-        const {content, encoding} = response as {content: string, encoding: string};
-        callback?.(content, encoding);
-      }
+    getContent: function(this: APIImpl.Resource, _callback?: (content: string, encoding: string) => void): Promise<{
+                  content: string, encoding: string,
+                }>|
+        void {
+          const {callback: callbackArg, promise, resolve, reject} =
+              callbackOrPromise<{content: string, encoding: string}, [string, string]>(arguments);
 
-      extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.GetResourceContent, url: this._url}, callback && callbackWrapper);
-    },
+          function callbackWrapper(response: unknown): void {
+            if (checkErrorAndReject(response, reject)) {
+              return;
+            }
 
-    setContent: function(
-        this: APIImpl.Resource, content: string, commit: boolean, callback: (error?: Object) => unknown): void {
-      extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.SetResourceContent, url: this._url, content, commit},
-          callback as (response: unknown) => unknown);
-    },
+            const {content, encoding} = response as {content: string, encoding: string};
+            resolve?.({content, encoding});
+            callbackArg?.(content, encoding);
+          }
 
-    setFunctionRangesForScript: function(
-        this: APIImpl.Resource, ranges: PublicAPI.Chrome.DevTools.NamedFunctionRange[]): Promise<void> {
+          extensionServer.sendRequest({command: PrivateAPI.Commands.GetResourceContent, url: this._url},
+                                      callbackWrapper);
+
+          return promise;
+        } as PublicAPI.Chrome.DevTools.Resource['getContent'],
+
+    setContent: function(this: APIImpl.Resource, content: string, commit: boolean,
+                         _callback?: (status?: object) => void): Promise<void>|
+        void {
+          const {callback: callbackArg, promise, resolve, reject} = callbackOrPromise<void, [object]>(arguments);
+
+          function callbackWrapper(response: unknown): void {
+            if (checkErrorAndReject(response, reject)) {
+              return;
+            }
+
+            resolve?.();
+            callbackArg?.(response as object);
+          }
+
+          extensionServer.sendRequest(
+              {command: PrivateAPI.Commands.SetResourceContent, url: this._url, content, commit}, callbackWrapper);
+
+          return promise;
+        } as PublicAPI.Chrome.DevTools.Resource['setContent'],
+
+    setFunctionRangesForScript: function(this: APIImpl.Resource,
+                                         ranges: PublicAPI.Chrome.DevTools.NamedFunctionRange[]): Promise<void> {
       return new Promise(
           (resolve, reject) => extensionServer.sendRequest(
               {

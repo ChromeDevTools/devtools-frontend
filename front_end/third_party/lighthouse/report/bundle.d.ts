@@ -82,7 +82,7 @@ declare var ne: {
             stickyHeaderEl: any;
             highlightEl: any;
             _updateStickyHeader(): void;
-        };
+        } | null;
         onMediaQueryChange(e: any): void;
         initFeatures(e: any): void;
         json: any;
@@ -100,15 +100,15 @@ declare var ne: {
         _saveFile(e: any): void;
     };
 };
-declare namespace St {
+declare namespace Ct {
     export { Lt as registerLocaleData };
-    export { Ct as hasLocale };
+    export { St as hasLocale };
 }
 declare function kt(r: any, e?: {}): HTMLElement;
 declare function Et(r: any, e: any): {
     lhr: any;
-    missingIcuMessageIds: any[];
+    missingIcuMessageIds: never[];
 };
 declare function Lt(r: any, e: any): void;
-declare function Ct(r: any): boolean;
-export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, St as format, kt as renderReport, Et as swapLocale };
+declare function St(r: any): boolean;
+export { Q as DOM, te as ReportRenderer, ne as ReportUIFeatures, Ct as format, kt as renderReport, Et as swapLocale };

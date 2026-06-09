@@ -48,6 +48,7 @@ export {
   createIssuesFromProtocolIssue,
   Events as IssuesManagerEvents,
   type EventTypes as IssuesManagerEventTypes,
+  isIssueCodeSupported,
   IssuesManager
 } from '../front_end/models/issues_manager/IssuesManager.js';
 export * as MarkdownIssueDescription from '../front_end/models/issues_manager/MarkdownIssueDescription.js';

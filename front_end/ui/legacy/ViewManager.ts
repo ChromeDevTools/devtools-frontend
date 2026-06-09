@@ -11,18 +11,17 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import type * as Foundation from '../../foundation/foundation.js';
-import {createIcon, type Icon} from '../kit/kit.js';
+import {createIcon} from '../kit/kit.js';
 import {render, type TemplateResult} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu} from './ContextMenu.js';
 import * as PlusButton from './PlusButton.js';
+import {StackedPane} from './StackedPane.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
 import {type ItemsProvider, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
-import {createTextChild} from './UIUtils.js';
 import type {TabbedViewLocation, View, ViewLocation} from './View.js';
-import viewContainersStyles from './viewContainers.css.js';
 import {
   getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
@@ -262,6 +261,10 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return toolbar;
   }
 
+  static setWidgetForView(view: View, widget: AnyWidget): void {
+    widgetForView.set(view, widget);
+  }
+
   getRegisteredViewExtensions(): PreRegisteredView[] {
     return this.preRegisteredViews;
   }
@@ -453,7 +456,7 @@ export class ContainerWidget extends VBox {
       // Move focus from |this| to loaded |widget| if any.
       const shouldFocus = this.element.hasFocus();
       this.setDefaultFocusedElement(null);
-      widgetForView.set(this.view, widget);
+      ViewManager.setWidgetForView(this.view, widget);
       widget.show(this.element);
       if (shouldFocus) {
         widget.focus();
@@ -478,131 +481,6 @@ export class ContainerWidget extends VBox {
     // This method is sniffed in tests.
   }
 }
-
-class ExpandableContainerWidget extends VBox {
-  private titleElement: HTMLDivElement;
-  private readonly titleExpandIcon: Icon;
-  private readonly view: View;
-  private widget?: AnyWidget;
-  private materializePromise?: Promise<void>;
-
-  constructor(view: View) {
-    super({useShadowDom: true});
-    this.element.classList.add('flex-none');
-    this.registerRequiredCSS(viewContainersStyles);
-
-    this.titleElement = document.createElement('div');
-    this.titleElement.classList.add('expandable-view-title');
-    this.titleElement.setAttribute('jslog', `${VisualLogging.sectionHeader().context(view.viewId()).track({
-                                     click: true,
-                                     keydown: 'Enter|Space|ArrowLeft|ArrowRight',
-                                   })}`);
-    ARIAUtils.markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = createIcon('triangle-right', 'title-expand-icon');
-    this.titleElement.appendChild(this.titleExpandIcon);
-    const titleText = view.title();
-    createTextChild(this.titleElement, titleText);
-    ARIAUtils.setLabel(this.titleElement, titleText);
-    ARIAUtils.setExpanded(this.titleElement, false);
-    this.titleElement.tabIndex = 0;
-    self.onInvokeElement(this.titleElement, this.toggleExpanded.bind(this));
-    this.titleElement.addEventListener('keydown', this.onTitleKeyDown.bind(this), false);
-    this.contentElement.insertBefore(this.titleElement, this.contentElement.firstChild);
-
-    ARIAUtils.setControls(this.titleElement, this.contentElement.createChild('slot'));
-    this.view = view;
-    expandableContainerForView.set(view, this);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    if (this.widget && this.materializePromise) {
-      void this.materializePromise.then(() => {
-        if (this.titleElement.classList.contains('expanded') && this.widget) {
-          this.widget.show(this.element);
-        }
-      });
-    }
-  }
-
-  private materialize(): Promise<void> {
-    if (this.materializePromise) {
-      return this.materializePromise;
-    }
-    // TODO(crbug.com/1006759): Transform to async-await
-    const promises = [];
-    promises.push(this.view.toolbarItems().then(toolbarItems => {
-      const toolbarElement = ViewManager.createToolbar(toolbarItems);
-      if (toolbarElement) {
-        this.titleElement.appendChild(toolbarElement);
-      }
-    }));
-    promises.push(this.view.widget().then(widget => {
-      this.widget = widget;
-      widgetForView.set(this.view, widget);
-      widget.show(this.element);
-    }));
-    this.materializePromise = Promise.all(promises).then(() => {});
-    return this.materializePromise;
-  }
-
-  expand(): Promise<void> {
-    if (this.titleElement.classList.contains('expanded')) {
-      return this.materialize();
-    }
-    this.titleElement.classList.add('expanded');
-    ARIAUtils.setExpanded(this.titleElement, true);
-    this.titleExpandIcon.name = 'triangle-down';
-    return this.materialize().then(() => {
-      if (this.widget) {
-        this.widget.show(this.element);
-      }
-    });
-  }
-
-  private collapse(): void {
-    if (!this.titleElement.classList.contains('expanded')) {
-      return;
-    }
-    this.titleElement.classList.remove('expanded');
-    ARIAUtils.setExpanded(this.titleElement, false);
-    this.titleExpandIcon.name = 'triangle-right';
-    void this.materialize().then(() => {
-      if (this.widget) {
-        this.widget.detach();
-      }
-    });
-  }
-
-  private toggleExpanded(event: Event): void {
-    if (event.type === 'keydown' && event.target !== this.titleElement) {
-      return;
-    }
-    if (this.titleElement.classList.contains('expanded')) {
-      this.collapse();
-    } else {
-      void this.expand();
-    }
-  }
-
-  private onTitleKeyDown(event: Event): void {
-    if (event.target !== this.titleElement) {
-      return;
-    }
-    const keyEvent = (event as KeyboardEvent);
-    if (keyEvent.key === 'ArrowLeft') {
-      this.collapse();
-    } else if (keyEvent.key === 'ArrowRight') {
-      if (!this.titleElement.classList.contains('expanded')) {
-        void this.expand();
-      } else if (this.widget) {
-        this.widget.focus();
-      }
-    }
-  }
-}
-
-const expandableContainerForView = new WeakMap<View, ExpandableContainerWidget>();
 
 class Location {
   protected readonly manager: ViewManager;
@@ -959,21 +837,22 @@ class TabbedLocation extends Location implements TabbedViewLocation {
 }
 
 class StackLocation extends Location implements ViewLocation {
-  private readonly vbox: VBox;
-  private readonly expandableContainers: Map<string, ExpandableContainerWidget>;
+  private readonly stackedPane: StackedPane;
 
   constructor(manager: ViewManager, revealCallback?: (() => void), location?: string, jslogContext?: string) {
-    const vbox = new VBox();
-    vbox.element.setAttribute('jslog', `${VisualLogging.pane(jslogContext || 'sidebar').track({resize: true})}`);
-    super(manager, vbox, revealCallback);
-    this.vbox = vbox;
-    ARIAUtils.markAsTree(vbox.element);
-
-    this.expandableContainers = new Map();
+    const stackedPane = new StackedPane(ViewManager.createToolbar, ViewManager.setWidgetForView);
+    stackedPane.element.setAttribute('jslog', `${VisualLogging.pane(jslogContext || 'sidebar').track({resize: true})}`);
+    super(manager, stackedPane, revealCallback);
+    this.stackedPane = stackedPane;
 
     if (location) {
       this.appendApplicableItems(location);
     }
+  }
+
+  // Blink test(s) rely on this
+  get expandableContainers(): Map<string, AnyWidget> {
+    return this.stackedPane.expandableContainers;
   }
 
   appendView(view: View, insertBefore?: View|null): void {
@@ -982,37 +861,18 @@ class StackLocation extends Location implements ViewLocation {
       oldLocation.removeView(view);
     }
 
-    let container = this.expandableContainers.get(view.viewId());
-    if (!container) {
-      locationForView.set(view, this);
-      this.manager.views.set(view.viewId(), view);
-      container = new ExpandableContainerWidget(view);
-      let beforeElement: Node|null = null;
-      if (insertBefore) {
-        const beforeContainer = expandableContainerForView.get(insertBefore);
-        beforeElement = beforeContainer ? beforeContainer.element : null;
-      }
-      container.show(this.vbox.contentElement, beforeElement);
-      this.expandableContainers.set(view.viewId(), container);
-    }
+    locationForView.set(view, this);
+    this.manager.views.set(view.viewId(), view);
+    this.stackedPane.appendView(view, insertBefore);
   }
 
   override async showView(view: View, insertBefore?: View|null): Promise<void> {
     this.appendView(view, insertBefore);
-    const container = this.expandableContainers.get(view.viewId());
-    if (container) {
-      await container.expand();
-    }
+    await this.stackedPane.expandView(view);
   }
 
   override removeView(view: View): void {
-    const container = this.expandableContainers.get(view.viewId());
-    if (!container) {
-      return;
-    }
-
-    container.detach();
-    this.expandableContainers.delete(view.viewId());
+    this.stackedPane.removeView(view);
     locationForView.delete(view);
     this.manager.views.delete(view.viewId());
   }

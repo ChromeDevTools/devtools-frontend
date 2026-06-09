@@ -470,7 +470,7 @@ export abstract class AiAgent<T> {
 
   readonly #sessionId: string;
   readonly #aidaClient: Host.AidaClient.AidaClient;
-  readonly #serverSideLoggingEnabled: boolean;
+  #serverSideLoggingEnabled: boolean;
   readonly confirmSideEffect: typeof Promise.withResolvers;
   readonly #functionDeclarations = new Map<string, FunctionDeclaration<Record<string, unknown>, unknown>>();
   readonly #allowedOrigin?: () => AllowedOriginResult;
@@ -547,6 +547,10 @@ export abstract class AiAgent<T> {
    * prevent unvalidated cached data from being replayed in subsequent runs.
    */
   clearCache(): void {
+  }
+
+  protected disableServerSideLogging(): void {
+    this.#serverSideLoggingEnabled = false;
   }
 
   popPendingMultimodalInput(): MultimodalInput|undefined {
@@ -700,6 +704,10 @@ export abstract class AiAgent<T> {
     this.#functionDeclarations.clear();
   }
 
+  /**
+   * Executed immediately after the current context is populated with the selected
+   * context and before the request is built.
+   */
   protected async preRun(): Promise<void> {
   }
 
@@ -712,11 +720,11 @@ export abstract class AiAgent<T> {
           },
           multimodalInput?: MultimodalInput,
           ): AsyncGenerator<ResponseData, void, void> {
-    await this.preRun();
     await options.selected?.refresh();
     if (options.selected) {
       this.context = options.selected;
     }
+    await this.preRun();
 
     const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
     Host.userMetrics.freestylerQueryLength(enhancedQuery.length);

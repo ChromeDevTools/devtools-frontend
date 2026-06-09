@@ -173,18 +173,17 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
     });
 
-    this.declareFunction<
-        {
-          type: 'localStorage' | 'sessionStorage',
-          origin: string,
-          storageKey?: string,
-        },
-        {
-          partitions: Array<{
-            storageKey: string,
-            keys: string[],
-          }>,
-        }>('listStorageKeys', {
+    this.declareFunction<{
+      type: 'localStorage' | 'sessionStorage',
+      origin: string,
+      storageKey?: string,
+    },
+                         {
+                           partitions: Array<{
+                             storageKey: string,
+                             keys: string[],
+                           }>,
+                         }>('listStorageKeys', {
       description:
           'Lists all keys for a given storage type for the requested origin. Returns keys grouped by storage partition.',
       parameters: {
@@ -218,6 +217,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
 
       handler: async args => {
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -244,19 +244,18 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
     });
 
-    this.declareFunction<
-        {
-          type: 'localStorage' | 'sessionStorage',
-          keys: string[],
-          origin: string,
-          storageKey?: string,
-        },
-        {
-          items: Array<{
-            storageKey: string,
-            values: Record<string, string>,
-          }>,
-        }>('getStorageValues', {
+    this.declareFunction<{
+      type: 'localStorage' | 'sessionStorage',
+      keys: string[],
+      origin: string,
+      storageKey?: string,
+    },
+                         {
+                           items: Array<{
+                             storageKey: string,
+                             values: Record<string, string>,
+                           }>,
+                         }>('getStorageValues', {
       description: 'Retrieve specific string values from storage partitions for requested keys.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -296,6 +295,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
 
       handler: async (args, options) => {
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -353,11 +353,10 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
     });
 
-    this.declareFunction<
-        {
-          origin: string,
-        },
-        {cookies: string[]}>('listCookies', {
+    this.declareFunction<{
+      origin: string,
+    },
+                         {cookies: string[]}>('listCookies', {
       description: 'Lists all cookies for the requested origin, strictly excluding their values.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -379,6 +378,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
         };
       },
       handler: async args => {
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -396,14 +396,13 @@ export class StorageAgent extends AiAgent<StorageItem> {
       },
     });
 
-    this.declareFunction<
-        {
-          cookieNames: string[],
-          origin: string,
-        },
-        {
-          cookies: CookieDetails[],
-        }>('getCookieValues', {
+    this.declareFunction<{
+      cookieNames: string[],
+      origin: string,
+    },
+                         {
+                           cookies: CookieDetails[],
+                         }>('getCookieValues', {
       description: 'Retrieve the values and detailed metadata of specific cookies by their names.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -431,6 +430,7 @@ export class StorageAgent extends AiAgent<StorageItem> {
         };
       },
       handler: async (args, options) => {
+        this.disableServerSideLogging();
         if (!isSamePrimaryPageOrigin(this.context)) {
           return {error: 'No origin available or not allowed.'};
         }
@@ -496,6 +496,15 @@ export class StorageAgent extends AiAgent<StorageItem> {
     }
 
     return primaryTargetOrigin;
+  }
+
+  protected override async preRun(): Promise<void> {
+    const item = this.context?.getItem();
+    if (item instanceof CookieItem && Boolean(item.name)) {
+      this.disableServerSideLogging();
+    } else if (item instanceof DOMStorageItem && Boolean(item.key)) {
+      this.disableServerSideLogging();
+    }
   }
 
   async *

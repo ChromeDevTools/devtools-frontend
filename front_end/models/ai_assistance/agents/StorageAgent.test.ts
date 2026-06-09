@@ -562,4 +562,95 @@ describeWithMockConnection('StorageAgent', function() {
       assert.strictEqual(context.getTitle(), 'cookies: https://example.com');
     });
   });
+
+  describe('Server-Side Logging Disabling on key/name/value access', () => {
+    beforeEach(() => {
+      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+      const cookieModel = target?.model(SDK.CookieModel.CookieModel);
+      if (cookieModel) {
+        sinon.stub(cookieModel, 'getCookiesForDomain').resolves([]);
+      }
+    });
+
+    async function loggingIsDisabledDuringRun(
+        aidaClient: ReturnType<typeof mockAidaClient>,
+        item: AiAssistance.StorageItem.StorageItem,
+        prompt = 'test',
+        ): Promise<boolean> {
+      const sideEffectPromise = Promise.withResolvers<boolean>();
+      sideEffectPromise.resolve(true);
+      const agent = new AiAssistance.StorageAgent.StorageAgent({
+        aidaClient,
+        serverSideLoggingEnabled: true,
+        confirmSideEffectForTest: sinon.stub().returns(sideEffectPromise),
+      });
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      await Array.fromAsync(agent.run(prompt, {selected: context}));
+      const call = aidaClient.doConversation.lastCall;
+      assert.exists(call);
+      return Boolean(call.args[0].metadata?.disable_user_content_logging);
+    }
+
+    it('turns off server-side logging if initial context has a defined cookie name', async () => {
+      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com', 'cookie1');
+      assert.isTrue(await loggingIsDisabledDuringRun(aidaClient, item));
+    });
+
+    it('does not turn off server-side logging if initial context has no specific key or name', async () => {
+      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
+      assert.isFalse(await loggingIsDisabledDuringRun(aidaClient, item));
+    });
+
+    it('turns off server-side logging immediately upon accessing cookie ', async () => {
+      const aidaClient = mockAidaClient([
+        [{functionCalls: [{name: 'listCookies', args: {origin: 'https://example.com'}}], explanation: ''}],
+        [{explanation: 'Here are the cookies.'}],
+      ]);
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
+      assert.isTrue(await loggingIsDisabledDuringRun(aidaClient, item, 'list cookies'));
+    });
+
+    it('turns off server-side logging immediately upon retrieving cookie values', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          functionCalls: [{name: 'getCookieValues', args: {cookieNames: ['cookie1'], origin: 'https://example.com'}}],
+          explanation: '',
+        }],
+        [{explanation: 'Here are the cookie values.'}],
+      ]);
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
+      assert.isTrue(await loggingIsDisabledDuringRun(aidaClient, item, 'get cookie'));
+    });
+
+    it('turns off server-side logging immediately upon listing storage keys', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          functionCalls: [{name: 'listStorageKeys', args: {type: 'localStorage', origin: 'https://example.com'}}],
+          explanation: '',
+        }],
+        [{explanation: 'Here are the storage keys.'}],
+      ]);
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                               'https://example.com/', 'localStorage');
+      assert.isTrue(await loggingIsDisabledDuringRun(aidaClient, item, 'list keys'));
+    });
+
+    it('turns off server-side logging immediately upon retrieving storage values', async () => {
+      const aidaClient = mockAidaClient([
+        [{
+          functionCalls: [{
+            name: 'getStorageValues',
+            args: {type: 'localStorage', keys: ['key1'], origin: 'https://example.com'},
+          }],
+          explanation: '',
+        }],
+        [{explanation: 'Here are the storage values.'}],
+      ]);
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                               'https://example.com/', 'localStorage');
+      assert.isTrue(await loggingIsDisabledDuringRun(aidaClient, item, 'get value'));
+    });
+  });
 });

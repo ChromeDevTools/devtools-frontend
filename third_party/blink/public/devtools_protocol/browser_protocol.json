@@ -8853,6 +8853,12 @@
                             "name": "enable",
                             "description": "If true, opens the popover and keeps it open. If false, closes the\npopover if it was previously force-opened.",
                             "type": "boolean"
+                        },
+                        {
+                            "name": "invokerNodeId",
+                            "description": "Optional ID of the element invoking this popover, used to establish the implicit anchor.\nIf not provided, it will fall back to the first invoker in the document, preferring\nelements with a popovertarget attribute over those with a commandfor attribute. Note that\nif there are multiple invokers, this is just an estimate.",
+                            "optional": true,
+                            "$ref": "BackendNodeId"
                         }
                     ],
                     "returns": [

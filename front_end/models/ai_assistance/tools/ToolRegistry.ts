@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
 import {GetStylesTool} from './GetStyles.js';
 import {type Tool, ToolName} from './Tool.js';
 
@@ -10,6 +11,7 @@ import {type Tool, ToolName} from './Tool.js';
  * Keep this type concrete (no type-erasure) to preserve exact tool types.
  */
 export const TOOLS = {
+  [ToolName.EXECUTE_JAVASCRIPT]: new ExecuteJavaScriptTool(),
   [ToolName.GET_STYLES]: new GetStylesTool(),
 };
 

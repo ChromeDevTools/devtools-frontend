@@ -5,7 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type {ComputedStyleAiWidget, FunctionCallHandlerResult} from '../agents/AiAgent.js';
+import type {ComputedStyleAiWidget, FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 import {debugLog} from '../debug.js';
 
@@ -69,7 +69,11 @@ export class GetStylesTool implements Tool<GetStylesArgs, unknown> {
     };
   }
 
-  async handler(params: GetStylesArgs, context: ToolContext): Promise<FunctionCallHandlerResult<unknown>> {
+  async handler(
+      params: GetStylesArgs,
+      context: ToolContext,
+      _options?: FunctionHandlerOptions,
+      ): Promise<FunctionCallHandlerResult<unknown>> {
     const widgets: ComputedStyleAiWidget[] = [];
     const result:
         Record<string, {computed: Record<string, string|undefined>, authored: Record<string, string|undefined>}> = {};

@@ -27,10 +27,8 @@ import {
 } from './AiAgent.js';
 import {
   type CreateExtensionScopeFunction,
-  executeJavaScriptFunction,
   type ExecuteJsAgentOptions,
   executeJsCode,
-  JavascriptExecutor
 } from './ExecuteJavascript.js';
 
 const preamble = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
@@ -169,7 +167,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 
   #execJs: typeof executeJsCode;
-  #javascriptExecutor: JavascriptExecutor;
 
   #changes: ChangeManager;
   #createExtensionScope: CreateExtensionScopeFunction;
@@ -185,14 +182,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
                                    return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
                                  });
-    this.#javascriptExecutor = new JavascriptExecutor(
-        {
-          executionMode: this.executionMode,
-          getContextNode: () => this.#getSelectedNode(),
-          createExtensionScope: this.#createExtensionScope.bind(this),
-          changes: this.#changes,
-        },
-        this.#execJs);
 
     const getStylesTool = ToolRegistry.get(ToolName.GET_STYLES);
     if (!getStylesTool) {
@@ -207,7 +196,25 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       }),
     });
 
-    this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
+    const executeJsTool = ToolRegistry.get(ToolName.EXECUTE_JAVASCRIPT);
+    if (!executeJsTool) {
+      throw new Error('Required tool "executeJavaScript" not found');
+    }
+    this.declareFunction(ToolName.EXECUTE_JAVASCRIPT, {
+      description: executeJsTool.description,
+      parameters: executeJsTool.parameters,
+      displayInfoFromArgs: executeJsTool.displayInfoFromArgs,
+      handler: (args, options) => executeJsTool.handler(
+          args,
+          {
+            conversationContext: this.context ?? null,
+            changeManager: this.#changes,
+            createExtensionScope: this.#createExtensionScope.bind(this),
+            execJs: this.#execJs,
+          },
+          options,
+          ),
+    });
 
     if (Annotations.AnnotationRepository.annotationsEnabled()) {
       this.declareFunction<{

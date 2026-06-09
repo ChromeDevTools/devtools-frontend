@@ -270,4 +270,69 @@ describeWithEnvironment('AiAgent2', () => {
     assert.isTrue(firstQuery.includes('dummy: A dummy skill for testing'));
     assert.isTrue(firstQuery.includes('User query: test query'));
   });
+
+  it('supports tools with side-effect approval flow (e.g. executeJavaScript)', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+      }],
+      [{
+        explanation: 'I will run JS code',
+        functionCalls: [{
+          name: 'executeJavaScript',
+          args: {code: '$0.style.color = "red"', explanation: 'changing color', title: 'change color'}
+        }],
+      }],
+      [{
+        explanation: 'Style changed successfully.',
+      }]
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+
+    const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
+    assert.exists(executeJsTool);
+    const handlerStub = sinon.stub(executeJsTool, 'handler');
+    handlerStub.onFirstCall().resolves(
+        {requiresApproval: true, description: 'This code may modify page content. Continue?'});
+    handlerStub.onSecondCall().resolves({result: 'success'});
+
+    const responses: AiAssistance.AiAgent.ResponseData[] = [];
+    const runGenerator = agent.run('question', {selected: null});
+
+    // Run until we hit the side effect approval
+    let next = await runGenerator.next();
+    while (!next.done) {
+      const response = next.value;
+      responses.push(response);
+      if (response.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT) {
+        // Simulate user confirming the side effect
+        response.confirm(true);
+      }
+      next = await runGenerator.next();
+    }
+
+    // Verify that handler was called twice: once for side-effect check, once for actual execution
+    sinon.assert.calledTwice(handlerStub);
+
+    // Verify first call didn't have approved: true
+    const firstCallOpts = handlerStub.getCall(0).args[2];
+    assert.isUndefined(firstCallOpts?.approved);
+
+    // Verify second call had approved: true
+    const secondCallOpts = handlerStub.getCall(1).args[2];
+    assert.propertyVal(secondCallOpts, 'approved', true);
+
+    // Verify final responses contain the side-effect and action result
+    const sideEffectResponse = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.SIDE_EFFECT);
+    assert.isDefined(sideEffectResponse);
+
+    const actionResponses = responses.filter(r => r.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.lengthOf(actionResponses, 3);
+    assert.propertyVal(actionResponses[0], 'code', 'learnSkills(\'styling\')');
+    assert.propertyVal(actionResponses[1], 'code', '$0.style.color = "red"');
+    assert.isUndefined(actionResponses[1].output);
+    assert.propertyVal(actionResponses[2], 'code', '$0.style.color = "red"');
+    assert.propertyVal(actionResponses[2], 'output', 'success');
+  });
 });

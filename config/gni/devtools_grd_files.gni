@@ -1184,6 +1184,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/skills/Skill.js",
   "front_end/models/ai_assistance/skills/SkillRegistry.js",
   "front_end/models/ai_assistance/skills/styling.skill.js",
+  "front_end/models/ai_assistance/tools/ExecuteJavaScript.js",
   "front_end/models/ai_assistance/tools/GetStyles.js",
   "front_end/models/ai_assistance/tools/Tool.js",
   "front_end/models/ai_assistance/tools/ToolRegistry.js",

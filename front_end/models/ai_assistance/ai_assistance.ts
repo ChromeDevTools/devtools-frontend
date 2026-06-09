@@ -39,6 +39,7 @@ import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
+import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
@@ -62,6 +63,7 @@ export {
   Debug,
   DOMNodeContext,
   EvaluateAction,
+  ExecuteJavaScript,
   ExtensionScope,
   FileAgent,
   FileFormatter,

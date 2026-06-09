@@ -28,6 +28,8 @@ export interface ExecuteJsAgentOptions extends BaseAgentOptions {
   execJs?: typeof executeJsCode;
 }
 
+// TODO(crbug.com/510206549): De-duplicate this function by migrating AccessibilityAgent to use
+// the registry-based ExecuteJavaScriptTool in tools/ExecuteJavaScript.ts.
 export function executeJavaScriptFunction(executor: JavascriptExecutor): FunctionDeclaration<
     {
       title: string,

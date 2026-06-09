@@ -5,7 +5,6 @@
 import * as Host from '../../core/host/host.js';
 
 import {
-  type AgentOptions,
   AiAgent,
   type ContextResponse,
   type ConversationContext,
@@ -13,7 +12,11 @@ import {
   type RequestOptions,
   ResponseType
 } from './agents/AiAgent.js';
+import {type ExecuteJsAgentOptions, executeJsCode} from './agents/ExecuteJavascript.js';
+import {ChangeManager} from './ChangeManager.js';
+import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {debugLog} from './debug.js';
+import {ExtensionScope} from './ExtensionScope.js';
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
 import type {Tool} from './tools/Tool.js';
@@ -30,6 +33,8 @@ export class AiAgent2 extends AiAgent<unknown> {
   readonly userTier = 'TESTERS';
 
   #skillsInjected = false;
+  #changes = new ChangeManager();
+  #execJs: typeof executeJsCode;
 
   get options(): RequestOptions {
     return {};
@@ -38,8 +43,9 @@ export class AiAgent2 extends AiAgent<unknown> {
   readonly #activeSkills = new Set<SkillName>();
   readonly #declaredTools = new Set<string>();
 
-  constructor(opts: AgentOptions) {
+  constructor(opts: ExecuteJsAgentOptions) {
     super(opts);
+    this.#execJs = opts.execJs ?? executeJsCode;
     this.#declaredTools.add('learnSkills');
     const skillsList = Object.keys(SKILLS).join(', ');
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
@@ -154,6 +160,11 @@ User query: ${enhancedQuery}`;
     return response.trim();
   }
 
+  #createExtensionScope(changes: ChangeManager): {install(): Promise<void>, uninstall(): Promise<void>} {
+    const selectedNode = this.context && this.context instanceof DOMNodeContext ? this.context.getItem() : null;
+    return new ExtensionScope(changes, this.sessionId, selectedNode);
+  }
+
   /**
    * Declares a tool to be available to the agent model, verifying first that
    * it hasn't already been declared to prevent duplicate declaration errors.
@@ -168,9 +179,16 @@ User query: ${enhancedQuery}`;
       description: tool.description,
       parameters: tool.parameters,
       displayInfoFromArgs: tool.displayInfoFromArgs,
-      handler: args => tool.handler(args, {
-        conversationContext: this.context ?? null,
-      }),
+      handler: (args, options) => tool.handler(
+          args,
+          {
+            conversationContext: this.context ?? null,
+            changeManager: this.#changes,
+            createExtensionScope: this.#createExtensionScope.bind(this),
+            execJs: this.#execJs,
+          },
+          options,
+          ),
     });
   }
 

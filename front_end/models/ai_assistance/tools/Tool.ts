@@ -3,13 +3,20 @@
 // found in the LICENSE file.
 
 import type * as Host from '../../../core/host/host.js';
-import type {ConversationContext, FunctionCallHandlerResult,} from '../agents/AiAgent.js';
+import type {ConversationContext, FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
+import type {executeJsCode} from '../agents/ExecuteJavascript.js';
+import type {ChangeManager} from '../ChangeManager.js';
 
 /**
  * Context provided to the tool's handler execution.
  */
 export interface ToolContext {
   conversationContext: ConversationContext<unknown>|null;
+  changeManager?: ChangeManager;
+  createExtensionScope?: (changes: ChangeManager) => {
+    install(): Promise<void>, uninstall(): Promise<void>,
+  };
+  execJs?: typeof executeJsCode;
 }
 
 /**
@@ -18,6 +25,7 @@ export interface ToolContext {
 export type ToolArgs = Record<string, unknown>;
 
 export const enum ToolName {
+  EXECUTE_JAVASCRIPT = 'executeJavaScript',
   GET_STYLES = 'getStyles',
 }
 
@@ -51,5 +59,6 @@ export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown, > 
   handler(
       args: Args,
       context: ToolContext,
+      options?: FunctionHandlerOptions,
       ): Promise<FunctionCallHandlerResult<ReturnType>>;
 }

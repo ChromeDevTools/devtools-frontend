@@ -6,6 +6,10 @@ import {assert} from 'chai';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import {
+  assertIsError,
+  assertIsResult,
+} from '../../../testing/AiAssistanceHelpers.js';
+import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
 import {
@@ -14,20 +18,6 @@ import {
   ruleMatch,
 } from '../../../testing/StyleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
-
-function assertIsError<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
-    asserts response is {error: string} {
-  if (!('error' in response)) {
-    assert.fail(`Expected error response, but got: ${JSON.stringify(response)}`);
-  }
-}
-
-function assertIsResult<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
-    asserts response is {result: T, widgets?: AiAssistance.AiAgent.AiWidget[]} {
-  if (!('result' in response)) {
-    assert.fail(`Expected success result response, but got: ${JSON.stringify(response)}`);
-  }
-}
 
 describeWithEnvironment('GetStylesTool', () => {
   let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;

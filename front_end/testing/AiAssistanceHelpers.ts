@@ -9,6 +9,7 @@ import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
+import type * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as Logs from '../models/logs/logs.js';
@@ -361,4 +362,25 @@ export function createTestFilesystem(fileSystemPath: string, files?: Array<{
   }
 
   return {project, uiSourceCode};
+}
+
+export function assertIsError<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
+    asserts response is {error: string} {
+  if (!('error' in response)) {
+    assert.fail(`Expected error response, but got: ${JSON.stringify(response)}`);
+  }
+}
+
+export function assertIsResult<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
+    asserts response is {result: T, widgets?: AiAssistance.AiAgent.AiWidget[]} {
+  if (!('result' in response)) {
+    assert.fail(`Expected success result response, but got: ${JSON.stringify(response)}`);
+  }
+}
+
+export function assertRequiresApproval<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>):
+    asserts response is {requiresApproval: true, description: string | null} {
+  if (!('requiresApproval' in response)) {
+    assert.fail(`Expected response requiring approval, but got: ${JSON.stringify(response)}`);
+  }
 }

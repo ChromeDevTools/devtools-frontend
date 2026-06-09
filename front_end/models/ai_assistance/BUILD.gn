@@ -49,6 +49,7 @@ devtools_module("ai_assistance") {
     "performance/AIQueries.ts",
     "skills/Skill.ts",
     "skills/SkillRegistry.ts",
+    "tools/ExecuteJavaScript.ts",
     "tools/GetStyles.ts",
     "tools/Tool.ts",
     "tools/ToolRegistry.ts",
@@ -143,6 +144,7 @@ ts_library("unittests") {
     "performance/AICallTree.test.ts",
     "performance/AIContext.test.ts",
     "performance/AIQueries.test.ts",
+    "tools/ExecuteJavaScript.test.ts",
     "tools/GetStyles.test.ts",
     "tools/ToolRegistry.test.ts",
   ]

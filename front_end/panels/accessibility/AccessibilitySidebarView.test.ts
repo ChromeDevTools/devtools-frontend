@@ -40,6 +40,23 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
     view.detach();
   });
 
+  it('notifies ViewManager when visibility is toggled', async () => {
+    view = Accessibility.AccessibilitySidebarView.AccessibilitySidebarView.instance({forceNew: true});
+    renderElementIntoDOM(view);
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    const visibilitySpy = sinon.spy();
+    viewManager.addEventListener(UI.ViewManager.Events.VIEW_VISIBILITY_CHANGED, visibilitySpy);
+
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-a11y-tree');
+    action.setToggled(true);
+
+    sinon.assert.calledWith(visibilitySpy, sinon.match({data: sinon.match({revealedViewId: 'aria-attributes'})}));
+
+    action.setToggled(false);
+
+    sinon.assert.calledWith(visibilitySpy, sinon.match({data: sinon.match({hiddenViewId: 'aria-attributes'})}));
+  });
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updatesUiOnEvent = (event: any, inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);

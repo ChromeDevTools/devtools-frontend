@@ -29,11 +29,13 @@ export class ExpandableContainerWidget extends VBox {
       view: View,
       private readonly createToolbar: CreateToolbarFn,
       private readonly setWidgetForView: SetWidgetForViewFn,
+      private readonly onVisibilityChanged?: (isExpanded: boolean) => void,
   ) {
     super({useShadowDom: true});
     this.element.classList.add('flex-none');
     this.registerRequiredCSS(viewContainersStyles);
 
+    this.onVisibilityChanged = onVisibilityChanged;
     this.createToolbar = createToolbar;
 
     this.titleElement = document.createElement('div');
@@ -101,6 +103,7 @@ export class ExpandableContainerWidget extends VBox {
     this.titleElement.classList.add('expanded');
     ARIAUtils.setExpanded(this.titleElement, true);
     this.titleExpandIcon.name = 'triangle-down';
+    this.onVisibilityChanged?.(true);
     return this.materialize().then(() => {
       if (this.isExpanded() && this.widget) {
         this.widget.show(this.element);
@@ -115,6 +118,7 @@ export class ExpandableContainerWidget extends VBox {
     this.titleElement.classList.remove('expanded');
     ARIAUtils.setExpanded(this.titleElement, false);
     this.titleExpandIcon.name = 'triangle-right';
+    this.onVisibilityChanged?.(false);
     void this.materialize().then(() => {
       if (this.widget) {
         this.widget.detach();
@@ -157,16 +161,20 @@ export class StackedPane extends VBox {
   constructor(
       private readonly createToolbar: CreateToolbarFn,
       private readonly setWidgetForView: SetWidgetForViewFn,
+      private readonly onViewVisibilityChanged?: (viewId: string, isExpanded: boolean) => void,
   ) {
     super();
     this.createToolbar = createToolbar;
+    this.onViewVisibilityChanged = onViewVisibilityChanged;
     ARIAUtils.markAsTree(this.element);
   }
 
   appendView(view: View, insertBefore?: View|null): void {
     let container = this.expandableContainers.get(view.viewId());
     if (!container) {
-      container = new ExpandableContainerWidget(view, this.createToolbar, this.setWidgetForView);
+      container =
+          new ExpandableContainerWidget(view, this.createToolbar, this.setWidgetForView,
+                                        isExpanded => this.onViewVisibilityChanged?.(view.viewId(), isExpanded));
       let beforeElement: Node|null = null;
       if (insertBefore) {
         const beforeContainer = expandableContainerForView.get(insertBefore);
@@ -174,6 +182,24 @@ export class StackedPane extends VBox {
       }
       container.show(this.contentElement, beforeElement);
       this.expandableContainers.set(view.viewId(), container);
+    }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    for (const [viewId, container] of this.expandableContainers) {
+      if (container.isExpanded()) {
+        this.onViewVisibilityChanged?.(viewId, true);
+      }
+    }
+  }
+
+  override willHide(): void {
+    super.willHide();
+    for (const [viewId, container] of this.expandableContainers) {
+      if (container.isExpanded()) {
+        this.onViewVisibilityChanged?.(viewId, false);
+      }
     }
   }
 

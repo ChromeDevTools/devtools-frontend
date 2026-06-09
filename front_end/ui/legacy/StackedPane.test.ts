@@ -87,6 +87,23 @@ describe('StackedPane', () => {
 
     assert.isTrue(stackedPane.isViewExpanded('viewA'));
   });
+
+  it('should notify about view visibility changes', async () => {
+    const visibilitySpy = sinon.spy();
+    const pane = new UI.StackedPane.StackedPane(createToolbarStub, () => {}, visibilitySpy);
+    const viewA = createMockView('viewA', 'View A');
+    pane.appendView(viewA);
+
+    await pane.expandView(viewA);
+    sinon.assert.calledWith(visibilitySpy, 'viewA', true);
+
+    const container = pane.getContainerForView(viewA);
+    const title = container!.element.shadowRoot!.querySelector('.expandable-view-title') as HTMLElement;
+    title.dispatchEvent(new Event('click', {bubbles: true}));
+    await raf();
+
+    sinon.assert.calledWith(visibilitySpy, 'viewA', false);
+  });
 });
 
 describe('ExpandableContainerWidget', () => {
@@ -197,5 +214,20 @@ describe('ExpandableContainerWidget', () => {
 
     assert.isFalse(container.isExpanded());
     sinon.assert.notCalled(mockWidget.show);
+  });
+
+  it('should notify via onVisibilityChanged callback', async () => {
+    const visibilitySpy = sinon.spy();
+    const callbackContainer =
+        new UI.StackedPane.ExpandableContainerWidget(mockView, createToolbarStub, () => {}, visibilitySpy);
+
+    await callbackContainer.expand();
+    sinon.assert.calledWith(visibilitySpy, true);
+
+    const title = callbackContainer.element.shadowRoot!.querySelector('.expandable-view-title') as HTMLElement;
+    title.dispatchEvent(new Event('click', {bubbles: true}));
+    await raf();
+
+    sinon.assert.calledWith(visibilitySpy, false);
   });
 });

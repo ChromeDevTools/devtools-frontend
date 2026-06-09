@@ -405,7 +405,7 @@ export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return new TabbedLocation(this, revealCallback, location, restoreSelection, allowReorder, options);
   }
 
-  createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation {
+  createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): StackLocation {
     return new StackLocation(this, revealCallback, location, jslogContext);
   }
 
@@ -836,14 +836,28 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   static orderStep = 10;  // Keep in sync with descriptors.
 }
 
-class StackLocation extends Location implements ViewLocation {
+export class StackLocation extends Location implements ViewLocation {
   private readonly stackedPane: StackedPane;
+  private readonly location: string;
+  #isVisible: boolean;
 
-  constructor(manager: ViewManager, revealCallback?: (() => void), location?: string, jslogContext?: string) {
-    const stackedPane = new StackedPane(ViewManager.createToolbar, ViewManager.setWidgetForView);
+  constructor(manager: ViewManager, revealCallback?: (() => void), location?: string, jslogContext?: string,
+              initialVisibility = true) {
+    const stackedPane =
+        new StackedPane(ViewManager.createToolbar, ViewManager.setWidgetForView, (viewId, isExpanded) => {
+          if (this.#isVisible) {
+            manager.dispatchEventToListeners(Events.VIEW_VISIBILITY_CHANGED, {
+              location: this.location,
+              revealedViewId: isExpanded ? viewId : undefined,
+              hiddenViewId: isExpanded ? undefined : viewId,
+            });
+          }
+        });
     stackedPane.element.setAttribute('jslog', `${VisualLogging.pane(jslogContext || 'sidebar').track({resize: true})}`);
     super(manager, stackedPane, revealCallback);
+    this.location = location || '';
     this.stackedPane = stackedPane;
+    this.#isVisible = initialVisibility;
 
     if (location) {
       this.appendApplicableItems(location);
@@ -853,6 +867,23 @@ class StackLocation extends Location implements ViewLocation {
   // Blink test(s) rely on this
   get expandableContainers(): Map<string, AnyWidget> {
     return this.stackedPane.expandableContainers;
+  }
+
+  notifyVisibilityChanged(isVisible: boolean): void {
+    if (this.#isVisible === isVisible) {
+      return;
+    }
+    this.#isVisible = isVisible;
+
+    for (const [viewId, container] of this.stackedPane.expandableContainers) {
+      if (container.isExpanded()) {
+        this.manager.dispatchEventToListeners(Events.VIEW_VISIBILITY_CHANGED, {
+          location: this.location,
+          revealedViewId: isVisible ? viewId : undefined,
+          hiddenViewId: isVisible ? undefined : viewId,
+        });
+      }
+    }
   }
 
   appendView(view: View, insertBefore?: View|null): void {
@@ -877,9 +908,8 @@ class StackLocation extends Location implements ViewLocation {
     this.manager.views.delete(view.viewId());
   }
 
-  override isViewVisible(_view: View): boolean {
-    // TODO(crbug.com/435356108): Implement this
-    throw new Error('not implemented');
+  override isViewVisible(view: View): boolean {
+    return this.#isVisible && this.stackedPane.isViewExpanded(view.viewId());
   }
 
   appendApplicableItems(locationName: string): void {

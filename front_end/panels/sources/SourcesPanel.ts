@@ -221,7 +221,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   #paused?: boolean;
   private switchToPausedTargetTimeout?: number;
   private executionLineLocation?: Bindings.DebuggerWorkspaceBinding.Location|null;
-  private sidebarPaneStack?: UI.View.ViewLocation;
+  private sidebarPaneStack?: UI.ViewManager.StackLocation;
   private tabbedLocationHeader?: Element|null;
   private extensionSidebarPanesContainer?: UI.View.ViewLocation;
   sidebarPaneView?: UI.Widget.VBox|UI.SplitWidget.SplitWidget;
@@ -477,6 +477,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   toggleDebuggerSidebar(): void {
     this.splitWidget.toggleSidebar();
+    this.sidebarPaneStack?.notifyVisibilityChanged(this.splitWidget.sidebarIsShowing());
   }
 
   private debuggerPaused(event: Common.EventTarget.EventTargetEvent<SDK.DebuggerModel.DebuggerModel>): void {

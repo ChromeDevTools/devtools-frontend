@@ -33,7 +33,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
   #node: SDK.DOMModel.DOMNode|null;
   #axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   private skipNextPullNode: boolean;
-  private readonly sidebarPaneStack: UI.View.ViewLocation;
+  private readonly sidebarPaneStack: UI.ViewManager.StackLocation;
   private readonly ariaSubPane: ARIAAttributesPane;
   private readonly axNodeSubPane: AXNodeSubPane;
   private readonly sourceOrderSubPane: SourceOrderPane;
@@ -159,6 +159,7 @@ export class AccessibilitySidebarView extends UI.Widget.VBox {
 
   private updateToggle(): void {
     const isToggled = this.toggleAction.toggled();
+    this.sidebarPaneStack.notifyVisibilityChanged(isToggled);
     // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
     render(
         html`

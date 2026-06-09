@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import type {EventTargetEvent} from '../../core/common/EventTarget.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
+import {raf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
@@ -324,6 +325,88 @@ describeWithEnvironment('ViewManager', () => {
 
       stackLocation.removeView(view);
       assert.isFalse(viewManager.views.has(viewId), 'view should be removed from ViewManager.views after removeView');
+    });
+
+    it('correctly reports visibility based on location and expand state', async () => {
+      const stackLocation = viewManager.createStackLocation(undefined, 'stack-location');
+      const view = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('Stack view'),
+        viewId: 'stack-view',
+      });
+
+      await stackLocation.showView(view);
+      const pane = stackLocation.widget() as UI.StackedPane.StackedPane;
+      const container = pane.getContainerForView(view);
+      const title = container!.element.shadowRoot!.querySelector('.expandable-view-title') as HTMLElement;
+
+      assert.isTrue(stackLocation.isViewVisible(view), 'Initial state: location visible and view expanded -> visible');
+
+      title.dispatchEvent(new Event('click', {bubbles: true}));
+      await raf();
+      assert.isFalse(stackLocation.isViewVisible(view), 'Collapse view: should be hidden');
+
+      stackLocation.notifyVisibilityChanged(false);
+      assert.isFalse(stackLocation.isViewVisible(view), 'Hide location: should remain hidden');
+
+      title.dispatchEvent(new Event('click', {bubbles: true}));  // expand again
+      await raf();
+      assert.isFalse(stackLocation.isViewVisible(view), 'Expand view: should remain hidden while location is hidden');
+    });
+
+    it('emits event when view is expanded or collapsed', async () => {
+      const stackLocation = viewManager.createStackLocation(undefined, 'stack-location');
+      const view = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('Stack view'),
+        viewId: 'stack-view',
+      });
+
+      const eventListener = startListeningForViewVisibilityUpdates();
+
+      await stackLocation.showView(view);
+      let events = eventListener.finishAndGetEvents();
+      assert.lengthOf(events, 1);
+      assert.strictEqual(events[0].data.revealedViewId, 'stack-view');
+      assert.strictEqual(events[0].data.location, 'stack-location');
+
+      // Re-start listening for collapse
+      const eventListener2 = startListeningForViewVisibilityUpdates();
+      const pane = stackLocation.widget() as UI.StackedPane.StackedPane;
+      const container = pane.getContainerForView(view);
+      const title = container!.element.shadowRoot!.querySelector('.expandable-view-title') as HTMLElement;
+      title.dispatchEvent(new Event('click', {bubbles: true}));
+      await raf();
+
+      events = eventListener2.finishAndGetEvents();
+      assert.lengthOf(events, 1);
+      assert.strictEqual(events[0].data.hiddenViewId, 'stack-view');
+      assert.strictEqual(events[0].data.location, 'stack-location');
+    });
+
+    it('emits events for all expanded views when pane toggles', async () => {
+      const stackLocation = viewManager.createStackLocation(undefined, 'stack-location');
+      const viewA = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('View A'),
+        viewId: 'view-a',
+      });
+      const viewB = new UI.View.SimpleView({
+        title: i18n.i18n.lockedString('View B'),
+        viewId: 'view-b',
+      });
+
+      await stackLocation.showView(viewA);
+      await stackLocation.showView(viewB);
+
+      const eventListener = startListeningForViewVisibilityUpdates();
+      const pane = stackLocation.widget() as UI.StackedPane.StackedPane;
+
+      // Simulate pane hiding
+      pane.willHide();
+      const events = eventListener.finishAndGetEvents();
+
+      assert.lengthOf(events, 2);
+      const expandedViews = events.map(e => e.data.hiddenViewId);
+      assert.include(expandedViews, 'view-a');
+      assert.include(expandedViews, 'view-b');
     });
   });
 });

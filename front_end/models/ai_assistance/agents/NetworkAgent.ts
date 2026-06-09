@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
+import {extractContextOrigin} from '../AiOrigins.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
@@ -98,6 +101,24 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+/**
+ * Returns the origin for a network request in the AI context.
+ *
+ * To prevent cross-origin prompt injection attacks, HAR-imported requests
+ * are isolated from live pages. We assign them a virtual origin
+ * (`imported-har://${domain}`) so they do not share the origin of live pages
+ * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
+ * between imported HAR data and live pages.
+ */
+export function getRequestContextOrigin(request: SDK.NetworkRequest.NetworkRequest): string {
+  const origin = extractContextOrigin(request.documentURL);
+  if (request.isImportedHar()) {
+    const parsed = Common.ParsedURL.ParsedURL.fromString(origin as Platform.DevToolsPath.UrlString);
+    return `imported-har://${parsed ? parsed.domain() : origin}`;
+  }
+  return origin;
+}
+
 export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
   #request: SDK.NetworkRequest.NetworkRequest;
   #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
@@ -117,6 +138,10 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
    */
   override getURL(): string {
     return this.#request.documentURL;
+  }
+
+  override getOrigin(): string {
+    return getRequestContextOrigin(this.#request);
   }
 
   override getItem(): SDK.NetworkRequest.NetworkRequest {

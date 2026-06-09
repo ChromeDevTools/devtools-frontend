@@ -76,6 +76,15 @@ describeWithMockConnection('NetworkAgent', function() {
       const context = new NetworkAgent.RequestContext(request, calculator);
       assert.strictEqual(context.getOrigin(), 'https://www.example.com');
     });
+
+    it('should return the virtual HAR origin if the request is imported from HAR', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId', urlString`https://www.example.com/path`, urlString`https://www.example.com/`, null);
+      request.setIsImportedHar(true);
+      const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+      const context = new NetworkAgent.RequestContext(request, calculator);
+      assert.strictEqual(context.getOrigin(), 'imported-har://www.example.com');
+    });
   });
 
   describe('run', () => {

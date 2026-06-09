@@ -299,6 +299,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #contentDataProvider?: () => Promise<TextUtils.ContentData.ContentDataOrError>;
   #isSameSite: boolean|null = null;
   #wasIntercepted = false;
+  /**
+   * Whether this request was imported from a HAR file.
+   */
+  #isImportedHar = false;
   #associatedData = new Map<string, object>();
   #hasOverriddenContent = false;
   #hasThirdPartyCookiePhaseoutIssue = false;
@@ -1146,6 +1150,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   setWasIntercepted(wasIntercepted: boolean): void {
     this.#wasIntercepted = wasIntercepted;
+  }
+
+  isImportedHar(): boolean {
+    return this.#isImportedHar;
+  }
+
+  setIsImportedHar(isImportedHar: boolean): void {
+    this.#isImportedHar = isImportedHar;
   }
 
   setEarlyHintsHeaders(headers: NameValue[]): void {

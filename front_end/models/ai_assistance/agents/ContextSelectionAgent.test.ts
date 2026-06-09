@@ -429,6 +429,94 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       ]);
     });
 
+    it('filters out HAR requests if the allowed origin is not the virtual HAR origin', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId1',
+          urlString`https://example.com/`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.setIsImportedHar(true);
+      request.statusCode = 200;
+      request.setIssueTime(0, 0);
+      request.endTime = 1;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([request]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => ({origin: 'https://example.com'}),
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      const part = requestToAida.historical_contexts?.[2].parts[0];
+      assert(part && 'functionResponse' in part);
+      assert.deepEqual(part.functionResponse.response, {
+        error: 'No requests showing with origin https://example.com. Tell the user to start a new chat',
+        widgets: undefined,
+      });
+    });
+
+    it('includes HAR requests if the allowed origin is the virtual HAR origin', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId1',
+          urlString`https://example.com/`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.setIsImportedHar(true);
+      request.statusCode = 200;
+      request.setIssueTime(0, 0);
+      request.endTime = 1;
+
+      const networkLog = Logs.NetworkLog.NetworkLog.instance();
+      sinon.stub(networkLog, 'requests').returns([request]);
+
+      const agent = new ContextSelectionAgent.ContextSelectionAgent({
+        aidaClient: mockAidaClient([
+          [{
+            functionCalls: [{
+              name: 'listNetworkRequests',
+              args: {},
+            }],
+            explanation: '',
+          }],
+          [{explanation: 'Done'}],
+        ]),
+        allowedOrigin: () => ({origin: 'imported-har://example.com'}),
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: null}));
+
+      const requestToAida = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER);
+      const part = requestToAida.historical_contexts?.[2].parts[0];
+      assert(part && 'functionResponse' in part);
+      assert.deepEqual(part.functionResponse.response, {
+        result: [
+          {
+            id: 'requestId1',
+            url: 'https://example.com/',
+            statusCode: 200,
+            duration: '1.00\xA0s',
+            transferSize: '0.0\xA0kB',
+          },
+        ],
+        widgets: undefined,
+      });
+    });
+
     it('returns error when there are no network requests', async () => {
       const networkLog = Logs.NetworkLog.NetworkLog.instance();
       sinon.stub(networkLog, 'requests').returns([]);

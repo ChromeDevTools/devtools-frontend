@@ -332,6 +332,13 @@ export interface SourceFilesListAiWidget {
   };
 }
 
+export interface NetworkRequestsListAiWidget {
+  name: 'NETWORK_REQUESTS_LIST';
+  data: {
+    requests: SDK.NetworkRequest.NetworkRequest[],
+  };
+}
+
 export interface LighthouseReportAiWidget {
   name: 'LIGHTHOUSE_REPORT';
   data: {
@@ -366,10 +373,10 @@ export interface SourceCodeAiWidget {
   };
 }
 
-export type AiWidget =
-    ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|PerformanceTraceAiWidget|
-    PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|LighthouseReportAiWidget|
-    TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget|SourceCodeAiWidget|SourceFilesListAiWidget;
+export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
+    PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|
+    LighthouseReportAiWidget|TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget|SourceCodeAiWidget|
+    SourceFilesListAiWidget|NetworkRequestsListAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

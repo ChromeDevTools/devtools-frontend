@@ -624,4 +624,10 @@
       display: none;
     }
   }
+
+  .network-requests-widget {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-4);
+  }
 }

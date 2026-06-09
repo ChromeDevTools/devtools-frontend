@@ -1419,5 +1419,106 @@ describeWithEnvironment('ChatMessage', () => {
          const innerListItems = details?.querySelectorAll('.collapsed-file');
          assert.lengthOf(innerListItems ?? [], 2);
        });
+
+    it('renders NETWORK_REQUESTS_LIST widget with less than 15 requests, not showing the expand button', async () => {
+      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
+      function createMockRequest(id: string) {
+        return {
+          requestId: () => id,
+          name: () => id,
+          statusCode: 200,
+          mimeType: 'text/html',
+          transferSize: 1000,
+          duration: 1,
+        } as unknown as SDK.NetworkRequest.NetworkRequest;
+      }
+
+      const requests = [createMockRequest('req1'), createMockRequest('req2')];
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'NETWORK_REQUESTS_LIST',
+            data: {
+              requests,
+            },
+          } as unknown as AIAssistanceModel.AiAgent.AiWidget],
+        }],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      const widgetHeader = await waitFor('.widget-header', targetElement);
+      assert.isNotNull(widgetHeader);
+      assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'Network requests');
+
+      const widgetContainer = await waitFor('.network-requests-widget', targetElement) as HTMLElement;
+      assert.isNotNull(widgetContainer);
+
+      // Verify headers
+      const headers = Array.from(widgetContainer.querySelectorAll('table th')).map(th => th.id);
+      assert.deepEqual(headers, ['name', 'status', 'size', 'time']);
+
+      // Verify that all requests are displayed (table has 1 header row + 2 data rows = 3 rows)
+      const rows = widgetContainer.querySelectorAll('table tr');
+      assert.lengthOf(rows, 3);
+
+      // Verify that the expand button does NOT exist
+      const expandButton = widgetContainer.querySelector('button.show-all-widget-requests-button');
+      assert.isNull(expandButton);
+    });
+
+    it('renders NETWORK_REQUESTS_LIST widget with more than 15 requests, showing the expand button', async () => {
+      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
+      function createMockRequest(id: string) {
+        return {
+          requestId: () => id,
+          name: () => id,
+          statusCode: 200,
+          mimeType: 'text/html',
+          transferSize: 1000,
+          duration: 1,
+        } as unknown as SDK.NetworkRequest.NetworkRequest;
+      }
+
+      const requests = Array.from({length: 17}, (_, i) => createMockRequest(`req${i + 1}`));
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'NETWORK_REQUESTS_LIST',
+            data: {
+              requests,
+            },
+          } as unknown as AIAssistanceModel.AiAgent.AiWidget],
+        }],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      const widgetHeader = await waitFor('.widget-header', targetElement);
+      assert.isNotNull(widgetHeader);
+      assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'Network requests');
+
+      const widgetContainer = await waitFor('.network-requests-widget', targetElement) as HTMLElement;
+      assert.isNotNull(widgetContainer);
+
+      // Verify headers
+      const headers = Array.from(widgetContainer.querySelectorAll('table th')).map(th => th.id);
+      assert.deepEqual(headers, ['name', 'status', 'size', 'time']);
+
+      // Verify that only the first 15 requests are displayed (table has 1 header row + 15 data rows = 16 rows)
+      const rowsBefore = widgetContainer.querySelectorAll('table tr');
+      assert.lengthOf(rowsBefore, 16);
+
+      // Verify that the expand button exists and has the correct text
+      const expandButton =
+          querySelectorErrorOnMissing(widgetContainer, 'button.show-all-widget-requests-button') as HTMLButtonElement;
+      assert.strictEqual(expandButton.textContent?.trim(), 'Show all 17 network requests');
+    });
   });
 });

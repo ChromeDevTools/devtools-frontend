@@ -14,9 +14,9 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type {
   AiWidget, BottomUpTreeAiWidget, ComputedStyleAiWidget, CoreVitalsAiWidget, DomTreeAiWidget, LighthouseReportAiWidget,
-  NetworkRequestGeneralHeadersAiWidget, PerfInsightAiWidget, PerformanceTraceAiWidget, SourceCodeAiWidget,
-  SourceFileAiWidget, SourceFilesListAiWidget, StylePropertiesAiWidget, TimelineEventSummaryAiWidget,
-  TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
+  NetworkRequestGeneralHeadersAiWidget, NetworkRequestsListAiWidget, PerfInsightAiWidget, PerformanceTraceAiWidget,
+  SourceCodeAiWidget, SourceFileAiWidget, SourceFilesListAiWidget, StylePropertiesAiWidget,
+  TimelineEventSummaryAiWidget, TimelineRangeSummaryAiWidget} from '../../../models/ai_assistance/agents/AiAgent.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as ComputedStyle from '../../../models/computed_style/computed_style.js';
 import * as Formatter from '../../../models/formatter/formatter.js';
@@ -414,6 +414,14 @@ const UIStringsNotTranslate = {
    * @description Title for the character set declaration widget.
    */
   characterSet: 'Character set declaration',
+  /**
+   * @description Title for the network requests list widget.
+   */
+  networkRequests: 'Network requests',
+  /**
+   * @description Accessible label for the reveal button in the network requests list widget.
+   */
+  revealFirstNetworkRequest: 'Reveal first network request in Network panel',
   /**
    * @description Title for the source files list widget.
    */
@@ -1466,6 +1474,79 @@ async function makeSourceFilesListWidget(widgetData: SourceFilesListAiWidget): P
   };
 }
 
+const expandedNetworkRequestsWidgets = new WeakSet<NetworkRequestsListAiWidget>();
+
+// A widget with a table of the list of network requests sent to the agent.
+// Only show 15 requests maximum in collapsed version. The rest of the requests
+// will be hidden unless the user clicks "Show all".
+async function makeNetworkRequestsListWidget(widgetData: NetworkRequestsListAiWidget):
+    Promise<WidgetMakerResponse|null> {
+  const requests = widgetData.data.requests;
+  if (requests.length === 0) {
+    return null;
+  }
+
+  const isExpanded = expandedNetworkRequestsWidgets.has(widgetData);
+  // We only want just expanded widget to be expanded, if the user closed and reopened the walkthrought, the widget should be collapsed again.
+  // Therefore, after rendering the widget, we remove the widget from the set of expanded widgets so that it is collapsed on next render.
+  if (isExpanded) {
+    expandedNetworkRequestsWidgets.delete(widgetData);
+  }
+  const displayedRequests = isExpanded ? requests : requests.slice(0, 15);
+
+  // The table contains same fields as the ones sent to the agent.
+  // clang-format off
+  const renderedWidget = html`
+    <div class="network-requests-widget">
+      <devtools-data-grid striped inline>
+        <table>
+          <tr>
+            <th id="name" weight="4">${i18n.i18n.lockedString('Name')}</th>
+            <th id="status" weight="1">${i18n.i18n.lockedString('Status')}</th>
+            <th id="size" weight="1">${i18n.i18n.lockedString('Size')}</th>
+            <th id="time" weight="1">${i18n.i18n.lockedString('Time')}</th>
+          </tr>
+          ${displayedRequests.map(request => html`
+            <tr>
+              <td>${request.name()}</td>
+              <td>${request.statusCode}</td>
+              <td>${i18n.ByteUtilities.formatBytesToKb(request.transferSize)}</td>
+              <td>${i18n.TimeUtilities.secondsToString(request.duration)}</td>
+            </tr>
+          `)}
+        </table>
+      </devtools-data-grid>
+      ${!isExpanded && requests.length > 15 ? html`
+        <div class="show-all-container">
+          <button class="show-all-widget-requests-button text-button"
+            jslog=${VisualLogging.action('show-all-widget-requests-button').track({click: true})}
+            @click=${(e: Event) => {
+              expandedNetworkRequestsWidgets.add(widgetData);
+              const widgetEl = (e.target as HTMLElement).closest('.widget');
+              if (widgetEl) {
+                const widget = UI.Widget.Widget.get(widgetEl) as ChatMessage;
+                if (widget && widget.performUpdate) {
+                  void widget.performUpdate();
+                }
+              }
+            }}>
+            ${i18n.i18n.lockedString(`Show all ${requests.length} network requests`)}
+          </button>
+        </div>
+      ` : Lit.nothing}
+    </div>
+  `;
+  // clang-format on
+
+  return {
+    renderedWidget,
+    title: lockedString(UIStringsNotTranslate.networkRequests),
+    revealable: requests[0],
+    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealFirstNetworkRequest),
+    jslogContext: 'network-requests-list-widget',
+  };
+}
+
 function renderNetworkRequestPreview(networkRequest: NonNullable<DomTreeAiWidget['data']['networkRequest']>):
     Lit.TemplateResult {
   const filename = networkRequest.url.split('/').pop() || networkRequest.url;
@@ -1583,6 +1664,8 @@ export function getWidgetSignature(widget: AiWidget): string {
       return `${widget.name}:${widget.data.request.requestId()}`;
     case 'SOURCE_CODE':
       return `${widget.name}:${widget.data.url}:${widget.data.line ?? ''}:${widget.data.column ?? ''}`;
+    case 'NETWORK_REQUESTS_LIST':
+      return `${widget.name}:${widget.data.requests.map(r => r.requestId()).join(',')}`;
     default:
       Platform.assertNever(widget, 'Unknown AiWidget name');
   }
@@ -1671,6 +1754,9 @@ async function renderWidgets(
         break;
       case 'SOURCE_FILES_LIST':
         response = await makeSourceFilesListWidget(widgetData);
+        break;
+      case 'NETWORK_REQUESTS_LIST':
+        response = await makeNetworkRequestsListWidget(widgetData);
         break;
       case 'LIGHTHOUSE_REPORT':
         response = await makeLighthouseReportWidget(widgetData);

@@ -6,6 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
+import type {NetworkRequest} from '../../../core/sdk/NetworkRequest.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as Logs from '../../logs/logs.js';
@@ -143,6 +144,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
         }
 
         let hasCrossOriginRequest = false;
+        const requestsToShow: NetworkRequest[] = [];
         for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
           const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
           /**
@@ -165,6 +167,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
             duration: i18n.TimeUtilities.secondsToString(request.duration),
             transferSize: i18n.ByteUtilities.formatBytesToKb(request.transferSize),
           });
+          requestsToShow.push(request);
         }
 
         if (requests.length === 0) {
@@ -177,6 +180,12 @@ export class ContextSelectionAgent extends AiAgent<never> {
 
         return {
           result: requests,
+          widgets: [{
+            name: 'NETWORK_REQUESTS_LIST',
+            data: {
+              requests: requestsToShow,
+            },
+          }],
         };
       },
     });

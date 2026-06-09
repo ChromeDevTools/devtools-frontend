@@ -657,7 +657,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
   #toggleSearchElementAction?: UI.ActionRegistration.Action;
   #aidaClient: Host.AidaClient.AidaClient;
-  #conversationSummaryAgent?: AiAssistanceModel.ConversationSummaryAgent.ConversationSummaryAgent;
+  #conversationSummary?: AiAssistanceModel.ConversationSummary.ConversationSummary;
   #viewOutput: PanelViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
@@ -784,17 +784,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           markdownRenderer,
           conversationMarkdown: this.#conversation.getConversationMarkdown(),
           generateConversationSummary: async (markdown: string) => {
-            if (!this.#conversationSummaryAgent) {
-              this.#conversationSummaryAgent = new AiAssistanceModel.ConversationSummaryAgent.ConversationSummaryAgent({
+            if (!this.#conversationSummary) {
+              this.#conversationSummary = new AiAssistanceModel.ConversationSummary.ConversationSummary({
                 aidaClient: this.#aidaClient,
                 serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
               });
             }
-            return await this.#conversationSummaryAgent.summarizeConversation(markdown);
+            return await this.#conversationSummary.summarizeConversation(markdown);
           },
-          onTextSubmit: async (
-              text: string, imageInput?: Host.AidaClient.Part,
-              multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
+          onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part,
+                               multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
             const submit = (): void => {
               Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
               void this.#startConversation(text, imageInput, multimodalInputType);

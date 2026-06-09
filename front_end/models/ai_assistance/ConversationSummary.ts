@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
-import * as Root from '../../../core/root/root.js';
+import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 
-import {AiAgent, type ContextResponse, ConversationContext, type RequestOptions, ResponseType} from './AiAgent.js';
+import {runOneShotPrompt} from './AiUtils.js';
 
 const preamble = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
@@ -98,90 +98,53 @@ color: red;
 - Professional, objective, and dense.
 - Past tense for actions; Present tense for technical facts.`;
 
-export class ConversationSummaryContext extends ConversationContext<string> {
-  #conversation: string;
-  constructor(conversation: string) {
-    super();
-    this.#conversation = conversation;
-  }
-
-  override getURL(): string {
-    return 'devtools://ai-assistance';
-  }
-
-  getItem(): string {
-    return this.#conversation;
-  }
-
-  override getTitle(): string {
-    return 'Conversation';
-  }
+export interface ConversationSummaryOptions {
+  aidaClient: Host.AidaClient.AidaClient;
+  serverSideLoggingEnabled?: boolean;
 }
 
 /**
- * An agent that takes a full conversation between a user and an agent in markdown
+ * A class that takes a full conversation between a user and an agent in markdown
  * format and produces a succinct summary of the conversation.
  *
  * This summary is designed to be read by a local agent in the user's IDE and it
  * will be used to help apply fixes to the user's local codebase based on the
  * debugging information the devtools agent found.
- *
- * This agent is not intended to be used directly by users in the AI Assistance
- * panel when chatting with DevTools AI.
  */
-export class ConversationSummaryAgent extends AiAgent<string> {
-  override preamble = preamble;
+export class ConversationSummary {
+  readonly #aidaClient: Host.AidaClient.AidaClient;
+  readonly #serverSideLoggingEnabled: boolean;
 
-  get clientFeature(): Host.AidaClient.ClientFeature {
-    return Host.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT;
-  }
-
-  get userTier(): string|undefined {
-    // TODO(b/491772868): tidy up userTier & feature flags in the backend.
-    return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
-  }
-
-  get options(): RequestOptions {
-    // TODO(b/491772868): tidy up userTier & feature flags in the backend.
-    const temperature = Root.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root.Runtime.hostConfig.devToolsFreestyler?.modelId;
-
-    return {
-      temperature,
-      modelId,
-    };
-  }
-
-  async * handleContextDetails(context: ConversationContext<string>|null): AsyncGenerator<ContextResponse, void, void> {
-    if (!context) {
-      return;
-    }
-
-    yield {
-      type: ResponseType.CONTEXT,
-      details: [
-        {
-          title: 'Conversation transcript',
-          text: context.getItem(),
-        },
-      ],
-    };
-  }
-
-  override async enhanceQuery(query: string, context: ConversationContext<string>|null): Promise<string> {
-    const conversation = context ? context.getItem() : query;
-    return `Summarize the following conversation:\n\n${conversation}`;
+  constructor(options: ConversationSummaryOptions) {
+    this.#aidaClient = options.aidaClient;
+    this.#serverSideLoggingEnabled = options.serverSideLoggingEnabled ?? false;
   }
 
   async summarizeConversation(conversation: string): Promise<string> {
-    const context = new ConversationSummaryContext(conversation);
-    const response = await Array.fromAsync(this.run('', {selected: context}));
-    const lastResponse = response.at(-1);
-    if (lastResponse && lastResponse.type === ResponseType.ANSWER && lastResponse.complete === true) {
-      const disclaimer =
-          '*Note: The code fixes and findings above were identified on a live page in DevTools. When applying them to your codebase, please adapt them to your project\'s specific technical stack (e.g., Tailwind CSS classes, CSS modules, framework components) rather than applying them as literal CSS overrides.*';
-      return `${lastResponse.text.trim()}\n\n${disclaimer}`;
+    const enhancedQuery = `Summarize the following conversation:\n\n${conversation}`;
+
+    // TODO(b/491772868): tidy up userTier & feature flags in the backend.
+    const temperature = Root.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const userTier = Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
+
+    const resultText = await runOneShotPrompt({
+      aidaClient: this.#aidaClient,
+      preamble,
+      query: enhancedQuery,
+      clientFeature: Host.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      temperature,
+      modelId,
+      userTier,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+    });
+
+    if (!resultText) {
+      throw new Error('Failed to summarize conversation');
     }
-    throw new Error('Failed to summarize conversation');
+
+    const disclaimer =
+        '*Note: The code fixes and findings above were identified on a live page in DevTools. When applying them to your codebase, please adapt them to your project\'s specific technical stack (e.g., Tailwind CSS classes, CSS modules, framework components) rather than applying them as literal CSS overrides.*';
+    return `${resultText.trim()}\n\n${disclaimer}`;
   }
 }

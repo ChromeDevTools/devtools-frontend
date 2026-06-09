@@ -2,21 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
-import * as Root from '../../../core/root/root.js';
-import type {AICallTree} from '../performance/AICallTree.js';
-import type {AgentFocus} from '../performance/AIContext.js';
+import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 
-import {AiAgent, type ContextResponse, type ConversationContext, type RequestOptions, ResponseType} from './AiAgent.js';
-import {PerformanceTraceContext} from './PerformanceAgent.js';
+import {runOneShotPrompt} from './AiUtils.js';
+import type {AICallTree} from './performance/AICallTree.js';
 
-/**
- * Preamble clocks in at ~970 tokens.
- *   The prose is around 4.5 chars per token.
- * The data can be as bad as 1.8 chars per token
- *
- * Check token length in https://aistudio.google.com/
- */
 const callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -79,80 +70,6 @@ The 'calculatePosition' function, taking 80ms, is a potential bottleneck.
 Consider optimizing the position calculation logic or reducing the frequency of calls to improve animation performance.
 `;
 
-export class PerformanceAnnotationsAgent extends AiAgent<AgentFocus> {
-  override preamble = callTreePreamble;
-
-  get clientFeature(): Host.AidaClient.ClientFeature {
-    return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT;
-  }
-
-  get userTier(): string|undefined {
-    return Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
-  }
-
-  get options(): RequestOptions {
-    const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
-
-    return {
-      temperature,
-      modelId,
-    };
-  }
-
-  async *
-      handleContextDetails(context: ConversationContext<AgentFocus>|null): AsyncGenerator<ContextResponse, void, void> {
-    if (!context) {
-      return;
-    }
-
-    const focus = context.getItem();
-    if (!focus.callTree) {
-      throw new Error('unexpected context');
-    }
-
-    const callTree = focus.callTree;
-
-    yield {
-      type: ResponseType.CONTEXT,
-      details: [
-        {
-          title: 'Selected call tree',
-          text: callTree.serialize(),
-        },
-      ],
-    };
-  }
-
-  override async enhanceQuery(query: string, context: ConversationContext<AgentFocus>|null): Promise<string> {
-    if (!context) {
-      return query;
-    }
-
-    const focus = context.getItem();
-    if (!focus.callTree) {
-      throw new Error('unexpected context');
-    }
-
-    const callTree = focus.callTree;
-    const contextString = callTree.serialize();
-    return `${contextString}\n\n# User request\n\n${query}`;
-  }
-
-  /**
-   * Used in the Performance panel to automatically generate a label for a selected entry.
-   */
-  async generateAIEntryLabel(callTree: AICallTree): Promise<string> {
-    const context = PerformanceTraceContext.fromCallTree(callTree);
-    const response = await Array.fromAsync(this.run(AI_LABEL_GENERATION_PROMPT, {selected: context}));
-    const lastResponse = response.at(-1);
-    if (lastResponse && lastResponse.type === ResponseType.ANSWER && lastResponse.complete === true) {
-      return lastResponse.text.trim();
-    }
-    throw new Error('Failed to generate AI entry label');
-  }
-}
-
 const AI_LABEL_GENERATION_PROMPT = `## Instruction:
 Generate a concise label (max 60 chars, single line) describing the *user-visible effect* of the selected call tree's activity, based solely on the provided call tree data.
 
@@ -168,3 +85,44 @@ Generate a concise label (max 60 chars, single line) describing the *user-visibl
 - Only include third-party script names if their identification is highly confident.
 - Very important: Only output the 60 character label text, your response will be used in full to show to the user as an annotation in the timeline.
 `;
+
+export interface PerformanceAnnotationsOptions {
+  aidaClient: Host.AidaClient.AidaClient;
+  serverSideLoggingEnabled?: boolean;
+}
+
+export class PerformanceAnnotations {
+  readonly #aidaClient: Host.AidaClient.AidaClient;
+  readonly #serverSideLoggingEnabled: boolean;
+
+  constructor(options: PerformanceAnnotationsOptions) {
+    this.#aidaClient = options.aidaClient;
+    this.#serverSideLoggingEnabled = options.serverSideLoggingEnabled ?? false;
+  }
+
+  async generateAIEntryLabel(callTree: AICallTree): Promise<string> {
+    const contextString = callTree.serialize();
+    const query = `${contextString}\n\n# User request\n\n${AI_LABEL_GENERATION_PROMPT}`;
+
+    const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const userTier = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+
+    const resultText = await runOneShotPrompt({
+      aidaClient: this.#aidaClient,
+      preamble: callTreePreamble,
+      query,
+      clientFeature: Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
+      temperature,
+      modelId,
+      userTier,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+    });
+
+    if (!resultText) {
+      throw new Error('Failed to generate AI entry label');
+    }
+
+    return resultText.trim();
+  }
+}

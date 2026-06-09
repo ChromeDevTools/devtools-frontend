@@ -609,7 +609,7 @@ describeWithEnvironment('Overlays', () => {
       const generateButton = elementsWrapper.querySelector<HTMLElement>('.ai-label-button');
       assert.isOk(generateButton, 'could not find "Generate label" button');
       assert.isTrue(generateButton.classList.contains('enabled'));
-      const agent = new AiAssistanceModels.PerformanceAnnotationsAgent.PerformanceAnnotationsAgent({
+      const performanceAnnotations = new AiAssistanceModels.PerformanceAnnotations.PerformanceAnnotations({
         aidaClient: mockAidaClient([[{
           explanation: 'This is an interesting entry',
           metadata: {
@@ -617,7 +617,7 @@ describeWithEnvironment('Overlays', () => {
           }
         }]])
       });
-      component.overrideAIAgentForTest(agent);
+      component.overridePerformanceAnnotationsForTest(performanceAnnotations);
 
       // The Agent call is async, so wait for the change event on the label to ensure the UI is updated.
       const changeEvent = new Promise<void>(resolve => {

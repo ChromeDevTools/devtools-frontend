@@ -4,18 +4,19 @@
 
 import {assert} from 'chai';
 
-import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
+import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
-} from '../../../testing/EnvironmentHelpers.js';
-import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as Trace from '../../trace/trace.js';
-import {AICallTree, PerformanceAnnotationsAgent} from '../ai_assistance.js';
+} from '../../testing/EnvironmentHelpers.js';
+import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as Trace from '../trace/trace.js';
 
-describeWithEnvironment('PerformanceAnnotationsAgent', () => {
+import {AICallTree, PerformanceAnnotations} from './ai_assistance.js';
+
+describeWithEnvironment('PerformanceAnnotations', () => {
   it('generates a label from the response', async function() {
-    const agent = new PerformanceAnnotationsAgent.PerformanceAnnotationsAgent({
+    const annotationsGenerator = new PerformanceAnnotations.PerformanceAnnotations({
       aidaClient: mockAidaClient([[{
         explanation: 'hello world\n',
       }]]),
@@ -27,7 +28,7 @@ describeWithEnvironment('PerformanceAnnotationsAgent', () => {
     assert.exists(evalScriptEvent);
     const aiCallTree = AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
     assert.isOk(aiCallTree);
-    const label = await agent.generateAIEntryLabel(aiCallTree);
+    const label = await annotationsGenerator.generateAIEntryLabel(aiCallTree);
     assert.strictEqual(label, 'hello world');
   });
 });

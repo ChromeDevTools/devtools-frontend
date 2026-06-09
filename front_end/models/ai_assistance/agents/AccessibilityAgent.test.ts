@@ -417,12 +417,77 @@ describeWithMockConnection('AccessibilityAgent', () => {
     sinon.stub(domModel, 'existingDocument').returns(document);
 
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-    const errorResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ERROR);
-    assert.exists(errorResponse);
-    if (errorResponse && 'error' in errorResponse) {
-      assert.strictEqual(errorResponse.error, AiAssistance.AiAgent.ErrorType.UNKNOWN);
-    }
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Cannot use this tool on an imported file.');
     sinon.assert.notCalled(execJs);
+  });
+
+  it('cannot call runAccessibilityAudits if the report is imported', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'runAccessibilityAudits', args: {explanation: 'testing'}}],
+    }]]);
+    const lighthouseRecording = sinon.stub().resolves(mockReport);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+      lighthouseRecording,
+    });
+
+    const importedReport: LHModel.ReporterTypes.ReportJSON = {
+      ...mockReport,
+      isImported: true,
+    };
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Cannot use this tool on an imported file.');
+    sinon.assert.notCalled(lighthouseRecording);
+  });
+
+  it('cannot call getStyles if the report is imported', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls:
+          [{name: 'getStyles', args: {path: '1,HTML,1,BODY', styleProperties: ['color'], explanation: 'testing'}}],
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+
+    const importedReport: LHModel.ReporterTypes.ReportJSON = {
+      ...mockReport,
+      isImported: true,
+    };
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Cannot use this tool on an imported file.');
+  });
+
+  it('cannot call getElementAccessibilityDetails if the report is imported', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+
+    const importedReport: LHModel.ReporterTypes.ReportJSON = {
+      ...mockReport,
+      isImported: true,
+    };
+    const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Cannot use this tool on an imported file.');
   });
 
   it('can still call getLighthouseAudits if the report is imported', async () => {
@@ -453,33 +518,14 @@ describeWithMockConnection('AccessibilityAgent', () => {
   });
 
   describe('enhanceQuery', () => {
-    it('prepends security warning if the report is imported', async () => {
-      const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
-        aidaClient: mockAidaClient([]),
-      });
-
-      const importedReport: LHModel.ReporterTypes.ReportJSON = {
-        ...mockReport,
-        isImported: true,
-      };
-      const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(importedReport);
-
-      const enhancedQuery = await agent.enhanceQuery('user query', context);
-
-      assert.include(enhancedQuery, 'imported from a file and is static');
-      assert.include(enhancedQuery, 'user query');
-    });
-
-    it('does not prepend security warning if the report is not imported', async () => {
+    it('adds the context to the query', async () => {
       const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
         aidaClient: mockAidaClient([]),
       });
 
       const context = new AiAssistance.AccessibilityAgent.AccessibilityContext(mockReport);
-
       const enhancedQuery = await agent.enhanceQuery('user query', context);
-
-      assert.notInclude(enhancedQuery, 'imported from a file and is static');
+      assert.include(enhancedQuery, '# Lighthouse Report');
       assert.include(enhancedQuery, 'user query');
     });
   });

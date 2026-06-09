@@ -81,12 +81,6 @@ If the user asks a question that requires an investigation of a problem, use thi
     - [Suggestion 2]
 `;
 
-const SECURITY_WARNING = `**CRITICAL CONSTRAINT**: This Lighthouse report was imported from a file and is static.
-You do NOT have access to the inspected page.
-Tools like \`executeJavaScript\`, \`getStyles\`, or \`runAccessibilityAudits\` are disabled.
-Do NOT attempt to use them or instruct the user that you will use them.
-Rely ONLY on the static report data below.`;
-
 export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
   #lh: LHModel.ReporterTypes.ReportJSON;
 
@@ -277,11 +271,18 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       }
     });
 
-    if (isImported) {
-      return;
-    }
-
-    this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
+    const executeJsDeclaration = executeJavaScriptFunction(this.#javascriptExecutor);
+    this.declareFunction('executeJavaScript', {
+      ...executeJsDeclaration,
+      handler: async (params, options) => {
+        if (isImported) {
+          return {
+            error: 'Cannot use this tool on an imported file.',
+          };
+        }
+        return await executeJsDeclaration.handler(params, options);
+      },
+    });
 
     this.declareFunction<{explanation: string}, {audits: string}>('runAccessibilityAudits', {
       description:
@@ -308,6 +309,11 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       },
       handler: async params => {
         debugLog('Function call: runAccessibilityAudits', params);
+        if (isImported) {
+          return {
+            error: 'Cannot use this tool on an imported file.',
+          };
+        }
         if (!this.#lighthouseRecording) {
           return {error: 'Lighthouse recording is not available.'};
         }
@@ -372,6 +378,11 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       },
       handler: async params => {
         debugLog('Function call: getStyles', params);
+        if (isImported) {
+          return {
+            error: 'Cannot use this tool on an imported file.',
+          };
+        }
         const node = await this.#resolvePathToNode(params.path);
         if (!node) {
           return {error: `Could not find the element with path: ${params.path}`};
@@ -442,6 +453,11 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       },
       handler: async params => {
         debugLog('Function call: getElementAccessibilityDetails', params);
+        if (isImported) {
+          return {
+            error: 'Cannot use this tool on an imported file.',
+          };
+        }
         const node = await this.#resolvePathToNode(params.path);
         if (!node) {
           return {error: `Could not find the element with path: ${params.path}`};
@@ -519,10 +535,7 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
     if (lhr) {
       this.#declareFunctions();
     }
-    let enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}\n# User request:\n\n` : '';
-    if (lhr?.getItem().isImported) {
-      enhancedQuery = `${SECURITY_WARNING}\n\n${enhancedQuery}`;
-    }
+    const enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}\n# User request:\n\n` : '';
     return `${enhancedQuery}${query}`;
   }
 

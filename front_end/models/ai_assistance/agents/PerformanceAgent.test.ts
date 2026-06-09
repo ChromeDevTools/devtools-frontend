@@ -663,11 +663,9 @@ code
       sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(false);
 
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
-      const errorResponse = responses.find(response => response.type === AiAgent.ResponseType.ERROR);
-      assert.exists(errorResponse);
-      if (errorResponse && 'error' in errorResponse) {
-        assert.strictEqual(errorResponse.error, AiAgent.ErrorType.UNKNOWN);
-      }
+      const actionResponse = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(actionResponse);
+      assert.strictEqual(actionResponse.output, 'Cannot use this tool on an imported file.');
     });
 
     it('can call getMainThreadTrackSummaryByLabel', async function() {

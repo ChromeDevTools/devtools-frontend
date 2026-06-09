@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
@@ -87,7 +88,8 @@ describe('SymbolizedErrorWidget', function() {
   });
 
   it('renders an error with a cause and various types of frames', async () => {
-    const causeStack = 'Error: cause error\n    at bar (http://example.com/b.js:2:2)\n    at Promise.all (index 2)';
+    const causeStack =
+        'Error: cause error\n    at eval (eval at <anonymous> (http://example.com/b.js:2:2), <anonymous>:1:1)\n    at bar (http://example.com/b.js:2:2)\n    at Promise.all (index 2)';
     const errorStack =
         'Error: main error\n    at async asyncFunc (http://example.com/a.js:1:1)\n    at new Constructor (http://example.com/a.js:2:2)\n    at Type.method [as alias] (http://example.com/a.js:3:3)\n    at wasmFunc (http://example.com/a.wasm:wasm-function[12]:0xabc)\n    at Array.map (<anonymous>)';
     const error = await createError(errorStack, causeStack);
@@ -185,6 +187,141 @@ describe('SymbolizedErrorWidget', function() {
 
     const text = getRenderedText(widget);
     assert.include(text, 'at Object.foo [as aliased method] (');
+  });
+
+  it('correctly renders a complex nested eval stack trace', async () => {
+    const target = universe.createTarget({});
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assert.exists(debuggerModel);
+
+    // Create a single script for the outer execution context so `translate` works.
+    const executionContextId = 1 as Protocol.Runtime.ExecutionContextId;
+    const scriptId = '1' as Protocol.Runtime.ScriptId;
+    debuggerModel.parsedScriptSource(scriptId, urlString`http://example.com/index.html`, 0, 0, 0, 0, executionContextId,
+                                     '', undefined, false, undefined, false, false, 0, false, null, null, null, null,
+                                     null, null);
+
+    const stack = `Error: V8-Stack
+    at end (eval at <anonymous> (eval at <anonymous> (eval at evalCaller (http://example.com/index.html:11:45))), <anonymous>:1:23)
+    at eval (eval at <anonymous> (eval at <anonymous> (eval at evalCaller (http://example.com/index.html:11:45))), <anonymous>:1:44)
+    at eval (eval at <anonymous> (eval at evalCaller (http://example.com/index.html:11:45)), <anonymous>:1:1)
+    at eval (eval at evalCaller (http://example.com/index.html:11:45), <anonymous>:1:1)
+    at evalCaller (http://example.com/index.html:15:45)`;
+
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+    const errorRemoteObject = runtimeModel.createRemoteObject({
+      type: Protocol.Runtime.RemoteObjectType.Object,
+      subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
+      description: stack,
+      objectId: '1' as Protocol.Runtime.RemoteObjectId,
+    });
+
+    // Augment exception details with a fake protocol stack trace holding scriptIds so `createSymbolizedError` uses our mocked script.
+    const exceptionDetails: Protocol.Runtime.ExceptionDetails = {
+      exceptionId: 1,
+      text: 'Uncaught',
+      lineNumber: 10,
+      columnNumber: 44,
+      stackTrace: {
+        callFrames: [
+          // The outer most frame in the V8 stack string is `evalCaller`, its URL matches `http://example.com/index.html`.
+          {
+            functionName: 'evalCaller',
+            scriptId,
+            url: 'http://example.com/index.html',
+            lineNumber: 14,
+            columnNumber: 44,
+          }
+        ],
+      },
+    };
+
+    const error = await universe.debuggerWorkspaceBinding.createSymbolizedError(errorRemoteObject, exceptionDetails);
+    assert.exists(error);
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(widget);
+    await widget.updateComplete;
+
+    const updatedText = getRenderedText(widget);
+
+    assert.include(
+        updatedText,
+        'at end (eval at <anonymous> (eval at <anonymous> (eval at evalCaller (example.com/index.html:11:45))), <anonymous>:1:23)');
+    assert.include(
+        updatedText,
+        'at eval (eval at <anonymous> (eval at <anonymous> (eval at evalCaller (example.com/index.html:11:45))), <anonymous>:1:44)');
+    assert.include(
+        updatedText,
+        'at eval (eval at <anonymous> (eval at evalCaller (example.com/index.html:11:45)), <anonymous>:1:1)');
+    assert.include(updatedText, 'at eval (eval at evalCaller (example.com/index.html:11:45), <anonymous>:1:1)');
+    assert.include(updatedText, 'at evalCaller (example.com/index.html:15:45)');
+  });
+
+  it('correctly renders a WASM frame inside an eval origin (without uiSourceCode)', async () => {
+    const stack =
+        'Error: wasm eval error\n    at eval (eval at wasmFunc (http://example.com/a.wasm:wasm-function[12]:0xabc), <anonymous>:1:1)';
+    const errorWithoutSource = await createError(stack);
+
+    const widgetWithoutSource = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widgetWithoutSource.ignoreListManager = universe.ignoreListManager;
+    widgetWithoutSource.error = errorWithoutSource;
+    renderElementIntoDOM(widgetWithoutSource);
+    await widgetWithoutSource.updateComplete;
+
+    const textWithoutSource = getRenderedText(widgetWithoutSource);
+    assert.include(textWithoutSource, 'at eval (eval at wasmFunc (example.com/a.wasm:0xabc), <anonymous>:1:1)');
+
+    // Verify that it is rendered as a clickable button (tag name is BUTTON)
+    const linkElementWithoutSource = widgetWithoutSource.contentElement.querySelector('.devtools-link');
+    assert.exists(linkElementWithoutSource);
+    assert.strictEqual(linkElementWithoutSource!.tagName, 'BUTTON');
+  });
+
+  it('correctly renders a WASM frame inside an eval origin (with uiSourceCode)', async () => {
+    // Create a fake uiLocation with uiSourceCode for a WASM file
+    const mockUiSourceCode = {
+      url: () => 'http://example.com/a.wasm',
+      mimeType: () => 'application/wasm',
+    } as unknown as Workspace.UISourceCode.UISourceCode;
+
+    const uiLocation = {
+      uiSourceCode: mockUiSourceCode,
+      lineNumber: 0,
+      columnNumber: 2748,  // 0xabc
+      linkText: () => 'a.wasm:0xabc',
+      isIgnoreListed: () => false,
+    } as unknown as Workspace.UISourceCode.UILocation;
+
+    mockUiSourceCode.uiLocation = () => uiLocation;
+
+    const mockLocation = {} as SDK.DebuggerModel.Location;
+    sinon.stub(SDK.DebuggerModel.DebuggerModel.prototype, 'createRawLocationByURL').returns(mockLocation);
+
+    // Stub CompilerScriptMapping prototype to return our mocked uiLocation directly
+    sinon.stub(Bindings.CompilerScriptMapping.CompilerScriptMapping.prototype, 'rawLocationToUILocation')
+        .returns(uiLocation);
+
+    const stack =
+        'Error: wasm eval error\n    at eval (eval at wasmFunc (http://example.com/a.wasm:wasm-function[12]:0xabc), <anonymous>:1:1)';
+    const errorWithSource = await createError(stack);
+
+    const widgetWithSource = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widgetWithSource.ignoreListManager = universe.ignoreListManager;
+    widgetWithSource.error = errorWithSource;
+    renderElementIntoDOM(widgetWithSource);
+    await widgetWithSource.updateComplete;
+
+    const textWithSource = getRenderedText(widgetWithSource);
+    assert.include(textWithSource, 'at eval (eval at wasmFunc (a.wasm:0xabc), a.wasm:0xabc)');
+
+    // Verify that it is rendered as a clickable anchor (tag name is A or behaves as a link)
+    const linkElementWithSource = widgetWithSource.contentElement.querySelector('.devtools-link');
+    assert.exists(linkElementWithSource);
+    assert.strictEqual(linkElementWithSource.tagName, 'BUTTON');
   });
 
   describe('ignore-listing', () => {

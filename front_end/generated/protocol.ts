@@ -11136,10 +11136,6 @@ export namespace Network {
   export const enum CookieExemptionReason {
     None = 'None',
     UserSetting = 'UserSetting',
-    TPCDMetadata = 'TPCDMetadata',
-    TPCDDeprecationTrial = 'TPCDDeprecationTrial',
-    TopLevelTPCDDeprecationTrial = 'TopLevelTPCDDeprecationTrial',
-    TPCDHeuristics = 'TPCDHeuristics',
     EnterprisePolicy = 'EnterprisePolicy',
     StorageAccess = 'StorageAccess',
     TopLevelStorageAccess = 'TopLevelStorageAccess',

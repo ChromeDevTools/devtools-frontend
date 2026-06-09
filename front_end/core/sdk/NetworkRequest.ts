@@ -160,22 +160,6 @@ const UIStrings = {
    /**
     * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
-   exemptionReasonTPCDMetadata: 'This cookie is allowed by a third-party cookie deprecation trial grace period. Learn more: goo.gle/dt-grace.',
-   /**
-    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-    */
-   exemptionReasonTPCDDeprecationTrial: 'This cookie is allowed by third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.',
-   /**
-    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-    */
-  exemptionReasonTopLevelTPCDDeprecationTrial: 'This cookie is allowed by top-level third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.',
-   /**
-    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-    */
-   exemptionReasonTPCDHeuristics: 'This cookie is allowed by third-party cookie heuristics. Learn more: goo.gle/hbe',
-   /**
-    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-    */
    exemptionReasonEnterprisePolicy: 'This cookie is allowed by Chrome Enterprise policy. Learn more: goo.gle/ce-3pc',
    /**
     * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
@@ -1948,14 +1932,6 @@ export const cookieExemptionReasonToUiString = function(
   switch (exemptionReason) {
     case Protocol.Network.CookieExemptionReason.UserSetting:
       return i18nString(UIStrings.exemptionReasonUserSetting);
-    case Protocol.Network.CookieExemptionReason.TPCDMetadata:
-      return i18nString(UIStrings.exemptionReasonTPCDMetadata);
-    case Protocol.Network.CookieExemptionReason.TopLevelTPCDDeprecationTrial:
-      return i18nString(UIStrings.exemptionReasonTopLevelTPCDDeprecationTrial);
-    case Protocol.Network.CookieExemptionReason.TPCDDeprecationTrial:
-      return i18nString(UIStrings.exemptionReasonTPCDDeprecationTrial);
-    case Protocol.Network.CookieExemptionReason.TPCDHeuristics:
-      return i18nString(UIStrings.exemptionReasonTPCDHeuristics);
     case Protocol.Network.CookieExemptionReason.EnterprisePolicy:
       return i18nString(UIStrings.exemptionReasonEnterprisePolicy);
     case Protocol.Network.CookieExemptionReason.StorageAccess:

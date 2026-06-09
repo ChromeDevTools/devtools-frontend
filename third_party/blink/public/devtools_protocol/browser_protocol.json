@@ -16759,10 +16759,6 @@
                     "enum": [
                         "None",
                         "UserSetting",
-                        "TPCDMetadata",
-                        "TPCDDeprecationTrial",
-                        "TopLevelTPCDDeprecationTrial",
-                        "TPCDHeuristics",
                         "EnterprisePolicy",
                         "StorageAccess",
                         "TopLevelStorageAccess",

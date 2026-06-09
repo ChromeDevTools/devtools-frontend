@@ -876,7 +876,7 @@ export abstract class HeapSnapshot {
   readonly #progress: HeapSnapshotProgress;
   readonly #noDistance = -5;
   rootNodeIndexInternal = 0;
-  #snapshotDiffs: Record<string, Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>> = {};
+  #snapshotDiffs: Record<number, Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff>> = {};
   #aggregatesForDiff?: {
     interfaceDefinitions: string,
     aggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>,
@@ -2688,9 +2688,8 @@ export abstract class HeapSnapshot {
     throw new Error('Not implemented');
   }
 
-  calculateSnapshotDiff(
-      baseSnapshotId: string,
-      baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>):
+  calculateSnapshotDiff(baseSnapshotId: number,
+                        baseSnapshotAggregates: Record<string, HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff>):
       Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff> {
     let snapshotDiff: Record<string, HeapSnapshotModel.HeapSnapshotModel.Diff> = this.#snapshotDiffs[baseSnapshotId];
     if (snapshotDiff) {
@@ -2976,7 +2975,7 @@ export abstract class HeapSnapshot {
     return {paths, limitsReached};
   }
 
-  createAddedNodesProvider(baseSnapshotId: string, classKey: string): HeapSnapshotNodesProvider {
+  createAddedNodesProvider(baseSnapshotId: number, classKey: string): HeapSnapshotNodesProvider {
     const snapshotDiff = this.#snapshotDiffs[baseSnapshotId];
     const diffForClass = snapshotDiff[classKey];
     return new HeapSnapshotNodesProvider(this, diffForClass.addedIndexes);

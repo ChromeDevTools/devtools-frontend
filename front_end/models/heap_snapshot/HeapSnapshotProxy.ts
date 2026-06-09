@@ -244,8 +244,6 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject implements 
     const snapshotProxy = await this.callFactoryMethodPromise('buildSnapshot', HeapSnapshotProxy, [channel.port1]);
     secondWorker.dispose();
     this.dispose();
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // @ts-expect-error
     snapshotProxy.setProfileUid(this.profileUid);
     await snapshotProxy.updateStaticData();
     this.snapshotReceivedCallback(snapshotProxy);
@@ -254,7 +252,7 @@ export class HeapSnapshotLoaderProxy extends HeapSnapshotProxyObject implements 
 
 export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   staticData: HeapSnapshotModel.StaticData|null;
-  profileUid?: string;
+  profileUid?: number;
 
   constructor(worker: HeapSnapshotWorkerProxy, objectId: number) {
     super(worker, objectId);
@@ -279,7 +277,7 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
   }
 
   calculateSnapshotDiff(
-      baseSnapshotId: string,
+      baseSnapshotId: number,
       baseSnapshotAggregates: Record<string, HeapSnapshotModel.AggregateForDiff>,
       ): Promise<Record<string, HeapSnapshotModel.Diff>> {
     return this.callMethodPromise('calculateSnapshotDiff', baseSnapshotId, baseSnapshotAggregates);
@@ -301,7 +299,7 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callFactoryMethod('createRetainingEdgesProvider', HeapSnapshotProviderProxy, nodeIndex);
   }
 
-  createAddedNodesProvider(baseSnapshotId: string, classKey: string): HeapSnapshotProviderProxy {
+  createAddedNodesProvider(baseSnapshotId: number, classKey: string): HeapSnapshotProviderProxy {
     return this.callFactoryMethod('createAddedNodesProvider', HeapSnapshotProviderProxy, baseSnapshotId, classKey);
   }
 
@@ -391,11 +389,11 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.staticData.totalSize;
   }
 
-  get uid(): string|undefined {
+  get uid(): number|undefined {
     return this.profileUid;
   }
 
-  setProfileUid(profileUid: string): void {
+  setProfileUid(profileUid: number): void {
     this.profileUid = profileUid;
   }
 

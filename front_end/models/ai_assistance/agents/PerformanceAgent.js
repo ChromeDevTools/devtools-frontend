@@ -36,6 +36,11 @@ const lockedString = i18n.i18n.lockedString;
  * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
+const SECURITY_WARNING = `**CRITICAL CONSTRAINT**: This performance trace was loaded from a file and is static.
+You do NOT have access to the live page.
+The tool \`getFunctionCode\` is disabled.
+Do NOT attempt to use it or instruct the user that you will use it.
+Rely only on the trace data and other available tools.`;
 const GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).
@@ -203,7 +208,6 @@ export class PerformanceTraceContext extends ConversationContext {
         return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree));
     }
     #focus;
-    external = false;
     constructor(focus) {
         super();
         this.#focus = focus;
@@ -392,7 +396,7 @@ export class PerformanceAgent extends AiAgent {
      * so we can show it in the disclosure UI. This is cleared and then populated
      * on each prompt.
      */
-    #additionalSelectionsForQuery = [];
+    #additionalSelectionsForDisclosure = [];
     get clientFeature() {
         return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
     }
@@ -420,7 +424,7 @@ export class PerformanceAgent extends AiAgent {
             }
             contextDisclosure.push(fact.text);
         }
-        contextDisclosure.push(...this.#additionalSelectionsForQuery);
+        contextDisclosure.push(...this.#additionalSelectionsForDisclosure);
         const focus = context.getItem();
         const widgets = this.#getWidgetsForFocus(focus);
         yield {
@@ -605,12 +609,16 @@ export class PerformanceAgent extends AiAgent {
                 selected.push(`User selected the ${focus.insight.insightKey} insight.\n\n`);
             }
         }
-        this.#additionalSelectionsForQuery = selected;
+        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
         if (!selected.length) {
-            return query;
+            this.#additionalSelectionsForDisclosure = [];
+            const finalQuery = query;
+            return isFresh ? finalQuery : `${SECURITY_WARNING}\n\n${finalQuery}`;
         }
         selected.push(`# User query\n\n${query}`);
-        return selected.join('');
+        this.#additionalSelectionsForDisclosure = [...selected];
+        const finalQuery = selected.join('');
+        return isFresh ? finalQuery : `${SECURITY_WARNING}\n\n${finalQuery}`;
     }
     async *run(initialQuery, options) {
         const focus = options.selected?.getItem();
@@ -692,9 +700,7 @@ export class PerformanceAgent extends AiAgent {
     }
     async #addFacts(context) {
         const focus = context.getItem();
-        if (!context.external) {
-            this.addFact(this.#notExternalExtraPreambleFact);
-        }
+        this.addFact(this.#notExternalExtraPreambleFact);
         const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
         if (annotationsEnabled) {
             this.addFact(this.#greenDevAnnotationsFact);
@@ -716,7 +722,7 @@ export class PerformanceAgent extends AiAgent {
             this.#formatter = new PerformanceTraceFormatter(focus);
             this.#formatter.resolveFunctionCode =
                 async (url, line, column) => {
-                    if (!target) {
+                    if (!target || !isFresh) {
                         return null;
                     }
                     return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
@@ -784,6 +790,7 @@ export class PerformanceAgent extends AiAgent {
     #declareFunctions(context) {
         const focus = context.getItem();
         const { parsedTrace } = focus;
+        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
         this.declareFunction('getInsightDetails', {
             description: 'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.',
             parameters: {
@@ -908,37 +915,7 @@ export class PerformanceAgent extends AiAgent {
                     return { error: 'Invalid eventKey' };
                 }
                 // TODO(b/425270067): Format in the same way that "Summary" detail tab does.
-                let details;
-                if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-                    const eventToSerialize = {
-                        ...event,
-                        args: {
-                            ...event.args,
-                            data: {
-                                ...event.args.data,
-                                responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) :
-                                    null,
-                            },
-                        },
-                    };
-                    details = JSON.stringify(eventToSerialize);
-                }
-                else if (Trace.Types.Events.isResourceReceiveResponse(event)) {
-                    const eventToSerialize = {
-                        ...event,
-                        args: {
-                            ...event.args,
-                            data: {
-                                ...event.args.data,
-                                headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
-                            },
-                        },
-                    };
-                    details = JSON.stringify(eventToSerialize);
-                }
-                else {
-                    details = JSON.stringify(event);
-                }
+                const details = formatEventForAI(event);
                 const key = `getEventByKey('${params.eventKey}')`;
                 this.#cacheFunctionResult(focus, key, details);
                 return {
@@ -1155,75 +1132,76 @@ export class PerformanceAgent extends AiAgent {
                 },
             });
         }
-        this.declareFunction('getFunctionCode', {
-            description: 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
-            parameters: {
-                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                description: '',
-                nullable: false,
-                properties: {
-                    scriptUrl: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'The url of the function.',
-                        nullable: false,
+        if (isFresh) {
+            this.declareFunction('getFunctionCode', {
+                description: 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
+                parameters: {
+                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                    description: '',
+                    nullable: false,
+                    properties: {
+                        scriptUrl: {
+                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                            description: 'The url of the function.',
+                            nullable: false,
+                        },
+                        line: {
+                            type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
+                            description: 'The line number where the function is defined.',
+                            nullable: false,
+                        },
+                        column: {
+                            type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
+                            description: 'The column number where the function is defined.',
+                            nullable: false,
+                        },
                     },
-                    line: {
-                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: 'The line number where the function is defined.',
-                        nullable: false,
-                    },
-                    column: {
-                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                        description: 'The column number where the function is defined.',
-                        nullable: false,
-                    },
+                    required: ['scriptUrl', 'line', 'column']
                 },
-                required: ['scriptUrl', 'line', 'column']
-            },
-            displayInfoFromArgs: args => {
-                return {
-                    title: lockedString('Looking up function code'),
-                    action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
-                };
-            },
-            handler: async (args) => {
-                debugLog('Function call: getFunctionCode');
-                if (args.line === undefined) {
-                    return { error: 'Missing arg: line' };
-                }
-                if (args.column === undefined) {
-                    return { error: 'Missing arg: column' };
-                }
-                if (!this.#formatter) {
-                    throw new Error('missing formatter');
-                }
-                const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-                if (!target) {
-                    throw new Error('missing target');
-                }
-                const url = args.scriptUrl;
-                const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
-                if (!code) {
-                    return { error: 'Could not find code' };
-                }
-                const result = this.#formatter.formatFunctionCode(code);
-                const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
-                this.#cacheFunctionResult(focus, key, result);
-                return {
-                    result: { result },
-                    widgets: [{
-                            name: 'SOURCE_CODE',
-                            data: {
-                                url: args.scriptUrl,
-                                line: args.line,
-                                column: args.column,
-                                code: code.code,
-                            },
-                        }],
-                };
-            },
-        });
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+                displayInfoFromArgs: args => {
+                    return {
+                        title: lockedString('Looking up function code'),
+                        action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+                    };
+                },
+                handler: async (args) => {
+                    debugLog('Function call: getFunctionCode');
+                    if (args.line === undefined) {
+                        return { error: 'Missing arg: line' };
+                    }
+                    if (args.column === undefined) {
+                        return { error: 'Missing arg: column' };
+                    }
+                    if (!this.#formatter) {
+                        throw new Error('missing formatter');
+                    }
+                    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                    if (!target) {
+                        throw new Error('missing target');
+                    }
+                    const url = args.scriptUrl;
+                    const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
+                    if (!code) {
+                        return { error: 'Could not find code' };
+                    }
+                    const result = this.#formatter.formatFunctionCode(code);
+                    const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
+                    this.#cacheFunctionResult(focus, key, result);
+                    return {
+                        result: { result },
+                        widgets: [{
+                                name: 'SOURCE_CODE',
+                                data: {
+                                    url: args.scriptUrl,
+                                    line: args.line,
+                                    column: args.column,
+                                    code: code.code,
+                                },
+                            }],
+                    };
+                },
+            });
+        }
         const isTraceApp = Root.Runtime.Runtime.isTraceApp();
         this.declareFunction('getResourceContent', {
             description: 'Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.',
@@ -1283,46 +1261,44 @@ export class PerformanceAgent extends AiAgent {
                 };
             },
         });
-        if (!context.external) {
-            this.declareFunction('selectEventByKey', {
-                description: 'Selects the event in the flamechart for the user. If the user asks to show them something, it\'s likely a good idea to call this function.',
-                parameters: {
-                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                    description: '',
-                    nullable: false,
-                    properties: {
-                        eventKey: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The key for the event.',
-                            nullable: false,
-                        }
-                    },
-                    required: ['eventKey']
-                },
-                displayInfoFromArgs: params => {
-                    return { title: lockedString('Selecting event'), action: `selectEventByKey('${params.eventKey}')` };
-                },
-                handler: async (params) => {
-                    debugLog('Function call: selectEventByKey', params);
-                    const event = focus.lookupEvent(params.eventKey);
-                    if (!event) {
-                        return { error: 'Invalid eventKey' };
+        this.declareFunction('selectEventByKey', {
+            description: 'Selects the event in the flamechart for the user. If the user asks to show them something, it\'s likely a good idea to call this function.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {
+                    eventKey: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The key for the event.',
+                        nullable: false,
                     }
-                    const revealable = new SDK.TraceObject.RevealableEvent(event);
-                    await Common.Revealer.reveal(revealable);
-                    return {
-                        result: { success: true },
-                        widgets: [{
-                                name: 'TIMELINE_EVENT_SUMMARY',
-                                data: {
-                                    event,
-                                    parsedTrace,
-                                },
-                            }],
-                    };
                 },
-            });
-        }
+                required: ['eventKey']
+            },
+            displayInfoFromArgs: params => {
+                return { title: lockedString('Selecting event'), action: `selectEventByKey('${params.eventKey}')` };
+            },
+            handler: async (params) => {
+                debugLog('Function call: selectEventByKey', params);
+                const event = focus.lookupEvent(params.eventKey);
+                if (!event) {
+                    return { error: 'Invalid eventKey' };
+                }
+                const revealable = new SDK.TraceObject.RevealableEvent(event);
+                await Common.Revealer.reveal(revealable);
+                return {
+                    result: { success: true },
+                    widgets: [{
+                            name: 'TIMELINE_EVENT_SUMMARY',
+                            data: {
+                                event,
+                                parsedTrace,
+                            },
+                        }],
+                };
+            },
+        });
     }
     #getBoundsForLabel(label, focus) {
         const { parsedTrace } = focus;
@@ -1423,5 +1399,68 @@ export class PerformanceAgent extends AiAgent {
         }
         return undefined;
     }
+}
+/**
+ * Serializes a trace event to a JSON string for AI consumption,
+ * ensuring sensitive data (like headers and raw script source code)
+ * is sanitized or redacted.
+ */
+function formatEventForAI(event) {
+    if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+        return JSON.stringify({
+            ...event,
+            args: {
+                ...event.args,
+                data: {
+                    ...event.args.data,
+                    responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null,
+                },
+            },
+        });
+    }
+    if (Trace.Types.Events.isResourceReceiveResponse(event)) {
+        return JSON.stringify({
+            ...event,
+            args: {
+                ...event.args,
+                data: {
+                    ...event.args.data,
+                    headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : undefined,
+                },
+            },
+        });
+    }
+    if (Trace.Types.Events.isRundownScriptSource(event)) {
+        // Redact sensitive cross-origin script source text.
+        const safeData = {
+            isolate: event.args.data.isolate,
+            scriptId: event.args.data.scriptId,
+            length: event.args.data.length,
+        };
+        return JSON.stringify({
+            ...event,
+            args: {
+                ...event.args,
+                data: safeData,
+            },
+        });
+    }
+    if (Trace.Types.Events.isRundownScriptSourceLarge(event)) {
+        // Redact sensitive cross-origin script source text.
+        const safeData = {
+            isolate: event.args.data.isolate,
+            scriptId: event.args.data.scriptId,
+            splitIndex: event.args.data.splitIndex,
+            splitCount: event.args.data.splitCount,
+        };
+        return JSON.stringify({
+            ...event,
+            args: {
+                ...event.args,
+                data: safeData,
+            },
+        });
+    }
+    return JSON.stringify(event);
 }
 //# sourceMappingURL=PerformanceAgent.js.map

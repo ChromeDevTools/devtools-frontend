@@ -4785,9 +4785,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     property.setDisplayedStringForInvalidProperty(invalidString);
     return container;
   }
-  #getLinkableFunction(functionName, matchedStyles) {
+  #getLinkableFunction(functionName, matchedStyles, property) {
     const swatch = new InlineEditor2.LinkSwatch.LinkSwatch();
-    const registeredFunction = matchedStyles.getRegisteredFunction(functionName);
+    const { registeredFunction, treeScopeDistance } = matchedStyles.getRegisteredFunction(functionName, property);
     const isDefined = Boolean(registeredFunction);
     swatch.data = {
       jslogContext: "css-function",
@@ -4798,7 +4798,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         if (!registeredFunction) {
           return;
         }
-        this.#stylesContainer.jumpToFunctionDefinition(registeredFunction);
+        this.#stylesContainer.jumpToFunctionDefinition(registeredFunction, treeScopeDistance);
       }
     };
     return swatch;
@@ -4814,7 +4814,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const stylesContainer = this.stylesContainer();
     const tooltipId = this.getTooltipId(`${functionName}-trace`);
     return html6`
-        <span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName.startsWith("--") ? this.#getLinkableFunction(functionName, matchedStyles) : functionName}</span>
+        <span tabIndex=-1 class=tracing-anchor aria-details=${tooltipId}>${functionName.startsWith("--") ? this.#getLinkableFunction(functionName, matchedStyles, context.property) : functionName}</span>
         <devtools-tooltip
             id=${tooltipId}
             use-hotkey
@@ -6077,6 +6077,13 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   getSectionIdx() {
     return this.sectionIdx;
+  }
+  treeScopeDistance() {
+    const treeScope = this.styleInternal.parentRule?.treeScope;
+    if (!treeScope) {
+      return -1;
+    }
+    return SDK7.CSSMatchedStyles.distanceToTreeScope(this.matchedStyles.node(), treeScope);
   }
   static createRuleOriginNode(matchedStyles, linkifier, rule) {
     if (!rule) {
@@ -7577,9 +7584,9 @@ var StylePropertyHighlighter = class {
     section5.showAllItems();
     PanelUtils.highlightElement(block.titleElement());
   }
-  findAndHighlightSection(sectionName, blockName) {
+  findAndHighlightSection(sectionName, blockName, treeScopeDistance = -1) {
     const block = this.styleSidebarPane.getSectionBlockByName(blockName);
-    const section5 = block?.sections.find((section6) => section6.headerText() === sectionName);
+    const section5 = block?.sections.find((section6) => section6.headerText() === sectionName && (treeScopeDistance === -1 || section6.treeScopeDistance() === treeScopeDistance));
     if (!section5 || !block) {
       return;
     }
@@ -8419,14 +8426,14 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       this.jumpToProperty("initial-value", valueSource.name, REGISTERED_PROPERTY_SECTION_NAME);
     }
   }
-  jumpToSection(sectionName, blockName) {
-    this.decorator.findAndHighlightSection(sectionName, blockName);
+  jumpToSection(sectionName, blockName, treeScopeDistance) {
+    this.decorator.findAndHighlightSection(sectionName, blockName, treeScopeDistance);
   }
   jumpToSectionBlock(section5) {
     this.decorator.findAndHighlightSectionBlock(section5);
   }
-  jumpToFunctionDefinition(functionName) {
-    this.jumpToSection(functionName, FUNCTION_SECTION_NAME);
+  jumpToFunctionDefinition(functionName, treeScopeDistance) {
+    this.jumpToSection(functionName, FUNCTION_SECTION_NAME, treeScopeDistance);
   }
   jumpToFontPaletteDefinition(paletteName) {
     this.jumpToSection(`@font-palette-values ${paletteName}`, i18nString6(UIStrings6.atRuleSection));
@@ -21177,7 +21184,7 @@ var StandaloneStylesContainer = class extends Common18.ObjectWrapper.eventMixin(
   getVariableParserError(_matchedStyles, _variableName) {
     return null;
   }
-  jumpToFunctionDefinition(_functionName) {
+  jumpToFunctionDefinition(_functionName, _treeScopeDistance) {
   }
   continueEditingElement(_sectionIndex, _propertyIndex) {
   }

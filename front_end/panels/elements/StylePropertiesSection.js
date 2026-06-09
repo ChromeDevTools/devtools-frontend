@@ -323,6 +323,13 @@ export class StylePropertiesSection {
     getSectionIdx() {
         return this.sectionIdx;
     }
+    treeScopeDistance() {
+        const treeScope = this.styleInternal.parentRule?.treeScope;
+        if (!treeScope) {
+            return -1;
+        }
+        return SDK.CSSMatchedStyles.distanceToTreeScope(this.matchedStyles.node(), treeScope);
+    }
     static createRuleOriginNode(matchedStyles, linkifier, rule) {
         if (!rule) {
             return nothing;

@@ -69,6 +69,11 @@ export interface ReportJSON {
     audits: Record<string, AuditResultJSON>;
     categories: Record<CategoryId, CategoryJSON>;
     categoryGroups: Record<string, GroupJSON>;
+    /**
+     * Identifies if the report was imported from a file (untrusted).
+     * Used to disable page-touching AI assistance tools for security.
+     */
+    isImported?: boolean;
 }
 export type DetailsJSON = TableDetailsJSON | OpportunityDetailsJSON | FilmstripDetailsJSON | ScreenshotDetailsJSON | DebugDataDetailsJSON;
 export interface SubItemsJSON {

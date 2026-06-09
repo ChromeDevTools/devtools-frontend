@@ -13,9 +13,10 @@ import { FileAgent, FileContext } from './agents/FileAgent.js';
 import { NetworkAgent, RequestContext } from './agents/NetworkAgent.js';
 import { PerformanceAgent, PerformanceTraceContext } from './agents/PerformanceAgent.js';
 import { StorageAgent, StorageContext } from './agents/StorageAgent.js';
-import { NodeContext, StylingAgent } from './agents/StylingAgent.js';
+import { StylingAgent } from './agents/StylingAgent.js';
 import { AiAgent2 } from './AiAgent2.js';
 import { AiHistoryStorage } from './AiHistoryStorage.js';
+import { DOMNodeContext } from './contexts/DOMNodeContext.js';
 export const NOT_FOUND_IMAGE_DATA = '';
 export const CONTEXT_TITLE = 'Analyzing data';
 const MAX_TITLE_LENGTH = 80;
@@ -120,7 +121,7 @@ export class AiConversation {
             if (updateContext instanceof FileContext) {
                 this.#updateAgent("drjones-file" /* ConversationType.FILE */);
             }
-            else if (updateContext instanceof NodeContext) {
+            else if (updateContext instanceof DOMNodeContext) {
                 this.#updateAgent("freestyler" /* ConversationType.STYLING */);
             }
             else if (updateContext instanceof RequestContext) {

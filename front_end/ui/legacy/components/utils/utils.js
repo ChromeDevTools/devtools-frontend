@@ -728,7 +728,12 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       jslogContext: options?.jslogContext || "script-location",
       omitOrigin: options?.omitOrigin
     };
-    const fallbackAnchor = _Linkifier.linkifyURL(frame.url, linkifyURLOptions);
+    const fallbackOptions = {
+      ...linkifyURLOptions,
+      showColumnNumber: frame.isWasm || Boolean(options?.showColumnNumber),
+      omitLineAndRenderColumnAsHex: frame.isWasm
+    };
+    const fallbackAnchor = _Linkifier.linkifyURL(frame.url, fallbackOptions);
     if (!frame.uiSourceCode) {
       const isIgnoreListed = (options?.ignoreListManager ?? Workspace.IgnoreListManager.IgnoreListManager.instance()).isUserIgnoreListedURL(frame.url);
       fallbackAnchor.classList.toggle("ignore-list-link", isIgnoreListed);
@@ -884,6 +889,10 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
     const omitOrigin = options.omitOrigin;
+    const omitLineAndRenderColumnAsHex = options.omitLineAndRenderColumnAsHex;
+    if (omitLineAndRenderColumnAsHex && showColumnNumber === false) {
+      throw new Error("omitLineAndRenderColumnAsHex requires showColumnNumber to not be explicitly false");
+    }
     if (!url || Common2.ParsedURL.schemeIs(url, "javascript:")) {
       return html`<span class=${className}>${text || url || i18nString2(UIStrings2.unknown)}</span>`;
     }
@@ -894,7 +903,11 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
         linkText = url.replace(parsedUrl.origin, "");
       }
     }
-    if (typeof lineNumber === "number" && !text) {
+    if (omitLineAndRenderColumnAsHex && !text) {
+      if (typeof columnNumber === "number") {
+        linkText += ":0x" + columnNumber.toString(16);
+      }
+    } else if (typeof lineNumber === "number" && !text) {
       linkText += ":" + (lineNumber + 1);
       if (showColumnNumber && typeof columnNumber === "number") {
         linkText += ":" + (columnNumber + 1);
@@ -1162,7 +1175,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       }
     }
     for (const registration of linkHandlers.values().filter((r) => r.handler)) {
-      const { title, handler, shouldHandleOpenResource } = registration;
+      const { title, origin, handler, shouldHandleOpenResource } = registration;
       if (url && !shouldHandleOpenResource(url, specificSchemeHandlers)) {
         continue;
       }
@@ -1172,7 +1185,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
         jslogContext: "open-using",
         handler: handler.bind(null, contentProviderOrUrl, lineNumber, columnNumber)
       };
-      if (title === _Linkifier.linkHandlerSetting().get()) {
+      if (origin === _Linkifier.linkHandlerSetting().get()) {
         result.unshift(action);
       } else {
         result.push(action);

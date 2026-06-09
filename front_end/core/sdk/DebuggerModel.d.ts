@@ -58,6 +58,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     private reset;
     scripts(): Script[];
     scriptForId(scriptId: string): Script | null;
+    isWasm(scriptId: string): boolean;
     /**
      * Returns all `Script` objects with the same provided `sourceURL`. The
      * resulting array is sorted by time with the newest `Script` in the front.

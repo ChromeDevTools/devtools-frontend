@@ -7,6 +7,14 @@ import type { Match, Matcher } from './CSSPropertyParser.js';
 import { CSSAtRule, CSSFunctionRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule } from './CSSRule.js';
 import { CSSStyleDeclaration } from './CSSStyleDeclaration.js';
 import type { DOMNode } from './DOMModel.js';
+/**
+ * Distance from node to parent that is the tree scope. Returns -1 if tree scope is not found.
+ *
+ * @param node The child node to start from.
+ * @param treeScope The tree scope node ID.
+ * @returns The distance to the tree scope node, or -1 if not found.
+ */
+export declare function distanceToTreeScope(node: DOMNode, treeScope: Protocol.DOM.BackendNodeId): number;
 export interface CSSMatchedStylesPayload {
     cssModel: CSSModel;
     node: DOMNode;
@@ -74,7 +82,10 @@ export declare class CSSMatchedStyles {
     transitionsStyle(): CSSStyleDeclaration | null;
     registeredProperties(): CSSRegisteredProperty[];
     getRegisteredProperty(name: string): CSSRegisteredProperty | undefined;
-    getRegisteredFunction(name: string): string | undefined;
+    getRegisteredFunction(name: string, sourceProperty: CSSProperty): {
+        treeScopeDistance: number;
+        registeredFunction?: string;
+    };
     functionRules(): CSSFunctionRule[];
     atRules(): CSSAtRule[];
     keyframes(): CSSKeyframesRule[];

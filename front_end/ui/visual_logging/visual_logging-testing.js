@@ -384,6 +384,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ai-assistance-v2-opt-in-change-dialog-seen",
   "ai-assistance-v2-opt-in.got-it",
   "ai-assistance-v2-opt-in.manage-settings",
+  "ai-assistance.storage-floating-button",
   "ai-code-completion-citations",
   "ai-code-completion-citations.citation-link",
   "ai-code-completion-disclaimer",

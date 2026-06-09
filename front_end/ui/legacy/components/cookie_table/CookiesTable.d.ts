@@ -1,8 +1,9 @@
 import '../data_grid/data_grid.js';
+import '../../../components/buttons/buttons.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import { Icon } from '../../../kit/kit.js';
 import * as UI from '../../legacy.js';
-interface ViewInput {
+export interface ViewInput {
     data: CookieData[];
     selectedKey?: string;
     editable?: boolean;
@@ -15,6 +16,9 @@ interface ViewInput {
     onDelete: (data: CookieData) => void;
     onContextMenu: (data: CookieData, menu: UI.ContextMenu.ContextMenu) => void;
     onSelect: (key: string | undefined) => void;
+    showAiButton?: boolean;
+    aiButtonTitle?: string;
+    onAiButtonClick?: (cookie: CookieData, event: Event) => void;
 }
 type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME | SDK.Cookie.Attribute.VALUE | SDK.Cookie.Attribute.DOMAIN | SDK.Cookie.Attribute.PATH | SDK.Cookie.Attribute.SECURE | SDK.Cookie.Attribute.SAME_SITE;
@@ -61,6 +65,7 @@ export declare class CookiesTable extends UI.Widget.VBox {
     willHide(): void;
     performUpdate(): void;
     private onSelect;
+    private isAiButtonEnabled;
     private onDeleteCookie;
     private onUpdateCookie;
     private onCreateCookie;

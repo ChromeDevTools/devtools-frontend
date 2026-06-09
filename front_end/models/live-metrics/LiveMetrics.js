@@ -51,15 +51,17 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         super();
         const targetManager = SDK.TargetManager.TargetManager.instance();
         targetManager.observeTargets(this, { scoped: true });
-        // Listen for target info changes to detect prerender activation.
-        // Scoped observers don't receive events when a prerendered target becomes
-        // primary because setScopeTarget() isn't called during that transition.
-        targetManager.addEventListener("AvailableTargetsChanged" /* SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED */, this.#onAvailableTargetsChanged, this);
+        targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     }
-    #onAvailableTargetsChanged() {
+    #onPrimaryPageChanged(event) {
         const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-        if (primaryTarget && primaryTarget !== this.#target) {
-            // Primary target changed (e.g., prerender activation). Switch to it.
+        if (!primaryTarget) {
+            return;
+        }
+        if (primaryTarget !== this.#target || event.data.type === "Activation" /* SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION */) {
+            // Primary target changed or prerender activated. Switch to it and reset metrics.
+            this.#clearMetrics();
+            this.#sendStatusUpdate();
             void this.#switchToTarget(primaryTarget);
         }
     }
@@ -320,15 +322,19 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                 break;
             }
             case 'reset': {
-                this.#lcpValue = undefined;
-                this.#clsValue = undefined;
-                this.#inpValue = undefined;
-                this.#interactions.clear();
-                this.#layoutShifts = [];
+                this.#clearMetrics();
                 break;
             }
         }
         this.#sendStatusUpdate();
+    }
+    #clearMetrics() {
+        this.#lcpValue = undefined;
+        this.#clsValue = undefined;
+        this.#inpValue = undefined;
+        this.#interactions.clear();
+        this.#interactionsByGroupId.clear();
+        this.#layoutShifts = [];
     }
     #isPrimaryFrameExecutionContext(executionContextId) {
         if (!this.#target) {
@@ -385,6 +391,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     }
     clearInteractions() {
         this.#interactions.clear();
+        this.#interactionsByGroupId.clear();
         this.#sendStatusUpdate();
     }
     clearLayoutShifts() {

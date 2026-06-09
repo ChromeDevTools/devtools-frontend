@@ -17,7 +17,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { ExtensionButton, ExtensionPanel, ExtensionSidebarPane } from './ExtensionPanel.js';
 const extensionOrigins = new WeakMap();
-const kPermittedSchemes = ['http:', 'https:', 'file:', 'data:', 'chrome-extension:', 'about:'];
+const kForbiddenSchemes = [
+    'chrome:',
+    'chrome-untrusted:',
+    'chrome-error:',
+    'chrome-search:',
+    'devtools:',
+];
 let extensionServerInstance;
 export class HostsPolicy {
     runtimeAllowedHosts;
@@ -63,7 +69,6 @@ class RegisteredExtension {
     name;
     hostsPolicy;
     allowFileAccess;
-    openResourceScheme = null;
     constructor(name, hostsPolicy, allowFileAccess) {
         this.name = name;
         this.hostsPolicy = hostsPolicy;
@@ -76,8 +81,12 @@ class RegisteredExtension {
         if (!inspectedURL) {
             return false;
         }
-        if (this.openResourceScheme && inspectedURL.startsWith(this.openResourceScheme)) {
-            return true;
+        let parsedURL;
+        try {
+            parsedURL = new URL(inspectedURL);
+        }
+        catch {
+            return false;
         }
         if (!ExtensionServer.canInspectURL(inspectedURL)) {
             return false;
@@ -86,13 +95,6 @@ class RegisteredExtension {
             return false;
         }
         if (!this.allowFileAccess) {
-            let parsedURL;
-            try {
-                parsedURL = new URL(inspectedURL);
-            }
-            catch {
-                return false;
-            }
             return parsedURL.protocol !== 'file:';
         }
         return true;
@@ -696,17 +698,27 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (!extension) {
             throw new Error('Received a message from an unregistered extension');
         }
-        if (message.urlScheme) {
-            extension.openResourceScheme = message.urlScheme;
+        let validScheme = message.urlScheme;
+        if (validScheme) {
+            try {
+                const urlToParse = validScheme.replace(/:?(\/\/)?$/, '') + '://test';
+                validScheme = new URL(urlToParse).protocol;
+            }
+            catch {
+                return this.status.E_BADARG('urlScheme', 'Invalid scheme');
+            }
+            if (kForbiddenSchemes.includes(validScheme) || validScheme === 'file:') {
+                return this.status.E_BADARG('urlScheme', 'Scheme is forbidden');
+            }
         }
         const extensionOrigin = this.getExtensionOrigin(port);
         const { name } = extension;
         const registration = {
             title: name,
             origin: extensionOrigin,
-            scheme: message.urlScheme,
+            scheme: validScheme,
             handler: this.handleOpenURL.bind(this, port),
-            shouldHandleOpenResource: (url, schemes) => Components.Linkifier.Linkifier.shouldHandleOpenResource(extension.openResourceScheme, url, schemes),
+            shouldHandleOpenResource: (url, schemes) => Components.Linkifier.Linkifier.shouldHandleOpenResource(validScheme || null, url, schemes),
         };
         if (message.handlerPresent) {
             Components.Linkifier.Linkifier.registerLinkHandler(registration);
@@ -1327,7 +1339,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         catch {
             return false;
         }
-        if (!kPermittedSchemes.includes(parsedURL.protocol)) {
+        if (kForbiddenSchemes.includes(parsedURL.protocol)) {
             return false;
         }
         if ((window.DevToolsAPI?.getOriginsForbiddenForExtensions?.() || []).includes(parsedURL.origin)) {

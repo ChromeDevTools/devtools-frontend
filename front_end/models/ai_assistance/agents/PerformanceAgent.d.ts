@@ -13,7 +13,6 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
     static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext;
     static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel): PerformanceTraceContext;
     static fromCallTree(callTree: AICallTree): PerformanceTraceContext;
-    external: boolean;
     constructor(focus: AgentFocus);
     getURL(): string;
     getItem(): AgentFocus;

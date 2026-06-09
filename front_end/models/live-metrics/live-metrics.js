@@ -49,11 +49,16 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     super();
     const targetManager = SDK.TargetManager.TargetManager.instance();
     targetManager.observeTargets(this, { scoped: true });
-    targetManager.addEventListener("AvailableTargetsChanged", this.#onAvailableTargetsChanged, this);
+    targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
   }
-  #onAvailableTargetsChanged() {
+  #onPrimaryPageChanged(event) {
     const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (primaryTarget && primaryTarget !== this.#target) {
+    if (!primaryTarget) {
+      return;
+    }
+    if (primaryTarget !== this.#target || event.data.type === "Activation") {
+      this.#clearMetrics();
+      this.#sendStatusUpdate();
       void this.#switchToTarget(primaryTarget);
     }
   }
@@ -300,15 +305,19 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
         break;
       }
       case "reset": {
-        this.#lcpValue = void 0;
-        this.#clsValue = void 0;
-        this.#inpValue = void 0;
-        this.#interactions.clear();
-        this.#layoutShifts = [];
+        this.#clearMetrics();
         break;
       }
     }
     this.#sendStatusUpdate();
+  }
+  #clearMetrics() {
+    this.#lcpValue = void 0;
+    this.#clsValue = void 0;
+    this.#inpValue = void 0;
+    this.#interactions.clear();
+    this.#interactionsByGroupId.clear();
+    this.#layoutShifts = [];
   }
   #isPrimaryFrameExecutionContext(executionContextId) {
     if (!this.#target) {
@@ -361,6 +370,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
   }
   clearInteractions() {
     this.#interactions.clear();
+    this.#interactionsByGroupId.clear();
     this.#sendStatusUpdate();
   }
   clearLayoutShifts() {

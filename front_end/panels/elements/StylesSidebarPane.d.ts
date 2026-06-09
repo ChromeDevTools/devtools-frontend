@@ -71,9 +71,9 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     revealProperty(cssProperty: SDK.CSSProperty.CSSProperty): void;
     jumpToProperty(propertyName: string, sectionName?: string, blockName?: string): boolean;
     jumpToDeclaration(valueSource: SDK.CSSMatchedStyles.CSSValueSource): void;
-    jumpToSection(sectionName: string, blockName: string): void;
+    jumpToSection(sectionName: string, blockName: string, treeScopeDistance?: number): void;
     jumpToSectionBlock(section: string): void;
-    jumpToFunctionDefinition(functionName: string): void;
+    jumpToFunctionDefinition(functionName: string, treeScopeDistance: number): void;
     jumpToFontPaletteDefinition(paletteName: string): void;
     jumpToCounterStyleDefinition(counterStyleName: string): void;
     forceUpdate(): void;

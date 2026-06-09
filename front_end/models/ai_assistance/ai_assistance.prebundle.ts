@@ -24,6 +24,7 @@ import * as AiOrigins from './AiOrigins.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
+import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
 import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
 import * as NetworkRequestFormatter from './data_formatters/NetworkRequestFormatter.js';
@@ -38,6 +39,9 @@ import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
 import * as StorageItem from './StorageItem.js';
+import * as GetStyles from './tools/GetStyles.js';
+import * as Tool from './tools/Tool.js';
+import * as ToolRegistry from './tools/ToolRegistry.js';
 
 export {
   AccessibilityAgent,
@@ -56,10 +60,12 @@ export {
   ContextSelectionAgent,
   ConversationSummaryAgent,
   Debug,
+  DOMNodeContext,
   EvaluateAction,
   ExtensionScope,
   FileAgent,
   FileFormatter,
+  GetStyles,
   GreenDevAgent,
   GreenDevAgentAntigravityCliSocketClient,
   GreenDevAgentGeminiCliSocketClient,
@@ -75,5 +81,7 @@ export {
   StorageAgent,
   StorageItem,
   StylingAgent,
+  Tool,
+  ToolRegistry,
   UnitFormatters,
 };

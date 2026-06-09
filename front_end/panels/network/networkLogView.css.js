@@ -273,21 +273,6 @@ td.time-column {
   vertical-align: sub;
 }
 
-.data-grid-data-grid-node .ai-button-container {
-  display: none;
-  float: right;
-
-  devtools-floating-button {
-    position: absolute;
-    z-index: 999;
-    margin-left: -17px;
-  }
-}
-
-.data-grid-data-grid-node:hover .ai-button-container {
-  display: inline-flex;
-}
-
 .image-network-icon-preview {
   inset: 0;
   margin: auto;

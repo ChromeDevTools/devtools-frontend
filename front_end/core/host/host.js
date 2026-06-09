@@ -2767,7 +2767,8 @@ var Action;
   Action2[Action2["AiCodeGenerationRequestTriggeredFromSources"] = 205] = "AiCodeGenerationRequestTriggeredFromSources";
   Action2[Action2["AiCodeCompletionFreCompletedFromConsole"] = 206] = "AiCodeCompletionFreCompletedFromConsole";
   Action2[Action2["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
-  Action2[Action2["MAX_VALUE"] = 208] = "MAX_VALUE";
+  Action2[Action2["AiAssistanceOpenedFromStoragePanelFloatingButton"] = 208] = "AiAssistanceOpenedFromStoragePanelFloatingButton";
+  Action2[Action2["MAX_VALUE"] = 209] = "MAX_VALUE";
 })(Action || (Action = {}));
 var PanelCodes;
 (function(PanelCodes2) {

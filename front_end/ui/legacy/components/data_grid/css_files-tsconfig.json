@@ -4,6 +4,7 @@
         "outDir": "."
     },
     "files": [
-        "dataGrid.css.js"
+        "dataGrid.css.js",
+        "dataGridAiButton.css.js"
     ]
 }

@@ -261,7 +261,8 @@ export declare enum Action {
     AiCodeGenerationRequestTriggeredFromSources = 205,
     AiCodeCompletionFreCompletedFromConsole = 206,
     AiCodeCompletionFreCompletedFromSources = 207,
-    MAX_VALUE = 208
+    AiAssistanceOpenedFromStoragePanelFloatingButton = 208,
+    MAX_VALUE = 209
 }
 export declare enum PanelCodes {
     elements = 1,

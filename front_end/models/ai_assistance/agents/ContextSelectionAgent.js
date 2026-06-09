@@ -9,13 +9,13 @@ import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { isOpaqueOrigin } from '../AiOrigins.js';
+import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { debugLog } from '../debug.js';
 import { AccessibilityContext } from './AccessibilityAgent.js';
 import { AiAgent, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
 import { RequestContext } from './NetworkAgent.js';
 import { PerformanceTraceContext } from './PerformanceAgent.js';
-import { NodeContext } from './StylingAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -415,7 +415,7 @@ export class ContextSelectionAgent extends AiAgent {
                 const node = await this.#onInspectElement();
                 if (node) {
                     return {
-                        context: new NodeContext(node),
+                        context: new DOMNodeContext(node),
                         description: 'User selected an element',
                     };
                 }

@@ -2,28 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Greendev from '../../../models/greendev/greendev.js';
 import * as Annotations from '../../annotations/annotations.js';
 import * as Emulation from '../../emulation/emulation.js';
 import { ChangeManager } from '../ChangeManager.js';
-import { debugLog } from '../debug.js';
 import { ExtensionScope } from '../ExtensionScope.js';
 import { AI_ASSISTANCE_CSS_CLASS_NAME } from '../injected.js';
-import { AiAgent, ConversationContext } from './AiAgent.js';
+import { ToolRegistry } from '../tools/ToolRegistry.js';
+import { AiAgent } from './AiAgent.js';
 import { executeJavaScriptFunction, executeJsCode, JavascriptExecutor } from './ExecuteJavascript.js';
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
-    /**
-     * @description Heading text for context details of Freestyler agent.
-     */
-    dataUsed: 'Data used',
-};
-const lockedString = i18n.i18n.lockedString;
 const preamble = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
@@ -119,69 +108,6 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS = {
     ["uploaded-image" /* MultimodalInputType.UPLOADED_IMAGE */]: promptForUploadedImage + considerationsForMultimodalInputEvaluation,
 };
 export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
-export class NodeContext extends ConversationContext {
-    #node;
-    constructor(node) {
-        super();
-        this.#node = node;
-    }
-    getURL() {
-        const ownerDocument = this.#node.ownerDocument;
-        if (!ownerDocument) {
-            // The node is detached from a document.
-            return 'detached';
-        }
-        return ownerDocument.documentURL;
-    }
-    getItem() {
-        return this.#node;
-    }
-    getTitle() {
-        throw new Error('Not implemented');
-    }
-    async getSuggestions() {
-        const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
-        if (!layoutProps) {
-            return;
-        }
-        if (layoutProps.isFlex) {
-            return [
-                { title: 'How can I make flex items wrap?', jslogContext: 'flex-wrap' },
-                { title: 'How do I distribute flex items evenly?', jslogContext: 'flex-distribute' },
-                { title: 'What is flexbox?', jslogContext: 'flex-what' },
-            ];
-        }
-        if (layoutProps.isSubgrid) {
-            return [
-                { title: 'Where is this grid defined?', jslogContext: 'subgrid-where' },
-                { title: 'How to overwrite parent grid properties?', jslogContext: 'subgrid-override' },
-                { title: 'How do subgrids work? ', jslogContext: 'subgrid-how' },
-            ];
-        }
-        if (layoutProps.isGrid) {
-            return [
-                { title: 'How do I align items in a grid?', jslogContext: 'grid-align' },
-                { title: 'How to add spacing between grid items?', jslogContext: 'grid-gap' },
-                { title: 'How does grid layout work?', jslogContext: 'grid-how' },
-            ];
-        }
-        if (layoutProps.hasScroll) {
-            return [
-                { title: 'How do I remove scrollbars for this element?', jslogContext: 'scroll-remove' },
-                { title: 'How can I style a scrollbar?', jslogContext: 'scroll-style' },
-                { title: 'Why does this element scroll?', jslogContext: 'scroll-why' },
-            ];
-        }
-        if (layoutProps.containerType) {
-            return [
-                { title: 'What are container queries?', jslogContext: 'container-what' },
-                { title: 'How do I use container-type?', jslogContext: 'container-how' },
-                { title: 'What\'s the container context for this element?', jslogContext: 'container-context' },
-            ];
-        }
-        return;
-    }
-}
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -230,51 +156,17 @@ export class StylingAgent extends AiAgent {
             createExtensionScope: this.#createExtensionScope.bind(this),
             changes: this.#changes,
         }, this.#execJs);
-        this.declareFunction('getStyles', {
-            description: `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
-
-**CRITICAL** An element uid is a number, not a selector.
-**CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
-**CRITICAL** Always provide the explanation argument to explain what and why you query.
-**CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".`,
-            parameters: {
-                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                description: '',
-                nullable: false,
-                properties: {
-                    explanation: {
-                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                        description: 'Explain why you want to get styles',
-                        nullable: false,
-                    },
-                    elements: {
-                        type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
-                        description: 'A list of element uids to get data for. These are numbers, not selectors.',
-                        items: { type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */, description: `An element uid.` },
-                        nullable: false,
-                    },
-                    styleProperties: {
-                        type: 5 /* Host.AidaClient.ParametersTypes.ARRAY */,
-                        description: 'One or more specific CSS style property names to fetch. Generic values like "all" or "*" are not supported.',
-                        nullable: false,
-                        items: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'A CSS style property name to retrieve. For example, \'background-color\'.'
-                        }
-                    },
-                },
-                required: ['explanation', 'elements', 'styleProperties']
-            },
-            displayInfoFromArgs: params => {
-                return {
-                    title: 'Reading computed and source styles',
-                    thought: params.explanation,
-                    action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`,
-                };
-            },
-            handler: async (params) => {
-                return await this.#getStyles(params.elements, params.styleProperties);
-            },
+        const getStylesTool = ToolRegistry.get("getStyles" /* ToolName.GET_STYLES */);
+        if (!getStylesTool) {
+            throw new Error('Required tool "getStyles" not found');
+        }
+        this.declareFunction("getStyles" /* ToolName.GET_STYLES */, {
+            description: getStylesTool.description,
+            parameters: getStylesTool.parameters,
+            displayInfoFromArgs: getStylesTool.displayInfoFromArgs,
+            handler: args => getStylesTool.handler(args, {
+                conversationContext: this.context ?? null,
+            }),
         });
         this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
@@ -330,144 +222,8 @@ export class StylingAgent extends AiAgent {
             },
         });
     }
-    static async describeElement(element) {
-        let output = `* Element's uid is ${element.backendNodeId()}.
-* Its selector is \`${element.simpleSelector()}\``;
-        const childNodes = await element.getChildNodesPromise();
-        if (childNodes) {
-            const textChildNodes = childNodes.filter(childNode => childNode.nodeType() === Node.TEXT_NODE);
-            const elementChildNodes = childNodes.filter(childNode => childNode.nodeType() === Node.ELEMENT_NODE);
-            switch (elementChildNodes.length) {
-                case 0:
-                    output += '\n* It doesn\'t have any child element nodes';
-                    break;
-                case 1:
-                    output += `\n* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
-                    break;
-                default:
-                    output += `\n* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map(node => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(', ')}`;
-            }
-            switch (textChildNodes.length) {
-                case 0:
-                    output += '\n* It doesn\'t have any child text nodes';
-                    break;
-                case 1:
-                    output += '\n* It only has 1 child text node';
-                    break;
-                default:
-                    output += `\n* It has ${textChildNodes.length} child text nodes`;
-            }
-        }
-        if (element.nextSibling) {
-            const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ?
-                `an element (uid=${element.nextSibling.backendNodeId()})` :
-                'a non element';
-            output += `\n* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
-        }
-        if (element.previousSibling) {
-            const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ?
-                `an element (uid=${element.previousSibling.backendNodeId()})` :
-                'a non element';
-            output += `\n* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
-        }
-        if (element.isInShadowTree()) {
-            output += '\n* It is in a shadow DOM tree.';
-        }
-        const parentNode = element.parentNode;
-        if (parentNode) {
-            const parentChildrenNodes = await parentNode.getChildNodesPromise();
-            output += `\n* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
-            const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? 'an element' : 'a non element';
-            output += `\n* Its parent is ${elementOrNodeElementNodeText} node`;
-            if (parentNode.isShadowRoot()) {
-                output += '\n* Its parent is a shadow root.';
-            }
-            if (parentChildrenNodes) {
-                const childElementNodes = parentChildrenNodes.filter(siblingNode => siblingNode.nodeType() === Node.ELEMENT_NODE);
-                switch (childElementNodes.length) {
-                    case 0:
-                        break;
-                    case 1:
-                        output += '\n* Its parent has only 1 child element node';
-                        break;
-                    default:
-                        output += `\n* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map(node => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`)
-                            .join(', ')}`;
-                        break;
-                }
-                const siblingTextNodes = parentChildrenNodes.filter(siblingNode => siblingNode.nodeType() === Node.TEXT_NODE);
-                switch (siblingTextNodes.length) {
-                    case 0:
-                        break;
-                    case 1:
-                        output += '\n* Its parent has only 1 child text node';
-                        break;
-                    default:
-                        output += `\n* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map(node => `\`${node.simpleSelector()}\``).join(', ')}`;
-                        break;
-                }
-            }
-        }
-        return output.trim();
-    }
     #getSelectedNode() {
         return this.context?.getItem() ?? null;
-    }
-    async #getStyles(elements, properties) {
-        const widgets = [];
-        const result = {};
-        for (const uid of elements) {
-            result[uid] = { computed: {}, authored: {} };
-            debugLog(`Action to execute: uid=${uid}`);
-            const selectedNode = this.#getSelectedNode();
-            if (!selectedNode) {
-                return { error: 'Error: Could not find the currently selected element.' };
-            }
-            const node = new SDK.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), Number(uid));
-            const resolved = await node.resolvePromise();
-            if (!resolved) {
-                return { error: 'Error: Could not find the element with uid=' + uid };
-            }
-            const newContext = new NodeContext(resolved);
-            if (this.context?.getOrigin() !== newContext.getOrigin()) {
-                return { error: 'Error: Node does not belong to the current origin.' };
-            }
-            const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
-            if (!styles) {
-                return { error: 'Error: Could not get computed styles.' };
-            }
-            const matchedStyles = await resolved.domModel().cssModel().getMatchedStyles(resolved.id);
-            if (!matchedStyles) {
-                return { error: 'Error: Could not get authored styles.' };
-            }
-            widgets.push({
-                name: 'COMPUTED_STYLES',
-                data: {
-                    computedStyles: styles,
-                    backendNodeId: node.backendNodeId(),
-                    matchedCascade: matchedStyles,
-                    properties,
-                }
-            });
-            for (const prop of properties) {
-                result[uid].computed[prop] = styles.get(prop);
-            }
-            for (const style of matchedStyles.nodeStyles()) {
-                for (const property of style.allProperties()) {
-                    if (!properties.includes(property.name)) {
-                        continue;
-                    }
-                    const state = matchedStyles.propertyState(property);
-                    if (state === "Active" /* SDK.CSSMatchedStyles.PropertyState.ACTIVE */) {
-                        result[uid].authored[property.name] = property.value;
-                    }
-                }
-            }
-        }
-        return {
-            result: JSON.stringify(result, null, 2),
-            widgets,
-        };
     }
     async addElementAnnotation(elementId, annotationMessage) {
         if (!Annotations.AnnotationRepository.annotationsEnabled()) {
@@ -668,16 +424,15 @@ export class StylingAgent extends AiAgent {
         return undefined;
     }
     async *handleContextDetails(selectedElement) {
-        if (!selectedElement) {
-            return;
+        if (selectedElement) {
+            const details = await selectedElement.getUserFacingDetails();
+            if (details) {
+                yield {
+                    type: "context" /* ResponseType.CONTEXT */,
+                    details,
+                };
+            }
         }
-        yield {
-            type: "context" /* ResponseType.CONTEXT */,
-            details: [{
-                    title: lockedString(UIStringsNotTranslate.dataUsed),
-                    text: await StylingAgent.describeElement(selectedElement.getItem()),
-                }],
-        };
     }
     async preRun() {
         this.#currentTurnId++;
@@ -692,9 +447,8 @@ export class StylingAgent extends AiAgent {
             multimodalInputEnhancementQuery = emulationInstructions + '\n' + multimodalInputEnhancementQuery;
             this.#hasAddedEmulationInstructions = true;
         }
-        const elementEnchancementQuery = selectedElement ?
-            `# Inspected element\n\n${await StylingAgent.describeElement(selectedElement.getItem())}\n\n# User request\n\n` :
-            '';
+        const promptDetails = selectedElement ? await selectedElement.getPromptDetails() : null;
+        const elementEnchancementQuery = promptDetails ? `${promptDetails}\n\n# User request\n\n` : '';
         return `${multimodalInputEnhancementQuery}${elementEnchancementQuery}QUERY: ${query}`;
     }
 }

@@ -7840,6 +7840,32 @@ import * as Adorners from "./../../ui/components/adorners/adorners.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
 import * as RenderCoordinator3 from "./../../ui/components/render_coordinator/render_coordinator.js";
 import * as DataGrid9 from "./../../ui/legacy/components/data_grid/data_grid.js";
+
+// gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
+var dataGridAiButton_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.data-grid-data-grid-node .ai-button-container {
+  display: none;
+  float: right;
+
+  devtools-floating-button {
+    position: absolute;
+    z-index: 999;
+    margin-left: -17px;
+  }
+}
+
+.data-grid-data-grid-node:hover .ai-button-container {
+  display: inline-flex;
+}
+
+/*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
+
+// gen/front_end/panels/network/NetworkLogView.js
 import * as PerfUI4 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
@@ -8170,21 +8196,6 @@ td.time-column {
   width: 16px;
   height: 16px;
   vertical-align: sub;
-}
-
-.data-grid-data-grid-node .ai-button-container {
-  display: none;
-  float: right;
-
-  devtools-floating-button {
-    position: absolute;
-    z-index: 999;
-    margin-left: -17px;
-  }
-}
-
-.data-grid-data-grid-node:hover .ai-button-container {
-  display: inline-flex;
 }
 
 .image-network-icon-preview {
@@ -11055,6 +11066,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
   constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
     super();
     this.registerRequiredCSS(networkLogView_css_default);
+    this.registerRequiredCSS(dataGridAiButton_css_default);
     this.setMinimumSize(50, 64);
     this.element.id = "network-container";
     this.element.classList.add("no-node-selected");

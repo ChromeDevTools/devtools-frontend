@@ -135,6 +135,7 @@ export interface LinkifyURLOptions {
     jslogContext?: string;
     omitOrigin?: boolean;
     onRef?: (el: HTMLElement) => void;
+    omitLineAndRenderColumnAsHex?: boolean;
 }
 export interface LinkifyOptions {
     className?: string;

@@ -405,7 +405,8 @@ export var Action;
     Action[Action["AiCodeGenerationRequestTriggeredFromSources"] = 205] = "AiCodeGenerationRequestTriggeredFromSources";
     Action[Action["AiCodeCompletionFreCompletedFromConsole"] = 206] = "AiCodeCompletionFreCompletedFromConsole";
     Action[Action["AiCodeCompletionFreCompletedFromSources"] = 207] = "AiCodeCompletionFreCompletedFromSources";
-    Action[Action["MAX_VALUE"] = 208] = "MAX_VALUE";
+    Action[Action["AiAssistanceOpenedFromStoragePanelFloatingButton"] = 208] = "AiAssistanceOpenedFromStoragePanelFloatingButton";
+    Action[Action["MAX_VALUE"] = 209] = "MAX_VALUE";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Action || (Action = {}));
 export var PanelCodes;

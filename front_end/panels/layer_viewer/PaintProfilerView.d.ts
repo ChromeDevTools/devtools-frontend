@@ -59,37 +59,23 @@ export declare const enum Events {
 export interface EventTypes {
     [Events.WINDOW_CHANGED]: void;
 }
+export interface CommandLogViewInput {
+    visibleLogItems: SDK.PaintProfiler.PaintProfilerLogItem[];
+}
+export declare const COMMAND_LOG_DEFAULT_VIEW: (input: CommandLogViewInput, _output: undefined, target: HTMLElement) => void;
+type CommandLogView = typeof COMMAND_LOG_DEFAULT_VIEW;
 export declare class PaintProfilerCommandLogView extends UI.Widget.VBox {
-    private readonly treeOutline;
+    #private;
     private log;
-    private readonly treeItemCache;
     private selectionWindow?;
-    constructor();
+    constructor(element?: HTMLElement, view?: CommandLogView);
+    wasShown(): void;
     setCommandLog(log: SDK.PaintProfiler.PaintProfilerLogItem[]): void;
-    private appendLogItem;
     updateWindow(selectionWindow: {
         left: number;
         right: number;
     } | null): void;
     performUpdate(): Promise<void>;
-}
-export declare class LogTreeElement extends UI.TreeOutline.TreeElement {
-    readonly logItem: SDK.PaintProfiler.PaintProfilerLogItem;
-    constructor(logItem: SDK.PaintProfiler.PaintProfilerLogItem);
-    onattach(): void;
-    onpopulate(): Promise<void>;
-    private paramToString;
-    private paramsToString;
-    private update;
-}
-export declare class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
-    private property;
-    constructor(property: {
-        name: string;
-        value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue;
-    });
-    static appendLogPropertyItem(element: UI.TreeOutline.TreeElement, name: string, value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue): void;
-    onattach(): void;
 }
 export declare class PaintProfilerCategory {
     name: string;

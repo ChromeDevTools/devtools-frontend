@@ -7,7 +7,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 import paintProfilerStyles from './paintProfiler.css.js';
+const { html, render, nothing } = Lit;
+const { repeat } = Lit.Directives;
 const UIStrings = {
     /**
      * @description Text to indicate the progress of a profile
@@ -341,142 +344,105 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin(UI.Widget
         this.#selectionWindow.setResizeEnabled(false);
     }
 }
+function paramToString(param, name) {
+    if (typeof param !== 'object') {
+        return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);
+    }
+    let str = '';
+    let keyCount = 0;
+    for (const key in param) {
+        const paramKey = param[key];
+        if (++keyCount > 4 || typeof paramKey === 'object' || (typeof paramKey === 'string' && paramKey.length > 100)) {
+            return name;
+        }
+        if (str) {
+            str += ', ';
+        }
+        str += paramKey;
+    }
+    return str;
+}
+function paramsToString(params) {
+    let str = '';
+    for (const key in params) {
+        if (str) {
+            str += ', ';
+        }
+        str += paramToString(params[key], key);
+    }
+    return str;
+}
+function renderProperty(name, value) {
+    const isObject = value !== null && typeof value === 'object';
+    // clang-format off
+    return html `
+    <li role="treeitem">
+      <span>${name}: </span>${isObject ? html `
+          <ul role="group">
+            ${Object.entries(value).map(([key, val]) => renderProperty(key, val))}
+          </ul>` : html `
+          <span>${JSON.stringify(value)}</span>`}
+    </li>
+  `;
+    // clang-format on
+}
+function renderLogItem(logItem) {
+    const hasParams = Boolean(logItem.params && Object.keys(logItem.params).length > 0);
+    const titleText = logItem.method + '(' + paramsToString(logItem.params) + ')';
+    // clang-format off
+    return html `
+    <li role="treeitem">
+      ${titleText}
+      ${hasParams ? html `
+        <ul role="group">
+          ${Object.entries(logItem.params || {}).map(([key, val]) => renderProperty(key, val))}
+        </ul>` : nothing}
+    </li>
+  `;
+    // clang-format on
+}
+// clang-format off
+export const COMMAND_LOG_DEFAULT_VIEW = (input, _output, target) => {
+    render(html `
+    <div class="overflow-auto flex-auto vbox">
+      <devtools-tree
+          autofocus
+          aria-label=${i18nString(UIStrings.commandLog)}
+          .template=${html `
+        <ul role="tree">
+          ${repeat(input.visibleLogItems, item => item.commandIndex, item => renderLogItem(item))}
+        </ul>`}>
+      </devtools-tree>
+    </div>`, target);
+};
 export class PaintProfilerCommandLogView extends UI.Widget.VBox {
-    treeOutline;
     log;
-    treeItemCache;
     selectionWindow;
-    constructor() {
-        super();
+    #view;
+    constructor(element, view = COMMAND_LOG_DEFAULT_VIEW) {
+        super(element);
+        this.#view = view;
         this.setMinimumSize(100, 25);
-        this.element.classList.add('overflow-auto');
-        this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-        UI.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString(UIStrings.commandLog));
-        this.element.appendChild(this.treeOutline.element);
-        this.setDefaultFocusedElement(this.treeOutline.contentElement);
         this.log = [];
-        this.treeItemCache = new Map();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
     }
     setCommandLog(log) {
         this.log = log;
         this.updateWindow({ left: 0, right: this.log.length });
-    }
-    appendLogItem(logItem) {
-        let treeElement = this.treeItemCache.get(logItem);
-        if (!treeElement) {
-            treeElement = new LogTreeElement(logItem);
-            this.treeItemCache.set(logItem, treeElement);
-        }
-        else if (treeElement.parent) {
-            return;
-        }
-        this.treeOutline.appendChild(treeElement);
     }
     updateWindow(selectionWindow) {
         this.selectionWindow = selectionWindow;
         this.requestUpdate();
     }
     performUpdate() {
-        if (!this.selectionWindow || !this.log.length) {
-            this.treeOutline.removeChildren();
-            return Promise.resolve();
-        }
-        const root = this.treeOutline.rootElement();
-        for (;;) {
-            const child = root.firstChild();
-            if (!child || child.logItem.commandIndex >= this.selectionWindow.left) {
-                break;
-            }
-            root.removeChildAtIndex(0);
-        }
-        for (;;) {
-            const child = root.lastChild();
-            if (!child || child.logItem.commandIndex < this.selectionWindow.right) {
-                break;
-            }
-            root.removeChildAtIndex(root.children().length - 1);
-        }
-        for (let i = this.selectionWindow.left, right = this.selectionWindow.right; i < right; ++i) {
-            this.appendLogItem(this.log[i]);
-        }
+        const visibleLogItems = this.selectionWindow && this.log.length ?
+            this.log.slice(this.selectionWindow.left, this.selectionWindow.right) :
+            [];
+        this.#view({ visibleLogItems }, undefined, this.contentElement);
         return Promise.resolve();
-    }
-}
-export class LogTreeElement extends UI.TreeOutline.TreeElement {
-    logItem;
-    constructor(logItem) {
-        super('', Boolean(logItem.params));
-        this.logItem = logItem;
-    }
-    onattach() {
-        this.update();
-    }
-    async onpopulate() {
-        for (const param in this.logItem.params) {
-            LogPropertyTreeElement.appendLogPropertyItem(this, param, this.logItem.params[param]);
-        }
-    }
-    paramToString(param, name) {
-        if (typeof param !== 'object') {
-            return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);
-        }
-        let str = '';
-        let keyCount = 0;
-        for (const key in param) {
-            const paramKey = param[key];
-            if (++keyCount > 4 || paramKey === 'object' || (paramKey === 'string' && paramKey.length > 100)) {
-                return name;
-            }
-            if (str) {
-                str += ', ';
-            }
-            str += paramKey;
-        }
-        return str;
-    }
-    paramsToString(params) {
-        let str = '';
-        for (const key in params) {
-            if (str) {
-                str += ', ';
-            }
-            str += this.paramToString(params[key], key);
-        }
-        return str;
-    }
-    update() {
-        const title = document.createDocumentFragment();
-        UI.UIUtils.createTextChild(title, this.logItem.method + '(' + this.paramsToString(this.logItem.params) + ')');
-        this.title = title;
-    }
-}
-export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
-    property;
-    constructor(property) {
-        super();
-        this.property = property;
-    }
-    static appendLogPropertyItem(element, name, value) {
-        const treeElement = new LogPropertyTreeElement({ name, value });
-        element.appendChild(treeElement);
-        if (value && typeof value === 'object') {
-            for (const property in value) {
-                LogPropertyTreeElement.appendLogPropertyItem(treeElement, property, value[property]);
-            }
-        }
-    }
-    onattach() {
-        const title = document.createDocumentFragment();
-        const nameElement = title.createChild('span', 'name');
-        nameElement.textContent = this.property.name;
-        const separatorElement = title.createChild('span', 'separator');
-        separatorElement.textContent = ': ';
-        if (this.property.value === null || typeof this.property.value !== 'object') {
-            const valueElement = title.createChild('span', 'value');
-            valueElement.textContent = JSON.stringify(this.property.value);
-            valueElement.classList.add('cm-js-' + (this.property.value === null ? 'null' : typeof this.property.value));
-        }
-        this.title = title;
     }
 }
 export class PaintProfilerCategory {

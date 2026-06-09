@@ -454,6 +454,10 @@ export class DebuggerModel extends SDKModel {
     scriptForId(scriptId) {
         return this.#scripts.get(scriptId) || null;
     }
+    isWasm(scriptId) {
+        const script = this.scriptForId(scriptId);
+        return script ? script.isWasm() : false;
+    }
     /**
      * Returns all `Script` objects with the same provided `sourceURL`. The
      * resulting array is sorted by time with the newest `Script` in the front.

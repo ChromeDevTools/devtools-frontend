@@ -48,6 +48,9 @@
       "path": "./network-tsconfig.json"
     },
     {
+      "path": "../../ui/legacy/components/data_grid/css_files-tsconfig.json"
+    },
+    {
       "path": "../../ui/legacy/components/object_ui/css_files-tsconfig.json"
     }
   ]

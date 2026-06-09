@@ -56,7 +56,7 @@ export declare class StandaloneStylesContainer extends StandaloneStylesContainer
     allSections(): StylePropertiesSection[];
     getVariablePopoverContents(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string, computedValue: string | null): ElementsComponents.CSSVariableValueView.CSSVariableValueView;
     getVariableParserError(_matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, _variableName: string): ElementsComponents.CSSVariableValueView.CSSVariableParserError | null;
-    jumpToFunctionDefinition(_functionName: string): void;
+    jumpToFunctionDefinition(_functionName: string, _treeScopeDistance: number): void;
     continueEditingElement(_sectionIndex: number, _propertyIndex: number): void;
     revealProperty(_cssProperty: SDK.CSSProperty.CSSProperty): void;
     resetFocus(): void;

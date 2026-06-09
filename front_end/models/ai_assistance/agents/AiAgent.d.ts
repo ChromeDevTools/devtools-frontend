@@ -167,6 +167,16 @@ export declare abstract class ConversationContext<T> {
      */
     refresh(): Promise<void>;
     getSuggestions(): Promise<ConversationSuggestions | undefined>;
+    /**
+     * Returns a detailed description of the context item for inclusion in the AI model prompt.
+     * Currently only used by AiAgent2.
+     */
+    getPromptDetails(): Promise<string | null>;
+    /**
+     * Returns a list of context details to display to the user in the UI.
+     * Currently only used by AiAgent2.
+     */
+    getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]] | null>;
 }
 export interface ComputedStyleAiWidget {
     name: 'COMPUTED_STYLES';

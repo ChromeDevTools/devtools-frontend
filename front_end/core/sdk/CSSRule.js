@@ -350,6 +350,7 @@ export class CSSFunctionRule extends CSSRule {
                 styleSheetId: payload.styleSheetId
             },
             header: styleSheetHeaderForRule(cssModel, payload),
+            originTreeScopeNodeId: payload.originTreeScopeNodeId
         });
         this.#name = new CSSValue(payload.name);
         this.#parameters = payload.parameters.map(({ name }) => name);

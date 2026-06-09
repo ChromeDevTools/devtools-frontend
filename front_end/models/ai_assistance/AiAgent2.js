@@ -5,6 +5,10 @@ import * as Host from '../../core/host/host.js';
 import { AiAgent } from './agents/AiAgent.js';
 import { debugLog } from './debug.js';
 import { SKILLS } from './skills/SkillRegistry.js';
+import { ToolRegistry } from './tools/ToolRegistry.js';
+const SKILL_DISPLAY_NAMES = {
+    styling: 'CSS and styling',
+};
 export class AiAgent2 extends AiAgent {
     // TODO: The static preamble is a placeholder and will eventually live server-side.
     preamble = 'You are a unified AI assistant in Chrome DevTools. You can learn skills to help the user.';
@@ -15,8 +19,10 @@ export class AiAgent2 extends AiAgent {
         return {};
     }
     #activeSkills = new Set();
+    #declaredTools = new Set();
     constructor(opts) {
         super(opts);
+        this.#declaredTools.add('learnSkills');
         const skillsList = Object.keys(SKILLS).join(', ');
         this.declareFunction('learnSkills', {
             description: `Load skills to help with the task. Available skills: ${skillsList}.`,
@@ -36,8 +42,12 @@ export class AiAgent2 extends AiAgent {
                 required: ['skills'],
             },
             displayInfoFromArgs: args => {
+                const isSingular = args.skills.length === 1;
+                const prefix = isSingular ? 'Learning skill' : 'Learning skills';
+                const names = args.skills.map(name => SKILL_DISPLAY_NAMES[name] ?? name).join(', ');
                 return {
-                    title: `Learning skills: ${args.skills.join(', ')}`,
+                    title: `${prefix}: ${names}`,
+                    action: `learnSkills(${args.skills.map(name => `'${name}'`).join(', ')})`,
                 };
             },
             handler: async (args) => {
@@ -46,30 +56,49 @@ export class AiAgent2 extends AiAgent {
             },
         });
     }
-    async enhanceQuery(query) {
+    async enhanceQuery(query, selected = null, 
+    // TODO: support multimodal input in AiAgent2.
+    _multimodalInputType) {
+        let enhancedQuery = query;
+        if (selected) {
+            const promptDetails = await selected.getPromptDetails();
+            if (promptDetails) {
+                enhancedQuery = `${promptDetails}
+
+# User request
+
+QUERY: ${query}`;
+            }
+        }
         if (this.#skillsInjected) {
-            return query;
+            return enhancedQuery;
         }
         this.#skillsInjected = true;
-        const skillsManifest = Object.entries(SKILLS).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
+        const skillsManifest = Object.entries(this.getSkills()).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
         return `Available skills:
 ${skillsManifest}
 
 You must call \`learnSkills\` to load a skill before you can use it.
 
-User query: ${query}`;
+User query: ${enhancedQuery}`;
     }
-    async *handleContextDetails(_select) {
-        yield {
-            type: "context" /* ResponseType.CONTEXT */,
-            details: [{
-                    title: 'Status',
-                    text: 'Minimal agent initialized.',
-                }],
-        };
+    async *handleContextDetails(selected) {
+        if (selected) {
+            const details = await selected.getUserFacingDetails();
+            if (details) {
+                yield {
+                    type: "context" /* ResponseType.CONTEXT */,
+                    details,
+                };
+            }
+        }
+    }
+    getSkills() {
+        return SKILLS;
     }
     async learnSkill(names) {
         let response = '';
+        const skills = this.getSkills();
         for (const name of names) {
             debugLog(`AiAgent2: Attempting to load skill ${name}`);
             if (this.#activeSkills.has(name)) {
@@ -77,18 +106,43 @@ User query: ${query}`;
                 response += `Skill ${name} is already loaded.\n`;
                 continue;
             }
-            const skillObj = SKILLS[name];
+            const skillObj = skills[name];
             if (skillObj) {
                 this.#activeSkills.add(name);
                 debugLog(`AiAgent2: Skill ${name} loaded successfully`);
                 response += `Skill ${name} loaded. Instructions:\n${skillObj.instructions}\n`;
+                for (const toolName of skillObj.allowedTools) {
+                    const tool = ToolRegistry.get(toolName);
+                    if (tool) {
+                        this.#declareTool(tool);
+                    }
+                }
             }
             else {
                 debugLog(`AiAgent2: Failed to load skill ${name}`);
-                response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(SKILLS).join(', ')}.\n`;
+                response += `Failed to load skill ${name}. Valid skills are: ${Object.keys(skills).join(', ')}.\n`;
             }
         }
         return response.trim();
+    }
+    /**
+     * Declares a tool to be available to the agent model, verifying first that
+     * it hasn't already been declared to prevent duplicate declaration errors.
+     */
+    #declareTool(tool) {
+        if (this.#declaredTools.has(tool.name)) {
+            debugLog(`AiAgent2: Tool ${tool.name} is already declared`);
+            return;
+        }
+        this.#declaredTools.add(tool.name);
+        this.declareFunction(tool.name, {
+            description: tool.description,
+            parameters: tool.parameters,
+            displayInfoFromArgs: tool.displayInfoFromArgs,
+            handler: args => tool.handler(args, {
+                conversationContext: this.context ?? null,
+            }),
+        });
     }
     get activeSkills() {
         return this.#activeSkills;

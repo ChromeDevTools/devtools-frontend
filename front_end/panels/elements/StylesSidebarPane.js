@@ -292,14 +292,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.jumpToProperty('initial-value', valueSource.name, REGISTERED_PROPERTY_SECTION_NAME);
         }
     }
-    jumpToSection(sectionName, blockName) {
-        this.decorator.findAndHighlightSection(sectionName, blockName);
+    jumpToSection(sectionName, blockName, treeScopeDistance) {
+        this.decorator.findAndHighlightSection(sectionName, blockName, treeScopeDistance);
     }
     jumpToSectionBlock(section) {
         this.decorator.findAndHighlightSectionBlock(section);
     }
-    jumpToFunctionDefinition(functionName) {
-        this.jumpToSection(functionName, FUNCTION_SECTION_NAME);
+    jumpToFunctionDefinition(functionName, treeScopeDistance) {
+        this.jumpToSection(functionName, FUNCTION_SECTION_NAME, treeScopeDistance);
     }
     jumpToFontPaletteDefinition(paletteName) {
         this.jumpToSection(`@font-palette-values ${paletteName}`, i18nString(UIStrings.atRuleSection));

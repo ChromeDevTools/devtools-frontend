@@ -2177,8 +2177,7 @@ var Tile = class {
 // gen/front_end/panels/layer_viewer/PaintProfilerView.js
 var PaintProfilerView_exports = {};
 __export(PaintProfilerView_exports, {
-  LogPropertyTreeElement: () => LogPropertyTreeElement,
-  LogTreeElement: () => LogTreeElement,
+  COMMAND_LOG_DEFAULT_VIEW: () => COMMAND_LOG_DEFAULT_VIEW,
   PaintProfilerCategory: () => PaintProfilerCategory,
   PaintProfilerCommandLogView: () => PaintProfilerCommandLogView,
   PaintProfilerView: () => PaintProfilerView
@@ -2188,6 +2187,7 @@ import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/layer_viewer/paintProfiler.css.js
 var paintProfiler_css_default = `/*
@@ -2228,6 +2228,8 @@ var paintProfiler_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./paintProfiler.css")} */`;
 
 // gen/front_end/panels/layer_viewer/PaintProfilerView.js
+var { html: html3, render: render3, nothing: nothing3 } = Lit3;
+var { repeat } = Lit3.Directives;
 var UIStrings6 = {
   /**
    * @description Text to indicate the progress of a profile
@@ -2563,141 +2565,98 @@ var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.e
     this.#selectionWindow.setResizeEnabled(false);
   }
 };
+function paramToString(param, name) {
+  if (typeof param !== "object") {
+    return typeof param === "string" && param.length > 100 ? name : JSON.stringify(param);
+  }
+  let str = "";
+  let keyCount = 0;
+  for (const key in param) {
+    const paramKey = param[key];
+    if (++keyCount > 4 || typeof paramKey === "object" || typeof paramKey === "string" && paramKey.length > 100) {
+      return name;
+    }
+    if (str) {
+      str += ", ";
+    }
+    str += paramKey;
+  }
+  return str;
+}
+function paramsToString(params) {
+  let str = "";
+  for (const key in params) {
+    if (str) {
+      str += ", ";
+    }
+    str += paramToString(params[key], key);
+  }
+  return str;
+}
+function renderProperty(name, value) {
+  const isObject = value !== null && typeof value === "object";
+  return html3`
+    <li role="treeitem">
+      <span>${name}: </span>${isObject ? html3`
+          <ul role="group">
+            ${Object.entries(value).map(([key, val]) => renderProperty(key, val))}
+          </ul>` : html3`
+          <span>${JSON.stringify(value)}</span>`}
+    </li>
+  `;
+}
+function renderLogItem(logItem) {
+  const hasParams = Boolean(logItem.params && Object.keys(logItem.params).length > 0);
+  const titleText = logItem.method + "(" + paramsToString(logItem.params) + ")";
+  return html3`
+    <li role="treeitem">
+      ${titleText}
+      ${hasParams ? html3`
+        <ul role="group">
+          ${Object.entries(logItem.params || {}).map(([key, val]) => renderProperty(key, val))}
+        </ul>` : nothing3}
+    </li>
+  `;
+}
+var COMMAND_LOG_DEFAULT_VIEW = (input, _output, target) => {
+  render3(html3`
+    <div class="overflow-auto flex-auto vbox">
+      <devtools-tree
+          autofocus
+          aria-label=${i18nString6(UIStrings6.commandLog)}
+          .template=${html3`
+        <ul role="tree">
+          ${repeat(input.visibleLogItems, (item) => item.commandIndex, (item) => renderLogItem(item))}
+        </ul>`}>
+      </devtools-tree>
+    </div>`, target);
+};
 var PaintProfilerCommandLogView = class extends UI5.Widget.VBox {
-  treeOutline;
   log;
-  treeItemCache;
   selectionWindow;
-  constructor() {
-    super();
+  #view;
+  constructor(element, view = COMMAND_LOG_DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     this.setMinimumSize(100, 25);
-    this.element.classList.add("overflow-auto");
-    this.treeOutline = new UI5.TreeOutline.TreeOutlineInShadow();
-    UI5.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString6(UIStrings6.commandLog));
-    this.element.appendChild(this.treeOutline.element);
-    this.setDefaultFocusedElement(this.treeOutline.contentElement);
     this.log = [];
-    this.treeItemCache = /* @__PURE__ */ new Map();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
   setCommandLog(log) {
     this.log = log;
     this.updateWindow({ left: 0, right: this.log.length });
-  }
-  appendLogItem(logItem) {
-    let treeElement = this.treeItemCache.get(logItem);
-    if (!treeElement) {
-      treeElement = new LogTreeElement(logItem);
-      this.treeItemCache.set(logItem, treeElement);
-    } else if (treeElement.parent) {
-      return;
-    }
-    this.treeOutline.appendChild(treeElement);
   }
   updateWindow(selectionWindow) {
     this.selectionWindow = selectionWindow;
     this.requestUpdate();
   }
   performUpdate() {
-    if (!this.selectionWindow || !this.log.length) {
-      this.treeOutline.removeChildren();
-      return Promise.resolve();
-    }
-    const root = this.treeOutline.rootElement();
-    for (; ; ) {
-      const child = root.firstChild();
-      if (!child || child.logItem.commandIndex >= this.selectionWindow.left) {
-        break;
-      }
-      root.removeChildAtIndex(0);
-    }
-    for (; ; ) {
-      const child = root.lastChild();
-      if (!child || child.logItem.commandIndex < this.selectionWindow.right) {
-        break;
-      }
-      root.removeChildAtIndex(root.children().length - 1);
-    }
-    for (let i = this.selectionWindow.left, right = this.selectionWindow.right; i < right; ++i) {
-      this.appendLogItem(this.log[i]);
-    }
+    const visibleLogItems = this.selectionWindow && this.log.length ? this.log.slice(this.selectionWindow.left, this.selectionWindow.right) : [];
+    this.#view({ visibleLogItems }, void 0, this.contentElement);
     return Promise.resolve();
-  }
-};
-var LogTreeElement = class extends UI5.TreeOutline.TreeElement {
-  logItem;
-  constructor(logItem) {
-    super("", Boolean(logItem.params));
-    this.logItem = logItem;
-  }
-  onattach() {
-    this.update();
-  }
-  async onpopulate() {
-    for (const param in this.logItem.params) {
-      LogPropertyTreeElement.appendLogPropertyItem(this, param, this.logItem.params[param]);
-    }
-  }
-  paramToString(param, name) {
-    if (typeof param !== "object") {
-      return typeof param === "string" && param.length > 100 ? name : JSON.stringify(param);
-    }
-    let str = "";
-    let keyCount = 0;
-    for (const key in param) {
-      const paramKey = param[key];
-      if (++keyCount > 4 || paramKey === "object" || paramKey === "string" && paramKey.length > 100) {
-        return name;
-      }
-      if (str) {
-        str += ", ";
-      }
-      str += paramKey;
-    }
-    return str;
-  }
-  paramsToString(params) {
-    let str = "";
-    for (const key in params) {
-      if (str) {
-        str += ", ";
-      }
-      str += this.paramToString(params[key], key);
-    }
-    return str;
-  }
-  update() {
-    const title = document.createDocumentFragment();
-    UI5.UIUtils.createTextChild(title, this.logItem.method + "(" + this.paramsToString(this.logItem.params) + ")");
-    this.title = title;
-  }
-};
-var LogPropertyTreeElement = class _LogPropertyTreeElement extends UI5.TreeOutline.TreeElement {
-  property;
-  constructor(property) {
-    super();
-    this.property = property;
-  }
-  static appendLogPropertyItem(element, name, value) {
-    const treeElement = new _LogPropertyTreeElement({ name, value });
-    element.appendChild(treeElement);
-    if (value && typeof value === "object") {
-      for (const property in value) {
-        _LogPropertyTreeElement.appendLogPropertyItem(treeElement, property, value[property]);
-      }
-    }
-  }
-  onattach() {
-    const title = document.createDocumentFragment();
-    const nameElement = title.createChild("span", "name");
-    nameElement.textContent = this.property.name;
-    const separatorElement = title.createChild("span", "separator");
-    separatorElement.textContent = ": ";
-    if (this.property.value === null || typeof this.property.value !== "object") {
-      const valueElement = title.createChild("span", "value");
-      valueElement.textContent = JSON.stringify(this.property.value);
-      valueElement.classList.add("cm-js-" + (this.property.value === null ? "null" : typeof this.property.value));
-    }
-    this.title = title;
   }
 };
 var PaintProfilerCategory = class {

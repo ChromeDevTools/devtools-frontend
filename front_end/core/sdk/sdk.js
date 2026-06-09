@@ -13031,7 +13031,8 @@ var CSSMatchedStyles_exports = {};
 __export(CSSMatchedStyles_exports, {
   CSSMatchedStyles: () => CSSMatchedStyles,
   CSSRegisteredProperty: () => CSSRegisteredProperty,
-  CSSValueSource: () => CSSValueSource
+  CSSValueSource: () => CSSValueSource,
+  distanceToTreeScope: () => distanceToTreeScope
 });
 import * as Platform6 from "./../platform/platform.js";
 
@@ -16252,7 +16253,8 @@ var CSSFunctionRule = class _CSSFunctionRule extends CSSRule {
         range: _CSSFunctionRule.mergeRanges(payload.children),
         styleSheetId: payload.styleSheetId
       },
-      header: styleSheetHeaderForRule(cssModel, payload)
+      header: styleSheetHeaderForRule(cssModel, payload),
+      originTreeScopeNodeId: payload.originTreeScopeNodeId
     });
     this.#name = new CSSValue(payload.name);
     this.#parameters = payload.parameters.map(({ name }) => name);
@@ -16478,6 +16480,27 @@ function queryMatches(style) {
   }
   return true;
 }
+function treeScopeDistance(node, property) {
+  if (!property.ownerStyle.parentRule && property.ownerStyle.type !== Type2.Inline) {
+    return -1;
+  }
+  const root = node.getTreeRoot();
+  const nodeId = property.ownerStyle.parentRule?.treeScope ?? root?.backendNodeId();
+  if (nodeId === void 0) {
+    return -1;
+  }
+  return distanceToTreeScope(node, nodeId);
+}
+function distanceToTreeScope(node, treeScope) {
+  let distance = 0;
+  for (let ancestor = node; ancestor; ancestor = ancestor.parentNode) {
+    if (ancestor.backendNodeId() === treeScope) {
+      return distance;
+    }
+    distance++;
+  }
+  return -1;
+}
 var CSSRegisteredProperty = class {
   #registration;
   #cssModel;
@@ -16585,7 +16608,9 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       this.#registeredPropertyMap.set(prop.propertyName(), prop);
     }
     for (const rule of this.#functionRules) {
-      this.#functionRuleMap.set(rule.functionName().text, rule);
+      const rules = this.#functionRuleMap.get(rule.functionName().text) ?? [];
+      rules.push(rule);
+      this.#functionRuleMap.set(rule.functionName().text, rules);
     }
   }
   async buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload) {
@@ -16928,9 +16953,23 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
   getRegisteredProperty(name) {
     return this.#registeredPropertyMap.get(name);
   }
-  getRegisteredFunction(name) {
-    const functionRule = this.#functionRuleMap.get(name);
-    return functionRule ? functionRule.nameWithParameters() : void 0;
+  getRegisteredFunction(name, sourceProperty) {
+    const minTreeScopeDistance = treeScopeDistance(this.#node, sourceProperty);
+    const functionRules = this.#functionRuleMap.get(name) ?? [];
+    let result = { treeScopeDistance: -1 };
+    for (const functionRule of functionRules) {
+      if (!functionRule.treeScope) {
+        continue;
+      }
+      const distance = distanceToTreeScope(this.#node, functionRule.treeScope);
+      if (distance === -1 || distance < minTreeScopeDistance) {
+        continue;
+      }
+      if (result.treeScopeDistance === -1 || distance < result.treeScopeDistance) {
+        result = { registeredFunction: functionRule.nameWithParameters(), treeScopeDistance: distance };
+      }
+    }
+    return result;
   }
   functionRules() {
     return this.#functionRules;
@@ -17142,24 +17181,6 @@ var NodeCascade = class {
       }
     }
   }
-  #treeScopeDistance(property) {
-    if (!property.ownerStyle.parentRule && property.ownerStyle.type !== Type2.Inline) {
-      return -1;
-    }
-    const root = this.#node.getTreeRoot();
-    const nodeId = property.ownerStyle.parentRule?.treeScope ?? root?.backendNodeId();
-    if (nodeId === void 0) {
-      return -1;
-    }
-    let distance = 0;
-    for (let ancestor = this.#node; ancestor; ancestor = ancestor.parentNode) {
-      if (ancestor.backendNodeId() === nodeId) {
-        return distance;
-      }
-      distance++;
-    }
-    return -1;
-  }
   #needsCascadeContextStep() {
     if (!this.#node.isInShadowTree()) {
       return false;
@@ -17172,7 +17193,7 @@ var NodeCascade = class {
   }
   updatePropertyState(propertyWithHigherSpecificity, canonicalName) {
     const activeProperty = this.activeProperties.get(canonicalName);
-    if (activeProperty?.important && !propertyWithHigherSpecificity.important || activeProperty && this.#needsCascadeContextStep() && this.#treeScopeDistance(activeProperty) > this.#treeScopeDistance(propertyWithHigherSpecificity)) {
+    if (activeProperty?.important && !propertyWithHigherSpecificity.important || activeProperty && this.#needsCascadeContextStep() && treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity)) {
       this.propertiesState.set(
         propertyWithHigherSpecificity,
         "Overloaded"
@@ -23442,6 +23463,10 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   }
   scriptForId(scriptId) {
     return this.#scripts.get(scriptId) || null;
+  }
+  isWasm(scriptId) {
+    const script = this.scriptForId(scriptId);
+    return script ? script.isWasm() : false;
   }
   /**
    * Returns all `Script` objects with the same provided `sourceURL`. The

@@ -56,6 +56,7 @@ export declare class StylePropertiesSection {
     updateAuthoringHint(): void;
     setSectionIdx(sectionIdx: number): void;
     getSectionIdx(): number;
+    treeScopeDistance(): number;
     static createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
     protected createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
     private static getRuleLocationFromCSSRule;

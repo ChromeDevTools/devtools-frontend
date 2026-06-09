@@ -43,6 +43,20 @@ export class ConversationContext {
     async getSuggestions() {
         return;
     }
+    /**
+     * Returns a detailed description of the context item for inclusion in the AI model prompt.
+     * Currently only used by AiAgent2.
+     */
+    async getPromptDetails() {
+        return null;
+    }
+    /**
+     * Returns a list of context details to display to the user in the UI.
+     * Currently only used by AiAgent2.
+     */
+    async getUserFacingDetails() {
+        return null;
+    }
 }
 class CrossOriginError extends Error {
     constructor() {

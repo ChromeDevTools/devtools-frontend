@@ -204,7 +204,7 @@ export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(U
     getVariableParserError(_matchedStyles, _variableName) {
         return null;
     }
-    jumpToFunctionDefinition(_functionName) {
+    jumpToFunctionDefinition(_functionName, _treeScopeDistance) {
     }
     continueEditingElement(_sectionIndex, _propertyIndex) {
     }

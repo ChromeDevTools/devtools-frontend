@@ -8,7 +8,7 @@ export declare class StylePropertyHighlighter {
      */
     highlightProperty(cssProperty: SDK.CSSProperty.CSSProperty): Promise<void>;
     findAndHighlightSectionBlock(sectionBlockName: string): void;
-    findAndHighlightSection(sectionName: string, blockName: string): void;
+    findAndHighlightSection(sectionName: string, blockName: string, treeScopeDistance?: number): void;
     /**
      * Find the first non-overridden property that matches the provided name, scroll to it and highlight it.
      */

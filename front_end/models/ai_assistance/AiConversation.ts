@@ -328,24 +328,27 @@ export class AiConversation {
     };
   }
 
+  #filterHistoryForNewAgent(): Host.AidaClient.Content[] {
+    return this.#agent?.history
+               .map(content => {
+                 return {
+                   ...content,
+                   parts: content.parts.filter(part => !('functionCall' in part) && !('functionResponse' in part)),
+                 };
+               })
+               .filter(content => content.parts.length > 0) ??
+        [];
+  }
+
   #updateAgent(type: ConversationType): void {
     if (this.#type === type) {
       return;
     }
 
-    this.#type = type;
+    const isTransitioningFromStorage = this.#type === ConversationType.STORAGE && type !== ConversationType.STORAGE;
+    const history = isTransitioningFromStorage ? [] : this.#filterHistoryForNewAgent();
 
-    // We need to filter out the function calls
-    // as the LLM tries to call the existing ones.
-    const history =
-        this.#agent?.history
-            .map(content => {
-              return {
-                ...content,
-                parts: content.parts.filter(part => !('functionCall' in part) && !('functionResponse' in part)),
-              };
-            })
-            .filter(content => content.parts.length > 0);
+    this.#type = type;
 
     const options = {
       aidaClient: this.#aidaClient,

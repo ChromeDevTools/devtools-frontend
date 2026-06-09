@@ -607,4 +607,41 @@ describeWithEnvironment('AiConversation', () => {
       assert.strictEqual(err.message, 'cross-origin context data should not be included');
     }
   });
+
+  it('should clear history when transitioning from storage to different agent', async () => {
+    updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
+
+    const aidaClient = mockAidaClient([
+      [{explanation: 'Storage analysis'}],
+      [{explanation: 'Network analysis'}],
+    ]);
+
+    const conversation = new AiAssistance.AiConversation.AiConversation({
+      type: AiAssistance.AiHistoryStorage.ConversationType.STORAGE,
+      data: [],
+      id: 'test-id',
+      isReadOnly: false,
+      aidaClient,
+    });
+
+    await Array.fromAsync(conversation.run('test storage query'));
+    assert.lengthOf(aidaClient.doConversation.getCalls(), 1);
+
+    const networkRequest = createNetworkRequest({
+      url: Platform.DevToolsPath.urlString`https://example.com`,
+      documentURL: Platform.DevToolsPath.urlString`https://example.com`
+    });
+    sinon.stub(networkRequest, 'requestContentData')
+        .resolves(new TextUtils.ContentData.ContentData('test content', false, 'text/plain'));
+    sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([networkRequest]);
+
+    conversation.setContext(new AiAssistance.NetworkAgent.RequestContext(
+        networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator()));
+
+    await Array.fromAsync(conversation.run('test network query'));
+    assert.lengthOf(aidaClient.doConversation.getCalls(), 2);
+    const secondRequest = aidaClient.doConversation.getCall(1).firstArg;
+    assert.isEmpty(secondRequest.historical_contexts ?? []);
+  });
+
 });

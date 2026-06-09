@@ -130,7 +130,7 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     const actual = await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix');
     const expected =
-        'curl \'http://localhost\' \\\n  -H \'header-with-value: some value\' \\\n  -H \'no-value-header;\'';
+        'curl --url \'http://localhost\' \\\n  -H \'header-with-value: some value\' \\\n  -H \'no-value-header;\'';
     assert.strictEqual(actual, expected);
   });
 
@@ -144,7 +144,7 @@ describeWithMockConnection('NetworkLogView', () => {
       ],
     });
     const actual = await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix');
-    const expected = 'curl \'http://localhost\'';
+    const expected = 'curl --url \'http://localhost\'';
     assert.strictEqual(actual, expected);
   });
 
@@ -154,11 +154,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b \'eva=\"Sg4=\"\'',
+        'curl --url \'http://localhost\' -b \'eva=\"Sg4=\"\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -b ^"eva=^\\^"Sg4=^\\^"^"',
+        'curl --url ^"http://localhost^" -b ^"eva=^\\^"Sg4=^\\^"^"',
     );
   });
 
@@ -168,11 +168,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -H \'cookie: namelesscookie\'',
+        'curl --url \'http://localhost\' -H \'cookie: namelesscookie\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -H ^"cookie: namelesscookie^"',
+        'curl --url ^"http://localhost^" -H ^"cookie: namelesscookie^"',
     );
   });
 
@@ -182,11 +182,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b \'name=value\'',
+        'curl --url \'http://localhost\' -b \'name=value\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -b ^"name=value^"',
+        'curl --url ^"http://localhost^" -b ^"name=value^"',
     );
   });
 
@@ -196,11 +196,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b \'\\\\attacker.com\\share\\leak=foo\'',
+        'curl --url \'http://localhost\' -b \'\\\\attacker.com\\share\\leak=foo\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -b ^"^\\^\\^\\^\\attacker.com^\\^\\share^\\^\\leak=foo^"',
+        'curl --url ^"http://localhost^" -b ^"^\\^\\^\\^\\attacker.com^\\^\\share^\\^\\leak=foo^"',
     );
   });
 
@@ -210,11 +210,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b \'eva=%22Sg4%3D%22\'',
+        'curl --url \'http://localhost\' -b \'eva=%22Sg4%3D%22\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -b ^"eva=^%^22Sg4^%^3D^%^22^"',
+        'curl --url ^"http://localhost^" -b ^"eva=^%^22Sg4^%^3D^%^22^"',
     );
   });
 
@@ -224,11 +224,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b $\'query=evil\\n\\n & cmd /c calc.exe \\n\\n\'',
+        'curl --url \'http://localhost\' -b $\'query=evil\\n\\n & cmd /c calc.exe \\n\\n\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^\"http://localhost^\" -b ^\"query=evil^\n\n^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
+        'curl --url ^\"http://localhost^\" -b ^\"query=evil^\n\n^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
     );
   });
 
@@ -238,11 +238,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b $\'query=evil\\r\\n & cmd /c calc.exe \\n\\n\'',
+        'curl --url \'http://localhost\' -b $\'query=evil\\r\\n & cmd /c calc.exe \\n\\n\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^\"http://localhost^\" -b ^\"query=evil^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
+        'curl --url ^\"http://localhost^\" -b ^\"query=evil^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
     );
   });
 
@@ -252,11 +252,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b $\'query=evil\\u0009\\u000b\\u000c\\r\\n & cmd /c calc.exe \\n\\n\'',
+        'curl --url \'http://localhost\' -b $\'query=evil\\u0009\\u000b\\u000c\\r\\n & cmd /c calc.exe \\n\\n\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^\"http://localhost^\" -b ^\"query=evil   ^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
+        'curl --url ^\"http://localhost^\" -b ^\"query=evil   ^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
     );
   });
 
@@ -266,11 +266,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -b $\'query=evil\\r & cmd /c calc.exe\'',
+        'curl --url \'http://localhost\' -b $\'query=evil\\r & cmd /c calc.exe\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^\"http://localhost^\" -b ^\"query=evil^\n\n ^& cmd /c calc.exe^\"',
+        'curl --url ^\"http://localhost^\" -b ^\"query=evil^\n\n ^& cmd /c calc.exe^\"',
     );
   });
 
@@ -280,11 +280,10 @@ describeWithMockConnection('NetworkLogView', () => {
     request.setRequestFormData(true, '123');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' --data-raw \'123\'',
+        'curl --url \'http://localhost\' --data-raw \'123\'',
     );
-    assert.strictEqual(
-        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" --data-raw ^"123^"');
+    assert.strictEqual(await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+                       'curl --url ^"http://localhost^" --data-raw ^"123^"');
   });
 
   it('generates a valid curl command for a POST request with urlencoded data', async () => {
@@ -295,11 +294,11 @@ describeWithMockConnection('NetworkLogView', () => {
     request.setRequestFormData(true, '1&b');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' \\\n  -H \'Content-Type: application/x-www-form-urlencoded\' \\\n  --data-raw \'1&b\'',
+        'curl --url \'http://localhost\' \\\n  -H \'Content-Type: application/x-www-form-urlencoded\' \\\n  --data-raw \'1&b\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" ^\n  -H ^"Content-Type: application/x-www-form-urlencoded^" ^\n  --data-raw ^"1^&b^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/x-www-form-urlencoded^" ^\n  --data-raw ^"1^&b^"');
   });
 
   it('generates a valid curl command for a POST request with JSON data', async () => {
@@ -310,11 +309,11 @@ describeWithMockConnection('NetworkLogView', () => {
     request.setRequestFormData(true, '{"a":1}');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' \\\n  -H \'Content-Type: application/json\' \\\n  --data-raw \'{"a":1}\'',
+        'curl --url \'http://localhost\' \\\n  -H \'Content-Type: application/json\' \\\n  --data-raw \'{"a":1}\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" ^\n  -H ^"Content-Type: application/json^" ^\n  --data-raw ^"^{^\\^"a^\\^":1^}^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/json^" ^\n  --data-raw ^"^{^\\^"a^\\^":1^}^"');
   });
 
   it('generates a valid curl command for a POST request with binary data', async () => {
@@ -325,11 +324,11 @@ describeWithMockConnection('NetworkLogView', () => {
     request.setRequestFormData(true, '1234\r\n00\x02\x03\x04\x05\'"!');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' \\\n  -H \'Content-Type: application/binary\' \\\n  --data-raw $\'1234\\r\\n00\\u0002\\u0003\\u0004\\u0005\\\'"\\u0021\'',
+        'curl --url \'http://localhost\' \\\n  -H \'Content-Type: application/binary\' \\\n  --data-raw $\'1234\\r\\n00\\u0002\\u0003\\u0004\\u0005\\\'"\\u0021\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"1234^\n\n00^ ^ ^ ^ \'^\\^"^!^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"1234^\n\n00^ ^ ^ ^ \'^\\^"^!^"');
   });
 
   it('generates a valid curl command for a POST request with binary data containing %', async () => {
@@ -340,21 +339,30 @@ describeWithMockConnection('NetworkLogView', () => {
     request.setRequestFormData(true, '%OS%\\r\\n%%OS%%\\r\\n"\\\\"\'$&!');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' \\\n  -H \'Content-Type: application/binary\' \\\n  --data-raw $\'%OS%\\\\r\\\\n%%OS%%\\\\r\\\\n"\\\\\\\\"\\\'$&\\u0021\'');
+        'curl --url \'http://localhost\' \\\n  -H \'Content-Type: application/binary\' \\\n  --data-raw $\'%OS%\\\\r\\\\n%%OS%%\\\\r\\\\n"\\\\\\\\"\\\'$&\\u0021\'');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"^%^OS^%^\\^\\r^\\^\\n^%^%^OS^%^%^\\^\\r^\\^\\n^\\^"^\\^\\^\\^\\^\\^"\'^$^&^!^"');
+        'curl --url ^"http://localhost^" ^\n  -H ^"Content-Type: application/binary^" ^\n  --data-raw ^"^%^OS^%^\\^\\r^\\^\\n^%^%^OS^%^%^\\^\\r^\\^\\n^\\^"^\\^\\^\\^\\^\\^"\'^$^&^!^"');
   });
 
   it('generates a valid curl command for a URL with special characters', async () => {
     const request = createNetworkRequest(urlString`http://example.com/?a=[]{}`, {});
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://example.com/?a=\\[\\]\\{\\}\'',
+        'curl --url \'http://example.com/?a=\\[\\]\\{\\}\'',
     );
+    assert.strictEqual(await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+                       'curl --url ^"http://example.com/?a=^\\[^\\]^\\{^\\}^"');
+  });
+
+  it('generates a valid curl command for a URL starting with a dash', async () => {
+    const request = createNetworkRequest(urlString`-http://example.com/`, {});
     assert.strictEqual(
-        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://example.com/?a=^\\[^\\]^\\{^\\}^"');
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl --url \'-http://example.com/\'',
+    );
+    assert.strictEqual(await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+                       'curl --url ^"-http://example.com/^"');
   });
 
   it('generates a valid curl command stripping pseudo-headers', async () => {
@@ -365,7 +373,7 @@ describeWithMockConnection('NetworkLogView', () => {
       ],
     });
     const actual = await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix');
-    const expected = 'curl \'http://localhost\'';
+    const expected = 'curl --url \'http://localhost\'';
     assert.strictEqual(actual, expected);
   });
 
@@ -374,11 +382,10 @@ describeWithMockConnection('NetworkLogView', () => {
     request.requestMethod = '|evilcommand|';
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -X \'|evilcommand|\'',
+        'curl --url \'http://localhost\' -X \'|evilcommand|\'',
     );
-    assert.strictEqual(
-        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -X ^"^|evilcommand^|^"');
+    assert.strictEqual(await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+                       'curl --url ^"http://localhost^" -X ^"^|evilcommand^|^"');
   });
 
   it('generates a valid curl command for urlencoded data starting with @', async () => {
@@ -389,11 +396,11 @@ describeWithMockConnection('NetworkLogView', () => {
     request.setRequestFormData(true, '@/etc/passwd');
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' \\\n  -H \'Content-Type: application/x-www-form-urlencoded\' \\\n  --data-raw \'@/etc/passwd\'',
+        'curl --url \'http://localhost\' \\\n  -H \'Content-Type: application/x-www-form-urlencoded\' \\\n  --data-raw \'@/etc/passwd\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^\"http://localhost^\" ^\n  -H ^\"Content-Type: application/x-www-form-urlencoded^\" ^\n  --data-raw ^\"^@/etc/passwd^\"',
+        'curl --url ^\"http://localhost^\" ^\n  -H ^\"Content-Type: application/x-www-form-urlencoded^\" ^\n  --data-raw ^\"^@/etc/passwd^\"',
     );
   });
 
@@ -977,8 +984,8 @@ url-header-und-content-overridden`]);
     contextMenu.invokeHandler(copyAllCurlCommands.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`curl 'url-header-overridden' ;
-curl 'url-header-und-content-overridden'`]);
+    assert.deepEqual(copyText.lastCall.args, [`curl --url 'url-header-overridden' ;
+curl --url 'url-header-und-content-overridden'`]);
     copyText.resetHistory();
 
     const copyAllFetchCall = findMenuItemWithLabel(footerSection, 'Copy all listed as fetch');
@@ -1023,10 +1030,10 @@ url-header-und-content-overridden`]);
     contextMenu.invokeHandler(copyAllCurlCommands.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`curl 'url-not-overridden' ;
-curl 'url-header-overridden' ;
-curl 'url-content-overridden' ;
-curl 'url-header-und-content-overridden'`]);
+    assert.deepEqual(copyText.lastCall.args, [`curl --url 'url-not-overridden' ;
+curl --url 'url-header-overridden' ;
+curl --url 'url-content-overridden' ;
+curl --url 'url-header-und-content-overridden'`]);
     copyText.resetHistory();
 
     contextMenu.invokeHandler(copyAllFetchCall.id());

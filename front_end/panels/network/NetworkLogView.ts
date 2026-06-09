@@ -2507,7 +2507,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // (it may be different from the inspected page platform).
     const escapeString = platform === 'win' ? escapeStringWin : escapeStringPosix;
 
-    command.push(escapeString(request.url()).replace(/[[{}\]]/g, '\\$&'));
+    // The shell escaping above protects the *shell* parser, but not curl's own
+    // argv parser: if the (HAR-imported) URL begins with '-', curl will parse
+    // it as an option (e.g. "-K//host/share/file" -> --config UNC path).
+    // Passing the URL via --url forces curl to treat it as a URL operand.
+    command.push('--url ' + escapeString(request.url()).replace(/[[{}\]]/g, '\\$&'));
 
     let inferredMethod = 'GET';
     const data = [];

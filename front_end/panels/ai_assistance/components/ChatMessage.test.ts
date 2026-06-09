@@ -20,6 +20,7 @@ import {
 import {makeFakeParsedTrace, microsecondsTraceWindow} from '../../../testing/TraceHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('ChatMessage', () => {
@@ -1519,6 +1520,56 @@ describeWithEnvironment('ChatMessage', () => {
       const expandButton =
           querySelectorErrorOnMissing(widgetContainer, 'button.show-all-widget-requests-button') as HTMLButtonElement;
       assert.strictEqual(expandButton.textContent?.trim(), 'Show all 17 network requests');
+    });
+
+    it('shows a snackbar with the error message when reveal fails', async () => {
+      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
+      const root = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
+      const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
+      const target = sinon.createStubInstance(SDK.Target.Target);
+      root.domModel.returns(domModel);
+      domModel.target.returns(target);
+      root.backendNodeId.returns(1 as Protocol.DOM.BackendNodeId);
+
+      const messageWithNamedWidget: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'DOM_TREE',
+            data: {
+              root,
+            },
+          }],
+        }],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({
+        message: messageWithNamedWidget,
+      });
+
+      const widgetHeader = await waitFor('.widget-header', targetElement) as HTMLElement;
+      assert.isNotNull(widgetHeader);
+      const revealBtn =
+          querySelectorErrorOnMissing(widgetHeader, 'devtools-button.widget-reveal-button') as HTMLElement;
+
+      const revealError = new Error('Node cannot be found in the current page.');
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').rejects(revealError);
+      const snackbarShowStub = sinon.stub(Snackbars.Snackbar.Snackbar, 'show');
+
+      revealBtn.click();
+
+      // Since it's async, we need to wait for the promise microtask queue to drain
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      sinon.assert.calledOnceWithExactly(snackbarShowStub, {
+        message: 'Node cannot be found in the current page.',
+      });
+
+      revealStub.restore();
+      snackbarShowStub.restore();
     });
   });
 });

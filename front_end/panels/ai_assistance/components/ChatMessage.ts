@@ -30,6 +30,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
+import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
 import * as UIHelpers from '../../../ui/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
@@ -1308,7 +1309,12 @@ function renderWidgetResponse(response: WidgetMakerResponse|null): Lit.LitTempla
     if (response === null) {
       return;
     }
-    void Common.Revealer.reveal(response?.revealable);
+    Common.Revealer.reveal(response?.revealable).catch((error: Error) => {
+      if (!error.message) {
+        return;
+      }
+      Snackbars.Snackbar.Snackbar.show({message: error.message});
+    });
   }
 
   const classes = Lit.Directives.classMap({

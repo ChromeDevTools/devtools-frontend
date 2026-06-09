@@ -103,6 +103,32 @@ describe('SymbolizedErrorWidget', function() {
     await assertScreenshot('console/symbolized-error-with-cause.png');
   });
 
+  it('renders an UnparsableError', async () => {
+    const target = universe.createTarget({});
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+
+    const description =
+        'Error: This is an unparsable error. http://example.com/unparsable.js\n    at foo (http://example.com/a.js:1:1)\n    invalid-line-that-fails';
+    const stringRemoteObject = runtimeModel?.createRemoteObject({
+      type: Protocol.Runtime.RemoteObjectType.String,
+      value: description,
+      description,
+    });
+    assert.exists(stringRemoteObject);
+
+    const error = await universe.debuggerWorkspaceBinding.createSymbolizedError(stringRemoteObject);
+    assert.instanceOf(error, Bindings.SymbolizedError.UnparsableError);
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(widget,
+                         {includeCommonStyles: true, extraStyles: [consoleViewStyles, symbolizedErrorWidgetStyles]});
+    await widget.updateComplete;
+
+    await assertScreenshot('console/symbolized-unparsable-error.png');
+  });
+
   it('triggers a re-render when the SymbolizedError updates', async () => {
     const error = await createError('Error: simple error\n    at foo (http://example.com/a.js:1:1)');
     const view = createViewFunctionStub(Console.SymbolizedErrorWidget.SymbolizedErrorWidget);

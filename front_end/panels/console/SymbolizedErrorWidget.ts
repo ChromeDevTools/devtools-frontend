@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+
+import {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 const {html, render} = Lit;
 
@@ -102,10 +105,25 @@ function renderFrameSuffix(frame: StackTrace.StackTrace.ParsedErrorStackFrame): 
 
 const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
   const renderError = (error: Bindings.SymbolizedError.SymbolizedError, isCause: boolean): Lit.LitTemplate => {
-    if (!(error instanceof Bindings.SymbolizedError.SymbolizedErrorObject)) {
+    if (error instanceof Bindings.SymbolizedError.SymbolizedSyntaxError) {
       console.error('SymbolizedErrorWidget received an unsupported error type:', error);
       return Lit.nothing;
     }
+    if (error instanceof Bindings.SymbolizedError.UnparsableError) {
+      const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(
+          error.errorStack,
+          (text: string, url: Platform.DevToolsPath.UrlString, lineNumber?: number, columnNumber?: number) => {
+            const options = {text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager};
+            const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
+            linkElement.tabIndex = -1;
+            return linkElement;
+          });
+      const header = renderHeader(fragment, isCause);
+      return html`
+        <span class=${isCause ? 'console-message-stack-trace-wrapper' : ''}>${header}</span>
+      `;
+    }
+
     const linkOptions: Components.Linkifier.LinkifyOptions = {
       showColumnNumber: true,
       inlineFrameIndex: 0,

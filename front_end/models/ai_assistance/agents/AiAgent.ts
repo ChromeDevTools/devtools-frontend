@@ -509,8 +509,8 @@ export abstract class AiAgent<T> {
     this.#allowedOrigin = opts.allowedOrigin;
   }
 
-  async enhanceQuery(query: string, selected: ConversationContext<T>|null, multimodalInputType?: MultimodalInputType):
-      Promise<string>;
+  async enhanceQuery(query: string, selected: ConversationContext<T>|null,
+                     multimodalInputType?: MultimodalInputType): Promise<string>;
   async enhanceQuery(query: string): Promise<string> {
     return query;
   }
@@ -557,9 +557,21 @@ export abstract class AiAgent<T> {
     return undefined;
   }
 
-  buildRequest(
-      part: Host.AidaClient.Part|Host.AidaClient.Part[],
-      role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest {
+  /**
+   * Preamble features appended to the `client_version` in metadata.
+   * This is required ONLY for the Styling Agent for legacy reasons to serve
+   * different server-side preambles based on the Chrome version.
+   * Other agents should NOT set or override this.
+   * If you are curious about this, look for `do_conversation_handler.cc` in
+   * Google3 or chat to @jacktfranklin.
+   */
+  preambleFeatures(): string[] {
+    return [];
+  }
+
+  buildRequest(part: Host.AidaClient.Part|Host.AidaClient.Part[],
+               role: Host.AidaClient.Role.USER|
+               Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest {
     const parts = Array.isArray(part) ? part : [part];
     const currentMessage: Host.AidaClient.Content = {
       parts,
@@ -600,7 +612,8 @@ export abstract class AiAgent<T> {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
         string_session_id: this.#sessionId,
         user_tier: userTier,
-        client_version: Root.Runtime.getChromeVersion(),
+        client_version:
+            Root.Runtime.getChromeVersion() + this.preambleFeatures().map(feature => `+${feature}`).join(''),
       },
 
       functionality_type: enableAidaFunctionCalling ? Host.AidaClient.FunctionalityType.AGENTIC_CHAT :

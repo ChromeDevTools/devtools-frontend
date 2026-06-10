@@ -281,6 +281,10 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     });
   }
 
+  override preambleFeatures(): string[] {
+    return ['function_calling'];
+  }
+
   #getSelectedNode(): SDK.DOMModel.DOMNode|null {
     return this.context?.getItem() ?? null;
   }

@@ -1,4 +1,3 @@
-
 Title: StylingAgent buildRequest structure matches the snapshot
 Content:
 {
@@ -129,7 +128,7 @@ Content:
     "disable_user_content_logging": false,
     "string_session_id": "sessionId",
     "user_tier": 3,
-    "client_version": "unit_test"
+    "client_version": "unit_test+function_calling"
   },
   "functionality_type": 5,
   "client_feature": 2

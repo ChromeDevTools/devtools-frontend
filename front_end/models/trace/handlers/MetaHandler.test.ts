@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {defaultTraceEvent} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
@@ -439,7 +439,7 @@ describe('MetaHandler', function() {
     const data = Trace.Handlers.ModelHandlers.Meta.data();
     const collected = [...data.threadsInProcess.values()].map(threadInProcess => [...threadInProcess.values()]);
 
-    expect(collected.map(process => process.map(thread => thread.args.name))).to.deep.equal([
+    assert.deepEqual(collected.map(process => process.map(thread => thread.args.name)), [
       [
         'swapper',
         'VizCompositorThread',

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {expect} from 'chai';
+import {assert} from 'chai';
 
 import * as Lantern from '../lantern.js';
 
@@ -28,31 +28,31 @@ describe('DNSCache', () => {
   describe('.getTimeUntilResolution', () => {
     it('should return the RTT multiplied', () => {
       const resolutionTime = dns.getTimeUntilResolution(request);
-      expect(resolutionTime).to.equal(100 * MULTIPLIER);
+      assert.strictEqual(resolutionTime, 100 * MULTIPLIER);
     });
 
     it('should return time with requestedAt', () => {
       const resolutionTime = dns.getTimeUntilResolution(request, {requestedAt: 1500});
-      expect(resolutionTime).to.equal(100 * MULTIPLIER);
+      assert.strictEqual(resolutionTime, 100 * MULTIPLIER);
     });
 
     it('should not cache by default', () => {
       dns.getTimeUntilResolution(request, {requestedAt: 0});
       const resolutionTime = dns.getTimeUntilResolution(request, {requestedAt: 1000});
-      expect(resolutionTime).to.equal(100 * MULTIPLIER);
+      assert.strictEqual(resolutionTime, 100 * MULTIPLIER);
     });
 
     it('should cache when told', () => {
       dns.getTimeUntilResolution(request, {requestedAt: 0, shouldUpdateCache: true});
       const resolutionTime = dns.getTimeUntilResolution(request, {requestedAt: 1000});
-      expect(resolutionTime).to.equal(0);
+      assert.strictEqual(resolutionTime, 0);
     });
 
     it('should cache by domain', () => {
       dns.getTimeUntilResolution(request, {requestedAt: 0, shouldUpdateCache: true});
       const otherRequest = {parsedURL: {host: 'other-example.com'}} as Lantern.Types.NetworkRequest;
       const resolutionTime = dns.getTimeUntilResolution(otherRequest, {requestedAt: 1000});
-      expect(resolutionTime).to.equal(100 * MULTIPLIER);
+      assert.strictEqual(resolutionTime, 100 * MULTIPLIER);
     });
 
     it('should not update cache with later times', () => {
@@ -61,10 +61,10 @@ describe('DNSCache', () => {
       dns.getTimeUntilResolution(request, {requestedAt: 500, shouldUpdateCache: true});
       dns.getTimeUntilResolution(request, {requestedAt: 5000, shouldUpdateCache: true});
 
-      expect(dns.getTimeUntilResolution(request, {requestedAt: 0})).to.equal(100 * MULTIPLIER);
-      expect(dns.getTimeUntilResolution(request, {requestedAt: 550})).to.equal(100 * MULTIPLIER - 50);
-      expect(dns.getTimeUntilResolution(request, {requestedAt: 1000})).to.equal(0);
-      expect(dns.getTimeUntilResolution(request, {requestedAt: 2000})).to.equal(0);
+      assert.strictEqual(dns.getTimeUntilResolution(request, {requestedAt: 0}), 100 * MULTIPLIER);
+      assert.strictEqual(dns.getTimeUntilResolution(request, {requestedAt: 550}), 100 * MULTIPLIER - 50);
+      assert.strictEqual(dns.getTimeUntilResolution(request, {requestedAt: 1000}), 0);
+      assert.strictEqual(dns.getTimeUntilResolution(request, {requestedAt: 2000}), 0);
     });
   });
 
@@ -72,7 +72,7 @@ describe('DNSCache', () => {
     it('should set the DNS resolution time for a request', () => {
       dns.setResolvedAt(request.parsedURL.host, 123);
       const resolutionTime = dns.getTimeUntilResolution(request);
-      expect(resolutionTime).to.equal(123);
+      assert.strictEqual(resolutionTime, 123);
     });
   });
 });

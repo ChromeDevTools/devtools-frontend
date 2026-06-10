@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {createTestFilesystem} from '../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -330,9 +330,9 @@ Line:5`);
       await project.writeFile('index.html', 'updated');
       try {
         await project.writeFile('example2.js', 'updated2');
-        expect.fail('did not throw');
+        assert.fail('did not throw');
       } catch (err) {
-        expect(err.message).to.eq('Too many files changed');
+        assert.strictEqual(err.message, 'Too many files changed');
       }
       assert.deepEqual(await project.readFile('index.html'), 'updated');
       assert.deepEqual(await project.readFile('example2.js'), 'content');
@@ -362,9 +362,9 @@ Line:5`);
 
       try {
         await project.writeFile('example2.js', 'updated2\nupdated3');
-        expect.fail('did not throw');
+        assert.fail('did not throw');
       } catch (err) {
-        expect(err.message).to.eq('Too many lines changed');
+        assert.strictEqual(err.message, 'Too many lines changed');
       }
       assert.deepEqual(await project.readFile('example2.js'), 'content');
     });

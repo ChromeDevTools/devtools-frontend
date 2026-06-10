@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Lantern from '../lantern.js';
@@ -54,7 +54,7 @@ describe('Metrics: Lantern FCP', function() {
         optimisticNodes.push(node);
       }
     });
-    expect(optimisticNodes.map(node => node.request.url)).to.deep.equal(['https://squoosh.app/']);
+    assert.deepEqual(optimisticNodes.map(node => node.request.url), ['https://squoosh.app/']);
 
     const pessimisticNodes: Lantern.Graph.NetworkNode[] = [];
     result.pessimisticGraph.traverse(node => {
@@ -62,6 +62,6 @@ describe('Metrics: Lantern FCP', function() {
         pessimisticNodes.push(node);
       }
     });
-    expect(pessimisticNodes.map(node => node.request.url)).to.deep.equal(['https://squoosh.app/']);
+    assert.deepEqual(pessimisticNodes.map(node => node.request.url), ['https://squoosh.app/']);
   });
 });

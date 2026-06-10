@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import type * as Protocol from '../../../../generated/protocol.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
@@ -396,7 +396,7 @@ describe('DependencyGraph/Simulator', () => {
       const resultA = simulator.simulate(nodeA);
       nodeC.addDependent(nodeD);
       const resultB = simulator.simulate(nodeA);
-      expect(resultA.timeInMs).to.be.lessThanOrEqual(resultB.timeInMs);
+      assert.isAtMost(resultA.timeInMs, resultB.timeInMs);
     });
 
     it('should throw (not hang) on graphs with cycles', () => {
@@ -416,7 +416,7 @@ describe('DependencyGraph/Simulator', () => {
         const graph = await createGraph(this, trace);
         const simulator = new Simulator({serverResponseTimeByOrigin, observedThroughput});
         const result = simulator.simulate(graph);
-        expect(result.timeInMs).to.be.greaterThan(100);
+        assert.isAbove(result.timeInMs, 100);
       });
 
       it('should sort the task event times', async () => {
@@ -428,7 +428,7 @@ describe('DependencyGraph/Simulator', () => {
         for (let i = 1; i < nodeTimings.length; i++) {
           const startTime = nodeTimings[i][1].startTime;
           const previousStartTime = nodeTimings[i - 1][1].startTime;
-          expect(startTime).to.be.greaterThanOrEqual(previousStartTime);
+          assert.isAtLeast(startTime, previousStartTime);
         }
       });
     });
@@ -438,19 +438,19 @@ describe('DependencyGraph/Simulator', () => {
     it('calculates savings using throughput', () => {
       const simulator = new Simulator({throughput: 1000, observedThroughput: 2000});
       const wastedMs = simulator.computeWastedMsFromWastedBytes(500);
-      expect(wastedMs).to.be.closeTo(4000, 0.1);
+      assert.closeTo(wastedMs, 4000, 0.1);
     });
 
     it('falls back to observed throughput if throughput is 0', () => {
       const simulator = new Simulator({throughput: 0, observedThroughput: 2000});
       const wastedMs = simulator.computeWastedMsFromWastedBytes(500);
-      expect(wastedMs).to.be.closeTo(2000, 0.1);
+      assert.closeTo(wastedMs, 2000, 0.1);
     });
 
     it('returns 0 if throughput and observed throughput are 0', () => {
       const simulator = new Simulator({throughput: 0, observedThroughput: 0});
       const wastedMs = simulator.computeWastedMsFromWastedBytes(500);
-      expect(wastedMs).to.equal(0);
+      assert.strictEqual(wastedMs, 0);
     });
   });
 });

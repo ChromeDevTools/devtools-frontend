@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -389,14 +389,14 @@ describeWithEnvironment('ChatMessage', () => {
     sinon.assert.callCount(view, 1);
 
     {
-      expect(view.input.showRateButtons).equals(true);
-      expect(view.input.isShowingFeedbackForm).equals(false);
+      assert.isTrue(view.input.showRateButtons);
+      assert.isFalse(view.input.isShowingFeedbackForm);
       view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
     sinon.assert.callCount(view, 2);
     {
-      expect(view.input.isShowingFeedbackForm).equals(true);
+      assert.isTrue(view.input.isShowingFeedbackForm);
     }
   });
 
@@ -408,13 +408,13 @@ describeWithEnvironment('ChatMessage', () => {
     sinon.assert.callCount(view, 1);
 
     {
-      expect(view.input.isShowingFeedbackForm).equals(false);
+      assert.isFalse(view.input.isShowingFeedbackForm);
       view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
     sinon.assert.callCount(view, 2);
     {
-      expect(view.input.isShowingFeedbackForm).equals(false);
+      assert.isFalse(view.input.isShowingFeedbackForm);
     }
   });
 
@@ -426,24 +426,24 @@ describeWithEnvironment('ChatMessage', () => {
     sinon.assert.callCount(view, 1);
 
     {
-      expect(view.input.isSubmitButtonDisabled).equals(true);
+      assert.isTrue(view.input.isSubmitButtonDisabled);
       view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
     sinon.assert.callCount(view, 2);
 
     {
-      expect(view.input.isShowingFeedbackForm).equals(true);
+      assert.isTrue(view.input.isShowingFeedbackForm);
       view.input.onInputChange('test');
     }
 
     {
-      expect(view.input.isSubmitButtonDisabled).equals(false);
+      assert.isFalse(view.input.isSubmitButtonDisabled);
       view.input.onSubmit(new SubmitEvent('submit'));
     }
 
     {
-      expect(view.input.isSubmitButtonDisabled).equals(true);
+      assert.isTrue(view.input.isSubmitButtonDisabled);
     }
   });
 
@@ -457,7 +457,7 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     sinon.assert.callCount(view, 1);
-    expect(view.input.showRateButtons).equals(false);
+    assert.isFalse(view.input.showRateButtons);
   });
 
   it('should show actions when it is not the last message and it is loading', async () => {
@@ -467,7 +467,7 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     sinon.assert.callCount(view, 1);
-    expect(view.input.showActions).equals(true);
+    assert.isTrue(view.input.showActions);
   });
 
   it('should not show actions when it is the last message and it is loading', async () => {
@@ -477,7 +477,7 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     sinon.assert.callCount(view, 1);
-    expect(view.input.showActions).equals(false);
+    assert.isFalse(view.input.showActions);
   });
 
   it('should not show suggestions when it is not the last message', async () => {
@@ -498,7 +498,7 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     sinon.assert.callCount(view, 1);
-    expect(view.input.suggestions).equals(undefined);
+    assert.isUndefined(view.input.suggestions);
   });
 
   it('should show suggestions when it is the last message', async () => {
@@ -519,7 +519,7 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     sinon.assert.callCount(view, 1);
-    expect(view.input.suggestions).deep.equals(['suggestion']);
+    assert.deepEqual(view.input.suggestions, ['suggestion']);
   });
 
   describe('Walkthrough Rendering', () => {

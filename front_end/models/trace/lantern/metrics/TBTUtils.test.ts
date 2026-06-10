@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {expect} from 'chai';
+import {assert} from 'chai';
 
 import * as Metrics from './metrics.js';
 
@@ -18,10 +18,10 @@ describe('TotalBlockingTime utils', () => {
     const fcpTimeMs = 500;
     const interactiveTimeMs = 4000;
 
-    expect(
+    assert.strictEqual(
         calculateSumOfBlockingTime(events, fcpTimeMs, interactiveTimeMs),
-        )
-        .to.equal(0);
+        0,
+    );
   });
 
   it('only looks at tasks within FCP and TTI', () => {
@@ -35,10 +35,10 @@ describe('TotalBlockingTime utils', () => {
     const fcpTimeMs = 1500;
     const interactiveTimeMs = 2500;
 
-    expect(
+    assert.strictEqual(
         calculateSumOfBlockingTime(events, fcpTimeMs, interactiveTimeMs),
-        )
-        .to.equal(150);
+        150,
+    );
   });
 
   it('clips before finding blocking regions', () => {
@@ -55,10 +55,10 @@ describe('TotalBlockingTime utils', () => {
       {start: 240, end: 460, duration: 120},
     ];
 
-    expect(
+    assert.strictEqual(
         calculateSumOfBlockingTime(events, fcpTimeMs, interactiveTimeMs),
-        )
-        .to.equal(10);  // 0ms + 10ms.
+        10,
+    );  // 0ms + 10ms.
   });
 
   // TTI can happen in the middle of a task, for example, if TTI is at FMP which occurs as part
@@ -68,60 +68,60 @@ describe('TotalBlockingTime utils', () => {
     const fcpTimeMs = 1000;
     const interactiveTimeMs = 2000;
 
-    expect(
+    assert.strictEqual(
         calculateSumOfBlockingTime(
             [{start: 1951, end: 2100, duration: 149}],
             fcpTimeMs,
             interactiveTimeMs,
             ),
-        )
-        .to.equal(0);  // Duration after clipping is 49, which is < 50.
-    expect(
+        0,
+    );  // Duration after clipping is 49, which is < 50.
+    assert.strictEqual(
         calculateSumOfBlockingTime(
             [{start: 1950, end: 2100, duration: 150}],
             fcpTimeMs,
             interactiveTimeMs,
             ),
-        )
-        .to.equal(0);  // Duration after clipping is 50, so time after 50ms is 0ms.
-    expect(
+        0,
+    );  // Duration after clipping is 50, so time after 50ms is 0ms.
+    assert.strictEqual(
         calculateSumOfBlockingTime(
             [{start: 1949, end: 2100, duration: 151}],
             fcpTimeMs,
             interactiveTimeMs,
             ),
-        )
-        .to.equal(1);  // Duration after clipping is 51, so time after 50ms is 1ms.
+        1,
+    );  // Duration after clipping is 51, so time after 50ms is 1ms.
   });
 
   it('clips properly if FCP falls in the middle of a task', () => {
     const fcpTimeMs = 1000;
     const interactiveTimeMs = 2000;
 
-    expect(
+    assert.strictEqual(
         calculateSumOfBlockingTime(
             [{start: 900, end: 1049, duration: 149}],
             fcpTimeMs,
             interactiveTimeMs,
             ),
-        )
-        .to.equal(0);  // Duration after clipping is 49, which is < 50.
-    expect(
+        0,
+    );  // Duration after clipping is 49, which is < 50.
+    assert.strictEqual(
         calculateSumOfBlockingTime(
             [{start: 900, end: 1050, duration: 150}],
             fcpTimeMs,
             interactiveTimeMs,
             ),
-        )
-        .to.equal(0);  // Duration after clipping is 50, so time after 50ms is 0ms.
-    expect(
+        0,
+    );  // Duration after clipping is 50, so time after 50ms is 0ms.
+    assert.strictEqual(
         calculateSumOfBlockingTime(
             [{start: 900, end: 1051, duration: 151}],
             fcpTimeMs,
             interactiveTimeMs,
             ),
-        )
-        .to.equal(1);  // Duration after clipping is 51, so time after 50ms is 1ms.
+        1,
+    );  // Duration after clipping is 51, so time after 50ms is 1ms.
   });
 
   // This can happen in the lantern metric case, where we use the optimistic
@@ -132,9 +132,9 @@ describe('TotalBlockingTime utils', () => {
 
     const events = [{start: 500, end: 3000, duration: 2500}];
 
-    expect(
+    assert.strictEqual(
         calculateSumOfBlockingTime(events, fcpTimeMs, interactiveTimeMs),
-        )
-        .to.equal(0);
+        0,
+    );
   });
 });

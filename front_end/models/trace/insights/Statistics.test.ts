@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {expect} from 'chai';
+import {assert} from 'chai';
 
 import * as Insights from './insights.js';
 
@@ -27,18 +27,18 @@ describe('statistics', () => {
       };
 
       // Be stricter with the control point requirements.
-      expect(getLogNormalScore(params, 7300)).to.equal(0.5);
-      expect(getLogNormalScore(params, 3785)).to.equal(0.9);
+      assert.strictEqual(getLogNormalScore(params, 7300), 0.5);
+      assert.strictEqual(getLogNormalScore(params, 3785), 0.9);
 
-      expect(getLogNormalScore(params, 0)).to.equal(1);
-      expect(getLogNormalScore(params, 1000)).to.be.closeTo(1.00, 0.01);
-      expect(getLogNormalScore(params, 2500)).to.be.closeTo(0.98, 0.01);
-      expect(getLogNormalScore(params, 5000)).to.be.closeTo(0.77, 0.01);
-      expect(getLogNormalScore(params, 7300)).to.equal(0.5);
-      expect(getLogNormalScore(params, 7500)).to.be.closeTo(0.48, 0.01);
-      expect(getLogNormalScore(params, 10000)).to.be.closeTo(0.27, 0.01);
-      expect(getLogNormalScore(params, 30000)).to.be.closeTo(0.00, 0.01);
-      expect(getLogNormalScore(params, 1000000)).to.equal(0);
+      assert.strictEqual(getLogNormalScore(params, 0), 1);
+      assert.closeTo(getLogNormalScore(params, 1000), 1.00, 0.01);
+      assert.closeTo(getLogNormalScore(params, 2500), 0.98, 0.01);
+      assert.closeTo(getLogNormalScore(params, 5000), 0.77, 0.01);
+      assert.strictEqual(getLogNormalScore(params, 7300), 0.5);
+      assert.closeTo(getLogNormalScore(params, 7500), 0.48, 0.01);
+      assert.closeTo(getLogNormalScore(params, 10000), 0.27, 0.01);
+      assert.closeTo(getLogNormalScore(params, 30000), 0.00, 0.01);
+      assert.strictEqual(getLogNormalScore(params, 1000000), 0);
     });
 
     it('returns 1 for all non-positive values', () => {
@@ -46,36 +46,36 @@ describe('statistics', () => {
         median: 1000,
         p10: 500,
       };
-      expect(getLogNormalScore(params, -100000)).to.equal(1);
-      expect(getLogNormalScore(params, -1)).to.equal(1);
-      expect(getLogNormalScore(params, 0)).to.equal(1);
+      assert.strictEqual(getLogNormalScore(params, -100000), 1);
+      assert.strictEqual(getLogNormalScore(params, -1), 1);
+      assert.strictEqual(getLogNormalScore(params, 0), 1);
     });
 
     it('throws on a non-positive median parameter', () => {
-      expect(() => {
+      assert.throws(() => {
         getLogNormalScore({median: 0, p10: 500}, 50);
-      }).to.throw('median must be greater than zero');
-      expect(() => {
+      }, 'median must be greater than zero');
+      assert.throws(() => {
         getLogNormalScore({median: -100, p10: 500}, 50);
-      }).to.throw('median must be greater than zero');
+      }, 'median must be greater than zero');
     });
 
     it('throws on a non-positive p10 parameter', () => {
-      expect(() => {
+      assert.throws(() => {
         getLogNormalScore({median: 500, p10: 0}, 50);
-      }).to.throw('p10 must be greater than zero');
-      expect(() => {
+      }, 'p10 must be greater than zero');
+      assert.throws(() => {
         getLogNormalScore({median: 500, p10: -100}, 50);
-      }).to.throw('p10 must be greater than zero');
+      }, 'p10 must be greater than zero');
     });
 
     it('throws if p10 is not less than the median', () => {
-      expect(() => {
+      assert.throws(() => {
         getLogNormalScore({median: 500, p10: 500}, 50);
-      }).to.throw('p10 must be less than the median');
-      expect(() => {
+      }, 'p10 must be less than the median');
+      assert.throws(() => {
         getLogNormalScore({median: 500, p10: 1000}, 50);
-      }).to.throw('p10 must be less than the median');
+      }, 'p10 must be less than the median');
     });
 
     describe('score is in correct pass/average/fail range', () => {
@@ -119,27 +119,27 @@ describe('statistics', () => {
           const params = {p10, median};
 
           // Max 1 at 0, everything else must be ≤ 1.
-          expect(getLogNormalScore(params, 0)).to.equal(1);
-          expect(getLogNormalScore(params, plusOneUlp(0))).to.be.lessThanOrEqual(1);
+          assert.strictEqual(getLogNormalScore(params, 0), 1);
+          assert.isAtMost(getLogNormalScore(params, plusOneUlp(0)), 1);
 
           // Just better than passing threshold.
-          expect(getLogNormalScore(params, minusOneUlp(p10))).to.be.greaterThanOrEqual(0.9);
+          assert.isAtLeast(getLogNormalScore(params, minusOneUlp(p10)), 0.9);
           // At passing threshold.
-          expect(getLogNormalScore(params, p10)).to.equal(0.9);
+          assert.strictEqual(getLogNormalScore(params, p10), 0.9);
           // Just worse than passing threshold.
-          expect(getLogNormalScore(params, plusOneUlp(p10))).to.be.lessThan(0.9);
+          assert.isBelow(getLogNormalScore(params, plusOneUlp(p10)), 0.9);
 
           // Just better than average threshold.
-          expect(getLogNormalScore(params, minusOneUlp(median))).to.be.greaterThanOrEqual(0.5);
+          assert.isAtLeast(getLogNormalScore(params, minusOneUlp(median)), 0.5);
           // At average threshold.
-          expect(getLogNormalScore(params, median)).to.equal(0.5);
+          assert.strictEqual(getLogNormalScore(params, median), 0.5);
           // Just worse than passing threshold.
-          expect(getLogNormalScore(params, plusOneUlp(median))).to.be.lessThan(0.5);
+          assert.isBelow(getLogNormalScore(params, plusOneUlp(median)), 0.5);
 
           // Some curves never quite reach 0, so just assert some extreme values aren't negative.
-          expect(getLogNormalScore(params, 1_000_000_000)).to.be.greaterThanOrEqual(0);
-          expect(getLogNormalScore(params, Number.MAX_SAFE_INTEGER)).to.be.greaterThanOrEqual(0);
-          expect(getLogNormalScore(params, Number.MAX_VALUE)).to.be.greaterThanOrEqual(0);
+          assert.isAtLeast(getLogNormalScore(params, 1_000_000_000), 0);
+          assert.isAtLeast(getLogNormalScore(params, Number.MAX_SAFE_INTEGER), 0);
+          assert.isAtLeast(getLogNormalScore(params, Number.MAX_VALUE), 0);
         });
       }
     });

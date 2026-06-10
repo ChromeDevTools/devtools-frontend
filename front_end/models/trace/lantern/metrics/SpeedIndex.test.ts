@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Lantern from '../lantern.js';
@@ -70,12 +70,12 @@ describe('Metrics: Lantern Speed Index', function() {
 
   it('should not scale coefficients at default', async () => {
     const result = SpeedIndex.getScaledCoefficients(defaultThrottling.rttMs);
-    expect(result).to.deep.equal(SpeedIndex.coefficients);
+    assert.deepEqual(result, SpeedIndex.coefficients);
   });
 
   it('should scale coefficients back', async () => {
     const result = SpeedIndex.getScaledCoefficients(5);
-    expect(result).to.deep.equal({intercept: 0, pessimistic: 0.5, optimistic: 0.5});
+    assert.deepEqual(result, {intercept: 0, pessimistic: 0.5, optimistic: 0.5});
   });
 
   it('should scale coefficients forward', async () => {

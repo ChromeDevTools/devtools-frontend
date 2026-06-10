@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
@@ -38,7 +38,7 @@ describe('DispatchHttpRequestClient', () => {
 
     try {
       await Host.DispatchHttpRequestClient.makeHttpRequest(defaultRequest);
-      expect.fail('makeHttpRequest did not throw');
+      assert.fail('makeHttpRequest did not throw');
     } catch (err) {
       assert.instanceOf(err, Host.DispatchHttpRequestClient.DispatchHttpRequestError);
       assert.strictEqual(err.type, Host.DispatchHttpRequestClient.ErrorType.NOT_FOUND);
@@ -53,7 +53,7 @@ describe('DispatchHttpRequestClient', () => {
 
     try {
       await Host.DispatchHttpRequestClient.makeHttpRequest(defaultRequest);
-      expect.fail('makeHttpRequest did not throw');
+      assert.fail('makeHttpRequest did not throw');
     } catch (err) {
       assert.instanceOf(err, Host.DispatchHttpRequestClient.DispatchHttpRequestError);
       assert.strictEqual(err.type, Host.DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE);
@@ -68,7 +68,7 @@ describe('DispatchHttpRequestClient', () => {
 
     try {
       await Host.DispatchHttpRequestClient.makeHttpRequest(defaultRequest);
-      expect.fail('makeHttpRequest did not throw');
+      assert.fail('makeHttpRequest did not throw');
     } catch (err) {
       assert.instanceOf(err, Host.DispatchHttpRequestClient.DispatchHttpRequestError);
       assert.strictEqual(err.type, Host.DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE);
@@ -91,7 +91,7 @@ describe('DispatchHttpRequestClient', () => {
     );
     try {
       await result;
-      expect.fail('makeHttpRequest did not throw');
+      assert.fail('makeHttpRequest did not throw');
     } catch (err) {
       assert.instanceOf(err, Host.DispatchHttpRequestClient.DispatchHttpRequestError);
       assert.strictEqual(err.type, Host.DispatchHttpRequestClient.ErrorType.ABORT);
@@ -116,7 +116,7 @@ describe('DispatchHttpRequestClient', () => {
     controller.abort();
     try {
       await result;
-      expect.fail('makeHttpRequest did not throw');
+      assert.fail('makeHttpRequest did not throw');
     } catch (err) {
       assert.instanceOf(err, Host.DispatchHttpRequestClient.DispatchHttpRequestError);
       assert.strictEqual(err.type, Host.DispatchHttpRequestClient.ErrorType.ABORT);

@@ -750,6 +750,7 @@ export default defineConfig([
       ],
 
       '@devtools/check-test-definitions': 'error',
+      '@devtools/prefer-chai-assert': 'error',
       '@devtools/no-assert-strict-equal-for-arrays-and-objects': 'error',
       '@devtools/no-assert-deep-strict-equal': 'error',
       '@devtools/no-assert-equal': 'error',

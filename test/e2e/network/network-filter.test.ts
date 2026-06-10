@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import {
@@ -65,40 +65,40 @@ describe('The Network Tab', function() {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('9');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(1);
-    expect(await elementTextContent(nodes[0])).to.equal(RESULTS[10]);
+    assert.lengthOf(nodes, 1);
+    assert.strictEqual(await elementTextContent(nodes[0]), RESULTS[10]);
   });
 
   it('can match multiple requests by text in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('svg');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(10);
+    assert.lengthOf(nodes, 10);
   });
 
   it('can filter by regex in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('/8/');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(1);
-    expect(await elementTextContent(nodes[0])).to.equal(RESULTS[9]);
+    assert.lengthOf(nodes, 1);
+    assert.strictEqual(await elementTextContent(nodes[0]), RESULTS[9]);
   });
 
   it('can match multiple requests by regex in the log view', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     await devToolsPage.typeText('/.*/');
     let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(11);
+    assert.isAtLeast(nodes.length, 11);
 
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText('/.*\\..*/');
     nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(11);
+    assert.isAtLeast(nodes.length, 11);
 
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText('/.*\\.svg/');
     nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(10);
+    assert.lengthOf(nodes, 10);
   });
 
   it('can match no requests by regex in the log view', async ({devToolsPage, inspectedPage}) => {
@@ -121,12 +121,12 @@ describe('The Network Tab', function() {
         `requests.html?num=3&cache=force-cache&nocache=${Math.random()}`, devToolsPage, inspectedPage);
     await devToolsPage.typeText('-is:from-cache');
     let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(7);
+    assert.lengthOf(nodes, 7);
 
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText('is:from-cache');
     nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(3);
+    assert.lengthOf(nodes, 3);
     await setPersistLog(false, devToolsPage);
   });
 
@@ -144,7 +144,7 @@ describe('The Network Tab', function() {
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText('scheme:https');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(11);
+    assert.isAtLeast(nodes.length, 11);
   });
 
   it('require operator to filter by domain', async ({devToolsPage, inspectedPage}) => {
@@ -155,7 +155,7 @@ describe('The Network Tab', function() {
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText('domain:localhost');
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(11);
+    assert.isAtLeast(nodes.length, 11);
   });
 
   it('can filter by partial URL in the log view', async ({devToolsPage, inspectedPage}) => {
@@ -163,7 +163,7 @@ describe('The Network Tab', function() {
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText(`https://localhost:${inspectedPage.serverPort}`);
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(11);
+    assert.isAtLeast(nodes.length, 11);
   });
 
   it('can reverse filter text in the log view', async ({devToolsPage, inspectedPage}) => {
@@ -172,7 +172,7 @@ describe('The Network Tab', function() {
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
     const output = [...RESULTS];
     output.splice(8, 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(output.length);
+    assert.isAtLeast(nodes.length, output.length);
   });
 
   it('can reverse filter regex in the log view', async ({devToolsPage, inspectedPage}) => {
@@ -181,69 +181,69 @@ describe('The Network Tab', function() {
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
     const output = [...RESULTS];
     output.splice(7, 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(output.length);
+    assert.isAtLeast(nodes.length, output.length);
   });
 
   it('can invert text filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('5');
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
+    assert.isTrue(await checkboxIsChecked(invertCheckbox));
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
     const output = [...RESULTS];
     output.splice(6, 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(output.length);
+    assert.isAtLeast(nodes.length, output.length);
     // Cleanup
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
   });
 
   it('can invert regex filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('/4/');
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
+    assert.isTrue(await checkboxIsChecked(invertCheckbox));
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 10);
     const output = [...RESULTS];
     output.splice(5, 1);
-    expect(nodes.length).to.be.greaterThanOrEqual(output.length);
+    assert.isAtLeast(nodes.length, output.length);
     // Cleanup
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
   });
 
   it('can invert negated text filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('-10');
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
+    assert.isTrue(await checkboxIsChecked(invertCheckbox));
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(1);
-    expect(await elementTextContent(nodes[0])).to.equal(RESULTS[0]);
+    assert.lengthOf(nodes, 1);
+    assert.strictEqual(await elementTextContent(nodes[0]), RESULTS[0]);
     // Cleanup
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
   });
 
   it('can invert negated regex filters', async ({devToolsPage, inspectedPage}) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
     const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
     await devToolsPage.typeText('-/10/');
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
+    assert.isTrue(await checkboxIsChecked(invertCheckbox));
     const nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    expect(nodes.length).to.equal(1);
-    expect(await elementTextContent(nodes[0])).to.equal(RESULTS[0]);
+    assert.lengthOf(nodes, 1);
+    assert.strictEqual(await elementTextContent(nodes[0]), RESULTS[0]);
     // Cleanup
     await invertCheckbox.click();
-    expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+    assert.isFalse(await checkboxIsChecked(invertCheckbox));
   });
 
   it('can persist the invert checkbox', async ({devToolsPage, inspectedPage}) => {
@@ -251,23 +251,23 @@ describe('The Network Tab', function() {
     // Start with invert disabled, then enable it.
     {
       const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-      expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+      assert.isFalse(await checkboxIsChecked(invertCheckbox));
       await invertCheckbox.click();
-      expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
+      assert.isTrue(await checkboxIsChecked(invertCheckbox));
     }
     // Verify persistence when enabled.
     await devToolsPage.reloadWithParams({panel: 'network'});
     {
       const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-      expect(await checkboxIsChecked(invertCheckbox)).to.equal(true);
+      assert.isTrue(await checkboxIsChecked(invertCheckbox));
       await invertCheckbox.click();
-      expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+      assert.isFalse(await checkboxIsChecked(invertCheckbox));
     }
     // Verify persistence when disabled.
     await devToolsPage.reloadWithParams({panel: 'network'});
     {
       const invertCheckbox = await (await devToolsPage.waitForAria('Invert')).toElement('input');
-      expect(await checkboxIsChecked(invertCheckbox)).to.equal(false);
+      assert.isFalse(await checkboxIsChecked(invertCheckbox));
     }
   });
 });

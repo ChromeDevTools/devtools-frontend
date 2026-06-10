@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -42,8 +42,8 @@ describe('RequestPreviewView', () => {
     const component = renderPreviewView(request);
     const widget = await component.showPreview();
     const frame = widget.contentElement.querySelector('iframe');
-    expect(frame).to.be.not.null;
-    expect(frame?.getAttribute('csp')).to.eql('default-src \'none\';img-src data:;style-src \'unsafe-inline\'');
+    assert.isNotNull(frame);
+    assert.strictEqual(frame?.getAttribute('csp'), 'default-src \'none\';img-src data:;style-src \'unsafe-inline\'');
     component.detach();
   });
 

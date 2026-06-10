@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {expectConsoleLogs} from '../../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
@@ -443,7 +443,7 @@ describe('NetworkAnalyzer', () => {
       const requests = await createRequests(this, trace);
       const result = NetworkAnalyzer.computeRTTAndServerResponseTime(requests);
 
-      expect(result.rtt).to.be.closeTo(0.082, 0.001);
+      assert.closeTo(result.rtt, 0.082, 0.001);
       assert.deepEqual([...result.additionalRttByOrigin.entries()], [
         [
           'https://www.paulirish.com',

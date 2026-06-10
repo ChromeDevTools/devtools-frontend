@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -362,7 +362,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         const nextInput = await view.nextInput;
         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
         assert.isTrue(nextInput.props.isContextSelected);
-        expect(nextInput.props.context?.getItem()).equals(contextItem);
+        assert.strictEqual(nextInput.props.context?.getItem(), contextItem);
       });
 
       it(`should update the selected ${test.name} context whenever flavor changes`, async () => {
@@ -381,7 +381,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         nextInput = await view.nextInput;
         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
         assert.isTrue(nextInput.props.isContextSelected);
-        expect(nextInput.props.context?.getItem()).equals(contextItem);
+        assert.strictEqual(nextInput.props.context?.getItem(), contextItem);
       });
 
       it(`should ignore ${test.name} flavor change after the panel was hidden`, async () => {

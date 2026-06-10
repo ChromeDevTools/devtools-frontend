@@ -13,8 +13,10 @@ const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';
 const EDITOR_ADD_BUTTON_SELECTOR = '.editor-buttons > devtools-button:nth-of-type(2)';
 
+const UA_INPUT_SELECTOR = 'input[name="user-agent"], input[aria-label="User agent string"]';
+
 describe('Custom device UA override', () => {
-  it('requires a non-empty user agent when adding a custom device', async ({devToolsPage, inspectedPage}) => {
+  it('pre-populates the user agent and enforces a non-empty value', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goTo('about:blank');
     await devToolsPage.waitFor('.tabbed-pane-left-toolbar');
     await openDeviceToolbar(devToolsPage, inspectedPage);
@@ -30,14 +32,29 @@ describe('Custom device UA override', () => {
     await devToolsPage.typeText('1080');
     await devToolsPage.tabForward();  // Focus DPR.
     await devToolsPage.typeText('1.0');
-    await devToolsPage.tabForward();  // Focus UA string (leave empty first).
+
+    const uaInput = await devToolsPage.waitFor(UA_INPUT_SELECTOR);
+    const prefilled = await uaInput.evaluate(input => (input as HTMLInputElement).value);
+    assert.isNotEmpty(prefilled, 'UA string field should be pre-populated with the default UA');
 
     const addButton = await devToolsPage.waitFor(EDITOR_ADD_BUTTON_SELECTOR);
-    assert.isTrue(
-        await addButton.evaluate(button => Boolean((button as HTMLElement & {disabled?: boolean}).disabled)),
-        'Add button should be disabled for empty UA');
+    assert.isFalse(await addButton.evaluate(button => Boolean((button as HTMLElement & {disabled?: boolean}).disabled)),
+                   'Add button should be enabled when UA is pre-populated');
 
-    await devToolsPage.typeText('Test device browser 1.0');
+    await uaInput.evaluate(input => {
+      (input as HTMLInputElement).value = '';
+      input.dispatchEvent(new Event('input', {bubbles: true}));
+      input.dispatchEvent(new Event('change', {bubbles: true}));
+    });
+
+    assert.isTrue(await addButton.evaluate(button => Boolean((button as HTMLElement & {disabled?: boolean}).disabled)),
+                  'Add button should be disabled when UA is cleared');
+
+    await uaInput.evaluate((input, value) => {
+      (input as HTMLInputElement).value = value as string;
+      input.dispatchEvent(new Event('input', {bubbles: true}));
+      input.dispatchEvent(new Event('change', {bubbles: true}));
+    }, prefilled);
 
     assert.isFalse(
         await addButton.evaluate(button => Boolean((button as HTMLElement & {disabled?: boolean}).disabled)),

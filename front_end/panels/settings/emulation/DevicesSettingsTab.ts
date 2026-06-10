@@ -177,6 +177,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     device.horizontal.height = 400;
     device.vertical.width = 400;
     device.vertical.height = 700;
+    device.userAgent = navigator.userAgent;
     this.#customDeviceList.addNewItem(this.emulatedDevicesList.custom().length, device);
   }
 

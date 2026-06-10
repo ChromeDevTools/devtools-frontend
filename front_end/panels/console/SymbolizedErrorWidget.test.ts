@@ -8,11 +8,13 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -127,6 +129,32 @@ describe('SymbolizedErrorWidget', function() {
     await widget.updateComplete;
 
     await assertScreenshot('console/symbolized-unparsable-error.png');
+  });
+
+  it('renders a SymbolizedErrorObject for a SyntaxError', async () => {
+    const uiLocation = {
+      uiSourceCode: {
+        url: () => 'http://example.com/script.js',
+        mimeType: () => 'text/javascript',
+      },
+      lineNumber: 0,
+      columnNumber: 5,
+      linkText: () => 'script.js:1:6',
+      isIgnoreListed: () => false,
+    } as unknown as Workspace.UISourceCode.UILocation;
+
+    const stackTrace = StubStackTrace.create([]) as unknown as StackTrace.StackTrace.ParsedErrorStackTrace;
+    const error = new Bindings.SymbolizedError.SymbolizedErrorObject('SyntaxError: Unexpected token', stackTrace, null);
+    sinon.stub(error, 'syntaxErrorLocation').get(() => uiLocation);
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = error;
+    renderElementIntoDOM(widget,
+                         {includeCommonStyles: true, extraStyles: [consoleViewStyles, symbolizedErrorWidgetStyles]});
+    await widget.updateComplete;
+
+    await assertScreenshot('console/symbolized-syntax-error.png');
   });
 
   it('triggers a re-render when the SymbolizedError updates', async () => {

@@ -126,7 +126,14 @@ const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): v
       maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
       ignoreListManager: input.ignoreListManager,
     };
-    const headerContent = html`${error.message}`;
+
+    let headerContent = html`${error.message}`;
+    if (error.syntaxErrorLocation) {
+      const linkElement = Components.Linkifier.Linkifier.linkifyUILocation(error.syntaxErrorLocation, linkOptions);
+      linkElement.tabIndex = -1;
+      headerContent = html`${error.message} (at ${linkElement})`;
+    }
+
     const header = renderHeader(headerContent, isCause);
     const syncFrames = error.stackTrace.syncFragment.frames;
     // clang-format off

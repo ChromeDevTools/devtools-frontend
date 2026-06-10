@@ -317,7 +317,7 @@ export class CookieItemsView extends UI.Widget.VBox {
   }
 
   private updateAiAssistanceContext(cookie: SDK.Cookie.Cookie|null): void {
-    if (!cookie || cookie.httpOnly()) {
+    if (cookie && cookie.httpOnly()) {
       UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
     }
@@ -332,7 +332,7 @@ export class CookieItemsView extends UI.Widget.VBox {
       return;
     }
 
-    const storageItem = new AiAssistanceModel.StorageItem.CookieItem(mainPageOrigin, this.cookieDomain, cookie.name());
+    const storageItem = new AiAssistanceModel.StorageItem.CookieItem(mainPageOrigin, this.cookieDomain, cookie?.name());
     UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, storageItem);
   }
 

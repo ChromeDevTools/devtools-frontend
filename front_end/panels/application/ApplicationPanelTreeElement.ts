@@ -2,15 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable @devtools/no-lit-render-outside-of-view */
+
+import '../../ui/components/buttons/buttons.js';
+
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import type {ResourcesPanel} from './ResourcesPanel.js';
+
+const {html} = Lit;
 
 export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   protected readonly resourcesPanel: ResourcesPanel;
   private customItemURL?: Platform.DevToolsPath.UrlString;
+  protected aiButtonContainer?: HTMLElement;
 
   constructor(resourcesPanel: ResourcesPanel, title: string, expandable: boolean, jslogContext: string) {
     super(title, expandable, jslogContext);
@@ -55,6 +64,36 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
 
   showView(view: UI.Widget.AnyWidget|null): void {
     this.resourcesPanel.showView(view);
+  }
+
+  protected createAiButton(storageItem: AiAssistance.StorageItem.StorageItem): void {
+    const STORAGE_FLOATING_BUTTON_ACTION_ID = 'ai-assistance.storage-floating-button';
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+    if (!actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID)) {
+      return;
+    }
+    const action = actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID);
+    if (!this.aiButtonContainer) {
+      this.aiButtonContainer = this.listItemElement.createChild('span', 'ai-button-container');
+      const icon = AiAssistance.AiUtils.getIconName();
+      const onClick = (ev: Event): void => {
+        ev.stopPropagation();
+        UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
+        void action.execute();
+      };
+
+      // clang-format off
+      Lit.render(html`
+            <devtools-floating-button
+              icon-name=${icon}
+              title=${action.title()}
+              jslogcontext="ask-ai"
+              @click=${onClick}
+              @mousedown=${(ev: Event) => ev.stopPropagation()}>
+            </devtools-floating-button>
+          `, this.aiButtonContainer);
+      // clang-format on
+    }
   }
 }
 

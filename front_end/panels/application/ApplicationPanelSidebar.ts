@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
@@ -1762,9 +1763,29 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     return false;
   }
 
+  /**
+   * Resolves the DOM storage partition context (`localStorage` or `sessionStorage`)
+   * associated with this tree element for AI assistance.
+   */
+  #getStorageItem(): AiAssistance.StorageItem.StorageItem|null {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin =
+        target?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : '';
+    if (!mainPageOrigin || !this.domStorage.storageKey) {
+      return null;
+    }
+    const origin = SDK.StorageKeyManager.parseStorageKey(this.domStorage.storageKey).origin;
+    const storageType = this.domStorage.isLocalStorage ? 'localStorage' : 'sessionStorage';
+    return new AiAssistance.StorageItem.DOMStorageItem(mainPageOrigin, origin, this.domStorage.storageKey, storageType);
+  }
+
   override onattach(): void {
     super.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
+    const storageItem = this.#getStorageItem();
+    if (storageItem) {
+      this.createAiButton(storageItem);
+    }
   }
 
   private handleContextMenuEvent(event: MouseEvent): void {
@@ -1851,9 +1872,27 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     return this.#cookieDomain;
   }
 
+  /**
+   * Resolves the cookie domain security context associated with this tree element
+   * for AI assistance.
+   */
+  #getStorageItem(): AiAssistance.StorageItem.StorageItem|null {
+    const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin =
+        primaryTarget?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(primaryTarget.inspectedURL()) : '';
+    if (!mainPageOrigin || !this.#cookieDomain) {
+      return null;
+    }
+    return new AiAssistance.StorageItem.CookieItem(mainPageOrigin, this.#cookieDomain);
+  }
+
   override onattach(): void {
     super.onattach();
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
+    const storageItem = this.#getStorageItem();
+    if (storageItem) {
+      this.createAiButton(storageItem);
+    }
   }
 
   private handleContextMenuEvent(event: Event): void {

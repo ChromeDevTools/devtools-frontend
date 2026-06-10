@@ -4,16 +4,20 @@
 
 import {assert} from 'chai';
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget, expectConsoleLogs, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
@@ -643,5 +647,64 @@ describeWithMockConnection('IndexedDBTreeElement live update', () => {
     model.dispatchEventToListeners(Application.IndexedDBModel.Events.DatabaseRemoved, {databaseId: db2Id, model});
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.strictEqual(indexedDBTreeElement.childCount(), 0);
+  });
+});
+
+describe('Ask-AI Hover Floating Button', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+  let target: SDK.Target.Target;
+  let panel: Application.ResourcesPanel.ResourcesPanel;
+
+  before(() => {
+    UI.ActionRegistration.registerActionExtension({
+      actionId: 'ai-assistance.storage-floating-button',
+      category: UI.ActionRegistration.ActionCategory.GLOBAL,
+      title: () => 'Ask Ai' as Common.UIString.LocalizedString,
+    });
+  });
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    target = universe.createTarget({url: urlString`http://example.com/`});
+    sinon.stub(target, 'inspectedURL').returns(urlString`http://example.com/`);
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
+
+    // Bridge legacy SDK and Settings singletons for legacy tree elements
+    const {targetManager, settings} = universe;
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(settings);
+
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
+
+    panel = sinon.createStubInstance(Application.ResourcesPanel.ResourcesPanel);
+  });
+
+  it('adds hover Ask-AI button for DOMStorageTreeElement', () => {
+    const domStorageModel = target.model(SDK.DOMStorageModel.DOMStorageModel);
+    assert.exists(domStorageModel);
+    const domStorage = new SDK.DOMStorageModel.DOMStorage(domStorageModel, 'http://example.com/', true);
+    const treeElement = new Application.ApplicationPanelSidebar.DOMStorageTreeElement(panel, domStorage);
+    treeElement.onattach();
+
+    const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button');
+    assert.exists(floatingButton, 'Expected Ask-AI floating button on tree element');
+  });
+
+  it('adds hover Ask-AI button for CookieTreeElement', () => {
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const frame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+    frame.resourceTreeModel.returns(resourceTreeModel);
+    const cookieUrl = new Common.ParsedURL.ParsedURL('https://example.com/');
+    const treeElement = new Application.ApplicationPanelSidebar.CookieTreeElement(panel, frame, cookieUrl);
+    treeElement.onattach();
+    const floatingButton = treeElement.listItemElement.querySelector('devtools-floating-button') ||
+        treeElement.listItemElement.querySelector('button');
+    assert.exists(floatingButton, 'Expected Ask-AI floating button on tree element');
   });
 });

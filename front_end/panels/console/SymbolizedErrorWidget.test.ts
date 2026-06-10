@@ -398,4 +398,43 @@ describe('SymbolizedErrorWidget', function() {
       await assertScreenshot('console/symbolized-error-with-ignored-frame-shown.png');
     });
   });
+
+  it('prefers rawName over name when rendering the function name', async () => {
+    const mockFrame = {
+      name: 'translatedName',
+      rawName: 'originalName',
+      line: 0,
+      column: 0,
+      url: 'http://example.com/a.js',
+    } as unknown as StackTrace.StackTrace.ParsedErrorStackFrame;
+
+    const mockStackTrace = {
+      syncFragment: {
+        frames: [mockFrame],
+      },
+      asyncFragments: [],
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    } as unknown as StackTrace.StackTrace.ParsedErrorStackTrace;
+
+    const mockError = {
+      message: 'Error message',
+      stackTrace: mockStackTrace,
+      cause: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEventToListeners: () => {},
+    } as unknown as Bindings.SymbolizedError.SymbolizedError;
+
+    const widget = new Console.SymbolizedErrorWidget.SymbolizedErrorWidget();
+    widget.ignoreListManager = universe.ignoreListManager;
+    widget.error = mockError;
+
+    renderElementIntoDOM(widget);
+    await widget.updateComplete;
+
+    const text = getRenderedText(widget);
+    assert.include(text, 'originalName');
+    assert.notInclude(text, 'translatedName');
+  });
 });

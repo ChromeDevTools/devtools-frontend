@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type {FunctionCallHandlerResult, FunctionHandlerOptions,} from '../agents/AiAgent.js';
 import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
-import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 
 import {
   type Tool,
@@ -108,14 +107,9 @@ const data = {
       context: ToolContext,
       options?: FunctionHandlerOptions,
       ): Promise<FunctionCallHandlerResult<unknown>> {
-    const activeContext = context.conversationContext;
-    if (!activeContext || !(activeContext instanceof DOMNodeContext)) {
-      return {error: 'Error: Could not find the currently selected element.'};
-    }
-
-    const selectedNode = activeContext.getItem();
-    if (!selectedNode) {
-      return {error: 'Error: Could not find the currently selected element.'};
+    const executionNode = context.getExecutionContextNode?.() ?? null;
+    if (!executionNode) {
+      return {error: 'Error: Could not find the context node for execution.'};
     }
 
     const executionMode = Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??
@@ -129,7 +123,7 @@ const data = {
 
     const executor = new JavascriptExecutor({
       executionMode,
-      getContextNode: () => selectedNode,
+      getContextNode: () => executionNode,
       createExtensionScope,
       changes,
     },

@@ -13,6 +13,8 @@ import {ChangeManager} from '../ChangeManager.js';
 import {LighthouseFormatter} from '../data_formatters/LighthouseFormatter.js';
 import {debugLog} from '../debug.js';
 import {ExtensionScope} from '../ExtensionScope.js';
+import {ToolName} from '../tools/Tool.js';
+import {ToolRegistry} from '../tools/ToolRegistry.js';
 
 import {
   AiAgent,
@@ -25,10 +27,8 @@ import {
 } from './AiAgent.js';
 import {
   type CreateExtensionScopeFunction,
-  executeJavaScriptFunction,
   type ExecuteJsAgentOptions,
   executeJsCode,
-  JavascriptExecutor
 } from './ExecuteJavascript.js';
 
 /**
@@ -117,7 +117,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 
   #execJs: typeof executeJsCode;
-  #javascriptExecutor: JavascriptExecutor;
   #changes: ChangeManager;
   #createExtensionScope: CreateExtensionScopeFunction;
 
@@ -129,14 +128,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
                                    return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode());
                                  });
-    this.#javascriptExecutor = new JavascriptExecutor(
-        {
-          executionMode: this.executionMode,
-          getContextNode: () => this.#getDocumentBodyNode(),
-          createExtensionScope: this.#createExtensionScope.bind(this),
-          changes: this.#changes,
-        },
-        this.#execJs);
   }
 
   get userTier(): string|undefined {
@@ -271,16 +262,31 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       }
     });
 
-    const executeJsDeclaration = executeJavaScriptFunction(this.#javascriptExecutor);
-    this.declareFunction('executeJavaScript', {
-      ...executeJsDeclaration,
-      handler: async (params, options) => {
+    const executeJsTool = ToolRegistry.get(ToolName.EXECUTE_JAVASCRIPT);
+    if (!executeJsTool) {
+      throw new Error('Required tool "executeJavaScript" not found');
+    }
+    this.declareFunction(executeJsTool.name, {
+      description: executeJsTool.description,
+      parameters: executeJsTool.parameters,
+      displayInfoFromArgs: executeJsTool.displayInfoFromArgs,
+      handler: async (args, options) => {
         if (isImported) {
           return {
             error: 'Cannot use this tool on an imported file.',
           };
         }
-        return await executeJsDeclaration.handler(params, options);
+        return await executeJsTool.handler(
+            args,
+            {
+              conversationContext: this.context ?? null,
+              changeManager: this.#changes,
+              createExtensionScope: this.#createExtensionScope.bind(this),
+              execJs: this.#execJs,
+              getExecutionContextNode: () => this.#getDocumentBodyNode(),
+            },
+            options,
+        );
       },
     });
 

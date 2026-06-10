@@ -211,6 +211,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
             changeManager: this.#changes,
             createExtensionScope: this.#createExtensionScope.bind(this),
             execJs: this.#execJs,
+            getExecutionContextNode: () => this.context?.getItem() ?? null,
           },
           options,
           ),

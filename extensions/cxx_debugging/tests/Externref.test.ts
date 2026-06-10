@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import {Debugger} from './RealBackend.js';
 import {createWorkerPlugin, makeURL, nonNull} from './TestUtils.js';
@@ -39,24 +39,24 @@ describe('Externref', () => {
 
     const variables = await plugin.listVariablesInScope(rawLocation);
 
-    expect(variables.map(v => v.name).sort()).to.deep.equal(['x', 'y']);
+    assert.deepEqual(variables.map(v => v.name).sort(), ['x', 'y']);
 
     {
       const value = nonNull(await plugin.evaluate('x', rawLocation, debug.stopIdForCallFrame(callFrame)));
       assert(value.type === 'reftype');
       const {subtype, description, preview} = await debug.getRemoteObject(callFrame, value);
-      expect(subtype).to.eql('wasmvalue');
-      expect(description).to.eql('externref');
-      expect(preview?.properties).to.eql([{name: 'value', type: 'object', value: 'Object'}]);
+      assert.deepEqual(subtype, 'wasmvalue');
+      assert.deepEqual(description, 'externref');
+      assert.deepEqual(preview?.properties, [{name: 'value', type: 'object', value: 'Object'}]);
     }
 
     {
       const value = nonNull(await plugin.evaluate('y', rawLocation, debug.stopIdForCallFrame(callFrame)));
       assert(value.type === 'reftype');
       const {subtype, description, preview} = await debug.getRemoteObject(callFrame, value);
-      expect(subtype).to.eql('wasmvalue');
-      expect(description).to.eql('externref');
-      expect(preview?.properties).to.eql([{name: 'value', type: 'string', value: 'test'}]);
+      assert.deepEqual(subtype, 'wasmvalue');
+      assert.deepEqual(description, 'externref');
+      assert.deepEqual(preview?.properties, [{name: 'value', type: 'string', value: 'test'}]);
     }
 
     await debug.resume();

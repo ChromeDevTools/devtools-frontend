@@ -13,7 +13,11 @@ import type {HostInterface} from '../src/WorkerRPC.js';
 import type {Debugger} from './RealBackend.js';
 
 export class TestHostInterface implements HostInterface {
-  getWasmLinearMemory(_offset: number, _length: number, _stopId: unknown): ArrayBuffer {
+  getWasmLinearMemory(
+      _offset: number,
+      _length: number,
+      _stopId: unknown,
+      ): ArrayBuffer {
     throw new Error('Method not implemented.');
   }
   getWasmLocal(_local: number, _stopId: unknown): WasmValue {
@@ -27,7 +31,8 @@ export class TestHostInterface implements HostInterface {
   }
   reportResourceLoad(
       _resourceUrl: string,
-      _status: {success: boolean, errorMessage?: string|undefined, size?: number|undefined}): Promise<void> {
+      _status: {success: boolean, errorMessage?: string|undefined, size?: number|undefined},
+      ): Promise<void> {
     return Promise.resolve();
   }
 }
@@ -36,7 +41,9 @@ export function makeURL(path: string): string {
   return new URL(path, document.baseURI).href;
 }
 
-export async function createWorkerPlugin(debug?: Debugger): Promise<Chrome.DevTools.LanguageExtensionPlugin> {
+export async function createWorkerPlugin(
+    debug?: Debugger,
+    ): Promise<Chrome.DevTools.LanguageExtensionPlugin> {
   return await WorkerPlugin.create([], true).then(p => {
     if (debug) {
       p.getWasmLinearMemory = debug.getWasmLinearMemory.bind(debug);
@@ -72,11 +79,12 @@ export function nonNull<T>(value?: T|null): T {
   return value;
 }
 
-export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null):
-    Chrome.DevTools.RemoteObject {
+export function remoteObject(
+    value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null,
+    ): Chrome.DevTools.RemoteObject {
   assert.exists(value);
-  assert(value.type !== 'reftype');
-  return value;
+  assert.notStrictEqual(value.type, 'reftype');
+  return value as Chrome.DevTools.RemoteObject;
 }
 
 export class TestWasmInterface implements WasmInterface {
@@ -168,7 +176,10 @@ export class TestValue implements Value {
     content.setFloat64(0, value, true);
     return new TestValue(content, typeName);
   }
-  static pointerTo(pointeeOrElements: TestValue|TestValue[], address?: number): TestValue {
+  static pointerTo(
+      pointeeOrElements: TestValue|TestValue[],
+      address?: number,
+      ): TestValue {
     const content = new DataView(new ArrayBuffer(4));
     const elements = Array.isArray(pointeeOrElements) ? pointeeOrElements : [pointeeOrElements];
     address = address ?? elements[0].location;
@@ -178,10 +189,17 @@ export class TestValue implements Value {
     for (let i = 0; i < elements.length; ++i) {
       members[i] = elements[i];
     }
-    const value = new TestValue(content, `${elements[0].typeNames[0]}${space}*`, members);
+    const value = new TestValue(
+        content,
+        `${elements[0].typeNames[0]}${space}*`,
+        members,
+    );
     return value;
   }
-  static fromMembers(typeName: string, members: {[key: string]: TestValue, [key: number]: TestValue}): TestValue {
+  static fromMembers(
+      typeName: string,
+      members: {[key: string]: TestValue, [key: number]: TestValue},
+      ): TestValue {
     return new TestValue(new DataView(new ArrayBuffer(0)), typeName, members);
   }
 
@@ -236,8 +254,10 @@ export class TestValue implements Value {
   }
 
   constructor(
-      content: DataView<ArrayBuffer>, typeName: string,
-      members?: {[key: string]: TestValue, [key: number]: TestValue}) {
+      content: DataView<ArrayBuffer>,
+      typeName: string,
+      members?: {[key: string]: TestValue, [key: number]: TestValue},
+  ) {
     this.location = 0;
     this.size = content.byteLength;
     this.typeNames = [typeName];

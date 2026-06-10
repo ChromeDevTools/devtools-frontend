@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {assert} from 'chai';
 
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {createEmbindPool} from '../src/DWARFSymbols.js';
@@ -184,7 +184,7 @@ describe('Interpreter', () => {
     }
 
     const variables = await plugin.listVariablesInScope(rawLocation);
-    expect(variables.map(v => v.name).sort()).to.deep.equal(['n', 'sum', 'x']);
+    assert.deepEqual(variables.map(v => v.name).sort(), ['n', 'sum', 'x']);
 
     if (!plugin.evaluate) {
       throw new Error('evaluate is undefined');
@@ -192,27 +192,27 @@ describe('Interpreter', () => {
 
     {
       const {value} = remoteObject(await plugin.evaluate('n + sum', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      expect(value).to.eql(55);
+      assert.deepEqual(value, 55);
     }
     {
       const {value} =
           remoteObject(await plugin.evaluate('(wchar_t)0x41414141', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      expect(value).to.eql('U+41414141');
+      assert.deepEqual(value, 'U+41414141');
     }
     {
       const {value} =
           remoteObject(await plugin.evaluate('(char16_t)0x4141', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      expect(value).to.eql('䅁');
+      assert.deepEqual(value, '䅁');
     }
     {
       const {value} =
           remoteObject(await plugin.evaluate('(char32_t)0x41414141', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      expect(value).to.eql('U+41414141');
+      assert.deepEqual(value, 'U+41414141');
     }
     {
       const {value} =
           remoteObject(await plugin.evaluate('(char32_t)0x4141', rawLocation, debug.stopIdForCallFrame(callFrame)));
-      expect(value).to.eql('䅁');
+      assert.deepEqual(value, '䅁');
     }
 
     await debug.resume();

@@ -721,7 +721,8 @@ export default defineConfig([
       'test/**/*.ts',
       '**/testing/*.ts',
       'scripts/eslint_rules/test/**/*',
-      'extensions/cxx_debugging/e2e/**',
+      'extensions/cxx_debugging/e2e/**/*.ts',
+      'extensions/cxx_debugging/tests/**/*.ts',
     ],
 
     rules: {

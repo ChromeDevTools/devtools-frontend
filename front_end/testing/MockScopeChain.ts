@@ -27,6 +27,7 @@ interface ScriptDescription {
   isContentScript?: boolean;
   embedderName?: string;
   executionContextId?: number;
+  scriptLanguage?: Protocol.Debugger.ScriptLanguage;
 }
 
 interface SetBreakpointByUrlResponse {
@@ -147,6 +148,7 @@ export class MockProtocolBackend {
       hasSourceURL: Boolean(scriptDescription.hasSourceURL),
       ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
       embedderName: scriptDescription.embedderName,
+      scriptLanguage: scriptDescription.scriptLanguage,
     });
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
@@ -530,23 +532,23 @@ export class MockDebuggerBackend {
       endColumn += startColumn;
     }
 
-    this.cdpConnection.dispatchEvent(
-        'Debugger.scriptParsed', {
-          scriptId: scriptId as Protocol.Runtime.ScriptId,
-          url: scriptDescription.url,
-          startLine,
-          startColumn,
-          endLine,
-          endColumn,
-          buildId: '',
-          executionContextId: (scriptDescription?.executionContextId ?? 1) as Protocol.Runtime.ExecutionContextId,
-          executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
-          hash: '',
-          hasSourceURL: Boolean(scriptDescription.hasSourceURL),
-          ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
-          embedderName: scriptDescription.embedderName,
-        },
-        target.sessionId);
+    this.cdpConnection.dispatchEvent('Debugger.scriptParsed', {
+      scriptId: scriptId as Protocol.Runtime.ScriptId,
+      url: scriptDescription.url,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      buildId: '',
+      executionContextId: (scriptDescription?.executionContextId ?? 1) as Protocol.Runtime.ExecutionContextId,
+      executionContextAuxData: {isDefault: !scriptDescription.isContentScript},
+      hash: '',
+      hasSourceURL: Boolean(scriptDescription.hasSourceURL),
+      ...(sourceMap ? {sourceMapURL: sourceMap.url} : null),
+      embedderName: scriptDescription.embedderName,
+      scriptLanguage: scriptDescription.scriptLanguage,
+    },
+                                     target.sessionId);
 
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
     const scriptObject = debuggerModel.scriptForId(scriptId);

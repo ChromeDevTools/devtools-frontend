@@ -107,7 +107,8 @@ export class DefaultScriptMapping implements DebuggerSourceMapping {
     }
     this.#uiSourceCodeToScript.set(uiSourceCode, script);
     this.#scriptToUISourceCode.set(script, uiSourceCode);
-    this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
+    const mimeType = script.isWasm() ? 'application/wasm' : 'text/javascript';
+    this.#project.addUISourceCodeWithProvider(uiSourceCode, script, null, mimeType);
     void this.#debuggerWorkspaceBinding.updateLocations(script);
   }
 

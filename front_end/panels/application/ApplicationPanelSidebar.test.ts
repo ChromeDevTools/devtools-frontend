@@ -151,6 +151,18 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     assert.isUndefined(sidebar.webMcpTreeElement);
   });
 
+  it('shows Ads panel only if the Ads panel config is enabled', async () => {
+    updateHostConfig({devToolsAdsPanel: {enabled: true}});
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    let sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+    assert.exists(sidebar.adsTreeElement);
+
+    updateHostConfig({devToolsAdsPanel: {enabled: false}});
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+    assert.isUndefined(sidebar.adsTreeElement);
+  });
+
   it('shows cookies for all frames', async () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();

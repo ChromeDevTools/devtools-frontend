@@ -637,6 +637,10 @@ interface DevToolsWebMCPSupport {
   enabled: boolean;
 }
 
+interface DevToolsAdsPanel {
+  enabled: boolean;
+}
+
 interface DevToolsPlusButton {
   enabled: boolean;
 }
@@ -695,6 +699,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsGeminiRebranding: HostConfigGeminiRebranding,
   devToolsProtocolMonitor: DevToolsProtocolMonitor,
   devToolsWebMCPSupport: DevToolsWebMCPSupport,
+  devToolsAdsPanel: DevToolsAdsPanel,
   devToolsUseGcaApi: UseGcaApi,
   devToolsPlusButton: DevToolsPlusButton,
 }>;

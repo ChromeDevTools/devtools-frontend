@@ -52,6 +52,7 @@ import {BackForwardCacheTreeElement} from './BackForwardCacheTreeElement.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
+import * as ApplicationComponents from './components/components.js';
 import {DeviceBoundSessionsModel} from './DeviceBoundSessionsModel.js';
 import {RootTreeElement as DeviceBoundSessionsRootTreeElement} from './DeviceBoundSessionsTreeElement.js';
 import {
@@ -110,6 +111,10 @@ const UIStrings = {
    * @description Text in Application Panel Sidebar of the Application panel
    */
   application: 'Application',
+  /**
+   * @description Text in Application Panel Sidebar of the Application panel
+   */
+  ads: 'Ads',
   /**
    * @description Text in Application Panel Sidebar of the Application panel
    */
@@ -354,6 +359,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   pushMessagingTreeElement: BackgroundServiceTreeElement;
   reportingApiTreeElement: ReportingApiTreeElement;
   webMcpTreeElement?: WebMCPTreeElement;
+  adsTreeElement?: ApplicationPanelTreeElement;
   deviceBoundSessionsRootTreeElement: DeviceBoundSessionsRootTreeElement|undefined;
   deviceBoundSessionsModel: DeviceBoundSessionsModel|undefined;
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
@@ -401,6 +407,25 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
       this.webMcpTreeElement = new WebMCPTreeElement(panel);
       this.applicationTreeElement.appendChild(this.webMcpTreeElement);
+    }
+
+    if (Root.Runtime.hostConfig.devToolsAdsPanel?.enabled) {
+      const adsTreeElement = new ApplicationPanelTreeElement(panel, i18nString(UIStrings.ads), false, 'ads');
+      const icon = createIcon('experiment');
+      adsTreeElement.setLeadingIcons([icon]);
+      adsTreeElement.itemURL = 'ads://' as Platform.DevToolsPath.UrlString;
+      let adsView: ApplicationComponents.AdsView.AdsView;
+      adsTreeElement.onselect = (selectedByUser?: boolean): boolean => {
+        ApplicationPanelTreeElement.prototype.onselect.call(adsTreeElement, selectedByUser);
+        if (!adsView) {
+          adsView = new ApplicationComponents.AdsView.AdsView();
+        }
+        adsTreeElement.showView(adsView);
+        UI.UIUserMetrics.UIUserMetrics.instance().panelShown('ads');
+        return false;
+      };
+      this.adsTreeElement = adsTreeElement;
+      this.applicationTreeElement.appendChild(this.adsTreeElement);
     }
 
     const storageSectionTitle = i18nString(UIStrings.storage);

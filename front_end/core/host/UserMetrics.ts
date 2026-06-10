@@ -571,8 +571,9 @@ export enum PanelCodes {
   'developer-resources' = 66,
   'autofill-view' = 67,
   freestyler = 68,
+  ads = 69,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 69,
+  MAX_VALUE = 70,
 }
 
 export enum MediaTypes {

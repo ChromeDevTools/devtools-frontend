@@ -7,6 +7,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import adsViewStyles from './adsView.css.js';
 
@@ -89,34 +90,36 @@ const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format off
   Lit.render(html`
     <style>${adsViewStyles}</style>
-    <dl class="metrics-container">
-      <div class="metric-box">
-        <dt class="metric-title">${i18nString(UIStrings.viewportAdDensity)}</dt>
-        <dd class="metric-value">
-          <span>${formatValue(metrics.viewportAdDensityByArea, true)}</span>
-          <span class="metric-average">${i18nString(UIStrings.average, {PH1: formatAverage(metrics.averageViewportAdDensityByArea, true)})}</span>
-        </dd>
-      </div>
-      <div class="metric-box">
-        <dt class="metric-title">${i18nString(UIStrings.viewportAdCount)}</dt>
-        <dd class="metric-value">
-          <span>${formatValue(metrics.viewportAdCount, false)}</span>
-          <span class="metric-average">${i18nString(UIStrings.average, {PH1: formatAverage(metrics.averageViewportAdCount, false)})}</span>
-        </dd>
-      </div>
-      <div class="metric-box">
-        <dt class="metric-title">${i18nString(UIStrings.totalCpuUsage)}</dt>
-        <dd class="metric-value">
-          <span>${formatCpu(metrics.totalAdCpuTime)}</span>
-        </dd>
-      </div>
-      <div class="metric-box">
-        <dt class="metric-title">${i18nString(UIStrings.totalNetworkUsage)}</dt>
-        <dd class="metric-value">
-          <span>${formatNetwork(metrics.totalAdNetworkBytes)}</span>
-        </dd>
-      </div>
-    </dl>
+    <div class="ads-view-container" jslog=${VisualLogging.pane('ads')}>
+      <dl class="metrics-container">
+        <div class="metric-box">
+          <dt class="metric-title">${i18nString(UIStrings.viewportAdDensity)}</dt>
+          <dd class="metric-value">
+            <span>${formatValue(metrics.viewportAdDensityByArea, true)}</span>
+            <span class="metric-average">${i18nString(UIStrings.average, {PH1: formatAverage(metrics.averageViewportAdDensityByArea, true)})}</span>
+          </dd>
+        </div>
+        <div class="metric-box">
+          <dt class="metric-title">${i18nString(UIStrings.viewportAdCount)}</dt>
+          <dd class="metric-value">
+            <span>${formatValue(metrics.viewportAdCount, false)}</span>
+            <span class="metric-average">${i18nString(UIStrings.average, {PH1: formatAverage(metrics.averageViewportAdCount, false)})}</span>
+          </dd>
+        </div>
+        <div class="metric-box">
+          <dt class="metric-title">${i18nString(UIStrings.totalCpuUsage)}</dt>
+          <dd class="metric-value">
+            <span>${formatCpu(metrics.totalAdCpuTime)}</span>
+          </dd>
+        </div>
+        <div class="metric-box">
+          <dt class="metric-title">${i18nString(UIStrings.totalNetworkUsage)}</dt>
+          <dd class="metric-value">
+            <span>${formatNetwork(metrics.totalAdNetworkBytes)}</span>
+          </dd>
+        </div>
+      </dl>
+    </div>
   `, target);
   // clang-format on
 };

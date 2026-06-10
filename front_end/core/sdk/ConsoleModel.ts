@@ -547,6 +547,7 @@ export interface ConsoleMessageDetails {
   context?: string;
   affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
+  exceptionDetails?: Protocol.Runtime.ExceptionDetails;
 }
 
 export class ConsoleMessage {
@@ -570,6 +571,7 @@ export class ConsoleMessage {
   #exceptionId?: number = undefined;
   #affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
+  readonly exceptionDetails?: Protocol.Runtime.ExceptionDetails;
 
   /**
    * The parent frame of the `console.log` call of logpoints or conditional breakpoints
@@ -600,6 +602,7 @@ export class ConsoleMessage {
     this.workerId = details?.workerId;
     this.#affectedResources = details?.affectedResources;
     this.category = details?.category;
+    this.exceptionDetails = details?.exceptionDetails;
 
     if (!this.#executionContextId && this.#runtimeModel) {
       if (this.scriptId) {
@@ -646,6 +649,7 @@ export class ConsoleMessage {
       executionContextId: exceptionDetails.executionContextId,
       scriptId: exceptionDetails.scriptId,
       affectedResources,
+      exceptionDetails,
     };
     return new ConsoleMessage(
         runtimeModel, Protocol.Log.LogEntrySource.Javascript, Protocol.Log.LogEntryLevel.Error,

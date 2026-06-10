@@ -105,10 +105,6 @@ function renderFrameSuffix(frame: StackTrace.StackTrace.ParsedErrorStackFrame): 
 
 const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): void => {
   const renderError = (error: Bindings.SymbolizedError.SymbolizedError, isCause: boolean): Lit.LitTemplate => {
-    if (error instanceof Bindings.SymbolizedError.SymbolizedSyntaxError) {
-      console.error('SymbolizedErrorWidget received an unsupported error type:', error);
-      return Lit.nothing;
-    }
     if (error instanceof Bindings.SymbolizedError.UnparsableError) {
       const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(
           error.errorStack,

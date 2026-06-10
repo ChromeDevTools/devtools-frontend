@@ -24,7 +24,6 @@ import {
   isErrorLike,
   type SymbolizedError,
   SymbolizedErrorObject,
-  SymbolizedSyntaxError,
   UnparsableError,
 } from './SymbolizedError.js';
 
@@ -238,14 +237,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       ]);
       fetchedExceptionDetails = details;
       causeRemoteObject = causeRemote;
-
-      if (remoteObject.className === 'SyntaxError' && fetchedExceptionDetails) {
-        const syntaxError = await SymbolizedSyntaxError.fromExceptionDetails(
-            remoteObject.runtimeModel().target(), this, fetchedExceptionDetails);
-        if (syntaxError) {
-          return syntaxError;
-        }
-      }
     } else if (remoteObject.type === 'string') {
       errorStack = remoteObject.description || '';
       if (!isErrorLike(errorStack)) {
@@ -271,6 +262,12 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
 
     const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(errorStack);
+
+    if (remoteObject.subtype === 'error' && remoteObject.className === 'SyntaxError' && fetchedExceptionDetails) {
+      return await SymbolizedErrorObject.createForSyntaxError(remoteObject.runtimeModel().target(), this, message,
+                                                              fetchedExceptionDetails, stackTrace, cause);
+    }
+
     return new SymbolizedErrorObject(message, stackTrace, cause);
   }
 

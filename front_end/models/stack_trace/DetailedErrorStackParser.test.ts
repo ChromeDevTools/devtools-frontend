@@ -178,7 +178,7 @@ describe('DetailedErrorStackParser', () => {
       assert.strictEqual(frames[0].parsedFrameInfo?.methodName, 'alias');
     });
 
-    it('parses wasm frames', () => {
+    it('parses wasm frames with function names', () => {
       const stack = `Error: foo
           at wasmModule.wasmFunc (http://www.example.org/script.js:wasm-function[123]:0xabc)`;
       const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(stack);
@@ -190,6 +190,22 @@ describe('DetailedErrorStackParser', () => {
       assert.strictEqual(frames[0].parsedFrameInfo?.wasmModuleName, 'wasmModule');
       assert.strictEqual(frames[0].parsedFrameInfo?.wasmFunctionIndex, 123);
       assert.strictEqual(frames[0].columnNumber, 0xabc);
+      assert.strictEqual(frames[0].lineNumber, 0);
+    });
+
+    it('parses wasm frames without function names', () => {
+      const stack = `Error: foo
+          at http://www.example.org/script.js:wasm-function[123]:0xabc`;
+      const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(stack);
+
+      assert.exists(frames);
+      assert.lengthOf(frames, 1);
+      assert.isTrue(frames[0].isWasm);
+      assert.strictEqual(frames[0].url, 'http://www.example.org/script.js');
+      assert.isUndefined(frames[0].parsedFrameInfo?.wasmModuleName);
+      assert.strictEqual(frames[0].parsedFrameInfo?.wasmFunctionIndex, 123);
+      assert.strictEqual(frames[0].columnNumber, 0xabc);
+      assert.strictEqual(frames[0].lineNumber, 0);
     });
 
     it('matches wasm protocol frames accurately with multiple frames', () => {

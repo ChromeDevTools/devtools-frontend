@@ -210,5 +210,21 @@ describeWithMockConnection('FunctionCodeResolver', function() {
         snapshotTester.assert(this, code.codeWithContext);
       });
     }
+
+    it('only retrieves code from projects associated with the specified target', async () => {
+      const target1 = createTarget();
+      const target2 = createTarget();
+      await backend.addScript(target2, {url: URL, content: exampleSource}, null);
+
+      // Attempt to retrieve code using target1
+      const codeFromTarget1 =
+          await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target1, URL, 0, 35);
+      assert.isNull(codeFromTarget1);
+
+      // Retrieve code using target2 (which actually owns the script)
+      const codeFromTarget2 =
+          await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target2, URL, 0, 35);
+      assert.isNotNull(codeFromTarget2);
+    });
   });
 });

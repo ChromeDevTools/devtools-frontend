@@ -203,7 +203,14 @@ function createFunctionCode(
 }
 
 /**
- * The input location may be a source mapped location or a raw location.
+ * Resolves the function code and its surrounding context for a given location.
+ *
+ * The input location (line, column) may be either an authored (source-mapped)
+ * location or a raw location. The function will attempt to resolve it to a
+ * raw location regardless. This is necessary because callers (such as AI
+ * assistance) may work with either format.
+ *
+ * We filter projects by `target` to prevent cross-origin leaks.
  */
 export async function getFunctionCodeFromLocation(
     target: SDK.Target.Target, url: Platform.DevToolsPath.UrlString, line: number, column: number,
@@ -213,10 +220,13 @@ export async function getFunctionCodeFromLocation(
     throw new Error('missing debugger model');
   }
 
-  let uiSourceCode;
+  let uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
   for (const project of projects) {
+    if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
+      continue;
+    }
     uiSourceCode = project.uiSourceCodeForURL(url);
     if (uiSourceCode) {
       break;

@@ -10,6 +10,7 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "adsView.css",
     "backForwardCacheView.css",
     "bounceTrackingMitigationsView.css",
     "endpointsGrid.css",
@@ -27,6 +28,7 @@ generate_css("css_files") {
 
 devtools_ui_module("components") {
   sources = [
+    "AdsView.ts",
     "BackForwardCacheStrings.ts",
     "BackForwardCacheView.ts",
     "BounceTrackingMitigationsView.ts",
@@ -91,6 +93,7 @@ devtools_ui_module("unittests") {
   testonly = true
 
   sources = [
+    "AdsView.test.ts",
     "BackForwardCacheView.test.ts",
     "BounceTrackingMitigationsView.test.ts",
     "CrashReportContextGrid.test.ts",

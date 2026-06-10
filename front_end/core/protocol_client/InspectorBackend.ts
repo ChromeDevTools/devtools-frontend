@@ -339,6 +339,10 @@ export class TargetBase {
     return this.getAgent('Autofill');
   }
 
+  adsAgent(): ProtocolProxyApi.AdsApi {
+    return this.getAgent('Ads');
+  }
+
   browserAgent(): ProtocolProxyApi.BrowserApi {
     return this.getAgent('Browser');
   }

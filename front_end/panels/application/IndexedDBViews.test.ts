@@ -10,6 +10,7 @@ import {
   getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
@@ -234,7 +235,7 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
   });
 });
 
-describe('IDBDataGridNode', () => {
+describeWithEnvironment('IDBDataGridNode', () => {
   it('creates a read-only object properties section for value column', async () => {
     const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
     const node = new Application.IndexedDBViews.IDBDataGridNode({value: remoteObject});

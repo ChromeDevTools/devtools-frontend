@@ -107,6 +107,19 @@ export function createDeepRemoteObjectMock(
 
 describe('ObjectPropertiesSection', () => {
   describeWithEnvironment('ObjectPropertiesSection', () => {
+    const expandedPropertyNames =
+        async(value: unknown, options?: {sortPropertiesAlphabetically?: boolean}): Promise<string[]> => {
+      ObjectUI.ObjectPropertiesSection.sortPropertiesAlphabeticallySetting().set(
+          options?.sortPropertiesAlphabetically ?? false);
+      const object = SDK.RemoteObject.RemoteObject.fromLocalObject(value);
+      const tree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+        readOnly: true,
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+      });
+      const children = await tree.populateChildrenIfNeeded();
+      return (children.properties ?? []).map(p => p.name);
+    };
+
     it('properties with null and undefined values are shown by default', async () => {
       const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
         s: 'string',
@@ -151,7 +164,63 @@ describe('ObjectPropertiesSection', () => {
       assert.isTrue(u.hidden);
     });
 
-    it('shows "Show all" in context menu', () => {
+    it('sorts expanded properties alphabetically by default', async () => {
+      const propertyNames = await expandedPropertyNames({
+        _a: 1,
+        beta: 2,
+        _z: 3,
+        alpha: 4,
+      },
+                                                        {sortPropertiesAlphabetically: true});
+      assert.deepEqual(propertyNames, ['alpha', 'beta', '_a', '_z']);
+    });
+
+    it('preserves insertion order when the setting is disabled', async () => {
+      const propertyNames = await expandedPropertyNames({
+        _a: 1,
+        beta: 2,
+        _z: 3,
+        alpha: 4,
+      },
+                                                        {sortPropertiesAlphabetically: false});
+      assert.deepEqual(propertyNames, ['_a', 'beta', '_z', 'alpha']);
+    });
+
+    it('compareProperties sorts enumerable properties before non-enumerable in alphabetical mode', () => {
+      const properties = [
+        new SDK.RemoteObject.RemoteObjectProperty('hiddenA', SDK.RemoteObject.RemoteObject.fromLocalObject(1), false,
+                                                  true, true),
+        new SDK.RemoteObject.RemoteObjectProperty('visibleA', SDK.RemoteObject.RemoteObject.fromLocalObject(2), true,
+                                                  true, true),
+        new SDK.RemoteObject.RemoteObjectProperty('hiddenB', SDK.RemoteObject.RemoteObject.fromLocalObject(3), false,
+                                                  true, true),
+        new SDK.RemoteObject.RemoteObjectProperty('visibleB', SDK.RemoteObject.RemoteObject.fromLocalObject(4), true,
+                                                  true, true),
+      ];
+
+      properties.sort(ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.compareProperties);
+      assert.deepEqual(properties.map(property => property.name), ['visibleA', 'visibleB', 'hiddenA', 'hiddenB']);
+    });
+
+    it('compareProperties preserves insertion order within enumerable buckets when alphabetical sorting is disabled',
+       () => {
+         const properties = [
+           new SDK.RemoteObject.RemoteObjectProperty('hiddenB', SDK.RemoteObject.RemoteObject.fromLocalObject(1), false,
+                                                     true, true),
+           new SDK.RemoteObject.RemoteObjectProperty('visibleB', SDK.RemoteObject.RemoteObject.fromLocalObject(2), true,
+                                                     true, true),
+           new SDK.RemoteObject.RemoteObjectProperty('hiddenA', SDK.RemoteObject.RemoteObject.fromLocalObject(3), false,
+                                                     true, true),
+           new SDK.RemoteObject.RemoteObjectProperty('visibleA', SDK.RemoteObject.RemoteObject.fromLocalObject(4), true,
+                                                     true, true),
+         ];
+
+         properties.sort((a, b) =>
+                             ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.compareProperties(a, b, false));
+         assert.deepEqual(properties.map(property => property.name), ['visibleB', 'visibleA', 'hiddenB', 'hiddenA']);
+       });
+
+    it('shows sorting and "Show all" toggles in context menu', () => {
       const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
       const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'title');
       const rootElement = section.objectTreeElement();
@@ -163,6 +232,11 @@ describe('ObjectPropertiesSection', () => {
       rootElement.listItemElement.dispatchEvent(event);
 
       sinon.assert.called(appendCheckboxItemSpy);
+      const sortPropertiesItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Sort properties alphabetically');
+      assert.exists(sortPropertiesItem);
+      assert.strictEqual(sortPropertiesItem[2]?.checked,
+                         ObjectUI.ObjectPropertiesSection.sortPropertiesAlphabeticallySetting().get());
+
       const showAllItem = appendCheckboxItemSpy.args.find(args => args[0] === 'Show all');
       assert.exists(showAllItem);
       assert.isTrue(showAllItem[2]?.checked);

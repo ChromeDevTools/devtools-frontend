@@ -287,3 +287,13 @@ export interface RetainingPaths {
     siblings?: boolean,
   };
 }
+
+export interface DominatorNode {
+  nodeId: number;
+  nodeIndex: number;
+  nodeName: string;
+  retainedSize: number;
+  selfSize: number;
+}
+
+export type DominatorChain = DominatorNode[];

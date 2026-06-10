@@ -2975,6 +2975,35 @@ export abstract class HeapSnapshot {
     return {paths, limitsReached};
   }
 
+  getDominatorsOf(nodeIndex: number): HeapSnapshotModel.HeapSnapshotModel.DominatorChain {
+    const chain: HeapSnapshotModel.HeapSnapshotModel.DominatorNode[] = [];
+    let currentIndex = nodeIndex;
+    const rootIndex = this.rootNodeIndex;
+
+    while (currentIndex !== undefined) {
+      const node = this.createNode(currentIndex);
+      chain.push({
+        nodeId: node.id(),
+        nodeIndex: currentIndex,
+        nodeName: node.name(),
+        retainedSize: node.retainedSize(),
+        selfSize: node.selfSize(),
+      });
+
+      if (currentIndex === rootIndex) {
+        break;
+      }
+
+      const nextIndex = node.dominatorIndex();
+      if (nextIndex === currentIndex) {
+        break;
+      }
+      currentIndex = nextIndex;
+    }
+
+    return chain;
+  }
+
   createAddedNodesProvider(baseSnapshotId: number, classKey: string): HeapSnapshotNodesProvider {
     const snapshotDiff = this.#snapshotDiffs[baseSnapshotId];
     const diffForClass = snapshotDiff[classKey];

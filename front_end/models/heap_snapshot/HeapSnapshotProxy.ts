@@ -370,6 +370,10 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('getRetainingPaths', nodeIndex, maxDepth, maxNodes, maxSiblings);
   }
 
+  getDominatorsOf(nodeIndex: number): Promise<HeapSnapshotModel.DominatorChain> {
+    return this.callMethodPromise('getDominatorsOf', nodeIndex);
+  }
+
   unignoreNodeInRetainersView(nodeIndex: number): Promise<void> {
     return this.callMethodPromise('unignoreNodeInRetainersView', nodeIndex);
   }

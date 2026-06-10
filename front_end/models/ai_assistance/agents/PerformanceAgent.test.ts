@@ -332,6 +332,7 @@ describeWithMockConnection('PerformanceAgent', function() {
 
   it('uses the mainFrameURL as the origin if it is valid', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
     const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
     assert.strictEqual(context.getOrigin(), 'https://web.dev');
   });
@@ -346,6 +347,7 @@ describeWithMockConnection('PerformanceAgent', function() {
       },
       insights: new Map(),
     } as unknown as Trace.TraceModel.ParsedTrace;
+    Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
     const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
     assert.strictEqual(context.getOrigin(), 'trace-100-200');
   });
@@ -1862,6 +1864,58 @@ code
       assert.strictEqual(suggestions[1].title, 'How can I reduce the size of my DOM?');
       assert.strictEqual(suggestions[2].title, 'How can I reduce the number of render-blocking requests?');
       assert.strictEqual(suggestions[3].title, 'Did anything slow down the request for this document?');
+    });
+  });
+
+  describe('PerformanceTraceContext.getOrigin', () => {
+    it('returns normal origin for fresh recordings', () => {
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {},
+        data: {
+          Meta: {
+            mainFrameURL: 'https://example.com/page',
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      assert.strictEqual(context.getOrigin(), 'https://example.com');
+    });
+
+    it('returns imported-trace origin for non-fresh (imported) recordings', () => {
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {},
+        data: {
+          Meta: {
+            mainFrameURL: 'https://example.com/page',
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      // Do not register as fresh
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      assert.strictEqual(context.getOrigin(), 'imported-trace://example.com');
+    });
+
+    it('handles invalid URLs by prefixing the fallback URL', () => {
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {},
+        data: {
+          Meta: {
+            mainFrameURL: 'invalid-url',
+            traceBounds: {min: 100, max: 200},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+      assert.strictEqual(context.getOrigin(), 'imported-trace://trace-100-200');
     });
   });
 

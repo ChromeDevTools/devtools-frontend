@@ -69,9 +69,10 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
   [Trace.Types.Events.Name.SOFT_NAVIGATION_START]: 1,
   [Trace.Types.Events.Name.MARK_LOAD]: 2,
   [Trace.Types.Events.Name.MARK_FCP]: 3,
-  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 4,
-  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 5,
-  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 6,
+  [Trace.Types.Events.Name.MARK_SOFT_FCP]: 4,
+  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 5,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 6,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 7,
 };
 
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
@@ -676,7 +677,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
             event.name === Trace.Types.Events.Name.SOFT_NAVIGATION_START ||
             event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE ||
             event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
-            event.name === Trace.Types.Events.Name.MARK_FCP ||
+            event.name === Trace.Types.Events.Name.MARK_FCP || event.name === Trace.Types.Events.Name.MARK_SOFT_FCP ||
             event.name === Trace.Types.Events.Name.MARK_DOM_CONTENT ||
             event.name === Trace.Types.Events.Name.MARK_LOAD);
 

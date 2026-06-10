@@ -372,7 +372,7 @@ A trace of https://andydavies.github.io/agent-tests/render-blocking/css-preload.
 
 ### soft-navs
 
-A trace of https://developer.chrome.com/docs/web-platform/soft-navigations-experiment, navigating to many other pages on the same domain. All are soft navigations.
+A trace of https://developer.chrome.com/docs/web-platform/soft-navigations, navigating to many other pages on the same domain. All are soft navigations.
 
 ### resource-initiators
 

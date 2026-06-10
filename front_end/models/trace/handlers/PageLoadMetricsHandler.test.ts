@@ -253,7 +253,8 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
     it('extracts all marker events from a trace correctly', () => {
       for (const metricName of Trace.Types.Events.MarkerName) {
         if (metricName === Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION ||
-            metricName === Trace.Types.Events.Name.SOFT_NAVIGATION_START) {
+            metricName === Trace.Types.Events.Name.SOFT_NAVIGATION_START ||
+            metricName === Trace.Types.Events.Name.MARK_SOFT_FCP) {
           continue;
         }
 
@@ -289,10 +290,133 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const {data} = await TraceLoader.traceEngine(this, 'soft-navs.json.gz');
       const {PageLoadMetrics} = data;
       assert.deepEqual(PageLoadMetrics.allMarkerEvents.map(e => e.name), [
-        'SoftNavigationStart', 'largestContentfulPaint::CandidateForSoftNavigation', 'SoftNavigationStart',
+        'SoftNavigationStart', 'SyntheticSoftFirstContentfulPaint',
         'largestContentfulPaint::CandidateForSoftNavigation', 'SoftNavigationStart',
-        'largestContentfulPaint::CandidateForSoftNavigation'
+        'SyntheticSoftFirstContentfulPaint', 'largestContentfulPaint::CandidateForSoftNavigation',
+        'SoftNavigationStart', 'SyntheticSoftFirstContentfulPaint', 'largestContentfulPaint::CandidateForSoftNavigation'
       ]);
+    });
+
+    it('correctly associates a MARK_SOFT_FCP event with its soft navigation start event', async () => {
+      Trace.Handlers.ModelHandlers.Meta.reset();
+      Trace.Handlers.ModelHandlers.PageLoadMetrics.reset();
+
+      // We need to tell Meta about process and main frame:
+      const browserProcess: Trace.Types.Events.ProcessName = {
+        name: 'process_name',
+        ph: Trace.Types.Events.Phase.METADATA,
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        ts: Trace.Types.Timing.Micro(0),
+        cat: 'disabled-by-default-devtools.timeline',
+        args: {name: 'Browser'},
+      };
+
+      const mainFrameCommitted: Trace.Types.Events.FrameCommittedInBrowser = {
+        name: 'FrameCommittedInBrowser',
+        ph: Trace.Types.Events.Phase.INSTANT,
+        s: Trace.Types.Events.Scope.THREAD,
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        ts: Trace.Types.Timing.Micro(0),
+        cat: 'disabled-by-default-devtools.timeline',
+        args: {
+          data: {
+            frame: 'main-frame-id',
+            name: 'main-frame',
+            processId: Trace.Types.Events.ProcessID(2),
+            url: 'https://example.com',
+          },
+        },
+      };
+
+      const tracingStarted: Trace.Types.Events.TracingStartedInBrowser = {
+        name: Trace.Types.Events.Name.TRACING_STARTED_IN_BROWSER,
+        ph: Trace.Types.Events.Phase.INSTANT,
+        s: Trace.Types.Events.Scope.THREAD,
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        ts: Trace.Types.Timing.Micro(0),
+        cat: 'disabled-by-default-devtools.timeline',
+        args: {
+          data: {
+            frameTreeNodeId: 1,
+            persistentIds: true,
+            frames: [{
+              frame: 'main-frame-id',
+              name: 'main-frame',
+              processId: Trace.Types.Events.ProcessID(2),
+              url: 'https://example.com',
+            }],
+          },
+        },
+      };
+
+      const softNavStart: Trace.Types.Events.SoftNavigationStart = {
+        name: Trace.Types.Events.Name.SOFT_NAVIGATION_START,
+        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_INSTANT,
+        pid: Trace.Types.Events.ProcessID(2),
+        tid: Trace.Types.Events.ThreadID(1),
+        ts: Trace.Types.Timing.Micro(10_000),
+        cat: 'disabled-by-default-devtools.timeline',
+        args: {
+          frame: 'main-frame-id',
+          context: {
+            performanceTimelineNavigationId: 42,
+            softNavContextId: 42,
+            URL: 'https://example.com',
+            timeOrigin: 10_000,
+            domModifications: 1,
+            firstContentfulPaint: 15_000,
+            paintedArea: 100,
+            repaintedArea: 100,
+          },
+        },
+      };
+
+      const softFcpEvent: Trace.Types.Events.SyntheticSoftFirstContentfulPaint = {
+        name: Trace.Types.Events.Name.MARK_SOFT_FCP,
+        ph: Trace.Types.Events.Phase.MARK,
+        rawSourceEvent: softNavStart,
+        _tag: 'SyntheticEntryTag',
+        pid: Trace.Types.Events.ProcessID(2),
+        tid: Trace.Types.Events.ThreadID(1),
+        ts: Trace.Types.Timing.Micro(15_000),
+        cat: 'disabled-by-default-devtools.timeline',
+        args: {
+          frame: 'main-frame-id',
+          context: {
+            performanceTimelineNavigationId: 42,
+            softNavContextId: 42,
+            URL: 'https://example.com',
+            timeOrigin: 10_000,
+            domModifications: 1,
+            firstContentfulPaint: 15_000,
+            paintedArea: 100,
+            repaintedArea: 100,
+          },
+        },
+      };
+
+      const events = [browserProcess, tracingStarted, mainFrameCommitted, softNavStart, softFcpEvent];
+      for (const event of events) {
+        Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+        Trace.Handlers.ModelHandlers.PageLoadMetrics.handleEvent(event);
+      }
+
+      await Trace.Handlers.ModelHandlers.Meta.finalize();
+      await Trace.Handlers.ModelHandlers.PageLoadMetrics.finalize();
+
+      const pageLoadMetricsData = Trace.Handlers.ModelHandlers.PageLoadMetrics.data();
+      const metricsForFrame = pageLoadMetricsData.metricScoresByFrameId.get('main-frame-id');
+      assert.isOk(metricsForFrame);
+      const metricsForSoftNav = metricsForFrame.get(softNavStart);
+      assert.isOk(metricsForSoftNav);
+      const fcpScore = metricsForSoftNav.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
+      assert.isOk(fcpScore);
+      assert.strictEqual(fcpScore.event, softFcpEvent);
+      assert.strictEqual(fcpScore.navigation, softNavStart);
+      assert.strictEqual(fcpScore.timing, 5_000);  // 15_000 - 10_000
     });
   });
 });

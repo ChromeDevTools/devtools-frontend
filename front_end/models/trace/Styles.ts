@@ -294,6 +294,10 @@ const UIStrings = {
   /**
    * @description Text in Timeline UIUtils of the Performance panel
    */
+  softNavigationStart: 'Soft navigation start',
+  /**
+   * @description Text in Timeline UIUtils of the Performance panel
+   */
   onloadEvent: 'Onload event',
   /**
    * @description Text in Timeline UIUtils of the Performance panel
@@ -307,6 +311,10 @@ const UIStrings = {
    * @description Text in Timeline UIUtils of the Performance panel
    */
   firstContentfulPaint: 'First Contentful Paint',
+  /**
+   * @description Text in Timeline UIUtils of the Performance panel
+   */
+  softFirstContentfulPaint: 'Soft First Contentful Paint',
   /**
    * @description Text in Timeline UIUtils of the Performance panel
    */
@@ -866,6 +874,12 @@ export function maybeInitSylesMap(): EventStylesMap {
         true,
         ),
 
+    [Types.Events.Name.SOFT_NAVIGATION_START]: new TimelineRecordStyle(
+        i18nString(UIStrings.softNavigationStart),
+        defaultCategoryStyles.loading,
+        true,
+        ),
+
     [Types.Events.Name.MARK_FIRST_PAINT]: new TimelineRecordStyle(
         i18nString(UIStrings.firstPaint),
         defaultCategoryStyles.painting,
@@ -874,6 +888,12 @@ export function maybeInitSylesMap(): EventStylesMap {
 
     [Types.Events.Name.MARK_FCP]: new TimelineRecordStyle(
         i18nString(UIStrings.firstContentfulPaint),
+        defaultCategoryStyles.rendering,
+        true,
+        ),
+
+    [Types.Events.Name.MARK_SOFT_FCP]: new TimelineRecordStyle(
+        i18nString(UIStrings.softFirstContentfulPaint),
         defaultCategoryStyles.rendering,
         true,
         ),
@@ -1024,11 +1044,11 @@ export function maybeInitSylesMap(): EventStylesMap {
     [Types.Events.Name.ASYNC_TASK]:
         new TimelineRecordStyle(i18nString(UIStrings.asyncTask), defaultCategoryStyles.async),
 
-    [Types.Events.Name.LAYOUT_SHIFT]: new TimelineRecordStyle(
-        i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience,
-        /* Mark LayoutShifts as hidden; in the timeline we render
-        * SyntheticLayoutShifts so those are the ones visible to the user */
-        true),
+    [Types.Events.Name.LAYOUT_SHIFT]:
+        new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience,
+                                /* Mark LayoutShifts as hidden; in the timeline we render
+                                 * SyntheticLayoutShifts so those are the ones visible to the user */
+                                true),
 
     [Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT]:
         new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience),
@@ -1123,9 +1143,11 @@ export function markerDetailsForEvent(event: Types.Events.Event): {
 } {
   let title = '';
   let color = 'var(--color-text-primary)';
-  if (Types.Events.isFirstContentfulPaint(event)) {
+  if (Types.Events.isAnyFirstContentfulPaint(event)) {
     color = 'var(--sys-color-green-bright)';
-    title = Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP;
+    title = (Types.Events.isSoftFirstContentfulPaint(event)) ?
+        Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_FCP :
+        Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP;
   }
   if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
     color = 'var(--sys-color-green)';

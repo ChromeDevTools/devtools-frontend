@@ -75,6 +75,28 @@ export function handleEvent(event: Types.Events.Event): void {
     return;
   }
   pageLoadEventsArray.push(event);
+
+  // A soft nav entry includes the Soft FCP details but we want to process both
+  // so push a separate Soft FCP event
+  if (Types.Events.isSoftNavigationStart(event) && event.args?.context?.firstContentfulPaint) {
+    const syntheticSoftFcpEvent = Helpers.SyntheticEvents.SyntheticEventsManager
+                                      .registerSyntheticEvent<Types.Events.SyntheticSoftFirstContentfulPaint>({
+                                        name: Types.Events.Name.MARK_SOFT_FCP,
+                                        ph: Types.Events.Phase.MARK,
+                                        rawSourceEvent: event,
+                                        pid: event.pid,
+                                        tid: event.tid,
+                                        ts: Types.Timing.Micro(event.args.context.firstContentfulPaint),
+                                        cat: event.cat,
+                                        args: {
+                                          frame: event.args.frame,
+                                          context: {
+                                            ...event.args.context,
+                                          },
+                                        },
+                                      });
+    pageLoadEventsArray.push(syntheticSoftFcpEvent);
+  }
 }
 
 function storePageLoadMetricAgainstNavigationId(
@@ -101,7 +123,7 @@ function storePageLoadMetricAgainstNavigationId(
     return;
   }
 
-  if (Types.Events.isFirstContentfulPaint(event)) {
+  if (Types.Events.isAnyFirstContentfulPaint(event)) {
     const fcpTime = Types.Timing.Micro(event.ts - navigation.ts);
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
     const metricScore = {event, metricName: MetricName.FCP, classification, navigation, timing: fcpTime};
@@ -226,7 +248,7 @@ function storeMetricScore(frameId: string, navigation: AnyNavigationStart, metri
 }
 
 export function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): string {
-  if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isInteractiveTime(event) ||
+  if (Types.Events.isAnyFirstContentfulPaint(event) || Types.Events.isInteractiveTime(event) ||
       Types.Events.isAnyLargestContentfulPaintCandidate(event) || Types.Events.isNavigationStart(event) ||
       Types.Events.isSoftNavigationStart(event) || Types.Events.isLayoutShift(event) ||
       Types.Events.isFirstPaint(event)) {
@@ -243,7 +265,7 @@ export function getFrameIdForPageLoadEvent(event: Types.Events.PageLoadEvent): s
 }
 
 function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNavigationStart|null {
-  if (Types.Events.isFirstContentfulPaint(event) || Types.Events.isAnyLargestContentfulPaintCandidate(event) ||
+  if (Types.Events.isAnyFirstContentfulPaint(event) || Types.Events.isAnyLargestContentfulPaintCandidate(event) ||
       Types.Events.isFirstPaint(event)) {
     const {navigationsByNavigationId, softNavigationsById} = metaHandlerData();
 
@@ -251,6 +273,12 @@ function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): AnyNa
     if (event.name === Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION &&
         event.args.data?.performanceTimelineNavigationId) {
       navigation = softNavigationsById.get(event.args.data.performanceTimelineNavigationId);
+      if (!navigation) {
+        // The most recent soft navigation must have been before the trace started.
+        return null;
+      }
+    } else if (Types.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
+      navigation = softNavigationsById.get(event.args.context.performanceTimelineNavigationId);
       if (!navigation) {
         // The most recent soft navigation must have been before the trace started.
         return null;
@@ -428,7 +456,7 @@ export async function finalize(): Promise<void> {
   // Filter out LCP candidates to use only definitive LCP values
   const allEventsButLCP =
       pageLoadEventsArray.filter(event => !Types.Events.isAnyLargestContentfulPaintCandidate(event));
-  const markerEvents = [...allFinalLCPEvents, ...allEventsButLCP].filter(Types.Events.isMarkerEvent);
+  const markerEvents = [...allEventsButLCP, ...allFinalLCPEvents].filter(Types.Events.isMarkerEvent);
   // Filter by main frame and sort.
   allMarkerEvents =
       markerEvents.filter(event => getFrameIdForPageLoadEvent(event) === mainFrame).sort((a, b) => a.ts - b.ts);
@@ -495,6 +523,7 @@ export const enum MetricName {
   NAV = 'Nav',
   // Soft Navigation and Soft Metrics
   SOFT_NAV = 'Nav*',
+  SOFT_FCP = 'FCP*',
   SOFT_LCP = 'LCP*',
   // Note: INP is handled in UserInteractionsHandler
 }

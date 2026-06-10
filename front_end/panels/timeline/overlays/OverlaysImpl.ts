@@ -1627,6 +1627,8 @@ export class Overlays extends EventTarget {
       markers: HTMLElement, marker: HTMLElement): void {
     if (Trace.Types.Events.isSoftNavigationStart(event)) {
       name = 'Soft Nav';
+    } else if (Trace.Types.Events.isSoftFirstContentfulPaint(event)) {
+      name = 'Soft FCP';
     } else if (Trace.Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
       name = 'Soft LCP';
     }

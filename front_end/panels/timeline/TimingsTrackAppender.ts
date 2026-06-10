@@ -37,12 +37,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
   [Trace.Types.Events.Name.NAVIGATION_START]: 0,
-  [Trace.Types.Events.Name.MARK_LOAD]: 1,
-  [Trace.Types.Events.Name.MARK_FCP]: 2,
+  [Trace.Types.Events.Name.SOFT_NAVIGATION_START]: 1,
   [Trace.Types.Events.Name.MARK_FIRST_PAINT]: 2,
-  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 3,
-  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 4,
-  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 5,
+  [Trace.Types.Events.Name.MARK_FCP]: 3,
+  [Trace.Types.Events.Name.MARK_SOFT_FCP]: 4,
+  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 5,
+  [Trace.Types.Events.Name.MARK_LOAD]: 6,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 7,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION]: 8,
 };
 
 export class TimingsTrackAppender implements TrackAppender {

@@ -809,16 +809,20 @@ export class TimelineUIUtils {
         name = 'Largest Contentful Paint';
         break;
       case Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION:
-        link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+        link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
         name = 'Soft Largest Contentful Paint';
         break;
       case Trace.Types.Events.Name.SOFT_NAVIGATION_START:
-        link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+        link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
         name = 'Soft Navigations';
         break;
       case Trace.Types.Events.Name.MARK_FCP:
         link = 'https://web.dev/first-contentful-paint/';
         name = 'First Contentful Paint';
+        break;
+      case Trace.Types.Events.Name.MARK_SOFT_FCP:
+        link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
+        name = 'Soft First Contentful Paint';
         break;
       default:
         break;
@@ -963,7 +967,7 @@ export class TimelineUIUtils {
 
     // Add timestamp to user timings, including custom extensibility markers
     if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming) ||
-        Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
+        Trace.Types.Extensions.isSyntheticExtensionEntry(event) || Trace.Types.Events.isSoftNavigationStart(event)) {
       const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
           event,
           parsedTrace,
@@ -1444,6 +1448,7 @@ export class TimelineUIUtils {
 
       case Trace.Types.Events.Name.MARK_FIRST_PAINT:
       case Trace.Types.Events.Name.MARK_FCP:
+      case Trace.Types.Events.Name.MARK_SOFT_FCP:
       case Trace.Types.Events.Name.MARK_LOAD:
       case Trace.Types.Events.Name.MARK_DOM_CONTENT: {
         const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
@@ -2074,7 +2079,7 @@ export class TimelineUIUtils {
         tall = true;
         break;
       case Trace.Types.Events.Name.SOFT_NAVIGATION_START:
-        color = 'var(--sys-color-blue)';
+        color = 'var(--color-text-primary)';
         tall = true;
         break;
       case Trace.Types.Events.Name.FRAME_STARTED_LOADING:
@@ -2094,6 +2099,7 @@ export class TimelineUIUtils {
         tall = true;
         break;
       case Trace.Types.Events.Name.MARK_FCP:
+      case Trace.Types.Events.Name.MARK_SOFT_FCP:
         color = 'var(--sys-color-green-bright)';
         tall = true;
         break;
@@ -2407,7 +2413,7 @@ export function isMarkerEvent(parsedTrace: Trace.TraceModel.ParsedTrace, event: 
     return true;
   }
 
-  if (Trace.Types.Events.isFirstContentfulPaint(event) || Trace.Types.Events.isFirstPaint(event)) {
+  if (Trace.Types.Events.isAnyFirstContentfulPaint(event) || Trace.Types.Events.isFirstPaint(event)) {
     return event.args.frame === parsedTrace.data.Meta.mainFrameId;
   }
 

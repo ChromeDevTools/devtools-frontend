@@ -123,6 +123,133 @@ describeWithEnvironment('Timing helpers', () => {
       const timeAsMS = Trace.Helpers.Timing.microToMilli(adjustedTime);
       assert.strictEqual(timeAsMS.toFixed(2), String(178.92));
     });
+
+    it('can adjust a MARK_SOFT_FCP event timestamp relative to its soft navigation start', async () => {
+      const softNavStart: Trace.Types.Events.SoftNavigationStart = {
+        name: Trace.Types.Events.Name.SOFT_NAVIGATION_START,
+        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_INSTANT,
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        cat: 'disabled-by-default-devtools.timeline',
+        ts: Trace.Types.Timing.Micro(10_000),
+        args: {
+          frame: 'main-frame-id',
+          context: {
+            performanceTimelineNavigationId: 42,
+            softNavContextId: 42,
+            URL: 'https://example.com',
+            timeOrigin: 10_000,
+            domModifications: 1,
+            firstContentfulPaint: 15_000,
+            paintedArea: 100,
+            repaintedArea: 100,
+          },
+        },
+      };
+      const softFcpEvent: Trace.Types.Events.SyntheticSoftFirstContentfulPaint = {
+        name: Trace.Types.Events.Name.MARK_SOFT_FCP,
+        ph: Trace.Types.Events.Phase.MARK,
+        rawSourceEvent: softNavStart,
+        _tag: 'SyntheticEntryTag',
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        cat: 'disabled-by-default-devtools.timeline',
+        ts: Trace.Types.Timing.Micro(15_000),
+        args: {
+          frame: 'main-frame-id',
+          context: {
+            performanceTimelineNavigationId: 42,
+            softNavContextId: 42,
+            URL: 'https://example.com',
+            timeOrigin: 10_000,
+            domModifications: 1,
+            firstContentfulPaint: 15_000,
+            paintedArea: 100,
+            repaintedArea: 100,
+          },
+        },
+      };
+
+      const traceBounds = {
+        min: Trace.Types.Timing.Micro(0),
+        max: Trace.Types.Timing.Micro(100_000),
+        range: Trace.Types.Timing.Micro(100_000),
+      };
+
+      const softNavigationsById = new Map([[42, softNavStart]]);
+
+      const adjustedTime = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+          softFcpEvent,
+          traceBounds,
+          new Map(),
+          softNavigationsById,
+          new Map(),
+      );
+
+      // 15_000 (softFcpEvent.ts) - 10_000 (softNavStart.ts) = 5_000
+      assert.strictEqual(adjustedTime, 5_000);
+    });
+
+    it('can adjust a SoftNavigationStart event timestamp relative to its closest navigation start', async () => {
+      const navigationStart: Trace.Types.Events.NavigationStart = {
+        name: Trace.Types.Events.Name.NAVIGATION_START,
+        ph: Trace.Types.Events.Phase.MARK,
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(1),
+        cat: 'disabled-by-default-devtools.timeline',
+        ts: Trace.Types.Timing.Micro(5_000),
+        args: {
+          frame: 'frame-1',
+          data: {
+            documentLoaderURL: 'https://example.com',
+            isLoadingMainFrame: true,
+            navigationId: 'nav-1',
+            isOutermostMainFrame: true,
+          },
+        },
+      };
+
+      const softNavStart: Trace.Types.Events.SoftNavigationStart = {
+        name: Trace.Types.Events.Name.SOFT_NAVIGATION_START,
+        ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_INSTANT,
+        pid: Trace.Types.Events.ProcessID(2),
+        tid: Trace.Types.Events.ThreadID(1),
+        cat: 'disabled-by-default-devtools.timeline',
+        ts: Trace.Types.Timing.Micro(12_000),
+        args: {
+          frame: 'frame-1',
+          context: {
+            performanceTimelineNavigationId: 42,
+            softNavContextId: 42,
+            URL: 'https://example.com',
+            timeOrigin: 10_000,
+            domModifications: 1,
+            firstContentfulPaint: 15_000,
+            paintedArea: 100,
+            repaintedArea: 100,
+          },
+        },
+      };
+
+      const traceBounds = {
+        min: Trace.Types.Timing.Micro(0),
+        max: Trace.Types.Timing.Micro(100_000),
+        range: Trace.Types.Timing.Micro(100_000),
+      };
+
+      const navigationsByFrameId = new Map([['frame-1', [navigationStart]]]);
+
+      const adjustedTime = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+          softNavStart,
+          traceBounds,
+          new Map(),
+          new Map(),
+          navigationsByFrameId,
+      );
+
+      // 12_000 (softNavStart.ts) - 5_000 (navigationStart.ts) = 7_000
+      assert.strictEqual(adjustedTime, 7_000);
+    });
   });
 
   describe('expandWindowByPercentOrToOneMillisecond', () => {

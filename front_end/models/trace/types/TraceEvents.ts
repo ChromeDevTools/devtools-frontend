@@ -737,6 +737,16 @@ export interface FirstContentfulPaint extends Mark {
   };
 }
 
+// Soft FCP is basically a copy of SoftNavigationStart but with a different name
+// and a different ts.
+export interface SyntheticSoftFirstContentfulPaint extends Omit<SoftNavigationStart, 'name'|'ph'>,
+                                                           Omit<SyntheticBased, 'name'|'ph'|'args'> {
+  name: Name.MARK_SOFT_FCP;
+  ph: Phase.MARK;
+}
+
+export type AnyFirstContentfulPaint = FirstContentfulPaint|SyntheticSoftFirstContentfulPaint;
+
 export interface FirstPaint extends Mark {
   name: Name.MARK_FIRST_PAINT;
   args: Args&{
@@ -747,14 +757,14 @@ export interface FirstPaint extends Mark {
   };
 }
 
-export type PageLoadEvent = FirstContentfulPaint|MarkDOMContent|InteractiveTime|AnyLargestContentfulPaintCandidate|
+export type PageLoadEvent = AnyFirstContentfulPaint|MarkDOMContent|InteractiveTime|AnyLargestContentfulPaintCandidate|
     LayoutShift|FirstPaint|MarkLoad|NavigationStart|SoftNavigationStart;
 
 const markerTypeGuards = [
   isMarkDOMContent,
   isMarkLoad,
   isFirstPaint,
-  isFirstContentfulPaint,
+  isAnyFirstContentfulPaint,
   isAnyLargestContentfulPaintCandidate,
   isNavigationStart,
   isSoftNavigationStart,
@@ -765,6 +775,7 @@ export const MarkerName = [
   Name.MARK_LOAD,
   Name.MARK_FIRST_PAINT,
   Name.MARK_FCP,
+  Name.MARK_SOFT_FCP,
   Name.MARK_LCP_CANDIDATE,
   Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION,
   Name.NAVIGATION_START,
@@ -2285,6 +2296,14 @@ export function isFirstContentfulPaint(event: Event): event is FirstContentfulPa
   return event.name === Name.MARK_FCP;
 }
 
+export function isSoftFirstContentfulPaint(event: Event): event is SyntheticSoftFirstContentfulPaint {
+  return event.name === Name.MARK_SOFT_FCP;
+}
+
+export function isAnyFirstContentfulPaint(event: Event): event is AnyFirstContentfulPaint {
+  return event.name === Name.MARK_FCP || event.name === Name.MARK_SOFT_FCP;
+}
+
 export function isAnyLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate {
   return event.name === Name.MARK_LCP_CANDIDATE || event.name === Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION;
 }
@@ -3168,6 +3187,7 @@ export const enum Name {
   MARK_DOM_CONTENT = 'MarkDOMContent',
   MARK_FIRST_PAINT = 'firstPaint',
   MARK_FCP = 'firstContentfulPaint',
+  MARK_SOFT_FCP = 'SyntheticSoftFirstContentfulPaint',
   MARK_LCP_CANDIDATE = 'largestContentfulPaint::Candidate',
   MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION = 'largestContentfulPaint::CandidateForSoftNavigation',
   MARK_LCP_INVALIDATE = 'largestContentfulPaint::Invalidate',

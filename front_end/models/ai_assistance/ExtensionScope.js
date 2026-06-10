@@ -14,18 +14,16 @@ export class ExtensionScope {
     #listeners = [];
     #changeManager;
     #agentId;
-    #turnId;
     /** Don't use directly use the getter */
     #frameId;
     /** Don't use directly use the getter */
     #target;
     #bindingMutex = new Common.Mutex.Mutex();
-    constructor(changes, agentId, selectedNode, turnId) {
+    constructor(changes, agentId, selectedNode) {
         this.#changeManager = changes;
         const frameId = selectedNode?.frameId();
         const target = selectedNode?.domModel().target();
         this.#agentId = agentId;
-        this.#turnId = turnId;
         this.#target = target;
         this.#frameId = frameId;
     }
@@ -279,7 +277,6 @@ export class ExtensionScope {
                 const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
                 const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
                     groupId: this.#agentId,
-                    turnId: this.#turnId,
                     sourceLocation: context.sourceLocation,
                     selector: context.selector,
                     simpleSelector: context.simpleSelector,

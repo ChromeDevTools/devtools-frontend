@@ -161,6 +161,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args) => {
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -220,6 +221,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args, options) => {
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -287,6 +289,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args) => {
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -328,6 +331,7 @@ export class StorageAgent extends AiAgent {
                 };
             },
             handler: async (args, options) => {
+                this.disableServerSideLogging();
                 if (!isSamePrimaryPageOrigin(this.context)) {
                     return { error: 'No origin available or not allowed.' };
                 }
@@ -379,6 +383,15 @@ export class StorageAgent extends AiAgent {
             return `${primaryTargetOrigin}\nUser-selected Context: DOM Storage\n Type: ${item.type}\nStorageKey: ${item.storageKey}\nOrigin: ${item.origin}${item.key ? `\nKey: ${item.key}` : ''}`;
         }
         return primaryTargetOrigin;
+    }
+    async preRun() {
+        const item = this.context?.getItem();
+        if (item instanceof CookieItem && Boolean(item.name)) {
+            this.disableServerSideLogging();
+        }
+        else if (item instanceof DOMStorageItem && Boolean(item.key)) {
+            this.disableServerSideLogging();
+        }
     }
     async *handleContextDetails(context) {
         if (!context) {

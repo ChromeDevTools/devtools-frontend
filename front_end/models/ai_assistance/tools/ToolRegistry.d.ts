@@ -1,3 +1,4 @@
+import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
 import { GetStylesTool } from './GetStyles.js';
 import { type Tool } from './Tool.js';
 /**
@@ -5,6 +6,7 @@ import { type Tool } from './Tool.js';
  * Keep this type concrete (no type-erasure) to preserve exact tool types.
  */
 export declare const TOOLS: {
+    executeJavaScript: ExecuteJavaScriptTool;
     getStyles: GetStylesTool;
 };
 /**

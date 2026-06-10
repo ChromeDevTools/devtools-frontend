@@ -12,7 +12,7 @@ import { ExtensionScope } from '../ExtensionScope.js';
 import { AI_ASSISTANCE_CSS_CLASS_NAME } from '../injected.js';
 import { ToolRegistry } from '../tools/ToolRegistry.js';
 import { AiAgent } from './AiAgent.js';
-import { executeJavaScriptFunction, executeJsCode, JavascriptExecutor } from './ExecuteJavascript.js';
+import { executeJsCode, } from './ExecuteJavascript.js';
 const preamble = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
@@ -135,27 +135,18 @@ export class StylingAgent extends AiAgent {
         return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
     }
     #execJs;
-    #javascriptExecutor;
     #changes;
     #createExtensionScope;
     #greenDevEmulationScreenshot = null;
     #greenDevEmulationAxTree = null;
     #hasAddedEmulationInstructions = false;
-    #currentTurnId = 0;
     constructor(opts) {
         super(opts);
         this.#changes = opts.changeManager || new ChangeManager();
         this.#execJs = opts.execJs ?? executeJsCode;
-        this.#createExtensionScope =
-            opts.createExtensionScope ?? ((changes) => {
-                return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null, this.#currentTurnId);
-            });
-        this.#javascriptExecutor = new JavascriptExecutor({
-            executionMode: this.executionMode,
-            getContextNode: () => this.#getSelectedNode(),
-            createExtensionScope: this.#createExtensionScope.bind(this),
-            changes: this.#changes,
-        }, this.#execJs);
+        this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
+            return new ExtensionScope(changes, this.sessionId, this.context?.getItem() ?? null);
+        });
         const getStylesTool = ToolRegistry.get("getStyles" /* ToolName.GET_STYLES */);
         if (!getStylesTool) {
             throw new Error('Required tool "getStyles" not found');
@@ -168,7 +159,21 @@ export class StylingAgent extends AiAgent {
                 conversationContext: this.context ?? null,
             }),
         });
-        this.declareFunction('executeJavaScript', executeJavaScriptFunction(this.#javascriptExecutor));
+        const executeJsTool = ToolRegistry.get("executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */);
+        if (!executeJsTool) {
+            throw new Error('Required tool "executeJavaScript" not found');
+        }
+        this.declareFunction("executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */, {
+            description: executeJsTool.description,
+            parameters: executeJsTool.parameters,
+            displayInfoFromArgs: executeJsTool.displayInfoFromArgs,
+            handler: (args, options) => executeJsTool.handler(args, {
+                conversationContext: this.context ?? null,
+                changeManager: this.#changes,
+                createExtensionScope: this.#createExtensionScope.bind(this),
+                execJs: this.#execJs,
+            }, options),
+        });
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
             this.declareFunction('addElementAnnotation', {
                 description: 'Adds a visual annotation in the Elements panel, attached to a node with ' +
@@ -433,9 +438,6 @@ export class StylingAgent extends AiAgent {
                 };
             }
         }
-    }
-    async preRun() {
-        this.#currentTurnId++;
     }
     async enhanceQuery(query, selectedElement, multimodalInputType) {
         let multimodalInputEnhancementQuery = this.multimodalInputEnabled && multimodalInputType ? MULTIMODAL_ENHANCEMENT_PROMPTS[multimodalInputType] : '';

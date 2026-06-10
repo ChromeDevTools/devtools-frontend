@@ -16,6 +16,7 @@ export declare class StorageAgent extends AiAgent<StorageItem> {
     get userTier(): string | undefined;
     get options(): RequestOptions;
     constructor(opts: AgentOptions);
+    protected preRun(): Promise<void>;
     handleContextDetails(context: ConversationContext<StorageItem> | null): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string, context: ConversationContext<StorageItem> | null): Promise<string>;
 }

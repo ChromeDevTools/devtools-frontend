@@ -2,6 +2,7 @@ import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
+import type * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import * as AiAssistancePanel from '../panels/ai_assistance/ai_assistance.js';
@@ -94,4 +95,15 @@ export declare function createTestFilesystem(fileSystemPath: string, files?: Arr
 }>): {
     project: Persistence.FileSystemWorkspaceBinding.FileSystem;
     uiSourceCode: Workspace.UISourceCode.UISourceCode;
+};
+export declare function assertIsError<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
+    error: string;
+};
+export declare function assertIsResult<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
+    result: T;
+    widgets?: AiAssistance.AiAgent.AiWidget[];
+};
+export declare function assertRequiresApproval<T>(response: AiAssistance.AiAgent.FunctionCallHandlerResult<T>): asserts response is {
+    requiresApproval: true;
+    description: string | null;
 };

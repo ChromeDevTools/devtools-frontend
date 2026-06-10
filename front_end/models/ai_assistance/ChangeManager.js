@@ -72,7 +72,6 @@ export class ChangeManager {
             // it currently causes crashes in the Styles tab when duplicate selectors exist (crbug.com/393515428).
             // This workaround avoids that crash.
             existingChange.groupId = change.groupId;
-            existingChange.turnId = change.turnId;
         }
         else {
             changes.push({
@@ -92,11 +91,11 @@ export class ChangeManager {
             .filter(change => change !== '')
             .join('\n\n');
     }
-    getChangedNodesForGroupId(groupId, turnId) {
+    getChangedNodesForGroupId(groupId) {
         const nodes = new Set();
         for (const changes of this.#stylesheetChanges.values()) {
             for (const change of changes) {
-                if (change.groupId === groupId && change.backendNodeId && (turnId === undefined || change.turnId === turnId)) {
+                if (change.groupId === groupId && change.backendNodeId) {
                     nodes.add(change.backendNodeId);
                 }
             }

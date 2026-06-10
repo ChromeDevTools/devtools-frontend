@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import type { FunctionCallHandlerResult } from '../agents/AiAgent.js';
+import type { FunctionCallHandlerResult, FunctionHandlerOptions } from '../agents/AiAgent.js';
 import { type Tool, type ToolArgs, type ToolContext, ToolName } from './Tool.js';
 export interface GetStylesArgs extends ToolArgs {
     elements: number[];
@@ -15,5 +15,5 @@ export declare class GetStylesTool implements Tool<GetStylesArgs, unknown> {
         thought: string;
         action: string;
     };
-    handler(params: GetStylesArgs, context: ToolContext): Promise<FunctionCallHandlerResult<unknown>>;
+    handler(params: GetStylesArgs, context: ToolContext, _options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<unknown>>;
 }

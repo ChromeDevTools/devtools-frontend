@@ -629,6 +629,12 @@ export default `/*
       display: none;
     }
   }
+
+  .network-requests-widget {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-4);
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('././components/chatMessage.css')} */`;

@@ -2,7 +2,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 export interface Change {
     groupId: string;
-    turnId?: number;
     sourceLocation?: string;
     selector: string;
     simpleSelector?: string;
@@ -23,5 +22,5 @@ export declare class ChangeManager {
     clear(): Promise<void>;
     addChange(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId, change: Change): Promise<string>;
     formatChangesForPatching(groupId: string, includeMetadata?: boolean): string;
-    getChangedNodesForGroupId(groupId: string, turnId?: number): Protocol.DOM.BackendNodeId[];
+    getChangedNodesForGroupId(groupId: string): Protocol.DOM.BackendNodeId[];
 }

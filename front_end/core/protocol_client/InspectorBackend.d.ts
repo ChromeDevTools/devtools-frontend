@@ -114,6 +114,7 @@ export declare class TargetBase {
     animationAgent(): ProtocolProxyApi.AnimationApi;
     auditsAgent(): ProtocolProxyApi.AuditsApi;
     autofillAgent(): ProtocolProxyApi.AutofillApi;
+    adsAgent(): ProtocolProxyApi.AdsApi;
     browserAgent(): ProtocolProxyApi.BrowserApi;
     backgroundServiceAgent(): ProtocolProxyApi.BackgroundServiceApi;
     cacheStorageAgent(): ProtocolProxyApi.CacheStorageApi;

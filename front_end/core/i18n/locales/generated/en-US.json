@@ -3869,6 +3869,21 @@
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
     "message": "Bounce tracking mitigations"
   },
+  "panels/application/components/AdsView.ts | average": {
+    "message": "(Average: {PH1})"
+  },
+  "panels/application/components/AdsView.ts | totalCpuUsage": {
+    "message": "Total CPU usage by ads"
+  },
+  "panels/application/components/AdsView.ts | totalNetworkUsage": {
+    "message": "Total network usage by ads"
+  },
+  "panels/application/components/AdsView.ts | viewportAdCount": {
+    "message": "Viewport ad count"
+  },
+  "panels/application/components/AdsView.ts | viewportAdDensity": {
+    "message": "Viewport ad density"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Pages that requested an AppBanner are not currently eligible for back/forward cache."
   },

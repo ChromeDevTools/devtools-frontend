@@ -12555,7 +12555,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       return "'" + str + "'";
     }
     const escapeString = platform === "win" ? escapeStringWin : escapeStringPosix;
-    command.push(escapeString(request.url()).replace(/[[{}\]]/g, "\\$&"));
+    command.push("--url " + escapeString(request.url()).replace(/[[{}\]]/g, "\\$&"));
     let inferredMethod = "GET";
     const data = [];
     const formData = await request.requestFormData();

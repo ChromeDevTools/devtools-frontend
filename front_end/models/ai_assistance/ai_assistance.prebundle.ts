@@ -6,7 +6,6 @@ import * as AgentProject from './AgentProject.js';
 import * as AccessibilityAgent from './agents/AccessibilityAgent.js';
 import * as AiAgent from './agents/AiAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
-import * as ConversationSummaryAgent from './agents/ConversationSummaryAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as GreenDevAgent from './agents/GreenDevAgent.js';
 import * as GreenDevAgentAntigravityCliSocketClient from './agents/GreenDevAgentAntigravityCliSocketClient.js';
@@ -14,7 +13,6 @@ import * as GreenDevAgentGeminiCliSocketClient from './agents/GreenDevAgentGemin
 import * as NetworkAgent from './agents/NetworkAgent.js';
 import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
-import * as PerformanceAnnotationsAgent from './agents/PerformanceAnnotationsAgent.js';
 import * as StorageAgent from './agents/StorageAgent.js';
 import * as StylingAgent from './agents/StylingAgent.js';
 import * as AiAgent2 from './AiAgent2.js';
@@ -25,6 +23,7 @@ import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
+import * as ConversationSummary from './ConversationSummary.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
 import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
 import * as NetworkRequestFormatter from './data_formatters/NetworkRequestFormatter.js';
@@ -38,7 +37,9 @@ import * as Injected from './injected.js';
 import * as AICallTree from './performance/AICallTree.js';
 import * as AIContext from './performance/AIContext.js';
 import * as AIQueries from './performance/AIQueries.js';
+import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
+import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
@@ -58,10 +59,11 @@ export {
   BuiltInAi,
   ChangeManager,
   ContextSelectionAgent,
-  ConversationSummaryAgent,
+  ConversationSummary,
   Debug,
   DOMNodeContext,
   EvaluateAction,
+  ExecuteJavaScript,
   ExtensionScope,
   FileAgent,
   FileFormatter,
@@ -75,7 +77,7 @@ export {
   NetworkRequestFormatter,
   PatchAgent,
   PerformanceAgent,
-  PerformanceAnnotationsAgent,
+  PerformanceAnnotations,
   PerformanceInsightFormatter,
   PerformanceTraceFormatter,
   StorageAgent,

@@ -167,7 +167,7 @@ export class EntryLabelOverlay extends HTMLElement {
     #callTree = null;
     // Creates or gets the setting if it exists.
     #aiAnnotationsEnabledSetting = Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
-    #agent = new AiAssistanceModels.PerformanceAnnotationsAgent.PerformanceAnnotationsAgent({
+    #performanceAnnotations = new AiAssistanceModels.PerformanceAnnotations.PerformanceAnnotations({
         aidaClient: new Host.AidaClient.AidaClient(),
         serverSideLoggingEnabled: isAiAssistanceServerSideLoggingEnabled(),
     });
@@ -223,8 +223,8 @@ export class EntryLabelOverlay extends HTMLElement {
     /**
      * So we can provide a mocked agent in tests. Do not call this method outside of a test!
      */
-    overrideAIAgentForTest(agent) {
-        this.#agent = agent;
+    overridePerformanceAnnotationsForTest(performanceAnnotations) {
+        this.#performanceAnnotations = performanceAnnotations;
     }
     entryHighlightWrapper() {
         return this.#entryHighlightWrapper;
@@ -471,7 +471,7 @@ export class EntryLabelOverlay extends HTMLElement {
                 this.#render();
                 this.#focusInputBox();
                 void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-                this.#label = await this.#agent.generateAIEntryLabel(this.#callTree);
+                this.#label = await this.#performanceAnnotations.generateAIEntryLabel(this.#callTree);
                 this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
                 this.#inputField.innerText = this.#label;
                 this.#placeCursorAtInputEnd();

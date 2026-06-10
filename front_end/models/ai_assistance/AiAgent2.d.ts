@@ -1,5 +1,6 @@
 import * as Host from '../../core/host/host.js';
-import { type AgentOptions, AiAgent, type ContextResponse, type ConversationContext, type MultimodalInputType, type RequestOptions } from './agents/AiAgent.js';
+import { AiAgent, type ContextResponse, type ConversationContext, type MultimodalInputType, type RequestOptions } from './agents/AiAgent.js';
+import { type ExecuteJsAgentOptions } from './agents/ExecuteJavascript.js';
 import type { Skill, SkillName } from './skills/Skill.js';
 export declare class AiAgent2 extends AiAgent<unknown> {
     #private;
@@ -7,7 +8,7 @@ export declare class AiAgent2 extends AiAgent<unknown> {
     readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
     readonly userTier = "TESTERS";
     get options(): RequestOptions;
-    constructor(opts: AgentOptions);
+    constructor(opts: ExecuteJsAgentOptions);
     enhanceQuery(query: string, selected?: ConversationContext<unknown> | null, _multimodalInputType?: MultimodalInputType): Promise<string>;
     handleContextDetails(selected: ConversationContext<unknown> | null): AsyncGenerator<ContextResponse, void, void>;
     getSkills(): Record<SkillName, Skill>;

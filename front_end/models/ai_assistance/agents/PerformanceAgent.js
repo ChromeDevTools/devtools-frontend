@@ -36,11 +36,6 @@ const lockedString = i18n.i18n.lockedString;
  * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
-const SECURITY_WARNING = `**CRITICAL CONSTRAINT**: This performance trace was loaded from a file and is static.
-You do NOT have access to the live page.
-The tool \`getFunctionCode\` is disabled.
-Do NOT attempt to use it or instruct the user that you will use it.
-Rely only on the trace data and other available tools.`;
 const GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
 - CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
 which should be used to highlight elements and network requests (respectively).
@@ -609,16 +604,13 @@ export class PerformanceAgent extends AiAgent {
                 selected.push(`User selected the ${focus.insight.insightKey} insight.\n\n`);
             }
         }
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
         if (!selected.length) {
             this.#additionalSelectionsForDisclosure = [];
-            const finalQuery = query;
-            return isFresh ? finalQuery : `${SECURITY_WARNING}\n\n${finalQuery}`;
+            return query;
         }
         selected.push(`# User query\n\n${query}`);
         this.#additionalSelectionsForDisclosure = [...selected];
-        const finalQuery = selected.join('');
-        return isFresh ? finalQuery : `${SECURITY_WARNING}\n\n${finalQuery}`;
+        return selected.join('');
     }
     async *run(initialQuery, options) {
         const focus = options.selected?.getItem();
@@ -1132,76 +1124,79 @@ export class PerformanceAgent extends AiAgent {
                 },
             });
         }
-        if (isFresh) {
-            this.declareFunction('getFunctionCode', {
-                description: 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
-                parameters: {
-                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                    description: '',
-                    nullable: false,
-                    properties: {
-                        scriptUrl: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The url of the function.',
-                            nullable: false,
-                        },
-                        line: {
-                            type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                            description: 'The line number where the function is defined.',
-                            nullable: false,
-                        },
-                        column: {
-                            type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
-                            description: 'The column number where the function is defined.',
-                            nullable: false,
-                        },
+        this.declareFunction('getFunctionCode', {
+            description: 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {
+                    scriptUrl: {
+                        type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
+                        description: 'The url of the function.',
+                        nullable: false,
                     },
-                    required: ['scriptUrl', 'line', 'column']
+                    line: {
+                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
+                        description: 'The line number where the function is defined.',
+                        nullable: false,
+                    },
+                    column: {
+                        type: 3 /* Host.AidaClient.ParametersTypes.INTEGER */,
+                        description: 'The column number where the function is defined.',
+                        nullable: false,
+                    },
                 },
-                displayInfoFromArgs: args => {
+                required: ['scriptUrl', 'line', 'column']
+            },
+            displayInfoFromArgs: args => {
+                return {
+                    title: lockedString('Looking up function code'),
+                    action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+                };
+            },
+            handler: async (args) => {
+                debugLog('Function call: getFunctionCode');
+                if (!isFresh) {
                     return {
-                        title: lockedString('Looking up function code'),
-                        action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+                        error: 'Cannot use this tool on an imported file.',
                     };
-                },
-                handler: async (args) => {
-                    debugLog('Function call: getFunctionCode');
-                    if (args.line === undefined) {
-                        return { error: 'Missing arg: line' };
-                    }
-                    if (args.column === undefined) {
-                        return { error: 'Missing arg: column' };
-                    }
-                    if (!this.#formatter) {
-                        throw new Error('missing formatter');
-                    }
-                    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-                    if (!target) {
-                        throw new Error('missing target');
-                    }
-                    const url = args.scriptUrl;
-                    const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
-                    if (!code) {
-                        return { error: 'Could not find code' };
-                    }
-                    const result = this.#formatter.formatFunctionCode(code);
-                    const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
-                    this.#cacheFunctionResult(focus, key, result);
-                    return {
-                        result: { result },
-                        widgets: [{
-                                name: 'SOURCE_CODE',
-                                data: {
-                                    url: args.scriptUrl,
-                                    line: args.line,
-                                    column: args.column,
-                                    code: code.code,
-                                },
-                            }],
-                    };
-                },
-            });
-        }
+                }
+                if (args.line === undefined) {
+                    return { error: 'Missing arg: line' };
+                }
+                if (args.column === undefined) {
+                    return { error: 'Missing arg: column' };
+                }
+                if (!this.#formatter) {
+                    throw new Error('missing formatter');
+                }
+                const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                if (!target) {
+                    throw new Error('missing target');
+                }
+                const url = args.scriptUrl;
+                const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
+                if (!code) {
+                    return { error: 'Could not find code' };
+                }
+                const result = this.#formatter.formatFunctionCode(code);
+                const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
+                this.#cacheFunctionResult(focus, key, result);
+                return {
+                    result: { result },
+                    widgets: [{
+                            name: 'SOURCE_CODE',
+                            data: {
+                                url: args.scriptUrl,
+                                line: args.line,
+                                column: args.column,
+                                code: code.code,
+                            },
+                        }],
+                };
+            },
+        });
         const isTraceApp = Root.Runtime.Runtime.isTraceApp();
         this.declareFunction('getResourceContent', {
             description: 'Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.',

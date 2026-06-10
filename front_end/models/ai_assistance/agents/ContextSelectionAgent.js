@@ -11,11 +11,13 @@ import * as Workspace from '../../workspace/workspace.js';
 import { isOpaqueOrigin } from '../AiOrigins.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { debugLog } from '../debug.js';
+import { StorageItem } from '../StorageItem.js';
 import { AccessibilityContext } from './AccessibilityAgent.js';
 import { AiAgent, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
 import { RequestContext } from './NetworkAgent.js';
 import { PerformanceTraceContext } from './PerformanceAgent.js';
+import { StorageContext } from './StorageAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -29,12 +31,12 @@ Your role is to understand the user's query, identify the appropriate specialize
 
 # Workflow
 1.  **Analyze**: Understand the user's intent and what they are trying to achieve.
-2.  **Classify**: Determine which specialized agent is best suited for the task (e.g., StylingAgent for CSS/styling issues, NetworkAgent for network requests, FileAgent for source files, PerformanceAgent for performance details, AccessibilityAgent for accessibility reports, or StorageAgent for storage issues).
-3.  **Gather Context**: Identify what information the specialized agent will need. Proactively use your tools to find and select this context (e.g., finding the relevant DOM node, network request, file, or performance trace). Always try to select a single specific context before answering the question.
+2.  **Classify**: Determine which specialized agent is best suited for the task (e.g., StylingAgent for CSS/styling issues, NetworkAgent for network requests, FileAgent for source files, PerformanceAgent for performance details, AccessibilityAgent for accessibility reports, or StorageAgent for analyzing and explaining storage but not editing).
+3.  **Gather Context**: Identify what information the specialized agent will need. Proactively use your tools to find and select this context (e.g., finding the relevant DOM node, network request, file, performance trace, or storage). Always try to select a single specific context before answering the question.
 4.  **Delegate**: Once context is selected, hand over to the specialized agent. If you are unable to delegate or gather more information, provide a comprehensive guide on how to fix the issue using Chrome DevTools, explaining how and why, or suggest any panel/flow that may help.
 
 # Considerations
-* Determine what is the domain of the question - styling, network, sources, performance or other part of DevTools.
+* Determine what is the domain of the question - styling, network, sources, performance, storage, or other part of DevTools.
 * For questions about performance (e.g., general performance issues, page speed, performance metrics like LCP, INP, CLS), use performanceRecordAndReload to record a performance trace.
 * Proactively try to gather additional data. If a specific piece of data can be selected, select it.
 * Always try to select a single specific context before answering the question.
@@ -118,6 +120,7 @@ export class ContextSelectionAgent extends AiAgent {
                     };
                 }
                 let hasCrossOriginRequest = false;
+                const requestsToShow = [];
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
                     const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
                     /**
@@ -139,6 +142,7 @@ export class ContextSelectionAgent extends AiAgent {
                         duration: i18n.TimeUtilities.secondsToString(request.duration),
                         transferSize: i18n.ByteUtilities.formatBytesToKb(request.transferSize),
                     });
+                    requestsToShow.push(request);
                 }
                 if (requests.length === 0) {
                     return {
@@ -149,6 +153,12 @@ export class ContextSelectionAgent extends AiAgent {
                 }
                 return {
                     result: requests,
+                    widgets: [{
+                            name: 'NETWORK_REQUESTS_LIST',
+                            data: {
+                                requests: requestsToShow,
+                            },
+                        }],
                 };
             },
         });
@@ -424,6 +434,42 @@ export class ContextSelectionAgent extends AiAgent {
                 };
             },
         });
+        if (Root.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
+            this.declareFunction('analyzeStorage', {
+                description: 'Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.',
+                parameters: {
+                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                    description: '',
+                    nullable: true,
+                    required: [],
+                    properties: {},
+                },
+                displayInfoFromArgs: () => {
+                    return {
+                        title: lockedString('Prepare storage analysis'),
+                        action: 'analyzeStorage()',
+                    };
+                },
+                handler: async () => {
+                    const allowedOriginResult = this.#allowedOrigin();
+                    if ('blocked' in allowedOriginResult) {
+                        return {
+                            error: 'Cross-origin access blocked due to navigation. Please start a new chat.',
+                        };
+                    }
+                    const origin = allowedOriginResult.origin;
+                    if (!origin) {
+                        return {
+                            error: 'Unable to find page storage.',
+                        };
+                    }
+                    return {
+                        context: new StorageContext(new StorageItem(origin, origin)),
+                        description: 'User selected page storage',
+                    };
+                },
+            });
+        }
     }
     async *handleContextDetails() {
     }

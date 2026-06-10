@@ -279,4 +279,19 @@ export function createTestFilesystem(fileSystemPath, files) {
     }
     return { project, uiSourceCode };
 }
+export function assertIsError(response) {
+    if (!('error' in response)) {
+        assert.fail(`Expected error response, but got: ${JSON.stringify(response)}`);
+    }
+}
+export function assertIsResult(response) {
+    if (!('result' in response)) {
+        assert.fail(`Expected success result response, but got: ${JSON.stringify(response)}`);
+    }
+}
+export function assertRequiresApproval(response) {
+    if (!('requiresApproval' in response)) {
+        assert.fail(`Expected response requiring approval, but got: ${JSON.stringify(response)}`);
+    }
+}
 //# sourceMappingURL=AiAssistanceHelpers.js.map

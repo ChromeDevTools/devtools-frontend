@@ -10,6 +10,8 @@ import { debugLog } from '../debug.js';
 import { EvaluateAction, formatError, SideEffectError } from '../EvaluateAction.js';
 import { FREESTYLER_WORLD_NAME } from '../injected.js';
 const lockedString = i18n.i18n.lockedString;
+// TODO(crbug.com/510206549): De-duplicate this function by migrating AccessibilityAgent to use
+// the registry-based ExecuteJavaScriptTool in tools/ExecuteJavaScript.ts.
 export function executeJavaScriptFunction(executor) {
     return {
         description: 'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.',

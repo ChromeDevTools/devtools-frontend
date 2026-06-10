@@ -5,6 +5,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import { ConsoleViewMessage } from './ConsoleViewMessage.js';
 const { html, render } = Lit;
 function renderHeader(content, isCause) {
     if (isCause) {
@@ -12,18 +13,55 @@ function renderHeader(content, isCause) {
     }
     return html `<span class="error-message-text">${content}</span>`;
 }
-function renderFramePrefix(frame, _options) {
+function formatName(frame) {
+    let name = frame.name || '';
+    const isInline = Boolean(frame.rawName) && frame.name !== frame.rawName;
+    const shouldAppendMethodAlias = !isInline && frame.methodName && name && name !== frame.methodName &&
+        !name.endsWith('.' + frame.methodName) && !name.endsWith(' ' + frame.methodName);
+    if (shouldAppendMethodAlias) {
+        name += ` [as ${frame.methodName}]`;
+    }
+    return name;
+}
+function renderLinkElement(frame, options) {
+    if (frame.url || frame.uiSourceCode) {
+        const link = Components.Linkifier.Linkifier.linkifyStackTraceFrame(frame, options);
+        link.tabIndex = -1;
+        return link;
+    }
+    return html `<span>&lt;anonymous&gt;</span>`;
+}
+function renderEvalOrigin(frame, options) {
+    const name = formatName(frame);
+    const linkElement = renderLinkElement(frame, options);
+    const asyncPrefix = frame.isAsync ? 'async ' : '';
+    const constructorPrefix = frame.isConstructor ? 'new ' : '';
+    if (frame.isEval) {
+        const evalOrigin = frame.evalOrigin ? renderEvalOrigin(frame.evalOrigin, options) : '<anonymous>';
+        if (name) {
+            return html `${asyncPrefix}${constructorPrefix}eval at ${name} (${evalOrigin})`;
+        }
+        return html `${asyncPrefix}${constructorPrefix}eval at ${evalOrigin}`;
+    }
+    if (name) {
+        return html `${asyncPrefix}${constructorPrefix}eval at ${name} (${linkElement})`;
+    }
+    return html `${asyncPrefix}${constructorPrefix}eval at ${linkElement}`;
+}
+function renderFramePrefix(frame, options) {
     const asyncPrefix = frame.isAsync ? 'async ' : '';
     if (frame.promiseIndex !== undefined) {
         const name = frame.name || 'Promise.all';
         return html `${asyncPrefix}${name} (index ${frame.promiseIndex})`;
     }
     const constructorPrefix = frame.isConstructor ? 'new ' : '';
-    let name = frame.name || '';
-    const isInline = Boolean(frame.rawName) && frame.name !== frame.rawName;
-    if (!isInline && frame.methodName && name && name !== frame.methodName && !name.endsWith('.' + frame.methodName) &&
-        !name.endsWith(' ' + frame.methodName)) {
-        name += ` [as ${frame.methodName}]`;
+    const name = formatName(frame);
+    if (frame.isEval) {
+        const evalOrigin = frame.evalOrigin ? renderEvalOrigin(frame.evalOrigin, options) : '<anonymous>';
+        if (name) {
+            return html `${asyncPrefix}${constructorPrefix}${name} (${evalOrigin}, `;
+        }
+        return html `${asyncPrefix}${constructorPrefix}${evalOrigin}, `;
     }
     if (name) {
         return html `${asyncPrefix}${constructorPrefix}${name} (`;
@@ -41,9 +79,21 @@ function renderFrameSuffix(frame) {
 }
 const DEFAULT_VIEW = (input, _output, target) => {
     const renderError = (error, isCause) => {
-        if (!(error instanceof Bindings.SymbolizedError.SymbolizedErrorObject)) {
+        if (error instanceof Bindings.SymbolizedError.SymbolizedSyntaxError) {
             console.error('SymbolizedErrorWidget received an unsupported error type:', error);
             return Lit.nothing;
+        }
+        if (error instanceof Bindings.SymbolizedError.UnparsableError) {
+            const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
+                const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
+                const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
+                linkElement.tabIndex = -1;
+                return linkElement;
+            });
+            const header = renderHeader(fragment, isCause);
+            return html `
+        <span class=${isCause ? 'console-message-stack-trace-wrapper' : ''}>${header}</span>
+      `;
         }
         const linkOptions = {
             showColumnNumber: true,
@@ -58,21 +108,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
         return html `
       <span class=${isCause ? 'console-message-stack-trace-wrapper' : ''}
       >${header}${syncFrames.length > 0 ? '\n' : ''}${syncFrames.map((frame, i) => {
-            let linkElement = Lit.nothing;
-            let isBuiltin = false;
-            if (frame.promiseIndex !== undefined) {
-                // Promise.all doesn't have a linkable location.
-                isBuiltin = true;
-            }
-            else if (frame.url || frame.uiSourceCode) {
-                const link = Components.Linkifier.Linkifier.linkifyStackTraceFrame(frame, linkOptions);
-                link.tabIndex = -1;
-                linkElement = link;
-            }
-            else {
-                linkElement = html `<span>&lt;anonymous&gt;</span>`;
-                isBuiltin = true;
-            }
+            const isBuiltin = frame.promiseIndex !== undefined || (!frame.url && !frame.uiSourceCode);
+            const linkElement = frame.promiseIndex !== undefined ? Lit.nothing : renderLinkElement(frame, linkOptions);
             const newline = i < error.stackTrace.syncFragment.frames.length - 1 ? '\n' : '';
             const frameClass = isBuiltin ? 'formatted-builtin-stack-frame' : 'formatted-stack-frame';
             return html `

@@ -48,7 +48,7 @@ export class GetStylesTool {
             action: `getStyles(${JSON.stringify(params.elements)}, ${JSON.stringify(params.styleProperties)})`,
         };
     }
-    async handler(params, context) {
+    async handler(params, context, _options) {
         const widgets = [];
         const result = {};
         const activeContext = context.conversationContext;

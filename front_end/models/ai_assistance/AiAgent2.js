@@ -3,7 +3,11 @@
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
 import { AiAgent } from './agents/AiAgent.js';
+import { executeJsCode } from './agents/ExecuteJavascript.js';
+import { ChangeManager } from './ChangeManager.js';
+import { DOMNodeContext } from './contexts/DOMNodeContext.js';
 import { debugLog } from './debug.js';
+import { ExtensionScope } from './ExtensionScope.js';
 import { SKILLS } from './skills/SkillRegistry.js';
 import { ToolRegistry } from './tools/ToolRegistry.js';
 const SKILL_DISPLAY_NAMES = {
@@ -15,6 +19,8 @@ export class AiAgent2 extends AiAgent {
     clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT; // Placeholder
     userTier = 'TESTERS';
     #skillsInjected = false;
+    #changes = new ChangeManager();
+    #execJs;
     get options() {
         return {};
     }
@@ -22,6 +28,7 @@ export class AiAgent2 extends AiAgent {
     #declaredTools = new Set();
     constructor(opts) {
         super(opts);
+        this.#execJs = opts.execJs ?? executeJsCode;
         this.#declaredTools.add('learnSkills');
         const skillsList = Object.keys(SKILLS).join(', ');
         this.declareFunction('learnSkills', {
@@ -125,6 +132,10 @@ User query: ${enhancedQuery}`;
         }
         return response.trim();
     }
+    #createExtensionScope(changes) {
+        const selectedNode = this.context && this.context instanceof DOMNodeContext ? this.context.getItem() : null;
+        return new ExtensionScope(changes, this.sessionId, selectedNode);
+    }
     /**
      * Declares a tool to be available to the agent model, verifying first that
      * it hasn't already been declared to prevent duplicate declaration errors.
@@ -139,9 +150,12 @@ User query: ${enhancedQuery}`;
             description: tool.description,
             parameters: tool.parameters,
             displayInfoFromArgs: tool.displayInfoFromArgs,
-            handler: args => tool.handler(args, {
+            handler: (args, options) => tool.handler(args, {
                 conversationContext: this.context ?? null,
-            }),
+                changeManager: this.#changes,
+                createExtensionScope: this.#createExtensionScope.bind(this),
+                execJs: this.#execJs,
+            }, options),
         });
     }
     get activeSkills() {

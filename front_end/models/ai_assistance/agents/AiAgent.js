@@ -138,6 +138,9 @@ export class AiAgent {
      */
     clearCache() {
     }
+    disableServerSideLogging() {
+        this.#serverSideLoggingEnabled = false;
+    }
     popPendingMultimodalInput() {
         return undefined;
     }
@@ -269,14 +272,18 @@ export class AiAgent {
     clearDeclaredFunctions() {
         this.#functionDeclarations.clear();
     }
+    /**
+     * Executed immediately after the current context is populated with the selected
+     * context and before the request is built.
+     */
     async preRun() {
     }
     async *run(initialQuery, options, multimodalInput) {
-        await this.preRun();
         await options.selected?.refresh();
         if (options.selected) {
             this.context = options.selected;
         }
+        await this.preRun();
         const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
         Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
         let query;

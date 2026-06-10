@@ -21,6 +21,5 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     activateDeviceEmulation(deviceName: string, visionDeficiency?: string): Promise<FunctionCallHandlerResult<unknown>>;
     popPendingMultimodalInput(): MultimodalInput | undefined;
     handleContextDetails(selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null): AsyncGenerator<ContextResponse, void, void>;
-    protected preRun(): Promise<void>;
     enhanceQuery(query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode> | null, multimodalInputType?: MultimodalInputType): Promise<string>;
 }

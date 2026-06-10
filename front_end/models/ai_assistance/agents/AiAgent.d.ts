@@ -254,6 +254,12 @@ export interface SourceFilesListAiWidget {
         uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
     };
 }
+export interface NetworkRequestsListAiWidget {
+    name: 'NETWORK_REQUESTS_LIST';
+    data: {
+        requests: SDK.NetworkRequest.NetworkRequest[];
+    };
+}
 export interface LighthouseReportAiWidget {
     name: 'LIGHTHOUSE_REPORT';
     data: {
@@ -283,7 +289,7 @@ export interface SourceCodeAiWidget {
         column?: number;
     };
 }
-export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget | SourceFilesListAiWidget;
+export type AiWidget = ComputedStyleAiWidget | CoreVitalsAiWidget | StylePropertiesAiWidget | DomTreeAiWidget | PerformanceTraceAiWidget | PerfInsightAiWidget | TimelineRangeSummaryAiWidget | BottomUpTreeAiWidget | SourceFileAiWidget | LighthouseReportAiWidget | TimelineEventSummaryAiWidget | NetworkRequestGeneralHeadersAiWidget | SourceCodeAiWidget | SourceFilesListAiWidget | NetworkRequestsListAiWidget;
 export type FunctionCallHandlerResult<Result> = {
     requiresApproval: true;
     /**
@@ -383,6 +389,7 @@ export declare abstract class AiAgent<T> {
      * prevent unvalidated cached data from being replayed in subsequent runs.
      */
     clearCache(): void;
+    protected disableServerSideLogging(): void;
     popPendingMultimodalInput(): MultimodalInput | undefined;
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;
     get sessionId(): string;
@@ -413,6 +420,10 @@ export declare abstract class AiAgent<T> {
      */
     protected declareFunction<Args extends Record<string, unknown>, ReturnType = unknown>(name: string, declaration: FunctionDeclaration<Args, ReturnType>): void;
     protected clearDeclaredFunctions(): void;
+    /**
+     * Executed immediately after the current context is populated with the selected
+     * context and before the request is built.
+     */
     protected preRun(): Promise<void>;
     run(initialQuery: string, options: {
         selected: ConversationContext<T> | null;

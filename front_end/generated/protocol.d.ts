@@ -5398,6 +5398,13 @@ export declare namespace DOM {
          * popover if it was previously force-opened.
          */
         enable: boolean;
+        /**
+         * Optional ID of the element invoking this popover, used to establish the implicit anchor.
+         * If not provided, it will fall back to the first invoker in the document, preferring
+         * elements with a popovertarget attribute over those with a commandfor attribute. Note that
+         * if there are multiple invokers, this is just an estimate.
+         */
+        invokerNodeId?: BackendNodeId;
     }
     interface ForceShowPopoverResponse extends ProtocolResponseWithError {
         /**

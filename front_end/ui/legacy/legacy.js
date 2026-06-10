@@ -2915,13 +2915,29 @@ function cancelUpdate(widget2) {
     nextUpdateQueue.delete(widget2);
   }
 }
+function resolveOverallUpdatePromise() {
+  if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) && nextUpdateQueue.size === 0 && !pendingAnimationFrame && overallUpdatePromise) {
+    overallUpdatePromise.resolve();
+    overallUpdatePromise = null;
+  }
+}
 function runNextUpdate() {
   pendingAnimationFrame = null;
   if (!currentUpdateQueue) {
     currentUpdateQueue = nextUpdateQueue;
     nextUpdateQueue = /* @__PURE__ */ new Map();
   }
-  for (const [widget2, { resolve }] of currentUpdateQueue) {
+  for (const [widget2, update] of currentUpdateQueue) {
+    if (currentlyProcessed.has(widget2)) {
+      const scheduledUpdate = nextUpdateQueue.get(widget2);
+      if (!scheduledUpdate) {
+        nextUpdateQueue.set(widget2, update);
+      } else {
+        void scheduledUpdate.promise.then(update.resolve);
+      }
+      continue;
+    }
+    const { resolve } = update;
     currentlyProcessed.add(widget2);
     void (async () => {
       try {
@@ -2929,7 +2945,17 @@ function runNextUpdate() {
         widget2.addUpdateController(controller);
         await widget2.performUpdate(controller.signal);
       } finally {
-        resolve();
+        currentlyProcessed.delete(widget2);
+        const nextUpdate = nextUpdateQueue.get(widget2);
+        if (nextUpdate) {
+          void nextUpdate.promise.then(resolve);
+          if (pendingAnimationFrame === null) {
+            pendingAnimationFrame = requestAnimationFrame(runNextUpdate);
+          }
+        } else {
+          resolve();
+        }
+        resolveOverallUpdatePromise();
       }
     })().catch((e) => {
       if (e.name !== "AbortError") {
@@ -2943,11 +2969,7 @@ function runNextUpdate() {
       runNextUpdate();
     } else {
       currentUpdateQueue = null;
-      currentlyProcessed.clear();
-      if (!pendingAnimationFrame && overallUpdatePromise) {
-        overallUpdatePromise.resolve();
-        overallUpdatePromise = null;
-      }
+      resolveOverallUpdatePromise();
     }
   });
 }
@@ -3243,7 +3265,7 @@ var Widget = class _Widget {
     return widgetMap.get(node);
   }
   static get allUpdatesComplete() {
-    if (!pendingAnimationFrame && !currentUpdateQueue) {
+    if (!pendingAnimationFrame && !currentUpdateQueue && currentlyProcessed.size === 0) {
       return Promise.resolve();
     }
     if (!overallUpdatePromise) {

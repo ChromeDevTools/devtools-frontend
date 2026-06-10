@@ -16,7 +16,7 @@ function me({ median: r5, p10: e }, t) {
   let n = 0.9061938024368232, o = Math.max(Number.MIN_VALUE, t / r5), i = Math.log(o), a = Math.max(Number.MIN_VALUE, e / r5), l = -Math.log(a), s = i * n / l, c = (1 - Ne(s)) / 2, d;
   return t <= e ? d = Math.max(0.9, Math.min(1, c)) : t <= r5 ? d = Math.max(Pe, Math.min(De, c)) : d = Math.max(0, Math.min(Re, c)), d;
 }
-var U = "\u2026";
+var O = "\u2026";
 var He = "\xA0";
 var fe = 0.9;
 var Ue = { PASS: { label: "pass", minScore: fe }, AVERAGE: { label: "average", minScore: 0.5 }, FAIL: { label: "fail" }, ERROR: { label: "error" } };
@@ -81,12 +81,12 @@ var E = class r {
     else {
       a = e.pathname;
       let s = a.split("/").filter((c) => c.length);
-      n && s.length > n && (a = U + s.slice(-1 * n).join("/")), i && (a = `${e.host}/${a.replace(/^\//, "")}`), o && (a = `${a}${e.search}`);
+      n && s.length > n && (a = O + s.slice(-1 * n).join("/")), i && (a = `${e.host}/${a.replace(/^\//, "")}`), o && (a = `${a}${e.search}`);
     }
     let l = 64;
-    if (e.protocol !== "data:" && (a = a.slice(0, 200), a = a.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${U}`), a = a.replace(/([a-zA-Z0-9-_]{9})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9-_]{10,}/g, `$1${U}`), a = a.replace(/(\d{3})\d{6,}/g, `$1${U}`), a = a.replace(/\u2026+/g, U), a.length > l && a.includes("?") && (a = a.replace(/\?([^=]*)(=)?.*/, `?$1$2${U}`), a.length > l && (a = a.replace(/\?.*/, `?${U}`)))), a.length > l) {
+    if (e.protocol !== "data:" && (a = a.slice(0, 200), a = a.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${O}`), a = a.replace(/([a-zA-Z0-9-_]{9})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9-_]{10,}/g, `$1${O}`), a = a.replace(/(\d{3})\d{6,}/g, `$1${O}`), a = a.replace(/\u2026+/g, O), a.length > l && a.includes("?") && (a = a.replace(/\?([^=]*)(=)?.*/, `?$1$2${O}`), a.length > l && (a = a.replace(/\?.*/, `?${O}`)))), a.length > l) {
       let s = a.lastIndexOf(".");
-      s >= 0 ? a = a.slice(0, l - 1 - (a.length - s)) + `${U}${a.slice(s)}` : a = a.slice(0, l - 1) + U;
+      s >= 0 ? a = a.slice(0, l - 1 - (a.length - s)) + `${O}${a.slice(s)}` : a = a.slice(0, l - 1) + O;
     }
     return a;
   }
@@ -2863,10 +2863,7 @@ details[open] .lh-clump-toggletext--hide { display: block;}
   animation-fill-mode: forwards;
 }
 .lh-exp-gauge-component .state--peek .lh-exp-gauge__inner .lh-exp-gauge__arc {
-  opacity: 1;
-}
-.lh-exp-gauge-component .state--peek .lh-exp-gauge__arc.lh-exp-gauge--faded {
-  opacity: 0.3; /* just a tad stronger cuz its fighting with a big solid arg */
+  opacity: 0.1;
 }
 /* do i need to set expanded and override this? */
 .lh-exp-gauge-component .state--peek .lh-exp-gauge__arc--metric.lh-exp-gauge--miniarc {
@@ -3097,22 +3094,22 @@ function st(r5) {
   x.setAttribute("id", "lh-tools-dropdown"), x.setAttribute("role", "menu"), x.setAttribute("aria-labelledby", "lh-tools-button");
   let L = r5.createElement("a", "lh-report-icon lh-report-icon--print");
   L.setAttribute("role", "menuitem"), L.setAttribute("tabindex", "-1"), L.setAttribute("href", "#"), L.setAttribute("data-i18n", "dropdownPrintSummary"), L.setAttribute("data-action", "print-summary");
-  let S = r5.createElement("a", "lh-report-icon lh-report-icon--print");
-  S.setAttribute("role", "menuitem"), S.setAttribute("tabindex", "-1"), S.setAttribute("href", "#"), S.setAttribute("data-i18n", "dropdownPrintExpanded"), S.setAttribute("data-action", "print-expanded");
-  let z = r5.createElement("a", "lh-report-icon lh-report-icon--copy");
-  z.setAttribute("role", "menuitem"), z.setAttribute("tabindex", "-1"), z.setAttribute("href", "#"), z.setAttribute("data-i18n", "dropdownCopyJSON"), z.setAttribute("data-action", "copy");
-  let M = r5.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
-  M.setAttribute("role", "menuitem"), M.setAttribute("tabindex", "-1"), M.setAttribute("href", "#"), M.setAttribute("data-i18n", "dropdownSaveHTML"), M.setAttribute("data-action", "save-html");
-  let $ = r5.createElement("a", "lh-report-icon lh-report-icon--download");
-  $.setAttribute("role", "menuitem"), $.setAttribute("tabindex", "-1"), $.setAttribute("href", "#"), $.setAttribute("data-i18n", "dropdownSaveJSON"), $.setAttribute("data-action", "save-json");
-  let R = r5.createElement("a", "lh-report-icon lh-report-icon--open");
-  R.setAttribute("role", "menuitem"), R.setAttribute("tabindex", "-1"), R.setAttribute("href", "#"), R.setAttribute("data-i18n", "dropdownViewer"), R.setAttribute("data-action", "open-viewer");
+  let C = r5.createElement("a", "lh-report-icon lh-report-icon--print");
+  C.setAttribute("role", "menuitem"), C.setAttribute("tabindex", "-1"), C.setAttribute("href", "#"), C.setAttribute("data-i18n", "dropdownPrintExpanded"), C.setAttribute("data-action", "print-expanded");
+  let A = r5.createElement("a", "lh-report-icon lh-report-icon--copy");
+  A.setAttribute("role", "menuitem"), A.setAttribute("tabindex", "-1"), A.setAttribute("href", "#"), A.setAttribute("data-i18n", "dropdownCopyJSON"), A.setAttribute("data-action", "copy");
+  let z = r5.createElement("a", "lh-report-icon lh-report-icon--download lh-hidden");
+  z.setAttribute("role", "menuitem"), z.setAttribute("tabindex", "-1"), z.setAttribute("href", "#"), z.setAttribute("data-i18n", "dropdownSaveHTML"), z.setAttribute("data-action", "save-html");
+  let V = r5.createElement("a", "lh-report-icon lh-report-icon--download");
+  V.setAttribute("role", "menuitem"), V.setAttribute("tabindex", "-1"), V.setAttribute("href", "#"), V.setAttribute("data-i18n", "dropdownSaveJSON"), V.setAttribute("data-action", "save-json");
   let N = r5.createElement("a", "lh-report-icon lh-report-icon--open");
-  N.setAttribute("role", "menuitem"), N.setAttribute("tabindex", "-1"), N.setAttribute("href", "#"), N.setAttribute("data-i18n", "dropdownSaveGist"), N.setAttribute("data-action", "save-gist");
-  let D = r5.createElement("a", "lh-report-icon lh-report-icon--open lh-hidden");
-  D.setAttribute("role", "menuitem"), D.setAttribute("tabindex", "-1"), D.setAttribute("href", "#"), D.setAttribute("data-i18n", "dropdownViewUnthrottledTrace"), D.setAttribute("data-action", "view-unthrottled-trace");
-  let I = r5.createElement("a", "lh-report-icon lh-report-icon--dark");
-  return I.setAttribute("role", "menuitem"), I.setAttribute("tabindex", "-1"), I.setAttribute("href", "#"), I.setAttribute("data-i18n", "dropdownDarkTheme"), I.setAttribute("data-action", "toggle-dark"), x.append(" ", L, " ", S, " ", z, " ", " ", M, " ", $, " ", R, " ", N, " ", " ", D, " ", I, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
+  N.setAttribute("role", "menuitem"), N.setAttribute("tabindex", "-1"), N.setAttribute("href", "#"), N.setAttribute("data-i18n", "dropdownViewer"), N.setAttribute("data-action", "open-viewer");
+  let I = r5.createElement("a", "lh-report-icon lh-report-icon--open");
+  I.setAttribute("role", "menuitem"), I.setAttribute("tabindex", "-1"), I.setAttribute("href", "#"), I.setAttribute("data-i18n", "dropdownSaveGist"), I.setAttribute("data-action", "save-gist");
+  let P = r5.createElement("a", "lh-report-icon lh-report-icon--open lh-hidden");
+  P.setAttribute("role", "menuitem"), P.setAttribute("tabindex", "-1"), P.setAttribute("href", "#"), P.setAttribute("data-i18n", "dropdownViewUnthrottledTrace"), P.setAttribute("data-action", "view-unthrottled-trace");
+  let H = r5.createElement("a", "lh-report-icon lh-report-icon--dark");
+  return H.setAttribute("role", "menuitem"), H.setAttribute("tabindex", "-1"), H.setAttribute("href", "#"), H.setAttribute("data-i18n", "dropdownDarkTheme"), H.setAttribute("data-action", "toggle-dark"), x.append(" ", L, " ", C, " ", A, " ", " ", z, " ", V, " ", N, " ", I, " ", " ", P, " ", H, " "), c.append(" ", d, " ", f, " ", x, " "), n.append(" ", " ", o, " ", s, " ", c, " "), e.append(n), e;
 }
 function ct(r5) {
   let e = r5.createFragment(), t = r5.createElement("div", "lh-warnings lh-warnings--toplevel"), n = r5.createElement("p", "lh-warnings__msg"), o = r5.createElement("ul");
@@ -3341,7 +3338,7 @@ function ye(r5) {
     n ? r5.fullPageScreenshot = { screenshot: n.screenshot, nodes: n.nodes } : r5.fullPageScreenshot = null, delete r5.audits["full-page-screenshot"];
   }
 }
-var O = E.RATINGS;
+var $ = E.RATINGS;
 var k = class r3 {
   static prepareReportResult(e) {
     let t = JSON.parse(JSON.stringify(e));
@@ -3443,18 +3440,16 @@ var k = class r3 {
       case "error":
       case "informative":
         return false;
-      case "numeric":
-      case "binary":
       default:
-        return Number(e.score) >= O.PASS.minScore;
+        return Number(e.score) >= $.PASS.minScore;
     }
   }
   static calculateRating(e, t) {
-    if (t === "manual" || t === "notApplicable") return O.PASS.label;
-    if (t === "error") return O.ERROR.label;
-    if (e === null) return O.FAIL.label;
-    let n = O.FAIL.label;
-    return e >= O.PASS.minScore ? n = O.PASS.label : e >= O.AVERAGE.minScore && (n = O.AVERAGE.label), n;
+    if (t === "manual" || t === "notApplicable") return $.PASS.label;
+    if (t === "error") return $.ERROR.label;
+    if (e === null) return $.FAIL.label;
+    let n = $.FAIL.label;
+    return e >= $.PASS.minScore ? n = $.PASS.label : e >= $.AVERAGE.minScore && (n = $.AVERAGE.label), n;
   }
   static calculateCategoryFraction(e) {
     let t = 0, n = 0, o = 0, i = 0;
@@ -3478,7 +3473,7 @@ var k = class r3 {
   }
 };
 var _e = { varianceDisclaimer: "Values are estimated and may vary. The [performance score is calculated](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directly from these metrics.", calculatorLink: "See calculator.", showRelevantAudits: "Show audits relevant to:", opportunityResourceColumnLabel: "Opportunity", opportunitySavingsColumnLabel: "Estimated Savings", errorMissingAuditInfo: "Report error: no audit information", errorLabel: "Error!", warningHeader: "Warnings: ", warningAuditsGroupTitle: "Passed audits but with warnings", passedAuditsGroupTitle: "Passed audits", notApplicableAuditsGroupTitle: "Not applicable", manualAuditsGroupTitle: "Additional items to manually check", toplevelWarningsMessage: "There were issues affecting this run of Lighthouse:", crcInitialNavigation: "Initial Navigation", crcLongestDurationLabel: "Maximum critical path latency:", snippetExpandButtonLabel: "Expand snippet", snippetCollapseButtonLabel: "Collapse snippet", lsPerformanceCategoryDescription: "[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.", labDataTitle: "Lab Data", thirdPartyResourcesLabel: "Show 3rd-party resources", viewTreemapLabel: "View Treemap", viewTraceLabel: "View Trace", dropdownPrintSummary: "Print Summary", dropdownPrintExpanded: "Print Expanded", dropdownCopyJSON: "Copy JSON", dropdownSaveHTML: "Save as HTML", dropdownSaveJSON: "Save as JSON", dropdownViewer: "Open in Viewer", dropdownSaveGist: "Save as Gist", dropdownDarkTheme: "Toggle Dark Theme", dropdownViewUnthrottledTrace: "View Unthrottled Trace", runtimeSettingsDevice: "Device", runtimeSettingsNetworkThrottling: "Network throttling", runtimeSettingsCPUThrottling: "CPU throttling", runtimeSettingsUANetwork: "User agent (network)", runtimeSettingsBenchmark: "Unthrottled CPU/Memory Power", runtimeSettingsAxeVersion: "Axe version", runtimeSettingsScreenEmulation: "Screen emulation", footerIssue: "File an issue", runtimeNoEmulation: "No emulation", runtimeMobileEmulation: "Emulated Moto G Power", runtimeDesktopEmulation: "Emulated Desktop", runtimeUnknown: "Unknown", runtimeSingleLoad: "Single page session", runtimeAnalysisWindow: "Initial page load", runtimeAnalysisWindowTimespan: "User interactions timespan", runtimeAnalysisWindowSnapshot: "Point-in-time snapshot", runtimeSingleLoadTooltip: "This data is taken from a single page session, as opposed to field data summarizing many sessions.", throttlingProvided: "Provided by environment", show: "Show", hide: "Hide", expandView: "Expand view", collapseView: "Collapse view", runtimeSlow4g: "Slow 4G throttling", runtimeCustom: "Custom throttling", firstPartyChipLabel: "1st party", openInANewTabTooltip: "Open in a new tab", unattributable: "Unattributable", unscoredLabel: "Unscored", unscoredTitle: "This audit does not contribute to the overall category score." };
-var G = class {
+var B = class {
   constructor(e, t) {
     this.dom = e, this.detailsRenderer = t;
   }
@@ -3721,7 +3716,7 @@ function xe(r5, e, t) {
 function ht(r5) {
   return { x: r5.left + r5.width / 2, y: r5.top + r5.height / 2 };
 }
-var V = class r4 {
+var G = class r4 {
   static getScreenshotPositions(e, t, n) {
     let o = ht(e), i = xe(o.x - t.width / 2, 0, n.width - t.width), a = xe(o.y - t.height / 2, 0, n.height - t.height);
     return { screenshot: { left: i, top: a }, clip: { left: e.left - i, top: e.top - a } };
@@ -3818,13 +3813,16 @@ var ee = class {
       n = t;
     }
     let a = this._dom.createElement("div", "lh-text__url");
-    if (a.append(this._renderLink({ text: n, url: t })), o) {
+    if (a.append(this._createLink({ text: n, url: t })), o) {
       let l = this._renderText(o);
       l.classList.add("lh-text__url-host"), a.append(l);
     }
     return i && (a.title = t, a.dataset.url = t), a;
   }
   _renderLink(e) {
+    return this._createLink(e);
+  }
+  _createLink(e) {
     let t = this._dom.createElement("a");
     if (this._dom.safelySetHref(t, e.url), !t.href) {
       let n = this._renderText(e.text);
@@ -4044,7 +4042,7 @@ var ee = class {
     if (e.selector && (t.title = e.selector), e.path && t.setAttribute("data-path", e.path), e.selector && t.setAttribute("data-selector", e.selector), e.snippet && t.setAttribute("data-snippet", e.snippet), !this._fullPageScreenshot) return t;
     let n = e.lhId && this._fullPageScreenshot.nodes[e.lhId];
     if (!n || n.width === 0 || n.height === 0) return t;
-    let o = { width: 147, height: 100 }, i = V.render(this._dom, this._fullPageScreenshot.screenshot, n, o);
+    let o = { width: 147, height: 100 }, i = G.render(this._dom, this._fullPageScreenshot.screenshot, n, o);
     return i && t.prepend(i), t;
   }
   renderSourceLocation(e) {
@@ -4052,7 +4050,7 @@ var ee = class {
     let t = `${e.url}:${e.line + 1}:${e.column}`, n;
     e.original && (n = `${e.original.file || "<unmapped>"}:${e.original.line + 1}:${e.original.column}`);
     let o;
-    if (e.urlProvider === "network" && n) o = this._renderLink({ url: e.url, text: n }), o.title = `maps to generated location ${t}`;
+    if (e.urlProvider === "network" && n) o = this._createLink({ url: e.url, text: n }), o.title = `maps to generated location ${t}`;
     else if (e.urlProvider === "network" && !n) o = this.renderTextURL(e.url), this._dom.find(".lh-link", o).textContent += `:${e.line + 1}:${e.column}`;
     else if (e.urlProvider === "comment" && n) o = this._renderText(`${n} (from source map)`), o.title = `${t} (from sourceURL)`;
     else if (e.urlProvider === "comment" && !n) o = this._renderText(`${t} (from sourceURL)`);
@@ -4158,61 +4156,61 @@ function mt(r5, e, t) {
   r5.find(".lh-exp-gauge__label", f).textContent = t.title, f.setAttribute("viewBox", [-64, -64 / 2, 128, 128 / 2].join(" ")), f.style.setProperty("--stroke-width", `${b}px`), f.style.setProperty("--circle-meas", (2 * Math.PI).toFixed(4));
   let u = r5.find("g.lh-exp-gauge__outer", e), v = r5.find("g.lh-exp-gauge__inner", e), _ = r5.find("circle.lh-cover", u), x = r5.find("circle.lh-exp-gauge__arc", v), L = r5.find("text.lh-exp-gauge__percentage", v);
   u.style.setProperty("--scale-initial", String(a / l)), u.style.setProperty("--radius", `${l}px`), _.style.setProperty("--radius", `${0.5 * (a + l)}px`), _.setAttribute("stroke-width", String(w)), f.style.setProperty("--radius", `${a}px`), x.setAttribute("stroke-dasharray", `${d()} ${(s - d()).toFixed(4)}`), x.setAttribute("stroke-dashoffset", String(0.25 * s - p)), L.textContent = Math.round(i * 100).toString();
-  let S = l + b, z = l - b, M = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), $ = M.reduce((y, C) => y += C.weight, 0), R = 0.25 * c - g - 0.5 * w, N = -0.5 * Math.PI;
+  let C = l + b, A = l - b, z = t.auditRefs.filter((y) => y.group === "metrics" && y.weight), V = z.reduce((y, S) => y += S.weight, 0), N = 0.25 * c - g - 0.5 * w, I = -0.5 * Math.PI;
   u.querySelectorAll(".metric").forEach((y) => {
-    M.map((F) => `metric--${F.id}`).find((F) => y.classList.contains(F)) || y.remove();
-  }), M.forEach((y, C) => {
-    let A = y.acronym ?? y.id, F = !u.querySelector(`.metric--${A}`), T = r5.maybeFind(`g.metric--${A}`, u) || r5.createSVGElement("g"), B = r5.maybeFind(`.metric--${A} circle.lh-exp-gauge--faded`, u) || r5.createSVGElement("circle"), K = r5.maybeFind(`.metric--${A} circle.lh-exp-gauge--miniarc`, u) || r5.createSVGElement("circle"), q = r5.maybeFind(`.metric--${A} circle.lh-exp-gauge-hovertarget`, u) || r5.createSVGElement("circle"), P = r5.maybeFind(`.metric--${A} text.metric__label`, u) || r5.createSVGElement("text"), H = r5.maybeFind(`.metric--${A} text.metric__value`, u) || r5.createSVGElement("text");
-    T.classList.add("metric", `metric--${A}`), B.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--faded"), K.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--miniarc"), q.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget");
-    let j = y.weight / $, ce = h(j), de = y.result.score ? y.result.score * j : 0, he = h(de), Fe = j * c, pe = h(j, true), ue = k.calculateRating(y.result.score, y.result.scoreDisplayMode);
-    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${R}`), T.style.setProperty("--i", C.toString()), B.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), K.style.setProperty("--metric-array", `${he} ${c - he}`), q.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), P.classList.add("metric__label"), H.classList.add("metric__value"), P.textContent = A, H.textContent = `+${Math.round(de * 100)}`;
-    let ge = N + j * Math.PI, Z = Math.cos(ge), J = Math.sin(ge);
+    z.map((R) => `metric--${R.id}`).find((R) => y.classList.contains(R)) || y.remove();
+  }), z.forEach((y, S) => {
+    let M = y.acronym ?? y.id, R = !u.querySelector(`.metric--${M}`), T = r5.maybeFind(`g.metric--${M}`, u) || r5.createSVGElement("g"), K = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge--faded`, u) || r5.createSVGElement("circle"), q = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge--miniarc`, u) || r5.createSVGElement("circle"), U = r5.maybeFind(`.metric--${M} circle.lh-exp-gauge-hovertarget`, u) || r5.createSVGElement("circle"), D = r5.maybeFind(`.metric--${M} text.metric__label`, u) || r5.createSVGElement("text"), F = r5.maybeFind(`.metric--${M} text.metric__value`, u) || r5.createSVGElement("text");
+    T.classList.add("metric", `metric--${M}`), K.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--faded"), q.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge--miniarc"), U.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget");
+    let j = y.weight / V, ce = h(j), de = y.result.score ? y.result.score * j : 0, he = h(de), Fe = j * c, pe = h(j, true), ue = k.calculateRating(y.result.score, y.result.scoreDisplayMode);
+    T.style.setProperty("--metric-rating", ue), T.style.setProperty("--metric-color", `var(--color-${ue})`), T.style.setProperty("--metric-offset", `${N}`), T.style.setProperty("--i", S.toString()), K.setAttribute("stroke-dasharray", `${ce} ${c - ce}`), q.style.setProperty("--metric-array", `${he} ${c - he}`), U.setAttribute("stroke-dasharray", `${pe} ${c - pe - g}`), D.classList.add("metric__label"), F.classList.add("metric__value"), D.textContent = M, F.textContent = `+${Math.round(de * 100)}`;
+    let ge = I + j * Math.PI, Z = Math.cos(ge), J = Math.sin(ge);
     switch (true) {
       case Z > 0:
-        H.setAttribute("text-anchor", "end");
+        F.setAttribute("text-anchor", "end");
         break;
       case Z < 0:
-        P.setAttribute("text-anchor", "end");
+        D.setAttribute("text-anchor", "end");
         break;
       case Z === 0:
-        P.setAttribute("text-anchor", "middle"), H.setAttribute("text-anchor", "middle");
+        D.setAttribute("text-anchor", "middle"), F.setAttribute("text-anchor", "middle");
         break;
     }
     switch (true) {
       case J > 0:
-        P.setAttribute("dominant-baseline", "hanging");
+        D.setAttribute("dominant-baseline", "hanging");
         break;
       case J < 0:
-        H.setAttribute("dominant-baseline", "hanging");
+        F.setAttribute("dominant-baseline", "hanging");
         break;
       case J === 0:
-        P.setAttribute("dominant-baseline", "middle"), H.setAttribute("dominant-baseline", "middle");
+        D.setAttribute("dominant-baseline", "middle"), F.setAttribute("dominant-baseline", "middle");
         break;
     }
-    P.setAttribute("x", (S * Z).toFixed(2)), P.setAttribute("y", (S * J).toFixed(2)), H.setAttribute("x", (z * Z).toFixed(2)), H.setAttribute("y", (z * J).toFixed(2)), F && (T.appendChild(B), T.appendChild(K), T.appendChild(q), T.appendChild(P), T.appendChild(H), u.appendChild(T)), R -= Fe, N += j * 2 * Math.PI;
+    D.setAttribute("x", (C * Z).toFixed(2)), D.setAttribute("y", (C * J).toFixed(2)), F.setAttribute("x", (A * Z).toFixed(2)), F.setAttribute("y", (A * J).toFixed(2)), R && (T.appendChild(K), T.appendChild(q), T.appendChild(U), T.appendChild(D), T.appendChild(F), u.appendChild(T)), N -= Fe, I += j * 2 * Math.PI;
   });
-  let D = u.querySelector(".lh-exp-gauge-underhovertarget") || r5.createSVGElement("circle");
-  D.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget", "lh-exp-gauge-underhovertarget");
-  let I = h(1, true);
-  if (D.setAttribute("stroke-dasharray", `${I} ${c - I - g}`), D.isConnected || u.prepend(D), f.dataset.listenersSetup) return;
+  let P = u.querySelector(".lh-exp-gauge-underhovertarget") || r5.createSVGElement("circle");
+  P.classList.add("lh-exp-gauge__arc", "lh-exp-gauge__arc--metric", "lh-exp-gauge-hovertarget", "lh-exp-gauge-underhovertarget");
+  let H = h(1, true);
+  if (P.setAttribute("stroke-dasharray", `${H} ${c - H - g}`), P.isConnected || u.prepend(P), f.dataset.listenersSetup) return;
   f.dataset.listenersSetup = true, Te(f), f.addEventListener("pointerover", (y) => {
     if (y.target === f && f.classList.contains("state--expanded")) {
       f.classList.remove("state--expanded"), f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), r5.find(".metric--highlight", f).classList.remove("metric--highlight"));
       return;
     }
     if (!(y.target instanceof Element)) return;
-    let C = y.target.parentNode;
-    if (C instanceof SVGElement) {
-      if (C && C === v) {
+    let S = y.target.parentNode;
+    if (S instanceof SVGElement) {
+      if (S && S === v) {
         f.classList.contains("state--expanded") ? f.classList.contains("state--highlight") && (f.classList.remove("state--highlight"), r5.find(".metric--highlight", f).classList.remove("metric--highlight")) : f.classList.add("state--expanded");
         return;
       }
-      if (C && C.classList && C.classList.contains("metric")) {
-        let A = C.style.getPropertyValue("--metric-rating");
-        if (e.style.setProperty("--color-highlight", `var(--color-${A}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), C.classList.add("metric--highlight");
+      if (S && S.classList && S.classList.contains("metric")) {
+        let M = S.style.getPropertyValue("--metric-rating");
+        if (e.style.setProperty("--color-highlight", `var(--color-${M}-secondary)`), !f.classList.contains("state--highlight")) f.classList.add("state--highlight"), S.classList.add("metric--highlight");
         else {
-          let F = r5.find(".metric--highlight", f);
-          C !== F && (F.classList.remove("metric--highlight"), C.classList.add("metric--highlight"));
+          let R = r5.find(".metric--highlight", f);
+          S !== R && (R.classList.remove("metric--highlight"), S.classList.add("metric--highlight"));
         }
       }
     }
@@ -4220,25 +4218,26 @@ function mt(r5, e, t) {
     f.classList.remove("state--highlight"), f.querySelector(".metric--highlight")?.classList.remove("metric--highlight");
   });
   async function Te(y) {
-    if (await new Promise((P) => setTimeout(P, 1e3)), y.classList.contains("state--expanded")) return;
-    let C = r5.find(".lh-exp-gauge__inner", y), A = `uniq-${Math.random()}`;
-    C.setAttribute("id", A);
-    let F = r5.createSVGElement("use");
-    F.setAttribute("href", `#${A}`), y.appendChild(F);
-    let T = 2.5;
-    y.style.setProperty("--peek-dur", `${T}s`), y.classList.add("state--peek", "state--expanded");
-    let B = () => {
-      y.classList.remove("state--peek", "state--expanded"), F.remove();
+    if (await new Promise((U) => setTimeout(U, 1e3)), y.classList.contains("state--expanded")) return;
+    let S = r5.find(".lh-exp-gauge__inner", y), M = Array.from(S.querySelectorAll("circle")).map((U) => {
+      let D = `uniq-${Math.random()}`;
+      U.setAttribute("id", D);
+      let F = r5.createSVGElement("use");
+      return F.setAttribute("href", `#${D}`), y.appendChild(F), F;
+    }), R = 2.5;
+    y.style.setProperty("--peek-dur", `${R}s`), y.classList.add("state--peek", "state--expanded");
+    let T = () => {
+      y.classList.remove("state--peek", "state--expanded"), M.forEach((U) => U.remove());
     }, K = setTimeout(() => {
-      y.removeEventListener("mouseenter", q), B();
-    }, T * 1e3 * 1.5);
+      y.removeEventListener("mouseenter", q), T();
+    }, R * 1e3 * 1.5);
     function q() {
-      clearTimeout(K), B();
+      clearTimeout(K), T();
     }
     y.addEventListener("mouseenter", q, { once: true });
   }
 }
-var oe = class extends G {
+var oe = class extends B {
   _renderMetric(e) {
     let t = this.dom.createComponent("metric"), n = this.dom.find(".lh-metric", t);
     n.id = e.result.id;
@@ -4300,10 +4299,10 @@ var oe = class extends G {
       if (p.insertBefore(x, g), a.forEach((L) => {
         x.append(this._renderMetric(L));
       }), i.querySelector(".lh-gauge__wrapper")) {
-        let L = this.dom.find(".lh-category-header__description", i), S = this.dom.createChildOf(L, "div", "lh-metrics__disclaimer"), z = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
-        S.append(z);
-        let M = this.dom.createChildOf(S, "a", "lh-calclink");
-        M.target = "_blank", M.textContent = o.calculatorLink, this.dom.safelySetHref(M, this._getScoringCalculatorHref(e.auditRefs));
+        let L = this.dom.find(".lh-category-header__description", i), C = this.dom.createChildOf(L, "div", "lh-metrics__disclaimer"), A = this.dom.convertMarkdownLinkSnippets(o.varianceDisclaimer);
+        C.append(A);
+        let z = this.dom.createChildOf(C, "a", "lh-calclink");
+        z.target = "_blank", z.textContent = o.calculatorLink, this.dom.safelySetHref(z, this._getScoringCalculatorHref(e.auditRefs));
       }
       p.classList.add("lh-audit-group--metrics"), i.append(p);
     }
@@ -4340,8 +4339,8 @@ var oe = class extends G {
         let x = v.auditRef.result.score || 0, L = _.auditRef.result.score || 0;
         if (x !== L) return x - L;
         if (u !== "All") {
-          let S = v.auditRef.result.metricSavings?.[u] ?? -1, z = _.auditRef.result.metricSavings?.[u] ?? -1;
-          if (S !== z) return z - S;
+          let C = v.auditRef.result.metricSavings?.[u] ?? -1, A = _.auditRef.result.metricSavings?.[u] ?? -1;
+          if (C !== A) return A - C;
         }
         return v.overallImpact !== _.overallImpact ? _.overallImpact * _.guidanceLevel - v.overallImpact * v.guidanceLevel : v.overallImpact === 0 && _.overallImpact === 0 && v.overallLinearImpact !== _.overallLinearImpact ? _.overallLinearImpact * _.guidanceLevel - v.overallLinearImpact * v.guidanceLevel : _.guidanceLevel - v.guidanceLevel;
       });
@@ -4460,7 +4459,7 @@ var te = class {
   }
   _renderReport(e) {
     m.apply({ providedStrings: e.i18n.rendererFormattedStrings, i18n: new re(e.configSettings.locale), reportJson: e });
-    let t = new ee(this._dom, { fullPageScreenshot: e.fullPageScreenshot ?? void 0, entities: e.entities }), n = new G(this._dom, t), o = { performance: new oe(this._dom, t) }, i = this._dom.createElement("div");
+    let t = new ee(this._dom, { fullPageScreenshot: e.fullPageScreenshot ?? void 0, entities: e.entities }), n = new B(this._dom, t), o = { performance: new oe(this._dom, t) }, i = this._dom.createElement("div");
     i.append(this._renderReportHeader());
     let a = this._dom.createElement("div", "lh-container"), l = this._dom.createElement("div", "lh-report");
     l.append(this._renderReportWarnings(e));
@@ -4482,7 +4481,7 @@ var te = class {
     }
     n.injectFinalScreenshot(h, e.audits, d);
     let g = this._dom.createFragment();
-    return this._opts.omitGlobalStyles || g.append(this._dom.createComponent("styles")), this._opts.omitTopbar || g.append(this._renderReportTopbar(e)), g.append(a), l.append(this._renderReportFooter(e)), a.append(i, l), e.fullPageScreenshot && V.installFullPageScreenshot(this._dom.rootEl, e.fullPageScreenshot.screenshot), g;
+    return this._opts.omitGlobalStyles || g.append(this._dom.createComponent("styles")), this._opts.omitTopbar || g.append(this._renderReportTopbar(e)), g.append(a), l.append(this._renderReportFooter(e)), a.append(i, l), e.fullPageScreenshot && G.installFullPageScreenshot(this._dom.rootEl, e.fullPageScreenshot.screenshot), g;
   }
 };
 function W(r5, e) {
@@ -4523,13 +4522,13 @@ function wt(r5, e, t) {
   });
   let o = window.open(e, t);
 }
-async function Ce(r5, e, t) {
+async function Se(r5, e, t) {
   let n = new URL(e), o = !!window.CompressionStream;
   n.hash = await Le.toBase64(JSON.stringify(r5), { gzip: o }), o && n.searchParams.set("gzip", "1"), window.open(n.toString(), t);
 }
-async function Se(r5) {
+async function Ce(r5) {
   let e = "viewer-" + se(r5), t = le() + "/viewer/";
-  await Ce({ lhr: r5 }, t, e);
+  await Se({ lhr: r5 }, t, e);
 }
 async function Ae(r5) {
   let e = "viewer-" + se(r5), t = le() + "/viewer/";
@@ -4538,7 +4537,7 @@ async function Ae(r5) {
 function ze(r5) {
   if (!r5.audits["script-treemap-data"].details) throw new Error("no script treemap data found");
   let t = { lhr: { mainDocumentUrl: r5.mainDocumentUrl, finalUrl: r5.finalUrl, finalDisplayedUrl: r5.finalDisplayedUrl, audits: { "script-treemap-data": r5.audits["script-treemap-data"] }, configSettings: { locale: r5.configSettings.locale } } }, n = le() + "/treemap/", o = "treemap-" + se(r5);
-  Ce(t, n, o);
+  Se(t, n, o);
 }
 var ie = class {
   constructor(e) {
@@ -4645,7 +4644,7 @@ var ae = class {
           break;
         }
         case "open-viewer": {
-          this._dom.isDevTools() ? Se(this.lhr) : Ae(this.lhr);
+          this._dom.isDevTools() ? Ce(this.lhr) : Ae(this.lhr);
           break;
         }
         case "save-gist": {
@@ -4814,7 +4813,7 @@ var ne = class {
     });
   }
   _setupElementScreenshotOverlay(e) {
-    this._fullPageScreenshot && V.installOverlayFeature({ dom: this._dom, rootEl: e, overlayContainerEl: e, fullPageScreenshot: this._fullPageScreenshot });
+    this._fullPageScreenshot && G.installOverlayFeature({ dom: this._dom, rootEl: e, overlayContainerEl: e, fullPageScreenshot: this._fullPageScreenshot });
   }
   _getThirdPartyRows(e, t) {
     let n = E.getEntityFromUrl(t, this.json.entities), o = this.json.entities?.find((a) => a.isFirstParty === true)?.name, i = [];
@@ -4847,15 +4846,15 @@ function Et(r5, e) {
 }
 function Lt(r5, e) {
 }
-function Ct(r5) {
+function St(r5) {
   return false;
 }
-var St = { registerLocaleData: Lt, hasLocale: Ct };
+var Ct = { registerLocaleData: Lt, hasLocale: St };
 export {
   Q as DOM,
   te as ReportRenderer,
   ne as ReportUIFeatures,
-  St as format,
+  Ct as format,
   kt as renderReport,
   Et as swapLocale
 };

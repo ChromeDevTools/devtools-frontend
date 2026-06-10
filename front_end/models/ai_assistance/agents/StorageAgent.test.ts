@@ -4,22 +4,34 @@
 
 import {assert} from 'chai';
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {getMainFrame, navigate} from '../../../testing/ResourceTreeHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('StorageAgent', function() {
+describe('StorageAgent', function() {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
   let activeStorages: SDK.DOMStorageModel.DOMStorage[] = [];
 
   beforeEach(() => {
-    const target = createTarget();
+    universe = new TestUniverse();
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+    const target = universe.createTarget({url: urlString`http://example.com/`});
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
     const domStorageModel = target.model(SDK.DOMStorageModel.DOMStorageModel);
     assert.exists(domStorageModel);
 
@@ -414,6 +426,57 @@ describeWithMockConnection('StorageAgent', function() {
     assert.include(actionResponse.output, 'https://example.com');
   });
 
+  it('can give a storage breakdown of primary target', async () => {
+    const cdpConnection = new MockCDPConnection();
+    cdpConnection.setSuccessHandler('Storage.getUsageAndQuota',
+                                    (callParams: Protocol.Storage.GetUsageAndQuotaRequest) => {
+                                      assert.strictEqual(callParams.origin, 'https://example.com');
+                                      return {
+                                        usage: 1000,
+                                        quota: 10000,
+                                        overrideActive: false,
+                                        usageBreakdown: [
+                                          {storageType: 'indexeddb' as Protocol.Storage.StorageType, usage: 200},
+                                          {storageType: 'file_systems' as Protocol.Storage.StorageType, usage: 0},
+                                          {storageType: 'service_workers' as Protocol.Storage.StorageType, usage: 800},
+                                        ],
+                                      };
+                                    });
+
+    const target = universe.createTarget({url: 'https://example.com', connection: cdpConnection});
+    target.setInspectedURL(urlString`https://example.com`);
+    (universe.targetManager.primaryPageTarget as unknown as sinon.SinonStub).returns(target);
+
+    const aidaClient = mockAidaClient([
+      [{
+        functionCalls: [{name: 'getStorageBreakdown', args: {}}],
+        explanation: '',
+      }],
+      [{explanation: 'Here is the breakdown.'}]
+    ]);
+    const agent = new AiAssistance.StorageAgent.StorageAgent({aidaClient});
+
+    const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
+    const context = new AiAssistance.StorageAgent.StorageContext(item);
+
+    const responses = await Array.fromAsync(agent.run('get breakdown', {selected: context}));
+    const actionResponse = responses.find((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.exists(actionResponse, 'Expected an action response');
+    assert.strictEqual(actionResponse.code, 'getStorageBreakdown()');
+
+    assert.exists(actionResponse.output);
+    const parsedOutput = JSON.parse(actionResponse.output!);
+
+    assert.deepEqual(parsedOutput, {
+      totalUsage: i18n.ByteUtilities.bytesToString(1000),
+      totalQuota: i18n.ByteUtilities.bytesToString(10000),
+      usageBreakdown: [
+        {storageType: 'service_workers', usage: i18n.ByteUtilities.bytesToString(800)},
+        {storageType: 'indexeddb', usage: i18n.ByteUtilities.bytesToString(200)},
+      ],
+    });
+  });
+
   describe('findFrameForOrigin', () => {
     it('returns the frame if it belongs to the same page target and has the primary origin', () => {
       const PRIMARY_ORIGIN = 'https://example.com';
@@ -462,8 +525,11 @@ describeWithMockConnection('StorageAgent', function() {
       assert.exists(primaryTarget);
 
       // 1. Create a new target representing a different page target
-      const differentTarget = SDK.TargetManager.TargetManager.instance().createTarget(
-          'different' as Protocol.Target.TargetID, 'different', SDK.Target.Type.FRAME, null);
+      const differentTarget = universe.createTarget({
+        id: 'different' as Protocol.Target.TargetID,
+        name: 'different',
+        type: SDK.Target.Type.FRAME,
+      });
       differentTarget.setInspectedURL(urlString`${DIFFERENT_ORIGIN}`);
 
       // 2. Create a main frame on the different target and navigate it

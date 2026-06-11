@@ -9,7 +9,14 @@ import type {ComputedStyleAiWidget, FunctionCallHandlerResult, FunctionHandlerOp
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 import {debugLog} from '../debug.js';
 
-import {type Tool, type ToolArgs, type ToolContext, ToolName} from './Tool.js';
+import {
+  type BaseToolCapability,
+  type OriginLockCapability,
+  type TargetCapability,
+  type Tool,
+  type ToolArgs,
+  ToolName,
+} from './Tool.js';
 
 export interface GetStylesArgs extends ToolArgs {
   elements: number[];
@@ -17,7 +24,8 @@ export interface GetStylesArgs extends ToolArgs {
   explanation: string;
 }
 
-export class GetStylesTool implements Tool<GetStylesArgs, unknown> {
+export class GetStylesTool implements
+    Tool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name = ToolName.GET_STYLES;
   readonly description =
       `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
@@ -71,34 +79,33 @@ export class GetStylesTool implements Tool<GetStylesArgs, unknown> {
 
   async handler(
       params: GetStylesArgs,
-      context: ToolContext,
+      context: BaseToolCapability&TargetCapability&OriginLockCapability,
       _options?: FunctionHandlerOptions,
       ): Promise<FunctionCallHandlerResult<unknown>> {
     const widgets: ComputedStyleAiWidget[] = [];
     const result:
         Record<string, {computed: Record<string, string|undefined>, authored: Record<string, string|undefined>}> = {};
 
-    const activeContext = context.conversationContext;
-    if (!activeContext || !(activeContext instanceof DOMNodeContext)) {
-      return {error: 'Error: Could not find the currently selected element.'};
+    const target = context.getTarget();
+    if (!target) {
+      return {error: 'Error: Could not find the inspected page.'};
     }
 
-    const selectedNode = activeContext.getItem();
-    if (!selectedNode) {
-      return {error: 'Error: Could not find the currently selected element.'};
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin) {
+      return {error: 'Error: Origin lock is not established.'};
     }
 
     for (const uid of params.elements) {
       result[uid] = {computed: {}, authored: {}};
       debugLog(`Action to execute: uid=${uid}`);
-      const node =
-          new SDK.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), uid as Protocol.DOM.BackendNodeId);
+      const node = new SDK.DOMModel.DeferredDOMNode(target, uid as Protocol.DOM.BackendNodeId);
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return {error: 'Error: Could not find the element with uid=' + uid};
       }
       const newContext = new DOMNodeContext(resolved);
-      if (activeContext.getOrigin() !== newContext.getOrigin()) {
+      if (establishedOrigin !== newContext.getOrigin()) {
         return {error: 'Error: Node does not belong to the current origin.'};
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

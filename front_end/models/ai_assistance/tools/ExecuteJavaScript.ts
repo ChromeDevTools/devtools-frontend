@@ -8,9 +8,11 @@ import type {FunctionCallHandlerResult, FunctionHandlerOptions,} from '../agents
 import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
 
 import {
+  type BaseToolCapability,
+  type PageExecutionCapability,
+  type StyleMutationCapability,
   type Tool,
   type ToolArgs,
-  type ToolContext,
   ToolName,
 } from './Tool.js';
 
@@ -20,7 +22,8 @@ export interface ExecuteJavaScriptArgs extends ToolArgs {
   title: string;
 }
 
-export class ExecuteJavaScriptTool implements Tool<ExecuteJavaScriptArgs, unknown> {
+export class ExecuteJavaScriptTool implements
+    Tool<ExecuteJavaScriptArgs, unknown, BaseToolCapability&PageExecutionCapability&StyleMutationCapability> {
   readonly name = ToolName.EXECUTE_JAVASCRIPT;
 
   readonly description =
@@ -104,10 +107,10 @@ const data = {
 
   async handler(
       params: ExecuteJavaScriptArgs,
-      context: ToolContext,
+      context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability,
       options?: FunctionHandlerOptions,
       ): Promise<FunctionCallHandlerResult<unknown>> {
-    const executionNode = context.getExecutionContextNode?.() ?? null;
+    const executionNode = context.getExecutionContextNode();
     if (!executionNode) {
       return {error: 'Error: Could not find the context node for execution.'};
     }
@@ -115,17 +118,11 @@ const data = {
     const executionMode = Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??
         Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
 
-    const changes = context.changeManager;
-    const createExtensionScope = context.createExtensionScope;
-    if (!changes || !createExtensionScope) {
-      return {error: 'Internal Error: Required change manager or extension scope creator is missing.'};
-    }
-
     const executor = new JavascriptExecutor({
       executionMode,
       getContextNode: () => executionNode,
-      createExtensionScope,
-      changes,
+      createExtensionScope: context.createExtensionScope,
+      changes: context.changeManager,
     },
                                             context.execJs);
 

@@ -4,11 +4,15 @@
 
 import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
 import {GetStylesTool} from './GetStyles.js';
-import {type Tool, ToolName} from './Tool.js';
+import {type AllToolsContext, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
 /**
  * Plain object registry containing concrete instantiated tools.
- * Keep this type concrete (no type-erasure) to preserve exact tool types.
+ *
+ * This object is deliberately declared as a plain object without an explicit type annotation
+ * (like `Record<ToolName, Tool>`) to preserve the exact concrete type of each registered tool.
+ * This is required to support compile-time type safety and inference in the overloaded
+ * `ToolRegistry.get()` method, which maps a literal `ToolName` key to its specific class type.
  */
 export const TOOLS = {
   [ToolName.EXECUTE_JAVASCRIPT]: new ExecuteJavaScriptTool(),
@@ -23,14 +27,26 @@ export class ToolRegistry {
    * Retrieves a tool by its literal name with 100% type safety.
    *
    * @template K - A key from the `TOOLS` registry.
+   * @param name The literal name of the tool to retrieve.
    * @returns The concrete class type of the requested tool.
    */
   static get<K extends keyof typeof TOOLS>(name: K): typeof TOOLS[K];
   /**
    * Fallback retrieval signature for general or runtime string lookups.
+   *
+   * @param name The string name of the tool to retrieve, used when the tool name is only known at runtime.
+   * @returns The generic Tool interface, or undefined if not found.
    */
-  static get(name: string): Tool|undefined;
-  static get(name: string): Tool|undefined {
-    return Object.prototype.hasOwnProperty.call(TOOLS, name) ? TOOLS[name as keyof typeof TOOLS] as Tool : undefined;
+  static get(name: string): Tool<ToolArgs, unknown, AllToolsContext>|undefined;
+  static get(name: string): Tool<ToolArgs, unknown, AllToolsContext>|undefined {
+    // We use a double assertion (`as unknown as Tool<...>`) here. TypeScript's variance
+    // rules prevent direct casting from specific concrete tools (which have narrowed,
+    // capability-specific contexts) to the generic `Tool` signature that uses `AllToolsContext`.
+    // This cast is runtime-safe because any capability requested by a specific tool is
+    // guaranteed to be satisfied by `AllToolsContext`, and the handler will only access
+    // the capabilities it expects.
+    return Object.prototype.hasOwnProperty.call(TOOLS, name) ?
+        TOOLS[name as keyof typeof TOOLS] as unknown as Tool<ToolArgs, unknown, AllToolsContext>:
+        undefined;
   }
 }

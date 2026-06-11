@@ -24,7 +24,7 @@ To deal with the work to take an object that is the AI agent's context and turn 
 
 ## Future Architecture (V2) - WIP
 
-We are currently working on migrating the DevTools AI Assistance from a siloed multi-agent architecture to a unified, skill-based single-agent architecture (`AIAgent2`).
+We are migrating the DevTools AI Assistance from a siloed multi-agent architecture to a unified, skill-based single-agent architecture (`AIAgent2`).
 
 In this new architecture:
 - A single agent (`AIAgent2`) handles multiple domains.
@@ -36,15 +36,16 @@ This work is currently in progress and behind a feature flag.
 ### Skills Build System
 
 To support dynamic loading of skills, we generate JavaScript files from Markdown files containing skill definitions.
-We use a nested `BUILD.gn` file in the `skills/` subdirectory specifically for this purpose. This ensures that GN's `target_gen_dir` points to `gen/front_end/models/ai_assistance/skills/`, placing the generated `.skill.js` files in the same relative structure as their source `.md` files. This allows TypeScript files in the `skills/` directory (like `map.ts`) to import the generated files using relative paths (e.g., `./styling.skill.js`) seamlessly.
+We use a nested `BUILD.gn` file in the `skills/` subdirectory specifically for this purpose. This ensures that GN's `target_gen_dir` points to `gen/front_end/models/ai_assistance/skills/`, placing the generated `.skill.js` files in the same relative structure as their source `.md` files. This allows TypeScript files in the `skills/` directory (like `map.ts`) to import the generated files using relative paths (e.g., `./styling.skill.js`) seamlessly. See the [Skills README](skills/README.md) for full details.
 
 ### Tools and ToolRegistry
 
 To support skills requiring execution of code or fetching page state (like computed styles), the architecture defines **Tools** in the `tools/` directory.
 
 - **BaseTool**: A non-generic base interface capturing tool metadata (`name`, `description`, `parameters`). This acts as the type-erased representation for generic registry storage and fallback string lookups.
-- **Tool**: A generic interface extending `BaseTool` that binds argument types (`Args`) to the schema `parameters` and the `handler()` method. This ensures compile-time safety and alignment inside each tool implementation.
-- **ToolRegistry**: A static registry (`ToolRegistry`) storing instantiated tools. It uses TypeScript function overloading and generic lookups (`static get<K extends keyof typeof TOOLS>(name: K): typeof TOOLS[K]`) to return the precise class type of each tool, preventing type-erasure and escape-hatches (such as `any` or `as unknown` type assertions) at integration points like `AiAgent.ts`.
+- **Tool**: A generic interface parameterized by `<Args, ReturnType, ContextType>` that binds parameter argument types and handler execution to strict contracts. `ContextType` defaults to `BaseToolCapability`, ensuring that each tool explicitly requests only the dependencies it requires.
+- **Capability Contexts**: Instead of passing a monolithic grab-bag context to all tools, dependencies are broken into narrow capability interfaces (e.g. `PageExecutionCapability`, `StyleMutationCapability`, `TargetCapability`, `OriginLockCapability`). Tools declare their required dependencies by intersecting these interfaces on their generic `ContextType` definition. The caller/Agent fulfills the complete capability context (`AllToolsContext`), guaranteeing 100% compile-time type safety for dependencies without runtime checks.
+- **ToolRegistry**: A static registry (`ToolRegistry`) storing instantiated tools. It uses TypeScript function overloading and generic lookups (`static get<K extends keyof typeof TOOLS>(name: K): typeof TOOLS[K]`) to return the precise class type of each tool, preventing type-erasure and escape-hatches (such as `any` or `as unknown` type assertions) at integration points like `AiAgent2.ts`. See the [Tools README](tools/README.md) for authoring instructions.
 
 ## Performance specific documentation
 

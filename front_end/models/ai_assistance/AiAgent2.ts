@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 import {
   AiAgent,
+  type AllowedOriginResult,
   type ContextResponse,
   type ConversationContext,
   type MultimodalInputType,
@@ -19,7 +21,7 @@ import {debugLog} from './debug.js';
 import {ExtensionScope} from './ExtensionScope.js';
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
-import type {Tool} from './tools/Tool.js';
+import type {AllToolsContext, Tool, ToolArgs} from './tools/Tool.js';
 import {ToolRegistry} from './tools/ToolRegistry.js';
 
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
@@ -35,6 +37,7 @@ export class AiAgent2 extends AiAgent<unknown> {
   #skillsInjected = false;
   #changes = new ChangeManager();
   #execJs: typeof executeJsCode;
+  readonly #allowedOrigin?: () => AllowedOriginResult;
 
   get options(): RequestOptions {
     return {};
@@ -46,6 +49,7 @@ export class AiAgent2 extends AiAgent<unknown> {
   constructor(opts: ExecuteJsAgentOptions) {
     super(opts);
     this.#execJs = opts.execJs ?? executeJsCode;
+    this.#allowedOrigin = opts.allowedOrigin;
     this.#declaredTools.add('learnSkills');
     const skillsList = Object.keys(SKILLS).join(', ');
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
@@ -169,7 +173,7 @@ User query: ${enhancedQuery}`;
    * Declares a tool to be available to the agent model, verifying first that
    * it hasn't already been declared to prevent duplicate declaration errors.
    */
-  #declareTool(tool: Tool): void {
+  #declareTool(tool: Tool<ToolArgs, unknown, AllToolsContext>): void {
     if (this.#declaredTools.has(tool.name)) {
       debugLog(`AiAgent2: Tool ${tool.name} is already declared`);
       return;
@@ -179,18 +183,24 @@ User query: ${enhancedQuery}`;
       description: tool.description,
       parameters: tool.parameters,
       displayInfoFromArgs: tool.displayInfoFromArgs,
-      handler: (args, options) => tool.handler(
-          args,
-          {
-            conversationContext: this.context ?? null,
-            changeManager: this.#changes,
-            createExtensionScope: this.#createExtensionScope.bind(this),
-            execJs: this.#execJs,
-            getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
-          },
-          options,
-          ),
+      handler: (args, options) => {
+        const context: AllToolsContext = {
+          conversationContext: this.context ?? null,
+          changeManager: this.#changes,
+          createExtensionScope: this.#createExtensionScope.bind(this),
+          execJs: this.#execJs,
+          getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
+          getTarget: () => SDK.TargetManager.TargetManager.instance().primaryPageTarget(),
+          getEstablishedOrigin: () => this.#getConversationOrigin(),
+        };
+        return tool.handler(args, context, options);
+      },
     });
+  }
+
+  #getConversationOrigin(): string|undefined {
+    const allowed = this.#allowedOrigin?.();
+    return allowed && 'origin' in allowed ? allowed.origin : undefined;
   }
 
   get activeSkills(): Set<SkillName> {

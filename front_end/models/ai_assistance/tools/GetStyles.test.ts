@@ -39,8 +39,12 @@ describeWithEnvironment('GetStylesTool', () => {
   it('successfully returns computed and authored styles', async () => {
     const {node: resolvedNode, cssModel} = createStubbedDomNodeWithModels({nodeId: 42});
 
-    resolvedNode.ownerDocument = null;
-    element.ownerDocument = null;
+    resolvedNode.ownerDocument = {
+      documentURL: 'https://example.com',
+    } as unknown as SDK.DOMModel.DOMDocument;
+    element.ownerDocument = {
+      documentURL: 'https://example.com',
+    } as unknown as SDK.DOMModel.DOMDocument;
 
     sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(resolvedNode);
 
@@ -53,7 +57,9 @@ describeWithEnvironment('GetStylesTool', () => {
 
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
-      conversationContext: new AiAssistance.DOMNodeContext.DOMNodeContext(element),
+      conversationContext: null,
+      getTarget: () => target,
+      getEstablishedOrigin: () => 'https://example.com',
     };
 
     const response = await tool.handler(
@@ -77,10 +83,12 @@ describeWithEnvironment('GetStylesTool', () => {
             null, 2));
   });
 
-  it('returns error when selected element is missing', async () => {
+  it('returns error when target is missing', async () => {
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
       conversationContext: null,
+      getTarget: () => null,
+      getEstablishedOrigin: () => undefined,
     };
 
     const response = await tool.handler(
@@ -92,15 +100,11 @@ describeWithEnvironment('GetStylesTool', () => {
         context);
 
     assertIsError(response);
-    assert.strictEqual(response.error, 'Error: Could not find the currently selected element.');
+    assert.strictEqual(response.error, 'Error: Could not find the inspected page.');
   });
 
   it('returns error on origin mismatch', async () => {
     const {node: resolvedNode} = createStubbedDomNodeWithModels({nodeId: 42});
-
-    element.ownerDocument = {
-      documentURL: 'https://example.com',
-    } as unknown as SDK.DOMModel.DOMDocument;
 
     resolvedNode.ownerDocument = {
       documentURL: 'https://another.com',
@@ -110,7 +114,9 @@ describeWithEnvironment('GetStylesTool', () => {
 
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
-      conversationContext: new AiAssistance.DOMNodeContext.DOMNodeContext(element),
+      conversationContext: null,
+      getTarget: () => target,
+      getEstablishedOrigin: () => 'https://example.com',
     };
 
     const response = await tool.handler(

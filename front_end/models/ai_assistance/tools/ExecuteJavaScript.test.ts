@@ -64,6 +64,9 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
     const context = {
       conversationContext: null,
       getExecutionContextNode: () => null,
+      execJs: sinon.stub(),
+      changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+      createExtensionScope: sinon.stub(),
     };
 
     const response = await tool.handler({
@@ -75,25 +78,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
 
     assertIsError(response);
     assert.strictEqual(response.error, 'Error: Could not find the context node for execution.');
-  });
-
-  it('returns error when changeManager or createExtensionScope is missing from context', async () => {
-    const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-    const context = {
-      conversationContext: null,
-      getExecutionContextNode: () => element,
-    };
-
-    const response = await tool.handler({
-      explanation: 'Check element',
-      title: 'Title',
-      code: 'console.log("hello")',
-    },
-                                        context);
-
-    assertIsError(response);
-    assert.strictEqual(response.error,
-                       'Internal Error: Required change manager or extension scope creator is missing.');
   });
 
   it('returns error when user denies execution', async () => {

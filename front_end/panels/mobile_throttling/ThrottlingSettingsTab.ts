@@ -180,9 +180,19 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * This promise resolves after the first compute pressure record is observed.
  * The object it returns is always up-to-date with the most recent record observed.
+ *
+ * Note: The returned value measures the host machine's compute pressure. When
+ * debugging a remote device, this may trigger irrelevant high-pressure warnings.
  */
 function createComputePressurePromise(): Promise<{state: string}> {
   const result = {state: ''};
+
+  // @ts-expect-error typescript/lib version needs to be updated.
+  if (typeof PressureObserver === 'undefined') {
+    // The Compute Pressure API is used only for showing warnings to the user.
+    // If it's unavailable, resolve immediately to proceed without warnings.
+    return Promise.resolve(result);
+  }
 
   return new Promise(resolve => {
     // @ts-expect-error typescript/lib version needs to be updated.

@@ -505,6 +505,11 @@ const UIStrings = {
    * @description Context menu item in Network panel to assess security headers of a request via AI.
    */
   assessSecurityHeaders: 'Assess security headers',
+  /**
+   * @description A comment in a generated command indicating that the URL scheme is unsupported. The placeholder is the comment prefix (e.g. '//' or '#').
+   * @example {//} PH1
+   */
+  unsupportedUrlScheme: '{PH1} Unsupported URL scheme',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -556,6 +561,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly filterBar: UI.FilterBar.FilterBar;
   private readonly textFilterSetting: Common.Settings.Setting<string>;
   private networkRequestToNode: WeakMap<SDK.NetworkRequest.NetworkRequest, NetworkRequestNode>;
+
+  static #allowedSchemes = new Set(['http:', 'https:', 'ws:', 'wss:', 'data:']);
 
   constructor(
       filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element,
@@ -2319,6 +2326,18 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return requests.filter(request => !request.isBlobRequest());
   }
 
+  static #getValidClipboardUrl(url: string): Platform.DevToolsPath.UrlString|null {
+    try {
+      const parsedUrl = new URL(url);
+      if (!NetworkLogView.#allowedSchemes.has(parsedUrl.protocol)) {
+        return null;
+      }
+      return url as Platform.DevToolsPath.UrlString;
+    } catch {
+      return null;
+    }
+  }
+
   private async generateFetchCall(request: SDK.NetworkRequest.NetworkRequest, style: FetchStyle): Promise<string> {
     const ignoredHeaders = new Set<string>([
       // Internal headers
@@ -2355,7 +2374,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const credentialHeaders = new Set<string>(['cookie', 'authorization']);
 
-    const url = JSON.stringify(request.url());
+    const validUrl = NetworkLogView.#getValidClipboardUrl(request.url());
+    if (!validUrl) {
+      return i18nString(UIStrings.unsupportedUrlScheme, {PH1: '//'});
+    }
+    const url = JSON.stringify(validUrl);
 
     const requestHeaders = request.requestHeaders();
     const headerData: Headers = requestHeaders.reduce((result, header) => {
@@ -2507,11 +2530,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // (it may be different from the inspected page platform).
     const escapeString = platform === 'win' ? escapeStringWin : escapeStringPosix;
 
-    // The shell escaping above protects the *shell* parser, but not curl's own
-    // argv parser: if the (HAR-imported) URL begins with '-', curl will parse
-    // it as an option (e.g. "-K//host/share/file" -> --config UNC path).
-    // Passing the URL via --url forces curl to treat it as a URL operand.
-    command.push('--url ' + escapeString(request.url()).replace(/[[{}\]]/g, '\\$&'));
+    const validUrl = NetworkLogView.#getValidClipboardUrl(request.url());
+    if (!validUrl) {
+      return i18nString(UIStrings.unsupportedUrlScheme, {PH1: '#'});
+    }
+    command.push('--url ' + escapeString(validUrl).replace(/[[{}\]]/g, '\\$&'));
 
     let inferredMethod = 'GET';
     const data = [];
@@ -2617,7 +2640,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       return null;
     }
 
-    command.push('-Uri ' + escapeString(request.url()));
+    const validUrl = NetworkLogView.#getValidClipboardUrl(request.url());
+    if (!validUrl) {
+      return i18nString(UIStrings.unsupportedUrlScheme, {PH1: '#'});
+    }
+    command.push('-Uri ' + escapeString(validUrl));
 
     if (request.requestMethod !== 'GET') {
       command.push('-Method ' + escapeString(request.requestMethod));

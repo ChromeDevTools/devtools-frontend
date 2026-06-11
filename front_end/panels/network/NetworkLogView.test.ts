@@ -355,14 +355,16 @@ describeWithMockConnection('NetworkLogView', () => {
                        'curl --url ^"http://example.com/?a=^\\[^\\]^\\{^\\}^"');
   });
 
-  it('generates a valid curl command for a URL starting with a dash', async () => {
+  it('returns unsupported URL scheme for a URL starting with a dash', async () => {
     const request = createNetworkRequest(urlString`-http://example.com/`, {});
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl --url \'-http://example.com/\'',
+        '# Unsupported URL scheme',
     );
-    assert.strictEqual(await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-                       'curl --url ^"-http://example.com/^"');
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        '# Unsupported URL scheme',
+    );
   });
 
   it('generates a valid curl command stripping pseudo-headers', async () => {
@@ -768,10 +770,10 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   function createOverrideRequests() {
-    const urlNotOverridden = urlString`url-not-overridden`;
-    const urlHeaderOverridden = urlString`url-header-overridden`;
-    const urlContentOverridden = urlString`url-content-overridden`;
-    const urlHeaderAndContentOverridden = urlString`url-header-und-content-overridden`;
+    const urlNotOverridden = urlString`https://url-not-overridden`;
+    const urlHeaderOverridden = urlString`https://url-header-overridden`;
+    const urlContentOverridden = urlString`https://url-content-overridden`;
+    const urlHeaderAndContentOverridden = urlString`https://url-header-and-content-overridden`;
 
     createNetworkRequest(urlNotOverridden, {target});
     const r2 = createNetworkRequest(urlHeaderOverridden, {target});
@@ -974,8 +976,8 @@ describeWithMockConnection('NetworkLogView', () => {
     contextMenu.invokeHandler(copyAllURLs.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`url-header-overridden
-url-header-und-content-overridden`]);
+    assert.deepEqual(copyText.lastCall.args, [`https://url-header-overridden
+https://url-header-and-content-overridden`]);
     copyText.resetHistory();
 
     const copyAllCurlCommands = findMenuItemWithLabel(
@@ -984,8 +986,8 @@ url-header-und-content-overridden`]);
     contextMenu.invokeHandler(copyAllCurlCommands.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`curl --url 'url-header-overridden' ;
-curl --url 'url-header-und-content-overridden'`]);
+    assert.deepEqual(copyText.lastCall.args, [`curl --url 'https://url-header-overridden' ;
+curl --url 'https://url-header-and-content-overridden'`]);
     copyText.resetHistory();
 
     const copyAllFetchCall = findMenuItemWithLabel(footerSection, 'Copy all listed as fetch');
@@ -993,13 +995,13 @@ curl --url 'url-header-und-content-overridden'`]);
     contextMenu.invokeHandler(copyAllFetchCall.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`fetch("url-header-overridden", {
+    assert.deepEqual(copyText.lastCall.args, [`fetch("https://url-header-overridden", {
   "body": null,
   "method": "GET",
   "mode": "cors",
   "credentials": "omit"
 }); ;
-fetch("url-header-und-content-overridden", {
+fetch("https://url-header-and-content-overridden", {
   "body": null,
   "method": "GET",
   "mode": "cors",
@@ -1012,8 +1014,9 @@ fetch("url-header-und-content-overridden", {
     contextMenu.invokeHandler(copyAllPowerShell.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
-Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
+    assert.deepEqual(copyText.lastCall.args,
+                     [`Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridden"`]);
     // Clear network filter
     networkLogView.setTextFilterValue('');
     copyText.resetHistory();
@@ -1021,43 +1024,43 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
     contextMenu.invokeHandler(copyAllURLs.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`url-not-overridden
-url-header-overridden
-url-content-overridden
-url-header-und-content-overridden`]);
+    assert.deepEqual(copyText.lastCall.args, [`https://url-not-overridden
+https://url-header-overridden
+https://url-content-overridden
+https://url-header-and-content-overridden`]);
     copyText.resetHistory();
 
     contextMenu.invokeHandler(copyAllCurlCommands.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`curl --url 'url-not-overridden' ;
-curl --url 'url-header-overridden' ;
-curl --url 'url-content-overridden' ;
-curl --url 'url-header-und-content-overridden'`]);
+    assert.deepEqual(copyText.lastCall.args, [`curl --url 'https://url-not-overridden' ;
+curl --url 'https://url-header-overridden' ;
+curl --url 'https://url-content-overridden' ;
+curl --url 'https://url-header-and-content-overridden'`]);
     copyText.resetHistory();
 
     contextMenu.invokeHandler(copyAllFetchCall.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`fetch("url-not-overridden", {
+    assert.deepEqual(copyText.lastCall.args, [`fetch("https://url-not-overridden", {
   "body": null,
   "method": "GET",
   "mode": "cors",
   "credentials": "omit"
 }); ;
-fetch("url-header-overridden", {
+fetch("https://url-header-overridden", {
   "body": null,
   "method": "GET",
   "mode": "cors",
   "credentials": "omit"
 }); ;
-fetch("url-content-overridden", {
+fetch("https://url-content-overridden", {
   "body": null,
   "method": "GET",
   "mode": "cors",
   "credentials": "omit"
 }); ;
-fetch("url-header-und-content-overridden", {
+fetch("https://url-header-and-content-overridden", {
   "body": null,
   "method": "GET",
   "mode": "cors",
@@ -1068,10 +1071,10 @@ fetch("url-header-und-content-overridden", {
     contextMenu.invokeHandler(copyAllPowerShell.id());
     await expectCalled(copyText);
     sinon.assert.callCount(copyText, 1);
-    assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "url-not-overridden";\r
-Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
-Invoke-WebRequest -UseBasicParsing -Uri "url-content-overridden";\r
-Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
+    assert.deepEqual(copyText.lastCall.args, [`Invoke-WebRequest -UseBasicParsing -Uri "https://url-not-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "https://url-content-overridden";\r
+Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridden"`]);
     copyText.resetHistory();
   });
 

@@ -144,6 +144,17 @@ export class AiAgent {
     popPendingMultimodalInput() {
         return undefined;
     }
+    /**
+     * Preamble features appended to the `client_version` in metadata.
+     * This is required ONLY for the Styling Agent for legacy reasons to serve
+     * different server-side preambles based on the Chrome version.
+     * Other agents should NOT set or override this.
+     * If you are curious about this, look for `do_conversation_handler.cc` in
+     * Google3 or chat to @jacktfranklin.
+     */
+    preambleFeatures() {
+        return [];
+    }
     buildRequest(part, role) {
         const parts = Array.isArray(part) ? part : [part];
         const currentMessage = {
@@ -183,7 +194,7 @@ export class AiAgent {
                 disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
                 string_session_id: this.#sessionId,
                 user_tier: userTier,
-                client_version: Root.Runtime.getChromeVersion(),
+                client_version: Root.Runtime.getChromeVersion() + this.preambleFeatures().map(feature => `+${feature}`).join(''),
             },
             functionality_type: enableAidaFunctionCalling ? Host.AidaClient.FunctionalityType.AGENTIC_CHAT :
                 Host.AidaClient.FunctionalityType.CHAT,

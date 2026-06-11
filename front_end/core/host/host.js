@@ -3011,7 +3011,6 @@ var DevtoolsExperiments;
 (function(DevtoolsExperiments2) {
   DevtoolsExperiments2[DevtoolsExperiments2["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments2[DevtoolsExperiments2["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
-  DevtoolsExperiments2[DevtoolsExperiments2["use-source-map-scopes"] = 76] = "use-source-map-scopes";
   DevtoolsExperiments2[DevtoolsExperiments2["durable-messages"] = 110] = "durable-messages";
   DevtoolsExperiments2[DevtoolsExperiments2["jpeg-xl"] = 111] = "jpeg-xl";
   DevtoolsExperiments2[DevtoolsExperiments2["plus-button"] = 112] = "plus-button";

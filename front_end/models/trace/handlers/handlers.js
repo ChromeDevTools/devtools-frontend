@@ -3203,6 +3203,24 @@ function handleEvent19(event) {
     return;
   }
   pageLoadEventsArray.push(event);
+  if (Types20.Events.isSoftNavigationStart(event) && event.args?.context?.firstContentfulPaint) {
+    const syntheticSoftFcpEvent = Helpers14.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      name: "SyntheticSoftFirstContentfulPaint",
+      ph: "R",
+      rawSourceEvent: event,
+      pid: event.pid,
+      tid: event.tid,
+      ts: Types20.Timing.Micro(event.args.context.firstContentfulPaint),
+      cat: event.cat,
+      args: {
+        frame: event.args.frame,
+        context: {
+          ...event.args.context
+        }
+      }
+    });
+    pageLoadEventsArray.push(syntheticSoftFcpEvent);
+  }
 }
 function storePageLoadMetricAgainstNavigationId(navigation, event) {
   const frameId = getFrameIdForPageLoadEvent(event);
@@ -3218,7 +3236,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
   if (Types20.Events.isNavigationStart(event)) {
     return;
   }
-  if (Types20.Events.isFirstContentfulPaint(event)) {
+  if (Types20.Events.isAnyFirstContentfulPaint(event)) {
     const fcpTime = Types20.Timing.Micro(event.ts - navigation.ts);
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
     const metricScore = { event, metricName: "FCP", classification, navigation, timing: fcpTime };
@@ -3331,7 +3349,7 @@ function storeMetricScore(frameId, navigation, metricScore) {
   metrics.set(metricScore.metricName, metricScore);
 }
 function getFrameIdForPageLoadEvent(event) {
-  if (Types20.Events.isFirstContentfulPaint(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isNavigationStart(event) || Types20.Events.isSoftNavigationStart(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isFirstPaint(event)) {
+  if (Types20.Events.isAnyFirstContentfulPaint(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isNavigationStart(event) || Types20.Events.isSoftNavigationStart(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isFirstPaint(event)) {
     return event.args.frame;
   }
   if (Types20.Events.isMarkDOMContent(event) || Types20.Events.isMarkLoad(event)) {
@@ -3344,11 +3362,16 @@ function getFrameIdForPageLoadEvent(event) {
   Platform10.assertNever(event, `Unexpected event type: ${event}`);
 }
 function getNavigationForPageLoadEvent(event) {
-  if (Types20.Events.isFirstContentfulPaint(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isFirstPaint(event)) {
+  if (Types20.Events.isAnyFirstContentfulPaint(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isFirstPaint(event)) {
     const { navigationsByNavigationId: navigationsByNavigationId2, softNavigationsById: softNavigationsById2 } = data5();
     let navigation;
     if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" && event.args.data?.performanceTimelineNavigationId) {
       navigation = softNavigationsById2.get(event.args.data.performanceTimelineNavigationId);
+      if (!navigation) {
+        return null;
+      }
+    } else if (Types20.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
+      navigation = softNavigationsById2.get(event.args.context.performanceTimelineNavigationId);
       if (!navigation) {
         return null;
       }
@@ -3471,7 +3494,7 @@ async function finalize19() {
   const allFinalLCPEvents = gatherFinalLCPEvents();
   const mainFrame = data5().mainFrameId;
   const allEventsButLCP = pageLoadEventsArray.filter((event) => !Types20.Events.isAnyLargestContentfulPaintCandidate(event));
-  const markerEvents = [...allFinalLCPEvents, ...allEventsButLCP].filter(Types20.Events.isMarkerEvent);
+  const markerEvents = [...allEventsButLCP, ...allFinalLCPEvents].filter(Types20.Events.isMarkerEvent);
   allMarkerEvents = markerEvents.filter((event) => getFrameIdForPageLoadEvent(event) === mainFrame).sort((a, b) => a.ts - b.ts);
 }
 function data19() {

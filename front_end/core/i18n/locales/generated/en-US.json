@@ -2639,8 +2639,14 @@
   "models/trace/Styles.ts | signReply": {
     "message": "Sign reply"
   },
+  "models/trace/Styles.ts | softFirstContentfulPaint": {
+    "message": "Soft First Contentful Paint"
+  },
   "models/trace/Styles.ts | softLargestContentfulPaint": {
     "message": "Soft Largest Contentful Paint"
+  },
+  "models/trace/Styles.ts | softNavigationStart": {
+    "message": "Soft navigation start"
   },
   "models/trace/Styles.ts | streamingCompileTask": {
     "message": "Streaming compile task"

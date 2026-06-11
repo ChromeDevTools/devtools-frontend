@@ -8275,8 +8275,8 @@ function renderHeader(content, isCause) {
   return html5`<span class="error-message-text">${content}</span>`;
 }
 function formatName(frame) {
-  let name = frame.name || "";
-  const isInline = Boolean(frame.rawName) && frame.name !== frame.rawName;
+  const isInline = frame.isInline;
+  let name = isInline ? frame.name || "" : frame.rawName || frame.name || "";
   const shouldAppendMethodAlias = !isInline && frame.methodName && name && name !== frame.methodName && !name.endsWith("." + frame.methodName) && !name.endsWith(" " + frame.methodName);
   if (shouldAppendMethodAlias) {
     name += ` [as ${frame.methodName}]`;
@@ -8339,10 +8339,6 @@ function renderFrameSuffix(frame) {
 }
 var DEFAULT_VIEW5 = (input, _output, target) => {
   const renderError2 = (error, isCause) => {
-    if (error instanceof Bindings4.SymbolizedError.SymbolizedSyntaxError) {
-      console.error("SymbolizedErrorWidget received an unsupported error type:", error);
-      return Lit4.nothing;
-    }
     if (error instanceof Bindings4.SymbolizedError.UnparsableError) {
       const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
         const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
@@ -8361,7 +8357,12 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
       maxLength: UI11.UIUtils.MaxLengthForDisplayedURLsInConsole,
       ignoreListManager: input.ignoreListManager
     };
-    const headerContent = html5`${error.message}`;
+    let headerContent = html5`${error.message}`;
+    if (error.syntaxErrorLocation) {
+      const linkElement = Components5.Linkifier.Linkifier.linkifyUILocation(error.syntaxErrorLocation, linkOptions);
+      linkElement.tabIndex = -1;
+      headerContent = html5`${error.message} (at ${linkElement})`;
+    }
     const header = renderHeader(headerContent, isCause);
     const syncFrames = error.stackTrace.syncFragment.frames;
     return html5`

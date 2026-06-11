@@ -48,7 +48,7 @@ const markerTypeGuards = [
     isMarkDOMContent,
     isMarkLoad,
     isFirstPaint,
-    isFirstContentfulPaint,
+    isAnyFirstContentfulPaint,
     isAnyLargestContentfulPaintCandidate,
     isNavigationStart,
     isSoftNavigationStart,
@@ -58,6 +58,7 @@ export const MarkerName = [
     "MarkLoad" /* Name.MARK_LOAD */,
     "firstPaint" /* Name.MARK_FIRST_PAINT */,
     "firstContentfulPaint" /* Name.MARK_FCP */,
+    "SyntheticSoftFirstContentfulPaint" /* Name.MARK_SOFT_FCP */,
     "largestContentfulPaint::Candidate" /* Name.MARK_LCP_CANDIDATE */,
     "largestContentfulPaint::CandidateForSoftNavigation" /* Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */,
     "navigationStart" /* Name.NAVIGATION_START */,
@@ -308,6 +309,12 @@ export function isLayoutInvalidationTracking(event) {
 }
 export function isFirstContentfulPaint(event) {
     return event.name === "firstContentfulPaint" /* Name.MARK_FCP */;
+}
+export function isSoftFirstContentfulPaint(event) {
+    return event.name === "SyntheticSoftFirstContentfulPaint" /* Name.MARK_SOFT_FCP */;
+}
+export function isAnyFirstContentfulPaint(event) {
+    return event.name === "firstContentfulPaint" /* Name.MARK_FCP */ || event.name === "SyntheticSoftFirstContentfulPaint" /* Name.MARK_SOFT_FCP */;
 }
 export function isAnyLargestContentfulPaintCandidate(event) {
     return event.name === "largestContentfulPaint::Candidate" /* Name.MARK_LCP_CANDIDATE */ || event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;

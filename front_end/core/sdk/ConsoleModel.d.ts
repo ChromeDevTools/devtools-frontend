@@ -72,6 +72,7 @@ export interface ConsoleMessageDetails {
     context?: string;
     affectedResources?: AffectedResources;
     category?: Protocol.Log.LogEntryCategory;
+    exceptionDetails?: Protocol.Runtime.ExceptionDetails;
 }
 export declare class ConsoleMessage {
     #private;
@@ -89,6 +90,7 @@ export declare class ConsoleMessage {
     workerId?: string;
     context?: string;
     category?: Protocol.Log.LogEntryCategory;
+    readonly exceptionDetails?: Protocol.Runtime.ExceptionDetails;
     /**
      * The parent frame of the `console.log` call of logpoints or conditional breakpoints
      * if they called `console.*` explicitly. The parent frame is where V8 paused

@@ -1,4 +1,5 @@
 import type * as Host from '../../../core/host/host.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import type { ConversationContext, FunctionCallHandlerResult, FunctionHandlerOptions } from '../agents/AiAgent.js';
 import type { executeJsCode } from '../agents/ExecuteJavascript.js';
 import type { ChangeManager } from '../ChangeManager.js';
@@ -13,6 +14,11 @@ export interface ToolContext {
         uninstall(): Promise<void>;
     };
     execJs?: typeof executeJsCode;
+    /**
+     * Returns the DOM node that acts as the execution context (i.e. `$0` inside the execution context)
+     * for running JavaScript.
+     */
+    getExecutionContextNode?: () => SDK.DOMModel.DOMNode | null;
 }
 /**
  * Base argument type for AI Tools.

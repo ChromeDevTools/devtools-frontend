@@ -1134,6 +1134,8 @@ var Overlays = class extends EventTarget {
   #mouseMoveOverlay(e, event, name, overlay, markers, marker) {
     if (Trace.Types.Events.isSoftNavigationStart(event)) {
       name = "Soft Nav";
+    } else if (Trace.Types.Events.isSoftFirstContentfulPaint(event)) {
+      name = "Soft FCP";
     } else if (Trace.Types.Events.isSoftLargestContentfulPaintCandidate(event)) {
       name = "Soft LCP";
     }

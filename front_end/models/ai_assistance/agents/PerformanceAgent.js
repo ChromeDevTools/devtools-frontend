@@ -13,6 +13,7 @@ import * as Logs from '../../logs/logs.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
+import { extractContextOrigin } from '../AiOrigins.js';
 import { sanitizeHeaders } from '../data_formatters/NetworkRequestFormatter.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
@@ -217,6 +218,26 @@ export class PerformanceTraceContext extends ConversationContext {
             const { min, max } = this.#focus.parsedTrace.data.Meta.traceBounds;
             return `trace-${min}-${max}`;
         }
+    }
+    /**
+     * Returns the origin for a performance trace in the AI context.
+     *
+     * To prevent cross-origin prompt injection attacks, imported traces
+     * are isolated from live pages. We assign them a virtual origin
+     * (`imported-trace://${domain}`) so they do not share the origin of live pages
+     * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
+     * between imported trace data and live pages.
+     */
+    getOrigin() {
+        const parsedTrace = this.#focus.parsedTrace;
+        const url = this.getURL();
+        const origin = extractContextOrigin(url);
+        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+        if (!isFresh) {
+            const parsed = Common.ParsedURL.ParsedURL.fromString(origin);
+            return `imported-trace://${parsed ? parsed.domain() : origin}`;
+        }
+        return origin;
     }
     getItem() {
         return this.#focus;

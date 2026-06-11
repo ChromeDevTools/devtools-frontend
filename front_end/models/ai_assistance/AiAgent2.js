@@ -155,6 +155,7 @@ User query: ${enhancedQuery}`;
                 changeManager: this.#changes,
                 createExtensionScope: this.#createExtensionScope.bind(this),
                 execJs: this.#execJs,
+                getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
             }, options),
         });
     }

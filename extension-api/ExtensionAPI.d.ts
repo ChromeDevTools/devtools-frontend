@@ -19,8 +19,35 @@ export namespace Chrome {
        */
       readonly buildId?: string;
 
+      /**
+       * Returns the `content` and `encoding` of the resource. If a `callback`
+       * is provided, it is invoked with the `content` and `encoding` and the
+       * method returns `void`. If no `callback` is provided, the method returns
+       * a `Promise`.
+       *
+       * @param callback Optional callback to be invoked with the content and
+       * encoding.
+       * @returns A Promise that resolves to an object containing the content
+       * and encoding if no callback is provided, otherwise void. Rejects with
+       * an error object on failure.
+       */
+      getContent(): Promise<{content: string, encoding: string}>;
       getContent(callback: (content: string, encoding: string) => unknown): void;
-      setContent(content: string, commit: boolean, callback?: (error?: Object) => unknown): void;
+
+      /**
+       * Sets the content of the resource. If a `callback` is provided, it is
+       * invoked when the content is set and the method returns `void`. If no
+       * `callback` is provided, the method returns a `Promise`.
+       *
+       * @param content The new content of the resource.
+       * @param commit Whether to commit the changes.
+       * @param callback Optional callback to be invoked when the content is
+       * set.
+       * @returns A Promise that resolves when the content is set if no callback
+       * is provided, otherwise void. Rejects with an error object on failure.
+       */
+      setContent(content: string, commit: boolean): Promise<void>;
+      setContent(content: string, commit: boolean, callback: (error?: object) => unknown): void;
       /**
        * Augments this resource's scopes information based on the list of {@link NamedFunctionRange}s
        * for improved debuggability and function naming.
@@ -40,18 +67,62 @@ export namespace Chrome {
       onResourceAdded: EventSink<(resource: Resource) => unknown>;
       onResourceContentCommitted: EventSink<(resource: Resource, content: string) => unknown>;
 
-      eval(
-          expression: string,
-          options?: {scriptExecutionContext?: string, frameURL?: string, useContentScriptContext?: boolean},
-          callback?: (result: unknown, exceptioninfo: {
-            code: string,
-            description: string,
-            details: unknown[],
-            isError: boolean,
-            isException: boolean,
-            value: string,
-          }) => unknown): void;
+      /**
+       * Evaluates a JavaScript expression in the context of the inspected page.
+       *
+       * If a `callback` is provided, it is invoked with the result and
+       * exception information and the method returns `void`. If no `callback`
+       * is provided, the method returns a `Promise`.
+       *
+       * @template E The type of the value that the Promise resolves to.
+       * @param expression The JavaScript expression to evaluate.
+       * @param optionsOrCallback Optional options for evaluation, or a callback
+       * function.
+       * @param callback Optional callback to be invoked with the evaluation
+       * result and exception information.
+       * @returns A Promise that resolves to the result if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      eval<E = unknown>(expression: string, options?: {
+        scriptExecutionContext?: string,
+        frameURL?: string,
+        useContentScriptContext?: boolean,
+      }): Promise<E>;
+      eval(expression: string,
+           optionsOrCallback: {scriptExecutionContext?: string, frameURL?: string, useContentScriptContext?: boolean}|
+           undefined|((result: unknown, exceptioninfo: {
+                        code: string,
+                        description: string,
+                        details: unknown[],
+                        isError: boolean,
+                        isException: boolean,
+                        value: string,
+                      }) => unknown),
+           callback?: (result: unknown, exceptioninfo: {
+             code: string,
+             description: string,
+             details: unknown[],
+             isError: boolean,
+             isException: boolean,
+             value: string,
+           }) => unknown): void;
+
+      /**
+       * Retrieves all resources within the inspected window.
+       *
+       * If a `callback` is provided, it is invoked with the array of resources
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param callback Optional callback to be invoked with the array of
+       * resources.
+       * @returns A Promise that resolves to an array of resources if no
+       * callback is provided, otherwise void. Rejects with an error object on
+       * failure.
+       */
+      getResources(): Promise<Resource[]>;
       getResources(callback: (resources: Resource[]) => unknown): void;
+
       reload(reloadOptions?: {ignoreCache?: boolean, injectedScript?: string, userAgent?: string}): void;
     }
 

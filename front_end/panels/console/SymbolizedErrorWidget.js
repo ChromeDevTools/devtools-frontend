@@ -14,8 +14,8 @@ function renderHeader(content, isCause) {
     return html `<span class="error-message-text">${content}</span>`;
 }
 function formatName(frame) {
-    let name = frame.name || '';
-    const isInline = Boolean(frame.rawName) && frame.name !== frame.rawName;
+    const isInline = frame.isInline;
+    let name = isInline ? (frame.name || '') : (frame.rawName || frame.name || '');
     const shouldAppendMethodAlias = !isInline && frame.methodName && name && name !== frame.methodName &&
         !name.endsWith('.' + frame.methodName) && !name.endsWith(' ' + frame.methodName);
     if (shouldAppendMethodAlias) {
@@ -79,10 +79,6 @@ function renderFrameSuffix(frame) {
 }
 const DEFAULT_VIEW = (input, _output, target) => {
     const renderError = (error, isCause) => {
-        if (error instanceof Bindings.SymbolizedError.SymbolizedSyntaxError) {
-            console.error('SymbolizedErrorWidget received an unsupported error type:', error);
-            return Lit.nothing;
-        }
         if (error instanceof Bindings.SymbolizedError.UnparsableError) {
             const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
                 const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
@@ -101,7 +97,12 @@ const DEFAULT_VIEW = (input, _output, target) => {
             maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
             ignoreListManager: input.ignoreListManager,
         };
-        const headerContent = html `${error.message}`;
+        let headerContent = html `${error.message}`;
+        if (error.syntaxErrorLocation) {
+            const linkElement = Components.Linkifier.Linkifier.linkifyUILocation(error.syntaxErrorLocation, linkOptions);
+            linkElement.tabIndex = -1;
+            headerContent = html `${error.message} (at ${linkElement})`;
+        }
         const header = renderHeader(headerContent, isCause);
         const syncFrames = error.stackTrace.syncFragment.frames;
         // clang-format off

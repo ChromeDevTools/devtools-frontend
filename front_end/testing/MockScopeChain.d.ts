@@ -12,6 +12,7 @@ interface ScriptDescription {
     isContentScript?: boolean;
     embedderName?: string;
     executionContextId?: number;
+    scriptLanguage?: Protocol.Debugger.ScriptLanguage;
 }
 /**
  * @deprecated Use {@link MockDebuggerBackend} instead.

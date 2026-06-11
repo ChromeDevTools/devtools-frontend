@@ -663,7 +663,6 @@ export var DevtoolsExperiments;
     /* eslint-disable @typescript-eslint/naming-convention */
     DevtoolsExperiments[DevtoolsExperiments["protocol-monitor"] = 13] = "protocol-monitor";
     DevtoolsExperiments[DevtoolsExperiments["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
-    DevtoolsExperiments[DevtoolsExperiments["use-source-map-scopes"] = 76] = "use-source-map-scopes";
     DevtoolsExperiments[DevtoolsExperiments["durable-messages"] = 110] = "durable-messages";
     DevtoolsExperiments[DevtoolsExperiments["jpeg-xl"] = 111] = "jpeg-xl";
     DevtoolsExperiments[DevtoolsExperiments["plus-button"] = 112] = "plus-button";

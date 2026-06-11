@@ -9839,7 +9839,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root9 from "./../root/root.js";
+import * as Root8 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -12990,7 +12990,7 @@ import * as TextUtils18 from "./../../models/text_utils/text_utils.js";
 import * as Common13 from "./../common/common.js";
 import * as Host3 from "./../host/host.js";
 import * as Platform10 from "./../platform/platform.js";
-import * as Root6 from "./../root/root.js";
+import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSFontFace.js
 var CSSFontFace_exports = {};
@@ -19246,7 +19246,6 @@ import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
 import * as Common11 from "./../common/common.js";
 import * as Platform8 from "./../platform/platform.js";
-import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/sdk/ScopeTreeCache.js
 var ScopeTreeCache_exports = {};
@@ -20407,20 +20406,18 @@ var SourceMap = class {
       nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
     }
-    if (Root5.Runtime.experiments.isEnabled(Root5.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
-      if (!this.#scopesInfo) {
-        this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
-      }
-      if (map.scopes) {
-        const { scopes, ranges } = ScopesCodec.decode(map, { mode: 2, generatedOffset: { line: baseLineNumber, column: baseColumnNumber } });
-        this.#scopesInfo.addOriginalScopes(scopes);
-        this.#scopesInfo.addGeneratedRanges(ranges);
-      } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
-        const originalScopes = this.parseBloombergScopes(map);
-        this.#scopesInfo.addOriginalScopes(originalScopes);
-      } else {
-        this.#scopesInfo.addOriginalScopes(new Array(map.sources.length).fill(null));
-      }
+    if (!this.#scopesInfo) {
+      this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
+    }
+    if (map.scopes) {
+      const { scopes, ranges } = ScopesCodec.decode(map, { mode: 2, generatedOffset: { line: baseLineNumber, column: baseColumnNumber } });
+      this.#scopesInfo.addOriginalScopes(scopes);
+      this.#scopesInfo.addGeneratedRanges(ranges);
+    } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
+      const originalScopes = this.parseBloombergScopes(map);
+      this.#scopesInfo.addOriginalScopes(originalScopes);
+    } else {
+      this.#scopesInfo.addOriginalScopes(new Array(map.sources.length).fill(null));
     }
   }
   parseBloombergScopes(map) {
@@ -21102,7 +21099,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!node) {
       return null;
     }
-    const shouldGetAnimatedStyles = Root6.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldGetAnimatedStyles = Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     const [matchedStylesResponse, animatedStylesResponse] = await Promise.all([
       this.agent.invoke_getMatchedStylesForNode({ nodeId }),
       shouldGetAnimatedStyles ? this.agent.invoke_getAnimatedStylesForNode({ nodeId }) : void 0
@@ -21779,7 +21776,7 @@ __export(FrameManager_exports, {
   FrameManager: () => FrameManager
 });
 import * as Common14 from "./../common/common.js";
-import * as Root7 from "./../root/root.js";
+import * as Root6 from "./../root/root.js";
 var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrapper {
   #eventListeners = /* @__PURE__ */ new WeakMap();
   // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
@@ -21795,13 +21792,13 @@ var FrameManager = class _FrameManager extends Common14.ObjectWrapper.ObjectWrap
     targetManager.observeModels(ResourceTreeModel, this);
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!Root7.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
-      Root7.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
+    if (!Root6.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
+      Root6.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
     }
-    return Root7.DevToolsContext.globalInstance().get(_FrameManager);
+    return Root6.DevToolsContext.globalInstance().get(_FrameManager);
   }
   static removeInstance() {
-    Root7.DevToolsContext.globalInstance().delete(_FrameManager);
+    Root6.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
     const addListener = resourceTreeModel.addEventListener(Events3.FrameAdded, this.frameAdded, this);
@@ -21978,7 +21975,7 @@ __export(DebuggerModel_exports, {
 });
 import * as Common17 from "./../common/common.js";
 import * as i18n11 from "./../i18n/i18n.js";
-import * as Root8 from "./../root/root.js";
+import * as Root7 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RuntimeModel.js
 var RuntimeModel_exports = {};
@@ -23212,11 +23209,11 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     this.#debuggerEnabled = true;
-    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     let instrumentationPromise;
-    if (Root8.Runtime.experiments.isEnabled(Root8.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+    if (Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
         instrumentation: "beforeScriptExecution"
       });
@@ -23232,7 +23229,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.registerDebugger(enableResult);
   }
   async syncDebuggerId() {
-    const isRemoteFrontend = Root8.Runtime.Runtime.queryParam("remoteFrontend") || Root8.Runtime.Runtime.queryParam("ws");
+    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
     const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
     const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
     void enablePromise.then(this.registerDebugger.bind(this));
@@ -28598,8 +28595,8 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const schemeBindingEnabled = Boolean(Root9.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
-    const portBindingEnabled = Boolean(Root9.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
+    const schemeBindingEnabled = Boolean(Root8.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
+    const portBindingEnabled = Boolean(Root8.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -29556,6 +29553,10 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   #contentDataProvider;
   #isSameSite = null;
   #wasIntercepted = false;
+  /**
+   * Whether this request was imported from a HAR file.
+   */
+  #isImportedHar = false;
   #associatedData = /* @__PURE__ */ new Map();
   #hasOverriddenContent = false;
   #hasThirdPartyCookiePhaseoutIssue = false;
@@ -30159,6 +30160,12 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   }
   setWasIntercepted(wasIntercepted) {
     this.#wasIntercepted = wasIntercepted;
+  }
+  isImportedHar() {
+    return this.#isImportedHar;
+  }
+  setIsImportedHar(isImportedHar) {
+    this.#isImportedHar = isImportedHar;
   }
   setEarlyHintsHeaders(headers) {
     this.earlyHintsHeaders = headers;
@@ -32416,7 +32423,7 @@ import * as i18n29 from "./../i18n/i18n.js";
 import * as Common33 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root11 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -32427,7 +32434,7 @@ __export(RehydratingConnection_exports, {
 import * as Common32 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root10 from "./../root/root.js";
+import * as Root9 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -32827,9 +32834,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root10.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root9.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root10.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root9.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -33362,11 +33369,11 @@ async function initMainConnection(createRootTarget, onConnectionLost) {
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root11.Runtime.Runtime.isTraceApp()) {
+  if (Root10.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root11.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root11.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root10.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root10.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
@@ -33952,6 +33959,7 @@ var ConsoleMessage = class _ConsoleMessage {
   #exceptionId = void 0;
   #affectedResources;
   category;
+  exceptionDetails;
   /**
    * The parent frame of the `console.log` call of logpoints or conditional breakpoints
    * if they called `console.*` explicitly. The parent frame is where V8 paused
@@ -33978,6 +33986,7 @@ var ConsoleMessage = class _ConsoleMessage {
     this.workerId = details?.workerId;
     this.#affectedResources = details?.affectedResources;
     this.category = details?.category;
+    this.exceptionDetails = details?.exceptionDetails;
     if (!this.#executionContextId && this.#runtimeModel) {
       if (this.scriptId) {
         this.#executionContextId = this.#runtimeModel.executionContextIdForScriptId(this.scriptId);
@@ -34012,7 +34021,8 @@ var ConsoleMessage = class _ConsoleMessage {
       timestamp,
       executionContextId: exceptionDetails.executionContextId,
       scriptId: exceptionDetails.scriptId,
-      affectedResources
+      affectedResources,
+      exceptionDetails
     };
     return new _ConsoleMessage(runtimeModel, "javascript", "error", RuntimeModel.simpleTextFromException(exceptionDetails), details);
   }

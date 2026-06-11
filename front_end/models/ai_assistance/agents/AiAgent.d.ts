@@ -391,6 +391,15 @@ export declare abstract class AiAgent<T> {
     clearCache(): void;
     protected disableServerSideLogging(): void;
     popPendingMultimodalInput(): MultimodalInput | undefined;
+    /**
+     * Preamble features appended to the `client_version` in metadata.
+     * This is required ONLY for the Styling Agent for legacy reasons to serve
+     * different server-side preambles based on the Chrome version.
+     * Other agents should NOT set or override this.
+     * If you are curious about this, look for `do_conversation_handler.cc` in
+     * Google3 or chat to @jacktfranklin.
+     */
+    preambleFeatures(): string[];
     buildRequest(part: Host.AidaClient.Part | Host.AidaClient.Part[], role: Host.AidaClient.Role.USER | Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.DoConversationRequest;
     get sessionId(): string;
     /**

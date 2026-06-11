@@ -4,7 +4,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import { JavascriptExecutor } from '../agents/ExecuteJavascript.js';
-import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 export class ExecuteJavaScriptTool {
     name = "executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */;
     description = 'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.';
@@ -78,13 +77,9 @@ const data = {
         };
     }
     async handler(params, context, options) {
-        const activeContext = context.conversationContext;
-        if (!activeContext || !(activeContext instanceof DOMNodeContext)) {
-            return { error: 'Error: Could not find the currently selected element.' };
-        }
-        const selectedNode = activeContext.getItem();
-        if (!selectedNode) {
-            return { error: 'Error: Could not find the currently selected element.' };
+        const executionNode = context.getExecutionContextNode?.() ?? null;
+        if (!executionNode) {
+            return { error: 'Error: Could not find the context node for execution.' };
         }
         const executionMode = Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??
             Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
@@ -95,7 +90,7 @@ const data = {
         }
         const executor = new JavascriptExecutor({
             executionMode,
-            getContextNode: () => selectedNode,
+            getContextNode: () => executionNode,
             createExtensionScope,
             changes,
         }, context.execJs);

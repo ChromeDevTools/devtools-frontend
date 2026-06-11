@@ -18,6 +18,18 @@ export function timeStampForEventAdjustedByClosestNavigation(event, traceBounds,
             eventTimeStamp = event.ts - navigationForEvent.ts;
         }
     }
+    else if (Types.Events.isSoftFirstContentfulPaint(event) && event.args?.context?.performanceTimelineNavigationId) {
+        const navigationForEvent = softNavigationsById.get(event.args.context.performanceTimelineNavigationId);
+        if (navigationForEvent) {
+            eventTimeStamp = event.ts - navigationForEvent.ts;
+        }
+    }
+    else if (Types.Events.isSoftNavigationStart(event)) {
+        const navigationForEvent = getNavigationForTraceEvent(event, event.args.frame, navigationsByFrameId);
+        if (navigationForEvent) {
+            eventTimeStamp = event.ts - navigationForEvent.ts;
+        }
+    }
     else if (event.args?.data?.navigationId) {
         const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
         if (navigationForEvent) {

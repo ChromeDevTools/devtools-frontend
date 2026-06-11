@@ -49,60 +49,59 @@ export function parseRawFramesFromErrorStack(stack) {
         let promiseIndex;
         let evalOrigin;
         const openParenIndex = lineContent.indexOf(' (');
+        let location = '';
         if (lineContent.endsWith(')') && openParenIndex !== -1) {
             functionName = lineContent.substring(0, openParenIndex).trim();
-            let location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
-            if (location.startsWith('eval at ')) {
-                isEval = true;
-                const commaIndex = location.lastIndexOf(', ');
-                let evalOriginStr = location;
-                if (commaIndex !== -1) {
-                    evalOriginStr = location.substring(0, commaIndex);
-                    location = location.substring(commaIndex + 2);
-                }
-                else {
-                    location = '';
-                }
-                if (evalOriginStr.startsWith('eval at ')) {
-                    evalOriginStr = evalOriginStr.substring(8);
-                }
-                const innerOpenParen = evalOriginStr.indexOf(' (');
-                let evalFunctionName = evalOriginStr;
-                let evalLocation = '';
-                if (innerOpenParen !== -1) {
-                    evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
-                    evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
-                }
-                else {
-                    evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
-                }
-            }
-            if (location.startsWith('index ')) {
-                promiseIndex = parseInt(location.substring(6), 10);
-                url = '';
-            }
-            else if (location === '<anonymous>' || location === 'native') {
-                url = '';
-            }
-            else if (location.includes(':wasm-function[')) {
-                isWasm = true;
-                const wasmMatch = /^(.*):wasm-function\[(\d+)\]:(0x[0-9a-fA-F]+)$/.exec(location);
-                if (wasmMatch) {
-                    url = wasmMatch[1];
-                    wasmFunctionIndex = parseInt(wasmMatch[2], 10);
-                    columnNumber = parseInt(wasmMatch[3], 16);
-                }
-            }
-            else {
-                const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
-                url = splitResult.url;
-                lineNumber = splitResult.lineNumber ?? -1;
-                columnNumber = splitResult.columnNumber ?? -1;
-            }
+            location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
         }
         else {
-            const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(lineContent);
+            location = lineContent;
+        }
+        if (location.startsWith('eval at ')) {
+            isEval = true;
+            const commaIndex = location.lastIndexOf(', ');
+            let evalOriginStr = location;
+            if (commaIndex !== -1) {
+                evalOriginStr = location.substring(0, commaIndex);
+                location = location.substring(commaIndex + 2);
+            }
+            else {
+                location = '';
+            }
+            if (evalOriginStr.startsWith('eval at ')) {
+                evalOriginStr = evalOriginStr.substring(8);
+            }
+            const innerOpenParen = evalOriginStr.indexOf(' (');
+            let evalFunctionName = evalOriginStr;
+            let evalLocation = '';
+            if (innerOpenParen !== -1) {
+                evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
+                evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
+                evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
+            }
+            else {
+                evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
+            }
+        }
+        if (location.startsWith('index ')) {
+            promiseIndex = parseInt(location.substring(6), 10);
+            url = '';
+        }
+        else if (location === '<anonymous>' || location === 'native') {
+            url = '';
+        }
+        else if (location.includes(':wasm-function[')) {
+            isWasm = true;
+            const wasmMatch = /^(.*):wasm-function\[(\d+)\]:(0x[0-9a-fA-F]+)$/.exec(location);
+            if (wasmMatch) {
+                url = wasmMatch[1];
+                wasmFunctionIndex = parseInt(wasmMatch[2], 10);
+                columnNumber = parseInt(wasmMatch[3], 16);
+                lineNumber = 0;
+            }
+        }
+        else if (location) {
+            const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
             url = splitResult.url;
             lineNumber = splitResult.lineNumber ?? -1;
             columnNumber = splitResult.columnNumber ?? -1;
@@ -162,13 +161,7 @@ export function parseMessage(stack) {
  */
 export function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
     function augmentFrame(rawFrame) {
-        const isWasm = rawFrame.isWasm;
         const protocolFrame = protocolStackTrace.callFrames.find(frame => {
-            if (isWasm) {
-                // The parser parses Wasm offsets into the `columnNumber` field. The `lineNumber` is always -1.
-                // In the protocol trace, the `lineNumber` is 0 (for Wasm) and `columnNumber` is the bytecode offset.
-                return rawFrame.url === frame.url && rawFrame.columnNumber === frame.columnNumber;
-            }
             return rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber &&
                 rawFrame.columnNumber === frame.columnNumber;
         });

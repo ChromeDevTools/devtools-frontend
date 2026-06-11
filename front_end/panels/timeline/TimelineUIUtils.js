@@ -756,16 +756,20 @@ export class TimelineUIUtils {
                 name = 'Largest Contentful Paint';
                 break;
             case "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */:
-                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
                 name = 'Soft Largest Contentful Paint';
                 break;
             case "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */:
-                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations-experiment';
+                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
                 name = 'Soft Navigations';
                 break;
             case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
                 link = 'https://web.dev/first-contentful-paint/';
                 name = 'First Contentful Paint';
+                break;
+            case "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */:
+                link = 'https://developer.chrome.com/docs/web-platform/soft-navigations';
+                name = 'Soft First Contentful Paint';
                 break;
             default:
                 break;
@@ -875,7 +879,7 @@ export class TimelineUIUtils {
         }
         // Add timestamp to user timings, including custom extensibility markers
         if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming) ||
-            Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
+            Trace.Types.Extensions.isSyntheticExtensionEntry(event) || Trace.Types.Events.isSoftNavigationStart(event)) {
             const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace);
             contentHelper.appendTextRow(i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
         }
@@ -1283,6 +1287,7 @@ export class TimelineUIUtils {
             }
             case "firstPaint" /* Trace.Types.Events.Name.MARK_FIRST_PAINT */:
             case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
+            case "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */:
             case "MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */:
             case "MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */: {
                 const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(event, parsedTrace);
@@ -1787,7 +1792,7 @@ export class TimelineUIUtils {
                 tall = true;
                 break;
             case "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */:
-                color = 'var(--sys-color-blue)';
+                color = 'var(--color-text-primary)';
                 tall = true;
                 break;
             case "FrameStartedLoading" /* Trace.Types.Events.Name.FRAME_STARTED_LOADING */:
@@ -1807,6 +1812,7 @@ export class TimelineUIUtils {
                 tall = true;
                 break;
             case "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */:
+            case "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */:
                 color = 'var(--sys-color-green-bright)';
                 tall = true;
                 break;
@@ -2053,7 +2059,7 @@ export function isMarkerEvent(parsedTrace, event) {
         event.name === "SoftNavigationStart" /* Name.SOFT_NAVIGATION_START */) {
         return true;
     }
-    if (Trace.Types.Events.isFirstContentfulPaint(event) || Trace.Types.Events.isFirstPaint(event)) {
+    if (Trace.Types.Events.isAnyFirstContentfulPaint(event) || Trace.Types.Events.isFirstPaint(event)) {
         return event.args.frame === parsedTrace.data.Meta.mainFrameId;
     }
     if (Trace.Types.Events.isMarkDOMContent(event) || Trace.Types.Events.isMarkLoad(event) ||

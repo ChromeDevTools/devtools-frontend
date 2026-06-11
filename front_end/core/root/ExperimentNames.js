@@ -6,7 +6,6 @@ export var ExperimentName;
     ExperimentName["ALL"] = "*";
     ExperimentName["PROTOCOL_MONITOR"] = "protocol-monitor";
     ExperimentName["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
-    ExperimentName["USE_SOURCE_MAP_SCOPES"] = "use-source-map-scopes";
     ExperimentName["DURABLE_MESSAGES"] = "durable-messages";
     ExperimentName["JPEG_XL"] = "jpeg-xl";
     ExperimentName["PLUS_BUTTON"] = "plus-button";

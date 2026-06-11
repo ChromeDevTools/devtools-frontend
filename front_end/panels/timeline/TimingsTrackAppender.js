@@ -21,12 +21,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS = {
     ["navigationStart" /* Trace.Types.Events.Name.NAVIGATION_START */]: 0,
-    ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 1,
-    ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 2,
+    ["SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */]: 1,
     ["firstPaint" /* Trace.Types.Events.Name.MARK_FIRST_PAINT */]: 2,
-    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 3,
-    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 4,
-    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 5,
+    ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 3,
+    ["SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */]: 4,
+    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 5,
+    ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 6,
+    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 7,
+    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 8,
 };
 export class TimingsTrackAppender {
     appenderName = 'Timings';

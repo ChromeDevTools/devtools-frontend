@@ -500,6 +500,7 @@ var Importer = class _Importer {
         };
       }
       const request = SDK2.NetworkRequest.NetworkRequest.createWithoutBackendRequest("har-" + requests.length, entry.request.url, documentURL, initiator);
+      request.setIsImportedHar(true);
       const page = pageref ? pages.get(pageref) : void 0;
       if (!pageLoad && pageref && page) {
         pageLoad = _Importer.buildPageLoad(page, request);

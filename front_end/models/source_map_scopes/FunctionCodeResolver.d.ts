@@ -25,7 +25,14 @@ export interface CreateFunctionCodeOptions {
     appendProfileData?: boolean;
 }
 /**
- * The input location may be a source mapped location or a raw location.
+ * Resolves the function code and its surrounding context for a given location.
+ *
+ * The input location (line, column) may be either an authored (source-mapped)
+ * location or a raw location. The function will attempt to resolve it to a
+ * raw location regardless. This is necessary because callers (such as AI
+ * assistance) may work with either format.
+ *
+ * We filter projects by `target` to prevent cross-origin leaks.
  */
 export declare function getFunctionCodeFromLocation(target: SDK.Target.Target, url: Platform.DevToolsPath.UrlString, line: number, column: number, options?: CreateFunctionCodeOptions): Promise<FunctionCode | null>;
 /**

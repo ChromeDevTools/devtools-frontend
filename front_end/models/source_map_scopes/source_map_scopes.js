@@ -143,10 +143,13 @@ async function getFunctionCodeFromLocation(target, url, line, column, options) {
   if (!debuggerModel) {
     throw new Error("missing debugger model");
   }
-  let uiSourceCode;
+  let uiSourceCode = null;
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
   for (const project of projects) {
+    if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
+      continue;
+    }
     uiSourceCode = project.uiSourceCodeForURL(url);
     if (uiSourceCode) {
       break;

@@ -1,9 +1,11 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
+import { extractContextOrigin } from '../AiOrigins.js';
 import { NetworkRequestFormatter } from '../data_formatters/NetworkRequestFormatter.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
 /**
@@ -83,6 +85,23 @@ const UIStringsNotTranslate = {
     requestInitiatorChain: 'Request initiator chain',
 };
 const lockedString = i18n.i18n.lockedString;
+/**
+ * Returns the origin for a network request in the AI context.
+ *
+ * To prevent cross-origin prompt injection attacks, HAR-imported requests
+ * are isolated from live pages. We assign them a virtual origin
+ * (`imported-har://${domain}`) so they do not share the origin of live pages
+ * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
+ * between imported HAR data and live pages.
+ */
+export function getRequestContextOrigin(request) {
+    const origin = extractContextOrigin(request.documentURL);
+    if (request.isImportedHar()) {
+        const parsed = Common.ParsedURL.ParsedURL.fromString(origin);
+        return `imported-har://${parsed ? parsed.domain() : origin}`;
+    }
+    return origin;
+}
 export class RequestContext extends ConversationContext {
     #request;
     #calculator;
@@ -99,6 +118,9 @@ export class RequestContext extends ConversationContext {
      */
     getURL() {
         return this.#request.documentURL;
+    }
+    getOrigin() {
+        return getRequestContextOrigin(this.#request);
     }
     getItem() {
         return this.#request;

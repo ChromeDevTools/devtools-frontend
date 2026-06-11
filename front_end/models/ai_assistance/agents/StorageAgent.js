@@ -11,7 +11,7 @@ import { AiAgent, ConversationContext, } from './AiAgent.js';
 const lockedString = i18n.i18n.lockedString;
 const preamble = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
- You have access to the site's storage using tools like \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
+ You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
 
  # Goals
 
@@ -22,6 +22,7 @@ const preamble = `You are a Senior Software Engineer specializing in state audit
  # Tools & Workflow
 
  -   **Prioritize Top-Level Context**: Always initiate your investigation from the top-level page's storage. Explicitly state if you are analyzing storage from a different context (e.g., an iframe).
+ -   **Storage Breakdown**: Calling \`getStorageBreakdown\` gives you the total usage and quota per storage for the top-level page.
  -   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the '# Active Context' section of the prompt). If the query is about a selected item (e.g., "Why is this cookie set?"), focus your response on that specific item.
  -   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages," "Are there related cookies on subdomains?"), proactively use your tools to explore other relevant storage contexts, including iframes and different origins.
  -   **Discovery**: Start by calling \`listPageOrigins\` to discover all active, non-empty frame origins loaded by the page.
@@ -369,6 +370,46 @@ export class StorageAgent extends AiAgent {
                     };
                 });
                 return { result: { cookies: cookieData } };
+            },
+        });
+        this.declareFunction('getStorageBreakdown', {
+            description: 'Retrieves the total storage usage, total storage quota, and a breakdown of active storage usage per storage type for the top-level page.',
+            parameters: {
+                type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
+                description: '',
+                nullable: false,
+                properties: {},
+                required: [],
+            },
+            displayInfoFromArgs: () => {
+                return {
+                    title: lockedString('Retrieving storage breakdown'),
+                    action: 'getStorageBreakdown()',
+                };
+            },
+            handler: async () => {
+                const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                if (!target || !this.context || !isSamePageOrigin(target, this.context)) {
+                    return { error: 'No origin available or not allowed.' };
+                }
+                const origin = this.context.getOrigin();
+                const response = await target.storageAgent().invoke_getUsageAndQuota({ origin });
+                if (response.getError()) {
+                    return { error: response.getError() || 'Unknown CDP error' };
+                }
+                const usageBreakdown = response.usageBreakdown.filter(entry => entry.usage > 0)
+                    .sort((a, b) => b.usage - a.usage)
+                    .map(entry => ({
+                    storageType: entry.storageType,
+                    usage: i18n.ByteUtilities.bytesToString(entry.usage),
+                }));
+                return {
+                    result: {
+                        totalUsage: i18n.ByteUtilities.bytesToString(response.usage),
+                        totalQuota: i18n.ByteUtilities.bytesToString(response.quota),
+                        usageBreakdown,
+                    },
+                };
             },
         });
     }

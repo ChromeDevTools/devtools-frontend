@@ -3626,7 +3626,7 @@ var markerTypeGuards = [
   isMarkDOMContent,
   isMarkLoad,
   isFirstPaint,
-  isFirstContentfulPaint,
+  isAnyFirstContentfulPaint,
   isAnyLargestContentfulPaintCandidate,
   isNavigationStart,
   isSoftNavigationStart
@@ -3646,8 +3646,8 @@ var SelectorTimingsKey;
   SelectorTimingsKey2["StyleSheetId"] = "style_sheet_id";
   SelectorTimingsKey2["InvalidationCount"] = "invalidation_count";
 })(SelectorTimingsKey || (SelectorTimingsKey = {}));
-function isFirstContentfulPaint(event) {
-  return event.name === "firstContentfulPaint";
+function isAnyFirstContentfulPaint(event) {
+  return event.name === "firstContentfulPaint" || event.name === "SyntheticSoftFirstContentfulPaint";
 }
 function isAnyLargestContentfulPaintCandidate(event) {
   return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";

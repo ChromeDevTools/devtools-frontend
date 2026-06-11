@@ -732,6 +732,8 @@ ui/legacy/ShortcutRegistry.test.js
 ui/legacy/SoftContextMenu.test.js
 ui/legacy/SoftDropDown.test.js
 ui/legacy/SplitWidget.test.js
+ui/legacy/StackLocation.test.js
+ui/legacy/StackedPane.test.js
 ui/legacy/SuggestBox.test.js
 ui/legacy/TabbedPane.test.js
 ui/legacy/TextPrompt.test.js

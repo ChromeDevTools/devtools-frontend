@@ -15,7 +15,7 @@ import { DefaultScriptMapping } from './DefaultScriptMapping.js';
 import { LiveLocationWithPool } from './LiveLocation.js';
 import { NetworkProject } from './NetworkProject.js';
 import { ResourceScriptMapping } from './ResourceScriptMapping.js';
-import { isErrorLike, SymbolizedErrorObject, SymbolizedSyntaxError, UnparsableError, } from './SymbolizedError.js';
+import { isErrorLike, SymbolizedErrorObject, UnparsableError, } from './SymbolizedError.js';
 export class DebuggerWorkspaceBinding {
     resourceMapping;
     #debuggerModelToData;
@@ -172,12 +172,6 @@ export class DebuggerWorkspaceBinding {
             ]);
             fetchedExceptionDetails = details;
             causeRemoteObject = causeRemote;
-            if (remoteObject.className === 'SyntaxError' && fetchedExceptionDetails) {
-                const syntaxError = await SymbolizedSyntaxError.fromExceptionDetails(remoteObject.runtimeModel().target(), this, fetchedExceptionDetails);
-                if (syntaxError) {
-                    return syntaxError;
-                }
-            }
         }
         else if (remoteObject.type === 'string') {
             errorStack = remoteObject.description || '';
@@ -200,6 +194,9 @@ export class DebuggerWorkspaceBinding {
             return new UnparsableError(errorStack, cause);
         }
         const message = StackTraceImpl.DetailedErrorStackParser.parseMessage(errorStack);
+        if (remoteObject.subtype === 'error' && remoteObject.className === 'SyntaxError' && fetchedExceptionDetails) {
+            return await SymbolizedErrorObject.createForSyntaxError(remoteObject.runtimeModel().target(), this, message, fetchedExceptionDetails, stackTrace, cause);
+        }
         return new SymbolizedErrorObject(message, stackTrace, cause);
     }
     async createLiveLocation(rawLocation, updateDelegate, locationPool) {

@@ -10853,6 +10853,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   toggleDebuggerSidebar() {
     this.splitWidget.toggleSidebar();
+    this.sidebarPaneStack?.notifyVisibilityChanged(this.splitWidget.sidebarIsShowing());
   }
   debuggerPaused(event) {
     const debuggerModel = event.data;

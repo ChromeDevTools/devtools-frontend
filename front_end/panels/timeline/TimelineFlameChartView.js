@@ -51,9 +51,10 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS = {
     ["SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */]: 1,
     ["MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */]: 2,
     ["firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */]: 3,
-    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 4,
-    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 5,
-    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 6,
+    ["SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */]: 4,
+    ["MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */]: 5,
+    ["largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */]: 6,
+    ["largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: 7,
 };
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
 // on top of each other.
@@ -548,7 +549,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
             event.name === "SoftNavigationStart" /* Trace.Types.Events.Name.SOFT_NAVIGATION_START */ ||
             event.name === "largestContentfulPaint::Candidate" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE */ ||
             event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* Trace.Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */ ||
-            event.name === "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */ ||
+            event.name === "firstContentfulPaint" /* Trace.Types.Events.Name.MARK_FCP */ || event.name === "SyntheticSoftFirstContentfulPaint" /* Trace.Types.Events.Name.MARK_SOFT_FCP */ ||
             event.name === "MarkDOMContent" /* Trace.Types.Events.Name.MARK_DOM_CONTENT */ ||
             event.name === "MarkLoad" /* Trace.Types.Events.Name.MARK_LOAD */);
         this.#sortMarkersForPreferredVisualOrder(markers);

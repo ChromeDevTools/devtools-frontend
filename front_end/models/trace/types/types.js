@@ -164,6 +164,7 @@ __export(TraceEvents_exports, {
   isAnimationFrameAsyncEnd: () => isAnimationFrameAsyncEnd,
   isAnimationFrameAsyncStart: () => isAnimationFrameAsyncStart,
   isAnimationFramePresentation: () => isAnimationFramePresentation,
+  isAnyFirstContentfulPaint: () => isAnyFirstContentfulPaint,
   isAnyLargestContentfulPaintCandidate: () => isAnyLargestContentfulPaintCandidate,
   isAnyScriptSourceEvent: () => isAnyScriptSourceEvent,
   isAuctionWorkletDoneWithProcess: () => isAuctionWorkletDoneWithProcess,
@@ -280,6 +281,7 @@ __export(TraceEvents_exports, {
   isScrollLayer: () => isScrollLayer,
   isSelectorStats: () => isSelectorStats,
   isSetLayerId: () => isSetLayerId,
+  isSoftFirstContentfulPaint: () => isSoftFirstContentfulPaint,
   isSoftLargestContentfulPaintCandidate: () => isSoftLargestContentfulPaintCandidate,
   isSoftNavigationStart: () => isSoftNavigationStart,
   isStyleInvalidatorInvalidationTracking: () => isStyleInvalidatorInvalidationTracking,
@@ -356,7 +358,7 @@ var markerTypeGuards = [
   isMarkDOMContent,
   isMarkLoad,
   isFirstPaint,
-  isFirstContentfulPaint,
+  isAnyFirstContentfulPaint,
   isAnyLargestContentfulPaintCandidate,
   isNavigationStart,
   isSoftNavigationStart
@@ -366,6 +368,7 @@ var MarkerName = [
   "MarkLoad",
   "firstPaint",
   "firstContentfulPaint",
+  "SyntheticSoftFirstContentfulPaint",
   "largestContentfulPaint::Candidate",
   "largestContentfulPaint::CandidateForSoftNavigation",
   "navigationStart",
@@ -609,6 +612,12 @@ function isLayoutInvalidationTracking(event) {
 }
 function isFirstContentfulPaint(event) {
   return event.name === "firstContentfulPaint";
+}
+function isSoftFirstContentfulPaint(event) {
+  return event.name === "SyntheticSoftFirstContentfulPaint";
+}
+function isAnyFirstContentfulPaint(event) {
+  return event.name === "firstContentfulPaint" || event.name === "SyntheticSoftFirstContentfulPaint";
 }
 function isAnyLargestContentfulPaintCandidate(event) {
   return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";

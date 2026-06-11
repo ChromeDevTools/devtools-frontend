@@ -74,6 +74,7 @@
     "../../../../../../front_end/ui/legacy/SoftContextMenu.ts",
     "../../../../../../front_end/ui/legacy/SoftDropDown.ts",
     "../../../../../../front_end/ui/legacy/SplitWidget.ts",
+    "../../../../../../front_end/ui/legacy/StackedPane.ts",
     "../../../../../../front_end/ui/legacy/SuggestBox.ts",
     "../../../../../../front_end/ui/legacy/TabbedPane.ts",
     "../../../../../../front_end/ui/legacy/TargetCrashedScreen.ts",

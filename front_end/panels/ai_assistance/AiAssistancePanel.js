@@ -1758,7 +1758,8 @@ export class ActionDelegate {
             case 'drjones.network-panel-context':
             case 'drjones.performance-panel-context':
             case 'drjones.sources-floating-button':
-            case 'drjones.sources-panel-context': {
+            case 'drjones.sources-panel-context':
+            case 'ai-assistance.storage-floating-button': {
                 void (async () => {
                     const view = UI.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
                     if (!view) {

@@ -30,6 +30,7 @@ export class Importer {
                 };
             }
             const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest('har-' + requests.length, entry.request.url, documentURL, initiator);
+            request.setIsImportedHar(true);
             const page = pageref ? pages.get(pageref) : undefined;
             if (!pageLoad && pageref && page) {
                 pageLoad = Importer.buildPageLoad(page, request);

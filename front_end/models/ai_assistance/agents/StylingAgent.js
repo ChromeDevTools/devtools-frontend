@@ -172,6 +172,7 @@ export class StylingAgent extends AiAgent {
                 changeManager: this.#changes,
                 createExtensionScope: this.#createExtensionScope.bind(this),
                 execJs: this.#execJs,
+                getExecutionContextNode: () => this.context?.getItem() ?? null,
             }, options),
         });
         if (Annotations.AnnotationRepository.annotationsEnabled()) {
@@ -226,6 +227,9 @@ export class StylingAgent extends AiAgent {
                 return await this.activateDeviceEmulation(params.deviceName, params.visionDeficiency);
             },
         });
+    }
+    preambleFeatures() {
+        return ['function_calling'];
     }
     #getSelectedNode() {
         return this.context?.getItem() ?? null;

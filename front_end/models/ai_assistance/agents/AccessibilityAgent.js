@@ -10,8 +10,9 @@ import { ChangeManager } from '../ChangeManager.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 import { debugLog } from '../debug.js';
 import { ExtensionScope } from '../ExtensionScope.js';
+import { ToolRegistry } from '../tools/ToolRegistry.js';
 import { AiAgent, ConversationContext, } from './AiAgent.js';
-import { executeJavaScriptFunction, executeJsCode, JavascriptExecutor } from './ExecuteJavascript.js';
+import { executeJsCode, } from './ExecuteJavascript.js';
 /**
  * WARNING: preamble defined in code is only used when userTier is
  * TESTERS. Otherwise, a server-side preamble is used (see
@@ -89,7 +90,6 @@ export class AccessibilityAgent extends AiAgent {
     clientFeature = Host.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
     #lighthouseRecording;
     #execJs;
-    #javascriptExecutor;
     #changes;
     #createExtensionScope;
     constructor(opts) {
@@ -100,12 +100,6 @@ export class AccessibilityAgent extends AiAgent {
         this.#createExtensionScope = opts.createExtensionScope ?? ((changes) => {
             return new ExtensionScope(changes, this.sessionId, this.#getDocumentBodyNode());
         });
-        this.#javascriptExecutor = new JavascriptExecutor({
-            executionMode: this.executionMode,
-            getContextNode: () => this.#getDocumentBodyNode(),
-            createExtensionScope: this.#createExtensionScope.bind(this),
-            changes: this.#changes,
-        }, this.#execJs);
     }
     get userTier() {
         return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -222,16 +216,27 @@ export class AccessibilityAgent extends AiAgent {
                 };
             }
         });
-        const executeJsDeclaration = executeJavaScriptFunction(this.#javascriptExecutor);
-        this.declareFunction('executeJavaScript', {
-            ...executeJsDeclaration,
-            handler: async (params, options) => {
+        const executeJsTool = ToolRegistry.get("executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */);
+        if (!executeJsTool) {
+            throw new Error('Required tool "executeJavaScript" not found');
+        }
+        this.declareFunction(executeJsTool.name, {
+            description: executeJsTool.description,
+            parameters: executeJsTool.parameters,
+            displayInfoFromArgs: executeJsTool.displayInfoFromArgs,
+            handler: async (args, options) => {
                 if (isImported) {
                     return {
                         error: 'Cannot use this tool on an imported file.',
                     };
                 }
-                return await executeJsDeclaration.handler(params, options);
+                return await executeJsTool.handler(args, {
+                    conversationContext: this.context ?? null,
+                    changeManager: this.#changes,
+                    createExtensionScope: this.#createExtensionScope.bind(this),
+                    execJs: this.#execJs,
+                    getExecutionContextNode: () => this.#getDocumentBodyNode(),
+                }, options);
             },
         });
         this.declareFunction('runAccessibilityAudits', {

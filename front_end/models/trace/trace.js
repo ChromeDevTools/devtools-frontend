@@ -1515,6 +1515,10 @@ var UIStrings = {
   /**
    * @description Text in Timeline UIUtils of the Performance panel
    */
+  softNavigationStart: "Soft navigation start",
+  /**
+   * @description Text in Timeline UIUtils of the Performance panel
+   */
   onloadEvent: "Onload event",
   /**
    * @description Text in Timeline UIUtils of the Performance panel
@@ -1528,6 +1532,10 @@ var UIStrings = {
    * @description Text in Timeline UIUtils of the Performance panel
    */
   firstContentfulPaint: "First Contentful Paint",
+  /**
+   * @description Text in Timeline UIUtils of the Performance panel
+   */
+  softFirstContentfulPaint: "Soft First Contentful Paint",
   /**
    * @description Text in Timeline UIUtils of the Performance panel
    */
@@ -2063,6 +2071,10 @@ function maybeInitSylesMap() {
       /* Types.Events.Name.MARK_DOM_CONTENT */
     ]: new TimelineRecordStyle(i18nString(UIStrings.domcontentloadedEvent), defaultCategoryStyles.scripting, true),
     [
+      "SoftNavigationStart"
+      /* Types.Events.Name.SOFT_NAVIGATION_START */
+    ]: new TimelineRecordStyle(i18nString(UIStrings.softNavigationStart), defaultCategoryStyles.loading, true),
+    [
       "firstPaint"
       /* Types.Events.Name.MARK_FIRST_PAINT */
     ]: new TimelineRecordStyle(i18nString(UIStrings.firstPaint), defaultCategoryStyles.painting, true),
@@ -2070,6 +2082,10 @@ function maybeInitSylesMap() {
       "firstContentfulPaint"
       /* Types.Events.Name.MARK_FCP */
     ]: new TimelineRecordStyle(i18nString(UIStrings.firstContentfulPaint), defaultCategoryStyles.rendering, true),
+    [
+      "SyntheticSoftFirstContentfulPaint"
+      /* Types.Events.Name.MARK_SOFT_FCP */
+    ]: new TimelineRecordStyle(i18nString(UIStrings.softFirstContentfulPaint), defaultCategoryStyles.rendering, true),
     [
       "largestContentfulPaint::Candidate"
       /* Types.Events.Name.MARK_LCP_CANDIDATE */
@@ -2249,7 +2265,7 @@ function maybeInitSylesMap() {
       i18nString(UIStrings.layoutShift),
       defaultCategoryStyles.experience,
       /* Mark LayoutShifts as hidden; in the timeline we render
-      * SyntheticLayoutShifts so those are the ones visible to the user */
+       * SyntheticLayoutShifts so those are the ones visible to the user */
       true
     ),
     [
@@ -2339,9 +2355,9 @@ function setTimelineMainEventCategories(categories) {
 function markerDetailsForEvent(event) {
   let title = "";
   let color = "var(--color-text-primary)";
-  if (Types5.Events.isFirstContentfulPaint(event)) {
+  if (Types5.Events.isAnyFirstContentfulPaint(event)) {
     color = "var(--sys-color-green-bright)";
-    title = "FCP";
+    title = Types5.Events.isSoftFirstContentfulPaint(event) ? "FCP*" : "FCP";
   }
   if (Types5.Events.isAnyLargestContentfulPaintCandidate(event)) {
     color = "var(--sys-color-green)";

@@ -61,6 +61,7 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
     }): ViewManager;
     static removeInstance(): void;
     static createToolbar(toolbarItems: ToolbarItem[] | TemplateResult): Element | null;
+    static setWidgetForView(view: View, widget: AnyWidget): void;
     getRegisteredViewExtensions(): PreRegisteredView[];
     locationNameForViewId(viewId: string): string;
     /**
@@ -82,7 +83,7 @@ export declare class ViewManager extends Common.ObjectWrapper.ObjectWrapper<Even
     isViewVisible(viewId: string): boolean;
     resolveLocation(location?: string): Promise<Location | null>;
     createTabbedLocation(revealCallback: (() => void), location: string, restoreSelection?: boolean, allowReorder?: boolean, options?: TabbedLocationOptions): TabbedViewLocation;
-    createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): ViewLocation;
+    createStackLocation(revealCallback?: (() => void), location?: string, jslogContext?: string): StackLocation;
     hasViewsForLocation(location: string): boolean;
     viewsForLocation(location: string): View[];
 }
@@ -114,5 +115,18 @@ export interface TabbedLocationOptions {
      * tabs are appended, so the very first layout pass reserves width for it.
      */
     plusButton?: PlusButton.PlusButtonOptions;
+}
+export declare class StackLocation extends Location implements ViewLocation {
+    #private;
+    private readonly stackedPane;
+    private readonly location;
+    constructor(manager: ViewManager, revealCallback?: (() => void), location?: string, jslogContext?: string, initialVisibility?: boolean);
+    get expandableContainers(): Map<string, AnyWidget>;
+    notifyVisibilityChanged(isVisible: boolean): void;
+    appendView(view: View, insertBefore?: View | null): void;
+    showView(view: View, insertBefore?: View | null): Promise<void>;
+    removeView(view: View): void;
+    isViewVisible(view: View): boolean;
+    appendApplicableItems(locationName: string): void;
 }
 export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, ViewRegistration, };

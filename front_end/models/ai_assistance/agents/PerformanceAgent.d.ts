@@ -15,6 +15,16 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
     static fromCallTree(callTree: AICallTree): PerformanceTraceContext;
     constructor(focus: AgentFocus);
     getURL(): string;
+    /**
+     * Returns the origin for a performance trace in the AI context.
+     *
+     * To prevent cross-origin prompt injection attacks, imported traces
+     * are isolated from live pages. We assign them a virtual origin
+     * (`imported-trace://${domain}`) so they do not share the origin of live pages
+     * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
+     * between imported trace data and live pages.
+     */
+    getOrigin(): string;
     getItem(): AgentFocus;
     getTitle(): string;
     /**

@@ -567,7 +567,7 @@ __export(Dialog_exports, {
 import * as Common16 from "./../../core/common/common.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Buttons7 from "./../components/buttons/buttons.js";
-import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/dialog.css.js
 var dialog_css_default = `/*
@@ -749,8 +749,8 @@ import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
-import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
-import { createIcon as createIcon6 } from "./../kit/kit.js";
+import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
+import { createIcon as createIcon7 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/ContextMenu.js
 var ContextMenu_exports = {};
@@ -768,7 +768,7 @@ import * as Host8 from "./../../core/host/host.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
 import { html as html3, render as render4 } from "./../lit/lit.js";
-import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
 var ShortcutRegistry_exports = {};
@@ -1531,8 +1531,8 @@ __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
 import * as i18n19 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon5 } from "./../kit/kit.js";
-import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
+import { createIcon as createIcon6 } from "./../kit/kit.js";
+import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/InspectorView.js
 var InspectorView_exports = {};
@@ -1549,8 +1549,8 @@ import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
-import { createIcon as createIcon4 } from "./../kit/kit.js";
-import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
+import { createIcon as createIcon5 } from "./../kit/kit.js";
+import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/DockController.js
 var DockController_exports = {};
@@ -2083,7 +2083,7 @@ var TYPE_TO_ICON = {
 // gen/front_end/ui/legacy/InspectorDrawerView.js
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
 var inspectorDrawerTabbedPane_css_default = `/*
@@ -5462,6 +5462,7 @@ var ViewManager_exports = {};
 __export(ViewManager_exports, {
   ContainerWidget: () => ContainerWidget,
   PreRegisteredView: () => PreRegisteredView,
+  StackLocation: () => StackLocation,
   ViewManager: () => ViewManager,
   defaultOptionsForTabs: () => defaultOptionsForTabs,
   getLocalizedViewLocationCategory: () => getLocalizedViewLocationCategory,
@@ -5476,9 +5477,9 @@ import * as Host5 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
-import { createIcon as createIcon3 } from "./../kit/kit.js";
+import { createIcon as createIcon4 } from "./../kit/kit.js";
 import { render as render3 } from "./../lit/lit.js";
-import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/PlusButton.js
 var PlusButton_exports = {};
@@ -5612,6 +5613,15 @@ function installPlusButton(context, options = {}) {
   return output.button;
 }
 
+// gen/front_end/ui/legacy/StackedPane.js
+var StackedPane_exports = {};
+__export(StackedPane_exports, {
+  ExpandableContainerWidget: () => ExpandableContainerWidget,
+  StackedPane: () => StackedPane
+});
+import { createIcon as createIcon3 } from "./../kit/kit.js";
+import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
+
 // gen/front_end/ui/legacy/viewContainers.css.js
 var viewContainers_css_default = `/* Copyright 2025 The Chromium Authors
 Use of this source code is governed by a BSD-style license that can be
@@ -5704,6 +5714,198 @@ found in the LICENSE file. */
 }
 
 /*# sourceURL=${import.meta.resolve("./viewContainers.css")} */`;
+
+// gen/front_end/ui/legacy/StackedPane.js
+var ExpandableContainerWidget = class extends VBox {
+  createToolbar;
+  setWidgetForView;
+  onVisibilityChanged;
+  titleElement;
+  titleExpandIcon;
+  view;
+  widget;
+  materializePromise;
+  constructor(view, createToolbar, setWidgetForView, onVisibilityChanged) {
+    super({ useShadowDom: true });
+    this.createToolbar = createToolbar;
+    this.setWidgetForView = setWidgetForView;
+    this.onVisibilityChanged = onVisibilityChanged;
+    this.element.classList.add("flex-none");
+    this.registerRequiredCSS(viewContainers_css_default);
+    this.onVisibilityChanged = onVisibilityChanged;
+    this.createToolbar = createToolbar;
+    this.titleElement = document.createElement("div");
+    this.titleElement.classList.add("expandable-view-title");
+    this.titleElement.setAttribute("jslog", `${VisualLogging5.sectionHeader().context(view.viewId()).track({
+      click: true,
+      keydown: "Enter|Space|ArrowLeft|ArrowRight"
+    })}`);
+    markAsTreeitem(this.titleElement);
+    this.titleExpandIcon = createIcon3("triangle-right", "title-expand-icon");
+    this.titleElement.appendChild(this.titleExpandIcon);
+    const titleText = view.title();
+    createTextChild(this.titleElement, titleText);
+    setLabel(this.titleElement, titleText);
+    setExpanded(this.titleElement, false);
+    this.titleElement.tabIndex = 0;
+    self.onInvokeElement(this.titleElement, this.toggleExpanded.bind(this));
+    this.titleElement.addEventListener("keydown", this.onTitleKeyDown.bind(this), false);
+    this.contentElement.insertBefore(this.titleElement, this.contentElement.firstChild);
+    setControls(this.titleElement, this.contentElement.createChild("slot"));
+    this.view = view;
+    expandableContainerForView.set(view, this);
+  }
+  isExpanded() {
+    return this.titleElement.classList.contains("expanded");
+  }
+  wasShown() {
+    super.wasShown();
+    if (this.widget && this.materializePromise) {
+      void this.materializePromise.then(() => {
+        if (this.isExpanded() && this.widget) {
+          this.widget.show(this.element);
+        }
+      });
+    }
+  }
+  materialize() {
+    if (this.materializePromise) {
+      return this.materializePromise;
+    }
+    const promises = [];
+    promises.push(this.view.toolbarItems().then((toolbarItems) => {
+      const toolbarElement = this.createToolbar(toolbarItems);
+      if (toolbarElement) {
+        this.titleElement.appendChild(toolbarElement);
+      }
+    }));
+    promises.push(this.view.widget().then((widget2) => {
+      this.widget = widget2;
+      this.setWidgetForView(this.view, widget2);
+    }));
+    this.materializePromise = Promise.all(promises).then(() => {
+    });
+    return this.materializePromise;
+  }
+  expand() {
+    if (this.isExpanded()) {
+      return this.materialize();
+    }
+    this.titleElement.classList.add("expanded");
+    setExpanded(this.titleElement, true);
+    this.titleExpandIcon.name = "triangle-down";
+    this.onVisibilityChanged?.(true);
+    return this.materialize().then(() => {
+      if (this.isExpanded() && this.widget) {
+        this.widget.show(this.element);
+      }
+    });
+  }
+  collapse() {
+    if (!this.isExpanded()) {
+      return;
+    }
+    this.titleElement.classList.remove("expanded");
+    setExpanded(this.titleElement, false);
+    this.titleExpandIcon.name = "triangle-right";
+    this.onVisibilityChanged?.(false);
+    void this.materialize().then(() => {
+      if (this.widget) {
+        this.widget.detach();
+      }
+    });
+  }
+  toggleExpanded(event) {
+    if (event.type === "keydown" && event.target !== this.titleElement) {
+      return;
+    }
+    if (this.isExpanded()) {
+      this.collapse();
+    } else {
+      void this.expand();
+    }
+  }
+  onTitleKeyDown(event) {
+    if (event.target !== this.titleElement) {
+      return;
+    }
+    const keyEvent = event;
+    if (keyEvent.key === "ArrowLeft") {
+      this.collapse();
+    } else if (keyEvent.key === "ArrowRight") {
+      if (!this.isExpanded()) {
+        void this.expand();
+      } else if (this.widget) {
+        this.widget.focus();
+      }
+    }
+  }
+};
+var expandableContainerForView = /* @__PURE__ */ new WeakMap();
+var StackedPane = class extends VBox {
+  createToolbar;
+  setWidgetForView;
+  onViewVisibilityChanged;
+  expandableContainers = /* @__PURE__ */ new Map();
+  constructor(createToolbar, setWidgetForView, onViewVisibilityChanged) {
+    super();
+    this.createToolbar = createToolbar;
+    this.setWidgetForView = setWidgetForView;
+    this.onViewVisibilityChanged = onViewVisibilityChanged;
+    this.createToolbar = createToolbar;
+    this.onViewVisibilityChanged = onViewVisibilityChanged;
+    markAsTree(this.element);
+  }
+  appendView(view, insertBefore) {
+    let container = this.expandableContainers.get(view.viewId());
+    if (!container) {
+      container = new ExpandableContainerWidget(view, this.createToolbar, this.setWidgetForView, (isExpanded) => this.onViewVisibilityChanged?.(view.viewId(), isExpanded));
+      let beforeElement = null;
+      if (insertBefore) {
+        const beforeContainer = expandableContainerForView.get(insertBefore);
+        beforeElement = beforeContainer ? beforeContainer.element : null;
+      }
+      container.show(this.contentElement, beforeElement);
+      this.expandableContainers.set(view.viewId(), container);
+    }
+  }
+  wasShown() {
+    super.wasShown();
+    for (const [viewId, container] of this.expandableContainers) {
+      if (container.isExpanded()) {
+        this.onViewVisibilityChanged?.(viewId, true);
+      }
+    }
+  }
+  willHide() {
+    super.willHide();
+    for (const [viewId, container] of this.expandableContainers) {
+      if (container.isExpanded()) {
+        this.onViewVisibilityChanged?.(viewId, false);
+      }
+    }
+  }
+  removeView(view) {
+    const container = this.expandableContainers.get(view.viewId());
+    if (container) {
+      container.detach();
+      this.expandableContainers.delete(view.viewId());
+    }
+  }
+  async expandView(view) {
+    const container = this.expandableContainers.get(view.viewId());
+    if (container) {
+      await container.expand();
+    }
+  }
+  isViewExpanded(viewId) {
+    const container = this.expandableContainers.get(viewId);
+    return container ? container.isExpanded() : false;
+  }
+  getContainerForView(view) {
+    return this.expandableContainers.get(view.viewId());
+  }
+};
 
 // gen/front_end/ui/legacy/ViewRegistration.js
 import * as i18n11 from "./../../core/i18n/i18n.js";
@@ -5958,6 +6160,9 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
     }
     return toolbar5;
   }
+  static setWidgetForView(view, widget2) {
+    widgetForView.set(view, widget2);
+  }
   getRegisteredViewExtensions() {
     return this.preRegisteredViews;
   }
@@ -6121,7 +6326,7 @@ var ContainerWidget = class extends VBox {
     promises.push(this.view.widget().then((widget2) => {
       const shouldFocus = this.element.hasFocus();
       this.setDefaultFocusedElement(null);
-      widgetForView.set(this.view, widget2);
+      ViewManager.setWidgetForView(this.view, widget2);
       widget2.show(this.element);
       if (shouldFocus) {
         widget2.focus();
@@ -6144,120 +6349,6 @@ var ContainerWidget = class extends VBox {
   wasShownForTest() {
   }
 };
-var ExpandableContainerWidget = class extends VBox {
-  titleElement;
-  titleExpandIcon;
-  view;
-  widget;
-  materializePromise;
-  constructor(view) {
-    super({ useShadowDom: true });
-    this.element.classList.add("flex-none");
-    this.registerRequiredCSS(viewContainers_css_default);
-    this.titleElement = document.createElement("div");
-    this.titleElement.classList.add("expandable-view-title");
-    this.titleElement.setAttribute("jslog", `${VisualLogging5.sectionHeader().context(view.viewId()).track({
-      click: true,
-      keydown: "Enter|Space|ArrowLeft|ArrowRight"
-    })}`);
-    markAsTreeitem(this.titleElement);
-    this.titleExpandIcon = createIcon3("triangle-right", "title-expand-icon");
-    this.titleElement.appendChild(this.titleExpandIcon);
-    const titleText = view.title();
-    createTextChild(this.titleElement, titleText);
-    setLabel(this.titleElement, titleText);
-    setExpanded(this.titleElement, false);
-    this.titleElement.tabIndex = 0;
-    self.onInvokeElement(this.titleElement, this.toggleExpanded.bind(this));
-    this.titleElement.addEventListener("keydown", this.onTitleKeyDown.bind(this), false);
-    this.contentElement.insertBefore(this.titleElement, this.contentElement.firstChild);
-    setControls(this.titleElement, this.contentElement.createChild("slot"));
-    this.view = view;
-    expandableContainerForView.set(view, this);
-  }
-  wasShown() {
-    super.wasShown();
-    if (this.widget && this.materializePromise) {
-      void this.materializePromise.then(() => {
-        if (this.titleElement.classList.contains("expanded") && this.widget) {
-          this.widget.show(this.element);
-        }
-      });
-    }
-  }
-  materialize() {
-    if (this.materializePromise) {
-      return this.materializePromise;
-    }
-    const promises = [];
-    promises.push(this.view.toolbarItems().then((toolbarItems) => {
-      const toolbarElement = ViewManager.createToolbar(toolbarItems);
-      if (toolbarElement) {
-        this.titleElement.appendChild(toolbarElement);
-      }
-    }));
-    promises.push(this.view.widget().then((widget2) => {
-      this.widget = widget2;
-      widgetForView.set(this.view, widget2);
-      widget2.show(this.element);
-    }));
-    this.materializePromise = Promise.all(promises).then(() => {
-    });
-    return this.materializePromise;
-  }
-  expand() {
-    if (this.titleElement.classList.contains("expanded")) {
-      return this.materialize();
-    }
-    this.titleElement.classList.add("expanded");
-    setExpanded(this.titleElement, true);
-    this.titleExpandIcon.name = "triangle-down";
-    return this.materialize().then(() => {
-      if (this.widget) {
-        this.widget.show(this.element);
-      }
-    });
-  }
-  collapse() {
-    if (!this.titleElement.classList.contains("expanded")) {
-      return;
-    }
-    this.titleElement.classList.remove("expanded");
-    setExpanded(this.titleElement, false);
-    this.titleExpandIcon.name = "triangle-right";
-    void this.materialize().then(() => {
-      if (this.widget) {
-        this.widget.detach();
-      }
-    });
-  }
-  toggleExpanded(event) {
-    if (event.type === "keydown" && event.target !== this.titleElement) {
-      return;
-    }
-    if (this.titleElement.classList.contains("expanded")) {
-      this.collapse();
-    } else {
-      void this.expand();
-    }
-  }
-  onTitleKeyDown(event) {
-    if (event.target !== this.titleElement) {
-      return;
-    }
-    const keyEvent = event;
-    if (keyEvent.key === "ArrowLeft") {
-      this.collapse();
-    } else if (keyEvent.key === "ArrowRight") {
-      if (!this.titleElement.classList.contains("expanded")) {
-        void this.expand();
-      } else if (this.widget) {
-        this.widget.focus();
-      }
-    }
-  }
-};
-var expandableContainerForView = /* @__PURE__ */ new WeakMap();
 var Location = class {
   manager;
   revealCallback;
@@ -6424,7 +6515,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
     this.#tabbedPane.appendTab(view.viewId(), view.title(), new ContainerWidget(view), void 0, false, view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
     const iconName = view.iconName();
     if (iconName) {
-      const icon = createIcon3(iconName);
+      const icon = createIcon4(iconName);
       this.#tabbedPane.setTabIcon(view.viewId(), icon);
     }
   }
@@ -6549,17 +6640,45 @@ var TabbedLocation = class _TabbedLocation extends Location {
   // Keep in sync with descriptors.
 };
 var StackLocation = class extends Location {
-  vbox;
-  expandableContainers;
-  constructor(manager, revealCallback, location, jslogContext) {
-    const vbox = new VBox();
-    vbox.element.setAttribute("jslog", `${VisualLogging5.pane(jslogContext || "sidebar").track({ resize: true })}`);
-    super(manager, vbox, revealCallback);
-    this.vbox = vbox;
-    markAsTree(vbox.element);
-    this.expandableContainers = /* @__PURE__ */ new Map();
+  stackedPane;
+  location;
+  #isVisible;
+  constructor(manager, revealCallback, location, jslogContext, initialVisibility = true) {
+    const stackedPane = new StackedPane(ViewManager.createToolbar, ViewManager.setWidgetForView, (viewId, isExpanded) => {
+      if (this.#isVisible) {
+        manager.dispatchEventToListeners("ViewVisibilityChanged", {
+          location: this.location,
+          revealedViewId: isExpanded ? viewId : void 0,
+          hiddenViewId: isExpanded ? void 0 : viewId
+        });
+      }
+    });
+    stackedPane.element.setAttribute("jslog", `${VisualLogging6.pane(jslogContext || "sidebar").track({ resize: true })}`);
+    super(manager, stackedPane, revealCallback);
+    this.location = location || "";
+    this.stackedPane = stackedPane;
+    this.#isVisible = initialVisibility;
     if (location) {
       this.appendApplicableItems(location);
+    }
+  }
+  // Blink test(s) rely on this
+  get expandableContainers() {
+    return this.stackedPane.expandableContainers;
+  }
+  notifyVisibilityChanged(isVisible) {
+    if (this.#isVisible === isVisible) {
+      return;
+    }
+    this.#isVisible = isVisible;
+    for (const [viewId, container] of this.stackedPane.expandableContainers) {
+      if (container.isExpanded()) {
+        this.manager.dispatchEventToListeners("ViewVisibilityChanged", {
+          location: this.location,
+          revealedViewId: isVisible ? viewId : void 0,
+          hiddenViewId: isVisible ? void 0 : viewId
+        });
+      }
     }
   }
   appendView(view, insertBefore) {
@@ -6567,39 +6686,21 @@ var StackLocation = class extends Location {
     if (oldLocation && oldLocation !== this) {
       oldLocation.removeView(view);
     }
-    let container = this.expandableContainers.get(view.viewId());
-    if (!container) {
-      locationForView.set(view, this);
-      this.manager.views.set(view.viewId(), view);
-      container = new ExpandableContainerWidget(view);
-      let beforeElement = null;
-      if (insertBefore) {
-        const beforeContainer = expandableContainerForView.get(insertBefore);
-        beforeElement = beforeContainer ? beforeContainer.element : null;
-      }
-      container.show(this.vbox.contentElement, beforeElement);
-      this.expandableContainers.set(view.viewId(), container);
-    }
+    locationForView.set(view, this);
+    this.manager.views.set(view.viewId(), view);
+    this.stackedPane.appendView(view, insertBefore);
   }
   async showView(view, insertBefore) {
     this.appendView(view, insertBefore);
-    const container = this.expandableContainers.get(view.viewId());
-    if (container) {
-      await container.expand();
-    }
+    await this.stackedPane.expandView(view);
   }
   removeView(view) {
-    const container = this.expandableContainers.get(view.viewId());
-    if (!container) {
-      return;
-    }
-    container.detach();
-    this.expandableContainers.delete(view.viewId());
+    this.stackedPane.removeView(view);
     locationForView.delete(view);
     this.manager.views.delete(view.viewId());
   }
-  isViewVisible(_view) {
-    throw new Error("not implemented");
+  isViewVisible(view) {
+    return this.#isVisible && this.stackedPane.isViewExpanded(view.viewId());
   }
   appendApplicableItems(locationName) {
     for (const view of this.manager.viewsForLocation(locationName)) {
@@ -6687,15 +6788,15 @@ var InspectorDrawerView = class {
     this.#moreTabsButton.setTitle(i18nString8(UIStrings8.moreTools));
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add("drawer-tabbed-pane");
-    this.tabbedPane.element.setAttribute("jslog", `${VisualLogging6.drawer()}`);
+    this.tabbedPane.element.setAttribute("jslog", `${VisualLogging7.drawer()}`);
     this.#minimizeExpandButton = new ToolbarButton(i18nString8(UIStrings8.minimizeDrawer), options.isVertical ? "right-panel-close" : "bottom-panel-close");
-    this.#minimizeExpandButton.element.setAttribute("jslog", `${VisualLogging6.toggle("minimize-drawer").track({ click: true })}`);
+    this.#minimizeExpandButton.element.setAttribute("jslog", `${VisualLogging7.toggle("minimize-drawer").track({ click: true })}`);
     this.#minimizeExpandButton.addEventListener("Click", options.onToggleMinimized);
     this.#closeDrawerButton = new ToolbarButton(i18nString8(UIStrings8.closeDrawer), "cross");
-    this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging6.close("close-drawer").track({ click: true })}`);
+    this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging7.close("close-drawer").track({ click: true })}`);
     this.#closeDrawerButton.addEventListener("Click", options.onHide);
     this.#toggleOrientationButton = new ToolbarButton(i18nString8(UIStrings8.toggleDrawerOrientation), options.isVertical ? "dock-bottom" : "dock-right");
-    this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging6.toggle("toggle-drawer-orientation").track({ click: true })}`);
+    this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging7.toggle("toggle-drawer-orientation").track({ click: true })}`);
     this.#toggleOrientationButton.addEventListener("Click", options.onToggleOrientation);
     if (options.enableOrientationToggle) {
       this.tabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
@@ -6714,7 +6815,7 @@ var InspectorDrawerView = class {
     setLabel(drawerElement, options.drawerLabel);
     this.#splitWidget.installResizer(this.tabbedPane.headerElement());
     this.#splitWidget.setSidebarWidget(this.tabbedPane);
-    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging6.toolbar("drawer").track({
+    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging7.toolbar("drawer").track({
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
@@ -6892,7 +6993,7 @@ __export(SplitWidget_exports, {
 import * as Common10 from "./../../core/common/common.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as Geometry3 from "./../../models/geometry/geometry.js";
-import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ResizerWidget.js
 var ResizerWidget_exports = {};
@@ -7790,7 +7891,7 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
     this.#showHideSidebarButton = new ToolbarButton("", "right-panel-open");
     this.#showHideSidebarButton.addEventListener("Click", buttonClicked, this);
     if (jslogContext) {
-      this.#showHideSidebarButton.element.setAttribute("jslog", `${VisualLogging7.toggleSubpane().track({ click: true }).context(jslogContext)}`);
+      this.#showHideSidebarButton.element.setAttribute("jslog", `${VisualLogging8.toggleSubpane().track({ click: true }).context(jslogContext)}`);
     }
     this.#updateShowHideSidebarButton();
     function buttonClicked() {
@@ -8125,7 +8226,7 @@ var InspectorView = class _InspectorView extends VBox {
     const mainHeaderElement = this.tabbedPane.headerElement();
     markAsNavigation(mainHeaderElement);
     setLabel(mainHeaderElement, i18nString9(UIStrings9.mainToolbar));
-    mainHeaderElement.setAttribute("jslog", `${VisualLogging8.toolbar("main").track({
+    mainHeaderElement.setAttribute("jslog", `${VisualLogging9.toolbar("main").track({
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
@@ -8284,7 +8385,7 @@ var InspectorView = class _InspectorView extends VBox {
       let icon = null;
       if (warnings.length !== 0) {
         const warning = warnings.length === 1 ? warnings[0] : "\xB7 " + warnings.join("\n\xB7 ");
-        icon = createIcon4("warning-filled", "small");
+        icon = createIcon5("warning-filled", "small");
         icon.classList.add("warning");
         Tooltip.install(icon, warning);
       }
@@ -8471,7 +8572,7 @@ var InspectorView = class _InspectorView extends VBox {
         if (panelName) {
           if (!Dialog.hasInstance() && !this.currentPanelLocked) {
             void this.showPanel(panelName);
-            void VisualLogging8.logKeyDown(null, event, `panel-by-index-${panelName}`);
+            void VisualLogging9.logKeyDown(null, event, `panel-by-index-${panelName}`);
           }
           event.consume(true);
         }
@@ -8956,11 +9057,11 @@ var SoftContextMenu = class _SoftContextMenu {
       /* AnchorBehavior.PREFER_BOTTOM */
     );
     this.contextMenuElement = this.glassPane.contentElement.createChild("div", "soft-context-menu");
-    this.contextMenuElement.setAttribute("jslog", `${VisualLogging9.menu().track({ resize: true }).parent("mapped").track({
+    this.contextMenuElement.setAttribute("jslog", `${VisualLogging10.menu().track({ resize: true }).parent("mapped").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Escape"
     })}`);
     if (this.loggableParent) {
-      VisualLogging9.setMappedParent(this.contextMenuElement, this.loggableParent);
+      VisualLogging10.setMappedParent(this.contextMenuElement, this.loggableParent);
     }
     this.contextMenuElement.tabIndex = -1;
     markAsMenu(this.contextMenuElement);
@@ -9057,7 +9158,7 @@ var SoftContextMenu = class _SoftContextMenu {
       menuItemElement.setAttribute("data-action-id", item8.id.toString());
     }
     if (menuContainsCheckbox) {
-      const checkMarkElement = createIcon5("checkmark", "checkmark");
+      const checkMarkElement = createIcon6("checkmark", "checkmark");
       menuItemElement.appendChild(checkMarkElement);
     }
     if (item8.tooltip) {
@@ -9066,9 +9167,9 @@ var SoftContextMenu = class _SoftContextMenu {
     const detailsForElement = {};
     if (item8.jslogContext && item8.label) {
       if (item8.type === "checkbox") {
-        menuItemElement.setAttribute("jslog", `${VisualLogging9.toggle().track({ click: true }).context(item8.jslogContext)}`);
+        menuItemElement.setAttribute("jslog", `${VisualLogging10.toggle().track({ click: true }).context(item8.jslogContext)}`);
       } else {
-        menuItemElement.setAttribute("jslog", `${VisualLogging9.action().track({ click: true }).context(item8.jslogContext)}`);
+        menuItemElement.setAttribute("jslog", `${VisualLogging10.action().track({ click: true }).context(item8.jslogContext)}`);
       }
     }
     if (item8.element && !item8.label) {
@@ -9112,7 +9213,7 @@ var SoftContextMenu = class _SoftContextMenu {
     }
     setLabel(menuItemElement, accessibleName);
     if (item8.isExperimentalFeature) {
-      const experimentIcon = createIcon5("experiment");
+      const experimentIcon = createIcon6("experiment");
       menuItemElement.appendChild(experimentIcon);
     }
     this.detailsForElementMap.set(menuItemElement, detailsForElement);
@@ -9127,19 +9228,19 @@ var SoftContextMenu = class _SoftContextMenu {
       subItems: item8.subItems
     });
     if (menuContainsCheckbox) {
-      const checkMarkElement = createIcon5("checkmark", "checkmark soft-context-menu-item-checkmark");
+      const checkMarkElement = createIcon6("checkmark", "checkmark soft-context-menu-item-checkmark");
       menuItemElement.appendChild(checkMarkElement);
     }
     createTextChild(menuItemElement, item8.label || "");
     setExpanded(menuItemElement, false);
-    const subMenuArrowElement = createIcon5("keyboard-arrow-right", "soft-context-menu-item-submenu-arrow");
+    const subMenuArrowElement = createIcon6("keyboard-arrow-right", "soft-context-menu-item-submenu-arrow");
     menuItemElement.appendChild(subMenuArrowElement);
     menuItemElement.addEventListener("mousedown", this.menuItemMouseDown.bind(this), false);
     menuItemElement.addEventListener("mouseup", this.menuItemMouseUp.bind(this), false);
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     if (item8.jslogContext) {
-      menuItemElement.setAttribute("jslog", `${VisualLogging9.item(item8.jslogContext).track({ click: true, resize: true })}`);
+      menuItemElement.setAttribute("jslog", `${VisualLogging10.item(item8.jslogContext).track({ click: true, resize: true })}`);
     }
     return menuItemElement;
   }
@@ -9157,7 +9258,7 @@ var SoftContextMenu = class _SoftContextMenu {
   }
   menuItemMouseUp(event) {
     this.triggerAction(event.target, event);
-    void VisualLogging9.logClick(event.target, event);
+    void VisualLogging10.logClick(event.target, event);
     event.consume();
   }
   root() {
@@ -9309,7 +9410,7 @@ var SoftContextMenu = class _SoftContextMenu {
       if (!detailsForElement || detailsForElement.customElement) {
         return;
       }
-      VisualLogging9.logClick(this.highlightedMenuItemElement, keyboardEvent);
+      VisualLogging10.logClick(this.highlightedMenuItemElement, keyboardEvent);
       this.triggerAction(this.highlightedMenuItemElement, keyboardEvent);
       if (detailsForElement.subItems && this.subMenu) {
         this.subMenu.highlightNext();
@@ -9977,11 +10078,11 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     for (const descriptor of descriptors) {
       if (descriptor.jslogContext) {
         if (descriptor.type === "checkbox") {
-          VisualLogging10.registerLoggable(descriptor, `${VisualLogging10.toggle().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging11.registerLoggable(descriptor, `${VisualLogging11.toggle().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         } else if (descriptor.type === "item") {
-          VisualLogging10.registerLoggable(descriptor, `${VisualLogging10.action().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging11.registerLoggable(descriptor, `${VisualLogging11.action().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         } else if (descriptor.type === "subMenu") {
-          VisualLogging10.registerLoggable(descriptor, `${VisualLogging10.item().context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging11.registerLoggable(descriptor, `${VisualLogging11.item().context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
         }
         if (descriptor.subItems) {
           this.registerLoggablesWithin(descriptor.subItems, descriptor);
@@ -10013,7 +10114,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
         Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       };
       Host8.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
-      VisualLogging10.registerLoggable(menuObject, `${VisualLogging10.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
+      VisualLogging11.registerLoggable(menuObject, `${VisualLogging11.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
       queueMicrotask(listenToEvents.bind(this));
@@ -10083,7 +10184,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       };
       const item8 = itemWithId(this.openHostedMenu, id2);
       if (item8?.jslogContext) {
-        void VisualLogging10.logClick(item8, new MouseEvent("click"));
+        void VisualLogging11.logClick(item8, new MouseEvent("click"));
       }
       if (item8 && featuresUsed.length > 0) {
         featuresUsed.map((feature) => Host8.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
@@ -10095,7 +10196,7 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
     Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
     if (this.openHostedMenu) {
-      void VisualLogging10.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
+      void VisualLogging11.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
     }
     this.openHostedMenu = null;
     if (!this.keepOpen) {
@@ -10184,7 +10285,7 @@ var MenuButton = class extends HTMLElement {
    * Reflects the `jslogContext` attribute. Sets the visual logging context for the button.
    */
   set jslogContext(jslogContext) {
-    this.setAttribute("jslog", VisualLogging10.dropDown(jslogContext).track({ click: true }).toString());
+    this.setAttribute("jslog", VisualLogging11.dropDown(jslogContext).track({ click: true }).toString());
   }
   get jslogContext() {
     return this.getAttribute("jslogContext");
@@ -10303,7 +10404,7 @@ __export(TextPrompt_exports, {
 import * as Common13 from "./../../core/common/common.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
-import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/SuggestBox.js
 var SuggestBox_exports = {};
@@ -10313,7 +10414,7 @@ __export(SuggestBox_exports, {
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as Geometry4 from "./../../models/geometry/geometry.js";
-import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ListControl.js
 var ListControl_exports = {};
@@ -10322,7 +10423,7 @@ __export(ListControl_exports, {
   ListMode: () => ListMode
 });
 import * as Platform9 from "./../../core/platform/platform.js";
-import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
 var ListMode;
 (function(ListMode2) {
   ListMode2["NonViewport"] = "UI.ListMode.NonViewport";
@@ -10645,7 +10746,7 @@ var ListControl = class {
     if (!element) {
       element = this.delegate.createElementForItem(item8);
       if (!element.hasAttribute("jslog")) {
-        element.setAttribute("jslog", `${VisualLogging11.item().track({
+        element.setAttribute("jslog", `${VisualLogging12.item().track({
           click: true,
           resize: true,
           keydown: "ArrowUp|ArrowDown|PageUp|PageDown|Home|End"
@@ -11102,7 +11203,7 @@ var SuggestBox = class {
     this.element.classList.add("suggest-box");
     this.element.addEventListener("mousedown", (event) => event.preventDefault(), true);
     this.element.addEventListener("click", this.onClick.bind(this), false);
-    this.element.setAttribute("jslog", `${VisualLogging12.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+    this.element.setAttribute("jslog", `${VisualLogging13.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
     this.glassPane = new GlassPane();
     this.glassPane.setAnchorBehavior(
       "PreferBottom"
@@ -11152,7 +11253,7 @@ var SuggestBox = class {
     if (this.visible()) {
       return;
     }
-    VisualLogging12.setMappedParent(this.element, this.suggestBoxDelegate.ownerElement());
+    VisualLogging13.setMappedParent(this.element, this.suggestBoxDelegate.ownerElement());
     this.glassPane.show(document);
     const suggestion = { text: "1", subtitle: "12" };
     this.rowHeight = measurePreferredSize(this.createElementForItem(suggestion), this.element).height;
@@ -11696,7 +11797,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
       element.parentElement.insertBefore(this.proxyElement, element);
     }
     this.contentElement.appendChild(element);
-    let jslog = VisualLogging13.textField().track({
+    let jslog = VisualLogging14.textField().track({
       keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape",
       change: true
     });
@@ -11878,7 +11979,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   onKeyDown(event) {
     let handled = false;
     if (this.isSuggestBoxVisible() && this.suggestBox?.keyPressed(event)) {
-      void VisualLogging13.logKeyDown(this.suggestBox.element, event);
+      void VisualLogging14.logKeyDown(this.suggestBox.element, event);
       event.consume(true);
       return;
     }
@@ -12899,8 +13000,8 @@ var ToolbarInput = class extends ToolbarItem {
       title: clearButtonText
     };
     clearButton.className = "toolbar-input-clear-button";
-    clearButton.setAttribute("jslog", `${VisualLogging14.action("clear").track({ click: true }).parent("mapped")}`);
-    VisualLogging14.setMappedParent(clearButton, internalPromptElement);
+    clearButton.setAttribute("jslog", `${VisualLogging15.action("clear").track({ click: true }).parent("mapped")}`);
+    VisualLogging15.setMappedParent(clearButton, internalPromptElement);
     clearButton.variant = "icon";
     clearButton.size = "SMALL";
     clearButton.iconName = "cross-circle-filled";
@@ -12966,7 +13067,7 @@ var ToolbarFilter = class extends ToolbarInput {
   constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
     const filterPlaceholder = filterBy ? filterBy : i18nString12(UIStrings12.filter);
     super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || "filter", element);
-    const filterIcon = createIcon6("filter");
+    const filterIcon = createIcon7("filter");
     this.element.prepend(filterIcon);
     this.element.classList.add("toolbar-filter");
     if (showRegexToggle) {
@@ -13111,7 +13212,7 @@ var ToolbarToggle = class extends ToolbarButton {
     );
     this.toggled(false);
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging14.toggle().track({ click: true }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging15.toggle().track({ click: true }).context(jslogContext)}`);
     }
     if (toggleOnClick !== void 0) {
       this.setToggleOnClick(toggleOnClick);
@@ -13160,11 +13261,11 @@ var ToolbarMenuButton = class extends ToolbarItem {
     this.title = "";
     if (!isIconDropdown) {
       this.element.classList.add("toolbar-has-dropdown");
-      const dropdownArrowIcon = createIcon6("triangle-down", "toolbar-dropdown-arrow");
+      const dropdownArrowIcon = createIcon7("triangle-down", "toolbar-dropdown-arrow");
       this.element.appendChild(dropdownArrowIcon);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging14.dropDown().track({ click: true }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging15.dropDown().track({ click: true }).context(jslogContext)}`);
     }
     this.element.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.contextMenuHandler = contextMenuHandler;
@@ -13294,7 +13395,7 @@ var ToolbarComboBox = class extends ToolbarItem {
       this.element.classList.add(className);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging14.dropDown().track({ change: true }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging15.dropDown().track({ change: true }).context(jslogContext)}`);
     }
   }
   turnShrinkable() {
@@ -13318,7 +13419,7 @@ var ToolbarComboBox = class extends ToolbarItem {
     if (!jslogContext) {
       jslogContext = value ? Platform13.StringUtilities.toKebabCase(value) : void 0;
     }
-    option.setAttribute("jslog", `${VisualLogging14.item(jslogContext).track({ click: true })}`);
+    option.setAttribute("jslog", `${VisualLogging15.item(jslogContext).track({ click: true })}`);
     return option;
   }
   applyEnabledState(enabled) {
@@ -13473,7 +13574,7 @@ import * as Geometry5 from "./../../models/geometry/geometry.js";
 import * as Buttons6 from "./../components/buttons/buttons.js";
 import { Icon as Icon2 } from "./../kit/kit.js";
 import * as Lit2 from "./../lit/lit.js";
-import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/checkboxTextLabel.css.js
 var checkboxTextLabel_css_default = `/*
@@ -15389,7 +15490,7 @@ function handleElementValueModifications(event, element, finishHandler, suggesti
   if (!isElementValueModification(event)) {
     return false;
   }
-  void VisualLogging15.logKeyDown(event.currentTarget, event, "element-value-modification");
+  void VisualLogging16.logKeyDown(event.currentTarget, event, "element-value-modification");
   const selection = element.getComponentSelection();
   if (!selection?.rangeCount) {
     return false;
@@ -15728,7 +15829,7 @@ function createTextButton(text, clickHandler, opts) {
     });
   }
   if (opts?.jslogContext) {
-    button.setAttribute("jslog", `${VisualLogging15.action().track({ click: true }).context(opts.jslogContext)}`);
+    button.setAttribute("jslog", `${VisualLogging16.action().track({ click: true }).context(opts.jslogContext)}`);
   }
   if (opts?.title) {
     button.setAttribute("title", opts.title);
@@ -15747,7 +15848,7 @@ function createInput(className, type, jslogContext) {
     element.type = type;
   }
   if (jslogContext) {
-    element.setAttribute("jslog", `${VisualLogging15.textField().track({ keydown: "Enter", change: true }).context(jslogContext)}`);
+    element.setAttribute("jslog", `${VisualLogging16.textField().track({ keydown: "Enter", change: true }).context(jslogContext)}`);
   }
   return element;
 }
@@ -15811,7 +15912,7 @@ function createSelect(name, options) {
 function createOption(title, value, jslogContext) {
   const result = new Option(title, value || title);
   if (jslogContext) {
-    result.setAttribute("jslog", `${VisualLogging15.item(jslogContext).track({ click: true })}`);
+    result.setAttribute("jslog", `${VisualLogging16.item(jslogContext).track({ click: true })}`);
   }
   return result;
 }
@@ -15844,7 +15945,7 @@ function createRadioButton(name, title, jslogContext) {
   const radio = label.createChild("input");
   radio.type = "radio";
   radio.name = name;
-  radio.setAttribute("jslog", `${VisualLogging15.toggle().track({ change: true }).context(jslogContext)}`);
+  radio.setAttribute("jslog", `${VisualLogging16.toggle().track({ change: true }).context(jslogContext)}`);
   createTextChild(label, title);
   return { label, radio };
 }
@@ -15883,7 +15984,7 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     const element = document.createElement("devtools-checkbox");
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
-      element.#checkboxElement.setAttribute("jslog", `${VisualLogging15.toggle().track({ change: true }).context(jslogContext)}`);
+      element.#checkboxElement.setAttribute("jslog", `${VisualLogging16.toggle().track({ change: true }).context(jslogContext)}`);
     }
     if (title !== void 0) {
       element.#textElement.textContent = title;
@@ -16011,7 +16112,7 @@ var DevToolsCloseButton = class extends HTMLElement {
     this.#button = new Buttons6.Button.Button();
     this.#button.data = { variant: "icon", iconName: "cross" };
     this.#button.classList.add("close-button");
-    this.#button.setAttribute("jslog", `${VisualLogging15.close().track({ click: true })}`);
+    this.#button.setAttribute("jslog", `${VisualLogging16.close().track({ click: true })}`);
     Tooltip.install(this.#button, i18nString13(UIStrings13.close));
     setLabel(this.#button, i18nString13(UIStrings13.close));
     root.appendChild(this.#button);
@@ -16451,7 +16552,7 @@ function maybeCreateNewBadge(promotionId) {
     const badge2 = document.createElement("div");
     badge2.className = "new-badge";
     badge2.textContent = i18nString13(UIStrings13.new);
-    badge2.setAttribute("jslog", `${VisualLogging15.badge("new-badge")}`);
+    badge2.setAttribute("jslog", `${VisualLogging16.badge("new-badge")}`);
     return badge2;
   }
   return void 0;
@@ -16746,7 +16847,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
       }
       if (jslog) {
         const isButton = e instanceof Buttons6.Button.Button;
-        const jslogBuilder2 = VisualLogging15.toggle(setting.name).track(isButton ? { click: true } : { change: true });
+        const jslogBuilder2 = VisualLogging16.toggle(setting.name).track(isButton ? { click: true } : { change: true });
         e.setAttribute("jslog", jslogBuilder2.toString());
       }
       setting.addChangeListener(settingChanged);
@@ -16765,7 +16866,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
       setValue(setting.get());
     });
   }
-  const jslogBuilder = jslog ? VisualLogging15.toggle(setting.name).track({ change: true }) : null;
+  const jslogBuilder = jslog ? VisualLogging16.toggle(setting.name).track({ change: true }) : null;
   if (setting.type() === "regex" || setting instanceof Common15.Settings.RegExpSetting) {
     return Directives3.ref((e) => {
       if (e === void 0) {
@@ -17118,7 +17219,7 @@ var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) 
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener("focus", () => this.widget().focus(), false);
     if (jslogContext) {
-      this.contentElement.setAttribute("jslog", `${VisualLogging16.dialog(jslogContext).track({ resize: true, keydown: "Escape" })}`);
+      this.contentElement.setAttribute("jslog", `${VisualLogging17.dialog(jslogContext).track({ resize: true, keydown: "Escape" })}`);
     }
     this.setPointerEventsBehavior(
       "BlockedByGlassPane"
@@ -17758,7 +17859,7 @@ __export(EmptyWidget_exports, {
 import "./../kit/kit.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import { Directives as Directives4, html as html4, render as render6 } from "./../lit/lit.js";
-import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
 var emptyWidget_css_default = `/*
@@ -17787,7 +17888,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   render6(html4`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
-    <div class="empty-state" jslog=${VisualLogging17.section("empty-view")}
+    <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}
          ${ref((e) => {
     output.contentElement = e;
   })}>
@@ -17862,7 +17963,7 @@ import * as Common17 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform18 from "./../../core/platform/platform.js";
-import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/filter.css.js
 var filter_css_default = `/*
@@ -18082,7 +18183,7 @@ var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
     this.registerRequiredCSS(filter_css_default);
     this.enabled = true;
     this.element.classList.add("filter-bar");
-    this.element.setAttribute("jslog", `${VisualLogging18.toolbar("filter-bar")}`);
+    this.element.setAttribute("jslog", `${VisualLogging19.toolbar("filter-bar")}`);
     this.stateSetting = Common17.Settings.Settings.instance().createSetting("filter-bar-" + name + "-toggled", Boolean(visibleByDefault));
     this.#filterButton = new ToolbarSettingToggle(this.stateSetting, "filter", i18nString16(UIStrings16.filter), "filter-filled", "filter");
     this.#filterButton.element.style.setProperty("--dot-toggle-top", "13px");
@@ -18259,7 +18360,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
     super();
     this.filtersElement = document.createElement("div");
     this.filtersElement.classList.add("filter-bitset-filter");
-    this.filtersElement.setAttribute("jslog", `${VisualLogging18.section("filter-bitset")}`);
+    this.filtersElement.setAttribute("jslog", `${VisualLogging19.section("filter-bitset")}`);
     markAsListBox(this.filtersElement);
     markAsMultiSelectable(this.filtersElement);
     Tooltip.install(this.filtersElement, i18nString16(UIStrings16.sclickToSelectMultipleTypes, {
@@ -18337,7 +18438,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
     }
     typeFilterElement.addEventListener("click", this.onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener("keydown", this.onTypeFilterKeydown.bind(this), false);
-    typeFilterElement.setAttribute("jslog", `${VisualLogging18.item(jslogContext).track({ click: true })}`);
+    typeFilterElement.setAttribute("jslog", `${VisualLogging19.item(jslogContext).track({ click: true })}`);
     this.typeFilterElements.push(typeFilterElement);
   }
   onTypeFilterClicked(event) {
@@ -18765,7 +18866,7 @@ import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
 import { html as html5, render as render7 } from "./../lit/lit.js";
-import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
 var listWidget_css_default = `/*
@@ -19052,7 +19153,7 @@ var ListWidget = class extends VBox {
     }
     const content = this.delegate.renderItem(item8, editable, this.#items.length - 1);
     if (!content.hasAttribute("jslog")) {
-      element.setAttribute("jslog", `${VisualLogging19.item().track({ resize: true })}`);
+      element.setAttribute("jslog", `${VisualLogging20.item().track({ resize: true })}`);
     }
     element.appendChild(content);
     if (editable) {
@@ -19215,7 +19316,7 @@ var Editor = class {
   constructor() {
     this.element = document.createElement("div");
     this.element.classList.add("editor-container");
-    this.element.setAttribute("jslog", `${VisualLogging19.pane("editor").track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging20.pane("editor").track({ resize: true })}`);
     this.element.addEventListener("keydown", onKeyDown.bind(null, Platform21.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
     this.#contentElement = this.element.createChild("div", "editor-content");
     this.#contentElement.addEventListener("keydown", onKeyDown.bind(null, (event) => {
@@ -19232,7 +19333,7 @@ var Editor = class {
       jslogContext: "cancel",
       variant: "outlined"
     });
-    this.cancelButton.setAttribute("jslog", `${VisualLogging19.action("cancel").track({ click: true })}`);
+    this.cancelButton.setAttribute("jslog", `${VisualLogging20.action("cancel").track({ click: true })}`);
     buttonsRow.appendChild(this.cancelButton);
     this.commitButton = createTextButton("", this.commitClicked.bind(this), {
       jslogContext: "commit",
@@ -19255,7 +19356,7 @@ var Editor = class {
     const input = createInput("", type);
     input.placeholder = title;
     input.addEventListener("input", this.validateControls.bind(this, false), false);
-    input.setAttribute("jslog", `${VisualLogging19.textField().track({ change: true, keydown: "Enter" }).context(name)}`);
+    input.setAttribute("jslog", `${VisualLogging20.textField().track({ change: true, keydown: "Enter" }).context(name)}`);
     setLabel(input, title);
     this.controlByName.set(name, input);
     this.controls.push(input);
@@ -19264,12 +19365,12 @@ var Editor = class {
   }
   createSelect(name, options, validator, title) {
     const select = document.createElement("select");
-    select.setAttribute("jslog", `${VisualLogging19.dropDown().track({ change: true }).context(name)}`);
+    select.setAttribute("jslog", `${VisualLogging20.dropDown().track({ change: true }).context(name)}`);
     for (let index = 0; index < options.length; ++index) {
       const option = select.createChild("option");
       option.value = options[index];
       option.textContent = options[index];
-      option.setAttribute("jslog", `${VisualLogging19.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
+      option.setAttribute("jslog", `${VisualLogging20.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
     }
     if (title) {
       Tooltip.install(select, title);
@@ -19365,12 +19466,12 @@ __export(Panel_exports, {
   Panel: () => Panel,
   PanelWithSidebar: () => PanelWithSidebar
 });
-import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
 var Panel = class extends VBox {
   panelName;
   constructor(name, useShadowDom) {
     super({ useShadowDom });
-    this.element.setAttribute("jslog", `${VisualLogging20.panel().context(name).track({ resize: true })}`);
+    this.element.setAttribute("jslog", `${VisualLogging21.panel().context(name).track({ resize: true })}`);
     this.element.classList.add("panel");
     this.element.setAttribute("aria-label", name);
     this.element.classList.add(name);
@@ -19403,7 +19504,7 @@ var PanelWithSidebar = class extends Panel {
     this.sidebarWidget.setMinimumSize(100, 25);
     this.panelSplitWidget.setSidebarWidget(this.sidebarWidget);
     this.sidebarWidget.element.classList.add("panel-sidebar");
-    this.sidebarWidget.element.setAttribute("jslog", `${VisualLogging20.pane("sidebar").track({ resize: true })}`);
+    this.sidebarWidget.element.setAttribute("jslog", `${VisualLogging21.pane("sidebar").track({ resize: true })}`);
   }
   panelSidebarElement() {
     return this.sidebarWidget.element;
@@ -19421,7 +19522,7 @@ var PopoverHelper_exports = {};
 __export(PopoverHelper_exports, {
   PopoverHelper: () => PopoverHelper
 });
-import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/popover.css.js
 var popover_css_default = `/*
@@ -19464,7 +19565,7 @@ var popover_css_default = `/*
 // gen/front_end/ui/legacy/PopoverHelper.js
 var PopoverHelper = class _PopoverHelper {
   static createPopover = (jslogContext) => {
-    const popover2 = new GlassPane(`${VisualLogging21.popover(jslogContext).parent("mapped")}`);
+    const popover2 = new GlassPane(`${VisualLogging22.popover(jslogContext).parent("mapped")}`);
     popover2.registerRequiredCSS(popover_css_default);
     popover2.setSizeBehavior(
       "MeasureContent"
@@ -19649,7 +19750,7 @@ var PopoverHelper = class _PopoverHelper {
         popoverHelperInstance.hidePopover();
       }
       popoverHelperInstance = this;
-      VisualLogging21.setMappedParent(popover2.contentElement, this.container);
+      VisualLogging22.setMappedParent(popover2.contentElement, this.container);
       popover2.contentElement.style.scrollbarGutter = "stable";
       popover2.contentElement.addEventListener("mousemove", this.popoverMouseMove.bind(this), true);
       popover2.contentElement.addEventListener("mouseout", this.popoverMouseOut.bind(this, popover2), true);
@@ -19910,7 +20011,7 @@ __export(ReportView_exports, {
   ReportView: () => ReportView,
   Section: () => Section2
 });
-import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/reportView.css.js
 var reportView_css_default = `/*
@@ -20099,7 +20200,7 @@ var ReportView = class extends VBox {
     if (link2) {
       this.urlElement.appendChild(link2);
     }
-    this.urlElement.setAttribute("jslog", `${VisualLogging22.link("source-location").track({ click: true })}`);
+    this.urlElement.setAttribute("jslog", `${VisualLogging23.link("source-location").track({ click: true })}`);
   }
   createToolbar() {
     return this.headerElement.createChild("devtools-toolbar");
@@ -20143,7 +20244,7 @@ var Section2 = class extends VBox {
       this.element.classList.add(className);
     }
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging22.section(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging23.section(jslogContext)}`);
     }
     this.jslogContext = jslogContext;
     this.headerElement = this.element.createChild("div", "report-section-header");
@@ -20300,9 +20401,9 @@ __export(SearchableView_exports, {
 import * as Common18 from "./../../core/common/common.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform22 from "./../../core/platform/platform.js";
-import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
 import * as Buttons10 from "./../components/buttons/buttons.js";
-import { createIcon as createIcon7 } from "./../kit/kit.js";
+import { createIcon as createIcon8 } from "./../kit/kit.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
 var searchableView_css_default = `/*
@@ -20595,7 +20696,7 @@ var SearchableView = class extends VBox {
     this.footerElementContainer = this.contentElement.createChild("div", "search-bar hidden");
     this.footerElementContainer.style.order = "100";
     this.footerElement = this.footerElementContainer.createChild("div", "toolbar-search");
-    this.footerElement.setAttribute("jslog", `${VisualLogging23.toolbar("search").track({ resize: true })}`);
+    this.footerElement.setAttribute("jslog", `${VisualLogging24.toolbar("search").track({ resize: true })}`);
     const replaceToggleToolbar = this.footerElement.createChild("devtools-toolbar", "replace-toggle-toolbar");
     this.replaceToggleButton = new ToolbarToggle(i18nString19(UIStrings19.enableFindAndReplace), "replace", void 0, "replace");
     setLabel(this.replaceToggleButton.element, i18nString19(UIStrings19.enableFindAndReplace));
@@ -20603,13 +20704,13 @@ var SearchableView = class extends VBox {
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
     const searchInputElements = this.footerElement.createChild("div", "search-inputs");
     const iconAndInput = searchInputElements.createChild("div", "icon-and-input");
-    const searchIcon = createIcon7("search");
+    const searchIcon = createIcon8("search");
     iconAndInput.appendChild(searchIcon);
     this.searchInputElement = createHistoryInput("search", "search-replace search");
     this.searchInputElement.id = "search-input-field";
     this.searchInputElement.autocomplete = "off";
     this.searchInputElement.placeholder = i18nString19(UIStrings19.findString);
-    this.searchInputElement.setAttribute("jslog", `${VisualLogging23.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
+    this.searchInputElement.setAttribute("jslog", `${VisualLogging24.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
     this.searchInputElement.addEventListener("keydown", this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener("input", this.onInput.bind(this), false);
     iconAndInput.appendChild(this.searchInputElement);
@@ -20617,7 +20718,7 @@ var SearchableView = class extends VBox {
     this.replaceInputElement = replaceInputElements.createChild("input", "search-replace");
     this.replaceInputElement.addEventListener("keydown", this.onReplaceKeyDown.bind(this), true);
     this.replaceInputElement.placeholder = i18nString19(UIStrings19.replace);
-    this.replaceInputElement.setAttribute("jslog", `${VisualLogging23.textField("replace").track({ change: true, keydown: "Enter" })}`);
+    this.replaceInputElement.setAttribute("jslog", `${VisualLogging24.textField("replace").track({ change: true, keydown: "Enter" })}`);
     const replaceInputClearButton = createClearButton("clear-replace-input");
     replaceInputClearButton.addEventListener("click", () => {
       this.replaceInputElement.value = "";
@@ -21071,8 +21172,8 @@ __export(SoftDropDown_exports, {
 });
 import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Geometry6 from "./../../models/geometry/geometry.js";
-import { createIcon as createIcon8 } from "./../kit/kit.js";
-import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
+import { createIcon as createIcon9 } from "./../kit/kit.js";
+import * as VisualLogging25 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/softDropDown.css.js
 var softDropDown_css_default = `/*
@@ -21201,12 +21302,12 @@ var SoftDropDown = class {
     this.placeholderText = i18nString20(UIStrings20.noItemSelected);
     this.element = document.createElement("button");
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging24.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
+      this.element.setAttribute("jslog", `${VisualLogging25.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
     }
     this.element.classList.add("soft-dropdown");
     appendStyle(this.element, softDropDownButton_css_default);
     this.titleElement = this.element.createChild("span", "title");
-    const dropdownArrowIcon = createIcon8("triangle-down");
+    const dropdownArrowIcon = createIcon9("triangle-down");
     this.element.appendChild(dropdownArrowIcon);
     setExpanded(this.element, false);
     this.glassPane = new GlassPane();
@@ -21231,8 +21332,8 @@ var SoftDropDown = class {
       cssFile: softDropDown_css_default
     }).appendChild(this.list.element);
     markAsMenu(this.list.element);
-    VisualLogging24.setMappedParent(this.list.element, this.element);
-    this.list.element.setAttribute("jslog", `${VisualLogging24.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+    VisualLogging25.setMappedParent(this.list.element, this.element);
+    this.list.element.setAttribute("jslog", `${VisualLogging25.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
     this.element.addEventListener("mousedown", (event) => {
       if (this.glassPane.isShowing()) {
         this.hide(event);
@@ -21250,7 +21351,7 @@ var SoftDropDown = class {
       }
       this.selectHighlightedItem();
       if (event.target instanceof Element && event.target?.parentElement) {
-        void VisualLogging24.logClick(event.target.parentElement, event);
+        void VisualLogging25.logClick(event.target.parentElement, event);
       }
       this.hide(event);
     }, false);
@@ -21522,7 +21623,7 @@ import * as Platform23 from "./../../core/platform/platform.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Highlighting from "./../components/highlighting/highlighting.js";
 import * as Lit3 from "./../lit/lit.js";
-import * as VisualLogging25 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging26 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/treeoutline.css.js
 var treeoutline_css_default = `/*
@@ -21886,7 +21987,7 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
     this.focusable = true;
     this.setFocusable(true);
     this.element = this.contentElement;
-    this.element.setAttribute("jslog", `${VisualLogging25.tree()}`);
+    this.element.setAttribute("jslog", `${VisualLogging26.tree()}`);
     markAsTree(this.element);
     this.useLightSelectionColor = false;
     this.treeElementToScrollIntoView = null;
@@ -22213,7 +22314,7 @@ var TreeElement = class {
     this.listItemNode.addEventListener("mousedown", this.handleMouseDown.bind(this), false);
     this.listItemNode.addEventListener("click", this.treeElementToggled.bind(this), false);
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
-    this.listItemNode.setAttribute("jslog", `${VisualLogging25.treeItem().parent("parentTreeItem").context(jslogContext).track({
+    this.listItemNode.setAttribute("jslog", `${VisualLogging26.treeItem().parent("parentTreeItem").context(jslogContext).track({
       click: true,
       resize: true,
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
@@ -22510,7 +22611,7 @@ var TreeElement = class {
       this.collapse();
       unsetExpandable(this.listItemNode);
     } else {
-      VisualLogging25.registerLoggable(this.expandLoggable, `${VisualLogging25.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
+      VisualLogging26.registerLoggable(this.expandLoggable, `${VisualLogging26.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
       setExpanded(this.listItemNode, false);
     }
   }
@@ -22592,7 +22693,7 @@ var TreeElement = class {
     } else {
       this.expand();
     }
-    void VisualLogging25.logClick(this.expandLoggable, event);
+    void VisualLogging26.logClick(this.expandLoggable, event);
     event.consume();
   }
   handleMouseDown(event) {
@@ -23424,7 +23525,7 @@ function loggingParentProvider(e) {
   const parentElement = treeElement?.parent?.listItemElement;
   return parentElement?.isConnected && parentElement || treeElement?.treeOutline?.contentElement;
 }
-VisualLogging25.registerParentProvider("parentTreeItem", loggingParentProvider);
+VisualLogging26.registerParentProvider("parentTreeItem", loggingParentProvider);
 
 // gen/front_end/ui/legacy/View.js
 var View_exports = {};
@@ -23518,6 +23619,7 @@ export {
   SoftContextMenu_exports as SoftContextMenu,
   SoftDropDown_exports as SoftDropDown,
   SplitWidget_exports as SplitWidget,
+  StackedPane_exports as StackedPane,
   SuggestBox_exports as SuggestBox,
   TabbedPane_exports as TabbedPane,
   TargetCrashedScreen_exports as TargetCrashedScreen,

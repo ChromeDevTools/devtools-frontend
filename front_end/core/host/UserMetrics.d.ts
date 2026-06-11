@@ -515,7 +515,6 @@ export declare const enum IssueOpener {
 export declare enum DevtoolsExperiments {
     'protocol-monitor' = 13,
     'instrumentation-breakpoints' = 61,
-    'use-source-map-scopes' = 76,
     'durable-messages' = 110,
     'jpeg-xl' = 111,
     'plus-button' = 112,

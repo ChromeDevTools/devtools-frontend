@@ -8,7 +8,6 @@ import * as Root from '../core/root/root.js';
 const REGISTERED_EXPERIMENTS = [
     Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR,
     Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
-    Root.ExperimentNames.ExperimentName.USE_SOURCE_MAP_SCOPES,
 ];
 export function setupRuntime() {
     Root.Runtime.experiments.clearForTest();

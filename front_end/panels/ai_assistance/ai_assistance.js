@@ -9111,7 +9111,8 @@ var ActionDelegate = class {
       case "drjones.network-panel-context":
       case "drjones.performance-panel-context":
       case "drjones.sources-floating-button":
-      case "drjones.sources-panel-context": {
+      case "drjones.sources-panel-context":
+      case "ai-assistance.storage-floating-button": {
         void (async () => {
           const view = UI11.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
           if (!view) {

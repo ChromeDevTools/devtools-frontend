@@ -581,6 +581,11 @@ export interface FirstContentfulPaint extends Mark {
         };
     };
 }
+export interface SyntheticSoftFirstContentfulPaint extends Omit<SoftNavigationStart, 'name' | 'ph'>, Omit<SyntheticBased, 'name' | 'ph' | 'args'> {
+    name: Name.MARK_SOFT_FCP;
+    ph: Phase.MARK;
+}
+export type AnyFirstContentfulPaint = FirstContentfulPaint | SyntheticSoftFirstContentfulPaint;
 export interface FirstPaint extends Mark {
     name: Name.MARK_FIRST_PAINT;
     args: Args & {
@@ -590,8 +595,8 @@ export interface FirstPaint extends Mark {
         };
     };
 }
-export type PageLoadEvent = FirstContentfulPaint | MarkDOMContent | InteractiveTime | AnyLargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart | SoftNavigationStart;
-export declare const MarkerName: readonly [Name.MARK_DOM_CONTENT, Name.MARK_LOAD, Name.MARK_FIRST_PAINT, Name.MARK_FCP, Name.MARK_LCP_CANDIDATE, Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION, Name.NAVIGATION_START, Name.SOFT_NAVIGATION_START];
+export type PageLoadEvent = AnyFirstContentfulPaint | MarkDOMContent | InteractiveTime | AnyLargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart | SoftNavigationStart;
+export declare const MarkerName: readonly [Name.MARK_DOM_CONTENT, Name.MARK_LOAD, Name.MARK_FIRST_PAINT, Name.MARK_FCP, Name.MARK_SOFT_FCP, Name.MARK_LCP_CANDIDATE, Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION, Name.NAVIGATION_START, Name.SOFT_NAVIGATION_START];
 export interface MarkerEvent extends Event {
     name: typeof MarkerName[number];
 }
@@ -1714,6 +1719,8 @@ export declare function isSyntheticAnimation(event: Event): event is SyntheticAn
 export declare function isLayoutShift(event: Event): event is LayoutShift;
 export declare function isLayoutInvalidationTracking(event: Event): event is LayoutInvalidationTracking;
 export declare function isFirstContentfulPaint(event: Event): event is FirstContentfulPaint;
+export declare function isSoftFirstContentfulPaint(event: Event): event is SyntheticSoftFirstContentfulPaint;
+export declare function isAnyFirstContentfulPaint(event: Event): event is AnyFirstContentfulPaint;
 export declare function isAnyLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate;
 export declare function isSoftLargestContentfulPaintCandidate(event: Event): event is AnyLargestContentfulPaintCandidate;
 export declare function isLargestImagePaintCandidate(event: Event): event is LargestImagePaintCandidate;
@@ -2274,6 +2281,7 @@ export declare const enum Name {
     MARK_DOM_CONTENT = "MarkDOMContent",
     MARK_FIRST_PAINT = "firstPaint",
     MARK_FCP = "firstContentfulPaint",
+    MARK_SOFT_FCP = "SyntheticSoftFirstContentfulPaint",
     MARK_LCP_CANDIDATE = "largestContentfulPaint::Candidate",
     MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION = "largestContentfulPaint::CandidateForSoftNavigation",
     MARK_LCP_INVALIDATE = "largestContentfulPaint::Invalidate",

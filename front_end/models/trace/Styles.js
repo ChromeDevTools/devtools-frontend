@@ -290,6 +290,10 @@ const UIStrings = {
     /**
      * @description Text in Timeline UIUtils of the Performance panel
      */
+    softNavigationStart: 'Soft navigation start',
+    /**
+     * @description Text in Timeline UIUtils of the Performance panel
+     */
     onloadEvent: 'Onload event',
     /**
      * @description Text in Timeline UIUtils of the Performance panel
@@ -303,6 +307,10 @@ const UIStrings = {
      * @description Text in Timeline UIUtils of the Performance panel
      */
     firstContentfulPaint: 'First Contentful Paint',
+    /**
+     * @description Text in Timeline UIUtils of the Performance panel
+     */
+    softFirstContentfulPaint: 'Soft First Contentful Paint',
     /**
      * @description Text in Timeline UIUtils of the Performance panel
      */
@@ -685,8 +693,10 @@ export function maybeInitSylesMap() {
         ["FrameStartedLoading" /* Types.Events.Name.FRAME_STARTED_LOADING */]: new TimelineRecordStyle(i18nString(UIStrings.frameStartedLoading), defaultCategoryStyles.loading, true),
         ["MarkLoad" /* Types.Events.Name.MARK_LOAD */]: new TimelineRecordStyle(i18nString(UIStrings.onloadEvent), defaultCategoryStyles.scripting, true),
         ["MarkDOMContent" /* Types.Events.Name.MARK_DOM_CONTENT */]: new TimelineRecordStyle(i18nString(UIStrings.domcontentloadedEvent), defaultCategoryStyles.scripting, true),
+        ["SoftNavigationStart" /* Types.Events.Name.SOFT_NAVIGATION_START */]: new TimelineRecordStyle(i18nString(UIStrings.softNavigationStart), defaultCategoryStyles.loading, true),
         ["firstPaint" /* Types.Events.Name.MARK_FIRST_PAINT */]: new TimelineRecordStyle(i18nString(UIStrings.firstPaint), defaultCategoryStyles.painting, true),
         ["firstContentfulPaint" /* Types.Events.Name.MARK_FCP */]: new TimelineRecordStyle(i18nString(UIStrings.firstContentfulPaint), defaultCategoryStyles.rendering, true),
+        ["SyntheticSoftFirstContentfulPaint" /* Types.Events.Name.MARK_SOFT_FCP */]: new TimelineRecordStyle(i18nString(UIStrings.softFirstContentfulPaint), defaultCategoryStyles.rendering, true),
         ["largestContentfulPaint::Candidate" /* Types.Events.Name.MARK_LCP_CANDIDATE */]: new TimelineRecordStyle(i18nString(UIStrings.largestContentfulPaint), defaultCategoryStyles.rendering, true),
         ["largestContentfulPaint::CandidateForSoftNavigation" /* Types.Events.Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */]: new TimelineRecordStyle(i18nString(UIStrings.softLargestContentfulPaint), defaultCategoryStyles.rendering, true),
         ["TimeStamp" /* Types.Events.Name.TIME_STAMP */]: new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.scripting),
@@ -732,7 +742,7 @@ export function maybeInitSylesMap() {
         ["AsyncTask" /* Types.Events.Name.ASYNC_TASK */]: new TimelineRecordStyle(i18nString(UIStrings.asyncTask), defaultCategoryStyles.async),
         ["LayoutShift" /* Types.Events.Name.LAYOUT_SHIFT */]: new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience, 
         /* Mark LayoutShifts as hidden; in the timeline we render
-        * SyntheticLayoutShifts so those are the ones visible to the user */
+         * SyntheticLayoutShifts so those are the ones visible to the user */
         true),
         ["SyntheticLayoutShift" /* Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT */]: new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience),
         ["SyntheticLayoutShiftCluster" /* Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT_CLUSTER */]: new TimelineRecordStyle(i18nString(UIStrings.layoutShiftCluster), defaultCategoryStyles.experience),
@@ -796,9 +806,11 @@ export function setTimelineMainEventCategories(categories) {
 export function markerDetailsForEvent(event) {
     let title = '';
     let color = 'var(--color-text-primary)';
-    if (Types.Events.isFirstContentfulPaint(event)) {
+    if (Types.Events.isAnyFirstContentfulPaint(event)) {
         color = 'var(--sys-color-green-bright)';
-        title = "FCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
+        title = (Types.Events.isSoftFirstContentfulPaint(event)) ?
+            "FCP*" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.SOFT_FCP */ :
+            "FCP" /* Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP */;
     }
     if (Types.Events.isAnyLargestContentfulPaintCandidate(event)) {
         color = 'var(--sys-color-green)';

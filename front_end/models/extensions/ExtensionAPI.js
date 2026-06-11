@@ -443,6 +443,39 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
         const lastArgument = args[args.length - 1];
         return typeof lastArgument === 'function' ? lastArgument : undefined;
     }
+    /**
+     * Helper to support both callback and Promise-based APIs.
+     *
+     * @param args The arguments object of the calling function.
+     * @returns An object containing either the `callback` function, or the
+     *    `promise` and its `resolve`/`reject` functions.
+     */
+    function callbackOrPromise(args) {
+        const callback = extractCallbackArgument(args);
+        if (callback) {
+            return { callback: callback };
+        }
+        const { promise, resolve, reject } = Promise.withResolvers();
+        return { promise, resolve, reject };
+    }
+    /**
+     * Checks if the `response` from the ExtensionServer indicates an error. If an
+     * error occurred and a `Promise` `reject` function is provided, this function
+     * will reject the promise with a generic 'DevTools API encountered an error' Error.
+     *
+     * @param response The response object from the ExtensionServer.
+     * @param reject The promise reject function, if applicable.
+     * @returns `true` if an error occurred and the promise was rejected, `false`
+     *    otherwise.
+     */
+    function checkErrorAndReject(response, reject) {
+        const res = response;
+        if (res.isError && reject) {
+            reject(new Error('DevTools API encountered an error'));
+            return true;
+        }
+        return false;
+    }
     const LanguageServicesAPI = declareInterfaceClass(LanguageServicesAPIImpl);
     const RecorderServicesAPI = declareInterfaceClass(RecorderServicesAPIImpl);
     const Performance = declareInterfaceClass(PerformanceImpl);
@@ -573,32 +606,44 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
             }
             extensionServer.sendRequest({ command: "Reload" /* PrivateAPI.Commands.Reload */, options });
         },
-        eval: function (expression, evaluateOptions) {
-            const callback = extractCallbackArgument(arguments);
+        eval: function (expression, optionsOrCallback, _callback) {
+            const options = (typeof optionsOrCallback === 'object' && optionsOrCallback !== null) ?
+                optionsOrCallback :
+                undefined;
+            const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
             function callbackWrapper(result) {
-                const { isError, isException, value } = result;
-                if (isError || isException) {
-                    callback?.(undefined, result);
+                if (checkErrorAndReject(result, reject)) {
+                    return;
+                }
+                const res = result;
+                if (res.isException) {
+                    reject?.(res);
                 }
                 else {
-                    callback?.(value);
+                    resolve?.(res.value);
+                }
+                if (res.isError || res.isException) {
+                    callbackArg?.(undefined, res);
+                }
+                else {
+                    callbackArg?.(res.value);
                 }
             }
-            extensionServer.sendRequest({
-                command: "evaluateOnInspectedPage" /* PrivateAPI.Commands.EvaluateOnInspectedPage */,
-                expression,
-                evaluateOptions: (typeof evaluateOptions === 'object' ? evaluateOptions : undefined),
-            }, callback && callbackWrapper);
-            return null;
+            extensionServer.sendRequest({ command: "evaluateOnInspectedPage" /* PrivateAPI.Commands.EvaluateOnInspectedPage */, expression, evaluateOptions: options }, callbackWrapper);
+            return promise;
         },
-        getResources: function (callback) {
-            function wrapResource(resourceData) {
-                return new (Constructor(Resource))(resourceData);
+        getResources: function (_callback) {
+            const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
+            function callbackWrapper(response) {
+                if (checkErrorAndReject(response, reject)) {
+                    return;
+                }
+                const wrappedResources = (response || []).map(r => new (Constructor(Resource))(r));
+                resolve?.(wrappedResources);
+                callbackArg?.(wrappedResources);
             }
-            function callbackWrapper(resources) {
-                callback?.(resources.map(wrapResource));
-            }
-            extensionServer.sendRequest({ command: "getPageResources" /* PrivateAPI.Commands.GetPageResources */ }, callback && callbackWrapper);
+            extensionServer.sendRequest({ command: "getPageResources" /* PrivateAPI.Commands.GetPageResources */ }, callbackWrapper);
+            return promise;
         },
     };
     function ResourceImpl(resourceData) {
@@ -616,15 +661,30 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
         get buildId() {
             return this._buildId;
         },
-        getContent: function (callback) {
+        getContent: function (_callback) {
+            const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
             function callbackWrapper(response) {
+                if (checkErrorAndReject(response, reject)) {
+                    return;
+                }
                 const { content, encoding } = response;
-                callback?.(content, encoding);
+                resolve?.({ content, encoding });
+                callbackArg?.(content, encoding);
             }
-            extensionServer.sendRequest({ command: "getResourceContent" /* PrivateAPI.Commands.GetResourceContent */, url: this._url }, callback && callbackWrapper);
+            extensionServer.sendRequest({ command: "getResourceContent" /* PrivateAPI.Commands.GetResourceContent */, url: this._url }, callbackWrapper);
+            return promise;
         },
-        setContent: function (content, commit, callback) {
-            extensionServer.sendRequest({ command: "setResourceContent" /* PrivateAPI.Commands.SetResourceContent */, url: this._url, content, commit }, callback);
+        setContent: function (content, commit, _callback) {
+            const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
+            function callbackWrapper(response) {
+                if (checkErrorAndReject(response, reject)) {
+                    return;
+                }
+                resolve?.();
+                callbackArg?.(response);
+            }
+            extensionServer.sendRequest({ command: "setResourceContent" /* PrivateAPI.Commands.SetResourceContent */, url: this._url, content, commit }, callbackWrapper);
+            return promise;
         },
         setFunctionRangesForScript: function (ranges) {
             return new Promise((resolve, reject) => extensionServer.sendRequest({

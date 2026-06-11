@@ -37,7 +37,8 @@ export declare class FrameImpl implements StackTrace.StackTrace.Frame {
     readonly missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo;
     readonly rawName?: string;
     readonly isWasm?: boolean;
-    constructor(url: string | undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode | undefined, name: string | undefined, line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo, rawName?: string, isWasm?: boolean);
+    readonly isInline?: boolean;
+    constructor(url: string | undefined, uiSourceCode: Workspace.UISourceCode.UISourceCode | undefined, name: string | undefined, line: number, column: number, missingDebugInfo?: StackTrace.StackTrace.MissingDebugInfo, rawName?: string, isWasm?: boolean, isInline?: boolean);
 }
 export declare class ParsedErrorStackFragmentImpl implements StackTrace.StackTrace.ParsedErrorStackFragment {
     readonly fragment: FragmentImpl;
@@ -59,6 +60,7 @@ export declare class ParsedErrorStackFrameImpl implements StackTrace.StackTrace.
     get isEval(): boolean | undefined;
     get evalOrigin(): ParsedErrorStackFrameImpl | undefined;
     get isWasm(): boolean | undefined;
+    get isInline(): boolean | undefined;
     get wasmModuleName(): string | undefined;
     get wasmFunctionIndex(): number | undefined;
     get typeName(): string | undefined;
@@ -92,5 +94,6 @@ export declare class DebuggableFrameImpl implements StackTrace.StackTrace.Debugg
     get missingDebugInfo(): StackTrace.StackTrace.MissingDebugInfo | undefined;
     get rawName(): string | undefined;
     get isWasm(): boolean | undefined;
+    get isInline(): boolean | undefined;
     get sdkFrame(): SDK.DebuggerModel.CallFrame;
 }

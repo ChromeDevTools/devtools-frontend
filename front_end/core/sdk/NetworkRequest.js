@@ -286,6 +286,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #contentDataProvider;
     #isSameSite = null;
     #wasIntercepted = false;
+    /**
+     * Whether this request was imported from a HAR file.
+     */
+    #isImportedHar = false;
     #associatedData = new Map();
     #hasOverriddenContent = false;
     #hasThirdPartyCookiePhaseoutIssue = false;
@@ -905,6 +909,12 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     setWasIntercepted(wasIntercepted) {
         this.#wasIntercepted = wasIntercepted;
+    }
+    isImportedHar() {
+        return this.#isImportedHar;
+    }
+    setIsImportedHar(isImportedHar) {
+        this.#isImportedHar = isImportedHar;
     }
     setEarlyHintsHeaders(headers) {
         this.earlyHintsHeaders = headers;

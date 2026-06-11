@@ -15,7 +15,7 @@ import { StorageItem } from '../StorageItem.js';
 import { AccessibilityContext } from './AccessibilityAgent.js';
 import { AiAgent, } from './AiAgent.js';
 import { FileContext } from './FileAgent.js';
-import { RequestContext } from './NetworkAgent.js';
+import { getRequestContextOrigin, RequestContext } from './NetworkAgent.js';
 import { PerformanceTraceContext } from './PerformanceAgent.js';
 import { StorageContext } from './StorageAgent.js';
 const lockedString = i18n.i18n.lockedString;
@@ -122,7 +122,7 @@ export class ContextSelectionAgent extends AiAgent {
                 let hasCrossOriginRequest = false;
                 const requestsToShow = [];
                 for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
-                    const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(request.documentURL);
+                    const requestOrigin = getRequestContextOrigin(request);
                     /**
                      * NOTE: this origin check does not ensure that all the requests are
                      * from the same origin as the target page. Instead, it ensures that
@@ -131,7 +131,7 @@ export class ContextSelectionAgent extends AiAgent {
                      * during the loading of the target page, and do not leak URLs from
                      * other pages.
                      */
-                    if (origin && documentOrigin !== origin) {
+                    if (origin && requestOrigin !== origin) {
                         hasCrossOriginRequest = true;
                         continue;
                     }
@@ -200,8 +200,8 @@ export class ContextSelectionAgent extends AiAgent {
                     if (req.requestId() !== id) {
                         return false;
                     }
-                    const documentOrigin = Common.ParsedURL.ParsedURL.extractOrigin(req.documentURL);
-                    return !origin || documentOrigin === origin;
+                    const requestOrigin = getRequestContextOrigin(req);
+                    return !origin || requestOrigin === origin;
                 });
                 if (request) {
                     const calculator = this.#networkTimeCalculator ?? new NetworkTimeCalculator.NetworkTransferTimeCalculator();

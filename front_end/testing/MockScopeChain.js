@@ -96,6 +96,7 @@ export class MockProtocolBackend {
             hasSourceURL: Boolean(scriptDescription.hasSourceURL),
             ...(sourceMap ? { sourceMapURL: sourceMap.url } : null),
             embedderName: scriptDescription.embedderName,
+            scriptLanguage: scriptDescription.scriptLanguage,
         });
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const scriptObject = debuggerModel.scriptForId(scriptId);
@@ -410,6 +411,7 @@ export class MockDebuggerBackend {
             hasSourceURL: Boolean(scriptDescription.hasSourceURL),
             ...(sourceMap ? { sourceMapURL: sourceMap.url } : null),
             embedderName: scriptDescription.embedderName,
+            scriptLanguage: scriptDescription.scriptLanguage,
         }, target.sessionId);
         const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const scriptObject = debuggerModel.scriptForId(scriptId);

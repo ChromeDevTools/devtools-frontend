@@ -862,6 +862,30 @@ describeWithEnvironment('InspectorDrawerView', () => {
       const closeButton = drawerElement.shadowRoot!.querySelector('[aria-label="Close drawer"]');
       assert.exists(closeButton, 'close drawer button should exist in drawer toolbar');
     });
+
+    it('hides the plus button when vertical and minimized', () => {
+      // The plus button is slotted into the `trailing-button` slot,
+      // which lives inside `headerContentsElement`. When the drawer is
+      // vertically minimized `headerContentsElement` receives the
+      // `hide-element` class — hiding the slot (and therefore the
+      // slotted plus button) along with the tab strip. If the slot
+      // is ever relocated outside that container the plus button would
+      // remain visible in the collapsed drawer strip and overlap the
+      // close/orientation buttons.
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      assert.isTrue(inspectorView.isDrawerOrientationVertical());
+
+      inspectorView.setDrawerMinimized(true);
+
+      const drawerElement = inspectorView.element.querySelector('.drawer-tabbed-pane');
+      assert.exists(drawerElement);
+      const trailingSlot = drawerElement.shadowRoot!.querySelector('slot[name="trailing-button"]');
+      assert.exists(trailingSlot, 'drawer TabbedPane must declare a `trailing-button` slot for the plus button');
+      const hiddenAncestor = trailingSlot.closest('.hide-element');
+      assert.exists(hiddenAncestor,
+                    'trailing-button slot must live inside a `.hide-element` container while vertically minimized');
+    });
   });
 
   describe('drawer minimize/expand with orientation changes', () => {

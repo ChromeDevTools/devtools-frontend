@@ -213,6 +213,59 @@ describeWithEnvironment('PlusButton', () => {
       assert.deepEqual(itemLabels(footerSectionItems(menu)), ['Drawer Other']);
     });
 
+    it('deduplicates other-location entries against currently-visible tabs by title', () => {
+      // Regression test: a visible (non-overflowed) tab in the local
+      // location ("Console") and a closeable view in the other main
+      // location sharing the title must not produce a duplicate entry —
+      // otherwise clicking the menu item moves the other-location view
+      // in and the user ends up with two same-titled tabs.
+      const tabbedPane = makeStubTabbedPane({visible: ['console']});
+      const localViews: UI.View.View[] = [
+        makeView({id: 'console', title: 'Console'}),
+      ];
+      const otherLocationViews: UI.View.View[] = [
+        makeView({id: 'drawer-console', title: 'Console', closeable: true}),
+        makeView({id: 'drawer-only', title: 'Drawer Only', closeable: true}),
+      ];
+      const menu = makeContextMenu();
+
+      UI.PlusButton.populatePlusButtonMenu(menu, makeContext({
+                                             tabbedPane,
+                                             location: 'panel',
+                                             views: () => localViews,
+                                             manager: {viewsForLocation: () => otherLocationViews, moveView: () => {}},
+                                           }));
+
+      // No overflow → everything lives in the default section.
+      assert.deepEqual(itemLabels(defaultSectionItems(menu)), ['Drawer Only']);
+    });
+
+    it('deduplicates other-location entries when both surfaces have the same-titled tab visible', () => {
+      // Regression test: when the local location has a visible "Console"
+      // tab AND the other-location view set also contains a visible
+      // closeable "Console" view (mirror of the case above), the menu
+      // must still only offer the unique other-location entry. This
+      // guards against the symmetric variant of the dedup bug.
+      const tabbedPane = makeStubTabbedPane({visible: ['drawer-console']});
+      const localViews: UI.View.View[] = [
+        makeView({id: 'drawer-console', title: 'Console'}),
+      ];
+      const otherLocationViews: UI.View.View[] = [
+        makeView({id: 'console', title: 'Console', closeable: true}),
+        makeView({id: 'sources', title: 'Sources', closeable: true}),
+      ];
+      const menu = makeContextMenu();
+
+      UI.PlusButton.populatePlusButtonMenu(menu, makeContext({
+                                             tabbedPane,
+                                             location: 'drawer-view',
+                                             views: () => localViews,
+                                             manager: {viewsForLocation: () => otherLocationViews, moveView: () => {}},
+                                           }));
+
+      assert.deepEqual(itemLabels(defaultSectionItems(menu)), ['Sources']);
+    });
+
     it('skips transient views in the local view set', () => {
       // A transient view that was registered in this location is not
       // user-addable, so it should not appear in the menu even though it

@@ -228,7 +228,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
             Host.InspectorFrontendHost.InspectorFrontendHostInstance),
-        'panel', true, true, {defaultTab: Root.Runtime.Runtime.queryParam('panel')});
+        'panel', true, true, {
+          defaultTab: Root.Runtime.Runtime.queryParam('panel'),
+          plusButton: {jslogContext: 'plus-button-panel'},
+        });
 
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);

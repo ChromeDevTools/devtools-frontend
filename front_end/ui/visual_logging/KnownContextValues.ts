@@ -3080,6 +3080,8 @@ export const knownContextValues = new Set([
   'player',
   'playing',
   'plus-button',
+  'plus-button-drawer',
+  'plus-button-panel',
   'pointer',
   'pointer-32-bit',
   'pointer-64-bit',

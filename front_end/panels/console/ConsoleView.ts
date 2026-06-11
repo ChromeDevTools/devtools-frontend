@@ -75,6 +75,7 @@ import {
   getMessageForElement,
 } from './ConsoleViewMessage.js';
 import {ConsoleViewport, type ConsoleViewportElement, type ConsoleViewportProvider} from './ConsoleViewport.js';
+import symbolizedErrorWidgetStyles from './symbolizedErrorWidget.css.js';
 
 const UIStrings = {
   /**
@@ -356,7 +357,11 @@ export class ConsoleView extends UI.Widget.VBox implements
   constructor(viewportThrottlerTimeout: number) {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS(consoleViewStyles, objectValueStyles, CodeHighlighter.codeHighlighterStyles);
+    // We register the SymbolizedErrorWidget styles here because many web and e2e
+    // tests use `deepTextContent`, which would also include <style> tags if they
+    // were injected directly into the widget's shadow DOM.
+    this.registerRequiredCSS(consoleViewStyles, symbolizedErrorWidgetStyles, objectValueStyles,
+                             CodeHighlighter.codeHighlighterStyles);
 
     this.#searchableView = new UI.SearchableView.SearchableView(this, null);
     this.#searchableView.element.classList.add('console-searchable-view');

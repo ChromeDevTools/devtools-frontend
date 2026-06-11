@@ -171,6 +171,10 @@ export class SymbolizedErrorWidget extends UI.Widget.Widget {
     this.#view = view;
   }
 
+  get linkElements(): readonly HTMLElement[] {
+    return [...this.contentElement.querySelectorAll<HTMLElement>('.devtools-link')];
+  }
+
   set ignoreListManager(ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager) {
     this.#ignoreListManager = ignoreListManager;
     this.requestUpdate();

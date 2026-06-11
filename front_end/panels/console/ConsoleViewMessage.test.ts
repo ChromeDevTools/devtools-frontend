@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
@@ -26,8 +25,6 @@ import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 // eslint-disable-next-line @devtools/es-modules-import
 import consoleViewStyles from './consoleView.css.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('ConsoleViewMessage', () => {
   describe('anchor rendering', () => {
@@ -394,15 +391,19 @@ describeWithMockConnection('ConsoleViewMessage', () => {
        async () => {
          const target = createTarget();
          const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-         const stackTrace = createStackTrace([
+         const errorStackTrace = createStackTrace([
+           'USER_ID::userNestedFunction::http://example.com/script.js::40::15',
+           'USER_ID::userFunction::http://example.com/script.js::10::2',
+         ]);
+         const consoleStackTrace = createStackTrace([
            'USER_ID::userNestedFunction::http://example.com/script.js::40::15',
            'USER_ID::userFunction::http://example.com/script.js::10::2',
            'APP_ID::entry::http://example.com/app.js::25::10',
          ]);
-         const stackTraceMessage = errorMessageForStack(stackTrace);
+         const stackTraceMessage = errorMessageForStack(errorStackTrace);
          const messageDetails: SDK.ConsoleModel.ConsoleMessageDetails = {
            type: Protocol.Runtime.ConsoleAPICalledEventType.Error,
-           stackTrace,
+           stackTrace: consoleStackTrace,
            parameters: [{
              type: Protocol.Runtime.RemoteObjectType.Object,
              subtype: Protocol.Runtime.RemoteObjectSubtype.Error,
@@ -413,19 +414,14 @@ describeWithMockConnection('ConsoleViewMessage', () => {
          const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
              runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
              stackTraceMessage, messageDetails);
-         const {message, linkifier} = createConsoleViewMessageWithStubDeps(rawMessage);
+         const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
 
-         // Inline Error frames: ALL ignore-listed
-         linkifier.linkifyScriptLocation.callsFake((_target, _scriptId, sourceURL, lineNumber, options) => {
-           const link = Components.Linkifier.Linkifier.linkifyURL(sourceURL, {lineNumber, ...options});
-           link.classList.add(IGNORE_LIST_LINK);
-           return link;
-         });
-         // Structured stack trace: only app.js is ignore-listed, script.js is NOT
-         linkifier.maybeLinkifyConsoleCallFrame.callsFake((_target, callFrame, options) => {
-           const link = Components.Linkifier.Linkifier.linkifyURL(
-               urlString`${callFrame.url}`, {lineNumber: callFrame.lineNumber, ...options});
-           if (callFrame.url.includes('/app.js')) {
+         // Inline Error frames: ALL ignore-listed (they are all script.js)
+         // Structured stack trace: contains app.js which is not ignore-listed, so it has non-ignored frames!
+         const originalLinkifyStackTraceFrame = Components.Linkifier.Linkifier.linkifyStackTraceFrame;
+         sinon.stub(Components.Linkifier.Linkifier, 'linkifyStackTraceFrame').callsFake((frame, options) => {
+           const link = originalLinkifyStackTraceFrame(frame, options);
+           if (frame.url?.includes('/script.js') || frame.uiSourceCode?.url().includes('/script.js')) {
              link.classList.add(IGNORE_LIST_LINK);
            }
            return link;
@@ -448,7 +444,10 @@ describeWithMockConnection('ConsoleViewMessage', () => {
          // Clicking "Show ignore-listed frames" reveals them
          await expandIgnored(element);
          assertShowLessLink(element);
-         assert.deepEqual(getCallFrames(element), EXPANDED_UNSTRUCTURED);
+         assert.deepEqual(getCallFrames(element), [
+           '    at userNestedFunction (/script.js:40:15)\n',
+           '    at userFunction (/script.js:10:2)',
+         ]);
 
          // Collapsing hides them again
          await collapseIgnored(element);

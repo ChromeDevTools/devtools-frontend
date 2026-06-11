@@ -167,7 +167,7 @@ describe('The Debugger Language Plugins', () => {
     });
     const callframes = error.message?.split('\n').slice(1);
     assert.deepEqual(callframes, [
-      `    at Main (unreachable.wat:${pauseLocation.sourceLine})`,
+      `    at Main (unreachable.wat:${pauseLocation.sourceLine}:0)`,
       '    at window.loadModule (wasm_module.html?mod…&autorun=Main:24:46)',
     ]);
   });
@@ -415,9 +415,9 @@ describe('The Debugger Language Plugins', () => {
       }
       const message = messages[messages.length - 1];
       return message.message === `Uncaught (in promise) RuntimeError: unreachable
-    at inner_inline_func (unreachable.ll:6)
-    at outer_inline_func (unreachable.ll:11)
-    at Main (unreachable.ll:16)
+    at inner_inline_func (unreachable.ll:6:3)
+    at outer_inline_func (unreachable.ll:11:3)
+    at Main (unreachable.ll:16:3)
     at go (unreachable.html:27:29)`;
     });
   });

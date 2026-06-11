@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -65,7 +66,17 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
   async createFromErrorStackLikeString(
       stack: string, rawFramesToUIFrames: TranslateRawFrames,
       exceptionDetails?: Protocol.Runtime.ExceptionDetails): Promise<StackTrace.StackTrace.ParsedErrorStackTrace|null> {
-    const rawFrames = parseRawFramesFromErrorStack(stack);
+    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
+    const baseURL = this.target().inspectedURL();
+    const resolveURL = (url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString|null => {
+      let urlWithScheme = parseOrScriptMatch(debuggerModel, url);
+      if (!urlWithScheme && Common.ParsedURL.ParsedURL.isRelativeURL(url)) {
+        urlWithScheme = parseOrScriptMatch(debuggerModel, Common.ParsedURL.ParsedURL.completeURL(baseURL, url));
+      }
+      return urlWithScheme;
+    };
+
+    const rawFrames = parseRawFramesFromErrorStack(stack, resolveURL);
     if (!rawFrames) {
       return null;
     }
@@ -265,6 +276,28 @@ async function translateEvalOrigin(
   }
 
   return new EvalOrigin(frames, parentEvalOrigin);
+}
+
+function parseOrScriptMatch(debuggerModel: SDK.DebuggerModel.DebuggerModel,
+                            url: Platform.DevToolsPath.UrlString|null): Platform.DevToolsPath.UrlString|null {
+  if (!url) {
+    return null;
+  }
+  if (Common.ParsedURL.ParsedURL.isValidUrlString(url)) {
+    return url;
+  }
+  if (debuggerModel.scriptsForSourceURL(url).length) {
+    return url;
+  }
+  // nodejs stack traces contain (absolute) file paths, but v8 reports them as file: urls.
+  try {
+    const fileUrl = new URL(url, 'file://');
+    if (debuggerModel.scriptsForSourceURL(fileUrl.href as Platform.DevToolsPath.UrlString).length) {
+      return fileUrl.href as Platform.DevToolsPath.UrlString;
+    }
+  } catch {
+  }
+  return null;
 }
 
 SDK.SDKModel.SDKModel.register(StackTraceModel, {capabilities: SDK.Target.Capability.NONE, autostart: false});

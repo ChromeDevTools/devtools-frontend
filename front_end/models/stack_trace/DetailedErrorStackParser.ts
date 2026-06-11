@@ -10,13 +10,15 @@ import type {RawFrame} from './Trie.js';
 
 const CALL_FRAME_REGEX = /^\s*at\s+/;
 
+export type ResolveURLCallback = (url: Platform.DevToolsPath.UrlString) => Platform.DevToolsPath.UrlString|null;
+
 /**
  * Takes a V8 Error#stack string and extracts structured information.
  *
  * @returns Null if the provided string has an unexpected format. A
  *          populated `RawFrame[]` otherwise.
  */
-export function parseRawFramesFromErrorStack(stack: string): RawFrame[]|null {
+export function parseRawFramesFromErrorStack(stack: string, resolveURL?: ResolveURLCallback): RawFrame[]|null {
   const lines = stack.split('\n');
   const firstAtLineIndex = findFramesStartLine(lines);
   const rawFrames: RawFrame[] = [];
@@ -90,9 +92,9 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[]|null {
       if (innerOpenParen !== -1) {
         evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
         evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
+        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`, resolveURL)?.[0];
       } else {
-        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
+        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`, resolveURL)?.[0];
       }
     }
 
@@ -112,9 +114,18 @@ export function parseRawFramesFromErrorStack(stack: string): RawFrame[]|null {
       }
     } else if (location) {
       const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
-      url = splitResult.url;
       lineNumber = splitResult.lineNumber ?? -1;
       columnNumber = splitResult.columnNumber ?? -1;
+
+      if (resolveURL && splitResult.url !== '<anonymous>' && splitResult.url !== 'native') {
+        const resolved = resolveURL(splitResult.url);
+        if (!resolved) {
+          return null;
+        }
+        url = resolved;
+      } else {
+        url = splitResult.url;
+      }
     }
 
     // Handle "typeName.methodName [as alias]"

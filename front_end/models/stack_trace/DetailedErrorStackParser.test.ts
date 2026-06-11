@@ -319,6 +319,47 @@ describe('DetailedErrorStackParser', () => {
       assert.isNull(frames);
     });
 
+    it('returns null for broken stack traces with invalid URLs or formats', () => {
+      const brokenStacks = [
+        `Error: broken
+            at function_name(foob.js foob.js:30:1)`,
+        `Error: broken
+            at function_name(foob.js:20:30`,
+        `Error: broken
+            at function_name(foob:20.js:30   bla`,
+        `Error: broken
+            at function_name)foob.js:20:30(`,
+        `Error: broken
+            at function_name foob.js:20:30)`,
+        `Error: broken
+            at foob.js foob.js:40:70`,
+      ];
+      const mockResolveURL = (url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString|null => {
+        if (url.includes('(') || url.includes(')') || url.includes('[') || url.includes(']')) {
+          return null;
+        }
+        if (url.includes(' ')) {
+          return null;
+        }
+        return url;
+      };
+
+      for (const stack of brokenStacks) {
+        const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(stack, mockResolveURL);
+        assert.isNull(frames, `Expected parsing to fail for stack: ${stack}`);
+      }
+
+      const validStack = `Error: valid
+          at function_name (foob.js:20:30)`;
+      const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(validStack, mockResolveURL);
+      assert.exists(frames);
+      assert.lengthOf(frames, 1);
+      assert.strictEqual(frames[0].url, 'foob.js');
+      assert.strictEqual(frames[0].functionName, 'function_name');
+      assert.strictEqual(frames[0].lineNumber, 19);
+      assert.strictEqual(frames[0].columnNumber, 29);
+    });
+
     it('allows and skips empty or whitespace-only lines interleaved between frames', () => {
       const stack = `Error: foo
           at functionName (http://www.example.org/script.js:10:5)

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -16,6 +17,8 @@ import * as StackTrace from './stack_trace.js';
 // TODO(crbug.com/444191656): Expose a `testing` bundle.
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTraceImpl from './stack_trace_impl.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('StackTraceModel', () => {
   setupSettingsHooks();
@@ -32,6 +35,7 @@ describe('StackTraceModel', () => {
   function setup() {
     const connection = new MockCDPConnection();
     const target = createTarget({connection});
+    sinon.stub(target, 'inspectedURL').returns(urlString`http://example.com`);
     return {
       model: target.model(StackTraceImpl.StackTraceModel.StackTraceModel)!,
       connection,
@@ -607,8 +611,8 @@ describe('StackTraceModel', () => {
 
       assert.exists(stackTrace);
       assert.strictEqual(stringifyStackTrace(stackTrace), [
-        'at foo (foo.js:0:9)',
-        'at bar (foo.js:1:19)',
+        'at foo (http://example.com/foo.js:0:9)',
+        'at bar (http://example.com/foo.js:1:19)',
         '--- setTimeout -------------------------',
         'at barFnX (bar.js:0:9)',
       ].join('\n'));
@@ -718,6 +722,49 @@ describe('StackTraceModel', () => {
 
       // Level 4 (Outermost): undefined
       assert.isUndefined(origin3?.evalOrigin);
+    });
+
+    it('uses resolveURL callback to match scripts and complete relative URLs', async () => {
+      const {model, connection} = setup();
+
+      // Register a script with a relative path on the DebuggerModel
+      connection.dispatchEvent('Debugger.scriptParsed', {
+        scriptId: 'script-id-1' as Protocol.Runtime.ScriptId,
+        url: 'registered-relative.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 10,
+        endColumn: 10,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+        isLiveEdit: false,
+        sourceMapURL: undefined,
+        hasSourceURL: false,
+        length: 100,
+      },
+                               model.target().sessionId);
+
+      // 1. A relative URL that is registered as a script should be accepted and resolved
+      const stack1 = `Error: test
+          at foo (registered-relative.js:5:1)`;
+      const stackTrace1 = await model.createFromErrorStackLikeString(stack1, identityTranslateFn);
+      assert.exists(stackTrace1);
+      assert.strictEqual(stringifyStackTrace(stackTrace1), 'at foo (registered-relative.js:4:0)');
+
+      // 2. A relative URL that is NOT registered as a script, but can be completed against the page inspectedURL (http://example.com) should be accepted and completed
+      const stack2 = `Error: test
+          at foo (not-registered.js:5:1)`;
+      const stackTrace2 = await model.createFromErrorStackLikeString(stack2, identityTranslateFn);
+      assert.exists(stackTrace2);
+      assert.strictEqual(stringifyStackTrace(stackTrace2), 'at foo (http://example.com/not-registered.js:4:0)');
+
+      // 3. If target has no inspected URL, and the relative URL is not registered, it should fail parsing and return null
+      (model.target().inspectedURL as sinon.SinonStub).returns(Platform.DevToolsPath.EmptyUrlString);
+      const stack3 = `Error: test
+          at foo (not-registered.js:5:1)`;
+      const stackTrace3 = await model.createFromErrorStackLikeString(stack3, identityTranslateFn);
+      assert.isNull(stackTrace3);
     });
   });
 });

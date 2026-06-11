@@ -1690,6 +1690,7 @@ code
       const rangeSummaryWidget = actions[0].widgets?.find(w => w.name === 'TIMELINE_RANGE_SUMMARY');
       assert.exists(rangeSummaryWidget);
     });
+
   });
 
   describe('PerformanceTraceContext.getSuggestions', () => {
@@ -2230,6 +2231,82 @@ code
       assert.strictEqual(
           PerformanceAgent.getLabelName('unknown-label' as PerformanceAgent.MainThreadSectionLabel, focus),
           'unknown-label',
+      );
+    });
+  });
+
+  describe('clearCache', () => {
+    it('clears the formatter and trace facts, forcing recreation with new target', async () => {
+      const parsedTrace = {
+        insights: new Map(),
+        metadata: {},
+        data: {
+          Meta: {
+            mainFrameURL: 'https://example.com/page',
+            traceBounds: {min: 0, max: 100},
+            mainFrameNavigations: [],
+          },
+          Scripts: {
+            scripts: [],
+          },
+          NetworkRequests: {
+            byTime: [],
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
+
+      const target1 = createTarget();
+      const target2 = createTarget();
+
+      const debuggerModel1 = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+      debuggerModel1.scripts.returns([]);
+      const target1ModelStub = sinon.stub(target1, 'model').callThrough();
+      target1ModelStub.withArgs(SDK.DebuggerModel.DebuggerModel).returns(debuggerModel1);
+
+      const debuggerModel2 = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+      debuggerModel2.scripts.returns([]);
+      const target2ModelStub = sinon.stub(target2, 'model').callThrough();
+      target2ModelStub.withArgs(SDK.DebuggerModel.DebuggerModel).returns(debuggerModel2);
+
+      const primaryPageTargetStub = sinon.stub(SDK.TargetManager.TargetManager.instance(), 'primaryPageTarget');
+      primaryPageTargetStub.returns(target1);
+
+      const aidaClient = mockAidaClient([
+        [{explanation: 'answer 1'}], [{
+          explanation: '',
+          functionCalls:
+              [{name: 'getFunctionCode', args: {scriptUrl: 'https://example.com/script.js', line: 10, column: 5}}]
+        }],
+        [{explanation: 'done'}]
+      ]);
+
+      const agent = new PerformanceAgent.PerformanceAgent({aidaClient});
+      const context = PerformanceAgent.PerformanceTraceContext.fromParsedTrace(parsedTrace);
+
+      // Run 1: Initialize formatter with target 1
+      await Array.fromAsync(agent.run('test 1', {selected: context}));
+
+      target1ModelStub.resetHistory();
+
+      // Change primary target to target 2
+      primaryPageTargetStub.returns(target2);
+
+      // Call clearCache
+      agent.clearCache();
+
+      // Run 2: Trigger function call which uses the resolver
+      await Array.fromAsync(agent.run('test 2', {selected: context}));
+
+      // Verify that the resolver was called with target 2, not target 1
+      sinon.assert.calledWith(
+          target2ModelStub,
+          SDK.DebuggerModel.DebuggerModel,
+      );
+      sinon.assert.neverCalledWith(
+          target1ModelStub,
+          SDK.DebuggerModel.DebuggerModel,
       );
     });
   });

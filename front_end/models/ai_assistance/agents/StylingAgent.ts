@@ -290,6 +290,20 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     });
   }
 
+  /**
+   * Clears styling-agent-specific caches and state.
+   * Resets cached emulation data (screenshots, accessibility tree) and the
+   * instructions flag to ensure they are re-evaluated in subsequent queries.
+   */
+  override clearCache(): void {
+    super.clearCache();
+    // Reset emulation state so that subsequent queries will re-initialize
+    // emulation details and fetch fresh data.
+    this.#greenDevEmulationScreenshot = null;
+    this.#greenDevEmulationAxTree = null;
+    this.#hasAddedEmulationInstructions = false;
+  }
+
   override preambleFeatures(): string[] {
     return ['function_calling'];
   }

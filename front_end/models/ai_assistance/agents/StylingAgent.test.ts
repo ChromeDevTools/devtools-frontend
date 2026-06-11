@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Greendev from '../../../models/greendev/greendev.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
@@ -908,6 +909,34 @@ describeWithEnvironment('StylingAgent', function() {
       const actionStep = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION)!;
       assert.exists(actionStep);
       assert.strictEqual(actionStep.output, 'Error: Could not get authored styles.');
+    });
+  });
+
+  describe('clearCache', () => {
+    it('resets emulation instructions flag', async () => {
+      const greendevPrototypes = sinon.createStubInstance(Greendev.Prototypes);
+      greendevPrototypes.isEnabled.withArgs('emulationCapabilities').returns(true);
+      sinon.stub(Greendev.Prototypes, 'instance').returns(greendevPrototypes);
+
+      const agent = new StylingAgent.StylingAgent({
+        aidaClient: mockAidaClient(),
+      });
+      const context = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
+
+      // First enhanceQuery should include instructions
+      const query1 = await agent.enhanceQuery('query1', context);
+      assert.include(query1, 'Emulation and Screenshots');
+
+      // Second enhanceQuery should NOT include instructions
+      const query2 = await agent.enhanceQuery('query2', context);
+      assert.notInclude(query2, 'Emulation and Screenshots');
+
+      // Call clearCache
+      agent.clearCache();
+
+      // Third enhanceQuery should include instructions again
+      const query3 = await agent.enhanceQuery('query3', context);
+      assert.include(query3, 'Emulation and Screenshots');
     });
   });
 });

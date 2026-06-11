@@ -211,10 +211,11 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel<unknown> {
     let i = 0;
     let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
-      node.frames = uiFrames[i++].map(
-          frame => new FrameImpl(
-              frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo,
-              node.rawFrame.functionName, node.rawFrame.isWasm));
+      const group = uiFrames[i++];
+      node.frames =
+          group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column,
+                                                    frame.missingDebugInfo, node.rawFrame.functionName,
+                                                    node.rawFrame.isWasm, index < group.length - 1));
 
       if (node.parsedFrameInfo?.evalOrigin) {
         node.evalOrigin = evalOrigins[evalI++];
@@ -253,10 +254,10 @@ async function translateEvalOrigin(
     rawFrame: RawFrame, rawFramesToUIFrames: TranslateRawFrames,
     target: SDK.Target.Target): Promise<EvalOrigin|undefined> {
   const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-  const frames = uiFrames[0].map(
-      frame => new FrameImpl(
-          frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo,
-          rawFrame.functionName, rawFrame.isWasm));
+  const group = uiFrames[0];
+  const frames = group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line,
+                                                           frame.column, frame.missingDebugInfo, rawFrame.functionName,
+                                                           rawFrame.isWasm, index < group.length - 1));
 
   let parentEvalOrigin: EvalOrigin|undefined;
   if (rawFrame.parsedFrameInfo?.evalOrigin) {

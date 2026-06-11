@@ -534,8 +534,11 @@ describe('StackTraceModel', () => {
       ]]));
 
       assert.strictEqual(stackTrace.syncFragment.frames[0].rawName, 'foo');
+      assert.isTrue(stackTrace.syncFragment.frames[0].isInline);
       assert.strictEqual(stackTrace.syncFragment.frames[1].rawName, 'foo');
+      assert.isTrue(stackTrace.syncFragment.frames[1].isInline);
       assert.strictEqual(stackTrace.syncFragment.frames[2].rawName, 'foo');
+      assert.isFalse(stackTrace.syncFragment.frames[2].isInline);
     });
   });
 

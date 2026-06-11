@@ -28,8 +28,8 @@ function renderHeader(content: Lit.LitTemplate|Node|UI.Widget.Widget, isCause: b
 }
 
 function formatName(frame: StackTrace.StackTrace.ParsedErrorStackFrame): string {
-  let name = frame.rawName || frame.name || '';
-  const isInline = Boolean(frame.rawName) && frame.name !== frame.rawName;
+  const isInline = frame.isInline;
+  let name = isInline ? (frame.name || '') : (frame.rawName || frame.name || '');
   const shouldAppendMethodAlias = !isInline && frame.methodName && name && name !== frame.methodName &&
       !name.endsWith('.' + frame.methodName) && !name.endsWith(' ' + frame.methodName);
   if (shouldAppendMethodAlias) {

@@ -136,10 +136,16 @@ export class Diff {
   removedCount = 0;
   addedSize = 0;
   removedSize = 0;
-  deletedIndexes: number[] = [];
-  addedIndexes: number[] = [];
   countDelta!: number;
   sizeDelta!: number;
+  // Data about added nodes
+  addedIndexes: number[] = [];
+  addedIds: number[] = [];
+  addedSelfSizes: number[] = [];
+  // Data about deleted nodes
+  deletedIndexes: number[] = [];
+  deletedIds: number[] = [];
+  deletedSelfSizes: number[] = [];
   constructor(name: string) {
     this.name = name;
   }

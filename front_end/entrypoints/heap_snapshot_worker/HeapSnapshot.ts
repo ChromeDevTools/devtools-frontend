@@ -2740,6 +2740,8 @@ export abstract class HeapSnapshot {
       const nodeAId = baseIds[i];
       if (nodeAId < nodeB.id()) {
         diff.deletedIndexes.push(baseIndexes[i]);
+        diff.deletedIds.push(nodeAId);
+        diff.deletedSelfSizes.push(baseSelfSizes[i]);
         diff.removedCount++;
         diff.removedSize += baseSelfSizes[i];
         ++i;
@@ -2747,6 +2749,8 @@ export abstract class HeapSnapshot {
           nodeAId >
           nodeB.id()) {  // Native nodes(e.g. dom groups) may have ids less than max JS object id in the base snapshot
         diff.addedIndexes.push(indexes[j]);
+        diff.addedIds.push(nodeB.id());
+        diff.addedSelfSizes.push(nodeB.selfSize());
         diff.addedCount++;
         diff.addedSize += nodeB.selfSize();
         nodeB.nodeIndex = indexes[++j];
@@ -2757,12 +2761,16 @@ export abstract class HeapSnapshot {
     }
     while (i < l) {
       diff.deletedIndexes.push(baseIndexes[i]);
+      diff.deletedIds.push(baseIds[i]);
+      diff.deletedSelfSizes.push(baseSelfSizes[i]);
       diff.removedCount++;
       diff.removedSize += baseSelfSizes[i];
       ++i;
     }
     while (j < m) {
       diff.addedIndexes.push(indexes[j]);
+      diff.addedIds.push(nodeB.id());
+      diff.addedSelfSizes.push(nodeB.selfSize());
       diff.addedCount++;
       diff.addedSize += nodeB.selfSize();
       nodeB.nodeIndex = indexes[++j];

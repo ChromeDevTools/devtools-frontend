@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -69,6 +69,10 @@ describeWithEnvironment('AiAgent2', () => {
     const answerResponse = responses.find(r => r.type === AiAssistance.AiAgent.ResponseType.ANSWER);
     assert.isDefined(answerResponse);
     assert.propertyVal(answerResponse, 'text', 'This is the answer.');
+
+    sinon.assert.callCount(aidaClient.doConversation, 1);
+    const callArgs = aidaClient.doConversation.getCall(0).args[0];
+    assert.propertyVal(callArgs, 'client_feature', Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT);
   });
 
   it('handles learning skills correctly (UI step and AIDA response)', async () => {

@@ -134,6 +134,8 @@ export enum ClientFeature {
   CHROME_CONVERSATION_SUMMARY_AGENT = 27,
   // Chrome AI Assistance Storage Agent.
   CHROME_STORAGE_AGENT = 28,
+  // Chrome DevTools V2 Agent.
+  CHROME_DEVTOOLS_V2_AGENT = 29,
 }
 
 export enum UserTier {

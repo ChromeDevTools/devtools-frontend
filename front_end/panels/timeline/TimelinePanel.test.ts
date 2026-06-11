@@ -12,6 +12,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Tracing from '../../services/tracing/tracing.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
@@ -526,5 +527,16 @@ describeWithEnvironment('TimelinePanel', function() {
         assert.strictEqual(totalSourceMapsWithChromExtensionProtocol?.length, 0);
       });
     });
+  });
+
+  it('correctly flags recording as fresh when stopped automatically', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    timeline['setState'](Timeline.TimelinePanel.State.RECORDING);
+    await timeline.loadingStarted();
+    await timeline.loadingComplete(events, null, null);
+
+    const parsedTrace = traceModel.parsedTrace();
+    assert.isOk(parsedTrace);
+    assert.isTrue(Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace));
   });
 });

@@ -95,6 +95,18 @@ import {WebMCPTreeElement} from './WebMCPTreeElement.js';
 
 const UIStrings = {
   /**
+   * @description Text of a context menu item to start a chat with AI
+   */
+  startAChat: 'Start a chat',
+  /**
+   * @description Text of a context menu item to explain contents of a local/session storage bucket with AI
+   */
+  explainStorage: 'Explain storage',
+  /**
+   * @description Text of a context menu item to explain web cookies with AI
+   */
+  explainCookies: 'Explain cookies',
+  /**
    * @description Text in Application Panel Sidebar of the Application panel
    */
   application: 'Application',
@@ -1792,6 +1804,22 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.clear), () => this.domStorage.clear(), {jslogContext: 'clear'});
+
+    const storageItem = this.#getStorageItem();
+    if (storageItem) {
+      const openAiAssistanceId = 'ai-assistance.application-panel-context';
+      if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
+        submenu.defaultSection().appendItem(
+            i18nString(UIStrings.explainStorage),
+            () => action.execute({prompt: 'What is the purpose of this storage bucket?'}),
+            {disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.storage'});
+      }
+    }
+
     void contextMenu.show();
   }
 }
@@ -1900,6 +1928,22 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.clear), () => this.resourcesPanel.clearCookies(this.target, this.#cookieDomain),
         {jslogContext: 'clear'});
+
+    const storageItem = this.#getStorageItem();
+    if (storageItem) {
+      const openAiAssistanceId = 'ai-assistance.application-panel-context';
+      if (UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+        UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
+        submenu.defaultSection().appendItem(
+            i18nString(UIStrings.explainCookies),
+            () => action.execute({prompt: 'What is the purpose of these cookies?'}),
+            {disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.cookies'});
+      }
+    }
+
     void contextMenu.show();
   }
 

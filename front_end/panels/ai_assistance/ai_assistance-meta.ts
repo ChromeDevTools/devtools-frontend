@@ -313,3 +313,19 @@ UI.ActionRegistration.registerActionExtension({
   condition: config =>
       isStorageAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
 });
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'ai-assistance.application-panel-context',
+  contextTypes(): [] {
+    return [];
+  },
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18nAiBrandedString(UIStrings.debugWithGemini, UIStrings.debugWithAi),
+  configurableBindings: false,
+  async loadActionDelegate() {
+    const AiAssistance = await loadAiAssistanceModule();
+    return new AiAssistance.ActionDelegate();
+  },
+  condition: config =>
+      isStorageAgentFeatureAvailable(config) && !isPolicyRestricted(config) && !isGeoRestricted(config),
+});

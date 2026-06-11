@@ -1575,7 +1575,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         break;
       }
       case 'ai-assistance.storage-floating-button': {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromStoragePanelFloatingButton);
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromApplicationPanelFloatingButton);
+        targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE;
+        break;
+      }
+      case 'ai-assistance.application-panel-context': {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromApplicationPanel);
         targetConversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STORAGE;
         break;
       }
@@ -2116,7 +2121,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'drjones.performance-panel-context':
       case 'drjones.sources-floating-button':
       case 'drjones.sources-panel-context':
-      case 'ai-assistance.storage-floating-button': {
+      case 'ai-assistance.storage-floating-button':
+      case 'ai-assistance.application-panel-context': {
         void (async () => {
           const view = UI.ViewManager.ViewManager.instance().view(
               AiAssistancePanel.panelName,

@@ -25,6 +25,18 @@ template("node_action") {
       devtools_location_prepend + "scripts/build/ninja/write-if-changed.js",
     ]
 
+    if (host_os == "linux") {
+      inputs += [ "//third_party/node/linux/node-linux-x64/bin/node" ]
+    } else if (host_os == "win") {
+      inputs += [ "//third_party/node/win/node.exe" ]
+    } else if (host_os == "mac") {
+      if (host_cpu == "arm64") {
+        inputs += [ "//third_party/node/mac_arm64/node-darwin-arm64/bin/node" ]
+      } else {
+        inputs += [ "//third_party/node/mac/node-darwin-x64/bin/node" ]
+      }
+    }
+
     args = [ rebase_path(_full_script_location, root_build_dir) ] + invoker.args
   }
 }

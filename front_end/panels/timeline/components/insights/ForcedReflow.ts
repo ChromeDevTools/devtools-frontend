@@ -53,7 +53,6 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
         callFrame.lineNumber, {
           columnNumber: callFrame.columnNumber,
           showColumnNumber: true,
-          inlineFrameIndex: 0,
           tabStop: true,
         });
 

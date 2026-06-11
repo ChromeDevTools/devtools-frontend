@@ -39,7 +39,7 @@ export class AffectedSourcesView extends AffectedResourcesView {
     const cellElement = document.createElement('td');
     // TODO(chromium:1072331): Check feasibility of plumping through scriptId for `linkifyScriptLocation`
     //                         to support source maps and formatted scripts.
-    const linkifierURLOptions = {columnNumber, lineNumber, tabStop: true, showColumnNumber: false, inlineFrameIndex: 0};
+    const linkifierURLOptions = {columnNumber, lineNumber, tabStop: true, showColumnNumber: false};
     // An element created with linkifyURL can subscribe to the events
     // 'click' neither 'keydown' if that key is the 'Enter' key.
     // Also, this element has a context menu, so we should be able to

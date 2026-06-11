@@ -237,7 +237,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
       tabStop: options?.tabStop,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || 'script-location',
       omitOrigin: options?.omitOrigin,
@@ -257,10 +256,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     // Prefer createRawLocationByScriptId() here, since it will always produce a correct
     // link, since the script ID is unique. Only fall back to createRawLocationByURL()
     // when all we have is an URL, which is not guaranteed to be unique.
-    const rawLocation = scriptId ? debuggerModel.createRawLocationByScriptId(
-                                       scriptId, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex) :
-                                   debuggerModel.createRawLocationByURL(
-                                       sourceURL, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex);
+    const rawLocation = scriptId ? debuggerModel.createRawLocationByScriptId(scriptId, lineNumber || 0, columnNumber) :
+                                   debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber);
     if (!rawLocation) {
       return fallbackAnchor;
     }
@@ -313,7 +310,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       className: options?.className,
       columnNumber: options?.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       tabStop: options?.tabStop,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || 'script-source-url',
@@ -329,7 +325,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
         rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
           columnNumber: rawLocation.columnNumber,
           className,
-          inlineFrameIndex: rawLocation.inlineFrameIndex,
           tabStop: options?.tabStop,
         });
   }
@@ -340,7 +335,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const linkifyOptions: LinkifyOptions = {
       ...options,
       columnNumber: callFrame.columnNumber,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
     };
     return this.maybeLinkifyScriptLocation(
         target, String(callFrame.scriptId) as Protocol.Runtime.ScriptId,
@@ -355,7 +349,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
       tabStop: options?.tabStop,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || 'script-location',
       omitOrigin: options?.omitOrigin,
@@ -394,7 +387,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
       tabStop: options?.tabStop,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || 'script-location',
       omitOrigin: options?.omitOrigin,
@@ -424,7 +416,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       lineNumber,
       columnNumber,
       showColumnNumber: false,
-      inlineFrameIndex: 0,
       maxLength: this.maxLength,
       preventClick: true,
       jslogContext: 'script-source-url',
@@ -595,7 +586,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
   static renderLinkifiedUrl(url: Platform.DevToolsPath.UrlString, options?: LinkifyURLOptions): TemplateResult {
     options = options || {
       showColumnNumber: false,
-      inlineFrameIndex: 0,
     };
 
     const text = options.text;
@@ -724,7 +714,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
           url: options.href || null,
           lineNumber: options.lineNumber ?? null,
           columnNumber: options.columnNumber ?? null,
-          inlineFrameIndex: 0,
           revealable: null,
           fallback: null,
           userMetric: options.userMetric,
@@ -1174,7 +1163,6 @@ interface LinkInfo {
   url: Platform.DevToolsPath.UrlString|null;
   lineNumber: number|null;
   columnNumber: number|null;
-  inlineFrameIndex: number;
   revealable: Object|null;
   fallback: Element|null;
   userMetric?: Host.UserMetrics.Action;
@@ -1187,7 +1175,6 @@ export interface LinkifyURLOptions {
   lineNumber?: number;
   columnNumber?: number;
   showColumnNumber?: boolean;
-  inlineFrameIndex?: number;
   preventClick?: boolean;
   maxLength?: number;
   tabStop?: boolean;
@@ -1203,7 +1190,6 @@ export interface LinkifyOptions {
   className?: string;
   columnNumber?: number;
   showColumnNumber?: boolean;
-  inlineFrameIndex?: number;
   tabStop?: boolean;
   userMetric?: Host.UserMetrics.Action;
   jslogContext?: string;

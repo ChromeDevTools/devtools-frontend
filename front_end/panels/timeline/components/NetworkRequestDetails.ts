@@ -267,7 +267,6 @@ function renderURL(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.Tem
   const options: LegacyComponents.Linkifier.LinkifyURLOptions = {
     tabStop: true,
     showColumnNumber: false,
-    inlineFrameIndex: 0,
     maxLength: MAX_URL_LENGTH,
   };
   const linkifiedURL = LegacyComponents.Linkifier.Linkifier.linkifyURL(
@@ -439,7 +438,6 @@ function renderInitiatedBy(
   const options: LegacyComponents.Linkifier.LinkifyOptions = {
     tabStop: true,
     showColumnNumber: true,
-    inlineFrameIndex: 0,
   };
   // If we have a stack trace, that is the most reliable way to get the initiator data and display a link to the source.
   if (hasStackTrace) {

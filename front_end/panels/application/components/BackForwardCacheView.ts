@@ -393,7 +393,6 @@ function maybeRenderJavaScriptDetails(details: Protocol.Page.BackForwardCacheBlo
                              options: {
                                columnNumber: detail.columnNumber,
                                showColumnNumber: true,
-                               inlineFrameIndex: 0,
                                maxLength: maxLengthForDisplayedURLs,
                              }
                            })}`));

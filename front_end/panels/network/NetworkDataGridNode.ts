@@ -1515,8 +1515,7 @@ export class NetworkRequestNode extends NetworkNode {
           this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
         } else {
           this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
-              target, initiator.scriptId, initiator.url, initiator.lineNumber,
-              {columnNumber: initiator.columnNumber, inlineFrameIndex: 0});
+              target, initiator.scriptId, initiator.url, initiator.lineNumber, {columnNumber: initiator.columnNumber});
         }
         UI.Tooltip.Tooltip.install((this.linkifiedInitiatorAnchor), '');
         cell.appendChild(this.linkifiedInitiatorAnchor);

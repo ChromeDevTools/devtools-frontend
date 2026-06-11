@@ -122,7 +122,6 @@ const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElement): v
 
     const linkOptions: Components.Linkifier.LinkifyOptions = {
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
       ignoreListManager: input.ignoreListManager,
     };

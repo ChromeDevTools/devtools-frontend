@@ -556,7 +556,6 @@ export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLM
           // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
           bypassURLTrimming: true,
           showColumnNumber: false,
-          inlineFrameIndex: 0,
         }),
         hrefUrl || url);
     container.appendChild(link);

@@ -668,7 +668,6 @@ export class TimelineUIUtils {
           const options = {
             tabStop: true,
             showColumnNumber: false,
-            inlineFrameIndex: 0,
           };
           details = LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
         }
@@ -763,7 +762,6 @@ export class TimelineUIUtils {
       lineNumber,
       columnNumber,
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       className: 'timeline-details',
       tabStop: true,
       omitOrigin,
@@ -788,14 +786,13 @@ export class TimelineUIUtils {
     const options = {
       className: 'timeline-details',
       tabStop: true,
-      inlineFrameIndex: 0,
       showColumnNumber: true,
       columnNumber: frame.columnNumber,
       lineNumber: frame.lineNumber,
       maxLength,
     };
     if (isFreshOrEnhanced) {
-      return linkifier.maybeLinkifyConsoleCallFrame(target, frame, {showColumnNumber: true, inlineFrameIndex: 0});
+      return linkifier.maybeLinkifyConsoleCallFrame(target, frame, {showColumnNumber: true});
     }
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
   }
@@ -1232,7 +1229,6 @@ export class TimelineUIUtils {
           const options = {
             tabStop: true,
             showColumnNumber: false,
-            inlineFrameIndex: 0,
           };
           contentHelper.appendElementRow(
               i18nString(UIStrings.imageUrl), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
@@ -1246,7 +1242,6 @@ export class TimelineUIUtils {
           const options = {
             tabStop: true,
             showColumnNumber: false,
-            inlineFrameIndex: 0,
           };
           contentHelper.appendElementRow(
               i18nString(UIStrings.stylesheetUrl), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
@@ -2305,7 +2300,6 @@ export class TimelineDetailsContentHelper {
       tabStop: true,
       columnNumber: startColumn,
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       text,
       omitOrigin,
     };
@@ -2322,8 +2316,7 @@ export class TimelineDetailsContentHelper {
       return;
     }
     const locationContent = document.createElement('span');
-    const link = this.#linkifier.maybeLinkifyScriptLocation(
-        this.target, null, url, startLine, {tabStop: true, inlineFrameIndex: 0});
+    const link = this.#linkifier.maybeLinkifyScriptLocation(this.target, null, url, startLine, {tabStop: true});
     if (!link) {
       return;
     }

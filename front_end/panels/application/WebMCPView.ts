@@ -1014,7 +1014,6 @@ export const PAYLOAD_DEFAULT_VIEW = (input: PayloadViewInput, output: object, ta
           link.lineNumber,
           {
             columnNumber: link.columnNumber,
-            inlineFrameIndex: 0,
             showColumnNumber: true,
           },
       );

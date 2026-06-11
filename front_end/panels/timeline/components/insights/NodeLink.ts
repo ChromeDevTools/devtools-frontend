@@ -39,7 +39,6 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     const options = {
       tabStop: true,
       showColumnNumber: false,
-      inlineFrameIndex: 0,
       maxLength: MAX_URL_LENGTH,
     };
     const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);

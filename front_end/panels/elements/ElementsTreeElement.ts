@@ -644,7 +644,6 @@ function renderTitle(
         text,
         preventClick: true,
         showColumnNumber: false,
-        inlineFrameIndex: 0,
       })}</span>)</span>`;
     }
 
@@ -733,7 +732,6 @@ function renderLinkifiedValue(value: string, node: SDK.DOMModel.DOMNode): Lit.Te
     text: value,
     preventClick: true,
     showColumnNumber: false,
-    inlineFrameIndex: 0,
     onRef: link => {
       ImagePreviewPopover.setImageUrl(link, rewrittenHref);
     }

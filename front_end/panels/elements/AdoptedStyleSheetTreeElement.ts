@@ -58,7 +58,6 @@ export class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeElement {
         text: linkText,
         preventClick: true,
         showColumnNumber: false,
-        inlineFrameIndex: 0,
       }));
       UI.UIUtils.createTextChild(documentElement, ')');
     }

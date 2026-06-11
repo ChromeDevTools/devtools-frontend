@@ -1467,7 +1467,6 @@ export class AllocationGridNode extends HeapSnapshotGridNode {
           String(allocationNode.scriptId) as Protocol.Runtime.ScriptId,
           allocationNode.scriptName as Platform.DevToolsPath.UrlString, allocationNode.line - 1, {
             columnNumber: allocationNode.column - 1,
-            inlineFrameIndex: 0,
             className: 'profile-node-file',
           });
       urlElement.style.maxWidth = '75%';

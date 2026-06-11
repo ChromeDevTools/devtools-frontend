@@ -341,7 +341,7 @@ function maybeRenderReasonContext(explanation: Protocol.Page.BackForwardCacheNot
     const link = 'chrome://extensions/?id=' + explanation.context as Platform.DevToolsPath.UrlString;
     // clang-format off
     return html`${i18nString(UIStrings.blockingExtensionId)}
-      <devtools-link .href=${link}>${explanation.context}</devtools-link>`;
+      <devtools-link .href=${link} allow-privileged>${explanation.context}</devtools-link>`;
     // clang-format on
   }
   return nothing;

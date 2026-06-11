@@ -60,7 +60,7 @@ export class Link extends HTMLElement {
       return;
     }
 
-    UIHelpers.openInNewTab(href);
+    UIHelpers.openInNewTab(href, this.allowPrivileged);
 
     event.consume();
   }
@@ -71,6 +71,18 @@ export class Link extends HTMLElement {
 
   set href(href: Platform.DevToolsPath.UrlString) {
     this.setAttribute('href', href);
+  }
+
+  get allowPrivileged(): boolean {
+    return this.hasAttribute('allow-privileged');
+  }
+
+  set allowPrivileged(allowPrivileged: boolean) {
+    if (allowPrivileged) {
+      this.setAttribute('allow-privileged', '');
+    } else {
+      this.removeAttribute('allow-privileged');
+    }
   }
 
   get jslogContext(): string|null {
@@ -98,7 +110,7 @@ export class Link extends HTMLElement {
       oldValue: string|null,
       newValue: string|null,
       ): void {
-    if (oldValue !== newValue) {
+    if (oldValue === newValue) {
       return;
     }
     if (name === 'jslogcontext') {
@@ -145,9 +157,11 @@ export class Link extends HTMLElement {
       className?: string,
       jsLogContext?: string,
       tabindex = 0,
+      allowPrivileged = false,
       ): Link {
     const link = new Link();
     link.href = url as Platform.DevToolsPath.UrlString;
+    link.allowPrivileged = allowPrivileged;
     linkText = linkText ?? url;
     link.textContent = Platform.StringUtilities.trimMiddle(linkText, 150);
 

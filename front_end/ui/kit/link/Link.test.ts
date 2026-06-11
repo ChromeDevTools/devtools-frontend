@@ -42,6 +42,27 @@ describe('devtools-link', () => {
     });
   });
 
+  describe('allowPrivileged', () => {
+    it('sets allow-privileged attribute', () => {
+      const link = new Link();
+      link.allowPrivileged = true;
+      assert.isTrue(link.hasAttribute('allow-privileged'));
+    });
+
+    it('unsets allow-privileged attribute', () => {
+      const link = new Link();
+      link.allowPrivileged = true;
+      link.allowPrivileged = false;
+      assert.isFalse(link.hasAttribute('allow-privileged'));
+    });
+
+    it('reads allow-privileged attribute', () => {
+      const link = new Link();
+      link.setAttribute('allow-privileged', '');
+      assert.isTrue(link.allowPrivileged);
+    });
+  });
+
   describe('visual logging', () => {
     it('should default to empty link', () => {
       const link = new Link();

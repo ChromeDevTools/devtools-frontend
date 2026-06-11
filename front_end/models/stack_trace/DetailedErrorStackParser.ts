@@ -68,6 +68,8 @@ export function parseRawFramesFromErrorStack(stack: string, resolveURL?: Resolve
     if (lineContent.endsWith(')') && openParenIndex !== -1) {
       functionName = lineContent.substring(0, openParenIndex).trim();
       location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
+    } else if (lineContent.startsWith('(') && lineContent.endsWith(')')) {
+      location = lineContent.substring(1, lineContent.length - 1);
     } else {
       location = lineContent;
     }

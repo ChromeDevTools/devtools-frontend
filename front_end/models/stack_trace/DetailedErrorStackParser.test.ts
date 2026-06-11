@@ -309,6 +309,48 @@ describe('DetailedErrorStackParser', () => {
       assert.isTrue(StackTraceImpl.Trie.isBuiltinFrame(frames[0]));
     });
 
+    it('parses relative URLs enclosed in parentheses without function names', () => {
+      const stack = `Error: test
+          at (foo1.js:10:50)
+          at (../foo4.js:10:50)
+          at (./bar/foo6.js:10:50)`;
+      const mockResolveURL = (url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString|null => {
+        return url;
+      };
+      const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(stack, mockResolveURL);
+
+      assert.exists(frames);
+      assert.lengthOf(frames, 3);
+
+      assert.strictEqual(frames[0].url, 'foo1.js');
+      assert.strictEqual(frames[0].functionName, '');
+      assert.strictEqual(frames[0].lineNumber, 9);
+      assert.strictEqual(frames[0].columnNumber, 49);
+
+      assert.strictEqual(frames[1].url, '../foo4.js');
+      assert.strictEqual(frames[1].functionName, '');
+      assert.strictEqual(frames[1].lineNumber, 9);
+      assert.strictEqual(frames[1].columnNumber, 49);
+
+      assert.strictEqual(frames[2].url, './bar/foo6.js');
+      assert.strictEqual(frames[2].functionName, '');
+      assert.strictEqual(frames[2].lineNumber, 9);
+      assert.strictEqual(frames[2].columnNumber, 49);
+    });
+
+    it('parses function names containing parentheses correctly', () => {
+      const stack = `Error: test
+          at Object.foo() (http://www.example.org/script.js:10:5)`;
+      const frames = StackTraceImpl.DetailedErrorStackParser.parseRawFramesFromErrorStack(stack);
+
+      assert.exists(frames);
+      assert.lengthOf(frames, 1);
+      assert.strictEqual(frames[0].url, 'http://www.example.org/script.js');
+      assert.strictEqual(frames[0].functionName, 'Object.foo()');
+      assert.strictEqual(frames[0].lineNumber, 9);
+      assert.strictEqual(frames[0].columnNumber, 4);
+    });
+
     it('returns null if arbitrary text is interleaved between frames', () => {
       const stack = `Error: foo
           at functionName (http://www.example.org/script.js:10:5)

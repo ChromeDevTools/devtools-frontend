@@ -12,10 +12,14 @@ import("../ninja/vars.gni")
 
 declare_args() {
   devtools_skip_typecheck = build_with_chromium && !is_official_build
+  devtools_use_typescript_go = false
 }
 
 assert(!devtools_skip_typecheck || !is_official_build,
        "Official build should not skip typecheck")
+
+assert(!devtools_use_typescript_go || build_with_chromium,
+       "TSGo is only available in full Chromium checkouts")
 
 # Defines a target that compiles .ts files using TypeScript.
 # A temporary tsconfig.json is generated which uses the
@@ -144,6 +148,10 @@ template("ts_library") {
 
     if (_tsconfig_only) {
       args += [ "--tsconfig-only" ]
+    }
+
+    if (devtools_use_typescript_go) {
+      args += [ "--use-typescript-go" ]
     }
 
     if (defined(invoker.additional_type_definitions)) {

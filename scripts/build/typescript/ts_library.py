@@ -6,6 +6,7 @@ import argparse
 import json
 import logging
 import os
+import platform
 import shlex
 import subprocess
 import sys
@@ -19,6 +20,10 @@ ROOT_DIRECTORY_OF_REPOSITORY = path.join(_CURRENT_DIR, '..', '..', '..')
 NODE_MODULES_DIRECTORY = path.join(ROOT_DIRECTORY_OF_REPOSITORY,
                                    'node_modules')
 TSC_LOCATION = path.join(NODE_MODULES_DIRECTORY, 'typescript', 'bin', 'tsc')
+
+# Assuming a full chromium checkout.
+TSGO_BASE_LOCATION = path.join(ROOT_DIRECTORY_OF_REPOSITORY, '..', '..',
+                               'typescript')
 
 try:
     old_sys_path = sys.path[:]
@@ -50,8 +55,25 @@ logging.basicConfig(
     level=logging.DEBUG if os.environ.get('TSC_DEBUG') else logging.WARNING)
 
 
-def runTsc(tsconfig_location):
-    cmd = [NODE_LOCATION, TSC_LOCATION, '-p', tsconfig_location]
+# Based on //third_party/typescript/typescript.py
+def tsgoPath():
+    if platform.machine() == 'arm64':
+        darwin_path = 'mac-arm64'
+    else:
+        darwin_path = 'mac-amd64'
+
+    return path.normpath(
+        path.join(
+            TSGO_BASE_LOCATION, *{
+                'Darwin': (darwin_path, 'src', 'lib', 'tsgo'),
+                'Linux': ('linux-amd64', 'src', 'lib', 'tsgo'),
+                'Windows': ('windows-amd64', 'src', 'lib', 'tsgo.exe'),
+            }[platform.system()]))
+
+
+def runTsc(tsconfig_location, use_typescript_go=False):
+    cmd = [tsgoPath()] if use_typescript_go else [NODE_LOCATION, TSC_LOCATION]
+    cmd += ['-p', tsconfig_location]
     logging.info("runTsc: %s", ' '.join(cmd))
     process = subprocess.Popen(cmd,
                                stdout=subprocess.PIPE,
@@ -216,6 +238,7 @@ def main():
     parser.add_argument('--tsconfig-only', action='store_true')
     parser.add_argument('--es-target', required=False)
     parser.add_argument('--es-libs', nargs='*', required=False)
+    parser.add_argument('--use-typescript-go', action='store_true')
     # Restrict supported features to the ones supported by Node 22.
     parser.set_defaults(test_only=False,
                         no_emit=False,
@@ -321,7 +344,8 @@ def main():
     previously_generated_file_metadata = compute_previous_generated_file_metadata(
         sources, tsconfig_output_directory)
 
-    found_errors, stderr = runTsc(tsconfig_location=tsconfig_output_location)
+    found_errors, stderr = runTsc(tsconfig_location=tsconfig_output_location,
+                                  use_typescript_go=opts.use_typescript_go)
 
     if opts.reset_timestamps:
         maybe_reset_timestamps_on_generated_files(

@@ -318,7 +318,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         createContext: () => {
           const networkRequest =
               createNetworkRequest({url: urlString`https://example.com`, documentURL: urlString`https://example.com`});
-          return new AiAssistanceModel.NetworkAgent.RequestContext(
+          return new AiAssistanceModel.RequestContext.RequestContext(
               networkRequest, sinon.createStubInstance(NetworkTimeCalculator.NetworkTransferDurationCalculator));
         },
         action: 'drjones.network-floating-button'

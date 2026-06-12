@@ -202,6 +202,18 @@ describe('NetworkRequestFormatter', () => {
           'Response status: 200 OK\nNetwork request status: finished\n');
     });
 
+    it('handles finished state with status code and empty status text correctly', () => {
+      assert.strictEqual(NetworkRequestFormatter.NetworkRequestFormatter.formatStatus({
+        statusCode: 200,
+        statusText: '',
+        failed: false,
+        canceled: false,
+        preserved: false,
+        finished: true,
+      }),
+                         'Response status: 200\nNetwork request status: finished\n');
+    });
+
     it('handles preserved state correctly', () => {
       assert.strictEqual(
           NetworkRequestFormatter.NetworkRequestFormatter.formatStatus({

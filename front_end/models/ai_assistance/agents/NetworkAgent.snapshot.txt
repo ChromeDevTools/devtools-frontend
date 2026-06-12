@@ -10,7 +10,7 @@ Content:
       },
       {
         "title": "Response",
-        "text": "Response headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse body:\n{\"request\":\"body\"}\n\nResponse status: 200 \nNetwork request status: pending\n"
+        "text": "Response headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse body:\n{\"request\":\"body\"}\n\nResponse status: 200\nNetwork request status: pending\n"
       },
       {
         "title": "Timing",
@@ -59,7 +59,7 @@ Content:
   {
     "parts": [
       {
-        "text": "# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse body:\n{\"request\":\"body\"}\n\nResponse status: 200 \nNetwork request status: pending\n\nRequest timing:\nQueued at (timestamp): 0 s\nStarted at (timestamp): 501 s\nQueueing (duration): 501 s\nConnection start (stalled) (duration): 800 ms\nRequest sent (duration): 100 ms\nDuration (duration): 501 s\n\nRequest initiator chain:\n- URL: <redacted cross-origin initiator URL>\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest"
+        "text": "# Selected network request\nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse body:\n{\"request\":\"body\"}\n\nResponse status: 200\nNetwork request status: pending\n\nRequest timing:\nQueued at (timestamp): 0 s\nStarted at (timestamp): 501 s\nQueueing (duration): 501 s\nConnection start (stalled) (duration): 800 ms\nRequest sent (duration): 100 ms\nDuration (duration): 501 s\n\nRequest initiator chain:\n- URL: <redacted cross-origin initiator URL>\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest"
       }
     ],
     "role": 1

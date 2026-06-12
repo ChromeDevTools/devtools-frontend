@@ -2,21 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
-import {extractContextOrigin} from '../AiOrigins.js';
-import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
+import type {RequestContext} from '../contexts/RequestContext.js';
 
 import {
   AiAgent,
-  type ContextDetail,
   type ContextResponse,
-  ConversationContext,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -73,90 +66,6 @@ This request aims to retrieve a list of products matching the search query "lapt
 `;
 /* clang-format on */
 
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
-  /**
-   * @description Heading text for the block that shows the network request details.
-   */
-  request: 'Request',
-  /**
-   * @description Heading text for the block that shows the network response details.
-   */
-  response: 'Response',
-  /**
-   * @description Prefix text for request URL.
-   */
-  requestUrl: 'Request URL',
-  /**
-   * @description Title text for request timing details.
-   */
-  timing: 'Timing',
-  /**
-   * @description Title text for request initiator chain.
-   */
-  requestInitiatorChain: 'Request initiator chain',
-} as const;
-
-const lockedString = i18n.i18n.lockedString;
-
-/**
- * Returns the origin for a network request in the AI context.
- *
- * To prevent cross-origin prompt injection attacks, HAR-imported requests
- * are isolated from live pages. We assign them a virtual origin
- * (`imported-har://${domain}`) so they do not share the origin of live pages
- * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
- * between imported HAR data and live pages.
- */
-export function getRequestContextOrigin(request: SDK.NetworkRequest.NetworkRequest): string {
-  const origin = extractContextOrigin(request.documentURL);
-  if (request.isImportedHar()) {
-    const parsed = Common.ParsedURL.ParsedURL.fromString(origin as Platform.DevToolsPath.UrlString);
-    return `imported-har://${parsed ? parsed.domain() : origin}`;
-  }
-  return origin;
-}
-
-export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
-  #request: SDK.NetworkRequest.NetworkRequest;
-  #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-
-  constructor(
-      request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator) {
-    super();
-    this.#request = request;
-    this.#calculator = calculator;
-  }
-
-  /**
-   * Note: this is not the literal origin of the network request. This URL
-   * is used to determine when we should force the user to start a new AI
-   * conversation when the context changes. We allow a single AI conversation to
-   * inspect all network requests that were made for that given target URL.
-   */
-  override getURL(): string {
-    return this.#request.documentURL;
-  }
-
-  override getOrigin(): string {
-    return getRequestContextOrigin(this.#request);
-  }
-
-  override getItem(): SDK.NetworkRequest.NetworkRequest {
-    return this.#request;
-  }
-
-  get calculator(): NetworkTimeCalculator.NetworkTimeCalculator {
-    return this.#calculator;
-  }
-
-  override getTitle(): string {
-    return this.#request.name();
-  }
-}
-
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -183,9 +92,14 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
       return;
     }
 
+    const details = await selectedNetworkRequest.getUserFacingDetails();
+    if (!details) {
+      return;
+    }
+
     yield {
       type: ResponseType.CONTEXT,
-      details: await createContextDetailsForNetworkAgent(selectedNetworkRequest),
+      details,
       widgets: [{
         name: 'NETWORK_REQUEST_GENERAL_HEADERS',
         data: {
@@ -196,46 +110,8 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
   }
 
   override async enhanceQuery(query: string, selectedNetworkRequest: RequestContext|null): Promise<string> {
-    const networkEnchantmentQuery = selectedNetworkRequest ?
-        `# Selected network request \n${
-            await (new NetworkRequestFormatter(selectedNetworkRequest.getItem(), selectedNetworkRequest.calculator)
-                       .formatNetworkRequest())}\n\n# User request\n\n` :
-        '';
+    const promptDetails = selectedNetworkRequest ? await selectedNetworkRequest.getPromptDetails() : null;
+    const networkEnchantmentQuery = promptDetails ? `${promptDetails}\n\n# User request\n\n` : '';
     return `${networkEnchantmentQuery}${query}`;
   }
-}
-
-async function createContextDetailsForNetworkAgent(
-    selectedNetworkRequest: RequestContext,
-    ): Promise<[ContextDetail, ...ContextDetail[]]> {
-  const request = selectedNetworkRequest.getItem();
-  const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
-  const requestContextDetail: ContextDetail = {
-    title: lockedString(UIStringsNotTranslate.request),
-    text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + request.url() + '\n\n' +
-        formatter.formatRequestHeaders(),
-  };
-  const responseBody = await formatter.formatResponseBody();
-  const responseBodyString = responseBody ? `\n\n${responseBody}` : '';
-
-  const responseContextDetail: ContextDetail = {
-    title: lockedString(UIStringsNotTranslate.response),
-    text: formatter.formatResponseHeaders() + responseBodyString +
-        `\n\n${formatter.formatStatus()}${formatter.formatFailureReasons()}`,
-  };
-  const timingContextDetail: ContextDetail = {
-    title: lockedString(UIStringsNotTranslate.timing),
-    text: formatter.formatNetworkRequestTiming(),
-  };
-  const initiatorChainContextDetail: ContextDetail = {
-    title: lockedString(UIStringsNotTranslate.requestInitiatorChain),
-    text: formatter.formatRequestInitiatorChain(),
-  };
-
-  return [
-    requestContextDetail,
-    responseContextDetail,
-    timingContextDetail,
-    initiatorChainContextDetail,
-  ];
 }

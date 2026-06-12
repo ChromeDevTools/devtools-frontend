@@ -43,7 +43,7 @@ describeWithEnvironment('AiConversation', () => {
 
     const conversation =
         new AiAssistance.AiConversation.AiConversation({type: AiAssistance.AiHistoryStorage.ConversationType.STYLING});
-    const networkRequest = new AiAssistance.NetworkAgent.RequestContext(
+    const networkRequest = new AiAssistance.RequestContext.RequestContext(
         createNetworkRequest(), new NetworkTimeCalculator.NetworkTransferTimeCalculator());
 
     conversation.setContext(networkRequest);
@@ -252,7 +252,7 @@ describeWithEnvironment('AiConversation', () => {
     assert.isFalse(hasFunctionCalls(secondRequest));
     assert.lengthOf(secondRequest.historical_contexts ?? [], 1);
 
-    conversation.setContext(new AiAssistance.NetworkAgent.RequestContext(
+    conversation.setContext(new AiAssistance.RequestContext.RequestContext(
         networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator()));
 
     await Array.fromAsync(conversation.run('test query 2'));
@@ -635,7 +635,7 @@ describeWithEnvironment('AiConversation', () => {
         .resolves(new TextUtils.ContentData.ContentData('test content', false, 'text/plain'));
     sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([networkRequest]);
 
-    conversation.setContext(new AiAssistance.NetworkAgent.RequestContext(
+    conversation.setContext(new AiAssistance.RequestContext.RequestContext(
         networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator()));
 
     await Array.fromAsync(conversation.run('test network query'));

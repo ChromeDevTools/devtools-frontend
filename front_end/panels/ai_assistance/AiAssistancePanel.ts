@@ -592,13 +592,13 @@ function createAccessibilityContext(report: LighthousePanel.LighthousePanel.Acti
   return new AiAssistanceModel.AccessibilityAgent.AccessibilityContext(report.report);
 }
 
-function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null):
-    AiAssistanceModel.NetworkAgent.RequestContext|null {
+function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|
+                              null): AiAssistanceModel.RequestContext.RequestContext|null {
   if (!request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel.NetworkAgent.RequestContext(request, calculator);
+  return new AiAssistanceModel.RequestContext.RequestContext(request, calculator);
 }
 
 function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentFocus|null):
@@ -669,7 +669,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedFile: AiAssistanceModel.FileAgent.FileContext|null = null;
   #selectedElement: AiAssistanceModel.DOMNodeContext.DOMNodeContext|null = null;
   #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
-  #selectedRequest: AiAssistanceModel.NetworkAgent.RequestContext|null = null;
+  #selectedRequest: AiAssistanceModel.RequestContext.RequestContext|null = null;
 
   #selectedAccessibility: AiAssistanceModel.AccessibilityAgent.AccessibilityContext|null = null;
   #selectedStorage: AiAssistanceModel.StorageAgent.StorageContext|null = null;
@@ -1254,7 +1254,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
         if (Boolean(ev.data)) {
           const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-          this.#selectedRequest = new AiAssistanceModel.NetworkAgent.RequestContext(ev.data, calculator);
+          this.#selectedRequest = new AiAssistanceModel.RequestContext.RequestContext(ev.data, calculator);
         } else {
           this.#selectedRequest = null;
         }
@@ -1488,7 +1488,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     const context = this.#conversation.selectedContext;
-    if (context instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
+    if (context instanceof AiAssistanceModel.RequestContext.RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
       return Common.Revealer.reveal(requestLocation);
@@ -1737,7 +1737,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#selectedFile = data;
     } else if (data instanceof AiAssistanceModel.DOMNodeContext.DOMNodeContext) {
       this.#selectedElement = data;
-    } else if (data instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
+    } else if (data instanceof AiAssistanceModel.RequestContext.RequestContext) {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;

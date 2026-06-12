@@ -11,12 +11,14 @@ Each agent has a _context_ defined, which represents the selected data that form
 - The `PerformanceAgent` has an individual performance trace and a specific focus (an insight, or a call tree) as its context.
 - The `StylingAgent` has a DOM Node as its context.
 
-When defining a context, they must extend the `ConversationContext` interface, which defines a few methods which must be implemented, including:
+Contexts are defined as subclasses extending the `ConversationContext` abstract class, which defines the following key methods:
 
-- `getOrigin()`: the origin of the data. This is important as for security concerns if the user swaps to a new context with a different origin, a new conversation must be started to avoid any concerns of sharing data across origins.
-- `getTitle()` which are used to represent the context in the UI.
+- `getOrigin()`: the origin of the data. This is critical for security: if the user switches to a new context with a different origin, the panel forces a new conversation to avoid cross-origin data exposure.
+- `getTitle()`: returns the user-facing title of the context.
+- `getPromptDetails()`: returns a Markdown formatted description of the context item to be directly included in the LLM prompt.
+- `getUserFacingDetails()`: returns structured details (such as request/response headers, timings, etc.) displayed to the user in the UI under the "Analyzing data" accordion.
 
-When the user begins a conversation with the AI, we want to include information based on the active context to send as part of the prompt. This is done in the agent implementation by overriding the `enhanceQuery()` method, which takes the active context as the second argument. This method can be used to enrich the query with contextual information.
+Encapsulating prompt formatting and UI generation within the context classes simplifies agent implementations and promotes reusability. Contexts are located in the `contexts/` directory.
 
 ### Formatters
 

@@ -26,8 +26,8 @@ import {
   ContextSelectionAgent,
   DOMNodeContext,
   FileAgent,
-  NetworkAgent,
   PerformanceAgent,
+  RequestContext,
   StorageAgent,
   StorageItem,
 } from '../ai_assistance.js';
@@ -754,7 +754,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       const contextChange = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE);
 
       assert.exists(contextChange);
-      assert.instanceOf(contextChange.context, NetworkAgent.RequestContext);
+      assert.instanceOf(contextChange.context, RequestContext.RequestContext);
       assert.strictEqual(contextChange.context.getItem(), request);
       assert.exists(contextChange.widgets);
       assert.lengthOf(contextChange.widgets, 1);

@@ -92,7 +92,8 @@ export class NetworkRequestFormatter {
   }): string {
     let responseStatus = '';
     if (status.statusCode) {
-      responseStatus = `Response status: ${status.statusCode} ${status.statusText}\n`;
+      const statusText = status.statusText ? ` ${status.statusText}` : '';
+      responseStatus = `Response status: ${status.statusCode}${statusText}\n`;
     }
     const flags = [];
     flags.push(status.finished ? 'finished' : 'pending');

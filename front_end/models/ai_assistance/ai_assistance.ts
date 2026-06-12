@@ -23,6 +23,7 @@ import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
+import * as RequestContext from './contexts/RequestContext.js';
 import * as ConversationSummary from './ConversationSummary.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
 import * as LighthouseFormatter from './data_formatters/LighthouseFormatter.js';
@@ -80,6 +81,7 @@ export {
   PerformanceAnnotations,
   PerformanceInsightFormatter,
   PerformanceTraceFormatter,
+  RequestContext,
   StorageAgent,
   StorageItem,
   StylingAgent,

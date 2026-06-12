@@ -1,0 +1,48 @@
+Title: RequestContext getPromptDetails describes the network request correctly
+Content:
+# Selected network request
+Request: https://www.example.com/api/users
+
+Request headers:
+Accept: application/json
+
+Response headers:
+Content-Type: application/json
+
+Response body:
+{}
+
+Response status: 200
+Network request status: pending
+
+Request timing:
+Queued at (timestamp): 0 s
+Started at (timestamp): 0 s
+Connection start (stalled) (duration): -
+Duration (duration): -
+
+Request initiator chain:
+- URL: https://www.example.com/api/users
+=== end content
+
+Title: RequestContext getUserFacingDetails returns details correctly
+Content:
+[
+  {
+    "title": "Request",
+    "text": "Request URL: https://www.example.com/api/users\n\nRequest headers:\nAccept: application/json"
+  },
+  {
+    "title": "Response",
+    "text": "Response headers:\nContent-Type: application/json\n\nResponse body:\n{}\n\nResponse status: 200\nNetwork request status: pending\n"
+  },
+  {
+    "title": "Timing",
+    "text": "Queued at (timestamp): 0 s\nStarted at (timestamp): 0 s\nConnection start (stalled) (duration): -\nDuration (duration): -"
+  },
+  {
+    "title": "Request initiator chain",
+    "text": "- URL: https://www.example.com/api/users"
+  }
+]
+=== end content

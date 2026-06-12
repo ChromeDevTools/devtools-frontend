@@ -177,7 +177,7 @@ function getContextRemoveLabel(context: AiAssistanceModel.AiAgent.ConversationCo
   if (context instanceof AiAssistanceModel.DOMNodeContext.DOMNodeContext) {
     return lockedString(UIStringsNotTranslate.removeContextElement);
   }
-  if (context instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
+  if (context instanceof AiAssistanceModel.RequestContext.RequestContext) {
     return lockedString(UIStringsNotTranslate.removeContextRequest);
   }
   if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
@@ -351,7 +351,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                                 })}
                               ></devtools-widget>` :
                             html`
-                          ${input.context instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
+                          ${input.context instanceof AiAssistanceModel.RequestContext.RequestContext ?
                             PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) :
                             input.context instanceof AiAssistanceModel.FileAgent.FileContext ?
                             PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) :

@@ -31,6 +31,14 @@ import * as PanelCommon from './common.js';
 
 const {urlString} = Platform.DevToolsPath;
 
+interface TestHARLog {
+  entries: Array<{
+    request: {
+      url: string,
+    },
+  }&Chrome.DevTools.Request>;
+}
+
 describeWithDevtoolsExtension('Extensions', {}, context => {
   it('are initialized after the target is initialized and navigated to a non-privileged URL', async () => {
     // This check is a proxy for verifying that the extension has been initialized. Outside of the test the extension
@@ -621,6 +629,10 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     const target = createTarget({type: SDK.Target.Type.FRAME});
     target.setInspectedURL(allowedUrl);
     {
+      const result = await context.chrome.devtools!.network.getHAR();
+      assert.hasAnyKeys(result, ['entries']);
+    }
+    {
       const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
       assert.hasAnyKeys(result, ['entries']);
     }
@@ -657,7 +669,12 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     createRequest(networkManager, frameId, 'blocked-url-request-id' as Protocol.Network.RequestId, blockedUrl);
     createRequest(networkManager, frameId, 'allowed-url-request-id' as Protocol.Network.RequestId, allowedUrl);
     {
-      const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb)) as HAR.Log.LogDTO;
+      const result = await context.chrome.devtools!.network.getHAR() as TestHARLog;
+      assert.exists(result.entries.find(e => e.request.url === allowedUrl));
+      assert.notExists(result.entries.find(e => e.request.url === blockedUrl));
+    }
+    {
+      const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb)) as TestHARLog;
       assert.exists(result.entries.find(e => e.request.url === allowedUrl));
       assert.notExists(result.entries.find(e => e.request.url === blockedUrl));
     }
@@ -892,6 +909,31 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
   }
 
+  it('can get request content', async () => {
+    Logs.NetworkLog.NetworkLog.instance();
+    const frameId = 'frame-id' as Protocol.Page.FrameId;
+    const target = createTarget({id: 'target' as Protocol.Target.TargetID});
+    target.setInspectedURL(allowedUrl);
+
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    createRequest(networkManager, frameId, 'request-id' as Protocol.Network.RequestId, allowedUrl);
+
+    const harLog = await context.chrome.devtools!.network.getHAR() as TestHARLog;
+    assert.lengthOf(harLog.entries, 1);
+    const request = harLog.entries[0] as Chrome.DevTools.Request;
+
+    const promise = request.getContent();
+    assert.exists(promise);
+    const contentData = await promise;
+    assert.deepEqual(contentData, {content: 'content', encoding: ''});
+
+    const callbackData = await new Promise<{content: string, encoding: string}>(resolve => {
+      request.getContent((content, encoding) => resolve({content, encoding}));
+    });
+    assert.deepEqual(callbackData, {content: 'content', encoding: ''});
+  });
+
   it('does not include blocked hosts in onRequestFinished event listener', async () => {
     const frameId = 'frame-id' as Protocol.Page.FrameId;
     const target = createTarget({id: 'target' as Protocol.Target.TargetID});
@@ -969,7 +1011,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     networkApi.addRequestHeaders({'X-Test': '1'});
     // Round-trip a callback command on the same MessagePort to ensure the
     // addRequestHeaders message has been processed before we assert.
-    await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
+    await context.chrome.devtools!.network.getHAR();
 
     sinon.assert.notCalled(setHeadersSpy);
   });

@@ -607,19 +607,29 @@ self.injectedExtensionAPI = function(
   }
 
   (Network.prototype as Pick<APIImpl.Network, 'getHAR'|'addRequestHeaders'>) = {
-    getHAR: function(this: PublicAPI.Chrome.DevTools.Network, callback?: (harLog: Object) => unknown): void {
-      function callbackWrapper(response: unknown): void {
-        const result =
-            response as ({entries: Array<HAR.Log.EntryDTO&{__proto__?: APIImpl.Request, _requestId?: number}>});
-        const entries = (result?.entries) || [];
-        for (let i = 0; i < entries.length; ++i) {
-          entries[i].__proto__ = new (Constructor(Request))(entries[i]._requestId as number);
-          delete entries[i]._requestId;
-        }
-        callback?.(result);
-      }
-      extensionServer.sendRequest({command: PrivateAPI.Commands.GetHAR}, callback && callbackWrapper);
-    },
+    getHAR: function(this: PublicAPI.Chrome.DevTools.Network, _callback?: (harLog: object) => unknown): Promise<object>|
+        void {
+          const {callback: callbackArg, promise, resolve, reject} = callbackOrPromise<object>(arguments);
+
+          function callbackWrapper(response: unknown): void {
+            if (checkErrorAndReject(response, reject)) {
+              return;
+            }
+
+            const result =
+                response as ({entries: Array<HAR.Log.EntryDTO&{__proto__?: APIImpl.Request, _requestId?: number}>});
+            const entries = (result?.entries) || [];
+            for (let i = 0; i < entries.length; ++i) {
+              entries[i].__proto__ = new (Constructor(Request))(entries[i]._requestId as number);
+              delete entries[i]._requestId;
+            }
+            resolve?.(result);
+            callbackArg?.(result);
+          }
+          extensionServer.sendRequest({command: PrivateAPI.Commands.GetHAR}, callbackWrapper);
+
+          return promise;
+        } as PublicAPI.Chrome.DevTools.Network['getHAR'],
 
     addRequestHeaders: function(headers: Record<string, string>): void {
       extensionServer.sendRequest(
@@ -631,15 +641,31 @@ self.injectedExtensionAPI = function(
     this._id = id;
   }
 
+  interface GetContentPromiseSignature {
+    content: string;
+    encoding: string;
+  }
+  type GetContentCallbackSignature = [content: string, encoding: string];
   (RequestImpl.prototype as Pick<APIImpl.Request, 'getContent'>) = {
-    getContent: function(this: APIImpl.Request, callback?: (content: string, encoding: string) => unknown): void {
-      function callbackWrapper(response: unknown): void {
-        const {content, encoding} = response as {content: string, encoding: string};
-        callback?.(content, encoding);
-      }
-      extensionServer.sendRequest(
-          {command: PrivateAPI.Commands.GetRequestContent, id: this._id}, callback && callbackWrapper);
-    },
+    getContent: function(this: APIImpl.Request, _callback?: (...args: GetContentCallbackSignature) => unknown):
+                    Promise<GetContentPromiseSignature>|
+        void {
+          const {callback: callbackArg, promise, resolve, reject} =
+              callbackOrPromise<GetContentPromiseSignature, GetContentCallbackSignature>(arguments);
+
+          function callbackWrapper(response: unknown): void {
+            if (checkErrorAndReject(response, reject)) {
+              return;
+            }
+
+            const {content, encoding} = response as {content: string, encoding: string};
+            resolve?.({content, encoding});
+            callbackArg?.(content, encoding);
+          }
+          extensionServer.sendRequest({command: PrivateAPI.Commands.GetRequestContent, id: this._id}, callbackWrapper);
+
+          return promise;
+        } as PublicAPI.Chrome.DevTools.Request['getContent'],
   };
 
   function Panels(this: APIImpl.Panels): void {

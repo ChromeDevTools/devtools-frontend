@@ -178,6 +178,20 @@ export namespace Chrome {
     }
 
     export interface Request {
+      /**
+       * Retrieves the content of the request.
+       *
+       * If a `callback` is provided, it is invoked with the content and encoding
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param callback Optional callback to be invoked with the content and
+       * encoding.
+       * @returns A Promise that resolves to an object containing the content and
+       * encoding if no callback is provided, otherwise void. Rejects with an
+       * error object on failure.
+       */
+      getContent(): Promise<{content: string, encoding: string}>;
       getContent(callback: (content: string, encoding: string) => unknown): void;
     }
 
@@ -185,6 +199,18 @@ export namespace Chrome {
       onNavigated: EventSink<(url: string) => unknown>;
       onRequestFinished: EventSink<(request: Request) => unknown>;
 
+      /**
+       * Retrieves the HAR log that contains all network requests.
+       *
+       * If a `callback` is provided, it is invoked with the HAR log object
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param callback Optional callback to be invoked with the HAR log.
+       * @returns A Promise that resolves to the HAR log if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      getHAR(): Promise<object>;
       getHAR(callback: (harLog: object) => unknown): void;
     }
 

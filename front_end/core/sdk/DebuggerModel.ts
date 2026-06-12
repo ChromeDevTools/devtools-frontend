@@ -734,12 +734,11 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     }
   }
 
-  createRawLocation(script: Script, lineNumber: number, columnNumber: number, inlineFrameIndex?: number): Location {
-    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber, inlineFrameIndex);
+  createRawLocation(script: Script, lineNumber: number, columnNumber: number): Location {
+    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
   }
 
-  createRawLocationByURL(sourceURL: string, lineNumber: number, columnNumber?: number, inlineFrameIndex?: number):
-      Location|null {
+  createRawLocationByURL(sourceURL: string, lineNumber: number, columnNumber?: number): Location|null {
     for (const script of this.#scriptsBySourceURL.get(sourceURL) || []) {
       if (script.lineOffset > lineNumber ||
           (script.lineOffset === lineNumber && columnNumber !== undefined && script.columnOffset > columnNumber)) {
@@ -749,15 +748,14 @@ export class DebuggerModel extends SDKModel<EventTypes> {
           (script.endLine === lineNumber && columnNumber !== undefined && script.endColumn <= columnNumber)) {
         continue;
       }
-      return new Location(this, script.scriptId, lineNumber, columnNumber, inlineFrameIndex);
+      return new Location(this, script.scriptId, lineNumber, columnNumber);
     }
     return null;
   }
 
-  createRawLocationByScriptId(
-      scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number,
-      inlineFrameIndex?: number): Location {
-    return new Location(this, scriptId, lineNumber, columnNumber, inlineFrameIndex);
+  createRawLocationByScriptId(scriptId: Protocol.Runtime.ScriptId, lineNumber: number,
+                              columnNumber?: number): Location {
+    return new Location(this, scriptId, lineNumber, columnNumber);
   }
 
   createRawLocationsByStackTrace(stackTrace: Protocol.Runtime.StackTrace): Location[] {

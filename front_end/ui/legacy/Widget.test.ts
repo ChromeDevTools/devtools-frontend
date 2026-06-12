@@ -319,6 +319,65 @@ describeWithEnvironment('Widget', () => {
       assert.strictEqual(childPerformUpdate.callCount, 1, 'Expected exactly one call to `childWidget.performUpdate`');
       assert.strictEqual(animationFrame.callCount, 1, 'Expected exactly one call to `requestAnimationFrame`');
     });
+
+    it('prevents starvation by shielding the next update from being aborted', async () => {
+      let callCount = 0;
+      let firstUpdateResolve = () => {};
+      let secondUpdateResolve = () => {};
+      let firstSignal: AbortSignal|undefined;
+      let secondSignal: AbortSignal|undefined;
+
+      const widget = new (class extends Widget {
+        override async performUpdate(signal?: AbortSignal): Promise<void> {
+          callCount++;
+          if (callCount === 1) {
+            firstSignal = signal;
+            await new Promise<void>(resolve => {
+              firstUpdateResolve = resolve;
+            });
+          } else if (callCount === 2) {
+            secondSignal = signal;
+            await new Promise<void>(resolve => {
+              secondUpdateResolve = resolve;
+            });
+          }
+        }
+      })();
+
+      widget.requestUpdate();
+
+      // Wait for the first performUpdate to start
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      assert.strictEqual(callCount, 1);
+      assert.isFalse(firstSignal?.aborted);
+
+      // This requestUpdate will abort firstSignal.
+      widget.requestUpdate();
+      assert.isTrue(firstSignal?.aborted);
+
+      // Resolve the first update so the second update is scheduled
+      firstUpdateResolve?.();
+
+      // Wait for the second update to start
+      await new Promise(resolve => {
+        // We use setTimeout here because the update scheduler uses a queueMicrotask
+        // and requestAnimationFrame. setTimeout ensures we yield to both.
+        setTimeout(() => requestAnimationFrame(resolve), 0);
+      });
+      assert.strictEqual(callCount, 2);
+      assert.isFalse(secondSignal?.aborted);
+
+      // This requestUpdate should be shielded and NOT abort the second signal
+      widget.requestUpdate();
+      assert.isFalse(secondSignal?.aborted);
+
+      // Resolve the second update
+      secondUpdateResolve?.();
+
+      await widget.updateComplete;
+
+      assert.strictEqual(callCount, 3);
+    });
   });
 
   describe('updateComplete', () => {

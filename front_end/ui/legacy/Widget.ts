@@ -483,6 +483,12 @@ export type WidgetOptions<ContentTypeT extends HTMLElement|DocumentFragment = HT
                                         classes?: never,
                                       });
 
+const enum UpdateState {
+  NORMAL = 'NORMAL',            // Standard state: update can be aborted for efficiency.
+  INTERRUPTED = 'INTERRUPTED',  // An update was physically running and got aborted; replacement must be shielded.
+  SHIELDED = 'SHIELDED',        // Current update is a replacement for an interrupted one and cannot be aborted.
+}
+
 export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElement> {
   readonly element: HTMLElement;
   #contentElement: ContentTypeT;
@@ -501,6 +507,7 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
   #externallyManaged?: boolean;
   #updateComplete = UPDATE_COMPLETE;
   #updateController?: AbortController;
+  #updateState = UpdateState.NORMAL;
 
   /**
    * Constructs a new `Widget` with the given `options`.
@@ -1165,12 +1172,17 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
   }
 
   addUpdateController(controller: AbortController): void {
+    const wasInterrupted = this.#updateState === UpdateState.INTERRUPTED;
     this.#updateController?.abort();
     this.#updateController = controller;
+    // Transition to SHIELDED if we are replacing a starved update, otherwise reset to NORMAL.
+    this.#updateState = wasInterrupted ? UpdateState.SHIELDED : UpdateState.NORMAL;
   }
 
   cancelUpdateController(): void {
     this.#updateController?.abort();
+    this.#updateController = undefined;
+    this.#updateState = UpdateState.NORMAL;
   }
 
   /**
@@ -1180,7 +1192,13 @@ export class Widget<ContentTypeT extends HTMLElement|DocumentFragment = HTMLElem
    * frame.
    */
   requestUpdate(): void {
-    this.#updateController?.abort();
+    // If the state is SHIELDED, we skip the abort call entirely to break the starvation loop.
+    if (this.#updateState !== UpdateState.SHIELDED) {
+      if (currentlyProcessed.has(this)) {
+        this.#updateState = UpdateState.INTERRUPTED;
+      }
+      this.#updateController?.abort();
+    }
     this.#updateComplete = enqueueWidgetUpdate(this);
   }
 

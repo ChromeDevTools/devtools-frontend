@@ -235,6 +235,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #shouldRenderLazily = false;
   #lazyRenderObserver?: IntersectionObserver;
   #lazyRenderCallbacks = new WeakMap<Element, () => void>();
+  #updateId = 0;
 
   constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel) {
     super(computedStyleModel, {delegatesFocus: true, useShadowDom: true, classes: ['flex-none']});
@@ -616,9 +617,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       this.dispatchEventToListeners(Events.INITIAL_UPDATE_COMPLETED);
     }
 
-    this.nodeStylesUpdatedForTest((this.node() as SDK.DOMModel.DOMNode), true);
+    this.#updateId += 1;
+    const currentUpdateId = this.#updateId;
 
-    this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED, {hasMatchedStyles: this.hasMatchedStyles});
+    void UI.Widget.Widget.allUpdatesComplete.then(() => {
+      if (this.#updateId === currentUpdateId) {
+        this.nodeStylesUpdatedForTest((this.node() as SDK.DOMModel.DOMNode), true);
+        this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED, {hasMatchedStyles: this.hasMatchedStyles});
+      }
+    });
   }
 
   #getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):

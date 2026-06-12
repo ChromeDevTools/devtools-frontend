@@ -11,6 +11,10 @@ import {devtoolsRootPath} from '../devtools_paths.js';
 
 import {esbuildPlugin} from './devtools_plugin.js';
 
+// Disable goroutine preemption to avoid random hangs
+// See crbug.com/478754070
+process.env.GODEBUG = 'asyncpreemptoff=1';
+
 // esbuild module uses binary in this path.
 const binaryName = os.type() === 'Windows_NT' ? 'esbuild.exe' : 'esbuild';
 process.env.ESBUILD_BINARY_PATH = path.join(

@@ -188,7 +188,11 @@ def runEsbuild(opts, tsconfig_output_location, tsconfig_output_directory):
     cmd += opts.sources
 
     logging.info('runEsbuild: %s', ' '.join(cmd))
-    p = subprocess.run(cmd)
+    env = os.environ.copy()
+    # Disable goroutine preemption to avoid random hangs
+    # See crbug.com/478754070
+    env['GODEBUG'] = 'asyncpreemptoff=1'
+    p = subprocess.run(cmd, env=env)
     return p.returncode
 
 

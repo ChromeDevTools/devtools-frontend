@@ -98,7 +98,7 @@ describeWithEnvironment('AiConversation', () => {
     await Array.fromAsync(conversation.run('test'));
 
     assert.exists(conversation.selectedContext);
-    assert.instanceOf(conversation.selectedContext, AiAssistance.FileAgent.FileContext);
+    assert.instanceOf(conversation.selectedContext, AiAssistance.FileContext.FileContext);
   });
 
   it('should yield UserQuery when run is called', async () => {

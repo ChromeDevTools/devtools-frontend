@@ -342,7 +342,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           const file = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode, {
             url: urlString`https://www.example.com/app.js`,
           });
-          return new AiAssistanceModel.FileAgent.FileContext(file);
+          return new AiAssistanceModel.FileContext.FileContext(file);
         },
         action: 'drjones.sources-panel-context',
       }

@@ -15,6 +15,7 @@ import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {isOpaqueOrigin} from '../AiOrigins.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
+import {FileContext} from '../contexts/FileContext.js';
 import {getRequestContextOrigin, RequestContext} from '../contexts/RequestContext.js';
 import {debugLog} from '../debug.js';
 import {StorageItem} from '../StorageItem.js';
@@ -27,7 +28,6 @@ import {
   type ContextResponse,
   type RequestOptions,
 } from './AiAgent.js';
-import {FileContext} from './FileAgent.js';
 import {PerformanceTraceContext} from './PerformanceAgent.js';
 import {StorageContext} from './StorageAgent.js';
 

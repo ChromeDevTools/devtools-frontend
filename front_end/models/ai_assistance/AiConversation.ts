@@ -25,7 +25,7 @@ import {
   type UserQuery
 } from './agents/AiAgent.js';
 import {ContextSelectionAgent} from './agents/ContextSelectionAgent.js';
-import {FileAgent, FileContext} from './agents/FileAgent.js';
+import {FileAgent} from './agents/FileAgent.js';
 import {NetworkAgent} from './agents/NetworkAgent.js';
 import {PerformanceAgent, PerformanceTraceContext} from './agents/PerformanceAgent.js';
 import {StorageAgent, StorageContext} from './agents/StorageAgent.js';
@@ -34,6 +34,7 @@ import {AiAgent2} from './AiAgent2.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import type {ChangeManager} from './ChangeManager.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
+import {FileContext} from './contexts/FileContext.js';
 import {RequestContext} from './contexts/RequestContext.js';
 
 export const NOT_FOUND_IMAGE_DATA = '';

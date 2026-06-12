@@ -5,13 +5,11 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Workspace from '../../workspace/workspace.js';
-import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 import {
   AiAgent,
-  type ContextDetail,
   type ContextResponse,
-  ConversationContext,
+  type ConversationContext,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -75,31 +73,6 @@ External Resources:
 MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 `;
 
-export class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
-  #file: Workspace.UISourceCode.UISourceCode;
-
-  constructor(file: Workspace.UISourceCode.UISourceCode) {
-    super();
-    this.#file = file;
-  }
-
-  override getURL(): string {
-    return this.#file.url();
-  }
-
-  override getItem(): Workspace.UISourceCode.UISourceCode {
-    return this.#file;
-  }
-
-  override getTitle(): string {
-    return this.#file.displayName();
-  }
-
-  override async refresh(): Promise<void> {
-    await this.#file.requestContentData();
-  }
-}
-
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -126,27 +99,21 @@ export class FileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
       return;
     }
 
+    const details = await selectedFile.getUserFacingDetails();
+    if (!details) {
+      return;
+    }
+
     yield {
       type: ResponseType.CONTEXT,
-      details: createContextDetailsForFileAgent(selectedFile),
+      details,
     };
   }
 
   override async enhanceQuery(
       query: string, selectedFile: ConversationContext<Workspace.UISourceCode.UISourceCode>|null): Promise<string> {
-    const fileEnchantmentQuery = selectedFile ?
-        `# Selected file\n${new FileFormatter(selectedFile.getItem()).formatFile()}\n\n# User request\n\n` :
-        '';
+    const promptDetails = selectedFile ? await selectedFile.getPromptDetails() : null;
+    const fileEnchantmentQuery = promptDetails ? `${promptDetails}\n\n# User request\n\n` : '';
     return `${fileEnchantmentQuery}${query}`;
   }
-}
-
-function createContextDetailsForFileAgent(selectedFile: ConversationContext<Workspace.UISourceCode.UISourceCode>):
-    [ContextDetail, ...ContextDetail[]] {
-  return [
-    {
-      title: 'Selected file',
-      text: new FileFormatter(selectedFile.getItem()).formatFile(),
-    },
-  ];
 }

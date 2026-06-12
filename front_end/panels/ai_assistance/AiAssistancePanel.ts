@@ -576,12 +576,12 @@ function createDOMNodeContext(node: SDK.DOMModel.DOMNode|null): AiAssistanceMode
   return new AiAssistanceModel.DOMNodeContext.DOMNodeContext(node);
 }
 
-function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAssistanceModel.FileAgent.FileContext|
+function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAssistanceModel.FileContext.FileContext|
     null {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel.FileAgent.FileContext(file);
+  return new AiAssistanceModel.FileContext.FileContext(file);
 }
 
 function createAccessibilityContext(report: LighthousePanel.LighthousePanel.ActiveLighthouseReport|null):
@@ -666,7 +666,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #conversation?: AiAssistanceModel.AiConversation.AiConversation;
 
-  #selectedFile: AiAssistanceModel.FileAgent.FileContext|null = null;
+  #selectedFile: AiAssistanceModel.FileContext.FileContext|null = null;
   #selectedElement: AiAssistanceModel.DOMNodeContext.DOMNodeContext|null = null;
   #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
   #selectedRequest: AiAssistanceModel.RequestContext.RequestContext|null = null;
@@ -1280,7 +1280,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!newFile || this.#selectedFile?.getItem() === newFile) {
           return;
         }
-        this.#selectedFile = new AiAssistanceModel.FileAgent.FileContext(ev.data);
+        this.#selectedFile = new AiAssistanceModel.FileContext.FileContext(ev.data);
         this.#updateConversationState(this.#conversation);
       };
 
@@ -1493,7 +1493,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
       return Common.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel.FileAgent.FileContext) {
+    if (context instanceof AiAssistanceModel.FileContext.FileContext) {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
@@ -1733,7 +1733,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleConversationContextChange = (data: unknown): void => {
-    if (data instanceof AiAssistanceModel.FileAgent.FileContext) {
+    if (data instanceof AiAssistanceModel.FileContext.FileContext) {
       this.#selectedFile = data;
     } else if (data instanceof AiAssistanceModel.DOMNodeContext.DOMNodeContext) {
       this.#selectedElement = data;

@@ -1170,6 +1170,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/agents/StorageAgent.js",
   "front_end/models/ai_assistance/agents/StylingAgent.js",
   "front_end/models/ai_assistance/contexts/DOMNodeContext.js",
+  "front_end/models/ai_assistance/contexts/FileContext.js",
   "front_end/models/ai_assistance/contexts/RequestContext.js",
   "front_end/models/ai_assistance/data_formatters/FileFormatter.js",
   "front_end/models/ai_assistance/data_formatters/LighthouseFormatter.js",

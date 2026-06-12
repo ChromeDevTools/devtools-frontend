@@ -15,7 +15,7 @@ import {
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Workspace from '../../workspace/workspace.js';
-import {AiAgent, FileAgent} from '../ai_assistance.js';
+import {AiAgent, FileAgent, FileContext} from '../ai_assistance.js';
 
 describeWithMockConnection('FileAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
@@ -137,7 +137,7 @@ describeWithMockConnection('FileAgent', () => {
           content: 'content',
         });
         const responses = await Array.fromAsync(
-            agent.run('test', {selected: uiSourceCode ? new FileAgent.FileContext(uiSourceCode) : null}));
+            agent.run('test', {selected: uiSourceCode ? new FileContext.FileContext(uiSourceCode) : null}));
 
         assert.deepEqual(responses, [
           {

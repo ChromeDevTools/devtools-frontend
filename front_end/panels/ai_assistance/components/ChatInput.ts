@@ -171,7 +171,7 @@ export type ViewOutput = undefined;
 
 function getContextRemoveLabel(context: AiAssistanceModel.AiAgent.ConversationContext<unknown>):
     Platform.UIString.LocalizedString {
-  if (context instanceof AiAssistanceModel.FileAgent.FileContext) {
+  if (context instanceof AiAssistanceModel.FileContext.FileContext) {
     return lockedString(UIStringsNotTranslate.removeContextFile);
   }
   if (context instanceof AiAssistanceModel.DOMNodeContext.DOMNodeContext) {
@@ -353,7 +353,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                             html`
                           ${input.context instanceof AiAssistanceModel.RequestContext.RequestContext ?
                             PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) :
-                            input.context instanceof AiAssistanceModel.FileAgent.FileContext ?
+                            input.context instanceof AiAssistanceModel.FileContext.FileContext ?
                             PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) :
                             input.context instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext ?
                             html`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` :

@@ -23,6 +23,7 @@ import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
+import * as FileContext from './contexts/FileContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
 import * as ConversationSummary from './ConversationSummary.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
@@ -67,6 +68,7 @@ export {
   ExecuteJavaScript,
   ExtensionScope,
   FileAgent,
+  FileContext,
   FileFormatter,
   GetStyles,
   GreenDevAgent,

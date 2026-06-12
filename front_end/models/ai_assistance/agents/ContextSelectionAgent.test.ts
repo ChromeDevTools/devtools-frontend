@@ -25,7 +25,7 @@ import {
   AiAgent,
   ContextSelectionAgent,
   DOMNodeContext,
-  FileAgent,
+  FileContext,
   PerformanceAgent,
   RequestContext,
   StorageAgent,
@@ -891,7 +891,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
       const contextChange = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE);
       assert.exists(contextChange);
-      assert.instanceOf(contextChange.context, FileAgent.FileContext);
+      assert.instanceOf(contextChange.context, FileContext.FileContext);
       assert.strictEqual(contextChange.context.getItem(), file);
       assert.exists(contextChange.widgets);
       assert.lengthOf(contextChange.widgets, 1);

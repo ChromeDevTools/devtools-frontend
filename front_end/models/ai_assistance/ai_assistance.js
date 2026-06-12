@@ -1689,21 +1689,16 @@ const data = {
     };
   }
   async handler(params, context, options) {
-    const executionNode = context.getExecutionContextNode?.() ?? null;
+    const executionNode = context.getExecutionContextNode();
     if (!executionNode) {
       return { error: "Error: Could not find the context node for execution." };
     }
     const executionMode = Root3.Runtime.hostConfig.devToolsFreestyler?.executionMode ?? Root3.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
-    const changes = context.changeManager;
-    const createExtensionScope = context.createExtensionScope;
-    if (!changes || !createExtensionScope) {
-      return { error: "Internal Error: Required change manager or extension scope creator is missing." };
-    }
     const executor = new JavascriptExecutor({
       executionMode,
       getContextNode: () => executionNode,
-      createExtensionScope,
-      changes
+      createExtensionScope: context.createExtensionScope,
+      changes: context.changeManager
     }, context.execJs);
     return await executor.executeAction(params.code, options);
   }
@@ -2568,24 +2563,24 @@ var GetStylesTool = class {
   async handler(params, context, _options) {
     const widgets = [];
     const result = {};
-    const activeContext = context.conversationContext;
-    if (!activeContext || !(activeContext instanceof DOMNodeContext)) {
-      return { error: "Error: Could not find the currently selected element." };
+    const target = context.getTarget();
+    if (!target) {
+      return { error: "Error: Could not find the inspected page." };
     }
-    const selectedNode = activeContext.getItem();
-    if (!selectedNode) {
-      return { error: "Error: Could not find the currently selected element." };
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin) {
+      return { error: "Error: Origin lock is not established." };
     }
     for (const uid of params.elements) {
       result[uid] = { computed: {}, authored: {} };
       debugLog(`Action to execute: uid=${uid}`);
-      const node = new SDK5.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), uid);
+      const node = new SDK5.DOMModel.DeferredDOMNode(target, uid);
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
       }
       const newContext = new DOMNodeContext(resolved);
-      if (activeContext.getOrigin() !== newContext.getOrigin()) {
+      if (establishedOrigin !== newContext.getOrigin()) {
         return { error: "Error: Node does not belong to the current origin." };
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
@@ -9875,9 +9870,17 @@ var StylingAgent = class extends AiAgent {
       description: getStylesTool.description,
       parameters: getStylesTool.parameters,
       displayInfoFromArgs: getStylesTool.displayInfoFromArgs,
-      handler: (args) => getStylesTool.handler(args, {
-        conversationContext: this.context ?? null
-      })
+      handler: async (args) => {
+        const context = this.context;
+        if (!context) {
+          return { error: "Error: Could not find the currently selected element." };
+        }
+        return await getStylesTool.handler(args, {
+          conversationContext: context,
+          getTarget: () => SDK10.TargetManager.TargetManager.instance().primaryPageTarget() ?? context.getItem().domModel().target(),
+          getEstablishedOrigin: () => context.getOrigin()
+        });
+      }
     });
     const executeJsTool = ToolRegistry.get(
       "executeJavaScript"
@@ -10172,6 +10175,7 @@ __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
 import * as Host15 from "./../../core/host/host.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/skills/styling.skill.js
 var skill = {
@@ -10202,6 +10206,7 @@ var AiAgent2 = class extends AiAgent {
   #skillsInjected = false;
   #changes = new ChangeManager();
   #execJs;
+  #allowedOrigin;
   get options() {
     return {};
   }
@@ -10210,6 +10215,7 @@ var AiAgent2 = class extends AiAgent {
   constructor(opts) {
     super(opts);
     this.#execJs = opts.execJs ?? executeJsCode;
+    this.#allowedOrigin = opts.allowedOrigin;
     this.#declaredTools.add("learnSkills");
     const skillsList = Object.keys(SKILLS).join(", ");
     this.declareFunction("learnSkills", {
@@ -10332,14 +10338,23 @@ ${skillObj.instructions}
       description: tool.description,
       parameters: tool.parameters,
       displayInfoFromArgs: tool.displayInfoFromArgs,
-      handler: (args, options) => tool.handler(args, {
-        conversationContext: this.context ?? null,
-        changeManager: this.#changes,
-        createExtensionScope: this.#createExtensionScope.bind(this),
-        execJs: this.#execJs,
-        getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null
-      }, options)
+      handler: (args, options) => {
+        const context = {
+          conversationContext: this.context ?? null,
+          changeManager: this.#changes,
+          createExtensionScope: this.#createExtensionScope.bind(this),
+          execJs: this.#execJs,
+          getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
+          getTarget: () => SDK11.TargetManager.TargetManager.instance().primaryPageTarget(),
+          getEstablishedOrigin: () => this.#getConversationOrigin()
+        };
+        return tool.handler(args, context, options);
+      }
     });
+  }
+  #getConversationOrigin() {
+    const allowed = this.#allowedOrigin?.();
+    return allowed && "origin" in allowed ? allowed.origin : void 0;
   }
   get activeSkills() {
     return this.#activeSkills;
@@ -10359,7 +10374,7 @@ import * as Common13 from "./../../core/common/common.js";
 import * as Host16 from "./../../core/host/host.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
@@ -10833,15 +10848,15 @@ ${item.text.trim()}`);
         this.#navigationOccurredDuringRun = true;
       }
     };
-    const targetManager = SDK11.TargetManager.TargetManager.instance();
-    targetManager.addModelListener(SDK11.ResourceTreeModel.ResourceTreeModel, SDK11.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    const targetManager = SDK12.TargetManager.TargetManager.instance();
+    targetManager.addModelListener(SDK12.ResourceTreeModel.ResourceTreeModel, SDK12.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     try {
       if (this.isBlockedByOrigin) {
         throw new Error("cross-origin context data should not be included");
       }
       yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
-      targetManager.removeModelListener(SDK11.ResourceTreeModel.ResourceTreeModel, SDK11.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+      targetManager.removeModelListener(SDK12.ResourceTreeModel.ResourceTreeModel, SDK12.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     }
   }
   #getQueryAfterSelection(initialQuery, selection) {
@@ -10923,7 +10938,7 @@ function isAiAssistanceContextSelectionAgentEnabled() {
   return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function getPrimaryPageOrigin() {
-  const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+  const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
   return inspectedURL ? new Common13.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
 }

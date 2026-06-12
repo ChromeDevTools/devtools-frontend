@@ -8366,6 +8366,12 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   async loadingStarted() {
     this.#changeView({ mode: "STATUS_PANE_OVERLAY" });
+    if (this.state === "Recording") {
+      this.setState(
+        "StopPending"
+        /* State.STOP_PENDING */
+      );
+    }
     if (this.statusDialog) {
       this.statusDialog.remove();
     }

@@ -51,24 +51,24 @@ export class GetStylesTool {
     async handler(params, context, _options) {
         const widgets = [];
         const result = {};
-        const activeContext = context.conversationContext;
-        if (!activeContext || !(activeContext instanceof DOMNodeContext)) {
-            return { error: 'Error: Could not find the currently selected element.' };
+        const target = context.getTarget();
+        if (!target) {
+            return { error: 'Error: Could not find the inspected page.' };
         }
-        const selectedNode = activeContext.getItem();
-        if (!selectedNode) {
-            return { error: 'Error: Could not find the currently selected element.' };
+        const establishedOrigin = context.getEstablishedOrigin();
+        if (!establishedOrigin) {
+            return { error: 'Error: Origin lock is not established.' };
         }
         for (const uid of params.elements) {
             result[uid] = { computed: {}, authored: {} };
             debugLog(`Action to execute: uid=${uid}`);
-            const node = new SDK.DOMModel.DeferredDOMNode(selectedNode.domModel().target(), uid);
+            const node = new SDK.DOMModel.DeferredDOMNode(target, uid);
             const resolved = await node.resolvePromise();
             if (!resolved) {
                 return { error: 'Error: Could not find the element with uid=' + uid };
             }
             const newContext = new DOMNodeContext(resolved);
-            if (activeContext.getOrigin() !== newContext.getOrigin()) {
+            if (establishedOrigin !== newContext.getOrigin()) {
                 return { error: 'Error: Node does not belong to the current origin.' };
             }
             const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

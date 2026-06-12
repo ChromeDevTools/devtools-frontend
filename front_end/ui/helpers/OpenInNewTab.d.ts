@@ -16,4 +16,4 @@
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */
-export declare function openInNewTab(url: URL | string): void;
+export declare function openInNewTab(url: URL | string, allowPrivileged?: boolean): void;

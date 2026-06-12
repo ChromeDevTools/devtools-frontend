@@ -3,6 +3,35 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
+/*
+ * Copyright (C) 2011 Google Inc.  All rights reserved.
+ * Copyright (C) 2007, 2008 Apple Inc.  All rights reserved.
+ * Copyright (C) 2009 Joseph Pecoraro
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1.  Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ * 2.  Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ * 3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
+ *     its contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -11,7 +40,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -30,6 +58,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { format, updateStyle } from './ConsoleFormat.js';
 import { ConsoleInsightTeaser } from './ConsoleInsightTeaser.js';
 import consoleViewStyles from './consoleView.css.js';
+import { SymbolizedErrorWidget } from './SymbolizedErrorWidget.js';
 const UIStrings = {
     /**
      * @description Message element text content in Console View Message of the Console panel. Shown
@@ -383,7 +412,14 @@ export class ConsoleViewMessage {
                     if (this.message.parameters?.length === 1) {
                         const parameter = this.message.parameters[0];
                         if (typeof parameter !== 'string' && parameter.type === 'string') {
-                            messageElement = this.tryFormatAsError(parameter.value);
+                            const value = parameter.value;
+                            const runtimeModel = this.message.runtimeModel();
+                            if (runtimeModel && Bindings.SymbolizedError.isErrorLike(value)) {
+                                const remoteObj = parameter instanceof SDK.RemoteObject.RemoteObject ?
+                                    parameter :
+                                    runtimeModel.createRemoteObject(parameter);
+                                messageElement = this.renderSymbolizedError(remoteObj);
+                            }
                         }
                     }
                     const args = this.message.parameters || [messageText];
@@ -600,16 +636,18 @@ export class ConsoleViewMessage {
         stackTracePreview.options = { widthConstrained: true };
         if (stackTraceTarget && stackTrace) {
             const selectableChildIndex = this.selectableChildren.length;
-            void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+            const stackTracePromise = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
                 .createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget)
                 .then(stackTrace => {
                 stackTracePreview.stackTrace = stackTrace;
                 return stackTracePreview.updateComplete;
             })
                 .then(() => {
-                const selectableLinks = stackTracePreview.linkElements.map(element => ({ element, forceSelect: () => element.focus() }));
+                const selectableLinks = stackTracePreview.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
                 this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
             });
+            this.#formatErrorStackPromiseForTest =
+                Promise.all([this.#formatErrorStackPromiseForTest, stackTracePromise]).then(() => { });
         }
         stackTracePreview.markAsRoot();
         stackTracePreview.show(stackTraceElement);
@@ -664,7 +702,7 @@ export class ConsoleViewMessage {
         let element;
         switch (outputType) {
             case 'error':
-                element = this.formatParameterAsError(output);
+                element = this.renderSymbolizedError(output);
                 break;
             case 'function':
                 element = this.formatParameterAsFunction(output, includePreview);
@@ -852,38 +890,24 @@ export class ConsoleViewMessage {
         appendOrShow(result, this.linkifyStringAsFragment(text));
         return result;
     }
-    formatParameterAsError(output) {
-        const result = document.createElement('span');
-        // Combine the ExceptionDetails for this error object with the parsed Error#stack.
-        // The Exceptiondetails include script IDs for stack frames, which allows more accurate
-        // linking.
-        const formatErrorStack = async (errorObj, includeCausedByPrefix) => {
-            const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
-            const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
-            let errorElement = this.tryFormatAsError(error.errorStack, details);
-            if (!errorElement) {
-                errorElement = document.createElement('span');
-                appendOrShow(errorElement, this.linkifyStringAsFragment(error.errorStack));
+    renderSymbolizedError(errorRemoteObject) {
+        const container = document.createElement('span');
+        const widget = new SymbolizedErrorWidget();
+        widget.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+        const selectableChildIndex = this.selectableChildren.length;
+        const format = async () => {
+            const error = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(errorRemoteObject, this.message.exceptionDetails);
+            if (error) {
+                widget.error = error;
             }
-            if (includeCausedByPrefix) {
-                const causeElement = document.createElement('div');
-                causeElement.append('Caused by: ', errorElement);
-                result.appendChild(causeElement);
-            }
-            else {
-                result.appendChild(errorElement);
-            }
-            if (cause?.subtype === 'error') {
-                await formatErrorStack(cause, /* includeCausedByPrefix */ true);
-            }
-            else if (cause?.type === 'string') {
-                const stringCauseElement = document.createElement('div');
-                stringCauseElement.append(`Caused by: ${cause.value}`);
-                result.append(stringCauseElement);
-            }
+            await widget.updateComplete;
+            const selectableLinks = widget.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
+            this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
         };
-        this.#formatErrorStackPromiseForTest = formatErrorStack(output, /* includeCausedByPrefix */ false);
-        return result;
+        this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format()]).then(() => { });
+        widget.markAsRoot();
+        widget.show(container);
+        return container;
     }
     formatAsArrayEntry(output) {
         return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
@@ -1566,134 +1590,6 @@ export class ConsoleViewMessage {
     }
     searchHighlightNode(index) {
         return this.searchHighlightNodes[index];
-    }
-    async getInlineFrames(debuggerModel, url, lineNumber, columnNumber) {
-        const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-        const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
-        const uiSourceCodes = projects.map(project => project.uiSourceCodeForURL(url)).flat().filter(f => !!f);
-        const scripts = uiSourceCodes.map(uiSourceCode => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
-        if (scripts.length) {
-            const location = new SDK.DebuggerModel.Location(debuggerModel, scripts[0].scriptId, lineNumber || 0, columnNumber);
-            const functionInfo = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location);
-            return functionInfo && 'frames' in functionInfo ? functionInfo : { frames: [] };
-        }
-        return { frames: [] };
-    }
-    // Expand inline stack frames in the formatted error in the stackTrace element, inserting new elements before the
-    // insertBefore anchor.
-    async expandInlineStackFrames(debuggerModel, prefix, suffix, url, lineNumber, columnNumber, stackTrace, insertBefore) {
-        const { frames } = await this.getInlineFrames(debuggerModel, url, lineNumber, columnNumber);
-        if (!frames.length) {
-            return false;
-        }
-        for (let f = 0; f < frames.length; ++f) {
-            const { name } = frames[f];
-            const formattedLine = document.createElement('span');
-            appendOrShow(formattedLine, this.linkifyStringAsFragment(`${prefix} ${name} (`));
-            const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), null, url, lineNumber, { columnNumber, inlineFrameIndex: f });
-            scriptLocationLink.tabIndex = -1;
-            this.selectableChildren.push({ element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus() });
-            formattedLine.appendChild(scriptLocationLink);
-            appendOrShow(formattedLine, this.linkifyStringAsFragment(suffix));
-            formattedLine.classList.add('formatted-stack-frame');
-            stackTrace.insertBefore(formattedLine, insertBefore);
-        }
-        return true;
-    }
-    createScriptLocationLinkForSyntaxError(debuggerModel, exceptionDetails) {
-        const { scriptId, lineNumber, columnNumber } = exceptionDetails;
-        if (!scriptId) {
-            return;
-        }
-        // SyntaxErrors might not populate the URL field. Try to resolve it via scriptId.
-        const url = exceptionDetails.url || debuggerModel.scriptForId(scriptId)?.sourceURL;
-        if (!url) {
-            return;
-        }
-        const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), exceptionDetails.scriptId || null, url, lineNumber, {
-            columnNumber,
-            inlineFrameIndex: 0,
-            showColumnNumber: true,
-        });
-        scriptLocationLink.tabIndex = -1;
-        return scriptLocationLink;
-    }
-    tryFormatAsError(string, exceptionDetails) {
-        const runtimeModel = this.message.runtimeModel();
-        if (!runtimeModel) {
-            return null;
-        }
-        const issueSummary = exceptionDetails?.exceptionMetaData?.issueSummary;
-        if (typeof issueSummary === 'string') {
-            string = StackTrace.ErrorStackParser.concatErrorDescriptionAndIssueSummary(string, issueSummary);
-        }
-        const linkInfos = StackTrace.ErrorStackParser.parseSourcePositionsFromErrorStack(runtimeModel, string);
-        if (!linkInfos?.length) {
-            return null;
-        }
-        if (exceptionDetails?.stackTrace) {
-            StackTrace.ErrorStackParser.augmentErrorStackWithScriptIds(linkInfos, exceptionDetails.stackTrace);
-        }
-        const debuggerModel = runtimeModel.debuggerModel();
-        const formattedResult = document.createElement('span');
-        for (let i = 0; i < linkInfos.length; ++i) {
-            const newline = i < linkInfos.length - 1 ? '\n' : '';
-            const { line, link, isCallFrame } = linkInfos[i];
-            // Syntax errors don't have a stack frame that points to the source position
-            // where the error occurred. We use the source location from the
-            // exceptionDetails and append it to the end of the message instead.
-            if (!link && exceptionDetails && line.startsWith('SyntaxError')) {
-                appendOrShow(formattedResult, this.linkifyStringAsFragment(line));
-                const maybeScriptLocation = this.createScriptLocationLinkForSyntaxError(debuggerModel, exceptionDetails);
-                if (maybeScriptLocation) {
-                    formattedResult.append(' (at ');
-                    formattedResult.appendChild(maybeScriptLocation);
-                    formattedResult.append(')');
-                }
-                formattedResult.append(newline);
-                continue;
-            }
-            if (!isCallFrame) {
-                appendOrShow(formattedResult, this.linkifyStringAsFragment(`${line}${newline}`));
-                continue;
-            }
-            const formattedLine = document.createElement('span');
-            if (!link) {
-                appendOrShow(formattedLine, this.linkifyStringAsFragment(`${line}${newline}`));
-                formattedLine.classList.add('formatted-builtin-stack-frame');
-                formattedResult.appendChild(formattedLine);
-                continue;
-            }
-            const suffix = `${link.suffix}${newline}`;
-            appendOrShow(formattedLine, this.linkifyStringAsFragment(link.prefix));
-            const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), link.scriptId || null, link.url, link.lineNumber, {
-                columnNumber: link.columnNumber,
-                inlineFrameIndex: 0,
-                showColumnNumber: true,
-            });
-            scriptLocationLink.tabIndex = -1;
-            this.selectableChildren.push({ element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus() });
-            formattedLine.appendChild(scriptLocationLink);
-            appendOrShow(formattedLine, this.linkifyStringAsFragment(suffix));
-            formattedLine.classList.add('formatted-stack-frame');
-            formattedResult.appendChild(formattedLine);
-            if (!link.enclosedInBraces) {
-                continue;
-            }
-            const prefixWithoutFunction = link.prefix.substring(0, link.prefix.lastIndexOf(' ', link.prefix.length - 3));
-            // If we were able to parse the function name from the stack trace line, try to replace it with an expansion of
-            // any inline frames.
-            const selectableChildIndex = this.selectableChildren.length - 1;
-            void this
-                .expandInlineStackFrames(debuggerModel, prefixWithoutFunction, suffix, link.url, link.lineNumber, link.columnNumber, formattedResult, formattedLine)
-                .then(modified => {
-                if (modified) {
-                    formattedResult.removeChild(formattedLine);
-                    this.selectableChildren.splice(selectableChildIndex, 1);
-                }
-            });
-        }
-        return formattedResult;
     }
     static linkifyWithCustomLinkifier(string, linkifier) {
         if (string.length > getMaxTokenizableStringLength()) {

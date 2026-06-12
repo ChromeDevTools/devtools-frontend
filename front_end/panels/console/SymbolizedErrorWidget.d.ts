@@ -9,6 +9,7 @@ declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: HTMLElem
 export declare class SymbolizedErrorWidget extends UI.Widget.Widget {
     #private;
     constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
+    get linkElements(): readonly HTMLElement[];
     set ignoreListManager(ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager);
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager | undefined;
     set error(error: Bindings.SymbolizedError.SymbolizedError);

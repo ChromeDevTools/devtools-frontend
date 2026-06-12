@@ -97,6 +97,7 @@ host/out-of-process.test.js
 host/user-metrics.test.js
 inline_editor/color-swatch.test.js
 inspector/drawer.test.js
+inspector/plus-button.test.js
 issues/bounce-tracking-issues.test.js
 issues/client-hint-issues.test.js
 issues/cookie-attribute-exceeds-max-size-issues.test.js

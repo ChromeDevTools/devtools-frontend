@@ -62,6 +62,7 @@ import { ConsoleSidebar } from './ConsoleSidebar.js';
 import consoleViewStyles from './consoleView.css.js';
 import { ConsoleCommand, ConsoleCommandResult, ConsoleGroupViewMessage, ConsoleTableMessageView, ConsoleViewMessage, getMessageForElement, } from './ConsoleViewMessage.js';
 import { ConsoleViewport } from './ConsoleViewport.js';
+import symbolizedErrorWidgetStyles from './symbolizedErrorWidget.css.js';
 const UIStrings = {
     /**
      * @description Label for button which links to Issues tab, specifying how many issues there are.
@@ -334,7 +335,10 @@ export class ConsoleView extends UI.Widget.VBox {
     constructor(viewportThrottlerTimeout) {
         super();
         this.setMinimumSize(0, 35);
-        this.registerRequiredCSS(consoleViewStyles, objectValueStyles, CodeHighlighter.codeHighlighterStyles);
+        // We register the SymbolizedErrorWidget styles here because many web and e2e
+        // tests use `deepTextContent`, which would also include <style> tags if they
+        // were injected directly into the widget's shadow DOM.
+        this.registerRequiredCSS(consoleViewStyles, symbolizedErrorWidgetStyles, objectValueStyles, CodeHighlighter.codeHighlighterStyles);
         this.#searchableView = new UI.SearchableView.SearchableView(this, null);
         this.#searchableView.element.classList.add('console-searchable-view');
         this.#searchableView.setPlaceholder(i18nString(UIStrings.findStringInLogs));

@@ -5,7 +5,11 @@ import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
 import { GetStylesTool } from './GetStyles.js';
 /**
  * Plain object registry containing concrete instantiated tools.
- * Keep this type concrete (no type-erasure) to preserve exact tool types.
+ *
+ * This object is deliberately declared as a plain object without an explicit type annotation
+ * (like `Record<ToolName, Tool>`) to preserve the exact concrete type of each registered tool.
+ * This is required to support compile-time type safety and inference in the overloaded
+ * `ToolRegistry.get()` method, which maps a literal `ToolName` key to its specific class type.
  */
 export const TOOLS = {
     ["executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */]: new ExecuteJavaScriptTool(),
@@ -16,7 +20,15 @@ export const TOOLS = {
  */
 export class ToolRegistry {
     static get(name) {
-        return Object.prototype.hasOwnProperty.call(TOOLS, name) ? TOOLS[name] : undefined;
+        // We use a double assertion (`as unknown as Tool<...>`) here. TypeScript's variance
+        // rules prevent direct casting from specific concrete tools (which have narrowed,
+        // capability-specific contexts) to the generic `Tool` signature that uses `AllToolsContext`.
+        // This cast is runtime-safe because any capability requested by a specific tool is
+        // guaranteed to be satisfied by `AllToolsContext`, and the handler will only access
+        // the capabilities it expects.
+        return Object.prototype.hasOwnProperty.call(TOOLS, name) ?
+            TOOLS[name] :
+            undefined;
     }
 }
 //# sourceMappingURL=ToolRegistry.js.map

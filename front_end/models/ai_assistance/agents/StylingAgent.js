@@ -155,9 +155,17 @@ export class StylingAgent extends AiAgent {
             description: getStylesTool.description,
             parameters: getStylesTool.parameters,
             displayInfoFromArgs: getStylesTool.displayInfoFromArgs,
-            handler: args => getStylesTool.handler(args, {
-                conversationContext: this.context ?? null,
-            }),
+            handler: async (args) => {
+                const context = this.context;
+                if (!context) {
+                    return { error: 'Error: Could not find the currently selected element.' };
+                }
+                return await getStylesTool.handler(args, {
+                    conversationContext: context,
+                    getTarget: () => SDK.TargetManager.TargetManager.instance().primaryPageTarget() ?? context.getItem().domModel().target(),
+                    getEstablishedOrigin: () => context.getOrigin(),
+                });
+            },
         });
         const executeJsTool = ToolRegistry.get("executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */);
         if (!executeJsTool) {

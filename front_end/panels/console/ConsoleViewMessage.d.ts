@@ -75,7 +75,7 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     private formatParameterAsNode;
     private formattedParameterAsNodeForTest;
     private formatParameterAsString;
-    private formatParameterAsError;
+    private renderSymbolizedError;
     private formatAsArrayEntry;
     private renderPropertyPreview;
     createRemoteObjectAccessorPropertySpan(object: SDK.RemoteObject.RemoteObject | null, propertyPath: string[], callback: (arg0: SDK.RemoteObject.CallFunctionResult) => void): HTMLElement;
@@ -126,10 +126,6 @@ export declare class ConsoleViewMessage implements ConsoleViewportElement {
     searchRegex(): RegExp | null;
     searchCount(): number;
     searchHighlightNode(index: number): Element;
-    private getInlineFrames;
-    private expandInlineStackFrames;
-    private createScriptLocationLinkForSyntaxError;
-    private tryFormatAsError;
     static linkifyWithCustomLinkifier(string: string, linkifier: (arg0: string, arg1: Platform.DevToolsPath.UrlString, arg2?: number, arg3?: number) => Node): DocumentFragment | UI.Widget.Widget;
     private linkifyStringAsFragment;
     private static tokenizeMessageText;

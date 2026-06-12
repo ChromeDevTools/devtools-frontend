@@ -9,7 +9,7 @@ const CALL_FRAME_REGEX = /^\s*at\s+/;
  * @returns Null if the provided string has an unexpected format. A
  *          populated `RawFrame[]` otherwise.
  */
-export function parseRawFramesFromErrorStack(stack) {
+export function parseRawFramesFromErrorStack(stack, resolveURL) {
     const lines = stack.split('\n');
     const firstAtLineIndex = findFramesStartLine(lines);
     const rawFrames = [];
@@ -54,6 +54,9 @@ export function parseRawFramesFromErrorStack(stack) {
             functionName = lineContent.substring(0, openParenIndex).trim();
             location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
         }
+        else if (lineContent.startsWith('(') && lineContent.endsWith(')')) {
+            location = lineContent.substring(1, lineContent.length - 1);
+        }
         else {
             location = lineContent;
         }
@@ -77,10 +80,10 @@ export function parseRawFramesFromErrorStack(stack) {
             if (innerOpenParen !== -1) {
                 evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
                 evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-                evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
+                evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`, resolveURL)?.[0];
             }
             else {
-                evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
+                evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`, resolveURL)?.[0];
             }
         }
         if (location.startsWith('index ')) {
@@ -102,9 +105,18 @@ export function parseRawFramesFromErrorStack(stack) {
         }
         else if (location) {
             const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
-            url = splitResult.url;
             lineNumber = splitResult.lineNumber ?? -1;
             columnNumber = splitResult.columnNumber ?? -1;
+            if (resolveURL && splitResult.url !== '<anonymous>' && splitResult.url !== 'native') {
+                const resolved = resolveURL(splitResult.url);
+                if (!resolved) {
+                    return null;
+                }
+                url = resolved;
+            }
+            else {
+                url = splitResult.url;
+            }
         }
         // Handle "typeName.methodName [as alias]"
         if (functionName) {

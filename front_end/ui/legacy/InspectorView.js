@@ -198,7 +198,10 @@ export class InspectorView extends VBox {
         this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
         this.drawerTabbedPane = this.#drawerView.tabbedPane;
         // Create main area tabbed pane.
-        this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance), 'panel', true, true, { defaultTab: Root.Runtime.Runtime.queryParam('panel') });
+        this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance), 'panel', true, true, {
+            defaultTab: Root.Runtime.Runtime.queryParam('panel'),
+            plusButton: { jslogContext: 'plus-button-panel' },
+        });
         this.tabbedPane = this.tabbedLocation.tabbedPane();
         this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
         this.tabbedPane.element.classList.add('main-tabbed-pane');

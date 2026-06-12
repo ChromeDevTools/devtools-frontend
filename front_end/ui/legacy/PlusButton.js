@@ -39,8 +39,13 @@ export class PlusButtonPresenter {
         for (const view of views()) {
             // Skip views that already have a tab. Hidden tabs are already listed
             // in the overflow section above, and visible tabs are accessible
-            // directly in the tab strip.
+            // directly in the tab strip. Track their id and title so the
+            // cross-location loop below cannot offer a same-titled duplicate
+            // (e.g. drawer "Console" while the panel "Console" is already
+            // visible — they have different view ids).
             if (tabbedPane.hasTab(view.viewId())) {
+                seenIds.add(view.viewId());
+                seenTitles.add(view.title());
                 continue;
             }
             // Transient views are not user-addable.

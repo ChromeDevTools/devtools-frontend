@@ -25,6 +25,8 @@ export declare class Link extends HTMLElement {
     disconnectedCallback(): void;
     get href(): string | null;
     set href(href: Platform.DevToolsPath.UrlString);
+    get allowPrivileged(): boolean;
+    set allowPrivileged(allowPrivileged: boolean);
     get jslogContext(): string | null;
     set jslogContext(jslogContext: string);
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
@@ -33,7 +35,7 @@ export declare class Link extends HTMLElement {
      * which we are activly migrating away from.
      * @deprecated
      */
-    static create(url: string, linkText?: string, className?: string, jsLogContext?: string, tabindex?: number): Link;
+    static create(url: string, linkText?: string, className?: string, jsLogContext?: string, tabindex?: number, allowPrivileged?: boolean): Link;
 }
 declare global {
     interface HTMLElementTagNameMap {

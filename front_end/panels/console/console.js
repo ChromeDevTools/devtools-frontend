@@ -694,7 +694,7 @@ var updateStyle = (currentStyle, styleToAdd) => {
 var ConsoleInsightTeaser_exports = {};
 __export(ConsoleInsightTeaser_exports, {
   ConsoleInsightTeaser: () => ConsoleInsightTeaser,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2
+  DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import "./../../ui/kit/kit.js";
@@ -704,8 +704,8 @@ import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon from "./../common/common.js";
 
@@ -853,9 +853,8 @@ import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
+import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as Logs from "./../../models/logs/logs.js";
-import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
@@ -975,9 +974,9 @@ var objectValue_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
 // gen/front_end/panels/console/ConsoleViewMessage.js
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
+import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI3 from "./../../ui/legacy/legacy.js";
+import { nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consoleView.css.js
@@ -1669,6 +1668,181 @@ var consoleView_css_default = `/* Copyright 2021 The Chromium Authors
 
 /*# sourceURL=${import.meta.resolve("./consoleView.css")} */`;
 
+// gen/front_end/panels/console/SymbolizedErrorWidget.js
+var SymbolizedErrorWidget_exports = {};
+__export(SymbolizedErrorWidget_exports, {
+  SymbolizedErrorWidget: () => SymbolizedErrorWidget
+});
+import * as Bindings from "./../../models/bindings/bindings.js";
+import * as Components from "./../../ui/legacy/components/utils/utils.js";
+import * as UI2 from "./../../ui/legacy/legacy.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
+var { html: html2, render: render2 } = Lit2;
+function renderHeader(content, isCause) {
+  if (isCause) {
+    return html2`<div class="symbolized-error-header"><span>Caused by: </span><span class="error-message-text">${content}</span></div>`;
+  }
+  return html2`<span class="error-message-text">${content}</span>`;
+}
+function formatName(frame) {
+  const isInline = frame.isInline;
+  let name = isInline ? frame.name || "" : frame.rawName || frame.name || "";
+  const shouldAppendMethodAlias = !isInline && frame.methodName && name && name !== frame.methodName && !name.endsWith("." + frame.methodName) && !name.endsWith(" " + frame.methodName);
+  if (shouldAppendMethodAlias) {
+    name += ` [as ${frame.methodName}]`;
+  }
+  return name;
+}
+function renderLinkElement(frame, options) {
+  if (frame.url || frame.uiSourceCode) {
+    const link = Components.Linkifier.Linkifier.linkifyStackTraceFrame(frame, options);
+    link.tabIndex = -1;
+    return link;
+  }
+  return html2`<span>&lt;anonymous&gt;</span>`;
+}
+function renderEvalOrigin(frame, options) {
+  const name = formatName(frame);
+  const linkElement = renderLinkElement(frame, options);
+  const asyncPrefix = frame.isAsync ? "async " : "";
+  const constructorPrefix = frame.isConstructor ? "new " : "";
+  if (frame.isEval) {
+    const evalOrigin = frame.evalOrigin ? renderEvalOrigin(frame.evalOrigin, options) : "<anonymous>";
+    if (name) {
+      return html2`${asyncPrefix}${constructorPrefix}eval at ${name} (${evalOrigin})`;
+    }
+    return html2`${asyncPrefix}${constructorPrefix}eval at ${evalOrigin}`;
+  }
+  if (name) {
+    return html2`${asyncPrefix}${constructorPrefix}eval at ${name} (${linkElement})`;
+  }
+  return html2`${asyncPrefix}${constructorPrefix}eval at ${linkElement}`;
+}
+function renderFramePrefix(frame, options) {
+  const asyncPrefix = frame.isAsync ? "async " : "";
+  if (frame.promiseIndex !== void 0) {
+    const name2 = frame.name || "Promise.all";
+    return html2`${asyncPrefix}${name2} (index ${frame.promiseIndex})`;
+  }
+  const constructorPrefix = frame.isConstructor ? "new " : "";
+  const name = formatName(frame);
+  if (frame.isEval) {
+    const evalOrigin = frame.evalOrigin ? renderEvalOrigin(frame.evalOrigin, options) : "<anonymous>";
+    if (name) {
+      return html2`${asyncPrefix}${constructorPrefix}${name} (${evalOrigin}, `;
+    }
+    return html2`${asyncPrefix}${constructorPrefix}${evalOrigin}, `;
+  }
+  if (name) {
+    return html2`${asyncPrefix}${constructorPrefix}${name} (`;
+  }
+  return html2`${asyncPrefix}${constructorPrefix}`;
+}
+function renderFrameSuffix(frame) {
+  if (frame.promiseIndex !== void 0) {
+    return Lit2.nothing;
+  }
+  if (frame.name) {
+    return html2`)`;
+  }
+  return Lit2.nothing;
+}
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  const renderError2 = (error, isCause) => {
+    if (error instanceof Bindings.SymbolizedError.UnparsableError) {
+      const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
+        const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
+        const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
+        linkElement.tabIndex = -1;
+        return linkElement;
+      });
+      const header2 = renderHeader(fragment, isCause);
+      return html2`
+        <span class=${isCause ? "console-message-stack-trace-wrapper" : ""}>${header2}</span>
+      `;
+    }
+    const linkOptions = {
+      showColumnNumber: true,
+      inlineFrameIndex: 0,
+      maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole,
+      ignoreListManager: input.ignoreListManager
+    };
+    let headerContent = html2`${error.message}`;
+    if (error.syntaxErrorLocation) {
+      const linkElement = Components.Linkifier.Linkifier.linkifyUILocation(error.syntaxErrorLocation, linkOptions);
+      linkElement.tabIndex = -1;
+      headerContent = html2`${error.message} (at ${linkElement})`;
+    }
+    const header = renderHeader(headerContent, isCause);
+    const syncFrames = error.stackTrace.syncFragment.frames;
+    return html2`
+      <span class=${isCause ? "console-message-stack-trace-wrapper" : ""}
+      >${header}${syncFrames.length > 0 ? "\n" : ""}${syncFrames.map((frame, i) => {
+      const isBuiltin = frame.promiseIndex !== void 0 || !frame.url && !frame.uiSourceCode;
+      const linkElement = frame.promiseIndex !== void 0 ? Lit2.nothing : renderLinkElement(frame, linkOptions);
+      const newline = i < error.stackTrace.syncFragment.frames.length - 1 ? "\n" : "";
+      const frameClass = isBuiltin ? "formatted-builtin-stack-frame" : "formatted-stack-frame";
+      return html2`
+            <span class=${frameClass}>${"    at "}${renderFramePrefix(frame, linkOptions)}${linkElement}${renderFrameSuffix(frame)}${newline}</span>
+          `;
+    })}
+      </span>
+      ${error.cause ? renderError2(error.cause, true) : Lit2.nothing}
+    `;
+  };
+  render2(html2`<span class="symbolized-error-widget">${renderError2(input.error, false)}</span>`, target);
+};
+var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
+  #error;
+  #view;
+  #ignoreListManager;
+  constructor(element, view = DEFAULT_VIEW2) {
+    const host = element || document.createElement("span");
+    super(host, { classes: ["symbolized-error-widget-host"] });
+    this.#view = view;
+  }
+  get linkElements() {
+    return [...this.contentElement.querySelectorAll(".devtools-link")];
+  }
+  set ignoreListManager(ignoreListManager) {
+    this.#ignoreListManager = ignoreListManager;
+    this.requestUpdate();
+  }
+  get ignoreListManager() {
+    return this.#ignoreListManager;
+  }
+  set error(error) {
+    this.#error?.removeEventListener("UPDATED", this.requestUpdate, this);
+    this.#error = error;
+    if (this.isShowing()) {
+      this.#error?.addEventListener("UPDATED", this.requestUpdate, this);
+    }
+    this.requestUpdate();
+  }
+  get error() {
+    return this.#error;
+  }
+  wasShown() {
+    super.wasShown();
+    this.#error?.addEventListener("UPDATED", this.requestUpdate, this);
+    this.requestUpdate();
+  }
+  willHide() {
+    super.willHide();
+    this.#error?.removeEventListener("UPDATED", this.requestUpdate, this);
+  }
+  performUpdate() {
+    if (!this.#error) {
+      return;
+    }
+    const input = {
+      error: this.#error,
+      ignoreListManager: this.#ignoreListManager
+    };
+    this.#view(input, {}, this.contentElement);
+  }
+};
+
 // gen/front_end/panels/console/ConsoleViewMessage.js
 var UIStrings2 = {
   /**
@@ -1861,7 +2035,7 @@ var hoverButtonObserver = new IntersectionObserver((results) => {
   }
 });
 function appendOrShow(parent, child) {
-  if (child instanceof UI2.Widget.Widget) {
+  if (child instanceof UI3.Widget.Widget) {
     child.show(
       parent,
       null,
@@ -1944,13 +2118,13 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   setInsight(insight) {
     if (this.elementInternal) {
-      render2(insight, this.elementInternal);
+      render3(insight, this.elementInternal);
       this.elementInternal.classList.toggle("has-insight", true);
       this.elementInternal.addEventListener("closeinsight", () => {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
         if (this.elementInternal) {
           this.elementInternal.classList.toggle("has-insight", false);
-          render2(nothing2, this.elementInternal);
+          render3(nothing3, this.elementInternal);
         }
         this.#teaser?.setInactive(false);
       }, { once: true });
@@ -2003,8 +2177,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           } else {
             messageElement.textContent = i18nString2(UIStrings2.consoleWasCleared);
           }
-          UI2.Tooltip.Tooltip.install(messageElement, i18nString2(UIStrings2.clearAllMessagesWithS, {
-            PH1: String(UI2.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("console.clear"))
+          UI3.Tooltip.Tooltip.install(messageElement, i18nString2(UIStrings2.clearAllMessagesWithS, {
+            PH1: String(UI3.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("console.clear"))
           }));
           break;
         case "dir": {
@@ -2024,7 +2198,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           if (this.message.parameters?.length === 1) {
             const parameter = this.message.parameters[0];
             if (typeof parameter !== "string" && parameter.type === "string") {
-              messageElement = this.tryFormatAsError(parameter.value);
+              const value = parameter.value;
+              const runtimeModel = this.message.runtimeModel();
+              if (runtimeModel && Bindings2.SymbolizedError.isErrorLike(value)) {
+                const remoteObj = parameter instanceof SDK3.RemoteObject.RemoteObject ? parameter : runtimeModel.createRemoteObject(parameter);
+                messageElement = this.renderSymbolizedError(remoteObj);
+              }
             }
           }
           const args = this.message.parameters || [messageText];
@@ -2065,25 +2244,25 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     }
     const messageElement = document.createElement("span");
     if (this.message.level === "error") {
-      UI2.UIUtils.createTextChild(messageElement, request.requestMethod + " ");
-      const linkElement = Components.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url(), void 0, void 0, "network-request");
+      UI3.UIUtils.createTextChild(messageElement, request.requestMethod + " ");
+      const linkElement = Components2.Linkifier.Linkifier.linkifyRevealable(request, request.url(), request.url(), void 0, void 0, "network-request");
       linkElement.tabIndex = -1;
       this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
       messageElement.appendChild(linkElement);
       if (request.failed) {
-        UI2.UIUtils.createTextChildren(messageElement, " ", request.localizedFailDescription || "");
+        UI3.UIUtils.createTextChildren(messageElement, " ", request.localizedFailDescription || "");
       }
       if (request.statusCode !== 0) {
-        UI2.UIUtils.createTextChildren(messageElement, " ", String(request.statusCode));
+        UI3.UIUtils.createTextChildren(messageElement, " ", String(request.statusCode));
       }
       const statusText = request.getInferredStatusText();
       if (statusText) {
-        UI2.UIUtils.createTextChildren(messageElement, " (", statusText, ")");
+        UI3.UIUtils.createTextChildren(messageElement, " (", statusText, ")");
       }
     } else {
       const messageText = this.message.messageText;
       const fragment = _ConsoleViewMessage.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
-        const linkElement = url === request.url() ? Components.Linkifier.Linkifier.linkifyRevealable(request, url, request.url(), void 0, void 0, "network-request") : Components.Linkifier.Linkifier.linkifyURL(url, { text, lineNumber, columnNumber });
+        const linkElement = url === request.url() ? Components2.Linkifier.Linkifier.linkifyRevealable(request, url, request.url(), void 0, void 0, "network-request") : Components2.Linkifier.Linkifier.linkifyURL(url, { text, lineNumber, columnNumber });
         linkElement.tabIndex = -1;
         this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
         return linkElement;
@@ -2164,10 +2343,10 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       anchorWrapperElement.classList.add("console-message-anchor");
       anchorWrapperElement.appendChild(anchorElement);
       for (const element of this.createAffectedResourceLinks()) {
-        UI2.UIUtils.createTextChild(anchorWrapperElement, " ");
+        UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
         anchorWrapperElement.append(element);
       }
-      UI2.UIUtils.createTextChild(anchorWrapperElement, " ");
+      UI3.UIUtils.createTextChild(anchorWrapperElement, " ");
       return anchorWrapperElement;
     }
     return null;
@@ -2188,13 +2367,13 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       icon.name = expand ? "triangle-down" : "triangle-right";
       stackTraceElement.classList.toggle("hidden-stack-trace", !expand);
       const stackTableState = expand ? i18nString2(UIStrings2.stackMessageExpanded) : i18nString2(UIStrings2.stackMessageCollapsed);
-      UI2.ARIAUtils.setLabel(contentElement, `${messageElement.textContent} ${stackTableState}`);
-      UI2.ARIAUtils.LiveAnnouncer.alert(stackTableState);
-      UI2.ARIAUtils.setExpanded(clickableElement, expand);
+      UI3.ARIAUtils.setLabel(contentElement, `${messageElement.textContent} ${stackTableState}`);
+      UI3.ARIAUtils.LiveAnnouncer.alert(stackTableState);
+      UI3.ARIAUtils.setExpanded(clickableElement, expand);
       this.traceExpanded = expand;
     };
     const toggleStackTrace = (event) => {
-      if (UI2.UIUtils.isEditing() || contentElement.hasSelection()) {
+      if (UI3.UIUtils.isEditing() || contentElement.hasSelection()) {
         return;
       }
       this.expandTrace?.(stackTraceElement.classList.contains("hidden-stack-trace"));
@@ -2218,7 +2397,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const contentElement = toggleElement.createChild("div", "console-message-stack-trace-wrapper");
     const messageElement = this.buildMessage();
     const clickableElement = contentElement.createChild("div");
-    UI2.ARIAUtils.setExpanded(clickableElement, false);
+    UI3.ARIAUtils.setExpanded(clickableElement, false);
     if (icon) {
       clickableElement.appendChild(icon);
     }
@@ -2229,22 +2408,24 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const stackTraceElement = contentElement.createChild("div", "hidden-stack-trace");
     const targetManager = SDK3.TargetManager.TargetManager.instance();
     const stackTraceTarget = target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
-    const stackTracePreview = new Components.JSPresentationUtils.StackTracePreviewContent();
+    const stackTracePreview = new Components2.JSPresentationUtils.StackTracePreviewContent();
     stackTracePreview.options = { widthConstrained: true };
     if (stackTraceTarget && stackTrace) {
       const selectableChildIndex = this.selectableChildren.length;
-      void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget).then((stackTrace2) => {
+      const stackTracePromise = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTrace, stackTraceTarget).then((stackTrace2) => {
         stackTracePreview.stackTrace = stackTrace2;
         return stackTracePreview.updateComplete;
       }).then(() => {
         const selectableLinks = stackTracePreview.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
         this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
       });
+      this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, stackTracePromise]).then(() => {
+      });
     }
     stackTracePreview.markAsRoot();
     stackTracePreview.show(stackTraceElement);
-    UI2.ARIAUtils.setLabel(contentElement, `${messageElement.textContent} ${i18nString2(UIStrings2.stackMessageCollapsed)}`);
-    UI2.ARIAUtils.markAsGroup(stackTraceElement);
+    UI3.ARIAUtils.setLabel(contentElement, `${messageElement.textContent} ${i18nString2(UIStrings2.stackMessageCollapsed)}`);
+    UI3.ARIAUtils.markAsGroup(stackTraceElement);
     return { stackTraceElement, contentElement, messageElement, clickableElement, toggleElement };
   }
   format(rawParameters) {
@@ -2260,7 +2441,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (shouldFormatMessage) {
       parameters = this.formatWithSubstitutionString(parameters[0].description, parameters.slice(1), formattedResult);
       if (parameters.length) {
-        UI2.UIUtils.createTextChild(formattedResult, " ");
+        UI3.UIUtils.createTextChild(formattedResult, " ");
       }
     }
     for (let i = 0; i < parameters.length; ++i) {
@@ -2270,7 +2451,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         formattedResult.appendChild(this.formatParameter(parameters[i], false, true));
       }
       if (i < parameters.length - 1) {
-        UI2.UIUtils.createTextChild(formattedResult, " ");
+        UI3.UIUtils.createTextChild(formattedResult, " ");
       }
     }
     return formattedResult;
@@ -2283,7 +2464,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     let element;
     switch (outputType) {
       case "error":
-        element = this.formatParameterAsError(output);
+        element = this.renderSymbolizedError(output);
         break;
       case "function":
         element = this.formatParameterAsFunction(output, includePreview);
@@ -2347,7 +2528,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         true
       );
     } else {
-      UI2.UIUtils.createTextChild(result, description);
+      UI3.UIUtils.createTextChild(result, description);
     }
     result.addEventListener("contextmenu", this.contextMenuEventFired.bind(this, obj), false);
     return result;
@@ -2357,7 +2538,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const trustedContentSpan = document.createElement("span");
     trustedContentSpan.appendChild(this.formatParameterAsString(obj));
     trustedContentSpan.classList.add("object-value-string");
-    UI2.UIUtils.createTextChild(result, `${obj.className} `);
+    UI3.UIUtils.createTextChild(result, `${obj.className} `);
     result.appendChild(trustedContentSpan);
     return result;
   }
@@ -2367,7 +2548,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     const renderPreview = (includeNullOrUndefined) => {
       if (obj.preview) {
         titleElement.classList.add("console-object-preview");
-        render2(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
+        render3(this.previewFormatter.renderObjectPreview(obj.preview, includeNullOrUndefined), titleElement);
         ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.appendMemoryIcon(titleElement, obj);
       }
     };
@@ -2380,25 +2561,25 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     } else if (obj.subtype === "trustedtype") {
       titleElement.appendChild(this.formatParameterAsTrustedType(obj));
     } else {
-      UI2.UIUtils.createTextChild(titleElement, obj.description || "");
+      UI3.UIUtils.createTextChild(titleElement, obj.description || "");
     }
     if (!obj.hasChildren || obj.customPreview()) {
       return titleElement;
     }
     const note = titleElement.createChild("span", "object-state-note info-note");
     if (this.message.type === SDK3.ConsoleModel.FrontendMessageType.QueryObjectResult) {
-      UI2.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil));
+      UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.thisValueWillNotBeCollectedUntil));
     } else {
-      UI2.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst));
+      UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.thisValueWasEvaluatedUponFirst));
     }
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(obj, titleElement, this.linkifier);
     section.element.classList.add("console-view-object-properties-section");
     section.enableContextMenu();
     section.setShowSelectionOnKeyboardFocus(true, true);
     this.selectableChildren.push(section);
-    section.addEventListener(UI2.TreeOutline.Events.ElementAttached, this.messageResized);
-    section.addEventListener(UI2.TreeOutline.Events.ElementExpanded, this.messageResized);
-    section.addEventListener(UI2.TreeOutline.Events.ElementCollapsed, this.messageResized);
+    section.addEventListener(UI3.TreeOutline.Events.ElementAttached, this.messageResized);
+    section.addEventListener(UI3.TreeOutline.Events.ElementExpanded, this.messageResized);
+    section.addEventListener(UI3.TreeOutline.Events.ElementCollapsed, this.messageResized);
     section.root.addEventListener("filter-changed", () => renderPreview(section.root.includeNullOrUndefinedValues));
     return section.element;
   }
@@ -2412,7 +2593,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       result.appendChild(functionElement);
       if (targetFunction !== originalFunction) {
         const note = result.createChild("span", "object-state-note info-note");
-        UI2.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.functionWasResolvedFromBound));
+        UI3.Tooltip.Tooltip.install(note, i18nString2(UIStrings2.functionWasResolvedFromBound));
       }
       result.addEventListener("contextmenu", this.contextMenuEventFired.bind(this, originalFunction), false);
       void promise.then(() => this.formattedParameterAsFunctionForTest());
@@ -2421,7 +2602,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   formattedParameterAsFunctionForTest() {
   }
   contextMenuEventFired(obj, event) {
-    const contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI3.ContextMenu.ContextMenu(event);
     contextMenu.appendApplicableItems(obj);
     void contextMenu.show();
   }
@@ -2442,7 +2623,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         result.appendChild(this.formatParameterAsObject(remoteObject, false));
         return;
       }
-      const renderResult2 = await UI2.UIUtils.Renderer.render(node);
+      const renderResult2 = await UI3.UIUtils.Renderer.render(node);
       if (renderResult2) {
         this.selectableChildren.push(renderResult2);
         renderResult2.element.addEventListener("dimensionschanged", () => {
@@ -2466,48 +2647,32 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     appendOrShow(result, this.linkifyStringAsFragment(text));
     return result;
   }
-  formatParameterAsError(output) {
-    const result = document.createElement("span");
-    const formatErrorStack = async (errorObj, includeCausedByPrefix) => {
-      const error = SDK3.RemoteObject.RemoteError.objectAsError(errorObj);
-      const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
-      let errorElement = this.tryFormatAsError(error.errorStack, details);
-      if (!errorElement) {
-        errorElement = document.createElement("span");
-        appendOrShow(errorElement, this.linkifyStringAsFragment(error.errorStack));
+  renderSymbolizedError(errorRemoteObject) {
+    const container = document.createElement("span");
+    const widget2 = new SymbolizedErrorWidget();
+    widget2.ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance();
+    const selectableChildIndex = this.selectableChildren.length;
+    const format2 = async () => {
+      const error = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(errorRemoteObject, this.message.exceptionDetails);
+      if (error) {
+        widget2.error = error;
       }
-      if (includeCausedByPrefix) {
-        const causeElement = document.createElement("div");
-        causeElement.append("Caused by: ", errorElement);
-        result.appendChild(causeElement);
-      } else {
-        result.appendChild(errorElement);
-      }
-      if (cause?.subtype === "error") {
-        await formatErrorStack(
-          cause,
-          /* includeCausedByPrefix */
-          true
-        );
-      } else if (cause?.type === "string") {
-        const stringCauseElement = document.createElement("div");
-        stringCauseElement.append(`Caused by: ${cause.value}`);
-        result.append(stringCauseElement);
-      }
+      await widget2.updateComplete;
+      const selectableLinks = widget2.linkElements.map((element) => ({ element, forceSelect: () => element.focus() }));
+      this.selectableChildren.splice(selectableChildIndex, 0, ...selectableLinks);
     };
-    this.#formatErrorStackPromiseForTest = formatErrorStack(
-      output,
-      /* includeCausedByPrefix */
-      false
-    );
-    return result;
+    this.#formatErrorStackPromiseForTest = Promise.all([this.#formatErrorStackPromiseForTest, format2()]).then(() => {
+    });
+    widget2.markAsRoot();
+    widget2.show(container);
+    return container;
   }
   formatAsArrayEntry(output) {
     return this.renderPropertyPreview(output.type, output.subtype, output.className, output.description);
   }
   renderPropertyPreview(type, subtype, className, description) {
     const fragment = document.createDocumentFragment();
-    render2(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
+    render3(this.previewFormatter.renderPropertyPreview(type, subtype, className, description), fragment);
     return fragment;
   }
   createRemoteObjectAccessorPropertySpan(object, propertyPath, callback) {
@@ -2518,7 +2683,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       return rootElement;
     }
     element.classList.add("object-value-calculate-value-button");
-    UI2.Tooltip.Tooltip.install(element, i18nString2(UIStrings2.invokePropertyGetter));
+    UI3.Tooltip.Tooltip.install(element, i18nString2(UIStrings2.invokePropertyGetter));
     element.addEventListener("click", onInvokeGetterClick, false);
     function onInvokeGetterClick(event) {
       event.consume();
@@ -2548,7 +2713,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       if (wasThrown) {
         const element = rootElement.createChild("span");
         element.textContent = i18nString2(UIStrings2.exception);
-        UI2.Tooltip.Tooltip.install(element, object2.description);
+        UI3.Tooltip.Tooltip.install(element, object2.description);
       } else if (isArrayEntry) {
         rootElement.appendChild(this.formatAsArrayEntry(object2));
       } else {
@@ -2639,8 +2804,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
         this.timestampElement = document.createElement("span");
         this.timestampElement.classList.add("console-timestamp");
       }
-      this.timestampElement.textContent = UI2.UIUtils.formatTimestamp(this.message.timestamp, false) + " ";
-      UI2.Tooltip.Tooltip.install(this.timestampElement, UI2.UIUtils.formatTimestamp(this.message.timestamp, true));
+      this.timestampElement.textContent = UI3.UIUtils.formatTimestamp(this.message.timestamp, false) + " ";
+      UI3.Tooltip.Tooltip.install(this.timestampElement, UI3.UIUtils.formatTimestamp(this.message.timestamp, true));
       this.contentElementInternal.insertBefore(this.timestampElement, this.contentElementInternal.firstChild);
     } else if (this.timestampElement) {
       this.timestampElement.remove();
@@ -2717,7 +2882,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     return this.selectableChildren.findIndex((child) => child.element.hasFocus());
   }
   onKeyDown(event) {
-    if (UI2.UIUtils.isEditing() || !this.elementInternal || !this.elementInternal.hasFocus() || this.elementInternal.hasSelection()) {
+    if (UI3.UIUtils.isEditing() || !this.elementInternal || !this.elementInternal.hasFocus() || this.elementInternal.hasSelection()) {
       return;
     }
     if (this.maybeHandleOnKeyDown(event)) {
@@ -2903,24 +3068,24 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     switch (this.message.level) {
       case "verbose":
         this.elementInternal.classList.add("console-verbose-level");
-        UI2.ARIAUtils.setLabel(this.elementInternal, this.text);
+        UI3.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
       case "info":
         this.elementInternal.classList.add("console-info-level");
         if (this.message.type === SDK3.ConsoleModel.FrontendMessageType.System) {
           this.elementInternal.classList.add("console-system-type");
         }
-        UI2.ARIAUtils.setLabel(this.elementInternal, this.text);
+        UI3.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
       case "warning":
         this.elementInternal.classList.add("console-warning-level");
         this.elementInternal.role = "log";
-        UI2.ARIAUtils.setLabel(this.elementInternal, this.text);
+        UI3.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
       case "error":
         this.elementInternal.classList.add("console-error-level");
         this.elementInternal.role = "log";
-        UI2.ARIAUtils.setLabel(this.elementInternal, this.text);
+        UI3.ARIAUtils.setLabel(this.elementInternal, this.text);
         break;
     }
     this.updateMessageIcon();
@@ -2928,7 +3093,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       this.elementInternal.classList.add("console-warning-level");
     }
     this.consoleRowWrapper.appendChild(this.contentElement());
-    if (UI2.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID) && this.shouldShowInsights()) {
+    if (UI3.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID) && this.shouldShowInsights()) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
       this.consoleRowWrapper.append(this.#createHoverButton());
     }
@@ -2994,8 +3159,8 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     button.append(icon);
     button.onclick = (event) => {
       event.stopPropagation();
-      UI2.Context.Context.instance().setFlavor(_ConsoleViewMessage, this);
-      const action2 = UI2.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_HOVER_ACTION_ID);
+      UI3.Context.Context.instance().setFlavor(_ConsoleViewMessage, this);
+      const action2 = UI3.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_HOVER_ACTION_ID);
       void action2.execute();
     };
     const label = document.createElement("div");
@@ -3045,7 +3210,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     if (this.contentElementInternal) {
       this.contentElementInternal.insertBefore(this.messageIcon, this.contentElementInternal.firstChild);
     }
-    UI2.ARIAUtils.setLabel(this.messageIcon, accessibleName);
+    UI3.ARIAUtils.setLabel(this.messageIcon, accessibleName);
   }
   setAdjacentUserCommandResult(adjacentUserCommandResult) {
     this.#adjacentUserCommandResult = adjacentUserCommandResult;
@@ -3108,7 +3273,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     } else {
       accessibleName = i18nString2(UIStrings2.repeatS, { n: this.repeatCountInternal });
     }
-    UI2.ARIAUtils.setLabel(this.repeatCountElement, accessibleName);
+    UI3.ARIAUtils.setLabel(this.repeatCountElement, accessibleName);
   }
   get text() {
     return this.message.messageText;
@@ -3116,7 +3281,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   toExportString() {
     const lines = [];
     const nodes = this.contentElement().childTextNodes();
-    const messageContent = nodes.map(Components.Linkifier.Linkifier.untruncatedNodeText).join("");
+    const messageContent = nodes.map(Components2.Linkifier.Linkifier.untruncatedNodeText).join("");
     for (let i = 0; i < this.repeatCount(); ++i) {
       lines.push(messageContent);
     }
@@ -3159,126 +3324,6 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   searchHighlightNode(index) {
     return this.searchHighlightNodes[index];
-  }
-  async getInlineFrames(debuggerModel, url, lineNumber, columnNumber) {
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-    const projects = Workspace.Workspace.WorkspaceImpl.instance().projects();
-    const uiSourceCodes = projects.map((project) => project.uiSourceCodeForURL(url)).flat().filter((f) => !!f);
-    const scripts = uiSourceCodes.map((uiSourceCode) => debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)).flat();
-    if (scripts.length) {
-      const location = new SDK3.DebuggerModel.Location(debuggerModel, scripts[0].scriptId, lineNumber || 0, columnNumber);
-      const functionInfo = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(scripts[0], location);
-      return functionInfo && "frames" in functionInfo ? functionInfo : { frames: [] };
-    }
-    return { frames: [] };
-  }
-  // Expand inline stack frames in the formatted error in the stackTrace element, inserting new elements before the
-  // insertBefore anchor.
-  async expandInlineStackFrames(debuggerModel, prefix, suffix, url, lineNumber, columnNumber, stackTrace, insertBefore) {
-    const { frames } = await this.getInlineFrames(debuggerModel, url, lineNumber, columnNumber);
-    if (!frames.length) {
-      return false;
-    }
-    for (let f = 0; f < frames.length; ++f) {
-      const { name } = frames[f];
-      const formattedLine = document.createElement("span");
-      appendOrShow(formattedLine, this.linkifyStringAsFragment(`${prefix} ${name} (`));
-      const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), null, url, lineNumber, { columnNumber, inlineFrameIndex: f });
-      scriptLocationLink.tabIndex = -1;
-      this.selectableChildren.push({ element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus() });
-      formattedLine.appendChild(scriptLocationLink);
-      appendOrShow(formattedLine, this.linkifyStringAsFragment(suffix));
-      formattedLine.classList.add("formatted-stack-frame");
-      stackTrace.insertBefore(formattedLine, insertBefore);
-    }
-    return true;
-  }
-  createScriptLocationLinkForSyntaxError(debuggerModel, exceptionDetails) {
-    const { scriptId, lineNumber, columnNumber } = exceptionDetails;
-    if (!scriptId) {
-      return;
-    }
-    const url = exceptionDetails.url || debuggerModel.scriptForId(scriptId)?.sourceURL;
-    if (!url) {
-      return;
-    }
-    const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), exceptionDetails.scriptId || null, url, lineNumber, {
-      columnNumber,
-      inlineFrameIndex: 0,
-      showColumnNumber: true
-    });
-    scriptLocationLink.tabIndex = -1;
-    return scriptLocationLink;
-  }
-  tryFormatAsError(string, exceptionDetails) {
-    const runtimeModel = this.message.runtimeModel();
-    if (!runtimeModel) {
-      return null;
-    }
-    const issueSummary = exceptionDetails?.exceptionMetaData?.issueSummary;
-    if (typeof issueSummary === "string") {
-      string = StackTrace3.ErrorStackParser.concatErrorDescriptionAndIssueSummary(string, issueSummary);
-    }
-    const linkInfos = StackTrace3.ErrorStackParser.parseSourcePositionsFromErrorStack(runtimeModel, string);
-    if (!linkInfos?.length) {
-      return null;
-    }
-    if (exceptionDetails?.stackTrace) {
-      StackTrace3.ErrorStackParser.augmentErrorStackWithScriptIds(linkInfos, exceptionDetails.stackTrace);
-    }
-    const debuggerModel = runtimeModel.debuggerModel();
-    const formattedResult = document.createElement("span");
-    for (let i = 0; i < linkInfos.length; ++i) {
-      const newline = i < linkInfos.length - 1 ? "\n" : "";
-      const { line, link, isCallFrame } = linkInfos[i];
-      if (!link && exceptionDetails && line.startsWith("SyntaxError")) {
-        appendOrShow(formattedResult, this.linkifyStringAsFragment(line));
-        const maybeScriptLocation = this.createScriptLocationLinkForSyntaxError(debuggerModel, exceptionDetails);
-        if (maybeScriptLocation) {
-          formattedResult.append(" (at ");
-          formattedResult.appendChild(maybeScriptLocation);
-          formattedResult.append(")");
-        }
-        formattedResult.append(newline);
-        continue;
-      }
-      if (!isCallFrame) {
-        appendOrShow(formattedResult, this.linkifyStringAsFragment(`${line}${newline}`));
-        continue;
-      }
-      const formattedLine = document.createElement("span");
-      if (!link) {
-        appendOrShow(formattedLine, this.linkifyStringAsFragment(`${line}${newline}`));
-        formattedLine.classList.add("formatted-builtin-stack-frame");
-        formattedResult.appendChild(formattedLine);
-        continue;
-      }
-      const suffix = `${link.suffix}${newline}`;
-      appendOrShow(formattedLine, this.linkifyStringAsFragment(link.prefix));
-      const scriptLocationLink = this.linkifier.linkifyScriptLocation(debuggerModel.target(), link.scriptId || null, link.url, link.lineNumber, {
-        columnNumber: link.columnNumber,
-        inlineFrameIndex: 0,
-        showColumnNumber: true
-      });
-      scriptLocationLink.tabIndex = -1;
-      this.selectableChildren.push({ element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus() });
-      formattedLine.appendChild(scriptLocationLink);
-      appendOrShow(formattedLine, this.linkifyStringAsFragment(suffix));
-      formattedLine.classList.add("formatted-stack-frame");
-      formattedResult.appendChild(formattedLine);
-      if (!link.enclosedInBraces) {
-        continue;
-      }
-      const prefixWithoutFunction = link.prefix.substring(0, link.prefix.lastIndexOf(" ", link.prefix.length - 3));
-      const selectableChildIndex = this.selectableChildren.length - 1;
-      void this.expandInlineStackFrames(debuggerModel, prefixWithoutFunction, suffix, link.url, link.lineNumber, link.columnNumber, formattedResult, formattedLine).then((modified) => {
-        if (modified) {
-          formattedResult.removeChild(formattedLine);
-          this.selectableChildren.splice(selectableChildIndex, 1);
-        }
-      });
-    }
-    return formattedResult;
   }
   static linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > getMaxTokenizableStringLength()) {
@@ -3326,7 +3371,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   linkifyStringAsFragment(string) {
     return _ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const options = { text, lineNumber, columnNumber };
-      const linkElement = Components.Linkifier.Linkifier.linkifyURL(url, options);
+      const linkElement = Components2.Linkifier.Linkifier.linkifyURL(url, options);
       linkElement.tabIndex = -1;
       this.selectableChildren.push({ element: linkElement, forceSelect: () => linkElement.focus() });
       return linkElement;
@@ -3673,12 +3718,12 @@ __export(PromptBuilder_exports, {
 });
 import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Bindings2 from "./../../models/bindings/bindings.js";
+import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as Formatter from "./../../models/formatter/formatter.js";
 import * as Logs2 from "./../../models/logs/logs.js";
 import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
-import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI4 from "./../../ui/legacy/legacy.js";
 var MAX_MESSAGE_SIZE = 1e3;
 var MAX_STACK_TRACE_SIZE = 1e3;
 var MAX_CODE_SIZE = 1e3;
@@ -3714,7 +3759,7 @@ var PromptBuilder = class {
       return { text: "", columnNumber: 0, lineNumber: 0 };
     }
     const rawLocation = new SDK4.DebuggerModel.Location(debuggerModel, callframe.scriptId, callframe.lineNumber, callframe.columnNumber);
-    const mappedLocation = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
+    const mappedLocation = await Bindings3.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
     const content = await mappedLocation?.uiSourceCode.requestContentData().then((contentDataOrError) => TextUtils5.ContentData.ContentData.asDeferredContent(contentDataOrError));
     const text = !content?.isEncoded && content?.content ? content.content : "";
     const firstNewline = text.indexOf("\n");
@@ -3897,7 +3942,7 @@ async function formatStackTrace(message) {
   if (!previewContainer) {
     return "";
   }
-  const widget2 = UI3.Widget.Widget.get(previewContainer);
+  const widget2 = UI4.Widget.Widget.get(previewContainer);
   if (!widget2) {
     return "";
   }
@@ -3906,12 +3951,12 @@ async function formatStackTrace(message) {
   const nodes = preview.childTextNodes();
   const messageContent = nodes.filter((n) => {
     return !n.parentElement?.closest(".show-all-link,.show-less-link,.hidden-row");
-  }).map(Components2.Linkifier.Linkifier.untruncatedNodeText);
+  }).map(Components3.Linkifier.Linkifier.untruncatedNodeText);
   return formatLines("", messageContent, MAX_STACK_TRACE_SIZE);
 }
 
 // gen/front_end/panels/console/ConsoleInsightTeaser.js
-var { render: render3, html: html2, Directives: { ref } } = Lit2;
+var { render: render4, html: html3, Directives: { ref } } = Lit3;
 var BUILT_IN_AI_DOCUMENTATION = "https://developer.chrome.com/docs/ai/built-in";
 var UIStringsNotTranslate = {
   /**
@@ -4010,7 +4055,7 @@ var DATA_USAGE_URL = "https://developer.chrome.com/docs/devtools/ai-assistance/g
 var EXPLAIN_TEASER_ACTION_ID = "explain.console-message.teaser";
 var SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
 function renderNoModel(input) {
-  return html2`
+  return html3`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.isForWarning ? lockedString(UIStringsNotTranslate.getHelpForWarning) : lockedString(UIStringsNotTranslate.getHelpForError)}
@@ -4045,14 +4090,14 @@ function renderNoModel(input) {
 }
 function renderDownloading(input) {
   const percent = ((input.downloadProgress || 0) * 100).toFixed(0);
-  return html2`
+  return html3`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${lockedString(UIStringsNotTranslate.downloadingAiModel)}</h2>
         <div class="progress-line">
-          ${input.downloadProgress === null ? html2`
+          ${input.downloadProgress === null ? html3`
               <div class="label">${lockedString(UIStringsNotTranslate.progressUnknown)}</div>
-            ` : html2`
+            ` : html3`
               <div class="label">${lockedString(UIStringsNotTranslate.progress)}</div>
               <div class="indicator-container">
                 <div
@@ -4081,7 +4126,7 @@ function renderDownloading(input) {
   `;
 }
 function renderGenerating(input) {
-  return html2`
+  return html3`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.isSlowGeneration ? lockedString(UIStringsNotTranslate.summarizingTakesABitLonger) : lockedString(UIStringsNotTranslate.summarizing)}</h2>
@@ -4107,7 +4152,7 @@ function renderGenerating(input) {
   `;
 }
 function renderError(input) {
-  return html2`
+  return html3`
     <div class="teaser-tooltip-container">
       <h2>${lockedString(UIStringsNotTranslate.summaryNotAvailable)}</h2>
       ${renderFooter(input)}
@@ -4115,7 +4160,7 @@ function renderError(input) {
   `;
 }
 function renderDontShowCheckbox(input) {
-  return html2`
+  return html3`
     <devtools-checkbox
       aria-label=${lockedString(UIStringsNotTranslate.dontShow)}
       @change=${input.dontShowChanged}
@@ -4125,9 +4170,9 @@ function renderDontShowCheckbox(input) {
   `;
 }
 function renderFooter(input) {
-  return html2`
+  return html3`
     <div class="tooltip-footer">
-      ${input.hasTellMeMoreButton ? html2`
+      ${input.hasTellMeMoreButton ? html3`
         <devtools-button
           title=${lockedString(UIStringsNotTranslate.tellMeMore)}
           .jslogContext=${"insights-teaser-tell-me-more"}
@@ -4137,7 +4182,7 @@ function renderFooter(input) {
           <devtools-icon class="lightbulb-icon" name="lightbulb-spark"></devtools-icon>
           ${lockedString(UIStringsNotTranslate.tellMeMore)}
         </devtools-button>
-      ` : Lit2.nothing}
+      ` : Lit3.nothing}
       <devtools-button
         .iconName=${"info"}
         .variant=${"icon"}
@@ -4166,7 +4211,7 @@ function renderFooter(input) {
   `;
 }
 function renderTeaser(input) {
-  return html2`
+  return html3`
     <div class="teaser-tooltip-container">
       <div class="response-container">
         <h2>${input.headerText}</h2>
@@ -4176,12 +4221,12 @@ function renderTeaser(input) {
     </div>
   `;
 }
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   if (input.isInactive) {
-    render3(Lit2.nothing, target);
+    render4(Lit3.nothing, target);
     return;
   }
-  render3(html2`
+  render4(html3`
     <style>${consoleInsightTeaser_css_default}</style>
     <devtools-tooltip
       ${ref((element) => {
@@ -4213,7 +4258,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </devtools-tooltip>
   `, target);
 };
-var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
+var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   #view;
   #uuid;
   #builtInAi;
@@ -4237,7 +4282,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
   #startTime = 0;
   constructor(uuid, consoleViewMessage, element, view) {
     super(element);
-    this.#view = view ?? DEFAULT_VIEW2;
+    this.#view = view ?? DEFAULT_VIEW3;
     this.#uuid = uuid;
     this.#promptBuilder = new PromptBuilder(consoleViewMessage);
     this.#consoleViewMessage = consoleViewMessage;
@@ -4268,8 +4313,8 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
     }
   }
   #executeConsoleInsightAction() {
-    UI4.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
-    const action2 = UI4.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_TEASER_ACTION_ID);
+    UI5.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
+    const action2 = UI5.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_TEASER_ACTION_ID);
     void action2.execute();
   }
   #onTellMeMoreClick(event) {
@@ -4315,7 +4360,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
         {
           iconName: "warning",
           // clang-format off
-          content: html2`<devtools-link
+          content: html3`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
             jslogcontext="explain.teaser.code-snippets-explainer"
@@ -4324,7 +4369,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
         }
       ],
       onLearnMoreClick: () => {
-        void UI4.ViewManager.ViewManager.instance().showView("chrome-ai");
+        void UI5.ViewManager.ViewManager.instance().showView("chrome-ai");
       },
       ariaLabel: lockedString(UIStringsNotTranslate.freDisclaimerHeader),
       learnMoreButtonText: lockedString(UIStringsNotTranslate.learnMore)
@@ -4477,7 +4522,7 @@ var ConsoleInsightTeaser = class extends UI4.Widget.Widget {
     Common4.Settings.Settings.instance().moduleSetting("console-insight-teasers-enabled").set(showTeasers);
   }
   #hasTellMeMoreButton() {
-    if (!UI4.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
+    if (!UI5.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_TEASER_ACTION_ID)) {
       return false;
     }
     if (Root.Runtime.hostConfig.aidaAvailability?.blockedByAge || Root.Runtime.hostConfig.isOffTheRecord) {
@@ -4528,7 +4573,7 @@ __export(ConsolePinPane_exports, {
   ConsolePinPane: () => ConsolePinPane,
   ConsolePinPresenter: () => ConsolePinPresenter,
   DEFAULT_PANE_VIEW: () => DEFAULT_PANE_VIEW,
-  DEFAULT_VIEW: () => DEFAULT_VIEW3
+  DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
 import * as Common5 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
@@ -4540,8 +4585,8 @@ import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html3, nothing as nothing4, render as render4 } from "./../../ui/lit/lit.js";
+import * as UI6 from "./../../ui/legacy/legacy.js";
+import { Directives, html as html4, nothing as nothing5, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelCommon2 from "./../common/common.js";
 
@@ -4625,7 +4670,7 @@ var consolePinPane_css_default = `/*
 
 // gen/front_end/panels/console/ConsolePinPane.js
 var { createRef, ref: ref2, repeat } = Directives;
-var { widget } = UI5.Widget;
+var { widget } = UI6.Widget;
 var UIStrings3 = {
   /**
    * @description A context menu item in the Console Pin Pane of the Console panel
@@ -4682,7 +4727,7 @@ var UIStrings3 = {
 var str_3 = i18n7.i18n.registerUIStrings("panels/console/ConsolePinPane.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_PANE_VIEW = (input, _output, target) => {
-  render4(html3`
+  render5(html4`
     <style>${consolePinPane_css_default}</style>
     <div class='console-pins monospace' jslog=${VisualLogging3.pane("console-pins")} @contextmenu=${input.onContextMenu}>
     ${repeat(input.pins, (pin) => pin, (pin) => widget(ConsolePinPresenter, {
@@ -4692,7 +4737,7 @@ var DEFAULT_PANE_VIEW = (input, _output, target) => {
   }))}
     </div>`, target);
 };
-var ConsolePinPane = class extends UI5.Widget.VBox {
+var ConsolePinPane = class extends UI6.Widget.VBox {
   #view;
   /** When creating a new pin, we'll focus it after rendering the editor */
   #newPin;
@@ -4709,12 +4754,12 @@ var ConsolePinPane = class extends UI5.Widget.VBox {
     this.#pinModel.stopPeriodicEvaluate();
   }
   contextMenuEventFired(event) {
-    const contextMenu = new UI5.ContextMenu.ContextMenu(event);
-    const target = UI5.UIUtils.deepElementFromEvent(event);
+    const contextMenu = new UI6.ContextMenu.ContextMenu(event);
+    const target = UI6.UIUtils.deepElementFromEvent(event);
     if (target) {
       const targetPinElement = target.enclosingNodeOrSelfWithClass("widget");
       if (targetPinElement) {
-        const targetPin = UI5.Widget.Widget.get(targetPinElement);
+        const targetPin = UI6.Widget.Widget.get(targetPinElement);
         if (targetPin instanceof ConsolePinPresenter) {
           contextMenu.editSection().appendItem(i18nString3(UIStrings3.removeExpression), () => targetPin.pin ? this.removePin(targetPin.pin) : void 0, { jslogContext: "remove-expression" });
           targetPin.appendToContextMenu(contextMenu);
@@ -4759,12 +4804,12 @@ var ConsolePinPane = class extends UI5.Widget.VBox {
     this.#newPin = void 0;
   }
 };
-var DEFAULT_VIEW3 = (input, output, target) => {
+var DEFAULT_VIEW4 = (input, output, target) => {
   const deleteIconLabel = input.expression ? i18nString3(UIStrings3.removeExpressionS, { PH1: input.expression }) : i18nString3(UIStrings3.removeBlankExpression);
   const deleteRef = createRef();
   const editorRef = createRef();
   const isError = input.result && !("error" in input.result) && input.result?.exceptionDetails && !SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(input.result);
-  render4(html3`
+  render5(html4`
     <style>${consolePinPane_css_default}</style>
     <style>${objectValue_css_default}</style>
     <div class='console-pin ${isError ? "error-level" : ""}'>
@@ -4815,18 +4860,18 @@ var DEFAULT_VIEW3 = (input, output, target) => {
 var FORMATTER = new ObjectUI2.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter();
 function renderResult(result, isEditing) {
   if (!result) {
-    return nothing4;
+    return nothing5;
   }
   if (result && SDK5.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-    return html3`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
+    return html4`<span class='object-value-calculate-value-button' title=${i18nString3(UIStrings3.evaluateAllowingSideEffects)}>(…)</span>`;
   }
   const renderedPreview = FORMATTER.renderEvaluationResultPreview(result, !isEditing);
-  if (renderedPreview === nothing4 && !isEditing) {
-    return html3`${i18nString3(UIStrings3.notAvailable)}`;
+  if (renderedPreview === nothing5 && !isEditing) {
+    return html4`${i18nString3(UIStrings3.notAvailable)}`;
   }
   return renderedPreview;
 }
-var ConsolePinPresenter = class extends UI5.Widget.Widget {
+var ConsolePinPresenter = class extends UI6.Widget.Widget {
   #pin;
   #focusOut;
   #onRemove;
@@ -4837,7 +4882,7 @@ var ConsolePinPresenter = class extends UI5.Widget.Widget {
   #lastNode = null;
   #deletePinIcon;
   #selfXssWarningDisabledSetting;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
     this.#selfXssWarningDisabledSetting = Common5.Settings.Settings.instance().createSetting(
@@ -5081,7 +5126,7 @@ var ConsolePinModel = class {
     if (!this.#active) {
       return;
     }
-    const executionContext = UI5.Context.Context.instance().flavor(SDK5.RuntimeModel.ExecutionContext);
+    const executionContext = UI6.Context.Context.instance().flavor(SDK5.RuntimeModel.ExecutionContext);
     if (executionContext) {
       await Promise.all(this.#pins.values().map((pin) => pin.evaluate(executionContext)));
     }
@@ -5174,13 +5219,13 @@ var ConsoleSidebar_exports = {};
 __export(ConsoleSidebar_exports, {
   ConsoleFilterGroup: () => ConsoleFilterGroup,
   ConsoleSidebar: () => ConsoleSidebar,
-  DEFAULT_VIEW: () => DEFAULT_VIEW4
+  DEFAULT_VIEW: () => DEFAULT_VIEW5
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
+import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/consoleSidebar.css.js
@@ -5257,7 +5302,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n9.i18n.registerUIStrings("panels/console/ConsoleSidebar.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
-var { render: render5, html: html4, nothing: nothing5 } = Lit3;
+var { render: render6, html: html5, nothing: nothing6 } = Lit4;
 var GROUP_ICONS = {
   [
     "message"
@@ -5284,13 +5329,13 @@ var GROUP_ICONS = {
     /* GroupName.VERBOSE */
   ]: { icon: "bug", label: UIStrings4.dVerbose }
 };
-var DEFAULT_VIEW4 = (input, output, target) => {
-  render5(html4`<devtools-tree
+var DEFAULT_VIEW5 = (input, output, target) => {
+  render6(html5`<devtools-tree
         navigation-variant
         hide-overflow
-        .template=${html4`
+        .template=${html5`
           <ul role="tree">
-            ${input.groups.map((group) => html4`
+            ${input.groups.map((group) => html5`
               <li
                 role="treeitem"
                 @select=${() => input.onSelectionChanged(group.filter)}
@@ -5301,9 +5346,9 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   i18nString4(GROUP_ICONS[group.name].label, {
     n: group.messageCount
   })}
-                  ${group.messageCount === 0 ? nothing5 : html4`
+                  ${group.messageCount === 0 ? nothing6 : html5`
                   <ul role="group">
-                    ${group.urlGroups.values().map((urlGroup) => html4`
+                    ${group.urlGroups.values().map((urlGroup) => html5`
                       <li
                         @select=${() => input.onSelectionChanged(urlGroup.filter)}
                         role="treeitem"
@@ -5364,7 +5409,7 @@ var CONSOLE_API_PARSED_FILTERS = [{
   negative: false,
   regex: void 0
 }];
-var ConsoleSidebar = class extends Common6.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
+var ConsoleSidebar = class extends Common6.ObjectWrapper.eventMixin(UI7.Widget.VBox) {
   #view;
   #groups = [
     new ConsoleFilterGroup("message", [], ConsoleFilter.allLevelsFilterValue()),
@@ -5388,7 +5433,7 @@ var ConsoleSidebar = class extends Common6.ObjectWrapper.eventMixin(UI6.Widget.V
   ];
   #selectedFilterSetting = Common6.Settings.Settings.instance().createSetting("console.sidebar-selected-filter", null);
   #selectedFilter = this.#groups.find((group) => group.name === this.#selectedFilterSetting.get())?.filter;
-  constructor(element, view = DEFAULT_VIEW4) {
+  constructor(element, view = DEFAULT_VIEW5) {
     super(element, {
       useShadowDom: "pure"
     });
@@ -5434,8 +5479,8 @@ __export(ConsoleViewport_exports, {
   ConsoleViewport: () => ConsoleViewport
 });
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
+import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI8 from "./../../ui/legacy/legacy.js";
 var ConsoleViewport = class {
   element;
   topGapElement;
@@ -5473,8 +5518,8 @@ var ConsoleViewport = class {
     this.bottomGapElementActive = false;
     this.topGapElement.textContent = "\uFEFF";
     this.bottomGapElement.textContent = "\uFEFF";
-    UI7.ARIAUtils.setHidden(this.topGapElement, true);
-    UI7.ARIAUtils.setHidden(this.bottomGapElement, true);
+    UI8.ARIAUtils.setHidden(this.topGapElement, true);
+    UI8.ARIAUtils.setHidden(this.bottomGapElement, true);
     this.provider = provider;
     this.element.addEventListener("scroll", this.onScroll.bind(this), false);
     this.element.addEventListener("copy", this.onCopy.bind(this), false);
@@ -5567,7 +5612,7 @@ var ConsoleViewport = class {
     return true;
   }
   onKeyDown(event) {
-    if (UI7.UIUtils.isEditing() || !this.itemCount || event.shiftKey) {
+    if (UI8.UIUtils.isEditing() || !this.itemCount || event.shiftKey) {
       return;
     }
     let isArrowUp = false;
@@ -5603,7 +5648,7 @@ var ConsoleViewport = class {
   updateFocusedItem(focusLastChild) {
     const selectedElement = this.renderedElementAt(this.virtualSelectedIndex);
     const changed = this.lastSelectedElement !== selectedElement;
-    const containerHasFocus = this.#contentElement === UI7.DOMUtilities.deepActiveElement(this.element.ownerDocument);
+    const containerHasFocus = this.#contentElement === UI8.DOMUtilities.deepActiveElement(this.element.ownerDocument);
     if (this.lastSelectedElement && changed) {
       this.lastSelectedElement.classList.remove("console-selected");
     }
@@ -5611,7 +5656,7 @@ var ConsoleViewport = class {
       selectedElement.classList.add("console-selected");
       const consoleViewMessage = getMessageForElement(selectedElement);
       if (consoleViewMessage) {
-        UI7.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+        UI8.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
       }
       if (focusLastChild) {
         this.setStickToBottom(false);
@@ -5906,7 +5951,7 @@ var ConsoleViewport = class {
         continue;
       }
       const element = providerElement.element();
-      const lineContent = element.childTextNodes().map(Components3.Linkifier.Linkifier.untruncatedNodeText).join("");
+      const lineContent = element.childTextNodes().map(Components4.Linkifier.Linkifier.untruncatedNodeText).join("");
       textLines.push(lineContent);
     }
     const endProviderElement = this.providerElement(endSelection.item);
@@ -5941,9 +5986,9 @@ var ConsoleViewport = class {
       if (node.nodeType !== Node.TEXT_NODE || node.parentNode && (node.parentNode.nodeName === "STYLE" || node.parentNode.nodeName === "SCRIPT" || node.parentNode.nodeName === "#document-fragment")) {
         continue;
       }
-      chars += Components3.Linkifier.Linkifier.untruncatedNodeText(node).length;
+      chars += Components4.Linkifier.Linkifier.untruncatedNodeText(node).length;
     }
-    const untruncatedContainerLength = Components3.Linkifier.Linkifier.untruncatedNodeText(selectionNode).length;
+    const untruncatedContainerLength = Components4.Linkifier.Linkifier.untruncatedNodeText(selectionNode).length;
     if (offset > 0 && untruncatedContainerLength !== textContentLength) {
       offset = untruncatedContainerLength;
     }
@@ -5996,7 +6041,7 @@ var ConsoleViewport = class {
     this.setStickToBottom(false);
     this.rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = index > 0 ? this.cumulativeHeights[index - 1] : 0;
-    if (UI7.UIUtils.isScrolledToBottom(this.element)) {
+    if (UI8.UIUtils.isScrolledToBottom(this.element)) {
       this.setStickToBottom(true);
     }
     this.refresh();
@@ -6013,7 +6058,7 @@ var ConsoleViewport = class {
     this.setStickToBottom(false);
     this.rebuildCumulativeHeightsIfNeeded();
     this.element.scrollTop = this.cumulativeHeights[index] - this.visibleHeight();
-    if (UI7.UIUtils.isScrolledToBottom(this.element)) {
+    if (UI8.UIUtils.isScrolledToBottom(this.element)) {
       this.setStickToBottom(true);
     }
     this.refresh();
@@ -6047,7 +6092,7 @@ import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.nex
 import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/ConsolePanel.js
@@ -6057,7 +6102,7 @@ __export(ConsolePanel_exports, {
   ConsoleRevealer: () => ConsoleRevealer,
   WrapperView: () => WrapperView
 });
-import * as UI9 from "./../../ui/legacy/legacy.js";
+import * as UI10 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/console/ConsoleView.js
@@ -6076,7 +6121,7 @@ import * as Root3 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
-import * as Bindings3 from "./../../models/bindings/bindings.js";
+import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
@@ -6085,10 +6130,64 @@ import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.
 import * as IssueCounter2 from "./../../ui/components/issue_counter/issue_counter.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
+import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
+import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 import { AiCodeCompletionSummaryToolbar } from "./../common/common.js";
+
+// gen/front_end/panels/console/symbolizedErrorWidget.css.js
+var symbolizedErrorWidget_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.symbolized-error-widget {
+  white-space: pre-wrap;
+  word-break: break-all;
+
+  --display-formatted-stack-frame-default: block;
+  --display-ignored-formatted-stack-frame-local: var(--display-ignored-formatted-stack-frame, none);
+
+  &.show-hidden-rows {
+    --display-ignored-formatted-stack-frame-local: var(--display-formatted-stack-frame-default);
+  }
+}
+
+.symbolized-error-widget .formatted-stack-frame {
+  display: var(--display-formatted-stack-frame-default);
+
+  &:has(.ignore-list-link) {
+    display: var(--display-ignored-formatted-stack-frame-local);
+    opacity: 60%;
+
+    /* Subsequent builtin stack frames are also treated as ignored */
+    & + .formatted-builtin-stack-frame {
+      display: var(--display-ignored-formatted-stack-frame-local);
+      opacity: 60%;
+    }
+  }
+}
+
+.symbolized-error-widget .formatted-builtin-stack-frame {
+  display: var(--display-formatted-stack-frame-default);
+}
+
+.symbolized-error-widget-host {
+  display: inline;
+}
+
+.symbolized-error-header {
+  display: block;
+}
+
+.error-message-text {
+  display: inline;
+}
+
+/*# sourceURL=${import.meta.resolve("./symbolizedErrorWidget.css")} */`;
+
+// gen/front_end/panels/console/ConsoleView.js
 var UIStrings5 = {
   /**
    * @description Label for button which links to Issues tab, specifying how many issues there are.
@@ -6295,7 +6394,7 @@ var MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
 var DISCLAIMER_TOOLTIP_ID = "console-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "console-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "console-ai-code-completion-citations-tooltip";
-var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
+var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   #searchableView;
   sidebar;
   isSidebarOpen;
@@ -6361,8 +6460,8 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
   constructor(viewportThrottlerTimeout) {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS(consoleView_css_default, objectValue_css_default, CodeHighlighter3.codeHighlighterStyles);
-    this.#searchableView = new UI8.SearchableView.SearchableView(this, null);
+    this.registerRequiredCSS(consoleView_css_default, symbolizedErrorWidget_css_default, objectValue_css_default, CodeHighlighter3.codeHighlighterStyles);
+    this.#searchableView = new UI9.SearchableView.SearchableView(this, null);
     this.#searchableView.element.classList.add("console-searchable-view");
     this.#searchableView.setPlaceholder(i18nString5(UIStrings5.findStringInLogs));
     this.#searchableView.setMinimalSearchQuerySize(0);
@@ -6372,7 +6471,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.filter = new ConsoleViewFilter(this.onFilterChanged.bind(this));
     this.consoleToolbarContainer = this.element.createChild("div", "console-toolbar-container");
     this.consoleToolbarContainer.role = "toolbar";
-    this.splitWidget = new UI8.SplitWidget.SplitWidget(true, false, "console.sidebar.width", 100);
+    this.splitWidget = new UI9.SplitWidget.SplitWidget(true, false, "console.sidebar.width", 100);
     this.splitWidget.setMainWidget(this.#searchableView);
     this.splitWidget.setSidebarWidget(this.sidebar);
     this.splitWidget.show(this.element);
@@ -6405,12 +6504,12 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.shortcuts = /* @__PURE__ */ new Map();
     this.regexMatchRanges = [];
     this.consoleContextSelector = new ConsoleContextSelector();
-    this.filterStatusText = new UI8.Toolbar.ToolbarText();
+    this.filterStatusText = new UI9.Toolbar.ToolbarText();
     this.filterStatusText.element.classList.add("dimmed");
     this.showSettingsPaneSetting = Common7.Settings.Settings.instance().createSetting("console-show-settings-toolbar", false);
-    this.showSettingsPaneButton = new UI8.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString5(UIStrings5.consoleSettings), "gear-filled");
+    this.showSettingsPaneButton = new UI9.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString5(UIStrings5.consoleSettings), "gear-filled");
     this.showSettingsPaneButton.element.setAttribute("jslog", `${VisualLogging5.toggleSubpane("console-settings").track({ click: true })}`);
-    this.progressToolbarItem = new UI8.Toolbar.ToolbarItem(document.createElement("div"));
+    this.progressToolbarItem = new UI9.Toolbar.ToolbarItem(document.createElement("div"));
     this.groupSimilarSetting = Common7.Settings.Settings.instance().moduleSetting("console-group-similar");
     this.groupSimilarSetting.addChangeListener(() => this.updateMessageList());
     this.showCorsErrorsSetting = Common7.Settings.Settings.instance().moduleSetting("console-shows-cors-errors");
@@ -6420,14 +6519,14 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     toolbar2.role = "presentation";
     toolbar2.wrappable = true;
     toolbar2.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(i18nString5(UIStrings5.showConsoleSidebar), i18nString5(UIStrings5.hideConsoleSidebar), i18nString5(UIStrings5.consoleSidebarShown), i18nString5(UIStrings5.consoleSidebarHidden), "console-sidebar"));
-    toolbar2.appendToolbarItem(UI8.Toolbar.Toolbar.createActionButton("console.clear"));
-    this.#collapseAllButton = new UI8.Toolbar.ToolbarButton(i18nString5(UIStrings5.collapseAll), "compress", void 0, "console.collapse-all");
+    toolbar2.appendToolbarItem(UI9.Toolbar.Toolbar.createActionButton("console.clear"));
+    this.#collapseAllButton = new UI9.Toolbar.ToolbarButton(i18nString5(UIStrings5.collapseAll), "compress", void 0, "console.collapse-all");
     this.#collapseAllButton.addEventListener("Click", this.#toggleCollapseAll, this);
     toolbar2.appendToolbarItem(this.#collapseAllButton);
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.consoleContextSelector.toolbarItem());
     toolbar2.appendSeparator();
-    const liveExpressionButton = UI8.Toolbar.Toolbar.createActionButton("console.create-pin");
+    const liveExpressionButton = UI9.Toolbar.Toolbar.createActionButton("console.create-pin");
     toolbar2.appendToolbarItem(liveExpressionButton);
     toolbar2.appendSeparator();
     toolbar2.appendToolbarItem(this.filter.textFilterUI);
@@ -6438,14 +6537,14 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.issueCounter = new IssueCounter2.IssueCounter.IssueCounter();
     this.issueCounter.id = "console-issues-counter";
     this.issueCounter.setAttribute("jslog", `${VisualLogging5.counter("issues").track({ click: true })}`);
-    const issuesToolbarItem = new UI8.Toolbar.ToolbarItem(this.issueCounter);
+    const issuesToolbarItem = new UI9.Toolbar.ToolbarItem(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: () => {
         Host4.userMetrics.issuesPanelOpenedFrom(
           2
           /* Host.UserMetrics.IssueOpener.STATUS_BAR_ISSUES_COUNTER */
         );
-        void UI8.ViewManager.ViewManager.instance().showView("issues-pane");
+        void UI9.ViewManager.ViewManager.instance().showView("issues-pane");
       },
       issuesManager: IssuesManager.IssuesManager.IssuesManager.instance(),
       accessibleName: i18nString5(UIStrings5.issueToolbarTooltipGeneral),
@@ -6465,8 +6564,8 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       /* Common.Settings.SettingStorageType.SYNCED */
     );
     const settingsPane = this.contentsElement.createChild("div", "console-settings-pane");
-    UI8.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
-    UI8.ARIAUtils.markAsGroup(settingsPane);
+    UI9.ARIAUtils.setLabel(settingsPane, i18nString5(UIStrings5.consoleSettings));
+    UI9.ARIAUtils.markAsGroup(settingsPane);
     const consoleEagerEvalSetting = Common7.Settings.Settings.instance().moduleSetting("console-eager-eval");
     const preserveConsoleLogSetting = Common7.Settings.Settings.instance().moduleSetting("preserve-console-log");
     const userActivationEvalSetting = Common7.Settings.Settings.instance().moduleSetting("console-user-activation-eval");
@@ -6491,7 +6590,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       this.messagesElement.addEventListener(type, this.messagesPasted.bind(this), true);
     });
     this.messagesCountElement = this.consoleToolbarContainer.createChild("div", "message-count");
-    UI8.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
+    UI9.ARIAUtils.markAsPoliteLiveRegion(this.messagesCountElement, false);
     this.viewportThrottler = new Common7.Throttler.Throttler(viewportThrottlerTimeout);
     this.pendingBatchResize = false;
     this.onMessageResizedBound = (e) => {
@@ -6501,12 +6600,12 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.promptElement.id = "console-prompt";
     const selectAllFixer = this.messagesElement.createChild("div", "console-view-fix-select-all");
     selectAllFixer.textContent = ".";
-    UI8.ARIAUtils.setHidden(selectAllFixer, true);
+    UI9.ARIAUtils.setHidden(selectAllFixer, true);
     this.registerShortcuts();
     this.messagesElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
     const throttler = new Common7.Throttler.Throttler(100);
     const refilterMessages = () => throttler.schedule(async () => this.onFilterChanged());
-    this.linkifier = new Components4.Linkifier.Linkifier(UI8.UIUtils.MaxLengthForDisplayedURLsInConsole);
+    this.linkifier = new Components5.Linkifier.Linkifier(UI9.UIUtils.MaxLengthForDisplayedURLsInConsole);
     this.linkifier.addEventListener("liveLocationUpdated", refilterMessages);
     this.consoleMessages = [];
     this.consoleGroupStarts = [];
@@ -6549,7 +6648,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.updateFilterStatus();
     this.timestampsSetting.addChangeListener(this.consoleTimestampsSettingChanged, this);
     this.registerWithMessageSink();
-    UI8.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
+    UI9.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.executionContextChanged, this);
     this.messagesElement.addEventListener("mousedown", (event) => this.updateStickToBottomOnPointerDown(event.button === 2), false);
     this.messagesElement.addEventListener("mouseup", this.updateStickToBottomOnPointerUp.bind(this), false);
     this.messagesElement.addEventListener("mouseleave", this.updateStickToBottomOnPointerUp.bind(this), false);
@@ -6826,7 +6925,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     const issuesTitleGotoIssues = manager.numberOfIssues() === 0 ? i18nString5(UIStrings5.issueToolbarClickToGoToTheIssuesTab) : i18nString5(UIStrings5.issueToolbarClickToView, { issueEnumeration });
     const issuesTitleGeneral = i18nString5(UIStrings5.issueToolbarTooltipGeneral);
     const issuesTitle = `${issuesTitleGeneral} ${issuesTitleGotoIssues}`;
-    UI8.Tooltip.Tooltip.install(this.issueCounter, issuesTitle);
+    UI9.Tooltip.Tooltip.install(this.issueCounter, issuesTitle);
     this.issueCounter.data = {
       ...this.issueCounter.data,
       leadingText: i18nString5(UIStrings5.issuesWithColon, { n: manager.numberOfIssues() }),
@@ -7034,7 +7133,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     }
   }
   async onMessageResized(event) {
-    const treeElement = event.data instanceof UI8.TreeOutline.TreeElement ? event.data.treeOutline?.element : event.data;
+    const treeElement = event.data instanceof UI9.TreeOutline.TreeElement ? event.data.treeOutline?.element : event.data;
     if (this.pendingBatchResize || !treeElement) {
       return;
     }
@@ -7047,7 +7146,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     this.pendingBatchResize = false;
   }
   getConsoleMessageHistory() {
-    const currentExecutionContext = UI8.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI9.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext);
     let consoleMessages = "";
     if (currentExecutionContext) {
       const consoleModel = currentExecutionContext.target().model(SDK7.ConsoleModel.ConsoleModel);
@@ -7084,10 +7183,10 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     if (hadFocus) {
       this.prompt.focus();
     }
-    UI8.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.consoleCleared));
+    UI9.ARIAUtils.LiveAnnouncer.alert(i18nString5(UIStrings5.consoleCleared));
   }
   handleContextMenuEvent(event) {
-    const contextMenu = new UI8.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI9.ContextMenu.ContextMenu(event);
     const eventTarget = event.target;
     if (eventTarget.isSelfOrDescendant(this.promptElement)) {
       void contextMenu.show();
@@ -7097,7 +7196,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     const consoleViewMessage = sourceElement && getMessageForElement(sourceElement);
     const consoleMessage = consoleViewMessage ? consoleViewMessage.consoleMessage() : null;
     if (consoleViewMessage) {
-      UI8.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+      UI9.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
     }
     if (consoleMessage && !consoleViewMessage?.element()?.matches(".has-insight") && consoleViewMessage?.shouldShowInsights()) {
       contextMenu.headerSection().appendAction(
@@ -7130,7 +7229,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
     const url = SDK7.TargetManager.TargetManager.instance().scopeTarget().inspectedURL();
     const parsedURL = Common7.ParsedURL.ParsedURL.fromString(url);
     const filename = Platform5.StringUtilities.sprintf("%s-%d.log", parsedURL ? parsedURL.host : "console", Date.now());
-    const stream = new Bindings3.FileUtils.FileOutputStream();
+    const stream = new Bindings4.FileUtils.FileOutputStream();
     const progressIndicator = document.createElement("devtools-progress");
     progressIndicator.title = i18nString5(UIStrings5.writingFile);
     progressIndicator.totalWork = this.itemCount();
@@ -7296,7 +7395,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
   messagesKeyDown(event) {
     const keyEvent = event;
     const hasActionModifier = keyEvent.ctrlKey || keyEvent.altKey || keyEvent.metaKey;
-    if (hasActionModifier || keyEvent.key.length !== 1 || UI8.UIUtils.isEditing() || this.messagesElement.hasSelection()) {
+    if (hasActionModifier || keyEvent.key.length !== 1 || UI9.UIUtils.isEditing() || this.messagesElement.hasSelection()) {
       return;
     }
     this.prompt.moveCaretToEndOfPrompt();
@@ -7307,13 +7406,13 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       event.preventDefault();
       this.prompt.showSelfXssWarning();
     }
-    if (UI8.UIUtils.isEditing()) {
+    if (UI9.UIUtils.isEditing()) {
       return;
     }
     this.prompt.focus();
   }
   registerShortcuts() {
-    this.shortcuts.set(UI8.KeyboardShortcut.KeyboardShortcut.makeKey("u", UI8.KeyboardShortcut.Modifiers.Ctrl.value), this.clearPromptBackwards.bind(this));
+    this.shortcuts.set(UI9.KeyboardShortcut.KeyboardShortcut.makeKey("u", UI9.KeyboardShortcut.Modifiers.Ctrl.value), this.clearPromptBackwards.bind(this));
   }
   clearPromptBackwards(e) {
     this.prompt.clear();
@@ -7325,7 +7424,7 @@ var ConsoleView = class _ConsoleView extends UI8.Widget.VBox {
       this.updateStickToBottomOnWheel();
       return;
     }
-    const shortcut = UI8.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(keyboardEvent);
+    const shortcut = UI9.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(keyboardEvent);
     const handler = this.shortcuts.get(shortcut);
     if (handler) {
       handler(keyboardEvent);
@@ -7539,10 +7638,10 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     this.messageLevelFiltersSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.networkMessagesSetting.addChangeListener(this.onFilterChanged.bind(this));
     this.filterByExecutionContextSetting.addChangeListener(this.onFilterChanged.bind(this));
-    UI8.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
+    UI9.Context.Context.instance().addFlavorChangeListener(SDK7.RuntimeModel.ExecutionContext, this.onFilterChanged, this);
     const filterKeys = Object.values(FilterType);
-    this.suggestionBuilder = new UI8.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
-    this.textFilterUI = new UI8.Toolbar.ToolbarFilter(void 0, 1, 1, i18nString5(UIStrings5.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
+    this.suggestionBuilder = new UI9.FilterSuggestionBuilder.FilterSuggestionBuilder(filterKeys);
+    this.textFilterUI = new UI9.Toolbar.ToolbarFilter(void 0, 1, 1, i18nString5(UIStrings5.egEventdCdnUrlacom), this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
     this.textFilterSetting = Common7.Settings.Settings.instance().createSetting("console.text-filter", "");
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
@@ -7560,10 +7659,10 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
       ["warning", i18nString5(UIStrings5.warnings)],
       ["error", i18nString5(UIStrings5.errors)]
     ]);
-    this.levelMenuButton = new UI8.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), void 0, void 0, "log-level");
+    this.levelMenuButton = new UI9.Toolbar.ToolbarMenuButton(this.appendLevelMenuItems.bind(this), void 0, void 0, "log-level");
     const levelMenuButtonInfoIcon = createIcon2("info", "console-sidebar-levels-info");
     levelMenuButtonInfoIcon.title = i18nString5(UIStrings5.overriddenByFilterSidebar);
-    this.levelMenuButtonInfo = new UI8.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
+    this.levelMenuButtonInfo = new UI9.Toolbar.ToolbarItem(levelMenuButtonInfoIcon);
     this.levelMenuButtonInfo.setVisible(false);
     this.updateLevelMenuButtonText();
     this.messageLevelFiltersSetting.addChangeListener(this.updateLevelMenuButtonText.bind(this));
@@ -7612,7 +7711,7 @@ var ConsoleViewFilter = class _ConsoleViewFilter {
     if (!this.networkMessagesSetting.get()) {
       parsedFilters.push({ key: FilterType.Source, text: "network", negative: true, regex: void 0 });
     }
-    this.currentFilter.executionContext = this.filterByExecutionContextSetting.get() ? UI8.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext) : null;
+    this.currentFilter.executionContext = this.filterByExecutionContextSetting.get() ? UI9.Context.Context.instance().flavor(SDK7.RuntimeModel.ExecutionContext) : null;
     this.currentFilter.parsedFilters = parsedFilters;
     this.currentFilter.levelsMask = this.messageLevelFiltersSetting.get();
   }
@@ -7690,7 +7789,7 @@ var ActionDelegate = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "console.toggle": {
-        const inspectorView = UI8.InspectorView.InspectorView.instance();
+        const inspectorView = UI9.InspectorView.InspectorView.instance();
         const consoleView = ConsoleView.instance();
         if (inspectorView.drawerVisible() && !inspectorView.isDrawerMinimized() && consoleView.isShowing() && consoleView.hasFocus()) {
           inspectorView.minimizeDrawer();
@@ -7726,7 +7825,7 @@ var consoleMessageToViewMessage = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/console/ConsolePanel.js
 var consolePanelInstance;
-var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
+var ConsolePanel = class _ConsolePanel extends UI10.Panel.Panel {
   view;
   #drawerWasMinimized = false;
   constructor() {
@@ -7742,11 +7841,11 @@ var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
   }
   static updateContextFlavor() {
     const consoleView = _ConsolePanel.instance().view;
-    UI9.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
+    UI10.Context.Context.instance().setFlavor(ConsoleView, consoleView.isShowing() ? consoleView : null);
   }
   wasShown() {
     super.wasShown();
-    const inspectorView = UI9.InspectorView.InspectorView.instance();
+    const inspectorView = UI10.InspectorView.InspectorView.instance();
     this.#drawerWasMinimized = inspectorView.isDrawerMinimized();
     const wrapper = wrapperViewInstance;
     if (wrapper?.isShowing()) {
@@ -7757,7 +7856,7 @@ var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
   }
   willHide() {
     super.willHide();
-    const inspectorView = UI9.InspectorView.InspectorView.instance();
+    const inspectorView = UI10.InspectorView.InspectorView.instance();
     inspectorView.setDrawerMinimized(false);
     if (wrapperViewInstance) {
       wrapperViewInstance.showViewInWrapper();
@@ -7772,7 +7871,7 @@ var ConsolePanel = class _ConsolePanel extends UI9.Panel.Panel {
   }
 };
 var wrapperViewInstance = null;
-var WrapperView = class _WrapperView extends UI9.Widget.VBox {
+var WrapperView = class _WrapperView extends UI10.Widget.VBox {
   view;
   constructor() {
     super({ jslog: `${VisualLogging6.panel("console").track({ resize: true })}` });
@@ -7789,7 +7888,7 @@ var WrapperView = class _WrapperView extends UI9.Widget.VBox {
     if (!ConsolePanel.instance().isShowing()) {
       this.showViewInWrapper();
     } else {
-      UI9.InspectorView.InspectorView.instance().setDrawerMinimized(true);
+      UI10.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     ConsolePanel.updateContextFlavor();
   }
@@ -7808,7 +7907,7 @@ var ConsoleRevealer = class {
       consoleView.focus();
       return;
     }
-    await UI9.ViewManager.ViewManager.instance().showView("console-view");
+    await UI10.ViewManager.ViewManager.instance().showView("console-view");
   }
 };
 
@@ -7889,7 +7988,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n13.i18n.registerUIStrings("panels/console/ConsolePrompt.ts", UIStrings6);
 var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_6);
-var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.Widget) {
+var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI11.Widget.Widget) {
   addCompletionsFromHistory;
   #history;
   initialText;
@@ -8009,7 +8108,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
     }
     this.element.removeAttribute("tabindex");
     this.editorSetForTest();
-    UI10.UIUserMetrics.UIUserMetrics.instance().panelLoaded("console", "DevTools.Launch.Console");
+    UI11.UIUserMetrics.UIUserMetrics.instance().panelLoaded("console", "DevTools.Launch.Console");
   }
   eagerSettingChanged() {
     const enabled = this.eagerEvalSetting.get();
@@ -8039,7 +8138,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
   async requestPreview() {
     const id = ++this.requestPreviewCurrent;
     const text = TextEditor2.Config.contentIncludingHint(this.editor.editor).trim();
-    const executionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const executionContext = UI11.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     const { preview, result } = await ObjectUI3.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
       text,
       true,
@@ -8156,9 +8255,9 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
     if (forceEvaluate || selection.main.head < doc.length) {
       return true;
     }
-    const currentExecutionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI11.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     const isExpressionComplete = await TextEditor2.JavaScript.isExpressionComplete(doc.toString());
-    if (currentExecutionContext !== UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext)) {
+    if (currentExecutionContext !== UI11.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext)) {
       return false;
     }
     return isExpressionComplete;
@@ -8214,7 +8313,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
     });
   }
   appendCommand(text, useCommandLineAPI) {
-    const currentExecutionContext = UI10.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
+    const currentExecutionContext = UI11.Context.Context.instance().flavor(SDK8.RuntimeModel.ExecutionContext);
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
       const consoleModel = executionContext.target().model(SDK8.ConsoleModel.ConsoleModel);
@@ -8255,178 +8354,6 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI10.Widget.W
     this.editor.focus();
   }
   editorSetForTest() {
-  }
-};
-
-// gen/front_end/panels/console/SymbolizedErrorWidget.js
-var SymbolizedErrorWidget_exports = {};
-__export(SymbolizedErrorWidget_exports, {
-  SymbolizedErrorWidget: () => SymbolizedErrorWidget
-});
-import * as Bindings4 from "./../../models/bindings/bindings.js";
-import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
-var { html: html5, render: render6 } = Lit4;
-function renderHeader(content, isCause) {
-  if (isCause) {
-    return html5`<div class="symbolized-error-header"><span>Caused by: </span><span class="error-message-text">${content}</span></div>`;
-  }
-  return html5`<span class="error-message-text">${content}</span>`;
-}
-function formatName(frame) {
-  const isInline = frame.isInline;
-  let name = isInline ? frame.name || "" : frame.rawName || frame.name || "";
-  const shouldAppendMethodAlias = !isInline && frame.methodName && name && name !== frame.methodName && !name.endsWith("." + frame.methodName) && !name.endsWith(" " + frame.methodName);
-  if (shouldAppendMethodAlias) {
-    name += ` [as ${frame.methodName}]`;
-  }
-  return name;
-}
-function renderLinkElement(frame, options) {
-  if (frame.url || frame.uiSourceCode) {
-    const link = Components5.Linkifier.Linkifier.linkifyStackTraceFrame(frame, options);
-    link.tabIndex = -1;
-    return link;
-  }
-  return html5`<span>&lt;anonymous&gt;</span>`;
-}
-function renderEvalOrigin(frame, options) {
-  const name = formatName(frame);
-  const linkElement = renderLinkElement(frame, options);
-  const asyncPrefix = frame.isAsync ? "async " : "";
-  const constructorPrefix = frame.isConstructor ? "new " : "";
-  if (frame.isEval) {
-    const evalOrigin = frame.evalOrigin ? renderEvalOrigin(frame.evalOrigin, options) : "<anonymous>";
-    if (name) {
-      return html5`${asyncPrefix}${constructorPrefix}eval at ${name} (${evalOrigin})`;
-    }
-    return html5`${asyncPrefix}${constructorPrefix}eval at ${evalOrigin}`;
-  }
-  if (name) {
-    return html5`${asyncPrefix}${constructorPrefix}eval at ${name} (${linkElement})`;
-  }
-  return html5`${asyncPrefix}${constructorPrefix}eval at ${linkElement}`;
-}
-function renderFramePrefix(frame, options) {
-  const asyncPrefix = frame.isAsync ? "async " : "";
-  if (frame.promiseIndex !== void 0) {
-    const name2 = frame.name || "Promise.all";
-    return html5`${asyncPrefix}${name2} (index ${frame.promiseIndex})`;
-  }
-  const constructorPrefix = frame.isConstructor ? "new " : "";
-  const name = formatName(frame);
-  if (frame.isEval) {
-    const evalOrigin = frame.evalOrigin ? renderEvalOrigin(frame.evalOrigin, options) : "<anonymous>";
-    if (name) {
-      return html5`${asyncPrefix}${constructorPrefix}${name} (${evalOrigin}, `;
-    }
-    return html5`${asyncPrefix}${constructorPrefix}${evalOrigin}, `;
-  }
-  if (name) {
-    return html5`${asyncPrefix}${constructorPrefix}${name} (`;
-  }
-  return html5`${asyncPrefix}${constructorPrefix}`;
-}
-function renderFrameSuffix(frame) {
-  if (frame.promiseIndex !== void 0) {
-    return Lit4.nothing;
-  }
-  if (frame.name) {
-    return html5`)`;
-  }
-  return Lit4.nothing;
-}
-var DEFAULT_VIEW5 = (input, _output, target) => {
-  const renderError2 = (error, isCause) => {
-    if (error instanceof Bindings4.SymbolizedError.UnparsableError) {
-      const fragment = ConsoleViewMessage.linkifyWithCustomLinkifier(error.errorStack, (text, url, lineNumber, columnNumber) => {
-        const options = { text, lineNumber, columnNumber, ignoreListManager: input.ignoreListManager };
-        const linkElement = Components5.Linkifier.Linkifier.linkifyURL(url, options);
-        linkElement.tabIndex = -1;
-        return linkElement;
-      });
-      const header2 = renderHeader(fragment, isCause);
-      return html5`
-        <span class=${isCause ? "console-message-stack-trace-wrapper" : ""}>${header2}</span>
-      `;
-    }
-    const linkOptions = {
-      showColumnNumber: true,
-      inlineFrameIndex: 0,
-      maxLength: UI11.UIUtils.MaxLengthForDisplayedURLsInConsole,
-      ignoreListManager: input.ignoreListManager
-    };
-    let headerContent = html5`${error.message}`;
-    if (error.syntaxErrorLocation) {
-      const linkElement = Components5.Linkifier.Linkifier.linkifyUILocation(error.syntaxErrorLocation, linkOptions);
-      linkElement.tabIndex = -1;
-      headerContent = html5`${error.message} (at ${linkElement})`;
-    }
-    const header = renderHeader(headerContent, isCause);
-    const syncFrames = error.stackTrace.syncFragment.frames;
-    return html5`
-      <span class=${isCause ? "console-message-stack-trace-wrapper" : ""}
-      >${header}${syncFrames.length > 0 ? "\n" : ""}${syncFrames.map((frame, i) => {
-      const isBuiltin = frame.promiseIndex !== void 0 || !frame.url && !frame.uiSourceCode;
-      const linkElement = frame.promiseIndex !== void 0 ? Lit4.nothing : renderLinkElement(frame, linkOptions);
-      const newline = i < error.stackTrace.syncFragment.frames.length - 1 ? "\n" : "";
-      const frameClass = isBuiltin ? "formatted-builtin-stack-frame" : "formatted-stack-frame";
-      return html5`
-            <span class=${frameClass}>${"    at "}${renderFramePrefix(frame, linkOptions)}${linkElement}${renderFrameSuffix(frame)}${newline}</span>
-          `;
-    })}
-      </span>
-      ${error.cause ? renderError2(error.cause, true) : Lit4.nothing}
-    `;
-  };
-  render6(html5`<span class="symbolized-error-widget">${renderError2(input.error, false)}</span>`, target);
-};
-var SymbolizedErrorWidget = class extends UI11.Widget.Widget {
-  #error;
-  #view;
-  #ignoreListManager;
-  constructor(element, view = DEFAULT_VIEW5) {
-    const host = element || document.createElement("span");
-    super(host, { classes: ["symbolized-error-widget-host"] });
-    this.#view = view;
-  }
-  set ignoreListManager(ignoreListManager) {
-    this.#ignoreListManager = ignoreListManager;
-    this.requestUpdate();
-  }
-  get ignoreListManager() {
-    return this.#ignoreListManager;
-  }
-  set error(error) {
-    this.#error?.removeEventListener("UPDATED", this.requestUpdate, this);
-    this.#error = error;
-    if (this.isShowing()) {
-      this.#error?.addEventListener("UPDATED", this.requestUpdate, this);
-    }
-    this.requestUpdate();
-  }
-  get error() {
-    return this.#error;
-  }
-  wasShown() {
-    super.wasShown();
-    this.#error?.addEventListener("UPDATED", this.requestUpdate, this);
-    this.requestUpdate();
-  }
-  willHide() {
-    super.willHide();
-    this.#error?.removeEventListener("UPDATED", this.requestUpdate, this);
-  }
-  performUpdate() {
-    if (!this.#error) {
-      return;
-    }
-    const input = {
-      error: this.#error,
-      ignoreListManager: this.#ignoreListManager
-    };
-    this.#view(input, {}, this.contentElement);
   }
 };
 export {

@@ -1526,6 +1526,9 @@ var str_7 = i18n13.i18n.registerUIStrings("panels/mobile_throttling/ThrottlingSe
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 function createComputePressurePromise() {
   const result = { state: "" };
+  if (typeof PressureObserver === "undefined") {
+    return Promise.resolve(result);
+  }
   return new Promise((resolve) => {
     const observer = new PressureObserver((records) => {
       result.state = records.at(-1).state;

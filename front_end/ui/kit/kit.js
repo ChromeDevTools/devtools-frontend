@@ -394,7 +394,7 @@ var Link = class _Link extends HTMLElement {
     if (!href) {
       return;
     }
-    UIHelpers.openInNewTab(href);
+    UIHelpers.openInNewTab(href, this.allowPrivileged);
     event.consume();
   }
   get href() {
@@ -402,6 +402,16 @@ var Link = class _Link extends HTMLElement {
   }
   set href(href) {
     this.setAttribute("href", href);
+  }
+  get allowPrivileged() {
+    return this.hasAttribute("allow-privileged");
+  }
+  set allowPrivileged(allowPrivileged) {
+    if (allowPrivileged) {
+      this.setAttribute("allow-privileged", "");
+    } else {
+      this.removeAttribute("allow-privileged");
+    }
   }
   get jslogContext() {
     return this.getAttribute("jslogcontext");
@@ -420,7 +430,7 @@ var Link = class _Link extends HTMLElement {
     }
   }
   attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue !== newValue) {
+    if (oldValue === newValue) {
       return;
     }
     if (name === "jslogcontext") {
@@ -449,9 +459,10 @@ var Link = class _Link extends HTMLElement {
    * which we are activly migrating away from.
    * @deprecated
    */
-  static create(url, linkText, className, jsLogContext, tabindex = 0) {
+  static create(url, linkText, className, jsLogContext, tabindex = 0, allowPrivileged = false) {
     const link2 = new _Link();
     link2.href = url;
+    link2.allowPrivileged = allowPrivileged;
     linkText = linkText ?? url;
     link2.textContent = Platform.StringUtilities.trimMiddle(linkText, 150);
     const classes = className ? `${className} devtools-link` : "devtools-link";

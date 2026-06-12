@@ -38,7 +38,16 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
         return new StackTraceImpl(syncFragment, asyncFragments);
     }
     async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
-        const rawFrames = parseRawFramesFromErrorStack(stack);
+        const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
+        const baseURL = this.target().inspectedURL();
+        const resolveURL = (url) => {
+            let urlWithScheme = parseOrScriptMatch(debuggerModel, url);
+            if (!urlWithScheme && Common.ParsedURL.ParsedURL.isRelativeURL(url)) {
+                urlWithScheme = parseOrScriptMatch(debuggerModel, Common.ParsedURL.ParsedURL.completeURL(baseURL, url));
+            }
+            return urlWithScheme;
+        };
+        const rawFrames = parseRawFramesFromErrorStack(stack, resolveURL);
         if (!rawFrames) {
             return null;
         }
@@ -196,6 +205,27 @@ async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
         parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
     }
     return new EvalOrigin(frames, parentEvalOrigin);
+}
+function parseOrScriptMatch(debuggerModel, url) {
+    if (!url) {
+        return null;
+    }
+    if (Common.ParsedURL.ParsedURL.isValidUrlString(url)) {
+        return url;
+    }
+    if (debuggerModel.scriptsForSourceURL(url).length) {
+        return url;
+    }
+    // nodejs stack traces contain (absolute) file paths, but v8 reports them as file: urls.
+    try {
+        const fileUrl = new URL(url, 'file://');
+        if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
+            return fileUrl.href;
+        }
+    }
+    catch {
+    }
+    return null;
 }
 SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0 /* SDK.Target.Capability.NONE */, autostart: false });
 //# sourceMappingURL=StackTraceModel.js.map

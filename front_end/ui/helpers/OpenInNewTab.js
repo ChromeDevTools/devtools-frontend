@@ -54,14 +54,14 @@ import * as SDK from '../../core/sdk/sdk.js';
  * @throws TypeError if `url` is not a valid URL.
  * @see https://en.wikipedia.org/wiki/UTM_parameters
  */
-export function openInNewTab(url) {
+export function openInNewTab(url, allowPrivileged) {
     url = new URL(url);
     if (Common.ParsedURL.schemeIs(url, 'javascript:')) {
         return;
     }
     // Navigating to a chrome:// link via a normal anchor doesn't work, so we "navigate"
-    // there using CDP.
-    if (Common.ParsedURL.schemeIs(url, 'chrome:')) {
+    // there using CDP if explicitly requested.
+    if (allowPrivileged && Common.ParsedURL.schemeIs(url, 'chrome:')) {
         const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
         if (rootTarget === null) {
             return;

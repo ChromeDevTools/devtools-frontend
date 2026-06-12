@@ -77,22 +77,17 @@ const data = {
         };
     }
     async handler(params, context, options) {
-        const executionNode = context.getExecutionContextNode?.() ?? null;
+        const executionNode = context.getExecutionContextNode();
         if (!executionNode) {
             return { error: 'Error: Could not find the context node for execution.' };
         }
         const executionMode = Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??
             Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
-        const changes = context.changeManager;
-        const createExtensionScope = context.createExtensionScope;
-        if (!changes || !createExtensionScope) {
-            return { error: 'Internal Error: Required change manager or extension scope creator is missing.' };
-        }
         const executor = new JavascriptExecutor({
             executionMode,
             getContextNode: () => executionNode,
-            createExtensionScope,
-            changes,
+            createExtensionScope: context.createExtensionScope,
+            changes: context.changeManager,
         }, context.execJs);
         return await executor.executeAction(params.code, options);
     }

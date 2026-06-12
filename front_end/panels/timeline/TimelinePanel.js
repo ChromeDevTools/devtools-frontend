@@ -2059,6 +2059,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     }
     async loadingStarted() {
         this.#changeView({ mode: 'STATUS_PANE_OVERLAY' });
+        // If recording was stopped automatically (e.g. page reload or AI-triggered trace),
+        // we must transition to STOP_PENDING so that loadingComplete() knows the resulting
+        // trace is a fresh recording.
+        if (this.state === "Recording" /* State.RECORDING */) {
+            this.setState("StopPending" /* State.STOP_PENDING */);
+        }
         if (this.statusDialog) {
             this.statusDialog.remove();
         }

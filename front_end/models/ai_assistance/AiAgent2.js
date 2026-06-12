@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import { AiAgent } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
@@ -21,6 +22,7 @@ export class AiAgent2 extends AiAgent {
     #skillsInjected = false;
     #changes = new ChangeManager();
     #execJs;
+    #allowedOrigin;
     get options() {
         return {};
     }
@@ -29,6 +31,7 @@ export class AiAgent2 extends AiAgent {
     constructor(opts) {
         super(opts);
         this.#execJs = opts.execJs ?? executeJsCode;
+        this.#allowedOrigin = opts.allowedOrigin;
         this.#declaredTools.add('learnSkills');
         const skillsList = Object.keys(SKILLS).join(', ');
         this.declareFunction('learnSkills', {
@@ -150,14 +153,23 @@ User query: ${enhancedQuery}`;
             description: tool.description,
             parameters: tool.parameters,
             displayInfoFromArgs: tool.displayInfoFromArgs,
-            handler: (args, options) => tool.handler(args, {
-                conversationContext: this.context ?? null,
-                changeManager: this.#changes,
-                createExtensionScope: this.#createExtensionScope.bind(this),
-                execJs: this.#execJs,
-                getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
-            }, options),
+            handler: (args, options) => {
+                const context = {
+                    conversationContext: this.context ?? null,
+                    changeManager: this.#changes,
+                    createExtensionScope: this.#createExtensionScope.bind(this),
+                    execJs: this.#execJs,
+                    getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
+                    getTarget: () => SDK.TargetManager.TargetManager.instance().primaryPageTarget(),
+                    getEstablishedOrigin: () => this.#getConversationOrigin(),
+                };
+                return tool.handler(args, context, options);
+            },
         });
+    }
+    #getConversationOrigin() {
+        const allowed = this.#allowedOrigin?.();
+        return allowed && 'origin' in allowed ? allowed.origin : undefined;
     }
     get activeSkills() {
         return this.#activeSkills;

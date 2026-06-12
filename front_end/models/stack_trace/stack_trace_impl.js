@@ -13,7 +13,7 @@ __export(DetailedErrorStackParser_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 var CALL_FRAME_REGEX = /^\s*at\s+/;
-function parseRawFramesFromErrorStack(stack) {
+function parseRawFramesFromErrorStack(stack, resolveURL) {
   const lines = stack.split("\n");
   const firstAtLineIndex = findFramesStartLine(lines);
   const rawFrames = [];
@@ -57,6 +57,8 @@ function parseRawFramesFromErrorStack(stack) {
     if (lineContent.endsWith(")") && openParenIndex !== -1) {
       functionName = lineContent.substring(0, openParenIndex).trim();
       location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
+    } else if (lineContent.startsWith("(") && lineContent.endsWith(")")) {
+      location = lineContent.substring(1, lineContent.length - 1);
     } else {
       location = lineContent;
     }
@@ -79,9 +81,9 @@ function parseRawFramesFromErrorStack(stack) {
       if (innerOpenParen !== -1) {
         evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
         evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`)?.[0];
+        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`, resolveURL)?.[0];
       } else {
-        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`)?.[0];
+        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`, resolveURL)?.[0];
       }
     }
     if (location.startsWith("index ")) {
@@ -100,9 +102,17 @@ function parseRawFramesFromErrorStack(stack) {
       }
     } else if (location) {
       const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
-      url = splitResult.url;
       lineNumber = splitResult.lineNumber ?? -1;
       columnNumber = splitResult.columnNumber ?? -1;
+      if (resolveURL && splitResult.url !== "<anonymous>" && splitResult.url !== "native") {
+        const resolved = resolveURL(splitResult.url);
+        if (!resolved) {
+          return null;
+        }
+        url = resolved;
+      } else {
+        url = splitResult.url;
+      }
     }
     if (functionName) {
       const aliasMatch = /(.*)\s+\[as\s+(.*)\]/.exec(functionName);
@@ -571,7 +581,16 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     return new StackTraceImpl(syncFragment, asyncFragments);
   }
   async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
-    const rawFrames = parseRawFramesFromErrorStack(stack);
+    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
+    const baseURL = this.target().inspectedURL();
+    const resolveURL = (url) => {
+      let urlWithScheme = parseOrScriptMatch(debuggerModel, url);
+      if (!urlWithScheme && Common3.ParsedURL.ParsedURL.isRelativeURL(url)) {
+        urlWithScheme = parseOrScriptMatch(debuggerModel, Common3.ParsedURL.ParsedURL.completeURL(baseURL, url));
+      }
+      return urlWithScheme;
+    };
+    const rawFrames = parseRawFramesFromErrorStack(stack, resolveURL);
     if (!rawFrames) {
       return null;
     }
@@ -717,6 +736,25 @@ async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
     parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
   }
   return new EvalOrigin(frames, parentEvalOrigin);
+}
+function parseOrScriptMatch(debuggerModel, url) {
+  if (!url) {
+    return null;
+  }
+  if (Common3.ParsedURL.ParsedURL.isValidUrlString(url)) {
+    return url;
+  }
+  if (debuggerModel.scriptsForSourceURL(url).length) {
+    return url;
+  }
+  try {
+    const fileUrl = new URL(url, "file://");
+    if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
+      return fileUrl.href;
+    }
+  } catch {
+  }
+  return null;
 }
 SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0, autostart: false });
 export {

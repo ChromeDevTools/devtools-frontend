@@ -747,7 +747,7 @@ __export(Toolbar_exports, {
 import * as Common14 from "./../../core/common/common.js";
 import * as i18n23 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
-import * as Root7 from "./../../core/root/root.js";
+import * as Root8 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
@@ -765,7 +765,7 @@ __export(ContextMenu_exports, {
   registerProvider: () => registerProvider
 });
 import * as Host8 from "./../../core/host/host.js";
-import * as Root6 from "./../../core/root/root.js";
+import * as Root7 from "./../../core/root/root.js";
 import * as Buttons4 from "./../components/buttons/buttons.js";
 import { html as html3, render as render4 } from "./../lit/lit.js";
 import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
@@ -1546,7 +1546,7 @@ __export(InspectorView_exports, {
 import * as Common11 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../components/buttons/buttons.js";
 import { createIcon as createIcon5 } from "./../kit/kit.js";
@@ -2083,6 +2083,7 @@ var TYPE_TO_ICON = {
 // gen/front_end/ui/legacy/InspectorDrawerView.js
 import * as Common8 from "./../../core/common/common.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
@@ -5516,6 +5517,8 @@ var PlusButtonPresenter = class {
     const seenTitles = new Set(overflowTabs.map((tab) => tab.title));
     for (const view of views()) {
       if (tabbedPane.hasTab(view.viewId())) {
+        seenIds.add(view.viewId());
+        seenTitles.add(view.title());
         continue;
       }
       if (view.isTransient()) {
@@ -6783,9 +6786,17 @@ var InspectorDrawerView = class {
     this.#onTabSelected = options.onTabSelected;
     this.#isConsoleOpenInMainAndDrawer = options.isConsoleOpenInMainAndDrawer;
     this.#drawerMinimizedSetting = Common8.Settings.Settings.instance().createLocalSetting("inspector.drawer-minimized", false);
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, { isLocationVisible: options.isVisible, tabbedPaneFactory: () => new DrawerTabbedPane() });
-    this.#moreTabsButton = this.tabbedLocation.enableMoreTabsButton();
-    this.#moreTabsButton.setTitle(i18nString8(UIStrings8.moreTools));
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, {
+      isLocationVisible: options.isVisible,
+      tabbedPaneFactory: () => new DrawerTabbedPane(),
+      plusButton: { title: i18nString8(UIStrings8.moreTools), jslogContext: "plus-button-drawer" }
+    });
+    if (Root5.Runtime.hostConfig.devToolsPlusButton?.enabled) {
+      this.#moreTabsButton = null;
+    } else {
+      this.#moreTabsButton = this.tabbedLocation.enableMoreTabsButton();
+      this.#moreTabsButton.setTitle(i18nString8(UIStrings8.moreTools));
+    }
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add("drawer-tabbed-pane");
     this.tabbedPane.element.setAttribute("jslog", `${VisualLogging7.drawer()}`);
@@ -8198,7 +8209,7 @@ var InspectorView = class _InspectorView extends VBox {
       onTabSelected: this.tabSelected.bind(this),
       isConsoleOpenInMainAndDrawer: (tabId) => tabId === "console-view" && this.tabbedPane.selectedTabId === "console",
       tabDelegate: this.tabDelegate,
-      enableOrientationToggle: Boolean(Root5.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
+      enableOrientationToggle: Boolean(Root6.Runtime.hostConfig.devToolsFlexibleLayout?.verticalDrawerEnabled),
       isVertical,
       verticalExpandedMinimumWidth: MIN_VERTICAL_DRAWER_WIDTH,
       minimumSizes: {
@@ -8210,11 +8221,14 @@ var InspectorView = class _InspectorView extends VBox {
     });
     this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
     this.drawerTabbedPane = this.#drawerView.tabbedPane;
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host7.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, { defaultTab: Root5.Runtime.Runtime.queryParam("panel") });
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host7.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, {
+      defaultTab: Root6.Runtime.Runtime.queryParam("panel"),
+      plusButton: { jslogContext: "plus-button-panel" }
+    });
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add("main-tabbed-pane");
-    const allocatedSpace = Root5.Runtime.conditions.canDock() ? "69px" : "41px";
+    const allocatedSpace = Root6.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
     this.tabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
@@ -9924,7 +9938,7 @@ var SubMenu = class extends Item {
       return order1 - order2;
     });
     for (const item8 of items) {
-      if (item8.experiment && !Root6.Runtime.experiments.isEnabled(item8.experiment)) {
+      if (item8.experiment && !Root7.Runtime.experiments.isEnabled(item8.experiment)) {
         continue;
       }
       const itemLocation = item8.location;
@@ -10366,7 +10380,7 @@ function registerProvider(registration) {
 async function loadApplicableRegisteredProviders(target) {
   const providers = [];
   for (const providerRegistration of registeredProviders) {
-    if (!Root6.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
+    if (!Root7.Runtime.Runtime.isDescriptorEnabled({ experiment: providerRegistration.experiment })) {
       continue;
     }
     if (providerRegistration.contextTypes) {
@@ -13562,7 +13576,7 @@ function registerToolbarItem(registration) {
   registeredToolbarItems.push(registration);
 }
 function getRegisteredToolbarItems() {
-  return registeredToolbarItems.filter((item8) => Root7.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
+  return registeredToolbarItems.filter((item8) => Root8.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
 }
 
 // gen/front_end/ui/legacy/UIUtils.js

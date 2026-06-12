@@ -4,12 +4,12 @@ import * as Host from "./../../core/host/host.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
-function openInNewTab(url) {
+function openInNewTab(url, allowPrivileged) {
   url = new URL(url);
   if (Common.ParsedURL.schemeIs(url, "javascript:")) {
     return;
   }
-  if (Common.ParsedURL.schemeIs(url, "chrome:")) {
+  if (allowPrivileged && Common.ParsedURL.schemeIs(url, "chrome:")) {
     const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (rootTarget === null) {
       return;

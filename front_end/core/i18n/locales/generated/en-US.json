@@ -3416,6 +3416,12 @@
   "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "No document detected"
   },
+  "panels/application/ApplicationPanelSidebar.ts | explainCookies": {
+    "message": "Explain cookies"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | explainStorage": {
+    "message": "Explain storage"
+  },
   "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
     "message": "Local"
   },
@@ -3496,6 +3502,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
     "message": "On this page you can view, add, edit, and delete session storage key-value pairs."
+  },
+  "panels/application/ApplicationPanelSidebar.ts | startAChat": {
+    "message": "Start a chat"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Storage"

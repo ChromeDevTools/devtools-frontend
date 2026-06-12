@@ -4,22 +4,67 @@ import type { ConversationContext, FunctionCallHandlerResult, FunctionHandlerOpt
 import type { executeJsCode } from '../agents/ExecuteJavascript.js';
 import type { ChangeManager } from '../ChangeManager.js';
 /**
- * Context provided to the tool's handler execution.
+ * Base capability for all tool contexts, providing access to the conversation context.
  */
-export interface ToolContext {
+export interface BaseToolCapability {
+    /**
+     * The active context for the current conversation step, if any.
+     */
     conversationContext: ConversationContext<unknown> | null;
-    changeManager?: ChangeManager;
-    createExtensionScope?: (changes: ChangeManager) => {
-        install(): Promise<void>;
-        uninstall(): Promise<void>;
-    };
-    execJs?: typeof executeJsCode;
+}
+/**
+ * Capability for tools that need to execute JavaScript code on the inspected page.
+ */
+export interface PageExecutionCapability {
+    /**
+     * Function to execute JavaScript code in the page context.
+     */
+    execJs: typeof executeJsCode;
     /**
      * Returns the DOM node that acts as the execution context (i.e. `$0` inside the execution context)
      * for running JavaScript.
      */
-    getExecutionContextNode?: () => SDK.DOMModel.DOMNode | null;
+    getExecutionContextNode(): SDK.DOMModel.DOMNode | null;
 }
+/**
+ * Capability for tools that need to manage and apply style mutations to the page.
+ */
+export interface StyleMutationCapability {
+    /**
+     * The change manager for tracking and applying style changes.
+     */
+    changeManager: ChangeManager;
+    /**
+     * Creates an extension scope for applying changes, ensuring they can be uninstalled when done.
+     */
+    createExtensionScope(changes: ChangeManager): {
+        install(): Promise<void>;
+        uninstall(): Promise<void>;
+    };
+}
+/**
+ * Capability for tools that need access to the current SDK Target of the inspected page.
+ */
+export interface TargetCapability {
+    /**
+     * Returns the current SDK Target for the inspected page.
+     */
+    getTarget(): SDK.Target.Target | null;
+}
+/**
+ * Capability for tools that need to enforce origin locking for security.
+ */
+export interface OriginLockCapability {
+    /**
+     * Returns the origin that the current conversation is locked to, if any.
+     */
+    getEstablishedOrigin(): string | undefined;
+}
+/**
+ * Unified context interface providing all capabilities available in the project.
+ * Used by the agent to pass a complete context to any tool type-safely.
+ */
+export type AllToolsContext = BaseToolCapability & PageExecutionCapability & StyleMutationCapability & TargetCapability & OriginLockCapability;
 /**
  * Base argument type for AI Tools.
  */
@@ -42,12 +87,13 @@ export interface BaseTool {
 }
 /**
  * Main generic interface for defining a Tool.
- * Binds the parameter schema properties and the handler implementation to a strict `Args` contract.
+ * Binds the parameter schema properties and the handler implementation to a strict `Args` and `ContextType` contract.
  *
  * @template Args - The expected object type for tool arguments. Must be an object type.
  * @template ReturnType - The type of data returned by the handler function.
+ * @template ContextType - The interface defining the capabilities this tool requires. Defaults to `BaseToolCapability`.
  */
-export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown> extends BaseTool {
+export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown, ContextType extends BaseToolCapability = BaseToolCapability> extends BaseTool {
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof Args>;
     readonly displayInfoFromArgs?: (args: Args) => {
         title?: string;
@@ -55,5 +101,12 @@ export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown> ex
         action?: string;
         suggestions?: [string, ...string[]];
     };
-    handler(args: Args, context: ToolContext, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<ReturnType>>;
+    /**
+     * The implementation function called when the AI invokes this tool.
+     *
+     * @param args The arguments provided by the AI model matching the tool's parameter schema.
+     * @param context The context object providing the capabilities requested by `ContextType`.
+     * @param options Additional runtime options for the handler execution.
+     */
+    handler(args: Args, context: ContextType, options?: FunctionHandlerOptions): Promise<FunctionCallHandlerResult<ReturnType>>;
 }

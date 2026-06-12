@@ -8666,7 +8666,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
         break;
       }
       case "ai-assistance.storage-floating-button": {
-        Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiAssistanceOpenedFromStoragePanelFloatingButton);
+        Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiAssistanceOpenedFromApplicationPanelFloatingButton);
+        targetConversationType = "storage";
+        break;
+      }
+      case "ai-assistance.application-panel-context": {
+        Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.AiAssistanceOpenedFromApplicationPanel);
         targetConversationType = "storage";
         break;
       }
@@ -9112,7 +9117,8 @@ var ActionDelegate = class {
       case "drjones.performance-panel-context":
       case "drjones.sources-floating-button":
       case "drjones.sources-panel-context":
-      case "ai-assistance.storage-floating-button": {
+      case "ai-assistance.storage-floating-button":
+      case "ai-assistance.application-panel-context": {
         void (async () => {
           const view = UI11.ViewManager.ViewManager.instance().view(AiAssistancePanel.panelName);
           if (!view) {

@@ -135,6 +135,9 @@ export class SymbolizedErrorWidget extends UI.Widget.Widget {
         super(host, { classes: ['symbolized-error-widget-host'] });
         this.#view = view;
     }
+    get linkElements() {
+        return [...this.contentElement.querySelectorAll('.devtools-link')];
+    }
     set ignoreListManager(ignoreListManager) {
         this.#ignoreListManager = ignoreListManager;
         this.requestUpdate();

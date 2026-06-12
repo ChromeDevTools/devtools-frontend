@@ -3860,7 +3860,8 @@ export const generatedProperties = [
  {
   "keywords": [
    "auto",
-   "none"
+   "none",
+   "normal"
   ],
   "name": "position-anchor"
  },
@@ -6987,7 +6988,8 @@ export const generatedPropertyValues = {
  "position-anchor": {
   "values": [
    "auto",
-   "none"
+   "none",
+   "normal"
   ]
  },
  "position-area": {

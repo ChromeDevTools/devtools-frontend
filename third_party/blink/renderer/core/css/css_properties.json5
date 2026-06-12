@@ -5205,7 +5205,7 @@
       field_group: "*",
       field_template: "external",
       converter: "ConvertPositionAnchor",
-      keywords: ["auto", "none"],
+      keywords: ["auto", "none", "normal"],
       typedom_types: ["Keyword"],
       valid_for_permission_element: true,
       valid_for_position_try: true,
@@ -6720,7 +6720,6 @@
       keywords: ["none", "all"],
       typedom_types: ["Keyword"],
       default_value: "none",
-      runtime_flag: "ScopedViewTransitions",
     },
     {
       name: "visibility",
@@ -7676,7 +7675,7 @@
       include_paths: ["third_party/blink/renderer/core/css/style_color.h",
                       "third_party/blink/renderer/core/layout/layout_theme.h"],
       type_name: "StyleColor",
-      default_value: "StyleColor(LayoutTheme::TapHighlightColor())",
+      default_value: "StyleColor(LayoutTheme::GetTheme().TapHighlightColor())",
       converter: "ConvertStyleColor",
       includes_currentcolor: true,
     },
@@ -7729,6 +7728,7 @@
       style_builder_custom_functions: ["initial", "inherit", "value"],
       valid_for_marker: true,
       stored_on_extra_field: ["TextEmphasisFill", "TextEmphasisMark", "TextEmphasisCustomMark"],
+      invalidate: ["reshape"],
     },
     {
       name: "-webkit-text-fill-color",
@@ -8834,7 +8834,7 @@
     {
       name: "position-area",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      style_builder_custom_functions: ["value", "inherit"],
+      style_builder_custom_functions: ["initial", "inherit", "value"],
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/core/style/position_area.h"],

@@ -3215,6 +3215,7 @@ var Widget = class _Widget {
   #externallyManaged;
   #updateComplete = UPDATE_COMPLETE;
   #updateController;
+  #updateState = "NORMAL";
   constructor(elementOrOptions, options) {
     if (elementOrOptions instanceof HTMLElement) {
       this.element = elementOrOptions;
@@ -3745,11 +3746,15 @@ var Widget = class _Widget {
   performUpdate(_signal) {
   }
   addUpdateController(controller) {
+    const wasInterrupted = this.#updateState === "INTERRUPTED";
     this.#updateController?.abort();
     this.#updateController = controller;
+    this.#updateState = wasInterrupted ? "SHIELDED" : "NORMAL";
   }
   cancelUpdateController() {
     this.#updateController?.abort();
+    this.#updateController = void 0;
+    this.#updateState = "NORMAL";
   }
   /**
    * Schedules an asynchronous update for this widget.
@@ -3758,7 +3763,12 @@ var Widget = class _Widget {
    * frame.
    */
   requestUpdate() {
-    this.#updateController?.abort();
+    if (this.#updateState !== "SHIELDED") {
+      if (currentlyProcessed.has(this)) {
+        this.#updateState = "INTERRUPTED";
+      }
+      this.#updateController?.abort();
+    }
     this.#updateComplete = enqueueWidgetUpdate(this);
   }
   /**

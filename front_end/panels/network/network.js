@@ -3352,7 +3352,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         if (initiator.stack?.callFrames.length) {
           this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
         } else {
-          this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(target, initiator.scriptId, initiator.url, initiator.lineNumber, { columnNumber: initiator.columnNumber, inlineFrameIndex: 0 });
+          this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(target, initiator.scriptId, initiator.url, initiator.lineNumber, { columnNumber: initiator.columnNumber });
         }
         UI6.Tooltip.Tooltip.install(this.linkifiedInitiatorAnchor, "");
         cell.appendChild(this.linkifiedInitiatorAnchor);
@@ -11018,7 +11018,12 @@ var UIStrings22 = {
   /**
    * @description Context menu item in Network panel to assess security headers of a request via AI.
    */
-  assessSecurityHeaders: "Assess security headers"
+  assessSecurityHeaders: "Assess security headers",
+  /**
+   * @description A comment in a generated command indicating that the URL scheme is unsupported. The placeholder is the comment prefix (e.g. '//' or '#').
+   * @example {//} PH1
+   */
+  unsupportedUrlScheme: "{PH1} Unsupported URL scheme"
 };
 var str_22 = i18n43.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
@@ -11063,6 +11068,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
   filterBar;
   textFilterSetting;
   networkRequestToNode;
+  static #allowedSchemes = /* @__PURE__ */ new Set(["http:", "https:", "ws:", "wss:", "data:"]);
   constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
     super();
     this.registerRequiredCSS(networkLogView_css_default);
@@ -12448,6 +12454,17 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
   filterOutBlobRequests(requests) {
     return requests.filter((request) => !request.isBlobRequest());
   }
+  static #getValidClipboardUrl(url) {
+    try {
+      const parsedUrl = new URL(url);
+      if (!_NetworkLogView.#allowedSchemes.has(parsedUrl.protocol)) {
+        return null;
+      }
+      return url;
+    } catch {
+      return null;
+    }
+  }
   async generateFetchCall(request, style) {
     const ignoredHeaders = /* @__PURE__ */ new Set([
       // Internal headers
@@ -12481,7 +12498,11 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       "user-agent"
     ]);
     const credentialHeaders = /* @__PURE__ */ new Set(["cookie", "authorization"]);
-    const url = JSON.stringify(request.url());
+    const validUrl = _NetworkLogView.#getValidClipboardUrl(request.url());
+    if (!validUrl) {
+      return i18nString22(UIStrings22.unsupportedUrlScheme, { PH1: "//" });
+    }
+    const url = JSON.stringify(validUrl);
     const requestHeaders = request.requestHeaders();
     const headerData = requestHeaders.reduce((result, header) => {
       const name = header.name;
@@ -12555,7 +12576,11 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       return "'" + str + "'";
     }
     const escapeString = platform === "win" ? escapeStringWin : escapeStringPosix;
-    command.push("--url " + escapeString(request.url()).replace(/[[{}\]]/g, "\\$&"));
+    const validUrl = _NetworkLogView.#getValidClipboardUrl(request.url());
+    if (!validUrl) {
+      return i18nString22(UIStrings22.unsupportedUrlScheme, { PH1: "#" });
+    }
+    command.push("--url " + escapeString(validUrl).replace(/[[{}\]]/g, "\\$&"));
     let inferredMethod = "GET";
     const data = [];
     const formData = await request.requestFormData();
@@ -12631,7 +12656,11 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       }
       return null;
     }
-    command.push("-Uri " + escapeString(request.url()));
+    const validUrl = _NetworkLogView.#getValidClipboardUrl(request.url());
+    if (!validUrl) {
+      return i18nString22(UIStrings22.unsupportedUrlScheme, { PH1: "#" });
+    }
+    command.push("-Uri " + escapeString(validUrl));
     if (request.requestMethod !== "GET") {
       command.push("-Method " + escapeString(request.requestMethod));
     }

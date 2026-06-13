@@ -114,7 +114,6 @@ interface LinkInfo {
     url: Platform.DevToolsPath.UrlString | null;
     lineNumber: number | null;
     columnNumber: number | null;
-    inlineFrameIndex: number;
     revealable: Object | null;
     fallback: Element | null;
     userMetric?: Host.UserMetrics.Action;
@@ -126,7 +125,6 @@ export interface LinkifyURLOptions {
     lineNumber?: number;
     columnNumber?: number;
     showColumnNumber?: boolean;
-    inlineFrameIndex?: number;
     preventClick?: boolean;
     maxLength?: number;
     tabStop?: boolean;
@@ -141,7 +139,6 @@ export interface LinkifyOptions {
     className?: string;
     columnNumber?: number;
     showColumnNumber?: boolean;
-    inlineFrameIndex?: number;
     tabStop?: boolean;
     userMetric?: Host.UserMetrics.Action;
     jslogContext?: string;

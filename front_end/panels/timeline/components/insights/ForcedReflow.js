@@ -39,7 +39,6 @@ export class ForcedReflow extends BaseInsightComponent {
         const location = linkifier.linkifyScriptLocation(null, callFrame.scriptId, callFrame.url, callFrame.lineNumber, {
             columnNumber: callFrame.columnNumber,
             showColumnNumber: true,
-            inlineFrameIndex: 0,
             tabStop: true,
         });
         if (location instanceof HTMLElement) {

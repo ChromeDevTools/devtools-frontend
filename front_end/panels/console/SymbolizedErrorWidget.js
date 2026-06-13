@@ -93,7 +93,6 @@ const DEFAULT_VIEW = (input, _output, target) => {
         }
         const linkOptions = {
             showColumnNumber: true,
-            inlineFrameIndex: 0,
             maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
             ignoreListManager: input.ignoreListManager,
         };

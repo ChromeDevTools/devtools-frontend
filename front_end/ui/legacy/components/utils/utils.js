@@ -602,7 +602,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
       tabStop: options?.tabStop,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || "script-location",
       omitOrigin: options?.omitOrigin
@@ -618,7 +617,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     if (!debuggerModel) {
       return fallbackAnchor;
     }
-    const rawLocation = scriptId ? debuggerModel.createRawLocationByScriptId(scriptId, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex) : debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber, linkifyURLOptions.inlineFrameIndex);
+    const rawLocation = scriptId ? debuggerModel.createRawLocationByScriptId(scriptId, lineNumber || 0, columnNumber) : debuggerModel.createRawLocationByURL(sourceURL, lineNumber || 0, columnNumber);
     if (!rawLocation) {
       return fallbackAnchor;
     }
@@ -660,7 +659,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       className: options?.className,
       columnNumber: options?.columnNumber,
       showColumnNumber: Boolean(options?.showColumnNumber),
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       tabStop: options?.tabStop,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || "script-source-url"
@@ -671,15 +669,13 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     return this.linkifyScriptLocation(rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
       columnNumber: rawLocation.columnNumber,
       className,
-      inlineFrameIndex: rawLocation.inlineFrameIndex,
       tabStop: options?.tabStop
     });
   }
   maybeLinkifyConsoleCallFrame(target, callFrame, options) {
     const linkifyOptions = {
       ...options,
-      columnNumber: callFrame.columnNumber,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0
+      columnNumber: callFrame.columnNumber
     };
     return this.maybeLinkifyScriptLocation(target, String(callFrame.scriptId), callFrame.url, callFrame.lineNumber, linkifyOptions);
   }
@@ -691,7 +687,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
       tabStop: options?.tabStop,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || "script-location",
       omitOrigin: options?.omitOrigin
@@ -723,7 +718,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       showColumnNumber: Boolean(options?.showColumnNumber),
       className: options?.className,
       tabStop: options?.tabStop,
-      inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || "script-location",
       omitOrigin: options?.omitOrigin
@@ -749,7 +743,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       lineNumber,
       columnNumber,
       showColumnNumber: false,
-      inlineFrameIndex: 0,
       maxLength: this.maxLength,
       preventClick: true,
       jslogContext: "script-source-url"
@@ -877,8 +870,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   }
   static renderLinkifiedUrl(url, options) {
     options = options || {
-      showColumnNumber: false,
-      inlineFrameIndex: 0
+      showColumnNumber: false
     };
     const text = options.text;
     const className = options.className || "";
@@ -991,7 +983,6 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
           url: options.href || null,
           lineNumber: options.lineNumber ?? null,
           columnNumber: options.columnNumber ?? null,
-          inlineFrameIndex: 0,
           revealable: null,
           fallback: null,
           userMetric: options.userMetric
@@ -1421,7 +1412,6 @@ var DEFAULT_VIEW = (input, output, target) => {
     const link3 = Linkifier.linkifyStackTraceFrame(frame, {
       showColumnNumber: Boolean(input.showColumnNumber),
       tabStop: Boolean(input.tabStops),
-      inlineFrameIndex: 0,
       revealBreakpoint: previousStackFrameWasBreakpointCondition,
       maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole,
       ignoreListManager: input.ignoreListManager

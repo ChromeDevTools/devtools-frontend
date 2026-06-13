@@ -125,7 +125,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
         const link = Linkifier.linkifyStackTraceFrame(frame, {
             showColumnNumber: Boolean(input.showColumnNumber),
             tabStop: Boolean(input.tabStops),
-            inlineFrameIndex: 0,
             revealBreakpoint: previousStackFrameWasBreakpointCondition,
             maxLength: UI.UIUtils.MaxLengthForDisplayedURLsInConsole,
             ignoreListManager: input.ignoreListManager,

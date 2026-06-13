@@ -55,6 +55,12 @@ export declare class PerformanceAgent extends AiAgent<AgentFocus> {
         selected: PerformanceTraceContext | null;
         signal?: AbortSignal;
     }): AsyncGenerator<ResponseData, void, void>;
+    /**
+     * Clears performance-agent-specific caches and state.
+     * This is called when the conversation needs to be reset (e.g. on navigation)
+     * to prevent stale formatters, trace facts, or selection contexts from leaking
+     * into subsequent runs.
+     */
     clearCache(): void;
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
     addNetworkRequestAnnotation(eventKey: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;

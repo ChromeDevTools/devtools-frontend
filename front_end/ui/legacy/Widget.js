@@ -394,6 +394,7 @@ export class Widget {
     #externallyManaged;
     #updateComplete = UPDATE_COMPLETE;
     #updateController;
+    #updateState = "NORMAL" /* UpdateState.NORMAL */;
     constructor(elementOrOptions, options) {
         if (elementOrOptions instanceof HTMLElement) {
             this.element = elementOrOptions;
@@ -956,11 +957,16 @@ export class Widget {
     performUpdate(_signal) {
     }
     addUpdateController(controller) {
+        const wasInterrupted = this.#updateState === "INTERRUPTED" /* UpdateState.INTERRUPTED */;
         this.#updateController?.abort();
         this.#updateController = controller;
+        // Transition to SHIELDED if we are replacing a starved update, otherwise reset to NORMAL.
+        this.#updateState = wasInterrupted ? "SHIELDED" /* UpdateState.SHIELDED */ : "NORMAL" /* UpdateState.NORMAL */;
     }
     cancelUpdateController() {
         this.#updateController?.abort();
+        this.#updateController = undefined;
+        this.#updateState = "NORMAL" /* UpdateState.NORMAL */;
     }
     /**
      * Schedules an asynchronous update for this widget.
@@ -969,7 +975,13 @@ export class Widget {
      * frame.
      */
     requestUpdate() {
-        this.#updateController?.abort();
+        // If the state is SHIELDED, we skip the abort call entirely to break the starvation loop.
+        if (this.#updateState !== "SHIELDED" /* UpdateState.SHIELDED */) {
+            if (currentlyProcessed.has(this)) {
+                this.#updateState = "INTERRUPTED" /* UpdateState.INTERRUPTED */;
+            }
+            this.#updateController?.abort();
+        }
         this.#updateComplete = enqueueWidgetUpdate(this);
     }
     /**

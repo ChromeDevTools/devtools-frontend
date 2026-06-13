@@ -505,7 +505,6 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
                 text,
                 preventClick: true,
                 showColumnNumber: false,
-                inlineFrameIndex: 0,
             })}</span>)</span>`;
         }
         case Node.DOCUMENT_FRAGMENT_NODE: {
@@ -583,7 +582,6 @@ function renderLinkifiedValue(value, node) {
         text: value,
         preventClick: true,
         showColumnNumber: false,
-        inlineFrameIndex: 0,
         onRef: link => {
             ImagePreviewPopover.setImageUrl(link, rewrittenHref);
         }

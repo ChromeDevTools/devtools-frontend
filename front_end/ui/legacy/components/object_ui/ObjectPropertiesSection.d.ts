@@ -18,6 +18,8 @@ export interface ObjectTreeOptions {
     readonly readOnly: boolean;
     readonly expansionTracker?: ObjectTreeExpansionTracker;
 }
+export declare function sortPropertiesAlphabeticallySetting(): Common.Settings.Setting<boolean>;
+export declare function isWasmObject(object: SDK.RemoteObject.RemoteObject | undefined): boolean;
 export declare class ObjectTreeExpansionTracker {
     #private;
     clear(): void;
@@ -35,12 +37,15 @@ export declare abstract class ObjectTreeNodeBase extends Common.ObjectWrapper.Ob
     } | null;
     protected extraProperties: ObjectTreeNode[];
     constructor(parent: ObjectTreeNodeBase | undefined, options: ObjectTreeOptions);
+    get isWasm(): boolean;
     get expanded(): boolean;
     set expanded(val: boolean);
     get readOnly(): boolean;
     get propertiesMode(): ObjectPropertiesMode;
     get includeNullOrUndefinedValues(): boolean;
     set includeNullOrUndefinedValues(value: boolean);
+    get sortPropertiesAlphabetically(): boolean;
+    set sortPropertiesAlphabetically(value: boolean);
     expandRecursively(maxDepth: number): Promise<void>;
     collapseRecursively(): void;
     setFilter(filter: {
@@ -112,7 +117,7 @@ export declare class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineI
     constructor(object: SDK.RemoteObject.RemoteObject, title?: string | Element | null, linkifier?: Components.Linkifier.Linkifier, showOverflow?: boolean, editable?: boolean);
     static defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): Element;
     static defaultObjectPropertiesSection(object: SDK.RemoteObject.RemoteObject, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): ObjectPropertiesSection;
-    static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty): number;
+    static compareProperties(propertyA: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, propertyB: ObjectTreeNode | SDK.RemoteObject.RemoteObjectProperty, sortPropertiesAlphabetically?: boolean): number;
     static createNameElement(name: string | null, isPrivate?: boolean): Element;
     static valueElementForFunctionDescription(description?: string, includePreview?: boolean, defaultName?: string, className?: string): LitTemplate;
     static createPropertyValueWithCustomSupport(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean): HTMLElement;

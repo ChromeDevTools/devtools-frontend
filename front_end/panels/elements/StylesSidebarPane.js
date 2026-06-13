@@ -202,6 +202,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     #shouldRenderLazily = false;
     #lazyRenderObserver;
     #lazyRenderCallbacks = new WeakMap();
+    #updateId = 0;
     constructor(computedStyleModel) {
         super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ['flex-none'] });
         this.setMinimumSize(96, 26);
@@ -512,8 +513,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             this.appendToolbarItem(this.createRenderingShortcuts());
             this.dispatchEventToListeners("InitialUpdateCompleted" /* Events.INITIAL_UPDATE_COMPLETED */);
         }
-        this.nodeStylesUpdatedForTest(this.node(), true);
-        this.dispatchEventToListeners("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, { hasMatchedStyles: this.hasMatchedStyles });
+        this.#updateId += 1;
+        const currentUpdateId = this.#updateId;
+        void UI.Widget.Widget.allUpdatesComplete.then(() => {
+            if (this.#updateId === currentUpdateId) {
+                this.nodeStylesUpdatedForTest(this.node(), true);
+                this.dispatchEventToListeners("StylesUpdateCompleted" /* Events.STYLES_UPDATE_COMPLETED */, { hasMatchedStyles: this.hasMatchedStyles });
+            }
+        });
     }
     #getRegisteredPropertyDetails(matchedStyles, variableName) {
         const registration = matchedStyles.getRegisteredProperty(variableName);

@@ -1507,7 +1507,6 @@ var LighthouseReportRenderer = class _LighthouseReportRenderer {
         lineNumber: line,
         columnNumber: column,
         showColumnNumber: false,
-        inlineFrameIndex: 0,
         maxLength: MaxLengthForLinks
       });
       UI.Tooltip.Tooltip.install(origHTMLElement, "");

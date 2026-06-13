@@ -17,6 +17,12 @@ export declare class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     get options(): RequestOptions;
     get multimodalInputEnabled(): boolean;
     constructor(opts: ExecuteJsAgentOptions);
+    /**
+     * Clears styling-agent-specific caches and state.
+     * Resets cached emulation data (screenshots, accessibility tree) and the
+     * instructions flag to ensure they are re-evaluated in subsequent queries.
+     */
+    clearCache(): void;
     preambleFeatures(): string[];
     addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
     activateDeviceEmulation(deviceName: string, visionDeficiency?: string): Promise<FunctionCallHandlerResult<unknown>>;

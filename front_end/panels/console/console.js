@@ -1763,7 +1763,6 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     }
     const linkOptions = {
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       maxLength: UI2.UIUtils.MaxLengthForDisplayedURLsInConsole,
       ignoreListManager: input.ignoreListManager
     };
@@ -2309,13 +2308,12 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       const userMetric = this.#getLinkifierMetric();
       if (stackFrameWithBreakpoint) {
         return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
-          inlineFrameIndex: 0,
           revealBreakpoint: true,
           userMetric
         });
       }
       if (scriptId) {
-        return this.linkifier.linkifyScriptLocation(runtimeModel.target(), scriptId, url || Platform2.DevToolsPath.EmptyUrlString, line, { columnNumber: column, inlineFrameIndex: 0, userMetric });
+        return this.linkifier.linkifyScriptLocation(runtimeModel.target(), scriptId, url || Platform2.DevToolsPath.EmptyUrlString, line, { columnNumber: column, userMetric });
       }
       if (stackTrace?.callFrames.length) {
         return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
@@ -2327,7 +2325,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
           null,
           url,
           line,
-          { columnNumber: column, inlineFrameIndex: 0, userMetric }
+          { columnNumber: column, userMetric }
         );
       }
       return null;

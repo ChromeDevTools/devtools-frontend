@@ -63,8 +63,10 @@ __export(ObjectPropertiesSection_exports, {
   Renderer: () => Renderer,
   RootElement: () => RootElement,
   getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom,
+  isWasmObject: () => isWasmObject,
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
-  objectValueStyles: () => objectValue_css_default
+  objectValueStyles: () => objectValue_css_default,
+  sortPropertiesAlphabeticallySetting: () => sortPropertiesAlphabeticallySetting
 });
 import * as Common from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
@@ -642,6 +644,10 @@ var UIStrings2 = {
    */
   collapseChildren: "Collapse children",
   /**
+   * @description A context menu item in the Object Properties Section to choose property ordering.
+   */
+  sortPropertiesAlphabetically: "Sort properties alphabetically",
+  /**
    * @description Text in Object Properties Section
    */
   noProperties: "No properties",
@@ -710,6 +716,16 @@ var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/object_ui/ObjectP
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var EXPANDABLE_MAX_DEPTH = 100;
 var objectPropertiesSectionMap = /* @__PURE__ */ new WeakMap();
+var cachedSortAlphabeticallySetting;
+function sortPropertiesAlphabeticallySetting() {
+  if (!cachedSortAlphabeticallySetting) {
+    cachedSortAlphabeticallySetting = Common.Settings.Settings.instance().createSetting("object-properties-sort-alphabetically", true);
+  }
+  return cachedSortAlphabeticallySetting;
+}
+function isWasmObject(object) {
+  return object?.subtype === "webassemblymemory" || object?.subtype === "wasmvalue";
+}
 var NodeExpansionLog = class _NodeExpansionLog {
   properties = /* @__PURE__ */ new Map();
   internalProperties = /* @__PURE__ */ new Map();
@@ -882,16 +898,19 @@ var ObjectTreeExpansionTracker = class _ObjectTreeExpansionTracker {
 };
 var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
   parent;
-  options;
   #children;
+  options;
   filter = null;
   extraProperties = [];
   #expanded = false;
   constructor(parent, options) {
     super();
     this.parent = parent;
-    this.options = options;
     this.filter = parent?.filter ?? null;
+    this.options = { ...options };
+  }
+  get isWasm() {
+    return isWasmObject(this.object);
   }
   get expanded() {
     return this.#expanded;
@@ -915,6 +934,20 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
   }
   set includeNullOrUndefinedValues(value) {
     this.setFilter({ includeNullOrUndefinedValues: value, regex: this.filter?.regex ?? null });
+  }
+  get sortPropertiesAlphabetically() {
+    if (this.isWasm) {
+      return false;
+    }
+    return sortPropertiesAlphabeticallySetting().get();
+  }
+  set sortPropertiesAlphabetically(value) {
+    const setting = sortPropertiesAlphabeticallySetting();
+    if (this.isWasm || setting.get() === value) {
+      return;
+    }
+    setting.set(value);
+    this.removeChildren();
   }
   // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
   // do that while walking (pre-order visitation enables that).
@@ -1062,7 +1095,7 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common.ObjectWrapper.
       expansionTracker: this.options.expansionTracker
     }));
     properties?.push(...this.extraProperties);
-    properties?.sort(ObjectPropertiesSection.compareProperties);
+    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, this.sortPropertiesAlphabetically));
     const accessors = properties && _ObjectTreeNodeBase.getGettersAndSetters(properties, this.options);
     const internalProperties = objectInternalProperties?.map((p) => new ObjectTreeNode(p, effectiveParent, {
       readOnly: this.readOnly,
@@ -1162,7 +1195,7 @@ var ArrayGroupTreeNode = class _ArrayGroupTreeNode extends ObjectTreeNodeBase {
       expansionTracker: this.options.expansionTracker
     }));
     properties?.push(...this.extraProperties);
-    properties?.sort(ObjectPropertiesSection.compareProperties);
+    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, this.sortPropertiesAlphabetically));
     const accessors = properties && ObjectTreeNodeBase.getGettersAndSetters(properties, this.options);
     return { properties, accessors };
   }
@@ -1328,7 +1361,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     return objectPropertiesSection;
   }
   // The RemoteObjectProperty overload is kept for web test compatibility for now.
-  static compareProperties(propertyA, propertyB) {
+  static compareProperties(propertyA, propertyB, sortPropertiesAlphabetically = true) {
     if (propertyA instanceof ObjectTreeNode) {
       propertyA = propertyA.property;
     }
@@ -1365,15 +1398,18 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
     if (propertyB.private && !propertyA.private) {
       return -1;
     }
-    const a = propertyA.name;
-    const b = propertyB.name;
-    if (a.startsWith("_") && !b.startsWith("_")) {
-      return 1;
+    if (sortPropertiesAlphabetically) {
+      const nameA = propertyA.name;
+      const nameB = propertyB.name;
+      if (nameA.startsWith("_") && !nameB.startsWith("_")) {
+        return 1;
+      }
+      if (nameB.startsWith("_") && !nameA.startsWith("_")) {
+        return -1;
+      }
+      return Platform2.StringUtilities.naturalOrderComparator(nameA, nameB);
     }
-    if (b.startsWith("_") && !a.startsWith("_")) {
-      return -1;
-    }
-    return Platform2.StringUtilities.naturalOrderComparator(a, b);
+    return 0;
   }
   static createNameElement(name, isPrivate) {
     const element = document.createElement("span");
@@ -1654,6 +1690,14 @@ var RootElement = class extends UI2.TreeOutline.TreeElement {
     }
     contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
     contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
+    if (!this.object.isWasm) {
+      contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.sortPropertiesAlphabetically), () => {
+        this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
+      }, {
+        checked: this.object.sortPropertiesAlphabetically,
+        jslogContext: "sort-properties-alphabetically"
+      });
+    }
     contextMenu.viewSection().appendCheckboxItem(i18n3.i18n.lockedString("Show all"), () => {
       this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
     }, { checked: this.object.includeNullOrUndefinedValues, jslogContext: "show-all" });
@@ -1919,7 +1963,8 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     if (arrayRanges && arrayRanges.length > 0) {
       empty = false;
     }
-    properties?.sort(ObjectPropertiesSection.compareProperties);
+    const sortPropertiesAlphabetically = properties?.[0]?.parent?.sortPropertiesAlphabetically ?? true;
+    properties?.sort((a, b) => ObjectPropertiesSection.compareProperties(a, b, sortPropertiesAlphabetically));
     const entriesProperty = internalProperties?.find(({ property }) => property.name === "[[Entries]]");
     if (entriesProperty) {
       const treeElement = new _ObjectPropertyTreeElement(entriesProperty, linkifier);
@@ -2082,6 +2127,14 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     let root = this.property;
     while (root.parent) {
       root = root.parent;
+    }
+    if (!root.isWasm) {
+      contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.sortPropertiesAlphabetically), () => {
+        root.sortPropertiesAlphabetically = !root.sortPropertiesAlphabetically;
+      }, {
+        checked: root.sortPropertiesAlphabetically,
+        jslogContext: "sort-properties-alphabetically"
+      });
     }
     contextMenu.viewSection().appendCheckboxItem(i18n3.i18n.lockedString("Show all"), () => {
       root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;

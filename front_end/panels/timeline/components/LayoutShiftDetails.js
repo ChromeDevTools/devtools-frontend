@@ -348,7 +348,6 @@ function linkifyURL(url) {
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(url, {
         tabStop: true,
         showColumnNumber: false,
-        inlineFrameIndex: 0,
         maxLength: MAX_URL_LENGTH,
     });
 }

@@ -1261,7 +1261,6 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     const options = {
       tabStop: true,
       showColumnNumber: false,
-      inlineFrameIndex: 0,
       maxLength: MAX_URL_LENGTH
     };
     const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
@@ -1777,7 +1776,6 @@ var ForcedReflow = class extends BaseInsightComponent {
     const location = linkifier.linkifyScriptLocation(null, callFrame.scriptId, callFrame.url, callFrame.lineNumber, {
       columnNumber: callFrame.columnNumber,
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       tabStop: true
     });
     if (location instanceof HTMLElement) {

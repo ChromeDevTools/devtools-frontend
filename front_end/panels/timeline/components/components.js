@@ -2826,7 +2826,6 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     const options = {
       tabStop: true,
       showColumnNumber: false,
-      inlineFrameIndex: 0,
       maxLength: MAX_URL_LENGTH4
     };
     const linkEl = LegacyComponents.Linkifier.Linkifier.linkifyURL(fallbackUrl, options);
@@ -3343,7 +3342,6 @@ function linkifyURL(url) {
   return LegacyComponents2.Linkifier.Linkifier.linkifyURL(url, {
     tabStop: true,
     showColumnNumber: false,
-    inlineFrameIndex: 0,
     maxLength: MAX_URL_LENGTH
   });
 }
@@ -6877,7 +6875,6 @@ function renderURL(request) {
   const options = {
     tabStop: true,
     showColumnNumber: false,
-    inlineFrameIndex: 0,
     maxLength: MAX_URL_LENGTH3
   };
   const linkifiedURL = LegacyComponents3.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
@@ -7007,8 +7004,7 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
   let link = null;
   const options = {
     tabStop: true,
-    showColumnNumber: true,
-    inlineFrameIndex: 0
+    showColumnNumber: true
   };
   if (hasStackTrace) {
     const topFrame = Trace8.Helpers.Trace.getStackTraceTopCallFrameInEventPayload(request) ?? null;

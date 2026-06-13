@@ -534,19 +534,18 @@ export class ConsoleViewMessage {
             const userMetric = this.#getLinkifierMetric();
             if (stackFrameWithBreakpoint) {
                 return this.linkifier.maybeLinkifyConsoleCallFrame(runtimeModel.target(), stackFrameWithBreakpoint, {
-                    inlineFrameIndex: 0,
                     revealBreakpoint: true,
                     userMetric,
                 });
             }
             if (scriptId) {
-                return this.linkifier.linkifyScriptLocation(runtimeModel.target(), scriptId, url || Platform.DevToolsPath.EmptyUrlString, line, { columnNumber: column, inlineFrameIndex: 0, userMetric });
+                return this.linkifier.linkifyScriptLocation(runtimeModel.target(), scriptId, url || Platform.DevToolsPath.EmptyUrlString, line, { columnNumber: column, userMetric });
             }
             if (stackTrace?.callFrames.length) {
                 return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
             }
             if (url && url !== 'undefined') {
-                return this.linkifier.linkifyScriptLocation(runtimeModel.target(), /* scriptId */ null, url, line, { columnNumber: column, inlineFrameIndex: 0, userMetric });
+                return this.linkifier.linkifyScriptLocation(runtimeModel.target(), /* scriptId */ null, url, line, { columnNumber: column, userMetric });
             }
             return null;
         };

@@ -6835,8 +6835,21 @@ ${query}`);
     }
     yield* super.run(initialQuery, options);
   }
+  /**
+   * Clears performance-agent-specific caches and state.
+   * This is called when the conversation needs to be reset (e.g. on navigation)
+   * to prevent stale formatters, trace facts, or selection contexts from leaking
+   * into subsequent runs.
+   */
   clearCache() {
+    super.clearCache();
     this.#functionCallCacheForFocus.clear();
+    this.#formatter = null;
+    this.#traceFacts = [];
+    this.#lastEventForEnhancedQuery = void 0;
+    this.#lastInsightForEnhancedQuery = void 0;
+    this.#additionalSelectionsForDisclosure = [];
+    this.#callTreeContextSet = /* @__PURE__ */ new WeakSet();
   }
   #createFactForTraceSummary() {
     if (!this.#formatter) {
@@ -9951,6 +9964,17 @@ var StylingAgent = class extends AiAgent {
         return await this.activateDeviceEmulation(params.deviceName, params.visionDeficiency);
       }
     });
+  }
+  /**
+   * Clears styling-agent-specific caches and state.
+   * Resets cached emulation data (screenshots, accessibility tree) and the
+   * instructions flag to ensure they are re-evaluated in subsequent queries.
+   */
+  clearCache() {
+    super.clearCache();
+    this.#greenDevEmulationScreenshot = null;
+    this.#greenDevEmulationAxTree = null;
+    this.#hasAddedEmulationInstructions = false;
   }
   preambleFeatures() {
     return ["function_calling"];

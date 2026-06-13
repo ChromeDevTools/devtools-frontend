@@ -489,6 +489,11 @@ const UIStrings = {
      * @description Context menu item in Network panel to assess security headers of a request via AI.
      */
     assessSecurityHeaders: 'Assess security headers',
+    /**
+     * @description A comment in a generated command indicating that the URL scheme is unsupported. The placeholder is the comment prefix (e.g. '//' or '#').
+     * @example {//} PH1
+     */
+    unsupportedUrlScheme: '{PH1} Unsupported URL scheme',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -533,6 +538,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
     filterBar;
     textFilterSetting;
     networkRequestToNode;
+    static #allowedSchemes = new Set(['http:', 'https:', 'ws:', 'wss:', 'data:']);
     constructor(filterBar, progressBarContainer, networkLogLargeRowsSetting) {
         super();
         this.registerRequiredCSS(networkLogViewStyles);
@@ -1937,6 +1943,18 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
     filterOutBlobRequests(requests) {
         return requests.filter(request => !request.isBlobRequest());
     }
+    static #getValidClipboardUrl(url) {
+        try {
+            const parsedUrl = new URL(url);
+            if (!NetworkLogView.#allowedSchemes.has(parsedUrl.protocol)) {
+                return null;
+            }
+            return url;
+        }
+        catch {
+            return null;
+        }
+    }
     async generateFetchCall(request, style) {
         const ignoredHeaders = new Set([
             // Internal headers
@@ -1970,7 +1988,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
             'user-agent',
         ]);
         const credentialHeaders = new Set(['cookie', 'authorization']);
-        const url = JSON.stringify(request.url());
+        const validUrl = NetworkLogView.#getValidClipboardUrl(request.url());
+        if (!validUrl) {
+            return i18nString(UIStrings.unsupportedUrlScheme, { PH1: '//' });
+        }
+        const url = JSON.stringify(validUrl);
         const requestHeaders = request.requestHeaders();
         const headerData = requestHeaders.reduce((result, header) => {
             const name = header.name;
@@ -2101,11 +2123,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
         // cURL command expected to run on the same platform that DevTools run
         // (it may be different from the inspected page platform).
         const escapeString = platform === 'win' ? escapeStringWin : escapeStringPosix;
-        // The shell escaping above protects the *shell* parser, but not curl's own
-        // argv parser: if the (HAR-imported) URL begins with '-', curl will parse
-        // it as an option (e.g. "-K//host/share/file" -> --config UNC path).
-        // Passing the URL via --url forces curl to treat it as a URL operand.
-        command.push('--url ' + escapeString(request.url()).replace(/[[{}\]]/g, '\\$&'));
+        const validUrl = NetworkLogView.#getValidClipboardUrl(request.url());
+        if (!validUrl) {
+            return i18nString(UIStrings.unsupportedUrlScheme, { PH1: '#' });
+        }
+        command.push('--url ' + escapeString(validUrl).replace(/[[{}\]]/g, '\\$&'));
         let inferredMethod = 'GET';
         const data = [];
         const formData = await request.requestFormData();
@@ -2198,7 +2220,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
             }
             return null;
         }
-        command.push('-Uri ' + escapeString(request.url()));
+        const validUrl = NetworkLogView.#getValidClipboardUrl(request.url());
+        if (!validUrl) {
+            return i18nString(UIStrings.unsupportedUrlScheme, { PH1: '#' });
+        }
+        command.push('-Uri ' + escapeString(validUrl));
         if (request.requestMethod !== 'GET') {
             command.push('-Method ' + escapeString(request.requestMethod));
         }

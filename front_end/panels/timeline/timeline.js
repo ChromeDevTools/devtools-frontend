@@ -9481,8 +9481,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (url) {
           const options = {
             tabStop: true,
-            showColumnNumber: false,
-            inlineFrameIndex: 0
+            showColumnNumber: false
           };
           details = LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
         }
@@ -9560,7 +9559,6 @@ var TimelineUIUtils = class _TimelineUIUtils {
       lineNumber,
       columnNumber,
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       className: "timeline-details",
       tabStop: true,
       omitOrigin
@@ -9581,14 +9579,13 @@ var TimelineUIUtils = class _TimelineUIUtils {
     const options = {
       className: "timeline-details",
       tabStop: true,
-      inlineFrameIndex: 0,
       showColumnNumber: true,
       columnNumber: frame.columnNumber,
       lineNumber: frame.lineNumber,
       maxLength
     };
     if (isFreshOrEnhanced) {
-      return linkifier.maybeLinkifyConsoleCallFrame(target, frame, { showColumnNumber: true, inlineFrameIndex: 0 });
+      return linkifier.maybeLinkifyConsoleCallFrame(target, frame, { showColumnNumber: true });
     }
     return LegacyComponents.Linkifier.Linkifier.linkifyURL(frame.url, options);
   }
@@ -9921,8 +9918,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (url) {
           const options = {
             tabStop: true,
-            showColumnNumber: false,
-            inlineFrameIndex: 0
+            showColumnNumber: false
           };
           contentHelper.appendElementRow(i18nString19(UIStrings19.imageUrl), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
@@ -9933,8 +9929,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         if (url) {
           const options = {
             tabStop: true,
-            showColumnNumber: false,
-            inlineFrameIndex: 0
+            showColumnNumber: false
           };
           contentHelper.appendElementRow(i18nString19(UIStrings19.stylesheetUrl), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
@@ -10747,7 +10742,6 @@ var TimelineDetailsContentHelper = class {
       tabStop: true,
       columnNumber: startColumn,
       showColumnNumber: true,
-      inlineFrameIndex: 0,
       text,
       omitOrigin
     };
@@ -10762,7 +10756,7 @@ var TimelineDetailsContentHelper = class {
       return;
     }
     const locationContent = document.createElement("span");
-    const link = this.#linkifier.maybeLinkifyScriptLocation(this.target, null, url, startLine, { tabStop: true, inlineFrameIndex: 0 });
+    const link = this.#linkifier.maybeLinkifyScriptLocation(this.target, null, url, startLine, { tabStop: true });
     if (!link) {
       return;
     }

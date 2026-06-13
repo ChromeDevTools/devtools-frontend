@@ -281,7 +281,6 @@ export interface EventTypes {
     [Events.RESPONSE_HEADERS_CHANGED]: void;
     [Events.WEBSOCKET_FRAME_ADDED]: WebSocketFrame;
     [Events.DIRECTSOCKET_CHUNK_ADDED]: DirectSocketChunk;
-    [Events.DIRECTSOCKET_CHUNK_ADDED]: DirectSocketChunk;
     [Events.EVENT_SOURCE_MESSAGE_ADDED]: EventSourceMessage;
     [Events.TRUST_TOKEN_RESULT_ADDED]: void;
 }

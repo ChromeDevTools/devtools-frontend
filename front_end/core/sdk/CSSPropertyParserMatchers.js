@@ -517,8 +517,7 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
                 const colorText = args.length >= 2 ? matching.getComputedTextRange(args[0], args[args.length - 1]) : '';
                 // colorText holds the fully substituted parenthesized expression, so colorFunc + colorText is the color
                 // function call.
-                const isRelativeColorSyntax = Boolean(colorText.match(/^[^)]*\(\W*from\W+/) && !matching.hasUnresolvedSubstitutions(node) &&
-                    CSS.supports('color', colorFunc + colorText));
+                const isRelativeColorSyntax = Boolean(colorText.match(/^[^)]*\(\W*from\W+/) && !matching.hasUnresolvedSubstitutions(node));
                 if (!isRelativeColorSyntax) {
                     return new ColorMatch(text, node);
                 }

@@ -642,11 +642,26 @@ export class PerformanceAgent extends AiAgent {
         }
         yield* super.run(initialQuery, options);
     }
+    /**
+     * Clears performance-agent-specific caches and state.
+     * This is called when the conversation needs to be reset (e.g. on navigation)
+     * to prevent stale formatters, trace facts, or selection contexts from leaking
+     * into subsequent runs.
+     */
     clearCache() {
+        super.clearCache();
         // Clear the function call cache to prevent stashed tool execution results
         // (which might contain cross-origin resource content fetched before navigation
         // was detected) from being replayed as facts in subsequent runs.
         this.#functionCallCacheForFocus.clear();
+        // Reset the formatter and trace facts so they are recreated with the
+        // correct target and origin on the next execution.
+        this.#formatter = null;
+        this.#traceFacts = [];
+        this.#lastEventForEnhancedQuery = undefined;
+        this.#lastInsightForEnhancedQuery = undefined;
+        this.#additionalSelectionsForDisclosure = [];
+        this.#callTreeContextSet = new WeakSet();
     }
     #createFactForTraceSummary() {
         if (!this.#formatter) {

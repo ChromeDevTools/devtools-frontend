@@ -11057,6 +11057,9 @@
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Unblock {PH1}"
   },
+  "panels/network/NetworkLogView.ts | unsupportedUrlScheme": {
+    "message": "{PH1} Unsupported URL scheme"
+  },
   "panels/network/NetworkLogView.ts | unthrottleS": {
     "message": "Stop throttling {PH1}"
   },
@@ -17713,6 +17716,9 @@
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showMoreS": {
     "message": "Show more ({PH1})"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | sortPropertiesAlphabetically": {
+    "message": "Sort properties alphabetically"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | stringIsTooLargeToEdit": {
     "message": "<string is too large to edit>"

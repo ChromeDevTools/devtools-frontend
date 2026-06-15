@@ -213,6 +213,14 @@ export function handleEvent(event: Types.Events.Event): void {
 
 export async function finalize(): Promise<void> {
   const {rendererProcessesByFrame} = metaHandlerData();
+
+  const allowedProtocols = [
+    'blob:',
+    'file:',
+    'filesystem:',
+    'http:',
+    'https:',
+  ];
   for (const [requestId, request] of requestMap.entries()) {
     // If we have an incomplete set of events here, we choose to drop the network
     // request rather than attempt to synthesize the missing data.
@@ -248,7 +256,7 @@ export async function finalize(): Promise<void> {
       }
 
       redirects.push({
-        url: sendRequest.args.data.url,
+        url: allowedProtocols.some(p => sendRequest.args.data.url.startsWith(p)) ? sendRequest.args.data.url : '',
         priority: sendRequest.args.data.priority,
         requestMethod: sendRequest.args.data.requestMethod,
         ts,
@@ -360,15 +368,7 @@ export async function finalize(): Promise<void> {
       }
     }
 
-    // TODO: consider allowing chrome / about.
-    const allowedProtocols = [
-      'blob:',
-      'file:',
-      'filesystem:',
-      'http:',
-      'https:',
-    ];
-    if (!allowedProtocols.some(p => firstSendRequest.args.data.url.startsWith(p))) {
+    if (!allowedProtocols.some(p => finalSendRequest.args.data.url.startsWith(p))) {
       continue;
     }
 
@@ -572,7 +572,11 @@ export async function finalize(): Promise<void> {
               responseHeaders: request.receiveResponse?.args.data.headers ?? null,
               fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint ?? 'auto',
               initiator: finalSendRequest.args.data.initiator,
-              stackTrace: finalSendRequest.args.data.stackTrace,
+              stackTrace: finalSendRequest.args.data.stackTrace?.map(
+                  frame => ({
+                    ...frame,
+                    url: allowedProtocols.some(p => frame.url.startsWith(p)) ? frame.url : '',
+                  })),
               timing,
               lrServerResponseTime,
               url,

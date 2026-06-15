@@ -3,8 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import { FileFormatter } from '../data_formatters/FileFormatter.js';
-import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { AiAgent, } from './AiAgent.js';
 /**
  * WARNING: preamble defined in code is only used when userTier is
  * TESTERS. Otherwise, a server-side preamble is used (see
@@ -62,25 +61,6 @@ Relevant Technologies: JavaScript, functions, arithmetic operations.
 External Resources:
 MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 `;
-export class FileContext extends ConversationContext {
-    #file;
-    constructor(file) {
-        super();
-        this.#file = file;
-    }
-    getURL() {
-        return this.#file.url();
-    }
-    getItem() {
-        return this.#file;
-    }
-    getTitle() {
-        return this.#file.displayName();
-    }
-    async refresh() {
-        await this.#file.requestContentData();
-    }
-}
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -103,24 +83,19 @@ export class FileAgent extends AiAgent {
         if (!selectedFile) {
             return;
         }
+        const details = await selectedFile.getUserFacingDetails();
+        if (!details) {
+            return;
+        }
         yield {
             type: "context" /* ResponseType.CONTEXT */,
-            details: createContextDetailsForFileAgent(selectedFile),
+            details,
         };
     }
     async enhanceQuery(query, selectedFile) {
-        const fileEnchantmentQuery = selectedFile ?
-            `# Selected file\n${new FileFormatter(selectedFile.getItem()).formatFile()}\n\n# User request\n\n` :
-            '';
+        const promptDetails = selectedFile ? await selectedFile.getPromptDetails() : null;
+        const fileEnchantmentQuery = promptDetails ? `${promptDetails}\n\n# User request\n\n` : '';
         return `${fileEnchantmentQuery}${query}`;
     }
-}
-function createContextDetailsForFileAgent(selectedFile) {
-    return [
-        {
-            title: 'Selected file',
-            text: new FileFormatter(selectedFile.getItem()).formatFile(),
-        },
-    ];
 }
 //# sourceMappingURL=FileAgent.js.map

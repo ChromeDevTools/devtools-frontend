@@ -62,6 +62,8 @@
     "../../../../../../front_end/models/ai_assistance/agents/StorageAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/StylingAgent.ts",
     "../../../../../../front_end/models/ai_assistance/contexts/DOMNodeContext.ts",
+    "../../../../../../front_end/models/ai_assistance/contexts/FileContext.ts",
+    "../../../../../../front_end/models/ai_assistance/contexts/RequestContext.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/FileFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/LighthouseFormatter.ts",
     "../../../../../../front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.ts",

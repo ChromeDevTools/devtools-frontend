@@ -1,14 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import type * as Workspace from '../../workspace/workspace.js';
-import { AiAgent, type ContextResponse, ConversationContext, type RequestOptions } from './AiAgent.js';
-export declare class FileContext extends ConversationContext<Workspace.UISourceCode.UISourceCode> {
-    #private;
-    constructor(file: Workspace.UISourceCode.UISourceCode);
-    getURL(): string;
-    getItem(): Workspace.UISourceCode.UISourceCode;
-    getTitle(): string;
-    refresh(): Promise<void>;
-}
+import { AiAgent, type ContextResponse, type ConversationContext, type RequestOptions } from './AiAgent.js';
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.

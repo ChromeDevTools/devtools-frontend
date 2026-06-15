@@ -1846,13 +1846,13 @@ var SHOW_LOADING_STATE_TIMEOUT = 100;
 var RELEVANT_DATA_LINK_CHAT_ID = "relevant-data-link-chat";
 var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
 function getContextRemoveLabel(context) {
-  if (context instanceof AiAssistanceModel4.FileAgent.FileContext) {
+  if (context instanceof AiAssistanceModel4.FileContext.FileContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextFile);
   }
   if (context instanceof AiAssistanceModel4.DOMNodeContext.DOMNodeContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextElement);
   }
-  if (context instanceof AiAssistanceModel4.NetworkAgent.RequestContext) {
+  if (context instanceof AiAssistanceModel4.RequestContext.RequestContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextRequest);
   }
   if (context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext) {
@@ -2004,7 +2004,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     }
   })}
                               ></devtools-widget>` : html5`
-                          ${input.context instanceof AiAssistanceModel4.NetworkAgent.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel4.FileAgent.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel4.AccessibilityAgent.AccessibilityContext ? html5`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext ? html5`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel4.StorageAgent.StorageContext ? html5`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit3.nothing}
+                          ${input.context instanceof AiAssistanceModel4.RequestContext.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel4.FileContext.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel4.AccessibilityAgent.AccessibilityContext ? html5`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext ? html5`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel4.StorageAgent.StorageContext ? html5`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit3.nothing}
                             <span
                               role="button"
                               class="title"
@@ -7922,7 +7922,7 @@ function createFileContext(file) {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel8.FileAgent.FileContext(file);
+  return new AiAssistanceModel8.FileContext.FileContext(file);
 }
 function createAccessibilityContext(report) {
   if (!report) {
@@ -7935,7 +7935,7 @@ function createRequestContext(request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel8.NetworkAgent.RequestContext(request, calculator);
+  return new AiAssistanceModel8.RequestContext.RequestContext(request, calculator);
 }
 function createPerformanceTraceContext(focus) {
   if (!focus) {
@@ -8398,7 +8398,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
     if (Boolean(ev.data)) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel8.NetworkAgent.RequestContext(ev.data, calculator);
+      this.#selectedRequest = new AiAssistanceModel8.RequestContext.RequestContext(ev.data, calculator);
     } else {
       this.#selectedRequest = null;
     }
@@ -8416,7 +8416,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (!newFile || this.#selectedFile?.getItem() === newFile) {
       return;
     }
-    this.#selectedFile = new AiAssistanceModel8.FileAgent.FileContext(ev.data);
+    this.#selectedFile = new AiAssistanceModel8.FileContext.FileContext(ev.data);
     this.#updateConversationState(this.#conversation);
   };
   #handleLighthouseReportFlavorChange = (ev) => {
@@ -8582,7 +8582,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       return;
     }
     const context = this.#conversation.selectedContext;
-    if (context instanceof AiAssistanceModel8.NetworkAgent.RequestContext) {
+    if (context instanceof AiAssistanceModel8.RequestContext.RequestContext) {
       const requestLocation = NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         "headers-component"
@@ -8590,7 +8590,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       );
       return Common6.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel8.FileAgent.FileContext) {
+    if (context instanceof AiAssistanceModel8.FileContext.FileContext) {
       return Common6.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext) {
@@ -8794,11 +8794,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
   }
   #handleConversationContextChange = (data) => {
-    if (data instanceof AiAssistanceModel8.FileAgent.FileContext) {
+    if (data instanceof AiAssistanceModel8.FileContext.FileContext) {
       this.#selectedFile = data;
     } else if (data instanceof AiAssistanceModel8.DOMNodeContext.DOMNodeContext) {
       this.#selectedElement = data;
-    } else if (data instanceof AiAssistanceModel8.NetworkAgent.RequestContext) {
+    } else if (data instanceof AiAssistanceModel8.RequestContext.RequestContext) {
       this.#selectedRequest = data;
     } else if (data instanceof AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;

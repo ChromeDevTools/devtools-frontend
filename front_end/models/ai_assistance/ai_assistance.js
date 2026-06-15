@@ -3095,55 +3095,18 @@ __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
+import * as Host9 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root10 from "./../../core/root/root.js";
+import * as Root8 from "./../../core/root/root.js";
 import * as Logs3 from "./../logs/logs.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace from "./../workspace/workspace.js";
 
-// gen/front_end/models/ai_assistance/StorageItem.js
-var StorageItem_exports = {};
-__export(StorageItem_exports, {
-  CookieItem: () => CookieItem,
-  DOMStorageItem: () => DOMStorageItem,
-  StorageItem: () => StorageItem
-});
-var StorageItem = class {
-  primaryTargetOrigin;
-  origin;
-  constructor(primaryTargetOrigin, origin) {
-    this.primaryTargetOrigin = primaryTargetOrigin;
-    this.origin = origin;
-  }
-};
-var DOMStorageItem = class extends StorageItem {
-  storageKey;
-  type;
-  key;
-  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
-    super(primaryTargetOrigin, origin);
-    this.storageKey = storageKey;
-    this.type = type;
-    this.key = key;
-  }
-};
-var CookieItem = class extends StorageItem {
-  name;
-  constructor(primaryTargetOrigin, origin, name) {
-    super(primaryTargetOrigin, origin);
-    this.name = name;
-  }
-};
-
-// gen/front_end/models/ai_assistance/agents/FileAgent.js
-var FileAgent_exports = {};
-__export(FileAgent_exports, {
-  FileAgent: () => FileAgent,
+// gen/front_end/models/ai_assistance/contexts/FileContext.js
+var FileContext_exports = {};
+__export(FileContext_exports, {
   FileContext: () => FileContext
 });
-import * as Host7 from "./../../core/host/host.js";
-import * as Root6 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/FileFormatter.js
 var FileFormatter_exports = {};
@@ -3218,7 +3181,8 @@ ${dataAsText}`;
   static formatStatus(status) {
     let responseStatus = "";
     if (status.statusCode) {
-      responseStatus = `Response status: ${status.statusCode} ${status.statusText}
+      const statusText = status.statusText ? ` ${status.statusText}` : "";
+      responseStatus = `Response status: ${status.statusCode}${statusText}
 `;
     }
     const flags = [];
@@ -3570,59 +3534,7 @@ ${truncated}
   }
 };
 
-// gen/front_end/models/ai_assistance/agents/FileAgent.js
-var preamble2 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
-You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
-* Source-mapped from: If this code is the source for a mapped file, you'll have a link to that generated file.
-* Source map: If this code has an associated source map, you'll have link to the source map.
-* If there is a request which caused the file to be loaded, you will be provided with the request initiator chain with URLs for those requests.
-
-Analyze the code and provide the following information:
-* Describe the primary functionality of the code. What does it do? Be specific and concise. If the code snippet is too small or unclear to determine the functionality, state that explicitly.
-* If possible, identify the framework or library the code is associated with (e.g., React, Angular, jQuery). List any key technologies, APIs, or patterns used in the code (e.g., Fetch API, WebSockets, object-oriented programming).
-* (Only provide if available and accessible externally) External Resources: Suggest relevant documentation that could help a developer understand the code better. Prioritize official documentation if available. Do not provide any internal resources.
-* (ONLY if request initiator chain is provided) Why the file was loaded?
-
-# Considerations
-* **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
-* Answer questions directly, using the provided links whenever relevant.
-* Always double-check links to make sure they are complete and correct.
-* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about files."
-* **CRITICAL** You are a file analysis agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
-* **Important Note:** The provided code may represent an incomplete fragment of a larger file. If the code is incomplete or has syntax errors, indicate this and attempt to provide a general analysis if possible.
-* **Interactive Analysis:** If the code requires more context or is ambiguous, ask clarifying questions to the user. Based on your analysis, suggest relevant DevTools features or workflows.
-
-## Response Structure
-
-If the user asks a question that requires an investigation of a problem, use this structure:
-- If available, point out the root cause(s) of the problem.
-  - Example: "**Root Cause**: The page is slow because of [reason]."
-  - Example: "**Root Causes**:"
-    - [Reason 1]
-    - [Reason 2]
-- if applicable, list actionable solution suggestion(s) in order of impact:
-  - Example: "**Suggestion**: [Suggestion 1]
-  - Example: "**Suggestions**:"
-    - [Suggestion 1]
-    - [Suggestion 2]
-
-## Example session
-
-**User:** (Selects a file containing the following JavaScript code)
-
-function calculateTotal(price, quantity) {
-  const total = price * quantity;
-  return total;
-}
-Explain this file.
-
-
-This code defines a function called calculateTotal that calculates the total cost by multiplying the price and quantity arguments.
-This code is written in JavaScript and doesn't seem to be associated with a specific framework. It's likely a utility function.
-Relevant Technologies: JavaScript, functions, arithmetic operations.
-External Resources:
-MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
-`;
+// gen/front_end/models/ai_assistance/contexts/FileContext.js
 var FileContext = class extends ConversationContext {
   #file;
   constructor(file) {
@@ -3638,127 +3550,36 @@ var FileContext = class extends ConversationContext {
   getTitle() {
     return this.#file.displayName();
   }
+  async getPromptDetails() {
+    return `# Selected file
+${new FileFormatter(this.#file).formatFile()}`;
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: "Selected file",
+        text: new FileFormatter(this.#file).formatFile()
+      }
+    ];
+  }
   async refresh() {
     await this.#file.requestContentData();
   }
 };
-var FileAgent = class extends AiAgent {
-  preamble = preamble2;
-  clientFeature = Host7.AidaClient.ClientFeature.CHROME_FILE_AGENT;
-  get userTier() {
-    return Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
-  }
-  get options() {
-    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
-    return {
-      temperature,
-      modelId
-    };
-  }
-  async *handleContextDetails(selectedFile) {
-    if (!selectedFile) {
-      return;
-    }
-    yield {
-      type: "context",
-      details: createContextDetailsForFileAgent(selectedFile)
-    };
-  }
-  async enhanceQuery(query, selectedFile) {
-    const fileEnchantmentQuery = selectedFile ? `# Selected file
-${new FileFormatter(selectedFile.getItem()).formatFile()}
 
-# User request
-
-` : "";
-    return `${fileEnchantmentQuery}${query}`;
-  }
-};
-function createContextDetailsForFileAgent(selectedFile) {
-  return [
-    {
-      title: "Selected file",
-      text: new FileFormatter(selectedFile.getItem()).formatFile()
-    }
-  ];
-}
-
-// gen/front_end/models/ai_assistance/agents/NetworkAgent.js
-var NetworkAgent_exports = {};
-__export(NetworkAgent_exports, {
-  NetworkAgent: () => NetworkAgent,
+// gen/front_end/models/ai_assistance/contexts/RequestContext.js
+var RequestContext_exports = {};
+__export(RequestContext_exports, {
   RequestContext: () => RequestContext,
   getRequestContextOrigin: () => getRequestContextOrigin
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Root7 from "./../../core/root/root.js";
-var preamble3 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
-The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
-Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
-* Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.
-* Analyze timing information to identify potential bottlenecks or areas for optimization.
-* Highlight potential issues indicated by the status code.
-
-# Considerations
-* If the response payload or request payload contains sensitive data, redact or generalize it in your analysis to ensure privacy.
-* Tailor your explanations and suggestions to the specific context of the request and the technologies involved (if discernible from the provided details).
-* **CRITICAL** Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
-* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about network requests."
-* **CRITICAL** You are a network request debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
-
-## Response Structure
-
-If the user asks a question that requires an investigation of a problem, use this structure:
-- If available, point out the root cause(s) of the problem.
-  - Example: "**Root Cause**: The page is slow because of [reason]."
-  - Example: "**Root Causes**:"
-    - [Reason 1]
-    - [Reason 2]
-- if applicable, list actionable solution suggestion(s) in order of impact:
-  - Example: "**Suggestion**: [Suggestion 1]
-  - Example: "**Suggestions**:"
-    - [Suggestion 1]
-    - [Suggestion 2]
-
-## Example session
-
-Explain this network request
-Request: https://api.example.com/products/search?q=laptop&category=electronics
-Response Headers:
-    Content-Type: application/json
-    Cache-Control: max-age=300
-...
-Request Headers:
-    User-Agent: Mozilla/5.0
-...
-Request Status: 200 OK
-
-
-This request aims to retrieve a list of products matching the search query "laptop" within the "electronics" category. The successful 200 OK status confirms that the server fulfilled the request and returned the relevant data.
-`;
 var UIStringsNotTranslate2 = {
-  /**
-   * @description Heading text for the block that shows the network request details.
-   */
   request: "Request",
-  /**
-   * @description Heading text for the block that shows the network response details.
-   */
   response: "Response",
-  /**
-   * @description Prefix text for request URL.
-   */
   requestUrl: "Request URL",
-  /**
-   * @description Title text for request timing details.
-   */
   timing: "Timing",
-  /**
-   * @description Title text for request initiator chain.
-   */
   requestInitiatorChain: "Request initiator chain"
 };
 var lockedString3 = i18n9.i18n.lockedString;
@@ -3793,84 +3614,80 @@ var RequestContext = class extends ConversationContext {
   getItem() {
     return this.#request;
   }
-  get calculator() {
-    return this.#calculator;
-  }
   getTitle() {
     return this.#request.name();
   }
-};
-var NetworkAgent = class extends AiAgent {
-  preamble = preamble3;
-  clientFeature = Host8.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
-  get userTier() {
-    return Root7.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+  async getPromptDetails() {
+    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
+    return `# Selected network request
+${await formatter.formatNetworkRequest()}`;
   }
-  get options() {
-    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
-    return {
-      temperature,
-      modelId
+  async getUserFacingDetails() {
+    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
+    const requestContextDetail = {
+      title: lockedString3(UIStringsNotTranslate2.request),
+      text: lockedString3(UIStringsNotTranslate2.requestUrl) + ": " + this.#request.url() + "\n\n" + formatter.formatRequestHeaders()
     };
-  }
-  async *handleContextDetails(selectedNetworkRequest) {
-    if (!selectedNetworkRequest) {
-      return;
-    }
-    yield {
-      type: "context",
-      details: await createContextDetailsForNetworkAgent(selectedNetworkRequest),
-      widgets: [{
-        name: "NETWORK_REQUEST_GENERAL_HEADERS",
-        data: {
-          request: selectedNetworkRequest.getItem()
-        }
-      }]
-    };
-  }
-  async enhanceQuery(query, selectedNetworkRequest) {
-    const networkEnchantmentQuery = selectedNetworkRequest ? `# Selected network request 
-${await new NetworkRequestFormatter(selectedNetworkRequest.getItem(), selectedNetworkRequest.calculator).formatNetworkRequest()}
-
-# User request
-
-` : "";
-    return `${networkEnchantmentQuery}${query}`;
-  }
-};
-async function createContextDetailsForNetworkAgent(selectedNetworkRequest) {
-  const request = selectedNetworkRequest.getItem();
-  const formatter = new NetworkRequestFormatter(request, selectedNetworkRequest.calculator);
-  const requestContextDetail = {
-    title: lockedString3(UIStringsNotTranslate2.request),
-    text: lockedString3(UIStringsNotTranslate2.requestUrl) + ": " + request.url() + "\n\n" + formatter.formatRequestHeaders()
-  };
-  const responseBody = await formatter.formatResponseBody();
-  const responseBodyString = responseBody ? `
+    const responseBody = await formatter.formatResponseBody();
+    const responseBodyString = responseBody ? `
 
 ${responseBody}` : "";
-  const responseContextDetail = {
-    title: lockedString3(UIStringsNotTranslate2.response),
-    text: formatter.formatResponseHeaders() + responseBodyString + `
+    const responseContextDetail = {
+      title: lockedString3(UIStringsNotTranslate2.response),
+      text: formatter.formatResponseHeaders() + responseBodyString + `
 
 ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
-  };
-  const timingContextDetail = {
-    title: lockedString3(UIStringsNotTranslate2.timing),
-    text: formatter.formatNetworkRequestTiming()
-  };
-  const initiatorChainContextDetail = {
-    title: lockedString3(UIStringsNotTranslate2.requestInitiatorChain),
-    text: formatter.formatRequestInitiatorChain()
-  };
-  return [
-    requestContextDetail,
-    responseContextDetail,
-    timingContextDetail,
-    initiatorChainContextDetail
-  ];
-}
+    };
+    const timingContextDetail = {
+      title: lockedString3(UIStringsNotTranslate2.timing),
+      text: formatter.formatNetworkRequestTiming()
+    };
+    const initiatorChainContextDetail = {
+      title: lockedString3(UIStringsNotTranslate2.requestInitiatorChain),
+      text: formatter.formatRequestInitiatorChain()
+    };
+    return [
+      requestContextDetail,
+      responseContextDetail,
+      timingContextDetail,
+      initiatorChainContextDetail
+    ];
+  }
+};
+
+// gen/front_end/models/ai_assistance/StorageItem.js
+var StorageItem_exports = {};
+__export(StorageItem_exports, {
+  CookieItem: () => CookieItem,
+  DOMStorageItem: () => DOMStorageItem,
+  StorageItem: () => StorageItem
+});
+var StorageItem = class {
+  primaryTargetOrigin;
+  origin;
+  constructor(primaryTargetOrigin, origin) {
+    this.primaryTargetOrigin = primaryTargetOrigin;
+    this.origin = origin;
+  }
+};
+var DOMStorageItem = class extends StorageItem {
+  storageKey;
+  type;
+  key;
+  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
+    super(primaryTargetOrigin, origin);
+    this.storageKey = storageKey;
+    this.type = type;
+    this.key = key;
+  }
+};
+var CookieItem = class extends StorageItem {
+  name;
+  constructor(primaryTargetOrigin, origin, name) {
+    super(primaryTargetOrigin, origin);
+    this.name = name;
+  }
+};
 
 // gen/front_end/models/ai_assistance/agents/PerformanceAgent.js
 var PerformanceAgent_exports = {};
@@ -3880,10 +3697,10 @@ __export(PerformanceAgent_exports, {
   getLabelName: () => getLabelName
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
+import * as Host7 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root8 from "./../../core/root/root.js";
+import * as Root6 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as Annotations3 from "./../annotations/annotations.js";
@@ -6299,7 +6116,7 @@ addNetworkRequestAnnotation and specify an annotation reason.
   ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
   elements described in your conclusion.
 `;
-var preamble4 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+var preamble2 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
 
@@ -6562,7 +6379,7 @@ function getLabelName(label, focus) {
   return label;
 }
 var PerformanceAgent = class extends AiAgent {
-  preamble = preamble4;
+  preamble = preamble2;
   #formatter = null;
   #lastEventForEnhancedQuery;
   #lastInsightForEnhancedQuery;
@@ -6622,14 +6439,14 @@ var PerformanceAgent = class extends AiAgent {
    */
   #additionalSelectionsForDisclosure = [];
   get clientFeature() {
-    return Host9.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    return Host7.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
-    return Boolean(Root8.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root8.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    return Boolean(Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options() {
-    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
     return {
       temperature,
       modelId
@@ -6981,7 +6798,7 @@ ${result}`,
       };
     }
     const byteCount = Platform4.StringUtilities.countWtf8Bytes(summary);
-    Host9.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
+    Host7.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
     this.#cacheFunctionResult(focus, cacheKey, summary);
     const widgets = [];
     widgets.push({
@@ -7226,7 +7043,7 @@ ${result}`,
           };
         }
         const byteCount = Platform4.StringUtilities.countWtf8Bytes(summary);
-        Host9.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
+        Host7.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         return {
@@ -7414,7 +7231,7 @@ ${result}`,
         };
       }
     });
-    const isTraceApp = Root8.Runtime.Runtime.isTraceApp();
+    const isTraceApp = Root6.Runtime.Runtime.isTraceApp();
     this.declareFunction("getResourceContent", {
       description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
       parameters: {
@@ -7671,12 +7488,12 @@ __export(StorageAgent_exports, {
   resolveDOMStorages: () => resolveDOMStorages
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
+import * as Host8 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root9 from "./../../core/root/root.js";
+import * as Root7 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 var lockedString5 = i18n13.i18n.lockedString;
-var preamble5 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
+var preamble3 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
  You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
 
@@ -7748,14 +7565,14 @@ var StorageContext = class extends ConversationContext {
 };
 var MAX_NUM_CHAR_LENGTH = 1e4;
 var StorageAgent = class _StorageAgent extends AiAgent {
-  preamble = preamble5;
-  clientFeature = Host10.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  preamble = preamble3;
+  clientFeature = Host8.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root9.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root9.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root7.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root7.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
@@ -8185,7 +8002,7 @@ function resolveDOMStorages(context, type, origin, storageKey) {
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
 var lockedString6 = i18n15.i18n.lockedString;
-var preamble6 = `
+var preamble4 = `
 You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
 Your role is to understand the user's query, identify the appropriate specialized agent to handle it, and select the relevant context from the page to assist that agent.
@@ -8221,14 +8038,14 @@ Your role is to understand the user's query, identify the appropriate specialize
 * The only available types are \`#req\` for network request and \`#file\` for source files. Only use ID inside the link, never ask about user selecting by ID.
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
-  preamble = preamble6;
-  clientFeature = Host11.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
+  preamble = preamble4;
+  clientFeature = Host9.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
-    return Root10.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root10.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root10.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8580,7 +8397,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       }
     });
-    if (Root10.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
+    if (Root8.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
       this.declareFunction("analyzeStorage", {
         description: "Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.",
         parameters: {
@@ -8660,6 +8477,103 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   }
 };
 
+// gen/front_end/models/ai_assistance/agents/FileAgent.js
+var FileAgent_exports = {};
+__export(FileAgent_exports, {
+  FileAgent: () => FileAgent
+});
+import * as Host10 from "./../../core/host/host.js";
+import * as Root9 from "./../../core/root/root.js";
+var preamble5 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
+You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
+* Source-mapped from: If this code is the source for a mapped file, you'll have a link to that generated file.
+* Source map: If this code has an associated source map, you'll have link to the source map.
+* If there is a request which caused the file to be loaded, you will be provided with the request initiator chain with URLs for those requests.
+
+Analyze the code and provide the following information:
+* Describe the primary functionality of the code. What does it do? Be specific and concise. If the code snippet is too small or unclear to determine the functionality, state that explicitly.
+* If possible, identify the framework or library the code is associated with (e.g., React, Angular, jQuery). List any key technologies, APIs, or patterns used in the code (e.g., Fetch API, WebSockets, object-oriented programming).
+* (Only provide if available and accessible externally) External Resources: Suggest relevant documentation that could help a developer understand the code better. Prioritize official documentation if available. Do not provide any internal resources.
+* (ONLY if request initiator chain is provided) Why the file was loaded?
+
+# Considerations
+* **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
+* Answer questions directly, using the provided links whenever relevant.
+* Always double-check links to make sure they are complete and correct.
+* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about files."
+* **CRITICAL** You are a file analysis agent. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+* **Important Note:** The provided code may represent an incomplete fragment of a larger file. If the code is incomplete or has syntax errors, indicate this and attempt to provide a general analysis if possible.
+* **Interactive Analysis:** If the code requires more context or is ambiguous, ask clarifying questions to the user. Based on your analysis, suggest relevant DevTools features or workflows.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
+
+## Example session
+
+**User:** (Selects a file containing the following JavaScript code)
+
+function calculateTotal(price, quantity) {
+  const total = price * quantity;
+  return total;
+}
+Explain this file.
+
+
+This code defines a function called calculateTotal that calculates the total cost by multiplying the price and quantity arguments.
+This code is written in JavaScript and doesn't seem to be associated with a specific framework. It's likely a utility function.
+Relevant Technologies: JavaScript, functions, arithmetic operations.
+External Resources:
+MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
+`;
+var FileAgent = class extends AiAgent {
+  preamble = preamble5;
+  clientFeature = Host10.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  get userTier() {
+    return Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
+  }
+  get options() {
+    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    return {
+      temperature,
+      modelId
+    };
+  }
+  async *handleContextDetails(selectedFile) {
+    if (!selectedFile) {
+      return;
+    }
+    const details = await selectedFile.getUserFacingDetails();
+    if (!details) {
+      return;
+    }
+    yield {
+      type: "context",
+      details
+    };
+  }
+  async enhanceQuery(query, selectedFile) {
+    const promptDetails = selectedFile ? await selectedFile.getPromptDetails() : null;
+    const fileEnchantmentQuery = promptDetails ? `${promptDetails}
+
+# User request
+
+` : "";
+    return `${fileEnchantmentQuery}${query}`;
+  }
+};
+
 // gen/front_end/models/ai_assistance/agents/GreenDevAgent.js
 var GreenDevAgent_exports = {};
 __export(GreenDevAgent_exports, {
@@ -8667,12 +8581,12 @@ __export(GreenDevAgent_exports, {
   GreenDevContext: () => GreenDevContext
 });
 import * as Common11 from "./../../core/common/common.js";
-import * as Host12 from "./../../core/host/host.js";
-import * as Root11 from "./../../core/root/root.js";
+import * as Host11 from "./../../core/host/host.js";
+import * as Root10 from "./../../core/root/root.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Greendev from "./../greendev/greendev.js";
 import * as Workspace3 from "./../workspace/workspace.js";
-var preamble7 = `You are a general purpose web page troubleshooting agent.
+var preamble6 = `You are a general purpose web page troubleshooting agent.
 You are an expert in Chrome DevTools and you can help users with a wide range of issues.
 
 Your job is to use the provided information to understand the problem, connect the dots to
@@ -8978,16 +8892,16 @@ var GreenDevAgent = class _GreenDevAgent extends AiAgent {
 ${codeSuggestionDiff}` });
     return "The fix suggestion has been submitted.";
   }
-  preamble = preamble7;
+  preamble = preamble6;
   get clientFeature() {
-    return Host12.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+    return Host11.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   }
   get userTier() {
     return "TESTERS";
   }
   get options() {
-    const temperature = Root11.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root11.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root10.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root10.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
@@ -9485,6 +9399,101 @@ var GreenDevAgentGeminiCliSocketClient = class {
         id: 15
       }));
     });
+  }
+};
+
+// gen/front_end/models/ai_assistance/agents/NetworkAgent.js
+var NetworkAgent_exports = {};
+__export(NetworkAgent_exports, {
+  NetworkAgent: () => NetworkAgent
+});
+import * as Host12 from "./../../core/host/host.js";
+import * as Root11 from "./../../core/root/root.js";
+var preamble7 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
+The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
+Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
+* Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.
+* Analyze timing information to identify potential bottlenecks or areas for optimization.
+* Highlight potential issues indicated by the status code.
+
+# Considerations
+* If the response payload or request payload contains sensitive data, redact or generalize it in your analysis to ensure privacy.
+* Tailor your explanations and suggestions to the specific context of the request and the technologies involved (if discernible from the provided details).
+* **CRITICAL** Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
+* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about network requests."
+* **CRITICAL** You are a network request debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
+
+## Response Structure
+
+If the user asks a question that requires an investigation of a problem, use this structure:
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
+
+## Example session
+
+Explain this network request
+Request: https://api.example.com/products/search?q=laptop&category=electronics
+Response Headers:
+    Content-Type: application/json
+    Cache-Control: max-age=300
+...
+Request Headers:
+    User-Agent: Mozilla/5.0
+...
+Request Status: 200 OK
+
+
+This request aims to retrieve a list of products matching the search query "laptop" within the "electronics" category. The successful 200 OK status confirms that the server fulfilled the request and returned the relevant data.
+`;
+var NetworkAgent = class extends AiAgent {
+  preamble = preamble7;
+  clientFeature = Host12.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  get userTier() {
+    return Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+  }
+  get options() {
+    const temperature = Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
+    return {
+      temperature,
+      modelId
+    };
+  }
+  async *handleContextDetails(selectedNetworkRequest) {
+    if (!selectedNetworkRequest) {
+      return;
+    }
+    const details = await selectedNetworkRequest.getUserFacingDetails();
+    if (!details) {
+      return;
+    }
+    yield {
+      type: "context",
+      details,
+      widgets: [{
+        name: "NETWORK_REQUEST_GENERAL_HEADERS",
+        data: {
+          request: selectedNetworkRequest.getItem()
+        }
+      }]
+    };
+  }
+  async enhanceQuery(query, selectedNetworkRequest) {
+    const promptDetails = selectedNetworkRequest ? await selectedNetworkRequest.getPromptDetails() : null;
+    const networkEnchantmentQuery = promptDetails ? `${promptDetails}
+
+# User request
+
+` : "";
+    return `${networkEnchantmentQuery}${query}`;
   }
 };
 
@@ -11493,6 +11502,7 @@ export {
   ExecuteJavaScript_exports as ExecuteJavaScript,
   ExtensionScope_exports as ExtensionScope,
   FileAgent_exports as FileAgent,
+  FileContext_exports as FileContext,
   FileFormatter_exports as FileFormatter,
   GetStyles_exports as GetStyles,
   GreenDevAgent_exports as GreenDevAgent,
@@ -11507,6 +11517,7 @@ export {
   PerformanceAnnotations_exports as PerformanceAnnotations,
   PerformanceInsightFormatter_exports as PerformanceInsightFormatter,
   PerformanceTraceFormatter_exports as PerformanceTraceFormatter,
+  RequestContext_exports as RequestContext,
   StorageAgent_exports as StorageAgent,
   StorageItem_exports as StorageItem,
   StylingAgent_exports as StylingAgent,

@@ -2839,7 +2839,8 @@ var PanelCodes;
   PanelCodes2[PanelCodes2["developer-resources"] = 66] = "developer-resources";
   PanelCodes2[PanelCodes2["autofill-view"] = 67] = "autofill-view";
   PanelCodes2[PanelCodes2["freestyler"] = 68] = "freestyler";
-  PanelCodes2[PanelCodes2["MAX_VALUE"] = 69] = "MAX_VALUE";
+  PanelCodes2[PanelCodes2["ads"] = 69] = "ads";
+  PanelCodes2[PanelCodes2["MAX_VALUE"] = 70] = "MAX_VALUE";
 })(PanelCodes || (PanelCodes = {}));
 var MediaTypes;
 (function(MediaTypes2) {

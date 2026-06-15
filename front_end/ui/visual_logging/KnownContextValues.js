@@ -343,6 +343,7 @@ export const knownContextValues = new Set([
     'addedSize',
     'additive-symbols',
     'adorner-settings',
+    'ads',
     'af',
     'affected-cookies',
     'affected-documents',

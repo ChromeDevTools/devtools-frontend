@@ -332,7 +332,8 @@ export declare enum PanelCodes {
     'developer-resources' = 66,
     'autofill-view' = 67,
     freestyler = 68,
-    MAX_VALUE = 69
+    ads = 69,
+    MAX_VALUE = 70
 }
 export declare enum MediaTypes {
     Unknown = 0,

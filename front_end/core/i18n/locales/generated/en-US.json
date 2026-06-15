@@ -3389,6 +3389,9 @@
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stop recording events"
   },
+  "panels/application/ApplicationPanelSidebar.ts | ads": {
+    "message": "Ads"
+  },
   "panels/application/ApplicationPanelSidebar.ts | application": {
     "message": "Application"
   },
@@ -6334,9 +6337,6 @@
   },
   "panels/application/WebMCPView.ts | canceledCount": {
     "message": "{PH1} Canceled"
-  },
-  "panels/application/WebMCPView.ts | causedBy": {
-    "message": "Caused by:"
   },
   "panels/application/WebMCPView.ts | clearFilters": {
     "message": "Clear filters"

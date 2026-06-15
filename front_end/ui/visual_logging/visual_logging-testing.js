@@ -367,6 +367,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "addedSize",
   "additive-symbols",
   "adorner-settings",
+  "ads",
   "af",
   "affected-cookies",
   "affected-documents",

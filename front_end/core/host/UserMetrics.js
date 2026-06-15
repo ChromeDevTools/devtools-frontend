@@ -479,8 +479,9 @@ export var PanelCodes;
     PanelCodes[PanelCodes["developer-resources"] = 66] = "developer-resources";
     PanelCodes[PanelCodes["autofill-view"] = 67] = "autofill-view";
     PanelCodes[PanelCodes["freestyler"] = 68] = "freestyler";
+    PanelCodes[PanelCodes["ads"] = 69] = "ads";
     /* eslint-enable @typescript-eslint/naming-convention */
-    PanelCodes[PanelCodes["MAX_VALUE"] = 69] = "MAX_VALUE";
+    PanelCodes[PanelCodes["MAX_VALUE"] = 70] = "MAX_VALUE";
 })(PanelCodes || (PanelCodes = {}));
 export var MediaTypes;
 (function (MediaTypes) {

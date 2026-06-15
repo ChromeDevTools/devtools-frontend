@@ -112,13 +112,13 @@ const SHOW_LOADING_STATE_TIMEOUT = 100;
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
 function getContextRemoveLabel(context) {
-    if (context instanceof AiAssistanceModel.FileAgent.FileContext) {
+    if (context instanceof AiAssistanceModel.FileContext.FileContext) {
         return lockedString(UIStringsNotTranslate.removeContextFile);
     }
     if (context instanceof AiAssistanceModel.DOMNodeContext.DOMNodeContext) {
         return lockedString(UIStringsNotTranslate.removeContextElement);
     }
-    if (context instanceof AiAssistanceModel.NetworkAgent.RequestContext) {
+    if (context instanceof AiAssistanceModel.RequestContext.RequestContext) {
         return lockedString(UIStringsNotTranslate.removeContextRequest);
     }
     if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
@@ -286,9 +286,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     })}
                               ></devtools-widget>` :
                     html `
-                          ${input.context instanceof AiAssistanceModel.NetworkAgent.RequestContext ?
+                          ${input.context instanceof AiAssistanceModel.RequestContext.RequestContext ?
                         PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) :
-                        input.context instanceof AiAssistanceModel.FileAgent.FileContext ?
+                        input.context instanceof AiAssistanceModel.FileContext.FileContext ?
                             PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) :
                             input.context instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext ?
                                 html `<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` :

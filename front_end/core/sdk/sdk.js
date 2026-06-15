@@ -23611,10 +23611,10 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       this.dispatchEventToListeners(Events7.DiscardedAnonymousScriptSource, script);
     }
   }
-  createRawLocation(script, lineNumber, columnNumber, inlineFrameIndex) {
-    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber, inlineFrameIndex);
+  createRawLocation(script, lineNumber, columnNumber) {
+    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
   }
-  createRawLocationByURL(sourceURL, lineNumber, columnNumber, inlineFrameIndex) {
+  createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
     for (const script of this.#scriptsBySourceURL.get(sourceURL) || []) {
       if (script.lineOffset > lineNumber || script.lineOffset === lineNumber && columnNumber !== void 0 && script.columnOffset > columnNumber) {
         continue;
@@ -23622,12 +23622,12 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       if (script.endLine < lineNumber || script.endLine === lineNumber && columnNumber !== void 0 && script.endColumn <= columnNumber) {
         continue;
       }
-      return new Location(this, script.scriptId, lineNumber, columnNumber, inlineFrameIndex);
+      return new Location(this, script.scriptId, lineNumber, columnNumber);
     }
     return null;
   }
-  createRawLocationByScriptId(scriptId, lineNumber, columnNumber, inlineFrameIndex) {
-    return new Location(this, scriptId, lineNumber, columnNumber, inlineFrameIndex);
+  createRawLocationByScriptId(scriptId, lineNumber, columnNumber) {
+    return new Location(this, scriptId, lineNumber, columnNumber);
   }
   createRawLocationsByStackTrace(stackTrace) {
     const rawLocations = [];

@@ -81,9 +81,9 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     private registerScript;
     private unregisterScript;
     private collectDiscardedScripts;
-    createRawLocation(script: Script, lineNumber: number, columnNumber: number, inlineFrameIndex?: number): Location;
-    createRawLocationByURL(sourceURL: string, lineNumber: number, columnNumber?: number, inlineFrameIndex?: number): Location | null;
-    createRawLocationByScriptId(scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number, inlineFrameIndex?: number): Location;
+    createRawLocation(script: Script, lineNumber: number, columnNumber: number): Location;
+    createRawLocationByURL(sourceURL: string, lineNumber: number, columnNumber?: number): Location | null;
+    createRawLocationByScriptId(scriptId: Protocol.Runtime.ScriptId, lineNumber: number, columnNumber?: number): Location;
     createRawLocationsByStackTrace(stackTrace: Protocol.Runtime.StackTrace): Location[];
     isPaused(): boolean;
     isPausing(): boolean;

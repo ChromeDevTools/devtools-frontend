@@ -1653,6 +1653,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     it('starts a new chat when a predefined prompt for a cross origin request is sent', async () => {
       const networkRequest = createNetworkRequest({
         url: urlString`https://a.test`,
+        documentURL: urlString`https://a.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
@@ -1669,6 +1670,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       // Change context to https://b.test.
       const networkRequest2 = createNetworkRequest({
         url: urlString`https://b.test`,
+        documentURL: urlString`https://b.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
 

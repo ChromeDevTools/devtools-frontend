@@ -104,3 +104,12 @@ To aid debugging, you can enable the AI Assistance logging. This setting is stor
 4. In the console, run `setDebugAiAssistanceEnabled(true)`.
 
 Now, when interacting with the AI and sending requests, you will see output logged to the console. You can use the `debugLog` helper to add your own logging as you are building out your feature.
+
+## Security & Origin Isolation
+
+To prevent prompt injection attacks and cross-origin data leaks, the AI Assistance panel enforces strict origin-lock boundaries:
+
+*   **Origin Locking**: Once a conversation session begins, it locks to the origin of the initial data context (e.g. `https://google.com` or a specific file path).
+*   **Opaque Origins**: Any origin classified as opaque (e.g. `data:`, `about:`, `detached` nodes, unparsed `undefined://` or empty origins) is blocked from starting AI assistance (`isOpaqueOrigin()`).
+*   **File Isolation**: Local files (`file://`) do not share a single wildcard origin. Instead, the path is appended (e.g. `file:///path/to/file.js`) to treat each local file as its own unique origin. Swapping local files in the same conversation is blocked.
+*   **Equivalence**: `areOriginsEquivalent()` ensures opaque origins are never equivalent to anything (including themselves), forcing a conversation reset on transitions.

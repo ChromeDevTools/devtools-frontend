@@ -17,7 +17,7 @@ Instead of passing a monolithic "grab-bag" context object to all tool handlers, 
 - `PageExecutionCapability`: For tools executing JavaScript code on the inspected page.
 - `StyleMutationCapability`: For tools managing and applying style mutations via a `ChangeManager`.
 - `TargetCapability`: For tools requiring access to the page's current SDK `Target`.
-- `OriginLockCapability`: For tools enforcing cross-origin security via origin locks.
+- `OriginLockCapability`: For tools enforcing cross-origin security via origin locks. Tools that fetch resources or state from the inspected page (such as styling or source code) must use this capability to verify that the target resource matches the conversation's established origin. This prevents the LLM from executing tools against out-of-origin elements or documents.
 
 ### Unified Context
 

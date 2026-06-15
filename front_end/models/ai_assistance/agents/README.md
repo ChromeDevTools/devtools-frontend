@@ -31,6 +31,13 @@ Example from `PerformanceAgent`:
   }
 ```
 
+### Origin Validation (`isOriginAllowed`)
+
+Before running an execution loop, the system validates the context's origin:
+*   **Opaque Origin Rejection**: Opaque origins are rejected immediately, blocking conversations on untrusted/opaque contexts (like `about:blank`, `data:` URLs, or opaque blob URLs).
+*   **Origin Lock Integrity**: If the conversation is already locked to an origin, the new context's origin must be equivalent (as defined by `areOriginsEquivalent()`) to the locked origin.
+*   **Safety Termination**: If validation fails, a cross-origin error is yielded and execution stops.
+
 ## Performance Agent
 
 The `PerformanceAgent` analyzes performance traces. This documentation details the specific data provided to the agent and the data it can retrieve via functions.

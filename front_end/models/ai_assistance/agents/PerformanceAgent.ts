@@ -15,7 +15,7 @@ import * as Logs from '../../logs/logs.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
-import {extractContextOrigin} from '../AiOrigins.js';
+import {canResourceContentsBeReadForTrace, extractContextOrigin} from '../AiOrigins.js';
 import {sanitizeHeaders} from '../data_formatters/NetworkRequestFormatter.js';
 import {
   PerformanceInsightFormatter,
@@ -1472,8 +1472,16 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
       },
       handler: async args => {
         debugLog('Function call: getResourceContent');
+        if (!isFresh) {
+          return {error: 'Cannot use this tool on an imported file.'};
+        }
 
-        const url = args.url as Platform.DevToolsPath.UrlString;
+        const url = args.url;
+        const allowedOrigin = context.getOrigin();
+        if (!canResourceContentsBeReadForTrace(url, allowedOrigin)) {
+          return {error: 'Resource not found'};
+        }
+
         let content: string|undefined;
 
         // First check parsedTrace.data.Scripts.

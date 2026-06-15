@@ -77,3 +77,31 @@ export function areOriginsEquivalent(origin1: string, origin2: string): boolean 
   }
   return origin1 === origin2;
 }
+
+/**
+ * Validates if the source code contents of a file (identified by targetURL) can be retrieved
+ * and shared with the AI, based on the origin of the active trace context.
+ *
+ * This function handles the following branches:
+ * 1. **Opaque origins**: If either the trace origin or target file origin is opaque
+ *    (e.g., data URLs, about:blank, sandboxed frames), access is blocked.
+ * 2. **Fresh Recordings**: For live page recordings, a strict same-origin comparison
+ *    (scheme, host, and port matching) is enforced.
+ *
+ * @param targetURL The URL of the file to be read.
+ * @param traceOrigin The allowed origin of the trace context.
+ * @returns true if reading the file is permitted; false otherwise.
+ */
+export function canResourceContentsBeReadForTrace(targetURL: string, traceOrigin: string): boolean {
+  // We explicitly block all file:// URLs. While we want to allow users to debug
+  // traces on local sites, allowing file:// access poses security risks (e.g.,
+  // reading local files like /etc/passwd via prompt injection) because file://
+  // origins are not sufficiently isolated from each other in DevTools' origin model.
+  if (traceOrigin.startsWith('file://') || targetURL.startsWith('file://')) {
+    return false;
+  }
+
+  const targetOrigin = extractContextOrigin(targetURL);
+
+  return areOriginsEquivalent(targetOrigin, traceOrigin);
+}

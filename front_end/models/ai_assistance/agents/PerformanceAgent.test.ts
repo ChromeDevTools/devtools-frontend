@@ -576,6 +576,9 @@ code
     });
 
     it('can call getResourceContent and yields SOURCE_CODE widget', async function() {
+      // Stub recordingIsFresh to return true to make it a "fresh recording"
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
+
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(parsedTrace.insights);
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
@@ -603,6 +606,88 @@ code
       assert.strictEqual(widget.name, 'SOURCE_CODE');
       assert.strictEqual(widget.data.url, url);
       assert.strictEqual(widget.data.code, 'console.log("hello world");');
+    });
+
+    it('blocks getResourceContent for cross-origin URLs', async function() {
+      // Stub recordingIsFresh to return true to make it a "fresh recording"
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
+
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const url = 'https://victim.com/sensitive.js';
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient(
+            [[{explanation: '', functionCalls: [{name: 'getResourceContent', args: {url}}]}], [{explanation: 'done'}]])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      // Mock script in trace
+      parsedTrace.data.Scripts.scripts.push({
+        url,
+        content: 'const secret = "sensitive data";',
+      } as unknown as Trace.Handlers.ModelHandlers.Scripts.Script);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.strictEqual(action.output, 'Resource not found');
+      assert.isUndefined(action.widgets);
+    });
+
+    it('blocks getResourceContent for file URLs', async function() {
+      // Stub recordingIsFresh to return true to make it a "fresh recording"
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
+
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const url = 'file:///tmp/sensitive.js';
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient(
+            [[{explanation: '', functionCalls: [{name: 'getResourceContent', args: {url}}]}], [{explanation: 'done'}]])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+      sinon.stub(context, 'getOrigin').returns('file://');
+
+      // Mock script in trace with file URL
+      parsedTrace.data.Scripts.scripts.push({
+        url,
+        content: 'const secret = "sensitive data";',
+      } as unknown as Trace.Handlers.ModelHandlers.Scripts.Script);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.strictEqual(action.output, 'Resource not found');
+      assert.isUndefined(action.widgets);
+    });
+
+    it('blocks getResourceContent for imported traces', async function() {
+      // Stub recordingIsFresh to return false to make it an "imported trace"
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(false);
+
+      const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const url = 'https://example.com/script.js';
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient(
+            [[{explanation: '', functionCalls: [{name: 'getResourceContent', args: {url}}]}], [{explanation: 'done'}]])
+      });
+      const context = PerformanceAgent.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(action);
+      assert.strictEqual(action.output, 'Cannot use this tool on an imported file.');
+      assert.isUndefined(action.widgets);
     });
 
     it('can call getFunctionCode and yields SOURCE_CODE widget', async function() {

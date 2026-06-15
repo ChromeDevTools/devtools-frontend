@@ -148,4 +148,31 @@ describeWithEnvironment('AiOrigins', () => {
                      'Different hosts should not be equivalent');
     });
   });
+
+  describe('canResourceContentsBeReadForTrace', () => {
+    it('returns true if origins are equivalent', () => {
+      assert.isTrue(
+          AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://a.com/script.js', 'https://a.com'));
+    });
+
+    it('returns false if origins are different', () => {
+      assert.isFalse(
+          AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://b.com/script.js', 'https://a.com'));
+    });
+
+    it('blocks opaque target origins even with matching allowedOrigin', () => {
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('data:text/javascript,console.log()',
+                                                                              'https://a.com'));
+    });
+
+    it('blocks opaque allowedOrigin', () => {
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://a.com/script.js', 'data:'));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://a.com/script.js', 'null'));
+    });
+
+    it('blocks local files for fresh recordings even if same-origin', () => {
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('file:///etc/passwd', 'file://'));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('file:///tmp/index.html', 'file://'));
+    });
+  });
 });

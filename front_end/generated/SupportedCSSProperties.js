@@ -248,6 +248,8 @@ export const generatedProperties = [
   "name": "accent-color"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "additive-symbols"
  },
  {
@@ -933,6 +935,8 @@ export const generatedProperties = [
   "name": "appearance"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "ascent-override"
  },
  {
@@ -1053,9 +1057,13 @@ export const generatedProperties = [
   "name": "background-size"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "base-palette"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "base-url"
  },
  {
@@ -2338,6 +2346,8 @@ export const generatedProperties = [
   "name": "d"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "descent-override"
  },
  {
@@ -2418,6 +2428,8 @@ export const generatedProperties = [
   "name": "empty-cells"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "fallback"
  },
  {
@@ -2553,14 +2565,18 @@ export const generatedProperties = [
   "name": "font"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "font-display"
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "name": "font-family"
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "keywords": [
    "normal"
   ],
@@ -2631,6 +2647,7 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "keywords": [
    "normal",
    "ultra-condensed",
@@ -2646,6 +2663,7 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "keywords": [
    "normal",
    "italic",
@@ -2688,6 +2706,7 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "longhands": [
    "font-variant-ligatures",
    "font-variant-caps",
@@ -2787,6 +2806,7 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "keywords": [
    "normal"
   ],
@@ -2794,6 +2814,7 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "is_descriptor": true,
   "keywords": [
    "normal",
    "bold",
@@ -2972,6 +2993,8 @@ export const generatedProperties = [
   "name": "hanging-punctuation"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "hash"
  },
  {
@@ -2984,6 +3007,8 @@ export const generatedProperties = [
   "name": "height"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "hostname"
  },
  {
@@ -3033,6 +3058,8 @@ export const generatedProperties = [
   "name": "image-rendering"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "inherits"
  },
  {
@@ -3045,6 +3072,8 @@ export const generatedProperties = [
   "name": "initial-letter"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "initial-value"
  },
  {
@@ -3173,6 +3202,8 @@ export const generatedProperties = [
   "name": "line-clamp"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "line-gap-override"
  },
  {
@@ -3468,9 +3499,13 @@ export const generatedProperties = [
   "name": "mix-blend-mode"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "navigation"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "negative"
  },
  {
@@ -3657,6 +3692,8 @@ export const generatedProperties = [
   "name": "overlay"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "override-colors"
  },
  {
@@ -3691,6 +3728,8 @@ export const generatedProperties = [
   "name": "overscroll-behavior-y"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "pad"
  },
  {
@@ -3765,6 +3804,7 @@ export const generatedProperties = [
   "name": "page-break-inside"
  },
  {
+  "is_descriptor": true,
   "keywords": [
    "none",
    "clamp",
@@ -3773,6 +3813,7 @@ export const generatedProperties = [
   "name": "page-margin-safety"
  },
  {
+  "is_descriptor": true,
   "name": "page-orientation"
  },
  {
@@ -3792,9 +3833,13 @@ export const generatedProperties = [
   "name": "path-length"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "pathname"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "pattern"
  },
  {
@@ -3845,6 +3890,8 @@ export const generatedProperties = [
   "name": "pointer-events"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "port"
  },
  {
@@ -3922,6 +3969,8 @@ export const generatedProperties = [
   "name": "position-visibility"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "prefix"
  },
  {
@@ -3933,6 +3982,8 @@ export const generatedProperties = [
   "name": "print-color-adjust"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "protocol"
  },
  {
@@ -3947,6 +3998,8 @@ export const generatedProperties = [
   "name": "r"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "range"
  },
  {
@@ -3976,6 +4029,8 @@ export const generatedProperties = [
   "name": "resize"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "result"
  },
  {
@@ -4475,6 +4530,8 @@ export const generatedProperties = [
   "name": "scrollbar-width"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "search"
  },
  {
@@ -4506,6 +4563,8 @@ export const generatedProperties = [
   "name": "size"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "size-adjust"
  },
  {
@@ -4521,9 +4580,13 @@ export const generatedProperties = [
   "name": "speak"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "speak-as"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "src"
  },
  {
@@ -4581,15 +4644,23 @@ export const generatedProperties = [
   "name": "stroke-width"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "suffix"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "symbols"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "syntax"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "system"
  },
  {
@@ -5052,6 +5123,8 @@ export const generatedProperties = [
   "name": "trigger-scope"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "types"
  },
  {
@@ -5066,6 +5139,8 @@ export const generatedProperties = [
   "name": "unicode-bidi"
  },
  {
+  "is_descriptor": true,
+  "is_property": false,
   "name": "unicode-range"
  },
  {

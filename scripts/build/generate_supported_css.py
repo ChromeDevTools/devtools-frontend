@@ -24,7 +24,8 @@ READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
 
 def _keep_only_required_keys(entry):
     for key in list(entry.keys()):
-        if key not in ("name", "longhands", "svg", "inherited", "keywords"):
+        if key not in ("name", "longhands", "svg", "inherited", "keywords",
+                       "is_property", "is_descriptor"):
             del entry[key]
     return entry
 

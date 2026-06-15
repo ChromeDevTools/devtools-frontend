@@ -92,6 +92,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/e2e/console/*",
     "../../entrypoints/*",
+    "../../panels/application/*",
     "../../panels/explain/*",
     "../../testing:*",
   ]

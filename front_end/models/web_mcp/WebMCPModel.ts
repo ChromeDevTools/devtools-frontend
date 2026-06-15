@@ -9,7 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../bindings/bindings.js';
-import * as StackTrace from '../stack_trace/stack_trace.js';
+import type * as StackTrace from '../stack_trace/stack_trace.js';
 
 export const enum Events {
   TOOLS_ADDED = 'ToolsAdded',
@@ -18,20 +18,13 @@ export const enum Events {
   TOOL_RESPONDED = 'ToolResponded',
 }
 
-export interface ExceptionDetails {
-  readonly error: SDK.RemoteObject.RemoteObject;
-  readonly description: string;
-  readonly frames: StackTrace.ErrorStackParser.ParsedErrorFrame[];
-  readonly cause?: ExceptionDetails;
-}
-
 export class Result {
   readonly status: Protocol.WebMCP.InvocationStatus;
   readonly output?: unknown;
   readonly errorText?: string;
   // TODO(crbug.com/494516094) Clean this up if the target disappears?
   readonly #exception?: SDK.RemoteObject.RemoteObject;
-  #exceptionDetails?: Promise<ExceptionDetails|undefined>;
+  #symbolizedError?: Promise<Bindings.SymbolizedError.SymbolizedError|null>;
 
   constructor(
       status: Protocol.WebMCP.InvocationStatus, output: unknown|undefined, errorText: string|undefined,
@@ -42,46 +35,13 @@ export class Result {
     this.output = output;
   }
 
-  get exceptionDetails(): Promise<ExceptionDetails|undefined>|undefined {
-    if (!this.#exceptionDetails) {
-      this.#exceptionDetails = this.#resolveExceptionDetails(this.#exception);
+  get symbolizedError(): Promise<Bindings.SymbolizedError.SymbolizedError|null>|undefined {
+    if (!this.#symbolizedError) {
+      this.#symbolizedError = this.#exception ?
+          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createSymbolizedError(this.#exception) :
+          Promise.resolve(null);
     }
-    return this.#exceptionDetails;
-  }
-
-  async #resolveExceptionDetails(errorObj: SDK.RemoteObject.RemoteObject|undefined):
-      Promise<ExceptionDetails|undefined> {
-    if (!errorObj) {
-      return undefined;
-    }
-    const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
-    const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
-    const description = error.errorStack;
-
-    const frames =
-        StackTrace.ErrorStackParser.parseSourcePositionsFromErrorStack(errorObj.runtimeModel(), error.errorStack) || [];
-    if (details?.stackTrace) {
-      StackTrace.ErrorStackParser.augmentErrorStackWithScriptIds(frames, details.stackTrace);
-    }
-
-    if (cause?.subtype === 'error') {
-      return {error: errorObj, description, frames, cause: await this.#resolveExceptionDetails(cause)};
-    }
-
-    if (cause?.type === 'string') {
-      return {
-        error: errorObj,
-        description,
-        frames,
-        cause: {
-          error: cause,
-          description: cause.value as string,
-          frames: [],
-        }
-      };
-    }
-
-    return {error: errorObj, description, frames};
+    return this.#symbolizedError;
   }
 }
 

@@ -98,6 +98,7 @@ devtools_ui_module("application") {
     "../../models/text_utils:bundle",
     "../../models/web_mcp:bundle",
     "../../models/workspace:bundle",
+    "../../panels/console:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
     "../../panels/network/forward:bundle",

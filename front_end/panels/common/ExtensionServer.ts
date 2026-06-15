@@ -12,6 +12,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -1616,6 +1617,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           targetType = Host.UserMetrics.ExtensionEvalTarget.SAME_EXTENSION;
         } else {
           targetType = Host.UserMetrics.ExtensionEvalTarget.OTHER_EXTENSION;
+          if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+            return this.status.E_FAILED(
+                'Access to extension URLs is restricted; use --extensions-on-chrome-urls to enable.');
+          }
         }
       }
       Host.userMetrics.extensionEvalTarget(targetType);

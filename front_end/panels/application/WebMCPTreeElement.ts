@@ -5,6 +5,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import {ApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
@@ -17,6 +18,13 @@ export class WebMCPTreeElement extends ApplicationPanelTreeElement {
     super(storagePanel, 'WebMCP', false, 'web-mcp');
     const icon = createIcon('document');
     this.setLeadingIcons([icon]);
+    const newBadge = UI.UIUtils.maybeCreateNewBadge('web-mcp');
+    if (newBadge) {
+      const fragment = document.createDocumentFragment();
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(html`<div class="trailing-icons icons-container">${newBadge}</div>`, fragment);
+      this.listItemElement.appendChild(fragment);
+    }
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {

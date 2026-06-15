@@ -117,7 +117,6 @@ domain Page
       digital-credentials-get
       direct-sockets
       direct-sockets-multicast
-      direct-sockets-private
       display-capture
       document-domain
       encrypted-media

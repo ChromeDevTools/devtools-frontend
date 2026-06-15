@@ -147,8 +147,8 @@ def try_pair(
 
 try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64", legacy_variant = True)
 try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64", legacy_variant = True)
-try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-15", "arm64", legacy_variant = True)
-try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-15", "arm64", properties = {"force_host_cpu": "arm64"})
+try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-26", "arm64", legacy_variant = True)
+try_pair("dtf_mac_cross", "rel", dimensions.mac, "Mac-26", "arm64", properties = {"force_host_cpu": "arm64"})
 try_pair(
     "dtf_linux",
     "dbg",

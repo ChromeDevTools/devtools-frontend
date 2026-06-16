@@ -113,6 +113,26 @@ describeWithMockConnection('Linkifier', () => {
         });
       }, 'omitLineAndRenderColumnAsHex requires showColumnNumber to not be explicitly false');
     });
+
+    it('renders privileged URLs as plain span by default', async () => {
+      const url = urlString`chrome://settings`;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url);
+      assert.strictEqual(link.tagName, 'SPAN');
+      assert.isFalse(link.classList.contains('devtools-link'));
+    });
+
+    it('renders privileged URLs as interactive links if allowPrivileged is true', async () => {
+      const url = urlString`chrome://settings`;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url, {allowPrivileged: true});
+      assert.isTrue(link.classList.contains('devtools-link'));
+    });
+
+    it('renders file URLs as plain span by default', async () => {
+      const url = urlString`file:///etc/passwd`;
+      const link = Components.Linkifier.Linkifier.linkifyURL(url);
+      assert.strictEqual(link.tagName, 'SPAN');
+      assert.isFalse(link.classList.contains('devtools-link'));
+    });
   });
 
   it('creates an empty placeholder anchor if the debugger is disabled and no url exists', () => {

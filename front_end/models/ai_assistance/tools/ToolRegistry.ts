@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
+import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetStylesTool} from './GetStyles.js';
+import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
 import {type AllToolsContext, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
 /**
@@ -17,6 +19,8 @@ import {type AllToolsContext, type Tool, type ToolArgs, ToolName} from './Tool.j
 export const TOOLS = {
   [ToolName.EXECUTE_JAVASCRIPT]: new ExecuteJavaScriptTool(),
   [ToolName.GET_STYLES]: new GetStylesTool(),
+  [ToolName.LIST_NETWORK_REQUESTS]: new ListNetworkRequestsTool(),
+  [ToolName.GET_NETWORK_REQUEST_DETAILS]: new GetNetworkRequestDetailsTool(),
 };
 
 /**

@@ -26,6 +26,7 @@ import {ToolRegistry} from './tools/ToolRegistry.js';
 
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   styling: 'CSS and styling',
+  network: 'Network requests',
 };
 
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.

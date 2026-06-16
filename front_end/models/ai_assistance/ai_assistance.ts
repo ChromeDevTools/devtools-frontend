@@ -42,7 +42,9 @@ import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
+import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
+import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
 
@@ -70,12 +72,14 @@ export {
   FileAgent,
   FileContext,
   FileFormatter,
+  GetNetworkRequestDetails,
   GetStyles,
   GreenDevAgent,
   GreenDevAgentAntigravityCliSocketClient,
   GreenDevAgentGeminiCliSocketClient,
   Injected,
   LighthouseFormatter,
+  ListNetworkRequests,
   NetworkAgent,
   NetworkRequestFormatter,
   PatchAgent,

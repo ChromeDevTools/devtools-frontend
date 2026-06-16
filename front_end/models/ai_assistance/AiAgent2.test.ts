@@ -251,7 +251,7 @@ describeWithEnvironment('AiAgent2', () => {
     // @ts-expect-error
     const result = await agent.learnSkill(['non-existent-skill']);
     assert.isTrue(result.includes('Failed to load skill non-existent-skill'));
-    assert.isTrue(result.includes('Valid skills are: styling, dummy'));
+    assert.isTrue(result.includes('Valid skills are: styling, network, dummy'));
   });
 
   it('injects overridden skills manifest into the query', async () => {

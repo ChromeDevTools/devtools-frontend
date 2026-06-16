@@ -13,7 +13,10 @@ import("../../../../scripts/build/ninja/vars.gni")
 action_foreach("generate_skills") {
   script = "//third_party/node/node.py"
 
-  sources = [ "styling.md" ]
+  sources = [
+    "network.md",
+    "styling.md",
+  ]
 
   inputs = [
     "../../../../scripts/build/build_ai_skills.mjs",

@@ -87,6 +87,8 @@ export type ToolArgs = Record<string, unknown>;
 export const enum ToolName {
   EXECUTE_JAVASCRIPT = 'executeJavaScript',
   GET_STYLES = 'getStyles',
+  LIST_NETWORK_REQUESTS = 'listNetworkRequests',
+  GET_NETWORK_REQUEST_DETAILS = 'getNetworkRequestDetails',
 }
 
 /**

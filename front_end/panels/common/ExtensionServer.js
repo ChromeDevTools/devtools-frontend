@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Extensions from '../../models/extensions/extensions.js';
@@ -1302,6 +1303,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
                 }
                 else {
                     targetType = 2 /* Host.UserMetrics.ExtensionEvalTarget.OTHER_EXTENSION */;
+                    if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+                        return this.status.E_FAILED('Access to extension URLs is restricted; use --extensions-on-chrome-urls to enable.');
+                    }
                 }
             }
             Host.userMetrics.extensionEvalTarget(targetType);

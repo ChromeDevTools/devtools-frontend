@@ -241,6 +241,9 @@ interface GdpProfilesAvailability {
 interface LiveEdit {
     enabled: boolean;
 }
+interface ExtensionsOnChromeUrls {
+    enabled: boolean;
+}
 interface DevToolsFlexibleLayout {
     verticalDrawerEnabled: boolean;
 }
@@ -332,6 +335,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAdsPanel: DevToolsAdsPanel;
     devToolsUseGcaApi: UseGcaApi;
     devToolsPlusButton: DevToolsPlusButton;
+    extensionsOnChromeUrls: ExtensionsOnChromeUrls;
 }>;
 /**
  * The host configuration for this DevTools instance.

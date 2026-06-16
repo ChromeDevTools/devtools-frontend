@@ -247,6 +247,8 @@ export const generatedProperties = [
         "name": "accent-color"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "additive-symbols"
     },
     {
@@ -256,6 +258,20 @@ export const generatedProperties = [
         "name": "align-items"
     },
     {
+        "keywords": [
+            "auto",
+            "normal",
+            "stretch",
+            "baseline",
+            "center",
+            "start",
+            "end",
+            "self-start",
+            "self-end",
+            "flex-start",
+            "flex-end",
+            "anchor-center"
+        ],
         "name": "align-self"
     },
     {
@@ -932,6 +948,8 @@ export const generatedProperties = [
         "name": "appearance"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "ascent-override"
     },
     {
@@ -1052,9 +1070,13 @@ export const generatedProperties = [
         "name": "background-size"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "base-palette"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "base-url"
     },
     {
@@ -1242,6 +1264,13 @@ export const generatedProperties = [
         "name": "border-end-start-radius"
     },
     {
+        "keywords": [
+            "none",
+            "repeat",
+            "stretch",
+            "space",
+            "round"
+        ],
         "longhands": [
             "border-image-source",
             "border-image-slice",
@@ -1885,6 +1914,9 @@ export const generatedProperties = [
         "name": "contain"
     },
     {
+        "keywords": [
+            "none"
+        ],
         "name": "contain-intrinsic-block-size"
     },
     {
@@ -1894,6 +1926,9 @@ export const generatedProperties = [
         "name": "contain-intrinsic-height"
     },
     {
+        "keywords": [
+            "none"
+        ],
         "name": "contain-intrinsic-inline-size"
     },
     {
@@ -2337,6 +2372,8 @@ export const generatedProperties = [
         "name": "d"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "descent-override"
     },
     {
@@ -2417,6 +2454,8 @@ export const generatedProperties = [
         "name": "empty-cells"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "fallback"
     },
     {
@@ -2552,14 +2591,18 @@ export const generatedProperties = [
         "name": "font"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "font-display"
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "name": "font-family"
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "keywords": [
             "normal"
         ],
@@ -2630,6 +2673,7 @@ export const generatedProperties = [
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "keywords": [
             "normal",
             "ultra-condensed",
@@ -2645,6 +2689,7 @@ export const generatedProperties = [
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "keywords": [
             "normal",
             "italic",
@@ -2687,6 +2732,7 @@ export const generatedProperties = [
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "longhands": [
             "font-variant-ligatures",
             "font-variant-caps",
@@ -2786,6 +2832,7 @@ export const generatedProperties = [
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "keywords": [
             "normal"
         ],
@@ -2793,6 +2840,7 @@ export const generatedProperties = [
     },
     {
         "inherited": true,
+        "is_descriptor": true,
         "keywords": [
             "normal",
             "bold",
@@ -2971,6 +3019,8 @@ export const generatedProperties = [
         "name": "hanging-punctuation"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "hash"
     },
     {
@@ -2983,6 +3033,8 @@ export const generatedProperties = [
         "name": "height"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "hostname"
     },
     {
@@ -3032,6 +3084,8 @@ export const generatedProperties = [
         "name": "image-rendering"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "inherits"
     },
     {
@@ -3044,6 +3098,8 @@ export const generatedProperties = [
         "name": "initial-letter"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "initial-value"
     },
     {
@@ -3130,6 +3186,22 @@ export const generatedProperties = [
         "name": "justify-items"
     },
     {
+        "keywords": [
+            "auto",
+            "normal",
+            "stretch",
+            "baseline",
+            "center",
+            "start",
+            "end",
+            "self-start",
+            "self-end",
+            "flex-start",
+            "flex-end",
+            "left",
+            "right",
+            "anchor-center"
+        ],
         "name": "justify-self"
     },
     {
@@ -3172,6 +3244,8 @@ export const generatedProperties = [
         "name": "line-clamp"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "line-gap-override"
     },
     {
@@ -3436,12 +3510,33 @@ export const generatedProperties = [
         "name": "min-block-size"
     },
     {
+        "keywords": [
+            "auto",
+            "min-content",
+            "max-content",
+            "fit-content",
+            "stretch"
+        ],
         "name": "min-height"
     },
     {
+        "keywords": [
+            "auto",
+            "min-content",
+            "max-content",
+            "fit-content",
+            "stretch"
+        ],
         "name": "min-inline-size"
     },
     {
+        "keywords": [
+            "auto",
+            "min-content",
+            "max-content",
+            "fit-content",
+            "stretch"
+        ],
         "name": "min-width"
     },
     {
@@ -3467,9 +3562,13 @@ export const generatedProperties = [
         "name": "mix-blend-mode"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "navigation"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "negative"
     },
     {
@@ -3548,6 +3647,21 @@ export const generatedProperties = [
         "name": "orphans"
     },
     {
+        "keywords": [
+            "auto",
+            "none",
+            "inset",
+            "groove",
+            "ridge",
+            "outset",
+            "dotted",
+            "dashed",
+            "solid",
+            "double",
+            "medium",
+            "thick",
+            "thin"
+        ],
         "longhands": [
             "outline-color",
             "outline-style",
@@ -3656,9 +3770,16 @@ export const generatedProperties = [
         "name": "overlay"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "override-colors"
     },
     {
+        "keywords": [
+            "auto",
+            "none",
+            "contain"
+        ],
         "longhands": [
             "overscroll-behavior-x",
             "overscroll-behavior-y"
@@ -3690,6 +3811,8 @@ export const generatedProperties = [
         "name": "overscroll-behavior-y"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "pad"
     },
     {
@@ -3752,6 +3875,13 @@ export const generatedProperties = [
         "name": "page-break-after"
     },
     {
+        "keywords": [
+            "auto",
+            "left",
+            "right",
+            "always",
+            "avoid"
+        ],
         "longhands": [
             "break-before"
         ],
@@ -3764,6 +3894,7 @@ export const generatedProperties = [
         "name": "page-break-inside"
     },
     {
+        "is_descriptor": true,
         "keywords": [
             "none",
             "clamp",
@@ -3772,6 +3903,7 @@ export const generatedProperties = [
         "name": "page-margin-safety"
     },
     {
+        "is_descriptor": true,
         "name": "page-orientation"
     },
     {
@@ -3791,9 +3923,13 @@ export const generatedProperties = [
         "name": "path-length"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "pathname"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "pattern"
     },
     {
@@ -3844,6 +3980,8 @@ export const generatedProperties = [
         "name": "pointer-events"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "port"
     },
     {
@@ -3921,6 +4059,8 @@ export const generatedProperties = [
         "name": "position-visibility"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "prefix"
     },
     {
@@ -3932,6 +4072,8 @@ export const generatedProperties = [
         "name": "print-color-adjust"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "protocol"
     },
     {
@@ -3946,6 +4088,8 @@ export const generatedProperties = [
         "name": "r"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "range"
     },
     {
@@ -3975,6 +4119,8 @@ export const generatedProperties = [
         "name": "resize"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "result"
     },
     {
@@ -4474,6 +4620,8 @@ export const generatedProperties = [
         "name": "scrollbar-width"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "search"
     },
     {
@@ -4505,6 +4653,8 @@ export const generatedProperties = [
         "name": "size"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "size-adjust"
     },
     {
@@ -4520,9 +4670,13 @@ export const generatedProperties = [
         "name": "speak"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "speak-as"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "src"
     },
     {
@@ -4580,15 +4734,23 @@ export const generatedProperties = [
         "name": "stroke-width"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "suffix"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "symbols"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "syntax"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "system"
     },
     {
@@ -5051,6 +5213,8 @@ export const generatedProperties = [
         "name": "trigger-scope"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "types"
     },
     {
@@ -5065,6 +5229,8 @@ export const generatedProperties = [
         "name": "unicode-bidi"
     },
     {
+        "is_descriptor": true,
+        "is_property": false,
         "name": "unicode-range"
     },
     {
@@ -5317,6 +5483,22 @@ export const generatedPropertyValues = {
             "currentcolor"
         ]
     },
+    "align-self": {
+        "values": [
+            "auto",
+            "normal",
+            "stretch",
+            "baseline",
+            "center",
+            "start",
+            "end",
+            "self-start",
+            "self-end",
+            "flex-start",
+            "flex-end",
+            "anchor-center"
+        ]
+    },
     "alignment-baseline": {
         "values": [
             "auto",
@@ -5548,6 +5730,15 @@ export const generatedPropertyValues = {
         "values": [
             "separate",
             "collapse"
+        ]
+    },
+    "border-image": {
+        "values": [
+            "none",
+            "repeat",
+            "stretch",
+            "space",
+            "round"
         ]
     },
     "border-image-repeat": {
@@ -5919,7 +6110,17 @@ export const generatedPropertyValues = {
             "block-size"
         ]
     },
+    "contain-intrinsic-block-size": {
+        "values": [
+            "none"
+        ]
+    },
     "contain-intrinsic-height": {
+        "values": [
+            "none"
+        ]
+    },
+    "contain-intrinsic-inline-size": {
         "values": [
             "none"
         ]
@@ -6613,6 +6814,24 @@ export const generatedPropertyValues = {
             "isolate"
         ]
     },
+    "justify-self": {
+        "values": [
+            "auto",
+            "normal",
+            "stretch",
+            "baseline",
+            "center",
+            "start",
+            "end",
+            "self-start",
+            "self-end",
+            "flex-start",
+            "flex-end",
+            "left",
+            "right",
+            "anchor-center"
+        ]
+    },
     "left": {
         "values": [
             "auto"
@@ -6778,6 +6997,33 @@ export const generatedPropertyValues = {
             "none"
         ]
     },
+    "min-height": {
+        "values": [
+            "auto",
+            "min-content",
+            "max-content",
+            "fit-content",
+            "stretch"
+        ]
+    },
+    "min-inline-size": {
+        "values": [
+            "auto",
+            "min-content",
+            "max-content",
+            "fit-content",
+            "stretch"
+        ]
+    },
+    "min-width": {
+        "values": [
+            "auto",
+            "min-content",
+            "max-content",
+            "fit-content",
+            "stretch"
+        ]
+    },
     "mix-blend-mode": {
         "values": [
             "normal",
@@ -6839,6 +7085,23 @@ export const generatedPropertyValues = {
         "values": [
             "normal",
             "none"
+        ]
+    },
+    "outline": {
+        "values": [
+            "auto",
+            "none",
+            "inset",
+            "groove",
+            "ridge",
+            "outset",
+            "dotted",
+            "dashed",
+            "solid",
+            "double",
+            "medium",
+            "thick",
+            "thin"
         ]
     },
     "outline-color": {
@@ -6914,6 +7177,13 @@ export const generatedPropertyValues = {
             "auto"
         ]
     },
+    "overscroll-behavior": {
+        "values": [
+            "auto",
+            "none",
+            "contain"
+        ]
+    },
     "overscroll-behavior-x": {
         "values": [
             "auto",
@@ -6933,6 +7203,15 @@ export const generatedPropertyValues = {
     "page": {
         "values": [
             "auto"
+        ]
+    },
+    "page-break-before": {
+        "values": [
+            "auto",
+            "left",
+            "right",
+            "always",
+            "avoid"
         ]
     },
     "page-margin-safety": {

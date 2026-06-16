@@ -3339,6 +3339,7 @@ import * as Common6 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Extensions2 from "./../../models/extensions/extensions.js";
@@ -4581,6 +4582,9 @@ var ExtensionServer = class _ExtensionServer extends Common6.ObjectWrapper.Objec
           targetType = 1;
         } else {
           targetType = 2;
+          if (!Root5.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+            return this.status.E_FAILED("Access to extension URLs is restricted; use --extensions-on-chrome-urls to enable.");
+          }
         }
       }
       Host9.userMetrics.extensionEvalTarget(targetType);

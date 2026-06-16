@@ -310,6 +310,8 @@ var generatedProperties = [
     "name": "accent-color"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "additive-symbols"
   },
   {
@@ -319,6 +321,20 @@ var generatedProperties = [
     "name": "align-items"
   },
   {
+    "keywords": [
+      "auto",
+      "normal",
+      "stretch",
+      "baseline",
+      "center",
+      "start",
+      "end",
+      "self-start",
+      "self-end",
+      "flex-start",
+      "flex-end",
+      "anchor-center"
+    ],
     "name": "align-self"
   },
   {
@@ -995,6 +1011,8 @@ var generatedProperties = [
     "name": "appearance"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "ascent-override"
   },
   {
@@ -1115,9 +1133,13 @@ var generatedProperties = [
     "name": "background-size"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "base-palette"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "base-url"
   },
   {
@@ -1305,6 +1327,13 @@ var generatedProperties = [
     "name": "border-end-start-radius"
   },
   {
+    "keywords": [
+      "none",
+      "repeat",
+      "stretch",
+      "space",
+      "round"
+    ],
     "longhands": [
       "border-image-source",
       "border-image-slice",
@@ -1948,6 +1977,9 @@ var generatedProperties = [
     "name": "contain"
   },
   {
+    "keywords": [
+      "none"
+    ],
     "name": "contain-intrinsic-block-size"
   },
   {
@@ -1957,6 +1989,9 @@ var generatedProperties = [
     "name": "contain-intrinsic-height"
   },
   {
+    "keywords": [
+      "none"
+    ],
     "name": "contain-intrinsic-inline-size"
   },
   {
@@ -2400,6 +2435,8 @@ var generatedProperties = [
     "name": "d"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "descent-override"
   },
   {
@@ -2480,6 +2517,8 @@ var generatedProperties = [
     "name": "empty-cells"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "fallback"
   },
   {
@@ -2615,14 +2654,18 @@ var generatedProperties = [
     "name": "font"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "font-display"
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "name": "font-family"
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "keywords": [
       "normal"
     ],
@@ -2693,6 +2736,7 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "keywords": [
       "normal",
       "ultra-condensed",
@@ -2708,6 +2752,7 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "keywords": [
       "normal",
       "italic",
@@ -2750,6 +2795,7 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "longhands": [
       "font-variant-ligatures",
       "font-variant-caps",
@@ -2849,6 +2895,7 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "keywords": [
       "normal"
     ],
@@ -2856,6 +2903,7 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "is_descriptor": true,
     "keywords": [
       "normal",
       "bold",
@@ -3034,6 +3082,8 @@ var generatedProperties = [
     "name": "hanging-punctuation"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "hash"
   },
   {
@@ -3046,6 +3096,8 @@ var generatedProperties = [
     "name": "height"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "hostname"
   },
   {
@@ -3095,6 +3147,8 @@ var generatedProperties = [
     "name": "image-rendering"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "inherits"
   },
   {
@@ -3107,6 +3161,8 @@ var generatedProperties = [
     "name": "initial-letter"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "initial-value"
   },
   {
@@ -3193,6 +3249,22 @@ var generatedProperties = [
     "name": "justify-items"
   },
   {
+    "keywords": [
+      "auto",
+      "normal",
+      "stretch",
+      "baseline",
+      "center",
+      "start",
+      "end",
+      "self-start",
+      "self-end",
+      "flex-start",
+      "flex-end",
+      "left",
+      "right",
+      "anchor-center"
+    ],
     "name": "justify-self"
   },
   {
@@ -3235,6 +3307,8 @@ var generatedProperties = [
     "name": "line-clamp"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "line-gap-override"
   },
   {
@@ -3499,12 +3573,33 @@ var generatedProperties = [
     "name": "min-block-size"
   },
   {
+    "keywords": [
+      "auto",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ],
     "name": "min-height"
   },
   {
+    "keywords": [
+      "auto",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ],
     "name": "min-inline-size"
   },
   {
+    "keywords": [
+      "auto",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ],
     "name": "min-width"
   },
   {
@@ -3530,9 +3625,13 @@ var generatedProperties = [
     "name": "mix-blend-mode"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "navigation"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "negative"
   },
   {
@@ -3611,6 +3710,21 @@ var generatedProperties = [
     "name": "orphans"
   },
   {
+    "keywords": [
+      "auto",
+      "none",
+      "inset",
+      "groove",
+      "ridge",
+      "outset",
+      "dotted",
+      "dashed",
+      "solid",
+      "double",
+      "medium",
+      "thick",
+      "thin"
+    ],
     "longhands": [
       "outline-color",
       "outline-style",
@@ -3719,9 +3833,16 @@ var generatedProperties = [
     "name": "overlay"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "override-colors"
   },
   {
+    "keywords": [
+      "auto",
+      "none",
+      "contain"
+    ],
     "longhands": [
       "overscroll-behavior-x",
       "overscroll-behavior-y"
@@ -3753,6 +3874,8 @@ var generatedProperties = [
     "name": "overscroll-behavior-y"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "pad"
   },
   {
@@ -3815,6 +3938,13 @@ var generatedProperties = [
     "name": "page-break-after"
   },
   {
+    "keywords": [
+      "auto",
+      "left",
+      "right",
+      "always",
+      "avoid"
+    ],
     "longhands": [
       "break-before"
     ],
@@ -3827,6 +3957,7 @@ var generatedProperties = [
     "name": "page-break-inside"
   },
   {
+    "is_descriptor": true,
     "keywords": [
       "none",
       "clamp",
@@ -3835,6 +3966,7 @@ var generatedProperties = [
     "name": "page-margin-safety"
   },
   {
+    "is_descriptor": true,
     "name": "page-orientation"
   },
   {
@@ -3854,9 +3986,13 @@ var generatedProperties = [
     "name": "path-length"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "pathname"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "pattern"
   },
   {
@@ -3907,6 +4043,8 @@ var generatedProperties = [
     "name": "pointer-events"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "port"
   },
   {
@@ -3984,6 +4122,8 @@ var generatedProperties = [
     "name": "position-visibility"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "prefix"
   },
   {
@@ -3995,6 +4135,8 @@ var generatedProperties = [
     "name": "print-color-adjust"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "protocol"
   },
   {
@@ -4009,6 +4151,8 @@ var generatedProperties = [
     "name": "r"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "range"
   },
   {
@@ -4038,6 +4182,8 @@ var generatedProperties = [
     "name": "resize"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "result"
   },
   {
@@ -4537,6 +4683,8 @@ var generatedProperties = [
     "name": "scrollbar-width"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "search"
   },
   {
@@ -4568,6 +4716,8 @@ var generatedProperties = [
     "name": "size"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "size-adjust"
   },
   {
@@ -4583,9 +4733,13 @@ var generatedProperties = [
     "name": "speak"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "speak-as"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "src"
   },
   {
@@ -4643,15 +4797,23 @@ var generatedProperties = [
     "name": "stroke-width"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "suffix"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "symbols"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "syntax"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "system"
   },
   {
@@ -5114,6 +5276,8 @@ var generatedProperties = [
     "name": "trigger-scope"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "types"
   },
   {
@@ -5128,6 +5292,8 @@ var generatedProperties = [
     "name": "unicode-bidi"
   },
   {
+    "is_descriptor": true,
+    "is_property": false,
     "name": "unicode-range"
   },
   {
@@ -5380,6 +5546,22 @@ var generatedPropertyValues = {
       "currentcolor"
     ]
   },
+  "align-self": {
+    "values": [
+      "auto",
+      "normal",
+      "stretch",
+      "baseline",
+      "center",
+      "start",
+      "end",
+      "self-start",
+      "self-end",
+      "flex-start",
+      "flex-end",
+      "anchor-center"
+    ]
+  },
   "alignment-baseline": {
     "values": [
       "auto",
@@ -5611,6 +5793,15 @@ var generatedPropertyValues = {
     "values": [
       "separate",
       "collapse"
+    ]
+  },
+  "border-image": {
+    "values": [
+      "none",
+      "repeat",
+      "stretch",
+      "space",
+      "round"
     ]
   },
   "border-image-repeat": {
@@ -5982,7 +6173,17 @@ var generatedPropertyValues = {
       "block-size"
     ]
   },
+  "contain-intrinsic-block-size": {
+    "values": [
+      "none"
+    ]
+  },
   "contain-intrinsic-height": {
+    "values": [
+      "none"
+    ]
+  },
+  "contain-intrinsic-inline-size": {
     "values": [
       "none"
     ]
@@ -6676,6 +6877,24 @@ var generatedPropertyValues = {
       "isolate"
     ]
   },
+  "justify-self": {
+    "values": [
+      "auto",
+      "normal",
+      "stretch",
+      "baseline",
+      "center",
+      "start",
+      "end",
+      "self-start",
+      "self-end",
+      "flex-start",
+      "flex-end",
+      "left",
+      "right",
+      "anchor-center"
+    ]
+  },
   "left": {
     "values": [
       "auto"
@@ -6841,6 +7060,33 @@ var generatedPropertyValues = {
       "none"
     ]
   },
+  "min-height": {
+    "values": [
+      "auto",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ]
+  },
+  "min-inline-size": {
+    "values": [
+      "auto",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ]
+  },
+  "min-width": {
+    "values": [
+      "auto",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ]
+  },
   "mix-blend-mode": {
     "values": [
       "normal",
@@ -6902,6 +7148,23 @@ var generatedPropertyValues = {
     "values": [
       "normal",
       "none"
+    ]
+  },
+  "outline": {
+    "values": [
+      "auto",
+      "none",
+      "inset",
+      "groove",
+      "ridge",
+      "outset",
+      "dotted",
+      "dashed",
+      "solid",
+      "double",
+      "medium",
+      "thick",
+      "thin"
     ]
   },
   "outline-color": {
@@ -6977,6 +7240,13 @@ var generatedPropertyValues = {
       "auto"
     ]
   },
+  "overscroll-behavior": {
+    "values": [
+      "auto",
+      "none",
+      "contain"
+    ]
+  },
   "overscroll-behavior-x": {
     "values": [
       "auto",
@@ -6996,6 +7266,15 @@ var generatedPropertyValues = {
   "page": {
     "values": [
       "auto"
+    ]
+  },
+  "page-break-before": {
+    "values": [
+      "auto",
+      "left",
+      "right",
+      "always",
+      "avoid"
     ]
   },
   "page-margin-safety": {
@@ -29422,22 +29701,6 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
-  exemptionReasonTPCDMetadata: "This cookie is allowed by a third-party cookie deprecation trial grace period. Learn more: goo.gle/dt-grace.",
-  /**
-   * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-   */
-  exemptionReasonTPCDDeprecationTrial: "This cookie is allowed by third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.",
-  /**
-   * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-   */
-  exemptionReasonTopLevelTPCDDeprecationTrial: "This cookie is allowed by top-level third-party cookie deprecation trial. Learn more: goo.gle/ps-dt.",
-  /**
-   * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-   */
-  exemptionReasonTPCDHeuristics: "This cookie is allowed by third-party cookie heuristics. Learn more: goo.gle/hbe",
-  /**
-   * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-   */
   exemptionReasonEnterprisePolicy: "This cookie is allowed by Chrome Enterprise policy. Learn more: goo.gle/ce-3pc",
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
@@ -30717,14 +30980,6 @@ var cookieExemptionReasonToUiString = function(exemptionReason) {
   switch (exemptionReason) {
     case "UserSetting":
       return i18nString9(UIStrings9.exemptionReasonUserSetting);
-    case "TPCDMetadata":
-      return i18nString9(UIStrings9.exemptionReasonTPCDMetadata);
-    case "TopLevelTPCDDeprecationTrial":
-      return i18nString9(UIStrings9.exemptionReasonTopLevelTPCDDeprecationTrial);
-    case "TPCDDeprecationTrial":
-      return i18nString9(UIStrings9.exemptionReasonTPCDDeprecationTrial);
-    case "TPCDHeuristics":
-      return i18nString9(UIStrings9.exemptionReasonTPCDHeuristics);
     case "EnterprisePolicy":
       return i18nString9(UIStrings9.exemptionReasonEnterprisePolicy);
     case "StorageAccess":

@@ -48,6 +48,8 @@ export var ClientFeature;
     ClientFeature[ClientFeature["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
     // Chrome AI Assistance Storage Agent.
     ClientFeature[ClientFeature["CHROME_STORAGE_AGENT"] = 28] = "CHROME_STORAGE_AGENT";
+    // Chrome DevTools V2 Agent.
+    ClientFeature[ClientFeature["CHROME_DEVTOOLS_V2_AGENT"] = 29] = "CHROME_DEVTOOLS_V2_AGENT";
 })(ClientFeature || (ClientFeature = {}));
 export var UserTier;
 (function (UserTier) {

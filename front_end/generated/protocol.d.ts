@@ -13546,7 +13546,6 @@ export declare namespace Page {
         DigitalCredentialsGet = "digital-credentials-get",
         DirectSockets = "direct-sockets",
         DirectSocketsMulticast = "direct-sockets-multicast",
-        DirectSocketsPrivate = "direct-sockets-private",
         DisplayCapture = "display-capture",
         DocumentDomain = "document-domain",
         EncryptedMedia = "encrypted-media",

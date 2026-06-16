@@ -136,6 +136,13 @@ export function handleEvent(event) {
 }
 export async function finalize() {
     const { rendererProcessesByFrame } = metaHandlerData();
+    const allowedProtocols = [
+        'blob:',
+        'file:',
+        'filesystem:',
+        'http:',
+        'https:',
+    ];
     for (const [requestId, request] of requestMap.entries()) {
         // If we have an incomplete set of events here, we choose to drop the network
         // request rather than attempt to synthesize the missing data.
@@ -168,7 +175,7 @@ export async function finalize() {
                 dur = Types.Timing.Micro(nextWillSendRequest.ts - willSendRequest.ts);
             }
             redirects.push({
-                url: sendRequest.args.data.url,
+                url: allowedProtocols.some(p => sendRequest.args.data.url.startsWith(p)) ? sendRequest.args.data.url : '',
                 priority: sendRequest.args.data.priority,
                 requestMethod: sendRequest.args.data.requestMethod,
                 ts,
@@ -271,15 +278,7 @@ export async function finalize() {
                 lrServerResponseTime = Math.max(0, parseInt(ResponseMsHeader.value, 10));
             }
         }
-        // TODO: consider allowing chrome / about.
-        const allowedProtocols = [
-            'blob:',
-            'file:',
-            'filesystem:',
-            'http:',
-            'https:',
-        ];
-        if (!allowedProtocols.some(p => firstSendRequest.args.data.url.startsWith(p))) {
+        if (!allowedProtocols.some(p => finalSendRequest.args.data.url.startsWith(p))) {
             continue;
         }
         const initialPriority = finalSendRequest.args.data.priority;
@@ -456,7 +455,10 @@ export async function finalize() {
                     responseHeaders: request.receiveResponse?.args.data.headers ?? null,
                     fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint ?? 'auto',
                     initiator: finalSendRequest.args.data.initiator,
-                    stackTrace: finalSendRequest.args.data.stackTrace,
+                    stackTrace: finalSendRequest.args.data.stackTrace?.map(frame => ({
+                        ...frame,
+                        url: allowedProtocols.some(p => frame.url.startsWith(p)) ? frame.url : '',
+                    })),
                     timing,
                     lrServerResponseTime,
                     url,

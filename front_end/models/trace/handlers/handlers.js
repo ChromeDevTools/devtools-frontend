@@ -988,6 +988,13 @@ function handleEvent6(event) {
 }
 async function finalize6() {
   const { rendererProcessesByFrame } = data5();
+  const allowedProtocols = [
+    "blob:",
+    "file:",
+    "filesystem:",
+    "http:",
+    "https:"
+  ];
   for (const [requestId, request] of requestMap.entries()) {
     if (!request.sendRequests) {
       continue;
@@ -1005,7 +1012,7 @@ async function finalize6() {
         dur = Types7.Timing.Micro(nextWillSendRequest.ts - willSendRequest.ts);
       }
       redirects.push({
-        url: sendRequest.args.data.url,
+        url: allowedProtocols.some((p) => sendRequest.args.data.url.startsWith(p)) ? sendRequest.args.data.url : "",
         priority: sendRequest.args.data.priority,
         requestMethod: sendRequest.args.data.requestMethod,
         ts,
@@ -1069,14 +1076,7 @@ async function finalize6() {
         lrServerResponseTime = Math.max(0, parseInt(ResponseMsHeader.value, 10));
       }
     }
-    const allowedProtocols = [
-      "blob:",
-      "file:",
-      "filesystem:",
-      "http:",
-      "https:"
-    ];
-    if (!allowedProtocols.some((p) => firstSendRequest.args.data.url.startsWith(p))) {
+    if (!allowedProtocols.some((p) => finalSendRequest.args.data.url.startsWith(p))) {
       continue;
     }
     const initialPriority = finalSendRequest.args.data.priority;
@@ -1165,7 +1165,10 @@ async function finalize6() {
           responseHeaders: request.receiveResponse?.args.data.headers ?? null,
           fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint ?? "auto",
           initiator: finalSendRequest.args.data.initiator,
-          stackTrace: finalSendRequest.args.data.stackTrace,
+          stackTrace: finalSendRequest.args.data.stackTrace?.map((frame2) => ({
+            ...frame2,
+            url: allowedProtocols.some((p) => frame2.url.startsWith(p)) ? frame2.url : ""
+          })),
           timing,
           lrServerResponseTime,
           url,

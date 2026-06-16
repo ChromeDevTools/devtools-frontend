@@ -259,6 +259,20 @@ export const generatedProperties = [
   "name": "align-items"
  },
  {
+  "keywords": [
+   "auto",
+   "normal",
+   "stretch",
+   "baseline",
+   "center",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "flex-start",
+   "flex-end",
+   "anchor-center"
+  ],
   "name": "align-self"
  },
  {
@@ -1251,6 +1265,13 @@ export const generatedProperties = [
   "name": "border-end-start-radius"
  },
  {
+  "keywords": [
+   "none",
+   "repeat",
+   "stretch",
+   "space",
+   "round"
+  ],
   "longhands": [
    "border-image-source",
    "border-image-slice",
@@ -1894,6 +1915,9 @@ export const generatedProperties = [
   "name": "contain"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "contain-intrinsic-block-size"
  },
  {
@@ -1903,6 +1927,9 @@ export const generatedProperties = [
   "name": "contain-intrinsic-height"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "contain-intrinsic-inline-size"
  },
  {
@@ -3160,6 +3187,22 @@ export const generatedProperties = [
   "name": "justify-items"
  },
  {
+  "keywords": [
+   "auto",
+   "normal",
+   "stretch",
+   "baseline",
+   "center",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "flex-start",
+   "flex-end",
+   "left",
+   "right",
+   "anchor-center"
+  ],
   "name": "justify-self"
  },
  {
@@ -3468,12 +3511,33 @@ export const generatedProperties = [
   "name": "min-block-size"
  },
  {
+  "keywords": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ],
   "name": "min-height"
  },
  {
+  "keywords": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ],
   "name": "min-inline-size"
  },
  {
+  "keywords": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ],
   "name": "min-width"
  },
  {
@@ -3584,6 +3648,21 @@ export const generatedProperties = [
   "name": "orphans"
  },
  {
+  "keywords": [
+   "auto",
+   "none",
+   "inset",
+   "groove",
+   "ridge",
+   "outset",
+   "dotted",
+   "dashed",
+   "solid",
+   "double",
+   "medium",
+   "thick",
+   "thin"
+  ],
   "longhands": [
    "outline-color",
    "outline-style",
@@ -3697,6 +3776,11 @@ export const generatedProperties = [
   "name": "override-colors"
  },
  {
+  "keywords": [
+   "auto",
+   "none",
+   "contain"
+  ],
   "longhands": [
    "overscroll-behavior-x",
    "overscroll-behavior-y"
@@ -3792,6 +3876,13 @@ export const generatedProperties = [
   "name": "page-break-after"
  },
  {
+  "keywords": [
+   "auto",
+   "left",
+   "right",
+   "always",
+   "avoid"
+  ],
   "longhands": [
    "break-before"
   ],
@@ -5393,6 +5484,22 @@ export const generatedPropertyValues = {
    "currentcolor"
   ]
  },
+ "align-self": {
+  "values": [
+   "auto",
+   "normal",
+   "stretch",
+   "baseline",
+   "center",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "flex-start",
+   "flex-end",
+   "anchor-center"
+  ]
+ },
  "alignment-baseline": {
   "values": [
    "auto",
@@ -5624,6 +5731,15 @@ export const generatedPropertyValues = {
   "values": [
    "separate",
    "collapse"
+  ]
+ },
+ "border-image": {
+  "values": [
+   "none",
+   "repeat",
+   "stretch",
+   "space",
+   "round"
   ]
  },
  "border-image-repeat": {
@@ -5995,7 +6111,17 @@ export const generatedPropertyValues = {
    "block-size"
   ]
  },
+ "contain-intrinsic-block-size": {
+  "values": [
+   "none"
+  ]
+ },
  "contain-intrinsic-height": {
+  "values": [
+   "none"
+  ]
+ },
+ "contain-intrinsic-inline-size": {
   "values": [
    "none"
   ]
@@ -6689,6 +6815,24 @@ export const generatedPropertyValues = {
    "isolate"
   ]
  },
+ "justify-self": {
+  "values": [
+   "auto",
+   "normal",
+   "stretch",
+   "baseline",
+   "center",
+   "start",
+   "end",
+   "self-start",
+   "self-end",
+   "flex-start",
+   "flex-end",
+   "left",
+   "right",
+   "anchor-center"
+  ]
+ },
  "left": {
   "values": [
    "auto"
@@ -6854,6 +6998,33 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
+ "min-height": {
+  "values": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ]
+ },
+ "min-inline-size": {
+  "values": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ]
+ },
+ "min-width": {
+  "values": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ]
+ },
  "mix-blend-mode": {
   "values": [
    "normal",
@@ -6915,6 +7086,23 @@ export const generatedPropertyValues = {
   "values": [
    "normal",
    "none"
+  ]
+ },
+ "outline": {
+  "values": [
+   "auto",
+   "none",
+   "inset",
+   "groove",
+   "ridge",
+   "outset",
+   "dotted",
+   "dashed",
+   "solid",
+   "double",
+   "medium",
+   "thick",
+   "thin"
   ]
  },
  "outline-color": {
@@ -6990,6 +7178,13 @@ export const generatedPropertyValues = {
    "auto"
   ]
  },
+ "overscroll-behavior": {
+  "values": [
+   "auto",
+   "none",
+   "contain"
+  ]
+ },
  "overscroll-behavior-x": {
   "values": [
    "auto",
@@ -7009,6 +7204,15 @@ export const generatedPropertyValues = {
  "page": {
   "values": [
    "auto"
+  ]
+ },
+ "page-break-before": {
+  "values": [
+   "auto",
+   "left",
+   "right",
+   "always",
+   "avoid"
   ]
  },
  "page-margin-safety": {

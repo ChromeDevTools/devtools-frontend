@@ -2037,6 +2037,9 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       invalidate: ["layout"],
+      keywords: ["auto", "normal", "stretch", "baseline", "center", "start",
+                 "end", "self-start", "self-end", "flex-start", "flex-end",
+                 "anchor-center"],
     },
     {
       name: "anchor-name",
@@ -4106,6 +4109,9 @@
       valid_for_position_try: true,
       valid_for_permission_element: true,
       invalidate: ["layout"],
+      keywords: ["auto", "normal", "stretch", "baseline", "center", "start",
+        "end", "self-start", "self-end", "flex-start", "flex-end", "left",
+        "right", "anchor-center"],
     },
     {
       name: "left",
@@ -4514,6 +4520,7 @@
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto", "min-content", "max-content", "fit-content", "stretch"],
     },
     {
       name: "min-width",
@@ -4537,6 +4544,7 @@
       invalidate: ["layout", "scroll-anchor"],
       affected_by_zoom: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto", "min-content", "max-content", "fit-content", "stretch"],
     },
     {
       name: "mix-blend-mode",
@@ -8085,6 +8093,7 @@
       valid_for_position_try: true,
       valid_for_page_context: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto", "min-content", "max-content", "fit-content", "stretch"],
     },
     {
       name: "min-block-size",
@@ -8995,6 +9004,7 @@
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       valid_for_page_context: true,
+      keywords: ["none", "repeat", "stretch", "space", "round"],
     },
     {
       name: "border-inline",
@@ -9152,6 +9162,7 @@
       },
       typedom_types: ["Keyword", "Length"],
       valid_for_permission_element: true,
+      keywords: ["none"],
     },
     {
       name: "contain-intrinsic-block-size",
@@ -9162,6 +9173,7 @@
       },
       typedom_types: ["Keyword", "Length"],
       valid_for_permission_element: true,
+      keywords: ["none"],
     },
     {
       name: "contain-intrinsic-size",
@@ -9613,6 +9625,8 @@
       longhands: ["outline-color", "outline-style", "outline-width"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       valid_for_page_context: true,
+      keywords: ["auto", "none", "inset", "groove", "ridge", "outset", "dotted",
+                "dashed", "solid", "double", "medium", "thick", "thin"],
     },
     {
       name: "overflow",
@@ -9625,6 +9639,7 @@
       name: "overscroll-behavior",
       longhands: ["overscroll-behavior-x", "overscroll-behavior-y"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      keywords: ["auto", "none", "contain"],
     },
     {
       name: "padding",
@@ -9657,6 +9672,7 @@
       name: "page-break-before",
       longhands: ["break-before"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      keywords: ["auto", "left", "right", "always", "avoid"],
     },
     {
       name: "page-break-inside",

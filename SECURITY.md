@@ -18,7 +18,7 @@ Chrome DevTools is a privileged web app running in a sandboxed renderer process,
 * Triggering Chrome memory corruption exploits.
 
 ### Outside Threat Model
-* **Social Engineering:** Convincing developers to paste payloads into the Console or connect to malicious remote debugging ports.
+* **Social Engineering:** Convincing developers to paste payloads into the Console, download and open a compromised file, or connect to malicious remote debugging ports, etc.
 * **Legitimate Data Exposure:** Displaying local user data, cookies, tokens, or auth headers within UI panels.
 * **Local Data Persistence:** Saving user-initiated traces, heaps, profiles, or logs to disk.
 * **Correctness & Availability:** Stale, misleading, or missing UI information (classified as functional bugs).

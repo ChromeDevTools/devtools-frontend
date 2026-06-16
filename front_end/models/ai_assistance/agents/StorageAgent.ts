@@ -14,6 +14,7 @@ import {
   AiAgent,
   type ContextResponse,
   ConversationContext,
+  type ConversationSuggestions,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -96,6 +97,50 @@ export class StorageContext extends ConversationContext<StorageItem> {
       return `${this.#item.key ? `entry: ${this.#item.key}` : 'storage:'} ${this.#item.origin}`;
     }
     return `Storage: ${this.getOrigin()}`;
+  }
+
+  override async getSuggestions(): Promise<ConversationSuggestions|undefined> {
+    if (this.#item instanceof CookieItem) {
+      if (this.#item.name) {
+        return [
+          {
+            title: 'Why is this cookie set?',
+            jslogContext: 'storage-cookie',
+          },
+          {
+            title: 'Explain the value of this cookie',
+            jslogContext: 'storage-cookie',
+          },
+        ];
+      }
+      return [
+        {
+          title: 'Explain the cookies set by this page',
+          jslogContext: 'storage-cookie',
+        },
+      ];
+    }
+    if (this.#item instanceof DOMStorageItem) {
+      if (this.#item.key) {
+        return [
+          {
+            title: 'What is the purpose of this storage entry?',
+            jslogContext: 'storage-domstorage',
+          },
+          {
+            title: 'Explain the value of this storage entry',
+            jslogContext: 'storage-domstorage',
+          },
+        ];
+      }
+      return [
+        {
+          title: 'Explain these storage items',
+          jslogContext: 'storage-domstorage',
+        },
+      ];
+    }
+    return undefined;
   }
 }
 

@@ -63,6 +63,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           'devToolsAiAssistanceNetworkAgent',
           'devToolsAiAssistanceFileAgent',
           'devToolsAiAssistancePerformanceAgent',
+          'devToolsAiAssistanceStorageAgent',
           'devToolsAiAssistanceV2',
         ]
             .reduce(
@@ -540,6 +541,22 @@ describeWithMockConnection('AI Assistance Panel', () => {
           initialNode,
           'selectedContext should be initial node',
       );
+    });
+  });
+
+  describe('storage suggestions', () => {
+    it('should show default suggestions when no context is attached', async () => {
+      await enableAllFeatureAndSetting();
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('ai-assistance.storage-floating-button');
+
+      const nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.deepEqual(nextInput.props.emptyStateSuggestions, [
+        {title: 'How is localStorage used on this page?', jslogContext: 'storage-default'},
+        {title: 'How is sessionStorage used on this page?', jslogContext: 'storage-default'},
+        {title: 'What cookies are stored for this page?', jslogContext: 'storage-default'},
+      ]);
     });
   });
 

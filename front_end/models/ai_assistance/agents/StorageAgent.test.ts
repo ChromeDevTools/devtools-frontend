@@ -627,6 +627,64 @@ describe('StorageAgent', function() {
       const context = new AiAssistance.StorageAgent.StorageContext(item);
       assert.strictEqual(context.getTitle(), 'cookies: https://example.com');
     });
+
+    it('returns correct suggestions if a cookie is selected', async () => {
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com', 'cookie1');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      const suggestions = await context.getSuggestions();
+      assert.deepEqual(suggestions, [
+        {
+          title: 'Why is this cookie set?',
+          jslogContext: 'storage-cookie',
+        },
+        {
+          title: 'Explain the value of this cookie',
+          jslogContext: 'storage-cookie',
+        },
+      ]);
+    });
+
+    it('returns correct suggestions if a storage item is selected', async () => {
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                               'https://example.com/', 'localStorage', 'key1');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      const suggestions = await context.getSuggestions();
+      assert.deepEqual(suggestions, [
+        {
+          title: 'What is the purpose of this storage entry?',
+          jslogContext: 'storage-domstorage',
+        },
+        {
+          title: 'Explain the value of this storage entry',
+          jslogContext: 'storage-domstorage',
+        },
+      ]);
+    });
+
+    it('returns correct suggestions when a whole cookie context of a page is selected', async () => {
+      const item = new AiAssistance.StorageItem.CookieItem('https://example.com', 'https://example.com');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      const suggestions = await context.getSuggestions();
+      assert.deepEqual(suggestions, [
+        {
+          title: 'Explain the cookies set by this page',
+          jslogContext: 'storage-cookie',
+        },
+      ]);
+    });
+
+    it('returns correct suggestions if a storage bucket is selected', async () => {
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
+                                                               'https://example.com/', 'localStorage');
+      const context = new AiAssistance.StorageAgent.StorageContext(item);
+      const suggestions = await context.getSuggestions();
+      assert.deepEqual(suggestions, [
+        {
+          title: 'Explain these storage items',
+          jslogContext: 'storage-domstorage',
+        },
+      ]);
+    });
   });
 
   describe('Server-Side Logging Disabling on key/name/value access', () => {

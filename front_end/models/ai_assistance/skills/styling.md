@@ -1,6 +1,6 @@
 ---
 name: styling
-description: Helping with CSS and styling
+description: CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.
 allowed-tools:
   - executeJavaScript
   - getStyles

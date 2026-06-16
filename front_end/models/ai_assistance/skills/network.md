@@ -1,6 +1,6 @@
 ---
 name: network
-description: Helping with network requests
+description: Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.
 allowed-tools:
   - listNetworkRequests
   - getNetworkRequestDetails

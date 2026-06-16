@@ -23,6 +23,14 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+interface NetworkRequestSummary {
+  id: string;
+  url: string;
+  statusCode: number;
+  duration: string;
+  transferSize: string;
+}
+
 /**
  * A tool that lists all network requests recorded by DevTools.
  * Filters the list by the conversation's established origin to prevent cross-origin data exposure.
@@ -58,7 +66,7 @@ export class ListNetworkRequestsTool implements
       _params: Record<string, never>,
       context: BaseToolCapability&OriginLockCapability,
       ): Promise<FunctionCallHandlerResult<unknown>> {
-    const requests = [];
+    const requests: NetworkRequestSummary[] = [];
     // A conversation is locked to an origin once the first query is made.
     // We only allow inspecting requests matching the conversation's established origin.
     const origin = context.getEstablishedOrigin();

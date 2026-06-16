@@ -62,7 +62,6 @@ export class AiAgent2 extends AiAgent<unknown> {
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
   readonly userTier = 'TESTERS';
 
-  #skillsInjected = false;
   #changes = new ChangeManager();
   #execJs: typeof executeJsCode;
   readonly #allowedOrigin?: () => AllowedOriginResult;
@@ -79,9 +78,12 @@ export class AiAgent2 extends AiAgent<unknown> {
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#allowedOrigin = opts.allowedOrigin;
     this.#declaredTools.add('learnSkills');
-    const skillsList = Object.keys(SKILLS).join(', ');
     this.declareFunction<{skills: SkillName[]}>('learnSkills', {
-      description: `Load skills to help with the task. Available skills: ${skillsList}.`,
+      description: () => {
+        const unloadedSkills = Object.keys(SKILLS).filter(name => !this.#activeSkills.has(name as SkillName));
+        return `Loads the specified skills to gain access to their specialized tools. Call this if the user's query relates to an available skill that is not yet loaded. Available skills: ${
+            unloadedSkills.join(', ')}.`;
+      },
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
         description: 'Parameters for learning skills',
@@ -131,16 +133,18 @@ QUERY: ${query}`;
       }
     }
 
-    if (this.#skillsInjected) {
+    const unloadedSkills =
+        Object.entries(this.getSkills()).filter(([name]) => !this.#activeSkills.has(name as SkillName));
+    if (unloadedSkills.length === 0) {
       return enhancedQuery;
     }
-    this.#skillsInjected = true;
-    const skillsManifest =
-        Object.entries(this.getSkills()).map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
-    return `Available skills:
+
+    const skillsManifest = unloadedSkills.map(([name, skill]) => `- ${name}: ${skill.description}`).join('\n');
+    return `Available skills that are not yet loaded:
 ${skillsManifest}
 
-You must call \`learnSkills\` to load a skill before you can use it.
+You must call \`learnSkills\` to load a skill before you can use its tools.
+If the user's request requires a skill that is not currently loaded, you MUST call \`learnSkills\` to load that skill first, instead of attempting to solve the query using tools from other skills.
 
 User query: ${enhancedQuery}`;
   }

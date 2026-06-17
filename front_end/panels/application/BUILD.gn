@@ -175,6 +175,7 @@ devtools_ui_module("unittests") {
     "ApplicationPanelSidebar.test.ts",
     "BackgroundServiceView.test.ts",
     "CrashReportContextView.test.ts",
+    "DOMStorageItemsView.test.ts",
     "DeviceBoundSessionsModel.test.ts",
     "DeviceBoundSessionsTreeElement.test.ts",
     "DeviceBoundSessionsView.test.ts",

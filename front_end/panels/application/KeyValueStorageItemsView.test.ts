@@ -26,7 +26,7 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
   });
   setupActionRegistry();
 
-  let keyValueStorageItemsView: Application.KeyValueStorageItemsView.KeyValueStorageItemsView;
+  let keyValueStorageItemsView: TestKeyValueStorageItemsView;
   let viewFunction: ViewFunctionStub<typeof Application.KeyValueStorageItemsView.KeyValueStorageItemsView>;
 
   const MOCK_ITEMS = [
@@ -59,6 +59,12 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     }
     override isAiButtonEnabled(): boolean {
       return UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.storage-floating-button');
+    }
+    override populateContextMenu(item: {key: string, value: string}, contextMenu: UI.ContextMenu.ContextMenu): void {
+      super.populateContextMenu(item, contextMenu);
+    }
+    override onAiButtonClick(item: {key: string, value: string}, event: Event): void {
+      super.onAiButtonClick(item, event);
     }
   }
 
@@ -129,18 +135,26 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     assert.include(viewFunction.input.preview.element.innerText, `${key}:newValue`);
   });
 
-  it('clicking Ask AI button triggers the action', () => {
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-    const action = actionRegistry.getAction('ai-assistance.storage-floating-button');
-    const executeStub = sinon.stub(action, 'execute');
+  it('clicking Ask AI button calls onAiButtonClick', () => {
+    const onAiButtonClickSpy = sinon.spy(keyValueStorageItemsView, 'onAiButtonClick');
 
     keyValueStorageItemsView.performUpdate();
 
     const dummyEvent = new Event('click');
     viewFunction.input.onAiButtonClick?.(MOCK_ITEMS[0], dummyEvent);
 
-    sinon.assert.calledOnce(executeStub);
+    sinon.assert.calledOnceWithExactly(onAiButtonClickSpy, MOCK_ITEMS[0], dummyEvent);
+  });
 
-    executeStub.restore();
+  it('right clicking calls populateContextMenu', () => {
+    const populateContextMenuSpy = sinon.spy(keyValueStorageItemsView, 'populateContextMenu');
+
+    keyValueStorageItemsView.performUpdate();
+
+    const dummyEvent = new Event('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(dummyEvent);
+    viewFunction.input.onContextMenu?.(MOCK_ITEMS[0], contextMenu);
+
+    sinon.assert.calledOnceWithExactly(populateContextMenuSpy, MOCK_ITEMS[0], contextMenu);
   });
 });

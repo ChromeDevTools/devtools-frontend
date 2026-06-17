@@ -92,6 +92,7 @@ export interface ViewInput {
   onDelete: (key: string) => void;
   onDeleteSelected: () => void;
   onDeleteAll: () => void;
+  onContextMenu?: (item: {key: string, value: string}, contextMenu: UI.ContextMenu.ContextMenu) => void;
   jslog?: string;
   classes?: string[];
   aiButtonTitle?: string;
@@ -175,6 +176,7 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
                           @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>) =>
                             input.onEdit(item.key, item.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
                           @delete=${() => input.onDelete(item.key)}
+                          @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu?.(item, e.detail)}
                           selected=${(input.selectedKey === item.key) || nothing}>
                         <td>${input.showAiButton ? html`
                             <span class="ai-button-container">
@@ -198,8 +200,8 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
                ${input.preview?.element}
               </devtools-widget>
             </devtools-split-view>`,
-            // clang-format on
-            target, {container: {attributes: {jslog: input.jslog}, classes: input.classes}});
+               // clang-format on
+               target, {container: {attributes: {jslog: input.jslog}, classes: input.classes}});
       };
     }
     super();
@@ -246,13 +248,13 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
         void this.#previewEntry(item);
         this.selectedItemChanged(item);
       },
-      onAiButtonClick: (item: {key: string, value: string}, event: Event) => {
-        event.stopPropagation();
-        viewInput.onSelect(item);
-        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-        if (actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID)) {
-          void actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).execute();
-        }
+      onAiButtonClick: this.isAiButtonEnabled() ?
+          (item: {key: string, value: string}, event: Event) => {
+            this.onAiButtonClick(item, event);
+          } :
+          undefined,
+      onContextMenu: (item: {key: string, value: string}, contextMenu: UI.ContextMenu.ContextMenu) => {
+        this.populateContextMenu(item, contextMenu);
       },
 
       onSort: (ascending: boolean) => {
@@ -282,6 +284,12 @@ export abstract class KeyValueStorageItemsView extends UI.Widget.VBox {
 
   protected isAiButtonEnabled(): boolean {
     return false;
+  }
+
+  protected populateContextMenu(_item: {key: string, value: string}, _contextMenu: UI.ContextMenu.ContextMenu): void {
+  }
+
+  protected onAiButtonClick(_item: {key: string, value: string}, _event: Event): void {
   }
 
   protected get toolbar(): StorageItemsToolbar|undefined {

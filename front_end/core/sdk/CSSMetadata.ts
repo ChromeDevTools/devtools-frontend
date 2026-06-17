@@ -1409,6 +1409,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'superellipse(infinity)',
     ]),
   ],
+  ['outline-style', new Set(['auto'])],
 ]);
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

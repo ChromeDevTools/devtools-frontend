@@ -120,6 +120,7 @@ interface LinkInfo {
     jslogContext?: string;
 }
 export interface LinkifyURLOptions {
+    allowPrivileged?: boolean;
     text?: string;
     className?: string;
     lineNumber?: number;
@@ -136,6 +137,7 @@ export interface LinkifyURLOptions {
     omitLineAndRenderColumnAsHex?: boolean;
 }
 export interface LinkifyOptions {
+    allowPrivileged?: boolean;
     className?: string;
     columnNumber?: number;
     showColumnNumber?: boolean;

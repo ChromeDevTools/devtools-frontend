@@ -71,7 +71,9 @@ export type AllToolsContext = BaseToolCapability & PageExecutionCapability & Sty
 export type ToolArgs = Record<string, unknown>;
 export declare const enum ToolName {
     EXECUTE_JAVASCRIPT = "executeJavaScript",
-    GET_STYLES = "getStyles"
+    GET_STYLES = "getStyles",
+    LIST_NETWORK_REQUESTS = "listNetworkRequests",
+    GET_NETWORK_REQUEST_DETAILS = "getNetworkRequestDetails"
 }
 /**
  * Non-generic metadata interface for a Tool.

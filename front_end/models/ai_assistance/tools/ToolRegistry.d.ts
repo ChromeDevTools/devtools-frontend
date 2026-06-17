@@ -1,5 +1,7 @@
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
+import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 import { type AllToolsContext, type Tool, type ToolArgs } from './Tool.js';
 /**
  * Plain object registry containing concrete instantiated tools.
@@ -12,6 +14,8 @@ import { type AllToolsContext, type Tool, type ToolArgs } from './Tool.js';
 export declare const TOOLS: {
     executeJavaScript: ExecuteJavaScriptTool;
     getStyles: GetStylesTool;
+    listNetworkRequests: ListNetworkRequestsTool;
+    getNetworkRequestDetails: GetNetworkRequestDetailsTool;
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

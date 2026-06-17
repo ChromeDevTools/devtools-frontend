@@ -320,7 +320,7 @@ export interface FunctionDeclaration<Args extends Record<string, unknown>, Retur
      * Description of function, this is send to the LLM
      * to explain what will the function do.
      */
-    description: string;
+    description: string | (() => string);
     /**
      * JSON schema like representation of the parameters
      * the function needs to be called with.

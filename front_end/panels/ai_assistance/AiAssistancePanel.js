@@ -300,6 +300,7 @@ async function getEmptyStateSuggestions(conversation) {
             return [
                 { title: 'How is localStorage used on this page?', jslogContext: 'storage-default' },
                 { title: 'How is sessionStorage used on this page?', jslogContext: 'storage-default' },
+                { title: 'What cookies are stored for this page?', jslogContext: 'storage-default' },
             ];
         }
         default:

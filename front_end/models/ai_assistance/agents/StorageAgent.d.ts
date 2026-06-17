@@ -1,13 +1,14 @@
 import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { type StorageItem } from '../StorageItem.js';
-import { type AgentOptions, AiAgent, type ContextResponse, ConversationContext, type RequestOptions } from './AiAgent.js';
+import { type AgentOptions, AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type RequestOptions } from './AiAgent.js';
 export declare class StorageContext extends ConversationContext<StorageItem> {
     #private;
     constructor(item: StorageItem);
     getURL(): string;
     getItem(): StorageItem;
     getTitle(): string;
+    getSuggestions(): Promise<ConversationSuggestions | undefined>;
 }
 export declare class StorageAgent extends AiAgent<StorageItem> {
     #private;

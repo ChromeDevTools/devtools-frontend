@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
+import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 /**
  * Plain object registry containing concrete instantiated tools.
  *
@@ -14,6 +16,8 @@ import { GetStylesTool } from './GetStyles.js';
 export const TOOLS = {
     ["executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */]: new ExecuteJavaScriptTool(),
     ["getStyles" /* ToolName.GET_STYLES */]: new GetStylesTool(),
+    ["listNetworkRequests" /* ToolName.LIST_NETWORK_REQUESTS */]: new ListNetworkRequestsTool(),
+    ["getNetworkRequestDetails" /* ToolName.GET_NETWORK_REQUEST_DETAILS */]: new GetNetworkRequestDetailsTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

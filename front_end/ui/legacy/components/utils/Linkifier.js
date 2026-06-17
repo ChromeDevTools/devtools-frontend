@@ -204,6 +204,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             userMetric: options?.userMetric,
             jslogContext: options?.jslogContext || 'script-location',
             omitOrigin: options?.omitOrigin,
+            allowPrivileged: options?.allowPrivileged,
         };
         const { columnNumber, className = '' } = linkifyURLOptions;
         if (sourceURL) {
@@ -267,6 +268,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             tabStop: options?.tabStop,
             userMetric: options?.userMetric,
             jslogContext: options?.jslogContext || 'script-source-url',
+            allowPrivileged: options?.allowPrivileged,
         };
         return scriptLink || Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
     }
@@ -498,6 +500,8 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         const lineNumber = options.lineNumber;
         const columnNumber = options.columnNumber;
         const showColumnNumber = options.showColumnNumber;
+        const isPrivileged = Common.ParsedURL.schemeIs(url, 'chrome:') || Common.ParsedURL.schemeIs(url, 'file:') ||
+            Common.ParsedURL.schemeIs(url, 'devtools:');
         const preventClick = options.preventClick;
         const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
         const bypassURLTrimming = options.bypassURLTrimming;
@@ -529,6 +533,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
             if (showColumnNumber && typeof columnNumber === 'number') {
                 linkText += ':' + (columnNumber + 1);
             }
+        }
+        if (isPrivileged && !options?.allowPrivileged) {
+            return html `<span class=${className}>${linkText}</span>`;
         }
         const title = linkText !== url ? url : '';
         const linkOptions = {

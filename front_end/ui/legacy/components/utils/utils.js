@@ -604,7 +604,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       tabStop: options?.tabStop,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || "script-location",
-      omitOrigin: options?.omitOrigin
+      omitOrigin: options?.omitOrigin,
+      allowPrivileged: options?.allowPrivileged
     };
     const { columnNumber, className = "" } = linkifyURLOptions;
     if (sourceURL) {
@@ -661,7 +662,8 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       showColumnNumber: Boolean(options?.showColumnNumber),
       tabStop: options?.tabStop,
       userMetric: options?.userMetric,
-      jslogContext: options?.jslogContext || "script-source-url"
+      jslogContext: options?.jslogContext || "script-source-url",
+      allowPrivileged: options?.allowPrivileged
     };
     return scriptLink || _Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
   }
@@ -877,6 +879,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     const lineNumber = options.lineNumber;
     const columnNumber = options.columnNumber;
     const showColumnNumber = options.showColumnNumber;
+    const isPrivileged = Common2.ParsedURL.schemeIs(url, "chrome:") || Common2.ParsedURL.schemeIs(url, "file:") || Common2.ParsedURL.schemeIs(url, "devtools:");
     const preventClick = options.preventClick;
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
@@ -904,6 +907,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       if (showColumnNumber && typeof columnNumber === "number") {
         linkText += ":" + (columnNumber + 1);
       }
+    }
+    if (isPrivileged && !options?.allowPrivileged) {
+      return html`<span class=${className}>${linkText}</span>`;
     }
     const title = linkText !== url ? url : "";
     const linkOptions = {

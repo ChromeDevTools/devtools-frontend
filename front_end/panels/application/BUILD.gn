@@ -174,6 +174,7 @@ devtools_ui_module("unittests") {
     "AppManifestView.test.ts",
     "ApplicationPanelSidebar.test.ts",
     "BackgroundServiceView.test.ts",
+    "CookieItemsView.test.ts",
     "CrashReportContextView.test.ts",
     "DOMStorageItemsView.test.ts",
     "DeviceBoundSessionsModel.test.ts",

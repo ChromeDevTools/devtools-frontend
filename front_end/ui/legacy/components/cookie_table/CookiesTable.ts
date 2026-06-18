@@ -50,8 +50,6 @@ import dataGridAiButtonStyles from '../data_grid/dataGridAiButton.css.js';
 
 import cookiesTableStyles from './cookiesTable.css.js';
 
-const STORAGE_FLOATING_BUTTON_ACTION_ID = 'ai-assistance.storage-floating-button';
-
 export interface ViewInput {
   data: CookieData[];
   selectedKey?: string;
@@ -194,6 +192,10 @@ export class CookiesTable extends UI.Widget.VBox {
   #refreshCallback?: (() => void);
   #selectedCallback?: ((arg0: SDK.Cookie.Cookie|null) => void);
   #deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
+  #aiButtonIsEnabled = false;
+  #onAiButtonClick?: (cookie: SDK.Cookie.Cookie, event: Event) => void;
+  #onPopulateAiContextMenu?: (cookie: SDK.Cookie.Cookie, contextMenu: UI.ContextMenu.ContextMenu) => void;
+  #aiButtonTitle?: string;
   private lastEditedColumnId: string|null;
   private data: CookieData[] = [];
   private cookies: SDK.Cookie.Cookie[] = [];
@@ -363,6 +365,26 @@ export class CookiesTable extends UI.Widget.VBox {
     this.#selectedCallback = callback;
   }
 
+  set aiButtonIsEnabled(enabled: boolean) {
+    this.#aiButtonIsEnabled = enabled;
+  }
+
+  get aiButtonIsEnabled(): boolean {
+    return this.#aiButtonIsEnabled;
+  }
+
+  set onAiButtonClick(callback: (cookie: SDK.Cookie.Cookie, event: Event) => void) {
+    this.#onAiButtonClick = callback;
+  }
+
+  set onPopulateAiContextMenu(callback: (cookie: SDK.Cookie.Cookie, contextMenu: UI.ContextMenu.ContextMenu) => void) {
+    this.#onPopulateAiContextMenu = callback;
+  }
+
+  set aiButtonTitle(title: string|undefined) {
+    this.#aiButtonTitle = title;
+  }
+
   set deleteCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: () => void) => void) {
     this.#deleteCallback = callback;
   }
@@ -407,6 +429,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
+    const onAiButtonClick = this.#onAiButtonClick;
     const input: ViewInput = {
       data: this.data,
       selectedKey: this.selectedKey,
@@ -420,19 +443,17 @@ export class CookiesTable extends UI.Widget.VBox {
       onDelete: this.onDeleteCookie.bind(this),
       onSelect: this.onSelect.bind(this),
       onContextMenu: this.populateContextMenu.bind(this),
-      showAiButton: this.isAiButtonEnabled(),
-      aiButtonTitle: this.isAiButtonEnabled() &&
-              UI.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ?
-          UI.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() :
+      showAiButton: this.#aiButtonIsEnabled,
+      aiButtonTitle: this.#aiButtonIsEnabled ? this.#aiButtonTitle : undefined,
+      onAiButtonClick: (this.#aiButtonIsEnabled && onAiButtonClick) ?
+          (cookieData: CookieData, event: Event) => {
+            event.stopPropagation();
+            const cookie = this.cookies.find(c => c.key() === cookieData.key);
+            if (cookie) {
+              onAiButtonClick(cookie, event);
+            }
+          } :
           undefined,
-      onAiButtonClick: (cookie: CookieData, event: Event) => {
-        event.stopPropagation();
-        this.onSelect(cookie.key);
-        const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-        if (actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID)) {
-          void actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).execute();
-        }
-      },
     };
     const output = {};
     this.view(input, output, this.element);
@@ -441,10 +462,6 @@ export class CookiesTable extends UI.Widget.VBox {
   private onSelect(key: string|undefined): void {
     this.selectedKey = key;
     this.#selectedCallback?.(this.selectedCookie());
-  }
-
-  private isAiButtonEnabled(): boolean {
-    return UI.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID);
   }
 
   private onDeleteCookie(data: CookieData): void {
@@ -648,6 +665,7 @@ export class CookiesTable extends UI.Widget.VBox {
       return;
     }
     const cookie = maybeCookie;
+    this.#onPopulateAiContextMenu?.(cookie, contextMenu);
 
     contextMenu.revealSection().appendItem(i18nString(UIStrings.showRequestsWithThisCookie), () => {
       const requestFilter = NetworkForward.UIFilter.UIRequestFilter.filters([

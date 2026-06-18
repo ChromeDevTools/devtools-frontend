@@ -51,6 +51,14 @@ const UIStrings = {
    */
   showUrlDecoded: 'Show URL-decoded',
   /**
+   * @description Text of a context menu item to start a chat with AI
+   */
+  startAChat: 'Start a chat',
+  /**
+   * @description Text of a context menu item to explain a web cookie with AI
+   */
+  explainCookie: 'Explain this cookie',
+  /**
    * @description Text in Cookie Items View of the Application panel to indicate that no cookie has been selected for preview
    */
   noCookieSelected: 'No cookie selected',
@@ -174,6 +182,10 @@ interface CookieItemsViewInput {
   onDeleteSelectedItems: () => void;
   onDeleteAllItems: () => void;
   onRefreshItems: () => void;
+  aiButtonIsEnabled: boolean;
+  onPopulateAiContextMenu: (cookie: SDK.Cookie.Cookie, contextMenu: UI.ContextMenu.ContextMenu) => void;
+  onAiButtonClick: (cookie: SDK.Cookie.Cookie, event: Event) => void;
+  aiButtonTitle?: string;
   selectedCookie: SDK.Cookie.Cookie|null;
 }
 
@@ -203,6 +215,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
             refreshCallback: input.onRefresh,
             selectedCallback: input.onSelect,
             deleteCallback: input.onDelete,
+            aiButtonIsEnabled: input.aiButtonIsEnabled,
+            onAiButtonClick: input.onAiButtonClick,
+            onPopulateAiContextMenu: input.onPopulateAiContextMenu,
+            aiButtonTitle: input.aiButtonTitle,
             editable: true,
           })}
           ></devtools-widget>
@@ -220,8 +236,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </devtools-split-view>
     </devtools-widget>
   `,
-      // clang-format on
-      target, {container: {attributes: {jslog: `${VisualLogging.pane('cookies-data')}`}}});
+         // clang-format on
+         target, {container: {attributes: {jslog: `${VisualLogging.pane('cookies-data')}`}}});
 };
 
 export class CookieItemsView extends UI.Widget.VBox {
@@ -261,7 +277,6 @@ export class CookieItemsView extends UI.Widget.VBox {
     this.cookieDomain = domain;
     this.refreshItems();
     this.model.addEventListener(SDK.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
-    this.updateAiAssistanceContext(null);
   }
 
   override performUpdate(): void {
@@ -296,6 +311,12 @@ export class CookieItemsView extends UI.Widget.VBox {
       onDeleteAllItems: this.deleteAllItems.bind(this),
       onRefreshItems: this.refreshItems.bind(this),
       selectedCookie: this.selectedCookie,
+      aiButtonIsEnabled: this.isAiButtonEnabled(),
+      onPopulateAiContextMenu: this.#onPopulateAiContextMenu.bind(this),
+      onAiButtonClick: this.#onAiButtonClick.bind(this),
+      aiButtonTitle: this.isAiButtonEnabled() ?
+          UI.ActionRegistry.ActionRegistry.instance().getAction('ai-assistance.storage-floating-button').title() :
+          undefined,
     };
 
     this.view(input, output, this.contentElement);
@@ -304,7 +325,6 @@ export class CookieItemsView extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
     this.refreshItems();
-    this.updateAiAssistanceContext(this.selectedCookie);
   }
 
   private showPreview(cookie: SDK.Cookie.Cookie|null): void {
@@ -313,10 +333,9 @@ export class CookieItemsView extends UI.Widget.VBox {
     }
     this.selectedCookie = cookie;
     this.requestUpdate();
-    this.updateAiAssistanceContext(cookie);
   }
 
-  private updateAiAssistanceContext(cookie: SDK.Cookie.Cookie|null): void {
+  #updateAiAssistanceContext(cookie: SDK.Cookie.Cookie|null): void {
     if (cookie && cookie.httpOnly()) {
       UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
       return;
@@ -342,6 +361,7 @@ export class CookieItemsView extends UI.Widget.VBox {
     }
     this.#toolbar.setCanDeleteSelected(Boolean(selectedCookie));
     this.showPreview(selectedCookie);
+    this.#updateAiAssistanceContext(selectedCookie);
   }
 
   private async saveCookie(newCookie: SDK.Cookie.Cookie, oldCookie: SDK.Cookie.Cookie|null): Promise<boolean> {
@@ -393,6 +413,7 @@ export class CookieItemsView extends UI.Widget.VBox {
    * This will only delete the currently visible cookies.
    */
   deleteAllItems(): void {
+    UI.Context.Context.instance().setFlavor(AiAssistanceModel.StorageItem.StorageItem, null);
     this.showPreview(null);
     void this.model.deleteCookies(this.shownCookies);
   }
@@ -411,5 +432,33 @@ export class CookieItemsView extends UI.Widget.VBox {
 
   refreshItems(): void {
     void this.model.getCookiesForDomain(this.cookieDomain, true).then(this.updateWithCookies.bind(this));
+  }
+
+  private isAiButtonEnabled(): boolean {
+    return UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.storage-floating-button');
+  }
+
+  #onPopulateAiContextMenu(cookie: SDK.Cookie.Cookie, contextMenu: UI.ContextMenu.ContextMenu): void {
+    const openAiAssistanceId = 'ai-assistance.application-panel-context';
+    if (this.isAiButtonEnabled() && UI.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
+      this.#updateAiAssistanceContext(cookie);
+      if (UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action.title(), false, openAiAssistanceId);
+        submenu.defaultSection().appendAction(openAiAssistanceId, i18nString(UIStrings.startAChat));
+        submenu.defaultSection().appendItem(
+            i18nString(UIStrings.explainCookie), () => action.execute({prompt: 'What is the purpose of this cookie?'}),
+            {disabled: !action.enabled(), jslogContext: openAiAssistanceId + '.cookies'});
+      }
+    }
+  }
+
+  #onAiButtonClick(cookie: SDK.Cookie.Cookie, _event: Event): void {
+    this.#updateAiAssistanceContext(cookie);
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
+    const storageFloatingButtonId = 'ai-assistance.storage-floating-button';
+    if (actionRegistry.hasAction(storageFloatingButtonId)) {
+      void actionRegistry.getAction(storageFloatingButtonId).execute();
+    }
   }
 }

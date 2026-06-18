@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import {describeWithEnvironment, setupActionRegistry} from '../../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../legacy.js';
 
@@ -14,33 +13,53 @@ type CookiesTableViewFunctionStub = sinon.SinonSpy<[CookieTable.CookiesTable.Vie
   input: CookieTable.CookiesTable.ViewInput,
 };
 
-describeWithEnvironment('CookiesTable', () => {
-  before(() => {
-    UI.ActionRegistration.registerActionExtension({
-      actionId: 'ai-assistance.storage-floating-button',
-      category: UI.ActionRegistration.ActionCategory.GLOBAL,
-      title: i18n.i18n.lockedLazyString('Ask AI'),
-    });
-  });
-  setupActionRegistry();
+describe('CookiesTable', () => {
+  setupLocaleHooks();
 
-  it('clicking Ask AI button triggers the action', () => {
+  it('clicking Ask AI button calls the onAiButtonClick delegate', () => {
     const viewFunction =
         createViewFunctionStub(CookieTable.CookiesTable.CookiesTable) as unknown as CookiesTableViewFunctionStub;
-    const cookiesTable = new CookieTable.CookiesTable.CookiesTable(
-        undefined, undefined, undefined, undefined, undefined, undefined, viewFunction);
-    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-    const action = actionRegistry.getAction('ai-assistance.storage-floating-button');
-    const executeStub = sinon.stub(action, 'execute');
+    const cookiesTable = new CookieTable.CookiesTable.CookiesTable(undefined, undefined, undefined, undefined,
+                                                                   undefined, undefined, viewFunction);
+    cookiesTable.aiButtonIsEnabled = true;
+
+    const onAiButtonClickStub = sinon.stub();
+    cookiesTable.onAiButtonClick = onAiButtonClickStub;
 
     const cookie = new SDK.Cookie.Cookie('cookie-name', 'value');
     cookiesTable.setCookies([cookie]);
     cookiesTable.performUpdate();
 
     const dummyEvent = new Event('click');
-    viewFunction.input.onAiButtonClick?.({name: 'cookie-name', value: 'value'}, dummyEvent);
+    viewFunction.input.onAiButtonClick?.({key: cookie.key(), name: 'cookie-name', value: 'value'}, dummyEvent);
 
-    sinon.assert.calledOnce(executeStub);
-    executeStub.restore();
+    sinon.assert.calledOnceWithExactly(onAiButtonClickStub, cookie, dummyEvent);
+  });
+
+  it('populates context menu calls the onPopulateAiContextMenu delegate', () => {
+    const viewFunction =
+        createViewFunctionStub(CookieTable.CookiesTable.CookiesTable) as unknown as CookiesTableViewFunctionStub;
+    const cookiesTable = new CookieTable.CookiesTable.CookiesTable(
+        undefined, undefined, undefined, undefined, undefined, undefined, viewFunction);
+    cookiesTable.aiButtonIsEnabled = true;
+
+    const onPopulateAiContextMenuStub = sinon.stub();
+    cookiesTable.onPopulateAiContextMenu = onPopulateAiContextMenuStub;
+
+    const cookie = new SDK.Cookie.Cookie('cookie-name', 'value');
+    cookiesTable.setCookies([cookie]);
+    cookiesTable.performUpdate();
+
+    const dummyEvent = new Event('contextmenu');
+    const contextMenu = new UI.ContextMenu.ContextMenu(dummyEvent);
+    const cookieData = {
+      key: cookie.key(),
+      name: cookie.name(),
+      value: cookie.value(),
+    };
+
+    viewFunction.input.onContextMenu?.(cookieData, contextMenu);
+
+    sinon.assert.calledOnceWithExactly(onPopulateAiContextMenuStub, cookie, contextMenu);
   });
 });

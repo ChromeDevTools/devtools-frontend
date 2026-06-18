@@ -6,10 +6,9 @@ import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -25,21 +24,10 @@ describeWithEnvironment('WatchExpression', () => {
     executionContext.evaluate.resolves({object, exceptionDetails: undefined});
     sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
 
-    const expandController = new ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker();
-    const linkifier = new Components.Linkifier.Linkifier();
-
-    const watchExpression = new Sources.WatchExpressionsSidebarPane.WatchExpression('obj', expandController, linkifier);
-    await watchExpression.updateComplete;
-
-    const treeElement = watchExpression.treeElement();
-    assert.exists(treeElement);
-
-    // Ensure children are populated
-    await treeElement.onpopulate();
-
-    const firstProperty = treeElement.childAt(0);
-    assert.instanceOf(firstProperty, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-    assert.isFalse(firstProperty.editable);
+    const expansionTracker = new ObjectUI.ObjectPropertiesSection.ObjectTreeExpansionTracker();
+    const watchExpression = new Sources.WatchExpressionsSidebarPane.WatchExpression();
+    await watchExpression.setExpression('obj', expansionTracker);
+    assert.isTrue(watchExpression.result?.readOnly);
   });
 
   it('shows "No watch expressions" when empty', async () => {
@@ -48,6 +36,7 @@ describeWithEnvironment('WatchExpression', () => {
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
 
+    await raf();
     await pane.updateComplete;
 
     const emptyElement = pane.contentElement.querySelector('.gray-info-message');
@@ -62,6 +51,7 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
     const frame = sinon.createStubInstance(Sources.UISourceCodeFrame.UISourceCodeFrame);
@@ -71,6 +61,7 @@ describeWithEnvironment('WatchExpression', () => {
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();
 
     pane.handleAction(UI.Context.Context.instance(), 'sources.add-to-watch');
+    await raf();
     await pane.updateComplete;
 
     assert.deepEqual(setting.get(), ['1 + 1']);
@@ -91,11 +82,11 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
-    const watchExpression = pane.watchExpressions[0];
-
-    const listItemElement = watchExpression.treeElement().listItemElement;
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    const listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
     assert.exists(listItemElement);
 
     const headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
@@ -103,15 +94,16 @@ describeWithEnvironment('WatchExpression', () => {
 
     // Double click to start editing
     headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+    await raf();
+    await pane.updateComplete;
 
-    const textPromptElement = listItemElement.querySelector('.text-prompt') as HTMLElement;
+    const textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
     assert.exists(textPromptElement);
 
-    textPromptElement.textContent = '2 + 2';
-    textPromptElement.dispatchEvent(new InputEvent('input', {bubbles: true}));
-    textPromptElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+    textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: '2 + 2'}));
 
-    await watchExpression.updateComplete;
+    await raf();
+    await pane.updateComplete;
 
     assert.deepEqual(setting.get(), ['2 + 2']);
 
@@ -131,17 +123,20 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
-    const watchExpression = pane.watchExpressions[0];
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    const listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
+    assert.exists(listItemElement);
 
-    const listItemElement = watchExpression.treeElement().listItemElement;
     const deleteButton = listItemElement.querySelector('.watch-expression-delete-button') as HTMLElement;
     assert.exists(deleteButton);
 
     deleteButton.dispatchEvent(new MouseEvent('click', {bubbles: true}));
 
-    await watchExpression.updateComplete;
+    await raf();
+    await pane.updateComplete;
 
     assert.deepEqual(setting.get(), []);
 
@@ -154,6 +149,7 @@ describeWithEnvironment('WatchExpression', () => {
     pane.element.style.width = '300px';
     pane.element.style.height = '200px';
     renderElementIntoDOM(pane, {includeCommonStyles: true});
+    await raf();
     await pane.updateComplete;
 
     await assertScreenshot('sources/watch-expressions-empty.png');
@@ -185,15 +181,50 @@ describeWithEnvironment('WatchExpression', () => {
     pane.element.style.width = '300px';
     pane.element.style.height = '200px';
     renderElementIntoDOM(pane, {includeCommonStyles: true});
+    await raf();
     await pane.updateComplete;
 
     const watchExpressions = pane.watchExpressions;
     assert.lengthOf(watchExpressions, 2);
 
-    watchExpressions[1].treeElement().select();
+    await assertScreenshot('sources/watch-expressions-list.png');
+  });
+
+  it('screenshot for watch expression with delete button visible', async () => {
+    Common.Settings.Settings.instance().createLocalSetting<string[]>('watch-expressions', []).set(['1 + 1']);
+
+    const object1 = SDK.RemoteObject.RemoteObject.fromLocalObject(2);
+
+    const executionContext = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+    const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+    debuggerModel.selectedCallFrame.returns(null);
+    executionContext.debuggerModel = debuggerModel;
+
+    executionContext.evaluate.resolves({object: object1, exceptionDetails: undefined});
+
+    sinon.stub(UI.Context.Context.instance(), 'flavor').returns(executionContext);
+
+    const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
+    pane.element.style.width = '300px';
+    pane.element.style.height = '200px';
+    renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
-    await assertScreenshot('sources/watch-expressions-list.png');
+    const watchExpressions = pane.watchExpressions;
+    assert.lengthOf(watchExpressions, 1);
+
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    const listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
+    assert.exists(listItemElement);
+    const deleteButton = listItemElement.querySelector('.watch-expression-delete-button') as HTMLElement;
+    assert.exists(deleteButton);
+
+    // Focus the delete button to make it visible via :focus-within on the title
+    deleteButton.focus();
+    await pane.updateComplete;
+
+    await assertScreenshot('sources/watch-expression-delete-button.png');
   });
 
   it('preserves expansion state across updates', async () => {
@@ -211,35 +242,39 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
     const watchExpression = pane.watchExpressions[0];
 
-    const treeElement = watchExpression.treeElement() as ObjectUI.ObjectPropertiesSection.RootElement;
-    assert.instanceOf(treeElement, ObjectUI.ObjectPropertiesSection.RootElement);
-    assert.isFalse(treeElement.expanded);
+    const tree = watchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
+    assert.exists(tree);
+    assert.isFalse(tree.expanded);
 
     // Expand the root
-    treeElement.expand();
-    assert.isTrue(treeElement.expanded);
+    tree.expanded = true;
+    assert.isTrue(tree.expanded);
 
     // Expand the 'foo' property
-    await treeElement.onpopulate();
-    const fooProperty = treeElement.childAt(0) as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
+    const children = await tree.populateChildrenIfNeeded();
+    const fooProperty = children.properties?.find(p => p.name === 'foo');
     assert.exists(fooProperty);
-    fooProperty.expand();
+    fooProperty.expanded = true;
     assert.isTrue(fooProperty.expanded);
 
-    // Trigger update
-    watchExpression.update();
-    await watchExpression.updateComplete;
+    // Trigger update by refreshing
+    UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
+    await raf();
+    await pane.updateComplete;
 
-    const newTreeElement = watchExpression.treeElement() as ObjectUI.ObjectPropertiesSection.RootElement;
-    assert.notStrictEqual(treeElement, newTreeElement);
-    assert.isTrue(newTreeElement.expanded);
+    const newWatchExpression = pane.watchExpressions[0];
+    const newTree = newWatchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
+    assert.notStrictEqual(tree, newTree);
+    assert.isTrue(newTree.expanded);
 
-    await newTreeElement.onpopulate();
-    const newFooProperty = newTreeElement.childAt(0) as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
+    const newChildren = await newTree.populateChildrenIfNeeded();
+    const newFooProperty = newChildren.properties?.find(p => p.name === 'foo');
+    assert.exists(newFooProperty);
     assert.notStrictEqual(fooProperty, newFooProperty);
     assert.isTrue(newFooProperty.expanded);
   });
@@ -259,31 +294,45 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
     const watchExpression = pane.watchExpressions[0];
-    const treeElement = watchExpression.treeElement() as ObjectUI.ObjectPropertiesSection.RootElement;
-    assert.instanceOf(treeElement, ObjectUI.ObjectPropertiesSection.RootElement);
+    const tree = watchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
+    assert.exists(tree);
 
     // Expand the root and a property
-    treeElement.expand();
-    await treeElement.onpopulate();
-    const fooProperty = treeElement.childAt(0) as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
-    fooProperty.expand();
-    assert.isTrue(treeElement.expanded);
+    tree.expanded = true;
+    const children = await tree.populateChildrenIfNeeded();
+    const fooProperty = children.properties?.find(p => p.name === 'foo');
+    assert.exists(fooProperty);
+    fooProperty.expanded = true;
+
+    assert.isTrue(tree.expanded);
     assert.isTrue(fooProperty.expanded);
 
     // Change expression
-    watchExpression.updateExpression('obj2');
-    await watchExpression.updateComplete;
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    const listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
+    const headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
+    headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+    await raf();
+    await pane.updateComplete;
 
-    const newTreeElement = watchExpression.treeElement() as ObjectUI.ObjectPropertiesSection.RootElement;
-    assert.notStrictEqual(treeElement, newTreeElement);
-    assert.isFalse(newTreeElement.expanded);
+    const textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'obj2'}));
+    await raf();
+    await pane.updateComplete;
+
+    const newWatchExpression = pane.watchExpressions[0];
+    const newTree = newWatchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
+    assert.notStrictEqual(tree, newTree);
+    assert.isFalse(newTree.expanded);
 
     // Re-query fooProperty and check it's not expanded
-    await newTreeElement.onpopulate();
-    const newFooProperty = newTreeElement.childAt(0) as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
+    const newChildren = await newTree.populateChildrenIfNeeded();
+    const newFooProperty = newChildren.properties?.find(p => p.name === 'foo');
+    assert.exists(newFooProperty);
     assert.notStrictEqual(fooProperty, newFooProperty);
     assert.isFalse(newFooProperty.expanded);
   });
@@ -303,31 +352,55 @@ describeWithEnvironment('WatchExpression', () => {
 
     const pane = new Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane();
     renderElementIntoDOM(pane);
+    await raf();
     await pane.updateComplete;
 
     const watchExpression = pane.watchExpressions[0];
-    const treeElement = watchExpression.treeElement() as ObjectUI.ObjectPropertiesSection.RootElement;
-    assert.instanceOf(treeElement, ObjectUI.ObjectPropertiesSection.RootElement);
-    treeElement.expand();
-    await treeElement.onpopulate();
-    const fooProperty = treeElement.childAt(0) as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
-    fooProperty.expand();
-    assert.isTrue(treeElement.expanded);
+    const tree = watchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
+    assert.exists(tree);
+
+    tree.expanded = true;
+    const children = await tree.populateChildrenIfNeeded();
+    const fooProperty = children.properties?.find(p => p.name === 'foo');
+    assert.exists(fooProperty);
+    fooProperty.expanded = true;
+
+    assert.isTrue(tree.expanded);
     assert.isTrue(fooProperty.expanded);
 
     // Change expression to obj2
-    watchExpression.updateExpression('obj2');
-    await watchExpression.updateComplete;
+    const treeElement = pane.contentElement.querySelector('devtools-tree');
+    let listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
+    let headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
+    headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+    await raf();
+    await pane.updateComplete;
+
+    let textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'obj2'}));
+    await raf();
+    await pane.updateComplete;
 
     // Change expression back to obj1
-    watchExpression.updateExpression('obj1');
-    await watchExpression.updateComplete;
+    listItemElement = treeElement?.shadowRoot?.querySelector('.watch-expression-tree-item') as HTMLElement;
+    headerElement = listItemElement.querySelector('.watch-expression-header') as HTMLElement;
+    headerElement.dispatchEvent(new MouseEvent('dblclick', {bubbles: true}));
+    await raf();
+    await pane.updateComplete;
 
-    const finalTreeElement = watchExpression.treeElement() as ObjectUI.ObjectPropertiesSection.RootElement;
-    assert.isFalse(finalTreeElement.expanded, 'Expansion state of root should be cleared when expression changes');
+    textPromptElement = listItemElement.querySelector('devtools-prompt') as HTMLElement;
+    textPromptElement.dispatchEvent(new CustomEvent('commit', {detail: 'obj1'}));
+    await raf();
+    await pane.updateComplete;
 
-    await finalTreeElement.onpopulate();
-    const finalFooProperty = finalTreeElement.childAt(0) as ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement;
+    const newWatchExpression = pane.watchExpressions[0];
+    const finalTree = newWatchExpression.result as ObjectUI.ObjectPropertiesSection.ObjectTree;
+
+    assert.isFalse(finalTree.expanded, 'Expansion state of root should be cleared when expression changes');
+
+    const finalChildren = await finalTree.populateChildrenIfNeeded();
+    const finalFooProperty = finalChildren.properties?.find(p => p.name === 'foo');
+    assert.exists(finalFooProperty);
     assert.notStrictEqual(fooProperty, finalFooProperty);
     assert.isFalse(finalFooProperty.expanded);
   });

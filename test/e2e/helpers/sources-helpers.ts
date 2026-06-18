@@ -366,15 +366,19 @@ export async function setEventListenerBreakpoint(groupName: string, eventName: s
   await devToolsPage.waitForVisible(groupSelector);
   const eventCheckbox = await devToolsPage.$(eventSelector);
   if (!eventCheckbox || !(await eventCheckbox.evaluate(x => x.checkVisibility()))) {
-    // Unfortunately the shadow DOM makes it hard to find the expander element
-    // we are attempting to click on, so we click to the left of the checkbox
-    // bounding box.
-    const rectData = await groupCheckbox.evaluate(element => {
-      const {left, top, width, height} = element.getBoundingClientRect();
-      return {left, top, width, height};
+    // The tree element is an <li> with a ::before pseudoelement for the triangle.
+    // We compute the exact coordinate of the triangle as done by isEventWithinDisclosureTriangle
+    const rectData = await groupCheckbox.evaluate(node => {
+      const paddingLeftValue = window.getComputedStyle(node).paddingLeft;
+      const computedLeftPadding = parseFloat(paddingLeftValue);
+      const left = node.getBoundingClientRect().left + computedLeftPadding;
+      const top = node.getBoundingClientRect().top;
+      const height = node.getBoundingClientRect().height;
+      return {left, top, height};
     });
 
-    await devToolsPage.page.mouse.click(rectData.left - 10, rectData.top + rectData.height * .5);
+    await devToolsPage.page.mouse.click(rectData.left + 5, rectData.top + rectData.height * 0.5);
+
     await devToolsPage.waitForVisible(eventSelector);
   }
 

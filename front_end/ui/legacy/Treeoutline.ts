@@ -409,11 +409,11 @@ export class TreeOutlineInShadow extends TreeOutline {
   shadowRoot: ShadowRoot;
   private readonly disclosureElement: Element;
   override renderSelection: boolean;
-  constructor(variant: TreeVariant = TreeVariant.OTHER, element?: HTMLElement) {
+  constructor(variant: TreeVariant = TreeVariant.OTHER, element?: HTMLElement, delegatesFocus?: boolean) {
     super();
     this.contentElement.classList.add('tree-outline');
     this.element = element ?? document.createElement('div');
-    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: treeoutlineStyles});
+    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: treeoutlineStyles, delegatesFocus});
     this.disclosureElement = this.shadowRoot.createChild('div', 'tree-outline-disclosure');
     this.disclosureElement.appendChild(this.contentElement);
     this.renderSelection = true;
@@ -1542,6 +1542,7 @@ class TreeViewTreeElement extends TreeElement {
   #userExpanded = false;
   #isProcessingAttribute = false;
   #previousOpenAttributeValue?: string|null;
+  #refreshScheduled = false;
 
   static #elementToTreeElement = new WeakMap<Node, TreeViewTreeElement>();
   readonly configElement: HTMLLIElement;
@@ -1587,6 +1588,17 @@ class TreeViewTreeElement extends TreeElement {
     } finally {
       this.#isProcessingAttribute = false;
     }
+  }
+
+  refreshSoon(): void {
+    if (this.#refreshScheduled) {
+      return;
+    }
+    this.#refreshScheduled = true;
+    queueMicrotask(() => {
+      this.#refreshScheduled = false;
+      this.refresh();
+    });
   }
 
   refresh(): void {
@@ -1754,10 +1766,17 @@ function removeNode(node: TreeElement, preserveParentExpandable = false): void {
 export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
   static readonly observedAttributes =
       ['navigation-variant', 'hide-overflow', 'dense', 'show-selection-on-keyboard-focus'];
-  readonly #treeOutline = new TreeOutlineInShadow(undefined, this);
+  readonly #treeOutline = new TreeOutlineInShadow(undefined, this, true);
 
   constructor() {
     super();
+    this.addEventListener('focusin', (event: Event) => {
+      const actualTarget = event.composedPath()[0];
+      if (actualTarget === this.#treeOutline.contentElement && !this.#treeOutline.selectedTreeElement &&
+          this.#treeOutline.firstChild()) {
+        this.#treeOutline.firstChild()?.select(/* omitFocus */ true, /* selectedByUser */ false);
+      }
+    });
     this.#treeOutline.addEventListener(Events.ElementSelected, event => {
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new TreeViewElement.SelectEvent());
@@ -1782,6 +1801,14 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
 
   getInternalTreeOutlineForTest(): TreeOutlineInShadow {
     return this.#treeOutline;
+  }
+
+  override focus(): void {
+    if (!this.#treeOutline.selectedTreeElement && this.#treeOutline.firstChild()) {
+      this.#treeOutline.firstChild()?.select(/* omitFocus */ true, /* selectedByUser */ false);
+    } else {
+      this.#treeOutline.focus();
+    }
   }
 
   #getParentTreeElement(element: HTMLLIElement|TreeElementWrapper):
@@ -1813,7 +1840,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     if (!treeElement) {
       return;
     }
-    treeElement.refresh();
+    treeElement.refreshSoon();
     if (node === treeNode && attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
       treeElement.revealAndSelect(true);
     }

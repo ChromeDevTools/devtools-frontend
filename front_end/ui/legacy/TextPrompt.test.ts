@@ -239,6 +239,30 @@ describe('TextPromptElement', () => {
     sinon.assert.notCalled(commitListener);
     sinon.assert.called(cancelListener);
   });
+
+  it('uses the value attribute when starting to edit instead of innerText', async () => {
+    const prompt = renderPrompt(html`<devtools-prompt value=${'Value content'}>Initial content</devtools-prompt>`);
+    prompt.setAttribute('editing', 'true');
+
+    assert.strictEqual(prompt.innerText, '');
+    assert.strictEqual(prompt.deepInnerText(), 'Value content');
+
+    const placeholder = prompt.shadowRoot?.querySelector('[contenteditable]');
+    assert.exists(placeholder);
+    assert.strictEqual(placeholder.textContent, 'Value content');
+    assert.strictEqual(window.getSelection()?.toString(), 'Value content');
+  });
+
+  it('allows setting value attribute dynamically', async () => {
+    const prompt = renderPrompt(html`<devtools-prompt>Initial content</devtools-prompt>`);
+    prompt.setAttribute('value', 'Updated value');
+    assert.strictEqual(prompt.getAttribute('value'), 'Updated value');
+
+    prompt.setAttribute('editing', 'true');
+    const placeholder = prompt.shadowRoot?.querySelector('[contenteditable]');
+    assert.exists(placeholder);
+    assert.strictEqual(placeholder.textContent, 'Updated value');
+  });
 });
 
 describe('TextPrompt', () => {

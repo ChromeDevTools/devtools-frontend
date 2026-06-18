@@ -28,7 +28,8 @@ describe('Watch Expression Pane', () => {
     await addWatchExpression('Text', devToolsPage);
 
     // Expand watch element
-    const element = await devToolsPage.waitFor('.object-properties-section-root-element');
+    const element = await devToolsPage.waitFor('.watch-expression-tree-item');
+    await devToolsPage.click('.watch-expression-tree-item');
     await devToolsPage.pressKey('ArrowRight');
 
     // Retrieve watch element and ensure that it is expanded
@@ -37,8 +38,9 @@ describe('Watch Expression Pane', () => {
 
     // Begin editing and check that element is now collapsed.
     await devToolsPage.pressKey('Enter');
-    const editingExpandCheck = await element.evaluate(e => e.classList.contains('expanded'));
-    assert.isFalse(editingExpandCheck);
+    await devToolsPage.waitForFunction(async () => {
+      return await element.evaluate(e => !e.classList.contains('expanded'));
+    });
 
     // Remove the watch so that it does not interfere with other tests.
     await devToolsPage.pressKey('Escape');
@@ -62,10 +64,8 @@ describe('Watch Expression Pane', () => {
 
     await addWatchExpression(watchText, devToolsPage);
 
-    const element = await devToolsPage.waitFor('.watch-expression-title');
-    const nameAndValue = await element.evaluate(e => e.textContent);
-
-    assert.strictEqual(nameAndValue, `${watchText}: ${watchValue}`);
+    const expectedText = `${watchText}: ${watchValue}`;
+    await devToolsPage.waitForElementWithTextContent(expectedText);
   });
 
   it('preserves expansion', async ({devToolsPage, inspectedPage}) => {
@@ -78,8 +78,10 @@ describe('Watch Expression Pane', () => {
     `);
 
     await addWatchExpression('globalObject', devToolsPage);
+    await devToolsPage.waitForElementWithTextContent('globalObject: Object');
 
     await devToolsPage.click('.watch-expression-title');
+    await devToolsPage.pressKey('ArrowRight');
     const fooProp = await devToolsPage.waitFor('foo', undefined, undefined, 'pierceShadowText');
     await devToolsPage.clickElement(fooProp);
 

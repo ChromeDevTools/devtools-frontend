@@ -174,6 +174,10 @@ const UIStrings = {
    * @description Text to be show in the Partition Key column in case it is an opaque origin.
    */
   opaquePartitionKey: '(opaque)',
+  /**
+   * @description Tooltip for the disabled AI button on HttpOnly cookies, explaining why they cannot be debugged.
+   */
+  httpOnlyCookiesCannotBeAdded: 'HttpOnly cookies cannot be added as context',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -275,7 +279,9 @@ export class CookiesTable extends UI.Widget.VBox {
                    SourcePort
                 </th>` : ''}
               </tr>
-              ${repeat(this.data, cookie => cookie.key, cookie => html`
+              ${repeat(this.data, cookie => cookie.key, cookie => {
+                const isHttpOnly = cookie['http-only'] === 'true';
+                return html`
                 <tr ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
                     ?dirty=${cookie.dirty}
@@ -285,12 +291,13 @@ export class CookiesTable extends UI.Widget.VBox {
                     @delete=${()=> input.onDelete(cookie)}
                     @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(cookie, e.detail)}
                     @select=${() => input.onSelect(cookie.key)}>
-                  <td>${input.showAiButton && !Boolean(cookie['http-only']) ? html`
+                  <td>${input.showAiButton ? html`
                       <span class="ai-button-container">
                         <devtools-floating-button
                           icon-name=${Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? 'spark' : 'smart-assistant'}
-                          title=${ifDefined(input.aiButtonTitle)}
-                          @click=${(e: Event) => input.onAiButtonClick?.(cookie, e)}
+                          title=${ifDefined(isHttpOnly ? i18nString(UIStrings.httpOnlyCookiesCannotBeAdded) : input.aiButtonTitle)}
+                          ?disabled=${isHttpOnly}
+                          @click=${(e: Event) => !isHttpOnly && input.onAiButtonClick?.(cookie, e)}
                         ></devtools-floating-button>
                       </span>
                     ` : nothing}${cookie.icons?.name}${cookie.name}</td>
@@ -299,7 +306,7 @@ export class CookiesTable extends UI.Widget.VBox {
                   <td>${cookie.icons?.path}${cookie.path}</td>
                   <td title=${ifDefined(cookie.expiresTooltip)}>${cookie.expires}</td>
                   <td>${cookie.size}</td>
-                  <td data-value=${Boolean(cookie['http-only'])}></td>
+                  <td data-value=${isHttpOnly}></td>
                   <td data-value=${Boolean(cookie.secure)}>${cookie.icons?.secure}</td>
                   <td>${cookie.icons?.['same-site']}${cookie['same-site']}</td>
                   <td>${cookie['partition-key-site']}</td>
@@ -309,7 +316,8 @@ export class CookiesTable extends UI.Widget.VBox {
                     <td title=${i18nString(UIStrings.sourceSchemeTooltip)}>${cookie['source-scheme']}</td>` : ''}
                   ${input.portBindingEnabled ? html`
                     <td title=${i18nString(UIStrings.sourcePortTooltip)}>${cookie['source-port']}</td>` : ''}
-                </tr>`)}
+                </tr>`;
+              })}
                 ${input.editable ? html`<tr placeholder><tr>` : ''}
               </table>
             </devtools-data-grid>`, target, {host: target});

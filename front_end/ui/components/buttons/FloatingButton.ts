@@ -38,7 +38,7 @@ const {html, Directives: {classMap}} = Lit;
  *                      provided context.
  */
 export class FloatingButton extends HTMLElement {
-  static readonly observedAttributes = ['icon-name', 'jslogcontext'];
+  static readonly observedAttributes = ['icon-name', 'jslogcontext', 'disabled'];
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 
@@ -83,6 +83,18 @@ export class FloatingButton extends HTMLElement {
     }
   }
 
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(disabled: boolean) {
+    if (disabled) {
+      this.setAttribute('disabled', '');
+    } else {
+      this.removeAttribute('disabled');
+    }
+  }
+
   attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
     if (oldValue === newValue) {
       return;
@@ -92,6 +104,9 @@ export class FloatingButton extends HTMLElement {
     }
     if (name === 'jslogcontext') {
       this.#updateJslog();
+    }
+    if (name === 'disabled') {
+      this.#render();
     }
   }
 
@@ -103,7 +118,7 @@ export class FloatingButton extends HTMLElement {
     // clang-format off
     Lit.render(html`
         <style>${floatingButtonStyles}</style>
-        <button class=${classes}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
+        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
         this.#shadow, {host: this});
     // clang-format on
   }

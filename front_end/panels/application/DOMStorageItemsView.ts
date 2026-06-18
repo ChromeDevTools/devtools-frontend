@@ -119,7 +119,6 @@ export class DOMStorageItemsView extends KeyValueStorageItemsView {
           SDK.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED, this.domStorageItemUpdated, this),
     ];
     this.refreshItems();
-    this.selectedItemChanged(null);
   }
 
   private domStorageItemsCleared(): void {

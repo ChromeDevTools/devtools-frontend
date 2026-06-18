@@ -1797,6 +1797,8 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     super.onselect(selectedByUser);
     UI.UIUserMetrics.UIUserMetrics.instance().panelShown('dom-storage');
     this.resourcesPanel.showDOMStorage(this.domStorage);
+    const storageItem = this.#getStorageItem();
+    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
     return false;
   }
 
@@ -1977,6 +1979,8 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     this.resourcesPanel.showCookies(this.target, this.#cookieDomain);
     UI.UIUserMetrics.UIUserMetrics.instance().panelShown(
         Host.UserMetrics.PanelCodes[Host.UserMetrics.PanelCodes.cookies]);
+    const storageItem = this.#getStorageItem();
+    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
     return false;
   }
 }

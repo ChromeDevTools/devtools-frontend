@@ -82,17 +82,23 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
         this.onNavigated = new (Constructor(EventSink))("inspected-url-changed" /* PrivateAPI.Events.InspectedURLChanged */);
     }
     Network.prototype = {
-        getHAR: function (callback) {
+        getHAR: function (_callback) {
+            const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
             function callbackWrapper(response) {
+                if (checkErrorAndReject(response, reject)) {
+                    return;
+                }
                 const result = response;
                 const entries = (result?.entries) || [];
                 for (let i = 0; i < entries.length; ++i) {
                     entries[i].__proto__ = new (Constructor(Request))(entries[i]._requestId);
                     delete entries[i]._requestId;
                 }
-                callback?.(result);
+                resolve?.(result);
+                callbackArg?.(result);
             }
-            extensionServer.sendRequest({ command: "getHAR" /* PrivateAPI.Commands.GetHAR */ }, callback && callbackWrapper);
+            extensionServer.sendRequest({ command: "getHAR" /* PrivateAPI.Commands.GetHAR */ }, callbackWrapper);
+            return promise;
         },
         addRequestHeaders: function (headers) {
             extensionServer.sendRequest({ command: "addRequestHeaders" /* PrivateAPI.Commands.AddRequestHeaders */, headers, extensionId: window.location.hostname });
@@ -102,12 +108,18 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
         this._id = id;
     }
     RequestImpl.prototype = {
-        getContent: function (callback) {
+        getContent: function (_callback) {
+            const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
             function callbackWrapper(response) {
+                if (checkErrorAndReject(response, reject)) {
+                    return;
+                }
                 const { content, encoding } = response;
-                callback?.(content, encoding);
+                resolve?.({ content, encoding });
+                callbackArg?.(content, encoding);
             }
-            extensionServer.sendRequest({ command: "getRequestContent" /* PrivateAPI.Commands.GetRequestContent */, id: this._id }, callback && callbackWrapper);
+            extensionServer.sendRequest({ command: "getRequestContent" /* PrivateAPI.Commands.GetRequestContent */, id: this._id }, callbackWrapper);
+            return promise;
         },
     };
     function Panels() {

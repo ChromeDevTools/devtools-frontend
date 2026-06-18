@@ -5063,6 +5063,12 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM Storage Items cleared"
   },
+  "panels/application/DOMStorageItemsView.ts | explainItem": {
+    "message": "Explain this item"
+  },
+  "panels/application/DOMStorageItemsView.ts | startAChat": {
+    "message": "Start a chat"
+  },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
     "message": "Extension Storage Items"
   },

@@ -9836,7 +9836,8 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
       "superellipse(0.5)",
       "superellipse(infinity)"
     ])
-  ]
+  ],
+  ["outline-style", /* @__PURE__ */ new Set(["auto"])]
 ]);
 var Weight = /* @__PURE__ */ new Map([
   ["align-content", 57],

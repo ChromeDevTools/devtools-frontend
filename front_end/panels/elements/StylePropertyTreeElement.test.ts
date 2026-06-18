@@ -2525,6 +2525,40 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     assert.isFalse(treeElement.listItemElement.classList.contains('disabled'));
   });
 
+  it('does not render new properties lazily even if the styles container allows it', () => {
+    sinon.stub(stylesSidebarPane, 'shouldRenderLazily').returns(true);
+    const trackForLazyRenderingSpy = sinon.spy(stylesSidebarPane, 'trackForLazyRendering');
+
+    const stylePropertyTreeElement = getTreeElement('color', 'red');
+    const section = stylePropertyTreeElement.section();
+    section.propertiesTreeOutline.appendChild(stylePropertyTreeElement);
+
+    sinon.assert.notCalled(trackForLazyRenderingSpy);
+  });
+
+  it('renders existing properties lazily if the styles container allows it', () => {
+    sinon.stub(stylesSidebarPane, 'shouldRenderLazily').returns(true);
+    const trackForLazyRenderingSpy = sinon.spy(stylesSidebarPane, 'trackForLazyRendering');
+
+    const property = addProperty('color', 'red');
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles, property.ownerStyle, 0,
+        null, null, null);
+    const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+      stylesContainer: stylesSidebarPane,
+      section,
+      matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: false,
+    });
+    section.propertiesTreeOutline.appendChild(stylePropertyTreeElement);
+
+    sinon.assert.calledOnce(trackForLazyRenderingSpy);
+  });
+
   it('applies overflow-wrap: break-word to tree outline list items for long values', () => {
     // Create a very long value without spaces that would otherwise overflow.
     const longValue = '9'.repeat(500) + 'px';

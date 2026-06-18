@@ -7,6 +7,7 @@ import * as AnnotationHelpers from './AnnotationHelpers.js';
 import * as AppenderUtils from './AppenderUtils.js';
 import * as BenchmarkEvents from './BenchmarkEvents.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
+import * as NetworkTrackWidget from './components/NetworkTrackWidget.js';
 import * as CountersGraph from './CountersGraph.js';
 import * as EntriesFilter from './EntriesFilter.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
@@ -61,6 +62,7 @@ export {
   LayoutShiftsTrackAppender,
   ModificationsManager,
   NetworkTrackAppender,
+  NetworkTrackWidget,
   RecordingMetadata,
   SaveFileFormatter,
   TargetForEvent,

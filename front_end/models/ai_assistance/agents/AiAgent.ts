@@ -338,6 +338,13 @@ export interface NetworkRequestsListAiWidget {
     requests: SDK.NetworkRequest.NetworkRequest[],
   };
 }
+export interface NetworkTrackAiWidget {
+  name: 'NETWORK_TRACK';
+  data: {
+    parsedTrace: Trace.TraceModel.ParsedTrace,
+    bounds: Trace.Types.Timing.TraceWindowMicro,
+  };
+}
 
 export interface LighthouseReportAiWidget {
   name: 'LIGHTHOUSE_REPORT';
@@ -376,7 +383,7 @@ export interface SourceCodeAiWidget {
 export type AiWidget = ComputedStyleAiWidget|CoreVitalsAiWidget|StylePropertiesAiWidget|DomTreeAiWidget|
     PerformanceTraceAiWidget|PerfInsightAiWidget|TimelineRangeSummaryAiWidget|BottomUpTreeAiWidget|SourceFileAiWidget|
     LighthouseReportAiWidget|TimelineEventSummaryAiWidget|NetworkRequestGeneralHeadersAiWidget|SourceCodeAiWidget|
-    SourceFilesListAiWidget|NetworkRequestsListAiWidget;
+    SourceFilesListAiWidget|NetworkRequestsListAiWidget|NetworkTrackAiWidget;
 
 export type FunctionCallHandlerResult<Result> = {
   requiresApproval: true,

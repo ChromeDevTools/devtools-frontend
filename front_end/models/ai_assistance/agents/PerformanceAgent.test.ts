@@ -566,13 +566,17 @@ code
       assert.exists(titleResponse);
       assert.strictEqual(titleResponse.title, 'Investigating network activity');
 
-      assert.deepEqual(action, {
-        type: 'action' as AiAgent.ActionResponse['type'],
-        widgets: undefined,
-        output: expectedOutput,
-        code: 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})',
-        canceled: false,
-      });
+      assert.exists(action);
+      assert.strictEqual(action.type, 'action');
+      assert.strictEqual(action.code, 'getNetworkTrackSummary({min: 658799706428, max: 658804825864})');
+      assert.strictEqual(action.output, expectedOutput);
+      assert.isFalse(action.canceled);
+
+      assert.exists(action.widgets);
+      assert.lengthOf(action.widgets, 1);
+      const networkWidget = action.widgets[0] as AiAgent.NetworkTrackAiWidget;
+      assert.strictEqual(networkWidget.name, 'NETWORK_TRACK');
+      assert.deepEqual(networkWidget.data.bounds, bounds);
     });
 
     it('can call getResourceContent and yields SOURCE_CODE widget', async function() {

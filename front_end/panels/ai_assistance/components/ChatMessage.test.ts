@@ -17,7 +17,7 @@ import {
   updateHostConfig,
   waitFor,
 } from '../../../testing/EnvironmentHelpers.js';
-import {makeFakeParsedTrace, microsecondsTraceWindow} from '../../../testing/TraceHelpers.js';
+import {getBaseTraceHandlerData, makeFakeParsedTrace, microsecondsTraceWindow} from '../../../testing/TraceHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Snackbars from '../../../ui/components/snackbars/snackbars.js';
@@ -297,6 +297,17 @@ describeWithEnvironment('ChatMessage', () => {
           },
         } as AIAssistanceModel.AiAgent.AiWidget;
         assert.strictEqual(AiAssistance.ChatMessage.getWidgetSignature(widget), 'BOTTOM_UP_TREE:100-200');
+      });
+
+      it('should correctly handle NETWORK_TRACK widget', () => {
+        const widget = {
+          name: 'NETWORK_TRACK',
+          data: {
+            bounds: microsecondsTraceWindow(100, 200),
+            parsedTrace: makeFakeParsedTrace(),
+          },
+        } as AIAssistanceModel.AiAgent.AiWidget;
+        assert.strictEqual(AiAssistance.ChatMessage.getWidgetSignature(widget), 'NETWORK_TRACK:100-200');
       });
 
       it('should correctly handle LIGHTHOUSE_REPORT widget', () => {
@@ -1570,6 +1581,34 @@ describeWithEnvironment('ChatMessage', () => {
 
       revealStub.restore();
       snackbarShowStub.restore();
+    });
+    it('renders NETWORK_TRACK widget with correct header and widget element', async () => {
+      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
+      const parsedTrace = getBaseTraceHandlerData();
+      const bounds = microsecondsTraceWindow(100, 200);
+      const message: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [{
+          type: 'widget',
+          widgets: [{
+            name: 'NETWORK_TRACK',
+            data: {
+              parsedTrace,
+              bounds,
+            },
+          }],
+        }],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const targetElement = renderView({message});
+      const widgetHeader = await waitFor('.widget-header', targetElement);
+      assert.isNotNull(widgetHeader);
+      assert.strictEqual(widgetHeader.querySelector('.widget-name')?.textContent, 'Network activity');
+
+      const devtoolsWidget = await waitFor('devtools-performance-agent-network-track', targetElement);
+      assert.isNotNull(devtoolsWidget);
     });
   });
 });

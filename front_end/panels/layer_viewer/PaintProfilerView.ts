@@ -249,32 +249,33 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   private minBarHeight: number;
   private readonly barPaddingWidth: number;
   private readonly outerBarWidth: number;
-  private pendingScale: number;
-  private scale: number;
+  #pendingScale: number;
+  #scale: number;
+  private samplesPerBar: number;
   private log: SDK.PaintProfiler.PaintProfilerLogItem[];
   private snapshot?: SDK.PaintProfiler.PaintProfilerSnapshot|null;
   private logCategories?: PaintProfilerCategory[];
   private profiles?: Protocol.LayerTree.PaintProfile[]|null;
   private updateImageTimer?: number;
-  private readonly showImageCallback: (arg0?: string|undefined) => void;
+  showImageCallback?: (arg0?: string|undefined) => void;
   private isProfiling = false;
   #isResizeEnabled = false;
 
   readonly #view: View;
   readonly #viewOutput: ViewOutput;
 
-  constructor(showImageCallback: (arg0?: string|undefined) => void, view: View = DEFAULT_VIEW) {
-    super();
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
     this.contentElement.classList.add('paint-profiler-overview');
-    this.showImageCallback = showImageCallback;
     this.#view = view;
 
     this.innerBarWidth = 4 * window.devicePixelRatio;
     this.minBarHeight = window.devicePixelRatio;
     this.barPaddingWidth = 2 * window.devicePixelRatio;
     this.outerBarWidth = this.innerBarWidth + this.barPaddingWidth;
-    this.pendingScale = 1;
-    this.scale = this.pendingScale;
+    this.#pendingScale = 1;
+    this.#scale = this.#pendingScale;
+    this.samplesPerBar = 0;
     this.log = [];
 
     this.#viewOutput = {
@@ -289,6 +290,27 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     };
 
     this.reset();
+  }
+
+  set snapshotAndLog(data: {
+    snapshot: SDK.PaintProfiler.PaintProfilerSnapshot|null,
+    log: SDK.PaintProfiler.PaintProfilerLogItem[],
+    clipRect?: Protocol.DOM.Rect|null,
+  }|null) {
+    const newSnapshot = data ? data.snapshot : null;
+    const newLog = data ? data.log : [];
+    const newClipRect = data ? (data.clipRect || null) : null;
+    if (this.snapshot === newSnapshot && this.log === newLog) {
+      return;
+    }
+    void this.setSnapshotAndLog(newSnapshot, newLog, newClipRect);
+  }
+
+  get snapshoAndLog(): {
+    log: SDK.PaintProfiler.PaintProfilerLogItem[],
+    snapshot?: SDK.PaintProfiler.PaintProfilerSnapshot|null,
+  } {
+    return {snapshot: this.snapshot, log: this.log};
   }
 
   static categories(): Record<string, PaintProfilerCategory> {
@@ -403,13 +425,17 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.requestUpdate();
   }
 
-  setScale(scale: number): void {
-    const needsUpdate = scale > this.scale;
+  set scale(scale: number) {
+    const needsUpdate = scale > this.#scale;
     const predictiveGrowthFactor = 2;
-    this.pendingScale = Math.min(1, scale * predictiveGrowthFactor);
+    this.#pendingScale = Math.min(1, scale * predictiveGrowthFactor);
     if (needsUpdate && this.snapshot) {
       this.updateImage();
     }
+  }
+
+  get scale(): number {
+    return this.#scale;
   }
 
   override performUpdate(): void {
@@ -429,7 +455,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private onWindowChanged(): void {
-    this.dispatchEventToListeners(Events.WINDOW_CHANGED);
+    this.dispatchEventToListeners(Events.WINDOW_CHANGED, this.selectionWindow());
     this.requestUpdate();
     if (this.updateImageTimer) {
       return;
@@ -460,7 +486,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
       left = this.log[window.left].commandIndex;
       right = this.log[window.right - 1].commandIndex;
     }
-    const scale = this.pendingScale;
+    const scale = this.#pendingScale;
     if (!this.snapshot) {
       return;
     }
@@ -468,8 +494,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
       if (!image) {
         return;
       }
-      this.scale = scale;
-      this.showImageCallback(image);
+      this.#scale = scale;
+      this.showImageCallback?.(image);
     });
   }
 
@@ -491,7 +517,7 @@ export const enum Events {
 }
 
 export interface EventTypes {
-  [Events.WINDOW_CHANGED]: void;
+  [Events.WINDOW_CHANGED]: {left: number, right: number}|null;
 }
 
 export interface CommandLogViewInput {
@@ -583,16 +609,14 @@ export const COMMAND_LOG_DEFAULT_VIEW = (input: CommandLogViewInput, _output: un
 type CommandLogView = typeof COMMAND_LOG_DEFAULT_VIEW;
 
 export class PaintProfilerCommandLogView extends UI.Widget.VBox {
-  private log: SDK.PaintProfiler.PaintProfilerLogItem[];
-  private selectionWindow?: {left: number, right: number}|null;
+  #log: SDK.PaintProfiler.PaintProfilerLogItem[] = [];
+  #selectionWindow?: {left: number, right: number}|null = null;
   readonly #view: CommandLogView;
 
   constructor(element?: HTMLElement, view: CommandLogView = COMMAND_LOG_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
     this.setMinimumSize(100, 25);
-
-    this.log = [];
   }
 
   override wasShown(): void {
@@ -600,19 +624,31 @@ export class PaintProfilerCommandLogView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  setCommandLog(log: SDK.PaintProfiler.PaintProfilerLogItem[]): void {
-    this.log = log;
-    this.updateWindow({left: 0, right: this.log.length});
-  }
-
-  updateWindow(selectionWindow: {left: number, right: number}|null): void {
-    this.selectionWindow = selectionWindow;
+  set commandLog(log: SDK.PaintProfiler.PaintProfilerLogItem[]) {
+    if (this.#log === log) {
+      return;
+    }
+    this.#log = log;
+    this.#selectionWindow = {left: 0, right: this.#log.length};
     this.requestUpdate();
   }
 
+  get commandLog(): SDK.PaintProfiler.PaintProfilerLogItem[] {
+    return this.#log;
+  }
+
+  set selectionWindow(window: {left: number, right: number}|null) {
+    this.#selectionWindow = window;
+    this.requestUpdate();
+  }
+
+  get selectionWindow(): {left: number, right: number}|null {
+    return this.#selectionWindow || null;
+  }
+
   override performUpdate(): Promise<void> {
-    const visibleLogItems = this.selectionWindow && this.log.length ?
-        this.log.slice(this.selectionWindow.left, this.selectionWindow.right) :
+    const visibleLogItems = this.#selectionWindow && this.#log.length ?
+        this.#log.slice(this.#selectionWindow.left, this.#selectionWindow.right) :
         [];
 
     this.#view({visibleLogItems}, undefined, this.contentElement);

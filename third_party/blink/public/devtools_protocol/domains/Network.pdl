@@ -738,14 +738,6 @@ domain Network
       None
       # The cookie should have been blocked by 3PCD but is exempted by explicit user setting.
       UserSetting
-      # The cookie should have been blocked by 3PCD but is exempted by metadata mitigation.
-      TPCDMetadata
-      # The cookie should have been blocked by 3PCD but is exempted by Deprecation Trial mitigation.
-      TPCDDeprecationTrial
-      # The cookie should have been blocked by 3PCD but is exempted by Top-level Deprecation Trial mitigation.
-      TopLevelTPCDDeprecationTrial
-      # The cookie should have been blocked by 3PCD but is exempted by heuristics mitigation.
-      TPCDHeuristics
       # The cookie should have been blocked by 3PCD but is exempted by Enterprise Policy.
       EnterprisePolicy
       # The cookie should have been blocked by 3PCD but is exempted by Storage Access API.

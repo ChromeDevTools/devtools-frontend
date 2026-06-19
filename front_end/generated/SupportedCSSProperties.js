@@ -10,7 +10,21 @@ export const generatedProperties = [
    "block-ellipsis",
    "continue"
   ],
-  "name": "-alternative-webkit-line-clamp"
+  "name": "-alternative-line-clamp-shorthand"
+ },
+ {
+  "keywords": [
+   "none"
+  ],
+  "name": "-alternative-webkit-line-clamp-longhand"
+ },
+ {
+  "longhands": [
+   "max-lines",
+   "block-ellipsis",
+   "continue"
+  ],
+  "name": "-alternative-webkit-line-clamp-shorthand"
  },
  {
   "inherited": true,
@@ -92,6 +106,12 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "auto",
+   "none",
+   "antialiased",
+   "subpixel-antialiased"
+  ],
   "name": "-webkit-font-smoothing"
  },
  {
@@ -112,6 +132,9 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "auto"
+  ],
   "name": "-webkit-locale"
  },
  {
@@ -128,15 +151,27 @@ export const generatedProperties = [
   "name": "-webkit-mask-box-image-outset"
  },
  {
+  "keywords": [
+   "repeat",
+   "stretch",
+   "space",
+   "round"
+  ],
   "name": "-webkit-mask-box-image-repeat"
  },
  {
   "name": "-webkit-mask-box-image-slice"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "-webkit-mask-box-image-source"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "-webkit-mask-box-image-width"
  },
  {
@@ -169,10 +204,23 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "none",
+   "horizontal"
+  ],
   "name": "-webkit-text-combine"
  },
  {
   "inherited": true,
+  "keywords": [
+   "none",
+   "blink",
+   "line-through",
+   "overline",
+   "underline",
+   "spelling-error",
+   "grammar-error"
+  ],
   "name": "-webkit-text-decorations-in-effect"
  },
  {
@@ -294,6 +342,7 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "-alternative-webkit-line-clamp-longhand",
    "-webkit-border-horizontal-spacing",
    "-webkit-border-vertical-spacing",
    "-webkit-box-align",
@@ -559,6 +608,7 @@ export const generatedProperties = [
    "letter-spacing",
    "lighting-color",
    "line-break",
+   "line-clamp",
    "line-gap-override",
    "line-height",
    "list-style-image",
@@ -865,6 +915,9 @@ export const generatedProperties = [
   "name": "animation-direction"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "animation-duration"
  },
  {
@@ -946,6 +999,22 @@ export const generatedProperties = [
   "name": "app-region"
  },
  {
+  "keywords": [
+   "auto",
+   "none",
+   "checkbox",
+   "radio",
+   "button",
+   "listbox",
+   "menulist",
+   "menulist-button",
+   "meter",
+   "progress-bar",
+   "searchfield",
+   "textfield",
+   "textarea",
+   "base-select"
+  ],
   "name": "appearance"
  },
  {
@@ -1033,7 +1102,6 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
    "none"
   ],
   "name": "background-image"
@@ -1162,9 +1230,26 @@ export const generatedProperties = [
   "name": "border-block-end-color"
  },
  {
+  "keywords": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ],
   "name": "border-block-end-style"
  },
  {
+  "keywords": [
+   "medium",
+   "thick",
+   "thin"
+  ],
   "name": "border-block-end-width"
  },
  {
@@ -1179,9 +1264,26 @@ export const generatedProperties = [
   "name": "border-block-start-color"
  },
  {
+  "keywords": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ],
   "name": "border-block-start-style"
  },
  {
+  "keywords": [
+   "medium",
+   "thick",
+   "thin"
+  ],
   "name": "border-block-start-width"
  },
  {
@@ -1338,9 +1440,26 @@ export const generatedProperties = [
   "name": "border-inline-end-color"
  },
  {
+  "keywords": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ],
   "name": "border-inline-end-style"
  },
  {
+  "keywords": [
+   "medium",
+   "thick",
+   "thin"
+  ],
   "name": "border-inline-end-width"
  },
  {
@@ -1355,9 +1474,26 @@ export const generatedProperties = [
   "name": "border-inline-start-color"
  },
  {
+  "keywords": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ],
   "name": "border-inline-start-style"
  },
  {
+  "keywords": [
+   "medium",
+   "thick",
+   "thin"
+  ],
   "name": "border-inline-start-width"
  },
  {
@@ -1969,6 +2105,14 @@ export const generatedProperties = [
   "name": "container-type"
  },
  {
+  "keywords": [
+   "none",
+   "normal",
+   "close-quote",
+   "no-close-quote",
+   "no-open-quote",
+   "open-quote"
+  ],
   "name": "content"
  },
  {
@@ -2999,13 +3143,19 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "none"
+   "auto",
+   "none",
+   "min-content",
+   "max-content"
   ],
   "name": "grid-template-columns"
  },
  {
   "keywords": [
-   "none"
+   "auto",
+   "none",
+   "min-content",
+   "max-content"
   ],
   "name": "grid-template-rows"
  },
@@ -3040,6 +3190,9 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "auto"
+  ],
   "name": "hyphenate-character"
  },
  {
@@ -3070,6 +3223,10 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "none",
+   "from-image"
+  ],
   "name": "image-orientation"
  },
  {
@@ -3126,9 +3283,15 @@ export const generatedProperties = [
   "name": "inset-block"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "inset-block-end"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "inset-block-start"
  },
  {
@@ -3139,9 +3302,15 @@ export const generatedProperties = [
   "name": "inset-inline"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "inset-inline-end"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "inset-inline-start"
  },
  {
@@ -3237,10 +3406,12 @@ export const generatedProperties = [
   "name": "line-break"
  },
  {
-  "longhands": [
-   "max-lines",
-   "block-ellipsis",
-   "continue"
+  "keywords": [
+   "none",
+   "auto",
+   "ellipsis",
+   "no-ellipsis",
+   "-webkit-legacy"
   ],
   "name": "line-clamp"
  },
@@ -3424,6 +3595,9 @@ export const generatedProperties = [
   "name": "mask-composite"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "mask-image"
  },
  {
@@ -3448,6 +3622,11 @@ export const generatedProperties = [
   "name": "mask-repeat"
  },
  {
+  "keywords": [
+   "auto",
+   "contain",
+   "cover"
+  ],
   "name": "mask-size"
  },
  {
@@ -3508,6 +3687,13 @@ export const generatedProperties = [
   "name": "max-width"
  },
  {
+  "keywords": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ],
   "name": "min-block-size"
  },
  {
@@ -4473,6 +4659,11 @@ export const generatedProperties = [
   "name": "scroll-margin-top"
  },
  {
+  "keywords": [
+   "none",
+   "after",
+   "before"
+  ],
   "name": "scroll-marker-group"
  },
  {
@@ -4593,6 +4784,9 @@ export const generatedProperties = [
   "name": "scroll-timeline-axis"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "scroll-timeline-name"
  },
  {
@@ -4629,9 +4823,6 @@ export const generatedProperties = [
   "name": "shape-image-threshold"
  },
  {
-  "keywords": [
-   "none"
-  ],
   "name": "shape-margin"
  },
  {
@@ -4651,6 +4842,11 @@ export const generatedProperties = [
   "name": "shape-rendering"
  },
  {
+  "keywords": [
+   "auto",
+   "portrait",
+   "landscape"
+  ],
   "name": "size"
  },
  {
@@ -4821,6 +5017,12 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "auto",
+   "text",
+   "cap",
+   "ex"
+  ],
   "name": "text-box-edge"
  },
  {
@@ -5062,6 +5264,10 @@ export const generatedProperties = [
   "name": "text-wrap-style"
  },
  {
+  "keywords": [
+   "none",
+   "all"
+  ],
   "name": "timeline-scope"
  },
  {
@@ -5096,12 +5302,23 @@ export const generatedProperties = [
   "name": "timeline-trigger-active-range"
  },
  {
+  "keywords": [
+   "auto",
+   "normal"
+  ],
   "name": "timeline-trigger-active-range-end"
  },
  {
+  "keywords": [
+   "auto",
+   "normal"
+  ],
   "name": "timeline-trigger-active-range-start"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "timeline-trigger-name"
  },
  {
@@ -5275,9 +5492,15 @@ export const generatedProperties = [
   "name": "view-timeline-axis"
  },
  {
+  "keywords": [
+   "auto"
+  ],
   "name": "view-timeline-inset"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "view-timeline-name"
  },
  {
@@ -5401,6 +5624,11 @@ export const generatedProperties = [
  }
 ];
 export const generatedPropertyValues = {
+ "-alternative-webkit-line-clamp-longhand": {
+  "values": [
+   "none"
+  ]
+ },
  "-webkit-box-align": {
   "values": [
    "stretch",
@@ -5436,6 +5664,14 @@ export const generatedPropertyValues = {
    "justify"
   ]
  },
+ "-webkit-font-smoothing": {
+  "values": [
+   "auto",
+   "none",
+   "antialiased",
+   "subpixel-antialiased"
+  ]
+ },
  "-webkit-line-break": {
   "values": [
    "auto",
@@ -5450,10 +5686,50 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
+ "-webkit-locale": {
+  "values": [
+   "auto"
+  ]
+ },
+ "-webkit-mask-box-image-repeat": {
+  "values": [
+   "repeat",
+   "stretch",
+   "space",
+   "round"
+  ]
+ },
+ "-webkit-mask-box-image-source": {
+  "values": [
+   "none"
+  ]
+ },
+ "-webkit-mask-box-image-width": {
+  "values": [
+   "auto"
+  ]
+ },
  "-webkit-rtl-ordering": {
   "values": [
    "logical",
    "visual"
+  ]
+ },
+ "-webkit-text-combine": {
+  "values": [
+   "none",
+   "horizontal"
+  ]
+ },
+ "-webkit-text-decorations-in-effect": {
+  "values": [
+   "none",
+   "blink",
+   "line-through",
+   "overline",
+   "underline",
+   "spelling-error",
+   "grammar-error"
   ]
  },
  "-webkit-text-security": {
@@ -5542,6 +5818,11 @@ export const generatedPropertyValues = {
    "alternate-reverse"
   ]
  },
+ "animation-duration": {
+  "values": [
+   "auto"
+  ]
+ },
  "animation-fill-mode": {
   "values": [
    "none",
@@ -5597,6 +5878,24 @@ export const generatedPropertyValues = {
    "none",
    "drag",
    "no-drag"
+  ]
+ },
+ "appearance": {
+  "values": [
+   "auto",
+   "none",
+   "checkbox",
+   "radio",
+   "button",
+   "listbox",
+   "menulist",
+   "menulist-button",
+   "meter",
+   "progress-bar",
+   "searchfield",
+   "textfield",
+   "textarea",
+   "base-select"
   ]
  },
  "aspect-ratio": {
@@ -5658,7 +5957,6 @@ export const generatedPropertyValues = {
  },
  "background-image": {
   "values": [
-   "auto",
    "none"
   ]
  },
@@ -5699,6 +5997,48 @@ export const generatedPropertyValues = {
  "block-size": {
   "values": [
    "auto"
+  ]
+ },
+ "border-block-end-style": {
+  "values": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ]
+ },
+ "border-block-end-width": {
+  "values": [
+   "medium",
+   "thick",
+   "thin"
+  ]
+ },
+ "border-block-start-style": {
+  "values": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ]
+ },
+ "border-block-start-width": {
+  "values": [
+   "medium",
+   "thick",
+   "thin"
   ]
  },
  "border-bottom-color": {
@@ -5758,6 +6098,48 @@ export const generatedPropertyValues = {
  "border-image-width": {
   "values": [
    "auto"
+  ]
+ },
+ "border-inline-end-style": {
+  "values": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ]
+ },
+ "border-inline-end-width": {
+  "values": [
+   "medium",
+   "thick",
+   "thin"
+  ]
+ },
+ "border-inline-start-style": {
+  "values": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double"
+  ]
+ },
+ "border-inline-start-width": {
+  "values": [
+   "medium",
+   "thick",
+   "thin"
   ]
  },
  "border-left-color": {
@@ -6143,6 +6525,16 @@ export const generatedPropertyValues = {
    "size",
    "scroll-state",
    "anchored"
+  ]
+ },
+ "content": {
+  "values": [
+   "none",
+   "normal",
+   "close-quote",
+   "no-close-quote",
+   "no-open-quote",
+   "open-quote"
   ]
  },
  "content-visibility": {
@@ -6731,12 +7123,18 @@ export const generatedPropertyValues = {
  },
  "grid-template-columns": {
   "values": [
-   "none"
+   "auto",
+   "none",
+   "min-content",
+   "max-content"
   ]
  },
  "grid-template-rows": {
   "values": [
-   "none"
+   "auto",
+   "none",
+   "min-content",
+   "max-content"
   ]
  },
  "hanging-punctuation": {
@@ -6753,6 +7151,11 @@ export const generatedPropertyValues = {
    "fit-content",
    "min-content",
    "max-content"
+  ]
+ },
+ "hyphenate-character": {
+  "values": [
+   "auto"
   ]
  },
  "hyphenate-limit-chars": {
@@ -6775,6 +7178,12 @@ export const generatedPropertyValues = {
    "stopped"
   ]
  },
+ "image-orientation": {
+  "values": [
+   "none",
+   "from-image"
+  ]
+ },
  "image-rendering": {
   "values": [
    "auto",
@@ -6793,6 +7202,26 @@ export const generatedPropertyValues = {
   ]
  },
  "inline-size": {
+  "values": [
+   "auto"
+  ]
+ },
+ "inset-block-end": {
+  "values": [
+   "auto"
+  ]
+ },
+ "inset-block-start": {
+  "values": [
+   "auto"
+  ]
+ },
+ "inset-inline-end": {
+  "values": [
+   "auto"
+  ]
+ },
+ "inset-inline-start": {
   "values": [
    "auto"
   ]
@@ -6856,6 +7285,15 @@ export const generatedPropertyValues = {
    "strict",
    "anywhere",
    "after-white-space"
+  ]
+ },
+ "line-clamp": {
+  "values": [
+   "none",
+   "auto",
+   "ellipsis",
+   "no-ellipsis",
+   "-webkit-legacy"
   ]
  },
  "line-height": {
@@ -6948,11 +7386,23 @@ export const generatedPropertyValues = {
    "exclude"
   ]
  },
+ "mask-image": {
+  "values": [
+   "none"
+  ]
+ },
  "mask-mode": {
   "values": [
    "alpha",
    "luminance",
    "match-source"
+  ]
+ },
+ "mask-size": {
+  "values": [
+   "auto",
+   "contain",
+   "cover"
   ]
  },
  "mask-type": {
@@ -6996,6 +7446,15 @@ export const generatedPropertyValues = {
  "max-width": {
   "values": [
    "none"
+  ]
+ },
+ "min-block-size": {
+  "values": [
+   "auto",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
   ]
  },
  "min-height": {
@@ -7474,6 +7933,13 @@ export const generatedPropertyValues = {
    "nearest"
   ]
  },
+ "scroll-marker-group": {
+  "values": [
+   "none",
+   "after",
+   "before"
+  ]
+ },
  "scroll-padding-block-end": {
   "values": [
    "auto"
@@ -7546,6 +8012,11 @@ export const generatedPropertyValues = {
    "auto"
   ]
  },
+ "scroll-timeline-name": {
+  "values": [
+   "none"
+  ]
+ },
  "scrollbar-color": {
   "values": [
    "auto"
@@ -7565,11 +8036,6 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
- "shape-margin": {
-  "values": [
-   "none"
-  ]
- },
  "shape-outside": {
   "values": [
    "none"
@@ -7581,6 +8047,13 @@ export const generatedPropertyValues = {
    "optimizespeed",
    "crispedges",
    "geometricprecision"
+  ]
+ },
+ "size": {
+  "values": [
+   "auto",
+   "portrait",
+   "landscape"
   ]
  },
  "speak": {
@@ -7660,6 +8133,14 @@ export const generatedPropertyValues = {
   "values": [
    "no-autospace",
    "normal"
+  ]
+ },
+ "text-box-edge": {
+  "values": [
+   "auto",
+   "text",
+   "cap",
+   "ex"
   ]
  },
  "text-box-trim": {
@@ -7814,6 +8295,29 @@ export const generatedPropertyValues = {
    "stable"
   ]
  },
+ "timeline-scope": {
+  "values": [
+   "none",
+   "all"
+  ]
+ },
+ "timeline-trigger-active-range-end": {
+  "values": [
+   "auto",
+   "normal"
+  ]
+ },
+ "timeline-trigger-active-range-start": {
+  "values": [
+   "auto",
+   "normal"
+  ]
+ },
+ "timeline-trigger-name": {
+  "values": [
+   "none"
+  ]
+ },
  "timeline-trigger-source": {
   "values": [
    "none",
@@ -7924,6 +8428,16 @@ export const generatedPropertyValues = {
    "text-top",
    "text-bottom",
    "middle"
+  ]
+ },
+ "view-timeline-inset": {
+  "values": [
+   "auto"
+  ]
+ },
+ "view-timeline-name": {
+  "values": [
+   "none"
   ]
  },
  "view-transition-class": {

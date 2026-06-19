@@ -82,6 +82,18 @@ experimental domain CSS
       # Specificity of the selector.
       experimental optional Specificity specificity
 
+  # Contribution of an individual simple selector to specificity.
+  experimental type SpecificityComponent extends object
+    properties
+      # The simple selector text that contributes to specificity.
+      string text
+      # The a component contribution.
+      integer a
+      # The b component contribution.
+      integer b
+      # The c component contribution.
+      integer c
+
   # Specificity:
   # https://drafts.csswg.org/selectors/#specificity-rules
   experimental type Specificity extends object
@@ -93,6 +105,8 @@ experimental domain CSS
       integer b
       # The c component, which represents the number of type selectors and pseudo-elements.
       integer c
+      # Per-simple-selector contributions used to explain this specificity.
+      experimental optional array of SpecificityComponent components
 
   # Selector list data.
   type SelectorList extends object

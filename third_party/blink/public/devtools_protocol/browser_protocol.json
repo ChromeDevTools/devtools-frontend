@@ -4433,6 +4433,34 @@
                     ]
                 },
                 {
+                    "id": "SpecificityComponent",
+                    "description": "Contribution of an individual simple selector to specificity.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "text",
+                            "description": "The simple selector text that contributes to specificity.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "a",
+                            "description": "The a component contribution.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "b",
+                            "description": "The b component contribution.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "c",
+                            "description": "The c component contribution.",
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
                     "id": "Specificity",
                     "description": "Specificity:\nhttps://drafts.csswg.org/selectors/#specificity-rules",
                     "experimental": true,
@@ -4452,6 +4480,16 @@
                             "name": "c",
                             "description": "The c component, which represents the number of type selectors and pseudo-elements.",
                             "type": "integer"
+                        },
+                        {
+                            "name": "components",
+                            "description": "Per-simple-selector contributions used to explain this specificity.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "SpecificityComponent"
+                            }
                         }
                     ]
                 },
@@ -16759,10 +16797,6 @@
                     "enum": [
                         "None",
                         "UserSetting",
-                        "TPCDMetadata",
-                        "TPCDDeprecationTrial",
-                        "TopLevelTPCDDeprecationTrial",
-                        "TPCDHeuristics",
                         "EnterprisePolicy",
                         "StorageAccess",
                         "TopLevelStorageAccess",

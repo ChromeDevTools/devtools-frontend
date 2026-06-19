@@ -2919,6 +2919,28 @@ export namespace CSS {
   }
 
   /**
+   * Contribution of an individual simple selector to specificity.
+   */
+  export interface SpecificityComponent {
+    /**
+     * The simple selector text that contributes to specificity.
+     */
+    text: string;
+    /**
+     * The a component contribution.
+     */
+    a: integer;
+    /**
+     * The b component contribution.
+     */
+    b: integer;
+    /**
+     * The c component contribution.
+     */
+    c: integer;
+  }
+
+  /**
    * Specificity:
    * https://drafts.csswg.org/selectors/#specificity-rules
    */
@@ -2936,6 +2958,10 @@ export namespace CSS {
      * The c component, which represents the number of type selectors and pseudo-elements.
      */
     c: integer;
+    /**
+     * Per-simple-selector contributions used to explain this specificity.
+     */
+    components?: SpecificityComponent[];
   }
 
   /**
@@ -11136,10 +11162,6 @@ export namespace Network {
   export const enum CookieExemptionReason {
     None = 'None',
     UserSetting = 'UserSetting',
-    TPCDMetadata = 'TPCDMetadata',
-    TPCDDeprecationTrial = 'TPCDDeprecationTrial',
-    TopLevelTPCDDeprecationTrial = 'TopLevelTPCDDeprecationTrial',
-    TPCDHeuristics = 'TPCDHeuristics',
     EnterprisePolicy = 'EnterprisePolicy',
     StorageAccess = 'StorageAccess',
     TopLevelStorageAccess = 'TopLevelStorageAccess',

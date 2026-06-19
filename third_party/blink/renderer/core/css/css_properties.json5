@@ -974,6 +974,7 @@
       // Animation properites are never incremental.
       supports_incremental_style: false,
       valid_for_keyframe: false,
+      keywords: ["auto"],
     },
     {
       name: "animation-fill-mode",
@@ -1157,6 +1158,7 @@
       valid_for_marker: true,
       runtime_flag: "TimelineTrigger",
       is_animation_affecting: true,
+      keywords: ["none"],
     },
     {
       name: "timeline-trigger-activation-range-start",
@@ -1196,6 +1198,7 @@
       runtime_flag: "TimelineTrigger",
       is_animation_affecting: true,
       percentages_depend_on_used_value: false,
+      keywords: ["auto", "normal"],
     },
     {
       name: "timeline-trigger-active-range-end",
@@ -1209,6 +1212,7 @@
       runtime_flag: "TimelineTrigger",
       is_animation_affecting: true,
       percentages_depend_on_used_value: false,
+      keywords: ["auto", "normal"],
     },
     {
       name: "timeline-trigger-source",
@@ -1838,6 +1842,7 @@
       valid_for_first_line: true,
       valid_for_permission_element: true,
       stored_on_extra_field: ["font"],
+      keywords: ["auto", "none", "antialiased", "subpixel-antialiased"],
     },
     {
       name: "forced-color-adjust",
@@ -1873,6 +1878,7 @@
       style_builder_custom_functions: ["value"],
       priority: 1,
       stored_on_extra_field: ["font"],
+      keywords: ["auto"],
     },
     {
       name: "math-depth",
@@ -2206,7 +2212,7 @@
       name: "background-image",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
-      keywords: ["auto", "none"],
+      keywords: ["none"],
       typedom_types: ["Keyword", "Image"],
       separator: " ",
       style_builder_template: "background_layer",
@@ -3224,6 +3230,7 @@
       valid_for_marker: true,
       valid_for_page_context: true,
       supports_incremental_style: true,
+      keywords: ["none", "normal", "close-quote", "no-close-quote", "no-open-quote", "open-quote"],
     },
     {
       name: "corner-bottom-left-shape",
@@ -3840,7 +3847,8 @@
       converter: "ConvertGridTrackList",
       getter: "SpecifiedGridTemplateColumns",
       style_builder_custom_functions: ["inherit"],
-      keywords: ["none"],
+      typedom_keywords: ["none"],
+      keywords: ["auto", "none", "min-content", "max-content"],
       typedom_types: ["Keyword"],
       invalidate: ["layout", "paint"],
       percentages_depend_on_used_value: true,
@@ -3875,7 +3883,8 @@
       converter: "ConvertGridTrackList",
       getter: "SpecifiedGridTemplateRows",
       style_builder_custom_functions: ["inherit"],
-      keywords: ["none"],
+      typedom_keywords: ["none"],
+      keywords: ["auto", "none", "min-content", "max-content"],
       typedom_types: ["Keyword"],
       invalidate: ["layout", "paint"],
       percentages_depend_on_used_value: true,
@@ -4008,6 +4017,7 @@
         "third_party/blink/renderer/platform/graphics/image_orientation.h"
       ],
       invalidate: ["layout", "paint"],
+      keywords: ["none", "from-image"],
     },
     {
       name: "dynamic-range-limit",
@@ -5432,6 +5442,7 @@
       type_name: "ScrollMarkerGroup",
       converter: "ConvertScrollMarkerGroup",
       typedom_types: ["Keyword"],
+      keywords: ["none", "after", "before"],
     },
     {
       interpolable: true,
@@ -5793,6 +5804,7 @@
       converter: "ConvertViewTimelineName",
       separator: ",",
       is_animation_affecting: true,
+      keywords: ["none"],
     },
     {
       name: "shape-image-threshold",
@@ -5816,7 +5828,6 @@
       field_template: "<length>",
       default_value: "Length::Fixed(0)",
       converter: "ConvertLength",
-      keywords: ["none"],
       typedom_types: ["Length", "Percentage"],
       invalidate: ["layout", "paint"],
       percentages_depend_on_used_value: true,
@@ -5855,6 +5866,7 @@
       computable: false,
       valid_for_page_context: true,
       stored_on_extra_field: ["PageSize", "PageSizeType"],
+      keywords: ["auto", "portrait", "landscape"],
     },
     {
       name: "speak",
@@ -6135,6 +6147,7 @@
       type_name: "TextBoxEdge",
       converter: "ConvertTextBoxEdge",
       invalidate: ["layout"],
+      keywords: ["auto", "text", "cap", "ex"],
     },
     {
       name: "text-box-trim",
@@ -6454,6 +6467,7 @@
       converter: "ConvertTimelineScope",
       separator: ",",
       is_animation_affecting: true,
+      keywords: ["none", "all"],
     },
     {
       name: "top",
@@ -6670,6 +6684,7 @@
       separator: ",",
       is_animation_affecting: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto"],
     },
     {
       name: "view-timeline-name",
@@ -6681,6 +6696,7 @@
       converter: "ConvertViewTimelineName",
       separator: ",",
       is_animation_affecting: true,
+      keywords: ["none"],
     },
     {
       name: "view-transition-class",
@@ -6788,6 +6804,9 @@
       // -internal-auto-base() can be resolved.
       priority: 1,
       invalidate: ["layout", "paint"],
+      keywords: ["auto", "none", "checkbox", "radio", "button", "listbox",
+                "menulist", "menulist-button", "meter", "progress-bar",
+                "searchfield", "textfield", "textarea", "base-select"]
     },
     {
       name: "-webkit-appearance",
@@ -7336,6 +7355,7 @@
       type_name: "AtomicString",
       converter: "ConvertString<CSSValueID::kAuto>",
       invalidate: ["layout", "paint"],
+      keywords: ["auto"],
     },
     {
       name: "-webkit-line-break",
@@ -7360,27 +7380,19 @@
     {
       name: "continue",
       property_methods: ["CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "keyword",
       keywords: ["normal", "collapse", "-webkit-legacy"],
-      default_value: "normal",
       typedom_types: ["Keyword"],
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSLineClamp",
+      stored_on_extra_field: ["Continue"],
+      runtime_flag: "CSSLineClampAsShorthand",
     },
     {
       name: "max-lines",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      field_group: "*",
-      field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/max_lines_data.h"],
-      default_value: "MaxLinesData(0, true)",
-      type_name: "MaxLinesData",
       converter: "ConvertMaxLines",
       keywords: ["auto"],
       typedom_types: ["Number", "Keyword"],
-      invalidate: ["layout", "paint"],
-      runtime_flag: "CSSLineClamp",
+      stored_on_extra_field: ["MaxLines"],
+      runtime_flag: "CSSLineClampAsShorthand",
     },
     {
       name: "block-ellipsis",
@@ -7392,15 +7404,39 @@
       default_value: "no-ellipsis",
       typedom_types: ["Keyword"],
       invalidate: ["layout", "paint"],
-      runtime_flag: "CSSLineClamp",
+      runtime_flag: "CSSLineClampAsShorthand",
     },
     {
+      // This is a longhand that behaves like the spec'd shorthand, so we store it in extra fields
+      // corresponding to each of the longhands, which are also used for those longhands proper with
+      // the `CSSLineClampAsShorthand` runtime flag.
+      // However, the spec's `block-ellipsis` longhand is inherited, while the rest of longhands
+      // aren't; so to avoid issues, we avoid sharing its state with the longhand.
       name: "line-clamp",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_custom_functions: ["initial", "inherit", "value"],
+      keywords: ["none", "auto", "ellipsis", "no-ellipsis", "-webkit-legacy"],
+      typedom_types: ["Keyword", "Number"],
+      stored_on_extra_field: [
+        "Continue",
+        "MaxLines",
+        "LineClampInternalBlockEllipsis"
+      ],
+      // overlaps with -alternative-webkit-line-clamp
+      overlapping: true,
+      runtime_flag: "CSSLineClamp"
+    },
+    {
+      // True shorthand for `line-clamp`
+      name: "-alternative-line-clamp-shorthand",
+      alternative_of: "line-clamp",
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       longhands: ["max-lines", "block-ellipsis", "continue"],
-      runtime_flag: "CSSLineClamp",
+      runtime_flag: "CSSLineClampAsShorthand",
     },
     {
+      // Standalone (legacy) version of the -webkit-line-clamp property, when no
+      // related runtime flags are enabled.
       name: "-webkit-line-clamp",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       field_group: "*",
@@ -7413,11 +7449,33 @@
       name_for_methods: "WebkitLineClamp",
     },
     {
-      name: "-alternative-webkit-line-clamp",
+      // Longhand version of -webkit-line-clamp which stores its values in extra
+      // fields, used when the CSSLineClamp is enabled (so there *is* a
+      // `line-clamp` property) but when CSSLineClampAsShorthand is disabled (so
+      // `line-clamp` is a longhand, not a shorthand).
+      name: "-alternative-webkit-line-clamp-longhand",
       alternative_of: "-webkit-line-clamp",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_custom_functions: ["initial", "inherit", "value"],
+      keywords: ["none"],
+      typedom_types: ["Keyword", "Number"],
+      stored_on_extra_field: [
+        "Continue",
+        "MaxLines",
+        "LineClampInternalBlockEllipsis"
+      ],
+      // overlaps with line-clamp
+      legacy_overlapping: true,
+      runtime_flag: "CSSLineClamp",
+    },
+    {
+      // Shorthand version of -webkit-line-clamp, corresponding to the
+      // `-alternative-line-clamp-shorthand` definition.
+      name: "-alternative-webkit-line-clamp-shorthand",
+      alternative_of: "-alternative-webkit-line-clamp-longhand",
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       longhands: ["max-lines", "block-ellipsis", "continue"],
-      runtime_flag: "CSSLineClamp",
+      runtime_flag: "CSSLineClampAsShorthand",
     },
     {
       name: "-webkit-mask-box-image-outset",
@@ -7438,6 +7496,7 @@
         modifier_type: "Repeat",
       },
       stored_on_extra_field: ["MaskBoxImage"],
+      keywords: ["repeat", "stretch", "space", "round"],
     },
     {
       name: "-webkit-mask-box-image-slice",
@@ -7458,6 +7517,7 @@
       style_builder_custom_functions: ["value"],
       includes_currentcolor: true,
       stored_on_extra_field: ["MaskBoxImage"],
+      keywords: ["none"],
     },
     {
       name: "-webkit-mask-box-image-width",
@@ -7470,6 +7530,7 @@
       },
       stored_on_extra_field: ["MaskBoxImage"],
       percentages_depend_on_used_value: true,
+      keywords: ["auto"],
     },
     {
       name: "mask-mode",
@@ -7521,6 +7582,7 @@
       },
       includes_currentcolor: true,
       stored_on_extra_field: ["Mask"],
+      keywords: ["none"],
     },
     {
       name: "-webkit-mask-image",
@@ -7585,6 +7647,7 @@
       },
       stored_on_extra_field: ["Mask"],
       percentages_depend_on_used_value: true,
+      keywords: ["auto", "contain", "cover"],
     },
     {
       name: "-webkit-mask-size",
@@ -7693,6 +7756,7 @@
       inherited: true,
       surrogate_for: "text-combine-upright",
       stored_on_extra_field: ["crbug.com/40919412"],
+      keywords: ["none", "horizontal"],
     },
     {
       name: "text-emphasis-color",
@@ -8107,6 +8171,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto", "min-content", "max-content", "fit-content", "stretch"],
     },
     {
       name: "max-inline-size",
@@ -8259,6 +8324,7 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["medium", "thick", "thin"],
     },
     {
       name: "border-inline-start-style",
@@ -8269,6 +8335,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
+                "dotted", "dashed", "solid", "double"],
     },
     {
       name: "border-inline-start-color",
@@ -8291,6 +8359,7 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["medium", "thick", "thin"],
     },
     {
       name: "border-inline-end-style",
@@ -8301,6 +8370,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
+                "dotted", "dashed", "solid", "double"],
     },
     {
       name: "border-inline-end-color",
@@ -8323,6 +8394,7 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["medium", "thick", "thin"],
     },
     {
       name: "border-block-start-style",
@@ -8333,6 +8405,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
+                "dotted", "dashed", "solid", "double"],
     },
     {
       name: "border-block-start-color",
@@ -8355,6 +8429,7 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["medium", "thick", "thin"],
     },
     {
       name: "border-block-end-style",
@@ -8365,6 +8440,8 @@
       valid_for_first_letter: true,
       valid_for_permission_element: true,
       valid_for_page_context: true,
+      keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
+                "dotted", "dashed", "solid", "double"],
     },
     {
       name: "border-block-end-color",
@@ -8389,6 +8466,7 @@
       layout_dependent: true,
       valid_for_permission_element: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto"],
     },
     {
       name: "inset-inline-end",
@@ -8402,6 +8480,7 @@
       layout_dependent: true,
       valid_for_permission_element: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto"],
     },
     {
       name: "inset-block-start",
@@ -8415,6 +8494,7 @@
       layout_dependent: true,
       valid_for_permission_element: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto"],
     },
     {
       name: "inset-block-end",
@@ -8429,6 +8509,7 @@
       valid_for_permission_element: true,
       valid_for_page_context: true,
       percentages_depend_on_used_value: true,
+      keywords: ["auto"],
     },
     {
       name: "border-start-start-radius",
@@ -8662,6 +8743,8 @@
       inherited: true,
       style_builder_template: "empty",
       stored_on_extra_field: ["crbug.com/40919412"],
+      keywords: ["none", "blink", "line-through", "overline", "underline",
+                "spelling-error", "grammar-error"],
     },
 
     // Descriptor only names

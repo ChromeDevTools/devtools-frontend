@@ -452,7 +452,7 @@ def CheckKnownContextValues(input_api, output_api):
     """
     # This regexp matches the one we use in `StringUtilities.isExtendedKebabCase()`.
     kebab_case_re = re.compile(
-        r"^([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$")
+        r"^-?([a-z0-9]+(?:-[a-z0-9]+)*\.)*[a-z0-9]+(?:-[a-z0-9]+)*$")
     local_path = input_api.os_path.join('front_end', 'ui', 'visual_logging',
                                         'KnownContextValues.ts')
     invalid_contexts = []

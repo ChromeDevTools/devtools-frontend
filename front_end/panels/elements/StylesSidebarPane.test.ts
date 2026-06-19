@@ -1908,6 +1908,23 @@ color: pink !important;`;
           // On second Tab, the AI suggestion is committed.
           sinon.assert.calledOnce(section.commitActiveAiSuggestion);
         });
+
+        it('accepts traditional autocomplete suggestion on Tab when suggest box is hidden but inline suggestion is active',
+           async () => {
+             const cssPropertyPrompt = new CSSPropertyPrompt(mockTreeItem, true);
+             cssPropertyPrompt.attachAndStartEditing(attachedElement, noop);
+
+             cssPropertyPrompt.setText('flex-g');
+             await cssPropertyPrompt.complete(true);
+
+             assert.isFalse(cssPropertyPrompt.isSuggestBoxVisible());
+             assert.strictEqual(cssPropertyPrompt.currentSuggestion()?.text, 'flex-grow');
+
+             const tabEvent = new KeyboardEvent('keydown', {key: 'Tab'});
+             cssPropertyPrompt.onKeyDown(tabEvent);
+
+             assert.strictEqual(cssPropertyPrompt.text(), 'flex-grow');
+           });
       });
 
       describe('updateAiCodeSuggestion', () => {

@@ -302,7 +302,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   #title: string;
   protected queryRange: TextUtils.TextRange.TextRange|null;
   private previousText: string;
-  private currentSuggestion: Suggestion|null;
+  #currentSuggestion: Suggestion|null;
   private completionRequestId: number;
   private ghostTextElement: HTMLSpanElement;
   private leftParenthesesIndices: number[];
@@ -337,7 +337,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#title = '';
     this.queryRange = null;
     this.previousText = '';
-    this.currentSuggestion = null;
+    this.#currentSuggestion = null;
     this.completionRequestId = 0;
     this.ghostTextElement = document.createElement('span');
     this.ghostTextElement.classList.add('auto-complete-text');
@@ -458,10 +458,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
   textWithCurrentSuggestion(): string {
     const text = this.text();
-    if (!this.queryRange || !this.currentSuggestion) {
+    if (!this.queryRange || !this.#currentSuggestion) {
       return text;
     }
-    const suggestion = this.currentSuggestion.text;
+    const suggestion = this.#currentSuggestion.text;
     return text.substring(0, this.queryRange.startColumn) + suggestion + text.substring(this.queryRange.endColumn);
   }
 
@@ -623,7 +623,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
         }
         break;
       case 'Escape':
-        if (this.isSuggestBoxVisible() || this.currentSuggestion) {
+        if (this.isSuggestBoxVisible() || this.#currentSuggestion) {
           this.clearAutocomplete();
           handled = true;
         }
@@ -646,14 +646,14 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   private acceptSuggestionOnStopCharacters(key: string): boolean {
-    if (!this.currentSuggestion || !this.queryRange || key.length !== 1 ||
+    if (!this.#currentSuggestion || !this.queryRange || key.length !== 1 ||
         !this.completionStopCharacters?.includes(key) ||
-        this.currentSuggestion.disableAcceptSuggestionOnStopCharacters) {
+        this.#currentSuggestion.disableAcceptSuggestionOnStopCharacters) {
       return false;
     }
 
     const query = this.text().substring(this.queryRange.startColumn, this.queryRange.endColumn);
-    if (query && this.currentSuggestion.text.startsWith(query + key)) {
+    if (query && this.#currentSuggestion.text.startsWith(query + key)) {
       this.queryRange.endColumn += 1;
       return this.acceptAutoComplete();
     }
@@ -728,7 +728,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     if (beforeText !== this.textWithCurrentSuggestion()) {
       this.dispatchEventToListeners(Events.TEXT_CHANGED);
     }
-    this.currentSuggestion = null;
+    this.#currentSuggestion = null;
   }
 
   private onBlur(): void {
@@ -736,14 +736,14 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   private refreshGhostText(): void {
-    if (this.currentSuggestion?.hideGhostText) {
+    if (this.#currentSuggestion?.hideGhostText) {
       this.ghostTextElement.remove();
       return;
     }
-    if (this.queryRange && this.currentSuggestion && this.isCaretAtEndOfPrompt() &&
-        this.currentSuggestion.text.startsWith(this.text().substring(this.queryRange.startColumn))) {
+    if (this.queryRange && this.#currentSuggestion && this.isCaretAtEndOfPrompt() &&
+        this.#currentSuggestion.text.startsWith(this.text().substring(this.queryRange.startColumn))) {
       this.ghostTextElement.textContent =
-          this.currentSuggestion.text.substring(this.queryRange.endColumn - this.queryRange.startColumn);
+          this.#currentSuggestion.text.substring(this.queryRange.endColumn - this.queryRange.startColumn);
       this.element().appendChild(this.ghostTextElement);
     } else {
       this.ghostTextElement.remove();
@@ -875,7 +875,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   applySuggestion(suggestion: Suggestion|null, isIntermediateSuggestion?: boolean): void {
-    this.currentSuggestion = suggestion;
+    this.#currentSuggestion = suggestion;
     this.refreshGhostText();
     if (isIntermediateSuggestion) {
       this.dispatchEventToListeners(Events.TEXT_CHANGED);
@@ -891,8 +891,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       return false;
     }
 
-    const suggestionLength = this.currentSuggestion ? this.currentSuggestion.text.length : 0;
-    const selectionRange = this.currentSuggestion ? this.currentSuggestion.selectionRange : null;
+    const suggestionLength = this.#currentSuggestion ? this.#currentSuggestion.text.length : 0;
+    const selectionRange = this.#currentSuggestion ? this.#currentSuggestion.selectionRange : null;
     const endColumn = selectionRange ? selectionRange.endColumn : suggestionLength;
     const startColumn = selectionRange ? selectionRange.startColumn : suggestionLength;
     this.element().textContent = this.textWithCurrentSuggestion();
@@ -1042,6 +1042,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
   suggestBoxForTest(): SuggestBox|undefined {
     return this.suggestBox;
+  }
+
+  currentSuggestion(): Suggestion|null {
+    return this.#currentSuggestion;
   }
 }
 

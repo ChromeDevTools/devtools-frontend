@@ -2038,9 +2038,21 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   override onInput(event: Event): void {
     super.onInput(event);
     if (this.aiCodeCompletionProvider) {
-      this.#updateAiCodeSuggestion();
-      this.#debouncedTriggerAiCodeCompletion();
+      const inputEvent = event as InputEvent;
+      const isDeletion = inputEvent.inputType?.startsWith('delete');
+      if (isDeletion) {
+        this.#debouncedTriggerAiCodeCompletion.cancel();
+        this.setAiAutoCompletion(null);
+      } else {
+        this.#updateAiCodeSuggestion();
+        this.#debouncedTriggerAiCodeCompletion();
+      }
     }
+  }
+
+  override detach(): void {
+    this.#debouncedTriggerAiCodeCompletion.cancel();
+    super.detach();
   }
 
   #handleEscape(keyboardEvent: KeyboardEvent): boolean {
@@ -2050,12 +2062,13 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     keyboardEvent.preventDefault();
     if (this.isSuggestBoxVisible()) {
       this.suggestBox?.hide();
-      // Required for ensuring the suggestion is not cleared.
-      keyboardEvent.consume(true);
-      return true;
+    } else {
+      this.setAiAutoCompletion(null);
     }
-    this.setAiAutoCompletion(null);
-    return false;
+    // Consume the event to prevent it from bubbling up to cancel the editing session,
+    // and return true to prevent TextPrompt from processing it.
+    keyboardEvent.consume(true);
+    return true;
   }
 
   private handleNameOrValueUpDown(event: Event): boolean {
@@ -2331,6 +2344,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     if (!args) {
       this.treeElement.section().activeAiSuggestion = undefined;
       this.activeAiSuggestionInfo = undefined;
+      this.applySuggestion(null);
       return;
     }
 

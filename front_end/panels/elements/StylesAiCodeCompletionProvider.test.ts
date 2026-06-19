@@ -10,7 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import * as Elements from './elements.js';
 
@@ -125,6 +125,47 @@ describeWithEnvironment('StylesAiCodeCompletionProvider', () => {
       assert.deepEqual(suffix, ' }');
       assert.deepEqual(cursorPosition, 3);
       assert.deepEqual(language, Host.AidaClient.AidaInferenceLanguage.CSS);
+    });
+
+    it('caps prefix and suffix to MAX_PREFIX_SUFFIX_LENGTH', async () => {
+      const completeCodeStub = sinon.stub(AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.prototype, 'completeCode');
+      const {provider} = createProvider();
+
+      const maxLength = TextEditor.AiCodeCompletionProvider.MAX_PREFIX_SUFFIX_LENGTH;
+      const largePrefix = 'a'.repeat(maxLength + 10);
+      const largeSuffix = 'b'.repeat(maxLength + 10);
+      const cssContent = `${largePrefix}body { color: red; }${largeSuffix}`;
+
+      const header = sinon.createStubInstance(SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
+      header.requestContentData.resolves(
+          new TextUtils.ContentData.ContentData(cssContent, /* isBase64=*/ false, 'text/css'));
+      const target = createTarget();
+      const cssModel = new SDK.CSSModel.CSSModel(target);
+      sinon.stub(cssModel, 'styleSheetHeaderForId').returns(header);
+
+      const cssProperty = new SDK.CSSProperty.CSSProperty(
+          {styleSheetId: 'test-sheet-id'} as SDK.CSSStyleDeclaration.CSSStyleDeclaration,
+          0,
+          'color',
+          'red',
+          true,
+          false,
+          true,
+          false,
+          'color: red;',
+          new TextUtils.TextRange.TextRange(0, largePrefix.length + 7, 0, largePrefix.length + 18),
+      );
+
+      await clock.tickAsync(0);
+
+      await provider.triggerAiCodeCompletion('pur', 3, false, cssProperty, cssModel);
+
+      sinon.assert.calledOnce(completeCodeStub);
+      const [prefix, suffix] = completeCodeStub.firstCall.args;
+      assert.strictEqual(prefix.length, maxLength);
+      assert.isTrue(prefix.endsWith('body { color: pur'));
+      assert.strictEqual(suffix.length, maxLength);
+      assert.isTrue(suffix.startsWith(' }bbbb'));
     });
   });
 

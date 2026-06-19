@@ -5,11 +5,19 @@
 /**
  * Debounce utility function, ensures that the function passed in is only called once the function stops being called and the delay has expired.
  */
-export const debounce = function(func: (...args: any[]) => void, delay: number): (...args: any[]) => void {
+export const debounce = function(
+    func: (...args: any[]) => void,
+    delay: number,
+    ): ((...args: any[]) => void)&{
+  cancel: () => void,
+} {
   let timer: ReturnType<typeof setTimeout>;
   const debounced = (...args: any[]): void => {
     clearTimeout(timer);
     timer = setTimeout(() => func(...args), testDebounceOverride ? 0 : delay);
+  };
+  debounced.cancel = () => {
+    clearTimeout(timer);
   };
   return debounced;
 };

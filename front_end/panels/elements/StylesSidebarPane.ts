@@ -2431,7 +2431,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
   }
 
   private acceptCodeComplete(): boolean {
-    if (this.isSuggestBoxVisible()) {
+    if (this.isSuggestBoxVisible() || this.currentSuggestion()) {
       // accept the suggestion from the traditional autocomplete menu
       this.acceptAutoComplete();
 

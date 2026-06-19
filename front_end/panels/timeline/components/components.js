@@ -7034,6 +7034,115 @@ function renderInitiatedBy(request, parsedTrace, target, linkifier) {
       </div>`;
 }
 
+// gen/front_end/panels/timeline/components/NetworkTrackWidget.js
+var NetworkTrackWidget_exports = {};
+__export(NetworkTrackWidget_exports, {
+  NetworkTrackWidget: () => NetworkTrackWidget
+});
+import * as Trace9 from "./../../../models/trace/trace.js";
+import * as PerfUI2 from "./../../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as Lit17 from "./../../../ui/lit/lit.js";
+
+// gen/front_end/panels/timeline/components/networkTrackWidget.css.js
+var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file. */
+
+:host {
+  display: flex;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 150px;
+  background-color: var(--sys-color-cdt-base-container);
+  border-radius: 8px;
+  border: 1px solid var(--sys-color-divider);
+}
+
+.container canvas {
+  /* stylelint-disable-next-line declaration-no-important */
+  pointer-events: none !important;
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+.vbox {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/*# sourceURL=${import.meta.resolve("./networkTrackWidget.css")} */`;
+
+// gen/front_end/panels/timeline/components/NetworkTrackWidget.js
+var { html: html17 } = Lit17;
+var NetworkTrackWidget = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #flameChartContainer = document.createElement("div");
+  #flameChart = null;
+  #dataProvider = null;
+  #parsedTrace = null;
+  constructor() {
+    super();
+    this.#flameChartContainer.classList.add("container");
+  }
+  set data(data) {
+    const parsedTrace = data.parsedTrace;
+    const dataProvider = data.dataProvider;
+    if (!parsedTrace || !dataProvider) {
+      return;
+    }
+    const isDataProviderChanged = dataProvider !== this.#dataProvider;
+    this.#dataProvider = dataProvider;
+    this.#parsedTrace = parsedTrace;
+    this.#render();
+    if (isDataProviderChanged || !this.#flameChart) {
+      this.#flameChartContainer.innerHTML = "";
+      this.#flameChart = new PerfUI2.FlameChart.FlameChart(this.#dataProvider, this);
+      this.#flameChart.show(this.#flameChartContainer, void 0, true);
+    }
+    const entityMapper = Trace9.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
+    this.#dataProvider.preparePopoverElement = () => null;
+    this.#dataProvider.setModel(parsedTrace, entityMapper);
+    const timelineData = this.#dataProvider.timelineData();
+    timelineData.groups = [];
+    const bounds = Trace9.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
+      min: Trace9.Types.Timing.Micro(data.bounds.min),
+      max: Trace9.Types.Timing.Micro(data.bounds.max),
+      range: Trace9.Types.Timing.Micro(data.bounds.range)
+    });
+    this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
+    this.#flameChart.setWindowTimes(bounds.min, bounds.max);
+    this.#render();
+  }
+  #render() {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    const output = html17`
+        <style>${networkTrackWidget_css_default}</style>
+        ${this.#flameChartContainer}
+      `;
+    Lit17.render(output, this.#shadow, { host: this });
+    if (this.#flameChart) {
+      this.#flameChart.update();
+    }
+  }
+  windowChanged(_windowStartTime, _windowEndTime, _animate) {
+  }
+  updateRangeSelection(_startTime, _endTime) {
+  }
+  updateSelectedGroup(_flameChart, _group) {
+  }
+};
+if (!customElements.get("devtools-performance-agent-network-track")) {
+  customElements.define("devtools-performance-agent-network-track", NetworkTrackWidget);
+}
+
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
 var RelatedInsightChips_exports = {};
 __export(RelatedInsightChips_exports, {
@@ -7042,7 +7151,7 @@ __export(RelatedInsightChips_exports, {
 });
 import * as i18n35 from "./../../../core/i18n/i18n.js";
 import * as UI14 from "./../../../ui/legacy/legacy.js";
-import * as Lit17 from "./../../../ui/lit/lit.js";
+import * as Lit18 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/relatedInsightChips.css.js
 var relatedInsightChips_css_default = `/*
@@ -7127,7 +7236,7 @@ var relatedInsightChips_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./relatedInsightChips.css")} */`;
 
 // gen/front_end/panels/timeline/components/RelatedInsightChips.js
-var { html: html17, render: render16 } = Lit17;
+var { html: html18, render: render17 } = Lit18;
 var UIStrings18 = {
   /**
    * @description prefix shown next to related insight chips
@@ -7175,11 +7284,11 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
   const { activeEvent, eventToInsightsMap } = input;
   const relatedInsights = activeEvent ? eventToInsightsMap.get(activeEvent) ?? [] : [];
   if (!activeEvent || eventToInsightsMap.size === 0 || relatedInsights.length === 0) {
-    render16(Lit17.nothing, target);
+    render17(Lit18.nothing, target);
     return;
   }
   const insightMessages = relatedInsights.flatMap((insight) => {
-    return insight.messages.map((message) => html17`
+    return insight.messages.map((message) => html18`
           <li class="insight-message-box">
             <button type="button" @click=${(event) => {
       event.preventDefault();
@@ -7194,7 +7303,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
         `);
   });
   const insightChips = relatedInsights.flatMap((insight) => {
-    return [html17`
+    return [html18`
           <li class="insight-chip">
             <button type="button" @click=${(event) => {
       event.preventDefault();
@@ -7206,7 +7315,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
           </li>
         `];
   });
-  render16(html17`<style>${relatedInsightChips_css_default}</style>
+  render17(html18`<style>${relatedInsightChips_css_default}</style>
         <ul>${insightMessages}</ul>
         <ul>${insightChips}</ul>`, target);
 };
@@ -7253,11 +7362,11 @@ import "./../../../ui/components/settings/settings.js";
 import * as Common6 from "./../../../core/common/common.js";
 import * as i18n37 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
-import * as Trace9 from "./../../../models/trace/trace.js";
+import * as Trace10 from "./../../../models/trace/trace.js";
 import * as TraceBounds3 from "./../../../services/trace_bounds/trace_bounds.js";
 import * as UI15 from "./../../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "./../../../ui/legacy/theme_support/theme_support.js";
-import * as Lit18 from "./../../../ui/lit/lit.js";
+import * as Lit19 from "./../../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/components/sidebarAnnotationsTab.css.js
@@ -7372,7 +7481,7 @@ var sidebarAnnotationsTab_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarAnnotationsTab.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarAnnotationsTab.js
-var { html: html18, render: render17 } = Lit18;
+var { html: html19, render: render18 } = Lit19;
 var diagramImageUrl = new URL("../../../Images/performance-panel-diagram.svg", import.meta.url).toString();
 var entryLabelImageUrl = new URL("../../../Images/performance-panel-entry-label.svg", import.meta.url).toString();
 var timeRangeImageUrl = new URL("../../../Images/performance-panel-time-range.svg", import.meta.url).toString();
@@ -7531,7 +7640,7 @@ var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
 function detailedAriaDescriptionForAnnotation(annotation) {
   switch (annotation.type) {
     case "ENTRY_LABEL": {
-      const name = Trace9.Name.forEntry(annotation.entry);
+      const name = Trace10.Name.forEntry(annotation.entry);
       return i18nString18(UIStrings19.entryLabelDescriptionLabel, {
         PH1: name,
         PH2: annotation.label
@@ -7549,8 +7658,8 @@ function detailedAriaDescriptionForAnnotation(annotation) {
       if (!annotation.entryTo) {
         return "";
       }
-      const nameFrom = Trace9.Name.forEntry(annotation.entryFrom);
-      const nameTo = Trace9.Name.forEntry(annotation.entryTo);
+      const nameFrom = Trace10.Name.forEntry(annotation.entryFrom);
+      const nameTo = Trace10.Name.forEntry(annotation.entryTo);
       return i18nString18(UIStrings19.entryLinkDescriptionLabel, {
         PH1: nameFrom,
         PH2: nameTo
@@ -7573,40 +7682,40 @@ function findTextColorForContrast(bgColorText) {
 function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
   switch (annotation.type) {
     case "ENTRY_LABEL": {
-      const entryName = Trace9.Name.forEntry(annotation.entry);
+      const entryName = Trace10.Name.forEntry(annotation.entry);
       const backgroundColor = annotationEntryToColorMap.get(annotation.entry) ?? "";
       const color = findTextColorForContrast(backgroundColor);
       const styleForAnnotationIdentifier = {
         backgroundColor,
         color
       };
-      return html18`
-            <span class="annotation-identifier" style=${Lit18.Directives.styleMap(styleForAnnotationIdentifier)}>
+      return html19`
+            <span class="annotation-identifier" style=${Lit19.Directives.styleMap(styleForAnnotationIdentifier)}>
               ${entryName}
             </span>
       `;
     }
     case "TIME_RANGE": {
       const minTraceBoundsMilli = TraceBounds3.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
-      const timeRangeStartInMs = Math.round(Trace9.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
-      const timeRangeEndInMs = Math.round(Trace9.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
-      return html18`
+      const timeRangeStartInMs = Math.round(Trace10.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
+      const timeRangeEndInMs = Math.round(Trace10.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
+      return html19`
             <span class="annotation-identifier time-range">
               ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
             </span>
       `;
     }
     case "ENTRIES_LINK": {
-      const entryFromName = Trace9.Name.forEntry(annotation.entryFrom);
+      const entryFromName = Trace10.Name.forEntry(annotation.entryFrom);
       const fromBackgroundColor = annotationEntryToColorMap.get(annotation.entryFrom) ?? "";
       const fromTextColor = findTextColorForContrast(fromBackgroundColor);
       const styleForFromAnnotationIdentifier = {
         backgroundColor: fromBackgroundColor,
         color: fromTextColor
       };
-      return html18`
+      return html19`
         <div class="entries-link">
-          <span class="annotation-identifier" style=${Lit18.Directives.styleMap(styleForFromAnnotationIdentifier)}>
+          <span class="annotation-identifier" style=${Lit19.Directives.styleMap(styleForFromAnnotationIdentifier)}>
             ${entryFromName}
           </span>
           <devtools-icon name="arrow-forward" class="inline-icon large">
@@ -7621,19 +7730,19 @@ function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
 }
 function renderEntryToIdentifier(annotation, annotationEntryToColorMap) {
   if (annotation.entryTo) {
-    const entryToName = Trace9.Name.forEntry(annotation.entryTo);
+    const entryToName = Trace10.Name.forEntry(annotation.entryTo);
     const toBackgroundColor = annotationEntryToColorMap.get(annotation.entryTo) ?? "";
     const toTextColor = findTextColorForContrast(toBackgroundColor);
     const styleForToAnnotationIdentifier = {
       backgroundColor: toBackgroundColor,
       color: toTextColor
     };
-    return html18`
-      <span class="annotation-identifier" style=${Lit18.Directives.styleMap(styleForToAnnotationIdentifier)}>
+    return html19`
+      <span class="annotation-identifier" style=${Lit19.Directives.styleMap(styleForToAnnotationIdentifier)}>
         ${entryToName}
       </span>`;
   }
-  return Lit18.nothing;
+  return Lit19.nothing;
 }
 function jslogForAnnotation(annotation) {
   switch (annotation.type) {
@@ -7648,7 +7757,7 @@ function jslogForAnnotation(annotation) {
   }
 }
 function renderTutorial() {
-  return html18`<div class="annotation-tutorial-container">
+  return html19`<div class="annotation-tutorial-container">
     ${i18nString18(UIStrings19.annotationGetStarted)}
       <div class="tutorial-card">
         <div class="tutorial-image"><img src=${entryLabelImageUrl}></div>
@@ -7673,13 +7782,13 @@ function renderTutorial() {
     </div>`;
 }
 var DEFAULT_VIEW11 = (input, _output, target) => {
-  render17(html18`
+  render18(html19`
       <style>${sidebarAnnotationsTab_css_default}</style>
       <span class="annotations">
-        ${input.annotations.length === 0 ? renderTutorial() : html18`
+        ${input.annotations.length === 0 ? renderTutorial() : html19`
             ${input.annotations.map((annotation) => {
     const label = detailedAriaDescriptionForAnnotation(annotation);
-    return html18`
+    return html19`
                 <div class="annotation-container"
                   @click=${() => input.onAnnotationClick(annotation)}
                   @mouseover=${() => annotation.type === "ENTRY_LABEL" ? input.onAnnotationHover(annotation) : null}
@@ -7716,10 +7825,10 @@ __export(SidebarInsightsTab_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW13,
   SidebarInsightsTab: () => SidebarInsightsTab
 });
-import * as Trace11 from "./../../../models/trace/trace.js";
+import * as Trace12 from "./../../../models/trace/trace.js";
 import * as Buttons9 from "./../../../ui/components/buttons/buttons.js";
 import * as UI17 from "./../../../ui/legacy/legacy.js";
-import * as Lit20 from "./../../../ui/lit/lit.js";
+import * as Lit21 from "./../../../ui/lit/lit.js";
 import * as Utils from "./../utils/utils.js";
 import * as Insights8 from "./insights/insights.js";
 
@@ -7809,9 +7918,9 @@ __export(SidebarSingleInsightSet_exports, {
 });
 import * as i18n39 from "./../../../core/i18n/i18n.js";
 import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
-import * as Trace10 from "./../../../models/trace/trace.js";
+import * as Trace11 from "./../../../models/trace/trace.js";
 import * as UI16 from "./../../../ui/legacy/legacy.js";
-import * as Lit19 from "./../../../ui/lit/lit.js";
+import * as Lit20 from "./../../../ui/lit/lit.js";
 import * as Insights6 from "./insights/insights.js";
 
 // gen/front_end/panels/timeline/components/sidebarSingleInsightSet.css.js
@@ -7837,7 +7946,7 @@ var sidebarSingleInsightSet_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./sidebarSingleInsightSet.css")} */`;
 
 // gen/front_end/panels/timeline/components/SidebarSingleInsightSet.js
-var { html: html19 } = Lit19.StaticHtml;
+var { html: html20 } = Lit20.StaticHtml;
 var INSIGHT_NAME_TO_COMPONENT = {
   Cache: Insights6.Cache.Cache,
   CharacterSet: Insights6.CharacterSet.CharacterSet,
@@ -7873,26 +7982,26 @@ var DEFAULT_VIEW12 = (input, output, target) => {
   const { shownInsights, passedInsights, insightSetKey, parsedTrace, renderInsightComponent } = input;
   function renderMetrics() {
     if (!insightSetKey || !parsedTrace) {
-      return Lit19.nothing;
+      return Lit20.nothing;
     }
-    return html19`${widget5(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
+    return html20`${widget5(CWVMetrics, { data: { insightSetKey, parsedTrace } })}`;
   }
   function renderInsights() {
     const shownInsightTemplates = shownInsights.map(renderInsightComponent);
     const passedInsightsTemplates = passedInsights.map(renderInsightComponent);
-    return html19`
+    return html20`
       ${shownInsightTemplates}
-      ${passedInsightsTemplates.length ? html19`
+      ${passedInsightsTemplates.length ? html20`
         <details class="passed-insights-section">
           <summary>${i18nString19(UIStrings20.passedInsights, {
       PH1: passedInsightsTemplates.length
     })}</summary>
           ${passedInsightsTemplates}
         </details>
-      ` : Lit19.nothing}
+      ` : Lit20.nothing}
     `;
   }
-  Lit19.render(html19`
+  Lit20.render(html20`
     <style>${sidebarSingleInsightSet_css_default}</style>
     <div class="navigation">
       ${renderMetrics()}
@@ -7906,7 +8015,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget
   #activeHighlightTimeout = -1;
   #data = {
     insightSetKey: null,
-    activeCategory: Trace10.Insights.Types.InsightCategory.ALL,
+    activeCategory: Trace11.Insights.Types.InsightCategory.ALL,
     activeInsight: null,
     parsedTrace: null
   };
@@ -7958,7 +8067,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget
   }
   #renderInsightComponent(insightSet, insightData, fieldMetrics) {
     if (!this.#data.parsedTrace) {
-      return Lit19.nothing;
+      return Lit20.nothing;
     }
     const { insightName, model } = insightData;
     const activeInsight = this.#data.activeInsight;
@@ -7979,12 +8088,12 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget
       fieldMetrics
     };
     const items = [{ componentClass, widgetConfig }];
-    const output = Lit19.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
-      return html19`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
+    const output = Lit20.Directives.repeat(items, (data) => data.widgetConfig.model, (data) => {
+      return html20`<devtools-widget class="insight-component-widget" ?highlight-insight=${isActiveInsight && this.#isActiveInsightHighlighted}
         ${widget5(data.componentClass, data.widgetConfig)}
       ></devtools-widget>`;
     });
-    return html19`${output}`;
+    return html20`${output}`;
   }
   performUpdate() {
     const { parsedTrace, insightSetKey } = this.#data;
@@ -8009,7 +8118,7 @@ var SidebarSingleInsightSet = class _SidebarSingleInsightSet extends UI16.Widget
 };
 
 // gen/front_end/panels/timeline/components/SidebarInsightsTab.js
-var { html: html20 } = Lit20;
+var { html: html21 } = Lit21;
 var { widget: widget6 } = UI17.Widget;
 var DEFAULT_VIEW13 = (input, output, target) => {
   const { parsedTrace, labels, activeInsightSet, activeInsight, selectedCategory, onInsightSetToggled, onInsightSetHovered, onInsightSetUnhovered, onZoomClick } = input;
@@ -8018,7 +8127,7 @@ var DEFAULT_VIEW13 = (input, output, target) => {
     return;
   }
   const hasMultipleInsightSets = insights.size > 1;
-  Lit20.render(html20`
+  Lit21.render(html21`
     <style>${sidebarInsightsTab_css_default}</style>
     <div class="insight-sets-wrapper">
       ${[...insights.values()].map((insightSet, index) => {
@@ -8030,14 +8139,14 @@ var DEFAULT_VIEW13 = (input, output, target) => {
       parsedTrace
     };
     const selected = insightSet === activeInsightSet;
-    const contents = html20`
+    const contents = html21`
           <devtools-widget
             data-insight-set-key=${id}
             ${widget6(SidebarSingleInsightSet, { data })}
           ></devtools-widget>
         `;
     if (hasMultipleInsightSets) {
-      return html20`<details ?open=${selected}>
+      return html21`<details ?open=${selected}>
             <summary
               @click=${() => onInsightSetToggled(insightSet)}
               @mouseenter=${() => onInsightSetHovered(insightSet)}
@@ -8063,11 +8172,11 @@ var DEFAULT_VIEW13 = (input, output, target) => {
   `, target);
 };
 function renderZoomButton(insightSetToggled) {
-  const classes = Lit20.Directives.classMap({
+  const classes = Lit21.Directives.classMap({
     "zoom-icon": true,
     active: insightSetToggled
   });
-  return html20`
+  return html21`
   <div class=${classes}>
       <devtools-button .data=${{
     variant: "icon",
@@ -8077,11 +8186,11 @@ function renderZoomButton(insightSetToggled) {
     ></devtools-button></div>`;
 }
 function renderDropdownIcon(insightSetToggled) {
-  const containerClasses = Lit20.Directives.classMap({
+  const containerClasses = Lit21.Directives.classMap({
     "dropdown-icon": true,
     active: insightSetToggled
   });
-  return html20`
+  return html21`
     <div class=${containerClasses}>
       <devtools-button .data=${{
     variant: "icon",
@@ -8100,7 +8209,7 @@ var SidebarInsightsTab = class _SidebarInsightsTab extends UI17.Widget.Widget {
   #view;
   #parsedTrace = null;
   #activeInsight = null;
-  #selectedCategory = Trace11.Insights.Types.InsightCategory.ALL;
+  #selectedCategory = Trace12.Insights.Types.InsightCategory.ALL;
   /**
    * When a trace has sets of insights, we show an accordion with each
    * set within. A set can be specific to a single navigation, or include the
@@ -8378,9 +8487,9 @@ __export(TimelineRangeSummaryView_exports, {
   statsForTimeRange: () => statsForTimeRange
 });
 import * as Platform9 from "./../../../core/platform/platform.js";
-import * as Trace12 from "./../../../models/trace/trace.js";
+import * as Trace13 from "./../../../models/trace/trace.js";
 import * as UI20 from "./../../../ui/legacy/legacy.js";
-import * as Lit22 from "./../../../ui/lit/lit.js";
+import * as Lit23 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineRangeSummaryView.css.js
 var timelineRangeSummaryView_css_default = `/*
@@ -8437,7 +8546,7 @@ __export(TimelineSummary_exports, {
 import * as i18n41 from "./../../../core/i18n/i18n.js";
 import * as Buttons10 from "./../../../ui/components/buttons/buttons.js";
 import * as UI19 from "./../../../ui/legacy/legacy.js";
-import * as Lit21 from "./../../../ui/lit/lit.js";
+import * as Lit22 from "./../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/components/timelineSummary.css.js
 var timelineSummary_css_default = `/*
@@ -8520,7 +8629,7 @@ var timelineSummary_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./timelineSummary.css")} */`;
 
 // gen/front_end/panels/timeline/components/TimelineSummary.js
-var { render: render20, html: html21 } = Lit21;
+var { render: render21, html: html22 } = Lit22;
 var UIStrings21 = {
   /**
    * @description Text for total
@@ -8536,11 +8645,11 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("panels/timeline/components/TimelineSummary.ts", UIStrings21);
 var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  const summaryClasses = Lit21.Directives.classMap({
+  const summaryClasses = Lit22.Directives.classMap({
     "timeline-summary": true,
     "is-in-ai-widget": Boolean(input.isInAIWidget)
   });
-  render20(html21`
+  render21(html22`
         <style>${timelineSummary_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI19.inspectorCommonStyles} }</style>
         <style>@scope to (devtools-widget > *) { ${Buttons10.textButtonStyles} }</style>
@@ -8548,7 +8657,7 @@ var CATEGORY_SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
             <div class="summary-range">${i18nString20(UIStrings21.rangeSS, { PH1: i18n41.TimeUtilities.millisToString(input.rangeStart), PH2: i18n41.TimeUtilities.millisToString(input.rangeEnd) })}</div>
             <div class="category-summary">
                 ${input.categories.map((category) => {
-    return html21`
+    return html22`
                         <div class="category-row">
                         <div class="category-swatch" style="background-color: ${category.color};"></div>
                         <div class="category-name">${category.title}</div>
@@ -8609,16 +8718,16 @@ var CategorySummary = class extends UI19.Widget.Widget {
 };
 
 // gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
-var { render: render21, html: html22 } = Lit22;
+var { render: render22, html: html23 } = Lit23;
 var { widget: widget7 } = UI20.Widget;
 var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   const { parsedTrace, events, startTime, endTime } = input;
   if (!events || !parsedTrace) {
-    render21(html22`<div class="timeline-details-range-summary"></div>`, target);
+    render22(html23`<div class="timeline-details-range-summary"></div>`, target);
     return;
   }
-  const minBoundsMilli = Trace12.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
+  const minBoundsMilli = Trace13.Helpers.Timing.microToMilli(parsedTrace.data.Meta.traceBounds.min);
   const aggregatedStats = statsForTimeRange(events, startTime, endTime);
   const startOffset = startTime - minBoundsMilli;
   const endOffset = endTime - minBoundsMilli;
@@ -8627,9 +8736,9 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     total += aggregatedStats[categoryName];
   }
   const categories = [];
-  for (const categoryName in Trace12.Styles.getCategoryStyles()) {
-    const category = Trace12.Styles.getCategoryStyles()[categoryName];
-    if (category.name === Trace12.Styles.EventCategory.IDLE) {
+  for (const categoryName in Trace13.Styles.getCategoryStyles()) {
+    const category = Trace13.Styles.getCategoryStyles()[categoryName];
+    if (category.name === Trace13.Styles.EventCategory.IDLE) {
       continue;
     }
     const value = aggregatedStats[category.name];
@@ -8639,7 +8748,7 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     categories.push({ value, color: category.getCSSValue(), title: category.title });
   }
   categories.sort((a, b) => b.value - a.value);
-  render21(html22`
+  render22(html23`
     <style>${timelineRangeSummaryView_css_default}</style>
     <div class="timeline-details-range-summary">
       <devtools-widget class="timeline-summary"
@@ -8653,7 +8762,7 @@ var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
     }
   })}
       ></devtools-widget>
-      ${input.thirdPartyTreeTemplate ?? Lit22.nothing}
+      ${input.thirdPartyTreeTemplate ?? Lit23.nothing}
     </div>
   `, target);
 };
@@ -8721,7 +8830,7 @@ function statsForTimeRange(events, startTime, endTime) {
     const aggregatedStats2 = {};
     const categoryStack = [];
     let lastTime = 0;
-    Trace12.Helpers.Trace.forEachEvent(events2, {
+    Trace13.Helpers.Trace.forEachEvent(events2, {
       onStartEvent,
       onEndEvent
     });
@@ -8748,8 +8857,8 @@ function statsForTimeRange(events, startTime, endTime) {
       }
     }
     function onStartEvent(e) {
-      const { startTime: startTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
-      const category = Trace12.Styles.getEventStyle(e.name)?.category.name || Trace12.Styles.getCategoryStyles().other.name;
+      const { startTime: startTime2 } = Trace13.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const category = Trace13.Styles.getEventStyle(e.name)?.category.name || Trace13.Styles.getCategoryStyles().other.name;
       const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
       if (category !== parentCategory) {
         categoryChange(parentCategory || null, category, startTime2);
@@ -8757,7 +8866,7 @@ function statsForTimeRange(events, startTime, endTime) {
       categoryStack.push(category);
     }
     function onEndEvent(e) {
-      const { endTime: endTime2 } = Trace12.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const { endTime: endTime2 } = Trace13.Helpers.Timing.eventTimingsMilliSeconds(e);
       const category = categoryStack.pop();
       const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
       if (category !== parentCategory) {
@@ -8784,6 +8893,7 @@ export {
   NetworkRequestDetails_exports as NetworkRequestDetails,
   NetworkRequestTooltip_exports as NetworkRequestTooltip,
   NetworkThrottlingSelector_exports as NetworkThrottlingSelector,
+  NetworkTrackWidget_exports as NetworkTrackWidget,
   OriginMap_exports as OriginMap,
   RelatedInsightChips_exports as RelatedInsightChips,
   Sidebar_exports as Sidebar,

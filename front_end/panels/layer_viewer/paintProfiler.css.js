@@ -9,33 +9,37 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.paint-profiler-overview {
-  background-color: var(--sys-color-cdt-base-container);
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    background-color: var(--sys-color-cdt-base-container);
+    display: flex;
+    flex-direction: row;
+  }
 
-.paint-profiler-canvas-container {
-  flex: auto;
-  position: relative;
-}
+  .paint-profiler-canvas-container {
+    flex: auto;
+    position: relative;
+  }
 
-.paint-profiler-pie-chart {
-  width: 60px !important; /* stylelint-disable-line declaration-no-important */
-  height: 60px !important; /* stylelint-disable-line declaration-no-important */
-  padding: 2px;
-  overflow: hidden;
-  font-size: 10px;
-}
+  .paint-profiler-pie-chart {
+    width: 60px !important; /* stylelint-disable-line declaration-no-important */
+    height: 60px !important; /* stylelint-disable-line declaration-no-important */
+    padding: 2px;
+    overflow: hidden;
+    font-size: 10px;
+  }
 
-.paint-profiler-canvas-container canvas {
-  z-index: 200;
-  background-color: var(--sys-color-cdt-base-container);
-  opacity: 95%;
-  height: 100%;
-  width: 100%;
-}
+  .paint-profiler-canvas-container canvas {
+    z-index: 200;
+    background-color: var(--sys-color-cdt-base-container);
+    opacity: 95%;
+    height: 100%;
+    width: 100%;
+  }
 
-.paint-profiler-canvas-container .overview-grid-window-resizer {
-  z-index: 2000;
+  .paint-profiler-canvas-container .overview-grid-window-resizer {
+    z-index: 2000;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./paintProfiler.css')} */`;

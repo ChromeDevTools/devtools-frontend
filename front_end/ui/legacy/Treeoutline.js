@@ -352,11 +352,11 @@ export class TreeOutlineInShadow extends TreeOutline {
     shadowRoot;
     disclosureElement;
     renderSelection;
-    constructor(variant = "Other" /* TreeVariant.OTHER */, element) {
+    constructor(variant = "Other" /* TreeVariant.OTHER */, element, delegatesFocus) {
         super();
         this.contentElement.classList.add('tree-outline');
         this.element = element ?? document.createElement('div');
-        this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: treeoutlineStyles });
+        this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: treeoutlineStyles, delegatesFocus });
         this.disclosureElement = this.shadowRoot.createChild('div', 'tree-outline-disclosure');
         this.disclosureElement.appendChild(this.contentElement);
         this.renderSelection = true;
@@ -1309,6 +1309,7 @@ class TreeViewTreeElement extends TreeElement {
     #userExpanded = false;
     #isProcessingAttribute = false;
     #previousOpenAttributeValue;
+    #refreshScheduled = false;
     static #elementToTreeElement = new WeakMap();
     configElement;
     constructor(treeOutline, configElement) {
@@ -1353,6 +1354,16 @@ class TreeViewTreeElement extends TreeElement {
         finally {
             this.#isProcessingAttribute = false;
         }
+    }
+    refreshSoon() {
+        if (this.#refreshScheduled) {
+            return;
+        }
+        this.#refreshScheduled = true;
+        queueMicrotask(() => {
+            this.#refreshScheduled = false;
+            this.refresh();
+        });
     }
     refresh() {
         const expandable = Boolean(this.configElement.querySelector('ul[role="group"]'));
@@ -1505,9 +1516,16 @@ function removeNode(node, preserveParentExpandable = false) {
  */
 export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     static observedAttributes = ['navigation-variant', 'hide-overflow', 'dense', 'show-selection-on-keyboard-focus'];
-    #treeOutline = new TreeOutlineInShadow(undefined, this);
+    #treeOutline = new TreeOutlineInShadow(undefined, this, true);
     constructor() {
         super();
+        this.addEventListener('focusin', (event) => {
+            const actualTarget = event.composedPath()[0];
+            if (actualTarget === this.#treeOutline.contentElement && !this.#treeOutline.selectedTreeElement &&
+                this.#treeOutline.firstChild()) {
+                this.#treeOutline.firstChild()?.select(/* omitFocus */ true, /* selectedByUser */ false);
+            }
+        });
         this.#treeOutline.addEventListener(Events.ElementSelected, event => {
             if (event.data instanceof TreeViewTreeElement) {
                 event.data.listItemElement.dispatchEvent(new TreeViewElement.SelectEvent());
@@ -1531,6 +1549,14 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     }
     getInternalTreeOutlineForTest() {
         return this.#treeOutline;
+    }
+    focus() {
+        if (!this.#treeOutline.selectedTreeElement && this.#treeOutline.firstChild()) {
+            this.#treeOutline.firstChild()?.select(/* omitFocus */ true, /* selectedByUser */ false);
+        }
+        else {
+            this.#treeOutline.focus();
+        }
     }
     #getParentTreeElement(element) {
         const subtreeRoot = element.parentElement;
@@ -1559,7 +1585,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
         if (!treeElement) {
             return;
         }
-        treeElement.refresh();
+        treeElement.refreshSoon();
         if (node === treeNode && attributeName === 'selected' && hasBooleanAttribute(treeNode, 'selected')) {
             treeElement.revealAndSelect(true);
         }

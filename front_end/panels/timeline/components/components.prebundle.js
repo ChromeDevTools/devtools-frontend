@@ -16,6 +16,7 @@ import * as MetricCard from './MetricCard.js';
 import * as NetworkRequestDetails from './NetworkRequestDetails.js';
 import * as NetworkRequestTooltip from './NetworkRequestTooltip.js';
 import * as NetworkThrottlingSelector from './NetworkThrottlingSelector.js';
+import * as NetworkTrackWidget from './NetworkTrackWidget.js';
 import * as OriginMap from './OriginMap.js';
 import * as RelatedInsightChips from './RelatedInsightChips.js';
 import * as Sidebar from './Sidebar.js';
@@ -25,5 +26,5 @@ import * as SidebarSingleInsightSet from './SidebarSingleInsightSet.js';
 import * as TimelineRangeSummaryView from './TimelineRangeSummaryView.js';
 import * as TimelineSummary from './TimelineSummary.js';
 import * as Utils from './Utils.js';
-export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkThrottlingSelector, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineRangeSummaryView, TimelineSummary, Utils, };
+export { Breadcrumbs, BreadcrumbsUI, CPUThrottlingSelector, CWVMetrics, DetailsView, ExportTraceOptions, FieldSettingsDialog, IgnoreListSetting, InteractionBreakdown, LayoutShiftDetails, LiveMetricsView, MetricCard, NetworkRequestDetails, NetworkRequestTooltip, NetworkThrottlingSelector, NetworkTrackWidget, OriginMap, RelatedInsightChips, Sidebar, SidebarAnnotationsTab, SidebarInsightsTab, SidebarSingleInsightSet, TimelineRangeSummaryView, TimelineSummary, Utils, };
 //# sourceMappingURL=components.prebundle.js.map

@@ -216,6 +216,10 @@ const UIStringsNotTranslate = {
      */
     revealPerformanceSummary: 'Reveal performance summary',
     /**
+     * @description Accessible label for the reveal button in the network track widget.
+     */
+    revealNetworkActivity: 'Reveal network activity',
+    /**
      * @description Accessible label for the reveal button in the bottom up thread activity widget.
      */
     revealBottomUpTree: 'Reveal bottom-up thread activity',
@@ -279,6 +283,10 @@ const UIStringsNotTranslate = {
      * @description Title for the performance summary widget.
      */
     performanceSummary: 'Performance summary',
+    /**
+     * @description Title for the network activity summary widget.
+     */
+    networkActivitySummary: 'Network activity',
     /**
      * @description The title of the button that allows exporting the conversation for agents.
      */
@@ -1374,6 +1382,8 @@ export function getWidgetSignature(widget) {
             return `${widget.name}:${widget.data.track}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
         case 'BOTTOM_UP_TREE':
             return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
+        case 'NETWORK_TRACK':
+            return `${widget.name}:${widget.data.bounds.min}-${widget.data.bounds.max}`;
         case 'SOURCE_FILE':
             return `${widget.name}:${widget.data.uiSourceCode.url()}`;
         case 'SOURCE_FILES_LIST':
@@ -1462,6 +1472,9 @@ async function renderWidgets(widgets, options = {}) {
                 break;
             case 'BOTTOM_UP_TREE':
                 response = await makeBottomUpTimelineTreeWidget(widgetData);
+                break;
+            case 'NETWORK_TRACK':
+                response = await makeNetworkTrackWidget(widgetData);
                 break;
             case 'SOURCE_FILE':
                 response = await makeSourceFileWidget(widgetData);
@@ -1956,6 +1969,27 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealPerformanceSummary),
         title: lockedString(UIStringsNotTranslate.performanceSummary),
         jslogContext: 'timeline-range-summary',
+    };
+}
+async function makeNetworkTrackWidget(widgetData) {
+    const { parsedTrace, bounds } = widgetData.data;
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    // clang-format off
+    const template = html `
+    <devtools-performance-agent-network-track
+      .data=${{
+        parsedTrace,
+        bounds,
+        dataProvider,
+    }}
+    ></devtools-performance-agent-network-track>`;
+    // clang-format on
+    return {
+        renderedWidget: template,
+        revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+        accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealNetworkActivity),
+        title: lockedString(UIStringsNotTranslate.networkActivitySummary),
+        jslogContext: 'network-track-widget',
     };
 }
 async function makeLighthouseReportWidget(widgetData) {

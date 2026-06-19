@@ -23,6 +23,7 @@ import { SuggestBox, type SuggestBoxDelegate, type Suggestion } from './SuggestB
  * @attribute completions Sets the `id` of the <datalist> containing the autocomplete options.
  * @attribute placeholder Sets a placeholder that's shown in place of the text contents when editing if the text is too
  *            large.
+ * @attribute value Sets the initial text value that's edited when editing starts. If not provided, the slot's inner text is used.
  */
 export declare class TextPromptElement extends HTMLElement {
     #private;

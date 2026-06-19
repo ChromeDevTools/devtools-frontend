@@ -72,7 +72,7 @@ export declare class TreeOutlineInShadow extends TreeOutline {
     shadowRoot: ShadowRoot;
     private readonly disclosureElement;
     renderSelection: boolean;
-    constructor(variant?: TreeVariant, element?: HTMLElement);
+    constructor(variant?: TreeVariant, element?: HTMLElement, delegatesFocus?: boolean);
     setVariant(variant: TreeVariant): void;
     registerRequiredCSS(...cssFiles: Array<string & {
         _tag: 'CSS-in-JS';
@@ -282,6 +282,7 @@ export declare class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     static readonly observedAttributes: string[];
     constructor();
     getInternalTreeOutlineForTest(): TreeOutlineInShadow;
+    focus(): void;
     protected updateNode(node: Node, attributeName: string | null): void;
     protected addNodes(nodes: NodeList | Node[], nextSibling?: Node | null): void;
     protected removeNodes(nodes: NodeList): void;

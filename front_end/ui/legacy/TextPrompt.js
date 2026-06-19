@@ -61,6 +61,7 @@ import { cloneCustomElement, ElementFocusRestorer } from './UIUtils.js';
  * @attribute completions Sets the `id` of the <datalist> containing the autocomplete options.
  * @attribute placeholder Sets a placeholder that's shown in place of the text contents when editing if the text is too
  *            large.
+ * @attribute value Sets the initial text value that's edited when editing starts. If not provided, the slot's inner text is used.
  */
 export class TextPromptElement extends HTMLElement {
     static observedAttributes = ['editing', 'completions', 'placeholder', 'cancel-on-blur'];
@@ -172,11 +173,12 @@ export class TextPromptElement extends HTMLElement {
     #startEditing() {
         const truncatedTextPlaceholder = this.getAttribute('placeholder');
         const placeholder = this.#entrypoint.createChild('span');
+        const initialText = this.getAttribute('value') ?? this.#slot.deepInnerText();
         if (truncatedTextPlaceholder === null) {
-            placeholder.textContent = this.#slot.deepInnerText();
+            placeholder.textContent = initialText;
         }
         else {
-            placeholder.setTextContentTruncatedIfNeeded(this.#slot.deepInnerText(), truncatedTextPlaceholder);
+            placeholder.setTextContentTruncatedIfNeeded(initialText, truncatedTextPlaceholder);
         }
         this.#slot.remove();
         const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ !this.#cancelOnBlur));

@@ -13394,7 +13394,8 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
     this.setMainWidget(this.logAndImageSplitWidget);
     this.imageView = new TimelinePaintImageView();
     this.logAndImageSplitWidget.setMainWidget(this.imageView);
-    this.paintProfilerView = new LayerViewer2.PaintProfilerView.PaintProfilerView(this.imageView.showImage.bind(this.imageView));
+    this.paintProfilerView = new LayerViewer2.PaintProfilerView.PaintProfilerView();
+    this.paintProfilerView.showImageCallback = this.imageView.showImage.bind(this.imageView);
     this.paintProfilerView.addEventListener("WindowChanged", this.onWindowChanged, this);
     this.setSidebarWidget(this.paintProfilerView);
     this.logTreeView = new LayerViewer2.PaintProfilerView.PaintProfilerCommandLogView();
@@ -13472,7 +13473,7 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
     return tracingLayerTree ? await tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
   }
   update() {
-    this.logTreeView.setCommandLog([]);
+    this.logTreeView.commandLog = [];
     void this.paintProfilerView.setSnapshotAndLog(null, [], null);
     let snapshotPromise;
     if (this.pendingSnapshot) {
@@ -13505,7 +13506,7 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
       void snapshot.commandLog().then((log) => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
     });
     function onCommandLogDone(snapshot, clipRect, log) {
-      this.logTreeView.setCommandLog(log || []);
+      this.logTreeView.commandLog = log || [];
       void this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
     }
   }
@@ -13517,7 +13518,7 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
     this.lastLoadedSnapshot = null;
   }
   onWindowChanged() {
-    this.logTreeView.updateWindow(this.paintProfilerView.selectionWindow());
+    this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
   }
 };
 var DEFAULT_VIEW2 = (input, output, target) => {
@@ -18832,6 +18833,115 @@ var CompatibilityTracksAppender = class {
   }
 };
 
+// gen/front_end/panels/timeline/components/NetworkTrackWidget.js
+var NetworkTrackWidget_exports = {};
+__export(NetworkTrackWidget_exports, {
+  NetworkTrackWidget: () => NetworkTrackWidget
+});
+import * as Trace37 from "./../../models/trace/trace.js";
+import * as PerfUI19 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as Lit2 from "./../../ui/lit/lit.js";
+
+// gen/front_end/panels/timeline/components/networkTrackWidget.css.js
+var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file. */
+
+:host {
+  display: flex;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 150px;
+  background-color: var(--sys-color-cdt-base-container);
+  border-radius: 8px;
+  border: 1px solid var(--sys-color-divider);
+}
+
+.container canvas {
+  /* stylelint-disable-next-line declaration-no-important */
+  pointer-events: none !important;
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+.vbox {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/*# sourceURL=${import.meta.resolve("./networkTrackWidget.css")} */`;
+
+// gen/front_end/panels/timeline/components/NetworkTrackWidget.js
+var { html: html7 } = Lit2;
+var NetworkTrackWidget = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #flameChartContainer = document.createElement("div");
+  #flameChart = null;
+  #dataProvider = null;
+  #parsedTrace = null;
+  constructor() {
+    super();
+    this.#flameChartContainer.classList.add("container");
+  }
+  set data(data) {
+    const parsedTrace = data.parsedTrace;
+    const dataProvider = data.dataProvider;
+    if (!parsedTrace || !dataProvider) {
+      return;
+    }
+    const isDataProviderChanged = dataProvider !== this.#dataProvider;
+    this.#dataProvider = dataProvider;
+    this.#parsedTrace = parsedTrace;
+    this.#render();
+    if (isDataProviderChanged || !this.#flameChart) {
+      this.#flameChartContainer.innerHTML = "";
+      this.#flameChart = new PerfUI19.FlameChart.FlameChart(this.#dataProvider, this);
+      this.#flameChart.show(this.#flameChartContainer, void 0, true);
+    }
+    const entityMapper = Trace37.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
+    this.#dataProvider.preparePopoverElement = () => null;
+    this.#dataProvider.setModel(parsedTrace, entityMapper);
+    const timelineData = this.#dataProvider.timelineData();
+    timelineData.groups = [];
+    const bounds = Trace37.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds({
+      min: Trace37.Types.Timing.Micro(data.bounds.min),
+      max: Trace37.Types.Timing.Micro(data.bounds.max),
+      range: Trace37.Types.Timing.Micro(data.bounds.range)
+    });
+    this.#dataProvider.setWindowTimes(bounds.min, bounds.max);
+    this.#flameChart.setWindowTimes(bounds.min, bounds.max);
+    this.#render();
+  }
+  #render() {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    const output = html7`
+        <style>${networkTrackWidget_css_default}</style>
+        ${this.#flameChartContainer}
+      `;
+    Lit2.render(output, this.#shadow, { host: this });
+    if (this.#flameChart) {
+      this.#flameChart.update();
+    }
+  }
+  windowChanged(_windowStartTime, _windowEndTime, _animate) {
+  }
+  updateRangeSelection(_startTime, _endTime) {
+  }
+  updateSelectedGroup(_flameChart, _group) {
+  }
+};
+if (!customElements.get("devtools-performance-agent-network-track")) {
+  customElements.define("devtools-performance-agent-network-track", NetworkTrackWidget);
+}
+
 // gen/front_end/panels/timeline/timeline.prebundle.js
 import * as Utils8 from "./utils/utils.js";
 export {
@@ -18850,6 +18960,7 @@ export {
   LayoutShiftsTrackAppender_exports as LayoutShiftsTrackAppender,
   ModificationsManager_exports as ModificationsManager,
   NetworkTrackAppender_exports as NetworkTrackAppender,
+  NetworkTrackWidget_exports as NetworkTrackWidget,
   RecordingMetadata_exports as RecordingMetadata,
   SaveFileFormatter_exports as SaveFileFormatter,
   TargetForEvent_exports as TargetForEvent,

@@ -1048,6 +1048,13 @@ export class PerformanceAgent extends AiAgent {
                 this.#cacheFunctionResult(focus, key, summary);
                 return {
                     result: { summary },
+                    widgets: [{
+                            name: 'NETWORK_TRACK',
+                            data: {
+                                parsedTrace,
+                                bounds,
+                            },
+                        }],
                 };
             },
         });

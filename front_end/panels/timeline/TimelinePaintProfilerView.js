@@ -32,8 +32,8 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         this.setMainWidget(this.logAndImageSplitWidget);
         this.imageView = new TimelinePaintImageView();
         this.logAndImageSplitWidget.setMainWidget(this.imageView);
-        this.paintProfilerView =
-            new LayerViewer.PaintProfilerView.PaintProfilerView(this.imageView.showImage.bind(this.imageView));
+        this.paintProfilerView = new LayerViewer.PaintProfilerView.PaintProfilerView();
+        this.paintProfilerView.showImageCallback = this.imageView.showImage.bind(this.imageView);
         this.paintProfilerView.addEventListener("WindowChanged" /* LayerViewer.PaintProfilerView.Events.WINDOW_CHANGED */, this.onWindowChanged, this);
         this.setSidebarWidget(this.paintProfilerView);
         this.logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
@@ -112,7 +112,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         return tracingLayerTree ? await tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
     }
     update() {
-        this.logTreeView.setCommandLog([]);
+        this.logTreeView.commandLog = [];
         void this.paintProfilerView.setSnapshotAndLog(null, [], null);
         let snapshotPromise;
         if (this.pendingSnapshot) {
@@ -154,7 +154,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
             void snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log || []));
         });
         function onCommandLogDone(snapshot, clipRect, log) {
-            this.logTreeView.setCommandLog(log || []);
+            this.logTreeView.commandLog = log || [];
             void this.paintProfilerView.setSnapshotAndLog(snapshot, log || [], clipRect);
         }
     }
@@ -166,7 +166,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         this.lastLoadedSnapshot = null;
     }
     onWindowChanged() {
-        this.logTreeView.updateWindow(this.paintProfilerView.selectionWindow());
+        this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
     }
 }
 export const DEFAULT_VIEW = (input, output, target) => {

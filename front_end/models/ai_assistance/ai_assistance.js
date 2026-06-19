@@ -7225,7 +7225,14 @@ ${result}`,
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         return {
-          result: { summary }
+          result: { summary },
+          widgets: [{
+            name: "NETWORK_TRACK",
+            data: {
+              parsedTrace,
+              bounds
+            }
+          }]
         };
       }
     });

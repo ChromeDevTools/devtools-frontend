@@ -25,6 +25,7 @@ import * as NetworkPanel from '../network/network.js';
 import * as TimelinePanel from '../timeline/timeline.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import { AccessibilityAgentMarkdownRenderer } from './components/AccessibilityAgentMarkdownRenderer.js';
+import { AIv2MarkdownRenderer, } from './components/AIv2MarkdownRenderer.js';
 import { ChatView, } from './components/ChatView.js';
 import { DisabledWidget } from './components/DisabledWidget.js';
 import { ExploreWidget } from './components/ExploreWidget.js';
@@ -307,7 +308,36 @@ async function getEmptyStateSuggestions(conversation) {
             Platform.assertNever(conversation.type, 'Unknown conversation type');
     }
 }
+function createV2MarkdownRenderer(conversation) {
+    const options = {};
+    const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = primaryTarget?.model(SDK.DOMModel.DOMModel);
+    const resourceTreeModel = primaryTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const context = conversation?.selectedContext;
+    if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+        const focus = context.getItem();
+        options.mainFrameId = focus.parsedTrace.data.Meta.mainFrameId;
+        options.lookupTraceEvent = focus.lookupEvent.bind(focus);
+    }
+    else {
+        if (domModel) {
+            options.mainDocumentURL = domModel.existingDocument()?.documentURL;
+        }
+        if (resourceTreeModel) {
+            options.mainFrameId = resourceTreeModel.mainFrame?.id;
+        }
+    }
+    return new AIv2MarkdownRenderer(options);
+}
 function getMarkdownRenderer(conversation) {
+    if (conversation?.type === "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */ &&
+        conversation.isReadOnly) {
+        // Handle historical conversations (can't linkify anything).
+        return new PerformanceAgentMarkdownRenderer();
+    }
+    if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && conversation && !conversation.isReadOnly) {
+        return createV2MarkdownRenderer(conversation);
+    }
     const context = conversation?.selectedContext;
     if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
         const focus = context.getItem();

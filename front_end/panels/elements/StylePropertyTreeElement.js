@@ -1726,7 +1726,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.#parentSection = section;
         this.isShorthand = isShorthand;
         this.newProperty = newProperty;
-        this.#lazyRender = stylesContainer.shouldRenderLazily();
+        this.#lazyRender = !this.newProperty && stylesContainer.shouldRenderLazily();
         if (this.newProperty) {
             this.listItemElement.textContent = '';
         }

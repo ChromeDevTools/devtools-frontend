@@ -6,13 +6,13 @@ var __export = (target, all) => {
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
 import "./../../ui/kit/kit.js";
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as Root8 from "./../../core/root/root.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel8 from "./../../models/ai_assistance/ai_assistance.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as AiAssistanceModel9 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Greendev from "./../../models/greendev/greendev.js";
@@ -21,7 +21,7 @@ import * as Buttons9 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars4 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import * as Lit10 from "./../../ui/lit/lit.js";
+import * as Lit11 from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as LighthousePanel2 from "./../lighthouse/lighthouse.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
@@ -242,15 +242,182 @@ var AccessibilityAgentMarkdownRenderer = class extends MarkdownRendererWithCodeB
   }
 };
 
+// gen/front_end/panels/ai_assistance/components/AIv2MarkdownRenderer.js
+import * as Common2 from "./../../core/common/common.js";
+import * as Platform2 from "./../../core/platform/platform.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
+import * as Logs2 from "./../../models/logs/logs.js";
+import * as Trace from "./../../models/trace/trace.js";
+import * as MarkdownView3 from "./../../ui/components/markdown_view/markdown_view.js";
+import * as Lit3 from "./../../ui/lit/lit.js";
+import * as PanelsCommon2 from "./../common/common.js";
+var { html: html3 } = Lit3.StaticHtml;
+var { until: until2 } = Lit3.Directives;
+var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsightRenderer {
+  options;
+  constructor(options = {}) {
+    super();
+    this.options = options;
+  }
+  #isSameOrigin(node) {
+    if (!this.options.mainDocumentURL) {
+      return true;
+    }
+    const nodeDocumentURL = node.ownerDocument?.documentURL ?? "";
+    return AiAssistanceModel3.AiUtils.isSameOrigin(this.options.mainDocumentURL, nodeDocumentURL);
+  }
+  #revealableLink(revealable, label) {
+    return html3`<devtools-link @click=${(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      void Common2.Revealer.reveal(revealable);
+    }}>${Platform2.StringUtilities.trimEndWithMaxLength(label, 100)}</devtools-link>`;
+  }
+  #renderLink(href, text) {
+    const devtoolsLink = this.#renderDevToolsLink(href, text);
+    if (devtoolsLink) {
+      return devtoolsLink;
+    }
+    if (href.startsWith("#")) {
+      const parsed = this.#parseLink(href);
+      if (parsed) {
+        const resultPromise = parsed.type === "path" ? this.#linkifyPath(parsed.path, text) : this.#linkifyNode(parsed.nodeId, text);
+        return html3`<span>${until2(resultPromise.then((node) => node || text), text)}</span>`;
+      }
+      if (this.options.lookupTraceEvent) {
+        const event = this.options.lookupTraceEvent(href.slice(1));
+        if (event) {
+          let label = text;
+          let title = "";
+          if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
+            title = event.args.data.url;
+          } else {
+            label += ` (${event.name})`;
+          }
+          return html3`<a href="#" draggable=false .title=${title} @click=${(e) => {
+            e.stopPropagation();
+            void Common2.Revealer.reveal(new SDK2.TraceObject.RevealableEvent(event));
+          }}>${label}</a>`;
+        }
+      }
+    }
+    return null;
+  }
+  #renderDevToolsLink(href, fallbackText) {
+    if (href.startsWith("#req-")) {
+      const request = Logs2.NetworkLog.NetworkLog.instance().requests().find((req) => req.requestId() === href.substring(5));
+      if (request) {
+        return this.#revealableLink(request, request.url());
+      }
+      return html3`${fallbackText}`;
+    }
+    if (href.startsWith("#file-")) {
+      const file = AiAssistanceModel3.ContextSelectionAgent.ContextSelectionAgent.getUISourceCodes().find((file2) => AiAssistanceModel3.ContextSelectionAgent.ContextSelectionAgent.uiSourceCodeId.get(file2) === Number(href.substring(6)));
+      if (file) {
+        return this.#revealableLink(file, file.name());
+      }
+      return html3`${fallbackText}`;
+    }
+    return null;
+  }
+  #parseLink(href) {
+    if (href.startsWith("#path-")) {
+      return { type: "path", path: href.replace("#path-", "") };
+    }
+    if (href.startsWith("#1,HTML")) {
+      return { type: "path", path: href.slice(1) };
+    }
+    let nodeIdStr = "";
+    if (href.startsWith("#node-")) {
+      nodeIdStr = href.replace("#node-", "");
+    } else if (href.startsWith("#")) {
+      nodeIdStr = href.slice(1);
+    }
+    if (nodeIdStr.trim() !== "") {
+      const nodeId = Number(nodeIdStr);
+      if (Number.isInteger(nodeId)) {
+        return { type: "node", nodeId };
+      }
+    }
+    return null;
+  }
+  async #linkifyNode(backendNodeId, label) {
+    const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK2.DOMModel.DOMModel);
+    if (!domModel) {
+      return void 0;
+    }
+    const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([backendNodeId]));
+    const node = domNodesMap?.get(backendNodeId);
+    if (!node) {
+      return;
+    }
+    if (this.options.mainFrameId && node.frameId() !== this.options.mainFrameId) {
+      return;
+    }
+    if (!this.#isSameOrigin(node)) {
+      return;
+    }
+    const linkedNode = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
+    return linkedNode;
+  }
+  async #linkifyPath(path, label) {
+    const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK2.DOMModel.DOMModel);
+    if (!domModel) {
+      return void 0;
+    }
+    const nodeId = await domModel.pushNodeByPathToFrontend(path);
+    if (!nodeId) {
+      return;
+    }
+    const node = domModel.nodeForId(nodeId);
+    if (!node) {
+      return;
+    }
+    if (!this.#isSameOrigin(node)) {
+      return;
+    }
+    const linkedNode = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
+    return linkedNode;
+  }
+  templateForToken(token) {
+    if (token.type === "link") {
+      const link4 = this.#renderLink(token.href, token.text);
+      if (link4) {
+        return link4;
+      }
+    }
+    if (token.type === "code") {
+      const lines = token.text.split("\n");
+      if (lines[0]?.trim() === "css") {
+        token.lang = "css";
+        token.text = lines.slice(1).join("\n");
+      }
+    }
+    if (token.type === "codespan") {
+      const matches = token.text.match(/^\[(.*)\]\((.+)\)$/);
+      if (matches?.[2]) {
+        const link4 = this.#renderLink(matches[2], matches[1]);
+        if (link4) {
+          return link4;
+        }
+      }
+    }
+    return super.templateForToken(token);
+  }
+};
+
 // gen/front_end/panels/ai_assistance/components/ChatView.js
 import "./../../ui/components/spinners/spinners.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as AiAssistanceModel7 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel8 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
 import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html9, nothing as nothing7, render as render7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives7, html as html10, nothing as nothing7, render as render7 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/PatchWidget.js
 var PatchWidget_exports = {};
@@ -263,25 +430,25 @@ import "./../../ui/legacy/legacy.js";
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/components/spinners/spinners.js";
 import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
-import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Persistence2 from "./../../models/persistence/persistence.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as WorkspaceDiff from "./../../models/workspace_diff/workspace_diff.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html4, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html5, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 import * as ChangesPanel from "./../changes/changes.js";
 import * as PanelCommon from "./../common/common.js";
 
 // gen/front_end/panels/ai_assistance/SelectWorkspaceDialog.js
 import "./../../ui/kit/kit.js";
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
@@ -290,7 +457,7 @@ import * as Persistence from "./../../models/persistence/persistence.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as UI from "./../../ui/legacy/legacy.js";
-import { html as html3, nothing, render } from "./../../ui/lit/lit.js";
+import { html as html4, nothing, render } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/selectWorkspaceDialog.css.js
 var selectWorkspaceDialog_css_default = `/*
@@ -422,12 +589,12 @@ var UIStringsNotTranslate = {
 var lockedString = i18n.i18n.lockedString;
 var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
   const hasFolders = input.folders.length > 0;
-  render(html3`
+  render(html4`
       <style>${selectWorkspaceDialog_css_default}</style>
       <h2 class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</h2>
       <div class="main-content">
         <div class="select-project-root">${input.selectProjectRootText}</div>
-        ${input.showAutomaticWorkspaceNudge ? html3`
+        ${input.showAutomaticWorkspaceNudge ? html4`
           <!-- Hardcoding, because there is no 'getFormatLocalizedString' equivalent for 'lockedString' -->
           <div>
             Tip: provide a
@@ -440,12 +607,12 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
           </div>
         ` : nothing}
       </div>
-      ${hasFolders ? html3`
+      ${hasFolders ? html4`
         <ul role="listbox" aria-label=${lockedString(UIStringsNotTranslate.selectFolder)}
           aria-activedescendant=${input.folders.length > 0 ? `option-${input.selectedIndex}` : ""}>
           ${input.folders.map((folder, index) => {
     const optionId = `option-${index}`;
-    return html3`
+    return html4`
               <li
                 id=${optionId}
                 @mousedown=${() => input.onProjectSelected(index)}
@@ -477,7 +644,7 @@ var SELECT_WORKSPACE_DIALOG_DEFAULT_VIEW = (input, _output, target) => {
           .jslogContext=${"add-folder"}
           @click=${input.onAddFolderButtonClick}
           .variant=${hasFolders ? "tonal" : "primary"}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
-        ${hasFolders ? html3`
+        ${hasFolders ? html4`
           <devtools-button
             title=${lockedString(UIStringsNotTranslate.select)}
             aria-label="Select"
@@ -595,7 +762,7 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI.Widget.VBox 
     const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
     if (automaticFileSystem) {
       this.#folders.push({
-        name: Common2.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
+        name: Common3.ParsedURL.ParsedURL.extractName(automaticFileSystem.root),
         path: automaticFileSystem.root,
         automaticFileSystem
       });
@@ -607,8 +774,8 @@ var SelectWorkspaceDialog = class _SelectWorkspaceDialog extends UI.Widget.VBox 
         continue;
       }
       this.#folders.push({
-        name: Common2.ParsedURL.ParsedURL.encodedPathToRawPathString(project.displayName()),
-        path: Common2.ParsedURL.ParsedURL.urlToRawPathString(project.id(), Host.Platform.isWin()),
+        name: Common3.ParsedURL.ParsedURL.encodedPathToRawPathString(project.displayName()),
+        path: Common3.ParsedURL.ParsedURL.urlToRawPathString(project.id(), Host.Platform.isWin()),
         project
       });
     }
@@ -767,13 +934,13 @@ var DEFAULT_VIEW = (input, output, target) => {
   if (!input.changeSummary && input.patchSuggestionState === PatchSuggestionState.INITIAL) {
     return;
   }
-  output.changeRef = output.changeRef ?? Directives2.createRef();
-  output.summaryRef = output.summaryRef ?? Directives2.createRef();
+  output.changeRef = output.changeRef ?? Directives3.createRef();
+  output.summaryRef = output.summaryRef ?? Directives3.createRef();
   function renderSourcesLink() {
     if (!input.sources) {
       return nothing2;
     }
-    return html4`<devtools-link
+    return html5`<devtools-link
           class="link"
           title="${UIStringsNotTranslate2.viewUploadedFiles} ${UIStringsNotTranslate2.opensInNewTab}"
           href="data:text/plain;charset=utf-8,${encodeURIComponent(input.sources)}"
@@ -783,7 +950,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   }
   function renderHeader() {
     if (input.savedToDisk) {
-      return html4`
+      return html5`
             <devtools-icon class="green-bright-icon summary-badge" name="check-circle"></devtools-icon>
             <span class="header-text">
               ${lockedString2(UIStringsNotTranslate2.savedToDisk)}
@@ -791,7 +958,7 @@ var DEFAULT_VIEW = (input, output, target) => {
           `;
     }
     if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-      return html4`
+      return html5`
             <devtools-icon class="on-tonal-icon summary-badge" name="difference"></devtools-icon>
             <span class="header-text">
               ${lockedString2(`File changes in ${input.projectName}`)}
@@ -802,7 +969,7 @@ var DEFAULT_VIEW = (input, output, target) => {
             ></devtools-icon>
           `;
     }
-    return html4`
+    return html5`
           <devtools-icon class="on-tonal-icon summary-badge" name="pen-spark"></devtools-icon>
           <span class="header-text">
             ${lockedString2(UIStringsNotTranslate2.unsavedChanges)}
@@ -818,18 +985,18 @@ var DEFAULT_VIEW = (input, output, target) => {
       return nothing2;
     }
     if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-      return html4`${widget(ChangesPanel.CombinedDiffView.CombinedDiffView, {
+      return html5`${widget(ChangesPanel.CombinedDiffView.CombinedDiffView, {
         workspaceDiff: input.workspaceDiff,
         // Ignore user creates inspector-stylesheets
         ignoredUrls: ["inspector://"]
       })}`;
     }
-    return html4`<devtools-code-block
+    return html5`<devtools-code-block
           .code=${input.changeSummary ?? ""}
           .codeLang=${"css"}
           .displayNotice=${true}
         ></devtools-code-block>
-        ${input.patchSuggestionState === PatchSuggestionState.ERROR ? html4`<div class="error-container">
+        ${input.patchSuggestionState === PatchSuggestionState.ERROR ? html5`<div class="error-container">
               <devtools-icon name="cross-circle-filled"></devtools-icon>${lockedString2(UIStringsNotTranslate2.genericErrorMessage)} ${renderSourcesLink()}
             </div>` : nothing2}`;
   }
@@ -838,7 +1005,7 @@ var DEFAULT_VIEW = (input, output, target) => {
       return nothing2;
     }
     if (input.patchSuggestionState === PatchSuggestionState.SUCCESS) {
-      return html4`
+      return html5`
           <div class="footer">
             <div class="left-side">
               <devtools-link class="link disclaimer-link" href="https://support.google.com/legal/answer/13505487" jslogcontext="code-disclaimer">
@@ -864,33 +1031,33 @@ var DEFAULT_VIEW = (input, output, target) => {
           `;
     }
     const iconName = input.projectType === SelectedProjectType.AUTOMATIC_DISCONNECTED ? "folder-off" : input.projectType === SelectedProjectType.AUTOMATIC_CONNECTED ? "folder-asterisk" : "folder";
-    return html4`
+    return html5`
         <div class="footer">
-          ${input.projectName ? html4`
+          ${input.projectName ? html5`
             <div class="change-workspace" jslog=${VisualLogging.section("patch-widget.workspace")}>
                 <devtools-icon .name=${iconName}></devtools-icon>
                 <span class="folder-name" title=${input.projectPath}>${input.projectName}</span>
-              ${input.onChangeWorkspaceClick ? html4`
+              ${input.onChangeWorkspaceClick ? html5`
                 <devtools-button
                   @click=${input.onChangeWorkspaceClick}
                   .jslogContext=${"change-workspace"}
                   .variant=${"text"}
                   .title=${lockedString2(UIStringsNotTranslate2.changeRootFolder)}
                   .disabled=${input.patchSuggestionState === PatchSuggestionState.LOADING}
-                  ${Directives2.ref(output.changeRef)}
+                  ${Directives3.ref(output.changeRef)}
                 >${lockedString2(UIStringsNotTranslate2.change)}</devtools-button>
               ` : nothing2}
             </div>
           ` : nothing2}
           <div class="apply-to-workspace-container" aria-live="polite">
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html4`
+            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html5`
               <div class="loading-text-container" jslog=${VisualLogging.section("patch-widget.apply-to-workspace-loading")}>
                 <devtools-spinner></devtools-spinner>
                 <span>
                   ${lockedString2(UIStringsNotTranslate2.applyingToWorkspace)}
                 </span>
               </div>
-            ` : html4`
+            ` : html5`
                 <devtools-button
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${"patch-widget.apply-to-workspace"}
@@ -898,7 +1065,7 @@ var DEFAULT_VIEW = (input, output, target) => {
                 ${lockedString2(UIStringsNotTranslate2.applyToWorkspace)}
               </devtools-button>
             `}
-            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html4`<devtools-button
+            ${input.patchSuggestionState === PatchSuggestionState.LOADING ? html5`<devtools-button
               @click=${input.onCancel}
               .jslogContext=${"cancel"}
               .variant=${"outlined"}>
@@ -929,14 +1096,14 @@ var DEFAULT_VIEW = (input, output, target) => {
           </div>
         </div>`;
   }
-  const template = input.savedToDisk ? html4`
+  const template = input.savedToDisk ? html5`
           <div class="change-summary saved-to-disk" role="status" aria-live="polite">
             <div class="header-container">
              ${renderHeader()}
              </div>
-          </div>` : html4`
+          </div>` : html5`
           <details class="change-summary" jslog=${VisualLogging.section("patch-widget")}>
-            <summary class="header-container" ${Directives2.ref(output.summaryRef)}>
+            <summary class="header-container" ${Directives3.ref(output.summaryRef)}>
               ${renderHeader()}
             </summary>
             ${renderContent()}
@@ -949,8 +1116,8 @@ var PatchWidget = class extends UI2.Widget.Widget {
   changeSummary = "";
   changeManager;
   // Whether the user completed first run experience dialog or not.
-  #aiPatchingFreCompletedSetting = Common3.Settings.Settings.instance().createSetting("ai-assistance-patching-fre-completed", false);
-  #projectIdSetting = Common3.Settings.Settings.instance().createSetting("ai-assistance-patching-selected-project-id", "");
+  #aiPatchingFreCompletedSetting = Common4.Settings.Settings.instance().createSetting("ai-assistance-patching-fre-completed", false);
+  #projectIdSetting = Common4.Settings.Settings.instance().createSetting("ai-assistance-patching-selected-project-id", "");
   #view;
   #viewOutput = {};
   #aidaClient;
@@ -980,19 +1147,19 @@ var PatchWidget = class extends UI2.Widget.Widget {
   #getDisplayedProject() {
     if (this.#project) {
       return {
-        projectName: Common3.ParsedURL.ParsedURL.encodedPathToRawPathString(this.#project.displayName()),
-        projectPath: Common3.ParsedURL.ParsedURL.urlToRawPathString(this.#project.id(), Host2.Platform.isWin())
+        projectName: Common4.ParsedURL.ParsedURL.encodedPathToRawPathString(this.#project.displayName()),
+        projectPath: Common4.ParsedURL.ParsedURL.urlToRawPathString(this.#project.id(), Host2.Platform.isWin())
       };
     }
     if (this.#automaticFileSystem) {
       return {
-        projectName: Common3.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
+        projectName: Common4.ParsedURL.ParsedURL.extractName(this.#automaticFileSystem.root),
         projectPath: this.#automaticFileSystem.root
       };
     }
     return {
       projectName: "",
-      projectPath: Platform4.DevToolsPath.EmptyRawPathString
+      projectPath: Platform5.DevToolsPath.EmptyRawPathString
     };
   }
   #shouldShowChangeButton() {
@@ -1049,7 +1216,7 @@ var PatchWidget = class extends UI2.Widget.Widget {
     if (isAiPatchingFreCompleted) {
       return true;
     }
-    const iconName = AiAssistanceModel3.AiUtils.getIconName();
+    const iconName = AiAssistanceModel4.AiUtils.getIconName();
     const result = await PanelCommon.FreDialog.show({
       header: { iconName, text: lockedString2(UIStringsNotTranslate2.freDisclaimerHeader) },
       reminderItems: [
@@ -1064,7 +1231,7 @@ var PatchWidget = class extends UI2.Widget.Widget {
         {
           iconName: "warning",
           // clang-format off
-          content: html4`<devtools-link
+          content: html5`<devtools-link
             href=${CODE_SNIPPET_WARNING_URL}
             class="link devtools-link"
             jslogcontext="code-snippets-explainer.patch-widget"
@@ -1232,7 +1399,7 @@ ${processedFiles.map((filename) => `* ${filename}`).join("\n")}`;
       throw new Error("Project does not exist");
     }
     this.#applyPatchAbortController = new AbortController();
-    const agent = new AiAssistanceModel3.PatchAgent.PatchAgent({
+    const agent = new AiAssistanceModel4.PatchAgent.PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: false,
       project: this.#project
@@ -1258,7 +1425,7 @@ window.aiAssistanceTestPatchPrompt = async (projectName, changeSummary, expected
     throw new Error("project not found");
   }
   const aidaClient = new Host2.AidaClient.AidaClient();
-  const agent = new AiAssistanceModel3.PatchAgent.PatchAgent({
+  const agent = new AiAssistanceModel4.PatchAgent.PatchAgent({
     aidaClient,
     serverSideLoggingEnabled: false,
     project
@@ -1327,15 +1494,15 @@ __export(ChatInput_exports, {
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
-import * as PanelsCommon2 from "./../common/common.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
+import * as PanelsCommon3 from "./../common/common.js";
 import * as PanelUtils from "./../utils/utils.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as Input from "./../../ui/components/input/input.js";
 import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
+import * as Lit4 from "./../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatInput.css.js
@@ -1751,7 +1918,7 @@ button.link {
 /*# sourceURL=${import.meta.resolve("././components/chatInput.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/ChatInput.js
-var { html: html5, Directives: { createRef, ref } } = Lit3;
+var { html: html6, Directives: { createRef, ref } } = Lit4;
 var { widget: widget2 } = UI3.Widget;
 var UIStrings = {
   /**
@@ -1846,35 +2013,35 @@ var SHOW_LOADING_STATE_TIMEOUT = 100;
 var RELEVANT_DATA_LINK_CHAT_ID = "relevant-data-link-chat";
 var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
 function getContextRemoveLabel(context) {
-  if (context instanceof AiAssistanceModel4.FileContext.FileContext) {
+  if (context instanceof AiAssistanceModel5.FileContext.FileContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextFile);
   }
-  if (context instanceof AiAssistanceModel4.DOMNodeContext.DOMNodeContext) {
+  if (context instanceof AiAssistanceModel5.DOMNodeContext.DOMNodeContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextElement);
   }
-  if (context instanceof AiAssistanceModel4.RequestContext.RequestContext) {
+  if (context instanceof AiAssistanceModel5.RequestContext.RequestContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextRequest);
   }
-  if (context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextPerfInsight);
   }
-  if (context instanceof AiAssistanceModel4.StorageAgent.StorageContext) {
+  if (context instanceof AiAssistanceModel5.StorageAgent.StorageContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextStorage);
   }
   return lockedString3(UIStringsNotTranslate3.removeContext);
 }
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  const chatInputContainerCls = Lit3.Directives.classMap({
+  const chatInputContainerCls = Lit4.Directives.classMap({
     "chat-input-container": true,
     "single-line-layout": !input.context,
     disabled: input.isTextInputDisabled
   });
   const renderRelevantDataDisclaimer = (tooltipId) => {
-    const classes = Lit3.Directives.classMap({
+    const classes = Lit4.Directives.classMap({
       "chat-input-disclaimer": true,
       "hide-divider": !input.isLoading && input.blockedByCrossOrigin
     });
-    return html5`
+    return html6`
       <div class=${classes}>
         <button
           class="link"
@@ -1907,10 +2074,10 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
       </div>
     `;
   };
-  Lit3.render(html5`
+  Lit4.render(html6`
     <style>${Input.textInputStyles}</style>
     <style>${chatInput_css_default}</style>
-    ${input.isReadOnly ? html5`
+    ${input.isReadOnly ? html6`
         <div
           class="chat-readonly-container"
           jslog=${VisualLogging2.section("read-only")}
@@ -1926,10 +2093,10 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     jslogContext: "start-new-chat"
   }}
           >${lockedString3(UIStringsNotTranslate3.startNewChat)}</devtools-button>
-        </div>` : html5`
+        </div>` : html6`
         <form class="input-form" @submit=${input.onSubmit}>
           <div class=${chatInputContainerCls}>
-            ${input.multimodalInputEnabled && input.imageInput && !input.isTextInputDisabled ? html5`
+            ${input.multimodalInputEnabled && input.imageInput && !input.isTextInputDisabled ? html6`
                 <div class="image-input-container">
                   <devtools-button
                     aria-label=${lockedString3(UIStringsNotTranslate3.removeImageInputButtonTitle)}
@@ -1941,12 +2108,12 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     title: lockedString3(UIStringsNotTranslate3.removeImageInputButtonTitle)
   }}
                   ></devtools-button>
-                  ${input.imageInput.isLoading ? html5`
+                  ${input.imageInput.isLoading ? html6`
                       <div class="loading">
                         <devtools-spinner></devtools-spinner>
-                      </div>` : html5`
+                      </div>` : html6`
                       <img src="data:${input.imageInput.mimeType};base64, ${input.imageInput.data}" alt="Image input" />`}
-                </div>` : Lit3.nothing}
+                </div>` : Lit4.nothing}
             <textarea
               class="chat-input"
               .disabled=${input.isTextInputDisabled}
@@ -1969,9 +2136,9 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             ></textarea>
             <div class="chat-input-actions">
               <div class="chat-input-actions-left">
-                ${input.context ? html5`
+                ${input.context ? html6`
                     <div class="select-element">
-                      ${input.conversationType === "freestyler" ? html5`
+                      ${input.conversationType === "freestyler" ? html6`
                           <devtools-button
                             .data=${{
     variant: "icon_toggle",
@@ -1985,26 +2152,26 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     disabled: input.isTextInputDisabled
   }}
                             @click=${input.onInspectElementClick}
-                          ></devtools-button>` : Lit3.nothing}
+                          ></devtools-button>` : Lit4.nothing}
                       <div
-                        class=${Lit3.Directives.classMap({
+                        class=${Lit4.Directives.classMap({
     "resource-link": true,
     disabled: !input.isContextSelected
   })}
                       >
-                        ${input.context instanceof AiAssistanceModel4.DOMNodeContext.DOMNodeContext ? html5`
+                        ${input.context instanceof AiAssistanceModel5.DOMNodeContext.DOMNodeContext ? html6`
                               <devtools-widget
                                 class="title"
-                                ${widget2(PanelsCommon2.DOMLinkifier.DOMNodeLink, {
+                                ${widget2(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
     node: input.context.getItem(),
     options: {
       disabled: !input.isContextSelected,
-      hiddenClassList: input.context.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel4.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
+      hiddenClassList: input.context.getItem().classNames().filter((className) => className.startsWith(AiAssistanceModel5.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)),
       ariaDescription: i18nString(UIStrings.revealContextDescription)
     }
   })}
-                              ></devtools-widget>` : html5`
-                          ${input.context instanceof AiAssistanceModel4.RequestContext.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel4.FileContext.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel4.AccessibilityAgent.AccessibilityContext ? html5`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel4.PerformanceAgent.PerformanceTraceContext ? html5`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel4.StorageAgent.StorageContext ? html5`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit3.nothing}
+                              ></devtools-widget>` : html6`
+                          ${input.context instanceof AiAssistanceModel5.RequestContext.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel5.FileContext.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel5.AccessibilityAgent.AccessibilityContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel5.StorageAgent.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit4.nothing}
                             <span
                               role="button"
                               class="title"
@@ -2017,7 +2184,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
   }}
                               aria-description=${i18nString(UIStrings.revealContextDescription)}
                             >${input.context.getTitle()}</span>`}
-                        ${input.isContextSelected && input.onContextRemoved ? html5`
+                        ${input.isContextSelected && input.onContextRemoved ? html6`
                                   <devtools-button
                                     title=${getContextRemoveLabel(input.context)}
                                     aria-label=${getContextRemoveLabel(input.context)}
@@ -2026,8 +2193,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                                     .size=${"MICRO"}
                                     .jslogContext=${"context-removed"}
                                     .variant=${"icon"}
-                                    @click=${input.onContextRemoved}></devtools-button>` : Lit3.nothing}
-                      ${!input.isContextSelected && input.onContextAdd ? html5`
+                                    @click=${input.onContextRemoved}></devtools-button>` : Lit4.nothing}
+                      ${!input.isContextSelected && input.onContextAdd ? html6`
                                     <devtools-button
                                       title=${lockedString3(UIStringsNotTranslate3.addContext)}
                                       aria-label=${lockedString3(UIStringsNotTranslate3.addContext)}
@@ -2036,16 +2203,16 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
                                       .size=${"MICRO"}
                                       .jslogContext=${"context-added"}
                                       .variant=${"icon"}
-                                      @click=${input.onContextAdd}></devtools-button>` : Lit3.nothing}
+                                      @click=${input.onContextAdd}></devtools-button>` : Lit4.nothing}
                       </div>
-                    </div>` : Lit3.nothing}
+                    </div>` : Lit4.nothing}
               </div>
               <div class="chat-input-actions-right">
                 <div class="chat-input-disclaimer-container">
                   ${renderRelevantDataDisclaimer(RELEVANT_DATA_LINK_CHAT_ID)}
                 </div>
-                ${input.multimodalInputEnabled && !input.blockedByCrossOrigin ? html5`
-                    ${input.uploadImageInputEnabled ? html5`
+                ${input.multimodalInputEnabled && !input.blockedByCrossOrigin ? html6`
+                    ${input.uploadImageInputEnabled ? html6`
                         <devtools-button
                           class="chat-input-button"
                           aria-label=${lockedString3(UIStringsNotTranslate3.addImageButtonTitle)}
@@ -2058,7 +2225,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     title: lockedString3(UIStringsNotTranslate3.addImageButtonTitle),
     jslogContext: "upload-image"
   }}
-                        ></devtools-button>` : Lit3.nothing}
+                        ></devtools-button>` : Lit4.nothing}
                     <devtools-button
                       class="chat-input-button"
                       aria-label=${lockedString3(UIStringsNotTranslate3.takeScreenshotButtonTitle)}
@@ -2071,8 +2238,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     title: lockedString3(UIStringsNotTranslate3.takeScreenshotButtonTitle),
     jslogContext: "take-screenshot"
   }}
-                    ></devtools-button>` : Lit3.nothing}
-                ${input.isLoading ? html5`
+                    ></devtools-button>` : Lit4.nothing}
+                ${input.isLoading ? html6`
                     <devtools-button
                       class="chat-input-button"
                       aria-label=${lockedString3(UIStringsNotTranslate3.cancelButtonTitle)}
@@ -2084,7 +2251,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     title: lockedString3(UIStringsNotTranslate3.cancelButtonTitle),
     jslogContext: "stop"
   }}
-                    ></devtools-button>` : input.blockedByCrossOrigin ? html5`
+                    ></devtools-button>` : input.blockedByCrossOrigin ? html6`
                       <devtools-button
                         class="start-new-chat-button"
                         aria-label=${lockedString3(UIStringsNotTranslate3.startNewChat)}
@@ -2095,7 +2262,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     title: lockedString3(UIStringsNotTranslate3.startNewChat),
     jslogContext: "start-new-chat"
   }}
-                      >${lockedString3(UIStringsNotTranslate3.startNewChat)}</devtools-button>` : html5`
+                      >${lockedString3(UIStringsNotTranslate3.startNewChat)}</devtools-button>` : html6`
                       <devtools-button
                         class="chat-input-button"
                         aria-label=${lockedString3(UIStringsNotTranslate3.sendButtonTitle)}
@@ -2114,7 +2281,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
           </div>
         </form>`}
     <footer
-      class=${Lit3.Directives.classMap({
+      class=${Lit4.Directives.classMap({
     "chat-input-footer": true,
     "is-read-only": input.isReadOnly
   })}
@@ -2179,7 +2346,7 @@ var ChatInput = class extends UI3.Widget.Widget {
    * @param dir direction to navigate. -1 for older, 1 for newer.
    */
   #navigatePromptHistory(dir) {
-    const prompts = AiAssistanceModel4.AiHistoryStorage.AiHistoryStorage.instance().getRecentPrompts();
+    const prompts = AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().getRecentPrompts();
     if (!prompts.length) {
       return;
     }
@@ -2200,11 +2367,11 @@ var ChatInput = class extends UI3.Widget.Widget {
     }
   }
   async #handleTakeScreenshot() {
-    const mainTarget = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainTarget = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
       throw new Error("Could not find main target");
     }
-    const model = mainTarget.model(SDK2.ScreenCaptureModel.ScreenCaptureModel);
+    const model = mainTarget.model(SDK3.ScreenCaptureModel.ScreenCaptureModel);
     if (!model) {
       throw new Error("Could not find model");
     }
@@ -2318,11 +2485,11 @@ var ChatInput = class extends UI3.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
   }
   willHide() {
     super.willHide();
-    SDK2.TargetManager.TargetManager.instance().removeModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    SDK3.TargetManager.TargetManager.instance().removeModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
   }
   #onPrimaryPageChanged() {
     this.#imageInput = void 0;
@@ -2438,19 +2605,19 @@ __export(ChatMessage_exports, {
 });
 import "./../../ui/components/markdown_view/markdown_view.js";
 import "./../../ui/kit/kit.js";
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel6 from "./../../models/ai_assistance/ai_assistance.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as AiAssistanceModel7 from "./../../models/ai_assistance/ai_assistance.js";
 import * as ComputedStyle from "./../../models/computed_style/computed_style.js";
 import * as Formatter from "./../../models/formatter/formatter.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
-import * as Trace from "./../../models/trace/trace.js";
+import * as Trace2 from "./../../models/trace/trace.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
-import * as PanelsCommon3 from "./../common/common.js";
+import * as PanelsCommon4 from "./../common/common.js";
 import * as TraceBounds from "./../../services/trace_bounds/trace_bounds.js";
 import * as Marked from "./../../third_party/marked/marked.js";
 import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
@@ -2458,7 +2625,7 @@ import * as Input3 from "./../../ui/components/input/input.js";
 import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
+import * as Lit6 from "./../../ui/lit/lit.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as Elements from "./../elements/elements.js";
 import * as Lighthouse from "./../lighthouse/lighthouse.js";
@@ -3165,11 +3332,11 @@ __export(WalkthroughView_exports, {
   walkthroughTitle: () => walkthroughTitle
 });
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel6 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as Input2 from "./../../ui/components/input/input.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as Lit5 from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/walkthroughView.css.js
@@ -3394,8 +3561,8 @@ var walkthroughView_css_default = `/*
 
 // gen/front_end/panels/ai_assistance/components/WalkthroughView.js
 var lockedString4 = i18n7.i18n.lockedString;
-var { html: html6, render: render4, Directives: Directives4 } = Lit4;
-var { ref: ref2 } = Directives4;
+var { html: html7, render: render4, Directives: Directives5 } = Lit5;
+var { ref: ref2 } = Directives5;
 var SCROLL_ROUND_OFFSET = 2;
 var UIStrings2 = {
   /**
@@ -3450,7 +3617,7 @@ function walkthroughCloseTitle(input) {
 function renderInlineWalkthrough(input, stepsOutput, allSteps) {
   const lastStep = allSteps.at(-1);
   if (!input.isInlined || !lastStep) {
-    return Lit4.nothing;
+    return Lit5.nothing;
   }
   function onToggle(event) {
     const isOpen = event.target.open;
@@ -3464,11 +3631,11 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
     }
   }
   const hasWidgets = allSteps.some((s) => s.widgets?.length);
-  const icon = AiAssistanceModel5.AiUtils.getIconName();
-  return html6`
+  const icon = AiAssistanceModel6.AiUtils.getIconName();
+  return html7`
     <div class="inline-wrapper" ?data-open=${input.isExpanded} jslog=${VisualLogging3.section("walkthrough-container")}>
       <span class="inline-icon">
-        ${input.isLoading ? html6`<devtools-spinner aria-label=${lockedString4(UIStrings2.inProgress)}></devtools-spinner>` : html6`<devtools-icon name=${icon}></devtools-icon>`}
+        ${input.isLoading ? html7`<devtools-spinner aria-label=${lockedString4(UIStrings2.inProgress)}></devtools-spinner>` : html7`<devtools-icon name=${icon}></devtools-icon>`}
       </span>
       <details class="walkthrough-inline" ?open=${input.isExpanded} @toggle=${onToggle} jslog=${VisualLogging3.expand("walkthrough").track({ click: true })}>
         <summary
@@ -3494,9 +3661,9 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
 }
 function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
   if (input.isInlined) {
-    return Lit4.nothing;
+    return Lit5.nothing;
   }
-  return html6`
+  return html7`
     <div class="walkthrough-view" jslog=${VisualLogging3.section("walkthrough-container")}>
       <div class="walkthrough-header">
          <h2 class="walkthrough-title">${i18nString2(UIStrings2.title)}</h2>
@@ -3515,25 +3682,25 @@ function renderSidebarWalkthrough(input, stepsOutput, stepsCount) {
         ></devtools-button>
       </div>
       ${stepsOutput}
-      ${stepsCount === 0 ? html6`
+      ${stepsCount === 0 ? html7`
         <div class="empty-state">
           <p>No walkthrough steps available yet.</p>
         </div>
-      ` : Lit4.nothing}
+      ` : Lit5.nothing}
     </div>
   `;
 }
 var DEFAULT_VIEW3 = (input, output, target) => {
   const allSteps = input.message?.parts.filter((t) => t.type === "step")?.map((p) => p.step) ?? [];
   const renderableSteps = allSteps.filter((s) => !s.requestApproval);
-  const stepsOutput = renderableSteps.length > 0 ? html6`
+  const stepsOutput = renderableSteps.length > 0 ? html7`
     <div class="steps-container" @scroll=${input.handleScroll} ${ref2((el) => {
     output.scrollContainer = el;
   })}>
       <div class="steps-scroll-content" ${ref2((el) => {
     output.stepsContainer = el;
   })}>
-        ${renderableSteps.map((step, index) => html6`
+        ${renderableSteps.map((step, index) => html7`
           <div class="walkthrough-step">
             <span class="step-number">${index + 1}</span>
             <div class="step-wrapper">
@@ -3548,8 +3715,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         `)}
       </div>
     </div>
-  ` : Lit4.nothing;
-  render4(html6`
+  ` : Lit5.nothing;
+  render4(html7`
     <style>
       ${Input2.textInputStyles}
       ${chatMessage_css_default}
@@ -3702,7 +3869,7 @@ var WalkthroughView = class extends UI4.Widget.Widget {
 };
 
 // gen/front_end/panels/ai_assistance/components/ChatMessage.js
-var { html: html7, Directives: { ref: ref3, ifDefined } } = Lit5;
+var { html: html8, Directives: { ref: ref3, ifDefined } } = Lit6;
 var lockedString5 = i18n9.i18n.lockedString;
 var { widget: widget3 } = UI5.Widget;
 var REPORT_URL = "https://crbug.com/508304827";
@@ -3878,6 +4045,10 @@ var UIStringsNotTranslate4 = {
    */
   revealPerformanceSummary: "Reveal performance summary",
   /**
+   * @description Accessible label for the reveal button in the network track widget.
+   */
+  revealNetworkActivity: "Reveal network activity",
+  /**
    * @description Accessible label for the reveal button in the bottom up thread activity widget.
    */
   revealBottomUpTree: "Reveal bottom-up thread activity",
@@ -3941,6 +4112,10 @@ var UIStringsNotTranslate4 = {
    * @description Title for the performance summary widget.
    */
   performanceSummary: "Performance summary",
+  /**
+   * @description Title for the network activity summary widget.
+   */
+  networkActivitySummary: "Network activity",
   /**
    * @description The title of the button that allows exporting the conversation for agents.
    */
@@ -4078,20 +4253,20 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   const hasAiV2 = Boolean(Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const message = input.message;
   if (message.entity === "user") {
-    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit5.nothing;
-    const messageClasses2 = Lit5.Directives.classMap({
+    const imageInput = message.imageInput && "inlineData" in message.imageInput ? renderImageChatMessage(message.imageInput.inlineData) : Lit6.nothing;
+    const messageClasses2 = Lit6.Directives.classMap({
       "chat-message": true,
       query: true,
       "is-last-message": input.isLastMessage,
       "is-first-message": input.isFirstMessage,
       "ai-v2": hasAiV2
     });
-    const userQueryWrapperClasses = Lit5.Directives.classMap({
+    const userQueryWrapperClasses = Lit6.Directives.classMap({
       // Don't need to style at all unless we are on the V2 flag.
       // Once we ship this can be removed entirely.
       "user-query-wrapper": hasAiV2
     });
-    Lit5.render(html7`
+    Lit6.render(html8`
       <style>${Input3.textInputStyles}</style>
       <style>${chatMessage_css_default}</style>
       <div class=${userQueryWrapperClasses}>
@@ -4104,34 +4279,34 @@ var DEFAULT_VIEW4 = (input, output, target) => {
     return;
   }
   const steps = message.parts.filter((part) => part.type === "step").map((part) => part.step);
-  const icon = AiAssistanceModel6.AiUtils.getIconName();
-  const messageClasses = Lit5.Directives.classMap({
+  const icon = AiAssistanceModel7.AiUtils.getIconName();
+  const messageClasses = Lit6.Directives.classMap({
     "chat-message": true,
     answer: true,
     "is-last-message": input.isLastMessage,
     "is-first-message": input.isFirstMessage,
     "ai-v2": hasAiV2
   });
-  Lit5.render(html7`
+  Lit6.render(html8`
     <style>${Input3.textInputStyles}</style>
     <style>${chatMessage_css_default}</style>
     <section class=${messageClasses} jslog=${VisualLogging4.section("answer")}>
-      ${hasAiV2 ? Lit5.nothing : html7`
+      ${hasAiV2 ? Lit6.nothing : html8`
         <div class="message-info">
           <devtools-icon name=${icon}></devtools-icon>
           <div class="message-name">
-            <h2>${AiAssistanceModel6.AiUtils.isGeminiBranding() ? lockedString5(UIStringsNotTranslate4.gemini) : lockedString5(UIStringsNotTranslate4.ai)}</h2>
+            <h2>${AiAssistanceModel7.AiUtils.isGeminiBranding() ? lockedString5(UIStringsNotTranslate4.gemini) : lockedString5(UIStringsNotTranslate4.ai)}</h2>
           </div>
         </div>`}
-      ${hasAiV2 ? renderWalkthroughUI(input, steps) : Lit5.nothing}
+      ${hasAiV2 ? renderWalkthroughUI(input, steps) : Lit6.nothing}
       <div class="answer-body-wrapper">
-        ${Lit5.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
+        ${Lit6.Directives.repeat(message.parts, (_, index) => index, (part, index) => {
     const isLastPart = index === message.parts.length - 1;
     if (part.type === "answer") {
-      return html7`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
+      return html8`<p>${renderTextAsMarkdown(part.text, input.markdownRenderer, { animate: !input.isReadOnly && input.isLoading && isLastPart && input.isLastMessage })}</p>`;
     }
     if (part.type === "widget") {
-      return html7`${Lit5.Directives.until(renderWidgets(part.widgets, { wrapperClass: "main-widgets-wrapper" }))}`;
+      return html8`${Lit6.Directives.until(renderWidgets(part.widgets, { wrapperClass: "main-widgets-wrapper" }))}`;
     }
     if (!hasAiV2 && part.type === "step") {
       return renderStep({
@@ -4141,10 +4316,10 @@ var DEFAULT_VIEW4 = (input, output, target) => {
         isLast: isLastPart
       });
     }
-    return Lit5.nothing;
+    return Lit6.nothing;
   })}
         ${renderError(message)}
-        ${input.shouldShowCSSChangeSummary && hasAiV2 && input.changeSummary ? html7`
+        ${input.shouldShowCSSChangeSummary && hasAiV2 && input.changeSummary ? html8`
           <devtools-code-block
             .code=${input.changeSummary}
             .codeLang=${"css"}
@@ -4152,10 +4327,10 @@ var DEFAULT_VIEW4 = (input, output, target) => {
             .displayNotice=${true}
             class="ai-css-change"
           ></devtools-code-block>
-        ` : Lit5.nothing}
-        ${input.showActions ? renderActions(input, output) : Lit5.nothing}
+        ` : Lit6.nothing}
+        ${input.showActions ? renderActions(input, output) : Lit6.nothing}
       </div>
-      ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit5.nothing}
+      ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit6.nothing}
     </section>
   `, target);
 };
@@ -4167,26 +4342,26 @@ function renderTextAsMarkdown(text, markdownRenderer, { animate, ref: refFn } = 
       markdownRenderer.renderToken(token);
     }
   } catch {
-    return html7`${text}`;
+    return html8`${text}`;
   }
-  return html7`<devtools-markdown-view
+  return html8`<devtools-markdown-view
     .data=${{ tokens, renderer: markdownRenderer, animationEnabled: animate }}
-    ${refFn ? ref3(refFn) : Lit5.nothing}>
+    ${refFn ? ref3(refFn) : Lit6.nothing}>
   </devtools-markdown-view>`;
 }
 function titleForStep(step) {
   return step.title ?? `${lockedString5(UIStringsNotTranslate4.investigating)}\u2026`;
 }
 function renderTitle(step) {
-  const paused = step.requestApproval ? html7`<span class="paused">${lockedString5(UIStringsNotTranslate4.paused)}: </span>` : Lit5.nothing;
-  return html7`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
+  const paused = step.requestApproval ? html8`<span class="paused">${lockedString5(UIStringsNotTranslate4.paused)}: </span>` : Lit6.nothing;
+  return html8`<h3 class="title" aria-label=${titleForStep(step)}>${paused}${titleForStep(step)}</h3>`;
 }
 function renderStepCode(step) {
   if (!step.code && !step.output) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
   const codeHeadingText = step.output && !step.canceled ? lockedString5(UIStringsNotTranslate4.codeExecuted) : lockedString5(UIStringsNotTranslate4.codeToExecute);
-  const code = step.code ? html7`<div class="action-result">
+  const code = step.code ? html8`<div class="action-result">
       <devtools-code-block
         .code=${step.code.trim()}
         .codeLang=${"js"}
@@ -4194,8 +4369,8 @@ function renderStepCode(step) {
         .header=${codeHeadingText}
         .showCopyButton=${true}
       ></devtools-code-block>
-  </div>` : Lit5.nothing;
-  const output = step.output ? html7`<div class="js-code-output">
+  </div>` : Lit6.nothing;
+  const output = step.output ? html8`<div class="js-code-output">
     <devtools-code-block
       .code=${step.output}
       .codeLang=${"js"}
@@ -4203,14 +4378,14 @@ function renderStepCode(step) {
       .header=${lockedString5(UIStringsNotTranslate4.dataReturned)}
       .showCopyButton=${false}
     ></devtools-code-block>
-  </div>` : Lit5.nothing;
-  return html7`<div class="step-code">${code}${output}</div>`;
+  </div>` : Lit6.nothing;
+  return html8`<div class="step-code">${code}${output}</div>`;
 }
 function renderStepDetails({ step, markdownRenderer, isLast }) {
-  const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit5.nothing;
-  const thought = step.thought ? html7`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit5.nothing;
-  const contextDetails = step.contextDetails ? html7`${Lit5.Directives.repeat(step.contextDetails, (contextDetail) => {
-    return html7`<div class="context-details">
+  const sideEffects = isLast && step.requestApproval ? renderSideEffectConfirmationUi(step) : Lit6.nothing;
+  const thought = step.thought ? html8`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit6.nothing;
+  const contextDetails = step.contextDetails ? html8`${Lit6.Directives.repeat(step.contextDetails, (contextDetail) => {
+    return html8`<div class="context-details">
       <devtools-code-block
         .code=${contextDetail.text}
         .codeLang=${contextDetail.codeLang || ""}
@@ -4219,8 +4394,8 @@ function renderStepDetails({ step, markdownRenderer, isLast }) {
         .showCopyButton=${true}
       ></devtools-code-block>
     </div>`;
-  })}` : Lit5.nothing;
-  return html7`<div class="step-details">
+  })}` : Lit6.nothing;
+  return html8`<div class="step-details">
     ${thought}
     ${renderStepCode(step)}
     ${sideEffects}
@@ -4231,7 +4406,7 @@ function renderWalkthroughSidebarButton(input, steps) {
   const { message, walkthrough } = input;
   const lastStep = steps.at(-1);
   if (walkthrough.isInlined || !lastStep) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
   const hasOneStepWithWidget = steps.some((step) => step.widgets?.length);
   const isExpanded = walkthrough.isExpanded && input.message.id === input.walkthrough.activeSidebarMessage?.id;
@@ -4241,8 +4416,8 @@ function renderWalkthroughSidebarButton(input, steps) {
     lastStep
   });
   const variant = hasOneStepWithWidget && !input.isLoading ? "tonal" : "text";
-  const icon = AiAssistanceModel6.AiUtils.getIconName();
-  const toggleContainerClasses = Lit5.Directives.classMap({
+  const icon = AiAssistanceModel7.AiUtils.getIconName();
+  const toggleContainerClasses = Lit6.Directives.classMap({
     "walkthrough-toggle-container": true,
     // We only apply the widget styling when loading is complete
     "has-widgets": hasOneStepWithWidget && !input.isLoading
@@ -4254,9 +4429,9 @@ function renderWalkthroughSidebarButton(input, steps) {
     prompt: input.prompt,
     stepTitle: titleForStep(lastStep)
   });
-  return html7`
+  return html8`
     <div class=${toggleContainerClasses}>
-      ${input.isLoading ? html7`<devtools-spinner></devtools-spinner>` : html7`<devtools-icon name=${icon}></devtools-icon>`}
+      ${input.isLoading ? html8`<devtools-spinner></devtools-spinner>` : html8`<devtools-icon name=${icon}></devtools-icon>`}
       <devtools-button
         .variant=${variant}
         .size=${"SMALL"}
@@ -4278,11 +4453,11 @@ function renderWalkthroughSidebarButton(input, steps) {
 function renderWalkthroughUI(input, steps) {
   const lastStep = steps.at(-1);
   if (!lastStep) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
-  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit5.nothing;
+  const openWalkThroughSidebarButton = !input.walkthrough.isInlined ? renderWalkthroughSidebarButton(input, steps) : Lit6.nothing;
   const isExpanded = input.walkthrough.isInlined ? input.walkthrough.inlineExpandedMessages.some((m) => m.id === input.message.id) : input.walkthrough.isExpanded && input.walkthrough.activeSidebarMessage?.id === input.message.id;
-  const walkthroughInline = input.walkthrough.isInlined ? html7`
+  const walkthroughInline = input.walkthrough.isInlined ? html8`
     <div class="walkthrough-container">
       ${widget3(WalkthroughView, {
     message: input.message,
@@ -4295,8 +4470,8 @@ function renderWalkthroughUI(input, steps) {
     onOpen: input.walkthrough.onOpen
   })}
     </div>
-  ` : Lit5.nothing;
-  return html7`
+  ` : Lit6.nothing;
+  return html8`
     ${openWalkThroughSidebarButton}
     ${walkthroughInline}
   `;
@@ -4304,10 +4479,10 @@ function renderWalkthroughUI(input, steps) {
 function renderSideEffectStepsUI(input, steps) {
   const sideEffectSteps = steps.filter((s) => s.requestApproval);
   if (sideEffectSteps.length === 0) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
-  return html7`
-    ${sideEffectSteps.map((step) => html7`
+  return html8`
+    ${sideEffectSteps.map((step) => html8`
       <div class="side-effect-container">
         ${renderStep({
     step,
@@ -4320,7 +4495,7 @@ function renderSideEffectStepsUI(input, steps) {
 }
 function renderStepBadge({ step, isLoading, isLast }) {
   if (isLoading && isLast && !step.requestApproval) {
-    return html7`<devtools-spinner aria-label=${lockedString5(UIStringsNotTranslate4.inProgress)}></devtools-spinner>`;
+    return html8`<devtools-spinner aria-label=${lockedString5(UIStringsNotTranslate4.inProgress)}></devtools-spinner>`;
   }
   let iconName = "checkmark";
   let ariaLabel = lockedString5(UIStringsNotTranslate4.completed);
@@ -4333,7 +4508,7 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ariaLabel = lockedString5(UIStringsNotTranslate4.aborted);
     iconName = "cross";
   }
-  return html7`<devtools-icon
+  return html8`<devtools-icon
       class="indicator"
       role=${ifDefined(role)}
       aria-label=${ifDefined(ariaLabel)}
@@ -4341,13 +4516,13 @@ function renderStepBadge({ step, isLoading, isLast }) {
     ></devtools-icon>`;
 }
 function renderStep({ step, isLoading, markdownRenderer, isLast }) {
-  const stepClasses = Lit5.Directives.classMap({
+  const stepClasses = Lit6.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails && !step.requestApproval,
     paused: Boolean(step.requestApproval),
     canceled: Boolean(step.canceled)
   });
-  return html7`
+  return html8`
     <details class=${stepClasses}
       jslog=${VisualLogging4.expand("step").track({ click: true })}
       .open=${Boolean(step.requestApproval)}>
@@ -4363,7 +4538,7 @@ function renderStep({ step, isLoading, markdownRenderer, isLast }) {
       </summary>
       ${renderStepDetails({ step, markdownRenderer, isLast })}
     </details>
-    ${Lit5.Directives.until(renderWidgets(step.widgets, { wrapperClass: "step-widgets-wrapper" }))}
+    ${Lit6.Directives.until(renderWidgets(step.widgets, { wrapperClass: "step-widgets-wrapper" }))}
     `;
 }
 var nodeCache = /* @__PURE__ */ new Map();
@@ -4372,11 +4547,11 @@ async function resolveNode(backendNodeId) {
   if (cachedNode) {
     return cachedNode;
   }
-  const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+  const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
   if (!target) {
     return null;
   }
-  const node = new SDK3.DOMModel.DeferredDOMNode(target, backendNodeId);
+  const node = new SDK4.DOMModel.DeferredDOMNode(target, backendNodeId);
   const resolved = await node.resolvePromise();
   if (resolved) {
     nodeCache.set(backendNodeId, resolved);
@@ -4395,7 +4570,7 @@ async function makeComputedStyleWidget(widgetData) {
   } catch {
     return null;
   }
-  const renderedWidget = html7`<devtools-widget
+  const renderedWidget = html8`<devtools-widget
       class="computed-styles-widget" ${widget3(Elements.ComputedStyleWidget.ComputedStyleWidget, {
     nodeStyle: styles,
     matchedStyles: widgetData.data.matchedCascade,
@@ -4410,12 +4585,12 @@ async function makeComputedStyleWidget(widgetData) {
     revealable: new Elements.ElementsPanel.NodeComputedStyles(domNodeForId),
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealComputedStyles),
     // clang-format off
-    title: html7`
+    title: html8`
       <span class="computed-style-title-wrapper">
         <span class="computed-style-title-prefix">Computed styles</span>
         <span class="style-class-wrapper">
           (<devtools-widget
-            ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
+            ${widget3(PanelsCommon4.DOMLinkifier.DOMNodeLink, {
       node: domNodeForId
     })}
           ></devtools-widget>)
@@ -4426,7 +4601,7 @@ async function makeComputedStyleWidget(widgetData) {
   };
 }
 async function makeCoreWebVitalsWidget(widgetData) {
-  const renderedWidget = html7`<devtools-widget class="core-vitals-widget" ${widget3(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data, skipBottomBorder: true })}>
+  const renderedWidget = html8`<devtools-widget class="core-vitals-widget" ${widget3(TimelineComponents.CWVMetrics.CWVMetrics, { data: widgetData.data, skipBottomBorder: true })}>
   </devtools-widget>`;
   return {
     renderedWidget,
@@ -4447,7 +4622,7 @@ async function makeStylePropertiesWidget(widgetData) {
   } catch {
     return null;
   }
-  const renderedWidget = html7`<devtools-widget
+  const renderedWidget = html8`<devtools-widget
       class="styling-preview-widget"
       ${widget3(Elements.StandaloneStylesContainer.StandaloneStylesContainer, {
     domNode: domNodeForId,
@@ -4458,8 +4633,8 @@ async function makeStylePropertiesWidget(widgetData) {
     renderedWidget,
     revealable: domNodeForId,
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealStyleProperties),
-    title: html7`<devtools-widget
-      ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, {
+    title: html8`<devtools-widget
+      ${widget3(PanelsCommon4.DOMLinkifier.DOMNodeLink, {
       node: domNodeForId
     })}
     ></devtools-widget>`,
@@ -4467,115 +4642,115 @@ async function makeStylePropertiesWidget(widgetData) {
   };
 }
 var INSIGHT_METADATA = {
-  [Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN]: {
+  [Trace2.Insights.Types.InsightKeys.LCP_BREAKDOWN]: {
     component: TimelineInsights.LCPBreakdown.LCPBreakdown,
     accessibleLabel: UIStringsNotTranslate4.revealLcpBreakdown,
     title: UIStringsNotTranslate4.lcpBreakdown,
     jslog: "lcp-breakdown-widget"
   },
-  [Trace.Insights.Types.InsightKeys.RENDER_BLOCKING]: {
+  [Trace2.Insights.Types.InsightKeys.RENDER_BLOCKING]: {
     component: TimelineInsights.RenderBlocking.RenderBlocking,
     accessibleLabel: UIStringsNotTranslate4.revealRenderBlockingBreakdown,
     title: UIStringsNotTranslate4.renderBlockingBreakdown,
     jslog: "render-blocking-widget"
   },
-  [Trace.Insights.Types.InsightKeys.LCP_DISCOVERY]: {
+  [Trace2.Insights.Types.InsightKeys.LCP_DISCOVERY]: {
     component: TimelineInsights.LCPDiscovery.LCPDiscovery,
     accessibleLabel: UIStringsNotTranslate4.revealLcpDiscovery,
     title: UIStringsNotTranslate4.lcpDiscovery,
     jslog: "lcp-discovery-widget"
   },
-  [Trace.Insights.Types.InsightKeys.CLS_CULPRITS]: {
+  [Trace2.Insights.Types.InsightKeys.CLS_CULPRITS]: {
     component: TimelineInsights.CLSCulprits.CLSCulprits,
     accessibleLabel: UIStringsNotTranslate4.revealClsCulprits,
     title: UIStringsNotTranslate4.clsCulprits,
     jslog: "cls-culprits-widget"
   },
-  [Trace.Insights.Types.InsightKeys.NETWORK_DEPENDENCY_TREE]: {
+  [Trace2.Insights.Types.InsightKeys.NETWORK_DEPENDENCY_TREE]: {
     component: TimelineInsights.NetworkDependencyTree.NetworkDependencyTree,
     accessibleLabel: UIStringsNotTranslate4.revealNetworkDependencyTree,
     title: UIStringsNotTranslate4.networkDependencyTree,
     jslog: "network-dependency-tree-widget"
   },
-  [Trace.Insights.Types.InsightKeys.THIRD_PARTIES]: {
+  [Trace2.Insights.Types.InsightKeys.THIRD_PARTIES]: {
     component: TimelineInsights.ThirdParties.ThirdParties,
     accessibleLabel: UIStringsNotTranslate4.revealThirdParties,
     title: UIStringsNotTranslate4.thirdParties,
     jslog: "third-parties-widget"
   },
-  [Trace.Insights.Types.InsightKeys.FORCED_REFLOW]: {
+  [Trace2.Insights.Types.InsightKeys.FORCED_REFLOW]: {
     component: TimelineInsights.ForcedReflow.ForcedReflow,
     accessibleLabel: UIStringsNotTranslate4.revealForcedReflow,
     title: UIStringsNotTranslate4.forcedReflow,
     jslog: "forced-reflow-widget"
   },
-  [Trace.Insights.Types.InsightKeys.CACHE]: {
+  [Trace2.Insights.Types.InsightKeys.CACHE]: {
     component: TimelineInsights.Cache.Cache,
     accessibleLabel: UIStringsNotTranslate4.revealCache,
     title: UIStringsNotTranslate4.cache,
     jslog: "cache-widget"
   },
-  [Trace.Insights.Types.InsightKeys.INP_BREAKDOWN]: {
+  [Trace2.Insights.Types.InsightKeys.INP_BREAKDOWN]: {
     component: TimelineInsights.INPBreakdown.INPBreakdown,
     accessibleLabel: UIStringsNotTranslate4.revealInpBreakdown,
     title: UIStringsNotTranslate4.inpBreakdown,
     jslog: "inp-breakdown-widget"
   },
-  [Trace.Insights.Types.InsightKeys.DOCUMENT_LATENCY]: {
+  [Trace2.Insights.Types.InsightKeys.DOCUMENT_LATENCY]: {
     component: TimelineInsights.DocumentLatency.DocumentLatency,
     accessibleLabel: UIStringsNotTranslate4.revealDocumentLatency,
     title: UIStringsNotTranslate4.documentLatency,
     jslog: "document-latency-widget"
   },
-  [Trace.Insights.Types.InsightKeys.DOM_SIZE]: {
+  [Trace2.Insights.Types.InsightKeys.DOM_SIZE]: {
     component: TimelineInsights.DOMSize.DOMSize,
     accessibleLabel: UIStringsNotTranslate4.revealDomSize,
     title: UIStringsNotTranslate4.domSize,
     jslog: "dom-size-widget"
   },
-  [Trace.Insights.Types.InsightKeys.DUPLICATE_JAVASCRIPT]: {
+  [Trace2.Insights.Types.InsightKeys.DUPLICATE_JAVASCRIPT]: {
     component: TimelineInsights.DuplicatedJavaScript.DuplicatedJavaScript,
     accessibleLabel: UIStringsNotTranslate4.revealDuplicateJavaScript,
     title: UIStringsNotTranslate4.duplicateJavaScript,
     jslog: "duplicate-javascript-widget"
   },
-  [Trace.Insights.Types.InsightKeys.IMAGE_DELIVERY]: {
+  [Trace2.Insights.Types.InsightKeys.IMAGE_DELIVERY]: {
     component: TimelineInsights.ImageDelivery.ImageDelivery,
     accessibleLabel: UIStringsNotTranslate4.revealImageDelivery,
     title: UIStringsNotTranslate4.imageDelivery,
     jslog: "image-delivery-widget"
   },
-  [Trace.Insights.Types.InsightKeys.FONT_DISPLAY]: {
+  [Trace2.Insights.Types.InsightKeys.FONT_DISPLAY]: {
     component: TimelineInsights.FontDisplay.FontDisplay,
     accessibleLabel: UIStringsNotTranslate4.revealFontDisplay,
     title: UIStringsNotTranslate4.fontDisplay,
     jslog: "font-display-widget"
   },
-  [Trace.Insights.Types.InsightKeys.SLOW_CSS_SELECTOR]: {
+  [Trace2.Insights.Types.InsightKeys.SLOW_CSS_SELECTOR]: {
     component: TimelineInsights.SlowCSSSelector.SlowCSSSelector,
     accessibleLabel: UIStringsNotTranslate4.revealSlowCssSelector,
     title: UIStringsNotTranslate4.slowCssSelector,
     jslog: "slow-css-selector-widget"
   },
-  [Trace.Insights.Types.InsightKeys.LEGACY_JAVASCRIPT]: {
+  [Trace2.Insights.Types.InsightKeys.LEGACY_JAVASCRIPT]: {
     component: TimelineInsights.LegacyJavaScript.LegacyJavaScript,
     accessibleLabel: UIStringsNotTranslate4.revealLegacyJavaScript,
     title: UIStringsNotTranslate4.legacyJavaScript,
     jslog: "legacy-javascript-widget"
   },
-  [Trace.Insights.Types.InsightKeys.VIEWPORT]: {
+  [Trace2.Insights.Types.InsightKeys.VIEWPORT]: {
     component: TimelineInsights.Viewport.Viewport,
     accessibleLabel: UIStringsNotTranslate4.revealViewport,
     title: UIStringsNotTranslate4.viewport,
     jslog: "viewport-widget"
   },
-  [Trace.Insights.Types.InsightKeys.MODERN_HTTP]: {
+  [Trace2.Insights.Types.InsightKeys.MODERN_HTTP]: {
     component: TimelineInsights.ModernHTTP.ModernHTTP,
     accessibleLabel: UIStringsNotTranslate4.revealModernHttp,
     title: UIStringsNotTranslate4.modernHttp,
     jslog: "modern-http-widget"
   },
-  [Trace.Insights.Types.InsightKeys.CHARACTER_SET]: {
+  [Trace2.Insights.Types.InsightKeys.CHARACTER_SET]: {
     component: TimelineInsights.CharacterSet.CharacterSet,
     accessibleLabel: UIStringsNotTranslate4.revealCharacterSet,
     title: UIStringsNotTranslate4.characterSet,
@@ -4583,7 +4758,7 @@ var INSIGHT_METADATA = {
   }
 };
 function renderInsightWidget(component, insight, jslog, accessibleLabel, title, bounds) {
-  const renderedWidget = html7`<devtools-widget
+  const renderedWidget = html8`<devtools-widget
     class=${jslog}
     ${widget3(component, {
     model: insight,
@@ -4606,7 +4781,7 @@ async function makePerfInsightWidget(widgetData) {
     return null;
   }
   let bounds;
-  if (insightKey === Trace.Insights.Types.InsightKeys.CLS_CULPRITS) {
+  if (insightKey === Trace2.Insights.Types.InsightKeys.CLS_CULPRITS) {
     const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
     if (!traceBounds) {
       return null;
@@ -4616,14 +4791,14 @@ async function makePerfInsightWidget(widgetData) {
   return renderInsightWidget(meta.component, insight, meta.jslog, meta.accessibleLabel, meta.title, bounds);
 }
 async function makeBottomUpTimelineTreeWidget(widgetData) {
-  const bottomUpRootNode = AiAssistanceModel6.AIQueries.AIQueries.mainThreadActivityBottomUp(widgetData.data.bounds, widgetData.data.parsedTrace);
+  const bottomUpRootNode = AiAssistanceModel7.AIQueries.AIQueries.mainThreadActivityBottomUp(widgetData.data.bounds, widgetData.data.parsedTrace);
   if (!bottomUpRootNode) {
     return null;
   }
   const events = bottomUpRootNode.events;
-  const startTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
-  const endTime = Trace.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
-  const renderedWidget = html7`<devtools-widget
+  const startTime = Trace2.Helpers.Timing.microToMilli(widgetData.data.bounds.min);
+  const endTime = Trace2.Helpers.Timing.microToMilli(widgetData.data.bounds.max);
+  const renderedWidget = html8`<devtools-widget
       class="bottom-up-timeline-tree-widget"
       ${widget3(Timeline.TimelineTreeView.BottomUpTimelineTreeView, {
     selectedEvents: events,
@@ -4644,24 +4819,24 @@ async function makeBottomUpTimelineTreeWidget(widgetData) {
 }
 function renderWidgetResponse(response) {
   if (response === null) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
   function onReveal() {
     if (response === null) {
       return;
     }
-    Common4.Revealer.reveal(response?.revealable).catch((error) => {
+    Common5.Revealer.reveal(response?.revealable).catch((error) => {
       if (!error.message) {
         return;
       }
       Snackbars2.Snackbar.Snackbar.show({ message: error.message });
     });
   }
-  const classes = Lit5.Directives.classMap({
+  const classes = Lit6.Directives.classMap({
     "widget-and-revealer-container": true,
     "revealer-only": response.renderedWidget === null
   });
-  const revealButton = html7`
+  const revealButton = html8`
     <devtools-button class="widget-reveal-button"
       .variant=${"text"}
       .accessibleLabel=${response.accessibleRevealLabel}
@@ -4672,25 +4847,25 @@ function renderWidgetResponse(response) {
       <devtools-icon name='tab-move'></devtools-icon>
     </devtools-button>
   `;
-  return html7`
+  return html8`
     <div class=${classes} jslog=${ifDefined(response.jslogContext ? VisualLogging4.section(response.jslogContext) : void 0)}>
-      ${response.title ? html7`
+      ${response.title ? html8`
         <div class="widget-header">
           <h4 class="widget-name">${response.title}</h4>
           <div class="widget-reveal-container">
             ${revealButton}
           </div>
         </div>
-      ` : Lit5.nothing}
-      ${response.renderedWidget ? html7`
+      ` : Lit6.nothing}
+      ${response.renderedWidget ? html8`
         <div class="widget-content-container">
           ${response.renderedWidget}
-        </div>` : Lit5.nothing}
-      ${!response.title ? html7`
+        </div>` : Lit6.nothing}
+      ${!response.title ? html8`
         <div class="widget-reveal-container">
           ${revealButton}
         </div>
-      ` : Lit5.nothing}
+      ` : Lit6.nothing}
     </div>
     `;
 }
@@ -4732,7 +4907,7 @@ async function makeSourceCodeWidget(widgetData) {
     const formatted = await Formatter.ScriptFormatter.formatScriptContent(canonicalMimeType, code, "  ");
     code = formatted.formattedContent;
   }
-  const renderedWidget = html7`
+  const renderedWidget = html8`
     <devtools-code-block
       class="source-code-widget"
       .displayLimit=${20}
@@ -4752,11 +4927,11 @@ async function makeSourceCodeWidget(widgetData) {
 }
 function renderFileRevealButton(file, collapsed) {
   const onReveal = () => {
-    void Common4.Revealer.reveal(file);
+    void Common5.Revealer.reveal(file);
   };
   const accessibleLabel = i18n9.i18n.lockedString(`Show ${file.fullDisplayName()}`);
   const className = `widget-reveal-button ${collapsed ? "collapsed-file" : "visible-file"}`;
-  return html7`
+  return html8`
     <devtools-button class=${className}
       .variant=${"text"}
       .accessibleLabel=${accessibleLabel}
@@ -4772,14 +4947,14 @@ async function makeSourceFilesListWidget(widgetData) {
   if (files.length === 0) {
     return null;
   }
-  const renderedWidget = html7`
+  const renderedWidget = html8`
     <div class="source-files-widget">
       ${files.slice(0, 10).map((file) => renderFileRevealButton(
     file,
     /* collapsed */
     false
   ))}
-      ${files.length > 10 ? html7`
+      ${files.length > 10 ? html8`
         <details class="source-files-details">
           <summary class="show-more-summary">${i18n9.i18n.lockedString(`Show all ${files.length} files`)}</summary>
           ${files.slice(10).map((file) => renderFileRevealButton(
@@ -4787,7 +4962,7 @@ async function makeSourceFilesListWidget(widgetData) {
     /* collapsed */
     true
   ))}
-        </details> ` : Lit5.nothing}
+        </details> ` : Lit6.nothing}
     </div>`;
   const title = lockedString5(UIStringsNotTranslate4.inspectedFileNames);
   return {
@@ -4809,7 +4984,7 @@ async function makeNetworkRequestsListWidget(widgetData) {
     expandedNetworkRequestsWidgets.delete(widgetData);
   }
   const displayedRequests = isExpanded ? requests : requests.slice(0, 15);
-  const renderedWidget = html7`
+  const renderedWidget = html8`
     <div class="network-requests-widget">
       <devtools-data-grid striped inline>
         <table>
@@ -4819,7 +4994,7 @@ async function makeNetworkRequestsListWidget(widgetData) {
             <th id="size" weight="1">${i18n9.i18n.lockedString("Size")}</th>
             <th id="time" weight="1">${i18n9.i18n.lockedString("Time")}</th>
           </tr>
-          ${displayedRequests.map((request) => html7`
+          ${displayedRequests.map((request) => html8`
             <tr>
               <td>${request.name()}</td>
               <td>${request.statusCode}</td>
@@ -4829,7 +5004,7 @@ async function makeNetworkRequestsListWidget(widgetData) {
           `)}
         </table>
       </devtools-data-grid>
-      ${!isExpanded && requests.length > 15 ? html7`
+      ${!isExpanded && requests.length > 15 ? html8`
         <div class="show-all-container">
           <button class="show-all-widget-requests-button text-button"
             jslog=${VisualLogging4.action("show-all-widget-requests-button").track({ click: true })}
@@ -4846,7 +5021,7 @@ async function makeNetworkRequestsListWidget(widgetData) {
             ${i18n9.i18n.lockedString(`Show all ${requests.length} network requests`)}
           </button>
         </div>
-      ` : Lit5.nothing}
+      ` : Lit6.nothing}
     </div>
   `;
   return {
@@ -4860,17 +5035,17 @@ async function makeNetworkRequestsListWidget(widgetData) {
 function renderNetworkRequestPreview(networkRequest) {
   const filename = networkRequest.url.split("/").pop() || networkRequest.url;
   const size = i18n9.ByteUtilities.bytesToString(networkRequest.size);
-  const resourceType = Common4.ResourceType.resourceTypes[networkRequest.resourceType];
+  const resourceType = Common5.ResourceType.resourceTypes[networkRequest.resourceType];
   const { iconName, color } = PanelUtils3.iconDataForResourceType(resourceType);
   const imageUrl = networkRequest.imageContent?.asImagePreviewUrl();
-  return html7`
+  return html8`
     <div class="network-request-preview">
       <div class="network-request-header">
         <div class="network-request-icon">
           ${resourceType.isImage() && imageUrl ? (
     // only try to render the image if we have a preview URL, else fallback to a coloured square.
-    html7`<img src=${imageUrl} alt=${filename} />`
-  ) : html7`<devtools-icon name=${iconName} style=${Lit5.Directives.styleMap({ color: color ?? "" })}></devtools-icon>`}
+    html8`<img src=${imageUrl} alt=${filename} />`
+  ) : html8`<devtools-icon name=${iconName} style=${Lit6.Directives.styleMap({ color: color ?? "" })}></devtools-icon>`}
         </div>
         <div class="network-request-details">
           <div class="network-request-name" title=${networkRequest.url}>${filename}</div>
@@ -4882,12 +5057,12 @@ function renderNetworkRequestPreview(networkRequest) {
 }
 async function makeDomTreeWidget(widgetData) {
   const root = widgetData.data.root;
-  if (!(root instanceof SDK3.DOMModel.DOMNodeSnapshot)) {
+  if (!(root instanceof SDK4.DOMModel.DOMNodeSnapshot)) {
     return null;
   }
   const networkRequest = widgetData.data.networkRequest;
-  const renderedWidget = html7`
-    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit5.nothing}
+  const renderedWidget = html8`
+    ${networkRequest ? renderNetworkRequestPreview(networkRequest) : Lit6.nothing}
     <devtools-widget class="dom-tree-widget" ${widget3(Elements.ElementsTreeOutline.DOMTreeWidget, {
     maxTreeDepth: 2,
     enableContextMenu: false,
@@ -4903,7 +5078,7 @@ async function makeDomTreeWidget(widgetData) {
   `;
   return {
     renderedWidget,
-    revealable: new SDK3.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
+    revealable: new SDK4.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLcpElement),
     title: lockedString5(UIStringsNotTranslate4.lcpElement),
     jslogContext: "dom-snapshot"
@@ -4927,6 +5102,8 @@ function getWidgetSignature(widget6) {
       return `${widget6.name}:${widget6.data.track}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
     case "BOTTOM_UP_TREE":
       return `${widget6.name}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
+    case "NETWORK_TRACK":
+      return `${widget6.name}:${widget6.data.bounds.min}-${widget6.data.bounds.max}`;
     case "SOURCE_FILE":
       return `${widget6.name}:${widget6.data.uiSourceCode.url()}`;
     case "SOURCE_FILES_LIST":
@@ -4942,7 +5119,7 @@ function getWidgetSignature(widget6) {
     case "NETWORK_REQUESTS_LIST":
       return `${widget6.name}:${widget6.data.requests.map((r) => r.requestId()).join(",")}`;
     default:
-      Platform5.assertNever(widget6, "Unknown AiWidget name");
+      Platform6.assertNever(widget6, "Unknown AiWidget name");
   }
 }
 function getDeduplicatedWidgetsMessage(message) {
@@ -4982,7 +5159,7 @@ function getDeduplicatedWidgetsMessage(message) {
 }
 async function renderWidgets(widgets, options = {}) {
   if (!Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled || !widgets || widgets.length === 0) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
   const ui = await Promise.all(widgets.map(async (widgetData) => {
     let response = null;
@@ -5011,6 +5188,9 @@ async function renderWidgets(widgets, options = {}) {
       case "BOTTOM_UP_TREE":
         response = await makeBottomUpTimelineTreeWidget(widgetData);
         break;
+      case "NETWORK_TRACK":
+        response = await makeNetworkTrackWidget(widgetData);
+        break;
       case "SOURCE_FILE":
         response = await makeSourceFileWidget(widgetData);
         break;
@@ -5033,24 +5213,24 @@ async function renderWidgets(widgets, options = {}) {
         response = await makeSourceCodeWidget(widgetData);
         break;
       default:
-        Platform5.assertNever(widgetData, "Unknown AiWidget name");
+        Platform6.assertNever(widgetData, "Unknown AiWidget name");
     }
     return renderWidgetResponse(response);
   }));
   if (options.wrapperClass) {
-    return html7`<div class=${options.wrapperClass}>${ui}</div>`;
+    return html8`<div class=${options.wrapperClass}>${ui}</div>`;
   }
-  return html7`${ui}`;
+  return html8`${ui}`;
 }
 function renderSideEffectConfirmationUi(step) {
   if (!step.requestApproval) {
-    return Lit5.nothing;
+    return Lit6.nothing;
   }
-  return html7`<div
+  return html8`<div
     class="side-effect-confirmation"
     jslog=${VisualLogging4.section("side-effect-confirmation")}
   >
-    ${step.requestApproval.description ? html7`<p>${step.requestApproval.description}</p>` : Lit5.nothing}
+    ${step.requestApproval.description ? html8`<p>${step.requestApproval.description}</p>` : Lit6.nothing}
     <div class="side-effect-buttons-container">
       <devtools-button
         .data=${{
@@ -5085,20 +5265,20 @@ function renderError(message) {
         errorMessage = UIStringsNotTranslate4.crossOriginError;
         break;
       case "abort":
-        return html7`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString5(UIStringsNotTranslate4.stoppedResponse)}</p>`;
+        return html8`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString5(UIStringsNotTranslate4.stoppedResponse)}</p>`;
     }
-    return html7`<p class="error" jslog=${VisualLogging4.section("error")}>${lockedString5(errorMessage)}</p>`;
+    return html8`<p class="error" jslog=${VisualLogging4.section("error")}>${lockedString5(errorMessage)}</p>`;
   }
-  return Lit5.nothing;
+  return Lit6.nothing;
 }
 function renderImageChatMessage(inlineData) {
-  if (inlineData.data === AiAssistanceModel6.AiConversation.NOT_FOUND_IMAGE_DATA) {
-    return html7`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
+  if (inlineData.data === AiAssistanceModel7.AiConversation.NOT_FOUND_IMAGE_DATA) {
+    return html8`<div class="unavailable-image" title=${UIStringsNotTranslate4.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
     </div>`;
   }
   const imageUrl = `data:${inlineData.mimeType};base64,${inlineData.data}`;
-  return html7`<devtools-link
+  return html8`<devtools-link
       class="image-link" title=${UIStringsNotTranslate4.openImageInNewTab}
       href=${imageUrl}
     >
@@ -5107,14 +5287,14 @@ function renderImageChatMessage(inlineData) {
 }
 function renderActions(input, output) {
   const aiAssistanceV2 = Root3.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
-  const rowClasses = Lit5.Directives.classMap({
+  const rowClasses = Lit6.Directives.classMap({
     "ai-assistance-feedback-row": true,
     "not-v2": !aiAssistanceV2
   });
-  return html7`
+  return html8`
     <div class=${rowClasses}>
       <div class="action-buttons">
-        ${input.showRateButtons ? html7`
+        ${input.showRateButtons ? html8`
           <devtools-button
             .data=${{
     variant: "icon",
@@ -5147,8 +5327,8 @@ function renderActions(input, output) {
     /* Host.AidaClient.Rating.NEGATIVE */
   )}
           ></devtools-button>
-          ${aiAssistanceV2 ? Lit5.nothing : html7`<div class="vertical-separator"></div>`}
-        ` : Lit5.nothing}
+          ${aiAssistanceV2 ? Lit6.nothing : html8`<div class="vertical-separator"></div>`}
+        ` : Lit6.nothing}
         <devtools-button
           .data=${{
     variant: "icon",
@@ -5159,7 +5339,7 @@ function renderActions(input, output) {
   }}
           @click=${input.onReportClick}
         ></devtools-button>
-        ${aiAssistanceV2 ? Lit5.nothing : html7`
+        ${aiAssistanceV2 ? Lit6.nothing : html8`
           <div class="vertical-separator"></div>
           <devtools-button
             .data=${{
@@ -5172,7 +5352,7 @@ function renderActions(input, output) {
             aria-label=${lockedString5(UIStringsNotTranslate4.copyResponse)}
             @click=${input.onCopyResponseClick}></devtools-button>
         `}
-        ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html7`
+        ${input.onExportClick && aiAssistanceV2 && input.isLastMessage ? html8`
           <devtools-button
             class="export-for-agents-button"
             .jslogContext=${"ai-export-for-agents"}
@@ -5181,10 +5361,10 @@ function renderActions(input, output) {
             aria-label=${lockedString5(UIStringsNotTranslate4.exportForAgents)}
             @click=${input.onExportClick}
           >${lockedString5(UIStringsNotTranslate4.exportForAgents)}</devtools-button>
-          ${input.suggestions ? html7`<div class="vertical-separator"></div>` : Lit5.nothing}
-        ` : Lit5.nothing}
+          ${input.suggestions ? html8`<div class="vertical-separator"></div>` : Lit6.nothing}
+        ` : Lit6.nothing}
       </div>
-      ${input.suggestions ? html7`<div class="suggestions-container">
+      ${input.suggestions ? html8`<div class="suggestions-container">
         <div class="scroll-button-container left hidden" ${ref3((element) => {
     output.suggestionsLeftScrollButtonContainer = element;
   })}>
@@ -5203,7 +5383,7 @@ function renderActions(input, output) {
         <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref3((element) => {
     output.suggestionsScrollContainer = element;
   })}>
-          ${input.suggestions.map((suggestion) => html7`<devtools-button
+          ${input.suggestions.map((suggestion) => html8`<devtools-button
             class='suggestion'
             .data=${{
     variant: "outlined",
@@ -5228,9 +5408,9 @@ function renderActions(input, output) {
             @click=${() => input.scrollSuggestionsScrollContainer("right")}
           ></devtools-button>
         </div>
-      </div>` : Lit5.nothing}
+      </div>` : Lit6.nothing}
     </div>
-    ${input.isShowingFeedbackForm ? html7`
+    ${input.isShowingFeedbackForm ? html8`
       <form class="feedback-form" @submit=${input.onSubmit}>
         <div class="feedback-header">
           <h4 class="feedback-title">${lockedString5(UIStringsNotTranslate4.whyThisRating)}</h4>
@@ -5269,7 +5449,7 @@ function renderActions(input, output) {
         </div>
       </div>
     </form>
-    ` : Lit5.nothing}
+    ` : Lit6.nothing}
   `;
 }
 var ChatMessage = class extends UI5.Widget.Widget {
@@ -5302,7 +5482,7 @@ var ChatMessage = class extends UI5.Widget.Widget {
     inlineExpandedMessages: []
   };
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
-  #suggestionsEvaluateLayoutThrottler = new Common4.Throttler.Throttler(100);
+  #suggestionsEvaluateLayoutThrottler = new Common5.Throttler.Throttler(100);
   #feedbackValue = "";
   #currentRating;
   #isShowingFeedbackForm = false;
@@ -5456,31 +5636,31 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         break;
       }
     }
-    const mainThread = AiAssistanceModel6.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
+    const mainThread = AiAssistanceModel7.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
     if (mainThread) {
       events = mainThread.entries;
-      AiAssistanceModel6.Debug.debugLog(`TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, "TID:", mainThread.tid, "Number of entries:", mainThread.entries.length);
+      AiAssistanceModel7.Debug.debugLog(`TimelineRangeSummaryAiWidget found main thread. PID:`, mainThread.pid, "TID:", mainThread.tid, "Number of entries:", mainThread.entries.length);
     }
   }
   if (!events) {
-    AiAssistanceModel6.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
+    AiAssistanceModel7.Debug.debugLog(`Warning: could not find events for TimelineRangeSummaryAiWidget`, widgetData);
     return null;
   }
   const thirdPartyTree = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();
-  const mapper = Trace.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
+  const mapper = Trace2.EntityMapper.EntityMapper.getOrCreate(parsedTrace);
   thirdPartyTree.model = { selectedEvents: events, parsedTrace, entityMapper: mapper };
   thirdPartyTree.activeSelection = Timeline.TimelineSelection.selectionFromRangeMicroSeconds(bounds.min, bounds.max);
   thirdPartyTree.refreshTree(true);
-  const template = html7`
+  const template = html8`
     <devtools-widget
       ${widget3(TimelineComponents.TimelineRangeSummaryView.TimelineRangeSummaryView, {
     data: {
       parsedTrace,
       events,
       isInAIWidget: true,
-      startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
-      endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
-      thirdPartyTreeTemplate: html7`${widget3(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
+      startTime: Trace2.Helpers.Timing.microToMilli(bounds.min),
+      endTime: Trace2.Helpers.Timing.microToMilli(bounds.max),
+      thirdPartyTreeTemplate: html8`${widget3(Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget, {
         maxRows: 10,
         isInAIWidget: true,
         model: {
@@ -5490,7 +5670,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         },
         activeSelection: { bounds },
         onBottomUpButtonClicked: (node) => {
-          void Common4.Revealer.reveal(new TimelineUtils.Helpers.RevealableBottomUpProfile(bounds, node ?? void 0));
+          void Common5.Revealer.reveal(new TimelineUtils.Helpers.RevealableBottomUpProfile(bounds, node ?? void 0));
         }
       })}`
     }
@@ -5504,6 +5684,25 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     jslogContext: "timeline-range-summary"
   };
 }
+async function makeNetworkTrackWidget(widgetData) {
+  const { parsedTrace, bounds } = widgetData.data;
+  const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+  const template = html8`
+    <devtools-performance-agent-network-track
+      .data=${{
+    parsedTrace,
+    bounds,
+    dataProvider
+  }}
+    ></devtools-performance-agent-network-track>`;
+  return {
+    renderedWidget: template,
+    revealable: new TimelineUtils.Helpers.RevealableTimeRange(bounds),
+    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealNetworkActivity),
+    title: lockedString5(UIStringsNotTranslate4.networkActivitySummary),
+    jslogContext: "network-track-widget"
+  };
+}
 async function makeLighthouseReportWidget(widgetData) {
   const reportEl = Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.renderLighthouseScores(widgetData.data.report);
   if (!reportEl) {
@@ -5511,7 +5710,7 @@ async function makeLighthouseReportWidget(widgetData) {
   }
   const snapshotReport = widgetData.data.snapshotReport;
   return {
-    renderedWidget: html7`<div class="lighthouse-report-widget">${reportEl}</div>`,
+    renderedWidget: html8`<div class="lighthouse-report-widget">${reportEl}</div>`,
     revealable: new Lighthouse.LighthousePanel.ActiveLighthouseReport(widgetData.data.report),
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLighthouse),
     title: lockedString5(UIStringsNotTranslate4.lighthouseReport),
@@ -5519,19 +5718,19 @@ async function makeLighthouseReportWidget(widgetData) {
   };
 }
 async function makeTimelineEventSummaryWidget(widgetData) {
-  const renderedWidget = html7`<devtools-widget class="timeline-event-summary-widget" ${widget3(() => {
+  const renderedWidget = html8`<devtools-widget class="timeline-event-summary-widget" ${widget3(() => {
     return Timeline.TimelineDetailsView.TimelineDetailsPane.makeEventWidget(widgetData.data.event, widgetData.data.parsedTrace);
   })}></devtools-widget>`;
   return {
     renderedWidget,
-    revealable: new SDK3.TraceObject.RevealableEvent(widgetData.data.event),
+    revealable: new SDK4.TraceObject.RevealableEvent(widgetData.data.event),
     accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealTimelineEventSummary),
     title: lockedString5(UIStringsNotTranslate4.timelineEventSummary),
     jslogContext: "timeline-event-summary-widget"
   };
 }
 async function makeNetworkRequestGeneralHeadersWidget(widgetData) {
-  const renderedWidget = html7`<devtools-widget class="network-request-general-headers-widget" ${widget3(() => {
+  const renderedWidget = html8`<devtools-widget class="network-request-general-headers-widget" ${widget3(() => {
     return Network.RequestHeadersView.RequestHeadersView.createGeneralHeadersView(widgetData.data.request);
   })}></devtools-widget>`;
   return {
@@ -5974,7 +6173,7 @@ import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars3 from "./../../ui/components/snackbars/snackbars.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../ui/lit/lit.js";
+import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exportForAgentsDialog.css.js
@@ -6077,7 +6276,7 @@ var exportForAgentsDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("././components/exportForAgentsDialog.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/ExportForAgentsDialog.js
-var { html: html8, render: render6 } = Lit6;
+var { html: html9, render: render6 } = Lit7;
 var UIStrings3 = {
   /**
    * @description Title for the export for agents dialog.
@@ -6119,7 +6318,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   const isPrompt = input.state.activeType === "prompt";
   const buttonText = isPrompt ? i18nString3(UIStrings3.copyToClipboard) : i18nString3(UIStrings3.saveAsMarkdown);
   const exportText = isPrompt ? input.state.promptText : input.state.conversationText;
-  render6(html8`
+  render6(html9`
     <style>${exportForAgentsDialog_css_default}</style>
     <div class="export-for-agents-dialog" jslog=${VisualLogging5.dialog("ai-export-for-agents")}>
       <header>
@@ -6159,13 +6358,13 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         </label>
       </div>
       <main>
-        ${isPrompt && input.state.isPromptLoading ? html8`
+        ${isPrompt && input.state.isPromptLoading ? html9`
           <span class="prompt-loading">
             <devtools-spinner></devtools-spinner>
             ${i18nString3(UIStrings3.generatingSummary)}
           </span>
-          ` : Lit6.nothing}
-        ${isPrompt ? html8`<textarea class="prompt" readonly .value=${input.state.isPromptLoading ? "" : exportText}></textarea>` : html8`<textarea class="conversation" readonly .value=${exportText}></textarea>`}
+          ` : Lit7.nothing}
+        ${isPrompt ? html9`<textarea class="prompt" readonly .value=${input.state.isPromptLoading ? "" : exportText}></textarea>` : html9`<textarea class="conversation" readonly .value=${exportText}></textarea>`}
       </main>
       <div class="disclaimer">${i18nString3(UIStrings3.disclaimer)}</div>
       <footer>
@@ -6272,7 +6471,7 @@ var ExportForAgentsDialog = class _ExportForAgentsDialog extends UI6.Widget.VBox
 };
 
 // gen/front_end/panels/ai_assistance/components/ChatView.js
-var { ref: ref4, repeat, classMap } = Directives6;
+var { ref: ref4, repeat, classMap } = Directives7;
 var { widget: widget4 } = UI7.Widget;
 var UIStringsNotTranslate5 = {
   /**
@@ -6304,7 +6503,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   const hasAiV2 = Boolean(Root4.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
   const chatUiClasses = classMap({
     "chat-ui": true,
-    gemini: AiAssistanceModel7.AiUtils.isGeminiBranding(),
+    gemini: AiAssistanceModel8.AiUtils.isGeminiBranding(),
     "ai-v2": hasAiV2
   });
   const inputWidgetClasses = classMap({
@@ -6313,13 +6512,13 @@ var DEFAULT_VIEW6 = (input, output, target) => {
   });
   const shouldShowPatchWidget = !hasAiV2 && !input.isLoading;
   const cssChangeSummaryMessage = getCSSChangeSummaryMessage(input.messages, input.isLoading);
-  render7(html9`
+  render7(html10`
       <style>${chatView_css_default}</style>
       <div class=${chatUiClasses}>
         <main @scroll=${input.handleScroll} ${ref4((element) => {
     output.mainElement = element;
   })}>
-          ${input.messages.length > 0 ? html9`
+          ${input.messages.length > 0 ? html10`
             <div class="messages-container" ${ref4(input.handleMessageContainerRef)}>
               ${repeat(input.messages, (message) => message.id, (message, index) => {
     const prevMessage = index > 0 ? input.messages[index - 1] : null;
@@ -6349,7 +6548,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     changeManager: input.changeManager
   }) : nothing7}
             </div>
-          ` : html9`
+          ` : html10`
             <div class="empty-state-container">
               <div class="header">
                 <div class="icon">
@@ -6357,14 +6556,14 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                ${AiAssistanceModel7.AiUtils.isGeminiBranding() ? html9`
+                ${AiAssistanceModel8.AiUtils.isGeminiBranding() ? html10`
                     <h1 class='greeting'>Hello</h1>
                     <p class='cta'>${lockedString6(UIStringsNotTranslate5.emptyStateTextGemini)}</p>
-                  ` : html9`<h1>${lockedString6(UIStringsNotTranslate5.emptyStateText)}</h1>`}
+                  ` : html10`<h1>${lockedString6(UIStringsNotTranslate5.emptyStateText)}</h1>`}
               </div>
               <div class="empty-state-content">
                 ${input.emptyStateSuggestions.map(({ title, jslogContext }) => {
-    return html9`<devtools-button
+    return html10`<devtools-button
                     class="suggestion"
                     @click=${() => input.handleSuggestionClick(title)}
                     .data=${{
@@ -6566,7 +6765,7 @@ import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import * as UI8 from "./../../ui/legacy/legacy.js";
-import { html as html10, render as render8 } from "./../../ui/lit/lit.js";
+import { html as html11, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
@@ -6663,16 +6862,16 @@ function renderAidaUnavailableContents(aidaAvailability) {
   switch (aidaAvailability) {
     case "no-account-email":
     case "sync-is-paused": {
-      return html10`${i18nString4(UIStrings4.notLoggedIn)}`;
+      return html11`${i18nString4(UIStrings4.notLoggedIn)}`;
     }
     case "no-internet": {
-      return html10`${i18nString4(UIStrings4.offline)}`;
+      return html11`${i18nString4(UIStrings4.offline)}`;
     }
   }
 }
 function renderConsentViewContents(hostConfig) {
   if (hostConfig.isOffTheRecord) {
-    return html10`${i18nString4(UIStrings4.notAvailableInIncognitoMode)}`;
+    return html11`${i18nString4(UIStrings4.notAvailableInIncognitoMode)}`;
   }
   const settingsLink = document.createElement("span");
   settingsLink.textContent = i18nString4(UIStrings4.settingsLink);
@@ -6692,10 +6891,10 @@ function renderConsentViewContents(hostConfig) {
   } else {
     consentViewContents = uiI18n.getFormatLocalizedString(str_4, UIStrings4.turnOnForStyles, { PH1: settingsLink });
   }
-  return html10`${consentViewContents}`;
+  return html11`${consentViewContents}`;
 }
 var DEFAULT_VIEW7 = (input, _output, target) => {
-  render8(html10`
+  render8(html11`
       <style>
         ${disabledWidget_css_default}
       </style>
@@ -6738,7 +6937,7 @@ __export(ExploreWidget_exports, {
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
-import { html as html11, render as render9 } from "./../../ui/lit/lit.js";
+import { html as html12, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
@@ -6894,7 +7093,7 @@ var UIStringsNotTranslate6 = {
 var lockedString7 = i18n17.i18n.lockedString;
 var DEFAULT_VIEW8 = (input, _output, target) => {
   function renderFeatureCardContent(featureCard) {
-    return html11`Open
+    return html12`Open
      <button
        class="link"
        role="link"
@@ -6905,7 +7104,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
      >${featureCard.panelName}</button>
      ${featureCard.text}`;
   }
-  render9(html11`
+  render9(html12`
       <style>
         ${exploreWidget_css_default}
       </style>
@@ -6930,7 +7129,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
           </p>
         </div>
         <div class="content">
-          ${input.featureCards.map((featureCard) => html11`
+          ${input.featureCards.map((featureCard) => html12`
               <div class="feature-card">
                 <div class="feature-card-icon">
                   <devtools-icon name=${featureCard.icon}></devtools-icon>
@@ -7022,7 +7221,7 @@ import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../ui/lit/lit.js";
+import * as Lit8 from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/optInChangeDialog.css.js
@@ -7124,7 +7323,7 @@ var optInChangeDialog_css_default = `/*
 /*# sourceURL=${import.meta.resolve("././components/optInChangeDialog.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/OptInChangeDialog.js
-var { html: html12, render: render10 } = Lit7;
+var { html: html13, render: render10 } = Lit8;
 var UIStrings5 = {
   /**
    * @description Title for the opt-in change dialog.
@@ -7159,7 +7358,7 @@ var str_5 = i18n19.i18n.registerUIStrings("panels/ai_assistance/components/OptIn
 var i18nString5 = i18n19.i18n.getLocalizedString.bind(void 0, str_5);
 var DEFAULT_VIEW9 = (input, _output, target) => {
   const disclaimer = input.loggingEnabled ? i18nString5(UIStrings5.privacyDisclaimer) : i18nString5(UIStrings5.privacyDisclaimerEnterpriseNoLogging);
-  render10(html12`
+  render10(html13`
     <style>${optInChangeDialog_css_default}</style>
     <div class="opt-in-change-dialog" jslog=${VisualLogging8.dialog("ai-v2-opt-in-change-dialog")}>
       <header>
@@ -7259,13 +7458,13 @@ var OptInChangeDialog = class _OptInChangeDialog extends UI10.Widget.VBox {
 };
 
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
-import * as Common5 from "./../../core/common/common.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as Trace2 from "./../../models/trace/trace.js";
-import * as Lit8 from "./../../ui/lit/lit.js";
-import * as PanelsCommon4 from "./../common/common.js";
-var { html: html13 } = Lit8.StaticHtml;
-var { until: until2 } = Lit8.Directives;
+import * as Common6 from "./../../core/common/common.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as Trace3 from "./../../models/trace/trace.js";
+import * as Lit9 from "./../../ui/lit/lit.js";
+import * as PanelsCommon5 from "./../common/common.js";
+var { html: html14 } = Lit9.StaticHtml;
+var { until: until3 } = Lit9.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   lookupEvent;
@@ -7278,22 +7477,22 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     if (token.type === "link" && token.href.startsWith("#")) {
       if (token.href.startsWith("#node-")) {
         const nodeId = Number(token.href.replace("#node-", ""));
-        return html13`<span>${until2(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
+        return html14`<span>${until3(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
       }
       const event = this.lookupEvent(token.href.slice(1));
       if (!event) {
-        return html13`${token.text}`;
+        return html14`${token.text}`;
       }
       let label = token.text;
       let title = "";
-      if (Trace2.Types.Events.isSyntheticNetworkRequest(event)) {
+      if (Trace3.Types.Events.isSyntheticNetworkRequest(event)) {
         title = event.args.data.url;
       } else {
         label += ` (${event.name})`;
       }
-      return html13`<a href="#" draggable=false .title=${title} @click=${(e) => {
+      return html14`<a href="#" draggable=false .title=${title} @click=${(e) => {
         e.stopPropagation();
-        void Common5.Revealer.reveal(new SDK4.TraceObject.RevealableEvent(event));
+        void Common6.Revealer.reveal(new SDK5.TraceObject.RevealableEvent(event));
       }}>${label}</a>`;
     }
     return super.templateForToken(token);
@@ -7305,8 +7504,8 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     if (backendNodeId === void 0) {
       return;
     }
-    const target = SDK4.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target?.model(SDK4.DOMModel.DOMModel);
+    const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK5.DOMModel.DOMModel);
     if (!domModel) {
       return void 0;
     }
@@ -7318,18 +7517,18 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     if (node.frameId() !== this.mainFrameId) {
       return;
     }
-    const linkedNode = PanelsCommon4.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
+    const linkedNode = PanelsCommon5.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
     return linkedNode;
   }
 };
 
 // gen/front_end/panels/ai_assistance/components/StylingAgentMarkdownRenderer.js
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Marked3 from "./../../third_party/marked/marked.js";
-import * as Lit9 from "./../../ui/lit/lit.js";
-import * as PanelsCommon5 from "./../common/common.js";
-var { html: html14 } = Lit9.StaticHtml;
-var { until: until3 } = Lit9.Directives;
+import * as Lit10 from "./../../ui/lit/lit.js";
+import * as PanelsCommon6 from "./../common/common.js";
+var { html: html15 } = Lit10.StaticHtml;
+var { until: until4 } = Lit10.Directives;
 var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
   mainFrameId;
   constructor(mainFrameId = "") {
@@ -7350,25 +7549,25 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
       const problemHeader = headers.splice(problemIndex, 1);
       headers.unshift(...problemHeader);
     }
-    return html14`
+    return html15`
       <table style="width: 100%;">
         <thead>
           <tr>
-            ${headers.map((header) => html14`<th style="text-align: left;">${header === "NodeId" ? "" : header}</th>`)}
+            ${headers.map((header) => html15`<th style="text-align: left;">${header === "NodeId" ? "" : header}</th>`)}
           </tr>
         </thead>
         <tbody>
           ${data.flatMap((row) => {
-      return html14`
+      return html15`
             <tr>
               ${headers.map((header) => {
         if (header === "NodeId") {
-          return html14`<td>${this.#renderLinkifiedText(row[header])}</td>`;
+          return html15`<td>${this.#renderLinkifiedText(row[header])}</td>`;
         }
         if (header === "Details") {
-          return html14`<td><a href="#" @click=${this.#toggleDetailsRow}>Details</a></td>`;
+          return html15`<td><a href="#" @click=${this.#toggleDetailsRow}>Details</a></td>`;
         }
-        return html14`<td>${row[header]}</td>`;
+        return html15`<td>${row[header]}</td>`;
       })}
             </tr>
             <tr class="details-row" style="display: none;">
@@ -7405,7 +7604,7 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
         nodeId = Number(token.href.replace("#", ""));
       }
       if (nodeId) {
-        return html14`<span>${until3(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
+        return html15`<span>${until4(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
       }
     }
     return super.templateForToken(token);
@@ -7432,29 +7631,29 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
     if (text.indexOf(",") === -1) {
       const nodeId = Number(text);
       if (isNaN(nodeId)) {
-        return html14`${text}`;
+        return html15`${text}`;
       }
       return this.#renderSingleLink(nodeId);
     }
     const nodeIdsStr = text.split(",").map((s) => s.trim()).filter(Boolean);
-    return html14`${nodeIdsStr.map((idStr) => {
+    return html15`${nodeIdsStr.map((idStr) => {
       const nodeId = Number(idStr);
       if (isNaN(nodeId)) {
-        return html14`<div>${idStr}</div>`;
+        return html15`<div>${idStr}</div>`;
       }
-      return html14`<div>${this.#renderSingleLink(nodeId)}</div>`;
+      return html15`<div>${this.#renderSingleLink(nodeId)}</div>`;
     })}`;
   }
   #renderSingleLink(nodeId) {
     const label = `link`;
-    return html14`<span>${until3(this.#linkifyNode(nodeId, label).then((node) => node || label), label)}</span>`;
+    return html15`<span>${until4(this.#linkifyNode(nodeId, label).then((node) => node || label), label)}</span>`;
   }
   async #linkifyNode(backendNodeId, label) {
     if (backendNodeId === void 0) {
       return;
     }
-    const target = SDK5.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target?.model(SDK5.DOMModel.DOMModel);
+    const target = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK6.DOMModel.DOMModel);
     if (!domModel) {
       return void 0;
     }
@@ -7466,7 +7665,7 @@ var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends M
     if (node.frameId() !== this.mainFrameId) {
       return;
     }
-    const linkedNode = PanelsCommon5.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
+    const linkedNode = PanelsCommon6.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
     return linkedNode;
   }
 };
@@ -7476,13 +7675,13 @@ var ExportConversation_exports = {};
 __export(ExportConversation_exports, {
   saveToDisk: () => saveToDisk
 });
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../../core/platform/platform.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Workspace7 from "./../../models/workspace/workspace.js";
 async function saveToDisk(conversation) {
   const markdownContent = conversation.getConversationMarkdown();
   const contentData = new TextUtils3.ContentData.ContentData(markdownContent, false, "text/markdown");
-  const titleFormatted = Platform6.StringUtilities.toSnakeCase(conversation.title || "");
+  const titleFormatted = Platform7.StringUtilities.toSnakeCase(conversation.title || "");
   const prefix = "devtools_";
   const suffix = ".md";
   const maxTitleLength = 64 - prefix.length - suffix.length;
@@ -7496,7 +7695,7 @@ async function saveToDisk(conversation) {
 }
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html15 } = Lit10;
+var { html: html16 } = Lit11;
 var { widget: widget5 } = UI11.Widget;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
@@ -7760,26 +7959,52 @@ async function getEmptyStateSuggestions(conversation) {
       ];
     }
     default:
-      Platform7.assertNever(conversation.type, "Unknown conversation type");
+      Platform8.assertNever(conversation.type, "Unknown conversation type");
   }
 }
-function getMarkdownRenderer(conversation) {
+function createV2MarkdownRenderer(conversation) {
+  const options = {};
+  const primaryTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
+  const domModel = primaryTarget?.model(SDK7.DOMModel.DOMModel);
+  const resourceTreeModel = primaryTarget?.model(SDK7.ResourceTreeModel.ResourceTreeModel);
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
+    const focus = context.getItem();
+    options.mainFrameId = focus.parsedTrace.data.Meta.mainFrameId;
+    options.lookupTraceEvent = focus.lookupEvent.bind(focus);
+  } else {
+    if (domModel) {
+      options.mainDocumentURL = domModel.existingDocument()?.documentURL;
+    }
+    if (resourceTreeModel) {
+      options.mainFrameId = resourceTreeModel.mainFrame?.id;
+    }
+  }
+  return new AIv2MarkdownRenderer(options);
+}
+function getMarkdownRenderer(conversation) {
+  if (conversation?.type === "drjones-performance-full" && conversation.isReadOnly) {
+    return new PerformanceAgentMarkdownRenderer();
+  }
+  if (Root8.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && conversation && !conversation.isReadOnly) {
+    return createV2MarkdownRenderer(conversation);
+  }
+  const context = conversation?.selectedContext;
+  if (context instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
     const focus = context.getItem();
     return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
   }
   if (conversation?.type === "drjones-performance-full") {
     return new PerformanceAgentMarkdownRenderer();
   }
-  if (Greendev.Prototypes.instance().isEnabled("emulationCapabilities") && conversation?.type === "freestyler" && SDK6.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK6.DOMModel.DOMModel)) {
-    const domModel = SDK6.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK6.DOMModel.DOMModel);
-    const resourceTreeModel = domModel?.target().model(SDK6.ResourceTreeModel.ResourceTreeModel);
+  if (Greendev.Prototypes.instance().isEnabled("emulationCapabilities") && conversation?.type === "freestyler" && SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel)) {
+    const domModel = SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel);
+    const resourceTreeModel = domModel?.target().model(SDK7.ResourceTreeModel.ResourceTreeModel);
     const mainFrameId = resourceTreeModel?.mainFrame?.id;
     return new StylingAgentMarkdownRenderer(mainFrameId);
   }
   if (conversation?.type === "accessibility") {
-    const domModel = SDK6.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK6.DOMModel.DOMModel);
+    const domModel = SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel);
     const mainDocumentURL = domModel?.existingDocument()?.documentURL;
     return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);
   }
@@ -7787,10 +8012,10 @@ function getMarkdownRenderer(conversation) {
 }
 function toolbarView(input) {
   const hasAiV2 = Boolean(Root8.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-  return html15`
+  return html16`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging9.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-      ${input.showChatActions ? html15`<devtools-button
+      ${input.showChatActions ? html16`<devtools-button
           title=${i18nString6(UIStrings6.newChat)}
           aria-label=${i18nString6(UIStrings6.newChat)}
           .iconName=${"plus"}
@@ -7804,8 +8029,8 @@ function toolbarView(input) {
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit10.nothing}
-        ${input.showActiveConversationActions ? html15`
+        ></devtools-menu-button>` : Lit11.nothing}
+        ${input.showActiveConversationActions ? html16`
           <devtools-button
               title=${i18nString6(UIStrings6.deleteChat)}
               aria-label=${i18nString6(UIStrings6.deleteChat)}
@@ -7814,7 +8039,7 @@ function toolbarView(input) {
               .variant=${"toolbar"}
               @click=${input.onDeleteClick}>
           </devtools-button>
-          ${hasAiV2 ? Lit10.nothing : html15`
+          ${hasAiV2 ? Lit11.nothing : html16`
             <devtools-button
               title=${i18nString6(UIStrings6.exportConversation)}
               aria-label=${i18nString6(UIStrings6.exportConversation)}
@@ -7824,7 +8049,7 @@ function toolbarView(input) {
               .variant=${"toolbar"}
               @click=${input.onExportConversationClick}>
             </devtools-button>
-            `}` : Lit10.nothing}
+            `}` : Lit11.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -7856,9 +8081,9 @@ function defaultView(input, output, target) {
   function renderState() {
     switch (input.state) {
       case "chat-view": {
-        return html15`<devtools-ai-chat-view
+        return html16`<devtools-ai-chat-view
           .props=${input.props}
-          ${Lit10.Directives.ref((el) => {
+          ${Lit11.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -7867,10 +8092,10 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html15`<devtools-widget class="fill-panel" ${widget5(ExploreWidget)}>
+        return html16`<devtools-widget class="fill-panel" ${widget5(ExploreWidget)}>
                     </devtools-widget>`;
       case "disabled-view":
-        return html15`<devtools-widget class="fill-panel" ${widget5(DisabledWidget, input.props)}>
+        return html16`<devtools-widget class="fill-panel" ${widget5(DisabledWidget, input.props)}>
                     </devtools-widget>`;
     }
   }
@@ -7883,7 +8108,7 @@ function defaultView(input, output, target) {
         walkthroughIsForLastMessage = true;
       }
     }
-    Lit10.render(html15`
+    Lit11.render(html16`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">
         <devtools-split-view
@@ -7896,18 +8121,18 @@ function defaultView(input, output, target) {
           <div slot="main" class="main-view">
             ${renderState()}
           </div>
-          ${shouldShowWalkthrough ? html15`
+          ${shouldShowWalkthrough ? html16`
             <devtools-widget slot="sidebar" ${widget5(WalkthroughView, {
       message: input.props.walkthrough.activeSidebarMessage,
       isLoading: input.props.isLoading && walkthroughIsForLastMessage,
       markdownRenderer: input.props.markdownRenderer,
       onToggle: input.props.walkthrough.onToggle
-    })}></devtools-widget>` : Lit10.nothing}
+    })}></devtools-widget>` : Lit11.nothing}
         </devtools-split-view>
       </div>
     `, target);
   } else {
-    Lit10.render(html15`
+    Lit11.render(html16`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">${renderState()}</div>
     `, target);
@@ -7917,38 +8142,38 @@ function createDOMNodeContext(node) {
   if (!node) {
     return null;
   }
-  return new AiAssistanceModel8.DOMNodeContext.DOMNodeContext(node);
+  return new AiAssistanceModel9.DOMNodeContext.DOMNodeContext(node);
 }
 function createFileContext(file) {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel8.FileContext.FileContext(file);
+  return new AiAssistanceModel9.FileContext.FileContext(file);
 }
 function createAccessibilityContext(report) {
   if (!report) {
     return null;
   }
-  return new AiAssistanceModel8.AccessibilityAgent.AccessibilityContext(report.report);
+  return new AiAssistanceModel9.AccessibilityAgent.AccessibilityContext(report.report);
 }
 function createRequestContext(request) {
   if (!request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel8.RequestContext.RequestContext(request, calculator);
+  return new AiAssistanceModel9.RequestContext.RequestContext(request, calculator);
 }
 function createPerformanceTraceContext(focus) {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext(focus);
+  return new AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext(focus);
 }
 function createStorageContext(item) {
   if (!item) {
     return null;
   }
-  return new AiAssistanceModel8.StorageAgent.StorageContext(item);
+  return new AiAssistanceModel9.StorageAgent.StorageContext(item);
 }
 var panelInstance;
 var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
@@ -7961,8 +8186,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
   #viewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting;
-  #changeManager = new AiAssistanceModel8.ChangeManager.ChangeManager();
-  #mutex = new Common6.Mutex.Mutex();
+  #changeManager = new AiAssistanceModel9.ChangeManager.ChangeManager();
+  #mutex = new Common7.Mutex.Mutex();
   #conversation;
   #selectedFile = null;
   #selectedElement = null;
@@ -7994,7 +8219,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (UI11.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
       this.#toggleSearchElementAction = UI11.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
-    AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
+    AiAssistanceModel9.AiHistoryStorage.AiHistoryStorage.instance().addEventListener("AiHistoryDeleted", this.#onHistoryDeleted, this);
   }
   #getToolbarInput() {
     return {
@@ -8062,7 +8287,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
           conversationMarkdown: this.#conversation.getConversationMarkdown(),
           generateConversationSummary: async (markdown) => {
             if (!this.#conversationSummary) {
-              this.#conversationSummary = new AiAssistanceModel8.ConversationSummary.ConversationSummary({
+              this.#conversationSummary = new AiAssistanceModel9.ConversationSummary.ConversationSummary({
                 aidaClient: this.#aidaClient,
                 serverSideLoggingEnabled: this.#serverSideLoggingEnabled
               });
@@ -8075,7 +8300,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
               void this.#startConversation(text, imageInput, multimodalInputType);
             };
             const isAIV2Enabled = Root8.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled;
-            const seenSetting = Common6.Settings.Settings.instance().moduleSetting("ai-assistance-v2-opt-in-change-dialog-seen");
+            const seenSetting = Common7.Settings.Settings.instance().moduleSetting("ai-assistance-v2-opt-in-change-dialog-seen");
             if (isAIV2Enabled && !seenSetting.get()) {
               OptInChangeDialog.show({
                 onGotIt: () => {
@@ -8179,7 +8404,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
   }
   #getAiAssistanceEnabledSetting() {
     try {
-      return Common6.Settings.moduleSetting("ai-assistance-enabled");
+      return Common7.Settings.moduleSetting("ai-assistance-enabled");
     } catch {
       return;
     }
@@ -8264,7 +8489,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       this.requestUpdate();
       return;
     }
-    const conversation = targetConversationType ? new AiAssistanceModel8.AiConversation.AiConversation({
+    const conversation = targetConversationType ? new AiAssistanceModel9.AiConversation.AiConversation({
       type: targetConversationType,
       data: [],
       isReadOnly: false,
@@ -8287,7 +8512,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       if (!conversation) {
         const conversationType = this.#getDefaultConversationType();
         if (conversationType) {
-          conversation = new AiAssistanceModel8.AiConversation.AiConversation({
+          conversation = new AiAssistanceModel9.AiConversation.AiConversation({
             type: conversationType,
             data: [],
             isReadOnly: false,
@@ -8321,25 +8546,25 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#viewOutput.chatView?.restoreScrollPosition();
     this.#viewOutput.chatView?.focusTextInput();
     void this.#handleAidaAvailabilityChange();
-    this.#selectedElement = createDOMNodeContext(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK6.DOMModel.DOMNode)));
-    this.#selectedRequest = createRequestContext(UI11.Context.Context.instance().flavor(SDK6.NetworkRequest.NetworkRequest));
-    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI11.Context.Context.instance().flavor(AiAssistanceModel8.AIContext.AgentFocus));
+    this.#selectedElement = createDOMNodeContext(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK7.DOMModel.DOMNode)));
+    this.#selectedRequest = createRequestContext(UI11.Context.Context.instance().flavor(SDK7.NetworkRequest.NetworkRequest));
+    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI11.Context.Context.instance().flavor(AiAssistanceModel9.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI11.Context.Context.instance().flavor(Workspace8.UISourceCode.UISourceCode));
     this.#selectedAccessibility = createAccessibilityContext(UI11.Context.Context.instance().flavor(LighthousePanel2.LighthousePanel.ActiveLighthouseReport));
-    this.#selectedStorage = createStorageContext(UI11.Context.Context.instance().flavor(AiAssistanceModel8.StorageItem.StorageItem));
+    this.#selectedStorage = createStorageContext(UI11.Context.Context.instance().flavor(AiAssistanceModel9.StorageItem.StorageItem));
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
-    UI11.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI11.Context.Context.instance().addFlavorChangeListener(SDK6.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel8.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel8.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
+    UI11.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI11.Context.Context.instance().addFlavorChangeListener(SDK7.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel9.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel9.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(Workspace8.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(LighthousePanel2.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI11.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    SDK6.TargetManager.TargetManager.instance().addModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
-    SDK6.TargetManager.TargetManager.instance().addModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
+    SDK7.TargetManager.TargetManager.instance().addModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
+    SDK7.TargetManager.TargetManager.instance().addModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     UI11.Context.Context.instance().addFlavorChangeListener(TimelinePanel2.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
@@ -8350,16 +8575,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host7.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
-    UI11.Context.Context.instance().removeFlavorChangeListener(SDK6.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI11.Context.Context.instance().removeFlavorChangeListener(SDK6.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
-    UI11.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel8.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
-    UI11.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel8.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
+    UI11.Context.Context.instance().removeFlavorChangeListener(SDK7.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI11.Context.Context.instance().removeFlavorChangeListener(SDK7.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI11.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel9.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
+    UI11.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel9.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
     UI11.Context.Context.instance().removeFlavorChangeListener(Workspace8.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI11.Context.Context.instance().removeFlavorChangeListener(LighthousePanel2.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI11.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     UI11.Context.Context.instance().removeFlavorChangeListener(TimelinePanel2.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
-    SDK6.TargetManager.TargetManager.instance().removeModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
-    SDK6.TargetManager.TargetManager.instance().removeModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
+    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
+    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     if (this.#timelinePanelInstance) {
       this.#timelinePanelInstance.removeEventListener("IsViewingTrace", this.requestUpdate, this);
       this.#timelinePanelInstance = null;
@@ -8399,7 +8624,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
     if (Boolean(ev.data)) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel8.RequestContext.RequestContext(ev.data, calculator);
+      this.#selectedRequest = new AiAssistanceModel9.RequestContext.RequestContext(ev.data, calculator);
     } else {
       this.#selectedRequest = null;
     }
@@ -8409,7 +8634,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
       return;
     }
-    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
+    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
     this.#updateConversationState(this.#conversation);
   };
   #handleUISourceCodeFlavorChange = (ev) => {
@@ -8417,7 +8642,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (!newFile || this.#selectedFile?.getItem() === newFile) {
       return;
     }
-    this.#selectedFile = new AiAssistanceModel8.FileContext.FileContext(ev.data);
+    this.#selectedFile = new AiAssistanceModel9.FileContext.FileContext(ev.data);
     this.#updateConversationState(this.#conversation);
   };
   #handleLighthouseReportFlavorChange = (ev) => {
@@ -8456,7 +8681,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
   }
   #handleSelectElementClick() {
-    UI11.Context.Context.instance().setFlavor(Common6.ReturnToPanel.ReturnToPanelFlavor, new Common6.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
+    UI11.Context.Context.instance().setFlavor(Common7.ReturnToPanel.ReturnToPanelFlavor, new Common7.ReturnToPanel.ReturnToPanelFlavor(this.panelName));
     void this.#toggleSearchElementAction?.execute();
   }
   #isTextInputDisabled() {
@@ -8511,7 +8736,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       case "storage":
         return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContext);
       case "none":
-        if (AiAssistanceModel8.AiUtils.isGeminiBranding()) {
+        if (AiAssistanceModel9.AiUtils.isGeminiBranding()) {
           return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContextBranded);
         }
         return lockedString8(UIStringsNotTranslate7.inputPlaceholderForNoContext);
@@ -8583,26 +8808,26 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       return;
     }
     const context = this.#conversation.selectedContext;
-    if (context instanceof AiAssistanceModel8.RequestContext.RequestContext) {
+    if (context instanceof AiAssistanceModel9.RequestContext.RequestContext) {
       const requestLocation = NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         "headers-component"
         /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
       );
-      return Common6.Revealer.reveal(requestLocation);
+      return Common7.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel8.FileContext.FileContext) {
-      return Common6.Revealer.reveal(context.getItem().uiLocation(0, 0));
+    if (context instanceof AiAssistanceModel9.FileContext.FileContext) {
+      return Common7.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
-        const revealable = new SDK6.TraceObject.RevealableEvent(event);
-        return Common6.Revealer.reveal(revealable);
+        const revealable = new SDK7.TraceObject.RevealableEvent(event);
+        return Common7.Revealer.reveal(revealable);
       }
       if (focus.insight) {
-        return Common6.Revealer.reveal(focus.insight);
+        return Common7.Revealer.reveal(focus.insight);
       }
     }
   }
@@ -8682,7 +8907,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
     let conversation = this.#conversation;
     if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-      conversation = new AiAssistanceModel8.AiConversation.AiConversation({
+      conversation = new AiAssistanceModel9.AiConversation.AiConversation({
         type: targetConversationType,
         data: [],
         isReadOnly: false,
@@ -8711,7 +8936,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
   }
   #populateHistoryMenu(contextMenu) {
-    const historicalConversations = AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel8.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
+    const historicalConversations = AiAssistanceModel9.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel9.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
     for (const conversation of historicalConversations.reverse()) {
       if (conversation.isEmpty || !conversation.title) {
         continue;
@@ -8728,7 +8953,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       });
     }
     contextMenu.footerSection().appendItem(i18nString6(UIStrings6.clearChatHistory), () => {
-      void AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+      void AiAssistanceModel9.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
     }, {
       disabled: historyEmpty
     });
@@ -8746,7 +8971,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       return;
     }
     this.#resetWalkthrough();
-    void AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
+    void AiAssistanceModel9.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI11.ARIAUtils.LiveAnnouncer.alert(i18nString6(UIStrings6.chatDeleted));
   }
@@ -8795,17 +9020,17 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
   }
   #handleConversationContextChange = (data) => {
-    if (data instanceof AiAssistanceModel8.FileContext.FileContext) {
+    if (data instanceof AiAssistanceModel9.FileContext.FileContext) {
       this.#selectedFile = data;
-    } else if (data instanceof AiAssistanceModel8.DOMNodeContext.DOMNodeContext) {
+    } else if (data instanceof AiAssistanceModel9.DOMNodeContext.DOMNodeContext) {
       this.#selectedElement = data;
-    } else if (data instanceof AiAssistanceModel8.RequestContext.RequestContext) {
+    } else if (data instanceof AiAssistanceModel9.RequestContext.RequestContext) {
       this.#selectedRequest = data;
-    } else if (data instanceof AiAssistanceModel8.PerformanceAgent.PerformanceTraceContext) {
+    } else if (data instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-    } else if (data instanceof AiAssistanceModel8.AccessibilityAgent.AccessibilityContext) {
+    } else if (data instanceof AiAssistanceModel9.AccessibilityAgent.AccessibilityContext) {
       this.#selectedAccessibility = data;
-    } else if (data instanceof AiAssistanceModel8.StorageAgent.StorageContext) {
+    } else if (data instanceof AiAssistanceModel9.StorageAgent.StorageContext) {
       this.#selectedStorage = data;
     }
     void VisualLogging9.logFunctionCall(`context-change-${this.#conversation?.type}`);
@@ -8826,16 +9051,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       const handleInspectModeToggled = (ev) => {
         if (!ev.data) {
           window.setTimeout(() => {
-            resolve(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK6.DOMModel.DOMNode)));
+            resolve(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK7.DOMModel.DOMNode)));
             removeListeners();
           }, 50);
         }
       };
       const removeListeners = () => {
-        UI11.Context.Context.instance().removeFlavorChangeListener(SDK6.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+        UI11.Context.Context.instance().removeFlavorChangeListener(SDK7.DOMModel.DOMNode, handleDOMNodeFlavorChange);
         this.#toggleSearchElementAction?.removeEventListener("Toggled", handleInspectModeToggled);
       };
-      UI11.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+      UI11.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, handleDOMNodeFlavorChange);
       this.#toggleSearchElementAction?.addEventListener("Toggled", handleInspectModeToggled);
       this.#runAbortController.signal.addEventListener("abort", () => {
         resolve(null);
@@ -9086,7 +9311,7 @@ ${part.text}`);
         contentParts.push(`### ${step.title}`);
       }
       if (step.contextDetails) {
-        contentParts.push(AiAssistanceModel8.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+        contentParts.push(AiAssistanceModel9.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
       }
       if (step.thought) {
         contentParts.push(step.thought);
@@ -9152,6 +9377,7 @@ function isAiAssistanceServerSideLoggingEnabled() {
   return !Root8.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 export {
+  AIv2MarkdownRenderer,
   AccessibilityAgentMarkdownRenderer,
   ActionDelegate,
   AiAssistancePanel,

@@ -47,6 +47,11 @@ export default `/*
   display: flex;
 }
 
+li.watch-expression-tree-item > span.tree-element-title {
+  display: block;
+  width: 100%;
+}
+
 .watch-expression-title:hover,
 .watch-expression-title:focus-within {
   padding-right: 26px;
@@ -60,6 +65,8 @@ export default `/*
   position: relative;
   flex: auto;
   min-height: 20px;
+  display: block;
+  width: 100%;
 }
 
 .watch-expression .name {

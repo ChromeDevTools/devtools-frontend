@@ -15233,9 +15233,6 @@
   "panels/sources/WatchExpressionsSidebarPane.ts | refreshWatchExpressions": {
     "message": "Refresh watch expressions"
   },
-  "panels/sources/WatchExpressionsSidebarPane.ts | watchExpressionDeleted": {
-    "message": "Watch expression deleted"
-  },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "Animations"
   },

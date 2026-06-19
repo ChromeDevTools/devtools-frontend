@@ -334,6 +334,7 @@ panels/ai_assistance/AiAssistancePanel.test.js
 panels/ai_assistance/ExportConversation.test.js
 panels/ai_assistance/PatchWidget.test.js
 panels/ai_assistance/SelectWorkspaceDialog.test.js
+panels/ai_assistance/components/AIv2MarkdownRenderer.test.js
 panels/ai_assistance/components/AccessibilityAgentMarkdownRenderer.test.js
 panels/ai_assistance/components/ChatInput.test.js
 panels/ai_assistance/components/ChatMessage.test.js

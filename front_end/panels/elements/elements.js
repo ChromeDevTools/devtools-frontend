@@ -4317,7 +4317,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.#parentSection = section5;
     this.isShorthand = isShorthand;
     this.newProperty = newProperty;
-    this.#lazyRender = stylesContainer.shouldRenderLazily();
+    this.#lazyRender = !this.newProperty && stylesContainer.shouldRenderLazily();
     if (this.newProperty) {
       this.listItemElement.textContent = "";
     }

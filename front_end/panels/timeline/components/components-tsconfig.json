@@ -51,6 +51,7 @@
     "../../../../../../../front_end/panels/timeline/components/NetworkRequestDetails.ts",
     "../../../../../../../front_end/panels/timeline/components/NetworkRequestTooltip.ts",
     "../../../../../../../front_end/panels/timeline/components/NetworkThrottlingSelector.ts",
+    "../../../../../../../front_end/panels/timeline/components/NetworkTrackWidget.ts",
     "../../../../../../../front_end/panels/timeline/components/OriginMap.ts",
     "../../../../../../../front_end/panels/timeline/components/RelatedInsightChips.ts",
     "../../../../../../../front_end/panels/timeline/components/Sidebar.ts",

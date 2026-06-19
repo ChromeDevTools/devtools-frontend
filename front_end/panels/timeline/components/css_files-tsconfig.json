@@ -18,6 +18,7 @@
         "networkRequestDetails.css.js",
         "networkRequestTooltip.css.js",
         "networkThrottlingSelector.css.js",
+        "networkTrackWidget.css.js",
         "originMap.css.js",
         "relatedInsightChips.css.js",
         "sidebarAnnotationsTab.css.js",

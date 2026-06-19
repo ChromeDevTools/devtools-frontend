@@ -39,7 +39,8 @@ import {
   ShadowMatcher,
   StringMatcher,
   URLMatcher,
-  VariableMatcher
+  VariableMatcher,
+  VariableNameMatcher
 } from './CSSPropertyParserMatchers.js';
 import {
   CSSAtRule,
@@ -979,6 +980,7 @@ export class CSSMatchedStyles {
   propertyMatchers(style: CSSStyleDeclaration, computedStyles: Map<string, string>|null): Array<Matcher<Match>> {
     return [
       new VariableMatcher(this, style),
+      new VariableNameMatcher(this, style),
       new ColorMatcher(() => computedStyles?.get('color') ?? null),
       new ColorMixMatcher(),
       new ContrastColorMatcher(),

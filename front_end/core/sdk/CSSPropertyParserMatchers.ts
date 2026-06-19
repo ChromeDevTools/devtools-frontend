@@ -130,6 +130,71 @@ export class VariableMatcher extends matcherBase(VariableMatch) {
   }
 }
 
+export class VariableNameMatch implements Match {
+  constructor(
+      readonly node: CodeMirror.SyntaxNode,
+      readonly text: string,
+      readonly matchedStyles: CSSMatchedStyles,
+      readonly style: CSSStyleDeclaration,
+  ) {
+  }
+
+  resolveVariable(): CSSVariableValue|null {
+    return this.matchedStyles.computeCSSVariable(this.style, this.text);
+  }
+}
+
+// clang-format off
+export class VariableNameMatcher extends matcherBase(VariableNameMatch) {
+  // clang-format on
+  constructor(readonly matchedStyles: CSSMatchedStyles, readonly style: CSSStyleDeclaration) {
+    super();
+  }
+
+  override accepts(): boolean {
+    return true;
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): VariableNameMatch|null {
+    if (node.name !== 'VariableName' && node.name !== 'FeatureName' && node.name !== 'KeywordQuery') {
+      // TODO(b/484268589): The result shouldn't be KeywordQuery, but currently
+      // sometimes Lezer parses it that way. Fix this when Lezer is fixed.
+      return null;
+    }
+    const rawText = matching.ast.text(node);
+    if (!rawText.startsWith('--')) {
+      return null;
+    }
+
+    let cur: CodeMirror.SyntaxNode|null = node.parent;
+    let foundStyleCall: CodeMirror.SyntaxNode|null = null;
+    while (cur) {
+      if (cur.name === 'CallExpression') {
+        return null;
+      }
+      if (cur.name === 'CallQuery') {
+        const callee = cur.getChild('QueryCallee');
+        if (callee && matching.ast.text(callee) === 'style') {
+          foundStyleCall = cur;
+          break;
+        }
+        return null;
+      }
+      cur = cur.parent;
+    }
+
+    if (!foundStyleCall) {
+      return null;
+    }
+
+    // When parsing style(--foo > 10px), Lezer thinks it is a KeywordQuery and
+    // includes the > in the token with --foo. We need to strip it.
+    const text = node.name === 'KeywordQuery' ? rawText.split(/\s|[>!=<:]/)[0] : rawText;
+
+    return new VariableNameMatch(node, text, this.matchedStyles, this.style);
+  }
+}
+
 export class AttributeMatch extends BaseVariableMatch {
   constructor(
       text: string,

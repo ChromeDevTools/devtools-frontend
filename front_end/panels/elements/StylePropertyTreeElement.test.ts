@@ -904,6 +904,22 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('VariableNameRenderer', () => {
+    it('creates links for style queries in if() correctly', async () => {
+      addProperty('--b', '3');
+      const stylePropertyTreeElement = getTreeElement('color', 'if(style(--b: 3): red)');
+
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
+    });
+
+    it('does not render inside function rules', async () => {
+      const stylePropertyTreeElement = await getTreeElementForFunctionRule('--func', 'if(style(--b: 3): red)');
+      stylePropertyTreeElement.updateTitle();
+      assert.notExists(stylePropertyTreeElement.valueElement?.querySelector('devtools-link-swatch'));
+    });
+  });
+
   describe('ColorRenderer', () => {
     it('correctly renders children of the color swatch', () => {
       const value = 'rgb(255, var(--zero), var(--zero))';

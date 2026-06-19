@@ -316,6 +316,21 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
   }
 }
 
+function handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource,
+                                     stylesContainer: StylesContainer): void {
+  Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
+  Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
+
+  if (typeof variable === 'string') {
+    stylesContainer.jumpToProperty(variable) ||
+        stylesContainer.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
+  } else if (variable.declaration instanceof SDK.CSSProperty.CSSProperty) {
+    stylesContainer.revealProperty(variable.declaration);
+  } else if (variable.declaration instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
+    stylesContainer.jumpToProperty('initial-value', variable.name, REGISTERED_PROPERTY_SECTION_NAME);
+  }
+}
+
 // clang-format off
 export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableMatch) {
   // clang-format on
@@ -344,7 +359,8 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? match.fallbackValue();
-    const onLinkActivate = (name: string): void => this.#handleVarDefinitionActivate(declaration ?? name);
+    const onLinkActivate = (name: string): void =>
+        handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
     const varSwatch = document.createElement('span');
 
     const substitution = context.tracing?.substitution({match, context});
@@ -416,19 +432,59 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 
     return [colorSwatch, varSwatch];
   }
+}
 
-  #handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource): void {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-    Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
+// clang-format off
+export class VariableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableNameMatch) {
+  // clang-format on
+  readonly #stylesContainer: StylesContainer;
+  readonly #treeElement: StylePropertyTreeElement|null;
+  readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement|null,
+              matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+    super();
+    this.#treeElement = treeElement;
+    this.#stylesContainer = stylesContainer;
+    this.#matchedStyles = matchedStyles;
+  }
 
-    if (typeof variable === 'string') {
-      this.#stylesContainer.jumpToProperty(variable) ||
-          this.#stylesContainer.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
-    } else if (variable.declaration instanceof SDK.CSSProperty.CSSProperty) {
-      this.#stylesContainer.revealProperty(variable.declaration);
-    } else if (variable.declaration instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
-      this.#stylesContainer.jumpToProperty('initial-value', variable.name, REGISTERED_PROPERTY_SECTION_NAME);
+  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, context: RenderingContext): Node[] {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+      return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
+
+    const {declaration, value: variableValue} = match.resolveVariable() ?? {};
+    const isDefined = variableValue !== undefined;
+    const onLinkActivate = (name: string): void =>
+        handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
+    const varSwatch = document.createElement('span');
+
+    const tooltipContents =
+        this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
+    const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
+    const tooltip = tooltipId ? {tooltipId} : undefined;
+    // clang-format off
+    render(html`
+        <devtools-link-swatch class=css-var-link .data=${{
+            tooltip,
+            text: match.text,
+            isDefined,
+            onLinkActivate,
+          }}>
+        </devtools-link-swatch>
+        ${tooltipId ? html`
+          <devtools-tooltip
+            id=${tooltipId}
+            variant=rich
+            jslogContext=elements.css-var
+          >
+            ${tooltipContents}
+          </devtools-tooltip>
+        ` : ''}
+    `, varSwatch);
+    // clang-format on
+
+    return [varSwatch];
   }
 }
 
@@ -2007,6 +2063,7 @@ export function getPropertyRenderers(
     Array<MatchRenderer<SDK.CSSPropertyParser.Match>> {
   return [
     new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
+    new VariableNameRenderer(stylesContainer, treeElement, matchedStyles),
     new ColorRenderer(stylesContainer, treeElement),
     new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
     new ContrastColorRenderer(stylesContainer, treeElement),
@@ -2026,10 +2083,10 @@ export function getPropertyRenderers(
     new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
     new PositionTryRenderer(matchedStyles),
     new LengthRenderer(stylesContainer, propertyName, treeElement),
-    new MathFunctionRenderer(
-        stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement),
-    new CustomFunctionRenderer(
-        stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement),
+    new MathFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName,
+                             treeElement),
+    new CustomFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName,
+                               treeElement),
     new AutoBaseRenderer(computedStyles, computedStyleExtraFields),
     new BinOpRenderer(),
     new RelativeColorChannelRenderer(treeElement),

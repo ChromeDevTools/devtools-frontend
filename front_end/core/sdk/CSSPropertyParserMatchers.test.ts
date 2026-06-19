@@ -813,4 +813,57 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.exists(ast, text);
     }
   });
+
+  it('matches variable names in style queries', () => {
+    const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+    const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+
+    {
+      // 1. Simple inline if() with style query
+      const {match} = matchSingleValue('width', 'if(style(--foo: bar): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--foo');
+    }
+
+    {
+      // 2. Parenthesized boolean subexpression
+      const {match} = matchSingleValue('width', 'if(not (style(--a: b) and style(--c: d)): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--a');
+    }
+
+    {
+      // 3. Ensure variables in value positions are NOT matched by VariableNameMatcher
+      const {match} = matchSingleValue('width', 'if((style((calc(var(--a)) > 10px) and not (--c: d))): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--c');
+    }
+
+    {
+      // 4. LHS of range comparison
+      const {match} = matchSingleValue('width', 'if(style(--q > 3): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--q');
+    }
+
+    {
+      // 5. RHS of range comparison
+      const {match} = matchSingleValue('width', 'if(style(3 = --q): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--q');
+    }
+
+    {
+      // 6. Range comparisons with calculations inside style() calling var()
+      const {match} = matchSingleValue('width', 'if(style(--foo > calc(var(--bar) + 10px)): 10px)',
+                                       new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style));
+      assert.exists(match);
+      assert.strictEqual(match.text, '--foo');
+    }
+  });
 });

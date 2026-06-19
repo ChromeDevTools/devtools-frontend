@@ -11,7 +11,7 @@ import type * as Trace from '../../models/trace/trace.js';
 import * as Greendev from '../greendev/greendev.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 
-import {AccessibilityAgent, AccessibilityContext} from './agents/AccessibilityAgent.js';
+import {AccessibilityAgent} from './agents/AccessibilityAgent.js';
 import {
   type AgentOptions,
   type AiAgent,
@@ -33,6 +33,7 @@ import {StylingAgent} from './agents/StylingAgent.js';
 import {AiAgent2} from './AiAgent2.js';
 import {AiHistoryStorage, ConversationType, type SerializedConversation} from './AiHistoryStorage.js';
 import type {ChangeManager} from './ChangeManager.js';
+import {AccessibilityContext} from './contexts/AccessibilityContext.js';
 import {DOMNodeContext} from './contexts/DOMNodeContext.js';
 import {FileContext} from './contexts/FileContext.js';
 import {RequestContext} from './contexts/RequestContext.js';

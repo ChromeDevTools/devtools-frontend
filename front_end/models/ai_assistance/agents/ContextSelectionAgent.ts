@@ -14,13 +14,13 @@ import * as NetworkTimeCalculator from '../../network_time_calculator/network_ti
 import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {isOpaqueOrigin} from '../AiOrigins.js';
+import {AccessibilityContext} from '../contexts/AccessibilityContext.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 import {FileContext} from '../contexts/FileContext.js';
 import {getRequestContextOrigin, RequestContext} from '../contexts/RequestContext.js';
 import {debugLog} from '../debug.js';
 import {StorageItem} from '../StorageItem.js';
 
-import {AccessibilityContext} from './AccessibilityAgent.js';
 import {
   type AgentOptions,
   AiAgent,

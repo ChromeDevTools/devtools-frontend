@@ -1,0 +1,26 @@
+Title: AccessibilityContext should return prompt details correctly
+Content:
+# Lighthouse Report:
+# Lighthouse Report Summary
+URL: https://example.com
+Fetch Time: 2026-03-12
+Lighthouse Version: 1.0.0
+
+## Category Scores
+- Accessibility: 50
+# Audits for Accessibility
+
+The following audits in this category have a score below 90 and may need attention:
+- **Accessibility Audit**: 50 (Fail)
+  * Description of accessibility audit
+=== end content
+
+Title: AccessibilityContext should return user facing details correctly
+Content:
+[
+  {
+    "title": "Lighthouse report",
+    "text": "# Lighthouse Report:\n# Lighthouse Report Summary\nURL: https://example.com\nFetch Time: 2026-03-12\nLighthouse Version: 1.0.0\n\n## Category Scores\n- Accessibility: 50\n# Audits for Accessibility\n\nThe following audits in this category have a score below 90 and may need attention:\n- **Accessibility Audit**: 50 (Fail)\n  * Description of accessibility audit"
+  }
+]
+=== end content

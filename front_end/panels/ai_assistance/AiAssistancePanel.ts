@@ -623,12 +623,12 @@ function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): AiAs
   return new AiAssistanceModel.FileContext.FileContext(file);
 }
 
-function createAccessibilityContext(report: LighthousePanel.LighthousePanel.ActiveLighthouseReport|null):
-    AiAssistanceModel.AccessibilityAgent.AccessibilityContext|null {
+function createAccessibilityContext(report: LighthousePanel.LighthousePanel.ActiveLighthouseReport|
+                                    null): AiAssistanceModel.AccessibilityContext.AccessibilityContext|null {
   if (!report) {
     return null;
   }
-  return new AiAssistanceModel.AccessibilityAgent.AccessibilityContext(report.report);
+  return new AiAssistanceModel.AccessibilityContext.AccessibilityContext(report.report);
 }
 
 function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|
@@ -710,7 +710,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
   #selectedRequest: AiAssistanceModel.RequestContext.RequestContext|null = null;
 
-  #selectedAccessibility: AiAssistanceModel.AccessibilityAgent.AccessibilityContext|null = null;
+  #selectedAccessibility: AiAssistanceModel.AccessibilityContext.AccessibilityContext|null = null;
   #selectedStorage: AiAssistanceModel.StorageAgent.StorageContext|null = null;
 
   // Messages displayed in the `ChatView` component.
@@ -1781,7 +1781,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     } else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
 
-    } else if (data instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext) {
+    } else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {
       this.#selectedAccessibility = data;
     } else if (data instanceof AiAssistanceModel.StorageAgent.StorageContext) {
       this.#selectedStorage = data;

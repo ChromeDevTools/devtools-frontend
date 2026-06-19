@@ -19,9 +19,8 @@ import {ToolRegistry} from '../tools/ToolRegistry.js';
 import {
   AiAgent,
   type AiWidget,
-  type ContextDetail,
   type ContextResponse,
-  ConversationContext,
+  type ConversationContext,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -80,31 +79,6 @@ If the user asks a question that requires an investigation of a problem, use thi
     - [Suggestion 1]
     - [Suggestion 2]
 `;
-
-export class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
-  #lh: LHModel.ReporterTypes.ReportJSON;
-
-  constructor(report: LHModel.ReporterTypes.ReportJSON) {
-    super();
-    this.#lh = report;
-  }
-
-  #url(): string {
-    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
-  }
-
-  override getURL(): string {
-    return this.#url();
-  }
-
-  override getItem(): LHModel.ReporterTypes.ReportJSON {
-    return this.#lh;
-  }
-
-  override getTitle(): string {
-    return `Lighthouse report: ${this.#url()}`;
-  }
-}
 
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -184,10 +158,13 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       return;
     }
 
-    yield {
-      type: ResponseType.CONTEXT,
-      details: this.#createContextDetails(lhr),
-    };
+    const details = await lhr.getUserFacingDetails();
+    if (details) {
+      yield {
+        type: ResponseType.CONTEXT,
+        details,
+      };
+    }
   }
 
   async #resolvePathToNode(path: string): Promise<SDK.DOMModel.DOMNode|null> {
@@ -517,38 +494,14 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
     });
   }
 
-  /**
-   * This is the initial payload we send at the start of a conversation.
-   * Because the agent is focused on Accessibility, we include the
-   * Accessibility Audits summary in the payload to avoid an extra round step of
-   * the AI querying them.
-   */
-  #getInitialPayload(context: ConversationContext<LHModel.ReporterTypes.ReportJSON>): string {
-    const report = context.getItem();
-    const formatter = new LighthouseFormatter();
-    const summary = formatter.summary(report);
-    const audits = formatter.audits(report, 'accessibility');
-    const allFailed = Object.values(report.categories).every(category => category.score === null);
-    if (allFailed) {
-      return '**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.';
-    }
-    return `# Lighthouse Report:\n${summary}\n${audits}`;
-  }
-
   override async enhanceQuery(query: string, lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON>|null):
       Promise<string> {
     this.clearDeclaredFunctions();
     if (lhr) {
       this.#declareFunctions();
     }
-    const enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}\n# User request:\n\n` : '';
+    const promptDetails = lhr ? await lhr.getPromptDetails() : null;
+    const enhancedQuery = promptDetails ? `${promptDetails}\n# User request:\n\n` : '';
     return `${enhancedQuery}${query}`;
-  }
-
-  #createContextDetails(lhr: ConversationContext<LHModel.ReporterTypes.ReportJSON>):
-      [ContextDetail, ...ContextDetail[]] {
-    return [
-      {title: 'Lighthouse report', text: this.#getInitialPayload(lhr)},
-    ];
   }
 }

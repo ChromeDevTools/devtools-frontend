@@ -257,6 +257,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         focus: () => this.onFocus(),
         blur: () => this.onBlur(),
         paste: () => this.onPaste(),
+        drop: event => event.preventDefault(),
         scroll: () => this.dispatchEventToListeners(Events.EDITOR_SCROLL),
         contextmenu: event => this.onContextMenu(event),
       }),
@@ -264,16 +265,15 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
         domEventHandlers:
             {contextmenu: (_view, block, event) => this.onLineGutterContextMenu(block.from, event as MouseEvent)},
       }),
-      CodeMirror.EditorView.updateListener.of(
-          (update):
-              void => {
-                if (update.selectionSet || update.docChanged) {
-                  this.updateSourcePosition();
-                }
-                if (update.docChanged) {
-                  this.onTextChanged();
-                }
-              }),
+      CodeMirror.EditorView.updateListener.of((update):
+                                                  void => {
+                                                    if (update.selectionSet || update.docChanged) {
+                                                      this.updateSourcePosition();
+                                                    }
+                                                    if (update.docChanged) {
+                                                      this.onTextChanged();
+                                                    }
+                                                  }),
       activeSearchState,
       CodeMirror.Prec.lowest(searchHighlighter),
       config.language.of([]),

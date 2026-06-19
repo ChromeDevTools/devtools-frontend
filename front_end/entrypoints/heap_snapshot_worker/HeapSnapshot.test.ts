@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import type * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
+import * as HeapSnapshotModel from '../../models/heap_snapshot/heap_snapshot.js';
 
 import * as HeapSnapshotWorker from './heap_snapshot_worker.js';
 
@@ -1115,5 +1115,49 @@ describe('HeapSnapshot', () => {
     assert.strictEqual(dominatorsC[0].nodeName, 'C');
     assert.strictEqual(dominatorsC[1].nodeIndex, 0);
     assert.strictEqual(dominatorsC[1].nodeName, 'root');
+  });
+
+  it('heapSnapshotRetainedByContext', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const context1 = new HeapNode('system / Context', 10, 'hidden', 10);
+    const context2 = new HeapNode('system / Context / Foo', 20, 'hidden', 20);
+    const nodeA = new HeapNode('NodeA', 30, 'object', 30);
+    const nodeB = new HeapNode('NodeB', 40, 'object', 40);
+    const nodeC = new HeapNode('NodeC', 50, 'object', 50);
+
+    root.linkNode(context1, 'property', 'context1');
+    root.linkNode(context2, 'property', 'context2');
+    root.linkNode(nodeB, 'property', 'nodeB');
+
+    context1.linkNode(nodeA, 'property', 'a');
+    context2.linkNode(nodeB, 'property', 'b');
+
+    nodeC.setBuilder(builder);
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const filter = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
+    filter.filterName = 'objectsRetainedByContexts';
+    const aggregates = snapshot.aggregatesWithFilter(filter);
+    const filteredNodeIndexes = new Set(Object.values(aggregates).flatMap(aggregate => aggregate.idxs));
+
+    const context1Index = snapshot.nodeIndexForId(10)!;
+    const context2Index = snapshot.nodeIndexForId(20)!;
+    const nodeAIndex = snapshot.nodeIndexForId(30)!;
+    const nodeBIndex = snapshot.nodeIndexForId(40)!;
+    const nodeCIndex = snapshot.nodeIndexForId(50)!;
+
+    // The three covered nodes should be context1, context2, and nodeA.
+    // nodeB is not covered because it is also reachable directly from root (not only via contexts).
+    // nodeC is not covered because it is unreachable from root.
+    assert.strictEqual(filteredNodeIndexes.size, 3, 'only three nodes should be covered');
+
+    assert.isTrue(filteredNodeIndexes.has(context1Index), 'context1 should be covered');
+    assert.isTrue(filteredNodeIndexes.has(context2Index), 'context2 should be covered');
+    assert.isTrue(filteredNodeIndexes.has(nodeAIndex), 'nodeA should be covered');
+    assert.isFalse(filteredNodeIndexes.has(nodeBIndex), 'nodeB should NOT be covered');
+    assert.isFalse(filteredNodeIndexes.has(nodeCIndex), 'nodeC (unreachable) should NOT be covered');
   });
 });

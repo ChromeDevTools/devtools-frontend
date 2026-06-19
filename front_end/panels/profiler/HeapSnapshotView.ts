@@ -138,6 +138,11 @@ const UIStrings = {
   objectsRetainedByDetachedDomNodes: 'Objects retained by detached DOM nodes',
   /**
    * @description An option which will filter the heap snapshot to show only
+   * objects kept alive by contexts
+   */
+  objectsRetainedByContexts: 'Objects retained by contexts',
+  /**
+   * @description An option which will filter the heap snapshot to show only
    * objects kept alive by the DevTools console
    */
   objectsRetainedByConsole: 'Objects retained by DevTools Console',
@@ -773,6 +778,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   static readonly ALWAYS_AVAILABLE_FILTERS: ReadonlyArray<{uiName: string, filterName: string}> = [
     {uiName: i18nString(UIStrings.duplicatedStrings), filterName: 'duplicatedStrings'},
     {uiName: i18nString(UIStrings.objectsRetainedByDetachedDomNodes), filterName: 'objectsRetainedByDetachedDomNodes'},
+    {uiName: i18nString(UIStrings.objectsRetainedByContexts), filterName: 'objectsRetainedByContexts'},
     {uiName: i18nString(UIStrings.objectsRetainedByConsole), filterName: 'objectsRetainedByConsole'},
     {uiName: i18nString(UIStrings.objectsRetainedByEventHandlers), filterName: 'objectsRetainedByEventHandlers'},
   ];

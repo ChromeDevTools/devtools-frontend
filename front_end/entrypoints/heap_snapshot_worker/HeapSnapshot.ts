@@ -1382,6 +1382,12 @@ export abstract class HeapSnapshot {
     };
 
     switch (filterName) {
+      case 'objectsRetainedByContexts':
+        traverse((_node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
+          return !this.isContextObject(edge.node());
+        });
+        markUnreachableNodes();
+        return (node: HeapSnapshotNode) => !getBit(node);
       case 'objectsRetainedByDetachedDomNodes':
         // Traverse the graph, avoiding detached nodes.
         traverse((_node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
@@ -1579,6 +1585,10 @@ export abstract class HeapSnapshot {
 
   isUserRoot(_node: HeapSnapshotNode): boolean {
     return true;
+  }
+
+  isContextObject(_node: HeapSnapshotNode): boolean {
+    return false;
   }
 
   calculateShallowSizes(): void {
@@ -3682,6 +3692,11 @@ export class JSHeapSnapshot extends HeapSnapshot {
 
   override isUserRoot(node: HeapSnapshotNode): boolean {
     return node.isUserRoot() || node.isDocumentDOMTreesRoot();
+  }
+
+  override isContextObject(node: HeapSnapshotNode): boolean {
+    const name = node.rawName();
+    return name === 'system / Context' || name.startsWith('system / Context / ');
   }
 
   override userObjectsMapAndFlag(): {map: Uint8Array, flag: number}|null {

@@ -1343,6 +1343,7 @@ __export(StylePropertyTreeElement_exports, {
   ShadowModel: () => ShadowModel,
   ShadowRenderer: () => ShadowRenderer,
   StylePropertyTreeElement: () => StylePropertyTreeElement,
+  VariableNameRenderer: () => VariableNameRenderer,
   VariableRenderer: () => VariableRenderer,
   getPropertyRenderers: () => getPropertyRenderers
 });
@@ -2878,6 +2879,20 @@ var CSSWideKeywordRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     return [swatch];
   }
 };
+function handleVarDefinitionActivate(variable, stylesContainer) {
+  Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
+  Host.userMetrics.swatchActivated(
+    0
+    /* Host.UserMetrics.SwatchType.VAR_LINK */
+  );
+  if (typeof variable === "string") {
+    stylesContainer.jumpToProperty(variable) || stylesContainer.jumpToProperty("initial-value", variable, REGISTERED_PROPERTY_SECTION_NAME);
+  } else if (variable.declaration instanceof SDK6.CSSProperty.CSSProperty) {
+    stylesContainer.revealProperty(variable.declaration);
+  } else if (variable.declaration instanceof SDK6.CSSMatchedStyles.CSSRegisteredProperty) {
+    stylesContainer.jumpToProperty("initial-value", variable.name, REGISTERED_PROPERTY_SECTION_NAME);
+  }
+}
 var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.VariableMatch) {
   // clang-format on
   #stylesContainer;
@@ -2900,7 +2915,7 @@ var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     const { declaration, value: variableValue } = match.resolveVariable() ?? {};
     const fromFallback = variableValue === void 0;
     const computedValue = variableValue ?? match.fallbackValue();
-    const onLinkActivate = (name) => this.#handleVarDefinitionActivate(declaration ?? name);
+    const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
     const varSwatch = document.createElement("span");
     const substitution = context.tracing?.substitution({ match, context });
     if (substitution) {
@@ -2954,19 +2969,48 @@ var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     }
     return [colorSwatch, varSwatch];
   }
-  #handleVarDefinitionActivate(variable) {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-    Host.userMetrics.swatchActivated(
-      0
-      /* Host.UserMetrics.SwatchType.VAR_LINK */
-    );
-    if (typeof variable === "string") {
-      this.#stylesContainer.jumpToProperty(variable) || this.#stylesContainer.jumpToProperty("initial-value", variable, REGISTERED_PROPERTY_SECTION_NAME);
-    } else if (variable.declaration instanceof SDK6.CSSProperty.CSSProperty) {
-      this.#stylesContainer.revealProperty(variable.declaration);
-    } else if (variable.declaration instanceof SDK6.CSSMatchedStyles.CSSRegisteredProperty) {
-      this.#stylesContainer.jumpToProperty("initial-value", variable.name, REGISTERED_PROPERTY_SECTION_NAME);
+};
+var VariableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.VariableNameMatch) {
+  // clang-format on
+  #stylesContainer;
+  #treeElement;
+  #matchedStyles;
+  constructor(stylesContainer, treeElement, matchedStyles) {
+    super();
+    this.#treeElement = treeElement;
+    this.#stylesContainer = stylesContainer;
+    this.#matchedStyles = matchedStyles;
+  }
+  render(match, context) {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule) {
+      return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
+    const { declaration, value: variableValue } = match.resolveVariable() ?? {};
+    const isDefined = variableValue !== void 0;
+    const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
+    const varSwatch = document.createElement("span");
+    const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
+    const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
+    const tooltip = tooltipId ? { tooltipId } : void 0;
+    render3(html6`
+        <devtools-link-swatch class=css-var-link .data=${{
+      tooltip,
+      text: match.text,
+      isDefined,
+      onLinkActivate
+    }}>
+        </devtools-link-swatch>
+        ${tooltipId ? html6`
+          <devtools-tooltip
+            id=${tooltipId}
+            variant=rich
+            jslogContext=elements.css-var
+          >
+            ${tooltipContents}
+          </devtools-tooltip>
+        ` : ""}
+    `, varSwatch);
+    return [varSwatch];
   }
 };
 var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.AttributeMatch) {
@@ -4251,6 +4295,7 @@ var PositionTryRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatch
 function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyles, treeElement, computedStyles, computedStyleExtraFields) {
   return [
     new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
+    new VariableNameRenderer(stylesContainer, treeElement, matchedStyles),
     new ColorRenderer(stylesContainer, treeElement),
     new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
     new ContrastColorRenderer(stylesContainer, treeElement),
@@ -7743,7 +7788,14 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     }
     currentPropertyString = currentPropertyString + text;
     prefix = prefix + text;
-    const suffix = content.substring(propertyEndOffset);
+    let suffix = content.substring(propertyEndOffset);
+    const maxLength = TextEditor.AiCodeCompletionProvider.MAX_PREFIX_SUFFIX_LENGTH;
+    if (prefix.length > maxLength) {
+      prefix = prefix.substring(prefix.length - maxLength);
+    }
+    if (suffix.length > maxLength) {
+      suffix = suffix.substring(0, maxLength);
+    }
     const startTime = performance.now();
     const aidaSuggestion = await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);
     if (!aidaSuggestion) {
@@ -9764,9 +9816,20 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   onInput(event) {
     super.onInput(event);
     if (this.aiCodeCompletionProvider) {
-      this.#updateAiCodeSuggestion();
-      this.#debouncedTriggerAiCodeCompletion();
+      const inputEvent = event;
+      const isDeletion = inputEvent.inputType?.startsWith("delete");
+      if (isDeletion) {
+        this.#debouncedTriggerAiCodeCompletion.cancel();
+        this.setAiAutoCompletion(null);
+      } else {
+        this.#updateAiCodeSuggestion();
+        this.#debouncedTriggerAiCodeCompletion();
+      }
     }
+  }
+  detach() {
+    this.#debouncedTriggerAiCodeCompletion.cancel();
+    super.detach();
   }
   #handleEscape(keyboardEvent) {
     if (!this.aiCodeCompletionProvider || !this.treeElement.section().activeAiSuggestion) {
@@ -9775,11 +9838,11 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     keyboardEvent.preventDefault();
     if (this.isSuggestBoxVisible()) {
       this.suggestBox?.hide();
-      keyboardEvent.consume(true);
-      return true;
+    } else {
+      this.setAiAutoCompletion(null);
     }
-    this.setAiAutoCompletion(null);
-    return false;
+    keyboardEvent.consume(true);
+    return true;
   }
   handleNameOrValueUpDown(event) {
     function finishHandler(_originalValue, _replacementString) {
@@ -10017,6 +10080,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     if (!args) {
       this.treeElement.section().activeAiSuggestion = void 0;
       this.activeAiSuggestionInfo = void 0;
+      this.applySuggestion(null);
       return;
     }
     if (!this.queryRange) {
@@ -10094,7 +10158,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     return completionHint;
   }
   acceptCodeComplete() {
-    if (this.isSuggestBoxVisible()) {
+    if (this.isSuggestBoxVisible() || this.currentSuggestion()) {
       this.acceptAutoComplete();
       const textAfterAccept = this.text();
       if (!this.treeElement.section().activeAiSuggestion?.properties.length) {

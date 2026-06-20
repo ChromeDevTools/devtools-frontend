@@ -44,6 +44,8 @@ export declare class FloatingButton extends HTMLElement {
     set iconName(iconName: string | null);
     get jslogContext(): string | null;
     set jslogContext(jslogContext: string | null);
+    get disabled(): boolean;
+    set disabled(disabled: boolean);
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
 }
 /**

@@ -1682,9 +1682,21 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     onInput(event) {
         super.onInput(event);
         if (this.aiCodeCompletionProvider) {
-            this.#updateAiCodeSuggestion();
-            this.#debouncedTriggerAiCodeCompletion();
+            const inputEvent = event;
+            const isDeletion = inputEvent.inputType?.startsWith('delete');
+            if (isDeletion) {
+                this.#debouncedTriggerAiCodeCompletion.cancel();
+                this.setAiAutoCompletion(null);
+            }
+            else {
+                this.#updateAiCodeSuggestion();
+                this.#debouncedTriggerAiCodeCompletion();
+            }
         }
+    }
+    detach() {
+        this.#debouncedTriggerAiCodeCompletion.cancel();
+        super.detach();
     }
     #handleEscape(keyboardEvent) {
         if (!this.aiCodeCompletionProvider || !this.treeElement.section().activeAiSuggestion) {
@@ -1693,12 +1705,14 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         keyboardEvent.preventDefault();
         if (this.isSuggestBoxVisible()) {
             this.suggestBox?.hide();
-            // Required for ensuring the suggestion is not cleared.
-            keyboardEvent.consume(true);
-            return true;
         }
-        this.setAiAutoCompletion(null);
-        return false;
+        else {
+            this.setAiAutoCompletion(null);
+        }
+        // Consume the event to prevent it from bubbling up to cancel the editing session,
+        // and return true to prevent TextPrompt from processing it.
+        keyboardEvent.consume(true);
+        return true;
     }
     handleNameOrValueUpDown(event) {
         function finishHandler(_originalValue, _replacementString) {
@@ -1938,6 +1952,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         if (!args) {
             this.treeElement.section().activeAiSuggestion = undefined;
             this.activeAiSuggestionInfo = undefined;
+            this.applySuggestion(null);
             return;
         }
         if (!this.queryRange) {
@@ -2016,7 +2031,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         return completionHint;
     }
     acceptCodeComplete() {
-        if (this.isSuggestBoxVisible()) {
+        if (this.isSuggestBoxVisible() || this.currentSuggestion()) {
             // accept the suggestion from the traditional autocomplete menu
             this.acceptAutoComplete();
             const textAfterAccept = this.text();

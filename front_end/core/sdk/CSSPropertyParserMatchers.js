@@ -99,6 +99,69 @@ export class VariableMatcher extends matcherBase(VariableMatch) {
             null;
     }
 }
+export class VariableNameMatch {
+    node;
+    text;
+    matchedStyles;
+    style;
+    constructor(node, text, matchedStyles, style) {
+        this.node = node;
+        this.text = text;
+        this.matchedStyles = matchedStyles;
+        this.style = style;
+    }
+    resolveVariable() {
+        return this.matchedStyles.computeCSSVariable(this.style, this.text);
+    }
+}
+// clang-format off
+export class VariableNameMatcher extends matcherBase(VariableNameMatch) {
+    matchedStyles;
+    style;
+    // clang-format on
+    constructor(matchedStyles, style) {
+        super();
+        this.matchedStyles = matchedStyles;
+        this.style = style;
+    }
+    accepts() {
+        return true;
+    }
+    matches(node, matching) {
+        if (node.name !== 'VariableName' && node.name !== 'FeatureName' && node.name !== 'KeywordQuery') {
+            // TODO(b/484268589): The result shouldn't be KeywordQuery, but currently
+            // sometimes Lezer parses it that way. Fix this when Lezer is fixed.
+            return null;
+        }
+        const rawText = matching.ast.text(node);
+        if (!rawText.startsWith('--')) {
+            return null;
+        }
+        let cur = node.parent;
+        let foundStyleCall = null;
+        while (cur) {
+            if (cur.name === 'CallExpression') {
+                return null;
+            }
+            if (cur.name === 'CallQuery') {
+                const callee = cur.getChild('QueryCallee');
+                if (callee && matching.ast.text(callee) === 'style') {
+                    foundStyleCall = cur;
+                    break;
+                }
+                return null;
+            }
+            cur = cur.parent;
+        }
+        if (!foundStyleCall) {
+            return null;
+        }
+        // When parsing style(--foo > 10px), Lezer thinks it is a KeywordQuery and
+        // includes the > in the token with --foo. We need to strip it.
+        const text = node.name === 'KeywordQuery' ? rawText.split(/\s|[>!=<:]/)[0] : rawText;
+        return new VariableNameMatch(node, text, this.matchedStyles, this.style);
+    }
+}
 export class AttributeMatch extends BaseVariableMatch {
     type;
     isCSSTokens;

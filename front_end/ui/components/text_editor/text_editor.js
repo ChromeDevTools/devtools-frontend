@@ -66,6 +66,7 @@ __export(AiCodeCompletionProvider_exports, {
   AiCodeCompletionProvider: () => AiCodeCompletionProvider,
   AiCodeCompletionTeaserMode: () => AiCodeCompletionTeaserMode,
   DELAY_BEFORE_SHOWING_RESPONSE_MS: () => DELAY_BEFORE_SHOWING_RESPONSE_MS,
+  MAX_PREFIX_SUFFIX_LENGTH: () => MAX_PREFIX_SUFFIX_LENGTH,
   aiCodeCompletionTeaserModeState: () => aiCodeCompletionTeaserModeState,
   setAiCodeCompletionTeaserMode: () => setAiCodeCompletionTeaserMode
 });

@@ -56,6 +56,11 @@ export declare class CookiesTable extends UI.Widget.VBox {
     set saveCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: SDK.Cookie.Cookie | null) => Promise<boolean>);
     set refreshCallback(callback: () => void);
     set selectedCallback(callback: (arg0: SDK.Cookie.Cookie | null) => void);
+    set aiButtonIsEnabled(enabled: boolean);
+    get aiButtonIsEnabled(): boolean;
+    set onAiButtonClick(callback: (cookie: SDK.Cookie.Cookie, event: Event) => void);
+    set onPopulateAiContextMenu(callback: (cookie: SDK.Cookie.Cookie, contextMenu: UI.ContextMenu.ContextMenu) => void);
+    set aiButtonTitle(title: string | undefined);
     set deleteCallback(callback: (arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
     set editable(value: boolean);
     set inline(value: boolean);
@@ -65,7 +70,6 @@ export declare class CookiesTable extends UI.Widget.VBox {
     willHide(): void;
     performUpdate(): void;
     private onSelect;
-    private isAiButtonEnabled;
     private onDeleteCookie;
     private onUpdateCookie;
     private onCreateCookie;

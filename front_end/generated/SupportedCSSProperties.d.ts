@@ -1,8 +1,15 @@
 export const generatedProperties: ({
     longhands: string[];
     name: string;
-    inherited?: undefined;
     keywords?: undefined;
+    inherited?: undefined;
+    is_descriptor?: undefined;
+    is_property?: undefined;
+} | {
+    keywords: string[];
+    name: string;
+    longhands?: undefined;
+    inherited?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -15,14 +22,7 @@ export const generatedProperties: ({
 } | {
     name: string;
     longhands?: undefined;
-    inherited?: undefined;
     keywords?: undefined;
-    is_descriptor?: undefined;
-    is_property?: undefined;
-} | {
-    keywords: string[];
-    name: string;
-    longhands?: undefined;
     inherited?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
@@ -45,8 +45,8 @@ export const generatedProperties: ({
     is_property: boolean;
     name: string;
     longhands?: undefined;
-    inherited?: undefined;
     keywords?: undefined;
+    inherited?: undefined;
 } | {
     keywords: string[];
     longhands: string[];
@@ -86,11 +86,14 @@ export const generatedProperties: ({
     is_descriptor: boolean;
     name: string;
     longhands?: undefined;
-    inherited?: undefined;
     keywords?: undefined;
+    inherited?: undefined;
     is_property?: undefined;
 })[];
 export const generatedPropertyValues: {
+    "-alternative-webkit-line-clamp-longhand": {
+        values: string[];
+    };
     "-webkit-box-align": {
         values: string[];
     };
@@ -106,13 +109,34 @@ export const generatedPropertyValues: {
     "-webkit-box-pack": {
         values: string[];
     };
+    "-webkit-font-smoothing": {
+        values: string[];
+    };
     "-webkit-line-break": {
         values: string[];
     };
     "-webkit-line-clamp": {
         values: string[];
     };
+    "-webkit-locale": {
+        values: string[];
+    };
+    "-webkit-mask-box-image-repeat": {
+        values: string[];
+    };
+    "-webkit-mask-box-image-source": {
+        values: string[];
+    };
+    "-webkit-mask-box-image-width": {
+        values: string[];
+    };
     "-webkit-rtl-ordering": {
+        values: string[];
+    };
+    "-webkit-text-combine": {
+        values: string[];
+    };
+    "-webkit-text-decorations-in-effect": {
         values: string[];
     };
     "-webkit-text-security": {
@@ -145,6 +169,9 @@ export const generatedPropertyValues: {
     "animation-direction": {
         values: string[];
     };
+    "animation-duration": {
+        values: string[];
+    };
     "animation-fill-mode": {
         values: string[];
     };
@@ -167,6 +194,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "app-region": {
+        values: string[];
+    };
+    appearance: {
         values: string[];
     };
     "aspect-ratio": {
@@ -211,6 +241,18 @@ export const generatedPropertyValues: {
     "block-size": {
         values: string[];
     };
+    "border-block-end-style": {
+        values: string[];
+    };
+    "border-block-end-width": {
+        values: string[];
+    };
+    "border-block-start-style": {
+        values: string[];
+    };
+    "border-block-start-width": {
+        values: string[];
+    };
     "border-bottom-color": {
         values: string[];
     };
@@ -233,6 +275,18 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "border-image-width": {
+        values: string[];
+    };
+    "border-inline-end-style": {
+        values: string[];
+    };
+    "border-inline-end-width": {
+        values: string[];
+    };
+    "border-inline-start-style": {
+        values: string[];
+    };
+    "border-inline-start-width": {
         values: string[];
     };
     "border-left-color": {
@@ -395,6 +449,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "container-type": {
+        values: string[];
+    };
+    content: {
         values: string[];
     };
     "content-visibility": {
@@ -634,6 +691,9 @@ export const generatedPropertyValues: {
     height: {
         values: string[];
     };
+    "hyphenate-character": {
+        values: string[];
+    };
     "hyphenate-limit-chars": {
         values: string[];
     };
@@ -643,6 +703,9 @@ export const generatedPropertyValues: {
     "image-animation": {
         values: string[];
     };
+    "image-orientation": {
+        values: string[];
+    };
     "image-rendering": {
         values: string[];
     };
@@ -650,6 +713,18 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "inline-size": {
+        values: string[];
+    };
+    "inset-block-end": {
+        values: string[];
+    };
+    "inset-block-start": {
+        values: string[];
+    };
+    "inset-inline-end": {
+        values: string[];
+    };
+    "inset-inline-start": {
         values: string[];
     };
     interactivity: {
@@ -674,6 +749,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "line-break": {
+        values: string[];
+    };
+    "line-clamp": {
         values: string[];
     };
     "line-height": {
@@ -724,7 +802,13 @@ export const generatedPropertyValues: {
     "mask-composite": {
         values: string[];
     };
+    "mask-image": {
+        values: string[];
+    };
     "mask-mode": {
+        values: string[];
+    };
+    "mask-size": {
         values: string[];
     };
     "mask-type": {
@@ -749,6 +833,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "max-width": {
+        values: string[];
+    };
+    "min-block-size": {
         values: string[];
     };
     "min-height": {
@@ -934,6 +1021,9 @@ export const generatedPropertyValues: {
     "scroll-initial-target": {
         values: string[];
     };
+    "scroll-marker-group": {
+        values: string[];
+    };
     "scroll-padding-block-end": {
         values: string[];
     };
@@ -970,6 +1060,9 @@ export const generatedPropertyValues: {
     "scroll-target-group": {
         values: string[];
     };
+    "scroll-timeline-name": {
+        values: string[];
+    };
     "scrollbar-color": {
         values: string[];
     };
@@ -979,13 +1072,13 @@ export const generatedPropertyValues: {
     "scrollbar-width": {
         values: string[];
     };
-    "shape-margin": {
-        values: string[];
-    };
     "shape-outside": {
         values: string[];
     };
     "shape-rendering": {
+        values: string[];
+    };
+    size: {
         values: string[];
     };
     speak: {
@@ -1016,6 +1109,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "text-autospace": {
+        values: string[];
+    };
+    "text-box-edge": {
         values: string[];
     };
     "text-box-trim": {
@@ -1081,6 +1177,18 @@ export const generatedPropertyValues: {
     "text-wrap-style": {
         values: string[];
     };
+    "timeline-scope": {
+        values: string[];
+    };
+    "timeline-trigger-active-range-end": {
+        values: string[];
+    };
+    "timeline-trigger-active-range-start": {
+        values: string[];
+    };
+    "timeline-trigger-name": {
+        values: string[];
+    };
     "timeline-trigger-source": {
         values: string[];
     };
@@ -1121,6 +1229,12 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "vertical-align": {
+        values: string[];
+    };
+    "view-timeline-inset": {
+        values: string[];
+    };
+    "view-timeline-name": {
         values: string[];
     };
     "view-transition-class": {

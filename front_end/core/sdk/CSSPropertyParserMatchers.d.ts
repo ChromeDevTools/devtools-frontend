@@ -48,6 +48,28 @@ export declare class VariableMatcher extends VariableMatcher_base {
     constructor(matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): VariableMatch | null;
 }
+export declare class VariableNameMatch implements Match {
+    readonly node: CodeMirror.SyntaxNode;
+    readonly text: string;
+    readonly matchedStyles: CSSMatchedStyles;
+    readonly style: CSSStyleDeclaration;
+    constructor(node: CodeMirror.SyntaxNode, text: string, matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
+    resolveVariable(): CSSVariableValue | null;
+}
+declare const VariableNameMatcher_base: {
+    new (): {
+        matchType: Platform.Constructor.ConstructorOrAbstract<VariableNameMatch>;
+        accepts(_propertyName: string): boolean;
+        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): VariableNameMatch | null;
+    };
+};
+export declare class VariableNameMatcher extends VariableNameMatcher_base {
+    readonly matchedStyles: CSSMatchedStyles;
+    readonly style: CSSStyleDeclaration;
+    constructor(matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
+    accepts(): boolean;
+    matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): VariableNameMatch | null;
+}
 export declare class AttributeMatch extends BaseVariableMatch {
     readonly type: string | null;
     readonly isCSSTokens: boolean;

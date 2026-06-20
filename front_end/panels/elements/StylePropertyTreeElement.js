@@ -265,6 +265,20 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
         return [swatch];
     }
 }
+function handleVarDefinitionActivate(variable, stylesContainer) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
+    Host.userMetrics.swatchActivated(0 /* Host.UserMetrics.SwatchType.VAR_LINK */);
+    if (typeof variable === 'string') {
+        stylesContainer.jumpToProperty(variable) ||
+            stylesContainer.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
+    }
+    else if (variable.declaration instanceof SDK.CSSProperty.CSSProperty) {
+        stylesContainer.revealProperty(variable.declaration);
+    }
+    else if (variable.declaration instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
+        stylesContainer.jumpToProperty('initial-value', variable.name, REGISTERED_PROPERTY_SECTION_NAME);
+    }
+}
 // clang-format off
 export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableMatch) {
     // clang-format on
@@ -288,7 +302,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         const { declaration, value: variableValue } = match.resolveVariable() ?? {};
         const fromFallback = variableValue === undefined;
         const computedValue = variableValue ?? match.fallbackValue();
-        const onLinkActivate = (name) => this.#handleVarDefinitionActivate(declaration ?? name);
+        const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
         const varSwatch = document.createElement('span');
         const substitution = context.tracing?.substitution({ match, context });
         if (substitution) {
@@ -344,19 +358,51 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         }
         return [colorSwatch, varSwatch];
     }
-    #handleVarDefinitionActivate(variable) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
-        Host.userMetrics.swatchActivated(0 /* Host.UserMetrics.SwatchType.VAR_LINK */);
-        if (typeof variable === 'string') {
-            this.#stylesContainer.jumpToProperty(variable) ||
-                this.#stylesContainer.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
+}
+// clang-format off
+export class VariableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableNameMatch) {
+    // clang-format on
+    #stylesContainer;
+    #treeElement;
+    #matchedStyles;
+    constructor(stylesContainer, treeElement, matchedStyles) {
+        super();
+        this.#treeElement = treeElement;
+        this.#stylesContainer = stylesContainer;
+        this.#matchedStyles = matchedStyles;
+    }
+    render(match, context) {
+        if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
+            return Renderer.render(ASTUtils.children(match.node), context).nodes;
         }
-        else if (variable.declaration instanceof SDK.CSSProperty.CSSProperty) {
-            this.#stylesContainer.revealProperty(variable.declaration);
-        }
-        else if (variable.declaration instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
-            this.#stylesContainer.jumpToProperty('initial-value', variable.name, REGISTERED_PROPERTY_SECTION_NAME);
-        }
+        const { declaration, value: variableValue } = match.resolveVariable() ?? {};
+        const isDefined = variableValue !== undefined;
+        const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
+        const varSwatch = document.createElement('span');
+        const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
+        const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
+        const tooltip = tooltipId ? { tooltipId } : undefined;
+        // clang-format off
+        render(html `
+        <devtools-link-swatch class=css-var-link .data=${{
+            tooltip,
+            text: match.text,
+            isDefined,
+            onLinkActivate,
+        }}>
+        </devtools-link-swatch>
+        ${tooltipId ? html `
+          <devtools-tooltip
+            id=${tooltipId}
+            variant=rich
+            jslogContext=elements.css-var
+          >
+            ${tooltipContents}
+          </devtools-tooltip>
+        ` : ''}
+    `, varSwatch);
+        // clang-format on
+        return [varSwatch];
     }
 }
 // clang-format off
@@ -1659,6 +1705,7 @@ export class PositionTryRenderer extends rendererBase(SDK.CSSPropertyParserMatch
 export function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyles, treeElement, computedStyles, computedStyleExtraFields) {
     return [
         new VariableRenderer(stylesContainer, treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
+        new VariableNameRenderer(stylesContainer, treeElement, matchedStyles),
         new ColorRenderer(stylesContainer, treeElement),
         new ColorMixRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, treeElement),
         new ContrastColorRenderer(stylesContainer, treeElement),

@@ -720,11 +720,11 @@ button {
     height: var(--sys-size-7);
   }
 
-  :host-context(:not(.theme-with-dark-background)) & > devtools-icon {
+  &:not(:disabled):host-context(:not(.theme-with-dark-background)) & > devtools-icon {
     color: var(--sys-color-on-tonal-container);
   }
 
-  :host-context(.theme-with-dark-background) & > devtools-icon {
+  &:not(:disabled):host-context(.theme-with-dark-background) & > devtools-icon {
     color: var(--sys-color-on-primary);
   }
 
@@ -806,7 +806,7 @@ button {
 // gen/front_end/ui/components/buttons/FloatingButton.js
 var { html: html2, Directives: { classMap: classMap2 } } = Lit2;
 var FloatingButton = class extends HTMLElement {
-  static observedAttributes = ["icon-name", "jslogcontext"];
+  static observedAttributes = ["icon-name", "jslogcontext", "disabled"];
   #shadow = this.attachShadow({ mode: "open" });
   constructor() {
     super();
@@ -844,6 +844,16 @@ var FloatingButton = class extends HTMLElement {
       this.setAttribute("jslogcontext", jslogContext);
     }
   }
+  get disabled() {
+    return this.hasAttribute("disabled");
+  }
+  set disabled(disabled) {
+    if (disabled) {
+      this.setAttribute("disabled", "");
+    } else {
+      this.removeAttribute("disabled");
+    }
+  }
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) {
       return;
@@ -854,6 +864,9 @@ var FloatingButton = class extends HTMLElement {
     if (name === "jslogcontext") {
       this.#updateJslog();
     }
+    if (name === "disabled") {
+      this.#render();
+    }
   }
   #render() {
     const classes = classMap2({
@@ -861,7 +874,7 @@ var FloatingButton = class extends HTMLElement {
     });
     Lit2.render(html2`
         <style>${floatingButton_css_default}</style>
-        <button class=${classes}><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
+        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
   }
   #updateJslog() {
     if (this.jslogContext) {

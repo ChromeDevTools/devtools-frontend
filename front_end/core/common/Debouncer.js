@@ -10,6 +10,9 @@ export const debounce = function (func, delay) {
         clearTimeout(timer);
         timer = setTimeout(() => func(...args), testDebounceOverride ? 0 : delay);
     };
+    debounced.cancel = () => {
+        clearTimeout(timer);
+    };
     return debounced;
 };
 let testDebounceOverride = false;

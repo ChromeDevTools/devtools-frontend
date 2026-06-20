@@ -106,7 +106,14 @@ export class StylesAiCodeCompletionProvider {
         }
         currentPropertyString = currentPropertyString + text;
         prefix = prefix + text;
-        const suffix = content.substring(propertyEndOffset);
+        let suffix = content.substring(propertyEndOffset);
+        const maxLength = TextEditor.AiCodeCompletionProvider.MAX_PREFIX_SUFFIX_LENGTH;
+        if (prefix.length > maxLength) {
+            prefix = prefix.substring(prefix.length - maxLength);
+        }
+        if (suffix.length > maxLength) {
+            suffix = suffix.substring(0, maxLength);
+        }
         const startTime = performance.now();
         // TODO(b/476098133): Consider adjusting cursor position
         const aidaSuggestion = await this.#requestAidaSuggestion(prefix, suffix, cursorPosition);

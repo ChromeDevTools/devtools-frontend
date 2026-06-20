@@ -4616,6 +4616,9 @@
   "panels/application/CookieItemsView.ts | clearFilteredCookies": {
     "message": "Clear filtered cookies"
   },
+  "panels/application/CookieItemsView.ts | explainCookie": {
+    "message": "Explain this cookie"
+  },
   "panels/application/CookieItemsView.ts | noCookieSelected": {
     "message": "No cookie selected"
   },
@@ -4633,6 +4636,9 @@
   },
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "Show URL-decoded"
+  },
+  "panels/application/CookieItemsView.ts | startAChat": {
+    "message": "Start a chat"
   },
   "panels/application/CrashReportContextView.ts | filterByText": {
     "message": "Filter by key or value"
@@ -17536,6 +17542,9 @@
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
     "message": "Editable Cookies"
+  },
+  "ui/legacy/components/cookie_table/CookiesTable.ts | httpOnlyCookiesCannotBeAdded": {
+    "message": "HttpOnly cookies cannot be added as context"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
     "message": "N/A"

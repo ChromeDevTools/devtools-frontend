@@ -41,11 +41,11 @@ button {
     height: var(--sys-size-7);
   }
 
-  :host-context(:not(.theme-with-dark-background)) & > devtools-icon {
+  &:not(:disabled):host-context(:not(.theme-with-dark-background)) & > devtools-icon {
     color: var(--sys-color-on-tonal-container);
   }
 
-  :host-context(.theme-with-dark-background) & > devtools-icon {
+  &:not(:disabled):host-context(.theme-with-dark-background) & > devtools-icon {
     color: var(--sys-color-on-primary);
   }
 

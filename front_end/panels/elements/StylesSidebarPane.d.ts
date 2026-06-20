@@ -186,6 +186,7 @@ export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     onMouseWheel(event: Event): void;
     tabKeyPressed(): boolean;
     onInput(event: Event): void;
+    detach(): void;
     private handleNameOrValueUpDown;
     private isValueSuggestion;
     private buildPropertyCompletions;

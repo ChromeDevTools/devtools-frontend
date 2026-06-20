@@ -59,6 +59,15 @@ export declare class VariableRenderer extends VariableRenderer_base {
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null);
     render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[];
 }
+declare const VariableNameRenderer_base: abstract new () => {
+    readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.VariableNameMatch, any[]>;
+    render(_match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Node[];
+};
+export declare class VariableNameRenderer extends VariableNameRenderer_base {
+    #private;
+    constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
+    render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, context: RenderingContext): Node[];
+}
 declare const AttributeRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.AttributeMatch, any[]>;
     render(_match: SDK.CSSPropertyParserMatchers.AttributeMatch, _context: RenderingContext): Node[];

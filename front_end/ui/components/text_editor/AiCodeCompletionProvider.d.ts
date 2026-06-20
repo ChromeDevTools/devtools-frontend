@@ -28,6 +28,7 @@ export interface AiCodeCompletionConfig {
 }
 export declare const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export declare const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
+export declare const MAX_PREFIX_SUFFIX_LENGTH = 20000;
 export declare class AiCodeCompletionProvider {
     #private;
     private constructor();

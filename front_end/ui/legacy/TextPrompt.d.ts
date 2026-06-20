@@ -71,7 +71,6 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     private autocompletionTimeout;
     protected queryRange: TextUtils.TextRange.TextRange | null;
     private previousText;
-    private currentSuggestion;
     private completionRequestId;
     private ghostTextElement;
     private leftParenthesesIndices;
@@ -156,6 +155,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     private tryMatchingLeftParenthesis;
     private updateLeftParenthesesIndices;
     suggestBoxForTest(): SuggestBox | undefined;
+    currentSuggestion(): Suggestion | null;
 }
 export declare const enum Events {
     TEXT_CHANGED = "TextChanged"

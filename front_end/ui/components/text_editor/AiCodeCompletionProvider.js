@@ -29,7 +29,7 @@ export const aiCodeCompletionTeaserModeState = CodeMirror.StateField.define({
 });
 export const DELAY_BEFORE_SHOWING_RESPONSE_MS = 500;
 export const AIDA_REQUEST_DEBOUNCE_TIMEOUT_MS = 200;
-const MAX_PREFIX_SUFFIX_LENGTH = 20_000;
+export const MAX_PREFIX_SUFFIX_LENGTH = 20_000;
 export class AiCodeCompletionProvider {
     #aidaClient = new Host.AidaClient.AidaClient();
     #aiCodeCompletion;

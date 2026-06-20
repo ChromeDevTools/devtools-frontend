@@ -350,6 +350,7 @@ panels/animation/AnimationTimeline.test.js
 panels/application/AppManifestView.test.js
 panels/application/ApplicationPanelSidebar.test.js
 panels/application/BackgroundServiceView.test.js
+panels/application/CookieItemsView.test.js
 panels/application/CrashReportContextView.test.js
 panels/application/DOMStorageItemsView.test.js
 panels/application/DeviceBoundSessionsModel.test.js

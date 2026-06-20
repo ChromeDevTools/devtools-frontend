@@ -6973,7 +6973,7 @@ export const NativeFunctions = [
     },
     {
         name: "install",
-        signatures: [["?install_url", "?manifest_id"]],
+        signatures: [["?install_url", "?manifest_id"], ["params"]],
         receivers: ["Navigator"]
     },
     {
@@ -8395,6 +8395,10 @@ export const NativeFunctions = [
     {
         name: "Profiler",
         signatures: [["options"]]
+    },
+    {
+        name: "getPathData",
+        signatures: [["?settings"]]
     },
     {
         name: "ByteLengthQueuingStrategy",

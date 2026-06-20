@@ -45,7 +45,6 @@ import { Directives, html, nothing, render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import dataGridAiButtonStyles from '../data_grid/dataGridAiButton.css.js';
 import cookiesTableStyles from './cookiesTable.css.js';
-const STORAGE_FLOATING_BUTTON_ACTION_ID = 'ai-assistance.storage-floating-button';
 const { repeat, ifDefined } = Directives;
 const UIStrings = {
     /**
@@ -133,6 +132,10 @@ const UIStrings = {
      * @description Text to be show in the Partition Key column in case it is an opaque origin.
      */
     opaquePartitionKey: '(opaque)',
+    /**
+     * @description Tooltip for the disabled AI button on HttpOnly cookies, explaining why they cannot be debugged.
+     */
+    httpOnlyCookiesCannotBeAdded: 'HttpOnly cookies cannot be added as context',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -143,6 +146,10 @@ export class CookiesTable extends UI.Widget.VBox {
     #refreshCallback;
     #selectedCallback;
     #deleteCallback;
+    #aiButtonIsEnabled = false;
+    #onAiButtonClick;
+    #onPopulateAiContextMenu;
+    #aiButtonTitle;
     lastEditedColumnId;
     data = [];
     cookies = [];
@@ -218,7 +225,9 @@ export class CookiesTable extends UI.Widget.VBox {
                    SourcePort
                 </th>` : ''}
               </tr>
-              ${repeat(this.data, cookie => cookie.key, cookie => html `
+              ${repeat(this.data, cookie => cookie.key, cookie => {
+                    const isHttpOnly = cookie['http-only'] === 'true';
+                    return html `
                 <tr ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
                     ?dirty=${cookie.dirty}
@@ -227,12 +236,13 @@ export class CookiesTable extends UI.Widget.VBox {
                     @delete=${() => input.onDelete(cookie)}
                     @contextmenu=${(e) => input.onContextMenu(cookie, e.detail)}
                     @select=${() => input.onSelect(cookie.key)}>
-                  <td>${input.showAiButton && !Boolean(cookie['http-only']) ? html `
+                  <td>${input.showAiButton ? html `
                       <span class="ai-button-container">
                         <devtools-floating-button
                           icon-name=${Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled ? 'spark' : 'smart-assistant'}
-                          title=${ifDefined(input.aiButtonTitle)}
-                          @click=${(e) => input.onAiButtonClick?.(cookie, e)}
+                          title=${ifDefined(isHttpOnly ? i18nString(UIStrings.httpOnlyCookiesCannotBeAdded) : input.aiButtonTitle)}
+                          ?disabled=${isHttpOnly}
+                          @click=${(e) => !isHttpOnly && input.onAiButtonClick?.(cookie, e)}
                         ></devtools-floating-button>
                       </span>
                     ` : nothing}${cookie.icons?.name}${cookie.name}</td>
@@ -241,7 +251,7 @@ export class CookiesTable extends UI.Widget.VBox {
                   <td>${cookie.icons?.path}${cookie.path}</td>
                   <td title=${ifDefined(cookie.expiresTooltip)}>${cookie.expires}</td>
                   <td>${cookie.size}</td>
-                  <td data-value=${Boolean(cookie['http-only'])}></td>
+                  <td data-value=${isHttpOnly}></td>
                   <td data-value=${Boolean(cookie.secure)}>${cookie.icons?.secure}</td>
                   <td>${cookie.icons?.['same-site']}${cookie['same-site']}</td>
                   <td>${cookie['partition-key-site']}</td>
@@ -251,7 +261,8 @@ export class CookiesTable extends UI.Widget.VBox {
                     <td title=${i18nString(UIStrings.sourceSchemeTooltip)}>${cookie['source-scheme']}</td>` : ''}
                   ${input.portBindingEnabled ? html `
                     <td title=${i18nString(UIStrings.sourcePortTooltip)}>${cookie['source-port']}</td>` : ''}
-                </tr>`)}
+                </tr>`;
+                })}
                 ${input.editable ? html `<tr placeholder><tr>` : ''}
               </table>
             </devtools-data-grid>`, target, { host: target });
@@ -289,6 +300,21 @@ export class CookiesTable extends UI.Widget.VBox {
     set selectedCallback(callback) {
         this.#selectedCallback = callback;
     }
+    set aiButtonIsEnabled(enabled) {
+        this.#aiButtonIsEnabled = enabled;
+    }
+    get aiButtonIsEnabled() {
+        return this.#aiButtonIsEnabled;
+    }
+    set onAiButtonClick(callback) {
+        this.#onAiButtonClick = callback;
+    }
+    set onPopulateAiContextMenu(callback) {
+        this.#onPopulateAiContextMenu = callback;
+    }
+    set aiButtonTitle(title) {
+        this.#aiButtonTitle = title;
+    }
     set deleteCallback(callback) {
         this.#deleteCallback = callback;
     }
@@ -323,6 +349,7 @@ export class CookiesTable extends UI.Widget.VBox {
         this.lastEditedColumnId = null;
     }
     performUpdate() {
+        const onAiButtonClick = this.#onAiButtonClick;
         const input = {
             data: this.data,
             selectedKey: this.selectedKey,
@@ -336,19 +363,17 @@ export class CookiesTable extends UI.Widget.VBox {
             onDelete: this.onDeleteCookie.bind(this),
             onSelect: this.onSelect.bind(this),
             onContextMenu: this.populateContextMenu.bind(this),
-            showAiButton: this.isAiButtonEnabled(),
-            aiButtonTitle: this.isAiButtonEnabled() &&
-                UI.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ?
-                UI.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() :
+            showAiButton: this.#aiButtonIsEnabled,
+            aiButtonTitle: this.#aiButtonIsEnabled ? this.#aiButtonTitle : undefined,
+            onAiButtonClick: (this.#aiButtonIsEnabled && onAiButtonClick) ?
+                (cookieData, event) => {
+                    event.stopPropagation();
+                    const cookie = this.cookies.find(c => c.key() === cookieData.key);
+                    if (cookie) {
+                        onAiButtonClick(cookie, event);
+                    }
+                } :
                 undefined,
-            onAiButtonClick: (cookie, event) => {
-                event.stopPropagation();
-                this.onSelect(cookie.key);
-                const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-                if (actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID)) {
-                    void actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).execute();
-                }
-            },
         };
         const output = {};
         this.view(input, output, this.element);
@@ -356,9 +381,6 @@ export class CookiesTable extends UI.Widget.VBox {
     onSelect(key) {
         this.selectedKey = key;
         this.#selectedCallback?.(this.selectedCookie());
-    }
-    isAiButtonEnabled() {
-        return UI.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID);
     }
     onDeleteCookie(data) {
         const cookie = this.cookies.find(cookie => cookie.key() === data.key);
@@ -540,6 +562,7 @@ export class CookiesTable extends UI.Widget.VBox {
             return;
         }
         const cookie = maybeCookie;
+        this.#onPopulateAiContextMenu?.(cookie, contextMenu);
         contextMenu.revealSection().appendItem(i18nString(UIStrings.showRequestsWithThisCookie), () => {
             const requestFilter = NetworkForward.UIFilter.UIRequestFilter.filters([
                 {

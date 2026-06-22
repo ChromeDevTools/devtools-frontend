@@ -131,7 +131,15 @@ export class CSSMetadata {
 
     for (const name of this.#valuesSet) {
       const values = this.specificPropertyValues(name)
-                         .filter(value => CSS.supports(name, value))
+                         .filter(value => {
+                           // Filter out values which are just the function name (e.g. 'url', 'radial-gradient', etc.)
+                           // The 'preset' is the full function (e.g. 'url(||)').
+                           const preset = valuePresets.get(name)?.get(value);
+                           if (preset && preset !== value) {
+                             return false;
+                           }
+                           return CSS.supports(name, value);
+                         })
                          .sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
       const presets = values.map(value => `${name}: ${value}`);
       if (!this.isSVGProperty(name)) {

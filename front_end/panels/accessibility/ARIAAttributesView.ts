@@ -79,6 +79,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
                   <devtools-prompt
                     completions=completions
                     class="monospace"
+                    value=${attribute.value}
                     @mousedown=${onStartEditing.bind(null, attribute)}
                     .completionTimeout=${0}
                     ?editing=${input.attributeBeingEdited === attribute}

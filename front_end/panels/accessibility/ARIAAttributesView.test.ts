@@ -68,6 +68,41 @@ describeWithMockConnection('ARIAAttributesView', () => {
     assert.isTrue(await input.propertyCompletions.has(role));
   });
 
+  it('does not include completions in the text prompt value when editing', async () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+    const attributeBeingEdited = node.attributes().find(attr => attr.name === 'aria-checked') || null;
+    assert.exists(attributeBeingEdited);
+    const propertyCompletions = new Map([[attributeBeingEdited, ['true', 'false', 'mixed', 'undefined']]]);
+    const input = {
+      onStartEditing: sinon.stub(),
+      onCommitEditing: sinon.stub(),
+      onCancelEditing: sinon.stub(),
+      attributeBeingEdited,
+      attributes: node.attributes(),
+      propertyCompletions,
+    };
+    Accessibility.ARIAAttributesView.DEFAULT_VIEW(input, {}, container);
+
+    // Wait for devtools-tree to render its template.
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const tree = container.querySelector('devtools-tree');
+    assert.exists(tree);
+    const treeOutline = tree.getInternalTreeOutlineForTest();
+
+    // The second attribute is aria-checked
+    const ariaCheckedTreeElement = treeOutline.rootElement().children()[1];
+    assert.exists(ariaCheckedTreeElement);
+
+    const prompt = ariaCheckedTreeElement.listItemElement.querySelector('devtools-prompt[editing]');
+    assert.exists(prompt);
+
+    const textPrompt = prompt.shadowRoot?.querySelector('.text-prompt');
+    assert.exists(textPrompt);
+    assert.strictEqual(textPrompt.textContent, 'true');
+  });
+
   it('should render attributes', async () => {
     const container = document.createElement('div');
     renderElementIntoDOM(container, {includeCommonStyles: true});

@@ -13,6 +13,26 @@ import * as StackTraceImpl from './stack_trace_impl.js';
 const {urlString} = Platform.DevToolsPath;
 
 describe('DetailedErrorStackParser', () => {
+  describe('concatErrorDescriptionAndIssueSummary', () => {
+    it('correctly appends the issue summary in case of single line error descriptions', () => {
+      assert.strictEqual(
+          StackTraceImpl.DetailedErrorStackParser.concatErrorDescriptionAndIssueSummary(
+              'TypeError: Failed to fetch',
+              'Access blocked by CORS policy: Cross origin requests are not allowed by request mode.'),
+          'TypeError: Failed to fetch. Access blocked by CORS policy: Cross origin requests are not allowed by request mode.',
+      );
+    });
+
+    it('correctly inserts the issue summary in case of multi-line error descriptions', () => {
+      assert.strictEqual(
+          StackTraceImpl.DetailedErrorStackParser.concatErrorDescriptionAndIssueSummary(
+              'TypeError: Failed to fetch\n  at (index):25:5',
+              'Access blocked by CORS policy: Cross origin requests are not allowed by request mode.'),
+          'TypeError: Failed to fetch. Access blocked by CORS policy: Cross origin requests are not allowed by request mode.\n  at (index):25:5',
+      );
+    });
+  });
+
   describe('parseRawFramesFromErrorStack', () => {
     it('parses standard V8 stack frames', () => {
       const stack = `Error: foo
@@ -676,5 +696,4 @@ more details
           frames[0].parsedFrameInfo?.evalOrigin?.parsedFrameInfo?.evalOrigin?.scriptId, 'base-script-id');
     });
   });
-
 });

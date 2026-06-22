@@ -12,16 +12,16 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '91dd0147f2b7419d8718fc9811756187e5b0e8af',
+  'build_revision': '63dd49fbe0c847139b2afd9069e516c0ab5d2a16',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '0d39be5a3f129cf1f35e7812108a2184e2193315',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'f710e50c6e928811caca1139e997d9194018ed6e',
+  'depot_tools_revision': '94e89b10b92cc9d6e58fc8d1b6474b7d29e8a114',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '1b9a1bc5962c85e2a933fb34a77ecd8b73799f1d',
+  'inspector_protocol_revision': '369afb2ffe24f7c953dcd3eed71b3f1529670732',
 
   # Keeping track of the last time we rolled the browser protocol files.
   'chromium_browser_protocol_revision' : '497ce88cb71102650c4ed3ec5fa40ddd45c28c26',
@@ -32,7 +32,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:c3f29c909a6255857093a797b9360b36f931b1cb',
+  'gn_version': 'git_revision:d31e02004d860452bc7273f002f6890d0adc94fa',
 
   'cmake_version': 'version:2@3.21.3',
 
@@ -62,7 +62,7 @@ vars = {
   'non_git_source': 'True',
 
   # siso CIPD package version
-  'siso_version': 'git_revision:0b5eb879ba9260eb6fd7dfe8f9437ef3396185c4',
+  'siso_version': 'git_revision:7ea15ed68d4aa12fc4aaa50f5446e8549e8f1ce0',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

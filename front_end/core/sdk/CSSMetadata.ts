@@ -1436,6 +1436,10 @@ const extraPropertyValues = new Map<string, Set<string>>([
     ]),
   ],
   ['outline-style', new Set(['auto'])],
+  ['overflow-block', new Set(['auto', 'hidden', 'visible', 'overlay', 'scroll', 'clip'])],
+  ['overflow-inline', new Set(['auto', 'hidden', 'visible', 'overlay', 'scroll', 'clip'])],
+  ['overscroll-behavior-block', new Set(['auto', 'none', 'contain'])],
+  ['overscroll-behavior-inline', new Set(['auto', 'none', 'contain'])],
 ]);
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

@@ -738,65 +738,86 @@ function renderLinkifiedValue(value: string, node: SDK.DOMModel.DOMNode): Lit.Te
   });
 }
 
+const relationPromisesCache = new WeakMap<SDK.DOMModel.DOMNode, Map<string, Promise<string|Lit.LitTemplate>>>();
+const relatedElementsCache = new WeakMap<SDK.DOMModel.DOMNode, Map<string, SDK.DOMModel.DOMNode|null>>();
+
 function renderAttribute(
     attr: {name: string, value?: string}, updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null,
     isDiff: boolean, node: SDK.DOMModel.DOMNode): Lit.LitTemplate {
   const name = attr.name;
   const value = attr.value || '';
   const forceValue = isDiff;
+  const isRelation = name === 'popovertarget' || name === 'interesttarget' || name === 'commandfor';
   const hasText = (forceValue || value.length > 0);
-  const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
-    change: true,
-    dblclick: true,
-  });
+  const linkifyName = isRelation && value.length === 0;
+  const linkifyValue = isRelation && value.length > 0;
 
-  const relationRef =
-      (relation: Protocol.DOM.GetElementByRelationRequestRelation, tooltip: string): ReturnType<typeof ref> =>
-          ref((el): void => {
-            if (!el) {
-              return;
-            }
-            void (async(): Promise<void> => {
-              const relatedElementId = await node.domModel().getElementByRelation(node.id, relation);
-              const relatedElement = node.domModel().nodeForId(relatedElementId);
-              if (!relatedElement) {
-                return;
-              }
-              const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedElement, {
-                preventKeyboardFocus: true,
-                tooltip,
-                textContent: el.textContent || undefined,
-                isDynamicLink: true,
-              });
-              render(link, el as HTMLElement);
-            })();
-          });
-
-  let relationRefDirective: ReturnType<typeof relationRef> = ref(() => {});
-  if (!value) {
+  let relation: Protocol.DOM.GetElementByRelationRequestRelation|undefined = undefined;
+  let tooltip = '';
+  if (isRelation) {
     if (name === 'popovertarget') {
-      relationRefDirective = relationRef(
-          Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget, i18nString(UIStrings.showPopoverTarget));
+      relation = Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget;
+      tooltip = i18nString(UIStrings.showPopoverTarget);
     } else if (name === 'interesttarget') {
-      relationRefDirective = relationRef(
-          Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget, i18nString(UIStrings.showInterestTarget));
+      relation = Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget;
+      tooltip = i18nString(UIStrings.showInterestTarget);
     } else if (name === 'commandfor') {
-      relationRefDirective = relationRef(
-          Protocol.DOM.GetElementByRelationRequestRelation.CommandFor, i18nString(UIStrings.showCommandForTarget));
+      relation = Protocol.DOM.GetElementByRelationRequestRelation.CommandFor;
+      tooltip = i18nString(UIStrings.showCommandForTarget);
     }
   }
 
-  let valueRelationRefDirective: ReturnType<typeof relationRef> = ref(() => {});
-  if (value) {
-    if (name === 'popovertarget') {
-      valueRelationRefDirective = relationRef(
-          Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget, i18nString(UIStrings.showPopoverTarget));
-    } else if (name === 'interesttarget') {
-      valueRelationRefDirective = relationRef(
-          Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget, i18nString(UIStrings.showInterestTarget));
-    } else if (name === 'commandfor') {
-      valueRelationRefDirective = relationRef(
-          Protocol.DOM.GetElementByRelationRequestRelation.CommandFor, i18nString(UIStrings.showCommandForTarget));
+  let relationPromise: Promise<string|Lit.LitTemplate>|undefined = undefined;
+  if (isRelation && relation) {
+    let nodeCache = relationPromisesCache.get(node);
+    if (!nodeCache) {
+      nodeCache = new Map();
+      relationPromisesCache.set(node, nodeCache);
+    }
+    const cacheKey = `${relation}:${value}`;
+    relationPromise = nodeCache.get(cacheKey);
+    const relationType = relation;
+    if (!relationPromise) {
+      relationPromise = (async () => {
+        try {
+          const relatedElementId = await node.domModel().getElementByRelation(node.id, relationType);
+          const relatedElement = node.domModel().nodeForId(relatedElementId);
+
+          let elemCache = relatedElementsCache.get(node);
+          if (!elemCache) {
+            elemCache = new Map();
+            relatedElementsCache.set(node, elemCache);
+          }
+          elemCache.set(`${name}:${value}`, relatedElement || null);
+
+          const isNameLinking = value.length === 0;
+          const fallback = isNameLinking ? name : value;
+
+          if (!relatedElement) {
+            return fallback;
+          }
+
+          const linkOptions: PanelsCommon.DOMLinkifier.Options = {
+            preventKeyboardFocus: true,
+            tooltip,
+            isDynamicLink: true,
+          };
+
+          if (isNameLinking) {
+            linkOptions.textContent = name;
+          } else {
+            const targetId = relatedElement.getAttribute('id');
+            if (targetId) {
+              linkOptions.textContent = targetId;
+            }
+          }
+
+          return PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedElement, linkOptions);
+        } catch {
+          return value.length === 0 ? name : value;
+        }
+      })();
+      nodeCache.set(cacheKey, relationPromise);
     }
   }
 
@@ -815,23 +836,31 @@ function renderAttribute(
     valueType = ValueType.SRCSET;
   }
 
-  const withEntitiesRef = valueType === ValueType.UNKNOWN ? ref(el => {
+  const withEntitiesRef = (valueType === ValueType.UNKNOWN && !isRelation) ? ref(el => {
     if (el) {
       setValueWithEntities(el, value);
     }
   }) :
-                                                            nothing;
+                                                                             nothing;
 
-  // clang-format off
+  const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
+    change: true,
+    dblclick: true,
+  });
+
   return html`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
-    Boolean(updateRecord?.isAttributeModified(name) && hasText),
-    DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${
+      linkifyName && relationPromise ? Lit.Directives.until(relationPromise, name) : name}</span>${
+      hasText ?
+          html`=\u200B"<span class="webkit-html-attribute-value" ${
+              animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText),
+                        DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
                         ${valueType === ValueType.SRC ? renderLinkifiedValue(value, node) : nothing}
-                        ${valueType === ValueType.SRCSET ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
+                        ${
+              valueType === ValueType.SRCSET ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
+                        ${linkifyValue && relationPromise ? Lit.Directives.until(relationPromise, value) : nothing}
                 </span>"` :
-      nothing}</span>`;
-  // clang-format on
+          nothing}</span>`;
 }
 
 function renderTag(
@@ -2440,9 +2469,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    const attributeValue = attributeName && attributeValueElement ?
+    let attributeValue = attributeName && attributeValueElement ?
         this.nodeInternal.getAttribute(attributeName)?.replaceAll('"', '&quot;') :
         undefined;
+
+    const isRelation =
+        attributeName === 'popovertarget' || attributeName === 'interesttarget' || attributeName === 'commandfor';
+    if (isRelation && attributeName && attributeValueElement) {
+      const rawValue = this.nodeInternal.getAttribute(attributeName) || '';
+      const relatedElement = relatedElementsCache.get(this.nodeInternal)?.get(`${attributeName}:${rawValue}`);
+      if (relatedElement) {
+        attributeValue = relatedElement.getAttribute('id') || '';
+      }
+    }
+
     if (attributeValue !== undefined) {
       attributeValueElement.setTextContentTruncatedIfNeeded(
           attributeValue, i18nString(UIStrings.valueIsTooLargeToEdit));

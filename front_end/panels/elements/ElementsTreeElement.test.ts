@@ -16,6 +16,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, registerActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {html} from '../../ui/lit/lit.js';
+import * as PanelsCommon from '../common/common.js';
 
 import * as Elements from './elements.js';
 
@@ -269,6 +271,140 @@ describeWithMockConnection('ElementsTreeElement', () => {
       const contents =
           Array.from(tooltip.querySelectorAll('.ad-provenance-tooltip-content')).map(el => el.textContent?.trim());
       assert.include(contents[1], '/ad-script.$script');
+    });
+  });
+
+  describe('Relation Attributes', () => {
+    let target: SDK.Target.Target;
+    let domModel: SDK.DOMModel.DOMModel;
+
+    beforeEach(() => {
+      target = createTarget();
+      domModel = target.model(SDK.DOMModel.DOMModel)!;
+    });
+
+    it('renders empty relation attribute without quotes if no relation', async () => {
+      const domTarget = document.createElement('div');
+      renderElementIntoDOM(domTarget);
+
+      const node = new SDK.DOMModel.DOMNode(domModel);
+      sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
+      sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
+      sinon.stub(node, 'nodeName').returns('DIV');
+      sinon.stub(node, 'hasAttributes').returns(true);
+      sinon.stub(node, 'attributes').returns([{name: 'popovertarget', value: ''}] as SDK.DOMModel.Attribute[]);
+
+      sinon.stub(domModel, 'getElementByRelation').resolves(undefined);
+
+      Elements.ElementsTreeElement.DEFAULT_VIEW({
+        ...getBaseViewInput(),
+        node,
+      },
+                                                {}, domTarget);
+
+      await raf();  // Wait for directive to run
+
+      const attributeElement = domTarget.querySelector('.webkit-html-attribute');
+      assert.exists(attributeElement);
+
+      const nameElement = attributeElement.querySelector('.webkit-html-attribute-name');
+      assert.exists(nameElement);
+      assert.strictEqual(nameElement.textContent, 'popovertarget');
+
+      // Should NOT have quotes or equals
+      assert.notInclude(attributeElement.textContent || '', '=');
+      assert.notInclude(attributeElement.textContent || '', '"');
+    });
+
+    it('renders empty relation attribute and linkifies it if relation exists', async () => {
+      const domTarget = document.createElement('div');
+      renderElementIntoDOM(domTarget);
+
+      const node = new SDK.DOMModel.DOMNode(domModel);
+      node.id = 1 as Protocol.DOM.NodeId;
+      sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
+      sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
+      sinon.stub(node, 'nodeName').returns('DIV');
+      sinon.stub(node, 'hasAttributes').returns(true);
+      sinon.stub(node, 'attributes').returns([{name: 'popovertarget', value: ''}] as SDK.DOMModel.Attribute[]);
+
+      const relatedNodeId = 2 as Protocol.DOM.NodeId;
+      const relatedNode = new SDK.DOMModel.DOMNode(domModel);
+      sinon.stub(domModel, 'getElementByRelation').resolves(relatedNodeId);
+      sinon.stub(domModel, 'nodeForId').withArgs(relatedNodeId).returns(relatedNode);
+
+      const fakeLink = html`<span>LINKIFIED_TARGET</span>`;
+      const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(fakeLink);
+
+      Elements.ElementsTreeElement.DEFAULT_VIEW({
+        ...getBaseViewInput(),
+        node,
+      },
+                                                {}, domTarget);
+
+      await raf();  // Wait for directive to run
+
+      const attributeElement = domTarget.querySelector('.webkit-html-attribute');
+      assert.exists(attributeElement);
+
+      // With Philip's model, we linkify the name!
+      const nameElement = attributeElement.querySelector('.webkit-html-attribute-name');
+      assert.exists(nameElement);
+
+      // Wait for async linkify to finish rendering
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.include(nameElement.textContent || '', 'LINKIFIED_TARGET');
+
+      // Value element should NOT exist
+      const valueElement = attributeElement.querySelector('.webkit-html-attribute-value');
+      assert.notExists(valueElement);
+
+      sinon.assert.calledOnce(linkifyStub);
+      const linkOptions = linkifyStub.firstCall.args[1] as PanelsCommon.DOMLinkifier.Options;
+      assert.strictEqual(linkOptions.textContent, 'popovertarget');
+    });
+
+    it('renders relation attribute with value and linkifies it', async () => {
+      const domTarget = document.createElement('div');
+      renderElementIntoDOM(domTarget);
+
+      const node = new SDK.DOMModel.DOMNode(domModel);
+      node.id = 1 as Protocol.DOM.NodeId;
+      sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
+      sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
+      sinon.stub(node, 'nodeName').returns('DIV');
+      sinon.stub(node, 'hasAttributes').returns(true);
+      sinon.stub(node, 'attributes').returns([{name: 'popovertarget',
+                                               value: 'targetNode'}] as SDK.DOMModel.Attribute[]);
+
+      const relatedNodeId = 2 as Protocol.DOM.NodeId;
+      const relatedNode = new SDK.DOMModel.DOMNode(domModel);
+      sinon.stub(domModel, 'getElementByRelation').resolves(relatedNodeId);
+      sinon.stub(domModel, 'nodeForId').withArgs(relatedNodeId).returns(relatedNode);
+
+      const fakeLink = html`<span>LINKIFIED_TARGET</span>`;
+      const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').returns(fakeLink);
+
+      Elements.ElementsTreeElement.DEFAULT_VIEW({
+        ...getBaseViewInput(),
+        node,
+      },
+                                                {}, domTarget);
+
+      await raf();  // Wait for directive to run
+
+      const attributeElement = domTarget.querySelector('.webkit-html-attribute');
+      assert.exists(attributeElement);
+
+      const valueElement = attributeElement.querySelector('.webkit-html-attribute-value');
+      assert.exists(valueElement);
+
+      // Wait for async linkify to finish rendering
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      assert.include(valueElement.textContent || '', 'LINKIFIED_TARGET');
+      sinon.assert.calledOnce(linkifyStub);
     });
   });
 

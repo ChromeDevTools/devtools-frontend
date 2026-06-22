@@ -60,6 +60,10 @@ export class CSSMetadata {
           continue;
         }
       }
+      const runtimeFlagStatus = property.runtime_flag_status;
+      if (Boolean(runtimeFlagStatus) && runtimeFlagStatus !== 'stable') {
+        continue;
+      }
       if (!CSS.supports(propertyName, 'initial')) {
         continue;
       }
@@ -1693,4 +1697,6 @@ export interface CSSPropertyDefinition {
   is_descriptor?: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   is_property?: boolean;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  runtime_flag_status?: string;
 }

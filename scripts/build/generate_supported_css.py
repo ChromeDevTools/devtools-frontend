@@ -20,12 +20,16 @@ GENERATED_LOCATION = path.join(ROOT_DIRECTORY, 'front_end', 'generated',
                                'SupportedCSSProperties.js')
 READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
                           'core', 'css', 'css_properties.json5')
+RUNTIME_FLAGS_READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink',
+                                        'renderer', 'platform',
+                                        'runtime_enabled_features.json5')
 
 
 def _keep_only_required_keys(entry):
     for key in list(entry.keys()):
         if key not in ("name", "longhands", "svg", "inherited", "keywords",
-                       "is_property", "is_descriptor"):
+                       "is_property", "is_descriptor", "runtime_flag",
+                       "runtime_flag_status"):
             del entry[key]
     return entry
 
@@ -33,6 +37,14 @@ def _keep_only_required_keys(entry):
 def properties_from_file(file_name):
     with open(file_name) as json5_file:
         doc = json5.loads(json5_file.read())
+    with open(RUNTIME_FLAGS_READ_LOCATION, 'r') as json5_file:
+        runtime_features_data = json5.loads(json5_file.read())
+
+    # Create a map for easy lookup of feature status
+    runtime_features_map = {
+        item['name']: item.get('status')
+        for item in runtime_features_data['data']
+    }
 
     properties = []
     property_names = {}
@@ -52,6 +64,10 @@ def properties_from_file(file_name):
         if "affected_by_all" not in entry or entry["affected_by_all"]:
             if not 'longhands' in entry:
                 affected_by_all.add(entry['name'])
+        if "runtime_flag" in entry and entry[
+                "runtime_flag"] in runtime_features_map:
+            status = runtime_features_map[entry["runtime_flag"]]
+            entry["runtime_flag_status"] = status
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
         if "keywords" in entry:

@@ -179,6 +179,16 @@
       milestone: 119,
     },
     {
+      name: "DigitalCredentialsUnknownProtocol",
+      message: "An unknown Digital Credentials protocol was requested in navigator.credentials.get() or create(). In a future release, unrecognized protocols will be blocked.",
+      translation_note: "Warning displayed to developers when an unknown protocol string is used in a call to navigator.credentials.get() or create() with the 'digital' option.",
+      web_features: [
+        "kDigitalCredentialsProtocolUnknown",
+      ],
+      chrome_status_feature: 6492906882990080,
+      milestone: 160,
+    },
+    {
       name: "DocumentCreateEventKeyboardEvents",
       message: "document.createEvent('KeyboardEvents') is deprecated and will be removed. Use `new KeyboardEvent()` instead.",
       translation_note: "Warning displayed to developers when document.createEvent() is called with 'KeyboardEvents', which is a non-standard event interface that will be removed.",

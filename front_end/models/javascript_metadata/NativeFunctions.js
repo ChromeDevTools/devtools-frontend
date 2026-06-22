@@ -1430,7 +1430,7 @@ export const NativeFunctions = [
   },
   {
     name: "add",
-    signatures: [["sub_apps_to_add"]],
+    signatures: [["install_paths"]],
     receivers: ["SubApps"]
   },
   {
@@ -2005,7 +2005,7 @@ export const NativeFunctions = [
   },
   {
     name: "remove",
-    signatures: [["app_ids"]],
+    signatures: [["manifest_ids"]],
     receivers: ["SubApps"]
   },
   {

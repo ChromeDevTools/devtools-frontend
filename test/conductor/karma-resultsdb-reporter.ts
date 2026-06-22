@@ -4,26 +4,21 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-// TODO: Fix this as they are extraneous dependencies
-// The type that get resolve are wrong, so keep the required
-import chalkImport from 'chalk';
+import {styleText} from 'node:util';
 
 import {formatAsHtml, formatDiff, resultAssertionsDiff} from './diff-utils.js';
 import * as ResultsDb from './resultsdb.js';
 import {ScreenshotError} from './screenshot-error.js';
 
-const chalk: any = chalkImport;
-
 export function formatAsPatch(assertionDiff: any) {
-  // We keep the console patch formatting here as it uses chalk
   const consoleDiffLines = Array.from(formatDiff(
       assertionDiff,
       (same: string) => ` ${same}`,
-      (actual: string) => chalk.green(`+${actual}`),
-      (expected: string) => chalk.red(`-${expected}`),
+      (actual: string) => styleText('green', `+${actual}`),
+      (expected: string) => styleText('red', `-${expected}`),
       ));
   if (consoleDiffLines.length > 0) {
-    return `${chalk.red('- expected')}\n${chalk.green('+ actual')}\n\n${consoleDiffLines.join('\n')}\n`;
+    return `${styleText('red', '- expected')}\n${styleText('green', '+ actual')}\n\n${consoleDiffLines.join('\n')}\n`;
   }
   return null;
 }

@@ -192,4 +192,106 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
     assertRequiresApproval(response);
     assert.exists(response.description);
   });
+
+  describe('timer cleanup', () => {
+    let clock: sinon.SinonFakeTimers;
+    beforeEach(() => {
+      clock = sinon.useFakeTimers({toFake: ['setTimeout', 'clearTimeout']});
+    });
+
+    afterEach(() => {
+      clock.restore();
+    });
+
+    it('clears the timeout after execution completes', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const mockExecJs = sinon.stub().resolves('{"success": true}');
+      const mockScope = {
+        install: sinon.stub().resolves(),
+        uninstall: sinon.stub().resolves(),
+      };
+
+      const context = {
+        conversationContext: null,
+        getExecutionContextNode: () => element,
+        execJs: mockExecJs,
+        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+        createExtensionScope: sinon.stub().returns(mockScope),
+      };
+
+      const response = await tool.handler({
+        explanation: 'Check element',
+        title: 'Title',
+        code: 'console.log("hello")',
+      },
+                                          context);
+
+      assertIsResult(response);
+      assert.strictEqual(clock.countTimers(), 0);
+    });
+
+    it('clears the timeout after execution throws an error', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const mockExecJs = sinon.stub().rejects(new Error('some execution error'));
+      const mockScope = {
+        install: sinon.stub().resolves(),
+        uninstall: sinon.stub().resolves(),
+      };
+
+      const context = {
+        conversationContext: null,
+        getExecutionContextNode: () => element,
+        execJs: mockExecJs,
+        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+        createExtensionScope: sinon.stub().returns(mockScope),
+      };
+
+      const response = await tool.handler({
+        explanation: 'Check element',
+        title: 'Title',
+        code: 'console.log("hello")',
+      },
+                                          context);
+
+      assertIsResult(response);
+      assert.strictEqual(clock.countTimers(), 0);
+    });
+
+    it('handles script timeout and returns error', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      let resolveMockPromise: (value: string) => void = () => {};
+      const mockPromise = new Promise<string>(resolve => {
+        resolveMockPromise = resolve;
+      });
+      const mockExecJs = sinon.stub().returns(mockPromise);
+      const mockScope = {
+        install: sinon.stub().resolves(),
+        uninstall: sinon.stub().resolves(),
+      };
+
+      const context = {
+        conversationContext: null,
+        getExecutionContextNode: () => element,
+        execJs: mockExecJs,
+        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+        createExtensionScope: sinon.stub().returns(mockScope),
+      };
+
+      const responsePromise = tool.handler({
+        explanation: 'Check element',
+        title: 'Title',
+        code: 'console.log("hello")',
+      },
+                                           context);
+
+      // Fast-forward time to trigger the timeout
+      await clock.tickAsync(5000);
+
+      const response = await responsePromise;
+      assertIsResult(response);
+      assert.strictEqual(response.result, 'Error: Script execution exceeded the maximum allowed time.');
+      assert.strictEqual(clock.countTimers(), 0);
+      resolveMockPromise('done');
+    });
+  });
 });

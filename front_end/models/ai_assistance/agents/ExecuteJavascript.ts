@@ -179,7 +179,11 @@ export class JavascriptExecutor {
     return error;
   }
 }`;
+    const timeoutSentinel = Symbol('timeout');
+    const {promise: timeoutPromise, resolve: resolveTimeout} = Promise.withResolvers<typeof timeoutSentinel>();
+    let timeoutId: ReturnType<typeof setTimeout>|undefined;
     try {
+      timeoutId = setTimeout(() => resolveTimeout(timeoutSentinel), OBSERVATION_TIMEOUT);
       const result = await Promise.race([
         this.#execJs(
             functionDeclaration,
@@ -188,11 +192,11 @@ export class JavascriptExecutor {
               contextNode: this.#options.getContextNode(),
             },
             ),
-        new Promise<never>((_, reject) => {
-          setTimeout(
-              () => reject(new Error('Script execution exceeded the maximum allowed time.')), OBSERVATION_TIMEOUT);
-        }),
+        timeoutPromise,
       ]);
+      if (result === timeoutSentinel) {
+        throw new Error('Script execution exceeded the maximum allowed time.');
+      }
       const byteCount = Platform.StringUtilities.countWtf8Bytes(result);
       Host.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
@@ -217,6 +221,11 @@ export class JavascriptExecutor {
         sideEffect: false,
         canceled: false,
       };
+    } finally {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+      resolveTimeout(timeoutSentinel);
     }
   }
 }

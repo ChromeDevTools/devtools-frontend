@@ -340,6 +340,7 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
             CodeMirror.EditorView.domEventHandlers({
                 blur: (_e, view) => this.#onBlur(view),
                 paste: () => this.#onPaste(),
+                drop: event => event.preventDefault(),
             }),
             TextEditor.Config.baseConfiguration(doc),
             TextEditor.Config.closeBrackets.instance(),

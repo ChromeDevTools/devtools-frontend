@@ -27,6 +27,7 @@ var __export2 = (target, all) => {
 var DetailedErrorStackParser_exports = {};
 __export2(DetailedErrorStackParser_exports, {
   augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
+  concatErrorDescriptionAndIssueSummary: () => concatErrorDescriptionAndIssueSummary,
   parseMessage: () => parseMessage,
   parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
 });
@@ -194,6 +195,13 @@ function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
   for (const rawFrame of rawFrames) {
     augmentFrame(rawFrame);
   }
+}
+function concatErrorDescriptionAndIssueSummary(description, issueSummary) {
+  const pos = description.indexOf("\n");
+  const prefix = pos === -1 ? description : description.substring(0, pos);
+  const suffix = pos === -1 ? "" : description.substring(pos);
+  description = `${prefix}. ${issueSummary}${suffix}`;
+  return description;
 }
 var StackTraceImpl_exports = {};
 __export2(StackTraceImpl_exports, {
@@ -3258,7 +3266,6 @@ import * as Common14 from "./../../core/common/common.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as StackTrace4 from "./../stack_trace/stack_trace.js";
 import * as Workspace17 from "./../workspace/workspace.js";
 
 // gen/front_end/models/bindings/DefaultScriptMapping.js
@@ -4083,7 +4090,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     ]);
     const issueSummary = fetchedExceptionDetails?.exceptionMetaData?.issueSummary;
     if (typeof issueSummary === "string") {
-      errorStack = StackTrace4.ErrorStackParser.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
+      errorStack = DetailedErrorStackParser_exports.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
     }
     if (!stackTrace) {
       return new UnparsableError(errorStack, cause);

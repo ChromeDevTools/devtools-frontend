@@ -210,6 +210,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.Sim
                 focus: () => this.onFocus(),
                 blur: () => this.onBlur(),
                 paste: () => this.onPaste(),
+                drop: event => event.preventDefault(),
                 scroll: () => this.dispatchEventToListeners("EditorScroll" /* Events.EDITOR_SCROLL */),
                 contextmenu: event => this.onContextMenu(event),
             }),

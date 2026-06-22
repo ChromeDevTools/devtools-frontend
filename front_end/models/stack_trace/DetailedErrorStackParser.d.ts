@@ -16,3 +16,13 @@ export declare function parseMessage(stack: string): string;
  * the parsed Error#stack with script IDs.
  */
 export declare function augmentRawFramesWithScriptIds(rawFrames: RawFrame[], protocolStackTrace: Protocol.Runtime.StackTrace): void;
+/**
+ * Combines the error description (essentially the `Error#stack` property value)
+ * with the `issueSummary`.
+ *
+ * @param description the `description` property of the `Error` remote object.
+ * @param issueSummary the optional `issueSummary` of the `exceptionMetaData`.
+ * @returns the enriched description.
+ * @see https://goo.gle/devtools-reduce-network-noise-design
+ */
+export declare function concatErrorDescriptionAndIssueSummary(description: string, issueSummary: string): string;

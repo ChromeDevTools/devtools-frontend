@@ -12620,54 +12620,75 @@ function renderLinkifiedValue(value5, node) {
     }
   });
 }
+var relationPromisesCache = /* @__PURE__ */ new WeakMap();
+var relatedElementsCache = /* @__PURE__ */ new WeakMap();
 function renderAttribute(attr, updateRecord, isDiff, node) {
   const name = attr.name;
   const value5 = attr.value || "";
   const forceValue = isDiff;
+  const isRelation = name === "popovertarget" || name === "interesttarget" || name === "commandfor";
   const hasText = forceValue || value5.length > 0;
-  const jslog = VisualLogging8.value(name === "style" ? "style-attribute" : "attribute").track({
-    change: true,
-    dblclick: true
-  });
-  const relationRef = (relation, tooltip) => ref2((el) => {
-    if (!el) {
-      return;
-    }
-    void (async () => {
-      const relatedElementId = await node.domModel().getElementByRelation(node.id, relation);
-      const relatedElement = node.domModel().nodeForId(relatedElementId);
-      if (!relatedElement) {
-        return;
-      }
-      const link2 = PanelsCommon3.DOMLinkifier.Linkifier.instance().linkify(relatedElement, {
-        preventKeyboardFocus: true,
-        tooltip,
-        textContent: el.textContent || void 0,
-        isDynamicLink: true
-      });
-      render8(link2, el);
-    })();
-  });
-  let relationRefDirective = ref2(() => {
-  });
-  if (!value5) {
+  const linkifyName = isRelation && value5.length === 0;
+  const linkifyValue = isRelation && value5.length > 0;
+  let relation = void 0;
+  let tooltip = "";
+  if (isRelation) {
     if (name === "popovertarget") {
-      relationRefDirective = relationRef("PopoverTarget", i18nString10(UIStrings11.showPopoverTarget));
+      relation = "PopoverTarget";
+      tooltip = i18nString10(UIStrings11.showPopoverTarget);
     } else if (name === "interesttarget") {
-      relationRefDirective = relationRef("InterestTarget", i18nString10(UIStrings11.showInterestTarget));
+      relation = "InterestTarget";
+      tooltip = i18nString10(UIStrings11.showInterestTarget);
     } else if (name === "commandfor") {
-      relationRefDirective = relationRef("CommandFor", i18nString10(UIStrings11.showCommandForTarget));
+      relation = "CommandFor";
+      tooltip = i18nString10(UIStrings11.showCommandForTarget);
     }
   }
-  let valueRelationRefDirective = ref2(() => {
-  });
-  if (value5) {
-    if (name === "popovertarget") {
-      valueRelationRefDirective = relationRef("PopoverTarget", i18nString10(UIStrings11.showPopoverTarget));
-    } else if (name === "interesttarget") {
-      valueRelationRefDirective = relationRef("InterestTarget", i18nString10(UIStrings11.showInterestTarget));
-    } else if (name === "commandfor") {
-      valueRelationRefDirective = relationRef("CommandFor", i18nString10(UIStrings11.showCommandForTarget));
+  let relationPromise = void 0;
+  if (isRelation && relation) {
+    let nodeCache = relationPromisesCache.get(node);
+    if (!nodeCache) {
+      nodeCache = /* @__PURE__ */ new Map();
+      relationPromisesCache.set(node, nodeCache);
+    }
+    const cacheKey = `${relation}:${value5}`;
+    relationPromise = nodeCache.get(cacheKey);
+    const relationType = relation;
+    if (!relationPromise) {
+      relationPromise = (async () => {
+        try {
+          const relatedElementId = await node.domModel().getElementByRelation(node.id, relationType);
+          const relatedElement = node.domModel().nodeForId(relatedElementId);
+          let elemCache = relatedElementsCache.get(node);
+          if (!elemCache) {
+            elemCache = /* @__PURE__ */ new Map();
+            relatedElementsCache.set(node, elemCache);
+          }
+          elemCache.set(`${name}:${value5}`, relatedElement || null);
+          const isNameLinking = value5.length === 0;
+          const fallback = isNameLinking ? name : value5;
+          if (!relatedElement) {
+            return fallback;
+          }
+          const linkOptions = {
+            preventKeyboardFocus: true,
+            tooltip,
+            isDynamicLink: true
+          };
+          if (isNameLinking) {
+            linkOptions.textContent = name;
+          } else {
+            const targetId = relatedElement.getAttribute("id");
+            if (targetId) {
+              linkOptions.textContent = targetId;
+            }
+          }
+          return PanelsCommon3.DOMLinkifier.Linkifier.instance().linkify(relatedElement, linkOptions);
+        } catch {
+          return value5.length === 0 ? name : value5;
+        }
+      })();
+      nodeCache.set(cacheKey, relationPromise);
     }
   }
   const nodeName = node ? node.nodeName().toLowerCase() : "";
@@ -12679,15 +12700,20 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
   } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
     valueType = 2;
   }
-  const withEntitiesRef = valueType === 0 ? ref2((el) => {
+  const withEntitiesRef = valueType === 0 && !isRelation ? ref2((el) => {
     if (el) {
       setValueWithEntities(el, value5);
     }
   }) : nothing4;
+  const jslog = VisualLogging8.value(name === "style" ? "style-attribute" : "attribute").track({
+    change: true,
+    dblclick: true
+  });
   return html10`<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html10`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? Lit6.Directives.until(relationPromise, name) : name}</span>${hasText ? html10`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
                         ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing4}
                         ${valueType === 2 ? renderLinkifiedSrcset(Common8.Srcset.parseSrcset(value5), node) : nothing4}
+                        ${linkifyValue && relationPromise ? Lit6.Directives.until(relationPromise, value5) : nothing4}
                 </span>"` : nothing4}</span>`;
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
@@ -14034,7 +14060,15 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         removeZeroWidthSpaceRecursive(child);
       }
     }
-    const attributeValue = attributeName && attributeValueElement ? this.nodeInternal.getAttribute(attributeName)?.replaceAll('"', "&quot;") : void 0;
+    let attributeValue = attributeName && attributeValueElement ? this.nodeInternal.getAttribute(attributeName)?.replaceAll('"', "&quot;") : void 0;
+    const isRelation = attributeName === "popovertarget" || attributeName === "interesttarget" || attributeName === "commandfor";
+    if (isRelation && attributeName && attributeValueElement) {
+      const rawValue = this.nodeInternal.getAttribute(attributeName) || "";
+      const relatedElement = relatedElementsCache.get(this.nodeInternal)?.get(`${attributeName}:${rawValue}`);
+      if (relatedElement) {
+        attributeValue = relatedElement.getAttribute("id") || "";
+      }
+    }
     if (attributeValue !== void 0) {
       attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue, i18nString10(UIStrings11.valueIsTooLargeToEdit));
     }

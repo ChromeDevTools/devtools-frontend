@@ -48,6 +48,10 @@ export declare const UIStrings: {
      */
     readonly DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.";
     /**
+     * @description Warning displayed to developers when an unknown protocol string is used in a call to navigator.credentials.get() or create() with the 'digital' option.
+     */
+    readonly DigitalCredentialsUnknownProtocol: "An unknown Digital Credentials protocol was requested in navigator.credentials.get() or create(). In a future release, unrecognized protocols will be blocked.";
+    /**
      * @description Warning displayed to developers when document.createEvent() is called with 'KeyboardEvents', which is a non-standard event interface that will be removed.
      */
     readonly DocumentCreateEventKeyboardEvents: "document.createEvent('KeyboardEvents') is deprecated and will be removed. Use `new KeyboardEvent()` instead.";

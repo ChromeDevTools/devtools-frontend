@@ -587,56 +587,79 @@ function renderLinkifiedValue(value, node) {
         }
     });
 }
+const relationPromisesCache = new WeakMap();
+const relatedElementsCache = new WeakMap();
 function renderAttribute(attr, updateRecord, isDiff, node) {
     const name = attr.name;
     const value = attr.value || '';
     const forceValue = isDiff;
+    const isRelation = name === 'popovertarget' || name === 'interesttarget' || name === 'commandfor';
     const hasText = (forceValue || value.length > 0);
-    const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
-        change: true,
-        dblclick: true,
-    });
-    const relationRef = (relation, tooltip) => ref((el) => {
-        if (!el) {
-            return;
-        }
-        void (async () => {
-            const relatedElementId = await node.domModel().getElementByRelation(node.id, relation);
-            const relatedElement = node.domModel().nodeForId(relatedElementId);
-            if (!relatedElement) {
-                return;
-            }
-            const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedElement, {
-                preventKeyboardFocus: true,
-                tooltip,
-                textContent: el.textContent || undefined,
-                isDynamicLink: true,
-            });
-            render(link, el);
-        })();
-    });
-    let relationRefDirective = ref(() => { });
-    if (!value) {
+    const linkifyName = isRelation && value.length === 0;
+    const linkifyValue = isRelation && value.length > 0;
+    let relation = undefined;
+    let tooltip = '';
+    if (isRelation) {
         if (name === 'popovertarget') {
-            relationRefDirective = relationRef("PopoverTarget" /* Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget */, i18nString(UIStrings.showPopoverTarget));
+            relation = "PopoverTarget" /* Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget */;
+            tooltip = i18nString(UIStrings.showPopoverTarget);
         }
         else if (name === 'interesttarget') {
-            relationRefDirective = relationRef("InterestTarget" /* Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget */, i18nString(UIStrings.showInterestTarget));
+            relation = "InterestTarget" /* Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget */;
+            tooltip = i18nString(UIStrings.showInterestTarget);
         }
         else if (name === 'commandfor') {
-            relationRefDirective = relationRef("CommandFor" /* Protocol.DOM.GetElementByRelationRequestRelation.CommandFor */, i18nString(UIStrings.showCommandForTarget));
+            relation = "CommandFor" /* Protocol.DOM.GetElementByRelationRequestRelation.CommandFor */;
+            tooltip = i18nString(UIStrings.showCommandForTarget);
         }
     }
-    let valueRelationRefDirective = ref(() => { });
-    if (value) {
-        if (name === 'popovertarget') {
-            valueRelationRefDirective = relationRef("PopoverTarget" /* Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget */, i18nString(UIStrings.showPopoverTarget));
+    let relationPromise = undefined;
+    if (isRelation && relation) {
+        let nodeCache = relationPromisesCache.get(node);
+        if (!nodeCache) {
+            nodeCache = new Map();
+            relationPromisesCache.set(node, nodeCache);
         }
-        else if (name === 'interesttarget') {
-            valueRelationRefDirective = relationRef("InterestTarget" /* Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget */, i18nString(UIStrings.showInterestTarget));
-        }
-        else if (name === 'commandfor') {
-            valueRelationRefDirective = relationRef("CommandFor" /* Protocol.DOM.GetElementByRelationRequestRelation.CommandFor */, i18nString(UIStrings.showCommandForTarget));
+        const cacheKey = `${relation}:${value}`;
+        relationPromise = nodeCache.get(cacheKey);
+        const relationType = relation;
+        if (!relationPromise) {
+            relationPromise = (async () => {
+                try {
+                    const relatedElementId = await node.domModel().getElementByRelation(node.id, relationType);
+                    const relatedElement = node.domModel().nodeForId(relatedElementId);
+                    let elemCache = relatedElementsCache.get(node);
+                    if (!elemCache) {
+                        elemCache = new Map();
+                        relatedElementsCache.set(node, elemCache);
+                    }
+                    elemCache.set(`${name}:${value}`, relatedElement || null);
+                    const isNameLinking = value.length === 0;
+                    const fallback = isNameLinking ? name : value;
+                    if (!relatedElement) {
+                        return fallback;
+                    }
+                    const linkOptions = {
+                        preventKeyboardFocus: true,
+                        tooltip,
+                        isDynamicLink: true,
+                    };
+                    if (isNameLinking) {
+                        linkOptions.textContent = name;
+                    }
+                    else {
+                        const targetId = relatedElement.getAttribute('id');
+                        if (targetId) {
+                            linkOptions.textContent = targetId;
+                        }
+                    }
+                    return PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(relatedElement, linkOptions);
+                }
+                catch {
+                    return value.length === 0 ? name : value;
+                }
+            })();
+            nodeCache.set(cacheKey, relationPromise);
         }
     }
     const nodeName = node ? node.nodeName().toLowerCase() : '';
@@ -650,20 +673,24 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
     else if (nodeName === 'image' && (name === 'xlink:href' || name === 'href')) {
         valueType = 2 /* ValueType.SRCSET */;
     }
-    const withEntitiesRef = valueType === 0 /* ValueType.UNKNOWN */ ? ref(el => {
+    const withEntitiesRef = (valueType === 0 /* ValueType.UNKNOWN */ && !isRelation) ? ref(el => {
         if (el) {
             setValueWithEntities(el, value);
         }
     }) :
         nothing;
-    // clang-format off
+    const jslog = VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
+        change: true,
+        dblclick: true,
+    });
     return html `<span class="webkit-html-attribute" jslog=${jslog}><span class="webkit-html-attribute-name"
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${relationRefDirective}>${name}</span>${hasText ? html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${valueRelationRefDirective} ${withEntitiesRef}>
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? Lit.Directives.until(relationPromise, name) : name}</span>${hasText ?
+        html `=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
                         ${valueType === 1 /* ValueType.SRC */ ? renderLinkifiedValue(value, node) : nothing}
                         ${valueType === 2 /* ValueType.SRCSET */ ? renderLinkifiedSrcset(Common.Srcset.parseSrcset(value), node) : nothing}
+                        ${linkifyValue && relationPromise ? Lit.Directives.until(relationPromise, value) : nothing}
                 </span>"` :
         nothing}</span>`;
-    // clang-format on
 }
 function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement, updateRecord) {
     const classMap = {
@@ -2037,9 +2064,17 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
                 removeZeroWidthSpaceRecursive(child);
             }
         }
-        const attributeValue = attributeName && attributeValueElement ?
+        let attributeValue = attributeName && attributeValueElement ?
             this.nodeInternal.getAttribute(attributeName)?.replaceAll('"', '&quot;') :
             undefined;
+        const isRelation = attributeName === 'popovertarget' || attributeName === 'interesttarget' || attributeName === 'commandfor';
+        if (isRelation && attributeName && attributeValueElement) {
+            const rawValue = this.nodeInternal.getAttribute(attributeName) || '';
+            const relatedElement = relatedElementsCache.get(this.nodeInternal)?.get(`${attributeName}:${rawValue}`);
+            if (relatedElement) {
+                attributeValue = relatedElement.getAttribute('id') || '';
+            }
+        }
         if (attributeValue !== undefined) {
             attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue, i18nString(UIStrings.valueIsTooLargeToEdit));
         }

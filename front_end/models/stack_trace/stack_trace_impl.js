@@ -8,6 +8,7 @@ var __export = (target, all) => {
 var DetailedErrorStackParser_exports = {};
 __export(DetailedErrorStackParser_exports, {
   augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
+  concatErrorDescriptionAndIssueSummary: () => concatErrorDescriptionAndIssueSummary,
   parseMessage: () => parseMessage,
   parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
 });
@@ -176,6 +177,13 @@ function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
   for (const rawFrame of rawFrames) {
     augmentFrame(rawFrame);
   }
+}
+function concatErrorDescriptionAndIssueSummary(description, issueSummary) {
+  const pos = description.indexOf("\n");
+  const prefix = pos === -1 ? description : description.substring(0, pos);
+  const suffix = pos === -1 ? "" : description.substring(pos);
+  description = `${prefix}. ${issueSummary}${suffix}`;
+  return description;
 }
 
 // gen/front_end/models/stack_trace/StackTraceImpl.js

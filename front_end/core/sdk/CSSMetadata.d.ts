@@ -81,4 +81,6 @@ export interface CSSPropertyDefinition {
     longhands: string[] | null;
     inherited: boolean | null;
     svg: boolean | null;
+    is_descriptor?: boolean;
+    is_property?: boolean;
 }

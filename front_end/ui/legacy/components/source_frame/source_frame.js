@@ -268,6 +268,7 @@ var SourceFrameImpl = class extends Common.ObjectWrapper.eventMixin(UI.View.Simp
         focus: () => this.onFocus(),
         blur: () => this.onBlur(),
         paste: () => this.onPaste(),
+        drop: (event) => event.preventDefault(),
         scroll: () => this.dispatchEventToListeners(
           "EditorScroll"
           /* Events.EDITOR_SCROLL */

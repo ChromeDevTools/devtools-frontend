@@ -189,4 +189,21 @@ export function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
         augmentFrame(rawFrame);
     }
 }
+/**
+ * Combines the error description (essentially the `Error#stack` property value)
+ * with the `issueSummary`.
+ *
+ * @param description the `description` property of the `Error` remote object.
+ * @param issueSummary the optional `issueSummary` of the `exceptionMetaData`.
+ * @returns the enriched description.
+ * @see https://goo.gle/devtools-reduce-network-noise-design
+ */
+export function concatErrorDescriptionAndIssueSummary(description, issueSummary) {
+    // Insert the issue summary right after the error message.
+    const pos = description.indexOf('\n');
+    const prefix = pos === -1 ? description : description.substring(0, pos);
+    const suffix = pos === -1 ? '' : description.substring(pos);
+    description = `${prefix}. ${issueSummary}${suffix}`;
+    return description;
+}
 //# sourceMappingURL=DetailedErrorStackParser.js.map

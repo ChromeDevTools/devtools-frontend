@@ -9080,6 +9080,11 @@ var CSSMetadata = class _CSSMetadata {
     for (let i = 0; i < properties.length; ++i) {
       const property = properties[i];
       const propertyName = property.name;
+      if ("is_descriptor" in property && "is_property" in property) {
+        if (property.is_descriptor && !property.is_property) {
+          continue;
+        }
+      }
       if (!CSS.supports(propertyName, "initial")) {
         continue;
       }
@@ -9119,6 +9124,15 @@ var CSSMetadata = class _CSSMetadata {
       }
     }
     for (const [propertyName, values] of propertyValueSets) {
+      const aliasFor = this.#aliasesFor.get(propertyName);
+      if (aliasFor) {
+        const aliasForValues = propertyValueSets.get(aliasFor);
+        if (aliasForValues) {
+          for (const val of aliasForValues) {
+            values.add(val);
+          }
+        }
+      }
       for (const commonKeyword of CommonKeywords) {
         if (!values.has(commonKeyword) && CSS.supports(propertyName, commonKeyword)) {
           values.add(commonKeyword);

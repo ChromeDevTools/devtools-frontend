@@ -650,3 +650,42 @@ describeWithEnvironment('ContentProviderContextMenuProvider', () => {
     assert.isUndefined(openInNewTabItem);
   });
 });
+
+describeWithEnvironment('LinkHandlerSettingUI', () => {
+  let registrations: Components.Linkifier.LinkHandlerRegistration[] = [];
+
+  afterEach(() => {
+    for (const registration of registrations) {
+      Components.Linkifier.Linkifier.unregisterLinkHandler(registration);
+    }
+    registrations = [];
+  });
+
+  function registerHandler(registration: Components.Linkifier.LinkHandlerRegistration): void {
+    Components.Linkifier.Linkifier.registerLinkHandler(registration);
+    registrations.push(registration);
+  }
+
+  it('displays the title of the registered link handlers', () => {
+    const origin = urlString`chrome-extension://test-origin`;
+    const title = 'Test Link Handler';
+    const registration: Components.Linkifier.LinkHandlerRegistration = {
+      title,
+      origin,
+      handler: () => {},
+      shouldHandleOpenResource: () => true,
+    };
+
+    registerHandler(registration);
+
+    const ui = Components.Linkifier.LinkHandlerSettingUI.instance({forceNew: true});
+    const element = ui.settingElement();
+    const select = element.querySelector('select') as HTMLSelectElement;
+    assert.exists(select);
+
+    const options = Array.from(select.options);
+    const testOption = options.find(option => option.value === origin);
+    assert.exists(testOption);
+    assert.strictEqual(testOption.text, title);
+  });
+});

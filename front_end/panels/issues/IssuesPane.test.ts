@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';

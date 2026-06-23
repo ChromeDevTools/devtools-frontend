@@ -304,10 +304,7 @@ def main():
     if opts.test_only:
         tsconfig['compilerOptions']['types'] += [
             "mocha",
-            "sinon",
         ]
-        # Required for sinon global access.
-        tsconfig['compilerOptions']['allowUmdGlobalAccess'] = True
 
     if runs_in_node_cjs_environment:
         tsconfig['compilerOptions']['module'] = 'nodenext'

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as UI from '../../../front_end/ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';

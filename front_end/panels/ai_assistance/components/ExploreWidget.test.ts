@@ -4,6 +4,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';

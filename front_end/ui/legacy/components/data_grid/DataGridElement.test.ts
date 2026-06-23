@@ -5,6 +5,7 @@
 import './data_grid.js';
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
@@ -40,7 +41,7 @@ describeWithEnvironment('DataGrid', () => {
   function getAlertAnnouncement(element: HTMLElement): string[] {
     element.blur();
     element.focus();
-    return liveAnnouncerAlertStub.args.map(arg => arg[0]);
+    return liveAnnouncerAlertStub.args.map((arg: string[]) => arg[0]);
   }
 
   beforeEach(() => {

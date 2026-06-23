@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 import type {JSONSchema7} from 'json-schema';
+import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {getVeId} from '../../testing/VisualLoggingHelpers.js';
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';

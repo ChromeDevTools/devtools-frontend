@@ -1,7 +1,6 @@
 {
   "extends": "../config/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "allowUmdGlobalAccess": true,
     "outDir": "ignored",
     "rootDir": ".",
     "target": "ES2023",
@@ -28,7 +27,7 @@
         }
       }
     ],
-    "types": ["mocha", "sinon"]
+    "types": ["mocha"]
   },
   "exclude": ["devtools_compatibility.js"],
   "references": [{ "path": "./tsconfig.compatibility.json" }]

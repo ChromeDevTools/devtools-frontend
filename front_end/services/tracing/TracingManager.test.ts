@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import type * as Trace from '../../models/trace/trace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';

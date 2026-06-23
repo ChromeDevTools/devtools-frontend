@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -10,6 +11,7 @@ import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import * as Root from '../root/root.js';
 
 import * as Host from './host.js';
+import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './InspectorFrontendHostAPI.js';
 
 describe('GdpClient', () => {
   setupLocaleHooks();
@@ -29,7 +31,7 @@ describe('GdpClient', () => {
 
     dispatchHttpRequestStub =
         sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-            .callsFake((_, cb) => {
+            .callsFake((_: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
               cb({
                 response: JSON.stringify({name: 'profiles/id'}),
                 statusCode: 200,
@@ -39,12 +41,13 @@ describe('GdpClient', () => {
   });
 
   it('should cache requests to getProfile when profile exists', async () => {
-    dispatchHttpRequestStub.callsFake((_, cb) => {
-      cb({
-        response: JSON.stringify({name: 'profiles/id'}),
-        statusCode: 200,
-      });
-    });
+    dispatchHttpRequestStub.callsFake(
+        (_: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+          cb({
+            response: JSON.stringify({name: 'profiles/id'}),
+            statusCode: 200,
+          });
+        });
     await Host.GdpClient.GdpClient.instance().getProfile();
     await Host.GdpClient.GdpClient.instance().getProfile();
 
@@ -52,18 +55,19 @@ describe('GdpClient', () => {
   });
 
   it('should cache requests in getProfile when profile doesn\'t exist', async () => {
-    dispatchHttpRequestStub.callsFake((request, cb) => {
-      if (request.path === '/v1beta1/profile:get') {
-        cb({statusCode: 404, error: ''});
-        return;
-      }
-      cb({
-        response: JSON.stringify({
-          createProfile: Host.GdpClient.EligibilityStatus.ELIGIBLE,
-        }),
-        statusCode: 200,
-      });
-    });
+    dispatchHttpRequestStub.callsFake(
+        (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+          if (request.path === '/v1beta1/profile:get') {
+            cb({statusCode: 404, error: ''});
+            return;
+          }
+          cb({
+            response: JSON.stringify({
+              createProfile: Host.GdpClient.EligibilityStatus.ELIGIBLE,
+            }),
+            statusCode: 200,
+          });
+        });
     await Host.GdpClient.GdpClient.instance().getProfile();
     await Host.GdpClient.GdpClient.instance().getProfile();
 
@@ -71,12 +75,13 @@ describe('GdpClient', () => {
   });
 
   it('should clear cache after creating a profile', async () => {
-    dispatchHttpRequestStub.callsFake((_, cb) => {
-      cb({
-        error: '',
-        statusCode: 404,
-      });
-    });
+    dispatchHttpRequestStub.callsFake(
+        (_: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+          cb({
+            error: '',
+            statusCode: 404,
+          });
+        });
     await Host.GdpClient.GdpClient.instance().getProfile();
     await Host.GdpClient.GdpClient.instance().createProfile(
         {user: 'test', emailPreference: Host.GdpClient.EmailPreference.ENABLED});
@@ -87,16 +92,17 @@ describe('GdpClient', () => {
   });
 
   it('`getAwardedBadgeNames` should normalize the badge names', async () => {
-    dispatchHttpRequestStub.callsFake((_, cb) => {
-      cb({
-        response: JSON.stringify({
-          awards: [{
-            name: '/profiles/some-obfuscated-id/awards/some-badge',
-          }],
-        }),
-        statusCode: 200,
-      });
-    });
+    dispatchHttpRequestStub.callsFake(
+        (_: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+          cb({
+            response: JSON.stringify({
+              awards: [{
+                name: '/profiles/some-obfuscated-id/awards/some-badge',
+              }],
+            }),
+            statusCode: 200,
+          });
+        });
     const result = await Host.GdpClient.GdpClient.instance().getAwardedBadgeNames({names: []});
     assert.deepEqual(result, new Set(['/profiles/me/awards/some-badge']));
   });
@@ -118,12 +124,13 @@ describe('GdpClient', () => {
 
   describe('getProfile', () => {
     it('should return null when there is an HTTP_RESPONSE_UNAVAILABLE error in the getProfile request', async () => {
-      dispatchHttpRequestStub.callsFake((request, cb) => {
-        if (request.path === '/v1beta1/profile:get') {
-          cb({statusCode: 503, error: ''});
-          return;
-        }
-      });
+      dispatchHttpRequestStub.callsFake(
+          (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+            if (request.path === '/v1beta1/profile:get') {
+              cb({statusCode: 503, error: ''});
+              return;
+            }
+          });
       const result = await Host.GdpClient.GdpClient.instance().getProfile();
 
       assert.isNull(result);
@@ -131,25 +138,27 @@ describe('GdpClient', () => {
     });
 
     it('should return null when the endpoint returns non-parseable response', async () => {
-      dispatchHttpRequestStub.callsFake((_, cb) => {
-        cb({
-          statusCode: 200,
-          response: 'this is not a json',
-        });
-      });
+      dispatchHttpRequestStub.callsFake(
+          (_: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+            cb({
+              statusCode: 200,
+              response: 'this is not a json',
+            });
+          });
       const result = await Host.GdpClient.GdpClient.instance().getProfile();
       assert.isNull(result);
     });
 
     it('should return null when there isn\'t a profile and checkEligibility call returned an error', async () => {
-      dispatchHttpRequestStub.callsFake((request, cb) => {
-        if (request.path === '/v1beta1/profile:get') {
-          cb({statusCode: 404, error: ''});
-          return;
-        }
+      dispatchHttpRequestStub.callsFake(
+          (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+            if (request.path === '/v1beta1/profile:get') {
+              cb({statusCode: 404, error: ''});
+              return;
+            }
 
-        cb({statusCode: 503, error: ''});
-      });
+            cb({statusCode: 503, error: ''});
+          });
       const result = await Host.GdpClient.GdpClient.instance().getProfile();
 
       assert.isNull(result);
@@ -157,12 +166,13 @@ describe('GdpClient', () => {
     });
 
     it('should return profile and isEligible if a profile exists without calling checkEligibility', async () => {
-      dispatchHttpRequestStub.callsFake((request, cb) => {
-        if (request.path === '/v1beta1/profile:get') {
-          cb({statusCode: 200, response: JSON.stringify({name: 'test/profile-id'})});
-          return;
-        }
-      });
+      dispatchHttpRequestStub.callsFake(
+          (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+            if (request.path === '/v1beta1/profile:get') {
+              cb({statusCode: 200, response: JSON.stringify({name: 'test/profile-id'})});
+              return;
+            }
+          });
       const result = await Host.GdpClient.GdpClient.instance().getProfile();
 
       assert.deepEqual(result, {
@@ -173,18 +183,19 @@ describe('GdpClient', () => {
     });
 
     it('should check eligibility if no profile exists', async () => {
-      dispatchHttpRequestStub.callsFake((request, cb) => {
-        if (request.path === '/v1beta1/profile:get') {
-          cb({statusCode: 404, error: ''});
-          return;
-        }
-        cb({
-          response: JSON.stringify({
-            createProfile: Host.GdpClient.EligibilityStatus.ELIGIBLE,
-          }),
-          statusCode: 200,
-        });
-      });
+      dispatchHttpRequestStub.callsFake(
+          (request: DispatchHttpRequestRequest, cb: (result: DispatchHttpRequestResult) => void) => {
+            if (request.path === '/v1beta1/profile:get') {
+              cb({statusCode: 404, error: ''});
+              return;
+            }
+            cb({
+              response: JSON.stringify({
+                createProfile: Host.GdpClient.EligibilityStatus.ELIGIBLE,
+              }),
+              statusCode: 200,
+            });
+          });
 
       const result = await Host.GdpClient.GdpClient.instance({forceNew: true}).getProfile();
 

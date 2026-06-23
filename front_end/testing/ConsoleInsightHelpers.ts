@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import sinon from 'sinon';
+
 import * as Host from '../core/host/host.js';
 import * as Console from '../panels/console/console.js';
 import * as Explain from '../panels/explain/explain.js';

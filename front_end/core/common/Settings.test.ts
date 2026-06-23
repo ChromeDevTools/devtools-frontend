@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Common from './common.js';
 
@@ -223,7 +224,7 @@ describe('Settings instance', () => {
 
     setting.set('new value');
 
-    sinon.assert.calledOnceWithMatch(changeStub, sinon.match(event => {
+    sinon.assert.calledOnceWithMatch(changeStub, sinon.match((event: Common.EventTarget.EventTargetEvent<string>) => {
       return event.data === 'new value';
     }));
   });

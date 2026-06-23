@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';

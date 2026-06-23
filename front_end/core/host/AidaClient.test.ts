@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {
   restoreUserAgentForTesting,
   setUserAgentForTesting,
-  updateHostConfig
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
@@ -35,11 +36,14 @@ describe('AidaClient', () => {
       aidaAvailability: {
         disallowLogging: false,
       },
-      devToolsConsoleInsights: {}
+      devToolsConsoleInsights: {},
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
       functionality_type: 2,
@@ -62,7 +66,10 @@ describe('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       options: {
         temperature: 0.5,
@@ -88,7 +95,10 @@ describe('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       options: {
         temperature: 0,
@@ -114,7 +124,10 @@ describe('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
       functionality_type: 2,
@@ -138,7 +151,10 @@ describe('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       options: {
         model_id: TEST_MODEL_ID,
@@ -166,7 +182,10 @@ describe('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       options: {
         temperature: 0.5,
@@ -192,7 +211,10 @@ describe('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
-      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      current_message: {
+        parts: [{text: 'foo'}],
+        role: Host.AidaClient.Role.USER,
+      },
       client: 'CHROME_DEVTOOLS',
       metadata: {
         disable_user_content_logging: true,
@@ -206,17 +228,24 @@ describe('AidaClient', () => {
     });
   });
 
-  async function getAllResults(provider: Host.AidaClient.AidaClient):
-      Promise<Host.AidaClient.DoConversationResponse[]> {
+  async function getAllResults(
+      provider: Host.AidaClient.AidaClient,
+      ): Promise<Host.AidaClient.DoConversationResponse[]> {
     const results = [];
-    for await (const result of provider.doConversation(Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'))) {
+    for await (const result of provider.doConversation(
+        Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'),
+        )) {
       results.push(result);
     }
     return results;
   }
 
   it('handles chunked response', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
@@ -228,7 +257,10 @@ describe('AidaClient', () => {
           let first = true;
           for (const chunk of response.split(',{')) {
             await new Promise(resolve => setTimeout(resolve, 0));
-            Host.ResourceLoader.streamWrite(streamId, first ? chunk : ',{' + chunk);
+            Host.ResourceLoader.streamWrite(
+                streamId,
+                first ? chunk : ',{' + chunk,
+            );
             first = false;
           }
           callback({statusCode: 200, response: ''});
@@ -262,11 +294,22 @@ describe('AidaClient', () => {
   });
 
   it('handles single square bracket as a chunk', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
-          const response = ['[', JSON.stringify({textChunk: {text: 'hello world'}, metadata: {rpcGlobalId: 123}}), ']'];
+          const response = [
+            '[',
+            JSON.stringify({
+              textChunk: {text: 'hello world'},
+              metadata: {rpcGlobalId: 123},
+            }),
+            ']',
+          ];
           for (const chunk of response) {
             await new Promise(resolve => setTimeout(resolve, 0));
             Host.ResourceLoader.streamWrite(streamId, chunk);
@@ -292,29 +335,65 @@ describe('AidaClient', () => {
   });
 
   it('handles chunked response with multiple objects per chunk', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
           const response = JSON.stringify([
-            {textChunk: {text: 'Friends, Romans, countrymen, lend me your ears;\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'I come to bury Caesar, not to praise him.\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'The evil that men do lives after them;\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'The good is oft interred with their bones;\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'So let it be with Caesar. The noble Brutus\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'Hath told you Caesar was ambitious:\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'If it were so, it was a grievous fault,\n'}, metadata: {rpcGlobalId: 123}},
-            {textChunk: {text: 'And grievously hath Caesar answer’d it.\n'}, metadata: {rpcGlobalId: 123}},
+            {
+              textChunk: {
+                text: 'Friends, Romans, countrymen, lend me your ears;\n',
+              },
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'I come to bury Caesar, not to praise him.\n'},
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'The evil that men do lives after them;\n'},
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'The good is oft interred with their bones;\n'},
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'So let it be with Caesar. The noble Brutus\n'},
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'Hath told you Caesar was ambitious:\n'},
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'If it were so, it was a grievous fault,\n'},
+              metadata: {rpcGlobalId: 123},
+            },
+            {
+              textChunk: {text: 'And grievously hath Caesar answer’d it.\n'},
+              metadata: {rpcGlobalId: 123},
+            },
           ]);
           const chunks = response.split(',{');
           await new Promise(resolve => setTimeout(resolve, 0));
           Host.ResourceLoader.streamWrite(streamId, chunks[0] + ',{' + chunks[1]);
           await new Promise(resolve => setTimeout(resolve, 0));
-          Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[2] + ',{' + chunks[3] + ',{' + chunks[4]);
+          Host.ResourceLoader.streamWrite(
+              streamId,
+              ',{' + chunks[2] + ',{' + chunks[3] + ',{' + chunks[4],
+          );
           await new Promise(resolve => setTimeout(resolve, 0));
           Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[5]);
           await new Promise(resolve => setTimeout(resolve, 0));
-          Host.ResourceLoader.streamWrite(streamId, ',{' + chunks[6] + ',{' + chunks[7]);
+          Host.ResourceLoader.streamWrite(
+              streamId,
+              ',{' + chunks[6] + ',{' + chunks[7],
+          );
           callback({statusCode: 200, response: ''});
         });
 
@@ -375,7 +454,11 @@ describe('AidaClient', () => {
   });
 
   it('handles attributionMetadata', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
@@ -388,8 +471,12 @@ describe('AidaClient', () => {
               textChunk: {text: 'Chunk2\n'},
               metadata: {
                 rpcGlobalId: 123,
-                attributionMetadata:
-                    {attributionAction: 'CITE', citations: [{startIndex: 0, endIndex: 1, uri: 'https://example.com'}]},
+                attributionMetadata: {
+                  attributionAction: 'CITE',
+                  citations: [
+                    {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
+                  ],
+                },
               },
             },
           ]);
@@ -410,7 +497,9 @@ describe('AidaClient', () => {
           rpcGlobalId: 123,
           attributionMetadata: {
             attributionAction: Host.AidaClient.RecitationAction.CITE,
-            citations: [{startIndex: 0, endIndex: 1, uri: 'https://example.com'}],
+            citations: [
+              {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
+            ],
           },
         },
         completed: false,
@@ -422,7 +511,9 @@ describe('AidaClient', () => {
           rpcGlobalId: 123,
           attributionMetadata: {
             attributionAction: Host.AidaClient.RecitationAction.CITE,
-            citations: [{startIndex: 0, endIndex: 1, uri: 'https://example.com'}],
+            citations: [
+              {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
+            ],
           },
         },
         functionCalls: undefined,
@@ -432,20 +523,33 @@ describe('AidaClient', () => {
   });
 
   it('throws on attributionAction of "block"', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
           const response = JSON.stringify([
             {
               textChunk: {text: 'Chunk1\n'},
-              metadata: {rpcGlobalId: 123, attributionMetadata: {attributionAction: 'NO_ACTION', citations: []}},
+              metadata: {
+                rpcGlobalId: 123,
+                attributionMetadata: {
+                  attributionAction: 'NO_ACTION',
+                  citations: [],
+                },
+              },
             },
             {
               textChunk: {text: 'Chunk2\n'},
               metadata: {
                 rpcGlobalId: 123,
-                attributionMetadata: {attributionAction: 'BLOCK', citations: []},
+                attributionMetadata: {
+                  attributionAction: 'BLOCK',
+                  citations: [],
+                },
               },
             },
           ]);
@@ -466,7 +570,11 @@ describe('AidaClient', () => {
   });
 
   it('handles subsequent code chunks', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
@@ -493,7 +601,11 @@ describe('AidaClient', () => {
   });
 
   it('handles subsequent code chunks with attached language', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
         .callsFake(async (request, callback) => {
           assert.isDefined(request.streamId);
           const streamId = request.streamId;
@@ -520,49 +632,14 @@ describe('AidaClient', () => {
   });
 
   it('throws a readable error on 403', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
-      statusCode: 403,
-    });
-    const provider = new Host.AidaClient.AidaClient();
-    try {
-      await getAllResults(provider);
-      assert.fail('provider.fetch did not throw');
-    } catch (err) {
-      assert.strictEqual((err as Error).message, 'Server responded: permission denied');
-    }
-  });
-
-  it('throws a timeout error on timeout', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
-      netErrorName: 'net::ERR_TIMED_OUT'
-    });
-    const provider = new Host.AidaClient.AidaClient();
-    try {
-      await getAllResults(provider);
-      assert.fail('provider.fetch did not throw');
-    } catch (err) {
-      assert.strictEqual((err as Error).message, 'doAidaConversation timed out');
-    }
-  });
-
-  it('throws an error for other codes', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
-      statusCode: 418,
-    });
-    const provider = new Host.AidaClient.AidaClient();
-    try {
-      await getAllResults(provider);
-      assert.fail('provider.fetch did not throw');
-    } catch (err) {
-      assert.strictEqual((err as Error).message, 'Request failed: {"statusCode":418}');
-    }
-  });
-
-  it('throws an error with all details for other failures', async () => {
-    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest').callsArgWith(1, {
-      error: 'Cannot get OAuth credentials',
-      detail: '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
-    });
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
+        .callsArgWith(1, {
+          statusCode: 403,
+        });
     const provider = new Host.AidaClient.AidaClient();
     try {
       await getAllResults(provider);
@@ -570,22 +647,97 @@ describe('AidaClient', () => {
     } catch (err) {
       assert.strictEqual(
           (err as Error).message,
-          'Cannot send request: Cannot get OAuth credentials {\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}');
+          'Server responded: permission denied',
+      );
+    }
+  });
+
+  it('throws a timeout error on timeout', async () => {
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
+        .callsArgWith(1, {
+          netErrorName: 'net::ERR_TIMED_OUT',
+        });
+    const provider = new Host.AidaClient.AidaClient();
+    try {
+      await getAllResults(provider);
+      assert.fail('provider.fetch did not throw');
+    } catch (err) {
+      assert.strictEqual(
+          (err as Error).message,
+          'doAidaConversation timed out',
+      );
+    }
+  });
+
+  it('throws an error for other codes', async () => {
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
+        .callsArgWith(1, {
+          statusCode: 418,
+        });
+    const provider = new Host.AidaClient.AidaClient();
+    try {
+      await getAllResults(provider);
+      assert.fail('provider.fetch did not throw');
+    } catch (err) {
+      assert.strictEqual(
+          (err as Error).message,
+          'Request failed: {"statusCode":418}',
+      );
+    }
+  });
+
+  it('throws an error with all details for other failures', async () => {
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
+        .callsArgWith(1, {
+          error: 'Cannot get OAuth credentials',
+          detail: '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
+        });
+    const provider = new Host.AidaClient.AidaClient();
+    try {
+      await getAllResults(provider);
+      assert.fail('provider.fetch did not throw');
+    } catch (err) {
+      assert.strictEqual(
+          (err as Error).message,
+          'Cannot send request: Cannot get OAuth credentials {\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
+      );
     }
   });
 
   describe('getAidaClientAvailability', () => {
-    function mockGetSyncInformation(information: Host.InspectorFrontendHostAPI.SyncInformation): void {
-      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'getSyncInformation').callsFake(cb => {
-        cb(information);
-      });
+    function mockGetSyncInformation(
+        information: Host.InspectorFrontendHostAPI.SyncInformation,
+        ): void {
+      sinon
+          .stub(
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+              'getSyncInformation',
+              )
+          .callsFake(cb => {
+            cb(information);
+          });
     }
 
     it('should return NO_INTERNET when navigator is not online', async () => {
       sinon.stub(Platform.HostRuntime.HOST_RUNTIME, 'getOnLine').returns(false);
 
       const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_INTERNET);
+      assert.strictEqual(
+          result,
+          Host.AidaClient.AidaAccessPreconditions.NO_INTERNET,
+      );
     });
 
     it('should return NO_ACCOUNT_EMAIL when the syncInfo doesn\'t contain accountEmail', async () => {
@@ -593,49 +745,72 @@ describe('AidaClient', () => {
 
       const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+      assert.strictEqual(
+          result,
+          Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
+      );
     });
 
     it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is true', async () => {
-      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: true});
+      mockGetSyncInformation({
+        accountEmail: 'some-email',
+        isSyncActive: true,
+      });
 
       const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      assert.strictEqual(
+          result,
+          Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      );
     });
 
     it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is false', async () => {
-      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: false});
+      mockGetSyncInformation({
+        accountEmail: 'some-email',
+        isSyncActive: false,
+      });
 
       const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      assert.strictEqual(
+          result,
+          Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      );
     });
   });
 
   describe('registerClientEvent', () => {
     it('should populate the default value for Aida Client event', async () => {
-      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'registerAidaClientEvent');
+      const stub = sinon.stub(
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+          'registerAidaClientEvent',
+      );
       const RPC_ID = 0;
 
       const provider = new Host.AidaClient.AidaClient();
       void provider.registerClientEvent({
         corresponding_aida_rpc_global_id: RPC_ID,
         disable_user_content_logging: false,
-        do_conversation_client_event: {user_feedback: {sentiment: Host.AidaClient.Rating.POSITIVE}},
+        do_conversation_client_event: {
+          user_feedback: {sentiment: Host.AidaClient.Rating.POSITIVE},
+        },
       });
       const arg = JSON.parse(stub.getCalls()[0].args[0]);
 
-      sinon.assert.match(arg, sinon.match({
-        client: Host.AidaClient.CLIENT_NAME,
-        event_time: sinon.match.string,
-        corresponding_aida_rpc_global_id: RPC_ID,
-        do_conversation_client_event: {
-          user_feedback: {
-            sentiment: 'POSITIVE',
-          },
-        },
-      }));
+      sinon.assert.match(
+          arg,
+          sinon.match({
+            client: Host.AidaClient.CLIENT_NAME,
+            event_time: sinon.match.string,
+            corresponding_aida_rpc_global_id: RPC_ID,
+            do_conversation_client_event: {
+              user_feedback: {
+                sentiment: 'POSITIVE',
+              },
+            },
+          }),
+      );
     });
   });
 
@@ -643,23 +818,31 @@ describe('AidaClient', () => {
     it('handles successful response', async () => {
       const mockResult: AidaCodeCompleteResult = {
         response: JSON.stringify({
-          generatedSamples: [{
-            generationString: 'console.log("hello");',
-            score: 0.9,
-            sampleId: 1,
-            metadata: {
-              attributionMetadata: {
-                attributionAction: 'CITE',
-                citations: [{startIndex: 0, endIndex: 1, uri: 'https://example.com'}],
+          generatedSamples: [
+            {
+              generationString: 'console.log("hello");',
+              score: 0.9,
+              sampleId: 1,
+              metadata: {
+                attributionMetadata: {
+                  attributionAction: 'CITE',
+                  citations: [
+                    {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
+                  ],
+                },
               },
             },
-          }],
+          ],
           metadata: {
             rpcGlobalId: 456,
           },
         }),
       };
-      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete')
+      sinon
+          .stub(
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+              'aidaCodeComplete',
+              )
           .callsArgWith(1, mockResult);
 
       const provider = new Host.AidaClient.AidaClient();
@@ -674,15 +857,19 @@ describe('AidaClient', () => {
       const result = await provider.completeCode(request);
 
       assert.deepEqual(result, {
-        generatedSamples: [{
-          generationString: 'console.log("hello");',
-          score: 0.9,
-          sampleId: 1,
-          attributionMetadata: {
-            attributionAction: Host.AidaClient.RecitationAction.CITE,
-            citations: [{startIndex: 0, endIndex: 1, uri: 'https://example.com'}]
+        generatedSamples: [
+          {
+            generationString: 'console.log("hello");',
+            score: 0.9,
+            sampleId: 1,
+            attributionMetadata: {
+              attributionAction: Host.AidaClient.RecitationAction.CITE,
+              citations: [
+                {startIndex: 0, endIndex: 1, uri: 'https://example.com'},
+              ],
+            },
           },
-        }],
+        ],
         metadata: {
           rpcGlobalId: 456,
         },
@@ -690,10 +877,15 @@ describe('AidaClient', () => {
     });
 
     it('throws on error from the host', async () => {
-      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete').callsArgWith(1, {
-        error: 'Cannot get OAuth credentials',
-        detail: '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
-      });
+      sinon
+          .stub(
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+              'aidaCodeComplete',
+              )
+          .callsArgWith(1, {
+            error: 'Cannot get OAuth credentials',
+            detail: '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
+          });
       const provider = new Host.AidaClient.AidaClient();
       try {
         const request: Host.AidaClient.CompletionRequest = {
@@ -709,14 +901,20 @@ describe('AidaClient', () => {
       } catch (err) {
         assert.strictEqual(
             (err as Error).message,
-            'Cannot send request: Cannot get OAuth credentials {\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}');
+            'Cannot send request: Cannot get OAuth credentials {\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
+        );
       }
     });
 
     it('throws on empty response from the host', async () => {
-      sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'aidaCodeComplete').callsArgWith(1, {
-        response: '',
-      });
+      sinon
+          .stub(
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+              'aidaCodeComplete',
+              )
+          .callsArgWith(1, {
+            response: '',
+          });
 
       const provider = new Host.AidaClient.AidaClient();
       const request: Host.AidaClient.CompletionRequest = {
@@ -739,15 +937,25 @@ describe('AidaClient', () => {
   describe('getClientFeatureName', () => {
     it('returns the name for a valid ClientFeature', () => {
       assert.strictEqual(
-          Host.AidaClient.getClientFeatureName(Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS),
-          'CHROME_CONSOLE_INSIGHTS');
+          Host.AidaClient.getClientFeatureName(
+              Host.AidaClient.ClientFeature.CHROME_CONSOLE_INSIGHTS,
+              ),
+          'CHROME_CONSOLE_INSIGHTS',
+      );
       assert.strictEqual(
-          Host.AidaClient.getClientFeatureName(Host.AidaClient.ClientFeature.CLIENT_FEATURE_UNSPECIFIED),
-          'CLIENT_FEATURE_UNSPECIFIED');
+          Host.AidaClient.getClientFeatureName(
+              Host.AidaClient.ClientFeature.CLIENT_FEATURE_UNSPECIFIED,
+              ),
+          'CLIENT_FEATURE_UNSPECIFIED',
+      );
     });
 
     it('throws for an invalid ClientFeature', () => {
-      assert.throws(() => Host.AidaClient.getClientFeatureName(1234 as Host.AidaClient.ClientFeature));
+      assert.throws(
+          () => Host.AidaClient.getClientFeatureName(
+              1234 as Host.AidaClient.ClientFeature,
+              ),
+      );
     });
   });
 });

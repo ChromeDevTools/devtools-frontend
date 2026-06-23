@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';

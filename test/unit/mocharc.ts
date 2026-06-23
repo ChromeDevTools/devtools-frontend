@@ -9,14 +9,22 @@ import {loadTests, TestConfig} from '../conductor/test_config.js';
 
 module.exports = {
   allowUncaught : false,
-  require : ['source-map-support/register', 'sinon/pkg/sinon.js', path.join(GEN_DIR, 'test', 'unit', 'mocha-hooks.js')],
+  require :
+          [
+            'source-map-support/register',
+            path.join(GEN_DIR, 'test', 'unit', 'mocha-hooks.js'),
+          ],
   spec :
        [
          ...loadTests(path.join(GEN_DIR, 'front_end'), 'foundation_tests.txt'),
-         ...loadTests(path.join(GEN_DIR, 'mcp'), 'foundation_tests.txt')
+         ...loadTests(path.join(GEN_DIR, 'mcp'), 'foundation_tests.txt'),
        ],
   timeout : TestConfig.debug ? 0 : 10_000,
-  reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
+  reporter : path.join(
+               path.dirname(__dirname),
+               'shared',
+               'mocha-resultsdb-reporter',
+               ),
   retries : TestConfig.retries,
   suiteName : 'unit',
   slow : 1000, ...TestConfig.mochaGrep,

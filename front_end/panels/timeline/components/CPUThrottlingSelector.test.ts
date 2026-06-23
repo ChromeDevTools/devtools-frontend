@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_throttling.js';

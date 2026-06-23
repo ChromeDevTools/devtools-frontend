@@ -33,21 +33,31 @@ describe('globMatch', () => {
 
   it('correctly matches full URLs', () => {
     assert.isTrue(
-        globMatch('http://localhost/path/to/folder/with/file.js', 'http://localhost/path/to/folder/with/file.js'));
+        globMatch(
+            'http://localhost/path/to/folder/with/file.js',
+            'http://localhost/path/to/folder/with/file.js',
+            ),
+    );
   });
 
   it('correctly matches *-patterns with slashes', () => {
     assert.isFalse(globMatch('http://*/file.txt', 'http://server/foo.txt'));
     assert.isTrue(globMatch('http://*/file.txt', 'http://server/file.txt'));
-    assert.isTrue(globMatch('https://*/*/bar.js', 'https://localhost/foo/bar.js'));
-    assert.isFalse(globMatch('https://*/*/bar.js', 'https://localhost/foo/baz/bar.js'));
+    assert.isTrue(
+        globMatch('https://*/*/bar.js', 'https://localhost/foo/bar.js'),
+    );
+    assert.isFalse(
+        globMatch('https://*/*/bar.js', 'https://localhost/foo/baz/bar.js'),
+    );
   });
 
   it('correctly matches **-patterns', () => {
     assert.isTrue(globMatch('**/file.txt', 'http://server/file.txt'));
     assert.isTrue(globMatch('**/file.txt', 'http://server/folder/file.txt'));
     assert.isTrue(globMatch('http://**/file.txt', 'http://server/file.txt'));
-    assert.isTrue(globMatch('http://**/file.txt', 'http://server/folder/file.txt'));
+    assert.isTrue(
+        globMatch('http://**/file.txt', 'http://server/folder/file.txt'),
+    );
     assert.isTrue(globMatch('http://host/**/file.txt', 'http://host/file.txt'));
   });
 

@@ -21,7 +21,9 @@ async function createItem(text: TemplateResult): Promise<CreditsItem> {
 
 describe('CreditsItem', () => {
   it('is accessible', async () => {
-    const el = await createItem(html`<devtools-cxx-debugging-credits-item></devtools-cxx-debugging-credits-item>`);
+    const el = await createItem(
+        html`<devtools-cxx-debugging-credits-item></devtools-cxx-debugging-credits-item>`,
+    );
     assert.isNotNull(el.shadowRoot);
   });
 
@@ -29,10 +31,13 @@ describe('CreditsItem', () => {
     const data: CreditsItemData = {
       title: 'My awesome project',
       homepage: 'https://www.example.com',
-      license: 'Do whatever you want!'
+      license: 'Do whatever you want!',
     };
     const el = await createItem(
-        html`<devtools-cxx-debugging-credits-item .data=${data}></devtools-cxx-debugging-credits-item>`);
+        html`<devtools-cxx-debugging-credits-item
+        .data=${data}
+      ></devtools-cxx-debugging-credits-item>`,
+    );
     assert.strictEqual(el.data, data);
 
     el.data = {title: 'title', homepage: 'homepage', license: 'license'};
@@ -42,10 +47,23 @@ describe('CreditsItem', () => {
   });
 
   it('renders title and homepage correctly', async () => {
-    const data: CreditsItemData = {title: 'My project', homepage: 'https://www.example.com', license: '3-BSD License'};
+    const data: CreditsItemData = {
+      title: 'My project',
+      homepage: 'https://www.example.com',
+      license: '3-BSD License',
+    };
     const el = await createItem(
-        html`<devtools-cxx-debugging-credits-item .data=${data}></devtools-cxx-debugging-credits-item>`);
-    assert.deepEqual(el.shadowRoot?.querySelector('.title')?.textContent, data.title);
-    assert.deepEqual(el.shadowRoot?.querySelector('a')?.getAttribute('href'), data.homepage);
+        html`<devtools-cxx-debugging-credits-item
+        .data=${data}
+      ></devtools-cxx-debugging-credits-item>`,
+    );
+    assert.deepEqual(
+        el.shadowRoot?.querySelector('.title')?.textContent,
+        data.title,
+    );
+    assert.deepEqual(
+        el.shadowRoot?.querySelector('a')?.getAttribute('href'),
+        data.homepage,
+    );
   });
 });

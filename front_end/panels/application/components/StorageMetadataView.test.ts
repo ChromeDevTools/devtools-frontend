@@ -5,6 +5,7 @@
 import '../../../ui/kit/kit.js';
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import type * as SDK from '../../../core/sdk/sdk.js';

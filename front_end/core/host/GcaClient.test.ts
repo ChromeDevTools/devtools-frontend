@@ -3,11 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 
 import * as Host from './host.js';
+import type {DispatchHttpRequestRequest, DispatchHttpRequestResult} from './InspectorFrontendHostAPI.js';
 
 describe('GcaClient', () => {
   setupLocaleHooks();
@@ -20,7 +22,7 @@ describe('GcaClient', () => {
 
   it('returns null for completeCode when request fails', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 500, error: 'Internal Server Error'});
         });
 
@@ -32,7 +34,7 @@ describe('GcaClient', () => {
 
   it('returns null for generateCode when request fails', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 500, error: 'Internal Server Error'});
         });
 
@@ -56,7 +58,7 @@ describe('GcaClient', () => {
       responseId: '123'
     };
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 200, response: JSON.stringify(mockResponse)});
         });
 
@@ -77,7 +79,7 @@ describe('GcaClient', () => {
       responseId: '456'
     };
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 200, response: JSON.stringify(mockResponse)});
         });
 
@@ -96,7 +98,7 @@ describe('GcaClient', () => {
 
   it('handles successful conversationRequest', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 200, response: '{}'});
         });
 
@@ -111,7 +113,7 @@ describe('GcaClient', () => {
 
   it('throws for conversationRequest when request fails', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 500, error: 'Internal Server Error'});
         });
 
@@ -131,7 +133,7 @@ describe('GcaClient', () => {
 
   it('handles successful registerClientEvent', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 200, response: '{}'});
         });
 
@@ -145,7 +147,7 @@ describe('GcaClient', () => {
 
   it('returns error for registerClientEvent when request fails', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'dispatchHttpRequest')
-        .callsFake((_request, callback) => {
+        .callsFake((_request: DispatchHttpRequestRequest, callback: (result: DispatchHttpRequestResult) => void) => {
           callback({statusCode: 500, error: 'Internal Server Error'});
         });
 

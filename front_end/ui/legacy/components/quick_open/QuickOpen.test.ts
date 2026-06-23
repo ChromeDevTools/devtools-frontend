@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 
@@ -31,7 +32,7 @@ describe('QuickOpen', () => {
     const setProviderStub = sinon.stub(QuickOpen.FilteredListWidget.FilteredListWidget.prototype, 'setProvider');
 
     const setProviderCalledPromise = new Promise<void>(resolve => {
-      setProviderStub.callsFake(provider => {
+      setProviderStub.callsFake((provider: QuickOpen.FilteredListWidget.Provider|null) => {
         if (provider !== null) {
           resolve();
         }

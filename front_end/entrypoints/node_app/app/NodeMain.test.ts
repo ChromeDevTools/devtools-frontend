@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
@@ -59,7 +60,7 @@ describeWithMockConnection('NodeChildTargetManager', () => {
     assert.exists(target);
 
     // Creating the target should have already sent a bunch of messages, like Debugger.enable
-    sinon.assert.calledWithMatch(sendStub, sinon.match(request => {
+    sinon.assert.calledWithMatch(sendStub, sinon.match((request: {message: string}) => {
       const {method} = JSON.parse(request.message);
       return method === 'Debugger.enable';
     }));

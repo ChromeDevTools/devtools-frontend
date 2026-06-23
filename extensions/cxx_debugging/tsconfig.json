@@ -5,12 +5,11 @@
     "allowUnreachableCode": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "allowUmdGlobalAccess": true,
     "paths": {
       "lit-html": ["./third_party/lit-html"],
       "lit-html/*": ["./third_party/lit-html/*"]
     },
-    "types": ["emscripten", "mocha", "sinon"]
+    "types": ["emscripten", "mocha"]
   },
   "include": ["src/*.ts", "tests/*.ts"]
 }

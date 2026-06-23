@@ -256,6 +256,7 @@ module.exports = function(config: any) {
     files: [
       // Global hooks in test_setup must go first
       {pattern: path.join(SOURCE_ROOT, 'node_modules/chai/**/*'), served: true, included: false},
+      {pattern: path.join(SOURCE_ROOT, 'node_modules/sinon/**/*'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end', 'testing', 'test_setup.js'), type: 'module'},
       ...tests.map(pattern => ({pattern, type: 'module'})),
       ...tests.map(pattern => ({pattern: `${pattern}.map`, served: true, included: false, watched: true})),
@@ -289,7 +290,7 @@ module.exports = function(config: any) {
       },
     },
 
-    frameworks: ['mocha', 'sinon'],
+    frameworks: ['mocha'],
 
     client: {
       mocha: {
@@ -304,7 +305,6 @@ module.exports = function(config: any) {
       {[`launcher:${CustomChrome.prototype.name}`]: ['type', CustomChrome]},
       require('karma-mocha'),
       require('karma-mocha-reporter'),
-      require('karma-sinon'),
       require('karma-sourcemap-loader'),
       require('karma-spec-reporter'),
       require('karma-coverage'),
@@ -324,6 +324,7 @@ module.exports = function(config: any) {
       '/locales': `/base/${targetDir}/front_end/core/i18n/locales`,
       '/front_end': `/base/${targetDir}/front_end`,
       '/chai': `/base/${devToolsRoot}/node_modules/chai`,
+      '/sinon': `/base/${devToolsRoot}/node_modules/sinon`,
     },
 
     middleware: ['snapshotTester'],

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -143,9 +144,9 @@ describe('CrUXManager', () => {
       const pageResult = await cruxManager.getFieldDataForPage('https://example.com');
 
       const fetchBodies = mockFetch.getCalls()
-                              .map(call => call.args[1].body)
+                              .map((call: sinon.SinonSpyCall) => call.args[1].body)
                               .sort()
-                              .map(body => JSON.parse(body) as CrUXManager.CrUXRequest);
+                              .map((body: string) => JSON.parse(body) as CrUXManager.CrUXRequest);
 
       assert.deepEqual(pageResult, {
         'origin-ALL': mockResponse(),

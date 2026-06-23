@@ -22,44 +22,50 @@
 
   adapted from node_modules/karma/static/context.html.
 -->
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <title></title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <script type="importmap">
-    {
-      "imports": {
-        "chai": "/chai/index.js"
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <script type="importmap">
+      {
+        "imports": {
+          "chai": "/chai/index.js",
+          "sinon": "/sinon/pkg/sinon-esm.js"
+        }
       }
-    }
-  </script>
-</head>
-<body>
-  <script src="context.js"></script>
-  <script type="text/javascript">
-    %CLIENT_CONFIG%
-    %SCRIPT_URL_ARRAY%
-    window.__karma__.setupContext(window);
-    %MAPPINGS%
-  </script>
-  %SCRIPTS%
-  <script type="module">
-    // Relying on the script module loading order is not sufficient if modules
-    // use top-level awaits so we need to wait till all modules are actually
-    // imported.
-    await Promise.all(
-        Array.from(document.body.querySelectorAll('script[type=module]')).map(script => {
+    </script>
+  </head>
+  <body>
+    <script src="context.js"></script>
+    <script type="text/javascript">
+      %CLIENT_CONFIG%
+      %SCRIPT_URL_ARRAY%
+      window.__karma__.setupContext(window);
+      %MAPPINGS%
+    </script>
+    %SCRIPTS%
+    <script type="module">
+      // Relying on the script module loading order is not sufficient if modules
+      // use top-level awaits so we need to wait till all modules are actually
+      // imported.
+      await Promise.all(
+        Array.from(document.body.querySelectorAll('script[type=module]')).map(
+          script => {
             if (script.src) {
-                return import(script.src);
+              return import(script.src);
             }
-        })
-    );
-    window.__karma__.loaded();
-  </script>
-  <script nomodule>
-    window.__karma__.loaded();
-  </script>
-</body>
+          },
+        ),
+      );
+      window.__karma__.loaded();
+    </script>
+    <script nomodule>
+      window.__karma__.loaded();
+    </script>
+  </body>
 </html>

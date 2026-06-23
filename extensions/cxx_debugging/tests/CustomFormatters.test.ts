@@ -15,52 +15,46 @@ describe('PageStore', () => {
     const bufferA = new Uint8Array([1, 2, 3, 4]).buffer;
     const bufferB = new Uint8Array([5, 6, 7, 8]).buffer;
 
-    assert.throws(() => new MemorySlice(bufferA, 16).merge(new MemorySlice(bufferB, 32)), 'Slices are not contiguous');
-    assert.throws(() => new MemorySlice(bufferA, 32).merge(new MemorySlice(bufferB, 16)), 'Slices are not contiguous');
-    assert.deepEqual(asArray(new MemorySlice(bufferA, 16).merge(new MemorySlice(bufferB, 20))), [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-    ]);
-    assert.deepEqual(asArray(new MemorySlice(bufferB, 20).merge(new MemorySlice(bufferA, 16))), [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-    ]);
-    assert.deepEqual(asArray(new MemorySlice(bufferA, 20).merge(new MemorySlice(bufferB, 16))), [
-      5,
-      6,
-      7,
-      8,
-      1,
-      2,
-      3,
-      4,
-    ]);
-    assert.deepEqual(asArray(new MemorySlice(bufferB, 16).merge(new MemorySlice(bufferA, 20))), [
-      5,
-      6,
-      7,
-      8,
-      1,
-      2,
-      3,
-      4,
-    ]);
-    assert.deepEqual(asArray(new MemorySlice(bufferA, 18).merge(new MemorySlice(bufferB, 20))), [1, 2, 3, 4, 7, 8]);
-    assert.deepEqual(asArray(new MemorySlice(bufferB, 20).merge(new MemorySlice(bufferA, 18))), [1, 2, 3, 4, 7, 8]);
-    assert.deepEqual(asArray(new MemorySlice(bufferA, 20).merge(new MemorySlice(bufferB, 18))), [5, 6, 7, 8, 3, 4]);
-    assert.deepEqual(asArray(new MemorySlice(bufferB, 18).merge(new MemorySlice(bufferA, 20))), [5, 6, 7, 8, 3, 4]);
+    assert.throws(
+        () => new MemorySlice(bufferA, 16).merge(new MemorySlice(bufferB, 32)),
+        'Slices are not contiguous',
+    );
+    assert.throws(
+        () => new MemorySlice(bufferA, 32).merge(new MemorySlice(bufferB, 16)),
+        'Slices are not contiguous',
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferA, 16).merge(new MemorySlice(bufferB, 20))),
+        [1, 2, 3, 4, 5, 6, 7, 8],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferB, 20).merge(new MemorySlice(bufferA, 16))),
+        [1, 2, 3, 4, 5, 6, 7, 8],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferA, 20).merge(new MemorySlice(bufferB, 16))),
+        [5, 6, 7, 8, 1, 2, 3, 4],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferB, 16).merge(new MemorySlice(bufferA, 20))),
+        [5, 6, 7, 8, 1, 2, 3, 4],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferA, 18).merge(new MemorySlice(bufferB, 20))),
+        [1, 2, 3, 4, 7, 8],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferB, 20).merge(new MemorySlice(bufferA, 18))),
+        [1, 2, 3, 4, 7, 8],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferA, 20).merge(new MemorySlice(bufferB, 18))),
+        [5, 6, 7, 8, 3, 4],
+    );
+    assert.deepEqual(
+        asArray(new MemorySlice(bufferB, 18).merge(new MemorySlice(bufferA, 20))),
+        [5, 6, 7, 8, 3, 4],
+    );
   });
 
   it('sorts disjoint slices correctly', () => {
@@ -73,7 +67,10 @@ describe('PageStore', () => {
       view.addSlice(two, 8);
       view.addSlice(two, 11);
       view.addSlice(two, 14);
-      assert.deepEqual(view.slices.map(s => s.begin), [2, 5, 8, 11, 14]);
+      assert.deepEqual(
+          view.slices.map(s => s.begin),
+          [2, 5, 8, 11, 14],
+      );
     }
     {
       const view = new PageStore();
@@ -82,7 +79,10 @@ describe('PageStore', () => {
       view.addSlice(two, 8);
       view.addSlice(two, 5);
       view.addSlice(two, 2);
-      assert.deepEqual(view.slices.map(s => s.begin), [2, 5, 8, 11, 14]);
+      assert.deepEqual(
+          view.slices.map(s => s.begin),
+          [2, 5, 8, 11, 14],
+      );
     }
   });
 
@@ -300,7 +300,10 @@ describe('PageStore', () => {
       assert.lengthOf(view.slices, 2);
       assert.deepEqual(asArray(view.slices[0]), [1, 2]);
       assert.deepEqual(view.slices[0].begin, 2);
-      assert.deepEqual(asArray(view.slices[1]), [4, 5, 0, 0, 7, 8, 0, 0, 10, 11]);
+      assert.deepEqual(
+          asArray(view.slices[1]),
+          [4, 5, 0, 0, 7, 8, 0, 0, 10, 11],
+      );
       assert.deepEqual(view.slices[1].begin, 6);
     }
   });

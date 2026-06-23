@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -242,8 +243,8 @@ describeWithMockConnection('DeviceModeModel', () => {
       const expectedAndroidVersion = isLateInYear ? (year - 2010) : (year - 2011);
       const expectedPixelModel = isLateInYear ? (year - 2016) : (year - 2017);
 
-      const modernCall =
-          setUserAgentOverride.getCalls().find(call => call.args[0].includes(`Pixel ${expectedPixelModel}`));
+      const modernCall = setUserAgentOverride.getCalls().find((call: sinon.SinonSpyCall) =>
+                                                                  call.args[0].includes(`Pixel ${expectedPixelModel}`));
       assert.exists(modernCall, 'Modern User Agent was not applied');
 
       const userAgent = modernCall?.args[0];

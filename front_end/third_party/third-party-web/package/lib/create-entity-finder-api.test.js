@@ -1,3 +1,5 @@
+const fs = require('fs')
+const path = require('path')
 const {createAPIFromDataset} = require('./create-entity-finder-api.js')
 
 describe('getEntity', () => {
@@ -40,5 +42,17 @@ describe('getEntity', () => {
     expect(api.getEntity('https://foo.example.co.uk/path').name).toEqual('Domain')
     expect(api.getEntity('https://bar.example.co.uk/path').name).toEqual('Domain')
     expect(api.getEntity('https://baz.bar.example.co.uk/path').name).toEqual('Domain')
+  })
+
+  it.skip('stress test', () => {
+    const urls = fs
+      .readFileSync(path.join(__dirname, '../data/random-urls.txt'), 'utf8')
+      .split('\n')
+      .filter(Boolean)
+    console.time('getEntity')
+    for (let i = 0; i < 1_000_000; i++) {
+      api.getEntity(urls[i % urls.length])
+    }
+    console.timeEnd('getEntity')
   })
 })

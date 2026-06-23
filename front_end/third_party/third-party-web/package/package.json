@@ -1,6 +1,6 @@
 {
   "name": "third-party-web",
-  "version": "0.26.2",
+  "version": "0.29.2",
   "description": "Categorized data on third party entities on the web.",
   "main": "./lib/index.js",
   "scripts": {
@@ -23,6 +23,10 @@
     "url": "https://github.com/patrickhulce/third-party-web.git"
   },
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "provenance": true
+  },
   "devDependencies": {
     "@google-cloud/bigquery": "^7.9.0",
     "chart.js": "^2.9.4",
@@ -33,7 +37,7 @@
     "lodash": "^4.17.15",
     "prettier": "^1.18.2",
     "prompts": "^2.4.2",
-    "semantic-release": "^24.2.0"
+    "semantic-release": "^25.0.3"
   },
   "config": {
     "exportAliases": {
@@ -42,5 +46,5 @@
       "httparchive-subset": "./lib/subsets/httparchive.js"
     }
   },
-  "packageManager": "yarn@4.1.1"
+  "packageManager": "yarn@4.10.3"
 }

@@ -24,4 +24,14 @@ describe('Entities', () => {
       }
     }
   })
+
+  it('should not have commas within a domain', () => {
+    for (const entity of entities) {
+      for (const domain of entity.domains) {
+        // A domain can be `*.maxymiser.net` or `maxymiser.hs.llnwd.net`
+        // A domain can't be `*.maxymiser.net, maxymiser.hs.llnwd.net`
+        expect(domain).toEqual(expect.not.stringContaining(','))
+      }
+    }
+  })
 })

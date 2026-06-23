@@ -1,6 +1,4 @@
-# [Third Party Web](https://www.thirdpartyweb.today/)
-
-## Check out the shiny new web UI https://www.thirdpartyweb.today/
+# Third Party Web
 
 Data on third party entities and their impact on the web.
 

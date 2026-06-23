@@ -1,22 +1,35 @@
 const DOMAIN_IN_URL_REGEX = /:\/\/(\S*?)(:\d+)?(\/|$)/
-const DOMAIN_CHARACTERS = /([a-z0-9.-]+\.[a-z0-9]+|localhost)/i
+const DOMAIN_CHARACTERS = /(?:[a-z0-9.-]+\.[a-z0-9]+|localhost)/i
 const IP_REGEX = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/
 const ROOT_DOMAIN_REGEX = /[^.]+\.([^.]+|(gov|com|co|ne)\.\w{2})$/i
 
-function getDomainFromOriginOrURL(originOrURL) {
-  if (typeof originOrURL !== 'string') return null
-  if (originOrURL.length > 10000 || originOrURL.startsWith('data:')) return null
-  if (DOMAIN_IN_URL_REGEX.test(originOrURL)) return originOrURL.match(DOMAIN_IN_URL_REGEX)[1]
-  if (DOMAIN_CHARACTERS.test(originOrURL)) return originOrURL.match(DOMAIN_CHARACTERS)[0]
-  return null
+/**
+ * @param {string} originOrURL
+ * @return {[string|null, string|null]} - The first item is the root domain, the second item is the domain.
+ */
+function parseDomains(originOrURL) {
+  if (typeof originOrURL !== 'string') return [null, null]
+  if (originOrURL.length > 10000 || originOrURL.startsWith('data:')) return [null, null]
+  let m = originOrURL.match(DOMAIN_IN_URL_REGEX)
+  let domain;
+  if (m) {
+    domain = m[1]
+  }
+  m = originOrURL.match(DOMAIN_CHARACTERS)
+  if (m) {
+    domain = m[0]
+  }
+
+  if (!domain) return [null, null]
+  if (IP_REGEX.test(domain)) return [domain, domain]
+  m = domain.match(ROOT_DOMAIN_REGEX)
+  const rootDomain = m && m[0] || domain;
+
+  return [rootDomain, domain]
 }
 
-function getRootDomain(originOrURL) {
-  const domain = getDomainFromOriginOrURL(originOrURL)
-  if (!domain) return null
-  if (IP_REGEX.test(domain)) return domain
-  const match = domain.match(ROOT_DOMAIN_REGEX)
-  return (match && match[0]) || domain
+function getRootDomain(originOrURL,) {
+  return parseDomains(originOrURL)[0];
 }
 
 function sliceSubdomainFromDomain(domain, rootDomain) {
@@ -28,8 +41,7 @@ function sliceSubdomainFromDomain(domain, rootDomain) {
 }
 
 function getEntityInDataset(entityByDomain, entityBySubDomain, entityByRootDomain, originOrURL) {
-  const domain = getDomainFromOriginOrURL(originOrURL)
-  const rootDomain = getRootDomain(domain)
+  const [rootDomain, domain] = parseDomains(originOrURL);
   if (!domain || !rootDomain) return undefined
   if (entityByDomain.has(domain)) return entityByDomain.get(domain)
 

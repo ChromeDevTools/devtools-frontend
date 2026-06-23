@@ -512,7 +512,11 @@ export const dumpSectionsWithIndent = function(treeElements, depth) {
 };
 
 export const scopeChainSections = function() {
-  return Sources.ScopeChainSidebarPane.ScopeChainSidebarPane.instance().treeOutline.rootElement().children();
+  return Sources.ScopeChainSidebarPane.ScopeChainSidebarPane.instance()
+      .contentElement.querySelector('devtools-tree')
+      ?.getInternalTreeOutlineForTest()
+      .rootElement()
+      .children();
 };
 
 export const expandScopeVariablesSidebarPane = function(callback) {

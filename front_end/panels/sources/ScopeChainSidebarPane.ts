@@ -191,18 +191,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
     return scopeChainSidebarPaneInstance;
   }
 
-  /**
-   * @deprecated Required for legacy web tests via DebuggerTestRunner.js
-   */
-  get treeOutline(): ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline|null {
-    const devtoolsTree = this.contentElement.querySelector('devtools-tree');
-    if (devtoolsTree) {
-      return (devtoolsTree as UI.TreeOutline.TreeViewElement).getInternalTreeOutlineForTest() as
-          ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline;
-    }
-    return null;
-  }
-
   flavorChanged(callFrame: StackTrace.StackTrace.DebuggableFrameFlavor|null): void {
     this.#scopeChainModel?.dispose();
     this.#scopeChainModel = null;

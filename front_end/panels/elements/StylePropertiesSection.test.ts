@@ -30,7 +30,12 @@ describeWithMockConnection('StylesPropertySection', () => {
   });
 
   it('contains specificity information', async () => {
-    const specificity = {a: 0, b: 1, c: 0};
+    const specificity = {
+      a: 0,
+      b: 1,
+      c: 0,
+      components: [{text: '.child', a: 0, b: 1, c: 0}],
+    };
     const matchedStyles = await getMatchedStylesWithBlankRule({cssModel: new SDK.CSSModel.CSSModel(createTarget())});
     const section = new Elements.StylePropertiesSection.StylePropertiesSection(
         new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
@@ -38,7 +43,14 @@ describeWithMockConnection('StylesPropertySection', () => {
     section.renderSelectors([{text: '.child', specificity}], [true], new WeakMap());
     const selectorElement = section.element.querySelector('.selector');
     assert.strictEqual(selectorElement?.textContent, '.child');
-    assert.deepEqual(section.element?.querySelector('devtools-tooltip')?.textContent?.trim(), 'Specificity: (0,1,0)');
+    const tooltip = section.element?.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
+    const details = tooltip.querySelector('details');
+    assert.exists(details);
+    const summary = details.querySelector('summary');
+    assert.exists(summary);
+    assert.include(summary.textContent ?? '', 'Specificity: (0,1,0)');
+    assert.include(tooltip.textContent ?? '', '(b) Class-like: .child');
   });
 
   it('renders selectors correctly', async () => {

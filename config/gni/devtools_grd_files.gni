@@ -1687,6 +1687,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/elements/AdoptedStyleSheetTreeElement.js",
   "front_end/panels/elements/CSSRuleValidator.js",
   "front_end/panels/elements/CSSRuleValidatorHelper.js",
+  "front_end/panels/elements/CSSSpecificityBreakdown.js",
   "front_end/panels/elements/CSSValueTraceView.js",
   "front_end/panels/elements/ClassesPaneWidget.js",
   "front_end/panels/elements/ColorSwatchPopoverIcon.js",

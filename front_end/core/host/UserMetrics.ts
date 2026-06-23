@@ -204,21 +204,6 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordCountHistogram('DevTools.Freestyler.EvalResponseSize', bytes, 0, 100_000, 100);
   }
 
-  performanceAINetworkSummaryResponseSize(bytes: number): void {
-    InspectorFrontendHostInstance.recordCountHistogram(
-        'DevTools.PerformanceAI.NetworkSummaryResponseSize', bytes, 0, 100_000, 100);
-  }
-
-  performanceAINetworkRequestDetailResponseSize(bytes: number): void {
-    InspectorFrontendHostInstance.recordCountHistogram(
-        'DevTools.PerformanceAI.NetworkRequestDetailResponseSize', bytes, 0, 100_000, 100);
-  }
-
-  performanceAIMainThreadActivityResponseSize(bytes: number): void {
-    InspectorFrontendHostInstance.recordCountHistogram(
-        'DevTools.PerformanceAI.MainThreadActivityResponseSize', bytes, 0, 100_000, 100);
-  }
-
   builtInAiAvailability(availability: BuiltInAiAvailability): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.BuiltInAiAvailability, availability, BuiltInAiAvailability.MAX_VALUE);

@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
@@ -522,7 +521,6 @@ code
 
   describe('function calls', () => {
     it('can call getNetworkTrackSummary', async function() {
-      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAINetworkSummaryResponseSize');
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       assert.isOk(parsedTrace.insights);
       const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
@@ -557,9 +555,6 @@ code
 
       const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(context.getItem());
       const expectedRequestsOutput = formatter.formatNetworkTrackSummary(bounds);
-
-      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(expectedRequestsOutput);
-      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
 
       const expectedOutput = JSON.stringify({summary: expectedRequestsOutput});
       const titleResponse = responses.find(response => response.type === AiAgent.ResponseType.TITLE);
@@ -760,7 +755,6 @@ code
     });
 
     it('can call getMainThreadTrackSummaryByLabel', async function() {
-      const metricsSpy = sinon.spy(Host.userMetrics, 'performanceAIMainThreadActivityResponseSize');
 
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(parsedTrace.insights);
@@ -792,9 +786,6 @@ code
       const bounds = Trace.Insights.Common.insightBounds(lcpBreakdown, context.getItem().primaryInsightSet!.bounds);
       const summary = await formatter.formatMainThreadTrackSummary(bounds);
       assert.isOk(summary);
-
-      const expectedBytesSize = Platform.StringUtilities.countWtf8Bytes(summary);
-      sinon.assert.calledWith(metricsSpy, expectedBytesSize);
 
       const expectedOutput = JSON.stringify({summary});
 

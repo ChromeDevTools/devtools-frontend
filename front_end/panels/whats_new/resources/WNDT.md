@@ -1,14 +1,15 @@
 ### [DevTools for agents](devtools-for-agents)
 
-DevTools for agents is now stable at version 1.0, bringing support for third-party developer tools
-provided by the inspected page, WebMCP debugging, and an improved CLI experience.
+DevTools for agents 1.4 and later bring new experimental memory debugging tools,
+experimental TOON support for structured content output, and improved skill discovery.
 
 ### [AI assistance](ai-assistance)
 
-The AI assistance panel now integrates with Lighthouse data and offers interactive, widget-based agent walkthroughs.
-Supported by an upgrade to Gemini 3 and other optimizations, responses are now more concise and actionable.
+The agent walkthrough in the updated AI assistance panel now renders rich widgets
+for performance network tracks, timeline event summaries, network requests,
+syntax-highlighted source code, and inspected file lists.
 
-### [CSS code completion](css-code-completion)
+### [`@container` and `@function`](css-container-function)
 
-The Styles tab in the Elements panel now features enhanced, Gemini-powered code completion.
-Experience smarter, real-time CSS suggestions that adapt dynamically as you type.
+You can now directly edit `@container` and `@function`
+rules within the Styles tab, allowing for seamless experimentation.

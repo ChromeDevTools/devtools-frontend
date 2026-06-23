@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // This will become a union type as we add more skills (e.g. 'styling' | 'network').
-export type SkillName = 'styling'|'network';
+export type SkillName = 'styling'|'network'|'accessibility';
 
 export interface Skill {
   name: SkillName;

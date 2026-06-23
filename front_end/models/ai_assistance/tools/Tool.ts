@@ -4,6 +4,7 @@
 
 import type * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type {ConversationContext, FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
 import type {executeJsCode} from '../agents/ExecuteJavascript.js';
 import type {ChangeManager} from '../ChangeManager.js';
@@ -73,11 +74,18 @@ export interface OriginLockCapability {
 }
 
 /**
+ * Capability for tools that need to run or query Lighthouse audits.
+ */
+export interface LighthouseCapability {
+  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+}
+
+/**
  * Unified context interface providing all capabilities available in the project.
  * Used by the agent to pass a complete context to any tool type-safely.
  */
-export type AllToolsContext =
-    BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&OriginLockCapability;
+export type AllToolsContext = BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&
+    OriginLockCapability&LighthouseCapability;
 
 /**
  * Base argument type for AI Tools.
@@ -89,6 +97,7 @@ export const enum ToolName {
   GET_STYLES = 'getStyles',
   LIST_NETWORK_REQUESTS = 'listNetworkRequests',
   GET_NETWORK_REQUEST_DETAILS = 'getNetworkRequestDetails',
+  GET_LIGHTHOUSE_AUDITS = 'getLighthouseAudits',
 }
 
 /**

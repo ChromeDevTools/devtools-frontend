@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
+import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetStylesTool} from './GetStyles.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
@@ -21,6 +22,7 @@ export const TOOLS = {
   [ToolName.GET_STYLES]: new GetStylesTool(),
   [ToolName.LIST_NETWORK_REQUESTS]: new ListNetworkRequestsTool(),
   [ToolName.GET_NETWORK_REQUEST_DETAILS]: new GetNetworkRequestDetailsTool(),
+  [ToolName.GET_LIGHTHOUSE_AUDITS]: new GetLighthouseAuditsTool(),
 };
 
 /**

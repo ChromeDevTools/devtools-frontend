@@ -4,6 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as LHModel from '../lighthouse/lighthouse.js';
 
 import {
   AiAgent,
@@ -27,6 +28,7 @@ import {ToolRegistry} from './tools/ToolRegistry.js';
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
   styling: 'CSS and styling',
   network: 'Network requests',
+  accessibility: 'Accessibility',
 };
 
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
@@ -56,6 +58,10 @@ If the user asks a question that requires an investigation or debugging, use thi
 * **CRITICAL**: Do not write full Python programs or other scripts to interact with the environment. Only invoke the allowed tools.
 * **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.`;
 
+export interface AiAgent2Options extends ExecuteJsAgentOptions {
+  lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
+}
+
 export class AiAgent2 extends AiAgent<unknown> {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   readonly preamble = preamble;
@@ -65,6 +71,8 @@ export class AiAgent2 extends AiAgent<unknown> {
   #changes = new ChangeManager();
   #execJs: typeof executeJsCode;
   readonly #allowedOrigin?: () => AllowedOriginResult;
+  readonly #lighthouseRecording?:
+      (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 
   get options(): RequestOptions {
     return {};
@@ -73,8 +81,9 @@ export class AiAgent2 extends AiAgent<unknown> {
   readonly #activeSkills = new Set<SkillName>();
   readonly #declaredTools = new Set<string>();
 
-  constructor(opts: ExecuteJsAgentOptions) {
+  constructor(opts: AiAgent2Options) {
     super(opts);
+    this.#lighthouseRecording = opts.lighthouseRecording;
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#allowedOrigin = opts.allowedOrigin;
     this.#declaredTools.add('learnSkills');
@@ -224,6 +233,7 @@ User query: ${enhancedQuery}`;
           getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
           getTarget: () => SDK.TargetManager.TargetManager.instance().primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
+          lighthouseRecording: this.#lighthouseRecording,
         };
         return tool.handler(args, context, options);
       },

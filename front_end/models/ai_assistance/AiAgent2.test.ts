@@ -10,7 +10,7 @@ import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as AiAssistance from './ai_assistance.js';
-import type {SkillName} from './skills/Skill.js';
+import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
 
 function assertIsFunctionResponse(part: Host.AidaClient.Part): asserts part is Host.AidaClient.FunctionResponsePart {
@@ -26,7 +26,22 @@ function getFunctionDeclarations(
   return callArgs.function_declarations ?? [];
 }
 
+/**
+ * Helper to mock the skills registry for an agent.
+ * Since the agent expects a full `Record<SkillName, Skill>`, but individual tests only
+ * need to mock a subset of skills, we use this helper to cast a partial set of skills
+ * to the full record type and assign it to the agent. This prevents tests from
+ * breaking when new skills are added to the global registry.
+ */
+function mockSkills(agent: AiAssistance.AiAgent2.AiAgent2, skills: Partial<Record<SkillName, Skill>>): void {
+  agent.getSkills = () => skills as unknown as Record<SkillName, Skill>;
+}
+
 describeWithEnvironment('AiAgent2', () => {
+  it('registers all expected skills', () => {
+    assert.deepEqual(Object.keys(SKILLS).sort(), ['styling', 'network', 'accessibility'].sort());
+  });
+
   it('can learn a skill', async () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
@@ -51,11 +66,13 @@ describeWithEnvironment('AiAgent2', () => {
   it('handles invalid skill names gracefully', async () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    mockSkills(agent, {
+      styling: SKILLS.styling,
+    });
 
     // @ts-expect-error
     const result = await agent.learnSkill(['non-existent-skill']);
-    assert.isTrue(result.includes('Failed to load skill non-existent-skill'));
-    assert.isTrue(result.includes('Valid skills are: styling'));
+    assert.strictEqual(result, 'Failed to load skill non-existent-skill. Valid skills are: styling.');
   });
 
   it('can run a conversation flow', async () => {
@@ -114,6 +131,10 @@ describeWithEnvironment('AiAgent2', () => {
   it('injects skills manifest containing only unloaded skills', async () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});
+    mockSkills(agent, {
+      styling: SKILLS.styling,
+      network: SKILLS.network,
+    });
 
     // Initially, styling and network are not loaded
     const firstQuery = await agent.enhanceQuery('test query');
@@ -207,8 +228,8 @@ describeWithEnvironment('AiAgent2', () => {
       allowedTools: ['getStyles'],
       instructions: 'Dummy instructions.',
     };
-    agent.getSkills = () => ({
-      ...SKILLS,
+    mockSkills(agent, {
+      styling: SKILLS.styling,
       [dummySkill.name]: dummySkill,
     });
 
@@ -262,8 +283,9 @@ describeWithEnvironment('AiAgent2', () => {
       allowedTools: ['getStyles'],
       instructions: 'Dummy instructions.',
     };
-    agent.getSkills = () => ({
-      ...SKILLS,
+    mockSkills(agent, {
+      styling: SKILLS.styling,
+      network: SKILLS.network,
       [dummySkill.name]: dummySkill,
     });
 
@@ -282,8 +304,8 @@ describeWithEnvironment('AiAgent2', () => {
       allowedTools: ['getStyles'],
       instructions: 'Dummy instructions.',
     };
-    agent.getSkills = () => ({
-      ...SKILLS,
+    mockSkills(agent, {
+      styling: SKILLS.styling,
       [dummySkill.name]: dummySkill,
     });
 

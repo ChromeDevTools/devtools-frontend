@@ -226,11 +226,12 @@ export class TextPromptElement extends HTMLElement {
   #done(e: Event, commit: boolean): void {
     const target = e.target as HTMLElement;
     const text = target.textContent || '';
-    this.#internals.setValidity({});
     if (commit) {
       const validationMessage = this.#validator?.(text) ?? '';
       if (validationMessage) {
         this.#internals.setValidity({customError: true}, validationMessage, this.#entrypoint);
+      } else {
+        this.#internals.setValidity({});
       }
 
       if (!this.#internals.reportValidity()) {
@@ -239,6 +240,7 @@ export class TextPromptElement extends HTMLElement {
 
       this.dispatchEvent(new TextPromptElement.CommitEvent(text));
     } else {
+      this.#internals.setValidity({});
       this.dispatchEvent(new TextPromptElement.CancelEvent());
     }
     e.consume();
@@ -248,12 +250,13 @@ export class TextPromptElement extends HTMLElement {
     if (event.handled || !(event instanceof KeyboardEvent)) {
       return;
     }
-    this.#internals.setValidity({});
 
     if (event.key === 'Enter') {
       this.#done(event, /* commit=*/ true);
     } else if (Platform.KeyboardUtilities.isEscKey(event)) {
       this.#done(event, /* commit=*/ false);
+    } else {
+      this.#internals.setValidity({});
     }
   }
 

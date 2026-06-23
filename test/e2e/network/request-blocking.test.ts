@@ -38,9 +38,9 @@ async function setupRequestBlocking(
     await devToolsPage.click(
         useURLPatterns ? 'aria/Add network request blocking or throttling pattern' :
                          'aria/Add network request blocking pattern');
-    await devToolsPage.click('.blocked-url-edit-value > input');
-    await devToolsPage.typeText(useURLPatterns ? `:*/*${pattern}` : pattern);
-    await devToolsPage.click('aria/Add');
+    await devToolsPage.waitFor('devtools-prompt');
+    await devToolsPage.typeText(useURLPatterns ? `*://*:*/*${pattern}` : pattern);
+    await devToolsPage.pressKey('Enter');
   }
 
   const networkRequestBlockingCheckbox =

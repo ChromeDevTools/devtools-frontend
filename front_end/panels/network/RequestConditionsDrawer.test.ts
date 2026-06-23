@@ -52,6 +52,7 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
 
   it('Add pattern button triggers showing the editor view', async () => {
     const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+    requestConditionsDrawer.contentElement.style.width = '400px';
     renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
     await requestConditionsDrawer.updateComplete;
     const blockedElement = requestConditionsDrawer.contentElement.querySelector('.blocked-urls');
@@ -61,10 +62,10 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
     const button = placeholder?.querySelector('devtools-button');
     assert.exists(button);
 
-    assert.isNull(list?.querySelector('.editor-content'));
+    assert.isNull(list?.querySelector('devtools-prompt'));
     dispatchClickEvent(button);
     await requestConditionsDrawer.updateComplete;
-    assert.exists(list?.querySelector('.editor-content'));
+    assert.exists(list?.querySelector('devtools-prompt'));
 
     await assertScreenshot('request_conditions/throttling_editor.png');
   });
@@ -194,22 +195,21 @@ describeWithMockConnection('RequestConditionsDrawer', () => {
       assert.strictEqual(tooltip.textContent, 'RegExp groups are not allowedLearn more');
     });
 
-    it('shows an error message in the editor when the pattern is invalid or has regexp groups', () => {
+    it('shows an error message in the editor when the pattern is invalid or has regexp groups', async () => {
       const requestConditionsDrawer = new Network.RequestConditionsDrawer.RequestConditionsDrawer();
+      renderElementIntoDOM(requestConditionsDrawer, {includeCommonStyles: true});
+      await requestConditionsDrawer.updateComplete;
 
-      const regexpPatternEditor = requestConditionsDrawer.beginEdit(
-          SDK.NetworkManager.RequestCondition.createFromSetting({url: 'http://*/(\\d+)', enabled: true}));
-      regexpPatternEditor.requestValidation();
-      assert.strictEqual(
-          regexpPatternEditor.element.querySelector('.list-widget-input-validation-error')?.textContent,
-          'RegExp groups are not allowed');
+      requestConditionsDrawer.addPattern();
+      await requestConditionsDrawer.updateComplete;
 
-      const invalidPatternEditor = requestConditionsDrawer.beginEdit(
-          SDK.NetworkManager.RequestCondition.createFromSetting({url: 'ht tp://*', enabled: true}));
-      invalidPatternEditor.requestValidation();
-      assert.strictEqual(
-          invalidPatternEditor.element.querySelector('.list-widget-input-validation-error')?.textContent,
-          'This pattern failed to parse as a URLPattern');
+      const list = requestConditionsDrawer.contentElement.querySelector('.blocked-urls')?.shadowRoot;
+      const prompt = list?.querySelector('devtools-prompt');
+      assert.exists(prompt);
+
+      assert.strictEqual(prompt?.validator?.('http://*/(\\d+)'), 'RegExp groups are not allowed');
+
+      assert.strictEqual(prompt?.validator?.('ht tp://*'), 'This pattern failed to parse as a URLPattern');
     });
   });
 

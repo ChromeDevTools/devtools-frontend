@@ -93,6 +93,7 @@ devtools_ui_module("network") {
     "../../ui/components/adorners:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/input:bundle",
+    "../../ui/components/lists:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/components/tooltips:bundle",
     "../../ui/i18n:bundle",

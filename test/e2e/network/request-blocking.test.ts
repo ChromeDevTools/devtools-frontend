@@ -108,8 +108,7 @@ for (const useURLPatterns of [true]) {
 
       const firstListItem = await devToolsPage.waitFor('.blocked-url');
       const firstCheckbox =
-          await (await devToolsPage.waitFor('.widget > .list > .list-item > .blocked-url > .blocked-url-checkbox'))
-              .toElement('input');
+          await (await devToolsPage.waitFor('devtools-list .blocked-url-checkbox')).toElement('input');
       assert.isTrue(await checkboxIsChecked(firstCheckbox));
       await firstListItem.click();
       assert.isTrue(await checkboxIsChecked(firstCheckbox));

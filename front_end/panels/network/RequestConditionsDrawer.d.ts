@@ -41,9 +41,8 @@ export declare class RequestConditionsDrawer extends UI.Widget.VBox implements U
     updateItem(element: HTMLElement, condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number): void;
     private toggleEnabled;
     removeItemRequested(condition: SDK.NetworkManager.RequestCondition): void;
-    beginEdit(pattern: SDK.NetworkManager.RequestCondition): UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>;
-    commitEdit(item: SDK.NetworkManager.RequestCondition, editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>, isNew: boolean): void;
-    private createEditor;
+    beginEdit(_pattern: SDK.NetworkManager.RequestCondition): UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>;
+    commitEdit(_item: SDK.NetworkManager.RequestCondition, _editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>, _isNew: boolean): void;
     update(): void;
     private onNetworkLogReset;
     private onRequestFinished;

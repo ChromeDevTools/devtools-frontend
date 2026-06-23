@@ -83,4 +83,5 @@ export interface CSSPropertyDefinition {
     svg: boolean | null;
     is_descriptor?: boolean;
     is_property?: boolean;
+    runtime_flag_status?: string;
 }

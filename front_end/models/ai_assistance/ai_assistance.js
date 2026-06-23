@@ -253,8 +253,7 @@ var AgentProject = class {
 // gen/front_end/models/ai_assistance/agents/AccessibilityAgent.js
 var AccessibilityAgent_exports = {};
 __export(AccessibilityAgent_exports, {
-  AccessibilityAgent: () => AccessibilityAgent,
-  AccessibilityContext: () => AccessibilityContext
+  AccessibilityAgent: () => AccessibilityAgent
 });
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
@@ -3302,25 +3301,6 @@ If the user asks a question that requires an investigation of a problem, use thi
     - [Suggestion 1]
     - [Suggestion 2]
 `;
-var AccessibilityContext = class extends ConversationContext {
-  #lh;
-  constructor(report) {
-    super();
-    this.#lh = report;
-  }
-  #url() {
-    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
-  }
-  getURL() {
-    return this.#url();
-  }
-  getItem() {
-    return this.#lh;
-  }
-  getTitle() {
-    return `Lighthouse report: ${this.#url()}`;
-  }
-};
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
   clientFeature = Host8.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
@@ -3375,10 +3355,13 @@ var AccessibilityAgent = class extends AiAgent {
     if (!lhr) {
       return;
     }
-    yield {
-      type: "context",
-      details: this.#createContextDetails(lhr)
-    };
+    const details = await lhr.getUserFacingDetails();
+    if (details) {
+      yield {
+        type: "context",
+        details
+      };
+    }
   }
   async #resolvePathToNode(path) {
     const target = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -3670,40 +3653,17 @@ var AccessibilityAgent = class extends AiAgent {
       }
     });
   }
-  /**
-   * This is the initial payload we send at the start of a conversation.
-   * Because the agent is focused on Accessibility, we include the
-   * Accessibility Audits summary in the payload to avoid an extra round step of
-   * the AI querying them.
-   */
-  #getInitialPayload(context) {
-    const report = context.getItem();
-    const formatter = new LighthouseFormatter();
-    const summary = formatter.summary(report);
-    const audits = formatter.audits(report, "accessibility");
-    const allFailed = Object.values(report.categories).every((category) => category.score === null);
-    if (allFailed) {
-      return "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
-    }
-    return `# Lighthouse Report:
-${summary}
-${audits}`;
-  }
   async enhanceQuery(query, lhr) {
     this.clearDeclaredFunctions();
     if (lhr) {
       this.#declareFunctions();
     }
-    const enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}
+    const promptDetails = lhr ? await lhr.getPromptDetails() : null;
+    const enhancedQuery = promptDetails ? `${promptDetails}
 # User request:
 
 ` : "";
     return `${enhancedQuery}${query}`;
-  }
-  #createContextDetails(lhr) {
-    return [
-      { title: "Lighthouse report", text: this.#getInitialPayload(lhr) }
-    ];
   }
 };
 
@@ -3719,6 +3679,60 @@ import * as Root8 from "./../../core/root/root.js";
 import * as Logs5 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace from "./../workspace/workspace.js";
+
+// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
+var AccessibilityContext_exports = {};
+__export(AccessibilityContext_exports, {
+  AccessibilityContext: () => AccessibilityContext
+});
+var AccessibilityContext = class extends ConversationContext {
+  #lh;
+  #cachedPayload = null;
+  constructor(report) {
+    super();
+    this.#lh = report;
+  }
+  #url() {
+    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
+  }
+  getURL() {
+    return this.#url();
+  }
+  getItem() {
+    return this.#lh;
+  }
+  getTitle() {
+    return `Lighthouse report: ${this.#url()}`;
+  }
+  #getInitialPayload() {
+    if (this.#cachedPayload !== null) {
+      return this.#cachedPayload;
+    }
+    const formatter = new LighthouseFormatter();
+    const summary = formatter.summary(this.#lh);
+    const audits = formatter.audits(this.#lh, "accessibility");
+    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
+    if (allFailed) {
+      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
+    } else {
+      this.#cachedPayload = `# Lighthouse Report:
+${summary}
+${audits}`;
+    }
+    return this.#cachedPayload;
+  }
+  async getPromptDetails() {
+    return this.#getInitialPayload();
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: "Lighthouse report",
+        text: this.#getInitialPayload()
+      }
+    ];
+  }
+};
 
 // gen/front_end/models/ai_assistance/contexts/FileContext.js
 var FileContext_exports = {};
@@ -11760,6 +11774,7 @@ export {
   AIContext_exports as AIContext,
   AIQueries_exports as AIQueries,
   AccessibilityAgent_exports as AccessibilityAgent,
+  AccessibilityContext_exports as AccessibilityContext,
   AgentProject_exports as AgentProject,
   AiAgent_exports as AiAgent,
   AiAgent2_exports as AiAgent2,

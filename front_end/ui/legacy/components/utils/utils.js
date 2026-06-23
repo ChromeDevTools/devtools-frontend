@@ -1248,15 +1248,17 @@ var LinkHandlerSettingUI = class _LinkHandlerSettingUI {
   }
   update() {
     this.element.removeChildren();
-    const names = [...linkHandlers.keys()];
-    names.unshift(i18nString2(UIStrings2.auto));
-    for (const name of names) {
+    const origins = [...linkHandlers.keys()];
+    origins.unshift(i18nString2(UIStrings2.auto));
+    for (const origin of origins) {
       const option = document.createElement("option");
-      option.textContent = name;
-      option.selected = name === Linkifier.linkHandlerSetting().get();
+      const registration = linkHandlers.get(origin);
+      option.textContent = registration === void 0 ? origin : registration.title;
+      option.value = origin;
+      option.selected = origin === Linkifier.linkHandlerSetting().get();
       this.element.appendChild(option);
     }
-    this.element.disabled = names.length <= 1;
+    this.element.disabled = origins.length <= 1;
   }
   onChange(event) {
     if (!event.target) {

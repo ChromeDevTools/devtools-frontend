@@ -26,6 +26,7 @@ export default `/*
 .text-prompt {
   cursor: text;
   overflow-x: visible;
+  min-width: var(--devtools-text-prompt-min-width, auto);
 }
 
 .text-prompt::-webkit-scrollbar {

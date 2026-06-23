@@ -11461,6 +11461,7 @@ var textPrompt_css_default = `/*
 .text-prompt {
   cursor: text;
   overflow-x: visible;
+  min-width: var(--devtools-text-prompt-min-width, auto);
 }
 
 .text-prompt::-webkit-scrollbar {
@@ -11664,17 +11665,19 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
   #done(e, commit) {
     const target = e.target;
     const text = target.textContent || "";
-    this.#internals.setValidity({});
     if (commit) {
       const validationMessage = this.#validator?.(text) ?? "";
       if (validationMessage) {
         this.#internals.setValidity({ customError: true }, validationMessage, this.#entrypoint);
+      } else {
+        this.#internals.setValidity({});
       }
       if (!this.#internals.reportValidity()) {
         return;
       }
       this.dispatchEvent(new _TextPromptElement.CommitEvent(text));
     } else {
+      this.#internals.setValidity({});
       this.dispatchEvent(new _TextPromptElement.CancelEvent());
     }
     e.consume();
@@ -11683,7 +11686,6 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     if (event.handled || !(event instanceof KeyboardEvent)) {
       return;
     }
-    this.#internals.setValidity({});
     if (event.key === "Enter") {
       this.#done(
         event,
@@ -11696,6 +11698,8 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
         /* commit=*/
         false
       );
+    } else {
+      this.#internals.setValidity({});
     }
   }
   set completionTimeout(timeout) {
@@ -18893,7 +18897,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html5, render as render7 } from "./../lit/lit.js";
+import { html as html5, nothing as nothing3, render as render7 } from "./../lit/lit.js";
 import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -19233,12 +19237,12 @@ var ListWidget = class extends VBox {
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          <devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing3 : html5`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
                            .variant=${"icon"}
-                           @click=${onEditClicked}></devtools-button>
+                           @click=${onEditClicked}></devtools-button>`}
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}

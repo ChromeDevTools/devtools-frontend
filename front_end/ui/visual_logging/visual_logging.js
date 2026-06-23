@@ -4361,6 +4361,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "ur",
   "url",
   "url-pattern",
+  "url-pattern-warning",
   "usage",
   "usb",
   "use-code-with-caution",

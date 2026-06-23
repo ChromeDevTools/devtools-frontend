@@ -1,15 +1,8 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
-import { AiAgent, type ContextResponse, ConversationContext, type RequestOptions } from './AiAgent.js';
+import { AiAgent, type ContextResponse, type ConversationContext, type RequestOptions } from './AiAgent.js';
 import { type ExecuteJsAgentOptions } from './ExecuteJavascript.js';
-export declare class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
-    #private;
-    constructor(report: LHModel.ReporterTypes.ReportJSON);
-    getURL(): string;
-    getItem(): LHModel.ReporterTypes.ReportJSON;
-    getTitle(): string;
-}
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.

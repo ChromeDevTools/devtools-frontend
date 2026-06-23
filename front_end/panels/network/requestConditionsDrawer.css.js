@@ -63,6 +63,9 @@ export default `/*
   overflow: hidden;
   flex: auto;
   padding: 0 3px;
+  cursor: text;
+
+  --devtools-text-prompt-min-width: 6em;
 }
 
 .blocked-url-edit-row {

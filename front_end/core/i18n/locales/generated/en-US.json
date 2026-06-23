@@ -11294,9 +11294,6 @@
   "panels/network/RequestConditionsDrawer.ts | learnMore": {
     "message": "Learn more"
   },
-  "panels/network/RequestConditionsDrawer.ts | learnMoreLabel": {
-    "message": "Learn more about URL pattern syntax"
-  },
   "panels/network/RequestConditionsDrawer.ts | noPattern": {
     "message": "Nothing throttled or blocked"
   },

@@ -11,14 +11,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as uiI18n from '../../ui/i18n/i18n.js';
-import { Link } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as PanelUtils from '../utils/utils.js';
 import requestConditionsDrawerStyles from './requestConditionsDrawer.css.js';
-const { ref, live } = Directives;
+const { ref, live, ifDefined } = Directives;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
@@ -81,10 +80,6 @@ const UIStrings = {
      */
     learnMore: 'Learn more',
     /**
-     * @description Accessibility label on a `Learn more` link
-     */
-    learnMoreLabel: 'Learn more about URL pattern syntax',
-    /**
      * @description Tooltip on a button moving an entry up
      * @example {*://example.com} PH1
      */
@@ -125,7 +120,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestConditionsDrawer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const NETWORK_REQUEST_BLOCKING_EXPLANATION_URL = 'https://developer.chrome.com/docs/devtools/network-request-blocking';
-const PATTERN_API_DOCS_URL = 'https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API';
 const { bindToAction } = UI.UIUtils;
 export const DEFAULT_VIEW = (input, output, target) => {
     render(
@@ -163,7 +157,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format on
     target);
 };
-function renderItem(condition, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, lookUpRequestCount) {
+function renderItem({ condition, editing, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, onCommit, onCancel, onBeginEdit, validator, lookUpRequestCount }) {
     const { enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL } = condition;
     const toggle = (e) => {
         e.consume(true);
@@ -176,6 +170,23 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
     const moveDown = (e) => {
         e.consume(true);
         onDecreasePriority(condition);
+    };
+    const onPromptActivate = (e) => {
+        if (!editable || editing) {
+            return;
+        }
+        onBeginEdit(condition);
+        e.consume(true);
+    };
+    const promptKeyDown = (e) => {
+        if (!editable || editing) {
+            return;
+        }
+        const keyboardEvent = e;
+        if (keyboardEvent.key === 'Enter') {
+            onBeginEdit(condition);
+            e.consume(true);
+        }
     };
     // clang-format off
     return html `
@@ -201,7 +212,7 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
       .jslogContext=${'increase-priority'}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       @click=${moveDown}></devtools-button>
-    ${originalOrUpgradedURLPattern ? html `
+    ${!editing && originalOrUpgradedURLPattern ? html `
       <devtools-tooltip variant=rich jslogcontext=url-pattern id=url-pattern-${index}>
         <div>hash: ${originalOrUpgradedURLPattern.hash}</div>
         <div>hostname: ${originalOrUpgradedURLPattern.hostname}</div>
@@ -214,14 +225,14 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
         <hr />
         ${learnMore()}
       </devtools-tooltip>` : nothing}
-    ${wildcardURL ? html `
+    ${!editing && wildcardURL ? html `
       <devtools-icon name=warning-filled class="small warning" aria-details=url-pattern-warning-${index}>
       </devtools-icon>
       <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-warning-${index}>
         ${i18nString(UIStrings.patternWasUpgraded, { PH1: wildcardURL })}
       </devtools-tooltip>
       ` : nothing}
-    ${!originalOrUpgradedURLPattern ? html `
+    ${!editing && !originalOrUpgradedURLPattern ? html `
       <devtools-icon name=cross-circle-filled class=small aria-details=url-pattern-error-${index}>
       </devtools-icon>
       <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-error-${index}>
@@ -231,13 +242,22 @@ function renderItem(condition, editable, index, onToggle, onConditionsChanged, o
         : i18nString(UIStrings.patternFailedToParse)}
         ${learnMore()}
       </devtools-tooltip>` : nothing}
-    <div
-      @click=${toggle}
-      ?disabled=${!editable || !originalOrUpgradedURLPattern}
+    <devtools-prompt
+      @click=${onPromptActivate}
+      @keydown=${promptKeyDown}
+      @focus=${onPromptActivate}
+      tabindex=${ifDefined(editing ? undefined : 0)}
+      @commit=${(e) => onCommit(condition, e.detail)}
+      @cancel=${() => onCancel(condition)}
+      ?disabled=${!editable}
+      placeholder=${i18nString(UIStrings.textEditPattern)}
+      value=${constructorStringOrWildcardURL}
+      ?editing=${editable && editing}
+      .validator=${validator}
       class=blocked-url-label
       aria-details=url-pattern-${index}>
         ${constructorStringOrWildcardURL}
-    </div>
+    </devtools-prompt>
     <select
        class=conditions-selector
        title=${i18nString(UIStrings.requestConditionsLabel)}
@@ -326,6 +346,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
     #throttledCount = new Map();
     #view;
     #listElements = new WeakMap();
+    #editingCondition;
     constructor(target, view = DEFAULT_VIEW) {
         super(target, {
             jslog: `${VisualLogging.panel('network.blocked-urls').track({ resize: true })}`,
@@ -356,7 +377,12 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
     }
     addPattern() {
         this.manager.requestConditions.conditionsEnabled = true;
-        this.list.addNewItem(0, SDK.NetworkManager.RequestCondition.createFromSetting({ url: Platform.DevToolsPath.EmptyUrlString, enabled: true }));
+        if (this.#editingCondition) {
+            this.#cancelEdit(this.#editingCondition);
+        }
+        const condition = SDK.NetworkManager.RequestCondition.createFromSetting({ url: Platform.DevToolsPath.EmptyUrlString, enabled: true });
+        this.#editingCondition = condition;
+        this.update();
     }
     removeAllPatterns() {
         this.manager.requestConditions.clear();
@@ -391,7 +417,47 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
                 this.manager.requestConditions.decreasePriority(condition);
             }
         };
-        render(renderItem(condition, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, this.#getRequestCount.bind(this)), element);
+        const validator = (value) => {
+            if (!value) {
+                return i18nString(UIStrings.patternInputCannotBeEmpty);
+            }
+            const parsedPattern = SDK.NetworkManager.RequestURLPattern.create(value);
+            const stringToCheck = parsedPattern ? parsedPattern.constructorString : value;
+            const existingCondition = this.manager.requestConditions.findCondition(stringToCheck);
+            if (existingCondition && existingCondition !== condition) {
+                return i18nString(UIStrings.patternAlreadyExists);
+            }
+            const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(value);
+            switch (isValid) {
+                case "failed-to-parse" /* SDK.NetworkManager.RequestURLPatternValidity.FAILED_TO_PARSE */:
+                    return i18nString(UIStrings.patternFailedToParse);
+                case "has-regexp-groups" /* SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS */:
+                    return i18nString(UIStrings.patternFailedWithRegExpGroups);
+            }
+            return null;
+        };
+        const onBeginEdit = (condition) => {
+            if (this.#editingCondition) {
+                this.#cancelEdit(this.#editingCondition);
+            }
+            this.#editingCondition = condition;
+            this.updateItem(element, condition, editable, index);
+        };
+        render(renderItem({
+            condition,
+            editable,
+            editing: this.#editingCondition === condition,
+            index,
+            onToggle,
+            onConditionsChanged,
+            onIncreasePriority,
+            onDecreasePriority,
+            onBeginEdit,
+            onCommit: this.#commitEdit.bind(this),
+            onCancel: this.#cancelEdit.bind(this),
+            validator,
+            lookUpRequestCount: this.#getRequestCount.bind(this)
+        }), element);
     }
     toggleEnabled() {
         this.manager.requestConditions.conditionsEnabled = !this.manager.requestConditions.conditionsEnabled;
@@ -401,66 +467,55 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
         this.manager.requestConditions.delete(condition);
         UI.ARIAUtils.LiveAnnouncer.alert(UIStrings.itemDeleted);
     }
-    beginEdit(pattern) {
-        this.editor = this.createEditor();
-        this.editor.control('url').value = pattern.constructorStringOrWildcardURL;
-        return this.editor;
+    beginEdit(_pattern) {
+        throw new Error('Not implemented. Editing is handled externally.');
     }
-    commitEdit(item, editor, isNew) {
-        const constructorString = editor.control('url').value;
+    commitEdit(_item, _editor, _isNew) {
+        throw new Error('Not implemented. Editing is handled externally.');
+    }
+    #commitEdit(condition, value) {
+        if (this.#editingCondition !== condition) {
+            return;
+        }
+        if (condition.constructorStringOrWildcardURL === value &&
+            Array.from(this.manager.requestConditions.conditions).includes(condition)) {
+            this.#editingCondition = undefined;
+            this.update();
+            return;
+        }
+        const constructorString = value;
         const pattern = SDK.NetworkManager.RequestURLPattern.create(constructorString);
         if (!pattern) {
-            throw new Error('Failed to parse pattern');
+            return;
         }
-        item.pattern = pattern;
-        if (isNew) {
-            this.manager.requestConditions.add(item);
+        condition.pattern = pattern;
+        // If it's a new item, it isn't in the manager yet. Add it.
+        if (!Array.from(this.manager.requestConditions.conditions).includes(condition)) {
+            this.manager.requestConditions.add(condition);
         }
+        this.#editingCondition = undefined;
+        this.update();
     }
-    createEditor() {
-        if (this.editor) {
-            return this.editor;
+    #cancelEdit(condition) {
+        if (this.#editingCondition === condition) {
+            this.#editingCondition = undefined;
+            this.update();
         }
-        const editor = new UI.ListWidget.Editor();
-        const content = editor.contentElement();
-        const titles = content.createChild('div', 'blocked-url-edit-row');
-        const label = titles.createChild('label');
-        const learnMore = Link.create(PATTERN_API_DOCS_URL, i18nString(UIStrings.learnMore), undefined, 'learn-more');
-        learnMore.title = i18nString(UIStrings.learnMoreLabel);
-        titles.append('\xA0', learnMore);
-        label.textContent = i18nString(UIStrings.textEditPattern);
-        const fields = content.createChild('div', 'blocked-url-edit-row');
-        const validator = (_item, _index, input) => {
-            if (!input.value) {
-                return { errorMessage: i18nString(UIStrings.patternInputCannotBeEmpty), valid: false };
-            }
-            if (this.manager.requestConditions.has(input.value)) {
-                return { errorMessage: i18nString(UIStrings.patternAlreadyExists), valid: false };
-            }
-            const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(input.value);
-            switch (isValid) {
-                case "failed-to-parse" /* SDK.NetworkManager.RequestURLPatternValidity.FAILED_TO_PARSE */:
-                    return { errorMessage: i18nString(UIStrings.patternFailedToParse), valid: false };
-                case "has-regexp-groups" /* SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS */:
-                    return { errorMessage: i18nString(UIStrings.patternFailedWithRegExpGroups), valid: false };
-            }
-            return { valid: true };
-        };
-        const urlInput = editor.createInput('url', 'text', '', validator);
-        label.htmlFor = urlInput.id = 'editor-url-input';
-        fields.createChild('div', 'blocked-url-edit-value').appendChild(urlInput);
-        return editor;
     }
     update() {
         const enabled = this.manager.requestConditions.conditionsEnabled;
         const newItems = Array.from(this.manager.requestConditions.conditions);
+        if (this.#editingCondition && !newItems.includes(this.#editingCondition)) {
+            newItems.unshift(this.#editingCondition);
+        }
         let oldIndex = 0;
         for (; oldIndex < newItems.length; ++oldIndex) {
             const pattern = newItems[oldIndex];
             this.list.updateItem(oldIndex, pattern, enabled, 
             /* focusable=*/ false, {
                 edit: i18nString(UIStrings.editPattern, { PH1: pattern.constructorStringOrWildcardURL }),
-                delete: i18nString(UIStrings.removePattern, { PH1: pattern.constructorStringOrWildcardURL })
+                delete: i18nString(UIStrings.removePattern, { PH1: pattern.constructorStringOrWildcardURL }),
+                hideEdit: true,
             });
         }
         while (oldIndex < this.list.items.length) {

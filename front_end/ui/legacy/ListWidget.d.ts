@@ -19,10 +19,12 @@ export declare class ListWidget<T> extends VBox {
     updateItem(index: number, newItem: T, editable: boolean, focusable?: boolean, controlLabels?: {
         edit?: string;
         delete?: string;
+        hideEdit?: boolean;
     }): void;
     appendItem(item: T, editable: boolean, focusable?: boolean, controlLabels?: {
         edit?: string;
         delete?: string;
+        hideEdit?: boolean;
     }): void;
     appendSeparator(): void;
     removeItem(index: number): void;

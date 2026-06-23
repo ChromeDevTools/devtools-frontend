@@ -11,7 +11,7 @@ import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 import { debugLog } from '../debug.js';
 import { ExtensionScope } from '../ExtensionScope.js';
 import { ToolRegistry } from '../tools/ToolRegistry.js';
-import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { AiAgent, } from './AiAgent.js';
 import { executeJsCode, } from './ExecuteJavascript.js';
 /**
  * WARNING: preamble defined in code is only used when userTier is
@@ -62,25 +62,6 @@ If the user asks a question that requires an investigation of a problem, use thi
     - [Suggestion 1]
     - [Suggestion 2]
 `;
-export class AccessibilityContext extends ConversationContext {
-    #lh;
-    constructor(report) {
-        super();
-        this.#lh = report;
-    }
-    #url() {
-        return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
-    }
-    getURL() {
-        return this.#url();
-    }
-    getItem() {
-        return this.#lh;
-    }
-    getTitle() {
-        return `Lighthouse report: ${this.#url()}`;
-    }
-}
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -147,10 +128,13 @@ export class AccessibilityAgent extends AiAgent {
         if (!lhr) {
             return;
         }
-        yield {
-            type: "context" /* ResponseType.CONTEXT */,
-            details: this.#createContextDetails(lhr),
-        };
+        const details = await lhr.getUserFacingDetails();
+        if (details) {
+            yield {
+                type: "context" /* ResponseType.CONTEXT */,
+                details,
+            };
+        }
     }
     async #resolvePathToNode(path) {
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -442,35 +426,14 @@ export class AccessibilityAgent extends AiAgent {
             },
         });
     }
-    /**
-     * This is the initial payload we send at the start of a conversation.
-     * Because the agent is focused on Accessibility, we include the
-     * Accessibility Audits summary in the payload to avoid an extra round step of
-     * the AI querying them.
-     */
-    #getInitialPayload(context) {
-        const report = context.getItem();
-        const formatter = new LighthouseFormatter();
-        const summary = formatter.summary(report);
-        const audits = formatter.audits(report, 'accessibility');
-        const allFailed = Object.values(report.categories).every(category => category.score === null);
-        if (allFailed) {
-            return '**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.';
-        }
-        return `# Lighthouse Report:\n${summary}\n${audits}`;
-    }
     async enhanceQuery(query, lhr) {
         this.clearDeclaredFunctions();
         if (lhr) {
             this.#declareFunctions();
         }
-        const enhancedQuery = lhr ? `${this.#getInitialPayload(lhr)}\n# User request:\n\n` : '';
+        const promptDetails = lhr ? await lhr.getPromptDetails() : null;
+        const enhancedQuery = promptDetails ? `${promptDetails}\n# User request:\n\n` : '';
         return `${enhancedQuery}${query}`;
-    }
-    #createContextDetails(lhr) {
-        return [
-            { title: 'Lighthouse report', text: this.#getInitialPayload(lhr) },
-        ];
     }
 }
 //# sourceMappingURL=AccessibilityAgent.js.map

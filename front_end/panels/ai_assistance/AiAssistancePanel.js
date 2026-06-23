@@ -518,7 +518,7 @@ function createAccessibilityContext(report) {
     if (!report) {
         return null;
     }
-    return new AiAssistanceModel.AccessibilityAgent.AccessibilityContext(report.report);
+    return new AiAssistanceModel.AccessibilityContext.AccessibilityContext(report.report);
 }
 function createRequestContext(request) {
     if (!request) {
@@ -1449,7 +1449,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
             this.#selectedPerformanceTrace = data;
         }
-        else if (data instanceof AiAssistanceModel.AccessibilityAgent.AccessibilityContext) {
+        else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {
             this.#selectedAccessibility = data;
         }
         else if (data instanceof AiAssistanceModel.StorageAgent.StorageContext) {

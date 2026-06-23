@@ -22,6 +22,7 @@ import * as AiOrigins from './AiOrigins.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
+import * as AccessibilityContext from './contexts/AccessibilityContext.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
@@ -50,6 +51,7 @@ import * as ToolRegistry from './tools/ToolRegistry.js';
 
 export {
   AccessibilityAgent,
+  AccessibilityContext,
   AgentProject,
   AiAgent,
   AiAgent2,

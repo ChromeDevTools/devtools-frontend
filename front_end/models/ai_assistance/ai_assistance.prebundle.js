@@ -21,6 +21,7 @@ import * as AiOrigins from './AiOrigins.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
 import * as ChangeManager from './ChangeManager.js';
+import * as AccessibilityContext from './contexts/AccessibilityContext.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
@@ -46,5 +47,5 @@ import * as GetStyles from './tools/GetStyles.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
-export { AccessibilityAgent, AgentProject, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetNetworkRequestDetails, GetStyles, GreenDevAgent, GreenDevAgentAntigravityCliSocketClient, GreenDevAgentGeminiCliSocketClient, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceFormatter, RequestContext, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
+export { AccessibilityAgent, AccessibilityContext, AgentProject, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetNetworkRequestDetails, GetStyles, GreenDevAgent, GreenDevAgentAntigravityCliSocketClient, GreenDevAgentGeminiCliSocketClient, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceFormatter, RequestContext, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
 //# sourceMappingURL=ai_assistance.prebundle.js.map

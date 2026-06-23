@@ -7,7 +7,7 @@ import './Toolbar.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import { html, render } from '../lit/lit.js';
+import { html, nothing, render } from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import listWidgetStyles from './listWidget.css.js';
@@ -183,12 +183,12 @@ export class ListWidget extends VBox {
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          <devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing : html `<devtools-button class=toolbar-button
                            .iconName=${'edit'}
                            .jslogContext=${'edit-item'}
                            .title=${controlLabels?.edit ?? i18nString(UIStrings.editString)}
                            .variant=${"icon" /* Buttons.Button.Variant.ICON */}
-                           @click=${onEditClicked}></devtools-button>
+                           @click=${onEditClicked}></devtools-button>`}
           <devtools-button class=toolbar-button
                            .iconName=${'bin'}
                            .jslogContext=${'remove-item'}

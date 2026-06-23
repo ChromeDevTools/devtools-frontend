@@ -808,6 +808,36 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.deepEqual(result.error?.details, ['Permission denied']);
   });
 
+  it('blocks evaluation on other extension execution contexts', async () => {
+    assert.isUndefined(context.chrome.devtools);
+
+    const parentFrameUrl = allowedUrl;
+    const parentFrame = await setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+
+    // Yield to the microtask queue to allow the extension to be initialized.
+    await new Promise(r => setTimeout(r, 0));
+
+    // Create a non-default context with a different extension origin.
+    const otherExtensionOrigin = urlString`chrome-extension://other-extension`;
+    const runtimeModel = parentFrame.resourceTreeModel()?.target().model(SDK.RuntimeModel.RuntimeModel);
+    assert.exists(runtimeModel);
+    runtimeModel.executionContextCreated({
+      id: 1 as Protocol.Runtime.ExecutionContextId,
+      origin: otherExtensionOrigin,
+      name: otherExtensionOrigin,
+      uniqueId: otherExtensionOrigin,
+      auxData: {frameId: parentFrame.id, isDefault: false},
+    });
+    const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
+        r => context.chrome.devtools?.inspectedWindow.eval(
+            // The typings don't match the implementation, so we need to cast to any here to make ts happy.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            '4', {frameURL: parentFrameUrl, scriptExecutionContext: otherExtensionOrigin} as any,
+            (result, error) => r({result, error})));
+
+    assert.deepEqual(result.error?.details, ['Permission denied']);
+  });
+
   it('blocks evaluation on blocked sub-executioncontexts', async () => {
     assert.isUndefined(context.chrome.devtools);
 

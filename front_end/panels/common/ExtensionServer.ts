@@ -85,7 +85,8 @@ export class HostsPolicy {
 }
 
 class RegisteredExtension {
-  constructor(readonly name: string, readonly hostsPolicy: HostsPolicy, readonly allowFileAccess: boolean) {
+  constructor(readonly origin: string, readonly name: string, readonly hostsPolicy: HostsPolicy,
+              readonly allowFileAccess: boolean) {
   }
 
   isAllowedOnTarget(inspectedURL?: Platform.DevToolsPath.UrlString): boolean {
@@ -102,6 +103,14 @@ class RegisteredExtension {
       parsedURL = new URL(inspectedURL);
     } catch {
       return false;
+    }
+
+    if (parsedURL.protocol === 'chrome-extension:') {
+      if (parsedURL.origin !== this.origin) {
+        if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+          return false;
+        }
+      }
     }
 
     if (!ExtensionServer.canInspectURL(inspectedURL)) {
@@ -1388,7 +1397,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const startPageURL = new URL((startPage));
       const extensionOrigin = startPageURL.origin;
       const name = extensionInfo.name || `Extension ${extensionOrigin}`;
-      const extensionRegistration = new RegisteredExtension(name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));
+      const extensionRegistration =
+          new RegisteredExtension(extensionOrigin, name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));
       if (!extensionRegistration.isAllowedOnTarget(inspectedURL)) {
         this.#pendingExtensions.push(extensionInfo);
         return;
@@ -1607,25 +1617,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     if (!extension?.isAllowedOnTarget(context.origin)) {
       return this.status.E_FAILED('Permission denied');
-    }
-
-    try {
-      const parsedUrl = new URL(frame.url);
-      let targetType = Host.UserMetrics.ExtensionEvalTarget.WEB_PAGE;
-      if (parsedUrl.protocol === 'chrome-extension:') {
-        if (parsedUrl.origin === securityOrigin) {
-          targetType = Host.UserMetrics.ExtensionEvalTarget.SAME_EXTENSION;
-        } else {
-          targetType = Host.UserMetrics.ExtensionEvalTarget.OTHER_EXTENSION;
-          if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
-            return this.status.E_FAILED(
-                'Access to extension URLs is restricted; use --extensions-on-chrome-urls to enable.');
-          }
-        }
-      }
-      Host.userMetrics.extensionEvalTarget(targetType);
-    } catch {
-      // Ignore invalid URLs.
     }
 
     void context

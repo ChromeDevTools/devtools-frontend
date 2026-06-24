@@ -57,6 +57,7 @@ devtools_module("ai_assistance") {
     "tools/GetNetworkRequestDetails.ts",
     "tools/GetStyles.ts",
     "tools/ListNetworkRequests.ts",
+    "tools/ResolveLighthousePath.ts",
     "tools/Tool.ts",
     "tools/ToolRegistry.ts",
   ]
@@ -158,6 +159,7 @@ ts_library("unittests") {
     "tools/GetNetworkRequestDetails.test.ts",
     "tools/GetStyles.test.ts",
     "tools/ListNetworkRequests.test.ts",
+    "tools/ResolveLighthousePath.test.ts",
     "tools/ToolRegistry.test.ts",
   ]
 

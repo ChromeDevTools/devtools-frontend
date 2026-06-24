@@ -98,6 +98,7 @@ export const enum ToolName {
   LIST_NETWORK_REQUESTS = 'listNetworkRequests',
   GET_NETWORK_REQUEST_DETAILS = 'getNetworkRequestDetails',
   GET_LIGHTHOUSE_AUDITS = 'getLighthouseAudits',
+  RESOLVE_LIGHTHOUSE_PATH = 'resolveLighthousePath',
 }
 
 /**

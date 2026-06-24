@@ -105,6 +105,10 @@ To aid debugging, you can enable the AI Assistance logging. This setting is stor
 
 Now, when interacting with the AI and sending requests, you will see output logged to the console. You can use the `debugLog` helper to add your own logging as you are building out your feature.
 
+### Testing the Accessibility Skill
+
+The accessibility skill (`accessibility.md`) relies on an active Lighthouse report. Before interacting with the agent using this skill, ensure you have run a Lighthouse audit on the page you are inspecting so that the `getLighthouseAudits` tool can retrieve the report data.
+
 ## Security & Origin Isolation
 
 To prevent prompt injection attacks and cross-origin data leaks, the AI Assistance panel enforces strict origin-lock boundaries:

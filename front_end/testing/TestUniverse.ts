@@ -36,7 +36,7 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
  * uses DEFAULT_SETTING_REGISTRATIONS_FOR_TEST, but it will not read the global
  * registered settings (on purpose).
  */
-export class TestUniverse {
+export class TestUniverse implements Foundation.Universe.Universe {
   readonly #context = new Root.DevToolsContext.WritableDevToolsContext();
   readonly #creationOptions?: CreationOptions;
 
@@ -56,6 +56,11 @@ export class TestUniverse {
       this.#context.set(Common.Console.Console, new Common.Console.Console());
     }
     return this.#context.get(Common.Console.Console);
+  }
+
+  // eslint-disable-next-line @devtools/enforce-test-universe-return-types
+  get context(): Root.DevToolsContext.DevToolsContext {
+    return this.#context;
   }
 
   get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding {

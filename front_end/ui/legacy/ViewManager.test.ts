@@ -7,9 +7,9 @@ import {assert} from 'chai';
 import * as Common from '../../core/common/common.js';
 import type {EventTargetEvent} from '../../core/common/EventTarget.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import {raf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as UI from './legacy.js';
 
@@ -98,8 +98,7 @@ describeWithEnvironment('ViewManager', () => {
       });
     }
 
-    viewManager = UI.ViewManager.ViewManager.instance(
-        {forceNew: true, universe: {context: new Root.DevToolsContext.WritableDevToolsContext()}});
+    viewManager = UI.ViewManager.ViewManager.instance({forceNew: true, universe: new TestUniverse()});
     locationResolver.createLocation(UI.ViewManager.ViewLocationValues.PANEL, true, 'view-1');
     locationResolver.createLocation(UI.ViewManager.ViewLocationValues.DRAWER_VIEW, false, undefined);
   });

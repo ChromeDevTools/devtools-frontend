@@ -14,6 +14,9 @@ export interface CreationOptions {
 }
 
 export class Universe {
+  // TODO(crbug.com/493763857): Once a singleton is no longer a singleton (i.e. it has no 'instance')
+  //                            static method, we can move it out of the `DevToolsContext` and store it
+  //                            directly on the `Universe`.
   readonly context: Root.DevToolsContext.DevToolsContext;
 
   constructor(options: CreationOptions) {
@@ -58,5 +61,9 @@ export class Universe {
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
         resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+  }
+
+  get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader {
+    return this.context.get(SDK.PageResourceLoader.PageResourceLoader);
   }
 }

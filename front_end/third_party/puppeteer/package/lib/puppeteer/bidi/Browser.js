@@ -128,7 +128,7 @@ let BidiBrowser = (() => {
                 }
                 catch (err) {
                     if (err instanceof ProtocolError) {
-                        debugError(err);
+                        debugError?.(err);
                     }
                     else {
                         throw err;
@@ -223,7 +223,7 @@ let BidiBrowser = (() => {
             }
             catch (error) {
                 // Fail silently.
-                debugError(error);
+                debugError?.(error);
             }
             finally {
                 this.connection.dispose();
@@ -316,7 +316,7 @@ let BidiBrowser = (() => {
             }
             catch (error) {
                 // Fail silently.
-                debugError(error);
+                debugError?.(error);
             }
             finally {
                 this.connection.dispose();

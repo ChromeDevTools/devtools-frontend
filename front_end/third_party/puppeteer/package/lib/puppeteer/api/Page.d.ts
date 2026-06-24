@@ -717,7 +717,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     /**
      * A target this page was created from.
      *
-     * @deprecated Use {@link Page.createCDPSession} directly.
+     * @deprecated To create CDP session use {@link Page.createCDPSession} directly. To
+     * identify pages spawned by this one, use {@link PageEvent.Popup} event instead.
      */
     abstract target(): Target;
     /**
@@ -753,9 +754,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract get tracing(): Tracing;
     /**
-     * Experimental API for {@link https://github.com/webmachinelearning/webmcp
-     * | WebMCP}. Requires Chrome 149+ with the
-     * `--enable-features=WebMCPTesting,DevToolsWebMCPSupport` flags enabled.
+     * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
+     * Requires Chrome 150+ with the `--enable-features=WebMCP` flag enabled.
      *
      * @experimental
      */
@@ -1743,6 +1743,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * ```
      */
     abstract emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
+    /**
+     * @param locale - Locale to emulate on the page. Passing no locale disables
+     * locale emulation.
+     */
+    abstract emulateLocale(locale?: string): Promise<void>;
     /**
      * @param timezoneId - Changes the timezone of the page. See
      * {@link https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt | ICU’s metaZones.txt}

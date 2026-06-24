@@ -19,23 +19,21 @@ export class CdpExtension extends Extension {
             return (target.type() === 'service_worker' &&
                 targetUrl.startsWith('chrome-extension://' + this.id));
         });
-        const workers = [];
-        for (const target of extensionWorkers) {
+        const workers = await Promise.all(extensionWorkers.map(async (target) => {
             try {
-                const worker = await target.worker();
-                if (worker) {
-                    workers.push(worker);
-                }
+                return await target.worker();
             }
             catch (err) {
                 if (this.#canIgnoreError(err)) {
-                    debugError(err);
-                    continue;
+                    debugError?.(err);
+                    return null;
                 }
                 throw err;
             }
-        }
-        return workers;
+        }));
+        return workers.filter((worker) => {
+            return worker !== null;
+        });
     }
     async pages() {
         const targets = this.#browser.targets();
@@ -50,7 +48,7 @@ export class CdpExtension extends Extension {
             }
             catch (err) {
                 if (this.#canIgnoreError(err)) {
-                    debugError(err);
+                    debugError?.(err);
                     return null;
                 }
                 throw err;

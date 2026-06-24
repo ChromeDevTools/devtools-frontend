@@ -119,6 +119,19 @@ export declare abstract class WebWorker extends EventEmitter<WebWorkerEvents> {
      * @returns A {@link JSHandle | handle} to the return value of `func`.
      */
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(func: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    /**
+     * Waits for the provided function, `workerFunction`, to return a truthy value when
+     * evaluated in the page's context.
+     *
+     * @param workerFunction - Function to be evaluated in browser context until it
+     * returns a truthy value.
+     * @param options - Options for configuring waiting behavior.
+     */
+    waitForFunction<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(workerFunction: Func | string, options?: {
+        polling?: number;
+        timeout?: number;
+        signal?: AbortSignal;
+    }, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     close(): Promise<void>;
 }
 //# sourceMappingURL=WebWorker.d.ts.map

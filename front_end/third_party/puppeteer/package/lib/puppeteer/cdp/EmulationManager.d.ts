@@ -43,6 +43,7 @@ export declare class EmulationManager implements ClientProvider {
         isScreenUnlocked: boolean;
     }): Promise<void>;
     emulateTimezone(timezoneId?: string): Promise<void>;
+    emulateLocale(locale?: string): Promise<void>;
     emulateVisionDeficiency(type?: Protocol.Emulation.SetEmulatedVisionDeficiencyRequest['type']): Promise<void>;
     emulateCPUThrottling(factor: number | null): Promise<void>;
     emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;

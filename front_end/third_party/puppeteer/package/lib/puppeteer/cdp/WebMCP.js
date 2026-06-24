@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError } from '../common/util.js';
-import { FrameManagerEvent } from './FrameManagerEvents.js';
+import { debugError, debugCatchError } from '../common/util.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
 /**
  * Represents a registered WebMCP tool available on the page.
@@ -123,7 +122,7 @@ export class WebMCPToolCall {
         }
         catch (error) {
             this.input = {};
-            debugError(error);
+            debugError?.(error);
         }
     }
 }
@@ -162,6 +161,7 @@ export class WebMCP extends EventEmitter {
             const frameTools = this.#tools.get(tool.frameId) ?? new Map();
             if (!this.#tools.has(tool.frameId)) {
                 this.#tools.set(tool.frameId, frameTools);
+                this.#listenToContextDestroyed(frame);
             }
             const addedTool = new WebMCPTool(this, tool, frame);
             frameTools.set(tool.name, addedTool);
@@ -205,7 +205,7 @@ export class WebMCP extends EventEmitter {
         };
         this.emit('toolresponded', response);
     };
-    #onFrameNavigated = (frame) => {
+    #onContextDisposed = (frame) => {
         this.#pendingCalls.clear();
         const frameTools = this.#tools.get(frame._id);
         if (!frameTools) {
@@ -217,6 +217,11 @@ export class WebMCP extends EventEmitter {
             this.emit('toolsremoved', { tools });
         }
     };
+    #listenToContextDestroyed(frame) {
+        frame.mainRealm().context?.once('disposed', () => {
+            this.#onContextDisposed(frame);
+        });
+    }
     /**
      * @internal
      */
@@ -224,14 +229,13 @@ export class WebMCP extends EventEmitter {
         super();
         this.#client = client;
         this.#frameManager = frameManager;
-        this.#frameManager.on(FrameManagerEvent.FrameNavigated, this.#onFrameNavigated);
         this.#bindListeners();
     }
     /**
      * @internal
      */
     async initialize() {
-        return await this.#client.send('WebMCP.enable').catch(debugError);
+        return await this.#client.send('WebMCP.enable').catch(debugCatchError);
     }
     /**
      * @internal

@@ -80,7 +80,7 @@ export class CdpHTTPRequest extends HTTPRequest {
             return result.postData;
         }
         catch (err) {
-            debugError(err);
+            debugError?.(err);
             return;
         }
     }

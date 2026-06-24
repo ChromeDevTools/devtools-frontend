@@ -6,7 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
-import type { Credentials } from '../api/Page.js';
+import type { Credentials, Page } from '../api/Page.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { type NetworkManagerEvents } from '../common/NetworkManagerEvents.js';
 /**
@@ -45,6 +45,7 @@ export interface InternalNetworkConditions extends NetworkConditions {
  */
 export interface FrameProvider {
     frame(id: string): Frame | null;
+    page(): Page;
 }
 /**
  * @internal
@@ -60,6 +61,7 @@ export declare class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     setOfflineMode(value: boolean): Promise<void>;
     emulateNetworkConditions(networkConditions: NetworkConditions | null): Promise<void>;
     setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata, platform?: string): Promise<void>;
+    setAcceptLanguage(acceptLanguage: string | undefined): Promise<void>;
     setCacheEnabled(enabled: boolean): Promise<void>;
     setRequestInterception(value: boolean): Promise<void>;
 }

@@ -557,15 +557,11 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
     }>
   ): Promise<void>;
   /**
-   * Installs an extension and returns the ID. In Chrome, this is only
-   * available if the browser was created using `pipe: true` and the
-   * `--enable-unsafe-extension-debugging` flag is set.
+   * Installs an extension and returns the ID.
    */
   abstract installExtension(path: string): Promise<string>;
   /**
-   * Uninstalls an extension. In Chrome, this is only available if the browser
-   * was created using `pipe: true` and the
-   * `--enable-unsafe-extension-debugging` flag is set.
+   * Uninstalls an extension.
    */
   abstract uninstallExtension(id: string): Promise<void>;
   /**
@@ -1179,9 +1175,11 @@ export declare interface Configuration {
    */
   temporaryDirectory?: string;
   /**
-   * Tells Puppeteer to not download during installation.
+   * Tells Puppeteer to not download any of the browsers during installation.
    *
-   * Can be overridden by `PUPPETEER_SKIP_DOWNLOAD`.
+   * Can be overridden by `PUPPETEER_SKIP_DOWNLOAD` or by specifying either
+   * `skipDownload` property in each browser specific config or by providing
+   * `PUPPETEER_FIREFOX_SKIP_DOWNLOAD` and `PUPPETEER_CHROME_SKIP_DOWNLOAD`.
    */
   skipDownload?: boolean;
   /**
@@ -1369,26 +1367,32 @@ export declare interface ConnectOptions {
   /**
    * A list of URL patterns to block.
    *
-   * This option allows you to restrict the browser from accessing specific
-   * URLs or origins. It uses the standard [URLPattern](https://urlpattern.spec.whatwg.org/) API to match URLs.
+   * This option allows you to restrict the browser from accessing specific URLs
+   * or origins. It uses the standard
+   * [URLPattern](https://urlpattern.spec.whatwg.org/) API to match URLs.
    *
-   * When connecting to an existing browser, Puppeteer will silently detach from any
-   * already open targets that violate the patterns.
+   * When connecting to an existing browser, Puppeteer will silently detach from
+   * any already open targets that violate the patterns.
    *
    * For any network requests made by the browser (including navigations and
    * subresources like images or scripts), the request will fail with an error
    * if the URL matches a blocked pattern.
    *
-   * @example Pattern to block a specific domain:
-   * `*://example.com/*`
+   * @example Pattern to block a specific domain: `*://example.com/*`
    *
-   * @example Pattern to block all subdomains:
-   * `*://*.evil.com/*`
+   * @example Pattern to block all subdomains: `*://*.evil.com/*`
    *
    * @remarks
-   * Currently only supported for CDP connections.
+   * Currently only supported for Chrome.
    *
-   * Inner `<iframe>` content loading is currently not blocked.
+   * The feature works while Puppeteer is attached to the CDP targets.
+   * It intercepts requests in the network service in Chrome.
+   * Chrome may perform some network access in other ways or
+   * some web features may omit the network service.
+   * The feature is meant as an additional guardrails to LLM-based
+   * usage under Puppeteer control and not a complete network sandbox.
+   * For complete network sandboxing, we recommend using
+   * container/OS-level sandbox mechanism.
    *
    * Cannot be used along with {@link ConnectOptions.allowlist}.
    *
@@ -1418,9 +1422,16 @@ export declare interface ConnectOptions {
    * `*://*.example.com/*`
    *
    * @remarks
-   * Currently only supported for CDP connections.
+   * Currently only supported for Chrome.
    *
-   * Inner `<iframe>` content loading is currently not blocked.
+   * The feature works while Puppeteer is attached to the CDP targets.
+   * It intercepts requests in the network service in Chrome.
+   * Chrome may perform some network access in other ways or
+   * some web features may omit the network service.
+   * The feature is meant as an additional guardrails to LLM-based
+   * usage under Puppeteer control and not a complete network sandbox.
+   * For complete network sandboxing, we recommend using
+   * container/OS-level sandbox mechanism.
    *
    * Cannot be used along with {@link ConnectOptions.blocklist}.
    *
@@ -5753,7 +5764,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
   /**
    * A target this page was created from.
    *
-   * @deprecated Use {@link Page.createCDPSession} directly.
+   * @deprecated To create CDP session use {@link Page.createCDPSession} directly. To
+   * identify pages spawned by this one, use {@link PageEvent.Popup} event instead.
    */
   abstract target(): Target;
   /**
@@ -5789,9 +5801,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    */
   abstract get tracing(): Tracing;
   /**
-   * Experimental API for {@link https://github.com/webmachinelearning/webmcp
-   * | WebMCP}. Requires Chrome 149+ with the
-   * `--enable-features=WebMCPTesting,DevToolsWebMCPSupport` flags enabled.
+   * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
+   * Requires Chrome 150+ with the `--enable-features=WebMCP` flag enabled.
    *
    * @experimental
    */
@@ -6829,6 +6840,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * ```
    */
   abstract emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
+  /**
+   * @param locale - Locale to emulate on the page. Passing no locale disables
+   * locale emulation.
+   */
+  abstract emulateLocale(locale?: string): Promise<void>;
   /**
    * @param timezoneId - Changes the timezone of the page. See
    * {@link https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt | ICU’s metaZones.txt}
@@ -9760,6 +9776,26 @@ export declare abstract class WebWorker extends EventEmitter<WebWorkerEvents> {
     Func extends EvaluateFunc<Params> = EvaluateFunc<Params>,
   >(
     func: Func | string,
+    ...args: Params
+  ): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+  /**
+   * Waits for the provided function, `workerFunction`, to return a truthy value when
+   * evaluated in the page's context.
+   *
+   * @param workerFunction - Function to be evaluated in browser context until it
+   * returns a truthy value.
+   * @param options - Options for configuring waiting behavior.
+   */
+  waitForFunction<
+    Params extends unknown[],
+    Func extends EvaluateFunc<Params> = EvaluateFunc<Params>,
+  >(
+    workerFunction: Func | string,
+    options?: {
+      polling?: number;
+      timeout?: number;
+      signal?: AbortSignal;
+    },
     ...args: Params
   ): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
   close(): Promise<void>;

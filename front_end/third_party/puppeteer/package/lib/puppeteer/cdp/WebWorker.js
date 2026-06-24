@@ -3,7 +3,8 @@ import { TargetType } from '../api/Target.js';
 import { WebWorker, WebWorkerEvent, } from '../api/WebWorker.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { debugError } from '../common/util.js';
+import { debugError, debugCatchError } from '../common/util.js';
+import { Deferred } from '../util/Deferred.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
@@ -17,6 +18,7 @@ export class CdpWebWorker extends WebWorker {
     #id;
     #targetType;
     #emitter;
+    #workerLoaded = new Deferred();
     get internalEmitter() {
         return this.#emitter;
     }
@@ -30,6 +32,9 @@ export class CdpWebWorker extends WebWorker {
         this.#client.once('Runtime.executionContextCreated', async (event) => {
             this.#world.setContext(new ExecutionContext(client, event.context, this.#world));
         });
+        this.#client.once('Inspector.workerScriptLoaded', () => {
+            this.#workerLoaded.resolve();
+        });
         this.#world.emitter.on('consoleapicalled', async (event) => {
             try {
                 const values = event.args.map(arg => {
@@ -41,7 +46,7 @@ export class CdpWebWorker extends WebWorker {
                     // eslint-disable-next-line max-len -- The comment is long.
                     // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
                     for (const value of values) {
-                        void value.dispose().catch(debugError);
+                        void value.dispose().catch(debugCatchError);
                     }
                     return;
                 }
@@ -52,7 +57,7 @@ export class CdpWebWorker extends WebWorker {
                 }
             }
             catch (err) {
-                debugError(err);
+                debugError?.(err);
             }
         });
         this.#client.on('Runtime.exceptionThrown', exceptionThrown);
@@ -60,8 +65,10 @@ export class CdpWebWorker extends WebWorker {
             this.#world.dispose();
         });
         // This might fail if the target is closed before we receive all execution contexts.
-        networkManager?.addClient(this.#client).catch(debugError);
-        this.#client.send('Runtime.enable').catch(debugError);
+        networkManager
+            ?.addClient(this.#client)
+            .catch(debugCatchError ?? (() => { }));
+        this.#client.send('Runtime.enable').catch(debugCatchError ?? (() => { }));
     }
     mainRealm() {
         return this.#world;
@@ -93,6 +100,14 @@ export class CdpWebWorker extends WebWorker {
                     self.close();
                 });
         }
+    }
+    async evaluate(func, ...args) {
+        await this.#workerLoaded.valueOrThrow();
+        return await super.evaluate(func, ...args);
+    }
+    async evaluateHandle(func, ...args) {
+        await this.#workerLoaded.valueOrThrow();
+        return await super.evaluateHandle(func, ...args);
     }
 }
 //# sourceMappingURL=WebWorker.js.map

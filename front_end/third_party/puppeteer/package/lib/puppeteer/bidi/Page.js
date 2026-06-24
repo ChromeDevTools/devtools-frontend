@@ -366,6 +366,9 @@ let BidiPage = (() => {
         async emulateTimezone(timezoneId) {
             return await this.#frame.browsingContext.setTimezoneOverride(timezoneId);
         }
+        async emulateLocale(locale) {
+            return await this.#frame.browsingContext.setLocaleOverride(locale);
+        }
         async emulateIdleState(overrides) {
             return await this.#cdpEmulationManager.emulateIdleState(overrides);
         }

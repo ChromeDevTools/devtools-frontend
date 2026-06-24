@@ -93,7 +93,7 @@ import { concat, distinctUntilChanged, EMPTY, filter, first, firstValueFrom, fro
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, } from '../common/EventEmitter.js';
 import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { debugError, fromEmitterEvent, filterAsync, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, } from '../common/util.js';
+import { fromEmitterEvent, filterAsync, isString, NETWORK_IDLE_TIME, timeout, withSourcePuppeteerURLIfNone, fromAbortSignal, debugCatchError, } from '../common/util.js';
 import { environment } from '../environment.js';
 import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, DisposableStack, disposeSymbol, } from '../util/disposable.js';
@@ -970,7 +970,7 @@ let Page = (() => {
                 if (viewport && viewport.deviceScaleFactor !== 0) {
                     await this.setViewport({ ...viewport, deviceScaleFactor: 0 });
                     stack.defer(() => {
-                        void this.setViewport(viewport).catch(debugError);
+                        void this.setViewport(viewport).catch(debugCatchError);
                     });
                 }
                 return await this.mainFrame()
@@ -1068,7 +1068,7 @@ let Page = (() => {
                                 ...scrollDimensions,
                             });
                             stack.defer(async () => {
-                                await this.setViewport(viewport).catch(debugError);
+                                await this.setViewport(viewport).catch(debugCatchError);
                             });
                         }
                     }
@@ -1450,7 +1450,7 @@ let Page = (() => {
         [(_screenshot_decorators = [guarded(function () {
                 return this.browser();
             })], disposeSymbol)]() {
-            return void this[asyncDisposeSymbol]().catch(debugError);
+            return void this[asyncDisposeSymbol]().catch(debugCatchError);
         }
         /** @internal */
         async [asyncDisposeSymbol]() {

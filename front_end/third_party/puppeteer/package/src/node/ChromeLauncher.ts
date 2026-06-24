@@ -107,19 +107,27 @@ export class ChromeLauncher extends BrowserLauncher {
 
     // Check for the user data dir argument, which will always be set even
     // with a custom directory specified via the userDataDir option.
-    let userDataDirIndex = chromeArguments.findIndex(arg => {
+    const userDataDirIndex = chromeArguments.findIndex(arg => {
       return arg.startsWith('--user-data-dir');
     });
+
+    let userDataDir: string;
     if (userDataDirIndex < 0) {
       isTempUserDataDir = true;
-      chromeArguments.push(
-        `--user-data-dir=${await mkdtemp(await this.getProfilePath())}`,
+      const profilePath = await this.getProfilePath();
+      userDataDir = await mkdtemp(profilePath);
+      chromeArguments.push(`--user-data-dir=${userDataDir}`);
+    } else {
+      const parsedUserDataDir = chromeArguments[userDataDirIndex]!.split(
+        '=',
+        2,
+      )[1];
+      assert(
+        typeof parsedUserDataDir === 'string',
+        '`--user-data-dir` is malformed',
       );
-      userDataDirIndex = chromeArguments.length - 1;
+      userDataDir = parsedUserDataDir;
     }
-
-    const userDataDir = chromeArguments[userDataDirIndex]!.split('=', 2)[1];
-    assert(typeof userDataDir === 'string', '`--user-data-dir` is malformed');
 
     let chromeExecutable = executablePath;
     if (!chromeExecutable) {
@@ -151,7 +159,7 @@ export class ChromeLauncher extends BrowserLauncher {
       try {
         await rm(path);
       } catch (error) {
-        debugError(error);
+        debugError?.(error);
         throw error;
       }
     }
@@ -273,11 +281,9 @@ export class ChromeLauncher extends BrowserLauncher {
         '--mute-audio',
       );
     }
-    chromeArguments.push(
-      enableExtensions
-        ? '--enable-unsafe-extension-debugging'
-        : '--disable-extensions',
-    );
+    if (!enableExtensions) {
+      chromeArguments.push('--disable-extensions');
+    }
     if (
       args.every(arg => {
         return arg.startsWith('-');

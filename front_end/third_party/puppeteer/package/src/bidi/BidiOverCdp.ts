@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as BidiMapper from 'chromium-bidi/lib/bidiMapper/BidiMapper.js';
+import {BidiMapper} from 'chromium-bidi';
 import type {ProtocolMapping} from 'devtools-protocol/types/protocol-mapping.js';
 
 import type {CDPEvents, CDPSession} from '../api/CDPSession.js';
@@ -16,7 +16,7 @@ import type {Handler} from '../common/EventEmitter.js';
 import {BidiConnection} from './Connection.js';
 
 const bidiServerLogger = (prefix: string, ...args: unknown[]): void => {
-  debug(`bidi:${prefix}`)(args);
+  debug(`bidi:${prefix}`)?.(args);
 };
 
 /**

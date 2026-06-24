@@ -56,7 +56,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
  * SPDX-License-Identifier: Apache-2.0
  */
 import { JSHandle } from '../api/JSHandle.js';
-import { debugError } from '../common/util.js';
+import { debugCatchError } from '../common/util.js';
 import { DisposableStack } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 /**
@@ -144,7 +144,7 @@ export class Binding {
                     callbacks.get(seq).reject(error);
                     callbacks.delete(seq);
                 }, this.#name, id, error.message, error.stack)
-                    .catch(debugError);
+                    .catch(debugCatchError);
             }
             else {
                 await context
@@ -154,7 +154,7 @@ export class Binding {
                     callbacks.get(seq).reject(error);
                     callbacks.delete(seq);
                 }, this.#name, id, error)
-                    .catch(debugError);
+                    .catch(debugCatchError);
             }
         }
     }

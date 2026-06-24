@@ -17,6 +17,18 @@ import { createIncrementalIdGenerator, } from '../util/incremental-id-generator.
 import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';
 /**
+ * @internal
+ */
+export function getBrowserTypeDisplayName(browserType) {
+    switch (browserType) {
+        case InstalledBrowser.FIREFOX:
+        case InstalledBrowser.CHROME:
+            return browserType.charAt(0).toUpperCase() + browserType.slice(1);
+        default:
+            return browserType;
+    }
+}
+/**
  * Describes a launcher - a class that is able to create and launch a browser instance.
  *
  * @public
@@ -153,9 +165,6 @@ export class BrowserLauncher {
             throw error;
         }
         if (Array.isArray(enableExtensions)) {
-            if (this.#browser === 'chrome' && !usePipe) {
-                throw new Error('To use `enableExtensions` with a list of paths in Chrome, you must be connected with `--remote-debugging-pipe` (`pipe: true`).');
-            }
             await Promise.all([
                 enableExtensions.map(path => {
                     return browser.installExtension(path);
@@ -178,7 +187,7 @@ export class BrowserLauncher {
                 await browserProcess.hasClosed();
             }
             catch (error) {
-                debugError(error);
+                debugError?.(error);
                 await browserProcess.close();
             }
         }
@@ -305,18 +314,10 @@ export class BrowserLauncher {
             if (configVersion) {
                 throw new Error(`Tried to find the browser at the configured path (${executablePath}) for version ${configVersion}, but no executable was found.`);
             }
-            switch (this.browser) {
-                case 'chrome':
-                    throw new Error(`Could not find Chrome (ver. ${browserVersion}). This can occur if either\n` +
-                        ` 1. you did not perform an installation before running the script (e.g. \`npx puppeteer browsers install ${browserType}\`) or\n` +
-                        ` 2. your cache path is incorrectly configured (which is: ${config.cacheDirectory}).\n` +
-                        'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
-                case 'firefox':
-                    throw new Error(`Could not find Firefox (rev. ${browserVersion}). This can occur if either\n` +
-                        ' 1. you did not perform an installation for Firefox before running the script (e.g. `npx puppeteer browsers install firefox`) or\n' +
-                        ` 2. your cache path is incorrectly configured (which is: ${config.cacheDirectory}).\n` +
-                        'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
-            }
+            throw new Error(`Could not find ${getBrowserTypeDisplayName(browserType)} (ver. ${browserVersion}). This can occur if either\n` +
+                ` 1. you did not perform an installation before running the script (e.g. \`npx puppeteer browsers install ${browserType}\`) or\n` +
+                ` 2. your cache path is incorrectly configured (which is: ${config.cacheDirectory}).\n` +
+                'For (2), check out our guide on configuring puppeteer at https://pptr.dev/guides/configuration.');
         }
         return executablePath;
     }

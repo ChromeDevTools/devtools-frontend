@@ -1,7 +1,7 @@
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = {  default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
 function _checkInRHS(e) { if (Object(e) !== e) throw TypeError("right-hand side of 'in' should be an object, got " + (null !== e ? typeof e : "null")); return e; }
 function _classPrivateGetter(s, r, a) { return a(_assertClassBrand(s, r)); }
 function _classPrivateMethodInitSpec(e, a) { _checkPrivateRedeclaration(e, a), a.add(e); }
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = {  default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -2828,8 +2828,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       get fs() {
         throw new Error('fs is not available in this environment');
       },
-      get ScreenRecorder() {
-        throw new Error('ScreenRecorder is not available in this environment');
+      ScreenRecorder: class {
+        constructor() {
+          throw new Error('ScreenRecorder is not available in this environment');
+        }
       }
     }
   };
@@ -2922,7 +2924,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.1.0';
+  const packageVersion = '25.2.1';
   // x-release-please-end
 
   /**
@@ -2930,19 +2932,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2020 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  /**
-   * @internal
-   */
-  let debugModule = null;
-  /**
-   * @internal
-   */
-  async function importDebug() {
-    if (!debugModule) {
-      debugModule = (await Promise.resolve().then(() => _interopRequireWildcard(require('node:util')))).debuglog;
-    }
-    return debugModule;
-  }
   /**
    * A debug function that can be used in any environment.
    *
@@ -2983,29 +2972,33 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   const debug = prefix => {
     if (isNode) {
-      return async (...logArgs) => {
+      const nodeDebug = environment.value.debuglog?.(prefix);
+      if (!nodeDebug || !nodeDebug.enabled) {
+        return;
+      }
+      return (...logArgs) => {
         if (captureLogs) {
           capturedLogs.push(prefix + logArgs);
         }
-        (await importDebug())(prefix)(...logArgs);
+        nodeDebug(...logArgs);
       };
     }
+    const debugLevel = globalThis.__PUPPETEER_DEBUG;
+    if (!debugLevel) {
+      return;
+    }
+    const everythingShouldBeLogged = debugLevel === '*';
+    const prefixMatchesDebugLevel = everythingShouldBeLogged || (
+    /**
+     * If the debug level is `foo*`, that means we match any prefix that
+     * starts with `foo`. If the level is `foo`, we match only the prefix
+     * `foo`.
+     */
+    debugLevel.endsWith('*') ? prefix.startsWith(debugLevel.slice(0, -1)) : prefix === debugLevel);
+    if (!prefixMatchesDebugLevel) {
+      return;
+    }
     return (...logArgs) => {
-      const debugLevel = globalThis.__PUPPETEER_DEBUG;
-      if (!debugLevel) {
-        return;
-      }
-      const everythingShouldBeLogged = debugLevel === '*';
-      const prefixMatchesDebugLevel = everythingShouldBeLogged || (
-      /**
-       * If the debug level is `foo*`, that means we match any prefix that
-       * starts with `foo`. If the level is `foo`, we match only the prefix
-       * `foo`.
-       */
-      debugLevel.endsWith('*') ? prefix.startsWith(debugLevel) : prefix === debugLevel);
-      if (!prefixMatchesDebugLevel) {
-        return;
-      }
       console.log(`${prefix}:`, ...logArgs);
     };
   };
@@ -3260,6 +3253,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   const debugError = debug('puppeteer:error');
   /**
    * @internal
+   *
+   * Use this instead of debugError so the catch functions
+   * don't re-throw the error.
+   */
+  const debugCatchError = debugError ?? (() => {});
+  /**
+   * @internal
    */
   const DEFAULT_VIEWPORT = Object.freeze({
     width: 800,
@@ -3428,7 +3428,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       return concat;
     } catch (error) {
-      debugError(error);
+      debugError?.(error);
       return null;
     }
   }
@@ -3738,7 +3738,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * @internal
      */
     [disposeSymbol]() {
-      return void this[asyncDisposeSymbol]().catch(debugError);
+      return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
     /**
      * @internal
@@ -3915,7 +3915,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     /** @internal */
     [disposeSymbol]() {
-      return void this[asyncDisposeSymbol]().catch(debugError);
+      return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
     /** @internal */
     async [asyncDisposeSymbol]() {
@@ -4266,7 +4266,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     /** @internal */
     [disposeSymbol]() {
-      return void this[asyncDisposeSymbol]().catch(debugError);
+      return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
     /** @internal */
     async [asyncDisposeSymbol]() {
@@ -5127,7 +5127,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }) => {
     return cssQuerySelectorAll(element, selector);
   });
-  const source = "\"use strict\";var N=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var B=Object.getOwnPropertyNames;var Y=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)N(t,r,{get:e[r],enumerable:!0})},G=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let s of B(e))!Y.call(t,s)&&s!==r&&N(t,s,{get:()=>e[s],enumerable:!(o=X(e,s))||o.enumerable});return t};var J=t=>G(N({},\"__esModule\",{value:!0}),t);var pe={};l(pe,{default:()=>he});module.exports=J(pe);var x=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends x{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(s=>s instanceof t?(s.#s&&r.add(s),s.valueOrThrow()):s);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#s;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#s=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#s),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#n;valueOrThrow(){return this.#n||(this.#n=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#n}};var L=new Map,W=t=>{let e=L.get(t);return e||(e=new Function(`return ${t}`)(),L.set(t,e),e)};var E={};l(E,{ariaQuerySelector:()=>z,ariaQuerySelectorAll:()=>b});var z=(t,e)=>globalThis.__ariaQuerySelector(t,e),b=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var v={};l(v,{cssQuerySelector:()=>K,cssQuerySelectorAll:()=>Z});var K=(t,e)=>t.querySelector(e),Z=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{CustomQuerySelectorRegistry:()=>y,customQuerySelectors:()=>P});var y=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(s,i)=>{for(let n of o(s,i))return n;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(s,i)=>{let n=o(s,i);return n?[n]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new y;var R={};l(R,{pierceQuerySelector:()=>ee,pierceQuerySelectorAll:()=>te});var ee=(t,e)=>{let r=null,o=s=>{let i=document.createTreeWalker(s,NodeFilter.SHOW_ELEMENT);do{let n=i.currentNode;n.shadowRoot&&o(n.shadowRoot),!(n instanceof ShadowRoot)&&n!==s&&!r&&n.matches(e)&&(r=n)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},te=(t,e)=>{let r=[],o=s=>{let i=document.createTreeWalker(s,NodeFilter.SHOW_ELEMENT);do{let n=i.currentNode;n.shadowRoot&&o(n.shadowRoot),!(n instanceof ShadowRoot)&&n!==s&&n.matches(e)&&r.push(n)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var w=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},T=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let s=await this.#e();if(!s){window.requestAnimationFrame(o);return}e.resolve(s),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var _={};l(_,{PCombinator:()=>H,pQuerySelector:()=>fe,pQuerySelectorAll:()=>$});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>m});var re=new Set([\"checkbox\",\"image\",\"radio\"]),oe=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!re.has(t.type),se=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!se.has(t.nodeName)&&!document.head?.contains(t),I=new WeakMap,F=t=>{for(;t;)I.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},j=new WeakSet,ne=new MutationObserver(t=>{for(let e of t)F(e.target)}),d=t=>{let e=I.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(oe(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{F(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),j.has(t)||(ne.observe(t,{childList:!0,characterData:!0,subtree:!0}),j.add(t))}return I.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let s;o.shadowRoot?s=m(o.shadowRoot,e):s=m(o,e);for(let i of s)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>le,pierce:()=>g,pierceAll:()=>O});var ie=[\"hidden\",\"collapse\"],le=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),s=o&&!ie.includes(o.visibility)&&!ae(r);return e===s?t:!1};function ae(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ce=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*g(t){ce(t)?yield t.shadowRoot:yield t}function*O(t){t=g(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var D={};l(D,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let s=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],n;for(;(n=s.iterateNext())&&(i.push(n),!(r&&i.length===r)););for(let h=0;h<i.length;h++)n=i[h],yield n,i[h]=null};var ue=/[-\\w\\P{ASCII}*]/u,H=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(H||{}),V=t=>\"querySelectorAll\"in t,Q=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){for(typeof this.#o==\"string\"&&this.#o.trimStart()===\":scope\"&&this.#t();this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&ue.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){V(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!V(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let s of r.parentElement.children)if(++o,s===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*b(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,g),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,O),this.#t();break}default:this.#r=e,this.#t();break}}},M=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let s=0;for(let n=e.previousSibling;n;n=n.previousSibling)++s;let i=this.calculate(e.parentNode,[s]);return this.#e.set(e,i),[...i,...r]}},U=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[s=-1,...i]=e;return r===s?U(o,i):r<s?-1:1},de=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new M;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,s])=>U(o,s)).map(([o])=>o)},$=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let s=0;return o.some(i=>(typeof i==\"string\"?++s:s=0,s>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return de(a.flatMap(r,o=>{let s=new Q(t,o);return s.run(),s.elements}))},fe=async function(t,e){for await(let r of $(t,e))return r;return null};var me=Object.freeze({...E,...A,...R,..._,...C,...k,...D,...v,Deferred:c,createFunction:W,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:w,RAFPoller:T}),he=me;\n";
+  const source = "\"use strict\";var N=Object.defineProperty;var B=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)N(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&N(t,n,{get:()=>e[n],enumerable:!(o=B(e,n))||o.enumerable});return t};var z=t=>J(N({},\"__esModule\",{value:!0}),t);var ye={};l(ye,{default:()=>pe});module.exports=z(ye);var b=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends b{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var W=new Map,j=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var v={};l(v,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{CustomQuerySelectorRegistry:()=>y,customQuerySelectors:()=>P});var y=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new y;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var w=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},T=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var L={};l(L,{PCombinator:()=>U,pQuerySelector:()=>me,pQuerySelectorAll:()=>X});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var O={};l(O,{textQuerySelectorAll:()=>m});var oe=new Set([\"checkbox\",\"image\",\"radio\"]),ne=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!oe.has(t.type),se=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!se.has(t.nodeName)&&!document.head?.contains(t),C=new WeakMap,V=t=>{for(;t;)C.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},F=new WeakSet,I,ie=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)V(r.target)})),I},d=t=>{let e=C.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(ne(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{V(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),F.has(t)||(ie().observe(t,{childList:!0,characterData:!0,subtree:!0}),F.add(t))}return C.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var M={};l(M,{checkVisibility:()=>ae,pierce:()=>g,pierceAll:()=>k});var le=[\"hidden\",\"collapse\"],ae=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),n=o&&!le.includes(o.visibility)&&!ce(r);return e===n?t:!1};function ce(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ue=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*g(t){ue(t)?yield t.shadowRoot:yield t}function*k(t){t=g(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var D={};l(D,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,i[h]=null};var de=/[-\\w\\P{ASCII}*]/u,U=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(U||{}),H=t=>\"querySelectorAll\"in t,Q=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){for(typeof this.#o==\"string\"&&this.#o.trimStart()===\":scope\"&&this.#t();this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&de.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){H(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!H(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,g),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,k),this.#t();break}default:this.#r=e,this.#t();break}}},_=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},fe=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new _;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},X=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return fe(a.flatMap(r,o=>{let n=new Q(t,o);return n.run(),n.elements}))},me=async function(t,e){for await(let r of X(t,e))return r;return null};var he=Object.freeze({...v,...A,...R,...L,...O,...M,...D,...E,Deferred:c,createFunction:j,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:w,RAFPoller:T}),pe=he;\n";
 
   /**
    * @license
@@ -6098,14 +6098,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        */
       async getProperties() {
         const propertyNames = await this.evaluate(object => {
-          const enumerableProperties = [];
-          const descriptors = Object.getOwnPropertyDescriptors(object);
-          for (const propertyName in descriptors) {
-            if (descriptors[propertyName]?.enumerable) {
-              enumerableProperties.push(propertyName);
-            }
-          }
-          return enumerableProperties;
+          return Object.keys(object ?? {});
         });
         const map = new Map();
         const results = await Promise.all(propertyNames.map(key => {
@@ -6133,7 +6126,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       /** @internal */
       [_ref]() {
-        return void this[asyncDisposeSymbol]().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugCatchError);
       }
       /** @internal */
       [asyncDisposeSymbol]() {
@@ -6598,7 +6591,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return this.emit(exports.LocatorEvent.Action, undefined);
     }), mergeMap(handle => {
       return from(handle.click(options)).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
+        void handle.dispose().catch(debugCatchError);
         throw err;
       }));
     }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -6730,7 +6723,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             throw new Error(`Element cannot be filled out.`);
         }
       })).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
+        void handle.dispose().catch(debugCatchError);
         throw err;
       }));
     }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -6742,7 +6735,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return this.emit(exports.LocatorEvent.Action, undefined);
     }), mergeMap(handle => {
       return from(handle.hover()).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
+        void handle.dispose().catch(debugCatchError);
         throw err;
       }));
     }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -6761,7 +6754,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           el.scrollLeft = scrollLeft;
         }
       }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
-        void handle.dispose().catch(debugError);
+        void handle.dispose().catch(debugCatchError);
         throw err;
       }));
     }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -10361,16 +10354,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   function headersArray(headers) {
     const result = [];
-    for (const name in headers) {
+    for (const name of Object.keys(headers)) {
       const value = headers[name];
-      if (!Object.is(value, undefined)) {
-        const values = Array.isArray(value) ? value : [value];
-        result.push(...values.map(value => {
-          return {
+      if (value !== undefined) {
+        if (Array.isArray(value)) {
+          for (const v of value) {
+            result.push({
+              name,
+              value: v + ''
+            });
+          }
+        } else {
+          result.push({
             name,
             value: value + ''
-          };
-        }));
+          });
+        }
       }
     }
     return result;
@@ -10477,7 +10476,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     // In certain cases, protocol will return error if the request was
     // already canceled or the page was closed. We should tolerate these
     // errors.
-    debugError(error);
+    debugError?.(error);
   }
 
   /**
@@ -11869,7 +11868,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
                   ...scrollDimensions
                 });
                 stack.defer(async () => {
-                  await this.setViewport(viewport).catch(debugError);
+                  await this.setViewport(viewport).catch(debugCatchError);
                 });
               }
             } else {
@@ -12245,7 +12244,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       /** @internal */
       [_ref2]() {
-        return void this[asyncDisposeSymbol]().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugCatchError);
       }
       /** @internal */
       async [asyncDisposeSymbol]() {
@@ -12287,7 +12286,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             deviceScaleFactor: 0
           });
           stack.defer(() => {
-            void this.setViewport(viewport).catch(debugError);
+            void this.setViewport(viewport).catch(debugCatchError);
           });
         }
         return await this.mainFrame().isolatedRealm().evaluate(() => {
@@ -12791,6 +12790,20 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       func = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, func);
       return await this.mainRealm().evaluateHandle(func, ...args);
     }
+    /**
+     * Waits for the provided function, `workerFunction`, to return a truthy value when
+     * evaluated in the page's context.
+     *
+     * @param workerFunction - Function to be evaluated in browser context until it
+     * returns a truthy value.
+     * @param options - Options for configuring waiting behavior.
+     */
+    waitForFunction(workerFunction, options = {}, ...args) {
+      return this.mainRealm().waitForFunction(workerFunction, {
+        polling: 100,
+        ...options
+      }, ...args);
+    }
     async close() {
       throw new UnsupportedOperation('WebWorker.close() is not supported');
     }
@@ -12984,7 +12997,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
               root.iframeSnapshot = iframeSnapshot ?? undefined;
             } catch (error) {
               // Frames can get detached at any time resulting in errors.
-              debugError(error);
+              debugError?.(error);
             }
           } catch (e_1) {
             env_1.error = e_1;
@@ -12993,9 +13006,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             __disposeResources$4(env_1);
           }
         }
-        for (const child of root.children) {
-          await populateIframes(child);
-        }
+        await Promise.all(root.children.map(child => {
+          return populateIframes(child);
+        }));
       };
       let needle = defaultRoot;
       if (!defaultRoot) {
@@ -13532,14 +13545,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             const callbacks = globalThis[name].callbacks;
             callbacks.get(seq).reject(error);
             callbacks.delete(seq);
-          }, _classPrivateFieldGet(_name3, this), id, error.message, error.stack).catch(debugError);
+          }, _classPrivateFieldGet(_name3, this), id, error.message, error.stack).catch(debugCatchError);
         } else {
           await context.evaluate((name, seq, error) => {
             // @ts-expect-error Code is evaluated in a different context.
             const callbacks = globalThis[name].callbacks;
             callbacks.get(seq).reject(error);
             callbacks.delete(seq);
-          }, _classPrivateFieldGet(_name3, this), id, error).catch(debugError);
+          }, _classPrivateFieldGet(_name3, this), id, error).catch(debugCatchError);
         }
       }
     }
@@ -13787,7 +13800,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       } catch (error) {
         // We still throw sync errors synchronously and clean up the scheduled
         // callback.
-        callback.promise.catch(debugError).finally(() => {
+        void callback.promise.catch(debugCatchError).finally(() => {
           _classPrivateFieldGet(_callbacks, this).delete(callback.id);
         });
         callback.reject(error);
@@ -14164,7 +14177,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           id,
           sessionId
         });
-        debugProtocolSend(stringifiedMessage);
+        debugProtocolSend?.(stringifiedMessage);
         _classPrivateFieldGet(_transport, this).send(stringifiedMessage);
       });
     }
@@ -14183,7 +14196,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return setTimeout(r, _classPrivateFieldGet(_delay2, this));
         });
       }
-      debugProtocolReceive(message);
+      debugProtocolReceive?.(message);
       const object = JSON.parse(message);
       if (object.method === 'Target.attachedToTarget') {
         const sessionId = object.params.sessionId;
@@ -14537,7 +14550,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_scriptSources, this).set(event.scriptId, response.scriptSource);
     } catch (error) {
       // This might happen if the page has already navigated away.
-      debugError(error);
+      debugError?.(error);
     }
   }
   var _client3 = /*#__PURE__*/new WeakMap();
@@ -14636,7 +14649,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_stylesheetSources, this).set(header.styleSheetId, response.text);
     } catch (error) {
       // This might happen if the page has already navigated away.
-      debugError(error);
+      debugError?.(error);
     }
   }
   function convertToDisjointRanges(nestedRanges) {
@@ -14805,7 +14818,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  let EmulationManager = ((_EmulationManager, _client5, _emulatingMobile, _hasTouch, _states, _viewportState, _idleOverridesState, _timezoneState, _visionDeficiencyState, _cpuThrottlingState, _mediaFeaturesState, _mediaTypeState, _geoLocationState, _defaultBackgroundColorState, _javascriptEnabledState, _focusState, _secondaryClients, _EmulationManager_brand) => {
+  let EmulationManager = ((_EmulationManager, _client5, _emulatingMobile, _hasTouch, _states, _viewportState, _idleOverridesState, _timezoneState, _localeState, _visionDeficiencyState, _cpuThrottlingState, _mediaFeaturesState, _mediaTypeState, _geoLocationState, _defaultBackgroundColorState, _javascriptEnabledState, _focusState, _secondaryClients, _EmulationManager_brand) => {
     let _instanceExtraInitializers = [];
     let _private_applyViewport_decorators;
     let _private_applyViewport_descriptor;
@@ -14813,6 +14826,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     let _private_emulateIdleState_descriptor;
     let _private_emulateTimezone_decorators;
     let _private_emulateTimezone_descriptor;
+    let _private_emulateLocale_decorators;
+    let _private_emulateLocale_descriptor;
     let _private_emulateVisionDeficiency_decorators;
     let _private_emulateVisionDeficiency_descriptor;
     let _private_emulateCpuThrottling_decorators;
@@ -14829,7 +14844,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     let _private_setJavaScriptEnabled_descriptor;
     let _private_emulateFocus_decorators;
     let _private_emulateFocus_descriptor;
-    return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaFeaturesState = /*#__PURE__*/new WeakMap(), _mediaTypeState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _focusState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
+    return _client5 = /*#__PURE__*/new WeakMap(), _emulatingMobile = /*#__PURE__*/new WeakMap(), _hasTouch = /*#__PURE__*/new WeakMap(), _states = /*#__PURE__*/new WeakMap(), _viewportState = /*#__PURE__*/new WeakMap(), _idleOverridesState = /*#__PURE__*/new WeakMap(), _timezoneState = /*#__PURE__*/new WeakMap(), _localeState = /*#__PURE__*/new WeakMap(), _visionDeficiencyState = /*#__PURE__*/new WeakMap(), _cpuThrottlingState = /*#__PURE__*/new WeakMap(), _mediaFeaturesState = /*#__PURE__*/new WeakMap(), _mediaTypeState = /*#__PURE__*/new WeakMap(), _geoLocationState = /*#__PURE__*/new WeakMap(), _defaultBackgroundColorState = /*#__PURE__*/new WeakMap(), _javascriptEnabledState = /*#__PURE__*/new WeakMap(), _focusState = /*#__PURE__*/new WeakMap(), _secondaryClients = /*#__PURE__*/new WeakMap(), _EmulationManager_brand = /*#__PURE__*/new WeakSet(), _EmulationManager = class EmulationManager {
       constructor(client) {
         _classPrivateMethodInitSpec(this, _EmulationManager_brand);
         _classPrivateFieldInitSpec(this, _client5, __runInitializers$2(this, _instanceExtraInitializers));
@@ -14845,6 +14860,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _classPrivateFieldInitSpec(this, _timezoneState, new EmulatedState({
           active: false
         }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateTimezone)));
+        _classPrivateFieldInitSpec(this, _localeState, new EmulatedState({
+          active: false
+        }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateLocale)));
         _classPrivateFieldInitSpec(this, _visionDeficiencyState, new EmulatedState({
           active: false
         }, this, _classPrivateGetter(_EmulationManager_brand, this, _get_emulateVisionDeficiency)));
@@ -14892,7 +14910,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         // We don't await here because we want to register all state changes before
         // the target is unpaused.
         void Promise.all(_classPrivateFieldGet(_states, this).map(s => {
-          return s.sync().catch(debugError);
+          return s.sync().catch(debugCatchError);
         }));
       }
       get javascriptEnabled() {
@@ -14925,6 +14943,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       async emulateTimezone(timezoneId) {
         await _classPrivateFieldGet(_timezoneState, this).setState({
           timezoneId,
+          active: true
+        });
+      }
+      async emulateLocale(locale) {
+        await _classPrivateFieldGet(_localeState, this).setState({
+          locale,
           active: true
         });
       }
@@ -15026,6 +15050,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _private_applyViewport_decorators = [invokeAtMostOnceForArguments];
       _private_emulateIdleState_decorators = [invokeAtMostOnceForArguments];
       _private_emulateTimezone_decorators = [invokeAtMostOnceForArguments];
+      _private_emulateLocale_decorators = [invokeAtMostOnceForArguments];
       _private_emulateVisionDeficiency_decorators = [invokeAtMostOnceForArguments];
       _private_emulateCpuThrottling_decorators = [invokeAtMostOnceForArguments];
       _private_emulateMediaFeatures_decorators = [invokeAtMostOnceForArguments];
@@ -15039,7 +15064,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           if (!viewportState.viewport) {
             await Promise.all([client.send('Emulation.clearDeviceMetricsOverride'), client.send('Emulation.setTouchEmulationEnabled', {
               enabled: false
-            })]).catch(debugError);
+            })]).catch(debugCatchError);
             return;
           }
           const {
@@ -15065,7 +15090,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             screenOrientation
           }).catch(err => {
             if (err.message.includes('Target does not support metrics override')) {
-              debugError(err);
+              debugError?.(err);
               return;
             }
             throw err;
@@ -15133,6 +15158,26 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         access: {
           has: obj => _EmulationManager_brand.has(_checkInRHS(obj)),
           get: obj => _classPrivateGetter(_EmulationManager_brand, obj, _get_emulateTimezone)
+        },
+        metadata: _metadata
+      }, null, _instanceExtraInitializers);
+      __esDecorate$2(_EmulationManager, _private_emulateLocale_descriptor = {
+        value: __setFunctionName(async function (client, localeState) {
+          if (!localeState.active) {
+            return;
+          }
+          await client.send('Emulation.setLocaleOverride', {
+            locale: localeState.locale
+          });
+        }, "#emulateLocale")
+      }, _private_emulateLocale_decorators, {
+        kind: "method",
+        name: "#emulateLocale",
+        static: false,
+        private: true,
+        access: {
+          has: obj => _EmulationManager_brand.has(_checkInRHS(obj)),
+          get: obj => _classPrivateGetter(_EmulationManager_brand, obj, _get_emulateLocale)
         },
         metadata: _metadata
       }, null, _instanceExtraInitializers);
@@ -15314,28 +15359,31 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     function _get_emulateTimezone(_this5) {
       return _private_emulateTimezone_descriptor.value;
     }
-    function _get_emulateVisionDeficiency(_this6) {
+    function _get_emulateLocale(_this6) {
+      return _private_emulateLocale_descriptor.value;
+    }
+    function _get_emulateVisionDeficiency(_this7) {
       return _private_emulateVisionDeficiency_descriptor.value;
     }
-    function _get_emulateCpuThrottling(_this7) {
+    function _get_emulateCpuThrottling(_this8) {
       return _private_emulateCpuThrottling_descriptor.value;
     }
-    function _get_emulateMediaFeatures(_this8) {
+    function _get_emulateMediaFeatures(_this9) {
       return _private_emulateMediaFeatures_descriptor.value;
     }
-    function _get_emulateMediaType(_this9) {
+    function _get_emulateMediaType(_this0) {
       return _private_emulateMediaType_descriptor.value;
     }
-    function _get_setGeolocation(_this0) {
+    function _get_setGeolocation(_this1) {
       return _private_setGeolocation_descriptor.value;
     }
-    function _get_setDefaultBackgroundColor(_this1) {
+    function _get_setDefaultBackgroundColor(_this10) {
       return _private_setDefaultBackgroundColor_descriptor.value;
     }
-    function _get_setJavaScriptEnabled(_this10) {
+    function _get_setJavaScriptEnabled(_this11) {
       return _private_setJavaScriptEnabled_descriptor.value;
     }
-    function _get_emulateFocus(_this11) {
+    function _get_emulateFocus(_this12) {
       return _private_emulateFocus_descriptor.value;
     }
   })();
@@ -15914,7 +15962,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }).catch(error => {
       // Exceptions might happen in case of a page been navigated or closed.
       // Swallow these since they are harmless and we don't leak anything in this case.
-      debugError(error);
+      debugError?.(error);
     });
   }
 
@@ -16015,7 +16063,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             objectId: this.id
           });
         } catch (error) {
-          debugError(error);
+          debugError?.(error);
           // Fallback to Element.scrollIntoView if DOM.scrollIntoViewIfNeeded is not supported
           await super.scrollIntoView();
         }
@@ -16176,8 +16224,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         value: _metadata
       });
     })(), _CdpElementHandle;
-    function _get_frameManager(_this12) {
-      return _this12.frame._frameManager;
+    function _get_frameManager(_this13) {
+      return _this13.frame._frameManager;
     }
   })();
 
@@ -16465,7 +16513,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             return;
           }
         }
-        debugError(error);
+        debugError?.(error);
       }
     } catch (e_1) {
       env_1.error = e_1;
@@ -16505,7 +16553,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       const binding = _classPrivateFieldGet(_bindings, this).get(name);
       await binding?.run(this, seq, args, isTrivial);
     } catch (err) {
-      debugError(err);
+      debugError?.(err);
     }
   }
   function _onConsoleAPI(event) {
@@ -16520,7 +16568,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     } catch (err) {
       // If the binding cannot be added, the context is broken. We cannot
       // recover so we ignore the error.
-      debugError(err);
+      debugError?.(err);
     }
   }
   async function _evaluate(returnByValue, pageFunction, ...args) {
@@ -16716,6 +16764,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _id7 = /*#__PURE__*/new WeakMap();
   var _targetType2 = /*#__PURE__*/new WeakMap();
   var _emitter2 = /*#__PURE__*/new WeakMap();
+  var _workerLoaded = /*#__PURE__*/new WeakMap();
   class CdpWebWorker extends WebWorker {
     get internalEmitter() {
       return _classPrivateFieldGet(_emitter2, this);
@@ -16727,6 +16776,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _id7, void 0);
       _classPrivateFieldInitSpec(this, _targetType2, void 0);
       _classPrivateFieldInitSpec(this, _emitter2, void 0);
+      _classPrivateFieldInitSpec(this, _workerLoaded, new Deferred());
       _classPrivateFieldSet(_id7, this, targetId);
       _classPrivateFieldSet(_client9, this, client);
       _classPrivateFieldSet(_targetType2, this, targetType);
@@ -16734,6 +16784,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_emitter2, this, new EventEmitter());
       _classPrivateFieldGet(_client9, this).once('Runtime.executionContextCreated', async event => {
         _classPrivateFieldGet(_world4, this).setContext(new ExecutionContext(client, event.context, _classPrivateFieldGet(_world4, this)));
+      });
+      _classPrivateFieldGet(_client9, this).once('Inspector.workerScriptLoaded', () => {
+        _classPrivateFieldGet(_workerLoaded, this).resolve();
       });
       _classPrivateFieldGet(_world4, this).emitter.on('consoleapicalled', async event => {
         try {
@@ -16746,7 +16799,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             // eslint-disable-next-line max-len -- The comment is long.
             // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
             for (const value of values) {
-              void value.dispose().catch(debugError);
+              void value.dispose().catch(debugCatchError);
             }
             return;
           }
@@ -16756,7 +16809,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             this.emit(exports.WebWorkerEvent.Console, consoleMessages);
           }
         } catch (err) {
-          debugError(err);
+          debugError?.(err);
         }
       });
       _classPrivateFieldGet(_client9, this).on('Runtime.exceptionThrown', exceptionThrown);
@@ -16764,8 +16817,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _classPrivateFieldGet(_world4, this).dispose();
       });
       // This might fail if the target is closed before we receive all execution contexts.
-      networkManager?.addClient(_classPrivateFieldGet(_client9, this)).catch(debugError);
-      _classPrivateFieldGet(_client9, this).send('Runtime.enable').catch(debugError);
+      networkManager?.addClient(_classPrivateFieldGet(_client9, this)).catch(debugCatchError ?? (() => {}));
+      _classPrivateFieldGet(_client9, this).send('Runtime.enable').catch(debugCatchError ?? (() => {}));
     }
     mainRealm() {
       return _classPrivateFieldGet(_world4, this);
@@ -16799,6 +16852,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             self.close();
           });
       }
+    }
+    async evaluate(func, ...args) {
+      await _classPrivateFieldGet(_workerLoaded, this).valueOrThrow();
+      return await super.evaluate(func, ...args);
+    }
+    async evaluateHandle(func, ...args) {
+      await _classPrivateFieldGet(_workerLoaded, this).valueOrThrow();
+      return await super.evaluateHandle(func, ...args);
     }
   }
 
@@ -17411,7 +17472,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         await Promise.all([_classPrivateFieldGet(_client0, this).send('Runtime.addBinding', {
           name: CDP_BINDING_PREFIX + binding.name
-        }), this.evaluate(binding.initSource).catch(debugError)]);
+        }), this.evaluate(binding.initSource).catch(debugCatchError)]);
       }
       async removeExposedFunctionBinding(binding) {
         // If a frame has not started loading, it might never start. Rely on
@@ -17425,7 +17486,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           // Removes the dangling Puppeteer binding wrapper.
           // @ts-expect-error: In a different context.
           globalThis[name] = undefined;
-        }, binding.name).catch(debugError)]);
+        }, binding.name).catch(debugCatchError)]);
       }
       async waitForDevicePrompt(options = {}) {
         return await _assertClassBrand(_CdpFrame_brand, this, _deviceRequestPromptManager).call(this).waitForDevicePrompt(options);
@@ -17766,7 +17827,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         });
         return result.postData;
       } catch (err) {
-        debugError(err);
+        debugError?.(err);
         return;
       }
     }
@@ -18283,6 +18344,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _userAgent = /*#__PURE__*/new WeakMap();
   var _userAgentMetadata = /*#__PURE__*/new WeakMap();
   var _platform = /*#__PURE__*/new WeakMap();
+  var _acceptLanguage = /*#__PURE__*/new WeakMap();
   var _handlers3 = /*#__PURE__*/new WeakMap();
   var _clients = /*#__PURE__*/new WeakMap();
   var _networkEnabled = /*#__PURE__*/new WeakMap();
@@ -18303,9 +18365,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _userAgent, void 0);
       _classPrivateFieldInitSpec(this, _userAgentMetadata, void 0);
       _classPrivateFieldInitSpec(this, _platform, void 0);
+      _classPrivateFieldInitSpec(this, _acceptLanguage, void 0);
       _classPrivateFieldInitSpec(this, _handlers3, [['Fetch.requestPaused', _assertClassBrand(_NetworkManager_brand, this, _onRequestPaused)], ['Fetch.authRequired', _assertClassBrand(_NetworkManager_brand, this, _onAuthRequired)], ['Network.requestWillBeSent', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSent)], ['Network.requestWillBeSentExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onRequestWillBeSentExtraInfo)], ['Network.requestServedFromCache', _assertClassBrand(_NetworkManager_brand, this, _onRequestServedFromCache)], ['Network.responseReceived', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceived)], ['Network.loadingFinished', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFinished)], ['Network.loadingFailed', _assertClassBrand(_NetworkManager_brand, this, _onLoadingFailed)], ['Network.responseReceivedExtraInfo', _assertClassBrand(_NetworkManager_brand, this, _onResponseReceivedExtraInfo)], [exports.CDPSessionEvent.Disconnected, _assertClassBrand(_NetworkManager_brand, this, _removeClient)]]);
       _classPrivateFieldInitSpec(this, _clients, new Map());
-      _classPrivateFieldInitSpec(this, _networkEnabled, true);
+      _classPrivateFieldInitSpec(this, _networkEnabled, void 0);
       _classPrivateFieldSet(_frameManager, this, frameManager);
       _classPrivateFieldSet(_networkEnabled, this, networkEnabled ?? true);
     }
@@ -18387,6 +18450,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_platform, this, platform);
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyUserAgent).bind(this));
     }
+    async setAcceptLanguage(acceptLanguage) {
+      _classPrivateFieldSet(_acceptLanguage, this, acceptLanguage);
+      await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyUserAgent).bind(this));
+    }
     async setCacheEnabled(enabled) {
       _classPrivateFieldSet(_userCacheDisabled, this, !enabled);
       await _assertClassBrand(_NetworkManager_brand, this, _applyToAllClients).call(this, _assertClassBrand(_NetworkManager_brand, this, _applyProtocolCacheDisabled).bind(this));
@@ -18453,12 +18520,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
   async function _applyUserAgent(client) {
-    if (_classPrivateFieldGet(_userAgent, this) === undefined) {
+    const userAgent = _classPrivateFieldGet(_userAgent, this) ?? (await _classPrivateFieldGet(_frameManager, this).page().browser().userAgent());
+    if (userAgent === undefined) {
       return;
     }
     try {
       await client.send('Network.setUserAgentOverride', {
-        userAgent: _classPrivateFieldGet(_userAgent, this),
+        userAgent,
+        acceptLanguage: _classPrivateFieldGet(_acceptLanguage, this),
         userAgentMetadata: _classPrivateFieldGet(_userAgentMetadata, this),
         platform: _classPrivateFieldGet(_platform, this)
       });
@@ -18547,14 +18616,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       username: undefined,
       password: undefined
     };
-    client.send('Fetch.continueWithAuth', {
+    void client.send('Fetch.continueWithAuth', {
       requestId: event.requestId,
       authChallengeResponse: {
         response,
         username,
         password
       }
-    }).catch(debugError);
+    }).catch(debugCatchError);
   }
   /**
    * CDP may send a Fetch.requestPaused without or before a
@@ -18565,9 +18634,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   function _onRequestPaused(client, event) {
     if (!_classPrivateFieldGet(_userRequestInterceptionEnabled, this) && _classPrivateFieldGet(_protocolRequestInterceptionEnabled, this)) {
-      client.send('Fetch.continueRequest', {
+      void client.send('Fetch.continueRequest', {
         requestId: event.requestId
-      }).catch(debugError);
+      }).catch(debugCatchError);
     }
     const {
       networkId: networkRequestId,
@@ -18674,7 +18743,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
     }
     if (!request) {
-      debugError(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
+      debugError?.(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
       return;
     }
     this.emit(exports.NetworkManagerEvent.RequestServedFromCache, request);
@@ -18696,7 +18765,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     const extraInfos = _classPrivateFieldGet(_networkEventManager, this).responseExtraInfo(responseReceived.requestId);
     if (extraInfos.length) {
-      debugError(new Error('Unexpected extraInfo events for request ' + responseReceived.requestId));
+      debugError?.(new Error('Unexpected extraInfo events for request ' + responseReceived.requestId));
     }
     // Chromium sends wrong extraInfo events for responses served from cache.
     // See https://github.com/puppeteer/puppeteer/issues/9965 and
@@ -18882,7 +18951,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_timeoutSettings3, this, timeoutSettings);
       this.setupEventListeners(_classPrivateFieldGet(_client10, this));
       client.once(exports.CDPSessionEvent.Disconnected, () => {
-        _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this).catch(debugError);
+        void _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this).catch(debugCatchError);
       });
     }
     /**
@@ -18902,7 +18971,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       this.setupEventListeners(client);
       client.once(exports.CDPSessionEvent.Disconnected, () => {
-        _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this).catch(debugError);
+        void _assertClassBrand(_FrameManager_brand, this, _onClientDisconnect).call(this).catch(debugCatchError);
       });
       await this.initialize(client, frame);
       await _classPrivateFieldGet(_networkManager, this).addClient(client);
@@ -19036,7 +19105,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         return frame._client().send('Page.removeScriptToEvaluateOnNewDocument', {
           identifier
-        }).catch(debugError);
+        }).catch(debugCatchError);
       }));
     }
     onAttachedToTarget(target) {
@@ -19048,7 +19117,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         frame.updateClient(target._session());
       }
       this.setupEventListeners(target._session());
-      void this.initialize(target._session(), frame).catch(debugError);
+      void this.initialize(target._session(), frame).catch(debugCatchError);
     }
     _deviceRequestPromptManager(client) {
       let manager = _classPrivateFieldGet(_deviceRequestPromptManagerMap, this).get(client);
@@ -19197,7 +19266,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         frameId: frame._id,
         worldName: name,
         grantUniveralAccess: true
-      }).catch(debugError);
+      }).catch(debugCatchError);
     }));
     _classPrivateFieldGet(_isolatedWorlds, this).add(key);
   }
@@ -19264,7 +19333,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       } else if (_assertClassBrand(_FrameManager_brand, this, _isExtensionOrigin).call(this, origin)) {
         const extId = _assertClassBrand(_FrameManager_brand, this, _extractExtensionId).call(this, origin);
         if (!extId) {
-          debugError('Error while parsing extension id');
+          debugError?.('Error while parsing extension id');
           return;
         }
         if (frame.extensionWorlds[extId]) {
@@ -21109,10 +21178,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  function _get_state(_this13) {
+  function _get_state(_this14) {
     return Object.assign({
-      ..._classPrivateFieldGet(_state2, _this13)
-    }, ..._classPrivateFieldGet(_transactions, _this13));
+      ..._classPrivateFieldGet(_state2, _this14)
+    }, ..._classPrivateFieldGet(_transactions, _this14));
   }
   function _createTransaction() {
     const transaction = {};
@@ -21459,7 +21528,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         this.input = JSON.parse(input);
       } catch (error) {
         this.input = {};
-        debugError(error);
+        debugError?.(error);
       }
     }
   }
@@ -21491,7 +21560,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _onToolsRemoved = /*#__PURE__*/new WeakMap();
   var _onToolInvoked = /*#__PURE__*/new WeakMap();
   var _onToolResponded = /*#__PURE__*/new WeakMap();
-  var _onFrameNavigated2 = /*#__PURE__*/new WeakMap();
+  var _onContextDisposed2 = /*#__PURE__*/new WeakMap();
   var _WebMCP_brand = /*#__PURE__*/new WeakSet();
   class WebMCP extends EventEmitter {
     /**
@@ -21514,6 +21583,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           const frameTools = _classPrivateFieldGet(_tools, this).get(tool.frameId) ?? new Map();
           if (!_classPrivateFieldGet(_tools, this).has(tool.frameId)) {
             _classPrivateFieldGet(_tools, this).set(tool.frameId, frameTools);
+            _assertClassBrand(_WebMCP_brand, this, _listenToContextDestroyed).call(this, frame);
           }
           const addedTool = new WebMCPTool(this, tool, frame);
           frameTools.set(tool.name, addedTool);
@@ -21561,7 +21631,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         };
         this.emit('toolresponded', response);
       });
-      _classPrivateFieldInitSpec(this, _onFrameNavigated2, frame => {
+      _classPrivateFieldInitSpec(this, _onContextDisposed2, frame => {
         _classPrivateFieldGet(_pendingCalls, this).clear();
         const frameTools = _classPrivateFieldGet(_tools, this).get(frame._id);
         if (!frameTools) {
@@ -21577,14 +21647,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       });
       _classPrivateFieldSet(_client16, this, client);
       _classPrivateFieldSet(_frameManager2, this, frameManager);
-      _classPrivateFieldGet(_frameManager2, this).on(exports.FrameManagerEvent.FrameNavigated, _classPrivateFieldGet(_onFrameNavigated2, this));
       _assertClassBrand(_WebMCP_brand, this, _bindListeners).call(this);
     }
     /**
      * @internal
      */
     async initialize() {
-      return await _classPrivateFieldGet(_client16, this).send('WebMCP.enable').catch(debugError);
+      return await _classPrivateFieldGet(_client16, this).send('WebMCP.enable').catch(debugCatchError);
     }
     /**
      * @internal
@@ -21622,6 +21691,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  function _listenToContextDestroyed(frame) {
+    frame.mainRealm().context?.once('disposed', () => {
+      _classPrivateFieldGet(_onContextDisposed2, this).call(this, frame);
+    });
+  }
   function _bindListeners() {
     _classPrivateFieldGet(_client16, this).on('WebMCP.toolsAdded', _classPrivateFieldGet(_onToolsAdded, this));
     _classPrivateFieldGet(_client16, this).on('WebMCP.toolsRemoved', _classPrivateFieldGet(_onToolsRemoved, this));
@@ -21744,7 +21818,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           await page.setViewport(defaultViewport);
         } catch (err) {
           if (isErrorLike(err) && isTargetClosedError(err)) {
-            debugError(err);
+            debugError?.(err);
           } else {
             throw err;
           }
@@ -21800,7 +21874,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
               // eslint-disable-next-line max-len -- The comment is long.
               // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
               for (const arg of message.args()) {
-                void arg.dispose().catch(debugError);
+                void arg.dispose().catch(debugCatchError);
               }
               return;
             }
@@ -21867,11 +21941,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldGet(_tabTargetClient, this).on(exports.CDPSessionEvent.Swapped, _assertClassBrand(_CdpPage_brand, this, _onActivation).bind(this));
       _classPrivateFieldGet(_tabTargetClient, this).on(exports.CDPSessionEvent.Ready, _assertClassBrand(_CdpPage_brand, this, _onSecondaryTarget).bind(this));
       _classPrivateFieldGet(_targetManager, this).on("targetGone" /* TargetManagerEvent.TargetGone */, _classPrivateFieldGet(_onDetachedFromTarget, this));
-      _classPrivateFieldGet(_tabTarget, this)._isClosedDeferred.valueOrThrow().then(() => {
+      void _classPrivateFieldGet(_tabTarget, this)._isClosedDeferred.valueOrThrow().then(() => {
         _classPrivateFieldGet(_targetManager, this).off("targetGone" /* TargetManagerEvent.TargetGone */, _classPrivateFieldGet(_onDetachedFromTarget, this));
         this.emit("close" /* PageEvent.Close */, undefined);
         _classPrivateFieldSet(_closed2, this, true);
-      }).catch(debugError);
+      }).catch(debugCatchError);
       _assertClassBrand(_CdpPage_brand, this, _setupPrimaryTargetListeners).call(this);
       _assertClassBrand(_CdpPage_brand, this, _attachExistingTargets).call(this);
     }
@@ -22221,6 +22295,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async emulateTimezone(timezoneId) {
       return await _classPrivateFieldGet(_emulationManager, this).emulateTimezone(timezoneId);
     }
+    async emulateLocale(locale) {
+      await _classPrivateFieldGet(_emulationManager, this).emulateLocale(locale);
+      await _classPrivateFieldGet(_frameManager3, this).networkManager.setAcceptLanguage(locale);
+    }
     async emulateIdleState(overrides) {
       return await _classPrivateFieldGet(_emulationManager, this).emulateIdleState(overrides);
     }
@@ -22267,7 +22345,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (omitBackground && (type === 'png' || type === 'webp')) {
           await _classPrivateFieldGet(_emulationManager, this).setTransparentBackgroundColor();
           stack.defer(async () => {
-            await _classPrivateFieldGet(_emulationManager, this).resetDefaultBackgroundColor().catch(debugError);
+            await _classPrivateFieldGet(_emulationManager, this).resetDefaultBackgroundColor().catch(debugCatchError);
           });
         }
         let clip = userClip;
@@ -22484,8 +22562,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (session.target()._subtype() !== 'prerender') {
       return;
     }
-    _classPrivateFieldGet(_frameManager3, this).registerSpeculativeSession(session).catch(debugError);
-    _classPrivateFieldGet(_emulationManager, this).registerSpeculativeSession(session).catch(debugError);
+    void _classPrivateFieldGet(_frameManager3, this).registerSpeculativeSession(session).catch(debugCatchError);
+    void _classPrivateFieldGet(_emulationManager, this).registerSpeculativeSession(session).catch(debugCatchError);
   }
   /**
    * Sets up listeners for the primary target. The primary target can change
@@ -22515,7 +22593,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       await Promise.all([_classPrivateFieldGet(_frameManager3, this).initialize(_classPrivateFieldGet(_primaryTargetClient, this)), _classPrivateFieldGet(_primaryTargetClient, this).send('Performance.enable'), _classPrivateFieldGet(_primaryTargetClient, this).send('Log.enable'), _classPrivateFieldGet(_webmcp2, this).initialize()]);
     } catch (err) {
       if (isErrorLike(err) && isTargetClosedError(err)) {
-        debugError(err);
+        debugError?.(err);
       } else {
         throw err;
       }
@@ -22603,7 +22681,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         // eslint-disable-next-line max-len -- The comment is long.
         // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
         for (const value of values) {
-          void value.dispose().catch(debugError);
+          void value.dispose().catch(debugCatchError);
         }
       }
       return;
@@ -22906,22 +22984,20 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         const targetUrl = target.url();
         return target.type() === 'service_worker' && targetUrl.startsWith('chrome-extension://' + this.id);
       });
-      const workers = [];
-      for (const target of extensionWorkers) {
+      const workers = await Promise.all(extensionWorkers.map(async target => {
         try {
-          const worker = await target.worker();
-          if (worker) {
-            workers.push(worker);
-          }
+          return await target.worker();
         } catch (err) {
           if (_assertClassBrand(_CdpExtension_brand, this, _canIgnoreError2).call(this, err)) {
-            debugError(err);
-            continue;
+            debugError?.(err);
+            return null;
           }
           throw err;
         }
-      }
-      return workers;
+      }));
+      return workers.filter(worker => {
+        return worker !== null;
+      });
     }
     async pages() {
       const targets = _classPrivateFieldGet(_browser2, this).targets();
@@ -22934,7 +23010,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return await target.asPage();
         } catch (err) {
           if (_assertClassBrand(_CdpExtension_brand, this, _canIgnoreError2).call(this, err)) {
-            debugError(err);
+            debugError?.(err);
             return null;
           }
           throw err;
@@ -23135,7 +23211,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_defaultViewport, this, defaultViewport ?? undefined);
     }
     _initialize() {
-      this._initializedDeferred.valueOrThrow().then(async result => {
+      void this._initializedDeferred.valueOrThrow().then(async result => {
         if (result === exports.InitializationStatus.ABORTED) {
           return;
         }
@@ -23153,7 +23229,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         const popupPage = await this.page();
         openerPage.emit("popup" /* PageEvent.Popup */, popupPage);
         return true;
-      }).catch(debugError);
+      }).catch(debugCatchError);
       this._checkIfInitialized();
     }
     async page() {
@@ -24237,12 +24313,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _blocklist, []);
       _classPrivateFieldInitSpec(this, _allowlist, []);
       _classPrivateFieldInitSpec(this, _silentDetach, async (session, parentSession) => {
-        await session.send('Runtime.runIfWaitingForDebugger').catch(debugError);
+        await session.send('Runtime.runIfWaitingForDebugger').catch(debugCatchError);
         // We don't use `session.detach()` because that dispatches all commands on
         // the connection instead of the parent session.
         await parentSession.send('Target.detachFromTarget', {
           sessionId: session.id()
-        }).catch(debugError);
+        }).catch(debugCatchError);
       });
       _classPrivateFieldInitSpec(this, _getParentTarget, parentSession => {
         return parentSession instanceof CdpCDPSession ? parentSession.target() : null;
@@ -24311,6 +24387,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           throw new Error(`Session ${event.sessionId} was not created.`);
         }
         if (!_classPrivateFieldGet(_connection4, this).isAutoAttached(targetInfo.targetId)) {
+          await _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo);
           return;
         }
         // If we connect to a browser that is already open,
@@ -24327,6 +24404,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         // should determine if a target is auto-attached or not with the help of
         // CDP.
         if (targetInfo.type === 'service_worker') {
+          if (!this.isUrlAllowed(targetInfo.url)) {
+            await Promise.all([_classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo), session.send('Runtime.runIfWaitingForDebugger')]).catch(debugCatchError);
+            return;
+          }
           await _classPrivateFieldGet(_silentDetach, this).call(this, session, parentSession);
           if (_classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId) || _classPrivateFieldGet(_ignoredTargets, this).has(targetInfo.targetId) || !_classPrivateFieldGet(_discoveredTargetsByTargetId, this).has(targetInfo.targetId)) {
             return;
@@ -24371,14 +24452,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         if (parentTarget?.type() === 'tab') {
           _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, parentTarget._targetId);
         }
-        // TODO: the browser might be shutting down here. What do we do with the
-        // error?
+        // The browser might be shutting down here, so we
+        // ignore potential errors.
         await Promise.all([session.send('Target.setAutoAttach', {
           waitForDebuggerOnStart: true,
           flatten: true,
           autoAttach: true,
           filter: _classPrivateFieldGet(_discoveryFilter, this)
-        }), _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session), session.send('Runtime.runIfWaitingForDebugger')]).catch(debugError);
+        }), _classPrivateFieldGet(_maybeSetupNetworkConditions, this).call(this, session, targetInfo), session.send('Runtime.runIfWaitingForDebugger')]).catch(debugCatchError);
       });
       _classPrivateFieldInitSpec(this, _onDetachedFromTarget2, (parentSession, event) => {
         const target = _classPrivateFieldGet(_attachedTargetsBySessionId, this).get(event.sessionId);
@@ -24418,7 +24499,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         return true;
       });
-      _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, async session => {
+      _classPrivateFieldInitSpec(this, _maybeSetupNetworkConditions, async (session, targetInfo) => {
         if (_classPrivateFieldGet(_blocklist, this).length === 0 && _classPrivateFieldGet(_allowlist, this).length === 0) {
           return;
         }
@@ -24450,10 +24531,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             uploadThroughput: -1
           });
         }
-        await session.send('Network.emulateNetworkConditionsByRule', {
+        const needsNetwork = targetInfo.type === 'worker' || targetInfo.type === 'service_worker' || targetInfo.type === 'shared_worker';
+        const promises = [];
+        if (needsNetwork) {
+          promises.push(session.send('Network.enable'));
+        }
+        promises.push(session.send('Network.emulateNetworkConditionsByRule', {
           offline: _classPrivateFieldGet(_blocklist, this).length > 0 ? true : undefined,
           matchedNetworkConditions
-        });
+        }));
+        await Promise.all(promises).catch(debugCatchError);
       });
       if (blocklist && allowlist) {
         throw new Error('Cannot specify both blockList and allowList');
@@ -24585,6 +24672,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _targetManager3 = /*#__PURE__*/new WeakMap();
   var _handleDevToolsAsPage = /*#__PURE__*/new WeakMap();
   var _extensions = /*#__PURE__*/new WeakMap();
+  var _version2 = /*#__PURE__*/new WeakMap();
   var _emitDisconnected = /*#__PURE__*/new WeakMap();
   var _CdpBrowser_brand = /*#__PURE__*/new WeakSet();
   var _createTarget = /*#__PURE__*/new WeakMap();
@@ -24627,6 +24715,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _targetManager3, void 0);
       _classPrivateFieldInitSpec(this, _handleDevToolsAsPage, false);
       _classPrivateFieldInitSpec(this, _extensions, new Map());
+      _classPrivateFieldInitSpec(this, _version2, void 0);
       _classPrivateFieldInitSpec(this, _emitDisconnected, () => {
         this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
       });
@@ -24974,8 +25063,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return target.type() === 'page' || target.type() === 'background_page' || target.type() === 'webview' || _classPrivateFieldGet(_handleDevToolsAsPage, this) && target.type() === 'other' && isDevToolsPageTarget(target.url());
     }));
   }
-  function _getVersion() {
-    return _classPrivateFieldGet(_connection5, this).send('Browser.getVersion');
+  async function _getVersion() {
+    if (!_classPrivateFieldGet(_version2, this)) {
+      _classPrivateFieldSet(_version2, this, Deferred.create());
+      try {
+        _classPrivateFieldGet(_version2, this).resolve(await _classPrivateFieldGet(_connection5, this).send('Browser.getVersion'));
+      } catch (error) {
+        _classPrivateFieldGet(_version2, this).reject(error);
+      }
+    }
+    return await _classPrivateFieldGet(_version2, this).valueOrThrow();
   }
   async function _connectToCdpBrowser(connectionTransport, url, options) {
     const {
@@ -24998,7 +25095,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       browserContextIds
     } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
-      return connection.send('Browser.close').catch(debugError);
+      return connection.send('Browser.close').catch(debugCatchError);
     }, targetFilter, isPageTarget, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
     return browser;
   }
@@ -25287,7 +25384,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
       });
       // Silently log all errors - we don't know what to do with them.
-      _classPrivateFieldGet(_ws, this).addEventListener('error', debugError);
+      _classPrivateFieldGet(_ws, this).addEventListener('error', debugCatchError);
     }
     send(message) {
       _classPrivateFieldGet(_ws, this).send(message);
@@ -26835,7 +26932,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         return {
           bidiConnection: pureBidiConnection,
           closeCallback: async () => {
-            await pureBidiConnection.send('browser.close', {}).catch(debugError);
+            await pureBidiConnection.send('browser.close', {}).catch(debugCatchError);
           }
         };
       }
@@ -26859,7 +26956,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       bidiConnection: bidiOverCdpConnection,
       closeCallback: async () => {
         // In case of BiDi over CDP, we need to close browser via CDP.
-        await cdpConnection.send('Browser.close').catch(debugError);
+        await cdpConnection.send('Browser.close').catch(debugCatchError);
       }
     };
   }
@@ -26886,6 +26983,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     if (options.protocol === 'webDriverBiDi' && (options.blocklist || options.allowlist)) {
       throw new Error('blocklist and allowlist are only supported with the CDP protocol');
+    }
+    if (options.blocklist) {
+      for (const rule of options.blocklist) {
+        new Y(rule);
+      }
+    }
+    if (options.allowlist) {
+      for (const rule of options.allowlist) {
+        new Y(rule);
+      }
     }
   }
   async function _connectToBrowser(options) {
@@ -27132,9 +27239,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '149.0.7827.22',
-    'chrome-headless-shell': '149.0.7827.22',
-    firefox: 'stable_151.0'
+    chrome: '150.0.7871.24',
+    'chrome-headless-shell': '150.0.7871.24',
+    firefox: 'stable_152.0.2'
   });
 
   /**
@@ -27293,6 +27400,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.createProtocolErrorMessage = createProtocolErrorMessage;
   exports.customQueryHandlers = customQueryHandlers;
   exports.debug = debug;
+  exports.debugCatchError = debugCatchError;
   exports.debugError = debugError;
   exports.default = puppeteer;
   exports.disposeSymbol = disposeSymbol;
@@ -27308,7 +27416,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.getSourceUrlComment = getSourceUrlComment;
   exports.handleError = handleError;
   exports.headersArray = headersArray;
-  exports.importDebug = importDebug;
   exports.isDate = isDate;
   exports.isErrnoException = isErrnoException;
   exports.isErrorLike = isErrorLike;

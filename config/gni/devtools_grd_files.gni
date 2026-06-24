@@ -2479,6 +2479,7 @@ grd_files_unbundled_sources = [
   "front_end/third_party/puppeteer/package/lib/puppeteer/injected/XPathQuerySelector.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/injected/injected.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/injected/util.js",
+  "front_end/third_party/puppeteer/package/lib/puppeteer/node-env-setup.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/node/BrowserLauncher.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/node/ChromeLauncher.js",
   "front_end/third_party/puppeteer/package/lib/puppeteer/node/FirefoxLauncher.js",

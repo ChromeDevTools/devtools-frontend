@@ -3,14 +3,9 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type { debuglog } from 'node:util';
 declare global {
     const __PUPPETEER_DEBUG: string;
 }
-/**
- * @internal
- */
-export declare function importDebug(): Promise<typeof debuglog>;
 /**
  * A debug function that can be used in any environment.
  *
@@ -49,7 +44,7 @@ export declare function importDebug(): Promise<typeof debuglog>;
  *
  * @internal
  */
-export declare const debug: (prefix: string) => ((...args: unknown[]) => void);
+export declare const debug: (prefix: string) => ((...args: unknown[]) => void) | undefined;
 /**
  * @internal
  */

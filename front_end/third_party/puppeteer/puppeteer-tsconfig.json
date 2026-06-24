@@ -156,6 +156,7 @@
     "package/lib/puppeteer/injected/XPathQuerySelector.js",
     "package/lib/puppeteer/injected/injected.js",
     "package/lib/puppeteer/injected/util.js",
+    "package/lib/puppeteer/node-env-setup.js",
     "package/lib/puppeteer/node/BrowserLauncher.js",
     "package/lib/puppeteer/node/ChromeLauncher.js",
     "package/lib/puppeteer/node/FirefoxLauncher.js",

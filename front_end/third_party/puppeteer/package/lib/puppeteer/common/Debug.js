@@ -3,20 +3,7 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { isNode } from '../environment.js';
-/**
- * @internal
- */
-let debugModule = null;
-/**
- * @internal
- */
-export async function importDebug() {
-    if (!debugModule) {
-        debugModule = (await import('node:util')).debuglog;
-    }
-    return debugModule;
-}
+import { isNode, environment } from '../environment.js';
 /**
  * A debug function that can be used in any environment.
  *
@@ -57,31 +44,35 @@ export async function importDebug() {
  */
 export const debug = (prefix) => {
     if (isNode) {
-        return async (...logArgs) => {
+        const nodeDebug = environment.value.debuglog?.(prefix);
+        if (!nodeDebug || !nodeDebug.enabled) {
+            return;
+        }
+        return (...logArgs) => {
             if (captureLogs) {
                 capturedLogs.push(prefix + logArgs);
             }
-            (await importDebug())(prefix)(...logArgs);
+            nodeDebug(...logArgs);
         };
     }
+    const debugLevel = globalThis.__PUPPETEER_DEBUG;
+    if (!debugLevel) {
+        return;
+    }
+    const everythingShouldBeLogged = debugLevel === '*';
+    const prefixMatchesDebugLevel = everythingShouldBeLogged ||
+        /**
+         * If the debug level is `foo*`, that means we match any prefix that
+         * starts with `foo`. If the level is `foo`, we match only the prefix
+         * `foo`.
+         */
+        (debugLevel.endsWith('*')
+            ? prefix.startsWith(debugLevel.slice(0, -1))
+            : prefix === debugLevel);
+    if (!prefixMatchesDebugLevel) {
+        return;
+    }
     return (...logArgs) => {
-        const debugLevel = globalThis.__PUPPETEER_DEBUG;
-        if (!debugLevel) {
-            return;
-        }
-        const everythingShouldBeLogged = debugLevel === '*';
-        const prefixMatchesDebugLevel = everythingShouldBeLogged ||
-            /**
-             * If the debug level is `foo*`, that means we match any prefix that
-             * starts with `foo`. If the level is `foo`, we match only the prefix
-             * `foo`.
-             */
-            (debugLevel.endsWith('*')
-                ? prefix.startsWith(debugLevel)
-                : prefix === debugLevel);
-        if (!prefixMatchesDebugLevel) {
-            return;
-        }
         console.log(`${prefix}:`, ...logArgs);
     };
 };

@@ -1,4 +1,4 @@
-import { launch } from '@puppeteer/browsers';
+import { Browser as InstalledBrowser, launch } from '@puppeteer/browsers';
 import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
@@ -15,6 +15,10 @@ export interface ResolvedLaunchArgs {
     executablePath: string;
     args: string[];
 }
+/**
+ * @internal
+ */
+export declare function getBrowserTypeDisplayName(browserType: InstalledBrowser): string;
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
  *

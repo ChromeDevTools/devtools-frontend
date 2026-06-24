@@ -64,7 +64,7 @@ import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, getReadableAsTypedArray, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, } from '../common/util.js';
+import { debugError, evaluationString, getReadableAsTypedArray, getReadableFromProtocolStream, parsePDFOptions, timeout, validateDialogType, debugCatchError, } from '../common/util.js';
 import { environment } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
@@ -112,7 +112,7 @@ export class CdpPage extends Page {
             }
             catch (err) {
                 if (isErrorLike(err) && isTargetClosedError(err)) {
-                    debugError(err);
+                    debugError?.(err);
                 }
                 else {
                     throw err;
@@ -201,14 +201,14 @@ export class CdpPage extends Page {
         this.#tabTargetClient.on(CDPSessionEvent.Swapped, this.#onActivation.bind(this));
         this.#tabTargetClient.on(CDPSessionEvent.Ready, this.#onSecondaryTarget.bind(this));
         this.#targetManager.on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
-        this.#tabTarget._isClosedDeferred
+        void this.#tabTarget._isClosedDeferred
             .valueOrThrow()
             .then(() => {
             this.#targetManager.off("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
             this.emit("close" /* PageEvent.Close */, undefined);
             this.#closed = true;
         })
-            .catch(debugError);
+            .catch(debugCatchError);
         this.#setupPrimaryTargetListeners();
         this.#attachExistingTargets();
     }
@@ -251,10 +251,12 @@ export class CdpPage extends Page {
         if (session.target()._subtype() !== 'prerender') {
             return;
         }
-        this.#frameManager.registerSpeculativeSession(session).catch(debugError);
-        this.#emulationManager
+        void this.#frameManager
             .registerSpeculativeSession(session)
-            .catch(debugError);
+            .catch(debugCatchError);
+        void this.#emulationManager
+            .registerSpeculativeSession(session)
+            .catch(debugCatchError);
     }
     /**
      * Sets up listeners for the primary target. The primary target can change
@@ -301,7 +303,7 @@ export class CdpPage extends Page {
                     // eslint-disable-next-line max-len -- The comment is long.
                     // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
                     for (const arg of message.args()) {
-                        void arg.dispose().catch(debugError);
+                        void arg.dispose().catch(debugCatchError);
                     }
                     return;
                 }
@@ -324,7 +326,7 @@ export class CdpPage extends Page {
         }
         catch (err) {
             if (isErrorLike(err) && isTargetClosedError(err)) {
-                debugError(err);
+                debugError?.(err);
             }
             else {
                 throw err;
@@ -707,7 +709,7 @@ export class CdpPage extends Page {
                 // eslint-disable-next-line max-len -- The comment is long.
                 // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
                 for (const value of values) {
-                    void value.dispose().catch(debugError);
+                    void value.dispose().catch(debugCatchError);
                 }
             }
             return;
@@ -803,6 +805,10 @@ export class CdpPage extends Page {
     async emulateTimezone(timezoneId) {
         return await this.#emulationManager.emulateTimezone(timezoneId);
     }
+    async emulateLocale(locale) {
+        await this.#emulationManager.emulateLocale(locale);
+        await this.#frameManager.networkManager.setAcceptLanguage(locale);
+    }
     async emulateIdleState(overrides) {
         return await this.#emulationManager.emulateIdleState(overrides);
     }
@@ -839,7 +845,7 @@ export class CdpPage extends Page {
                 stack.defer(async () => {
                     await this.#emulationManager
                         .resetDefaultBackgroundColor()
-                        .catch(debugError);
+                        .catch(debugCatchError);
                 });
             }
             let clip = userClip;

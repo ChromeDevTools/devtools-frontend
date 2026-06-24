@@ -1,4 +1,4 @@
-import { debugError } from './util.js';
+import { debugCatchError } from './util.js';
 /**
  * @internal
  */
@@ -28,7 +28,7 @@ export class BrowserWebSocketTransport {
             }
         });
         // Silently log all errors - we don't know what to do with them.
-        this.#ws.addEventListener('error', debugError);
+        this.#ws.addEventListener('error', debugCatchError);
     }
     send(message) {
         this.#ws.send(message);

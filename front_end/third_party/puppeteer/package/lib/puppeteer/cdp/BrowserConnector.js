@@ -3,7 +3,7 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { debugError, DEFAULT_VIEWPORT } from '../common/util.js';
+import { DEFAULT_VIEWPORT, debugCatchError } from '../common/util.js';
 import { createIncrementalIdGenerator } from '../util/incremental-id-generator.js';
 import { CdpBrowser } from './Browser.js';
 import { Connection } from './Connection.js';
@@ -19,7 +19,7 @@ export async function _connectToCdpBrowser(connectionTransport, url, options) {
     /* rawErrors */ false, idGenerator);
     const { browserContextIds } = await connection.send('Target.getBrowserContexts');
     const browser = await CdpBrowser._create(connection, browserContextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, undefined, () => {
-        return connection.send('Browser.close').catch(debugError);
+        return connection.send('Browser.close').catch(debugCatchError);
     }, targetFilter, isPageTarget, undefined, networkEnabled, issuesEnabled, handleDevToolsAsPage, blocklist, allowlist);
     return browser;
 }

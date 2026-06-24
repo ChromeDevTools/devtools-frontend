@@ -122,7 +122,7 @@ export class Connection extends EventEmitter {
                 id,
                 sessionId,
             });
-            debugProtocolSend(stringifiedMessage);
+            debugProtocolSend?.(stringifiedMessage);
             this.#transport.send(stringifiedMessage);
         });
     }
@@ -141,7 +141,7 @@ export class Connection extends EventEmitter {
                 return setTimeout(r, this.#delay);
             });
         }
-        debugProtocolReceive(message);
+        debugProtocolReceive?.(message);
         const object = JSON.parse(message);
         if (object.method === 'Target.attachedToTarget') {
             const sessionId = object.params.sessionId;

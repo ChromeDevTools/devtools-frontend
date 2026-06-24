@@ -6,7 +6,7 @@
 import { URLPattern } from '../../third_party/urlpattern-polyfill/urlpattern-polyfill.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError } from '../common/util.js';
+import { debugCatchError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { CdpCDPSession } from './CdpSession.js';
@@ -157,14 +157,16 @@ export class TargetManager extends EventEmitter {
         }
     }
     #silentDetach = async (session, parentSession) => {
-        await session.send('Runtime.runIfWaitingForDebugger').catch(debugError);
+        await session
+            .send('Runtime.runIfWaitingForDebugger')
+            .catch(debugCatchError);
         // We don't use `session.detach()` because that dispatches all commands on
         // the connection instead of the parent session.
         await parentSession
             .send('Target.detachFromTarget', {
             sessionId: session.id(),
         })
-            .catch(debugError);
+            .catch(debugCatchError);
     };
     #getParentTarget = (parentSession) => {
         return parentSession instanceof CdpCDPSession
@@ -236,6 +238,7 @@ export class TargetManager extends EventEmitter {
             throw new Error(`Session ${event.sessionId} was not created.`);
         }
         if (!this.#connection.isAutoAttached(targetInfo.targetId)) {
+            await this.#maybeSetupNetworkConditions(session, targetInfo);
             return;
         }
         // If we connect to a browser that is already open,
@@ -252,6 +255,13 @@ export class TargetManager extends EventEmitter {
         // should determine if a target is auto-attached or not with the help of
         // CDP.
         if (targetInfo.type === 'service_worker') {
+            if (!this.isUrlAllowed(targetInfo.url)) {
+                await Promise.all([
+                    this.#maybeSetupNetworkConditions(session, targetInfo),
+                    session.send('Runtime.runIfWaitingForDebugger'),
+                ]).catch(debugCatchError);
+                return;
+            }
             await this.#silentDetach(session, parentSession);
             if (this.#attachedTargetsByTargetId.has(targetInfo.targetId) ||
                 this.#ignoredTargets.has(targetInfo.targetId) ||
@@ -301,8 +311,8 @@ export class TargetManager extends EventEmitter {
         if (parentTarget?.type() === 'tab') {
             this.#finishInitializationIfReady(parentTarget._targetId);
         }
-        // TODO: the browser might be shutting down here. What do we do with the
-        // error?
+        // The browser might be shutting down here, so we
+        // ignore potential errors.
         await Promise.all([
             session.send('Target.setAutoAttach', {
                 waitForDebuggerOnStart: true,
@@ -310,9 +320,9 @@ export class TargetManager extends EventEmitter {
                 autoAttach: true,
                 filter: this.#discoveryFilter,
             }),
-            this.#maybeSetupNetworkConditions(session),
+            this.#maybeSetupNetworkConditions(session, targetInfo),
             session.send('Runtime.runIfWaitingForDebugger'),
-        ]).catch(debugError);
+        ]).catch(debugCatchError);
     };
     #finishInitializationIfReady(targetId) {
         if (targetId !== undefined) {
@@ -372,7 +382,7 @@ export class TargetManager extends EventEmitter {
         }
         return result;
     }
-    #maybeSetupNetworkConditions = async (session) => {
+    #maybeSetupNetworkConditions = async (session, targetInfo) => {
         if (this.#blocklist.length === 0 && this.#allowlist.length === 0) {
             return;
         }
@@ -404,10 +414,18 @@ export class TargetManager extends EventEmitter {
                 uploadThroughput: -1,
             });
         }
-        await session.send('Network.emulateNetworkConditionsByRule', {
+        const needsNetwork = targetInfo.type === 'worker' ||
+            targetInfo.type === 'service_worker' ||
+            targetInfo.type === 'shared_worker';
+        const promises = [];
+        if (needsNetwork) {
+            promises.push(session.send('Network.enable'));
+        }
+        promises.push(session.send('Network.emulateNetworkConditionsByRule', {
             offline: this.#blocklist.length > 0 ? true : undefined,
             matchedNetworkConditions,
-        });
+        }));
+        await Promise.all(promises).catch(debugCatchError);
     };
 }
 //# sourceMappingURL=TargetManager.js.map

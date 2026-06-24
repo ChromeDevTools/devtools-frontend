@@ -3,17 +3,12 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+// Set up Node-specific environment dependencies before importing other modules.
+import './node-env-setup.js';
 export * from './index.js';
-import fs from 'node:fs';
-import path from 'node:path';
 import { environment } from './environment.js';
 import * as Puppeteer from './index.js';
-// Set up Node-specific environment dependencies.
-environment.value = {
-    fs,
-    path,
-    ScreenRecorder: Puppeteer.ScreenRecorder,
-};
+environment.value.ScreenRecorder = Puppeteer.ScreenRecorder;
 /**
  * @public
  */

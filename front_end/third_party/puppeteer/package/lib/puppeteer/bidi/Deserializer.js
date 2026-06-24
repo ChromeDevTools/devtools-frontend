@@ -10,7 +10,7 @@ import { debugError } from '../common/util.js';
 export class BidiDeserializer {
     static deserialize(result) {
         if (!result) {
-            debugError('Service did not produce a result.');
+            debugError?.('Service did not produce a result.');
             return undefined;
         }
         switch (result.type) {
@@ -52,7 +52,7 @@ export class BidiDeserializer {
             case 'string':
                 return result.value;
         }
-        debugError(`Deserialization of type ${result.type} not supported.`);
+        debugError?.(`Deserialization of type ${result.type} not supported.`);
         return undefined;
     }
     static #deserializeNumber(value) {

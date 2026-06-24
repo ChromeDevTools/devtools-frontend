@@ -1,6 +1,6 @@
 import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError, fromEmitterEvent, filterAsync, timeout, fromAbortSignal, } from '../common/util.js';
+import { fromEmitterEvent, filterAsync, timeout, fromAbortSignal, debugCatchError, } from '../common/util.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 /**
  * @internal
@@ -180,7 +180,7 @@ export class Browser extends EventEmitter {
     }
     /** @internal */
     [disposeSymbol]() {
-        return void this[asyncDisposeSymbol]().catch(debugError);
+        return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
     /** @internal */
     async [asyncDisposeSymbol]() {

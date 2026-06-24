@@ -325,6 +325,8 @@ SOURCES = [
   "package/lib/puppeteer/injected/injected.js",
   "package/lib/puppeteer/injected/util.d.ts",
   "package/lib/puppeteer/injected/util.js",
+  "package/lib/puppeteer/node-env-setup.d.ts",
+  "package/lib/puppeteer/node-env-setup.js",
   "package/lib/puppeteer/node/BrowserLauncher.d.ts",
   "package/lib/puppeteer/node/BrowserLauncher.js",
   "package/lib/puppeteer/node/ChromeLauncher.d.ts",

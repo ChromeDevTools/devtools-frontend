@@ -39,7 +39,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 };
 import { Frame, FrameEvent, throwIfDetached } from '../api/Frame.js';
 import { UnsupportedOperation } from '../common/Errors.js';
-import { debugError } from '../common/util.js';
+import { debugCatchError } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
@@ -276,7 +276,7 @@ let CdpFrame = (() => {
                 this.#client.send('Runtime.addBinding', {
                     name: CDP_BINDING_PREFIX + binding.name,
                 }),
-                this.evaluate(binding.initSource).catch(debugError),
+                this.evaluate(binding.initSource).catch(debugCatchError),
             ]);
         }
         async removeExposedFunctionBinding(binding) {
@@ -293,7 +293,7 @@ let CdpFrame = (() => {
                     // Removes the dangling Puppeteer binding wrapper.
                     // @ts-expect-error: In a different context.
                     globalThis[name] = undefined;
-                }, binding.name).catch(debugError),
+                }, binding.name).catch(debugCatchError),
             ]);
         }
         async waitForDevicePrompt(options = {}) {

@@ -52,7 +52,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, identity, ignoreElements, map, merge, mergeMap, noop, of, pipe, race, raceWith, retry, tap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
-import { debugError, fromAbortSignal, timeout } from '../../common/util.js';
+import { fromAbortSignal, timeout, debugCatchError } from '../../common/util.js';
 /**
  * All the events that a locator instance may emit.
  *
@@ -284,7 +284,7 @@ export class Locator extends EventEmitter {
             return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.click(options)).pipe(catchError(err => {
-                void handle.dispose().catch(debugError);
+                void handle.dispose().catch(debugCatchError);
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -429,7 +429,7 @@ export class Locator extends EventEmitter {
                 }
             }))
                 .pipe(catchError(err => {
-                void handle.dispose().catch(debugError);
+                void handle.dispose().catch(debugCatchError);
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -444,7 +444,7 @@ export class Locator extends EventEmitter {
             return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.hover()).pipe(catchError(err => {
-                void handle.dispose().catch(debugError);
+                void handle.dispose().catch(debugCatchError);
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));
@@ -466,7 +466,7 @@ export class Locator extends EventEmitter {
                     el.scrollLeft = scrollLeft;
                 }
             }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
-                void handle.dispose().catch(debugError);
+                void handle.dispose().catch(debugCatchError);
                 throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal, cause));

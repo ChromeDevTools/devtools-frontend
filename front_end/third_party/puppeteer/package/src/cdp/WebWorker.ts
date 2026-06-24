@@ -15,7 +15,9 @@ import {
 } from '../api/WebWorker.js';
 import {EventEmitter} from '../common/EventEmitter.js';
 import {TimeoutSettings} from '../common/TimeoutSettings.js';
-import {debugError} from '../common/util.js';
+import {debugError, debugCatchError} from '../common/util.js';
+import type {EvaluateFunc, HandleFor} from '../index-browser.js';
+import {Deferred} from '../util/Deferred.js';
 
 import {ExecutionContext} from './ExecutionContext.js';
 import {IsolatedWorld} from './IsolatedWorld.js';
@@ -39,6 +41,7 @@ export class CdpWebWorker extends WebWorker {
   readonly #id: string;
   readonly #targetType: TargetType;
   readonly #emitter: EventEmitter<WebWorkerEvents>;
+  #workerLoaded = new Deferred<void>();
 
   get internalEmitter(): EventEmitter<WebWorkerEvents> {
     return this.#emitter;
@@ -64,6 +67,10 @@ export class CdpWebWorker extends WebWorker {
         new ExecutionContext(client, event.context, this.#world),
       );
     });
+    this.#client.once('Inspector.workerScriptLoaded', () => {
+      this.#workerLoaded.resolve();
+    });
+
     this.#world.emitter.on('consoleapicalled', async event => {
       try {
         const values = event.args.map(arg => {
@@ -79,7 +86,7 @@ export class CdpWebWorker extends WebWorker {
           // eslint-disable-next-line max-len -- The comment is long.
           // eslint-disable-next-line @puppeteer/use-using -- These are not owned by this function.
           for (const value of values) {
-            void value.dispose().catch(debugError);
+            void value.dispose().catch(debugCatchError);
           }
           return;
         }
@@ -90,7 +97,7 @@ export class CdpWebWorker extends WebWorker {
           this.emit(WebWorkerEvent.Console, consoleMessages);
         }
       } catch (err) {
-        debugError(err);
+        debugError?.(err);
       }
     });
     this.#client.on('Runtime.exceptionThrown', exceptionThrown);
@@ -99,8 +106,10 @@ export class CdpWebWorker extends WebWorker {
     });
 
     // This might fail if the target is closed before we receive all execution contexts.
-    networkManager?.addClient(this.#client).catch(debugError);
-    this.#client.send('Runtime.enable').catch(debugError);
+    networkManager
+      ?.addClient(this.#client)
+      .catch(debugCatchError ?? (() => {}));
+    this.#client.send('Runtime.enable').catch(debugCatchError ?? (() => {}));
   }
 
   mainRealm(): Realm {
@@ -135,5 +144,24 @@ export class CdpWebWorker extends WebWorker {
           self.close();
         });
     }
+  }
+
+  override async evaluate<
+    Params extends unknown[],
+    Func extends EvaluateFunc<Params> = EvaluateFunc<Params>,
+  >(func: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>> {
+    await this.#workerLoaded.valueOrThrow();
+    return await super.evaluate(func, ...args);
+  }
+
+  override async evaluateHandle<
+    Params extends unknown[],
+    Func extends EvaluateFunc<Params> = EvaluateFunc<Params>,
+  >(
+    func: Func | string,
+    ...args: Params
+  ): Promise<HandleFor<Awaited<ReturnType<Func>>>> {
+    await this.#workerLoaded.valueOrThrow();
+    return await super.evaluateHandle(func, ...args);
   }
 }

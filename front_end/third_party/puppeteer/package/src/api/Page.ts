@@ -61,7 +61,6 @@ import type {
   NodeFor,
 } from '../common/types.js';
 import {
-  debugError,
   fromEmitterEvent,
   filterAsync,
   isString,
@@ -69,6 +68,7 @@ import {
   timeout,
   withSourcePuppeteerURLIfNone,
   fromAbortSignal,
+  debugCatchError,
 } from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import {environment} from '../environment.js';
@@ -910,7 +910,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
   /**
    * A target this page was created from.
    *
-   * @deprecated Use {@link Page.createCDPSession} directly.
+   * @deprecated To create CDP session use {@link Page.createCDPSession} directly. To
+   * identify pages spawned by this one, use {@link PageEvent.Popup} event instead.
    */
   abstract target(): Target;
 
@@ -955,9 +956,8 @@ export abstract class Page extends EventEmitter<PageEvents> {
   abstract get tracing(): Tracing;
 
   /**
-   * Experimental API for {@link https://github.com/webmachinelearning/webmcp
-   * | WebMCP}. Requires Chrome 149+ with the
-   * `--enable-features=WebMCPTesting,DevToolsWebMCPSupport` flags enabled.
+   * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
+   * Requires Chrome 150+ with the `--enable-features=WebMCP` flag enabled.
    *
    * @experimental
    */
@@ -2221,6 +2221,12 @@ export abstract class Page extends EventEmitter<PageEvents> {
   abstract emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
 
   /**
+   * @param locale - Locale to emulate on the page. Passing no locale disables
+   * locale emulation.
+   */
+  abstract emulateLocale(locale?: string): Promise<void>;
+
+  /**
    * @param timezoneId - Changes the timezone of the page. See
    * {@link https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt | ICU’s metaZones.txt}
    * for a list of supported timezone IDs. Passing
@@ -2614,7 +2620,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
     if (viewport && viewport.deviceScaleFactor !== 0) {
       await this.setViewport({...viewport, deviceScaleFactor: 0});
       stack.defer(() => {
-        void this.setViewport(viewport).catch(debugError);
+        void this.setViewport(viewport).catch(debugCatchError);
       });
     }
     return await this.mainFrame()
@@ -2738,7 +2744,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
             ...scrollDimensions,
           });
           stack.defer(async () => {
-            await this.setViewport(viewport).catch(debugError);
+            await this.setViewport(viewport).catch(debugCatchError);
           });
         }
       } else {
@@ -3228,7 +3234,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /** @internal */
   override [disposeSymbol](): void {
-    return void this[asyncDisposeSymbol]().catch(debugError);
+    return void this[asyncDisposeSymbol]().catch(debugCatchError);
   }
 
   /** @internal */

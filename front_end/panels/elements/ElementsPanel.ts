@@ -1627,7 +1627,7 @@ export class PseudoStateMarkerDecorator implements MarkerDecorator {
       return null;
     }
     return {
-      color: '--sys-color-orange-bright',
+      color: 'var(--sys-color-orange-bright)',
       title: i18nString(UIStrings.elementStateS, {PH1: ':' + pseudoState.join(', :')}),
     };
   }

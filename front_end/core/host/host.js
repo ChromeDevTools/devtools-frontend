@@ -2511,15 +2511,6 @@ var UserMetrics = class {
   freestylerEvalResponseSize(bytes) {
     InspectorFrontendHostInstance.recordCountHistogram("DevTools.Freestyler.EvalResponseSize", bytes, 0, 1e5, 100);
   }
-  performanceAINetworkSummaryResponseSize(bytes) {
-    InspectorFrontendHostInstance.recordCountHistogram("DevTools.PerformanceAI.NetworkSummaryResponseSize", bytes, 0, 1e5, 100);
-  }
-  performanceAINetworkRequestDetailResponseSize(bytes) {
-    InspectorFrontendHostInstance.recordCountHistogram("DevTools.PerformanceAI.NetworkRequestDetailResponseSize", bytes, 0, 1e5, 100);
-  }
-  performanceAIMainThreadActivityResponseSize(bytes) {
-    InspectorFrontendHostInstance.recordCountHistogram("DevTools.PerformanceAI.MainThreadActivityResponseSize", bytes, 0, 1e5, 100);
-  }
   builtInAiAvailability(availability) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
       "DevTools.BuiltInAiAvailability",

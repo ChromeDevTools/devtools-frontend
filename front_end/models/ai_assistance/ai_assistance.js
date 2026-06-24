@@ -255,7 +255,7 @@ var AccessibilityAgent_exports = {};
 __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
-import * as Host8 from "./../../core/host/host.js";
+import * as Host9 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
@@ -1577,16 +1577,21 @@ var JavascriptExecutor = class {
     return error;
   }
 }`;
+    const timeoutSentinel = Symbol("timeout");
+    const { promise: timeoutPromise, resolve: resolveTimeout } = Promise.withResolvers();
+    let timeoutId;
     try {
+      timeoutId = setTimeout(() => resolveTimeout(timeoutSentinel), OBSERVATION_TIMEOUT);
       const result = await Promise.race([
         this.#execJs(functionDeclaration, {
           throwOnSideEffect,
           contextNode: this.#options.getContextNode()
         }),
-        new Promise((_, reject) => {
-          setTimeout(() => reject(new Error("Script execution exceeded the maximum allowed time.")), OBSERVATION_TIMEOUT);
-        })
+        timeoutPromise
       ]);
+      if (result === timeoutSentinel) {
+        throw new Error("Script execution exceeded the maximum allowed time.");
+      }
       const byteCount = Platform3.StringUtilities.countWtf8Bytes(result);
       Host2.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
@@ -1610,6 +1615,11 @@ var JavascriptExecutor = class {
         sideEffect: false,
         canceled: false
       };
+    } finally {
+      if (timeoutId !== void 0) {
+        clearTimeout(timeoutId);
+      }
+      resolveTimeout(timeoutSentinel);
     }
   }
 };
@@ -1703,15 +1713,28 @@ const data = {
   }
 };
 
-// gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
-var GetNetworkRequestDetails_exports = {};
-__export(GetNetworkRequestDetails_exports, {
-  GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
+// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
+var GetLighthouseAudits_exports = {};
+__export(GetLighthouseAudits_exports, {
+  GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Logs2 from "./../logs/logs.js";
-import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
+
+// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
+var AccessibilityContext_exports = {};
+__export(AccessibilityContext_exports, {
+  AccessibilityContext: () => AccessibilityContext
+});
+
+// gen/front_end/models/ai_assistance/agents/AiAgent.js
+var AiAgent_exports = {};
+__export(AiAgent_exports, {
+  AiAgent: () => AiAgent,
+  ConversationContext: () => ConversationContext,
+  MAX_STEPS: () => MAX_STEPS
+});
+import * as Host4 from "./../../core/host/host.js";
+import * as Root4 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/AiOrigins.js
 var AiOrigins_exports = {};
@@ -1763,24 +1786,7 @@ function canResourceContentsBeReadForTrace(targetURL, traceOrigin) {
   return areOriginsEquivalent(targetOrigin, traceOrigin);
 }
 
-// gen/front_end/models/ai_assistance/contexts/RequestContext.js
-var RequestContext_exports = {};
-__export(RequestContext_exports, {
-  RequestContext: () => RequestContext,
-  getRequestContextOrigin: () => getRequestContextOrigin
-});
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
-var AiAgent_exports = {};
-__export(AiAgent_exports, {
-  AiAgent: () => AiAgent,
-  ConversationContext: () => ConversationContext,
-  MAX_STEPS: () => MAX_STEPS
-});
-import * as Host4 from "./../../core/host/host.js";
-import * as Root4 from "./../../core/root/root.js";
 var MAX_SUGGESTION_LENGTH = 200;
 var MAX_STEPS = 10;
 var ConversationContext = class {
@@ -2371,6 +2377,111 @@ function sanitizeSuggestions(suggestions) {
   return sanitized;
 }
 
+// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
+var AccessibilityContext = class extends ConversationContext {
+  #lh;
+  #cachedPayload = null;
+  constructor(report) {
+    super();
+    this.#lh = report;
+  }
+  #url() {
+    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
+  }
+  getURL() {
+    return this.#url();
+  }
+  getItem() {
+    return this.#lh;
+  }
+  getTitle() {
+    return `Lighthouse report: ${this.#url()}`;
+  }
+  #getInitialPayload() {
+    if (this.#cachedPayload !== null) {
+      return this.#cachedPayload;
+    }
+    const formatter = new LighthouseFormatter();
+    const summary = formatter.summary(this.#lh);
+    const audits = formatter.audits(this.#lh, "accessibility");
+    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
+    if (allFailed) {
+      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
+    } else {
+      this.#cachedPayload = `# Lighthouse Report:
+${summary}
+${audits}`;
+    }
+    return this.#cachedPayload;
+  }
+  async getPromptDetails() {
+    return this.#getInitialPayload();
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: "Lighthouse report",
+        text: this.#getInitialPayload()
+      }
+    ];
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
+var GetLighthouseAuditsTool = class {
+  name = "getLighthouseAudits";
+  description = "Returns the audits for a specific Lighthouse category.";
+  parameters = {
+    type: 6,
+    description: "Arguments for retrieving Lighthouse category audits.",
+    nullable: false,
+    properties: {
+      categoryId: {
+        type: 1,
+        description: 'The category of audits to retrieve. E.g. "accessibility".',
+        nullable: false
+      }
+    },
+    required: ["categoryId"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: `Getting Lighthouse audits for ${params.categoryId}`,
+      action: `getLighthouseAudits('${params.categoryId}')`
+    };
+  }
+  async handler(params, context) {
+    if (!(context.conversationContext instanceof AccessibilityContext)) {
+      return { error: "Error: Active context is not a Lighthouse report." };
+    }
+    const report = context.conversationContext.getItem();
+    const audits = new LighthouseFormatter().audits(report, params.categoryId);
+    return {
+      result: { audits },
+      widgets: [{ name: "LIGHTHOUSE_REPORT", data: { report } }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
+var GetNetworkRequestDetails_exports = {};
+__export(GetNetworkRequestDetails_exports, {
+  GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
+});
+import * as Host6 from "./../../core/host/host.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Logs2 from "./../logs/logs.js";
+import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
+
+// gen/front_end/models/ai_assistance/contexts/RequestContext.js
+var RequestContext_exports = {};
+__export(RequestContext_exports, {
+  RequestContext: () => RequestContext,
+  getRequestContextOrigin: () => getRequestContextOrigin
+});
+import * as Common6 from "./../../core/common/common.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
+
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
 var NetworkRequestFormatter_exports = {};
 __export(NetworkRequestFormatter_exports, {
@@ -2872,7 +2983,7 @@ var GetStyles_exports = {};
 __export(GetStyles_exports, {
   GetStylesTool: () => GetStylesTool
 });
-import * as Host6 from "./../../core/host/host.js";
+import * as Host7 from "./../../core/host/host.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
@@ -3160,7 +3271,7 @@ var ListNetworkRequests_exports = {};
 __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
-import * as Host7 from "./../../core/host/host.js";
+import * as Host8 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Logs3 from "./../logs/logs.js";
 var UIStringsNotTranslate4 = {
@@ -3248,7 +3359,11 @@ var TOOLS = {
   [
     "getNetworkRequestDetails"
     /* ToolName.GET_NETWORK_REQUEST_DETAILS */
-  ]: new GetNetworkRequestDetailsTool()
+  ]: new GetNetworkRequestDetailsTool(),
+  [
+    "getLighthouseAudits"
+    /* ToolName.GET_LIGHTHOUSE_AUDITS */
+  ]: new GetLighthouseAuditsTool()
 };
 var ToolRegistry = class {
   static get(name) {
@@ -3303,7 +3418,7 @@ If the user asks a question that requires an investigation of a problem, use thi
 `;
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
-  clientFeature = Host8.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  clientFeature = Host9.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   #lighthouseRecording;
   #execJs;
   #changes;
@@ -3673,66 +3788,12 @@ __export(ContextSelectionAgent_exports, {
   ContextSelectionAgent: () => ContextSelectionAgent
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
+import * as Host12 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Root8 from "./../../core/root/root.js";
 import * as Logs5 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace from "./../workspace/workspace.js";
-
-// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
-var AccessibilityContext_exports = {};
-__export(AccessibilityContext_exports, {
-  AccessibilityContext: () => AccessibilityContext
-});
-var AccessibilityContext = class extends ConversationContext {
-  #lh;
-  #cachedPayload = null;
-  constructor(report) {
-    super();
-    this.#lh = report;
-  }
-  #url() {
-    return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
-  }
-  getURL() {
-    return this.#url();
-  }
-  getItem() {
-    return this.#lh;
-  }
-  getTitle() {
-    return `Lighthouse report: ${this.#url()}`;
-  }
-  #getInitialPayload() {
-    if (this.#cachedPayload !== null) {
-      return this.#cachedPayload;
-    }
-    const formatter = new LighthouseFormatter();
-    const summary = formatter.summary(this.#lh);
-    const audits = formatter.audits(this.#lh, "accessibility");
-    const allFailed = Object.values(this.#lh.categories).every((category) => category.score === null);
-    if (allFailed) {
-      this.#cachedPayload = "**CRITICAL**: The Lighthouse report failed to record or all category scores are error/unavailable (n/a). This indicates a failed run or missing data.";
-    } else {
-      this.#cachedPayload = `# Lighthouse Report:
-${summary}
-${audits}`;
-    }
-    return this.#cachedPayload;
-  }
-  async getPromptDetails() {
-    return this.#getInitialPayload();
-  }
-  async getUserFacingDetails() {
-    return [
-      {
-        title: "Lighthouse report",
-        text: this.#getInitialPayload()
-      }
-    ];
-  }
-};
 
 // gen/front_end/models/ai_assistance/contexts/FileContext.js
 var FileContext_exports = {};
@@ -3889,9 +3950,8 @@ __export(PerformanceAgent_exports, {
   getLabelName: () => getLabelName
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
+import * as Host10 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
@@ -6631,7 +6691,7 @@ var PerformanceAgent = class extends AiAgent {
    */
   #additionalSelectionsForDisclosure = [];
   get clientFeature() {
-    return Host9.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+    return Host10.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
   }
   get userTier() {
     return Boolean(Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
@@ -6989,8 +7049,6 @@ ${result}`,
         error: `${functionName} response is too large. Try investigating using other functions, or a more narrow bounds`
       };
     }
-    const byteCount = Platform4.StringUtilities.countWtf8Bytes(summary);
-    Host9.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
     this.#cacheFunctionResult(focus, cacheKey, summary);
     const widgets = [];
     widgets.push({
@@ -7234,8 +7292,6 @@ ${result}`,
             error: "getNetworkTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
           };
         }
-        const byteCount = Platform4.StringUtilities.countWtf8Bytes(summary);
-        Host9.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
         const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
         this.#cacheFunctionResult(focus, key, summary);
         return {
@@ -7694,7 +7750,7 @@ __export(StorageAgent_exports, {
   resolveDOMStorages: () => resolveDOMStorages
 });
 import * as Common9 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
+import * as Host11 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
@@ -7815,7 +7871,7 @@ var StorageContext = class extends ConversationContext {
 var MAX_NUM_CHAR_LENGTH = 1e4;
 var StorageAgent = class _StorageAgent extends AiAgent {
   preamble = preamble3;
-  clientFeature = Host10.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  clientFeature = Host11.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
   get userTier() {
     return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -8288,7 +8344,7 @@ Your role is to understand the user's query, identify the appropriate specialize
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   preamble = preamble4;
-  clientFeature = Host11.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
+  clientFeature = Host12.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
     return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -8731,7 +8787,7 @@ var FileAgent_exports = {};
 __export(FileAgent_exports, {
   FileAgent: () => FileAgent
 });
-import * as Host12 from "./../../core/host/host.js";
+import * as Host13 from "./../../core/host/host.js";
 import * as Root9 from "./../../core/root/root.js";
 var preamble5 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
 You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
@@ -8787,7 +8843,7 @@ MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web
 `;
 var FileAgent = class extends AiAgent {
   preamble = preamble5;
-  clientFeature = Host12.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  clientFeature = Host13.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
     return Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
@@ -8830,7 +8886,7 @@ __export(GreenDevAgent_exports, {
   GreenDevContext: () => GreenDevContext
 });
 import * as Common11 from "./../../core/common/common.js";
-import * as Host13 from "./../../core/host/host.js";
+import * as Host14 from "./../../core/host/host.js";
 import * as Root10 from "./../../core/root/root.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Greendev from "./../greendev/greendev.js";
@@ -9143,7 +9199,7 @@ ${codeSuggestionDiff}` });
   }
   preamble = preamble6;
   get clientFeature() {
-    return Host13.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+    return Host14.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   }
   get userTier() {
     return "TESTERS";
@@ -9656,7 +9712,7 @@ var NetworkAgent_exports = {};
 __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent
 });
-import * as Host14 from "./../../core/host/host.js";
+import * as Host15 from "./../../core/host/host.js";
 import * as Root11 from "./../../core/root/root.js";
 var preamble7 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
@@ -9704,7 +9760,7 @@ This request aims to retrieve a list of products matching the search query "lapt
 `;
 var NetworkAgent = class extends AiAgent {
   preamble = preamble7;
-  clientFeature = Host14.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  clientFeature = Host15.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
     return Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
@@ -9752,7 +9808,7 @@ __export(PatchAgent_exports, {
   FileUpdateAgent: () => FileUpdateAgent,
   PatchAgent: () => PatchAgent
 });
-import * as Host15 from "./../../core/host/host.js";
+import * as Host16 from "./../../core/host/host.js";
 import * as Root12 from "./../../core/root/root.js";
 var preamble8 = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.
@@ -9791,7 +9847,7 @@ var PatchAgent = class extends AiAgent {
     return;
   }
   preamble = preamble8;
-  clientFeature = Host15.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  clientFeature = Host16.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
     return Root12.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -9973,7 +10029,7 @@ var FileUpdateAgent = class extends AiAgent {
     return;
   }
   preamble = preamble8;
-  clientFeature = Host15.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
+  clientFeature = Host16.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
     return Root12.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
@@ -9991,7 +10047,7 @@ __export(StylingAgent_exports, {
   AI_ASSISTANCE_FILTER_REGEX: () => AI_ASSISTANCE_FILTER_REGEX,
   StylingAgent: () => StylingAgent
 });
-import * as Host16 from "./../../core/host/host.js";
+import * as Host17 from "./../../core/host/host.js";
 import * as Root13 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Greendev2 from "./../greendev/greendev.js";
@@ -10098,7 +10154,7 @@ var MULTIMODAL_ENHANCEMENT_PROMPTS = {
 var AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 var StylingAgent = class extends AiAgent {
   preamble = preamble9;
-  clientFeature = Host16.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  clientFeature = Host17.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
     return greenDevEmulationEnabled ? "TESTERS" : Root13.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -10456,11 +10512,21 @@ var AiAgent2_exports = {};
 __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
-import * as Host17 from "./../../core/host/host.js";
+import * as Host18 from "./../../core/host/host.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 
-// gen/front_end/models/ai_assistance/skills/network.skill.js
+// gen/front_end/models/ai_assistance/skills/accessibility.skill.js
 var skill = {
+  "name": "accessibility",
+  "description": "Accessibility audits and report querying.",
+  "allowedTools": [
+    "getLighthouseAudits"
+  ],
+  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report."
+};
+
+// gen/front_end/models/ai_assistance/skills/network.skill.js
+var skill2 = {
   "name": "network",
   "description": "Analyzing network traffic, network requests, HTTP/HTTPS headers, status codes, payload details, timing/performance, and request sizes.",
   "allowedTools": [
@@ -10471,7 +10537,7 @@ var skill = {
 };
 
 // gen/front_end/models/ai_assistance/skills/styling.skill.js
-var skill2 = {
+var skill3 = {
   "name": "styling",
   "description": "CSS, styling, layouts, positioning, computed styles, DOM tree structure, and page styles.",
   "allowedTools": [
@@ -10483,14 +10549,16 @@ var skill2 = {
 
 // gen/front_end/models/ai_assistance/skills/SkillRegistry.js
 var SKILLS = {
-  styling: skill2,
-  network: skill
+  styling: skill3,
+  network: skill2,
+  accessibility: skill
 };
 
 // gen/front_end/models/ai_assistance/AiAgent2.js
 var SKILL_DISPLAY_NAMES = {
   styling: "CSS and styling",
-  network: "Network requests"
+  network: "Network requests",
+  accessibility: "Accessibility"
 };
 var preamble10 = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -10521,11 +10589,12 @@ If the user asks a question that requires an investigation or debugging, use thi
 var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble10;
-  clientFeature = Host17.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
+  clientFeature = Host18.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
   userTier = "TESTERS";
   #changes = new ChangeManager();
   #execJs;
   #allowedOrigin;
+  #lighthouseRecording;
   get options() {
     return {};
   }
@@ -10533,6 +10602,7 @@ var AiAgent2 = class extends AiAgent {
   #declaredTools = /* @__PURE__ */ new Set();
   constructor(opts) {
     super(opts);
+    this.#lighthouseRecording = opts.lighthouseRecording;
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#allowedOrigin = opts.allowedOrigin;
     this.#declaredTools.add("learnSkills");
@@ -10587,7 +10657,7 @@ QUERY: ${query}`;
     if (unloadedSkills.length === 0) {
       return enhancedQuery;
     }
-    const skillsManifest = unloadedSkills.map(([name, skill3]) => `- ${name}: ${skill3.description}`).join("\n");
+    const skillsManifest = unloadedSkills.map(([name, skill4]) => `- ${name}: ${skill4.description}`).join("\n");
     return `Available skills that are not yet loaded:
 ${skillsManifest}
 
@@ -10668,7 +10738,8 @@ ${skillObj.instructions}
           execJs: this.#execJs,
           getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
           getTarget: () => SDK11.TargetManager.TargetManager.instance().primaryPageTarget(),
-          getEstablishedOrigin: () => this.#getConversationOrigin()
+          getEstablishedOrigin: () => this.#getConversationOrigin(),
+          lighthouseRecording: this.#lighthouseRecording
         };
         return tool.handler(args, context, options);
       }
@@ -10693,8 +10764,8 @@ __export(AiConversation_exports, {
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
 import * as Common13 from "./../../core/common/common.js";
-import * as Host18 from "./../../core/host/host.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Host19 from "./../../core/host/host.js";
+import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
@@ -10850,8 +10921,8 @@ var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
 var ALLOWED_PAGE_NAVIGATIONS = [
-  Platform5.DevToolsPath.urlString`about://`,
-  Platform5.DevToolsPath.urlString`chrome://terms`
+  Platform4.DevToolsPath.urlString`about://`,
+  Platform4.DevToolsPath.urlString`chrome://terms`
 ];
 function generateContextDetailsMarkdown(details) {
   const detailsMarkdown = [];
@@ -10899,7 +10970,7 @@ var AiConversation = class _AiConversation {
   #onInspectElement;
   #networkTimeCalculator;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host18.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host19.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -11158,7 +11229,7 @@ ${item.text.trim()}`);
       case "none":
         return new ContextSelectionAgent(options);
       default:
-        Platform5.assertNever(type, "Unknown conversation type");
+        Platform4.assertNever(type, "Unknown conversation type");
     }
   }
   async *run(initialQuery, options = {}) {
@@ -11271,7 +11342,7 @@ __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
 import * as Common14 from "./../../core/common/common.js";
-import * as Host19 from "./../../core/host/host.js";
+import * as Host20 from "./../../core/host/host.js";
 import * as Root15 from "./../../core/root/root.js";
 var builtInAiInstance;
 var BuiltInAi = class _BuiltInAi extends Common14.ObjectWrapper.ObjectWrapper {
@@ -11452,31 +11523,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -11485,31 +11556,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host19.userMetrics.builtInAiAvailability(
+          Host20.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -11524,7 +11595,7 @@ var ConversationSummary_exports = {};
 __export(ConversationSummary_exports, {
   ConversationSummary: () => ConversationSummary
 });
-import * as Host20 from "./../../core/host/host.js";
+import * as Host21 from "./../../core/host/host.js";
 import * as Root16 from "./../../core/root/root.js";
 var preamble11 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
@@ -11634,7 +11705,7 @@ ${conversation}`;
       aidaClient: this.#aidaClient,
       preamble: preamble11,
       query: enhancedQuery,
-      clientFeature: Host20.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      clientFeature: Host21.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11655,7 +11726,7 @@ var PerformanceAnnotations_exports = {};
 __export(PerformanceAnnotations_exports, {
   PerformanceAnnotations: () => PerformanceAnnotations
 });
-import * as Host21 from "./../../core/host/host.js";
+import * as Host22 from "./../../core/host/host.js";
 import * as Root17 from "./../../core/root/root.js";
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
@@ -11754,7 +11825,7 @@ ${AI_LABEL_GENERATION_PROMPT}`;
       aidaClient: this.#aidaClient,
       preamble: callTreePreamble,
       query,
-      clientFeature: Host21.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
+      clientFeature: Host22.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11794,6 +11865,7 @@ export {
   FileAgent_exports as FileAgent,
   FileContext_exports as FileContext,
   FileFormatter_exports as FileFormatter,
+  GetLighthouseAudits_exports as GetLighthouseAudits,
   GetNetworkRequestDetails_exports as GetNetworkRequestDetails,
   GetStyles_exports as GetStyles,
   GreenDevAgent_exports as GreenDevAgent,

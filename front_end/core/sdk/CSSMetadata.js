@@ -98,6 +98,9 @@ export class CSSMetadata {
                 if (preset && preset !== value) {
                     return false;
                 }
+                if (partialValueKeywordsNoPresets.get(name)?.has(value)) {
+                    return false;
+                }
                 return CSS.supports(name, value);
             })
                 .sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
@@ -408,7 +411,75 @@ const valuePresets = new Map([
             ['ornaments', 'ornaments(||)'],
             ['annotation', 'annotation(||)'],
         ]),
+    ],
+    [
+        'clip-path', new Map([
+            ['inset', 'inset(|10px|)'],
+            ['circle', 'circle(|100px|)'],
+            ['ellipse', 'ellipse(|100px 100px|)'],
+            ['polygon', 'polygon(|50px 0px, 100px 100px, 0px 100px|)'],
+            ['url', 'url(||)'],
+        ])
+    ],
+    [
+        'transition-timing-function', new Map([
+            ['steps', 'steps(|5, end|)'],
+            ['cubic-bezier', 'cubic-bezier(|0.25, 0.1, 0.25, 1|)'],
+        ])
+    ],
+    [
+        'animation-timing-function', new Map([
+            ['steps', 'steps(|5, end|)'],
+            ['cubic-bezier', 'cubic-bezier(|0.25, 0.1, 0.25, 1|)'],
+        ])
+    ],
+    [
+        'box-shadow',
+        new Map([
+            ['inset', 'inset |0 0 10px black|'],
+        ]),
+    ],
+    [
+        'font-size-adjust',
+        new Map([
+            ['ex-height', 'ex-height |0.5|'],
+            ['cap-height', 'cap-height |0.5|'],
+            ['ch-width', 'ch-width |0.5|'],
+            ['ic-width', 'ic-width |0.5|'],
+            ['ic-height', 'ic-height |0.5|'],
+        ]),
+    ],
+    [
+        'initial-letter',
+        new Map([
+            ['drop', 'drop |2|'],
+            ['raise', 'raise |2|'],
+        ]),
+    ],
+    [
+        'text-box-edge', new Map([
+            ['cap', 'cap alphabetic'],
+            ['ex', 'ex alphabetic'],
+        ])
     ]
+]);
+const partialValueKeywordsNoPresets = new Map([
+    ['scroll-snap-type', new Set(['mandatory', 'proximity'])],
+    ['scrollbar-gutter', new Set(['both-edges'])],
+    ['animation-timing-function', new Set(['jump-both', 'jump-end', 'jump-none', 'jump-start'])],
+    ['transition-timing-function', new Set(['jump-both', 'jump-end', 'jump-none', 'jump-start'])],
+    [
+        'animation-trigger', new Set([
+            'play',
+            'pause',
+            'play-once',
+            'play-alternate',
+            'play-forwards',
+            'play-backwards',
+            'play-pause',
+            'replay',
+        ])
+    ],
 ]);
 const distanceProperties = new Set([
     'background-position',

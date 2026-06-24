@@ -229,8 +229,9 @@ __export(RequestConditionsDrawer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   RequestConditionsDrawer: () => RequestConditionsDrawer
 });
-import "./../../ui/legacy/legacy.js";
+import "./../../ui/components/lists/lists.js";
 import "./../../ui/components/tooltips/tooltips.js";
+import "./../../ui/legacy/legacy.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
@@ -429,17 +430,7 @@ var UIStrings2 = {
   /**
    * @description Aria announcemenet when a pattern was moved down
    */
-  patternMovedDown: "URL pattern was moved down",
-  /**
-   * @description Text on a button to start editing text
-   * @example {*://example.com} PH1
-   */
-  editPattern: "Edit {PH1}",
-  /**
-   * @description Label for an item to remove something
-   * @example {*://example.com} PH1
-   */
-  removePattern: "Remove {PH1}"
+  patternMovedDown: "URL pattern was moved down"
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/network/RequestConditionsDrawer.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -449,6 +440,7 @@ var DEFAULT_VIEW = (input, output, target) => {
   render(
     // clang-format off
     html`
+    <style>${requestConditionsDrawer_css_default}</style>
     <devtools-toolbar jslog=${VisualLogging.toolbar()}>
       <devtools-checkbox
         ?checked=${input.enabled}
@@ -460,7 +452,9 @@ var DEFAULT_VIEW = (input, output, target) => {
       <devtools-button ${bindToAction("network.add-network-request-blocking-pattern")}></devtools-button>
       <devtools-button ${bindToAction("network.remove-all-network-request-blocking-patterns")}></devtools-button>
     </devtools-toolbar>
-    <div class=empty-state ${ref((e) => input.list.setEmptyPlaceholder(e ?? null))}>
+    ${input.conditions.length === 0 ? html`
+    <div class="list">
+      <div class=empty-state>
       <span class=empty-state-header>${i18nString2(UIStrings2.noPattern)}</span>
       <div class=empty-state-description>
         ${uiI18n.getFormatLocalizedStringTemplate(str_2, UIStrings2.noThrottlingOrBlockingPattern, { PH1: learnMore() })}
@@ -474,12 +468,40 @@ var DEFAULT_VIEW = (input, output, target) => {
           ${i18nString2(UIStrings2.addRule)}
       </devtools-button>
     </div>
-    <devtools-widget ${widget(UI2.Widget.VBox)}>
-      ${input.list.element}
-    </devtools-widget>
+    </div>
+    ` : html`
+    <devtools-list
+        class="blocked-urls list square-corners"
+        ?deletable=${input.enabled}
+        @edit=${(e) => input.onBeginEdit(input.conditions[e.detail.index])}
+        @delete=${(e) => input.onRemove(input.conditions[e.detail.index])}>
+      ${input.conditions.map((condition, index) => html`
+        <div class="blocked-url" ${ref((e) => {
+      output.itemRefs.set(condition, e);
+    })}>
+          ${renderItem({
+      condition,
+      editing: input.editingCondition === condition,
+      editable: input.enabled,
+      index,
+      onToggle: input.onToggle,
+      onConditionsChanged: input.onConditionsChanged,
+      onIncreasePriority: input.onIncreasePriority,
+      onDecreasePriority: input.onDecreasePriority,
+      onCommit: input.onCommit,
+      onCancel: input.onCancel,
+      onBeginEdit: input.onBeginEdit,
+      validator: (val) => input.validator(condition, val),
+      lookUpRequestCount: input.lookUpRequestCount
+    })}
+        </div>
+      `)}
+    </devtools-list>
+    `}
     `,
     // clang-format on
-    target
+    target,
+    { container: { classes: !input.enabled && input.conditions.length > 0 ? ["blocking-disabled"] : [] } }
   );
 };
 function renderItem({ condition, editing, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, onCommit, onCancel, onBeginEdit, validator, lookUpRequestCount }) {
@@ -659,12 +681,10 @@ function learnMore() {
 }
 var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.VBox {
   manager;
-  list;
-  editor;
   blockedCountForUrl;
   #throttledCount = /* @__PURE__ */ new Map();
   #view;
-  #listElements = /* @__PURE__ */ new WeakMap();
+  #viewOutput = { itemRefs: /* @__PURE__ */ new Map() };
   #editingCondition;
   constructor(target, view = DEFAULT_VIEW) {
     super(target, {
@@ -673,26 +693,64 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     });
     this.#view = view;
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-    this.manager.addEventListener("BlockedPatternsChanged", this.update, this);
-    this.list = new UI2.ListWidget.ListWidget(this);
-    this.list.registerRequiredCSS(requestConditionsDrawer_css_default);
-    this.list.element.classList.add("blocked-urls");
-    this.editor = null;
+    this.manager.addEventListener("BlockedPatternsChanged", this.requestUpdate, this);
     this.blockedCountForUrl = /* @__PURE__ */ new Map();
     SDK.TargetManager.TargetManager.instance().addModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.onRequestFinished, this, { scoped: true });
-    this.update();
+    this.requestUpdate();
     Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.onNetworkLogReset, this);
   }
   performUpdate() {
+    this.#viewOutput.itemRefs.clear();
     const enabled = this.manager.requestConditions.conditionsEnabled;
-    this.list.element.classList.toggle("blocking-disabled", !enabled && Boolean(this.manager.requestConditions.count));
+    const conditions = Array.from(this.manager.requestConditions.conditions);
+    if (this.#editingCondition && !conditions.includes(this.#editingCondition)) {
+      conditions.unshift(this.#editingCondition);
+    }
     const input = {
       addPattern: this.addPattern.bind(this),
       toggleEnabled: this.toggleEnabled.bind(this),
       enabled,
-      list: this.list
+      conditions,
+      editingCondition: this.#editingCondition,
+      onToggle: (condition) => {
+        if (enabled) {
+          condition.enabled = !condition.enabled;
+        }
+      },
+      onConditionsChanged: (condition, conditions2) => {
+        if (enabled) {
+          condition.conditions = conditions2;
+        }
+      },
+      onIncreasePriority: (condition) => {
+        if (enabled) {
+          UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedUp));
+          this.manager.requestConditions.increasePriority(condition);
+        }
+      },
+      onDecreasePriority: (condition) => {
+        if (enabled) {
+          UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedDown));
+          this.manager.requestConditions.decreasePriority(condition);
+        }
+      },
+      onBeginEdit: (condition) => {
+        if (this.#editingCondition) {
+          this.#cancelEdit(this.#editingCondition);
+        }
+        this.#editingCondition = condition;
+        this.requestUpdate();
+      },
+      onRemove: (condition) => {
+        this.manager.requestConditions.delete(condition);
+        UI2.ARIAUtils.LiveAnnouncer.alert(UIStrings2.itemDeleted);
+      },
+      onCommit: this.#commitEdit.bind(this),
+      onCancel: this.#cancelEdit.bind(this),
+      validator: this.#validator.bind(this),
+      lookUpRequestCount: this.#getRequestCount.bind(this)
     };
-    this.#view(input, {}, this.contentElement);
+    this.#view(input, this.#viewOutput, this.contentElement);
   }
   addPattern() {
     this.manager.requestConditions.conditionsEnabled = true;
@@ -701,96 +759,33 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     }
     const condition = SDK.NetworkManager.RequestCondition.createFromSetting({ url: Platform.DevToolsPath.EmptyUrlString, enabled: true });
     this.#editingCondition = condition;
-    this.update();
+    this.requestUpdate();
   }
   removeAllPatterns() {
     this.manager.requestConditions.clear();
   }
-  renderItem(condition, editable, index) {
-    const element = document.createElement("div");
-    this.#listElements.set(condition, element);
-    element.classList.add("blocked-url");
-    this.updateItem(element, condition, editable, index);
-    return element;
-  }
-  updateItem(element, condition, editable, index) {
-    const onToggle = (condition2) => {
-      if (editable) {
-        condition2.enabled = !condition2.enabled;
-      }
-    };
-    const onConditionsChanged = (condition2, conditions) => {
-      if (editable) {
-        condition2.conditions = conditions;
-      }
-    };
-    const onIncreasePriority = (condition2) => {
-      if (this.manager.requestConditions.conditionsEnabled) {
-        UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedUp));
-        this.manager.requestConditions.increasePriority(condition2);
-      }
-    };
-    const onDecreasePriority = (condition2) => {
-      if (this.manager.requestConditions.conditionsEnabled) {
-        UI2.ARIAUtils.LiveAnnouncer.status(i18nString2(UIStrings2.patternMovedDown));
-        this.manager.requestConditions.decreasePriority(condition2);
-      }
-    };
-    const validator = (value) => {
-      if (!value) {
-        return i18nString2(UIStrings2.patternInputCannotBeEmpty);
-      }
-      const parsedPattern = SDK.NetworkManager.RequestURLPattern.create(value);
-      const stringToCheck = parsedPattern ? parsedPattern.constructorString : value;
-      const existingCondition = this.manager.requestConditions.findCondition(stringToCheck);
-      if (existingCondition && existingCondition !== condition) {
-        return i18nString2(UIStrings2.patternAlreadyExists);
-      }
-      const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(value);
-      switch (isValid) {
-        case "failed-to-parse":
-          return i18nString2(UIStrings2.patternFailedToParse);
-        case "has-regexp-groups":
-          return i18nString2(UIStrings2.patternFailedWithRegExpGroups);
-      }
-      return null;
-    };
-    const onBeginEdit = (condition2) => {
-      if (this.#editingCondition) {
-        this.#cancelEdit(this.#editingCondition);
-      }
-      this.#editingCondition = condition2;
-      this.updateItem(element, condition2, editable, index);
-    };
-    render(renderItem({
-      condition,
-      editable,
-      editing: this.#editingCondition === condition,
-      index,
-      onToggle,
-      onConditionsChanged,
-      onIncreasePriority,
-      onDecreasePriority,
-      onBeginEdit,
-      onCommit: this.#commitEdit.bind(this),
-      onCancel: this.#cancelEdit.bind(this),
-      validator,
-      lookUpRequestCount: this.#getRequestCount.bind(this)
-    }), element);
+  #validator(condition, value) {
+    if (!value) {
+      return i18nString2(UIStrings2.patternInputCannotBeEmpty);
+    }
+    const parsedPattern = SDK.NetworkManager.RequestURLPattern.create(value);
+    const stringToCheck = parsedPattern ? parsedPattern.constructorString : value;
+    const existingCondition = this.manager.requestConditions.findCondition(stringToCheck);
+    if (existingCondition && existingCondition !== condition) {
+      return i18nString2(UIStrings2.patternAlreadyExists);
+    }
+    const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(value);
+    switch (isValid) {
+      case "failed-to-parse":
+        return i18nString2(UIStrings2.patternFailedToParse);
+      case "has-regexp-groups":
+        return i18nString2(UIStrings2.patternFailedWithRegExpGroups);
+    }
+    return null;
   }
   toggleEnabled() {
     this.manager.requestConditions.conditionsEnabled = !this.manager.requestConditions.conditionsEnabled;
-    this.update();
-  }
-  removeItemRequested(condition) {
-    this.manager.requestConditions.delete(condition);
-    UI2.ARIAUtils.LiveAnnouncer.alert(UIStrings2.itemDeleted);
-  }
-  beginEdit(_pattern) {
-    throw new Error("Not implemented. Editing is handled externally.");
-  }
-  commitEdit(_item, _editor, _isNew) {
-    throw new Error("Not implemented. Editing is handled externally.");
+    this.requestUpdate();
   }
   #commitEdit(condition, value) {
     if (this.#editingCondition !== condition) {
@@ -798,7 +793,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     }
     if (condition.constructorStringOrWildcardURL === value && Array.from(this.manager.requestConditions.conditions).includes(condition)) {
       this.#editingCondition = void 0;
-      this.update();
+      this.requestUpdate();
       return;
     }
     const constructorString = value;
@@ -811,40 +806,13 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       this.manager.requestConditions.add(condition);
     }
     this.#editingCondition = void 0;
-    this.update();
+    this.requestUpdate();
   }
   #cancelEdit(condition) {
     if (this.#editingCondition === condition) {
       this.#editingCondition = void 0;
-      this.update();
+      this.requestUpdate();
     }
-  }
-  update() {
-    const enabled = this.manager.requestConditions.conditionsEnabled;
-    const newItems = Array.from(this.manager.requestConditions.conditions);
-    if (this.#editingCondition && !newItems.includes(this.#editingCondition)) {
-      newItems.unshift(this.#editingCondition);
-    }
-    let oldIndex = 0;
-    for (; oldIndex < newItems.length; ++oldIndex) {
-      const pattern = newItems[oldIndex];
-      this.list.updateItem(
-        oldIndex,
-        pattern,
-        enabled,
-        /* focusable=*/
-        false,
-        {
-          edit: i18nString2(UIStrings2.editPattern, { PH1: pattern.constructorStringOrWildcardURL }),
-          delete: i18nString2(UIStrings2.removePattern, { PH1: pattern.constructorStringOrWildcardURL }),
-          hideEdit: true
-        }
-      );
-    }
-    while (oldIndex < this.list.items.length) {
-      this.list.removeItem(oldIndex);
-    }
-    this.requestUpdate();
   }
   #getRequestCount(condition) {
     if (condition.isBlocking) {
@@ -892,9 +860,13 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       console.assert(!!drawer, "Drawer not initialized");
       return;
     }
-    const conditions = drawer.manager.requestConditions.conditions.find((condition) => condition.ruleIds.has(appliedConditions.appliedNetworkConditionsId) && condition.constructorString && condition.constructorString === appliedConditions.urlPattern);
-    const element = conditions && drawer.#listElements.get(conditions);
-    element && PanelUtils.PanelUtils.highlightElement(element);
+    const condition = drawer.manager.requestConditions.conditions.find((condition2) => condition2.ruleIds.has(appliedConditions.appliedNetworkConditionsId) && condition2.constructorString && condition2.constructorString === appliedConditions.urlPattern);
+    if (condition) {
+      const element = drawer.#viewOutput.itemRefs.get(condition);
+      if (element) {
+        PanelUtils.PanelUtils.highlightElement(element);
+      }
+    }
   }
 };
 var ActionDelegate = class {

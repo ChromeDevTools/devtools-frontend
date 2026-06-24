@@ -43,6 +43,7 @@ import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
+import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
@@ -74,6 +75,7 @@ export {
   FileAgent,
   FileContext,
   FileFormatter,
+  GetLighthouseAudits,
   GetNetworkRequestDetails,
   GetStyles,
   GreenDevAgent,

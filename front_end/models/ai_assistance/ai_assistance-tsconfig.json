@@ -79,6 +79,7 @@
     "../../../../../../front_end/models/ai_assistance/skills/Skill.ts",
     "../../../../../../front_end/models/ai_assistance/skills/SkillRegistry.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ExecuteJavaScript.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/GetLighthouseAudits.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetNetworkRequestDetails.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetStyles.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ListNetworkRequests.ts",

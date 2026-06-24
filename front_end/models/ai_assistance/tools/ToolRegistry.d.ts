@@ -1,4 +1,5 @@
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
@@ -16,6 +17,7 @@ export declare const TOOLS: {
     getStyles: GetStylesTool;
     listNetworkRequests: ListNetworkRequestsTool;
     getNetworkRequestDetails: GetNetworkRequestDetailsTool;
+    getLighthouseAudits: GetLighthouseAuditsTool;
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

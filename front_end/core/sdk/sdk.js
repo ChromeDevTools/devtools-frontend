@@ -9378,6 +9378,9 @@ var CSSMetadata = class _CSSMetadata {
         if (preset && preset !== value) {
           return false;
         }
+        if (partialValueKeywordsNoPresets.get(name)?.has(value)) {
+          return false;
+        }
         return CSS.supports(name, value);
       }).sort(_CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
       const presets = values.map((value) => `${name}: ${value}`);
@@ -9660,6 +9663,79 @@ var valuePresets = /* @__PURE__ */ new Map([
       ["swash", "swash(||)"],
       ["ornaments", "ornaments(||)"],
       ["annotation", "annotation(||)"]
+    ])
+  ],
+  [
+    "clip-path",
+    /* @__PURE__ */ new Map([
+      ["inset", "inset(|10px|)"],
+      ["circle", "circle(|100px|)"],
+      ["ellipse", "ellipse(|100px 100px|)"],
+      ["polygon", "polygon(|50px 0px, 100px 100px, 0px 100px|)"],
+      ["url", "url(||)"]
+    ])
+  ],
+  [
+    "transition-timing-function",
+    /* @__PURE__ */ new Map([
+      ["steps", "steps(|5, end|)"],
+      ["cubic-bezier", "cubic-bezier(|0.25, 0.1, 0.25, 1|)"]
+    ])
+  ],
+  [
+    "animation-timing-function",
+    /* @__PURE__ */ new Map([
+      ["steps", "steps(|5, end|)"],
+      ["cubic-bezier", "cubic-bezier(|0.25, 0.1, 0.25, 1|)"]
+    ])
+  ],
+  [
+    "box-shadow",
+    /* @__PURE__ */ new Map([
+      ["inset", "inset |0 0 10px black|"]
+    ])
+  ],
+  [
+    "font-size-adjust",
+    /* @__PURE__ */ new Map([
+      ["ex-height", "ex-height |0.5|"],
+      ["cap-height", "cap-height |0.5|"],
+      ["ch-width", "ch-width |0.5|"],
+      ["ic-width", "ic-width |0.5|"],
+      ["ic-height", "ic-height |0.5|"]
+    ])
+  ],
+  [
+    "initial-letter",
+    /* @__PURE__ */ new Map([
+      ["drop", "drop |2|"],
+      ["raise", "raise |2|"]
+    ])
+  ],
+  [
+    "text-box-edge",
+    /* @__PURE__ */ new Map([
+      ["cap", "cap alphabetic"],
+      ["ex", "ex alphabetic"]
+    ])
+  ]
+]);
+var partialValueKeywordsNoPresets = /* @__PURE__ */ new Map([
+  ["scroll-snap-type", /* @__PURE__ */ new Set(["mandatory", "proximity"])],
+  ["scrollbar-gutter", /* @__PURE__ */ new Set(["both-edges"])],
+  ["animation-timing-function", /* @__PURE__ */ new Set(["jump-both", "jump-end", "jump-none", "jump-start"])],
+  ["transition-timing-function", /* @__PURE__ */ new Set(["jump-both", "jump-end", "jump-none", "jump-start"])],
+  [
+    "animation-trigger",
+    /* @__PURE__ */ new Set([
+      "play",
+      "pause",
+      "play-once",
+      "play-alternate",
+      "play-forwards",
+      "play-backwards",
+      "play-pause",
+      "replay"
     ])
   ]
 ]);

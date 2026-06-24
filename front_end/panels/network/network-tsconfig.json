@@ -150,6 +150,9 @@
       "path": "../../ui/components/input/bundle-tsconfig.json"
     },
     {
+      "path": "../../ui/components/lists/bundle-tsconfig.json"
+    },
+    {
       "path": "../../ui/components/render_coordinator/bundle-tsconfig.json"
     },
     {

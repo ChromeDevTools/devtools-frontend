@@ -27,9 +27,6 @@ export declare class UserMetrics {
     visualLoggingProcessingDone(timeInMilliseconds: number): void;
     freestylerQueryLength(numberOfCharacters: number): void;
     freestylerEvalResponseSize(bytes: number): void;
-    performanceAINetworkSummaryResponseSize(bytes: number): void;
-    performanceAINetworkRequestDetailResponseSize(bytes: number): void;
-    performanceAIMainThreadActivityResponseSize(bytes: number): void;
     builtInAiAvailability(availability: BuiltInAiAvailability): void;
     consoleInsightTeaserGenerated(timeInMilliseconds: number): void;
     consoleInsightTeaserGeneratedMedium(timeInMilliseconds: number): void;

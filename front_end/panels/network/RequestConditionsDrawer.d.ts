@@ -1,15 +1,30 @@
-import '../../ui/legacy/legacy.js';
+import '../../ui/components/lists/lists.js';
 import '../../ui/components/tooltips/tooltips.js';
+import '../../ui/legacy/legacy.js';
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 interface ViewInput {
-    list: UI.ListWidget.ListWidget<SDK.NetworkManager.RequestCondition>;
+    conditions: SDK.NetworkManager.RequestCondition[];
+    editingCondition?: SDK.NetworkManager.RequestCondition;
     enabled: boolean;
     toggleEnabled: () => void;
     addPattern: () => void;
+    onToggle: (condition: SDK.NetworkManager.RequestCondition) => void;
+    onConditionsChanged: (condition: SDK.NetworkManager.RequestCondition, conditions: SDK.NetworkManager.ThrottlingConditions) => void;
+    onIncreasePriority: (condition: SDK.NetworkManager.RequestCondition) => void;
+    onDecreasePriority: (condition: SDK.NetworkManager.RequestCondition) => void;
+    onCommit: (condition: SDK.NetworkManager.RequestCondition, value: string) => void;
+    onCancel: (condition: SDK.NetworkManager.RequestCondition) => void;
+    onBeginEdit: (condition: SDK.NetworkManager.RequestCondition) => void;
+    onRemove: (condition: SDK.NetworkManager.RequestCondition) => void;
+    validator: (condition: SDK.NetworkManager.RequestCondition, value: string) => Common.UIString.LocalizedString | null;
+    lookUpRequestCount: (condition: SDK.NetworkManager.RequestCondition) => number;
 }
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+interface ViewOutput {
+    itemRefs: Map<SDK.NetworkManager.RequestCondition, HTMLElement | undefined>;
+}
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
 interface AffectedCountViewInput {
     count: number;
@@ -27,23 +42,15 @@ export declare class AffectedCountWidget extends UI.Widget.Widget {
     wasShown(): void;
     willHide(): void;
 }
-export declare class RequestConditionsDrawer extends UI.Widget.VBox implements UI.ListWidget.Delegate<SDK.NetworkManager.RequestCondition> {
+export declare class RequestConditionsDrawer extends UI.Widget.VBox {
     #private;
     private manager;
-    private readonly list;
-    private editor;
     private blockedCountForUrl;
     constructor(target?: HTMLElement, view?: View);
     performUpdate(): void;
     addPattern(): void;
     removeAllPatterns(): void;
-    renderItem(condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number): Element;
-    updateItem(element: HTMLElement, condition: SDK.NetworkManager.RequestCondition, editable: boolean, index: number): void;
     private toggleEnabled;
-    removeItemRequested(condition: SDK.NetworkManager.RequestCondition): void;
-    beginEdit(_pattern: SDK.NetworkManager.RequestCondition): UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>;
-    commitEdit(_item: SDK.NetworkManager.RequestCondition, _editor: UI.ListWidget.Editor<SDK.NetworkManager.RequestCondition>, _isNew: boolean): void;
-    update(): void;
     private onNetworkLogReset;
     private onRequestFinished;
     wasShown(): void;

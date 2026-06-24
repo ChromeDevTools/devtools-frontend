@@ -711,7 +711,7 @@ button {
     background-color: var(--sys-color-tonal-container);
   }
 
-  :host-context(.theme-with-dark-background) & {
+  :host-context(.theme-with-dark-background) &:not(:disabled) {
     background-color: var(--sys-color-primary);
   }
 
@@ -720,11 +720,11 @@ button {
     height: var(--sys-size-7);
   }
 
-  &:not(:disabled):host-context(:not(.theme-with-dark-background)) & > devtools-icon {
+  :host-context(:not(.theme-with-dark-background)) &:not(:disabled) > devtools-icon {
     color: var(--sys-color-on-tonal-container);
   }
 
-  &:not(:disabled):host-context(.theme-with-dark-background) & > devtools-icon {
+  :host-context(.theme-with-dark-background) &:not(:disabled) > devtools-icon {
     color: var(--sys-color-on-primary);
   }
 

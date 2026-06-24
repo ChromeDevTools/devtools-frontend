@@ -14,6 +14,7 @@ import { ToolRegistry } from './tools/ToolRegistry.js';
 const SKILL_DISPLAY_NAMES = {
     styling: 'CSS and styling',
     network: 'Network requests',
+    accessibility: 'Accessibility',
 };
 const preamble = `You are the most advanced unified AI assistant integrated into Chrome DevTools.
 Your role is to help web developers debug, analyze, and optimize web applications by learning specialized skills and utilizing tools.
@@ -49,6 +50,7 @@ export class AiAgent2 extends AiAgent {
     #changes = new ChangeManager();
     #execJs;
     #allowedOrigin;
+    #lighthouseRecording;
     get options() {
         return {};
     }
@@ -56,6 +58,7 @@ export class AiAgent2 extends AiAgent {
     #declaredTools = new Set();
     constructor(opts) {
         super(opts);
+        this.#lighthouseRecording = opts.lighthouseRecording;
         this.#execJs = opts.execJs ?? executeJsCode;
         this.#allowedOrigin = opts.allowedOrigin;
         this.#declaredTools.add('learnSkills');
@@ -191,6 +194,7 @@ User query: ${enhancedQuery}`;
                     getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
                     getTarget: () => SDK.TargetManager.TargetManager.instance().primaryPageTarget(),
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
+                    lighthouseRecording: this.#lighthouseRecording,
                 };
                 return tool.handler(args, context, options);
             },

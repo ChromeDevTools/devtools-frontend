@@ -4,7 +4,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
@@ -791,8 +790,6 @@ export class PerformanceAgent extends AiAgent {
                 error: `${functionName} response is too large. Try investigating using other functions, or a more narrow bounds`,
             };
         }
-        const byteCount = Platform.StringUtilities.countWtf8Bytes(summary);
-        Host.userMetrics.performanceAIMainThreadActivityResponseSize(byteCount);
         this.#cacheFunctionResult(focus, cacheKey, summary);
         const widgets = [];
         widgets.push({
@@ -1042,8 +1039,6 @@ export class PerformanceAgent extends AiAgent {
                         error: 'getNetworkTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds',
                     };
                 }
-                const byteCount = Platform.StringUtilities.countWtf8Bytes(summary);
-                Host.userMetrics.performanceAINetworkSummaryResponseSize(byteCount);
                 const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
                 this.#cacheFunctionResult(focus, key, summary);
                 return {

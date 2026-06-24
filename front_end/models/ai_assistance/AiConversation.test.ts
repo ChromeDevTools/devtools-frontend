@@ -431,7 +431,14 @@ describeWithEnvironment('AiConversation', () => {
     const contextResponse: AiAssistance.AiAgent.ContextResponse = {
       type: AiAssistance.AiAgent.ResponseType.CONTEXT,
       details: [{title: 'Detail', text: 'Text'}],
-      widgets: [{name: 'DOM_TREE', data: {root: {} as SDK.DOMModel.DOMNodeSnapshot}}],
+      widgets: [{
+        name: 'DOM_TREE',
+        data: {
+          root: {} as SDK.DOMModel.DOMNodeSnapshot,
+          title: 'Title' as Platform.UIString.LocalizedString,
+          accessibleRevealLabel: 'Label' as Platform.UIString.LocalizedString
+        }
+      }],
     };
 
     const actionResponse: AiAssistance.AiAgent.ActionResponse = {

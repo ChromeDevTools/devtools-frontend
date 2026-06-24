@@ -193,6 +193,8 @@ describeWithMockConnection('AccessibilityAgent', () => {
     assert.exists(actions[0].widgets);
     const widget = actions[0].widgets?.find(w => w.name === 'DOM_TREE') as AiAssistance.AiAgent.DomTreeAiWidget;
     assert.exists(widget);
+    assert.strictEqual(widget.data.title, 'Element details');
+    assert.strictEqual(widget.data.accessibleRevealLabel, 'Reveal element');
     assert.strictEqual(widget.data.root, mockSnapshot);
   });
 

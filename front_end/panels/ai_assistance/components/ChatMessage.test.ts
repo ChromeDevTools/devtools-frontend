@@ -7,6 +7,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as AIAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
@@ -259,6 +260,8 @@ describeWithEnvironment('ChatMessage', () => {
             root: {
               backendNodeId: () => 1 as Protocol.DOM.BackendNodeId,
             } as unknown as AIAssistanceModel.AiAgent.DomTreeAiWidget['data']['root'],
+            title: 'Title' as Platform.UIString.LocalizedString,
+            accessibleRevealLabel: 'Label' as Platform.UIString.LocalizedString,
           },
         } as AIAssistanceModel.AiAgent.AiWidget;
         assert.strictEqual(
@@ -1150,7 +1153,7 @@ describeWithEnvironment('ChatMessage', () => {
       }
     });
 
-    it('renders widget name and top reveal button when widgetName is provided', async () => {
+    it('renders widget title and reveal button label from widget data', async () => {
       const root = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
       const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
       const target = sinon.createStubInstance(SDK.Target.Target);
@@ -1168,6 +1171,8 @@ describeWithEnvironment('ChatMessage', () => {
                 name: 'DOM_TREE',
                 data: {
                   root,
+                  title: 'Custom Title' as Platform.UIString.LocalizedString,
+                  accessibleRevealLabel: 'Custom Reveal Label' as Platform.UIString.LocalizedString,
                 },
               },
             ],
@@ -1186,13 +1191,13 @@ describeWithEnvironment('ChatMessage', () => {
       assert.isNotNull(widgetHeader);
       assert.strictEqual(
           widgetHeader.querySelector('.widget-name')?.textContent,
-          'LCP element',
+          'Custom Title',
       );
       const revealButton = widgetHeader.querySelector('.widget-reveal-button');
       assert.isNotNull(revealButton);
       assert.strictEqual(
           revealButton.getAttribute('accessibleLabel'),
-          'Reveal LCP element',
+          'Custom Reveal Label',
       );
     });
 
@@ -1219,6 +1224,8 @@ describeWithEnvironment('ChatMessage', () => {
                 name: 'DOM_TREE',
                 data: {
                   root,
+                  title: 'Title' as Platform.UIString.LocalizedString,
+                  accessibleRevealLabel: 'Label' as Platform.UIString.LocalizedString,
                   networkRequest: {
                     url: 'https://example.com/image.png',
                     size: 100,
@@ -1815,6 +1822,8 @@ describeWithEnvironment('ChatMessage', () => {
                 name: 'DOM_TREE',
                 data: {
                   root,
+                  title: 'Title' as Platform.UIString.LocalizedString,
+                  accessibleRevealLabel: 'Label' as Platform.UIString.LocalizedString,
                 },
               },
             ],

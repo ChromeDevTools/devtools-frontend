@@ -483,6 +483,8 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
           name: 'DOM_TREE',
           data: {
             root: snapshot,
+            title: i18n.i18n.lockedString('Element details'),
+            accessibleRevealLabel: i18n.i18n.lockedString('Reveal element'),
           },
         });
 

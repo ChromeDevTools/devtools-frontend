@@ -1156,6 +1156,8 @@ code
       assert.exists(action.widgets);
       const domTreeWidget = action.widgets?.find(w => w.name === 'DOM_TREE') as AiAgent.DomTreeAiWidget;
       assert.exists(domTreeWidget);
+      assert.strictEqual(domTreeWidget.data.title, 'LCP element');
+      assert.strictEqual(domTreeWidget.data.accessibleRevealLabel, 'Reveal LCP element');
       assert.exists(domTreeWidget.data.networkRequest?.imageContent);
       assert.strictEqual(domTreeWidget.data.networkRequest?.imageContent?.base64, 'base64');
     });

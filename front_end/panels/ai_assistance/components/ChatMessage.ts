@@ -224,10 +224,6 @@ const UIStringsNotTranslate = {
    */
   revealRenderBlockingBreakdown: 'Reveal render-blocking requests',
   /**
-   * @description Accessible label for the reveal button in the LCP element widget.
-   */
-  revealLcpElement: 'Reveal LCP element',
-  /**
    * @description Accessible label for the reveal button in the performance summary widget.
    */
   revealPerformanceSummary: 'Reveal performance summary',
@@ -291,10 +287,6 @@ const UIStringsNotTranslate = {
    * @description Title for the 3rd parties widget.
    */
   thirdParties: '3rd parties',
-  /**
-   * @description Title for the LCP element widget.
-   */
-  lcpElement: 'LCP element',
   /**
    * @description Title for the performance summary widget.
    */
@@ -987,7 +979,7 @@ interface WidgetMakerResponse {
   // Can be null if the widget is only used to add the Reveal CTA.
   title: Lit.LitTemplate|Platform.UIString.LocalizedString|null;
   jslogContext?: string;
-  accessibleRevealLabel: string;
+  accessibleRevealLabel: Platform.UIString.LocalizedString;
 }
 
 const nodeCache = new Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode>();
@@ -1620,8 +1612,8 @@ async function makeDomTreeWidget(widgetData: DomTreeAiWidget): Promise<WidgetMak
   return {
     renderedWidget,
     revealable: new SDK.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
-    accessibleRevealLabel: lockedString(UIStringsNotTranslate.revealLcpElement),
-    title: lockedString(UIStringsNotTranslate.lcpElement),
+    accessibleRevealLabel: widgetData.data.accessibleRevealLabel,
+    title: widgetData.data.title,
     jslogContext: 'dom-snapshot',
   };
 }

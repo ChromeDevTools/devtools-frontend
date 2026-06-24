@@ -1051,6 +1051,8 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
                     data: {
                       root: snapshot,
                       networkRequest,
+                      title: lockedString('LCP element'),
+                      accessibleRevealLabel: lockedString('Reveal LCP element'),
                     },
                   });
                 }

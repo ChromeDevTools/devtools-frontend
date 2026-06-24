@@ -1160,4 +1160,69 @@ describe('HeapSnapshot', () => {
     assert.isFalse(filteredNodeIndexes.has(nodeBIndex), 'nodeB should NOT be covered');
     assert.isFalse(filteredNodeIndexes.has(nodeCIndex), 'nodeC (unreachable) should NOT be covered');
   });
+
+  describe('getDuplicateStrings', () => {
+    it('finds duplicate strings and groups them', async () => {
+      const builder = new HeapSnapshotBuilder();
+      const root = builder.rootNode;
+
+      const str1a = new HeapNode('str1', 10, 'string');
+      const str1b = new HeapNode('str1', 10, 'string');
+      root.linkNode(str1a, 'element');
+      root.linkNode(str1b, 'element');
+
+      const str2a = new HeapNode('str2', 20, 'string');
+      const str2b = new HeapNode('str2', 20, 'string');
+      root.linkNode(str2a, 'element');
+      root.linkNode(str2b, 'element');
+
+      const str3 = new HeapNode('str3', 30, 'string');
+      root.linkNode(str3, 'element');
+
+      const snapshot = await builder.createJSHeapSnapshot();
+      const duplicates = snapshot.getDuplicateStrings();
+
+      assert.lengthOf(duplicates, 2);
+
+      assert.strictEqual(duplicates[0].value, 'str2');
+      assert.strictEqual(duplicates[0].count, 2);
+      assert.strictEqual(duplicates[0].totalSelfSize, 40);
+      assert.strictEqual(duplicates[0].totalRetainedSize, 40);
+      assert.lengthOf(duplicates[0].nodes, 2);
+
+      assert.strictEqual(duplicates[1].value, 'str1');
+      assert.strictEqual(duplicates[1].count, 2);
+      assert.strictEqual(duplicates[1].totalSelfSize, 20);
+      assert.strictEqual(duplicates[1].totalRetainedSize, 20);
+      assert.lengthOf(duplicates[1].nodes, 2);
+    });
+
+    function markTruncated(node: HeapNode) {
+      const truncNode = new HeapNode('bool', 0, 'number');
+      const valueNode = new HeapNode('true', 0, 'number');
+      node.linkNode(truncNode, 'internal', 'truncated');
+      truncNode.linkNode(valueNode, 'internal', 'value');
+    }
+
+    it('groups truncated strings by prefix and sets truncated flag', async () => {
+      const builder = new HeapSnapshotBuilder();
+      const root = builder.rootNode;
+
+      const str1a = new HeapNode('prefix...', 10, 'string');
+      root.linkNode(str1a, 'element');
+      markTruncated(str1a);
+
+      const str1b = new HeapNode('prefix...', 10, 'string');
+      root.linkNode(str1b, 'element');
+
+      const snapshot = await builder.createJSHeapSnapshot();
+      const duplicates = snapshot.getDuplicateStrings();
+
+      assert.lengthOf(duplicates, 1);
+
+      assert.strictEqual(duplicates[0].value, 'prefix...');
+      assert.isTrue(duplicates[0].truncated);
+      assert.strictEqual(duplicates[0].totalSelfSize, 20);
+    });
+  });
 });

@@ -528,6 +528,52 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
     value |= detachedness;                 // Set the new bits.
     this.#setDetachednessAndClassIndex(value);
   }
+
+  findInternalEdgeTarget(name: string): HeapSnapshotNode|undefined {
+    for (let iter = this.edges(); iter.hasNext(); iter.next()) {
+      const edge = iter.edge;
+      if (!edge.isInternal()) {
+        continue;
+      }
+      if (edge.name() === name) {
+        return edge.node();
+      }
+    }
+    return undefined;
+  }
+
+  // V8 represents boolean values in heap snapshots as a virtual node of type 'number'
+  // and name 'bool', which has an internal edge named 'value' pointing to a string node
+  // with name 'true' or 'false'.
+  // See V8's FindOrCreateBoolEntry in heap-snapshot-generator.cc.
+  nodeValueAsBool(): boolean|undefined {
+    if (this.rawType() !== this.snapshot.nodeNumberType) {
+      return undefined;
+    }
+    if (this.rawName() !== 'bool') {
+      return undefined;
+    }
+    const valNode = this.findInternalEdgeTarget('value');
+    if (!valNode) {
+      return undefined;
+    }
+    const rawName = valNode.rawName();
+    if (rawName === 'true') {
+      return true;
+    }
+    if (rawName === 'false') {
+      return false;
+    }
+    return undefined;
+  }
+
+  nodeIsTruncatedString(): boolean {
+    const truncNode = this.findInternalEdgeTarget('truncated');
+    if (!truncNode) {
+      return false;
+    }
+    return truncNode.nodeValueAsBool() === true;
+  }
 }
 
 export class HeapSnapshotNodeIterator implements HeapSnapshotItemIterator {
@@ -903,6 +949,7 @@ export abstract class HeapSnapshot {
   nodeSyntheticType!: number;
   nodeClosureType!: number;
   nodeRegExpType!: number;
+  nodeNumberType!: number;
   edgeFieldsCount!: number;
   edgeTypeOffset!: number;
   edgeNameOffset!: number;
@@ -983,6 +1030,7 @@ export abstract class HeapSnapshot {
     this.nodeSyntheticType = this.nodeTypes.indexOf('synthetic');
     this.nodeClosureType = this.nodeTypes.indexOf('closure');
     this.nodeRegExpType = this.nodeTypes.indexOf('regexp');
+    this.nodeNumberType = this.nodeTypes.indexOf('number');
 
     this.edgeFieldsCount = meta.edge_fields.length;
     this.edgeTypeOffset = meta.edge_fields.indexOf('type');
@@ -1314,6 +1362,52 @@ export abstract class HeapSnapshot {
     // @ts-expect-error key is added in createFilter
     const key = filter ? filter.key : 'allObjects';
     return this.getAggregatesByClassKey(false, key, filter);
+  }
+
+  getDuplicateStrings(): HeapSnapshotModel.HeapSnapshotModel.DuplicateStringGroup[] {
+    const filter = this.createNamedFilter('duplicatedStrings');
+    const groupsMap = new Map<string, HeapSnapshotModel.HeapSnapshotModel.DuplicateStringGroup>();
+    const node = this.createNode(0);
+
+    for (let i = 0; i < this.nodeCount; ++i) {
+      node.nodeIndex = i * this.nodeFieldCount;
+      if (filter(node)) {
+        const name = node.name();
+        const truncated = node.nodeIsTruncatedString();
+
+        // Note that there is exactly one group for each duplicated string value. So
+        // truncated strings might end up in the same group as non-truncated strings if the
+        // prefix matches the non-truncated string. This should be unlikely though and we
+        // don't handle this here to avoid that additional complexity.
+        let group = groupsMap.get(name);
+        if (!group) {
+          group = {
+            value: name,
+            count: 0,
+            totalSelfSize: 0,
+            totalRetainedSize: 0,
+            nodes: [],
+            truncated,
+          };
+          groupsMap.set(name, group);
+        } else if (truncated) {
+          // Make sure the truncated flag is set in case the group was initially created by a
+          // non-truncated string.
+          group.truncated = true;
+        }
+        group.count++;
+        group.totalSelfSize += node.selfSize();
+        group.totalRetainedSize += node.retainedSize();
+        group.nodes.push({
+          id: node.id(),
+          selfSize: node.selfSize(),
+          retainedSize: node.retainedSize(),
+          distance: node.distance(),
+        });
+      }
+    }
+
+    return Array.from(groupsMap.values()).sort((a, b) => b.totalRetainedSize - a.totalRetainedSize);
   }
 
   private createNodeIdFilter(minNodeId: number, maxNodeId: number): (arg0: HeapSnapshotNode) => boolean {

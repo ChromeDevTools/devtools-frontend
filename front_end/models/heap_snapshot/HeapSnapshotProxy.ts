@@ -272,6 +272,10 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('aggregatesWithFilter', filter);
   }
 
+  getDuplicateStrings(): Promise<HeapSnapshotModel.DuplicateStringGroup[]> {
+    return this.callMethodPromise('getDuplicateStrings');
+  }
+
   aggregatesForDiff(interfaceDefinitions: string): Promise<Record<string, HeapSnapshotModel.AggregateForDiff>> {
     return this.callMethodPromise('aggregatesForDiff', interfaceDefinitions);
   }

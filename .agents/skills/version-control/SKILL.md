@@ -1,9 +1,13 @@
 ---
 name: devtools-version-control
-description: Use when managing branches, creating and uploading CLs, or handling stacked changes in the DevTools Gerrit-based workflow.
+description: Use when starting a new task, creating a branch, switching branches, managing branches, creating and uploading CLs, or handling stacked changes in the DevTools Gerrit-based workflow. ALWAYS use this instead of running standard git checkout/switch commands for branch creation.
 ---
 
 # DevTools Version Control
+
+> [!IMPORTANT]
+> **DO NOT use standard Git commands like `git checkout -b` or `git switch -c` to create branches.**
+> In Chrome DevTools, you MUST always use `git new-branch <branch-name>` (or `git new-branch --upstream_current <branch-name>` for stacked CLs). Standard commands fail to configure the correct upstream tracking branch required by `depot_tools` and Gerrit.
 
 ## Overview
 Chrome DevTools uses Gerrit for code review. The standard workflow is **one branch per Change List (CL)** and **one commit per branch**. Instead of multiple commits, you amend your single commit locally.

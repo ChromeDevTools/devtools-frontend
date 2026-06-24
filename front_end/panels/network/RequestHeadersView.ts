@@ -412,7 +412,7 @@ function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
           class="link devtools-link"
           jslogcontext="devtools-override"
       >
-        <devtools-icon name="help" class="inline-icon medium">
+        <devtools-icon name="help" class="inline-icon">
         </devtools-icon>
       </devtools-link>
       <devtools-link
@@ -424,7 +424,7 @@ function renderHeaderOverridesLink(input: ViewInput): Lit.LitTemplate {
         ${fileIcon}${Persistence.NetworkPersistenceManager.HEADERS_FILENAME}
       </devtools-link>
     `;
-  // clang-format on
+    // clang-format on
 }
 
 function renderRawHeaders(text: string): Lit.TemplateResult {

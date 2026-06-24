@@ -888,6 +888,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   handleHeaderInterception(interceptedRequest: SDK.NetworkManager.InterceptedRequest): Protocol.Fetch.HeaderEntry[] {
+    if (NetworkPersistenceManager.isForbiddenNetworkUrl(interceptedRequest.request.url as
+                                                        Platform.DevToolsPath.UrlString)) {
+      return [];
+    }
     let result: Protocol.Fetch.HeaderEntry[] = interceptedRequest.responseHeaders || [];
     // 'rawPathFromUrl()''s return value is already (singly-)encoded, so we can
     // treat it as an 'EncodedPathString' here.
@@ -914,8 +918,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (!this.#active || (method === 'OPTIONS')) {
       return;
     }
+    const requestUrl = interceptedRequest.request.url as Platform.DevToolsPath.UrlString;
+    if (NetworkPersistenceManager.isForbiddenNetworkUrl(requestUrl)) {
+      return;
+    }
     const proj = this.#project as FileSystem;
-    const path = this.fileUrlFromNetworkUrl(interceptedRequest.request.url as Platform.DevToolsPath.UrlString);
+    const path = this.fileUrlFromNetworkUrl(requestUrl);
     const fileSystemUISourceCode = proj.uiSourceCodeForURL(path);
     let responseHeaders = this.handleHeaderInterception(interceptedRequest);
     if (!fileSystemUISourceCode && !responseHeaders.length) {

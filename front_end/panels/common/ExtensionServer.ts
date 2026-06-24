@@ -962,27 +962,45 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
    */
   private extensionAllowedOnContentProvider(
       contentProvider: TextUtils.ContentProvider.ContentProvider, port: MessagePort): boolean {
-    if (!(contentProvider instanceof Workspace.UISourceCode.UISourceCode)) {
-      return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
-    }
-
-    if (contentProvider.contentType() !== Common.ResourceType.resourceTypes.Script) {
-      // We only check sourceURL magic comments for scripts (excluding ones coming from source maps).
-      return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
-    }
-
-    const scripts =
-        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
-    if (scripts.length === 0) {
-      return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
-    }
-
-    return scripts.every(script => {
-      if (script.hasSourceURL) {
-        return this.extensionAllowedOnTarget(script.target(), port);
+    // 1. Exception for Scripts with sourceURL
+    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
+        contentProvider.contentType() === Common.ResourceType.resourceTypes.Script) {
+      const scripts =
+          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
+      if (scripts.length > 0) {
+        const uiSourceCodeTarget =
+            Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
+        if (uiSourceCodeTarget && !this.extensionAllowedOnTarget(uiSourceCodeTarget, port)) {
+          return false;
+        }
+        return scripts.every(script => {
+          if (script.hasSourceURL) {
+            return this.extensionAllowedOnTarget(script.target(), port);
+          }
+          return this.extensionAllowedOnURL(script.contentURL(), port) &&
+              this.extensionAllowedOnTarget(script.target(), port);
+        });
       }
-      return this.extensionAllowedOnURL(script.contentURL(), port);
-    });
+    }
+
+    // 2. Standard Policy: Both URL and Target must be allowed
+
+    // 2a. Check URL
+    if (!this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
+      return false;
+    }
+
+    // 2b. Check Target (if one can be identified)
+    let target: SDK.Target.Target|undefined;
+    if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+      target = SDK.NetworkManager.NetworkManager.forRequest(contentProvider)?.target();
+    } else if (contentProvider instanceof SDK.Resource.Resource) {
+      target = contentProvider.frame()?.resourceTreeModel().target();
+    } else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
+    }
+
+    return !target || this.extensionAllowedOnTarget(target, port);
   }
 
   /**
@@ -1007,7 +1025,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return {uiSourceCode};
   }
 
-  private extensionAllowedOnTarget(target: SDK.Target.Target, port: MessagePort): boolean {
+  private extensionAllowedOnTarget(target: SDK.Target.Target|undefined, port: MessagePort): boolean {
+    if (!target) {
+      return false;
+    }
     return this.extensionAllowedOnURL(target.inspectedURL(), port);
   }
 
@@ -1070,7 +1091,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return this.status.E_BADARG('command', `expected ${Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR}`);
     }
     const requests =
-        Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnURL(r.url(), port));
+        Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnContentProvider(r, port));
     const harLog = await HAR.Log.Log.build(requests, {sanitize: false});
     for (let i = 0; i < harLog.entries.length; ++i) {
       // @ts-expect-error
@@ -1319,26 +1340,34 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private notifyResourceAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
-    this.postNotification(
-        Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded, [this.makeResource(uiSourceCode)],
-        extension => extension.isAllowedOnTarget(uiSourceCode.url()));
+    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const targetUrl = target?.inspectedURL();
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded, [this.makeResource(uiSourceCode)],
+                          extension => extension.isAllowedOnTarget(uiSourceCode.url()) &&
+                              (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
   }
 
   private notifyUISourceCodeContentCommitted(
       event: Common.EventTarget.EventTargetEvent<Workspace.Workspace.WorkingCopyCommittedEvent>): void {
     const {uiSourceCode, content} = event.data;
-    this.postNotification(
-        Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted, [this.makeResource(uiSourceCode), content],
-        extension => extension.isAllowedOnTarget(uiSourceCode.url()));
+    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const targetUrl = target?.inspectedURL();
+    this.postNotification(Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted,
+                          [this.makeResource(uiSourceCode), content],
+                          extension => extension.isAllowedOnTarget(uiSourceCode.url()) &&
+                              (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
   }
 
   private async notifyRequestFinished(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>):
       Promise<void> {
     const request = event.data;
     const entry = await HAR.Log.Entry.build(request, {sanitize: false});
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+    const targetUrl = networkManager?.target()?.inspectedURL();
     this.postNotification(
         Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished, [this.requestId(request), entry],
-        extension => extension.isAllowedOnTarget(entry.request.url));
+        extension => extension.isAllowedOnTarget(entry.request.url as Platform.DevToolsPath.UrlString) &&
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
   }
 
   private notifyElementsSelectionChanged(): void {
@@ -1504,11 +1533,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private registerAutosubscriptionTargetManagerHandler<Events, T extends keyof Events>(
       eventTopic: string, modelClass: new(arg1: SDK.Target.Target) => SDK.SDKModel.SDKModel<Events>,
       frontendEventType: T, handler: Common.EventTarget.EventListener<Events, T>): void {
-    this.registerSubscriptionHandler(
-        eventTopic,
-        () => SDK.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this),
-        () => SDK.TargetManager.TargetManager.instance().removeModelListener(
-            modelClass, frontendEventType, handler, this));
+    this.registerSubscriptionHandler(eventTopic,
+                                     () => SDK.TargetManager.TargetManager.instance().addModelListener(
+                                         modelClass, frontendEventType, handler, this, {scoped: true}),
+                                     () => SDK.TargetManager.TargetManager.instance().removeModelListener(
+                                         modelClass, frontendEventType, handler, this));
   }
 
   private registerResourceContentCommittedHandler(

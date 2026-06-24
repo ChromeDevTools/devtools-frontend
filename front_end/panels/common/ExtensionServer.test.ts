@@ -93,11 +93,14 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       const target = createTarget({url});
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.isNotNull(resourceTreeModel);
-      await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+      if (!resourceTreeModel.cachedResourcesLoaded()) {
+        await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+      }
       target.setInspectedURL(url);
-      resourceTreeModel.mainFrame?.addResource(new SDK.Resource.Resource(
-          resourceTreeModel, null, url, url, null, null, Common.ResourceType.resourceTypes.Document, 'application/text',
-          null, null));
+      const mainFrame = getMainFrame(target, {url});
+      mainFrame.addResource(new SDK.Resource.Resource(resourceTreeModel, null, url, url, null, null,
+                                                      Common.ResourceType.resourceTypes.Document, 'application/text',
+                                                      null, null));
       return target;
     });
 
@@ -148,8 +151,8 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
            // create a mock uiSourceCode for the sourceMap script
            const scriptUrl = urlString`https://example.com/foo.js.map/foo.js`;
            project.addUISourceCode(
-               new Workspace.UISourceCode.UISourceCode(
-                   project, scriptUrl, Common.ResourceType.resourceTypes.SourceMapScript),
+               new Workspace.UISourceCode.UISourceCode(project, scriptUrl,
+                                                       Common.ResourceType.resourceTypes.SourceMapScript),
            );
            const uiSourceCode = project.uiSourceCodeForURL(scriptUrl);
            assert.exists(uiSourceCode);
@@ -195,11 +198,14 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       const stubScript = sinon.createStubInstance(SDK.Script.Script);
       // @ts-expect-error
       stubScript.buildId = 'my-build-id';
+      stubScript.target.returns(target);
+      stubScript.contentURL.returns(urlString`http://example.com/index.js`);
+      stubScript.hasSourceURL = false;
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), 'scriptsForUISourceCode')
           .returns([stubScript]);
       project.addUISourceCode(
-          new Workspace.UISourceCode.UISourceCode(
-              project, urlString`http://example.com/index.js`, Common.ResourceType.resourceTypes.Script),
+          new Workspace.UISourceCode.UISourceCode(project, urlString`http://example.com/index.js`,
+                                                  Common.ResourceType.resourceTypes.Script),
       );
 
       const resources =
@@ -681,9 +687,32 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     }
   });
 
-  async function setUpFrame(
-      name: string, url: Platform.DevToolsPath.UrlString, parentFrame?: SDK.ResourceTreeModel.ResourceTreeFrame,
-      executionContextOrigin?: Platform.DevToolsPath.UrlString) {
+  it('does not include requests from blocked targets in the HAR entries even if request URL is allowed', async () => {
+    Logs.NetworkLog.NetworkLog.instance();
+
+    const parentFrameUrl = allowedUrl;
+    const childFrameUrl = blockedUrl;
+    const parentFrame = await setUpFrame('parent', parentFrameUrl);
+    const childFrame = await setUpFrame('child', childFrameUrl, parentFrame);
+
+    const childTarget = childFrame.resourceTreeModel()?.target();
+    assert.exists(childTarget);
+    childTarget.setInspectedURL(blockedUrl);  // Explicitly set to blocked URL
+
+    const networkManager = childTarget.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+
+    const frameId = 'child-frame-id' as Protocol.Page.FrameId;
+    const requestUrl = urlString`${allowedUrl}?fromBlockedTarget`;
+    createRequest(networkManager, frameId, 'request-from-blocked-target' as Protocol.Network.RequestId, requestUrl);
+
+    const result = await context.chrome.devtools!.network.getHAR() as TestHARLog;
+    assert.notExists(result.entries.find(e => e.request.url === requestUrl));
+  });
+
+  async function setUpFrame(name: string, url: Platform.DevToolsPath.UrlString,
+                            parentFrame?: SDK.ResourceTreeModel.ResourceTreeFrame,
+                            executionContextOrigin?: Platform.DevToolsPath.UrlString) {
     const parentTarget = parentFrame?.resourceTreeModel()?.target();
     const target = createTarget({id: `${name}-target-id` as Protocol.Target.TargetID, parentTarget});
     const frame = parentFrame ? await addChildFrame(target, {url}) : getMainFrame(target, {url});
@@ -712,8 +741,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     await setUpFrame('child', childFrameUrl, parentFrame);
 
     const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
-        r => context.chrome.devtools?.inspectedWindow.eval(
-            '4', {frameURL: childFrameUrl}, (result, error) => r({result, error})));
+        r => context.chrome.devtools?.inspectedWindow.eval('4', {frameURL: childFrameUrl},
+                                                           (result, error) => r({result, error})));
 
     assert.deepEqual(result.error?.details, ['Permission denied']);
   });
@@ -849,15 +878,15 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     await setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
 
     const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
-        r => context.chrome.devtools?.inspectedWindow.eval(
-            '4', {frameURL: childFrameUrl}, (result, error) => r({result, error})));
+        r => context.chrome.devtools?.inspectedWindow.eval('4', {frameURL: childFrameUrl},
+                                                           (result, error) => r({result, error})));
 
     assert.deepEqual(result.error?.details, ['Permission denied']);
   });
 
-  async function createUISourceCode(
-      project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject, url: Platform.DevToolsPath.UrlString,
-      contentType = Common.ResourceType.resourceTypes.Document) {
+  async function createUISourceCode(project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject,
+                                    url: Platform.DevToolsPath.UrlString,
+                                    contentType = Common.ResourceType.resourceTypes.Document) {
     const mimeType = 'text/html';
     const dataProvider = () =>
         Promise.resolve(new TextUtils.ContentData.ContentData('content', /* isBase64 */ false, mimeType));
@@ -872,8 +901,8 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     target.setInspectedURL(allowedUrl);
 
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
-        .returns(sinon.createStubInstance(
-            Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, {scriptsForUISourceCode: []}));
+        .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                          {scriptsForUISourceCode: []}));
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
         Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
@@ -902,6 +931,37 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     ]);
   });
 
+  it('blocks getting resource contents on allowed urls if target is blocked', async () => {
+    const parentTarget = createTarget({id: 'parent' as Protocol.Target.TargetID});
+    parentTarget.setInspectedURL(allowedUrl);
+
+    const blockedTarget = createTarget({id: 'blocked-target' as Protocol.Target.TargetID});
+    blockedTarget.setInspectedURL(blockedUrl);
+    sinon.stub(blockedTarget, 'inspectedURL').returns(blockedUrl);
+
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                          {scriptsForUISourceCode: []}));
+
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
+        Workspace.Workspace.WorkspaceImpl.instance(), blockedTarget.id(), Workspace.Workspace.projectTypes.Network, '',
+        false /* isServiceProject */);
+
+    Bindings.NetworkProject.NetworkProject.setTargetForProject(project, blockedTarget);
+
+    const uniqueAllowedUrl = urlString`${allowedUrl}?uniqueResourceTest`;
+
+    // Stub targetForUISourceCode to ensure it returns blockedTarget for our unique URL
+    const targetForUISourceCodeStub = sinon.stub(Bindings.NetworkProject.NetworkProject, 'targetForUISourceCode');
+    targetForUISourceCodeStub.returns(blockedTarget);
+
+    await createUISourceCode(project, uniqueAllowedUrl);
+
+    assert.exists(context.chrome.devtools);
+    const resources = await context.chrome.devtools!.inspectedWindow.getResources();
+    assert.notExists(resources.find(r => r.url === uniqueAllowedUrl));
+  });
+
   it('allows arbitrary schemes in sourceURL comments, as long as the inspected target is allowed', async () => {
     const target = createTarget({id: 'target' as Protocol.Target.TargetID});
     target.setInspectedURL(allowedUrl);
@@ -928,10 +988,17 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.deepEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
   });
 
-  function createRequest(
-      networkManager: SDK.NetworkManager.NetworkManager, frameId: Protocol.Page.FrameId,
-      requestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString): void {
+  const requestToManager = new Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkManager.NetworkManager>();
+
+  function createRequest(networkManager: SDK.NetworkManager.NetworkManager, frameId: Protocol.Page.FrameId,
+                         requestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString): void {
+    if (!(SDK.NetworkManager.NetworkManager.forRequest as unknown as {isSinonProxy?: boolean}).isSinonProxy) {
+      requestToManager.clear();
+      sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest')
+          .callsFake(request => requestToManager.get(request) || null);
+    }
     const request = SDK.NetworkRequest.NetworkRequest.create(requestId, url, url, frameId, null, null, undefined);
+    requestToManager.set(request, networkManager);
     const dataProvider = () =>
         Promise.resolve(new TextUtils.ContentData.ContentData('content', false, request.mimeType));
     request.setContentDataProvider(dataProvider);
@@ -975,11 +1042,10 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     // which result type mismatch due to the Request type not containing the respective fields in HAR.Log.EntryDTO.
     // Therefore, cast through unknown to resolve this.
     // TODO: (crbug.com/1482763) Update Request type to match HAR.Log.EntryDTO
-    context.chrome.devtools?.network.onRequestFinished.addListener(
-        r => requests.push(r as unknown as HAR.Log.EntryDTO));
-    await waitForFunction(
-        () => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
-            Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished));
+    context.chrome.devtools?.network.onRequestFinished.addListener(r =>
+                                                                       requests.push(r as unknown as HAR.Log.EntryDTO));
+    await waitForFunction(() => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                              Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished));
 
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
@@ -993,13 +1059,49 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.notExists(requests.find(e => e.request.url === blockedUrl));
   });
 
+  it('does not include requests from blocked targets in onRequestFinished event listener even if request URL is allowed',
+     async () => {
+       const frameId = 'frame-id' as Protocol.Page.FrameId;
+
+       const allowedTarget = createTarget({id: 'allowed-target' as Protocol.Target.TargetID});
+       allowedTarget.setInspectedURL(allowedUrl);
+
+       const blockedTarget = createTarget({id: 'blocked-target' as Protocol.Target.TargetID});
+       blockedTarget.setInspectedURL(blockedUrl);
+
+       const requestUrlFromBlocked = urlString`${allowedUrl}?fromBlockedTarget`;
+       const requestUrlFromAllowed = urlString`${allowedUrl}?fromAllowedTarget`;
+
+       const requests: HAR.Log.EntryDTO[] = [];
+       context.chrome.devtools?.network.onRequestFinished.addListener(
+           r => requests.push(r as unknown as HAR.Log.EntryDTO));
+       await waitForFunction(() => PanelCommon.ExtensionServer.ExtensionServer.instance().hasSubscribers(
+                                 Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished));
+
+       const networkManager = blockedTarget.model(SDK.NetworkManager.NetworkManager);
+       assert.exists(networkManager);
+
+       createRequest(networkManager, frameId, 'request-from-blocked-target' as Protocol.Network.RequestId,
+                     requestUrlFromBlocked);
+
+       const allowedNetworkManager = allowedTarget.model(SDK.NetworkManager.NetworkManager);
+       assert.exists(allowedNetworkManager);
+       createRequest(allowedNetworkManager, frameId, 'request-from-allowed-target' as Protocol.Network.RequestId,
+                     requestUrlFromAllowed);
+
+       await waitForFunction(() => requests.length >= 1);
+
+       assert.lengthOf(requests, 1);
+       assert.strictEqual(requests[0].request.url, requestUrlFromAllowed);
+     });
+
   it('blocks setting resource contents on blocked urls', async () => {
     const target = createTarget({id: 'target' as Protocol.Target.TargetID});
     target.setInspectedURL(allowedUrl);
 
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
-        .returns(sinon.createStubInstance(
-            Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, {scriptsForUISourceCode: []}));
+        .returns(sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+                                          {scriptsForUISourceCode: []}));
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
         Workspace.Workspace.WorkspaceImpl.instance(), target.id(), Workspace.Workspace.projectTypes.Network, '',
         false /* isServiceProject */);
@@ -1056,21 +1158,21 @@ describe('ExtensionServer', () => {
     const expectation = urlString`${`${extensionOrigin}/foo`}`;
     assert.isUndefined(
         PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'http://example.com/foo'));
-    assert.strictEqual(
-        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, expectation));
-    assert.strictEqual(
-        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, '/foo'));
-    assert.strictEqual(
-        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'foo'));
+    assert.strictEqual(expectation,
+                       PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, expectation));
+    assert.strictEqual(expectation,
+                       PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, '/foo'));
+    assert.strictEqual(expectation,
+                       PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'foo'));
 
     assert.isUndefined(
         PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'http://example.com/foo'));
-    assert.strictEqual(
-        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, expectation));
-    assert.strictEqual(
-        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, '/foo'));
-    assert.strictEqual(
-        expectation, PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'foo'));
+    assert.strictEqual(expectation,
+                       PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, expectation));
+    assert.strictEqual(expectation,
+                       PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, '/foo'));
+    assert.strictEqual(expectation,
+                       PanelCommon.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'foo'));
   });
 
   it('cannot inspect chrome webstore URLs', () => {
@@ -1133,8 +1235,8 @@ describe('ExtensionServer', () => {
   });
 });
 
-function assertIsStatus<T>(value: T|PanelCommon.ExtensionServer.Record):
-    asserts value is PanelCommon.ExtensionServer.Record {
+function assertIsStatus<T>(value: T|
+                           PanelCommon.ExtensionServer.Record): asserts value is PanelCommon.ExtensionServer.Record {
   if (value && typeof value === 'object' && 'code' in value) {
     assert.isTrue(value.code === 'OK' || Boolean(value.isError), `Value ${value} is not a status code`);
   } else {
@@ -1306,14 +1408,13 @@ for (const allowFileAccess of [true, false]) {
 
           const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
           assert.isOk(debuggerModel);
-          debuggerModel.parsedScriptSource(
-              '0' as Protocol.Runtime.ScriptId, urlString`file:///source/url`, 0, 0, 100, 100, 0, '', {}, false,
-              'file:///source/url.map', false, false, 200, true, null, null,
-              Protocol.Debugger.ScriptLanguage.JavaScript, [{
-                type: Protocol.Debugger.DebugSymbolsType.SourceMap,
-                externalURL: 'file:///source/url.map',
-              }],
-              null, null);
+          debuggerModel.parsedScriptSource('0' as Protocol.Runtime.ScriptId, urlString`file:///source/url`, 0, 0, 100,
+                                           100, 0, '', {}, false, 'file:///source/url.map', false, false, 200, true,
+                                           null, null, Protocol.Debugger.ScriptLanguage.JavaScript, [{
+                                             type: Protocol.Debugger.DebugSymbolsType.SourceMap,
+                                             externalURL: 'file:///source/url.map',
+                                           }],
+                                           null, null);
 
           sinon.assert.calledOnce(endpointSpy);
           assert.strictEqual(

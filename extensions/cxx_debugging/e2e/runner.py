@@ -61,6 +61,8 @@ def get_artifact_dir(project, *paths):
     return os.path.join(base, *paths)
 
 
+NINJA_BIN = repo_path('//third_party/ninja/ninja')
+
 def ninja(build_root, artifact, verbose):
     ninja_dir = repo_path(build_root, get_artifact_dir(artifact))
     if not os.path.exists(repo_path(ninja_dir, 'build.ninja')):
@@ -69,7 +71,7 @@ def ninja(build_root, artifact, verbose):
         )
         raise FileNotFoundError(repo_path(ninja_dir, 'build.ninja'))
 
-    run_process('ninja', cwd=ninja_dir, verbose=verbose)
+    run_process(NINJA_BIN, cwd=ninja_dir, verbose=verbose)
 
 
 def run_process(*args, verbose=False, cwd=None, env=None):

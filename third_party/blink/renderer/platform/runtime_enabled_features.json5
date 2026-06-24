@@ -1305,6 +1305,7 @@
       // objects that live on the compositor thread.
       // [1] https://drafts.csswg.org/css-animations-2/#timeline-triggers
       name: "CompositorTimelineTrigger",
+      status: "stable",
     },
     {
       name: "CompressionDictionaryTransport",
@@ -3536,7 +3537,8 @@
       name: "IncomingCallNotifications",
       origin_trial_feature_name: "IncomingCallNotifications",
       origin_trial_os: [ "win" ],
-      base_feature: "IncomingCallNotifications",
+      base_feature: "none",
+      public: true,
     },
     {
       name: "InertElementNonEditable",
@@ -4885,7 +4887,7 @@
       status: "stable",
     },
     {
-      // Shipping in M148, so should be removed around M150.
+      // Shipping in M148, revised in M151, so should be removed around M153.
       name: "RecheckParentDuringNodeVectorInsertion",
       status: "stable",
     },
@@ -5005,10 +5007,6 @@
       status: "test",
     },
     {
-      name: "RenderBlockingStatus",
-      status: "stable",
-    },
-    {
       // The renderpriority attribute feature.
       // https://github.com/WICG/display-locking/blob/main/explainers/update-rendering.md
       name: "RenderPriorityAttribute",
@@ -5037,14 +5035,6 @@
     },
     {
       name: "ResolveVarStylesOnCopy",
-      status: "stable",
-    },
-    {
-      name: "ResourceTimingContentEncoding",
-      status: "stable",
-    },
-    {
-      name: "ResourceTimingContentType",
       status: "stable",
     },
     {
@@ -5789,6 +5779,14 @@
       public: true,
     },
     {
+      // Historically, the parser split Text nodes at ~64k boundaries. This
+      // behavior is no longer necessary; by default the parser keeps each run
+      // of text in a single Text node. Enabling this flag restores the legacy
+      // behavior of splitting Text nodes at 64k boundaries. Shipping in M151
+      // and can be removed in M153.
+      name: "SplitLargeTextNodes",
+    },
+    {
       // Splits a qualified name on its first colon, per the DOM "validate and
       // extract" algorithm, so any later colons are part of the local name.
       // See https://crbug.com/490251709
@@ -5895,14 +5893,7 @@
       name: "SuppressPointerStreamAfterDrag",
       status: "stable",
     },
-    {
-      name: "SvgAnchorElementAttributes",
-      status: "stable",
-    },
-    {
-      name: "SvgAnchorElementDownloadAttribute",
-      status: "stable",
-    },
+
     {
       name: "SvgAnimateMotionDiscreteCalcMode",
       status: "stable",
@@ -6832,9 +6823,6 @@
       origin_trial_feature_name: "WebCryptoAdditionalAlgorithms202606",
     },
     {
-      name: "WebFontResizeLCP",
-    },
-    {
       name: "WebGLDeveloperExtensions",
       public: true,
       status: "experimental",
@@ -7044,6 +7032,11 @@
         "ChromeOS": "stable",
         "default": "",
       },
+    },
+    {
+      name: "WebTransportAnticipatedConcurrentIncomingStreams",
+      status: "experimental",
+      base_feature: "none",
     },
     {
       name: "WebTransportApplicationProtocol",

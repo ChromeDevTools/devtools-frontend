@@ -66,10 +66,13 @@ def stage1(sysroot_dir, source_dir, OPTIONS):
         'build_shared': 'OFF' if OPTIONS.static else 'ON',
         'libcxx_dir': libcxx_dir,
     }
+    ninja = os.path.join(devtools_dir(source_dir), 'third_party', 'ninja',
+                         'ninja' + exec_extension())
     cmake_args = [
         OPTIONS.cmake,
         OPTIONS.extension_source,
         *CMAKE_DEFAULTS,
+        '-DCMAKE_MAKE_PROGRAM={}'.format(ninja),
         '-DBUILD_SHARED_LIBS={build_shared}'.format(**cmake_settings),
         '-DCMAKE_BUILD_TYPE=Release',
         '-DCMAKE_CXX_FLAGS=-stdlib=libc++ -pthread -I{libcxx_dir}/include/c++/v1'
@@ -87,9 +90,6 @@ def stage1(sysroot_dir, source_dir, OPTIONS):
         cmake_args.append('-DCMAKE_CXX_COMPILER={}'.format(OPTIONS.cxx))
 
     maybe_cmake(binary_dir, cmake_args, OPTIONS.verbose)
-
-    ninja = os.path.join(devtools_dir(source_dir), 'third_party', 'ninja',
-                         'ninja')
     call([
         ninja, 'lldb-tblgen', 'clang-tblgen', 'llvm-tblgen', 'llvm-dwp',
         'llvm-mc'
@@ -101,6 +101,8 @@ def stage1(sysroot_dir, source_dir, OPTIONS):
 
 def stage2(source_dir, stage1_dir, OPTIONS):
     sys.stdout.write('Building Stage 2.\n')
+    ninja = os.path.join(devtools_dir(source_dir), 'third_party', 'ninja',
+                         'ninja' + exec_extension())
     llvm_tools_dir = os.path.abspath(
         os.path.join(stage1_dir, 'third_party', 'llvm', 'src', 'llvm', 'bin'))
     emcc = os.path.join(devtools_dir(source_dir), 'third_party',
@@ -133,6 +135,7 @@ def stage2(source_dir, stage1_dir, OPTIONS):
     }
     cmake_args = [
         OPTIONS.cmake, OPTIONS.extension_source, *CMAKE_DEFAULTS,
+        '-DCMAKE_MAKE_PROGRAM={}'.format(ninja),
         '-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=-O1 -g -DNDEBUG',
         '-DCMAKE_C_FLAGS_RELWITHDEBINFO=-O1 -g -DNDEBUG',
         '-DCMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO=-O1 -g -DNDEBUG -gseparate-dwarf',
@@ -196,8 +199,7 @@ def stage2(source_dir, stage1_dir, OPTIONS):
     num_cores = os.cpu_count()
     env = os.environ.copy()
 
-    ninja = os.path.join(devtools_dir(source_dir), 'third_party', 'ninja',
-                         'ninja')
+
     if not OPTIONS.no_check:
         call([ninja, '-j%d' % num_cores, 'all', 'check-extension'],
              verbose=OPTIONS.verbose,

@@ -208,6 +208,36 @@ experimental domain Overlay
       # The content box highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
 
+  # Supported display cutout shapes.
+  type DisplayCutoutShape extends string
+    enum
+      pill
+      notch
+      circle
+      rectangle
+
+  # Configuration for a display cutout.
+  type DisplayCutoutConfig extends object
+    properties
+      # A rectangle representing the cutout bounds.
+      DOM.Rect rect
+      # Shape used to draw the cutout.
+      DisplayCutoutShape shape
+      # Border radius for rounded cutout shapes.
+      optional integer borderRadius
+      # Upper shoulder radius for notch cutout shapes.
+      optional integer upperRadius
+      # Lower transition radius for notch cutout shapes.
+      optional integer lowerRadius
+      # Center x coordinate for circle cutout shapes.
+      optional integer cx
+      # Center y coordinate for circle cutout shapes.
+      optional integer cy
+      # Radius for circle cutout shapes.
+      optional integer radius
+      # The cutout fill color (default: black).
+      optional DOM.RGBA contentColor
+
   # Configuration for Window Controls Overlay
   type WindowControlsOverlayConfig extends object
     properties
@@ -475,6 +505,12 @@ experimental domain Overlay
     parameters
       # hinge data, null means hideHinge
       optional HingeConfig hingeConfig
+
+  # Add a display cutout overlay.
+  command setShowDisplayCutout
+    parameters
+      # display cutout data, null means hide display cutout
+      optional DisplayCutoutConfig displayCutoutConfig
 
   # Show elements in isolation mode with overlays.
   command setShowIsolatedElements

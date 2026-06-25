@@ -3933,6 +3933,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Add a display cutout overlay.
+     */
+    'Overlay.setShowDisplayCutout': {
+      paramsType: [Protocol.Overlay.SetShowDisplayCutoutRequest?];
+      returnType: void;
+    };
+    /**
      * Show elements in isolation mode with overlays.
      */
     'Overlay.setShowIsolatedElements': {

@@ -900,6 +900,24 @@
     percentages_depend_on_used_value: {
       valid_type: "bool",
     },
+
+    // - devtools_keywords: ["keyword1", "keyword2"]
+    //
+    // Keywords that are valid for devtools. This would act as an override to
+    // the keywords list.
+    // This is useful for cases where
+    // 1. Keywords are not accepted on their own in devtools but might be valid
+    // in other contexts. For example, 'jump-both' is not accepted on its own in
+    // devtools, but is valid as part of the animation-timing-function property.
+    // 2. Shorthand properties do not accept all keywords from the longhands
+    // as it is. For example, 'columns' does not accept 'wrap' or 'nowrap'
+    // (which are valid keywords for 'column-wrap').
+    // This field is used by the following script in the devtools-frontend repo to
+    // generate the supported CSS properties:
+    // third_party/devtools-frontend/src/scripts/build/generate_supported_css.py
+    devtools_keywords: {
+      valid_type: "list",
+    },
   },
 
   // Members in the data objects should appear in the same order as in the
@@ -3128,6 +3146,7 @@
       // high-priority properties.
       priority: 2,
       valid_for_permission_element: true,
+      keywords: ["normal", "light", "dark"],
     },
     {
       name: "column-fill",
@@ -3483,6 +3502,7 @@
       valid_for_highlight: true,
       valid_for_permission_icon: true,
       invalidate: ["paint"],
+      keywords: ["none"],
     },
     {
       name: "fill-opacity",
@@ -5938,6 +5958,7 @@
       valid_for_highlight: true,
       valid_for_permission_icon: true,
       invalidate: ["paint", "stroke"],
+      keywords: ["none", "context-stroke"],
     },
     {
       name: "stroke-dasharray",
@@ -6588,6 +6609,7 @@
       supports_incremental_style: true,
       invalidate: ["has-transform", "transform-data", "transform-other"],
       percentages_depend_on_used_value: true,
+      keywords: ["none"],
     },
     {
       name: "rotate",
@@ -6603,6 +6625,7 @@
       converter: "ConvertRotate",
       supports_incremental_style: true,
       invalidate: ["has-transform", "transform-data", "transform-other"],
+      keywords: ["none"],
     },
     {
       name: "scale",
@@ -6619,6 +6642,7 @@
       supports_incremental_style: true,
       invalidate: ["has-transform", "transform-data", "transform-other"],
       percentages_depend_on_used_value: true,
+      keywords: ["none"],
     },
     {
       name: "unicode-bidi",
@@ -6852,6 +6876,7 @@
       // Overlaps with border-image.
       legacy_overlapping: true,
       percentages_depend_on_used_value: true,
+      devtools_keywords: ["none", "stretch", "repeat", "space", "round"],
     },
     {
       name: "-webkit-border-vertical-spacing",
@@ -7707,7 +7732,7 @@
       inherited: true,
       field_group: "*",
       field_template: "keyword_custom",
-      keywords: ["auto", "spaces"],
+      keywords: ["auto", "none", "spaces"],
       default_value: "auto",
       invalidate: ["layout", "paint"],
       runtime_flag: "CSSRubyOverhang",
@@ -7832,6 +7857,7 @@
       invalidate: ["layout"],
       runtime_flag: "CssTextFit",
       percentages_depend_on_used_value: false,
+      keywords: ["none", "shrink", "grow"],
     },
     {
       name: "-webkit-text-security",
@@ -8982,6 +9008,11 @@
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       supports_incremental_style: true,
       valid_for_page_context: true,
+      devtools_keywords: ["none", "left", "right", "center", "top", "bottom",
+        "repeat", "no-repeat", "repeat-x", "repeat-y", "round", "space",
+        "scroll", "fixed", "local", "border-box", "padding-box", "content-box",
+         "text", "border-area", "currentcolor"
+      ],
     },
     {
       name: "background-position",
@@ -9003,6 +9034,10 @@
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       valid_for_page_context: true,
+      devtools_keywords: ["none", "hidden", "inset", "groove", "outset", "ridge",
+        "dotted", "dashed", "solid", "double", "thin", "medium", "thick",
+        "currentcolor"
+      ],
     },
     {
       name: "border-block",
@@ -9273,6 +9308,7 @@
         "container-name", "container-type"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      devtools_keywords: ["none"],
     },
     {
       name: "corner-top-shape",
@@ -9534,6 +9570,10 @@
       name: "flex",
       longhands: ["flex-grow", "flex-shrink", "flex-basis"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      devtools_keywords: [
+        "none", "auto", "content", "min-content", "max-content", "fit-content",
+        "stretch"
+      ],
     },
     {
       name: "flex-flow",
@@ -9554,6 +9594,7 @@
       // Changes to anything related to fonts require that we call style.UpdateFont(),
       // which the incremental path does not do.
       supports_incremental_style: false,
+      devtools_keywords: [],
     },
     {
       name: "font-variant",
@@ -9574,6 +9615,7 @@
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       // See comment on font.
       supports_incremental_style: false,
+      devtools_keywords: ["none"],
     },
     {
       name: "grid",
@@ -9583,6 +9625,7 @@
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       layout_dependent: true,
+      devtools_keywords: ["none"],
     },
     {
       name: "place-content",
@@ -9637,6 +9680,7 @@
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       layout_dependent: true,
+      devtools_keywords: ["none"],
     },
     {
       name: "inset",
@@ -9940,6 +9984,7 @@
       name: "view-timeline",
       longhands: ["view-timeline-name", "view-timeline-axis", "view-timeline-inset"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      devtools_keywords: ["none"],
     },
     {
       name: "-webkit-border-after",
@@ -9991,6 +10036,7 @@
       name: "columns",
       longhands: ["column-width", "column-count", "column-height", "column-wrap"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      devtools_keywords: ["auto"],
     },
     {
       name: "mask",
@@ -10000,6 +10046,9 @@
         "mask-clip", "mask-composite", "mask-mode"
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      devtools_keywords: ["none", "left", "right", "center", "top", "bottom",
+        "subtract", "intersect", "exclude", "alpha", "luminance", "match-source"
+      ],
     },
     {
       name: "-webkit-mask",
@@ -10014,6 +10063,7 @@
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       computable: true,
+      devtools_keywords: ["none", "stretch", "repeat", "space", "round"],
     },
     {
       name: "mask-position",

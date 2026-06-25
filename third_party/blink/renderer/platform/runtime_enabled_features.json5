@@ -688,7 +688,7 @@
     },
     {
       name: "AriaActions",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "AriaNotify",
@@ -3805,14 +3805,6 @@
       public: true,
     },
     {
-      // When the start-of-line position cannot be determined (e.g., because
-      // the caret is in an empty inline element with no layout information),
-      // fall back to the start of the enclosing block rather than the start
-      // of the entire editable root. See https://crbug.com/41053053.
-      name: "LogicalStartOfLineBlockFallback",
-      status: "stable",
-    },
-    {
       name: "LoginElement",
       depends_on: ["FedCm"],
       status: "experimental",
@@ -4134,6 +4126,16 @@
       implied_by: ["SoftNavigationHeuristics"],
     },
     {
+      // Exposes navigation redirect timing (redirectCount, redirectStart and
+      // redirectEnd) for cross-origin redirect chains when every redirect opts
+      // in to the navigation's destination origin via Timing-Allow-Origin and
+      // the navigation is not a no-referrer navigation.
+      // https://github.com/whatwg/fetch/pull/1931
+      // https://github.com/whatwg/html/pull/12513
+      name: "NavigationTimingRedirectTimingViaTAO",
+      status: "experimental",
+    },
+    {
       name: "NavigatorContentUtils",
       // Android does not yet support NavigatorContentUtils.
       status: {"Android": "", "default": "stable"},
@@ -4298,6 +4300,7 @@
       // their ancestor select element is disabled.
       // https://github.com/w3c/csswg-drafts/issues/13383
       // https://issues.chromium.org/issues/490082172
+      // Enabled in M149, modified in M151, safe to remove in M153.
       name: "OptionDisablednessCheckAncestors",
       status: "stable",
     },
@@ -5091,7 +5094,8 @@
     },
     {
       name: "RTCDiagnosticLogging",
-      status: "test",
+      origin_trial_feature_name: "RTCDiagnosticLogging",
+      status: "experimental",
       base_feature_status: "enabled",
       copied_from_base_feature_if: "overridden",
     },
@@ -5667,15 +5671,6 @@
       status: "stable",
     },
     {
-      // Skip lines that contain only pseudo-element content (like ::before
-      // or ::after) when determining valid caret positions for line
-      // navigation. Pseudo-elements don't have DOM nodes for caret positioning,
-      // so including them caused incorrect selection behavior.
-      // See crbug.com/357889508
-      name: "SkipPseudoOnlyLinesInLineNavigation",
-      status: "stable",
-    },
-    {
       // Skips the browser touch event filter, ensuring that events that reach
       // the queue and would otherwise be filtered out will instead be passed
       // onto the renderer compositor process as long as the page hasn't timed
@@ -6018,6 +6013,10 @@
       status: "experimental",
     },
     {
+      name: "TabAlignmentWithFloats",
+      status: "stable",
+    },
+    {
       // Don't trigger table border rendering with only bordercolor attribute.
       // This shipped in M146 and can be removed in M148.
       name: "TableBorderColorNoImplicitBorder",
@@ -6119,6 +6118,12 @@
       status: "stable",
     },
     {
+      // crbug.com/523134883: Ignore ruby annotation text when computing
+      // text-autospace boundaries.
+      name: "TextAutoSpaceIgnoreRubyAnnotation",
+      status: "stable",
+    },
+    {
       name: "TextBoxTrimForNestedList",
       status: "stable",
     },
@@ -6127,9 +6132,9 @@
       status: "experimental",
     },
     {
-      // crbug.com/522298908
+      // crbug.com/488458870, crbug.com/522298908, and crbug.com/522298908
       name: "TextEmphasisAsRuby",
-      status: "experimental",
+      status: "stable",
     },
     {
       // crbug.com/40812040
@@ -6507,12 +6512,8 @@
     },
     {
       name: "UserMediaElement",
-      status: "experimental",
-      origin_trial_feature_name: "UserMediaElement",
+      status: "stable",
       public: true,
-      origin_trial_os: ["win", "mac", "linux", "fuchsia", "chromeos", "android"],
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
     },
     {
       // Allowing legacy compatibility paths for usermedia element (such as

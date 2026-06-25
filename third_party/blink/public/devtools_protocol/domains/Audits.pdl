@@ -604,6 +604,7 @@ experimental domain Audits
       JwksHttpNotFound
       JwksInvalidResponse
       TokenVerificationSdJwtUnsupportedHeaderAlg
+      TokenVerificationSdJwtInvalidTyp
       TokenVerificationSdJwtMissingIss
       TokenVerificationSdJwtMissingIat
       TokenVerificationSdJwtMissingCnf

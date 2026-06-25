@@ -2082,6 +2082,7 @@
                         "JwksHttpNotFound",
                         "JwksInvalidResponse",
                         "TokenVerificationSdJwtUnsupportedHeaderAlg",
+                        "TokenVerificationSdJwtInvalidTyp",
                         "TokenVerificationSdJwtMissingIss",
                         "TokenVerificationSdJwtMissingIat",
                         "TokenVerificationSdJwtMissingCnf",
@@ -20869,6 +20870,76 @@
                     ]
                 },
                 {
+                    "id": "DisplayCutoutShape",
+                    "description": "Supported display cutout shapes.",
+                    "type": "string",
+                    "enum": [
+                        "pill",
+                        "notch",
+                        "circle",
+                        "rectangle"
+                    ]
+                },
+                {
+                    "id": "DisplayCutoutConfig",
+                    "description": "Configuration for a display cutout.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "rect",
+                            "description": "A rectangle representing the cutout bounds.",
+                            "$ref": "DOM.Rect"
+                        },
+                        {
+                            "name": "shape",
+                            "description": "Shape used to draw the cutout.",
+                            "$ref": "DisplayCutoutShape"
+                        },
+                        {
+                            "name": "borderRadius",
+                            "description": "Border radius for rounded cutout shapes.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "upperRadius",
+                            "description": "Upper shoulder radius for notch cutout shapes.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "lowerRadius",
+                            "description": "Lower transition radius for notch cutout shapes.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "cx",
+                            "description": "Center x coordinate for circle cutout shapes.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "cy",
+                            "description": "Center y coordinate for circle cutout shapes.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "radius",
+                            "description": "Radius for circle cutout shapes.",
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "contentColor",
+                            "description": "The cutout fill color (default: black).",
+                            "optional": true,
+                            "$ref": "DOM.RGBA"
+                        }
+                    ]
+                },
+                {
                     "id": "WindowControlsOverlayConfig",
                     "description": "Configuration for Window Controls Overlay",
                     "type": "object",
@@ -21436,6 +21507,18 @@
                             "description": "hinge data, null means hideHinge",
                             "optional": true,
                             "$ref": "HingeConfig"
+                        }
+                    ]
+                },
+                {
+                    "name": "setShowDisplayCutout",
+                    "description": "Add a display cutout overlay.",
+                    "parameters": [
+                        {
+                            "name": "displayCutoutConfig",
+                            "description": "display cutout data, null means hide display cutout",
+                            "optional": true,
+                            "$ref": "DisplayCutoutConfig"
                         }
                     ]
                 },

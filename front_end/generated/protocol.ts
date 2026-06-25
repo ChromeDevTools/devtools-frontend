@@ -1444,6 +1444,7 @@ export namespace Audits {
     JwksHttpNotFound = 'JwksHttpNotFound',
     JwksInvalidResponse = 'JwksInvalidResponse',
     TokenVerificationSdJwtUnsupportedHeaderAlg = 'TokenVerificationSdJwtUnsupportedHeaderAlg',
+    TokenVerificationSdJwtInvalidTyp = 'TokenVerificationSdJwtInvalidTyp',
     TokenVerificationSdJwtMissingIss = 'TokenVerificationSdJwtMissingIss',
     TokenVerificationSdJwtMissingIat = 'TokenVerificationSdJwtMissingIat',
     TokenVerificationSdJwtMissingCnf = 'TokenVerificationSdJwtMissingCnf',
@@ -13983,6 +13984,58 @@ export namespace Overlay {
   }
 
   /**
+   * Supported display cutout shapes.
+   */
+  export const enum DisplayCutoutShape {
+    Pill = 'pill',
+    Notch = 'notch',
+    Circle = 'circle',
+    Rectangle = 'rectangle',
+  }
+
+  /**
+   * Configuration for a display cutout.
+   */
+  export interface DisplayCutoutConfig {
+    /**
+     * A rectangle representing the cutout bounds.
+     */
+    rect: DOM.Rect;
+    /**
+     * Shape used to draw the cutout.
+     */
+    shape: DisplayCutoutShape;
+    /**
+     * Border radius for rounded cutout shapes.
+     */
+    borderRadius?: integer;
+    /**
+     * Upper shoulder radius for notch cutout shapes.
+     */
+    upperRadius?: integer;
+    /**
+     * Lower transition radius for notch cutout shapes.
+     */
+    lowerRadius?: integer;
+    /**
+     * Center x coordinate for circle cutout shapes.
+     */
+    cx?: integer;
+    /**
+     * Center y coordinate for circle cutout shapes.
+     */
+    cy?: integer;
+    /**
+     * Radius for circle cutout shapes.
+     */
+    radius?: integer;
+    /**
+     * The cutout fill color (default: black).
+     */
+    contentColor?: DOM.RGBA;
+  }
+
+  /**
    * Configuration for Window Controls Overlay
    */
   export interface WindowControlsOverlayConfig {
@@ -14342,6 +14395,13 @@ export namespace Overlay {
      * hinge data, null means hideHinge
      */
     hingeConfig?: HingeConfig;
+  }
+
+  export interface SetShowDisplayCutoutRequest {
+    /**
+     * display cutout data, null means hide display cutout
+     */
+    displayCutoutConfig?: DisplayCutoutConfig;
   }
 
   export interface SetShowIsolatedElementsRequest {

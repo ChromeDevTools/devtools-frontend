@@ -1876,6 +1876,11 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "normal",
+   "light",
+   "dark"
+  ],
   "name": "color-scheme"
  },
  {
@@ -2694,6 +2699,9 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "none"
+  ],
   "name": "fill"
  },
  {
@@ -4449,6 +4457,9 @@ export const generatedProperties = [
   "name": "right"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "rotate"
  },
  {
@@ -4622,6 +4633,7 @@ export const generatedProperties = [
   "inherited": true,
   "keywords": [
    "auto",
+   "none",
    "spaces"
   ],
   "name": "ruby-overhang",
@@ -4776,6 +4788,9 @@ export const generatedProperties = [
   "name": "ry"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "scale"
  },
  {
@@ -5089,6 +5104,10 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "none",
+   "context-stroke"
+  ],
   "name": "stroke"
  },
  {
@@ -5335,6 +5354,11 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "keywords": [
+   "none",
+   "shrink",
+   "grow"
+  ],
   "name": "text-fit",
   "runtime_flag": "CssTextFit",
   "runtime_flag_status": "stable"
@@ -5647,6 +5671,9 @@ export const generatedProperties = [
   "name": "transition-timing-function"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "translate"
  },
  {
@@ -6608,6 +6635,13 @@ export const generatedPropertyValues = {
    "optimizequality"
   ]
  },
+ "color-scheme": {
+  "values": [
+   "normal",
+   "light",
+   "dark"
+  ]
+ },
  "column-count": {
   "values": [
    "auto"
@@ -7036,6 +7070,11 @@ export const generatedPropertyValues = {
   "values": [
    "fixed",
    "content"
+  ]
+ },
+ "fill": {
+  "values": [
+   "none"
   ]
  },
  "fill-rule": {
@@ -8041,6 +8080,11 @@ export const generatedPropertyValues = {
    "auto"
   ]
  },
+ "rotate": {
+  "values": [
+   "none"
+  ]
+ },
  "row-gap": {
   "values": [
    "normal"
@@ -8118,6 +8162,7 @@ export const generatedPropertyValues = {
  "ruby-overhang": {
   "values": [
    "auto",
+   "none",
    "spaces"
   ]
  },
@@ -8141,6 +8186,11 @@ export const generatedPropertyValues = {
  "ry": {
   "values": [
    "auto"
+  ]
+ },
+ "scale": {
+  "values": [
+   "none"
   ]
  },
  "scroll-axis-lock": {
@@ -8299,6 +8349,12 @@ export const generatedPropertyValues = {
    "currentcolor"
   ]
  },
+ "stroke": {
+  "values": [
+   "none",
+   "context-stroke"
+  ]
+ },
  "stroke-dasharray": {
   "values": [
    "none"
@@ -8434,6 +8490,13 @@ export const generatedPropertyValues = {
  "text-emphasis-color": {
   "values": [
    "currentcolor"
+  ]
+ },
+ "text-fit": {
+  "values": [
+   "none",
+   "shrink",
+   "grow"
   ]
  },
  "text-justify": {
@@ -8615,6 +8678,11 @@ export const generatedPropertyValues = {
    "jump-start",
    "step-start",
    "step-end"
+  ]
+ },
+ "translate": {
+  "values": [
+   "none"
   ]
  },
  "trigger-scope": {

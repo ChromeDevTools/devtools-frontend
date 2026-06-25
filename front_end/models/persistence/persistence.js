@@ -3030,6 +3030,9 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     return headers;
   }
   handleHeaderInterception(interceptedRequest) {
+    if (_NetworkPersistenceManager.isForbiddenNetworkUrl(interceptedRequest.request.url)) {
+      return [];
+    }
     let result = interceptedRequest.responseHeaders || [];
     const urlSegments = this.rawPathFromUrl(interceptedRequest.request.url).split("/");
     let path = Platform11.DevToolsPath.EmptyEncodedPathString;
@@ -3045,8 +3048,12 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     if (!this.#active || method === "OPTIONS") {
       return;
     }
+    const requestUrl = interceptedRequest.request.url;
+    if (_NetworkPersistenceManager.isForbiddenNetworkUrl(requestUrl)) {
+      return;
+    }
     const proj = this.#project;
-    const path = this.fileUrlFromNetworkUrl(interceptedRequest.request.url);
+    const path = this.fileUrlFromNetworkUrl(requestUrl);
     const fileSystemUISourceCode = proj.uiSourceCodeForURL(path);
     let responseHeaders = this.handleHeaderInterception(interceptedRequest);
     if (!fileSystemUISourceCode && !responseHeaders.length) {

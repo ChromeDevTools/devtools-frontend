@@ -81,7 +81,8 @@ export declare const enum ToolName {
     GET_STYLES = "getStyles",
     LIST_NETWORK_REQUESTS = "listNetworkRequests",
     GET_NETWORK_REQUEST_DETAILS = "getNetworkRequestDetails",
-    GET_LIGHTHOUSE_AUDITS = "getLighthouseAudits"
+    GET_LIGHTHOUSE_AUDITS = "getLighthouseAudits",
+    RESOLVE_LIGHTHOUSE_PATH = "resolveLighthousePath"
 }
 /**
  * Non-generic metadata interface for a Tool.

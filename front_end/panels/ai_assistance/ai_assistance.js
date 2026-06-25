@@ -4037,10 +4037,6 @@ var UIStringsNotTranslate4 = {
    */
   revealRenderBlockingBreakdown: "Reveal render-blocking requests",
   /**
-   * @description Accessible label for the reveal button in the LCP element widget.
-   */
-  revealLcpElement: "Reveal LCP element",
-  /**
    * @description Accessible label for the reveal button in the performance summary widget.
    */
   revealPerformanceSummary: "Reveal performance summary",
@@ -4104,10 +4100,6 @@ var UIStringsNotTranslate4 = {
    * @description Title for the 3rd parties widget.
    */
   thirdParties: "3rd parties",
-  /**
-   * @description Title for the LCP element widget.
-   */
-  lcpElement: "LCP element",
   /**
    * @description Title for the performance summary widget.
    */
@@ -5079,8 +5071,8 @@ async function makeDomTreeWidget(widgetData) {
   return {
     renderedWidget,
     revealable: new SDK4.DOMModel.DeferredDOMNode(root.domModel().target(), root.backendNodeId()),
-    accessibleRevealLabel: lockedString5(UIStringsNotTranslate4.revealLcpElement),
-    title: lockedString5(UIStringsNotTranslate4.lcpElement),
+    accessibleRevealLabel: widgetData.data.accessibleRevealLabel,
+    title: widgetData.data.title,
     jslogContext: "dom-snapshot"
   };
 }

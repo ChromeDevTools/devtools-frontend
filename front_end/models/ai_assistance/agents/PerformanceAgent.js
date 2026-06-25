@@ -893,6 +893,8 @@ export class PerformanceAgent extends AiAgent {
                                         data: {
                                             root: snapshot,
                                             networkRequest,
+                                            title: lockedString('LCP element'),
+                                            accessibleRevealLabel: lockedString('Reveal LCP element'),
                                         },
                                     });
                                 }

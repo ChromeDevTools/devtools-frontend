@@ -8,4 +8,5 @@ export interface CreationOptions {
 export declare class Universe {
     readonly context: Root.DevToolsContext.DevToolsContext;
     constructor(options: CreationOptions);
+    get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
 }

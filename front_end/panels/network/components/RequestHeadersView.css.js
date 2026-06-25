@@ -158,6 +158,7 @@ devtools-link {
 
 devtools-link .inline-icon {
   padding-right: 3px;
+  vertical-align: middle;
 }
 
 .purple.dot::before {

@@ -37,6 +37,10 @@ export class TestUniverse {
         }
         return this.#context.get(Common.Console.Console);
     }
+    // eslint-disable-next-line @devtools/enforce-test-universe-return-types
+    get context() {
+        return this.#context;
+    }
     get cssWorkspaceBinding() {
         if (!this.#context.has(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding)) {
             this.#context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, new Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding(this.#resourceMapping, this.targetManager));

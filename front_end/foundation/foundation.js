@@ -15,6 +15,9 @@ import * as SDK from "./../core/sdk/sdk.js";
 import * as Bindings from "./../models/bindings/bindings.js";
 import * as Workspace from "./../models/workspace/workspace.js";
 var Universe = class {
+  // TODO(crbug.com/493763857): Once a singleton is no longer a singleton (i.e. it has no 'instance')
+  //                            static method, we can move it out of the `DevToolsContext` and store it
+  //                            directly on the `Universe`.
   context;
   constructor(options) {
     const context = new Root.DevToolsContext.WritableDevToolsContext();
@@ -43,6 +46,9 @@ var Universe = class {
     context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+  }
+  get pageResourceLoader() {
+    return this.context.get(SDK.PageResourceLoader.PageResourceLoader);
   }
 };
 export {

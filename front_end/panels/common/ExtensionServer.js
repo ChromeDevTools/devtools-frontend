@@ -67,10 +67,12 @@ export class HostsPolicy {
     }
 }
 class RegisteredExtension {
+    origin;
     name;
     hostsPolicy;
     allowFileAccess;
-    constructor(name, hostsPolicy, allowFileAccess) {
+    constructor(origin, name, hostsPolicy, allowFileAccess) {
+        this.origin = origin;
         this.name = name;
         this.hostsPolicy = hostsPolicy;
         this.allowFileAccess = allowFileAccess;
@@ -88,6 +90,13 @@ class RegisteredExtension {
         }
         catch {
             return false;
+        }
+        if (parsedURL.protocol === 'chrome-extension:') {
+            if (parsedURL.origin !== this.origin) {
+                if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
+                    return false;
+                }
+            }
         }
         if (!ExtensionServer.canInspectURL(inspectedURL)) {
             return false;
@@ -778,23 +787,41 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
      * long as the corresponding target is permitted.
      */
     extensionAllowedOnContentProvider(contentProvider, port) {
-        if (!(contentProvider instanceof Workspace.UISourceCode.UISourceCode)) {
-            return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
-        }
-        if (contentProvider.contentType() !== Common.ResourceType.resourceTypes.Script) {
-            // We only check sourceURL magic comments for scripts (excluding ones coming from source maps).
-            return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
-        }
-        const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
-        if (scripts.length === 0) {
-            return this.extensionAllowedOnURL(contentProvider.contentURL(), port);
-        }
-        return scripts.every(script => {
-            if (script.hasSourceURL) {
-                return this.extensionAllowedOnTarget(script.target(), port);
+        // 1. Exception for Scripts with sourceURL
+        if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
+            contentProvider.contentType() === Common.ResourceType.resourceTypes.Script) {
+            const scripts = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider);
+            if (scripts.length > 0) {
+                const uiSourceCodeTarget = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
+                if (uiSourceCodeTarget && !this.extensionAllowedOnTarget(uiSourceCodeTarget, port)) {
+                    return false;
+                }
+                return scripts.every(script => {
+                    if (script.hasSourceURL) {
+                        return this.extensionAllowedOnTarget(script.target(), port);
+                    }
+                    return this.extensionAllowedOnURL(script.contentURL(), port) &&
+                        this.extensionAllowedOnTarget(script.target(), port);
+                });
             }
-            return this.extensionAllowedOnURL(script.contentURL(), port);
-        });
+        }
+        // 2. Standard Policy: Both URL and Target must be allowed
+        // 2a. Check URL
+        if (!this.extensionAllowedOnURL(contentProvider.contentURL(), port)) {
+            return false;
+        }
+        // 2b. Check Target (if one can be identified)
+        let target;
+        if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+            target = SDK.NetworkManager.NetworkManager.forRequest(contentProvider)?.target();
+        }
+        else if (contentProvider instanceof SDK.Resource.Resource) {
+            target = contentProvider.frame()?.resourceTreeModel().target();
+        }
+        else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+            target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? undefined;
+        }
+        return !target || this.extensionAllowedOnTarget(target, port);
     }
     /**
      * This method prefers returning 'Permission denied' errors if restricted resources are not found,
@@ -814,6 +841,9 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         return { uiSourceCode };
     }
     extensionAllowedOnTarget(target, port) {
+        if (!target) {
+            return false;
+        }
         return this.extensionAllowedOnURL(target.inspectedURL(), port);
     }
     onReload(message, port) {
@@ -864,7 +894,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         if (message.command !== "getHAR" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR */) {
             return this.status.E_BADARG('command', `expected ${"getHAR" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR */}`);
         }
-        const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnURL(r.url(), port));
+        const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnContentProvider(r, port));
         const harLog = await HAR.Log.Log.build(requests, { sanitize: false });
         for (let i = 0; i < harLog.entries.length; ++i) {
             // @ts-expect-error
@@ -1057,16 +1087,25 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
     notifyResourceAdded(event) {
         const uiSourceCode = event.data;
-        this.postNotification("resource-added" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded */, [this.makeResource(uiSourceCode)], extension => extension.isAllowedOnTarget(uiSourceCode.url()));
+        const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+        const targetUrl = target?.inspectedURL();
+        this.postNotification("resource-added" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceAdded */, [this.makeResource(uiSourceCode)], extension => extension.isAllowedOnTarget(uiSourceCode.url()) &&
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
     }
     notifyUISourceCodeContentCommitted(event) {
         const { uiSourceCode, content } = event.data;
-        this.postNotification("resource-content-committed" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted */, [this.makeResource(uiSourceCode), content], extension => extension.isAllowedOnTarget(uiSourceCode.url()));
+        const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+        const targetUrl = target?.inspectedURL();
+        this.postNotification("resource-content-committed" /* Extensions.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted */, [this.makeResource(uiSourceCode), content], extension => extension.isAllowedOnTarget(uiSourceCode.url()) &&
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
     }
     async notifyRequestFinished(event) {
         const request = event.data;
         const entry = await HAR.Log.Entry.build(request, { sanitize: false });
-        this.postNotification("network-request-finished" /* Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished */, [this.requestId(request), entry], extension => extension.isAllowedOnTarget(entry.request.url));
+        const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+        const targetUrl = networkManager?.target()?.inspectedURL();
+        this.postNotification("network-request-finished" /* Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished */, [this.requestId(request), entry], extension => extension.isAllowedOnTarget(entry.request.url) &&
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
     }
     notifyElementsSelectionChanged() {
         this.postNotification("panel-objectSelected-" /* Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected */ + 'elements', []);
@@ -1117,7 +1156,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             const startPageURL = new URL((startPage));
             const extensionOrigin = startPageURL.origin;
             const name = extensionInfo.name || `Extension ${extensionOrigin}`;
-            const extensionRegistration = new RegisteredExtension(name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));
+            const extensionRegistration = new RegisteredExtension(extensionOrigin, name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));
             if (!extensionRegistration.isAllowedOnTarget(inspectedURL)) {
                 this.#pendingExtensions.push(extensionInfo);
                 return;
@@ -1201,7 +1240,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         this.registerSubscriptionHandler(eventTopic, () => eventTarget.addEventListener(frontendEventType, handler, this), () => eventTarget.removeEventListener(frontendEventType, handler, this));
     }
     registerAutosubscriptionTargetManagerHandler(eventTopic, modelClass, frontendEventType, handler) {
-        this.registerSubscriptionHandler(eventTopic, () => SDK.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this), () => SDK.TargetManager.TargetManager.instance().removeModelListener(modelClass, frontendEventType, handler, this));
+        this.registerSubscriptionHandler(eventTopic, () => SDK.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this, { scoped: true }), () => SDK.TargetManager.TargetManager.instance().removeModelListener(modelClass, frontendEventType, handler, this));
     }
     registerResourceContentCommittedHandler(handler) {
         function addFirstEventListener() {
@@ -1293,25 +1332,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         if (!extension?.isAllowedOnTarget(context.origin)) {
             return this.status.E_FAILED('Permission denied');
-        }
-        try {
-            const parsedUrl = new URL(frame.url);
-            let targetType = 0 /* Host.UserMetrics.ExtensionEvalTarget.WEB_PAGE */;
-            if (parsedUrl.protocol === 'chrome-extension:') {
-                if (parsedUrl.origin === securityOrigin) {
-                    targetType = 1 /* Host.UserMetrics.ExtensionEvalTarget.SAME_EXTENSION */;
-                }
-                else {
-                    targetType = 2 /* Host.UserMetrics.ExtensionEvalTarget.OTHER_EXTENSION */;
-                    if (!Root.Runtime.hostConfig.extensionsOnChromeUrls?.enabled) {
-                        return this.status.E_FAILED('Access to extension URLs is restricted; use --extensions-on-chrome-urls to enable.');
-                    }
-                }
-            }
-            Host.userMetrics.extensionEvalTarget(targetType);
-        }
-        catch {
-            // Ignore invalid URLs.
         }
         void context
             .evaluate({

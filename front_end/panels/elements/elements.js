@@ -19663,7 +19663,7 @@ var PseudoStateMarkerDecorator = class _PseudoStateMarkerDecorator {
       return null;
     }
     return {
-      color: "--sys-color-orange-bright",
+      color: "var(--sys-color-orange-bright)",
       title: i18nString15(UIStrings16.elementStateS, { PH1: ":" + pseudoState.join(", :") })
     };
   }

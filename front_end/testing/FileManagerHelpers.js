@@ -1,6 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import sinon from 'sinon';
 import * as Workspace from '../models/workspace/workspace.js';
 export function stubFileManager() {
     const fileManager = Workspace.FileManager.FileManager.instance();

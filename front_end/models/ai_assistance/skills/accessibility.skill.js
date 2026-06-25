@@ -7,7 +7,9 @@ export const skill = {
   "name": "accessibility",
   "description": "Accessibility audits and report querying.",
   "allowedTools": [
-    "getLighthouseAudits"
+    "getLighthouseAudits",
+    "resolveLighthousePath",
+    "getStyles"
   ],
-  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report."
+  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveLighthousePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties."
 };

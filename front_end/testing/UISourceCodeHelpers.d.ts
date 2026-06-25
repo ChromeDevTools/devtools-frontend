@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import type * as SDK from '../core/sdk/sdk.js';
@@ -45,6 +46,6 @@ export declare function createFileSystemUISourceCode(options: {
 };
 export declare function setupMockedUISourceCode(url?: string): {
     sut: Workspace.UISourceCode.UISourceCode;
-    projectStub: import("sinon").SinonStubbedInstance<Bindings.ContentProviderBasedProject.ContentProviderBasedProject>;
-    contentTypeStub: import("sinon").SinonStubbedInstance<Common.ResourceType.ResourceType>;
+    projectStub: sinon.SinonStubbedInstance<Bindings.ContentProviderBasedProject.ContentProviderBasedProject>;
+    contentTypeStub: sinon.SinonStubbedInstance<Common.ResourceType.ResourceType>;
 };

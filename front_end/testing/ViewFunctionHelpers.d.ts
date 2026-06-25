@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import type * as Platform from '../core/platform/platform.js';
 import type * as UI from '../ui/legacy/legacy.js';
 type WidgetConstructor = Platform.Constructor.AbstractConstructor<UI.Widget.AnyWidget | HTMLElement>;

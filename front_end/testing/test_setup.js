@@ -5,6 +5,7 @@
  * This file is automatically loaded and run by Karma because it automatically
  * loads and injects all *.js files it finds.
  */
+import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Trace from '../models/trace/trace.js';

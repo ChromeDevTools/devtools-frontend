@@ -725,6 +725,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         return headers;
     }
     handleHeaderInterception(interceptedRequest) {
+        if (NetworkPersistenceManager.isForbiddenNetworkUrl(interceptedRequest.request.url)) {
+            return [];
+        }
         let result = interceptedRequest.responseHeaders || [];
         // 'rawPathFromUrl()''s return value is already (singly-)encoded, so we can
         // treat it as an 'EncodedPathString' here.
@@ -746,8 +749,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         if (!this.#active || (method === 'OPTIONS')) {
             return;
         }
+        const requestUrl = interceptedRequest.request.url;
+        if (NetworkPersistenceManager.isForbiddenNetworkUrl(requestUrl)) {
+            return;
+        }
         const proj = this.#project;
-        const path = this.fileUrlFromNetworkUrl(interceptedRequest.request.url);
+        const path = this.fileUrlFromNetworkUrl(requestUrl);
         const fileSystemUISourceCode = proj.uiSourceCodeForURL(path);
         let responseHeaders = this.handleHeaderInterception(interceptedRequest);
         if (!fileSystemUISourceCode && !responseHeaders.length) {

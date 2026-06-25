@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import * as Host from '../core/host/host.js';
 import * as Console from '../panels/console/console.js';
 import * as Explain from '../panels/explain/explain.js';
@@ -17,7 +18,7 @@ export declare function createConsoleInsightWidget(options?: Partial<Explain.Vie
         headerRef: Lit.Directives.Ref<HTMLHeadingElement>;
         citationLinks: HTMLElement[];
     };
-    stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => import("sinon").SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>;
+    stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => sinon.SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>;
     testPromptBuilder: {
         buildPrompt(): Promise<{
             prompt: string;
@@ -37,6 +38,6 @@ export declare function createConsoleInsightWidget(options?: Partial<Explain.Vie
             };
             completed: boolean;
         }, void, unknown>;
-        registerClientEvent: import("sinon").SinonSpy<any[], any>;
+        registerClientEvent: sinon.SinonSpy<any[], any>;
     };
 }>;

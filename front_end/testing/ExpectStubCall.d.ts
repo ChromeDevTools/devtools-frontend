@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 /**
  * Returns a Promise that resolves with the arguments of the `stub`'s call once
  * it has been called `callCount` times.

@@ -22,7 +22,11 @@ devtools-header-section-row:first-of-type {
 }
 
 .add-header-button {
-  margin: -4px 0 10px 5px;
+  margin: var(--sys-size-5) 0 var(--sys-size-5) var(--sys-size-4);
+}
+
+devtools-header-section-row + .add-header-button {
+  margin-top: calc(-1 * var(--sys-size-3));
 }
 
 /*# sourceURL=${import.meta.resolve('./ResponseHeaderSection.css')} */`;

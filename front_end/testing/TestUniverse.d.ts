@@ -1,5 +1,6 @@
 import * as Common from '../core/common/common.js';
 import type * as Host from '../core/host/host.js';
+import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
 import * as Bindings from '../models/bindings/bindings.js';
@@ -25,7 +26,7 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
  * uses DEFAULT_SETTING_REGISTRATIONS_FOR_TEST, but it will not read the global
  * registered settings (on purpose).
  */
-export declare class TestUniverse {
+export declare class TestUniverse implements Foundation.Universe.Universe {
     #private;
     constructor(options?: CreationOptions);
     /**
@@ -33,6 +34,7 @@ export declare class TestUniverse {
      */
     createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
     get console(): Common.Console.Console;
+    get context(): Root.DevToolsContext.DevToolsContext;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;
     get debuggerWorkspaceBinding(): Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
     get frameManager(): SDK.FrameManager.FrameManager;

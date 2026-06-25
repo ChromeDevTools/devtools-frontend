@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "allowUmdGlobalAccess": true,
+    "allowSyntheticDefaultImports": true,
     "checkJs": true,
     "composite": true,
     "declaration": true,
@@ -36,8 +36,7 @@
       "../../../../../node_modules"
     ],
     "types": [
-      "mocha",
-      "sinon"
+      "mocha"
     ],
     "useUnknownInCatchVariables": false
   },

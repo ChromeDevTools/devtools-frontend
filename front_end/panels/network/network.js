@@ -4290,7 +4290,7 @@ function renderHeaderOverridesLink(input) {
           class="link devtools-link"
           jslogcontext="devtools-override"
       >
-        <devtools-icon name="help" class="inline-icon medium">
+        <devtools-icon name="help" class="inline-icon">
         </devtools-icon>
       </devtools-link>
       <devtools-link

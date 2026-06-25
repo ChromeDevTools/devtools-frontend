@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
@@ -48,7 +49,7 @@ export declare function createAiAssistancePanel(options?: {
     panel: AiAssistancePanel.AiAssistancePanel;
     view: import("./ViewFunctionHelpers.js").ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>;
     aidaClient: Host.AidaClient.AidaClient;
-    stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => import("sinon").SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>;
+    stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => sinon.SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>;
 }>;
 export declare const setupAutomaticFileSystem: (options?: {
     hasFileSystem: boolean;

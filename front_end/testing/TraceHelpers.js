@@ -135,9 +135,7 @@ export const defaultTraceEvent = {
  */
 export function getTree(thread) {
     const tree = thread.tree;
-    if (!tree) {
-        assert(false, `Couldn't get tree in thread ${thread.name}`);
-    }
+    assert(tree, `Couldn't get tree in thread ${thread.name}`);
     return tree;
 }
 /**
@@ -147,9 +145,7 @@ export function getTree(thread) {
 export function getRootAt(thread, index) {
     const tree = getTree(thread);
     const node = [...tree.roots][index];
-    if (node === undefined) {
-        assert(false, `Couldn't get the id of the root at index ${index} in thread ${thread.name}`);
-    }
+    assert(node, `Couldn't get the id of the root at index ${index} in thread ${thread.name}`);
     return node;
 }
 /**
@@ -513,9 +509,7 @@ export function getMainThread(data) {
             }
         }
     }
-    if (!mainThread) {
-        throw new Error('Could not find main thread.');
-    }
+    assert.isNotNull(mainThread, 'Could not find main thread');
     return mainThread;
 }
 export function getBaseTraceHandlerData(overrides = {}) {
@@ -705,9 +699,7 @@ export function getBaseTraceHandlerData(overrides = {}) {
  */
 export function getEventOfType(events, predicate) {
     const match = events.find(predicate);
-    if (!match) {
-        throw new Error('Failed to find matching event of type.');
-    }
+    assert(match, 'Failed to find matching event of type');
     return match;
 }
 /**

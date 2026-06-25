@@ -1,5 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import type { UrlString } from '../../../core/platform/DevToolsPath.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
@@ -205,6 +206,8 @@ export interface DomTreeAiWidget {
     name: 'DOM_TREE';
     data: {
         root: SDK.DOMModel.DOMNodeSnapshot;
+        title: Platform.UIString.LocalizedString;
+        accessibleRevealLabel: Platform.UIString.LocalizedString;
         networkRequest?: {
             url: string;
             size: number;

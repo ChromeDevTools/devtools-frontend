@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import * as Workspace from '../models/workspace/workspace.js';
 export type StubbedFileManager = Workspace.FileManager.FileManager & {
     save: sinon.SinonStub;

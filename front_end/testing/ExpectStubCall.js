@@ -1,6 +1,7 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import sinon from 'sinon';
 /**
  * Returns a Promise that resolves with the arguments of the `stub`'s call once
  * it has been called `callCount` times.

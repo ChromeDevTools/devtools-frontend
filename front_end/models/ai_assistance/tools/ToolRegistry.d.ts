@@ -3,6 +3,7 @@ import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
+import { ResolveLighthousePathTool } from './ResolveLighthousePath.js';
 import { type AllToolsContext, type Tool, type ToolArgs } from './Tool.js';
 /**
  * Plain object registry containing concrete instantiated tools.
@@ -18,6 +19,7 @@ export declare const TOOLS: {
     listNetworkRequests: ListNetworkRequestsTool;
     getNetworkRequestDetails: GetNetworkRequestDetailsTool;
     getLighthouseAudits: GetLighthouseAuditsTool;
+    resolveLighthousePath: ResolveLighthousePathTool;
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

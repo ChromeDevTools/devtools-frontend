@@ -512,6 +512,10 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
     return this.#pseudoElements.get(Protocol.DOM.PseudoType.PickerIcon)?.at(-1);
   }
 
+  interestButtonPseudoElement(): DOMNode|undefined {
+    return this.#pseudoElements.get(Protocol.DOM.PseudoType.InterestButton)?.at(-1);
+  }
+
   markerPseudoElement(): DOMNode|undefined {
     return this.#pseudoElements.get(Protocol.DOM.PseudoType.Marker)?.at(-1);
   }

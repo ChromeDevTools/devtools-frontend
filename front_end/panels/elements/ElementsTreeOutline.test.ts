@@ -102,6 +102,36 @@ describeWithMockConnection('ElementsTreeOutline', () => {
     assert.isNotNull(treeOutline.findTreeElement(pickerIconNode!));
   });
 
+  it('should include the ::interest-button pseudo element', () => {
+    const buttonNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'button',
+      localName: 'button',
+      nodeValue: 'A Button',
+      childNodeCount: 1,
+      pseudoElements: [{
+        parentId: 1 as Protocol.DOM.NodeId,
+        nodeId: 2 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        pseudoType: Protocol.DOM.PseudoType.InterestButton,
+        pseudoIdentifier: '::interest-button',
+        nodeName: '::interest-button',
+        localName: '::interest-button',
+        nodeValue: 'i',
+      }],
+    });
+    assert.isNotNull(buttonNode);
+
+    const interestButtonNode = buttonNode.interestButtonPseudoElement();
+    assert.isNotNull(interestButtonNode);
+
+    treeOutline.rootDOMNode = buttonNode;
+    assert.isNotNull(treeOutline.findTreeElement(interestButtonNode!));
+  });
+
   it('should add an element-related issue to the relevant tree element', async () => {
     const divNodePayload = {
       nodeId: 2 as Protocol.DOM.NodeId,

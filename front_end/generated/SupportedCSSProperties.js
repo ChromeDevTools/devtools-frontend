@@ -37,6 +37,13 @@ export const generatedProperties = [
   "name": "-webkit-border-horizontal-spacing"
  },
  {
+  "devtools_keywords": [
+   "none",
+   "stretch",
+   "repeat",
+   "space",
+   "round"
+  ],
   "name": "-webkit-border-image"
  },
  {
@@ -144,6 +151,13 @@ export const generatedProperties = [
   "name": "-webkit-locale"
  },
  {
+  "devtools_keywords": [
+   "none",
+   "stretch",
+   "repeat",
+   "space",
+   "round"
+  ],
   "longhands": [
    "-webkit-mask-box-image-source",
    "-webkit-mask-box-image-slice",
@@ -1050,6 +1064,29 @@ export const generatedProperties = [
   "name": "backface-visibility"
  },
  {
+  "devtools_keywords": [
+   "none",
+   "left",
+   "right",
+   "center",
+   "top",
+   "bottom",
+   "repeat",
+   "no-repeat",
+   "repeat-x",
+   "repeat-y",
+   "round",
+   "space",
+   "scroll",
+   "fixed",
+   "local",
+   "border-box",
+   "padding-box",
+   "content-box",
+   "text",
+   "border-area",
+   "currentcolor"
+  ],
   "longhands": [
    "background-image",
    "background-position-x",
@@ -1191,6 +1228,22 @@ export const generatedProperties = [
   "name": "block-size"
  },
  {
+  "devtools_keywords": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double",
+   "thin",
+   "medium",
+   "thick",
+   "currentcolor"
+  ],
   "longhands": [
    "border-top-color",
    "border-top-style",
@@ -2077,6 +2130,9 @@ export const generatedProperties = [
   "runtime_flag_status": "stable"
  },
  {
+  "devtools_keywords": [
+   "auto"
+  ],
   "longhands": [
    "column-width",
    "column-count",
@@ -2131,6 +2187,9 @@ export const generatedProperties = [
   "name": "contain-intrinsic-width"
  },
  {
+  "devtools_keywords": [
+   "none"
+  ],
   "longhands": [
    "container-name",
    "container-type"
@@ -2723,6 +2782,15 @@ export const generatedProperties = [
   "name": "filter"
  },
  {
+  "devtools_keywords": [
+   "none",
+   "auto",
+   "content",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ],
   "longhands": [
    "flex-grow",
    "flex-shrink",
@@ -2805,6 +2873,7 @@ export const generatedProperties = [
   "runtime_flag_status": "experimental"
  },
  {
+  "devtools_keywords": [],
   "inherited": true,
   "longhands": [
    "font-style",
@@ -2941,6 +3010,9 @@ export const generatedProperties = [
   "name": "font-style"
  },
  {
+  "devtools_keywords": [
+   "none"
+  ],
   "inherited": true,
   "longhands": [
    "font-synthesis-weight",
@@ -3123,6 +3195,9 @@ export const generatedProperties = [
   "name": "gap"
  },
  {
+  "devtools_keywords": [
+   "none"
+  ],
   "longhands": [
    "grid-template-rows",
    "grid-template-columns",
@@ -3236,6 +3311,9 @@ export const generatedProperties = [
   "name": "grid-row-start"
  },
  {
+  "devtools_keywords": [
+   "none"
+  ],
   "longhands": [
    "grid-template-rows",
    "grid-template-columns",
@@ -3689,6 +3767,20 @@ export const generatedProperties = [
   "name": "marker-start"
  },
  {
+  "devtools_keywords": [
+   "none",
+   "left",
+   "right",
+   "center",
+   "top",
+   "bottom",
+   "subtract",
+   "intersect",
+   "exclude",
+   "alpha",
+   "luminance",
+   "match-source"
+  ],
   "longhands": [
    "mask-image",
    "-webkit-mask-position-x",
@@ -5736,6 +5828,9 @@ export const generatedProperties = [
   "name": "vertical-align"
  },
  {
+  "devtools_keywords": [
+   "none"
+  ],
   "longhands": [
    "view-timeline-name",
    "view-timeline-axis",
@@ -5884,6 +5979,15 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
+ "-webkit-border-image": {
+  "values": [
+   "none",
+   "stretch",
+   "repeat",
+   "space",
+   "round"
+  ]
+ },
  "-webkit-box-align": {
   "values": [
    "stretch",
@@ -5944,6 +6048,15 @@ export const generatedPropertyValues = {
  "-webkit-locale": {
   "values": [
    "auto"
+  ]
+ },
+ "-webkit-mask-box-image": {
+  "values": [
+   "none",
+   "stretch",
+   "repeat",
+   "space",
+   "round"
   ]
  },
  "-webkit-mask-box-image-repeat": {
@@ -6169,6 +6282,31 @@ export const generatedPropertyValues = {
    "hidden"
   ]
  },
+ "background": {
+  "values": [
+   "none",
+   "left",
+   "right",
+   "center",
+   "top",
+   "bottom",
+   "repeat",
+   "no-repeat",
+   "repeat-x",
+   "repeat-y",
+   "round",
+   "space",
+   "scroll",
+   "fixed",
+   "local",
+   "border-box",
+   "padding-box",
+   "content-box",
+   "text",
+   "border-area",
+   "currentcolor"
+  ]
+ },
  "background-attachment": {
   "values": [
    "scroll",
@@ -6252,6 +6390,24 @@ export const generatedPropertyValues = {
  "block-size": {
   "values": [
    "auto"
+  ]
+ },
+ "border": {
+  "values": [
+   "none",
+   "hidden",
+   "inset",
+   "groove",
+   "outset",
+   "ridge",
+   "dotted",
+   "dashed",
+   "solid",
+   "double",
+   "thin",
+   "medium",
+   "thick",
+   "currentcolor"
   ]
  },
  "border-block-end-style": {
@@ -6742,6 +6898,11 @@ export const generatedPropertyValues = {
    "wrap"
   ]
  },
+ "columns": {
+  "values": [
+   "auto"
+  ]
+ },
  "contain": {
   "values": [
    "none",
@@ -6771,6 +6932,11 @@ export const generatedPropertyValues = {
   ]
  },
  "contain-intrinsic-width": {
+  "values": [
+   "none"
+  ]
+ },
+ "container": {
   "values": [
    "none"
   ]
@@ -7088,6 +7254,17 @@ export const generatedPropertyValues = {
    "none"
   ]
  },
+ "flex": {
+  "values": [
+   "none",
+   "auto",
+   "content",
+   "min-content",
+   "max-content",
+   "fit-content",
+   "stretch"
+  ]
+ },
  "flex-basis": {
   "values": [
    "auto",
@@ -7132,6 +7309,9 @@ export const generatedPropertyValues = {
    "normal",
    "infinite"
   ]
+ },
+ "font": {
+  "values": []
  },
  "font-feature-settings": {
   "values": [
@@ -7207,6 +7387,11 @@ export const generatedPropertyValues = {
    "normal",
    "italic",
    "oblique"
+  ]
+ },
+ "font-synthesis": {
+  "values": [
+   "none"
   ]
  },
  "font-synthesis-small-caps": {
@@ -7328,6 +7513,11 @@ export const generatedPropertyValues = {
    "content-inline-size"
   ]
  },
+ "grid": {
+  "values": [
+   "none"
+  ]
+ },
  "grid-auto-columns": {
   "values": [
    "auto",
@@ -7381,6 +7571,11 @@ export const generatedPropertyValues = {
  "grid-row-start": {
   "values": [
    "auto"
+  ]
+ },
+ "grid-template": {
+  "values": [
+   "none"
   ]
  },
  "grid-template-areas": {
@@ -7643,6 +7838,22 @@ export const generatedPropertyValues = {
  "marker-start": {
   "values": [
    "none"
+  ]
+ },
+ "mask": {
+  "values": [
+   "none",
+   "left",
+   "right",
+   "center",
+   "top",
+   "bottom",
+   "subtract",
+   "intersect",
+   "exclude",
+   "alpha",
+   "luminance",
+   "match-source"
   ]
  },
  "mask-composite": {
@@ -8724,6 +8935,11 @@ export const generatedPropertyValues = {
    "text-top",
    "text-bottom",
    "middle"
+  ]
+ },
+ "view-timeline": {
+  "values": [
+   "none"
   ]
  },
  "view-timeline-inset": {

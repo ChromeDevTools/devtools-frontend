@@ -29,7 +29,7 @@ def _keep_only_required_keys(entry):
     for key in list(entry.keys()):
         if key not in ("name", "longhands", "svg", "inherited", "keywords",
                        "is_property", "is_descriptor", "runtime_flag",
-                       "runtime_flag_status"):
+                       "runtime_flag_status", "devtools_keywords"):
             del entry[key]
     return entry
 
@@ -70,7 +70,16 @@ def properties_from_file(file_name):
             entry["runtime_flag_status"] = status
         properties.append(_keep_only_required_keys(entry))
         property_names[entry["name"]] = entry
-        if "keywords" in entry:
+        # If devtools_keywords is specified, it is given precedence over keywords.
+        # This is because there might be values in keywords which are actually not
+        # supported in the browser yet (e.g. due to experimental flags).
+        if "devtools_keywords" in entry:
+            devtools_keywords = [
+                keyword for keyword in entry["devtools_keywords"]
+                if not keyword.startswith("-internal-")
+            ]
+            property_values[entry["name"]] = {"values": devtools_keywords}
+        elif "keywords" in entry:
             keywords = [
                 keyword for keyword in entry["keywords"]
                 if not keyword.startswith("-internal-")

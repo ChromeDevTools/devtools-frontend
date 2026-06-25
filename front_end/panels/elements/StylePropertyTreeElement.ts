@@ -316,8 +316,8 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
   }
 }
 
-function handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource,
-                                     stylesContainer: StylesContainer): void {
+export function handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource,
+                                            stylesContainer: StylesContainer): void {
   Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
   Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
 
@@ -448,16 +448,17 @@ export class VariableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     this.#matchedStyles = matchedStyles;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Node[] {
+    const varSwatch = document.createElement('span');
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
-      return Renderer.render(ASTUtils.children(match.node), context).nodes;
+      render(html`${match.text}`, varSwatch);
+      return [varSwatch];
     }
 
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const isDefined = variableValue !== undefined;
     const onLinkActivate = (name: string): void =>
         handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-    const varSwatch = document.createElement('span');
 
     const tooltipContents =
         this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);

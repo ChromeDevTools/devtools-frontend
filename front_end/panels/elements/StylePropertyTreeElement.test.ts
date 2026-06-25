@@ -35,9 +35,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   let mockVariableMap: Record<string, string|SDK.CSSProperty.CSSProperty>;
   let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
-  let fakeComputeCSSVariable: SinonStub<
-      [style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, variableName: string],
-      SDK.CSSMatchedStyles.CSSVariableValue|null>;
+  let fakeComputeCSSVariable: SinonStub<[
+    style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, variableName: string,
+    containerNode?: SDK.DOMModel.DOMNode|undefined
+  ],
+                                        SDK.CSSMatchedStyles.CSSVariableValue|null>;
   let cssModel: SDK.CSSModel.CSSModel;
 
   const environmentVariables = {a: 'A'};
@@ -67,7 +69,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       getEnvironmentVariablesCallback: () => ({environmentVariables})
     });
     sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
-    fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name) => {
+    fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name, _node) => {
       const value = mockVariableMap[name];
       if (!value) {
         return null;

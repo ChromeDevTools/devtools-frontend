@@ -52,8 +52,10 @@ devtools_ui_module("components") {
     "../../../ui/components/input:bundle",
     "../../../ui/components/node_text:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/components/tooltips:bundle",
     "../../../ui/kit:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/inline_editor:bundle",
     "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]

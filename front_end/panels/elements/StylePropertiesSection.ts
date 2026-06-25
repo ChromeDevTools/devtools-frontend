@@ -56,7 +56,12 @@ import * as PanelsCommon from '../common/common.js';
 import * as ElementsComponents from './components/components.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
-import {type Context, GhostStylePropertyTreeElement, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import {
+  type Context,
+  GhostStylePropertyTreeElement,
+  handleVarDefinitionActivate,
+  StylePropertyTreeElement,
+} from './StylePropertyTreeElement.js';
 import type {StylesContainer} from './StylesContainer.js';
 
 const UIStrings = {
@@ -898,7 +903,7 @@ export class StylePropertiesSection {
           ancestorRuleElement = this.createMediaElement(rule.media[mediaIndex++]);
           break;
         case Protocol.CSS.CSSRuleType.ContainerRule:
-          ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++]);
+          ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++], rule.style);
           break;
         case Protocol.CSS.CSSRuleType.ScopeRule:
           ancestorRuleElement = this.createScopeElement(rule.scopes[scopeIndex++]);
@@ -1019,7 +1024,8 @@ export class StylePropertiesSection {
     return mediaQueryElement;
   }
 
-  protected createContainerQueryElement(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery):
+  protected createContainerQueryElement(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery,
+                                        style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration):
       ElementsComponents.CSSQuery.CSSQuery|undefined {
     let onQueryTextClick;
     if (containerQuery.styleSheetId) {
@@ -1032,10 +1038,22 @@ export class StylePropertiesSection {
       queryName: containerQuery.textIsConditionText ? undefined : containerQuery.name,
       queryText: containerQuery.text,
       onQueryTextClick,
+      onLinkActivate: async(resolvedVariable: string|SDK.CSSMatchedStyles.CSSValueSource): Promise<void> => {
+        handleVarDefinitionActivate(resolvedVariable, this.stylesContainer);
+      },
+      getPopoverContents: (variableName: string, variableValue: string|null):
+                              ElementsComponents.CSSVariableValueView.CSSVariableValueView => {
+        return this.stylesContainer.getVariablePopoverContents(this.matchedStyles, variableName, variableValue);
+      },
       jslogContext: 'container-query',
     };
-    if (!/^style\(.*\)/.test(containerQuery.text)) {
-      // We only add container element for non-style queries.
+    if (style) {
+      const tooltipPrefix = `container-${this.sectionTooltipIdPrefix}-${this.nestingLevel}`;
+      void containerQuery.getContainerForNode(this.matchedStyles.node().id).then(container => {
+        if (container) {
+          containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
+        }
+      });
       void this.addContainerForContainerQuery(containerQuery);
     }
     return containerQueryElement;

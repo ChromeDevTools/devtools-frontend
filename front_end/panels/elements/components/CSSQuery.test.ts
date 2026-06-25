@@ -5,7 +5,9 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as SDK from '../../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -77,5 +79,36 @@ describe('CSSQuery', () => {
         '@container --bar {',
         'text content of query element should match query text',
     );
+  });
+
+  it('renders links in style queries correctly', () => {
+    const component = new ElementsComponents.CSSQuery.CSSQuery();
+    renderElementIntoDOM(component);
+
+    const clickListener = sinon.spy();
+    component.data = {
+      queryPrefix: '@container',
+      queryText: 'style(--foo: bar)',
+      onLinkActivate: clickListener,
+      jslogContext: 'foo',
+    };
+
+    const matchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+    const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    const variableValue = {
+      value: 'bar',
+      declaration: {} as unknown as SDK.CSSMatchedStyles.CSSValueSource,
+    };
+    matchedStyles.computeCSSVariable.callsFake((_style, name) => name === '--foo' ? variableValue : null);
+
+    component.parseStyleQueries(matchedStyles, style, node, '');
+
+    const swatch = component.shadowRoot!.querySelector('devtools-link-swatch') as InlineEditor.LinkSwatch.LinkSwatch;
+    assert.exists(swatch);
+    assert.strictEqual(swatch.data.text, '--foo');
+
+    swatch.data.onLinkActivate('--foo');
+    sinon.assert.calledOnce(clickListener);
   });
 });

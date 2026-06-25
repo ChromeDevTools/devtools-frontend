@@ -911,6 +911,13 @@ const MIN_OBJECT_COUNT_PER_INTERFACE = 2;
 // long tail of unpopular interfaces that don't help analysis.
 const MIN_OBJECT_PROPORTION_PER_INTERFACE = 1000;
 
+// Values in the nodeNativeContextAttribution array:
+// >= 0: The ordinal of the specific native context that owns the object.
+// -1 (NO_NATIVE_CONTEXT): The object is not reachable from any native context.
+// -2 (SHARED_NATIVE_CONTEXT): The object is reachable from multiple native contexts.
+const NO_NATIVE_CONTEXT = -1;
+const SHARED_NATIVE_CONTEXT = -2;
+
 export abstract class HeapSnapshot {
   nodes: Platform.TypedArrayUtilities.BigUint32Array;
   containmentEdges: Platform.TypedArrayUtilities.BigUint32Array;
@@ -986,6 +993,9 @@ export abstract class HeapSnapshot {
   #nodeDistancesForRetainersView: Int32Array|undefined;
   #edgeNamesThatAreNotWeakMaps: Platform.TypedArrayUtilities.BitVector;
   detachednessAndClassIndexArray?: Uint32Array;
+  nodeNativeContextAttribution!: Int32Array;
+  #nativeContextSizes!: HeapSnapshotModel.HeapSnapshotModel.NativeContextSizes;
+  #nativeContextOrdinals!: number[];
   #interfaceNames = new Map<string, number>();
   #interfaceDefinitions?: InterfaceDefinition[];
 
@@ -1083,8 +1093,11 @@ export abstract class HeapSnapshot {
     this.buildSamples();
     this.#progress.updateStatus('Building locations…');
     this.buildLocationMap();
+    this.#progress.updateStatus('Calculating native context attribution…');
+    this.calculateNativeContextAttribution();
     this.#progress.updateStatus('Calculating retained sizes…');
     await this.installResultsFromSecondThread(resultsFromSecondWorker);
+    this.calculateNativeContextSizes();
     this.#progress.updateStatus('Calculating statistics…');
     this.calculateStatistics();
 
@@ -1589,6 +1602,25 @@ export abstract class HeapSnapshot {
 
         return (node: HeapSnapshotNode) => !getBit(node);
       }
+      case 'sharedNativeContext':
+        return (node: HeapSnapshotNode) => {
+          const ordinal = node.nodeIndex / this.nodeFieldCount;
+          return this.nodeNativeContextAttribution[ordinal] === SHARED_NATIVE_CONTEXT;
+        };
+      case 'noNativeContext':
+        return (node: HeapSnapshotNode) => {
+          const ordinal = node.nodeIndex / this.nodeFieldCount;
+          return this.nodeNativeContextAttribution[ordinal] === NO_NATIVE_CONTEXT;
+        };
+      default:
+        if (filterName.startsWith('nativeContext_')) {
+          const targetNodeIndex = Number(filterName.substring('nativeContext_'.length));
+          const targetOrdinal = targetNodeIndex / this.nodeFieldCount;
+          return (node: HeapSnapshotNode) => {
+            const ordinal = node.nodeIndex / this.nodeFieldCount;
+            return this.nodeNativeContextAttribution[ordinal] === targetOrdinal;
+          };
+        }
     }
     throw new Error('Invalid filter name');
   }
@@ -2336,6 +2368,255 @@ export abstract class HeapSnapshot {
       node.setClassIndex(getNodeClassIndex(node));
       node.nodeIndex = node.nextNodeIndex();
     }
+  }
+
+  private calculateNativeContextAttribution(): void {
+    // Map from node ordinal to its attributed native context.
+    // Value is either a native context ordinal (>= 0), NO_NATIVE_CONTEXT, or SHARED_NATIVE_CONTEXT.
+    const attribution = new Int32Array(this.nodeCount).fill(NO_NATIVE_CONTEXT);
+
+    // First, try to infer a fixed native context for each object directly (e.g., via its map or direct links).
+    // These direct attributions are considered "fixed" and will not be overwritten by the subsequent propagation phase.
+    const isFixed = Platform.TypedArrayUtilities.createBitVector(this.nodeCount);
+    const edgeTargets = this.buildInitEdgeTargets();
+    this.#nativeContextOrdinals = [];
+    for (let ordinal = 0; ordinal < this.nodeCount; ordinal++) {
+      if (this.isNativeContext(ordinal)) {
+        this.#nativeContextOrdinals.push(ordinal);
+        attribution[ordinal] = ordinal;
+        isFixed.setBit(ordinal);
+      } else {
+        const owner = this.inferFixedNativeContextForOrdinal(ordinal, edgeTargets);
+        if (owner >= 0) {
+          attribution[ordinal] = owner;
+          isFixed.setBit(ordinal);
+        }
+      }
+    }
+
+    // Propagate the fixed native context attributions to the rest of the nodes based on reachability.
+    this.propagateNativeContextAttribution(attribution, isFixed);
+    this.nodeNativeContextAttribution = attribution;
+  }
+
+  private calculateNativeContextSizes(): void {
+    const nodeFieldCount = this.nodeFieldCount;
+    const node = this.createNode(0);
+    const nativeContexts: HeapSnapshotModel.HeapSnapshotModel.NativeContextSize[] = [];
+    const ordinalToInfo = new Map<number, HeapSnapshotModel.HeapSnapshotModel.NativeContextSize>();
+    for (const ordinal of this.#nativeContextOrdinals) {
+      node.nodeIndex = ordinal * nodeFieldCount;
+      const info = {
+        nodeId: node.id(),
+        nodeIndex: node.nodeIndex,
+        nodeName: node.name(),
+        attributedSize: 0,
+        retainedSize: node.retainedSize(),
+        selfSize: node.selfSize(),
+      };
+      nativeContexts.push(info);
+      ordinalToInfo.set(ordinal, info);
+    }
+
+    let sharedSize = 0;
+    let noAttributionSize = 0;
+    const selfSizeOffset = this.nodeSelfSizeOffset;
+    const nodes = this.nodes;
+
+    for (let i = 0; i < this.nodeCount; ++i) {
+      const ownerOrdinal = this.nodeNativeContextAttribution[i];
+      const selfSize = nodes.getValue(i * nodeFieldCount + selfSizeOffset);
+      if (ownerOrdinal === SHARED_NATIVE_CONTEXT) {
+        sharedSize += selfSize;
+      } else if (ownerOrdinal === NO_NATIVE_CONTEXT) {
+        noAttributionSize += selfSize;
+      } else {
+        console.assert(ownerOrdinal >= 0, 'ownerOrdinal should be >= 0');
+        const info = ordinalToInfo.get(ownerOrdinal);
+        console.assert(info !== undefined, 'info should exist');
+        if (info) {
+          info.attributedSize += selfSize;
+        }
+      }
+    }
+
+    this.#nativeContextSizes = {
+      nativeContexts,
+      sharedSize,
+      noAttributionSize,
+    };
+  }
+
+  // Precomputes and maps specific outgoing edge targets for every node in the heap.
+  // For each node ordinal, it stores the target ordinal of its:
+  // - 'native_context' edge (in the returned 'nativeContext' array)
+  // - 'map' edge (in the returned 'map' array)
+  // This allows fast O(1) lookups of these key edges during attribution.
+  private buildInitEdgeTargets(): {
+    nativeContext: Int32Array,
+    map: Int32Array,
+  } {
+    const {
+      nodeCount,
+      nodeFieldCount,
+      containmentEdges,
+      edgeFieldsCount,
+      edgeTypeOffset,
+      edgeNameOffset,
+      edgeToNodeOffset,
+      edgeInternalType,
+      firstEdgeIndexes,
+      strings,
+    } = this;
+
+    const nativeContext = new Int32Array(nodeCount).fill(-1);
+    const map = new Int32Array(nodeCount).fill(-1);
+
+    const nativeContextIdx = strings.indexOf('native_context');
+    const mapIdx = strings.indexOf('map');
+
+    for (let ordinal = 0; ordinal < nodeCount; ordinal++) {
+      const first = firstEdgeIndexes[ordinal];
+      const last = firstEdgeIndexes[ordinal + 1];
+      for (let edgeIndex = first; edgeIndex < last; edgeIndex += edgeFieldsCount) {
+        const edgeType = containmentEdges.getValue(edgeIndex + edgeTypeOffset);
+        if (edgeType !== edgeInternalType) {
+          continue;
+        }
+
+        const nameIdx = containmentEdges.getValue(edgeIndex + edgeNameOffset);
+        const childNodeIndex = containmentEdges.getValue(edgeIndex + edgeToNodeOffset);
+        const childOrdinal = childNodeIndex / nodeFieldCount;
+
+        if (nameIdx === nativeContextIdx && nativeContext[ordinal] === -1 && this.isNativeContext(childOrdinal)) {
+          nativeContext[ordinal] = childOrdinal;
+        } else if (nameIdx === mapIdx && map[ordinal] === -1) {
+          map[ordinal] = childOrdinal;
+        }
+      }
+    }
+
+    return {nativeContext, map};
+  }
+
+  // Infers the native context for a node by looking at its Map.
+  // In V8, objects point to their Map, and Maps point to their Meta-Map (the Map of the Map).
+  // To save space, individual Maps do not have a direct link to the NativeContext.
+  // Instead, the Meta-Map (which is unique per NativeContext) has a 'native_context' edge.
+  // Thus, we can find the NativeContext of an object by traversing:
+  // Object -> Map -> Meta-Map -> NativeContext.
+  private inferFixedNativeContextForOrdinal(ordinal: number, edgeTargets: {
+    nativeContext: Int32Array,
+    map: Int32Array,
+  }): number {
+    const mapOrdinal = edgeTargets.map[ordinal];
+    if (mapOrdinal >= 0) {
+      const metaMapOrdinal = edgeTargets.map[mapOrdinal];
+      if (metaMapOrdinal >= 0) {
+        const mapNativeContextOrdinal = edgeTargets.nativeContext[metaMapOrdinal];
+        if (mapNativeContextOrdinal >= 0) {
+          return mapNativeContextOrdinal;
+        }
+      }
+    }
+
+    return NO_NATIVE_CONTEXT;
+  }
+
+  private mergeNativeContextOwner(current: number, incoming: number): number {
+    console.assert(incoming !== NO_NATIVE_CONTEXT, 'Incoming owner should not be NO_NATIVE_CONTEXT');
+    if (current === SHARED_NATIVE_CONTEXT || incoming === SHARED_NATIVE_CONTEXT) {
+      return SHARED_NATIVE_CONTEXT;
+    }
+    if (current === NO_NATIVE_CONTEXT) {
+      return incoming;
+    }
+    if (current === incoming) {
+      return current;
+    }
+    return SHARED_NATIVE_CONTEXT;
+  }
+
+  private propagateNativeContextAttribution(attribution: Int32Array,
+                                            isFixed: Platform.TypedArrayUtilities.BitVector): void {
+    const {
+      nodeCount,
+      containmentEdges,
+      edgeFieldsCount,
+      edgeTypeOffset,
+      edgeToNodeOffset,
+      edgeShortcutType,
+      edgeWeakType,
+      nodeFieldCount,
+      firstEdgeIndexes,
+    } = this;
+
+    // Initialize the queue with all nodes that have a fixed (directly inferred) native context.
+    // Propagation will start from these "anchors".
+    const queue: number[] = [];
+    for (let ordinal = 0; ordinal < nodeCount; ordinal++) {
+      if (isFixed.getBit(ordinal)) {
+        queue.push(ordinal);
+      }
+    }
+
+    let queueIndex = 0;
+    while (queueIndex < queue.length) {
+      const ordinal = queue[queueIndex];
+      queueIndex++;
+
+      const current = attribution[ordinal];
+      console.assert(current !== NO_NATIVE_CONTEXT, 'Queue should not contain unattributed nodes');
+
+      const first = firstEdgeIndexes[ordinal];
+      const last = firstEdgeIndexes[ordinal + 1];
+      for (let edgeIndex = first; edgeIndex < last; edgeIndex += edgeFieldsCount) {
+        const edgeType = containmentEdges.getValue(edgeIndex + edgeTypeOffset);
+        if (edgeType === edgeShortcutType || edgeType === edgeWeakType) {
+          continue;
+        }
+        const childNodeIndex = containmentEdges.getValue(edgeIndex + edgeToNodeOffset);
+        const childOrdinal = childNodeIndex / nodeFieldCount;
+
+        // Skip if it is a self-loop, or if the child node has a "fixed" attribution.
+        // Fixed attributions are directly inferred and cannot be overwritten by propagation.
+        if (childOrdinal === ordinal || isFixed.getBit(childOrdinal)) {
+          continue;
+        }
+
+        // Merge the parent's native context owner into the child's owner.
+        // Nodes can be visited multiple times: first, a node might be attributed to a specific
+        // native context. If it is later reached by a different native context, the merge will
+        // transition its owner to SHARED_NATIVE_CONTEXT.
+        // If the owner changes (e.g., transitioning to SHARED), we queue the child again
+        // to propagate the updated owner to its retainees.
+        const merged = this.mergeNativeContextOwner(attribution[childOrdinal], current);
+        if (merged !== attribution[childOrdinal]) {
+          attribution[childOrdinal] = merged;
+          queue.push(childOrdinal);
+        }
+      }
+    }
+  }
+
+  getNativeContextSizes(): HeapSnapshotModel.HeapSnapshotModel.NativeContextSizes {
+    return this.#nativeContextSizes;
+  }
+
+  nodeNativeContext(nodeIndex: number): number {
+    const ordinal = nodeIndex / this.nodeFieldCount;
+    const nativeContextOrdinal = this.nodeNativeContextAttribution[ordinal];
+    if (nativeContextOrdinal < 0) {
+      return nativeContextOrdinal;
+    }
+    return nativeContextOrdinal * this.nodeFieldCount;
+  }
+
+  private isNativeContext(nodeOrdinal: number): boolean {
+    const nameIdx = this.nodes.getValue(nodeOrdinal * this.nodeFieldCount + this.nodeNameOffset);
+    const name = this.strings[nameIdx];
+    return name === 'system / NativeContext' || name.startsWith('system / NativeContext / ') ||
+        name === 'Detached system / NativeContext' || name.startsWith('Detached system / NativeContext / ');
   }
 
   interfaceDefinitions(): string {

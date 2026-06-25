@@ -267,6 +267,10 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callMethodPromise('interfaceDefinitions');
   }
 
+  getNativeContextSizes(): Promise<HeapSnapshotModel.NativeContextSizes> {
+    return this.callMethodPromise('getNativeContextSizes');
+  }
+
   aggregatesWithFilter(filter: HeapSnapshotModel.NodeFilter):
       Promise<Record<string, HeapSnapshotModel.AggregatedInfo>> {
     return this.callMethodPromise('aggregatesWithFilter', filter);

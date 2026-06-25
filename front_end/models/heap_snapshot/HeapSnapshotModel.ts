@@ -317,3 +317,18 @@ export interface DuplicateStringGroup {
   }>;
   truncated?: boolean;
 }
+
+export interface NativeContextSize {
+  nodeId: number;
+  nodeIndex: number;
+  nodeName: string;
+  attributedSize: number;
+  retainedSize: number;
+  selfSize: number;
+}
+
+export interface NativeContextSizes {
+  nativeContexts: NativeContextSize[];
+  sharedSize: number;
+  noAttributionSize: number;
+}

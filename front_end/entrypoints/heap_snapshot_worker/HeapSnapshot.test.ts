@@ -1225,4 +1225,329 @@ describe('HeapSnapshot', () => {
       assert.strictEqual(duplicates[0].totalSelfSize, 20);
     });
   });
+
+  it('nativeContextAttribution', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    // Native Context 1
+    const nc1 = new HeapNode('system / NativeContext / url1', 10, 'object', 10);
+    root.linkNode(nc1, 'element');
+
+    // Native Context 2
+    const nc2 = new HeapNode('system / NativeContext / url2', 20, 'object', 20);
+    root.linkNode(nc2, 'element');
+
+    // Node owned by nc1
+    const nodeA = new HeapNode('NodeA', 100, 'object', 100);
+    nc1.linkNode(nodeA, 'property', 'a');
+
+    // Node owned by nc2
+    const nodeB = new HeapNode('NodeB', 200, 'object', 200);
+    nc2.linkNode(nodeB, 'property', 'b');
+
+    // Node shared by nc1 and nc2
+    const nodeShared = new HeapNode('NodeShared', 300, 'object', 300);
+    nc1.linkNode(nodeShared, 'property', 'shared');
+    nc2.linkNode(nodeShared, 'property', 'shared');
+
+    // Unattributed node (only reachable from root, not via native contexts)
+    const nodeUnattributed = new HeapNode('NodeUnattributed', 400, 'object', 400);
+    root.linkNode(nodeUnattributed, 'element');
+
+    // Context chain attribution
+    const context = new HeapNode('system / Context', 50, 'object', 50);
+    context.setBuilder(builder);
+    context.linkNode(nc1, 'internal', 'previous');
+    nc1.linkNode(context, 'internal', 'context');
+
+    const nodeViaContext = new HeapNode('NodeViaContext', 500, 'object', 500);
+    context.linkNode(nodeViaContext, 'property', 'var');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const nc1Index = snapshot.nodeIndexForId(10)!;
+    const nc2Index = snapshot.nodeIndexForId(20)!;
+    const nodeAIndex = snapshot.nodeIndexForId(100)!;
+    const nodeBIndex = snapshot.nodeIndexForId(200)!;
+    const nodeSharedIndex = snapshot.nodeIndexForId(300)!;
+    const nodeUnattributedIndex = snapshot.nodeIndexForId(400)!;
+    const contextIndex = snapshot.nodeIndexForId(50)!;
+    const nodeViaContextIndex = snapshot.nodeIndexForId(500)!;
+
+    // NC1 should own itself
+    assert.strictEqual(snapshot.nodeNativeContext(nc1Index), nc1Index, 'NC1 owns itself');
+    // NC2 should own itself
+    assert.strictEqual(snapshot.nodeNativeContext(nc2Index), nc2Index, 'NC2 owns itself');
+
+    // NodeA should be owned by NC1
+    assert.strictEqual(snapshot.nodeNativeContext(nodeAIndex), nc1Index, 'NodeA owned by NC1');
+    // NodeB should be owned by NC2
+    assert.strictEqual(snapshot.nodeNativeContext(nodeBIndex), nc2Index, 'NodeB owned by NC2');
+
+    // NodeShared should be SHARED (-2)
+    assert.strictEqual(snapshot.nodeNativeContext(nodeSharedIndex), -2, 'NodeShared is shared');
+
+    // NodeUnattributed should be UNATTRIBUTED (-1)
+    assert.strictEqual(snapshot.nodeNativeContext(nodeUnattributedIndex), -1, 'NodeUnattributed is unattributed');
+
+    // Context should be owned by NC1 (via fixed owner/context owner map)
+    assert.strictEqual(snapshot.nodeNativeContext(contextIndex), nc1Index, 'Context owned by NC1');
+
+    // NodeViaContext should be owned by NC1 (propagated from Context)
+    assert.strictEqual(snapshot.nodeNativeContext(nodeViaContextIndex), nc1Index, 'NodeViaContext owned by NC1');
+  });
+
+  it('nativeContextAttributionViaMetaMap', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    // Native Context
+    const nc = new HeapNode('system / NativeContext', 10, 'object', 10);
+    root.linkNode(nc, 'element');
+
+    // MapMap (meta-map)
+    const mm = new HeapNode('MapMap', 20, 'object', 20);
+    root.linkNode(mm, 'element');
+    mm.linkNode(nc, 'internal', 'native_context');
+
+    // Map
+    const m = new HeapNode('Map', 30, 'object', 30);
+    root.linkNode(m, 'element');
+    m.linkNode(mm, 'internal', 'map');
+
+    // JSObject
+    const o = new HeapNode('JSObject', 100, 'object', 100);
+    root.linkNode(o, 'element');
+    o.linkNode(m, 'internal', 'map');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    const ncIndex = snapshot.nodeIndexForId(10)!;
+    const oIndex = snapshot.nodeIndexForId(100)!;
+
+    // O should be owned by NC because O -> M -> MM -> NC
+    assert.strictEqual(snapshot.nodeNativeContext(oIndex), ncIndex, 'JSObject owned by NC via meta-map');
+  });
+
+  it('attributes objects to detached native contexts via meta-map links', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const nc = new HeapNode('Detached system / NativeContext', 10, 'object', 10);
+    root.linkNode(nc, 'element');
+
+    const mm = new HeapNode('MapMap', 20, 'object', 20);
+    root.linkNode(mm, 'element');
+    mm.linkNode(nc, 'internal', 'native_context');
+
+    const m = new HeapNode('Map', 30, 'object', 30);
+    root.linkNode(m, 'element');
+    m.linkNode(mm, 'internal', 'map');
+
+    const o = new HeapNode('JSObject', 100, 'object', 100);
+    root.linkNode(o, 'element');
+    o.linkNode(m, 'internal', 'map');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+    const ncIndex = snapshot.nodeIndexForId(10)!;
+    const oIndex = snapshot.nodeIndexForId(100)!;
+
+    assert.strictEqual(snapshot.nodeNativeContext(oIndex), ncIndex, 'JSObject owned by detached NC via meta-map');
+
+    const info = snapshot.getNativeContextSizes();
+    assert.deepEqual(info.nativeContexts, [
+      {
+        nodeId: 10,
+        nodeIndex: ncIndex,
+        nodeName: 'Detached system / NativeContext',
+        attributedSize: 160,
+        retainedSize: 10,
+        selfSize: 10,
+      },
+    ]);
+  });
+
+  it('does not attribute objects to non-native contexts via meta-map links', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    const nc = new HeapNode('system / NativeContext', 10, 'object', 10);
+    root.linkNode(nc, 'element');
+
+    const notNativeContext = new HeapNode('NotNativeContext', 20, 'object', 20);
+    root.linkNode(notNativeContext, 'element');
+
+    const mm = new HeapNode('MapMap', 30, 'object', 30);
+    root.linkNode(mm, 'element');
+    mm.linkNode(notNativeContext, 'internal', 'native_context');
+
+    const m = new HeapNode('Map', 40, 'object', 40);
+    root.linkNode(m, 'element');
+    m.linkNode(mm, 'internal', 'map');
+
+    const o = new HeapNode('JSObject', 100, 'object', 100);
+    root.linkNode(o, 'element');
+    o.linkNode(m, 'internal', 'map');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+    const ncIndex = snapshot.nodeIndexForId(10)!;
+    const oIndex = snapshot.nodeIndexForId(100)!;
+
+    assert.strictEqual(snapshot.nodeNativeContext(oIndex), -1, 'JSObject should not be owned by a non-native context');
+
+    const info = snapshot.getNativeContextSizes();
+    assert.deepEqual(info.nativeContexts, [
+      {
+        nodeId: 10,
+        nodeIndex: ncIndex,
+        nodeName: 'system / NativeContext',
+        attributedSize: 10,
+        retainedSize: 10,
+        selfSize: 10,
+      },
+    ]);
+    assert.isAtLeast(info.noAttributionSize, 100, 'Unattributed size should include JSObject');
+  });
+
+  it('can calculate native contexts and their sizes', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    // Native Context 1
+    const nc1 = new HeapNode('system / NativeContext', 10, 'object', 10);
+    root.linkNode(nc1, 'element');
+
+    // Native Context 2 (starts with prefix)
+    const nc2 = new HeapNode('system / NativeContext / https://example.com', 20, 'object', 20);
+    root.linkNode(nc2, 'element');
+
+    // Meta-map pointing to NC1
+    const mm1 = new HeapNode('MapMap1', 30, 'object', 30);
+    root.linkNode(mm1, 'element');
+    mm1.linkNode(nc1, 'internal', 'native_context');
+
+    // Map pointing to MM1
+    const m1 = new HeapNode('Map1', 40, 'object', 40);
+    root.linkNode(m1, 'element');
+    m1.linkNode(mm1, 'internal', 'map');
+
+    // JSObject pointing to Map1 (attributed to NC1)
+    const o1 = new HeapNode('JSObject1', 100, 'object', 100);
+    root.linkNode(o1, 'element');
+    o1.linkNode(m1, 'internal', 'map');
+
+    // Unattributed node (size 300, not linked to any map or native context)
+    const unattributedNode = new HeapNode('UnattributedNode', 300, 'object', 300);
+    root.linkNode(unattributedNode, 'element');
+
+    // Shared object (size 400, linked from both NC1 and NC2)
+    const sharedObj = new HeapNode('SharedObject', 400, 'object', 400);
+    nc1.linkNode(sharedObj, 'element');
+    nc2.linkNode(sharedObj, 'element');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+
+    // 1. Verify getNativeContextSizes returns native contexts with correct sizes
+    const info = snapshot.getNativeContextSizes();
+    assert.lengthOf(info.nativeContexts, 2, 'Should find 2 native contexts');
+
+    const nc1Index = snapshot.nodeIndexForId(10)!;
+    const nc2Index = snapshot.nodeIndexForId(20)!;
+    assert.deepEqual(info.nativeContexts, [
+      {
+        nodeId: 10,
+        nodeIndex: nc1Index,
+        nodeName: 'system / NativeContext',
+        attributedSize: 180,
+        retainedSize: 10,
+        selfSize: 10,
+      },
+      {
+        nodeId: 20,
+        nodeIndex: nc2Index,
+        nodeName: 'system / NativeContext / https://example.com',
+        attributedSize: 20,
+        retainedSize: 20,
+        selfSize: 20,
+      },
+    ]);
+
+    assert.strictEqual(info.sharedSize, 400, 'Shared size should be 400');
+    assert.strictEqual(info.noAttributionSize, 300, 'No attribution size should be 300');
+  });
+
+  it('can filter objects by native context', async () => {
+    const builder = new HeapSnapshotBuilder();
+    const root = builder.rootNode;
+
+    // Native Context 1
+    const nc1 = new HeapNode('system / NativeContext', 10, 'object', 10);
+    root.linkNode(nc1, 'element');
+
+    // Native Context 2 (starts with prefix)
+    const nc2 = new HeapNode('system / NativeContext / https://example.com', 20, 'object', 20);
+    root.linkNode(nc2, 'element');
+
+    // Meta-map pointing to NC1
+    const mm1 = new HeapNode('MapMap1', 30, 'object', 30);
+    root.linkNode(mm1, 'element');
+    mm1.linkNode(nc1, 'internal', 'native_context');
+
+    // Map pointing to MM1
+    const m1 = new HeapNode('Map1', 40, 'object', 40);
+    root.linkNode(m1, 'element');
+    m1.linkNode(mm1, 'internal', 'map');
+
+    // JSObject pointing to Map1 (attributed to NC1)
+    const o1 = new HeapNode('JSObject1', 100, 'object', 100);
+    root.linkNode(o1, 'element');
+    o1.linkNode(m1, 'internal', 'map');
+
+    // Unattributed node (size 300, not linked to any map or native context)
+    const unattributedNode = new HeapNode('UnattributedNode', 300, 'object', 300);
+    root.linkNode(unattributedNode, 'element');
+
+    // Shared object (size 400, linked from both NC1 and NC2)
+    const sharedObj = new HeapNode('SharedObject', 400, 'object', 400);
+    nc1.linkNode(sharedObj, 'element');
+    nc2.linkNode(sharedObj, 'element');
+
+    const snapshot = await builder.createJSHeapSnapshot();
+    const nc1Index = snapshot.nodeIndexForId(10)!;
+
+    // Filter for NC1
+    const filter1 = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
+    filter1.filterName = `nativeContext_${nc1Index}`;
+    const aggregates1 = snapshot.aggregatesWithFilter(filter1);
+    const indexes1 = new Set(Object.values(aggregates1).flatMap(a => a.idxs));
+
+    assert.isTrue(indexes1.has(snapshot.nodeIndexForId(10)!), 'NC1 should be in NC1 aggregates');
+    assert.isTrue(indexes1.has(snapshot.nodeIndexForId(100)!), 'JSObject1 should be in NC1 aggregates');
+    assert.isTrue(indexes1.has(snapshot.nodeIndexForId(40)!), 'Map1 should be in NC1 aggregates (propagated)');
+    assert.isFalse(indexes1.has(snapshot.nodeIndexForId(20)!), 'NC2 should NOT be in NC1 aggregates');
+    assert.isFalse(indexes1.has(snapshot.rootNodeIndex), 'Root should NOT be in NC1 aggregates');
+
+    // Filter for noNativeContext
+    const filterNoNc = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
+    filterNoNc.filterName = 'noNativeContext';
+    const aggregatesNoNc = snapshot.aggregatesWithFilter(filterNoNc);
+    const indexesNoNc = new Set(Object.values(aggregatesNoNc).flatMap(a => a.idxs));
+
+    assert.isTrue(indexesNoNc.has(snapshot.nodeIndexForId(300)!),
+                  'UnattributedNode should be in noNativeContext aggregates');
+    assert.isFalse(indexesNoNc.has(snapshot.nodeIndexForId(100)!),
+                   'JSObject1 should NOT be in noNativeContext aggregates');
+
+    // Filter for sharedNativeContext
+    const filterShared = new HeapSnapshotModel.HeapSnapshotModel.NodeFilter();
+    filterShared.filterName = 'sharedNativeContext';
+    const aggregatesShared = snapshot.aggregatesWithFilter(filterShared);
+    const indexesShared = new Set(Object.values(aggregatesShared).flatMap(a => a.idxs));
+
+    assert.isTrue(indexesShared.has(snapshot.nodeIndexForId(400)!),
+                  'SharedObject should be in sharedNativeContext aggregates');
+    assert.isFalse(indexesShared.has(snapshot.nodeIndexForId(100)!),
+                   'JSObject1 should NOT be in sharedNativeContext aggregates');
+  });
 });

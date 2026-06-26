@@ -103,6 +103,15 @@ export class EmulatedDevice {
             parseIntValue(json, 'bottom'));
       }
 
+      function parseCutoutShape(json: any): CutoutShape {
+        const shape = parseValue(json, 'shape', 'string');
+        if (shape !== CutoutShape.PILL && shape !== CutoutShape.NOTCH && shape !== CutoutShape.CIRCLE &&
+            shape !== CutoutShape.RECTANGLE) {
+          throw new Error('Emulated device mode has unsupported cutout shape: ' + shape);
+        }
+        return shape;
+      }
+
       function parseRGBA(json: any): SDK.OverlayModel.HighlightColor {
         const result = {} as SDK.OverlayModel.HighlightColor;
         result.r = parseIntValue(json, 'r');
@@ -257,6 +266,40 @@ export class EmulatedDevice {
           throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
         }
         mode.image = (parseValue(modes[i], 'image', 'string', null) as string);
+        const safeAreaInsets = parseValue(modes[i], 'safe-area-insets', 'object', null);
+        if (safeAreaInsets) {
+          mode.safeAreaInsets = parseInsets(safeAreaInsets);
+        }
+        const cutout = parseValue(modes[i], 'cutout', 'object', null);
+        if (cutout) {
+          const shape = parseCutoutShape(cutout);
+          const baseCutout = {
+            x: parseIntValue(cutout, 'x'),
+            y: parseIntValue(cutout, 'y'),
+            width: parseIntValue(cutout, 'width'),
+            height: parseIntValue(cutout, 'height'),
+          };
+          if (shape === CutoutShape.PILL) {
+            mode.cutout = {shape, ...baseCutout, borderRadius: parseIntValue(cutout, 'border-radius')};
+          } else if (shape === CutoutShape.NOTCH) {
+            mode.cutout = {
+              shape,
+              ...baseCutout,
+              upperRadius: parseIntValue(cutout, 'upper-radius'),
+              lowerRadius: parseIntValue(cutout, 'lower-radius'),
+            };
+          } else if (shape === CutoutShape.CIRCLE) {
+            mode.cutout = {
+              shape,
+              ...baseCutout,
+              cx: parseIntValue(cutout, 'cx'),
+              cy: parseIntValue(cutout, 'cy'),
+              radius: parseIntValue(cutout, 'radius'),
+            };
+          } else {
+            mode.cutout = {shape, ...baseCutout};
+          }
+        }
         result.modes.push(mode);
       }
       result.#showByDefault = (parseValue(json, 'show-by-default', 'boolean', undefined) as boolean);
@@ -359,6 +402,35 @@ export class EmulatedDevice {
         },
         image: this.modes[i].image || undefined,
       };
+      const safeAreaInsets = this.modes[i].safeAreaInsets;
+      if (safeAreaInsets) {
+        mode['safe-area-insets'] = {
+          left: safeAreaInsets.left,
+          top: safeAreaInsets.top,
+          right: safeAreaInsets.right,
+          bottom: safeAreaInsets.bottom,
+        };
+      }
+      const cutout = this.modes[i].cutout;
+      if (cutout) {
+        mode.cutout = {
+          shape: cutout.shape,
+          x: cutout.x,
+          y: cutout.y,
+          width: cutout.width,
+          height: cutout.height,
+        };
+        if (cutout.shape === CutoutShape.PILL) {
+          mode.cutout['border-radius'] = cutout.borderRadius;
+        } else if (cutout.shape === CutoutShape.NOTCH) {
+          mode.cutout['upper-radius'] = cutout.upperRadius;
+          mode.cutout['lower-radius'] = cutout.lowerRadius;
+        } else if (cutout.shape === CutoutShape.CIRCLE) {
+          mode.cutout.cx = cutout.cx;
+          mode.cutout.cy = cutout.cy;
+          mode.cutout.radius = cutout.radius;
+        }
+      }
       json['modes'].push(mode);
     }
 
@@ -637,7 +709,24 @@ export interface Mode {
   orientation: string;
   insets: Insets;
   image: string|null;
+  safeAreaInsets?: Insets;
+  cutout?: Cutout;
 }
+export const enum CutoutShape {
+  PILL = 'pill',
+  NOTCH = 'notch',
+  CIRCLE = 'circle',
+  RECTANGLE = 'rectangle',
+}
+export interface BaseCutout {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+export type Cutout = BaseCutout&({shape: CutoutShape.RECTANGLE}|{shape: CutoutShape.PILL, borderRadius: number}|
+                                 {shape: CutoutShape.NOTCH, upperRadius: number, lowerRadius: number}|
+                                 {shape: CutoutShape.CIRCLE, cx: number, cy: number, radius: number});
 export interface Orientation {
   width: number;
   height: number;
@@ -654,6 +743,25 @@ export interface JSONMode {
     right: number,
     top: number,
     bottom: number,
+  };
+  'safe-area-insets'?: {
+    left: number,
+    right: number,
+    top: number,
+    bottom: number,
+  };
+  cutout?: {
+    shape: string,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    'border-radius'?: number,
+    'upper-radius'?: number,
+    'lower-radius'?: number,
+    cx?: number,
+    cy?: number,
+    radius?: number,
   };
 }
 

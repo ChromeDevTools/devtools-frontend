@@ -29,16 +29,18 @@ template("generate_css") {
       string_join(",", sources),
     ]
 
-    outputs = []
+    _css_outputs = []
     foreach(_input, sources) {
-      outputs += [ "$target_gen_dir/$_input.js" ]
+      _css_outputs += [ "$target_gen_dir/$_input.js" ]
     }
+
+    outputs = [ "$target_gen_dir/$target_name-tsconfig.json" ] + _css_outputs
 
     data = outputs
 
     if (!devtools_bundle) {
       metadata = {
-        grd_files = outputs
+        grd_files = _css_outputs
       }
     }
   }

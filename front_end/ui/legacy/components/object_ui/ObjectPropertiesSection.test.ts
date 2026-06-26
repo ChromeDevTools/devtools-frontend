@@ -318,6 +318,23 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     sinon.assert.calledWith(copyText, 'bar');
   });
 
+  it('expands and collapses when the underlying node is expanded and collapsed', async () => {
+    const property = new SDK.RemoteObject.RemoteObjectProperty(
+        'name', SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'}), true, true);
+    const node = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
+
+    const treeElement = new ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement(node);
+
+    node.expanded = true;
+    assert.isTrue(treeElement.expanded);
+
+    node.expanded = false;
+    assert.isFalse(treeElement.expanded);
+  });
+
   it('does not edit readonly values', async () => {
     const property = new SDK.RemoteObject.RemoteObjectProperty(
         'name', SDK.RemoteObject.RemoteObject.fromLocalObject(42), true, true);
@@ -425,6 +442,64 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
     expandButton.click();
     await assertScreenshot('object_ui/expanded_strings.png');
     assert.strictEqual(value.textContent, `"${longString}"`);
+  });
+});
+
+describeWithEnvironment('ArrayGroupingTreeElement', () => {
+  let target: SDK.Target.Target;
+  let runtimeModel: SDK.RuntimeModel.RuntimeModel;
+
+  beforeEach(() => {
+    target = createTarget();
+    runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel)!;
+  });
+
+  it('expands and collapses when the underlying node is expanded and collapsed', async () => {
+    const rootObj = createDeepRemoteObjectMock(runtimeModel, {});
+
+    // Inject array behavior into rootObj to get arrayRanges
+    sinon.stub(rootObj, 'subtype').get(() => Protocol.Runtime.RemoteObjectSubtype.Array);
+    sinon.stub(rootObj, 'arrayLength').returns(1000);
+    sinon.stub(rootObj, 'callFunctionJSON').resolves({ranges: [[0, 10, 11]]});
+
+    const root = new ObjectUI.ObjectPropertiesSection.ObjectTree(rootObj, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+    });
+
+    const rootChildren = await root.populateChildrenIfNeeded();
+    const node = rootChildren.arrayRanges?.[0]!;
+    const treeElement = new ObjectUI.ObjectPropertiesSection.ArrayGroupingTreeElement(node);
+
+    node.expanded = true;
+    assert.isTrue(treeElement.expanded);
+
+    node.expanded = false;
+    assert.isFalse(treeElement.expanded);
+  });
+});
+
+describeWithEnvironment('ObjectTreeNode', () => {
+  it('prevents recursive expansion for [[Prototype]]', () => {
+    const property = new SDK.RemoteObject.RemoteObjectProperty(
+        '[[Prototype]]', SDK.RemoteObject.RemoteObject.fromLocalObject({}), true, true);
+    const node = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
+
+    assert.isFalse(node.canExpandRecursively);
+  });
+
+  it('allows recursive expansion for regular properties', () => {
+    const property =
+        new SDK.RemoteObject.RemoteObjectProperty('foo', SDK.RemoteObject.RemoteObject.fromLocalObject({}), true, true);
+    const node = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
+      readOnly: false,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
+    });
+
+    assert.isTrue(node.canExpandRecursively);
   });
 });
 

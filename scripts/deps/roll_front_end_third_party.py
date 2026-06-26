@@ -11,7 +11,7 @@ import re
 import subprocess
 import json
 import shutil
-from packaging.version import parse as parse_version
+from pkg_resources import parse_version
 import argparse
 
 DEVTOOLS_PATH = os.path.dirname(
@@ -21,7 +21,7 @@ DEVTOOLS_PATH = os.path.dirname(
 def get_start_and_end_endex_for_gn_var(content, variable):
     startIndex = None
     endIndex = None
-    startPattern = re.compile(r'\s*' + variable + r'\s*=\s*\[\s*')
+    startPattern = re.compile(r'\s*' + variable + '\s*=\s*\[\s*')
     endPattern = re.compile(r'\s*\]\s*')
     for i, line in enumerate(content):
         if startPattern.match(line):

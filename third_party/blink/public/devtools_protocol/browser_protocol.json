@@ -7279,6 +7279,7 @@
                         "file-selector-button",
                         "details-content",
                         "picker",
+                        "select-listbox",
                         "permission-icon",
                         "overscroll-area-parent",
                         "skeleton"
@@ -29302,7 +29303,7 @@
                         },
                         {
                             "name": "focus",
-                            "description": "If specified, the option is used to determine if the new target should\nbe focused or not. By default, the focus behavior depends on the\nvalue of the background field. For example, background=false and focus=false\nwill result in the target tab being opened but the browser window remain\nunchanged (if it was in the background, it will remain in the background)\nand background=false with focus=undefined will result in the window being focused.\nUsing background: true and focus: true is not supported and will result in an error.",
+                            "description": "If specified, determines whether the new target should be focused.\nBy default, the focus behavior depends on the `background` parameter:\n- If `background` is false (default) and `focus` is omitted, the new target is focused and the browser window is brought to the foreground.\n- If `background` is false and `focus` is false, the target is opened but the browser window's focus remains unchanged (e.g., if the window was in the background, it stays there).\n- If `background` is true, setting `focus` to true is not supported and will result in an error.",
                             "experimental": true,
                             "optional": true,
                             "type": "boolean"

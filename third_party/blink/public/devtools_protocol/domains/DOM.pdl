@@ -76,6 +76,7 @@ domain DOM
       file-selector-button
       details-content
       picker
+      select-listbox
       permission-icon
       overscroll-area-parent
       skeleton

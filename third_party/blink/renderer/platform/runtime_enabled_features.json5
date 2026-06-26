@@ -634,6 +634,11 @@
       name: "AnimationWorklet",
     },
     {
+      // crbug.com/445727139
+      name: "AnnotationSpaceOnStart",
+      status: "experimental",
+    },
+    {
       name: "AnonymousIframe",
       status: "stable",
     },
@@ -780,6 +785,13 @@
       origin_trial_allows_third_party: true,
       status: "experimental",
       public: true,
+    },
+    {
+      // Pins a generic font-family on the autofill preview pseudo-elements so
+      // an author @font-face cannot oracle the previewed text.
+      // crbug.com/517710554.
+      name: "AutofillPreviewGenericFontFamily",
+      status: "stable",
     },
     {
       name: "AutomationControlled",
@@ -1273,10 +1285,6 @@
       name: "CompositeClipPathAnimation",
       status: "experimental",
       public: true,
-    },
-    {
-      name: "CompositedAnimationsCancelledAsynchronously",
-      status: "stable"
     },
     {
       name: "CompositedSelectionUpdate",
@@ -2185,6 +2193,12 @@
     {
       name: "DeclarativeCSSModulesStyleTag",
       status: "experimental",
+    },
+    {
+      name: "DeclarativePerformanceObserver",
+      origin_trial_feature_name: "DeclarativePerformanceObserver",
+      status: "experimental",
+      base_feature: "none",
     },
     {
       name: "DeclarativeSkeletons",
@@ -3600,6 +3614,15 @@
       // iOS.
       status: {"Android": "test", "iOS": "test", "default": "stable"},
     },
+    // Enables the `alpha` and `colorspace` content/IDL attributes on
+    // <input type=color>, allowing alpha and Display P3 color values.
+    // https://html.spec.whatwg.org/multipage/input.html#dom-input-colorspace
+    // https://html.spec.whatwg.org/multipage/input.html#dom-input-alpha
+    // https://chromestatus.com/feature/5736024861966336
+    {
+      name: "InputTypeColorEnhancements",
+      status: "experimental",
+    },
     // Insert a blockquote before a outer block after creating the blockquote
     // when indenting a node whose outer block is a blockquote. See
     // https://crbug.com/327665597
@@ -3663,6 +3686,10 @@
       name: "JavaScriptCompileHintsPerFunctionMagicRuntime",
       status: "experimental",
       origin_trial_feature_name: "JavaScriptCompileHintsPerFunctionMagic",
+    },
+    {
+      name: "JavaScriptImportText",
+      status: "experimental",
     },
     {
       name: "JavaScriptSourcePhaseImports",
@@ -3887,6 +3914,11 @@
     {
       name: "MaskDeserializationTimeForCrossOriginMessages",
       status: "stable",
+    },
+    {
+      // Enables MathMLAnchorElement
+      name: "MathMLAnchorElement",
+      status: "test",
     },
     {
       // Enables mirroring for stretchy and large MathML operators when
@@ -7207,7 +7239,7 @@
     // https://crbug.com/40704952
     {
       name: "WheelEventMomentum",
-      status: "experimental",
+      status: "stable",
     },
     // If enabled, window.default[Ss]tatus will be supported. This is disabled
     // by default, and is here to allow this behavior to be re-enabled via Finch
@@ -7251,6 +7283,10 @@
     {
       name: "XMLSerializerConsistentDefaultNsDeclMatching",
       status: "test",
+    },
+    {
+      name: "XMLViewerForIframes",
+      status: "experimental",
     },
     {
       // Support XPath evaluation within Shadow DOM.

@@ -4804,6 +4804,7 @@ export namespace DOM {
     FileSelectorButton = 'file-selector-button',
     DetailsContent = 'details-content',
     Picker = 'picker',
+    SelectListbox = 'select-listbox',
     PermissionIcon = 'permission-icon',
     OverscrollAreaParent = 'overscroll-area-parent',
     Skeleton = 'skeleton',
@@ -19491,13 +19492,11 @@ export namespace Target {
      */
     hidden?: boolean;
     /**
-     * If specified, the option is used to determine if the new target should
-     * be focused or not. By default, the focus behavior depends on the
-     * value of the background field. For example, background=false and focus=false
-     * will result in the target tab being opened but the browser window remain
-     * unchanged (if it was in the background, it will remain in the background)
-     * and background=false with focus=undefined will result in the window being focused.
-     * Using background: true and focus: true is not supported and will result in an error.
+     * If specified, determines whether the new target should be focused.
+     * By default, the focus behavior depends on the `background` parameter:
+     * - If `background` is false (default) and `focus` is omitted, the new target is focused and the browser window is brought to the foreground.
+     * - If `background` is false and `focus` is false, the target is opened but the browser window's focus remains unchanged (e.g., if the window was in the background, it stays there).
+     * - If `background` is true, setting `focus` to true is not supported and will result in an error.
      */
     focus?: boolean;
   }

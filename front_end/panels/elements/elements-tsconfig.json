@@ -41,6 +41,7 @@
     "../../../../../../front_end/panels/elements/AdoptedStyleSheetTreeElement.ts",
     "../../../../../../front_end/panels/elements/CSSRuleValidator.ts",
     "../../../../../../front_end/panels/elements/CSSRuleValidatorHelper.ts",
+    "../../../../../../front_end/panels/elements/CSSSpecificityBreakdown.ts",
     "../../../../../../front_end/panels/elements/CSSValueTraceView.ts",
     "../../../../../../front_end/panels/elements/ClassesPaneWidget.ts",
     "../../../../../../front_end/panels/elements/ColorSwatchPopoverIcon.ts",

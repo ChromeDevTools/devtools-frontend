@@ -86,10 +86,16 @@
       "path": "../../../ui/components/render_coordinator/bundle-tsconfig.json"
     },
     {
+      "path": "../../../ui/components/tooltips/bundle-tsconfig.json"
+    },
+    {
       "path": "../../../ui/kit/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/legacy/bundle-tsconfig.json"
+    },
+    {
+      "path": "../../../ui/legacy/components/inline_editor/bundle-tsconfig.json"
     },
     {
       "path": "../../../ui/lit/bundle-tsconfig.json"

@@ -22,6 +22,7 @@ import './StylesAiCodeCompletionProvider.js';
 import './StylePropertyTreeElement.js';
 import './ComputedStyleWidget.js';
 import './CSSRuleValidator.js';
+import './CSSSpecificityBreakdown.js';
 import './ElementsPanel.js';
 import './ClassesPaneWidget.js';
 import './ElementStatePaneWidget.js';
@@ -34,6 +35,7 @@ import * as ClassesPaneWidget from './ClassesPaneWidget.js';
 import * as ColorSwatchPopoverIcon from './ColorSwatchPopoverIcon.js';
 import * as ComputedStyleWidget from './ComputedStyleWidget.js';
 import * as CSSRuleValidator from './CSSRuleValidator.js';
+import * as CSSSpecificityBreakdown from './CSSSpecificityBreakdown.js';
 import * as CSSValueTraceView from './CSSValueTraceView.js';
 import * as DOMPath from './DOMPath.js';
 import * as ElementsPanel from './ElementsPanel.js';
@@ -62,5 +64,5 @@ import * as StylesAiCodeCompletionProvider from './StylesAiCodeCompletionProvide
 import * as StylesSidebarPane from './StylesSidebarPane.js';
 import * as TopLayerContainer from './TopLayerContainer.js';
 import * as WebCustomData from './WebCustomData.js';
-export { AccessibilityTreeUtils, AccessibilityTreeView, AdoptedStyleSheetTreeElement, ClassesPaneWidget, ColorSwatchPopoverIcon, ComputedStyleWidget, CSSRuleValidator, CSSValueTraceView, DOMPath, ElementsPanel, ElementsSidebarPane, ElementStatePaneWidget, ElementsTreeElement, ElementsTreeOutline, ElementsTreeOutlineRenderer, EventListenersWidget, ImagePreviewPopover, InspectElementModeController, LayersWidget, LayoutPane, MarkerDecorator, MetricsSidebarPane, PlatformFontsWidget, PropertiesWidget, PropertyRenderer, StandaloneStylesContainer, StyleEditorWidget, StylePropertiesSection, StylePropertyHighlighter, StylePropertyTreeElement, StylePropertyUtils, StylesAiCodeCompletionProvider, StylesSidebarPane, TopLayerContainer, WebCustomData, };
+export { AccessibilityTreeUtils, AccessibilityTreeView, AdoptedStyleSheetTreeElement, ClassesPaneWidget, ColorSwatchPopoverIcon, ComputedStyleWidget, CSSRuleValidator, CSSSpecificityBreakdown, CSSValueTraceView, DOMPath, ElementsPanel, ElementsSidebarPane, ElementStatePaneWidget, ElementsTreeElement, ElementsTreeOutline, ElementsTreeOutlineRenderer, EventListenersWidget, ImagePreviewPopover, InspectElementModeController, LayersWidget, LayoutPane, MarkerDecorator, MetricsSidebarPane, PlatformFontsWidget, PropertiesWidget, PropertyRenderer, StandaloneStylesContainer, StyleEditorWidget, StylePropertiesSection, StylePropertyHighlighter, StylePropertyTreeElement, StylePropertyUtils, StylesAiCodeCompletionProvider, StylesSidebarPane, TopLayerContainer, WebCustomData, };
 //# sourceMappingURL=elements.prebundle.js.map

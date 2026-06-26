@@ -30,7 +30,7 @@ __export(ElementsPanel_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
-import * as i18n32 from "./../../core/i18n/i18n.js";
+import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
@@ -726,7 +726,7 @@ __export(ComputedStyleWidget_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common7 from "./../../core/common/common.js";
-import * as i18n16 from "./../../core/i18n/i18n.js";
+import * as i18n18 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as TreeOutline6 from "./../../ui/components/tree_outline/tree_outline.js";
@@ -1050,7 +1050,7 @@ __export(PropertyRenderer_exports, {
   rendererBase: () => rendererBase
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as i18n14 from "./../../core/i18n/i18n.js";
+import * as i18n16 from "./../../core/i18n/i18n.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
@@ -1074,7 +1074,7 @@ __export(StylesSidebarPane_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common5 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
-import * as i18n12 from "./../../core/i18n/i18n.js";
+import * as i18n14 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
@@ -1345,7 +1345,8 @@ __export(StylePropertyTreeElement_exports, {
   StylePropertyTreeElement: () => StylePropertyTreeElement,
   VariableNameRenderer: () => VariableNameRenderer,
   VariableRenderer: () => VariableRenderer,
-  getPropertyRenderers: () => getPropertyRenderers
+  getPropertyRenderers: () => getPropertyRenderers,
+  handleVarDefinitionActivate: () => handleVarDefinitionActivate
 });
 import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
@@ -2981,14 +2982,15 @@ var VariableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
     this.#stylesContainer = stylesContainer;
     this.#matchedStyles = matchedStyles;
   }
-  render(match, context) {
+  render(match, _context) {
+    const varSwatch = document.createElement("span");
     if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule) {
-      return Renderer.render(ASTUtils.children(match.node), context).nodes;
+      render3(html6`${match.text}`, varSwatch);
+      return [varSwatch];
     }
     const { declaration, value: variableValue } = match.resolveVariable() ?? {};
     const isDefined = variableValue !== void 0;
     const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-    const varSwatch = document.createElement("span");
     const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
@@ -5842,7 +5844,7 @@ __export(StylePropertiesSection_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as Badges2 from "./../../models/badges/badges.js";
@@ -5856,7 +5858,92 @@ import { html as html7, nothing as nothing2, render as render4 } from "./../../u
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
 import * as ElementsComponents2 from "./components/components.js";
+
+// gen/front_end/panels/elements/CSSSpecificityBreakdown.js
+var CSSSpecificityBreakdown_exports = {};
+__export(CSSSpecificityBreakdown_exports, {
+  formatSpecificitySummary: () => formatSpecificitySummary,
+  formatSpecificityTooltip: () => formatSpecificityTooltip,
+  getSpecificityBreakdown: () => getSpecificityBreakdown,
+  getSpecificityBreakdownLines: () => getSpecificityBreakdownLines
+});
+import * as i18n9 from "./../../core/i18n/i18n.js";
 var UIStrings5 = {
+  /**
+   * @description Summary line in a tooltip explaining a CSS selector specificity.
+   * @example {1} PH1
+   * @example {2} PH2
+   * @example {3} PH3
+   */
+  specificity: "Specificity: ({PH1},{PH2},{PH3})",
+  /**
+   * @description Tooltip line listing the selector parts contributing to the ID-like specificity bucket.
+   * @example {#main} PH1
+   */
+  idLikeSpecificity: "(a) ID-like: {PH1}",
+  /**
+   * @description Tooltip line listing the selector parts contributing to the class-like specificity bucket.
+   * @example {.active, :hover} PH1
+   */
+  classLikeSpecificity: "(b) Class-like: {PH1}",
+  /**
+   * @description Tooltip line listing the selector parts contributing to the type-like specificity bucket.
+   * @example {div} PH1
+   */
+  typeLikeSpecificity: "(c) Type-like: {PH1}"
+};
+var str_5 = i18n9.i18n.registerUIStrings("panels/elements/CSSSpecificityBreakdown.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+function formatContribution(text, contribution) {
+  return contribution > 1 ? `${text} x${contribution}` : text;
+}
+function formatComponentList(components) {
+  const formatter = new Intl.ListFormat(i18n9.DevToolsLocale.DevToolsLocale.instance().locale, {
+    style: "long",
+    type: "conjunction"
+  });
+  return formatter.format(components);
+}
+function getSpecificityBreakdown(specificity) {
+  const ids = [];
+  const classes = [];
+  const types = [];
+  for (const component of specificity.components ?? []) {
+    if (component.a > 0) {
+      ids.push(formatContribution(component.text, component.a));
+    }
+    if (component.b > 0) {
+      classes.push(formatContribution(component.text, component.b));
+    }
+    if (component.c > 0) {
+      types.push(formatContribution(component.text, component.c));
+    }
+  }
+  return { ids, classes, types };
+}
+function formatSpecificitySummary(specificity) {
+  return i18nString5(UIStrings5.specificity, { PH1: specificity.a, PH2: specificity.b, PH3: specificity.c });
+}
+function getSpecificityBreakdownLines(specificity) {
+  const breakdown = getSpecificityBreakdown(specificity);
+  const lines = [];
+  if (breakdown.ids.length > 0) {
+    lines.push(i18nString5(UIStrings5.idLikeSpecificity, { PH1: formatComponentList(breakdown.ids) }));
+  }
+  if (breakdown.classes.length > 0) {
+    lines.push(i18nString5(UIStrings5.classLikeSpecificity, { PH1: formatComponentList(breakdown.classes) }));
+  }
+  if (breakdown.types.length > 0) {
+    lines.push(i18nString5(UIStrings5.typeLikeSpecificity, { PH1: formatComponentList(breakdown.types) }));
+  }
+  return lines;
+}
+function formatSpecificityTooltip(specificity) {
+  return [formatSpecificitySummary(specificity), ...getSpecificityBreakdownLines(specificity)].join("\n");
+}
+
+// gen/front_end/panels/elements/StylePropertiesSection.js
+var UIStrings6 = {
   /**
    * @description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
    */
@@ -5908,11 +5995,6 @@ var UIStrings5 = {
    */
   cssSelector: "`CSS` selector",
   /**
-   * @description Text displayed in tooltip that shows specificity information.
-   * @example {(0,0,1)} PH1
-   */
-  specificity: "Specificity: {PH1}",
-  /**
    * @description Accessibility label for the button that expands a collapsed CSS rule in the Styles pane.
    */
   expandCollapsedRule: "Expand collapsed rule",
@@ -5921,8 +6003,8 @@ var UIStrings5 = {
    */
   collapseExpandedRule: "Collapse expanded rule"
 };
-var str_5 = i18n9.i18n.registerUIStrings("panels/elements/StylePropertiesSection.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("panels/elements/StylePropertiesSection.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var { widget: widget2 } = UI9.Widget;
 var STYLE_TAG = "<style>";
 var DEFAULT_MAX_PROPERTIES = 50;
@@ -6032,7 +6114,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     });
     selectorContainer.appendChild(this.#collapseIcon);
     this.selectorElement = document.createElement("span");
-    UI9.ARIAUtils.setLabel(this.selectorElement, i18nString5(UIStrings5.cssSelector));
+    UI9.ARIAUtils.setLabel(this.selectorElement, i18nString6(UIStrings6.cssSelector));
     this.selectorElement.classList.add("selector");
     this.selectorElement.textContent = headerText;
     selectorContainer.appendChild(this.selectorElement);
@@ -6049,7 +6131,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       this.titleElement.classList.add("hidden");
     }
     if (rule) {
-      const newRuleButton = new UI9.Toolbar.ToolbarButton(i18nString5(UIStrings5.insertStyleRuleBelow), "plus", void 0, "elements.new-style-rule");
+      const newRuleButton = new UI9.Toolbar.ToolbarButton(i18nString6(UIStrings6.insertStyleRuleBelow), "plus", void 0, "elements.new-style-rule");
       newRuleButton.addEventListener("Click", this.onNewRuleClick, this);
       newRuleButton.setSize(
         "MICRO"
@@ -6164,7 +6246,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       if (location2) {
         return html7`${location2}`;
       }
-      const label = header.isConstructedByNew() ? i18nString5(UIStrings5.constructedStylesheet) : STYLE_TAG;
+      const label = header.isConstructedByNew() ? i18nString6(UIStrings6.constructedStylesheet) : STYLE_TAG;
       const node2 = linkifyNode(label);
       if (node2) {
         return node2;
@@ -6176,13 +6258,13 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return html7`${location}`;
     }
     if (rule.isUserAgent()) {
-      return html7`${i18nString5(UIStrings5.userAgentStylesheet)}`;
+      return html7`${i18nString6(UIStrings6.userAgentStylesheet)}`;
     }
     if (rule.isInjected()) {
-      return html7`${i18nString5(UIStrings5.injectedStylesheet)}`;
+      return html7`${i18nString6(UIStrings6.injectedStylesheet)}`;
     }
     if (rule.isViaInspector()) {
-      return html7`${i18nString5(UIStrings5.viaInspector)}`;
+      return html7`${i18nString6(UIStrings6.viaInspector)}`;
     }
     const node = linkifyNode(STYLE_TAG);
     if (node) {
@@ -6322,7 +6404,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     const node = this.matchedStyles.nodeForStyle(this.styleInternal);
     if (this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Inline) {
-      return this.matchedStyles.isInherited(this.styleInternal) ? i18nString5(UIStrings5.styleAttribute) : "element.style";
+      return this.matchedStyles.isInherited(this.styleInternal) ? i18nString6(UIStrings6.styleAttribute) : "element.style";
     }
     if (this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Transition) {
       return "transitions style";
@@ -6331,7 +6413,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return this.styleInternal.animationName() ? `${this.styleInternal.animationName()} animation` : "animation style";
     }
     if (node && this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Attributes) {
-      return i18nString5(UIStrings5.sattributesStyle, { PH1: node.nodeNameInCorrectCase() });
+      return i18nString6(UIStrings6.sattributesStyle, { PH1: node.nodeNameInCorrectCase() });
     }
     if (this.styleInternal.parentRule instanceof SDK7.CSSRule.CSSStyleRule) {
       return this.styleInternal.parentRule.selectorText();
@@ -6532,7 +6614,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
           ancestorRuleElement = this.createMediaElement(rule.media[mediaIndex++]);
           break;
         case "ContainerRule":
-          ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++]);
+          ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++], rule.style);
           break;
         case "ScopeRule":
           ancestorRuleElement = this.createScopeElement(rule.scopes[scopeIndex++]);
@@ -6640,7 +6722,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     };
     return mediaQueryElement;
   }
-  createContainerQueryElement(containerQuery) {
+  createContainerQueryElement(containerQuery, style) {
     let onQueryTextClick;
     if (containerQuery.styleSheetId) {
       onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);
@@ -6651,9 +6733,21 @@ var StylePropertiesSection = class _StylePropertiesSection {
       queryName: containerQuery.textIsConditionText ? void 0 : containerQuery.name,
       queryText: containerQuery.text,
       onQueryTextClick,
+      onLinkActivate: async (resolvedVariable) => {
+        handleVarDefinitionActivate(resolvedVariable, this.stylesContainer);
+      },
+      getPopoverContents: (variableName, variableValue) => {
+        return this.stylesContainer.getVariablePopoverContents(this.matchedStyles, variableName, variableValue);
+      },
       jslogContext: "container-query"
     };
-    if (!/^style\(.*\)/.test(containerQuery.text)) {
+    if (style) {
+      const tooltipPrefix = `container-${this.sectionTooltipIdPrefix}-${this.nestingLevel}`;
+      void containerQuery.getContainerForNode(this.matchedStyles.node().id).then((container) => {
+        if (container) {
+          containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
+        }
+      });
       void this.addContainerForContainerQuery(containerQuery);
     }
     return containerQueryElement;
@@ -6872,7 +6966,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     if (count < properties.length) {
       this.showAllButton.classList.remove("hidden");
-      this.showAllButton.textContent = i18nString5(UIStrings5.showAllPropertiesSMore, { PH1: properties.length - count });
+      this.showAllButton.textContent = i18nString6(UIStrings6.showAllPropertiesSMore, { PH1: properties.length - count });
     } else {
       this.showAllButton.classList.add("hidden");
     }
@@ -6944,7 +7038,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (this.#collapseIcon) {
       this.#collapseIcon.name = collapsed ? "triangle-right" : "triangle-down";
       UI9.ARIAUtils.setExpanded(this.#collapseIcon, !collapsed);
-      UI9.ARIAUtils.setLabel(this.#collapseIcon, collapsed ? i18nString5(UIStrings5.expandCollapsedRule) : i18nString5(UIStrings5.collapseExpandedRule));
+      UI9.ARIAUtils.setLabel(this.#collapseIcon, collapsed ? i18nString6(UIStrings6.expandCollapsedRule) : i18nString6(UIStrings6.collapseExpandedRule));
     }
   }
   #toggleCollapsed() {
@@ -6995,14 +7089,25 @@ var StylePropertiesSection = class _StylePropertiesSection {
       elementToSelectorIndex.set(span, i);
       span.textContent = selectors[i].text;
       if (specificityTooltipId && selector.specificity) {
-        span.setAttribute("aria-describedby", specificityTooltipId);
-        const PH1 = `(${selector.specificity.a},${selector.specificity.b},${selector.specificity.c})`;
+        span.setAttribute("aria-details", specificityTooltipId);
         const tooltip = this.#specificityTooltips.appendChild(new Tooltips2.Tooltip.Tooltip({
           id: specificityTooltipId,
           anchor: span,
+          variant: "rich",
           jslogContext: "elements.css-selector-specificity"
         }));
-        tooltip.textContent = i18nString5(UIStrings5.specificity, { PH1 });
+        tooltip.hoverDelay = 500;
+        const specificitySummary = formatSpecificitySummary(selector.specificity);
+        const breakdownLines = getSpecificityBreakdownLines(selector.specificity);
+        const tooltipContent = breakdownLines.length > 0 ? html7`
+          <details class="selector-specificity-tooltip-disclosure">
+            <summary>${specificitySummary}</summary>
+            <ul class="selector-specificity-tooltip-list">
+              ${breakdownLines.map((line) => html7`<li>${line}</li>`)}
+            </ul>
+          </details>` : html7`
+          <div class="selector-specificity-tooltip-summary">${specificitySummary}</div>`;
+        render4(tooltipContent, tooltip, { host: this });
       }
     }
   }
@@ -7170,15 +7275,15 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return;
     }
     const contextMenu = new UI9.ContextMenu.ContextMenu(event);
-    contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copySelector), () => {
+    contextMenu.clipboardSection().appendItem(i18nString6(UIStrings6.copySelector), () => {
       const selectorText = this.headerText();
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(selectorText);
     }, { jslogContext: "copy-selector" });
-    contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyRule), () => {
+    contextMenu.clipboardSection().appendItem(i18nString6(UIStrings6.copyRule), () => {
       const ruleText = this.formatLeadingProperties().ruleText;
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
     }, { jslogContext: "copy-rule" });
-    contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyAllDeclarations), () => {
+    contextMenu.clipboardSection().appendItem(i18nString6(UIStrings6.copyAllDeclarations), () => {
       const allDeclarationText = this.formatLeadingProperties().allDeclarationText;
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     }, { jslogContext: "copy-all-declarations" });
@@ -7690,7 +7795,7 @@ __export(StylesAiCodeCompletionProvider_exports, {
 });
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
@@ -7742,7 +7847,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
   async #updateAiCodeCompletionState() {
     const aidaAvailability = await Host3.AidaClient.AidaClient.checkAccessPreconditions();
     const isAvailable = aidaAvailability === "available";
-    const devtoolsLocale = i18n11.DevToolsLocale.DevToolsLocale.instance().locale;
+    const devtoolsLocale = i18n13.DevToolsLocale.DevToolsLocale.instance().locale;
     const isEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale) && this.#aiCodeCompletionSetting.get();
     if (isAvailable && isEnabled) {
       this.#setupAiCodeCompletion();
@@ -8214,6 +8319,40 @@ var stylesSidebarPane_css_default = `/**
   margin-bottom: -4px;
 }
 
+.selector-specificity-tooltip-summary {
+  white-space: nowrap;
+}
+
+.selector-specificity-tooltip-disclosure {
+  > summary {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+}
+
+.selector-specificity-tooltip-list {
+  margin: var(--sys-size-3) 0 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+
+    &::before {
+      content: "";
+      flex: none;
+      width: var(--sys-size-3);
+      height: var(--sys-size-3);
+      border-radius: 50%;
+      background-color: currentcolor;
+      /* Aligns the bullet's center with the disclosure triangle above. */
+      margin-left: var(--sys-size-2);
+    }
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./stylesSidebarPane.css")} */`;
 
 // gen/front_end/panels/elements/WebCustomData.js
@@ -8257,7 +8396,7 @@ var WebCustomData = class _WebCustomData {
 };
 
 // gen/front_end/panels/elements/StylesSidebarPane.js
-var UIStrings6 = {
+var UIStrings7 = {
   /**
    * @description No matches element text content in Styles Sidebar Pane of the Elements panel
    */
@@ -8319,9 +8458,9 @@ var UIStrings6 = {
    */
   atRuleSection: "Other @rules"
 };
-var str_6 = i18n12.i18n.registerUIStrings("panels/elements/StylesSidebarPane.ts", UIStrings6);
-var i18nString6 = i18n12.i18n.getLocalizedString.bind(void 0, str_6);
-var lockedString = i18n12.i18n.lockedString;
+var str_7 = i18n14.i18n.registerUIStrings("panels/elements/StylesSidebarPane.ts", UIStrings7);
+var i18nString7 = i18n14.i18n.getLocalizedString.bind(void 0, str_7);
+var lockedString = i18n14.i18n.lockedString;
 var FILTER_IDLE_PERIOD = 500;
 var MIN_FOLDED_SECTIONS_COUNT = 5;
 var LAZY_RENDER_THRESHOLD = 200;
@@ -8403,7 +8542,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     Common5.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").addChangeListener(this.updateCollapsedSectionsSetting, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message hidden");
-    this.noMatchesElement.textContent = i18nString6(UIStrings6.noMatchingSelectorOrStyle);
+    this.noMatchesElement.textContent = i18nString7(UIStrings7.noMatchingSelectorOrStyle);
     this.sectionsContainer = new UI10.Widget.VBox();
     this.sectionsContainer.show(this.contentElement);
     UI10.ARIAUtils.markAsList(this.sectionsContainer.contentElement);
@@ -8489,10 +8628,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.jumpToSection(functionName, FUNCTION_SECTION_NAME, treeScopeDistance);
   }
   jumpToFontPaletteDefinition(paletteName) {
-    this.jumpToSection(`@font-palette-values ${paletteName}`, i18nString6(UIStrings6.atRuleSection));
+    this.jumpToSection(`@font-palette-values ${paletteName}`, i18nString7(UIStrings7.atRuleSection));
   }
   jumpToCounterStyleDefinition(counterStyleName) {
-    this.jumpToSection(`@counter-style ${counterStyleName}`, i18nString6(UIStrings6.atRuleSection));
+    this.jumpToSection(`@counter-style ${counterStyleName}`, i18nString7(UIStrings7.atRuleSection));
   }
   forceUpdate() {
     this.needsForceUpdate = true;
@@ -8624,7 +8763,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       if (this.lastFilterChange) {
         const stillTyping = Date.now() - this.lastFilterChange < FILTER_IDLE_PERIOD;
         if (!stillTyping) {
-          UI10.ARIAUtils.LiveAnnouncer.alert(this.visibleSections ? i18nString6(UIStrings6.visibleSelectors, { n: this.visibleSections }) : i18nString6(UIStrings6.noMatchingSelectorOrStyle));
+          UI10.ARIAUtils.LiveAnnouncer.alert(this.visibleSections ? i18nString7(UIStrings7.visibleSelectors, { n: this.visibleSections }) : i18nString7(UIStrings7.noMatchingSelectorOrStyle));
         }
       }
     }, FILTER_IDLE_PERIOD);
@@ -9421,7 +9560,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const prefersColorSchemeSetting = Common5.Settings.Settings.instance().moduleSetting("emulated-css-media-feature-prefers-color-scheme");
     const autoDarkModeSetting = Common5.Settings.Settings.instance().moduleSetting("emulate-auto-dark-mode");
     const decorateStatus = (condition, title) => `${condition ? "\u2713 " : ""}${title}`;
-    const button = new UI10.Toolbar.ToolbarToggle(i18nString6(UIStrings6.toggleRenderingEmulations), "brush", "brush-filled", void 0, false);
+    const button = new UI10.Toolbar.ToolbarToggle(i18nString7(UIStrings7.toggleRenderingEmulations), "brush", "brush-filled", void 0, false);
     button.element.setAttribute("jslog", `${VisualLogging5.dropDown("rendering-emulations").track({ click: true })}`);
     button.element.addEventListener("click", (event) => {
       const boundingRect = button.element.getBoundingClientRect();
@@ -9435,7 +9574,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const isAutoDarkEnabled = autoDarkModeSetting.get();
       const lightColorSchemeOption = decorateStatus(isLightColorScheme, "prefers-color-scheme: light");
       const darkColorSchemeOption = decorateStatus(isDarkColorScheme, "prefers-color-scheme: dark");
-      const autoDarkModeOption = decorateStatus(isAutoDarkEnabled, i18nString6(UIStrings6.automaticDarkMode));
+      const autoDarkModeOption = decorateStatus(isAutoDarkEnabled, i18nString7(UIStrings7.automaticDarkMode));
       menu.defaultSection().appendItem(lightColorSchemeOption, () => {
         autoDarkModeSetting.set(false);
         prefersColorSchemeSetting.set(isLightColorScheme ? "" : "light");
@@ -9551,7 +9690,7 @@ var SectionBlock = class _SectionBlock {
     separatorElement.setAttribute("jslog", `${VisualLogging5.sectionHeader("pseudotype")}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : "";
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
-    separatorElement.textContent = i18nString6(UIStrings6.pseudoSElement, { PH1: pseudoTypeString });
+    separatorElement.textContent = i18nString7(UIStrings7.pseudoSElement, { PH1: pseudoTypeString });
     return new _SectionBlock(separatorElement);
   }
   static async createInheritedPseudoTypeBlock(pseudoType, pseudoArgument, node) {
@@ -9560,7 +9699,7 @@ var SectionBlock = class _SectionBlock {
     separatorElement.setAttribute("jslog", `${VisualLogging5.sectionHeader("inherited-pseudotype")}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : "";
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
-    UI10.UIUtils.createTextChild(separatorElement, i18nString6(UIStrings6.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
+    UI10.UIUtils.createTextChild(separatorElement, i18nString7(UIStrings7.inheritedFromSPseudoOf, { PH1: pseudoTypeString }));
     const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, { preventKeyboardFocus: true });
     render5(link2, separatorElement);
     return new _SectionBlock(separatorElement);
@@ -9590,7 +9729,7 @@ var SectionBlock = class _SectionBlock {
     const separatorElement = document.createElement("div");
     const block = new _SectionBlock(separatorElement, true, expandedByDefault);
     separatorElement.className = "sidebar-separator";
-    separatorElement.appendChild(document.createTextNode(i18nString6(UIStrings6.atRuleSection)));
+    separatorElement.appendChild(document.createTextNode(i18nString7(UIStrings7.atRuleSection)));
     return block;
   }
   static createPositionTryBlock(positionTryName) {
@@ -9604,7 +9743,7 @@ var SectionBlock = class _SectionBlock {
     const separatorElement = document.createElement("div");
     separatorElement.className = "sidebar-separator";
     separatorElement.setAttribute("jslog", `${VisualLogging5.sectionHeader("inherited")}`);
-    UI10.UIUtils.createTextChild(separatorElement, i18nString6(UIStrings6.inheritedFroms));
+    UI10.UIUtils.createTextChild(separatorElement, i18nString7(UIStrings7.inheritedFroms));
     const link2 = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, {
       preventKeyboardFocus: true
     });
@@ -9615,7 +9754,7 @@ var SectionBlock = class _SectionBlock {
     const separatorElement = document.createElement("div");
     separatorElement.className = "sidebar-separator layer-separator";
     separatorElement.setAttribute("jslog", `${VisualLogging5.sectionHeader("layer")}`);
-    UI10.UIUtils.createTextChild(separatorElement.createChild("div"), i18nString6(UIStrings6.layer));
+    UI10.UIUtils.createTextChild(separatorElement.createChild("div"), i18nString7(UIStrings7.layer));
     const layers = rule.layers;
     if (!layers.length && rule.origin === "user-agent") {
       const name2 = rule.origin === "user-agent" ? "\xA0user\xA0agent\xA0stylesheet" : "\xA0implicit\xA0outer\xA0layer";
@@ -9624,7 +9763,7 @@ var SectionBlock = class _SectionBlock {
     }
     const layerLink = separatorElement.createChild("button");
     layerLink.className = "link";
-    layerLink.title = i18nString6(UIStrings6.clickToRevealLayer);
+    layerLink.title = i18nString7(UIStrings7.clickToRevealLayer);
     const name = layers.map((layer) => SDK8.CSSModel.CSSModel.readableLayerName(layer.text)).join(".");
     layerLink.textContent = name;
     layerLink.onclick = () => LayersWidget.instance().revealLayer(name);
@@ -9743,9 +9882,9 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         const optionOrAlt = Host4.Platform.isMac() ? "Option" : "Alt";
         if (cssValueText !== null) {
           if (cssValueText.match(/#[\da-f]{3,6}$/i)) {
-            this.setTitle(i18nString6(UIStrings6.incrementdecrementWithMousewheelOne, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
+            this.setTitle(i18nString7(UIStrings7.incrementdecrementWithMousewheelOne, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
           } else if (cssValueText.match(/\d+/)) {
-            this.setTitle(i18nString6(UIStrings6.incrementdecrementWithMousewheelHundred, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
+            this.setTitle(i18nString7(UIStrings7.incrementdecrementWithMousewheelHundred, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
           }
         }
       }
@@ -10189,7 +10328,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       this.aiCodeCompletionProvider?.onSuggestionAccepted(this.activeAiSuggestionInfo.citations, this.activeAiSuggestionInfo.rpcGlobalId, this.activeAiSuggestionInfo.sampleId);
     }
     if (suggestionText) {
-      UI10.ARIAUtils.LiveAnnouncer.status(i18nString6(UIStrings6.aiSuggestionAccepted, { PH1: suggestionText }));
+      UI10.ARIAUtils.LiveAnnouncer.status(i18nString7(UIStrings7.aiSuggestionAccepted, { PH1: suggestionText }));
     }
     this.setAiAutoCompletion(null);
   }
@@ -10266,7 +10405,7 @@ var ButtonProvider2 = class _ButtonProvider {
 };
 
 // gen/front_end/panels/elements/PropertyRenderer.js
-var UIStrings7 = {
+var UIStrings8 = {
   /**
    * @description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
    * @example {margin} PH1
@@ -10278,8 +10417,8 @@ var UIStrings7 = {
    */
   cssPropertyValue: "`CSS` property value: {PH1}"
 };
-var str_7 = i18n14.i18n.registerUIStrings("panels/elements/PropertyRenderer.ts", UIStrings7);
-var i18nString7 = i18n14.i18n.getLocalizedString.bind(void 0, str_7);
+var str_8 = i18n16.i18n.registerUIStrings("panels/elements/PropertyRenderer.ts", UIStrings8);
+var i18nString8 = i18n16.i18n.getLocalizedString.bind(void 0, str_8);
 function mergeWithSpacing(nodes, merge) {
   const result = [...nodes];
   if (SDK9.CSSPropertyParser.requiresSpace(nodes, merge)) {
@@ -10621,7 +10760,7 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
       change: true,
       keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
     })}`);
-    UI11.ARIAUtils.setLabel(nameElement, i18nString7(UIStrings7.cssPropertyName, { PH1: name }));
+    UI11.ARIAUtils.setLabel(nameElement, i18nString8(UIStrings8.cssPropertyName, { PH1: name }));
     nameElement.className = "webkit-css-property";
     nameElement.textContent = name;
     nameElement.normalize();
@@ -10642,7 +10781,7 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
       change: true,
       keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
     })}`);
-    UI11.ARIAUtils.setLabel(valueElement, i18nString7(UIStrings7.cssPropertyValue, { PH1: property.value }));
+    UI11.ARIAUtils.setLabel(valueElement, i18nString8(UIStrings8.cssPropertyValue, { PH1: property.value }));
     valueElement.className = "value";
     valueElement.tabIndex = -1;
     const { nodes, cssControls } = this.renderValueNodes(property, matchedResult, renderers, tracing, signal);
@@ -10720,7 +10859,7 @@ var BinOpRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.Bi
 // gen/front_end/panels/elements/ComputedStyleWidget.js
 var { html: html8, render: render6 } = Lit5;
 var { bindToSetting } = UI12.UIUtils;
-var UIStrings8 = {
+var UIStrings9 = {
   /**
    * @description Text for a checkbox setting that controls whether the user-supplied filter text
    * excludes all CSS propreties which are filtered out, or just greys them out. In Computed Style
@@ -10755,8 +10894,8 @@ var UIStrings8 = {
    */
   filterUpdateAriaText: `Filter applied: {PH1}. Total Results: {PH2}`
 };
-var str_8 = i18n16.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings8);
-var i18nString8 = i18n16.i18n.getLocalizedString.bind(void 0, str_8);
+var str_9 = i18n18.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings9);
+var i18nString9 = i18n18.i18n.getLocalizedString.bind(void 0, str_9);
 function matchProperty(name, value5) {
   return SDK10.CSSPropertyParser.matchDeclaration(name, value5, [
     new SDK10.CSSPropertyParserMatchers.ColorMatcher(),
@@ -10874,18 +11013,18 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             @regextoggle=${input.onRegexToggled}
           ></devtools-toolbar-input>
           <devtools-checkbox
-            title=${i18nString8(UIStrings8.showAll)}
+            title=${i18nString9(UIStrings9.showAll)}
             ${bindToSetting(input.showInheritedComputedStylePropertiesSetting)}
-          >${i18nString8(UIStrings8.showAll)}</devtools-checkbox>
+          >${i18nString9(UIStrings9.showAll)}</devtools-checkbox>
           <devtools-checkbox
-            title=${i18nString8(UIStrings8.group)}
+            title=${i18nString9(UIStrings9.group)}
             ${bindToSetting(input.groupComputedStylesSetting)}
-          >${i18nString8(UIStrings8.group)}</devtools-checkbox>
+          >${i18nString9(UIStrings9.group)}</devtools-checkbox>
         </devtools-toolbar>
       </div>
       ` : Lit5.nothing}
     ${input.computedStylesTree}
-    ${!input.hasMatches ? html8`<div class="gray-info-message">${i18nString8(UIStrings8.noMatchingProperty)}</div>` : ""}
+    ${!input.hasMatches ? html8`<div class="gray-info-message">${i18nString9(UIStrings9.noMatchingProperty)}</div>` : ""}
   `, target);
 };
 var ComputedStyleWidget = class extends UI12.Widget.VBox {
@@ -11215,12 +11354,12 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     if (rule) {
       const header = rule.header;
       if (header && !header.isAnonymousInlineStyleSheet()) {
-        contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.navigateToSelectorSource), () => {
+        contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.navigateToSelectorSource), () => {
           StylePropertiesSection.tryNavigateToRuleLocation(matchedStyles, rule);
         }, { jslogContext: "navigate-to-selector-source" });
       }
     }
-    contextMenu.defaultSection().appendItem(i18nString8(UIStrings8.navigateToStyle), () => Common7.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
+    contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.navigateToStyle), () => Common7.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
     void contextMenu.show();
   }
   computeNonInheritedProperties(matchedStyles) {
@@ -11255,7 +11394,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#filterText = event.detail;
     await this.filterComputedStyles(this.#buildFilterRegex(event.detail));
     if (event.detail && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
-      UI12.ARIAUtils.LiveAnnouncer.alert(i18nString8(UIStrings8.filterUpdateAriaText, { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }));
+      UI12.ARIAUtils.LiveAnnouncer.alert(i18nString9(UIStrings9.filterUpdateAriaText, { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }));
     }
   }
   async filterComputedStyles(regex) {
@@ -11419,7 +11558,7 @@ __export(ElementsTreeOutline_exports, {
   elementsTreeOutlineStyles: () => elementsTreeOutline_css_default
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as i18n26 from "./../../core/i18n/i18n.js";
+import * as i18n28 from "./../../core/i18n/i18n.js";
 import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Badges4 from "./../../models/badges/badges.js";
 import * as Elements from "./../../models/elements/elements.js";
@@ -11588,9 +11727,9 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
 };
 
 // gen/front_end/panels/elements/ElementIssueUtils.js
-import * as i18n18 from "./../../core/i18n/i18n.js";
+import * as i18n20 from "./../../core/i18n/i18n.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
-var UIStrings9 = {
+var UIStrings10 = {
   /**
    * @description Tooltip text shown in the Elements panel when an element has an error.
    */
@@ -11660,8 +11799,8 @@ var UIStrings9 = {
    */
   interactiveContentSummaryDescendant: "Interactive element inside of a <summary> element"
 };
-var str_9 = i18n18.i18n.registerUIStrings("panels/elements/ElementIssueUtils.ts", UIStrings9);
-var i18nString9 = i18n18.i18n.getLocalizedString.bind(void 0, str_9);
+var str_10 = i18n20.i18n.registerUIStrings("panels/elements/ElementIssueUtils.ts", UIStrings10);
+var i18nString10 = i18n20.i18n.getLocalizedString.bind(void 0, str_10);
 function getElementIssueDetails(issue) {
   if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
     const issueDetails = issue.details();
@@ -11675,7 +11814,7 @@ function getElementIssueDetails(issue) {
     const issueDetails = issue.details();
     if (issue.isInteractiveContentAttributesSelectDescendantIssue()) {
       return {
-        tooltip: i18nString9(UIStrings9.interactiveContentAttributesSelectDescendant),
+        tooltip: i18nString10(UIStrings10.interactiveContentAttributesSelectDescendant),
         nodeId: issueDetails.nodeId
       };
     }
@@ -11689,25 +11828,25 @@ function getElementIssueDetails(issue) {
 function getTooltipFromGenericIssue(errorType) {
   switch (errorType) {
     case "FormLabelForNameError":
-      return i18nString9(UIStrings9.formLabelForNameError);
+      return i18nString10(UIStrings10.formLabelForNameError);
     case "FormDuplicateIdForInputError":
-      return i18nString9(UIStrings9.formDuplicateIdForInputError);
+      return i18nString10(UIStrings10.formDuplicateIdForInputError);
     case "FormInputWithNoLabelError":
-      return i18nString9(UIStrings9.formInputWithNoLabelError);
+      return i18nString10(UIStrings10.formInputWithNoLabelError);
     case "FormAutocompleteAttributeEmptyError":
-      return i18nString9(UIStrings9.formAutocompleteAttributeEmptyError);
+      return i18nString10(UIStrings10.formAutocompleteAttributeEmptyError);
     case "FormEmptyIdAndNameAttributesForInputError":
-      return i18nString9(UIStrings9.formEmptyIdAndNameAttributesForInputError);
+      return i18nString10(UIStrings10.formEmptyIdAndNameAttributesForInputError);
     case "FormAriaLabelledByToNonExistingIdError":
-      return i18nString9(UIStrings9.formAriaLabelledByToNonExistingId);
+      return i18nString10(UIStrings10.formAriaLabelledByToNonExistingId);
     case "FormInputAssignedAutocompleteValueToIdOrNameAttributeError":
-      return i18nString9(UIStrings9.formInputAssignedAutocompleteValueToIdOrNameAttributeError);
+      return i18nString10(UIStrings10.formInputAssignedAutocompleteValueToIdOrNameAttributeError);
     case "FormLabelHasNeitherForNorNestedInputError":
-      return i18nString9(UIStrings9.formLabelHasNeitherForNorNestedInput);
+      return i18nString10(UIStrings10.formLabelHasNeitherForNorNestedInput);
     case "FormLabelForMatchesNonExistingIdError":
-      return i18nString9(UIStrings9.formLabelForMatchesNonExistingIdError);
+      return i18nString10(UIStrings10.formLabelForMatchesNonExistingIdError);
     case "FormInputHasWrongButWellIntendedAutocompleteValueError":
-      return i18nString9(UIStrings9.formInputHasWrongButWellIntendedAutocompleteValueError);
+      return i18nString10(UIStrings10.formInputHasWrongButWellIntendedAutocompleteValueError);
     default:
       return "";
   }
@@ -11715,17 +11854,17 @@ function getTooltipFromGenericIssue(errorType) {
 function getTooltipFromElementAccessibilityIssue(reason) {
   switch (reason) {
     case "DisallowedSelectChild":
-      return i18nString9(UIStrings9.disallowedSelectChild);
+      return i18nString10(UIStrings10.disallowedSelectChild);
     case "DisallowedOptGroupChild":
-      return i18nString9(UIStrings9.disallowedOptGroupChild);
+      return i18nString10(UIStrings10.disallowedOptGroupChild);
     case "NonPhrasingContentOptionChild":
-      return i18nString9(UIStrings9.nonPhrasingContentOptionChild);
+      return i18nString10(UIStrings10.nonPhrasingContentOptionChild);
     case "InteractiveContentOptionChild":
-      return i18nString9(UIStrings9.interactiveContentOptionChild);
+      return i18nString10(UIStrings10.interactiveContentOptionChild);
     case "InteractiveContentLegendChild":
-      return i18nString9(UIStrings9.interactiveContentLegendChild);
+      return i18nString10(UIStrings10.interactiveContentLegendChild);
     case "InteractiveContentSummaryDescendant":
-      return i18nString9(UIStrings9.interactiveContentSummaryDescendant);
+      return i18nString10(UIStrings10.interactiveContentSummaryDescendant);
     default:
       return "";
   }
@@ -11747,7 +11886,7 @@ import "./../../ui/components/adorners/adorners.js";
 import "./../../ui/components/buttons/buttons.js";
 import * as Common8 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n22 from "./../../core/i18n/i18n.js";
+import * as i18n24 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
@@ -12042,8 +12181,8 @@ __export(MarkerDecorator_exports, {
   GenericDecorator: () => GenericDecorator,
   getRegisteredDecorators: () => getRegisteredDecorators
 });
-import * as i18n20 from "./../../core/i18n/i18n.js";
-var UIStrings10 = {
+import * as i18n22 from "./../../core/i18n/i18n.js";
+var UIStrings11 = {
   /**
    * @description Title of the Marker Decorator of Elements
    */
@@ -12053,8 +12192,8 @@ var UIStrings10 = {
    */
   elementIsHidden: "Element is hidden"
 };
-var str_10 = i18n20.i18n.registerUIStrings("panels/elements/MarkerDecorator.ts", UIStrings10);
-var i18nLazyString = i18n20.i18n.getLazilyComputedLocalizedString.bind(void 0, str_10);
+var str_11 = i18n22.i18n.registerUIStrings("panels/elements/MarkerDecorator.ts", UIStrings11);
+var i18nLazyString = i18n22.i18n.getLazilyComputedLocalizedString.bind(void 0, str_11);
 var GenericDecorator = class {
   title;
   color;
@@ -12071,12 +12210,12 @@ var GenericDecorator = class {
 };
 var domBreakpointData = {
   marker: "breakpoint-marker",
-  title: i18nLazyString(UIStrings10.domBreakpoint),
+  title: i18nLazyString(UIStrings11.domBreakpoint),
   color: "var(--sys-color-primary-bright)"
 };
 var elementIsHiddenData = {
   marker: "hidden-marker",
-  title: i18nLazyString(UIStrings10.elementIsHidden),
+  title: i18nLazyString(UIStrings11.elementIsHidden),
   color: "var(--sys-color-neutral-bright)"
 };
 function getRegisteredDecorators() {
@@ -12099,7 +12238,7 @@ function getRegisteredDecorators() {
 // gen/front_end/panels/elements/ElementsTreeElement.js
 var { html: html10, nothing: nothing4, render: render8, Directives: { ref: ref2, repeat } } = Lit6;
 var { animateOn } = UI14.UIUtils;
-var UIStrings11 = {
+var UIStrings12 = {
   /**
    * @description Title for Ad adorner. This element is marked as advertisement element.
    */
@@ -12400,8 +12539,8 @@ var UIStrings11 = {
    */
   reveal: "reveal"
 };
-var str_11 = i18n22.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings11);
-var i18nString10 = i18n22.i18n.getLocalizedString.bind(void 0, str_11);
+var str_12 = i18n24.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings12);
+var i18nString11 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
 function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
@@ -12635,13 +12774,13 @@ function renderAttribute(attr, updateRecord, isDiff, node) {
   if (isRelation) {
     if (name === "popovertarget") {
       relation = "PopoverTarget";
-      tooltip = i18nString10(UIStrings11.showPopoverTarget);
+      tooltip = i18nString11(UIStrings12.showPopoverTarget);
     } else if (name === "interesttarget") {
       relation = "InterestTarget";
-      tooltip = i18nString10(UIStrings11.showInterestTarget);
+      tooltip = i18nString11(UIStrings12.showInterestTarget);
     } else if (name === "commandfor") {
       relation = "CommandFor";
-      tooltip = i18nString10(UIStrings11.showCommandForTarget);
+      tooltip = i18nString11(UIStrings12.showCommandForTarget);
     }
   }
   let relationPromise = void 0;
@@ -12746,7 +12885,7 @@ function maybeRenderAdAdorner(input) {
   return html10`
     <devtools-adorner
       aria-details=${input.adTooltipId}
-      aria-label=${i18nString10(UIStrings11.thisElementWasIdentifiedAsAnAd)}
+      aria-label=${i18nString11(UIStrings12.thisElementWasIdentifiedAsAnAd)}
       .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.AD}
       jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.AD)}
       ${adornerRef()}>
@@ -12760,12 +12899,12 @@ function maybeRenderAdAdorner(input) {
     <devtools-tooltip id=${input.adTooltipId} variant=rich @copy=${(e) => e.stopPropagation()}>
       <div class="ad-provenance-tooltip">
         ${input.adProvenance.filterlistRule ? html10`
-          <div class="ad-provenance-tooltip-title">${i18nString10(UIStrings11.filterListRule)}</div>
+          <div class="ad-provenance-tooltip-title">${i18nString11(UIStrings12.filterListRule)}</div>
           <div class="ad-provenance-tooltip-content">${input.adProvenance.filterlistRule}</div>
         ` : nothing4}
 
         ${input.adProvenance.adScriptAncestry && input.target ? html10`
-          <div class="ad-provenance-tooltip-title">${i18nString10(UIStrings11.creatorAdScriptAncestry)}</div>
+          <div class="ad-provenance-tooltip-title">${i18nString11(UIStrings12.creatorAdScriptAncestry)}</div>
           <div class="ad-provenance-tooltip-content">
             ${input.adProvenance.adScriptAncestry.ancestryChain.map((script) => html10`
               <div>
@@ -12779,7 +12918,7 @@ function maybeRenderAdAdorner(input) {
           </div>
 
           ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule ? html10`
-            <div class="ad-provenance-tooltip-title">${i18nString10(UIStrings11.rootScriptFilterListRule)}</div>
+            <div class="ad-provenance-tooltip-title">${i18nString11(UIStrings12.rootScriptFilterListRule)}</div>
             <div class="ad-provenance-tooltip-content">
               ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule}
             </div>
@@ -12787,7 +12926,7 @@ function maybeRenderAdAdorner(input) {
         ` : nothing4}
 
         ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html10`
-            <div class="ad-provenance-tooltip-title">${i18nString10(UIStrings11.noProvenanceAvailable)}</div>
+            <div class="ad-provenance-tooltip-title">${i18nString11(UIStrings12.noProvenanceAvailable)}</div>
           ` : nothing4}
       </div>
     </devtools-tooltip>
@@ -12824,7 +12963,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         ${input.showViewSourceAdorner ? html10`<devtools-adorner
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE)}
-          aria-label=${i18nString10(UIStrings11.viewSourceCode)}
+          aria-label=${i18nString11(UIStrings12.viewSourceCode)}
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
@@ -12837,7 +12976,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.CONTAINER).track({ click: true })}
           active=${input.containerAdornerActive}
-          aria-label=${input.containerAdornerActive ? i18nString10(UIStrings11.enableContainer) : i18nString10(UIStrings11.disableContainer)}
+          aria-label=${input.containerAdornerActive ? i18nString11(UIStrings12.enableContainer) : i18nString11(UIStrings12.disableContainer)}
           @click=${input.onContainerAdornerClick}
           @keydown=${handleAdornerKeydown(input.onContainerAdornerClick)}
           ${adornerRef()}>
@@ -12854,7 +12993,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX).track({ click: true })}
           active=${input.flexAdornerActive}
-          aria-label=${input.flexAdornerActive ? i18nString10(UIStrings11.disableFlexMode) : i18nString10(UIStrings11.enableFlexMode)}
+          aria-label=${input.flexAdornerActive ? i18nString11(UIStrings12.disableFlexMode) : i18nString11(UIStrings12.enableFlexMode)}
           @click=${input.onFlexAdornerClick}
           @keydown=${handleAdornerKeydown(input.onFlexAdornerClick)}
           ${adornerRef()}>
@@ -12868,7 +13007,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           .name=${input.isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID}
           jslog=${VisualLogging8.adorner(input.isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID).track({ click: true })}
           active=${input.gridAdornerActive}
-          aria-label=${input.gridAdornerActive ? i18nString10(UIStrings11.disableGridMode) : i18nString10(UIStrings11.enableGridMode)}
+          aria-label=${input.gridAdornerActive ? i18nString11(UIStrings12.disableGridMode) : i18nString11(UIStrings12.enableGridMode)}
           @click=${input.onGridAdornerClick}
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
@@ -12882,7 +13021,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES).track({ click: true })}
           active=${input.gridAdornerActive}
-          aria-label=${input.gridAdornerActive ? i18nString10(UIStrings11.disableGridLanesMode) : i18nString10(UIStrings11.enableGridLanesMode)}
+          aria-label=${input.gridAdornerActive ? i18nString11(UIStrings12.disableGridLanesMode) : i18nString11(UIStrings12.enableGridLanesMode)}
           @click=${input.onGridAdornerClick}
           @keydown=${handleAdornerKeydown(input.onGridAdornerClick)}
           ${adornerRef()}>
@@ -12894,7 +13033,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           tabindex=0
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA).track({ click: true })}
-          aria-label=${i18nString10(UIStrings11.openMediaPanel)}
+          aria-label=${i18nString11(UIStrings12.openMediaPanel)}
           @click=${input.onMediaAdornerClick}
           @keydown=${handleAdornerKeydown(input.onMediaAdornerClick)}
           ${adornerRef()}>
@@ -12910,7 +13049,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER).track({ click: true })}
           active=${input.popoverAdornerActive}
-          aria-label=${input.popoverAdornerActive ? i18nString10(UIStrings11.stopForceOpenPopover) : i18nString10(UIStrings11.forceOpenPopover)}
+          aria-label=${input.popoverAdornerActive ? i18nString11(UIStrings12.stopForceOpenPopover) : i18nString11(UIStrings12.forceOpenPopover)}
           @click=${input.onPopoverAdornerClick}
           @keydown=${handleAdornerKeydown(input.onPopoverAdornerClick)}
           ${adornerRef()}>
@@ -12922,7 +13061,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           tabindex=0
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.TOP_LAYER}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.TOP_LAYER).track({ click: true })}
-          aria-label=${i18nString10(UIStrings11.reveal)}
+          aria-label=${i18nString11(UIStrings12.reveal)}
           @click=${input.onTopLayerAdornerClick}
           @keydown=${handleAdornerKeydown(input.onTopLayerAdornerClick)}
           ${adornerRef()}>
@@ -12936,7 +13075,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({ click: true })}
           active=${input.startingStyleAdornerActive}
           toggleable=true
-          aria-label=${input.startingStyleAdornerActive ? i18nString10(UIStrings11.disableStartingStyle) : i18nString10(UIStrings11.enableStartingStyle)}
+          aria-label=${input.startingStyleAdornerActive ? i18nString11(UIStrings12.disableStartingStyle) : i18nString11(UIStrings12.enableStartingStyle)}
           @click=${input.onStartingStyleAdornerClick}
           @keydown=${handleAdornerKeydown(input.onStartingStyleAdornerClick)}
           ${adornerRef()}>
@@ -12946,7 +13085,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           class="scroll"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL).track({ click: true })}
-          aria-label=${i18nString10(UIStrings11.elementHasScrollableOverflow)}
+          aria-label=${i18nString11(UIStrings12.elementHasScrollableOverflow)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}</span>
         </devtools-adorner>` : nothing4}
@@ -12970,7 +13109,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({ click: true })}
           active=${input.scrollSnapAdornerActive}
           toggleable=true
-          aria-label=${input.scrollSnapAdornerActive ? i18nString10(UIStrings11.disableScrollSnap) : i18nString10(UIStrings11.enableScrollSnap)}
+          aria-label=${input.scrollSnapAdornerActive ? i18nString11(UIStrings12.disableScrollSnap) : i18nString11(UIStrings12.enableScrollSnap)}
           @click=${input.onScrollSnapAdornerClick}
           @keydown=${handleAdornerKeydown(input.onScrollSnapAdornerClick)}
           ${adornerRef()}>
@@ -12978,7 +13117,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
         </devtools-adorner>` : nothing4}
       </div>` : nothing4}
       ${input.isSelected ? html10`
-        <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString10(UIStrings11.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
+        <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString11(UIStrings12.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
       ` : nothing4}
       ${input.showAiButton ? html10`
         <span class="ai-button-container ${input.editorState ? "hidden" : ""}">
@@ -13113,7 +13252,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   static populateForcedPseudoStateItems(contextMenu, node) {
     const pseudoClasses = ["active", "hover", "focus", "visited", "focus-within", "focus-visible"];
     const forcedPseudoState = node.domModel().cssModel().pseudoState(node);
-    const stateMenu = contextMenu.debugSection().appendSubMenuItem(i18nString10(UIStrings11.forceState), false, "force-state");
+    const stateMenu = contextMenu.debugSection().appendSubMenuItem(i18nString11(UIStrings12.forceState), false, "force-state");
     for (const pseudoClass of pseudoClasses) {
       const pseudoClassForced = forcedPseudoState ? forcedPseudoState.indexOf(pseudoClass) >= 0 : false;
       stateMenu.defaultSection().appendCheckboxItem(":" + pseudoClass, setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced), { checked: pseudoClassForced, jslogContext: pseudoClass });
@@ -13733,17 +13872,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (!treeElement) {
       return;
     }
-    contextMenu.editSection().appendItem(i18nString10(UIStrings11.addAttribute), treeElement.addNewAttribute.bind(treeElement), { jslogContext: "add-attribute" });
+    contextMenu.editSection().appendItem(i18nString11(UIStrings12.addAttribute), treeElement.addNewAttribute.bind(treeElement), { jslogContext: "add-attribute" });
     const target = event.target;
     const attribute = target.enclosingNodeOrSelfWithClass("webkit-html-attribute");
     const newAttribute = target.enclosingNodeOrSelfWithClass("add-attribute");
     if (attribute && !newAttribute) {
-      contextMenu.editSection().appendItem(i18nString10(UIStrings11.editAttribute), this.startEditingAttribute.bind(this, attribute, target), { jslogContext: "edit-attribute" });
+      contextMenu.editSection().appendItem(i18nString11(UIStrings12.editAttribute), this.startEditingAttribute.bind(this, attribute, target), { jslogContext: "edit-attribute" });
     }
     await this.populateNodeContextMenu(contextMenu);
     _ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
     this.populateScrollIntoView(contextMenu);
-    contextMenu.viewSection().appendItem(i18nString10(UIStrings11.focus), async () => {
+    contextMenu.viewSection().appendItem(i18nString11(UIStrings12.focus), async () => {
       await this.nodeInternal.focus();
     }, { jslogContext: "focus" });
   }
@@ -13754,24 +13893,24 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.populateScrollIntoView(contextMenu);
   }
   populateExpandRecursively(contextMenu) {
-    contextMenu.viewSection().appendItem(i18nString10(UIStrings11.expandRecursively), this.expandRecursively.bind(this), { jslogContext: "expand-recursively" });
+    contextMenu.viewSection().appendItem(i18nString11(UIStrings12.expandRecursively), this.expandRecursively.bind(this), { jslogContext: "expand-recursively" });
   }
   populateScrollIntoView(contextMenu) {
-    contextMenu.viewSection().appendItem(i18nString10(UIStrings11.scrollIntoView), () => this.nodeInternal.scrollIntoView(), { jslogContext: "scroll-into-view" });
+    contextMenu.viewSection().appendItem(i18nString11(UIStrings12.scrollIntoView), () => this.nodeInternal.scrollIntoView(), { jslogContext: "scroll-into-view" });
   }
   isAiButtonEnabled() {
     return UI14.ActionRegistry.ActionRegistry.instance().hasAction("freestyler.elements-floating-button");
   }
   async populateTextContextMenu(contextMenu, textNode) {
     if (!this.editing) {
-      contextMenu.editSection().appendItem(i18nString10(UIStrings11.editText), this.startEditingTextNode.bind(this, textNode), { jslogContext: "edit-text" });
+      contextMenu.editSection().appendItem(i18nString11(UIStrings12.editText), this.startEditingTextNode.bind(this, textNode), { jslogContext: "edit-text" });
     }
     return await this.populateNodeContextMenu(contextMenu);
   }
   async populateNodeContextMenu(contextMenu) {
     const isEditable = this.hasEditableNode();
     if (isEditable && !this.editing) {
-      contextMenu.editSection().appendItem(i18nString10(UIStrings11.editAsHtml), this.editAsHTML.bind(this), { jslogContext: "elements.edit-as-html" });
+      contextMenu.editSection().appendItem(i18nString11(UIStrings12.editAsHtml), this.editAsHTML.bind(this), { jslogContext: "elements.edit-as-html" });
     }
     const isShadowRoot = this.nodeInternal.isShadowRoot();
     const createShortcut = UI14.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
@@ -13792,23 +13931,23 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       UI14.Context.Context.instance().setFlavor(SDK13.DOMModel.DOMNode, this.nodeInternal);
       const action2 = UI14.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
       const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId);
-      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString10(UIStrings11.startAChat));
+      submenu.defaultSection().appendAction(openAiAssistanceId, i18nString11(UIStrings12.startAChat));
       const submenuConfigs = [
         {
           condition: (props) => Boolean(props?.isFlex),
           items: [
             {
-              label: i18nString10(UIStrings11.wrapTheseItems),
+              label: i18nString11(UIStrings12.wrapTheseItems),
               prompt: "How can I make flex items wrap?",
               jslogContextSuffix: ".flex-wrap"
             },
             {
-              label: i18nString10(UIStrings11.distributeItemsEvenly),
+              label: i18nString11(UIStrings12.distributeItemsEvenly),
               prompt: "How do I distribute flex items evenly?",
               jslogContextSuffix: ".flex-distribute"
             },
             {
-              label: i18nString10(UIStrings11.explainFlexbox),
+              label: i18nString11(UIStrings12.explainFlexbox),
               prompt: "What is flexbox?",
               jslogContextSuffix: ".flex-what"
             }
@@ -13818,17 +13957,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
           condition: (props) => Boolean(props?.isGrid && !props?.isSubgrid),
           items: [
             {
-              label: i18nString10(UIStrings11.alignItems),
+              label: i18nString11(UIStrings12.alignItems),
               prompt: "How do I align items in a grid?",
               jslogContextSuffix: ".grid-align"
             },
             {
-              label: i18nString10(UIStrings11.addPadding),
+              label: i18nString11(UIStrings12.addPadding),
               prompt: "How to add spacing between grid items?",
               jslogContextSuffix: ".grid-gap"
             },
             {
-              label: i18nString10(UIStrings11.explainGridLayout),
+              label: i18nString11(UIStrings12.explainGridLayout),
               prompt: "How does grid layout work?",
               jslogContextSuffix: ".grid-how"
             }
@@ -13838,17 +13977,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
           condition: (props) => Boolean(props?.isSubgrid),
           items: [
             {
-              label: i18nString10(UIStrings11.findGridDefinition),
+              label: i18nString11(UIStrings12.findGridDefinition),
               prompt: "Where is this grid defined?",
               jslogContextSuffix: ".subgrid-where"
             },
             {
-              label: i18nString10(UIStrings11.changeParentProperties),
+              label: i18nString11(UIStrings12.changeParentProperties),
               prompt: "How to overwrite parent grid properties?",
               jslogContextSuffix: ".subgrid-override"
             },
             {
-              label: i18nString10(UIStrings11.explainSubgrids),
+              label: i18nString11(UIStrings12.explainSubgrids),
               prompt: "How do subgrids work?",
               jslogContextSuffix: ".subgrid-how"
             }
@@ -13858,17 +13997,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
           condition: (props) => Boolean(props?.hasScroll),
           items: [
             {
-              label: i18nString10(UIStrings11.removeScrollbars),
+              label: i18nString11(UIStrings12.removeScrollbars),
               prompt: "How do I remove scrollbars for this element?",
               jslogContextSuffix: ".scroll-remove"
             },
             {
-              label: i18nString10(UIStrings11.styleScrollbars),
+              label: i18nString11(UIStrings12.styleScrollbars),
               prompt: "How can I style a scrollbar?",
               jslogContextSuffix: ".scroll-style"
             },
             {
-              label: i18nString10(UIStrings11.explainScrollbars),
+              label: i18nString11(UIStrings12.explainScrollbars),
               prompt: "Why does this element scroll?",
               jslogContextSuffix: ".scroll-why"
             }
@@ -13878,17 +14017,17 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
           condition: (props) => Boolean(props?.containerType),
           items: [
             {
-              label: i18nString10(UIStrings11.explainContainerQueries),
+              label: i18nString11(UIStrings12.explainContainerQueries),
               prompt: "What are container queries?",
               jslogContextSuffix: ".container-what"
             },
             {
-              label: i18nString10(UIStrings11.explainContainerTypes),
+              label: i18nString11(UIStrings12.explainContainerTypes),
               prompt: "How do I use container-type?",
               jslogContextSuffix: ".container-how"
             },
             {
-              label: i18nString10(UIStrings11.explainContainerContext),
+              label: i18nString11(UIStrings12.explainContainerContext),
               prompt: "What's the container context for this element?",
               jslogContextSuffix: ".container-context"
             }
@@ -13899,12 +14038,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
           condition: () => true,
           items: [
             {
-              label: i18nString10(UIStrings11.assessVisibility),
+              label: i18nString11(UIStrings12.assessVisibility),
               prompt: "Why isn\u2019t this element visible?",
               jslogContextSuffix: ".visibility"
             },
             {
-              label: i18nString10(UIStrings11.centerElement),
+              label: i18nString11(UIStrings12.centerElement),
               prompt: "How do I center this element?",
               jslogContextSuffix: ".center"
             }
@@ -13919,45 +14058,45 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         }
       }
     }
-    menuItem = contextMenu.clipboardSection().appendItem(i18nString10(UIStrings11.cut), treeOutline.performCopyOrCut.bind(treeOutline, true, this.nodeInternal), { disabled: !this.hasEditableNode(), jslogContext: "cut" });
+    menuItem = contextMenu.clipboardSection().appendItem(i18nString11(UIStrings12.cut), treeOutline.performCopyOrCut.bind(treeOutline, true, this.nodeInternal), { disabled: !this.hasEditableNode(), jslogContext: "cut" });
     menuItem.setShortcut(createShortcut("X", modifier));
-    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString10(UIStrings11.copy), false, "copy");
+    const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString11(UIStrings12.copy), false, "copy");
     const section5 = copyMenu.section();
     if (!isShadowRoot) {
-      menuItem = section5.appendItem(i18nString10(UIStrings11.copyOuterhtml), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal), { jslogContext: "copy-outer-html" });
+      menuItem = section5.appendItem(i18nString11(UIStrings12.copyOuterhtml), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal), { jslogContext: "copy-outer-html" });
       menuItem.setShortcut(createShortcut("V", modifier));
     }
     if (this.nodeInternal.nodeType() === Node.ELEMENT_NODE) {
-      section5.appendItem(i18nString10(UIStrings11.copySelector), this.copyCSSPath.bind(this), { jslogContext: "copy-selector" });
-      section5.appendItem(i18nString10(UIStrings11.copyJsPath), this.copyJSPath.bind(this), { disabled: !canGetJSPath(this.nodeInternal), jslogContext: "copy-js-path" });
-      section5.appendItem(i18nString10(UIStrings11.copyStyles), this.copyStyles.bind(this), { jslogContext: "elements.copy-styles" });
+      section5.appendItem(i18nString11(UIStrings12.copySelector), this.copyCSSPath.bind(this), { jslogContext: "copy-selector" });
+      section5.appendItem(i18nString11(UIStrings12.copyJsPath), this.copyJSPath.bind(this), { disabled: !canGetJSPath(this.nodeInternal), jslogContext: "copy-js-path" });
+      section5.appendItem(i18nString11(UIStrings12.copyStyles), this.copyStyles.bind(this), { jslogContext: "elements.copy-styles" });
     }
     if (!isShadowRoot) {
-      section5.appendItem(i18nString10(UIStrings11.copyXpath), this.copyXPath.bind(this), { jslogContext: "copy-xpath" });
-      section5.appendItem(i18nString10(UIStrings11.copyFullXpath), this.copyFullXPath.bind(this), { jslogContext: "copy-full-xpath" });
+      section5.appendItem(i18nString11(UIStrings12.copyXpath), this.copyXPath.bind(this), { jslogContext: "copy-xpath" });
+      section5.appendItem(i18nString11(UIStrings12.copyFullXpath), this.copyFullXPath.bind(this), { jslogContext: "copy-full-xpath" });
     }
-    menuItem = copyMenu.clipboardSection().appendItem(i18nString10(UIStrings11.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal, true), { jslogContext: "copy-element" });
+    menuItem = copyMenu.clipboardSection().appendItem(i18nString11(UIStrings12.copyElement), treeOutline.performCopyOrCut.bind(treeOutline, false, this.nodeInternal, true), { jslogContext: "copy-element" });
     menuItem.setShortcut(createShortcut("C", modifier));
     if (!isShadowRoot) {
       const isRootElement = !this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeName() === "#document";
-      menuItem = contextMenu.editSection().appendItem(i18nString10(UIStrings11.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal), {
+      menuItem = contextMenu.editSection().appendItem(i18nString11(UIStrings12.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal), {
         disabled: this.nodeInternal.isInShadowTree() || isRootElement,
         jslogContext: "elements.duplicate-element"
       });
     }
-    menuItem = contextMenu.clipboardSection().appendItem(i18nString10(UIStrings11.paste), treeOutline.pasteNode.bind(treeOutline, this.nodeInternal), { disabled: !treeOutline.canPaste(this.nodeInternal), jslogContext: "paste" });
+    menuItem = contextMenu.clipboardSection().appendItem(i18nString11(UIStrings12.paste), treeOutline.pasteNode.bind(treeOutline, this.nodeInternal), { disabled: !treeOutline.canPaste(this.nodeInternal), jslogContext: "paste" });
     menuItem.setShortcut(createShortcut("V", modifier));
-    menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString10(UIStrings11.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal), { checked: treeOutline.isToggledToHidden(this.nodeInternal), jslogContext: "elements.hide-element" });
+    menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString11(UIStrings12.hideElement), treeOutline.toggleHideElement.bind(treeOutline, this.nodeInternal), { checked: treeOutline.isToggledToHidden(this.nodeInternal), jslogContext: "elements.hide-element" });
     menuItem.setShortcut(UI14.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("elements.hide-element") || "");
     if (isEditable) {
-      contextMenu.editSection().appendItem(i18nString10(UIStrings11.deleteElement), this.remove.bind(this), { jslogContext: "delete-element" });
+      contextMenu.editSection().appendItem(i18nString11(UIStrings12.deleteElement), this.remove.bind(this), { jslogContext: "delete-element" });
     }
     this.populateExpandRecursively(contextMenu);
-    contextMenu.viewSection().appendItem(i18nString10(UIStrings11.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
+    contextMenu.viewSection().appendItem(i18nString11(UIStrings12.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
     const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
-    contextMenu.viewSection().appendItem(i18nString10(UIStrings11.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI14.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
+    contextMenu.viewSection().appendItem(i18nString11(UIStrings12.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI14.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
     if (this.nodeInternal.frameOwnerFrameId()) {
-      contextMenu.viewSection().appendItem(i18nString10(UIStrings11.showFrameDetails), () => {
+      contextMenu.viewSection().appendItem(i18nString11(UIStrings12.showFrameDetails), () => {
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();
         if (frameOwnerFrameId) {
           const frame = SDK13.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
@@ -13971,12 +14110,12 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (!treeOutline) {
       return;
     }
-    contextMenu.editSection().appendItem(i18nString10(UIStrings11.editData), this.startEditingProcessingInstructionValue.bind(this), { jslogContext: "elements.edit-data" });
-    contextMenu.editSection().appendItem(i18nString10(UIStrings11.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal), {
+    contextMenu.editSection().appendItem(i18nString11(UIStrings12.editData), this.startEditingProcessingInstructionValue.bind(this), { jslogContext: "elements.edit-data" });
+    contextMenu.editSection().appendItem(i18nString11(UIStrings12.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal), {
       disabled: this.nodeInternal.isInShadowTree(),
       jslogContext: "elements.duplicate-element"
     });
-    contextMenu.editSection().appendItem(i18nString10(UIStrings11.deleteElement), this.remove.bind(this), { jslogContext: "delete-element" });
+    contextMenu.editSection().appendItem(i18nString11(UIStrings12.deleteElement), this.remove.bind(this), { jslogContext: "delete-element" });
   }
   startEditing() {
     if (!this.treeOutline || this.treeOutline.selectedDOMNode() !== this.nodeInternal) {
@@ -14070,7 +14209,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       }
     }
     if (attributeValue !== void 0) {
-      attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue, i18nString10(UIStrings11.valueIsTooLargeToEdit));
+      attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue, i18nString11(UIStrings12.valueIsTooLargeToEdit));
     }
     removeZeroWidthSpaceRecursive(attribute);
     const config = new UI14.InplaceEditor.Config(this.attributeEditingCommitted.bind(this), this.editingCancelled.bind(this), attributeName);
@@ -14472,7 +14611,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         tooltip.push(decoration.title);
       }
       if (!this.expanded && descendantDecorations.length) {
-        tooltip.push(i18nString10(UIStrings11.children));
+        tooltip.push(i18nString11(UIStrings12.children));
         for (const decoration of descendantDecorations) {
           tooltip.push(decoration.title);
         }
@@ -15116,20 +15255,20 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 // gen/front_end/panels/elements/ShortcutTreeElement.js
 import * as Common9 from "./../../core/common/common.js";
-import * as i18n24 from "./../../core/i18n/i18n.js";
+import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit7 from "./../../ui/lit/lit.js";
 import * as VisualElements from "./../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents6 from "./components/components.js";
 var { html: html11, render: render9 } = Lit7;
-var UIStrings12 = {
+var UIStrings13 = {
   /**
    * @description Link text content in Elements Tree Outline of the Elements panel
    */
   reveal: "reveal"
 };
-var str_12 = i18n24.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings12);
-var i18nString11 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
+var str_13 = i18n26.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings13);
+var i18nString12 = i18n26.i18n.getLocalizedString.bind(void 0, str_13);
 var DEFAULT_VIEW4 = (input, _output, target) => {
   render9(html11`
     <div class="selection fill"></div>
@@ -15138,7 +15277,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
       .name=${ElementsComponents6.AdornerManager.RegisteredAdorners.REVEAL}
       class="adorner-reveal"
       jslog=${VisualElements.adorner("reveal")}
-      aria-label=${i18nString11(UIStrings12.reveal)}
+      aria-label=${i18nString12(UIStrings13.reveal)}
       @click=${input.onRevealAdornerClick}
       @mousedown=${(e) => e.consume()}
       ${adornerRef()}>
@@ -15265,7 +15404,7 @@ var TopLayerContainer = class extends UI16.TreeOutline.TreeElement {
 };
 
 // gen/front_end/panels/elements/ElementsTreeOutline.js
-var UIStrings13 = {
+var UIStrings14 = {
   /**
    * @description ARIA accessible name in Elements Tree Outline of the Elements panel
    */
@@ -15289,8 +15428,8 @@ var UIStrings13 = {
    */
   viewIssue: "View Issue:"
 };
-var str_13 = i18n26.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings13);
-var i18nString12 = i18n26.i18n.getLocalizedString.bind(void 0, str_13);
+var str_14 = i18n28.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings14);
+var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
 var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
 var DEFAULT_VIEW5 = (input, output, target) => {
@@ -15733,7 +15872,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     this.disableEdits = disableEdits ?? false;
     this.expandRoot = expandRoot ?? false;
     this.elementInternal.classList.toggle("elements-hide-gutter", hideGutter);
-    UI17.ARIAUtils.setLabel(this.elementInternal, i18nString12(UIStrings13.pageDom));
+    UI17.ARIAUtils.setLabel(this.elementInternal, i18nString13(UIStrings14.pageDom));
     this.elementInternal.addEventListener("focusout", this.onfocusout.bind(this), false);
     this.elementInternal.addEventListener("mousedown", this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener("mousemove", this.onmousemove.bind(this), false);
@@ -15816,7 +15955,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
             return html12`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString12(UIStrings13.viewIssue)}</devtools-link>
+                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString13(UIStrings14.viewIssue)}</devtools-link>
                   <span>${elementIssueDetails.tooltip}</span>
                   </div>`;
           })}
@@ -16137,7 +16276,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
       const lineHeight = parseFloat(computedStyle.lineHeight) || 16;
       const truncatedLines = Math.round((container.scrollHeight - container.clientHeight) / lineHeight);
       if (truncatedLines > 0) {
-        this.#showAllButton.textContent = i18nString12(UIStrings13.showAllLines, { PH1: truncatedLines });
+        this.#showAllButton.textContent = i18nString13(UIStrings14.showAllLines, { PH1: truncatedLines });
       } else {
         this.#showAllButton?.classList.add("hidden");
       }
@@ -16468,7 +16607,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
       textNode = null;
     }
     const commentNode = node.enclosingNodeOrSelfWithClass("webkit-html-comment");
-    contextMenu.saveSection().appendItem(i18nString12(UIStrings13.storeAsGlobalVariable), this.saveNodeToTempVariable.bind(this, treeElement.node()), { jslogContext: "store-as-global-variable" });
+    contextMenu.saveSection().appendItem(i18nString13(UIStrings14.storeAsGlobalVariable), this.saveNodeToTempVariable.bind(this, treeElement.node()), { jslogContext: "store-as-global-variable" });
     if (textNode) {
       await treeElement.populateTextContextMenu(contextMenu, textNode);
     } else if (isTag) {
@@ -17061,7 +17200,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
         treeElement.expandAllButtonElement = this.createExpandAllButtonTreeElement(treeElement);
       }
       treeElement.insertChild(treeElement.expandAllButtonElement, targetButtonIndex);
-      treeElement.expandAllButtonElement.title = i18nString12(UIStrings13.showAllNodesDMore, { PH1: visibleChildren.length - expandedChildCount });
+      treeElement.expandAllButtonElement.title = i18nString13(UIStrings14.showAllNodesDMore, { PH1: visibleChildren.length - expandedChildCount });
     } else if (treeElement.expandAllButtonElement) {
       treeElement.expandAllButtonElement = null;
     }
@@ -17134,7 +17273,7 @@ __export(LayoutPane_exports, {
 });
 import "./../../ui/components/node_text/node_text.js";
 import * as Common11 from "./../../core/common/common.js";
-import * as i18n28 from "./../../core/i18n/i18n.js";
+import * as i18n30 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
@@ -17288,7 +17427,7 @@ var layoutPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./layoutPane.css")} */`;
 
 // gen/front_end/panels/elements/LayoutPane.js
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Title of the input to select the overlay color for an element using the color picker
    */
@@ -17330,8 +17469,8 @@ var UIStrings14 = {
    */
   colorPickerOpened: "Color picker opened."
 };
-var str_14 = i18n28.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings14);
-var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n30.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings15);
+var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
 var { render: render11, html: html13 } = Lit8;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
@@ -17420,7 +17559,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
     const target2 = event.target;
     const input2 = target2.querySelector("input");
     input2.click();
-    UI18.ARIAUtils.LiveAnnouncer.alert(i18nString13(UIStrings14.colorPickerOpened));
+    UI18.ARIAUtils.LiveAnnouncer.alert(i18nString14(UIStrings15.colorPickerOpened));
     event.preventDefault();
   };
   const onColorLabelKeyDown = (event) => {
@@ -17461,15 +17600,15 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           <input
               @change=${(e) => input.onColorChange(element, e)}
               @input=${(e) => input.onColorChange(element, e)}
-              title=${i18nString13(UIStrings14.chooseElementOverlayColor)}
+              title=${i18nString14(UIStrings15.chooseElementOverlayColor)}
               tabindex="0"
               class="color-picker"
               type="color"
               value=${element.color} />
         </label>
         <devtools-button class="show-element"
-           .title=${i18nString13(UIStrings14.showElementInTheElementsPanel)}
-           aria-label=${i18nString13(UIStrings14.showElementInTheElementsPanel)}
+           .title=${i18nString14(UIStrings15.showElementInTheElementsPanel)}
+           aria-label=${i18nString14(UIStrings15.showElementInTheElementsPanel)}
            .iconName=${"select-element"}
            .jslogContext=${"elements.select-element"}
            .size=${"SMALL"}
@@ -17486,10 +17625,10 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           <summary class="header"
             @keydown=${input.onSummaryKeyDown}
             jslog=${VisualLogging10.sectionHeader("grid-settings").track({ click: true })}>
-            ${i18nString13(UIStrings14.gridOrGridLanes)}
+            ${i18nString14(UIStrings15.gridOrGridLanes)}
           </summary>
           <div class="content-section" jslog=${VisualLogging10.section("grid-settings")}>
-            <h3 class="content-section-title">${i18nString13(UIStrings14.overlayDisplaySettings)}</h3>
+            <h3 class="content-section-title">${i18nString14(UIStrings15.overlayDisplaySettings)}</h3>
             <div class="select-settings">
               ${input.enumSettings.map((setting) => html13`<label data-enum-setting="true" class="select-label" title=${setting.title}>
                       <select
@@ -17519,7 +17658,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           </div>
           ${input.gridElements ? html13`<div class="content-section" jslog=${VisualLogging10.section("grid-overlays")}>
               <h3 class="content-section-title">
-                ${input.gridElements.length ? i18nString13(UIStrings14.gridOrGridLanesOverlays) : i18nString13(UIStrings14.noGridOrGridLanesLayoutsFoundOnThisPage)}
+                ${input.gridElements.length ? i18nString14(UIStrings15.gridOrGridLanesOverlays) : i18nString14(UIStrings15.noGridOrGridLanesLayoutsFoundOnThisPage)}
               </h3>
               ${input.gridElements.length ? html13`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
             </div>` : ""}
@@ -17530,11 +17669,11 @@ var DEFAULT_VIEW6 = (input, output, target) => {
                 class="header"
                 @keydown=${input.onSummaryKeyDown}
                 jslog=${VisualLogging10.sectionHeader("flexbox-overlays").track({ click: true })}>
-              ${i18nString13(UIStrings14.flexbox)}
+              ${i18nString14(UIStrings15.flexbox)}
             </summary>
             ${input.flexContainerElements ? html13`<div class="content-section" jslog=${VisualLogging10.section("flexbox-overlays")}>
                 <h3 class="content-section-title">
-                  ${input.flexContainerElements.length ? i18nString13(UIStrings14.flexboxOverlays) : i18nString13(UIStrings14.noFlexboxLayoutsFoundOnThisPage)}
+                  ${input.flexContainerElements.length ? i18nString14(UIStrings15.flexboxOverlays) : i18nString14(UIStrings15.noFlexboxLayoutsFoundOnThisPage)}
                 </h3>
                 ${input.flexContainerElements.length ? html13`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
               </div>` : ""}
@@ -18291,7 +18430,7 @@ __export(PlatformFontsWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
   PlatformFontsWidget: () => PlatformFontsWidget
 });
-import * as i18n30 from "./../../core/i18n/i18n.js";
+import * as i18n32 from "./../../core/i18n/i18n.js";
 import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { html as html15, render as render13 } from "./../../ui/lit/lit.js";
@@ -18346,7 +18485,7 @@ var platformFontsWidget_css_default = `/**
 /*# sourceURL=${import.meta.resolve("./platformFontsWidget.css")} */`;
 
 // gen/front_end/panels/elements/PlatformFontsWidget.js
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Section title text content in Platform Fonts Widget of the Elements panel
    */
@@ -18376,24 +18515,24 @@ var UIStrings15 = {
    */
   dGlyphs: "{n, plural, =1 {(# glyph)} other {(# glyphs)}}"
 };
-var str_15 = i18n30.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.ts", UIStrings15);
-var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n32.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.ts", UIStrings16);
+var i18nString15 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW8 = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
   render13(html15`
     <style>${platformFontsWidget_css_default}</style>
     <div class="platform-fonts">
       ${isEmptySection ? "" : html15`
-        <div class="title">${i18nString14(UIStrings15.renderedFonts)}</div>
+        <div class="title">${i18nString15(UIStrings16.renderedFonts)}</div>
         <div class="stats-section">
           ${input.platformFonts?.map((platformFont) => {
-    const fontOrigin = platformFont.isCustomFont ? i18nString14(UIStrings15.networkResource) : i18nString14(UIStrings15.localFile);
+    const fontOrigin = platformFont.isCustomFont ? i18nString15(UIStrings16.networkResource) : i18nString15(UIStrings16.localFile);
     const usage = platformFont.glyphCount;
     return html15`
               <div class="font-stats-item">
-                <div><span class="font-property-name">${i18nString14(UIStrings15.familyName)}</span>: ${platformFont.familyName}</div>
-                <div><span class="font-property-name">${i18nString14(UIStrings15.postScriptName)}</span>: ${platformFont.postScriptName}</div>
-                <div><span class="font-property-name">${i18nString14(UIStrings15.fontOrigin)}</span>: ${fontOrigin}<span class="font-usage">${i18nString14(UIStrings15.dGlyphs, { n: usage })}</span></div>
+                <div><span class="font-property-name">${i18nString15(UIStrings16.familyName)}</span>: ${platformFont.familyName}</div>
+                <div><span class="font-property-name">${i18nString15(UIStrings16.postScriptName)}</span>: ${platformFont.postScriptName}</div>
+                <div><span class="font-property-name">${i18nString15(UIStrings16.fontOrigin)}</span>: ${fontOrigin}<span class="font-usage">${i18nString15(UIStrings16.dGlyphs, { n: usage })}</span></div>
               </div>
             `;
   })}
@@ -18436,7 +18575,7 @@ var PlatformFontsWidget = class extends UI20.Widget.VBox {
 };
 
 // gen/front_end/panels/elements/ElementsPanel.js
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Placeholder text for the search box the Elements Panel. Selector refers to CSS
    * selectors.
@@ -18514,8 +18653,8 @@ var UIStrings16 = {
    */
   adornerSettings: "Badge settings"
 };
-var str_16 = i18n32.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings16);
-var i18nString15 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n34.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings17);
+var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
 var elementsPanelInstance;
 var DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
@@ -18565,7 +18704,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#searchableView = new UI21.SearchableView.SearchableView(this, null);
     this.#searchableView.setMinimalSearchQuerySize(0);
     this.#searchableView.setMinimumSize(25, 28);
-    this.#searchableView.setPlaceholder(i18nString15(UIStrings16.findByStringSelectorOrXpath));
+    this.#searchableView.setPlaceholder(i18nString16(UIStrings17.findByStringSelectorOrXpath));
     const stackElement = this.#searchableView.element;
     this.mainContainer = document.createElement("div");
     this.domTreeContainer = document.createElement("div");
@@ -18574,7 +18713,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     stackElement.appendChild(this.mainContainer);
     stackElement.appendChild(crumbsContainer);
     UI21.ARIAUtils.markAsMain(this.domTreeContainer);
-    UI21.ARIAUtils.setLabel(this.domTreeContainer, i18nString15(UIStrings16.domTreeExplorer));
+    UI21.ARIAUtils.setLabel(this.domTreeContainer, i18nString16(UIStrings17.domTreeExplorer));
     this.splitWidget.setMainWidget(this.#searchableView);
     this.splitMode = null;
     this.mainContainer.id = "main-content";
@@ -19225,7 +19364,7 @@ ${node.simpleSelector()} {}`, false);
       showMetricsWidgetInStylesPane();
     });
     this.stylesWidget.addEventListener("InitialUpdateCompleted", () => {
-      this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(i18nString15(UIStrings16.showComputedStylesSidebar), i18nString15(UIStrings16.hideComputedStylesSidebar), i18nString15(UIStrings16.computedStylesShown), i18nString15(UIStrings16.computedStylesHidden), "computed-styles"));
+      this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(i18nString16(UIStrings17.showComputedStylesSidebar), i18nString16(UIStrings17.hideComputedStylesSidebar), i18nString16(UIStrings17.computedStylesShown), i18nString16(UIStrings17.computedStylesHidden), "computed-styles"));
     });
     const showMetricsWidgetInComputedPane = () => {
       this.metricsWidget.show(computedStylePanesWrapper.element, this.#computedStyleWidget.element);
@@ -19269,19 +19408,19 @@ ${node.simpleSelector()} {}`, false);
     }
     const headerElement = tabbedPane.headerElement();
     UI21.ARIAUtils.markAsNavigation(headerElement);
-    UI21.ARIAUtils.setLabel(headerElement, i18nString15(UIStrings16.sidePanelToolbar));
+    UI21.ARIAUtils.setLabel(headerElement, i18nString16(UIStrings17.sidePanelToolbar));
     const contentElement = tabbedPane.tabbedPaneContentElement();
     UI21.ARIAUtils.markAsComplementary(contentElement);
-    UI21.ARIAUtils.setLabel(contentElement, i18nString15(UIStrings16.sidePanelContent));
+    UI21.ARIAUtils.setLabel(contentElement, i18nString16(UIStrings17.sidePanelContent));
     const stylesView = new UI21.View.SimpleView({
-      title: i18nString15(UIStrings16.styles),
+      title: i18nString16(UIStrings17.styles),
       viewId: "styles"
     });
     this.sidebarPaneView.appendView(stylesView);
     stylesView.element.classList.add("flex-auto");
     stylesSplitWidget.show(stylesView.element);
     const computedView = new UI21.View.SimpleView({
-      title: i18nString15(UIStrings16.computed),
+      title: i18nString16(UIStrings17.computed),
       viewId: "computed"
     });
     computedView.element.classList.add("composite", "fill");
@@ -19369,7 +19508,7 @@ ${node.simpleSelector()} {}`, false);
     LayoutPane.instance().requestUpdate();
   }
   populateAdornerSettingsContextMenu(contextMenu) {
-    const adornerSubMenu = contextMenu.viewSection().appendSubMenuItem(i18nString15(UIStrings16.adornerSettings), false, "show-adorner-settings");
+    const adornerSubMenu = contextMenu.viewSection().appendSubMenuItem(i18nString16(UIStrings17.adornerSettings), false, "show-adorner-settings");
     const adornerSettings = this.adornerManager.getSettings();
     for (const [adorner3, isEnabled] of adornerSettings) {
       adornerSubMenu.defaultSection().appendCheckboxItem(adorner3, () => {
@@ -19501,7 +19640,7 @@ var ContextMenuProvider = class {
     if (ElementsPanel.instance().element.isAncestor(event.target)) {
       return;
     }
-    contextMenu.revealSection().appendItem(i18nString15(UIStrings16.openInElementsPanel), () => Common13.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
+    contextMenu.revealSection().appendItem(i18nString16(UIStrings17.openInElementsPanel), () => Common13.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
   }
 };
 var NodeComputedStyles = class {
@@ -19520,7 +19659,7 @@ var DOMNodeRevealer = class {
       if (Platform10.UserVisibleError.isUserVisibleError(reason)) {
         message = reason.message;
       } else {
-        message = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);
+        message = i18nString16(UIStrings17.nodeCannotBeFoundInTheCurrent);
       }
       Common13.Console.Console.instance().warn(message);
       throw reason;
@@ -19539,7 +19678,7 @@ var DOMNodeRevealer = class {
         if (domModel) {
           void domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
         } else {
-          const msg = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);
+          const msg = i18nString16(UIStrings17.nodeCannotBeFoundInTheCurrent);
           reject(new Platform10.UserVisibleError.UserVisibleError(msg));
         }
       }
@@ -19552,7 +19691,7 @@ var DOMNodeRevealer = class {
         const isDetached = !(currentNode instanceof SDK18.DOMModel.DOMDocument);
         const isDocument = node instanceof SDK18.DOMModel.DOMDocument;
         if (!isDocument && isDetached) {
-          const msg2 = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);
+          const msg2 = i18nString16(UIStrings17.nodeCannotBeFoundInTheCurrent);
           reject(new Platform10.UserVisibleError.UserVisibleError(msg2));
           return;
         }
@@ -19562,12 +19701,12 @@ var DOMNodeRevealer = class {
           void promise.then(resolve);
           return;
         }
-        const msg = i18nString15(UIStrings16.nodeCannotBeFoundInTheCurrent);
+        const msg = i18nString16(UIStrings17.nodeCannotBeFoundInTheCurrent);
         reject(new Platform10.UserVisibleError.UserVisibleError(msg));
       }
       function checkRemoteObjectThenReveal(resolvedNode) {
         if (!resolvedNode) {
-          const msg = i18nString15(UIStrings16.theRemoteObjectCouldNotBe);
+          const msg = i18nString16(UIStrings17.theRemoteObjectCouldNotBe);
           reject(new Platform10.UserVisibleError.UserVisibleError(msg));
           return;
         }
@@ -19575,7 +19714,7 @@ var DOMNodeRevealer = class {
       }
       function checkDeferredDOMNodeThenReveal(resolvedNode) {
         if (!resolvedNode) {
-          const msg = i18nString15(UIStrings16.theDeferredDomNodeCouldNotBe);
+          const msg = i18nString16(UIStrings17.theDeferredDomNodeCouldNotBe);
           reject(new Platform10.UserVisibleError.UserVisibleError(msg));
           return;
         }
@@ -19664,7 +19803,7 @@ var PseudoStateMarkerDecorator = class _PseudoStateMarkerDecorator {
     }
     return {
       color: "var(--sys-color-orange-bright)",
-      title: i18nString15(UIStrings16.elementStateS, { PH1: ":" + pseudoState.join(", :") })
+      title: i18nString16(UIStrings17.elementStateS, { PH1: ":" + pseudoState.join(", :") })
     };
   }
 };
@@ -19792,14 +19931,14 @@ __export(EventListenersWidget_exports, {
   EventListenersWidget: () => EventListenersWidget
 });
 import * as Common15 from "./../../core/common/common.js";
-import * as i18n34 from "./../../core/i18n/i18n.js";
+import * as i18n36 from "./../../core/i18n/i18n.js";
 import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
 import { html as html16, render as render14 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "./../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting: bindToSetting2 } = UI23.UIUtils;
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Title of show framework listeners setting in event listeners widget of the elements panel
    */
@@ -19833,8 +19972,8 @@ var UIStrings17 = {
    */
   resolveEventListenersBoundWith: "Resolve event listeners bound with framework"
 };
-var str_17 = i18n34.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings17);
-var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n36.i18n.registerUIStrings("panels/elements/EventListenersWidget.ts", UIStrings18);
+var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
 var { widget: widget3 } = UI23.Widget;
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW9 = (input, _output, target) => {
@@ -19842,13 +19981,13 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     <div jslog=${VisualLogging14.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
-        <devtools-checkbox title=${i18nString16(UIStrings17.showListenersOnTheAncestors)}
+        <devtools-checkbox title=${i18nString17(UIStrings18.showListenersOnTheAncestors)}
           ${bindToSetting2(input.showForAncestorsSetting)}>
-          ${i18nString16(UIStrings17.ancestors)}
+          ${i18nString17(UIStrings18.ancestors)}
         </devtools-checkbox>
         <select class="dispatch-filter"
-          title=${i18nString16(UIStrings17.eventListenersCategory)}
-          aria-label=${i18nString16(UIStrings17.eventListenersCategory)}
+          title=${i18nString17(UIStrings18.eventListenersCategory)}
+          aria-label=${i18nString17(UIStrings18.eventListenersCategory)}
           jslog=${VisualLogging14.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
           ${input.dispatchFilters.map((filter) => html16`
@@ -19856,9 +19995,9 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
               ${filter.name}
             </option>`)}
         </select>
-        <devtools-checkbox title=${i18nString16(UIStrings17.resolveEventListenersBoundWith)}
+        <devtools-checkbox title=${i18nString17(UIStrings18.resolveEventListenersBoundWith)}
           ${bindToSetting2(input.showFrameworkListenersSetting)}>
-          ${i18nString16(UIStrings17.frameworkListeners)}
+          ${i18nString17(UIStrings18.frameworkListeners)}
         </devtools-checkbox>
       </devtools-toolbar>
       ${widget3(EventListeners.EventListenersView.EventListenersView, {
@@ -19882,7 +20021,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
     this.dispatchFilterBySetting = Common15.Settings.Settings.instance().createSetting("event-listener-dispatch-filter-type", DispatchFilterBy.All);
     this.dispatchFilterBySetting.addChangeListener(this.requestUpdate.bind(this));
     this.showFrameworkListenersSetting = Common15.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
-    this.showFrameworkListenersSetting.setTitle(i18nString16(UIStrings17.frameworkListeners));
+    this.showFrameworkListenersSetting.setTitle(i18nString17(UIStrings18.frameworkListeners));
     this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
     UI23.Context.Context.instance().addFlavorChangeListener(SDK20.DOMModel.DOMNode, this.requestUpdate.bind(this));
     this.requestUpdate();
@@ -19908,9 +20047,9 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
       },
       onEventListenersViewChange: this.requestUpdate.bind(this),
       dispatchFilters: [
-        { name: i18nString16(UIStrings17.all), value: DispatchFilterBy.All },
-        { name: i18nString16(UIStrings17.passive), value: DispatchFilterBy.Passive },
-        { name: i18nString16(UIStrings17.blocking), value: DispatchFilterBy.Blocking }
+        { name: i18nString17(UIStrings18.all), value: DispatchFilterBy.All },
+        { name: i18nString17(UIStrings18.passive), value: DispatchFilterBy.Passive },
+        { name: i18nString17(UIStrings18.blocking), value: DispatchFilterBy.Blocking }
       ],
       selectedDispatchFilter: dispatchFilter,
       eventListenerObjects: [],
@@ -20007,7 +20146,7 @@ __export(PropertiesWidget_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common16 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n36 from "./../../core/i18n/i18n.js";
+import * as i18n38 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -20042,7 +20181,7 @@ var propertiesWidget_css_default = `/*
 var OBJECT_GROUP_NAME = "properties-sidebar-pane";
 var { bindToSetting: bindToSetting3 } = UI24.UIUtils;
 var { repeat: repeat2 } = Directives3;
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Text on the checkbox in the Properties tab of the Elements panel, which controls whether
    * all properties of the currently selected DOM element are shown, or only meaningful properties (i.e.
@@ -20061,8 +20200,8 @@ var UIStrings18 = {
    */
   noMatchingProperty: "No matching property"
 };
-var str_18 = i18n36.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings18);
-var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n38.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings19);
+var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW10 = (input, _output, target) => {
   render15(html17`
     <div jslog=${VisualLogging15.pane("element-properties").track({ resize: true })}>
@@ -20075,13 +20214,13 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
             @regextoggle=${input.onRegexToggled}
             style="flex-grow:1; flex-shrink:1"
           ></devtools-toolbar-input>
-          <devtools-checkbox title=${i18nString17(UIStrings18.showAllTooltip)} ${bindToSetting3(getShowAllPropertiesSetting())}>
-            ${i18nString17(UIStrings18.showAll)}
+          <devtools-checkbox title=${i18nString18(UIStrings19.showAllTooltip)} ${bindToSetting3(getShowAllPropertiesSetting())}>
+            ${i18nString18(UIStrings19.showAll)}
           </devtools-checkbox>
         </devtools-toolbar>
       </div>
       ${input.objectTree && input.allChildrenFiltered ? html17`
-        <div class="gray-info-message">${i18nString17(UIStrings18.noMatchingProperty)}</div>
+        <div class="gray-info-message">${i18nString18(UIStrings19.noMatchingProperty)}</div>
       ` : nothing7}
       <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html17`
         <ul role=tree class="source-code object-properties-section">
@@ -20221,7 +20360,7 @@ __export(ClassesPaneWidget_exports, {
   ClassesPaneWidget: () => ClassesPaneWidget
 });
 import * as Common17 from "./../../core/common/common.js";
-import * as i18n38 from "./../../core/i18n/i18n.js";
+import * as i18n40 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
@@ -20274,7 +20413,7 @@ var classesPaneWidget_css_default = `/**
 /*# sourceURL=${import.meta.resolve("./classesPaneWidget.css")} */`;
 
 // gen/front_end/panels/elements/ClassesPaneWidget.js
-var UIStrings19 = {
+var UIStrings20 = {
   /**
    * @description Prompt text for a text field in the Classes Pane Widget of the Elements panel.
    * Class refers to a CSS class.
@@ -20296,8 +20435,8 @@ var UIStrings19 = {
    */
   elementClasses: "Element Classes"
 };
-var str_19 = i18n38.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings19);
-var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ClassesPaneWidget.ts", UIStrings20);
+var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
 var ClassesPaneWidget = class extends UI25.Widget.Widget {
   input;
   classesContainer;
@@ -20322,7 +20461,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     this.prompt.setAutocompletionTimeout(0);
     this.prompt.renderAsBlock();
     const proxyElement = this.prompt.attach(this.input);
-    this.prompt.setPlaceholder(i18nString18(UIStrings19.addNewClass));
+    this.prompt.setPlaceholder(i18nString19(UIStrings20.addNewClass));
     this.prompt.addEventListener("TextChanged", this.onTextChanged, this);
     proxyElement.addEventListener("keydown", this.onKeyDown.bind(this), false);
     SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
@@ -20368,7 +20507,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
       this.toggleClass(node, className, true);
     }
     const joinClassString = classNames.join(" ");
-    const announcementString = classNames.length > 1 ? i18nString18(UIStrings19.classesSAdded, { PH1: joinClassString }) : i18nString18(UIStrings19.classSAdded, { PH1: joinClassString });
+    const announcementString = classNames.length > 1 ? i18nString19(UIStrings20.classesSAdded, { PH1: joinClassString }) : i18nString19(UIStrings20.classSAdded, { PH1: joinClassString });
     UI25.ARIAUtils.LiveAnnouncer.alert(announcementString);
     this.installNodeClasses(node);
     this.update();
@@ -20490,7 +20629,7 @@ var ButtonProvider3 = class _ButtonProvider {
   button;
   view;
   constructor() {
-    this.button = new UI25.Toolbar.ToolbarToggle(i18nString18(UIStrings19.elementClasses), "class");
+    this.button = new UI25.Toolbar.ToolbarToggle(i18nString19(UIStrings20.elementClasses), "class");
     this.button.element.style.setProperty("--dot-toggle-top", "12px");
     this.button.element.style.setProperty("--dot-toggle-left", "18px");
     this.button.element.setAttribute("jslog", `${VisualLogging16.toggleSubpane("elements-classes").track({ click: true })}`);
@@ -20590,7 +20729,7 @@ __export(ElementStatePaneWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
-import * as i18n40 from "./../../core/i18n/i18n.js";
+import * as i18n42 from "./../../core/i18n/i18n.js";
 import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
@@ -20656,7 +20795,7 @@ var elementStatePaneWidget_css_default = `/**
 
 // gen/front_end/panels/elements/ElementStatePaneWidget.js
 var { bindToSetting: bindToSetting4 } = UI26.UIUtils;
-var UIStrings20 = {
+var UIStrings21 = {
   /**
    * @description Title of a section in the Element State Pane Widget of the Elements panel. The
    * controls in this section allow users to force a particular state on the selected element, e.g. a
@@ -20686,8 +20825,8 @@ var UIStrings20 = {
    */
   learnMore: "Learn more"
 };
-var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings20);
-var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
+var str_21 = i18n42.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings21);
+var i18nString20 = i18n42.i18n.getLocalizedString.bind(void 0, str_21);
 var SpecificPseudoStates;
 (function(SpecificPseudoStates2) {
   SpecificPseudoStates2["ENABLED"] = "enabled";
@@ -20727,8 +20866,8 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
     <div class="styles-element-state-pane"
         jslog=${VisualLogging17.pane("element-states")}>
       <div class="page-state-checkbox">
-        <devtools-checkbox class="small" title=${i18nString19(UIStrings20.emulatesAFocusedPage)}
-            ${bindToSetting4("emulate-page-focus")}>${i18nString19(UIStrings20.emulateFocusedPage)}</devtools-checkbox>
+        <devtools-checkbox class="small" title=${i18nString20(UIStrings21.emulatesAFocusedPage)}
+            ${bindToSetting4("emulate-page-focus")}>${i18nString20(UIStrings21.emulateFocusedPage)}</devtools-checkbox>
         <devtools-button
             @click=${() => UIHelpers.openInNewTab("https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page")}
            .data=${{
@@ -20736,18 +20875,18 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
     iconName: "help",
     size: "SMALL",
     jslogContext: "learn-more",
-    title: i18nString19(UIStrings20.learnMore)
+    title: i18nString20(UIStrings21.learnMore)
   }}></devtools-button>
       </div>
       <div class="section-header">
-        <span>${i18nString19(UIStrings20.forceElementState)}</span>
+        <span>${i18nString20(UIStrings21.forceElementState)}</span>
       </div>
       <div class="pseudo-states-container" role="presentation">
         ${input.states.filter(({ type }) => type === "persistent").map((state) => createElementStateCheckbox(state))}
       </div>
       <details class="specific-details" ?hidden=${input.states.filter(({ type }) => type === "specific").every((state) => state.hidden)}>
         <summary class="force-specific-element-header section-header">
-          <span>${i18nString19(UIStrings20.forceElementSpecificStates)}</span>
+          <span>${i18nString20(UIStrings21.forceElementSpecificStates)}</span>
         </summary>
         <div class="pseudo-states-container specific-pseudo-states" role="presentation">
           ${input.states.filter(({ type, hidden }) => type === "specific" && !hidden).map((state) => createElementStateCheckbox(state))}
@@ -20990,7 +21129,7 @@ var ButtonProvider4 = class _ButtonProvider {
   button;
   view;
   constructor() {
-    this.button = new UI26.Toolbar.ToolbarToggle(i18nString19(UIStrings20.toggleElementState), "hover");
+    this.button = new UI26.Toolbar.ToolbarToggle(i18nString20(UIStrings21.toggleElementState), "hover");
     this.button.addEventListener("Click", this.clicked, this);
     this.button.element.classList.add("element-state");
     this.button.element.setAttribute("jslog", `${VisualLogging17.toggleSubpane("element-states").track({ click: true })}`);
@@ -21334,6 +21473,7 @@ export {
   AccessibilityTreeView_exports as AccessibilityTreeView,
   AdoptedStyleSheetTreeElement_exports as AdoptedStyleSheetTreeElement,
   CSSRuleValidator_exports as CSSRuleValidator,
+  CSSSpecificityBreakdown_exports as CSSSpecificityBreakdown,
   CSSValueTraceView_exports as CSSValueTraceView,
   ClassesPaneWidget_exports as ClassesPaneWidget,
   ColorSwatchPopoverIcon_exports as ColorSwatchPopoverIcon,

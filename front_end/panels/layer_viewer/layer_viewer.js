@@ -2429,7 +2429,6 @@ var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.e
   #viewOutput;
   constructor(element, view = DEFAULT_VIEW3) {
     super(element);
-    this.contentElement.classList.add("paint-profiler-overview");
     this.#view = view;
     this.innerBarWidth = 4 * window.devicePixelRatio;
     this.minBarHeight = window.devicePixelRatio;

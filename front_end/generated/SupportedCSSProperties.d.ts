@@ -5,6 +5,7 @@ export const generatedProperties: ({
     runtime_flag_status: string;
     keywords?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -14,6 +15,7 @@ export const generatedProperties: ({
     runtime_flag_status: string;
     longhands?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -23,9 +25,11 @@ export const generatedProperties: ({
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
     keywords?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
+    devtools_keywords: string[];
     name: string;
     longhands?: undefined;
     runtime_flag?: undefined;
@@ -41,9 +45,41 @@ export const generatedProperties: ({
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
+    name: string;
+    longhands?: undefined;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+    keywords?: undefined;
+    inherited?: undefined;
+    devtools_keywords?: undefined;
+    is_descriptor?: undefined;
+    is_property?: undefined;
+} | {
+    longhands: string[];
+    name: string;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+    keywords?: undefined;
+    inherited?: undefined;
+    devtools_keywords?: undefined;
+    is_descriptor?: undefined;
+    is_property?: undefined;
+} | {
+    inherited: boolean;
+    keywords: string[];
+    name: string;
+    longhands?: undefined;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+    devtools_keywords?: undefined;
+    is_descriptor?: undefined;
+    is_property?: undefined;
+} | {
+    devtools_keywords: string[];
     longhands: string[];
     name: string;
     runtime_flag?: undefined;
@@ -54,20 +90,12 @@ export const generatedProperties: ({
     is_property?: undefined;
 } | {
     inherited: boolean;
-    keywords: string[];
-    name: string;
-    longhands?: undefined;
-    runtime_flag?: undefined;
-    runtime_flag_status?: undefined;
-    is_descriptor?: undefined;
-    is_property?: undefined;
-} | {
-    inherited: boolean;
     longhands: string[];
     name: string;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
     keywords?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -79,6 +107,7 @@ export const generatedProperties: ({
     runtime_flag_status?: undefined;
     keywords?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
 } | {
     is_descriptor: boolean;
     is_property: boolean;
@@ -88,6 +117,7 @@ export const generatedProperties: ({
     longhands?: undefined;
     keywords?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
 } | {
     inherited: boolean;
     keywords: string[];
@@ -95,6 +125,7 @@ export const generatedProperties: ({
     runtime_flag: string;
     runtime_flag_status: string;
     longhands?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -104,6 +135,7 @@ export const generatedProperties: ({
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -113,6 +145,7 @@ export const generatedProperties: ({
     runtime_flag: string;
     runtime_flag_status: string;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -122,6 +155,7 @@ export const generatedProperties: ({
     longhands?: undefined;
     keywords?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -132,6 +166,7 @@ export const generatedProperties: ({
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
     keywords?: undefined;
+    devtools_keywords?: undefined;
     is_property?: undefined;
 } | {
     inherited: boolean;
@@ -141,6 +176,17 @@ export const generatedProperties: ({
     longhands?: undefined;
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
+    devtools_keywords?: undefined;
+    is_property?: undefined;
+} | {
+    devtools_keywords: string[];
+    inherited: boolean;
+    longhands: string[];
+    name: string;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+    keywords?: undefined;
+    is_descriptor?: undefined;
     is_property?: undefined;
 } | {
     inherited: boolean;
@@ -150,6 +196,7 @@ export const generatedProperties: ({
     runtime_flag?: undefined;
     runtime_flag_status?: undefined;
     keywords?: undefined;
+    devtools_keywords?: undefined;
     is_property?: undefined;
 } | {
     keywords: string[];
@@ -158,6 +205,7 @@ export const generatedProperties: ({
     runtime_flag_status: null;
     longhands?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
@@ -168,6 +216,7 @@ export const generatedProperties: ({
     runtime_flag_status: string;
     longhands?: undefined;
     inherited?: undefined;
+    devtools_keywords?: undefined;
     is_property?: undefined;
 } | {
     is_descriptor: boolean;
@@ -177,15 +226,7 @@ export const generatedProperties: ({
     runtime_flag_status?: undefined;
     keywords?: undefined;
     inherited?: undefined;
-    is_property?: undefined;
-} | {
-    inherited: boolean;
-    name: string;
-    runtime_flag: string;
-    runtime_flag_status: string;
-    longhands?: undefined;
-    keywords?: undefined;
-    is_descriptor?: undefined;
+    devtools_keywords?: undefined;
     is_property?: undefined;
 } | {
     inherited: boolean;
@@ -194,11 +235,15 @@ export const generatedProperties: ({
     runtime_flag: string;
     runtime_flag_status: string;
     keywords?: undefined;
+    devtools_keywords?: undefined;
     is_descriptor?: undefined;
     is_property?: undefined;
 })[];
 export const generatedPropertyValues: {
     "-alternative-webkit-line-clamp-longhand": {
+        values: string[];
+    };
+    "-webkit-border-image": {
         values: string[];
     };
     "-webkit-box-align": {
@@ -228,6 +273,9 @@ export const generatedPropertyValues: {
     "-webkit-locale": {
         values: string[];
     };
+    "-webkit-mask-box-image": {
+        values: string[];
+    };
     "-webkit-mask-box-image-repeat": {
         values: string[];
     };
@@ -238,6 +286,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "-webkit-rtl-ordering": {
+        values: string[];
+    };
+    "-webkit-ruby-position": {
         values: string[];
     };
     "-webkit-text-combine": {
@@ -315,6 +366,9 @@ export const generatedPropertyValues: {
     "backface-visibility": {
         values: string[];
     };
+    background: {
+        values: string[];
+    };
     "background-attachment": {
         values: string[];
     };
@@ -346,6 +400,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "block-size": {
+        values: string[];
+    };
+    border: {
         values: string[];
     };
     "border-block-end-style": {
@@ -489,6 +546,9 @@ export const generatedPropertyValues: {
     "color-rendering": {
         values: string[];
     };
+    "color-scheme": {
+        values: string[];
+    };
     "column-count": {
         values: string[];
     };
@@ -537,6 +597,9 @@ export const generatedPropertyValues: {
     "column-wrap": {
         values: string[];
     };
+    columns: {
+        values: string[];
+    };
     contain: {
         values: string[];
     };
@@ -550,6 +613,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "contain-intrinsic-width": {
+        values: string[];
+    };
+    container: {
         values: string[];
     };
     "container-name": {
@@ -663,10 +729,16 @@ export const generatedPropertyValues: {
     "field-sizing": {
         values: string[];
     };
+    fill: {
+        values: string[];
+    };
     "fill-rule": {
         values: string[];
     };
     filter: {
+        values: string[];
+    };
+    flex: {
         values: string[];
     };
     "flex-basis": {
@@ -686,6 +758,9 @@ export const generatedPropertyValues: {
     };
     "flow-tolerance": {
         values: string[];
+    };
+    font: {
+        values: never[];
     };
     "font-feature-settings": {
         values: string[];
@@ -712,6 +787,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "font-style": {
+        values: string[];
+    };
+    "font-synthesis": {
         values: string[];
     };
     "font-synthesis-small-caps": {
@@ -756,6 +834,9 @@ export const generatedPropertyValues: {
     "frame-sizing": {
         values: string[];
     };
+    grid: {
+        values: string[];
+    };
     "grid-auto-columns": {
         values: string[];
     };
@@ -781,6 +862,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "grid-row-start": {
+        values: string[];
+    };
+    "grid-template": {
         values: string[];
     };
     "grid-template-areas": {
@@ -904,6 +988,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "marker-start": {
+        values: string[];
+    };
+    mask: {
         values: string[];
     };
     "mask-composite": {
@@ -1071,6 +1158,9 @@ export const generatedPropertyValues: {
     right: {
         values: string[];
     };
+    rotate: {
+        values: string[];
+    };
     "row-gap": {
         values: string[];
     };
@@ -1117,6 +1207,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     ry: {
+        values: string[];
+    };
+    scale: {
         values: string[];
     };
     "scroll-axis-lock": {
@@ -1194,6 +1287,9 @@ export const generatedPropertyValues: {
     "stop-color": {
         values: string[];
     };
+    stroke: {
+        values: string[];
+    };
     "stroke-dasharray": {
         values: string[];
     };
@@ -1246,6 +1342,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "text-emphasis-color": {
+        values: string[];
+    };
+    "text-fit": {
         values: string[];
     };
     "text-justify": {
@@ -1323,6 +1422,9 @@ export const generatedPropertyValues: {
     "transition-timing-function": {
         values: string[];
     };
+    translate: {
+        values: string[];
+    };
     "trigger-scope": {
         values: string[];
     };
@@ -1336,6 +1438,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "vertical-align": {
+        values: string[];
+    };
+    "view-timeline": {
         values: string[];
     };
     "view-timeline-inset": {

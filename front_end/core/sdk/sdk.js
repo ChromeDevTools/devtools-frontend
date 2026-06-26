@@ -99,6 +99,13 @@ var generatedProperties = [
     "name": "-webkit-border-horizontal-spacing"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "stretch",
+      "repeat",
+      "space",
+      "round"
+    ],
     "name": "-webkit-border-image"
   },
   {
@@ -206,6 +213,13 @@ var generatedProperties = [
     "name": "-webkit-locale"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "stretch",
+      "repeat",
+      "space",
+      "round"
+    ],
     "longhands": [
       "-webkit-mask-box-image-source",
       "-webkit-mask-box-image-slice",
@@ -264,6 +278,10 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "before",
+      "after"
+    ],
     "name": "-webkit-ruby-position"
   },
   {
@@ -1112,6 +1130,29 @@ var generatedProperties = [
     "name": "backface-visibility"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "left",
+      "right",
+      "center",
+      "top",
+      "bottom",
+      "repeat",
+      "no-repeat",
+      "repeat-x",
+      "repeat-y",
+      "round",
+      "space",
+      "scroll",
+      "fixed",
+      "local",
+      "border-box",
+      "padding-box",
+      "content-box",
+      "text",
+      "border-area",
+      "currentcolor"
+    ],
     "longhands": [
       "background-image",
       "background-position-x",
@@ -1253,6 +1294,22 @@ var generatedProperties = [
     "name": "block-size"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "hidden",
+      "inset",
+      "groove",
+      "outset",
+      "ridge",
+      "dotted",
+      "dashed",
+      "solid",
+      "double",
+      "thin",
+      "medium",
+      "thick",
+      "currentcolor"
+    ],
     "longhands": [
       "border-top-color",
       "border-top-style",
@@ -1938,6 +1995,11 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "normal",
+      "light",
+      "dark"
+    ],
     "name": "color-scheme"
   },
   {
@@ -2134,6 +2196,9 @@ var generatedProperties = [
     "runtime_flag_status": "stable"
   },
   {
+    "devtools_keywords": [
+      "auto"
+    ],
     "longhands": [
       "column-width",
       "column-count",
@@ -2151,8 +2216,7 @@ var generatedProperties = [
       "layout",
       "style",
       "paint",
-      "inline-size",
-      "block-size"
+      "inline-size"
     ],
     "name": "contain"
   },
@@ -2188,6 +2252,9 @@ var generatedProperties = [
     "name": "contain-intrinsic-width"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "longhands": [
       "container-name",
       "container-type"
@@ -2756,6 +2823,9 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "none"
+    ],
     "name": "fill"
   },
   {
@@ -2777,6 +2847,15 @@ var generatedProperties = [
     "name": "filter"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "auto",
+      "content",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
+    ],
     "longhands": [
       "flex-grow",
       "flex-shrink",
@@ -2859,6 +2938,7 @@ var generatedProperties = [
     "runtime_flag_status": "experimental"
   },
   {
+    "devtools_keywords": [],
     "inherited": true,
     "longhands": [
       "font-style",
@@ -2995,6 +3075,9 @@ var generatedProperties = [
     "name": "font-style"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "inherited": true,
     "longhands": [
       "font-synthesis-weight",
@@ -3177,6 +3260,9 @@ var generatedProperties = [
     "name": "gap"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "longhands": [
       "grid-template-rows",
       "grid-template-columns",
@@ -3290,6 +3376,9 @@ var generatedProperties = [
     "name": "grid-row-start"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "longhands": [
       "grid-template-rows",
       "grid-template-columns",
@@ -3743,6 +3832,20 @@ var generatedProperties = [
     "name": "marker-start"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "left",
+      "right",
+      "center",
+      "top",
+      "bottom",
+      "subtract",
+      "intersect",
+      "exclude",
+      "alpha",
+      "luminance",
+      "match-source"
+    ],
     "longhands": [
       "mask-image",
       "-webkit-mask-position-x",
@@ -4395,7 +4498,43 @@ var generatedProperties = [
       "end",
       "self-start",
       "self-end",
-      "all"
+      "span-all",
+      "span-left",
+      "span-right",
+      "span-x-start",
+      "span-x-end",
+      "self-x-start",
+      "self-x-end",
+      "span-self-x-start",
+      "span-self-x-end",
+      "span-top",
+      "span-bottom",
+      "span-y-start",
+      "span-y-end",
+      "self-y-start",
+      "self-y-end",
+      "span-self-y-start",
+      "span-self-y-end",
+      "block-start",
+      "block-end",
+      "span-block-start",
+      "span-block-end",
+      "inline-start",
+      "inline-end",
+      "span-inline-start",
+      "span-inline-end",
+      "self-block-start",
+      "self-block-end",
+      "span-self-block-start",
+      "span-self-block-end",
+      "self-inline-start",
+      "self-inline-end",
+      "span-self-inline-start",
+      "span-self-inline-end",
+      "span-start",
+      "span-end",
+      "span-self-start",
+      "span-self-end"
     ],
     "name": "position-area"
   },
@@ -4511,6 +4650,9 @@ var generatedProperties = [
     "name": "right"
   },
   {
+    "keywords": [
+      "none"
+    ],
     "name": "rotate"
   },
   {
@@ -4684,6 +4826,7 @@ var generatedProperties = [
     "inherited": true,
     "keywords": [
       "auto",
+      "none",
       "spaces"
     ],
     "name": "ruby-overhang",
@@ -4838,6 +4981,9 @@ var generatedProperties = [
     "name": "ry"
   },
   {
+    "keywords": [
+      "none"
+    ],
     "name": "scale"
   },
   {
@@ -5151,6 +5297,10 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "none",
+      "context-stroke"
+    ],
     "name": "stroke"
   },
   {
@@ -5397,6 +5547,11 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "none",
+      "shrink",
+      "grow"
+    ],
     "name": "text-fit",
     "runtime_flag": "CssTextFit",
     "runtime_flag_status": "stable"
@@ -5709,6 +5864,9 @@ var generatedProperties = [
     "name": "transition-timing-function"
   },
   {
+    "keywords": [
+      "none"
+    ],
     "name": "translate"
   },
   {
@@ -5771,6 +5929,9 @@ var generatedProperties = [
     "name": "vertical-align"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "longhands": [
       "view-timeline-name",
       "view-timeline-axis",
@@ -5919,6 +6080,15 @@ var generatedPropertyValues = {
       "none"
     ]
   },
+  "-webkit-border-image": {
+    "values": [
+      "none",
+      "stretch",
+      "repeat",
+      "space",
+      "round"
+    ]
+  },
   "-webkit-box-align": {
     "values": [
       "stretch",
@@ -5981,6 +6151,15 @@ var generatedPropertyValues = {
       "auto"
     ]
   },
+  "-webkit-mask-box-image": {
+    "values": [
+      "none",
+      "stretch",
+      "repeat",
+      "space",
+      "round"
+    ]
+  },
   "-webkit-mask-box-image-repeat": {
     "values": [
       "repeat",
@@ -6003,6 +6182,12 @@ var generatedPropertyValues = {
     "values": [
       "logical",
       "visual"
+    ]
+  },
+  "-webkit-ruby-position": {
+    "values": [
+      "before",
+      "after"
     ]
   },
   "-webkit-text-combine": {
@@ -6204,6 +6389,31 @@ var generatedPropertyValues = {
       "hidden"
     ]
   },
+  "background": {
+    "values": [
+      "none",
+      "left",
+      "right",
+      "center",
+      "top",
+      "bottom",
+      "repeat",
+      "no-repeat",
+      "repeat-x",
+      "repeat-y",
+      "round",
+      "space",
+      "scroll",
+      "fixed",
+      "local",
+      "border-box",
+      "padding-box",
+      "content-box",
+      "text",
+      "border-area",
+      "currentcolor"
+    ]
+  },
   "background-attachment": {
     "values": [
       "scroll",
@@ -6287,6 +6497,24 @@ var generatedPropertyValues = {
   "block-size": {
     "values": [
       "auto"
+    ]
+  },
+  "border": {
+    "values": [
+      "none",
+      "hidden",
+      "inset",
+      "groove",
+      "outset",
+      "ridge",
+      "dotted",
+      "dashed",
+      "solid",
+      "double",
+      "thin",
+      "medium",
+      "thick",
+      "currentcolor"
     ]
   },
   "border-block-end-style": {
@@ -6670,6 +6898,13 @@ var generatedPropertyValues = {
       "optimizequality"
     ]
   },
+  "color-scheme": {
+    "values": [
+      "normal",
+      "light",
+      "dark"
+    ]
+  },
   "column-count": {
     "values": [
       "auto"
@@ -6770,6 +7005,11 @@ var generatedPropertyValues = {
       "wrap"
     ]
   },
+  "columns": {
+    "values": [
+      "auto"
+    ]
+  },
   "contain": {
     "values": [
       "none",
@@ -6779,8 +7019,7 @@ var generatedPropertyValues = {
       "layout",
       "style",
       "paint",
-      "inline-size",
-      "block-size"
+      "inline-size"
     ]
   },
   "contain-intrinsic-block-size": {
@@ -6799,6 +7038,11 @@ var generatedPropertyValues = {
     ]
   },
   "contain-intrinsic-width": {
+    "values": [
+      "none"
+    ]
+  },
+  "container": {
     "values": [
       "none"
     ]
@@ -7100,6 +7344,11 @@ var generatedPropertyValues = {
       "content"
     ]
   },
+  "fill": {
+    "values": [
+      "none"
+    ]
+  },
   "fill-rule": {
     "values": [
       "nonzero",
@@ -7109,6 +7358,17 @@ var generatedPropertyValues = {
   "filter": {
     "values": [
       "none"
+    ]
+  },
+  "flex": {
+    "values": [
+      "none",
+      "auto",
+      "content",
+      "min-content",
+      "max-content",
+      "fit-content",
+      "stretch"
     ]
   },
   "flex-basis": {
@@ -7155,6 +7415,9 @@ var generatedPropertyValues = {
       "normal",
       "infinite"
     ]
+  },
+  "font": {
+    "values": []
   },
   "font-feature-settings": {
     "values": [
@@ -7230,6 +7493,11 @@ var generatedPropertyValues = {
       "normal",
       "italic",
       "oblique"
+    ]
+  },
+  "font-synthesis": {
+    "values": [
+      "none"
     ]
   },
   "font-synthesis-small-caps": {
@@ -7351,6 +7619,11 @@ var generatedPropertyValues = {
       "content-inline-size"
     ]
   },
+  "grid": {
+    "values": [
+      "none"
+    ]
+  },
   "grid-auto-columns": {
     "values": [
       "auto",
@@ -7404,6 +7677,11 @@ var generatedPropertyValues = {
   "grid-row-start": {
     "values": [
       "auto"
+    ]
+  },
+  "grid-template": {
+    "values": [
+      "none"
     ]
   },
   "grid-template-areas": {
@@ -7666,6 +7944,22 @@ var generatedPropertyValues = {
   "marker-start": {
     "values": [
       "none"
+    ]
+  },
+  "mask": {
+    "values": [
+      "none",
+      "left",
+      "right",
+      "center",
+      "top",
+      "bottom",
+      "subtract",
+      "intersect",
+      "exclude",
+      "alpha",
+      "luminance",
+      "match-source"
     ]
   },
   "mask-composite": {
@@ -8036,7 +8330,43 @@ var generatedPropertyValues = {
       "end",
       "self-start",
       "self-end",
-      "all"
+      "span-all",
+      "span-left",
+      "span-right",
+      "span-x-start",
+      "span-x-end",
+      "self-x-start",
+      "self-x-end",
+      "span-self-x-start",
+      "span-self-x-end",
+      "span-top",
+      "span-bottom",
+      "span-y-start",
+      "span-y-end",
+      "self-y-start",
+      "self-y-end",
+      "span-self-y-start",
+      "span-self-y-end",
+      "block-start",
+      "block-end",
+      "span-block-start",
+      "span-block-end",
+      "inline-start",
+      "inline-end",
+      "span-inline-start",
+      "span-inline-end",
+      "self-block-start",
+      "self-block-end",
+      "span-self-block-start",
+      "span-self-block-end",
+      "self-inline-start",
+      "self-inline-end",
+      "span-self-inline-start",
+      "span-self-inline-end",
+      "span-start",
+      "span-end",
+      "span-self-start",
+      "span-self-end"
     ]
   },
   "position-try-fallbacks": {
@@ -8101,6 +8431,11 @@ var generatedPropertyValues = {
   "right": {
     "values": [
       "auto"
+    ]
+  },
+  "rotate": {
+    "values": [
+      "none"
     ]
   },
   "row-gap": {
@@ -8180,6 +8515,7 @@ var generatedPropertyValues = {
   "ruby-overhang": {
     "values": [
       "auto",
+      "none",
       "spaces"
     ]
   },
@@ -8203,6 +8539,11 @@ var generatedPropertyValues = {
   "ry": {
     "values": [
       "auto"
+    ]
+  },
+  "scale": {
+    "values": [
+      "none"
     ]
   },
   "scroll-axis-lock": {
@@ -8361,6 +8702,12 @@ var generatedPropertyValues = {
       "currentcolor"
     ]
   },
+  "stroke": {
+    "values": [
+      "none",
+      "context-stroke"
+    ]
+  },
   "stroke-dasharray": {
     "values": [
       "none"
@@ -8496,6 +8843,13 @@ var generatedPropertyValues = {
   "text-emphasis-color": {
     "values": [
       "currentcolor"
+    ]
+  },
+  "text-fit": {
+    "values": [
+      "none",
+      "shrink",
+      "grow"
     ]
   },
   "text-justify": {
@@ -8679,6 +9033,11 @@ var generatedPropertyValues = {
       "step-end"
     ]
   },
+  "translate": {
+    "values": [
+      "none"
+    ]
+  },
   "trigger-scope": {
     "values": [
       "none",
@@ -8718,6 +9077,11 @@ var generatedPropertyValues = {
       "text-top",
       "text-bottom",
       "middle"
+    ]
+  },
+  "view-timeline": {
+    "values": [
+      "none"
     ]
   },
   "view-timeline-inset": {
@@ -18199,7 +18563,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     const domCascade = this.#styleToDOMCascade.get(style);
     return domCascade ? domCascade.findAvailableCSSVariables(style) : [];
   }
-  computeCSSVariable(style, variableName) {
+  computeCSSVariable(style, variableName, containerNode) {
     if (style.parentRule instanceof CSSKeyframeRule) {
       const keyframeName = style.parentRule.parentRuleName();
       const activeStyle = this.#mainDOMCascade?.styles().find((searchStyle) => {
@@ -18214,7 +18578,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       style = activeStyle;
     }
     const domCascade = this.#styleToDOMCascade.get(style);
-    return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
+    return domCascade ? domCascade.computeCSSVariable(style, variableName, containerNode) : null;
   }
   computeAttribute(style, attributeName, type) {
     const domCascade = this.#styleToDOMCascade.get(style);
@@ -18313,6 +18677,9 @@ var NodeCascade = class {
     this.styles = styles;
     this.#isInherited = isInherited;
     this.#node = node;
+  }
+  node() {
+    return this.#node;
   }
   computeActiveProperties() {
     this.propertiesState.clear();
@@ -18618,9 +18985,20 @@ var DOMInheritanceCascade = class {
         return this.#findPropertyInParentCascadeIfInherited(property) ?? this.#findCustomPropertyRegistration(property.name);
     }
   }
-  computeCSSVariable(style, variableName) {
+  nodeToNodeCascade(node) {
+    for (const nodeCascade of this.#nodeCascades) {
+      if (nodeCascade.node() === node) {
+        return nodeCascade;
+      }
+    }
+    if (this.#fallbackCascade) {
+      return this.#fallbackCascade.nodeToNodeCascade(node);
+    }
+    return null;
+  }
+  computeCSSVariable(style, variableName, containerNode) {
     this.ensureInitialized();
-    const nodeCascade = this.#styleToNodeCascade.get(style);
+    const nodeCascade = containerNode ? this.nodeToNodeCascade(containerNode) : this.#styleToNodeCascade.get(style);
     if (!nodeCascade) {
       return null;
     }

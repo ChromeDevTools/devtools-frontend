@@ -97,7 +97,7 @@ export declare class CSSMatchedStyles {
     customHighlightPseudoNames(): Set<string>;
     nodeForStyle(style: CSSStyleDeclaration): DOMNode | null;
     availableCSSVariables(style: CSSStyleDeclaration): string[];
-    computeCSSVariable(style: CSSStyleDeclaration, variableName: string): CSSVariableValue | null;
+    computeCSSVariable(style: CSSStyleDeclaration, variableName: string, containerNode?: DOMNode): CSSVariableValue | null;
     computeAttribute(style: CSSStyleDeclaration, attributeName: string, type: CSSType): string | null;
     originatingNodeForStyle(style: CSSStyleDeclaration): DOMNode | null;
     rawAttributeValueFromStyle(style: CSSStyleDeclaration, attributeName: string): string | null;

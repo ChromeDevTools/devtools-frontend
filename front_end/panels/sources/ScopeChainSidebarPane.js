@@ -132,16 +132,6 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
         }
         return scopeChainSidebarPaneInstance;
     }
-    /**
-     * @deprecated Required for legacy web tests via DebuggerTestRunner.js
-     */
-    get treeOutline() {
-        const devtoolsTree = this.contentElement.querySelector('devtools-tree');
-        if (devtoolsTree) {
-            return devtoolsTree.getInternalTreeOutlineForTest();
-        }
-        return null;
-    }
     flavorChanged(callFrame) {
         this.#scopeChainModel?.dispose();
         this.#scopeChainModel = null;

@@ -8401,6 +8401,10 @@ export const NativeFunctions = [
         signatures: [["?settings"]]
     },
     {
+        name: "setPathData",
+        signatures: [["pathData"]]
+    },
+    {
         name: "ByteLengthQueuingStrategy",
         signatures: [["init"]]
     },

@@ -332,4 +332,38 @@ export default `/**
   margin-bottom: -4px;
 }
 
+.selector-specificity-tooltip-summary {
+  white-space: nowrap;
+}
+
+.selector-specificity-tooltip-disclosure {
+  > summary {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+}
+
+.selector-specificity-tooltip-list {
+  margin: var(--sys-size-3) 0 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+
+    &::before {
+      content: "";
+      flex: none;
+      width: var(--sys-size-3);
+      height: var(--sys-size-3);
+      border-radius: 50%;
+      background-color: currentcolor;
+      /* Aligns the bullet's center with the disclosure triangle above. */
+      margin-left: var(--sys-size-2);
+    }
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('./stylesSidebarPane.css')} */`;

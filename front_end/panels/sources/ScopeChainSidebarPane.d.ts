@@ -17,10 +17,6 @@ export declare class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.
     #private;
     constructor(target?: HTMLElement, view?: View);
     static instance(): ScopeChainSidebarPane;
-    /**
-     * @deprecated Required for legacy web tests via DebuggerTestRunner.js
-     */
-    get treeOutline(): ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline | null;
     flavorChanged(callFrame: StackTrace.StackTrace.DebuggableFrameFlavor | null): void;
     performUpdate(): void;
     /**

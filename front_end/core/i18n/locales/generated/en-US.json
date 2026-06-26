@@ -7793,6 +7793,18 @@
   "panels/elements/CSSRuleValidator.ts | unusedAnchorPositioning": {
     "message": "An anchor was defined but the element is hidden."
   },
+  "panels/elements/CSSSpecificityBreakdown.ts | classLikeSpecificity": {
+    "message": "(b) Class-like: {PH1}"
+  },
+  "panels/elements/CSSSpecificityBreakdown.ts | idLikeSpecificity": {
+    "message": "(a) ID-like: {PH1}"
+  },
+  "panels/elements/CSSSpecificityBreakdown.ts | specificity": {
+    "message": "Specificity: ({PH1},{PH2},{PH3})"
+  },
+  "panels/elements/CSSSpecificityBreakdown.ts | typeLikeSpecificity": {
+    "message": "(c) Type-like: {PH1}"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "Invalid element or text node within <optgroup>"
   },
@@ -8377,9 +8389,6 @@
   },
   "panels/elements/StylePropertiesSection.ts | showAllPropertiesSMore": {
     "message": "Show all properties ({PH1} more)"
-  },
-  "panels/elements/StylePropertiesSection.ts | specificity": {
-    "message": "Specificity: {PH1}"
   },
   "panels/elements/StylePropertiesSection.ts | styleAttribute": {
     "message": "style attribute"

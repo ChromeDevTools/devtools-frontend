@@ -1303,6 +1303,9 @@ var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
   CSSQuery: () => CSSQuery
 });
+import "./../../../ui/components/tooltips/tooltips.js";
+import "./../../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as SDK from "./../../../core/sdk/sdk.js";
 import * as UI3 from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
@@ -1335,15 +1338,71 @@ var CSSQuery = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #queryPrefix = "";
   #queryName;
-  #queryText = "";
+  #queryText = [];
   #onQueryTextClick;
+  #onLinkActivate;
+  #getPopoverContents;
   #jslogContext;
+  #matchedStyles;
+  #style;
+  #containerNode;
+  #tooltipPrefix = "";
   set data(data) {
     this.#queryPrefix = data.queryPrefix;
     this.#queryName = data.queryName;
-    this.#queryText = data.queryText;
+    this.#queryText = [{ text: data.queryText, isVariable: false }];
     this.#onQueryTextClick = data.onQueryTextClick;
+    this.#onLinkActivate = data.onLinkActivate;
+    this.#getPopoverContents = data.getPopoverContents;
     this.#jslogContext = data.jslogContext;
+    this.#render();
+  }
+  parseStyleQueries(matchedStyles, style, containerNode, tooltipPrefix) {
+    this.#matchedStyles = matchedStyles;
+    this.#style = style;
+    this.#containerNode = containerNode;
+    this.#tooltipPrefix = tooltipPrefix;
+    const queryText = this.#queryText[0]?.text;
+    if (!queryText) {
+      return;
+    }
+    const prefix = "if(";
+    const suffix = ": 1)";
+    const ast = SDK.CSSPropertyParser.tokenizeDeclaration("--query", prefix + queryText + suffix);
+    if (!ast) {
+      return;
+    }
+    const matcher = new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style);
+    const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
+    const matchedNodes = SDK.CSSPropertyParser.TreeSearch.findAll(ast, (node) => {
+      return matchedResult.getMatch(node) instanceof SDK.CSSPropertyParserMatchers.VariableNameMatch;
+    });
+    matchedNodes.sort((a, b) => a.from - b.from);
+    const sections = [];
+    const valueOffset = ast.rule.indexOf(ast.propertyValue) + prefix.length;
+    let lastOffset = 0;
+    for (const node of matchedNodes) {
+      const start = node.from - valueOffset;
+      const end = node.to - valueOffset;
+      if (start > lastOffset) {
+        sections.push({
+          text: queryText.substring(lastOffset, start),
+          isVariable: false
+        });
+      }
+      sections.push({
+        text: queryText.substring(start, end),
+        isVariable: true
+      });
+      lastOffset = end;
+    }
+    if (lastOffset < queryText.length) {
+      sections.push({
+        text: queryText.substring(lastOffset),
+        isVariable: false
+      });
+    }
+    this.#queryText = sections;
     this.#render();
   }
   #render() {
@@ -1352,7 +1411,38 @@ var CSSQuery = class extends HTMLElement {
       editable: Boolean(this.#onQueryTextClick)
     });
     const queryText = html6`
-      <span class="query-text" @click=${this.#onQueryTextClick}>${this.#queryText}</span>
+      <span class="query-text" @click=${this.#onQueryTextClick}>${this.#queryText.map((section, index) => {
+      if (section.isVariable && this.#matchedStyles && this.#style && this.#onLinkActivate) {
+        const variableName = section.text;
+        const variable = this.#matchedStyles.computeCSSVariable(this.#style, variableName, this.#containerNode);
+        const isDefined = variable !== null && variable.value !== void 0;
+        const onLinkActivate = () => {
+          if (this.#onLinkActivate) {
+            this.#onLinkActivate(variable ? variable.declaration : variableName);
+          }
+        };
+        const tooltipContents = this.#getPopoverContents?.(variableName, variable?.value ?? null) ?? null;
+        const tooltipId = `${this.#tooltipPrefix}-${index}-${variableName}`;
+        const tooltip = { tooltipId };
+        return html6`
+              <devtools-link-swatch class="css-var-link" .data=${{
+          tooltip,
+          text: variableName,
+          isDefined,
+          onLinkActivate
+        }}>
+              </devtools-link-swatch>
+              <devtools-tooltip
+                id=${tooltipId}
+                variant="rich"
+                jslogContext="elements.css-var"
+              >
+                ${tooltipContents}
+              </devtools-tooltip>
+            `;
+      }
+      return html6`${section.text}`;
+    })}</span>
     `;
     render6(html6`
         <style>${cssQuery_css_default}</style>
@@ -1528,7 +1618,7 @@ __export(ElementsBreadcrumbs_exports, {
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as SDK from "./../../../core/sdk/sdk.js";
+import * as SDK2 from "./../../../core/sdk/sdk.js";
 import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
@@ -1784,13 +1874,13 @@ var ElementsBreadcrumbs = class extends HTMLElement {
     return () => node.highlight();
   }
   #onCrumbMouseLeave() {
-    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
   #onCrumbFocus(node) {
     return () => node.highlight();
   }
   #onCrumbBlur() {
-    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight();
   }
   #engageResizeObserver() {
     if (!this.#resizeObserver || this.#isObservingResize === true) {
@@ -2064,7 +2154,7 @@ __export(QueryContainer_exports, {
 });
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
-import * as SDK2 from "./../../../core/sdk/sdk.js";
+import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2107,7 +2197,7 @@ var queryContainer_css_default = `/*
 
 // gen/front_end/panels/elements/components/QueryContainer.js
 var { render: render10, html: html10 } = Lit4;
-var { PhysicalAxis, QueryAxis } = SDK2.CSSContainerQuery;
+var { PhysicalAxis, QueryAxis } = SDK3.CSSContainerQuery;
 var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
   static eventName = "queriedsizerequested";
   constructor() {
@@ -2137,7 +2227,7 @@ var QueryContainer = class extends HTMLElement {
     this.dispatchEvent(new QueriedSizeRequestedEvent());
   }
   #onContainerLinkMouseLeave() {
-    SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight();
     this.#isContainerLinkHovered = false;
     this.#render();
   }

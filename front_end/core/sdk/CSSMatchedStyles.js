@@ -679,7 +679,7 @@ export class CSSMatchedStyles {
         const domCascade = this.#styleToDOMCascade.get(style);
         return domCascade ? domCascade.findAvailableCSSVariables(style) : [];
     }
-    computeCSSVariable(style, variableName) {
+    computeCSSVariable(style, variableName, containerNode) {
         if (style.parentRule instanceof CSSKeyframeRule) {
             // The resolution of the variables inside of a CSS keyframe rule depends on where this keyframe rule is used.
             // So, we need to find the style with active CSS property `animation-name` that equals to the keyframe's name.
@@ -694,7 +694,7 @@ export class CSSMatchedStyles {
             style = activeStyle;
         }
         const domCascade = this.#styleToDOMCascade.get(style);
-        return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
+        return domCascade ? domCascade.computeCSSVariable(style, variableName, containerNode) : null;
     }
     computeAttribute(style, attributeName, type) {
         const domCascade = this.#styleToDOMCascade.get(style);
@@ -794,6 +794,9 @@ class NodeCascade {
         this.styles = styles;
         this.#isInherited = isInherited;
         this.#node = node;
+    }
+    node() {
+        return this.#node;
     }
     computeActiveProperties() {
         this.propertiesState.clear();
@@ -1095,9 +1098,20 @@ class DOMInheritanceCascade {
                     this.#findCustomPropertyRegistration(property.name);
         }
     }
-    computeCSSVariable(style, variableName) {
+    nodeToNodeCascade(node) {
+        for (const nodeCascade of this.#nodeCascades) {
+            if (nodeCascade.node() === node) {
+                return nodeCascade;
+            }
+        }
+        if (this.#fallbackCascade) {
+            return this.#fallbackCascade.nodeToNodeCascade(node);
+        }
+        return null;
+    }
+    computeCSSVariable(style, variableName, containerNode) {
         this.ensureInitialized();
-        const nodeCascade = this.#styleToNodeCascade.get(style);
+        const nodeCascade = containerNode ? this.nodeToNodeCascade(containerNode) : this.#styleToNodeCascade.get(style);
         if (!nodeCascade) {
             return null;
         }

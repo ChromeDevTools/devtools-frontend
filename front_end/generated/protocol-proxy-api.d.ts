@@ -3119,6 +3119,11 @@ declare namespace ProtocolProxyApi {
     invoke_setShowHinge(params: Protocol.Overlay.SetShowHingeRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
+     * Add a display cutout overlay.
+     */
+    invoke_setShowDisplayCutout(params: Protocol.Overlay.SetShowDisplayCutoutRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+    /**
      * Show elements in isolation mode with overlays.
      */
     invoke_setShowIsolatedElements(params: Protocol.Overlay.SetShowIsolatedElementsRequest): Promise<Protocol.ProtocolResponseWithError>;

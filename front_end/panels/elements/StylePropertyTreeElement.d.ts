@@ -50,6 +50,7 @@ export declare class CSSWideKeywordRenderer extends CSSWideKeywordRenderer_base 
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null);
     render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[];
 }
+export declare function handleVarDefinitionActivate(variable: string | SDK.CSSMatchedStyles.CSSValueSource, stylesContainer: StylesContainer): void;
 declare const VariableRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.VariableMatch, any[]>;
     render(_match: SDK.CSSPropertyParserMatchers.VariableMatch, _context: RenderingContext): Node[];
@@ -66,7 +67,7 @@ declare const VariableNameRenderer_base: abstract new () => {
 export declare class VariableNameRenderer extends VariableNameRenderer_base {
     #private;
     constructor(stylesContainer: StylesContainer, treeElement: StylePropertyTreeElement | null, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles);
-    render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, context: RenderingContext): Node[];
+    render(match: SDK.CSSPropertyParserMatchers.VariableNameMatch, _context: RenderingContext): Node[];
 }
 declare const AttributeRenderer_base: abstract new () => {
     readonly matchType: Platform.Constructor.Constructor<SDK.CSSPropertyParserMatchers.AttributeMatch, any[]>;

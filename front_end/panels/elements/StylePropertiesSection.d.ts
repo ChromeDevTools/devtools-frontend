@@ -91,7 +91,7 @@ export declare class StylePropertiesSection {
     protected createClosingBrace(): HTMLElement;
     protected indentElement(element: HTMLElement, nestingLevel: number, clipboardOnly?: boolean): HTMLElement;
     protected createMediaElement(media: SDK.CSSMedia.CSSMedia): ElementsComponents.CSSQuery.CSSQuery | undefined;
-    protected createContainerQueryElement(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery): ElementsComponents.CSSQuery.CSSQuery | undefined;
+    protected createContainerQueryElement(containerQuery: SDK.CSSContainerQuery.CSSContainerQuery, style?: SDK.CSSStyleDeclaration.CSSStyleDeclaration): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createScopeElement(scope: SDK.CSSScope.CSSScope): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createStartingStyleElement(): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createSupportsElement(supports: SDK.CSSSupports.CSSSupports): ElementsComponents.CSSQuery.CSSQuery | undefined;

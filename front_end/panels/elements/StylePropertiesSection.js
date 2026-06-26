@@ -48,9 +48,10 @@ import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import * as ElementsComponents from './components/components.js';
+import { formatSpecificitySummary, getSpecificityBreakdownLines } from './CSSSpecificityBreakdown.js';
 import { ElementsPanel } from './ElementsPanel.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
-import { GhostStylePropertyTreeElement, StylePropertyTreeElement } from './StylePropertyTreeElement.js';
+import { GhostStylePropertyTreeElement, handleVarDefinitionActivate, StylePropertyTreeElement, } from './StylePropertyTreeElement.js';
 const UIStrings = {
     /**
      * @description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
@@ -102,11 +103,6 @@ const UIStrings = {
      * @description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
      */
     cssSelector: '`CSS` selector',
-    /**
-     * @description Text displayed in tooltip that shows specificity information.
-     * @example {(0,0,1)} PH1
-     */
-    specificity: 'Specificity: {PH1}',
     /**
      * @description Accessibility label for the button that expands a collapsed CSS rule in the Styles pane.
      */
@@ -757,7 +753,7 @@ export class StylePropertiesSection {
                     ancestorRuleElement = this.createMediaElement(rule.media[mediaIndex++]);
                     break;
                 case "ContainerRule" /* Protocol.CSS.CSSRuleType.ContainerRule */:
-                    ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++]);
+                    ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++], rule.style);
                     break;
                 case "ScopeRule" /* Protocol.CSS.CSSRuleType.ScopeRule */:
                     ancestorRuleElement = this.createScopeElement(rule.scopes[scopeIndex++]);
@@ -868,7 +864,7 @@ export class StylePropertiesSection {
         };
         return mediaQueryElement;
     }
-    createContainerQueryElement(containerQuery) {
+    createContainerQueryElement(containerQuery, style) {
         let onQueryTextClick;
         if (containerQuery.styleSheetId) {
             onQueryTextClick = this.handleQueryRuleClick.bind(this, containerQuery);
@@ -879,10 +875,21 @@ export class StylePropertiesSection {
             queryName: containerQuery.textIsConditionText ? undefined : containerQuery.name,
             queryText: containerQuery.text,
             onQueryTextClick,
+            onLinkActivate: async (resolvedVariable) => {
+                handleVarDefinitionActivate(resolvedVariable, this.stylesContainer);
+            },
+            getPopoverContents: (variableName, variableValue) => {
+                return this.stylesContainer.getVariablePopoverContents(this.matchedStyles, variableName, variableValue);
+            },
             jslogContext: 'container-query',
         };
-        if (!/^style\(.*\)/.test(containerQuery.text)) {
-            // We only add container element for non-style queries.
+        if (style) {
+            const tooltipPrefix = `container-${this.sectionTooltipIdPrefix}-${this.nestingLevel}`;
+            void containerQuery.getContainerForNode(this.matchedStyles.node().id).then(container => {
+                if (container) {
+                    containerQueryElement.parseStyleQueries(this.matchedStyles, style, container.containerNode, tooltipPrefix);
+                }
+            });
             void this.addContainerForContainerQuery(containerQuery);
         }
         return containerQueryElement;
@@ -1223,14 +1230,26 @@ export class StylePropertiesSection {
             elementToSelectorIndex.set(span, i);
             span.textContent = selectors[i].text;
             if (specificityTooltipId && selector.specificity) {
-                span.setAttribute('aria-describedby', specificityTooltipId);
-                const PH1 = `(${selector.specificity.a},${selector.specificity.b},${selector.specificity.c})`;
+                span.setAttribute('aria-details', specificityTooltipId);
                 const tooltip = this.#specificityTooltips.appendChild(new Tooltips.Tooltip.Tooltip({
                     id: specificityTooltipId,
                     anchor: span,
+                    variant: 'rich',
                     jslogContext: 'elements.css-selector-specificity',
                 }));
-                tooltip.textContent = i18nString(UIStrings.specificity, { PH1 });
+                tooltip.hoverDelay = 500;
+                const specificitySummary = formatSpecificitySummary(selector.specificity);
+                const breakdownLines = getSpecificityBreakdownLines(selector.specificity);
+                const tooltipContent = breakdownLines.length > 0 ? html `
+          <details class="selector-specificity-tooltip-disclosure">
+            <summary>${specificitySummary}</summary>
+            <ul class="selector-specificity-tooltip-list">
+              ${breakdownLines.map(line => html `<li>${line}</li>`)}
+            </ul>
+          </details>` :
+                    html `
+          <div class="selector-specificity-tooltip-summary">${specificitySummary}</div>`;
+                render(tooltipContent, tooltip, { host: this });
             }
         }
     }

@@ -265,7 +265,7 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
         return [swatch];
     }
 }
-function handleVarDefinitionActivate(variable, stylesContainer) {
+export function handleVarDefinitionActivate(variable, stylesContainer) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     Host.userMetrics.swatchActivated(0 /* Host.UserMetrics.SwatchType.VAR_LINK */);
     if (typeof variable === 'string') {
@@ -371,14 +371,15 @@ export class VariableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         this.#stylesContainer = stylesContainer;
         this.#matchedStyles = matchedStyles;
     }
-    render(match, context) {
+    render(match, _context) {
+        const varSwatch = document.createElement('span');
         if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK.CSSRule.CSSFunctionRule) {
-            return Renderer.render(ASTUtils.children(match.node), context).nodes;
+            render(html `${match.text}`, varSwatch);
+            return [varSwatch];
         }
         const { declaration, value: variableValue } = match.resolveVariable() ?? {};
         const isDefined = variableValue !== undefined;
         const onLinkActivate = (name) => handleVarDefinitionActivate(declaration ?? name, this.#stylesContainer);
-        const varSwatch = document.createElement('span');
         const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.text, variableValue ?? null);
         const tooltipId = this.#treeElement?.getTooltipId('custom-property-var');
         const tooltip = tooltipId ? { tooltipId } : undefined;

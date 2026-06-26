@@ -8,7 +8,7 @@ import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetStylesTool} from './GetStyles.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
 import {ResolveLighthousePathTool} from './ResolveLighthousePath.js';
-import {type AllToolsContext, type Tool, type ToolArgs, ToolName} from './Tool.js';
+import {type AllToolsCapabilities, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
 /**
  * Plain object registry containing concrete instantiated tools.
@@ -45,16 +45,16 @@ export class ToolRegistry {
    * @param name The string name of the tool to retrieve, used when the tool name is only known at runtime.
    * @returns The generic Tool interface, or undefined if not found.
    */
-  static get(name: string): Tool<ToolArgs, unknown, AllToolsContext>|undefined;
-  static get(name: string): Tool<ToolArgs, unknown, AllToolsContext>|undefined {
+  static get(name: string): Tool<ToolArgs, unknown, AllToolsCapabilities>|undefined;
+  static get(name: string): Tool<ToolArgs, unknown, AllToolsCapabilities>|undefined {
     // We use a double assertion (`as unknown as Tool<...>`) here. TypeScript's variance
     // rules prevent direct casting from specific concrete tools (which have narrowed,
-    // capability-specific contexts) to the generic `Tool` signature that uses `AllToolsContext`.
+    // capability-specific contexts) to the generic `Tool` signature that uses `AllToolsCapabilities`.
     // This cast is runtime-safe because any capability requested by a specific tool is
-    // guaranteed to be satisfied by `AllToolsContext`, and the handler will only access
+    // guaranteed to be satisfied by `AllToolsCapabilities`, and the handler will only access
     // the capabilities it expects.
     return Object.prototype.hasOwnProperty.call(TOOLS, name) ?
-        TOOLS[name as keyof typeof TOOLS] as unknown as Tool<ToolArgs, unknown, AllToolsContext>:
+        TOOLS[name as keyof typeof TOOLS] as unknown as Tool<ToolArgs, unknown, AllToolsCapabilities>:
         undefined;
   }
 }

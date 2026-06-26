@@ -84,7 +84,7 @@ export interface LighthouseCapability {
  * Unified context interface providing all capabilities available in the project.
  * Used by the agent to pass a complete context to any tool type-safely.
  */
-export type AllToolsContext = BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&
+export type AllToolsCapabilities = BaseToolCapability&PageExecutionCapability&StyleMutationCapability&TargetCapability&
     OriginLockCapability&LighthouseCapability;
 
 /**

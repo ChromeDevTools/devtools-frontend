@@ -21,7 +21,7 @@ Instead of passing a monolithic "grab-bag" context object to all tool handlers, 
 
 ### Unified Context
 
-The Agent (e.g., `AiAgent2`) builds the complete dependency union (`AllToolsContext`) and fulfills all capabilities. When the handler is invoked, TypeScript validates that the provided context matches the intersection of capabilities requested by that tool.
+The Agent (e.g., `AiAgent2`) builds the complete dependency union (`AllToolsCapabilities`) and fulfills all capabilities. When the handler is invoked, TypeScript validates that the provided context matches the intersection of capabilities requested by that tool.
 
 ## Authoring a New Tool
 

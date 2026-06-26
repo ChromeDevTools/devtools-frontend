@@ -22,7 +22,7 @@ import {debugLog} from './debug.js';
 import {ExtensionScope} from './ExtensionScope.js';
 import type {Skill, SkillName} from './skills/Skill.js';
 import {SKILLS} from './skills/SkillRegistry.js';
-import type {AllToolsContext, Tool, ToolArgs} from './tools/Tool.js';
+import type {AllToolsCapabilities, Tool, ToolArgs} from './tools/Tool.js';
 import {ToolRegistry} from './tools/ToolRegistry.js';
 
 const SKILL_DISPLAY_NAMES: Record<SkillName, string> = {
@@ -214,7 +214,7 @@ User query: ${enhancedQuery}`;
    * Declares a tool to be available to the agent model, verifying first that
    * it hasn't already been declared to prevent duplicate declaration errors.
    */
-  #declareTool(tool: Tool<ToolArgs, unknown, AllToolsContext>): void {
+  #declareTool(tool: Tool<ToolArgs, unknown, AllToolsCapabilities>): void {
     if (this.#declaredTools.has(tool.name)) {
       debugLog(`AiAgent2: Tool ${tool.name} is already declared`);
       return;
@@ -225,7 +225,7 @@ User query: ${enhancedQuery}`;
       parameters: tool.parameters,
       displayInfoFromArgs: tool.displayInfoFromArgs,
       handler: (args, options) => {
-        const context: AllToolsContext = {
+        const context: AllToolsCapabilities = {
           conversationContext: this.context ?? null,
           changeManager: this.#changes,
           createExtensionScope: this.#createExtensionScope.bind(this),

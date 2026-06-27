@@ -30,9 +30,9 @@ export class ToolRegistry {
     static get(name) {
         // We use a double assertion (`as unknown as Tool<...>`) here. TypeScript's variance
         // rules prevent direct casting from specific concrete tools (which have narrowed,
-        // capability-specific contexts) to the generic `Tool` signature that uses `AllToolsContext`.
+        // capability-specific contexts) to the generic `Tool` signature that uses `AllToolsCapabilities`.
         // This cast is runtime-safe because any capability requested by a specific tool is
-        // guaranteed to be satisfied by `AllToolsContext`, and the handler will only access
+        // guaranteed to be satisfied by `AllToolsCapabilities`, and the handler will only access
         // the capabilities it expects.
         return Object.prototype.hasOwnProperty.call(TOOLS, name) ?
             TOOLS[name] :

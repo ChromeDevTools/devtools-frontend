@@ -6,23 +6,28 @@ import {assert} from 'chai';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as AutofillManager from './autofill_manager.js';
 
-describeWithMockConnection('AutofillManager', () => {
+describe('AutofillManager', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
   let target: SDK.Target.Target;
   let model: SDK.AutofillModel.AutofillModel;
   let autofillManager: AutofillManager.AutofillManager.AutofillManager;
 
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    target = universe.createTarget();
     model = target.model(SDK.AutofillModel.AutofillModel)!;
-    autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({
-      forceNew: true,
-      targetManager: SDK.TargetManager.TargetManager.instance(),
-    });
+    autofillManager = universe.autofillManager;
   });
 
   describe('emits AddressFormFilled events', () => {

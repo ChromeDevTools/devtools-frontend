@@ -37,10 +37,6 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return Root.DevToolsContext.globalInstance().get(AutofillManager);
   }
 
-  static removeInstance(): void {
-    Root.DevToolsContext.globalInstance().delete(AutofillManager);
-  }
-
   async #addressFormFilled({data}: Common.EventTarget.EventTargetEvent<
                            SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.ADDRESS_FORM_FILLED]>): Promise<void> {
     this.#autofillModel = data.autofillModel;

@@ -8,12 +8,8 @@ import sinon from 'sinon';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../../testing/EnvironmentHelpers.js';
-import {
-  clearAllMockConnectionResponseHandlers,
-  describeWithMockConnection,
-  setMockConnectionResponseHandler
-} from '../../../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../../../testing/MockCDPConnection.js';
 import {html} from '../../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../../common/common.js';
 
@@ -23,9 +19,10 @@ function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: num
   return x as T;
 }
 
-describeWithMockConnection('NodeLink', () => {
-  beforeEach(async () => {
-    clearAllMockConnectionResponseHandlers();
+describeWithEnvironment('NodeLink', () => {
+  let target: SDK.Target.Target;
+  afterEach(() => {
+    target?.dispose('test');
   });
 
   it('renders a node link', async () => {
@@ -33,17 +30,17 @@ describeWithMockConnection('NodeLink', () => {
       return html`<div class="fake-linkify-node"></div>`;
     });
 
+    const connection = new MockCDPConnection();
     // Create a mock target, dom model, document and node.
-    const target = createTarget();
+    target = createTarget({connection});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
     const documentNode = {nodeId: nodeId(1)};
     const domNode = new SDK.DOMModel.DOMNode(domModel);
     domNode.id = nodeId(2);
     // Set related CDP methods responses to return our mock document and node.
-    setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domNode.id]}));
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domNode.id]}));
+    connection.setSuccessHandler('DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
 
     // Register the mock document and node in DOMModel, these use the mock responses set above.
     await domModel.requestDocument();
@@ -64,17 +61,17 @@ describeWithMockConnection('NodeLink', () => {
   });
 
   it('falls back to an HTML snippet if one is passed in', async () => {
+    const connection = new MockCDPConnection();
     // Create a mock target, dom model, document and node.
-    const target = createTarget();
+    target = createTarget({connection});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
     const documentNode = {nodeId: nodeId(1)};
     const domNode = new SDK.DOMModel.DOMNode(domModel);
     domNode.id = nodeId(2);
     // Return an empty array of NodeIds so that the frontend resolution fails.
-    setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: []}));
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: []}));
+    connection.setSuccessHandler('DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
     await domModel.requestDocument();
     domModel.registerNode(domNode);
 
@@ -92,17 +89,17 @@ describeWithMockConnection('NodeLink', () => {
   });
 
   it('falls back to text if that is supplied', async () => {
+    const connection = new MockCDPConnection();
     // Create a mock target, dom model, document and node.
-    const target = createTarget();
+    target = createTarget({connection});
     const domModel = target.model(SDK.DOMModel.DOMModel);
     assert.exists(domModel);
     const documentNode = {nodeId: nodeId(1)};
     const domNode = new SDK.DOMModel.DOMNode(domModel);
     domNode.id = nodeId(2);
     // Return an empty array of NodeIds so that the frontend resolution fails.
-    setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: []}));
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: []}));
+    connection.setSuccessHandler('DOM.getDocument', () => ({root: documentNode} as Protocol.DOM.GetDocumentResponse));
     await domModel.requestDocument();
     domModel.registerNode(domNode);
 

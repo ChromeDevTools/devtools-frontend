@@ -6,14 +6,9 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  clearAllMockConnectionResponseHandlers,
-  clearMockConnectionResponseHandler,
-  describeWithMockConnection,
-  dispatchEvent,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
@@ -24,14 +19,14 @@ const MAX_WIDTH = 10;
 const MAX_HEIGHT = 20;
 const EVERY_NTH_FRAME = 2;
 
-async function expectStartScreencastCalled<T>(action: () => Promise<T>| T): Promise<{
+async function expectStartScreencastCalled<T>(connection: MockCDPConnection, action: () => Promise<T>| T): Promise<{
   cdpRequest: Protocol.Page.StartScreencastRequest,
   actionResult: T,
 }> {
-  clearMockConnectionResponseHandler('Page.startScreencast');
+  connection.setHandler('Page.startScreencast', null);
 
   const startScreencastCalledPromise = Promise.withResolvers<Protocol.Page.StartScreencastRequest>();
-  setMockConnectionResponseHandler('Page.startScreencast', (request?: Protocol.Page.StartScreencastRequest) => {
+  connection.setSuccessHandler('Page.startScreencast', (request?: Protocol.Page.StartScreencastRequest) => {
     startScreencastCalledPromise.resolve(request as Protocol.Page.StartScreencastRequest);
     return {};
   });
@@ -44,13 +39,13 @@ async function expectStartScreencastCalled<T>(action: () => Promise<T>| T): Prom
   };
 }
 
-async function expectStopScreencastCaled<T>(action: () => Promise<T>| T): Promise<{
+async function expectStopScreencastCaled<T>(connection: MockCDPConnection, action: () => Promise<T>| T): Promise<{
   actionResult: T,
 }> {
-  clearMockConnectionResponseHandler('Page.stopScreencast');
+  connection.setHandler('Page.stopScreencast', null);
 
   const stopScreencastCalledPromise = Promise.withResolvers<void>();
-  setMockConnectionResponseHandler('Page.stopScreencast', () => {
+  connection.setSuccessHandler('Page.stopScreencast', () => {
     stopScreencastCalledPromise.resolve();
     return {};
   });
@@ -60,27 +55,28 @@ async function expectStopScreencastCaled<T>(action: () => Promise<T>| T): Promis
   return {actionResult: response};
 }
 
-async function startMockScreencast(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel, {
-  format = Protocol.Page.StartScreencastRequestFormat.Jpeg,
-  quality = QUALITY,
-  maxWidth = MAX_WIDTH,
-  maxHeight = MAX_HEIGHT,
-  everyNthFrame = EVERY_NTH_FRAME,
-  onFrame = noop,
-  onVisibilityChanged = noop,
-}: {
-  format?: Protocol.Page.StartScreencastRequestFormat,
-  quality?: number,
-  maxWidth?: number,
-  maxHeight?: number,
-  everyNthFrame?: number,
-  onFrame?: () => void,
-  onVisibilityChanged?: () => void,
-} = {}) {
+async function startMockScreencast(connection: MockCDPConnection,
+                                   screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel, {
+                                     format = Protocol.Page.StartScreencastRequestFormat.Jpeg,
+                                     quality = QUALITY,
+                                     maxWidth = MAX_WIDTH,
+                                     maxHeight = MAX_HEIGHT,
+                                     everyNthFrame = EVERY_NTH_FRAME,
+                                     onFrame = noop,
+                                     onVisibilityChanged = noop,
+                                   }: {
+                                     format?: Protocol.Page.StartScreencastRequestFormat,
+                                     quality?: number,
+                                     maxWidth?: number,
+                                     maxHeight?: number,
+                                     everyNthFrame?: number,
+                                     onFrame?: () => void,
+                                     onVisibilityChanged?: () => void,
+                                   } = {}) {
   const {
     cdpRequest,
     actionResult: id,
-  } = await expectStartScreencastCalled(() => {
+  } = await expectStartScreencastCalled(connection, () => {
     return screenCaptureModel.startScreencast(
         format, quality, maxWidth, maxHeight, everyNthFrame, onFrame, onVisibilityChanged);
   });
@@ -91,32 +87,33 @@ async function startMockScreencast(screenCaptureModel: SDK.ScreenCaptureModel.Sc
   };
 }
 
-async function stopMockScreencast(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel, {id}: {
-  id: number,
-}) {
-  await expectStopScreencastCaled(() => {
+async function stopMockScreencast(connection: MockCDPConnection,
+                                  screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel, {id}: {
+                                    id: number,
+                                  }) {
+  await expectStopScreencastCaled(connection, () => {
     screenCaptureModel.stopScreencast(id);
   });
 }
 
-describeWithMockConnection('ScreenCaptureModel', () => {
+describeWithEnvironment('ScreenCaptureModel', () => {
   let target: SDK.Target.Target;
   let screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    target = universe.createTarget({connection});
     const model = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
     assert.exists(model);
     screenCaptureModel = model;
   });
 
-  afterEach(() => {
-    clearAllMockConnectionResponseHandlers();
-  });
-
   describe('Screencasting', () => {
     describe('only one screencast operation', () => {
       it('startScreencast should start screen casting', async () => {
-        const {cdpRequest} = await startMockScreencast(screenCaptureModel, {
+        const {cdpRequest} = await startMockScreencast(connection, screenCaptureModel, {
           format: Protocol.Page.StartScreencastRequestFormat.Jpeg,
           quality: 1,
           maxWidth: 2,
@@ -134,15 +131,15 @@ describeWithMockConnection('ScreenCaptureModel', () => {
       });
 
       it('stopScreencast should stop screen casting', async () => {
-        const {id} = await startMockScreencast(screenCaptureModel);
+        const {id} = await startMockScreencast(connection, screenCaptureModel);
 
-        await stopMockScreencast(screenCaptureModel, {id});
+        await stopMockScreencast(connection, screenCaptureModel, {id});
       });
 
       it('stopScreencast throws an error for trying to stop screencast when there are no screencast operations in progress',
          async () => {
            try {
-             await stopMockScreencast(screenCaptureModel, {id: 42});
+             await stopMockScreencast(connection, screenCaptureModel, {id: 42});
              assert.fail('Expected `stopScreencast` to throw');
            } catch (err) {
              assert.strictEqual(err.message, 'There is no screencast operation to stop.');
@@ -151,9 +148,9 @@ describeWithMockConnection('ScreenCaptureModel', () => {
 
       it('stopScreencast throws an error for trying to stop a different screencast than what is being in progress right now',
          async () => {
-           await startMockScreencast(screenCaptureModel);
+           await startMockScreencast(connection, screenCaptureModel);
            try {
-             await stopMockScreencast(screenCaptureModel, {id: 42});
+             await stopMockScreencast(connection, screenCaptureModel, {id: 42});
              assert.fail('Expected `stopScreencast` to throw');
            } catch (err) {
              assert.strictEqual(
@@ -164,15 +161,15 @@ describeWithMockConnection('ScreenCaptureModel', () => {
 
     describe('multiple screencast operations', () => {
       beforeEach(() => {
-        setMockConnectionResponseHandler('Page.stopScreencast', () => ({}));
+        connection.setSuccessHandler('Page.stopScreencast', () => ({}));
       });
 
       it('second call to startScreencast stops the ongoing screencasting', async () => {
-        await startMockScreencast(screenCaptureModel);
+        await startMockScreencast(connection, screenCaptureModel);
 
         // Stop screencast is called for the initial call before starting a new screencast.
-        await expectStopScreencastCaled(async () => {
-          await startMockScreencast(screenCaptureModel);
+        await expectStopScreencastCaled(connection, async () => {
+          await startMockScreencast(connection, screenCaptureModel);
         });
       });
 
@@ -183,11 +180,13 @@ describeWithMockConnection('ScreenCaptureModel', () => {
         const lastVisibilityChangeCallback = sinon.stub();
 
         await startMockScreencast(
-            screenCaptureModel, {onFrame: initialFrameCallback, onVisibilityChanged: initialVisibilityChangeCallback});
-        await startMockScreencast(
-            screenCaptureModel, {onFrame: lastFrameCallback, onVisibilityChanged: lastVisibilityChangeCallback});
-        dispatchEvent(target, 'Page.screencastFrame', {} as Protocol.Page.ScreencastFrameEvent);
-        dispatchEvent(target, 'Page.screencastVisibilityChanged', {} as Protocol.Page.ScreencastVisibilityChangedEvent);
+            connection, screenCaptureModel,
+            {onFrame: initialFrameCallback, onVisibilityChanged: initialVisibilityChangeCallback});
+        await startMockScreencast(connection, screenCaptureModel,
+                                  {onFrame: lastFrameCallback, onVisibilityChanged: lastVisibilityChangeCallback});
+        connection.dispatchEvent('Page.screencastFrame', {} as Protocol.Page.ScreencastFrameEvent, undefined);
+        connection.dispatchEvent('Page.screencastVisibilityChanged',
+                                 {} as Protocol.Page.ScreencastVisibilityChangedEvent, undefined);
 
         sinon.assert.notCalled(initialFrameCallback);
         sinon.assert.notCalled(initialVisibilityChangeCallback);
@@ -202,12 +201,15 @@ describeWithMockConnection('ScreenCaptureModel', () => {
         const lastVisibilityChangeCallback = sinon.stub();
 
         await startMockScreencast(
-            screenCaptureModel, {onFrame: initialFrameCallback, onVisibilityChanged: initialVisibilityChangeCallback});
-        const {id} = await startMockScreencast(
-            screenCaptureModel, {onFrame: lastFrameCallback, onVisibilityChanged: lastVisibilityChangeCallback});
-        await stopMockScreencast(screenCaptureModel, {id});
-        dispatchEvent(target, 'Page.screencastFrame', {} as Protocol.Page.ScreencastFrameEvent);
-        dispatchEvent(target, 'Page.screencastVisibilityChanged', {} as Protocol.Page.ScreencastVisibilityChangedEvent);
+            connection, screenCaptureModel,
+            {onFrame: initialFrameCallback, onVisibilityChanged: initialVisibilityChangeCallback});
+        const {id} =
+            await startMockScreencast(connection, screenCaptureModel,
+                                      {onFrame: lastFrameCallback, onVisibilityChanged: lastVisibilityChangeCallback});
+        await stopMockScreencast(connection, screenCaptureModel, {id});
+        connection.dispatchEvent('Page.screencastFrame', {} as Protocol.Page.ScreencastFrameEvent, undefined);
+        connection.dispatchEvent('Page.screencastVisibilityChanged',
+                                 {} as Protocol.Page.ScreencastVisibilityChangedEvent, undefined);
 
         sinon.assert.calledOnce(initialFrameCallback);
         sinon.assert.calledOnce(initialVisibilityChangeCallback);

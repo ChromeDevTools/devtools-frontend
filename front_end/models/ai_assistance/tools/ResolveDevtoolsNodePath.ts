@@ -17,11 +17,11 @@ import {
 } from './Tool.js';
 
 /**
- * Arguments for resolving a Lighthouse path to a backend node ID.
+ * Arguments for resolving a DevTools node path to a backend node ID.
  */
-export interface ResolveLighthousePathArgs extends ToolArgs {
+export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
   /**
-   * A Lighthouse-style element path.
+   * A DevTools node path.
    * This is typically a comma-separated list of child indices and tag names
    * representing the path from the root to the target element (e.g., "1,HTML,1,BODY").
    */
@@ -30,19 +30,20 @@ export interface ResolveLighthousePathArgs extends ToolArgs {
 }
 
 /**
- * A tool that resolves a Lighthouse-style element path to a backend node ID.
+ * A tool that resolves a DevTools node path to a backend node ID.
  *
  * This is used by the AI assistant to identify specific DOM nodes referred to in
- * Lighthouse reports. It ensures the resolved node belongs to the locked origin.
+ * Lighthouse reports or other sources using node paths. It ensures the resolved node
+ * belongs to the locked origin.
  */
-export class ResolveLighthousePathTool implements
-    Tool<ResolveLighthousePathArgs, {backendNodeId: number}, BaseToolCapability&TargetCapability&OriginLockCapability> {
-  readonly name = ToolName.RESOLVE_LIGHTHOUSE_PATH;
-  readonly description = 'Resolves a Lighthouse path to a backend node ID.';
+export class ResolveDevtoolsNodePathTool implements Tool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
+                                                         BaseToolCapability&TargetCapability&OriginLockCapability> {
+  readonly name = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
+  readonly description = 'Resolves a DevTools node path to a backend node ID.';
 
-  readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ResolveLighthousePathArgs> = {
+  readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ResolveDevtoolsNodePathArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,
-    description: 'Arguments for resolving a Lighthouse path to a backend node ID.',
+    description: 'Arguments for resolving a DevTools node path to a backend node ID.',
     nullable: false,
     properties: {
       explanation: {
@@ -52,14 +53,14 @@ export class ResolveLighthousePathTool implements
       },
       path: {
         type: Host.AidaClient.ParametersTypes.STRING,
-        description: 'Lighthouse path string.',
+        description: 'DevTools node path string.',
         nullable: false,
       },
     },
     required: ['explanation', 'path'],
   };
 
-  displayInfoFromArgs(params: ResolveLighthousePathArgs): {
+  displayInfoFromArgs(params: ResolveDevtoolsNodePathArgs): {
     title: string,
     thought: string,
     action: string,
@@ -67,7 +68,7 @@ export class ResolveLighthousePathTool implements
     return {
       title: 'Resolving element path',
       thought: params.explanation,
-      action: `resolveLighthousePath('${params.path}')`,
+      action: `resolveDevtoolsNodePath('${params.path}')`,
     };
   }
 
@@ -79,7 +80,7 @@ export class ResolveLighthousePathTool implements
    * access to nodes from other origins.
    */
   async handler(
-      params: ResolveLighthousePathArgs,
+      params: ResolveDevtoolsNodePathArgs,
       context: BaseToolCapability&TargetCapability&OriginLockCapability,
       ): Promise<FunctionCallHandlerResult<{backendNodeId: number}>> {
     const establishedOrigin = context.getEstablishedOrigin();
@@ -95,11 +96,11 @@ export class ResolveLighthousePathTool implements
 
     let nodeId;
     try {
-      // Resolves the Lighthouse path (a representation of the path to a node)
+      // Resolves the DevTools node path (a representation of the path to a node)
       // and ensures the node is loaded into the frontend DOM model, returning its ID.
       nodeId = await domModel.pushNodeByPathToFrontend(params.path);
     } catch {
-      return {error: 'Error: Could not find node by path.'};
+      // pushNodeByPathToFrontend can fail or return undefined
     }
     if (!nodeId) {
       return {error: 'Error: Could not find node by path.'};

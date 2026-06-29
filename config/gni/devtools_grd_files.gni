@@ -1195,7 +1195,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js",
   "front_end/models/ai_assistance/tools/GetStyles.js",
   "front_end/models/ai_assistance/tools/ListNetworkRequests.js",
-  "front_end/models/ai_assistance/tools/ResolveLighthousePath.js",
+  "front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.js",
   "front_end/models/ai_assistance/tools/Tool.js",
   "front_end/models/ai_assistance/tools/ToolRegistry.js",
   "front_end/models/ai_code_completion/AiCodeCompletion.js",

@@ -48,7 +48,7 @@ import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
-import * as ResolveLighthousePath from './tools/ResolveLighthousePath.js';
+import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
 
@@ -95,7 +95,7 @@ export {
   PerformanceInsightFormatter,
   PerformanceTraceFormatter,
   RequestContext,
-  ResolveLighthousePath,
+  ResolveDevtoolsNodePath,
   StorageAgent,
   StorageItem,
   StylingAgent,

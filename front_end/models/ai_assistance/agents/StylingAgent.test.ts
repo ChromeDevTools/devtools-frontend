@@ -65,6 +65,9 @@ describeWithEnvironment('StylingAgent', function() {
     element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     element.domModel.returns(domModel);
     element.backendNodeId.returns(99 as unknown as ReturnType<SDK.DOMModel.DOMNode['backendNodeId']>);
+    element.ownerDocument = {
+      documentURL: 'https://example.com',
+    } as unknown as SDK.DOMModel.DOMDocument;
   });
 
   describe('buildRequest', () => {
@@ -684,8 +687,9 @@ describeWithEnvironment('StylingAgent', function() {
     it('successfully returns computed and authored styles', async () => {
       const {node: resolvedNode, cssModel} = createStubbedDomNodeWithModels({nodeId: 42});
 
-      resolvedNode.ownerDocument = null;
-      element.ownerDocument = null;
+      resolvedNode.ownerDocument = {
+        documentURL: 'https://example.com',
+      } as unknown as SDK.DOMModel.DOMDocument;
 
       sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(resolvedNode);
 
@@ -803,8 +807,6 @@ describeWithEnvironment('StylingAgent', function() {
     });
 
     it('returns error when target node cannot be resolved', async () => {
-      element.ownerDocument = null;
-
       sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(null);
 
       const agent = new StylingAgent.StylingAgent({
@@ -838,8 +840,9 @@ describeWithEnvironment('StylingAgent', function() {
     it('returns error when computed styles fail', async () => {
       const {node: resolvedNode, cssModel} = createStubbedDomNodeWithModels({nodeId: 42});
 
-      resolvedNode.ownerDocument = null;
-      element.ownerDocument = null;
+      resolvedNode.ownerDocument = {
+        documentURL: 'https://example.com',
+      } as unknown as SDK.DOMModel.DOMDocument;
 
       sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(resolvedNode);
       (cssModel.getComputedStyle as sinon.SinonStub).resolves(null);
@@ -875,8 +878,9 @@ describeWithEnvironment('StylingAgent', function() {
     it('returns error when matched styles fail', async () => {
       const {node: resolvedNode, cssModel} = createStubbedDomNodeWithModels({nodeId: 42});
 
-      resolvedNode.ownerDocument = null;
-      element.ownerDocument = null;
+      resolvedNode.ownerDocument = {
+        documentURL: 'https://example.com',
+      } as unknown as SDK.DOMModel.DOMDocument;
 
       sinon.stub(SDK.DOMModel.DeferredDOMNode.prototype, 'resolvePromise').resolves(resolvedNode);
 

@@ -17,11 +17,29 @@ Instead of passing a monolithic "grab-bag" context object to all tool handlers, 
 - `PageExecutionCapability`: For tools executing JavaScript code on the inspected page.
 - `StyleMutationCapability`: For tools managing and applying style mutations via a `ChangeManager`.
 - `TargetCapability`: For tools requiring access to the page's current SDK `Target`.
-- `OriginLockCapability`: For tools enforcing cross-origin security via origin locks. Tools that fetch resources or state from the inspected page (such as styling or source code) must use this capability to verify that the target resource matches the conversation's established origin. This prevents the LLM from executing tools against out-of-origin elements or documents.
+- `OriginLockCapability`: For tools enforcing cross-origin security via origin locks. Tools that fetch resources or state from the inspected page (such as styling or source code) must use this capability to verify that the target resource matches the conversation's established origin. This prevents the LLM from executing tools against out-of-origin elements or documents. Verification should be done by wrapping resolved resources in helper context classes (e.g., `DOMNodeContext`) and calling `isOriginAllowed(establishedOrigin)`.
 
 ### Unified Context
 
 The Agent (e.g., `AiAgent2`) builds the complete dependency union (`AllToolsCapabilities`) and fulfills all capabilities. When the handler is invoked, TypeScript validates that the provided context matches the intersection of capabilities requested by that tool.
+
+## Returning UI Widgets
+
+Tools can return rich UI components (widgets) to be rendered directly in the AI Assistance panel alongside text results. To do this, include the widget payload in the `widgets` field of the returned `FunctionCallHandlerResult`:
+
+```typescript
+return {
+  result: JSON.stringify(properties, null, 2),
+  widgets: [{
+    name: 'DOM_TREE',
+    data: {
+      root: snapshot,
+      title: i18n.i18n.lockedString('Element details'),
+      accessibleRevealLabel: i18n.i18n.lockedString('Reveal element'),
+    },
+  }],
+};
+```
 
 ## Authoring a New Tool
 
@@ -35,6 +53,8 @@ To author a new tool:
 See concrete, production examples of capability-based tools in this directory:
 - [ExecuteJavaScript.ts](ExecuteJavaScript.ts): Demonstrates use of `PageExecutionCapability` and `StyleMutationCapability`.
 - [GetStyles.ts](GetStyles.ts): Demonstrates use of `TargetCapability` and `OriginLockCapability`.
+- [GetElementAccessibilityDetails.ts](GetElementAccessibilityDetails.ts): Demonstrates returning UI widgets (`DOM_TREE`) and origin checks with context wrappers.
+- [ResolveDevtoolsNodePath.ts](ResolveDevtoolsNodePath.ts): Demonstrates path resolution input validation and origin lock checks.
 
 ## ToolRegistry Lookup
 

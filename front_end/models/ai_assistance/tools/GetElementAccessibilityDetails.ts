@@ -90,6 +90,9 @@ export class GetElementAccessibilityDetailsTool implements
       return {error: 'Error: Inspected target not found.'};
     }
 
+    // Resolve the backend node ID to an SDK DOMNode. We use DeferredDOMNode
+    // because the backend node ID is the stable identifier received from external
+    // sources (like Lighthouse audits), and we need to fetch the local node object to query it.
     const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, params.element as Protocol.DOM.BackendNodeId);
     const resolved = await deferredNode.resolvePromise();
     if (!resolved) {
@@ -107,6 +110,8 @@ export class GetElementAccessibilityDetailsTool implements
       return {error: 'Error: Accessibility model not found.'};
     }
 
+    // Accessibility data is not loaded by default for all nodes to optimize performance.
+    // We must explicitly request and load the accessibility subtree for the resolved node before querying.
     await axModel.requestAndLoadSubTreeToNode(resolved);
     const axNode = axModel.axNodeForDOMNode(resolved);
     if (!axNode) {
@@ -119,6 +124,8 @@ export class GetElementAccessibilityDetailsTool implements
       properties: axNode.properties()?.map(p => ({name: p.name, value: p.value?.value})) ?? [],
     };
 
+    // Take a snapshot of the resolved node's DOM structure. This is required
+    // by the DOM_TREE UI widget to render the element's local tree in the AI response panel.
     const snapshot = await resolved.takeSnapshot();
     return {
       result: JSON.stringify(properties, null, 2),

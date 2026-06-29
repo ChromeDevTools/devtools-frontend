@@ -8,7 +8,7 @@ import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetStylesTool} from './GetStyles.js';
 import {ListNetworkRequestsTool} from './ListNetworkRequests.js';
-import {ResolveLighthousePathTool} from './ResolveLighthousePath.js';
+import {ResolveDevtoolsNodePathTool} from './ResolveDevtoolsNodePath.js';
 import {type AllToolsCapabilities, type Tool, type ToolArgs, ToolName} from './Tool.js';
 
 /**
@@ -25,7 +25,7 @@ export const TOOLS = {
   [ToolName.LIST_NETWORK_REQUESTS]: new ListNetworkRequestsTool(),
   [ToolName.GET_NETWORK_REQUEST_DETAILS]: new GetNetworkRequestDetailsTool(),
   [ToolName.GET_LIGHTHOUSE_AUDITS]: new GetLighthouseAuditsTool(),
-  [ToolName.RESOLVE_LIGHTHOUSE_PATH]: new ResolveLighthousePathTool(),
+  [ToolName.RESOLVE_DEVTOOLS_NODE_PATH]: new ResolveDevtoolsNodePathTool(),
   [ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS]: new GetElementAccessibilityDetailsTool(),
 };
 

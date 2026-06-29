@@ -98,7 +98,7 @@ export const enum ToolName {
   LIST_NETWORK_REQUESTS = 'listNetworkRequests',
   GET_NETWORK_REQUEST_DETAILS = 'getNetworkRequestDetails',
   GET_LIGHTHOUSE_AUDITS = 'getLighthouseAudits',
-  RESOLVE_LIGHTHOUSE_PATH = 'resolveLighthousePath',
+  RESOLVE_DEVTOOLS_NODE_PATH = 'resolveDevtoolsNodePath',
   GET_ELEMENT_ACCESSIBILITY_DETAILS = 'getElementAccessibilityDetails',
 }
 
@@ -126,6 +126,10 @@ export interface BaseTool {
 export interface Tool<Args extends ToolArgs = ToolArgs, ReturnType = unknown,
                                    ContextType extends BaseToolCapability = BaseToolCapability> extends BaseTool {
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof Args>;
+  /**
+   * Converts the tool arguments into user-friendly display information.
+   * This is used by the UI to show what the agent is doing (e.g., in the history/steps log).
+   */
   readonly displayInfoFromArgs?: (
       args: Args,
       ) => {

@@ -7,8 +7,8 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 
 import * as ComputedStyle from './computed_style.js';
@@ -29,14 +29,16 @@ function createNode(target: SDK.Target.Target, {nodeId}: {nodeId: Protocol.DOM.N
   return node;
 }
 
-describeWithMockConnection('ComputedStyleModel', () => {
+describeWithEnvironment('ComputedStyleModel', () => {
   let target: SDK.Target.Target;
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
   let domNode1: SDK.DOMModel.DOMNode;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
     stubNoopSettings();
-    target = createTarget();
+    connection = new MockCDPConnection();
+    target = createTarget({connection});
     domNode1 = createNode(target, {nodeId: 1 as Protocol.DOM.NodeId});
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     sinon.stub(ComputedStyle.ComputedStyleModel.ComputedStyleModel.prototype, 'cssModel').returns(cssModel);
@@ -112,6 +114,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
     const domNode2 = createNode(target, {nodeId: 2 as Protocol.DOM.NodeId});
     const mockMatchedStylesForNode2 = await getMatchedStyles({
       node: domNode2,
+      connection,
     });
     const cachedMatchedCascadeForNodeStub =
         sinon.stub(cssModel, 'cachedMatchedCascadeForNode').resolves(mockMatchedStylesForNode2);
@@ -152,6 +155,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
     it('should return a map of property traces from the matched styles', async () => {
       const mockMatchedStyles = await getMatchedStyles({
         matchedPayload: [ruleMatch('div', [{name: 'color', value: 'red'}, {name: 'font-size', value: '12px'}])],
+        connection,
       });
       const traces = computedStyleModel.computePropertyTraces(mockMatchedStyles);
       assert.sameMembers(Array.from(traces.keys()), ['color', 'font-size']);
@@ -164,6 +168,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
     it('should not include properties that are not active in the style', async () => {
       const mockMatchedStyles = await getMatchedStyles({
         matchedPayload: [ruleMatch('div', [{name: 'color', value: 'red'}])],
+        connection,
       });
       const colorProperty = mockMatchedStyles.nodeStyles()[0].allProperties()[0];
       sinon.stub(colorProperty, 'activeInStyle').returns(false);
@@ -175,6 +180,7 @@ describeWithMockConnection('ComputedStyleModel', () => {
     it('should not include properties whose state is not determined', async () => {
       const mockMatchedStyles = await getMatchedStyles({
         matchedPayload: [ruleMatch('div', [{name: 'color', value: 'red'}])],
+        connection,
       });
       sinon.stub(mockMatchedStyles, 'propertyState').returns(null);
 

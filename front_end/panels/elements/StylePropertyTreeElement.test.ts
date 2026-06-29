@@ -7,6 +7,7 @@ import sinon from 'sinon';
 import type {SinonStub, SinonStubbedInstance} from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -14,9 +15,9 @@ import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled, spyCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   getMatchedStyles,
   getMatchedStylesWithBlankRule,
@@ -30,9 +31,10 @@ import * as LegacyUI from '../../ui/legacy/legacy.js';
 import * as ElementsComponents from './components/components.js';
 import * as Elements from './elements.js';
 
-describeWithMockConnection('StylePropertyTreeElement', () => {
+describeWithEnvironment('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
   let computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel;
+  let connection: MockCDPConnection;
   let mockVariableMap: Record<string, string|SDK.CSSProperty.CSSProperty>;
   let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
   let fakeComputeCSSVariable: SinonStub<[
@@ -45,6 +47,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   const environmentVariables = {a: 'A'};
 
   beforeEach(async () => {
+    connection = new MockCDPConnection();
     computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     mockVariableMap = {
@@ -59,14 +62,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     };
 
     matchedStyles = await getMatchedStylesWithBlankRule({
-      cssModel: new SDK.CSSModel.CSSModel(createTarget()),
+      cssModel: new SDK.CSSModel.CSSModel(createTarget({connection})),
       range: {
         startLine: 0,
         startColumn: 0,
         endLine: 0,
         endColumn: 1,
       },
-      getEnvironmentVariablesCallback: () => ({environmentVariables})
+      getEnvironmentVariablesCallback: () => ({environmentVariables}),
+      connection,
     });
     sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
     fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((_style, name, _node) => {
@@ -89,8 +93,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
         {forceNew: true, resourceMapping, targetManager: SDK.TargetManager.TargetManager.instance()});
 
-    setMockConnectionResponseHandler('CSS.enable', () => ({}));
-    cssModel = new SDK.CSSModel.CSSModel(createTarget());
+    connection.setSuccessHandler('CSS.enable', () => ({}));
+    cssModel = new SDK.CSSModel.CSSModel(createTarget({connection}));
     await cssModel.resumeModel();
     const domModel = cssModel.domModel();
     const node = new SDK.DOMModel.DOMNode(domModel);
@@ -109,6 +113,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   async function getTreeElementForFunctionRule(functionName: string, result: string, propertyName = 'result') {
     const matchedStyles = await getMatchedStyles({
+      connection,
       functionRules:
           [{name: {text: functionName}, origin: Protocol.CSS.StyleSheetOrigin.Regular, parameters: [], children: []}]
     });
@@ -174,23 +179,25 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
        });
 
     it('is able to expand longhands with vars', async () => {
-      setMockConnectionResponseHandler(
-          'CSS.getLonghandProperties', (request: Protocol.CSS.GetLonghandPropertiesRequest) => {
-            if (request.shorthandName !== 'shorthand') {
-              return {getError: () => 'Invalid shorthand'};
-            }
-            const longhands = request.value.split(' ');
-            if (longhands.length !== 3) {
-              return {getError: () => 'Invalid value'};
-            }
-            return {
-              longhandProperties: [
-                {name: 'first', value: longhands[0]},
-                {name: 'second', value: longhands[1]},
-                {name: 'third', value: longhands[2]},
-              ]
-            };
-          });
+      connection.setHandler('CSS.getLonghandProperties', null);
+      connection.setHandler('CSS.getLonghandProperties', (request: Protocol.CSS.GetLonghandPropertiesRequest) => {
+        if (request.shorthandName !== 'shorthand') {
+          return {error: {message: 'Invalid shorthand', code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus}};
+        }
+        const longhands = request.value.split(' ');
+        if (longhands.length !== 3) {
+          return {error: {message: 'Invalid value', code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus}};
+        }
+        return {
+          result: {
+            longhandProperties: [
+              {name: 'first', value: longhands[0]},
+              {name: 'second', value: longhands[1]},
+              {name: 'third', value: longhands[2]},
+            ],
+          },
+        };
+      });
       const stylePropertyTreeElement = getTreeElement(
           'shorthand', 'var(--a) var(--space)',
           [{name: 'first', value: ''}, {name: 'second', value: ''}, {name: 'third', value: ''}]);
@@ -328,10 +335,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       it('supports evaluation during tracing', async () => {
         const property = addProperty('color', 'color-mix(in srgb, black, white)');
-        setMockConnectionResponseHandler(
-            'CSS.resolveValues',
-            (request: Protocol.CSS.ResolveValuesRequest) =>
-                ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
+        connection.setHandler('CSS.resolveValues', null);
+        connection.setSuccessHandler('CSS.resolveValues',
+                                     (request: Protocol.CSS.ResolveValuesRequest) =>
+                                         ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
         const matchedResult = property.parseValue(matchedStyles, new Map());
 
         const context =
@@ -1033,10 +1040,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('evaluates relative color channels during tracing', async () => {
-      setMockConnectionResponseHandler(
-          'CSS.resolveValues',
-          (request: Protocol.CSS.ResolveValuesRequest) =>
-              ({results: request.values.map(v => v === 'calc(1.000 / 2)' ? '0.5' : '')}));
+      connection.setHandler('CSS.resolveValues', null);
+      connection.setSuccessHandler('CSS.resolveValues',
+                                   (request: Protocol.CSS.ResolveValuesRequest) =>
+                                       ({results: request.values.map(v => v === 'calc(1.000 / 2)' ? '0.5' : '')}));
       const property = addProperty('color', 'rgb(from #ff0c0c calc(r / 2) g b)');
 
       const {promise, resolve} = Promise.withResolvers<void>();
@@ -1488,8 +1495,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       highlightMock = sinon.mock();
       revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal');
       hideDOMNodeHighlightStub = sinon.stub(SDK.OverlayModel.OverlayModel, 'hideDOMNodeHighlight');
-      setMockConnectionResponseHandler(
-          'DOM.getAnchorElement', () => ({result: undefined} as unknown as Protocol.DOM.GetAnchorElementResponse));
+      connection.setHandler('DOM.getAnchorElement', null);
+      connection.setSuccessHandler('DOM.getAnchorElement',
+                                   () => ({result: undefined} as unknown as Protocol.DOM.GetAnchorElementResponse));
     });
 
     it('renders anchor() function correctly', async () => {
@@ -1992,19 +2000,20 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('LengthRenderer', () => {
     it('shows a popover with pixel values for relative units', async () => {
-      setMockConnectionResponseHandler(
-          'CSS.resolveValues',
-          (request: Protocol.CSS.ResolveValuesRequest) =>
-              ({results: request.values.map(v => v === '2em' ? '15px' : v)}));
-      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
+      connection.setHandler('CSS.resolveValues', null);
+      connection.setSuccessHandler('CSS.resolveValues',
+                                   (request: Protocol.CSS.ResolveValuesRequest) =>
+                                       ({results: request.values.map(v => v === '2em' ? '15px' : v)}));
+      const cssModel = new SDK.CSSModel.CSSModel(createTarget({connection}));
       const domModel = cssModel.domModel();
       const node = new SDK.DOMModel.DOMNode(domModel);
       node.id = 0 as Protocol.DOM.NodeId;
       LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
       computedStyleModel.node = node;
       const stylePropertyTreeElement = getTreeElement('property', '5px 2em');
-      setMockConnectionResponseHandler(
-          'CSS.getComputedStyleForNode', () => ({computedStyle: {}} as Protocol.CSS.GetComputedStyleForNodeResponse));
+      connection.setHandler('CSS.getComputedStyleForNode', null);
+      connection.setSuccessHandler('CSS.getComputedStyleForNode',
+                                   () => ({computedStyle: {}} as Protocol.CSS.GetComputedStyleForNodeResponse));
 
       await stylePropertyTreeElement.onpopulate();
       stylePropertyTreeElement.updateTitle();
@@ -2093,11 +2102,12 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('MathFunctionRenderer', () => {
     it('strikes out non-selected values', async () => {
-      setMockConnectionResponseHandler(
+      connection.setHandler('CSS.resolveValues', null);
+      connection.setSuccessHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) => ({
-            results: request.values.map(
-                value => value.startsWith('min') ? '4px' : value.trim().replaceAll(/(em|pt)$/g, 'px'))
+            results: request.values.map(value => value.startsWith('min') ? '4px' :
+                                                                           value.trim().replaceAll(/(em|pt)$/g, 'px'))
           }));
       const strikeOutSpy =
           sinon.spy(Elements.StylePropertyTreeElement.MathFunctionRenderer.prototype, 'applyMathFunction');
@@ -2128,7 +2138,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('shows the original text during tracing when evaluation fails', async () => {
-      setMockConnectionResponseHandler(
+      connection.setHandler('CSS.resolveValues', null);
+      connection.setSuccessHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) => ({results: request.values.map(() => '')}));
       const evaluationSpy =
@@ -2236,7 +2247,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
     function setParentComputedStyle(style: Record<string, string>) {
       const computedStyle = Object.keys(style).map(name => ({name, value: style[name]}));
-      setMockConnectionResponseHandler('CSS.getComputedStyleForNode', ({nodeId}) => {
+      connection.setHandler('CSS.getComputedStyleForNode', null);
+      connection.setSuccessHandler('CSS.getComputedStyleForNode', ({nodeId}) => {
         if (nodeId === 0) {
           return {computedStyle} as Protocol.CSS.GetComputedStyleForNodeResponse;
         }
@@ -2516,7 +2528,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       ]);
       return {styles: [updatedStylePayload]};
     });
-    setMockConnectionResponseHandler('CSS.setStyleTexts', setStyleTextsHandler);
+    connection.setHandler('CSS.setStyleTexts', null);
+    connection.setSuccessHandler('CSS.setStyleTexts', setStyleTextsHandler);
 
     // We must attach the element to the DOM because applyStyleText checks isConnected
     renderElementIntoDOM(treeElement.listItemElement);

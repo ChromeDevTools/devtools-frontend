@@ -22,53 +22,54 @@ describe('CSSMatchedStyles', () => {
   setupRuntimeHooks();
 
   let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
+    connection = new MockCDPConnection();
     universe = new TestUniverse();
   });
 
   describe('computeCSSVariable', () => {
     const testCssValueEquals = async (text: string, expectedValue: unknown) => {
       const matchedStyles = await getMatchedStyles({
+        connection,
         matchedPayload: [
-          ruleMatch(
-              'div',
-              [
-                {name: '--diamond', value: 'var(--diamond-a) var(--diamond-b)'},
-                {name: '--diamond-a', value: 'var(--foo)'},
-                {name: '--diamond-b', value: 'var(--foo)'},
-                {name: '--foo', value: 'active-foo'},
-                {name: '--baz', value: 'active-baz !important', important: true},
-                {name: '--baz', value: 'passive-baz'},
-                {name: '--dark', value: 'darkgrey'},
-                {name: '--empty', value: ''},
-                {name: '--empty2', value: 'var(--empty)'},
-                {name: '--light', value: 'lightgrey'},
-                {name: '--theme', value: 'var(--dark)'},
-                {name: '--shadow', value: '1px var(--theme)'},
-                {name: '--width', value: '1px'},
-                {name: '--a', value: 'a'},
-                {name: '--b', value: 'var(--a)'},
-                {name: '--valid-fallback', value: 'var(--non-existent, fallback-value)'},
-                {name: '--var-reference-in-fallback', value: 'var(--non-existent, var(--foo))'},
-                {name: '--itself', value: 'var(--itself)'},
-                {name: '--itself-complex', value: '10px var(--itself-complex)'},
-                {name: '--cycle-1', value: 'var(--cycle-2)'},
-                {name: '--cycle-2', value: 'var(--cycle-1)'},
-                {name: '--cycle-a', value: 'var(--cycle-b, 50px)'},
-                {name: '--cycle-b', value: 'var(--cycle-a)'},
-                {name: '--cycle-in-fallback', value: 'var(--non-existent, var(--cycle-a))'},
-                {name: '--non-existent-fallback', value: 'var(--non-existent, var(--another-non-existent))'},
-                {name: '--out-of-cycle', value: 'var(--cycle-2, 20px)'},
-                {name: '--non-inherited', value: 'var(--inherited)'},
-                {name: '--also-inherited-overloaded', value: 'this is overloaded here'},
-              ]),
-          ruleMatch(
-              'html',
-              [
-                {name: '--inherited', value: 'var(--also-inherited-overloaded)'},
-                {name: '--also-inherited-overloaded', value: 'inherited and overloaded'},
-              ]),
+          ruleMatch('div',
+                    [
+                      {name: '--diamond', value: 'var(--diamond-a) var(--diamond-b)'},
+                      {name: '--diamond-a', value: 'var(--foo)'},
+                      {name: '--diamond-b', value: 'var(--foo)'},
+                      {name: '--foo', value: 'active-foo'},
+                      {name: '--baz', value: 'active-baz !important', important: true},
+                      {name: '--baz', value: 'passive-baz'},
+                      {name: '--dark', value: 'darkgrey'},
+                      {name: '--empty', value: ''},
+                      {name: '--empty2', value: 'var(--empty)'},
+                      {name: '--light', value: 'lightgrey'},
+                      {name: '--theme', value: 'var(--dark)'},
+                      {name: '--shadow', value: '1px var(--theme)'},
+                      {name: '--width', value: '1px'},
+                      {name: '--a', value: 'a'},
+                      {name: '--b', value: 'var(--a)'},
+                      {name: '--valid-fallback', value: 'var(--non-existent, fallback-value)'},
+                      {name: '--var-reference-in-fallback', value: 'var(--non-existent, var(--foo))'},
+                      {name: '--itself', value: 'var(--itself)'},
+                      {name: '--itself-complex', value: '10px var(--itself-complex)'},
+                      {name: '--cycle-1', value: 'var(--cycle-2)'},
+                      {name: '--cycle-2', value: 'var(--cycle-1)'},
+                      {name: '--cycle-a', value: 'var(--cycle-b, 50px)'},
+                      {name: '--cycle-b', value: 'var(--cycle-a)'},
+                      {name: '--cycle-in-fallback', value: 'var(--non-existent, var(--cycle-a))'},
+                      {name: '--non-existent-fallback', value: 'var(--non-existent, var(--another-non-existent))'},
+                      {name: '--out-of-cycle', value: 'var(--cycle-2, 20px)'},
+                      {name: '--non-inherited', value: 'var(--inherited)'},
+                      {name: '--also-inherited-overloaded', value: 'this is overloaded here'},
+                    ]),
+          ruleMatch('html',
+                    [
+                      {name: '--inherited', value: 'var(--also-inherited-overloaded)'},
+                      {name: '--also-inherited-overloaded', value: 'inherited and overloaded'},
+                    ]),
         ],
       });
 
@@ -101,6 +102,7 @@ describe('CSSMatchedStyles', () => {
       node.parentNode.parentNode.parentNode.id = 4 as Protocol.DOM.NodeId;
 
       const matchedStyles = await getMatchedStyles({
+        connection,
         node,
         matchedPayload: [ruleMatch('div', [{name: '--foo', value: 'foo1'}])],  // styleFoo1
         inheritedPayload: [
@@ -166,12 +168,12 @@ describe('CSSMatchedStyles', () => {
       parent.pseudoElements.returns(new Map([[Protocol.DOM.PseudoType.Highlight, [parentHighlight]]]));
 
       const matchedStyles = await getMatchedStyles({
+        connection,
         node,
         matchedPayload: [ruleMatch('div.b', [{name: '--color', value: 'green'}])],
         inheritedPayload: [
           {
-            matchedCSSRules:
-                [ruleMatch('div.a', [{name: '--color', value: 'yellow'}])],
+            matchedCSSRules: [ruleMatch('div.a', [{name: '--color', value: 'yellow'}])],
           },
         ],
         pseudoPayload: [
@@ -185,9 +187,10 @@ describe('CSSMatchedStyles', () => {
           pseudoElements: [{
             pseudoType: Protocol.DOM.PseudoType.Highlight,
             pseudoIdentifier: 'highlight-foo',
-            matches: [ruleMatch(
-                '.a::highlight(highlight-foo)',
-                [{name: '--color', value: 'blue'},])],
+            matches: [ruleMatch('.a::highlight(highlight-foo)',
+                                [
+                                  {name: '--color', value: 'blue'},
+                                ])],
           }]
         }]
       });
@@ -214,18 +217,18 @@ describe('CSSMatchedStyles', () => {
       node.pseudoElements.returns(new Map([[Protocol.DOM.PseudoType.After, [afterNode]]]));
 
       const matchedStyles = await getMatchedStyles({
+        connection,
         node,
         matchedPayload: [ruleMatch('div.b', [{name: '--color', value: 'green'}, {name: '--bg-color', value: 'red'}])],
         pseudoPayload: [
           {
             pseudoType: Protocol.DOM.PseudoType.After,
-            matches: [ruleMatch(
-                '.b::after',
-                [
-                  {name: '--color', value: 'blue'},
-                  {name: '--color2', value: 'var(--color)'},
-                  {name: '--color3', value: 'var(--bg-color)'},
-                ])],
+            matches: [ruleMatch('.b::after',
+                                [
+                                  {name: '--color', value: 'blue'},
+                                  {name: '--color2', value: 'var(--color)'},
+                                  {name: '--color3', value: 'var(--bg-color)'},
+                                ])],
           },
         ],
       });
@@ -301,6 +304,7 @@ describe('CSSMatchedStyles', () => {
       parent.id = 2 as Protocol.DOM.NodeId;
       node.parentNode = parent;
       const matchedStyles = await getMatchedStyles({
+        connection,
         matchedPayload: [ruleMatch('div', [{name: '--color', value: 'inherit'}])],
         inheritedPayload: [{matchedCSSRules: [ruleMatch('div', [{name: '--color', value: 'inherited-color'}])]}],
         node
@@ -321,7 +325,7 @@ describe('CSSMatchedStyles', () => {
         const inheritedPayload = inheritedRules.map(
             ruleTexts => ({matchedCSSRules: ruleTexts.map((rule, i) => ruleToRuleMatch(rule, i + styleRules.length))}));
 
-        const matchedStyles = await getMatchedStyles({matchedPayload, inheritedPayload});
+        const matchedStyles = await getMatchedStyles({connection, matchedPayload, inheritedPayload});
         return matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], name)?.value ?? null;
       }
 
@@ -463,6 +467,7 @@ describe('CSSMatchedStyles', () => {
        ];
        const inheritedPayload = [{matchedCSSRules: matchedPayload.slice(1)}];
        const matchedStyles = await getMatchedStyles({
+         connection,
          node,
          matchedPayload,
          inheritedPayload,
@@ -587,8 +592,13 @@ describe('CSSMatchedStyles', () => {
         // Value is undefined
         {name: '--unregistered-is-not-inherited', value: 'unset', expectedValue: undefined},
       ];
-      const matchedStyles = await getMatchedStyles(
-          {matchedPayload: [ruleMatch('div', properties)], inheritedPayload, cssPropertyRegistrations, node});
+      const matchedStyles = await getMatchedStyles({
+        connection,
+        matchedPayload: [ruleMatch('div', properties)],
+        inheritedPayload,
+        cssPropertyRegistrations,
+        node
+      });
       checkResolution(matchedStyles, properties);
     });
 
@@ -621,8 +631,13 @@ describe('CSSMatchedStyles', () => {
         // Value is undefined
         {name: '--unregistered-is-not-inherited', value: 'inherit', expectedValue: undefined},
       ];
-      const matchedStyles = await getMatchedStyles(
-          {matchedPayload: [ruleMatch('div', properties)], inheritedPayload, cssPropertyRegistrations, node});
+      const matchedStyles = await getMatchedStyles({
+        connection,
+        matchedPayload: [ruleMatch('div', properties)],
+        inheritedPayload,
+        cssPropertyRegistrations,
+        node
+      });
       checkResolution(matchedStyles, properties);
     });
 
@@ -655,8 +670,13 @@ describe('CSSMatchedStyles', () => {
         // Value is undefined
         {name: '--unregistered-is-not-inherited', value: 'initial', expectedValue: undefined},
       ];
-      const matchedStyles = await getMatchedStyles(
-          {matchedPayload: [ruleMatch('div', properties)], inheritedPayload, cssPropertyRegistrations, node});
+      const matchedStyles = await getMatchedStyles({
+        connection,
+        matchedPayload: [ruleMatch('div', properties)],
+        inheritedPayload,
+        cssPropertyRegistrations,
+        node
+      });
       checkResolution(matchedStyles, properties);
     });
 
@@ -696,6 +716,7 @@ describe('CSSMatchedStyles', () => {
       ]);
       uaRule.rule.origin = Protocol.CSS.StyleSheetOrigin.UserAgent;
       const matchedStyles = await getMatchedStyles({
+        connection,
         matchedPayload: [uaRule, userRule, ruleMatch('div', properties)],
         inheritedPayload,
         cssPropertyRegistrations,
@@ -757,6 +778,7 @@ describe('CSSMatchedStyles', () => {
       const uaRule = ruleMatch('div', [{name: 'font-variant', value: 'ua-font-variant'}]);
       uaRule.rule.origin = Protocol.CSS.StyleSheetOrigin.UserAgent;
       const matchedStyles = await getMatchedStyles({
+        connection,
         inlinePayload,
         matchedPayload: [uaRule, oneMoreLayer, nextLayer, sameLayer, mainRule],
         inheritedPayload,
@@ -783,6 +805,7 @@ describe('CSSMatchedStyles', () => {
       const mainRule = ruleMatch('div', properties);
       const previousRule = ruleMatch('div', [{name: 'color', value: 'previous-rule'}]);
       const matchedStyles = await getMatchedStyles({
+        connection,
         matchedPayload: [previousRule, mainRule],
         node,
       });
@@ -799,6 +822,7 @@ describe('CSSMatchedStyles', () => {
       const mainRule = ruleMatch('div', properties);
       const inlinePayload = ruleMatch('', inlineProperties).rule.style;
       const matchedStyles = await getMatchedStyles({
+        connection,
         inlinePayload,
         matchedPayload: [mainRule],
         node,
@@ -830,7 +854,7 @@ describe('CSSMatchedStyles', () => {
         ruleMatch('div', {color: 'y'}),
       ]
     }];
-    const matchedStyles = await getMatchedStyles({node, matchedPayload, inheritedPayload});
+    const matchedStyles = await getMatchedStyles({connection, node, matchedPayload, inheritedPayload});
 
     const styles = matchedStyles.nodeStyles();
     assert.lengthOf(styles, 5);
@@ -858,6 +882,7 @@ describe('CSSMatchedStyles', () => {
     pseudoElement.parentNode = node;
     pseudoElement.pseudoType.returns('before' as Protocol.DOM.PseudoType);
     const matchedStyles = await getMatchedStyles({
+      connection,
       matchedPayload: [ruleMatch('div::before', {content: 'attr(data-content)'})],
       node: pseudoElement,
     });
@@ -934,6 +959,7 @@ describe('CSSMatchedStyles', () => {
     node.getAttribute.callsFake((name: string) => attributes.find(attr => attr.name === name)?.value);
 
     const matchedStyles = await getMatchedStyles({
+      connection,
       matchedPayload: [ruleMatch('div', variables)],
       node,
     });
@@ -968,6 +994,7 @@ describe('CSSMatchedStyles', () => {
       }];
 
       const matchedStyles = await getMatchedStyles({
+        connection,
         functionRules,
       });
       assert.lengthOf(matchedStyles.functionRules(), 1);
@@ -1027,6 +1054,7 @@ describe('CSSMatchedStyles', () => {
       ];
 
       const matchedStyles = await getMatchedStyles({
+        connection,
         node,
         functionRules,
       });
@@ -1114,6 +1142,7 @@ describe('CSSMatchedStyles', () => {
         },
       ];
       const matchedStyles = await getMatchedStyles({
+        connection,
         cssModel,
         node,
         matchedPayload: [
@@ -1142,6 +1171,7 @@ describe('CSSMatchedStyles', () => {
         styleSheetId: nestedRule.rule.styleSheetId,
       }];
       const matchedStyles = await getMatchedStyles({
+        connection,
         matchedPayload: [outerRule, nestedRule],
       });
 
@@ -1158,6 +1188,7 @@ describe('CSSMatchedStyles', () => {
         } as Protocol.CSS.CSSAnimationStyle;
 
         const matchedStyles = await getMatchedStyles({
+          connection,
           matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
           animationStylesPayload: [animationStyle],
         });
@@ -1178,6 +1209,7 @@ describe('CSSMatchedStyles', () => {
         } as Protocol.CSS.CSSStyle;
 
         const matchedStyles = await getMatchedStyles({
+          connection,
           matchedPayload: [ruleMatch('div', [{name: 'opacity', value: '0.5'}])],
           transitionsStylePayload: transitionStyle,
         });
@@ -1193,6 +1225,7 @@ describe('CSSMatchedStyles', () => {
 
       it('returns false when a property is overridden by another regular property', async () => {
         const matchedStyles = await getMatchedStyles({
+          connection,
           matchedPayload: [
             ruleMatch('div', [{name: 'opacity', value: '0.5'}]),
             ruleMatch('div.active', [{name: 'opacity', value: '1'}]),  // Higher specificity

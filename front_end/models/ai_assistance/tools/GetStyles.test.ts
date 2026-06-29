@@ -13,6 +13,7 @@ import {
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {
   createStubbedDomNodeWithModels,
   getMatchedStyles,
@@ -24,8 +25,10 @@ describeWithEnvironment('GetStylesTool', () => {
   let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
   let target: sinon.SinonStubbedInstance<SDK.Target.Target>;
   let domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
+    connection = new MockCDPConnection();
     target = sinon.createStubInstance(SDK.Target.Target);
     target.model.returns(null);
 
@@ -53,7 +56,7 @@ describeWithEnvironment('GetStylesTool', () => {
     (cssModel.getComputedStyle as sinon.SinonStub).resolves(computedStyleMap);
 
     const matchedPayload = [ruleMatch('div', {color: 'red'})];
-    const matchedStyles = getMatchedStyles({cssModel, node: resolvedNode, matchedPayload});
+    const matchedStyles = await getMatchedStyles({cssModel, node: resolvedNode, matchedPayload, connection});
     (cssModel.getMatchedStyles as sinon.SinonStub).resolves(matchedStyles);
 
     const tool = new AiAssistance.GetStyles.GetStylesTool();

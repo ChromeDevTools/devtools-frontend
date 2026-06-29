@@ -7,23 +7,26 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createStubbedDomNodeWithModels, getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
 
 import * as Elements from './elements.js';
 
-describeWithMockConnection('StylePropertyHighlighter', () => {
+describeWithEnvironment('StylePropertyHighlighter', () => {
   async function setupStylesPane(): Promise<{
     stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane,
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
   }> {
+    const connection = new MockCDPConnection();
     const {cssModel, node} = createStubbedDomNodeWithModels();
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
     const computedStyleModel = new ComputedStyle.ComputedStyleModel.ComputedStyleModel(node);
     const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
-    const matchedStyles = await getMatchedStyles({node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode, cssModel});
+    const matchedStyles =
+        await getMatchedStyles({node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode, cssModel, connection});
     return {
       stylesSidebarPane,
       matchedStyles,

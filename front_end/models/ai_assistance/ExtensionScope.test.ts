@@ -8,8 +8,8 @@ import sinon from 'sinon';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 import * as Bindings from '../bindings/bindings.js';
@@ -40,8 +40,10 @@ async function getSelector(
     node = createNode();
   }
 
+  const connection = new MockCDPConnection();
   const matchedStyles = await getMatchedStyles({
     node,
+    connection,
     ...payload,
   });
 
@@ -370,9 +372,10 @@ describe('ExtensionScope', () => {
     });
   });
 
-  describeWithMockConnection('getSourceLocation', () => {
+  describeWithEnvironment('getSourceLocation', () => {
     async function setupMockedStyleRules() {
-      const target = createTarget();
+      const connection = new MockCDPConnection();
+      const target = createTarget({connection});
 
       const targetManager = target.targetManager();
       targetManager.setScopeTarget(target);
@@ -436,6 +439,7 @@ describe('ExtensionScope', () => {
         node,
         matchedPayload,
         cssModel,
+        connection,
       });
 
       return AiAssistance.ExtensionScope.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles)!;

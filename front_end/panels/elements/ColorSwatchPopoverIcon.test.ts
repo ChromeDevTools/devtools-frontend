@@ -11,17 +11,19 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {getMatchedStyles} from '../../testing/StyleHelpers.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 
 import * as Elements from './elements.js';
 
-describeWithMockConnection('ColorSwatchPopoverIcon', () => {
+describe('ColorSwatchPopoverIcon', () => {
   describeWithEnvironment('', () => {
+    let connection: MockCDPConnection;
     setupActionRegistry();
     beforeEach(() => {
+      connection = new MockCDPConnection();
       const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       const resourceMapping =
           new Bindings.ResourceMapping.ResourceMapping(SDK.TargetManager.TargetManager.instance(), workspace);
@@ -36,7 +38,7 @@ describeWithMockConnection('ColorSwatchPopoverIcon', () => {
         stylesContainer:
             new Elements.StylesSidebarPane.StylesSidebarPane(new ComputedStyle.ComputedStyleModel.ComputedStyleModel()),
         section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
-        matchedStyles: await getMatchedStyles(),
+        matchedStyles: await getMatchedStyles({connection}),
         property,
         isShorthand: false,
         inherited: false,

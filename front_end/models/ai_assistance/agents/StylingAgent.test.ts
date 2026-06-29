@@ -16,6 +16,7 @@ import {
   setUserAgentForTesting,
   updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {createStubbedDomNodeWithModels, getMatchedStyles, ruleMatch} from '../../../testing/StyleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -24,6 +25,10 @@ const {StylingAgent, AiAgent} = AiAssistance;
 
 describeWithEnvironment('StylingAgent', function() {
   const snapshotTester = new SnapshotTester(this, import.meta);
+  let connection: MockCDPConnection;
+  beforeEach(() => {
+    connection = new MockCDPConnection();
+  });
 
   function mockHostConfig(
       modelId?: string, temperature?: number, userTier?: string,
@@ -697,7 +702,7 @@ describeWithEnvironment('StylingAgent', function() {
       (cssModel.getComputedStyle as sinon.SinonStub).resolves(computedStyleMap);
 
       const matchedPayload = [ruleMatch('div', {color: 'red'})];
-      const matchedStyles = getMatchedStyles({cssModel, node: resolvedNode, matchedPayload});
+      const matchedStyles = await getMatchedStyles({cssModel, node: resolvedNode, matchedPayload, connection});
       (cssModel.getMatchedStyles as sinon.SinonStub).resolves(matchedStyles);
 
       const agent = new StylingAgent.StylingAgent({

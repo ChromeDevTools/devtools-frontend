@@ -60,9 +60,13 @@ template("ts_library") {
                              "inputs",
                              "data_deps",
                              "metadata",
+                             "additional_type_definitions",
                            ])
     if (!defined(inputs)) {
       inputs = []
+    }
+    if (defined(additional_type_definitions)) {
+      inputs += additional_type_definitions
     }
 
     inputs += [

@@ -11,24 +11,18 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
-import {
-  clearMockConnectionResponseHandler,
-  describeWithMockConnection,
-  dispatchEvent,
-  registerListenerOnOutgoingMessage,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import type {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
-import {getInitializedResourceTreeModel, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {getInitializedResourceTreeModel, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {setupPageResourceLoaderForSourceMap} from '../../testing/SourceMapHelpers.js';
 import {
   createContentProviderUISourceCode,
 } from '../../testing/UISourceCodeHelpers.js';
-import * as Bindings from '../bindings/bindings.js';
+import type * as Bindings from '../bindings/bindings.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as TextUtils from '../text_utils/text_utils.js';
@@ -36,7 +30,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('BreakpointManager', () => {
+describeWithEnvironment('BreakpointManager', () => {
   const URL_HTML = urlString`http://site/index.html`;
   const INLINE_SCRIPT_START = 41;
   const BREAKPOINT_SCRIPT_LINE = 1;
@@ -85,30 +79,38 @@ describeWithMockConnection('BreakpointManager', () => {
   });
 
   let target: SDK.Target.Target;
-  let backend: MockProtocolBackend;
+  let backend: MockDebuggerBackend;
   let breakpointManager: Breakpoints.BreakpointManager.BreakpointManager;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   let targetManager: SDK.TargetManager.TargetManager;
   let workspace: Workspace.Workspace.WorkspaceImpl;
-  beforeEach(async () => {
-    workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
+
+  function registerListenerOnOutgoingMessage(connection: MockCDPConnection, method: string): Promise<void> {
+    const {resolve, promise} = Promise.withResolvers<void>();
+    const originalSend = connection.send.bind(connection);
+    sinon.stub(connection, 'send').callsFake(async (m, params, sessionId) => {
+      const result = await originalSend(m, params, sessionId);
+      if (m === method) {
+        resolve();
+      }
+      return result;
     });
-    backend = new MockProtocolBackend();
-    target = createTarget();
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    return promise;
+  }
+
+  beforeEach(async () => {
+    backend = new MockDebuggerBackend();
+    Root.DevToolsContext.setGlobalInstance(backend.universe.context as Root.DevToolsContext.WritableDevToolsContext);
+    target = backend.createTarget();
+    workspace = backend.universe.workspace;
+    targetManager = backend.universe.targetManager;
+    debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+
+    targetManager.setScopeTarget(target);
 
     // Wait for the resource tree model to load; otherwise, our uiSourceCodes could be asynchronously
     // invalidated during the test.
-    setMockResourceTree(false);
+    mockResourceTree(backend.cdpConnection);
     await getInitializedResourceTreeModel(target);
 
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
@@ -116,8 +118,13 @@ describeWithMockConnection('BreakpointManager', () => {
       targetManager,
       workspace,
       debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
+      settings: backend.universe.settings,
     });
+  });
+
+  afterEach(() => {
+    Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
+    Root.DevToolsContext.setGlobalInstance(null);
   });
 
   async function uiSourceCodeFromScript(debuggerModel: SDK.DebuggerModel.DebuggerModel, script: SDK.Script.Script):
@@ -138,20 +145,15 @@ describeWithMockConnection('BreakpointManager', () => {
       const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
       assert.exists(uiSourceCode);
 
-      function getPossibleBreakpointsStub(_request: Protocol.Debugger.GetPossibleBreakpointsRequest):
-          Protocol.Debugger.GetPossibleBreakpointsResponse {
+      const getPossibleBreakpoints = sinon.spy((_request: Protocol.Debugger.GetPossibleBreakpointsRequest) => {
         return {
           locations: [
             {scriptId, lineNumber: 0, columnNumber: 4},
             {scriptId, lineNumber: 0, columnNumber: 8},
           ],
-          getError() {
-            return undefined;
-          },
         };
-      }
-      const getPossibleBreakpoints = sinon.spy(getPossibleBreakpointsStub);
-      setMockConnectionResponseHandler('Debugger.getPossibleBreakpoints', getPossibleBreakpoints);
+      });
+      backend.cdpConnection.setSuccessHandler('Debugger.getPossibleBreakpoints', getPossibleBreakpoints);
 
       const uiTextRange = new TextUtils.TextRange.TextRange(0, 0, 1, 0);
       const possibleBreakpoints = await breakpointManager.possibleBreakpoints(uiSourceCode, uiTextRange);
@@ -220,7 +222,7 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.exists(uiSourceCode);
 
       // Remove the project (and thus the uiSourceCode).
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(uiSourceCode.project());
+      workspace.removeProject(uiSourceCode.project());
 
       // Set the breakpoint.
       const breakpoint =
@@ -409,8 +411,8 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Mock out "Debugger.setBreakpointByUrl and just echo back the request".
       const cdpSetBreakpointPromise = new Promise<Protocol.Debugger.SetBreakpointByUrlRequest>(res => {
-        clearMockConnectionResponseHandler('Debugger.setBreakpointByUrl');
-        setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', request => {
+        backend.cdpConnection.setHandler('Debugger.setBreakpointByUrl', null);
+        backend.cdpConnection.setSuccessHandler('Debugger.setBreakpointByUrl', request => {
           res(request);
           return {} as Protocol.Debugger.SetBreakpointByUrlResponse;
         });
@@ -465,9 +467,9 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Mock out "Debugger.setBreakpointByUrl and echo back the first two 'Debugger.setBreakpointByUrl' requests.
     const cdpSetBreakpointPromise = new Promise<Map<string, Protocol.Debugger.SetBreakpointByUrlRequest>>(res => {
-      clearMockConnectionResponseHandler('Debugger.setBreakpointByUrl');
+      backend.cdpConnection.setHandler('Debugger.setBreakpointByUrl', null);
       const requests = new Map<string, Protocol.Debugger.SetBreakpointByUrlRequest>();
-      setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', request => {
+      backend.cdpConnection.setSuccessHandler('Debugger.setBreakpointByUrl', request => {
         requests.set(request.url ?? '', request);
         if (requests.size === 2) {
           res(requests);
@@ -541,7 +543,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Clean up.
     await breakpoint.remove(false);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+    workspace.removeProject(project);
     Root.Runtime.experiments.disableForTest(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
   });
 
@@ -583,7 +585,7 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.strictEqual(result, Breakpoints.BreakpointManager.DebuggerUpdateResult.OK);
     assert.strictEqual(breakpoint.getLastResolvedState()?.[0].lineNumber, 13);
     await breakpoint.remove(false);
-    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+    workspace.removeProject(project);
   });
 
   it('allows awaiting on removal of breakpoint in debugger', async () => {
@@ -759,8 +761,8 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.strictEqual(breakpoint.getUiSourceCodes().size, 0);
 
     // Create a new target.
-    target = createTarget();
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    target = backend.createTarget();
+    targetManager.setScopeTarget(target);
 
     const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assert.exists(reloadedDebuggerModel);
@@ -817,14 +819,9 @@ describeWithMockConnection('BreakpointManager', () => {
       enabled: true,
       isLogpoint: false,
     }];
-    Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
-    Breakpoints.BreakpointManager.BreakpointManager.instance({
-      forceNew: true,
-      targetManager,
-      workspace,
-      debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
-    });
+    backend.universe.settings.createLocalSetting('breakpoints', breakpoints).set(breakpoints);
+    Breakpoints.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding, settings: backend.universe.settings});
 
     // Create a new target and make sure that the backend receives setBreakpointByUrl request
     // from breakpoint manager.
@@ -832,7 +829,7 @@ describeWithMockConnection('BreakpointManager', () => {
       breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
       locations: [],
     });
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(createTarget());
+    targetManager.setScopeTarget(backend.createTarget());
     await breakpointSetPromise;
   });
 
@@ -859,14 +856,9 @@ describeWithMockConnection('BreakpointManager', () => {
         condition: '' as SDK.DebuggerModel.BackendCondition,
       }],
     }];
-    Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints).set(breakpoints);
-    Breakpoints.BreakpointManager.BreakpointManager.instance({
-      forceNew: true,
-      targetManager,
-      workspace,
-      debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
-    });
+    backend.universe.settings.createLocalSetting('breakpoints', breakpoints).set(breakpoints);
+    Breakpoints.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding, settings: backend.universe.settings});
 
     // Create a new target and make sure that the backend receives setBreakpointByUrl request
     // from breakpoint manager.
@@ -874,7 +866,7 @@ describeWithMockConnection('BreakpointManager', () => {
       breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
       locations: [],
     });
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(createTarget());
+    targetManager.setScopeTarget(backend.createTarget());
     await breakpointSetPromise;
   });
 
@@ -883,18 +875,18 @@ describeWithMockConnection('BreakpointManager', () => {
     targetManager.removeTarget(target);
 
     // Re-create a target and breakpoint manager.
-    target = createTarget();
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    target = backend.createTarget();
+    targetManager.setScopeTarget(target);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     assert.exists(debuggerModel);
     const breakpoints: Breakpoints.BreakpointManager.BreakpointStorageState[] = [];
-    const setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints);
+    const setting = backend.universe.settings.createLocalSetting('breakpoints', breakpoints);
     Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       targetManager,
       workspace,
       debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
+      settings: backend.universe.settings,
     });
 
     // Add script with source map.
@@ -980,7 +972,7 @@ describeWithMockConnection('BreakpointManager', () => {
       }
 
       // Re-create the breakpoint manager and the target.
-      const setting = Common.Settings.Settings.instance().createLocalSetting('breakpoints', breakpoints);
+      const setting = backend.universe.settings.createLocalSetting('breakpoints', breakpoints);
       setting.set(breakpoints);
       // Create the breakpoint manager, request placing on the two latest breakpoints in the backend.
       Breakpoints.BreakpointManager.BreakpointManager.instance({
@@ -988,11 +980,11 @@ describeWithMockConnection('BreakpointManager', () => {
         targetManager,
         workspace,
         debuggerWorkspaceBinding,
-        settings: Common.Settings.Settings.instance(),
+        settings: backend.universe.settings,
         restoreInitialBreakpointCount: expectedBreakpointLines.length,
       });
-      target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      target = backend.createTarget();
+      targetManager.setScopeTarget(target);
     });
 
     assert.deepEqual(Array.from(await breakpointRequestLines), expectedBreakpointLines);
@@ -1000,15 +992,13 @@ describeWithMockConnection('BreakpointManager', () => {
 
   describe('with instrumentation breakpoints turned on', () => {
     beforeEach(() => {
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       Root.Runtime.experiments.enableForTest(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
       breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
         forceNew: true,
         targetManager,
         workspace,
         debuggerWorkspaceBinding,
-        settings: Common.Settings.Settings.instance()
+        settings: backend.universe.settings,
       });
     });
 
@@ -1051,7 +1041,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Register our interest in an outgoing 'resume', which should be sent as soon as
       // we have set up all breakpoints during the instrumentation pause.
-      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+      const resumeSentPromise = registerListenerOnOutgoingMessage(backend.cdpConnection, 'Debugger.resume');
 
       // Inform the front-end about an instrumentation break.
       backend.dispatchDebuggerPause(script, Protocol.Debugger.PausedEventReason.Instrumentation);
@@ -1110,6 +1100,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Disconnect from the target. This will also unload the script.
       breakpointManager.targetManager.removeTarget(target);
+      target.dispose('Disposed in test');
 
       // Make sure the source code for the script was removed from the breakpoint.
       assert.strictEqual(breakpoint.getUiSourceCodes().size, 0);
@@ -1118,11 +1109,15 @@ describeWithMockConnection('BreakpointManager', () => {
       await breakpoint.remove(true /* keepInStorage */);
 
       // Create a new target.
-      target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      target = backend.createTarget();
+      targetManager.setScopeTarget(target);
+      await getInitializedResourceTreeModel(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(reloadedDebuggerModel);
+
+      // Set the breakpoint response for our upcoming request.
+      const setResponsePromise = backend.responderToBreakpointByUrlRequest(URL, breakpointLine);
 
       // Add the same script under a different scriptId.
       const reloadedScript = await backend.addScript(target, scriptInfo, null);
@@ -1131,8 +1126,8 @@ describeWithMockConnection('BreakpointManager', () => {
       const reloadedUiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(reloadedScript);
       assert.exists(reloadedUiSourceCode);
 
-      // Set the breakpoint response for our upcoming request.
-      void backend.responderToBreakpointByUrlRequest(URL, breakpointLine)({
+      // Provide the response now that we have the scriptId.
+      void setResponsePromise({
         breakpointId: 'RELOADED_BREAK_ID' as Protocol.Debugger.BreakpointId,
         locations: [
           {
@@ -1145,7 +1140,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Register our interest in an outgoing 'resume', which should be sent as soon as
       // we have set up all breakpoints during the instrumentation pause.
-      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+      const resumeSentPromise = registerListenerOnOutgoingMessage(backend.cdpConnection, 'Debugger.resume');
 
       // Inform the front-end about an instrumentation break.
       backend.dispatchDebuggerPause(reloadedScript, Protocol.Debugger.PausedEventReason.Instrumentation);
@@ -1208,8 +1203,8 @@ describeWithMockConnection('BreakpointManager', () => {
       await breakpoint.remove(true /* keepInStorage */);
 
       // Create a new target.
-      target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      target = backend.createTarget();
+      targetManager.setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(reloadedDebuggerModel);
@@ -1237,7 +1232,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Register our interest in an outgoing 'resume', which should be sent as soon as
       // we have set up all breakpoints during the instrumentation pause.
-      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+      const resumeSentPromise = registerListenerOnOutgoingMessage(backend.cdpConnection, 'Debugger.resume');
 
       // Inform the front-end about an instrumentation break.
       backend.dispatchDebuggerPause(reloadedScript, Protocol.Debugger.PausedEventReason.Instrumentation);
@@ -1258,7 +1253,7 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.exists(debuggerModel);
 
       function dispatchDocumentOpened() {
-        dispatchEvent(target, 'Page.documentOpened', {
+        backend.cdpConnection.dispatchEvent('Page.documentOpened', {
           frame: {
             id: 'main' as Protocol.Page.FrameId,
             loaderId: 'foo' as Protocol.Network.LoaderId,
@@ -1270,7 +1265,8 @@ describeWithMockConnection('BreakpointManager', () => {
             crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
             gatedAPIFeatures: [],
           },
-        });
+        },
+                                            undefined);
       }
       dispatchDocumentOpened();
 
@@ -1317,8 +1313,8 @@ describeWithMockConnection('BreakpointManager', () => {
       await breakpoint.remove(true /* keepInStorage */);
 
       // Create a new target.
-      target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      target = backend.createTarget();
+      targetManager.setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(reloadedDebuggerModel);
@@ -1347,7 +1343,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Register our interest in an outgoing 'resume', which should be sent as soon as
       // we have set up all breakpoints during the instrumentation pause.
-      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+      const resumeSentPromise = registerListenerOnOutgoingMessage(backend.cdpConnection, 'Debugger.resume');
 
       // Inform the front-end about an instrumentation break.
       backend.dispatchDebuggerPause(reloadedScript, Protocol.Debugger.PausedEventReason.Instrumentation);
@@ -1405,6 +1401,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Disconnect from the target. This will also unload the script.
       breakpointManager.targetManager.removeTarget(target);
+      target.dispose('Disposed in test');
 
       // Make sure the source code for the script was removed from the breakpoint.
       assert.strictEqual(breakpoint.getUiSourceCodes().size, 0);
@@ -1413,8 +1410,9 @@ describeWithMockConnection('BreakpointManager', () => {
       await breakpoint.remove(true /* keepInStorage */);
 
       // Create a new target.
-      target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      target = backend.createTarget();
+      targetManager.setScopeTarget(target);
+      await getInitializedResourceTreeModel(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(reloadedDebuggerModel);
@@ -1444,7 +1442,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Register our interest in an outgoing 'resume', which should be sent as soon as
       // we have set up all breakpoints during the instrumentation pause.
-      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+      const resumeSentPromise = registerListenerOnOutgoingMessage(backend.cdpConnection, 'Debugger.resume');
 
       // Inform the front-end about an instrumentation break.
       backend.dispatchDebuggerPause(reloadedScript, Protocol.Debugger.PausedEventReason.Instrumentation);
@@ -1460,7 +1458,7 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     it('can restore breakpoints in scripts with language plugins', async () => {
-      const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+      const {pluginManager} = debuggerWorkspaceBinding;
       const scriptInfo = {url: URL, content: ''};
       const script = await backend.addScript(target, scriptInfo, null);
 
@@ -1554,8 +1552,8 @@ describeWithMockConnection('BreakpointManager', () => {
       await breakpoint.remove(true /* keepInStorage */);
 
       // Create a new target.
-      target = createTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      target = backend.createTarget();
+      targetManager.setScopeTarget(target);
 
       const reloadedDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(reloadedDebuggerModel);
@@ -1580,7 +1578,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Register our interest in an outgoing 'resume', which should be sent as soon as
       // we have set up all breakpoints during the instrumentation pause.
-      const resumeSentPromise = registerListenerOnOutgoingMessage('Debugger.resume');
+      const resumeSentPromise = registerListenerOnOutgoingMessage(backend.cdpConnection, 'Debugger.resume');
 
       // Inform the front-end about an instrumentation break.
       backend.dispatchDebuggerPause(reloadedScript, Protocol.Debugger.PausedEventReason.Instrumentation);
@@ -1596,7 +1594,6 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     it('can move breakpoints to network files that are set in matching file system files', async () => {
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
       const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
 
@@ -1607,11 +1604,8 @@ describeWithMockConnection('BreakpointManager', () => {
     });
 
     it('can move breakpoints to network files that are set in override files', async () => {
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-      SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
       Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
-          {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
+      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
       const fileSystemPath = urlString`file://path/to/overrides`;
       const fielSystemFileUrl = urlString`${fileSystemPath + '/site/script.js'}`;
@@ -1675,11 +1669,9 @@ describeWithMockConnection('BreakpointManager', () => {
     const breakpointLine = 0;
     const resolvedBreakpointLine = 1;
 
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const persistence =
         Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
-        {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
     // Create a file system project and source code.
     const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
@@ -1727,11 +1719,9 @@ describeWithMockConnection('BreakpointManager', () => {
 
   it('Breakpoints are set only into network project', async () => {
     const breakpointLine = 0;
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const persistence =
         Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
-    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
-        {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
 
     // Create a file system project and source code.
     const fileName = Common.ParsedURL.ParsedURL.extractName(scriptDescription.url);
@@ -1753,7 +1743,12 @@ describeWithMockConnection('BreakpointManager', () => {
 
     let addedBreakpoint: Breakpoints.BreakpointManager.Breakpoint|null = null;
     breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointAdded, ({data: {breakpoint}}) => {
-      assert.isNull(addedBreakpoint, 'More than one breakpoint was added');
+      // With TestUniverse wiring up the persistence layer, the breakpoint will be moved
+      // between the filesystem and network source codes, triggering the BreakpointAdded event
+      // multiple times. We assert that subsequent calls do not create different breakpoint instances.
+      if (addedBreakpoint) {
+        assert.strictEqual(breakpoint, addedBreakpoint, 'Different breakpoints were added');
+      }
       addedBreakpoint = breakpoint;
     });
 
@@ -1793,8 +1788,8 @@ describeWithMockConnection('BreakpointManager', () => {
       }],
     });
 
-    setMockConnectionResponseHandler(
-        'Debugger.setScriptSource', () => ({status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok}));
+    backend.cdpConnection.setSuccessHandler('Debugger.setScriptSource',
+                                            () => ({status: Protocol.Debugger.SetScriptSourceResponseStatus.Ok}));
 
     const uiSourceCode = await uiSourceCodeFromScript(debuggerModel, script);
     assert.exists(uiSourceCode);
@@ -1851,7 +1846,7 @@ describeWithMockConnection('BreakpointManager', () => {
       setupPageResourceLoaderForSourceMap(sourceMapContent);
 
       // Create a worker target.
-      const workerTarget = createTarget({name: 'worker', parentTarget: target});
+      const workerTarget = backend.createTarget({name: 'worker', parentTarget: target});
 
       // Add script with source map.
       const scriptInfo = {url: URL, content: COMPILED_SCRIPT_SOURCES_CONTENT};

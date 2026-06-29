@@ -636,14 +636,21 @@ export class MockDebuggerBackend {
   }
 
   responderToBreakpointByUrlRequest(url: string, lineNumber: number):
-      (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'>) => Promise<void> {
+      (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'>|
+       ProtocolClient.CDPConnection.CommandResult<'Debugger.setBreakpointByUrl'>) => Promise<void> {
     const {promise: responsePromise, resolve: responseCallback} =
         Promise.withResolvers<CommandHandlerResponse<'Debugger.setBreakpointByUrl'>>();
     const {promise: requestPromise, resolve: requestCallback} = Promise.withResolvers<void>();
     const key = this.#getBreakpointKey(url, lineNumber);
     this.#setBreakpointByUrlResponses.set(key, {response: responsePromise, callback: requestCallback, isOneShot: true});
-    return async (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'>) => {
-      responseCallback(response);
+    return async (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'>|
+                  ProtocolClient.CDPConnection.CommandResult<'Debugger.setBreakpointByUrl'>) => {
+      if ('result' in response || 'error' in response) {
+        responseCallback(response as CommandHandlerResponse<'Debugger.setBreakpointByUrl'>);
+      } else {
+        responseCallback(
+            {result: response as ProtocolClient.CDPConnection.CommandResult<'Debugger.setBreakpointByUrl'>});
+      }
       await requestPromise;
     };
   }

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "OTR Test Extension",
+  "version": "1.0",
+  "description": "Extension to test OTR loading via CDP",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

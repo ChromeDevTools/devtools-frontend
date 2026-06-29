@@ -80,7 +80,28 @@ export class Launcher {
   static async browserSetup(settings: BrowserSettings, serverPort: number) {
     const browser = await Launcher.launchChrome(settings, serverPort);
     setupBrowserProcessIO(browser);
-    return new BrowserWrapper(browser);
+    const wrapper = new BrowserWrapper(browser);
+    if (settings.extensions && settings.extensions.length > 0) {
+      await Launcher.loadExtensions(wrapper, settings.extensions);
+    }
+    return wrapper;
+  }
+
+  static async loadExtensions(browser: BrowserWrapper, extensions: string[]) {
+    try {
+      const browserTarget = await browser.browser.waitForTarget(t => t.type() === 'browser');
+      const session = await browserTarget.createCDPSession();
+      for (const extPath of extensions) {
+        await session.send('Extensions.loadUnpacked', {
+          path: extPath,
+          enableInIncognito: true,
+        });
+      }
+      await session.detach();
+    } catch (error) {
+      console.error('Failed to load extensions via CDP:', error);
+      throw error;
+    }
   }
 
   private static launchChrome(settings: BrowserSettings, serverPort: number) {
@@ -148,6 +169,14 @@ export class Launcher {
     }
     launchArgs.push(`--enable-features=${enabledFeatures.join(',')}`);
 
+    if (settings.extensions && settings.extensions.length > 0) {
+      if (Array.isArray(opts.ignoreDefaultArgs)) {
+        opts.ignoreDefaultArgs.push('--disable-extensions');
+      } else {
+        opts.ignoreDefaultArgs = ['--disable-extensions'];
+      }
+    }
+
     opts.args = launchArgs;
     return puppeteer.launch(opts);
   }
@@ -156,6 +185,7 @@ export class Launcher {
 export interface BrowserSettings {
   enabledFeatures: string[];
   disabledFeatures: string[];
+  extensions?: string[];
 }
 
 export const DEFAULT_BROWSER_SETTINGS: BrowserSettings = {

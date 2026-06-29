@@ -11,6 +11,7 @@ ts_e2e_library("extensions") {
     "can-reveal-requests.test.ts",
     "can-search-in-extension-panel.test.ts",
     "debugger-language-plugins.test.ts",
+    "mock-extension.test.ts",
   ]
 
   deps = [

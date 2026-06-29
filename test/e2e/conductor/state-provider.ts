@@ -8,7 +8,12 @@ import * as puppeteer from 'puppeteer-core';
 import {querySelectorShadowTextAll, querySelectorShadowTextOne} from '../../conductor/custom-query-handlers.js';
 import {TestConfig} from '../../conductor/test_config.js';
 import {startServer} from '../../conductor/test_server.js';
-import {type BrowserWrapper, DEFAULT_BROWSER_SETTINGS, Launcher} from '../shared/browser-helper.js';
+import {
+  type BrowserSettings,
+  type BrowserWrapper,
+  DEFAULT_BROWSER_SETTINGS,
+  Launcher
+} from '../shared/browser-helper.js';
 import {DEFAULT_DEVTOOLS_SETTINGS, setupDevToolsPage} from '../shared/frontend-helper.js';
 import {setupInspectedPage} from '../shared/target-helper.js';
 
@@ -57,9 +62,10 @@ export class StateProvider {
     }
 
     const settings = this.#getSettings(suite);
-    const browserSettings = {
+    const browserSettings: BrowserSettings = {
       enabledFeatures: (settings.enabledFeatures ?? []).toSorted(),
       disabledFeatures: (settings.disabledFeatures ?? []).toSorted(),
+      extensions: (settings.extensions ?? []).toSorted(),
     };
     const browserKey = JSON.stringify(browserSettings);
     browser = this.#settingToBrowser.get(browserKey);
@@ -150,6 +156,7 @@ export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E
   return {
     enabledFeatures: mergeAsSet(s1.enabledFeatures, s2.enabledFeatures),
     disabledFeatures: mergeAsSet(s1.disabledFeatures, s2.disabledFeatures),
+    extensions: mergeAsSet(s1.extensions, s2.extensions),
     enabledDevToolsExperiments: mergeAsSet(s1.enabledDevToolsExperiments, s2.enabledDevToolsExperiments),
     disabledDevToolsExperiments: mergeAsSet(s1.disabledDevToolsExperiments, s2.disabledDevToolsExperiments),
     devToolsSettings: {...(s2.devToolsSettings ?? {}), ...(s1.devToolsSettings ?? {})},

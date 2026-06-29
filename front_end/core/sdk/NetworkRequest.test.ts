@@ -8,11 +8,10 @@ import sinon from 'sinon';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {expectCookie} from '../../testing/Cookies.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
@@ -246,14 +245,19 @@ describe('NetworkRequest', () => {
   });
 });
 
-describeWithMockConnection('NetworkRequest', () => {
+describeWithEnvironment('NetworkRequest (MockConnection)', () => {
   let networkManagerForRequestStub: sinon.SinonStub;
   let cookie: SDK.Cookie.Cookie;
   let addBlockedCookieSpy: sinon.SinonSpy;
   let target: SDK.Target.Target;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    target = universe.createTarget({connection});
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
     networkManagerForRequestStub = sinon.stub(SDK.NetworkManager.NetworkManager, 'forRequest').returns(networkManager);
@@ -267,7 +271,7 @@ describeWithMockConnection('NetworkRequest', () => {
 
   it('adds blocked response cookies to - and removes exempted cookies from cookieModel', async () => {
     const removeBlockedCookieSpy = sinon.spy(SDK.CookieModel.CookieModel.prototype, 'removeBlockedCookie');
-    setMockConnectionResponseHandler('Network.getCookies', () => ({cookies: []}));
+    connection.setSuccessHandler('Network.getCookies', () => ({cookies: []}));
     const cookieModel = target.model(SDK.CookieModel.CookieModel);
     assert.exists(cookieModel);
     const url = urlString`url`;
@@ -314,12 +318,17 @@ describeWithMockConnection('NetworkRequest', () => {
   });
 });
 
-describeWithMockConnection('ServerSentEvents', () => {
+describeWithEnvironment('ServerSentEvents', () => {
   let target: SDK.Target.Target;
   let networkManager: SDK.NetworkManager.NetworkManager;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    target = universe.createTarget({connection});
     networkManager = target.model(SDK.NetworkManager.NetworkManager) as SDK.NetworkManager.NetworkManager;
   });
 
@@ -364,12 +373,9 @@ describeWithMockConnection('ServerSentEvents', () => {
   });
 
   it('sends EventSourceMessageAdded events for raw text/event-stream', async () => {
-    setMockConnectionResponseHandler('Network.streamResourceContent', () => ({
-                                                                        getError() {
-                                                                          return undefined;
-                                                                        },
-                                                                        bufferedData: '',
-                                                                      }));
+    connection.setSuccessHandler('Network.streamResourceContent', () => ({
+                                                                    bufferedData: '',
+                                                                  }));
     networkManager.dispatcher.requestWillBeSent({
       requestId: '1' as Protocol.Network.RequestId,
       request: {
@@ -425,7 +431,7 @@ data: bar\n\n`;
   });
 });
 
-describeWithMockConnection('requestStreamingContent', () => {
+describeWithEnvironment('requestStreamingContent', () => {
   let target: SDK.Target.Target;
   let networkManager: SDK.NetworkManager.NetworkManager;
 

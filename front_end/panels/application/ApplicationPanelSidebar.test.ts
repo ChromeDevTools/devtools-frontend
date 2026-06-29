@@ -11,13 +11,16 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import {getContextMenuForElement} from '../../testing/ContextMenuHelpers.js';
-import {createTarget, expectConsoleLogs, stubNoopSettings, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
-import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
+  createTarget,
+  describeWithEnvironment,
+  expectConsoleLogs,
+  stubNoopSettings,
+  updateHostConfig
+} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createResource, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -58,8 +61,10 @@ class SharedStorageTreeElementListener {
   }
 }
 
-describeWithMockConnection('ApplicationPanelSidebar', () => {
+describeWithEnvironment('ApplicationPanelSidebar', () => {
   let target: SDK.Target.Target;
+  let tabTarget: SDK.Target.Target;
+  let prerenderTarget: SDK.Target.Target;
 
   const TEST_ORIGIN_A = 'http://www.example.com/';
   const TEST_SITE_A = 'http://example.com';
@@ -131,13 +136,22 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   beforeEach(() => {
     stubNoopSettings();
     SDK.ChildTargetManager.ChildTargetManager.install();
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
-    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    const connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    connection.setSuccessHandler('Storage.getSharedStorageEntries',
+                                 () => ({} as Protocol.Storage.GetSharedStorageEntriesResponse));
+    connection.setSuccessHandler('Storage.setSharedStorageTracking', () => ({}));
+    tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
+    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();  // Silence console error
-    setMockConnectionResponseHandler(
-        'Storage.getSharedStorageEntries', () => ({} as Protocol.Storage.GetSharedStorageEntriesResponse));
-    setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
+  });
+
+  afterEach(() => {
+    target?.dispose('test');
+    prerenderTarget?.dispose('test');
+    tabTarget?.dispose('test');
   });
 
   it('shows WebMCP only if the WebMCP config is enabled', async () => {
@@ -467,16 +481,23 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   });
 });
 
-describeWithMockConnection('IDBDatabaseTreeElement', () => {
+describeWithEnvironment('IDBDatabaseTreeElement', () => {
+  let target: SDK.Target.Target;
   beforeEach(() => {
     stubNoopSettings();
+    const connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    target = createTarget({connection});
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+  });
+  afterEach(() => {
+    target?.dispose('test');
   });
   expectConsoleLogs({
     error: ['Error: No LanguageSelector instance exists yet.'],
   });
 
   it('only becomes selectable after database is updated', () => {
-    const target = createTarget();
     const model = target.model(Application.IndexedDBModel.IndexedDBModel);
     assert.exists(model);
     const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
@@ -489,13 +510,18 @@ describeWithMockConnection('IDBDatabaseTreeElement', () => {
   });
 });
 
-describeWithMockConnection('ResourcesSection', () => {
+describeWithEnvironment('ResourcesSection', () => {
   const tests = (inScope: boolean) => () => {
     let target: SDK.Target.Target;
     beforeEach(() => {
       stubNoopSettings();
       SDK.FrameManager.FrameManager.instance({forceNew: true});
-      target = createTarget();
+      const connection = new MockCDPConnection();
+      mockResourceTree(connection);
+      target = createTarget({connection});
+    });
+    afterEach(() => {
+      target?.dispose('test');
     });
 
     expectConsoleLogs({
@@ -541,7 +567,7 @@ describeWithMockConnection('ResourcesSection', () => {
   describe('out of scope', tests(false));
 });
 
-describeWithMockConnection('IndexedDBTreeElement live update', () => {
+describeWithEnvironment('IndexedDBTreeElement live update', () => {
   let target: SDK.Target.Target;
   let model: Application.IndexedDBModel.IndexedDBModel;
   let sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar;
@@ -549,7 +575,10 @@ describeWithMockConnection('IndexedDBTreeElement live update', () => {
 
   beforeEach(async () => {
     stubNoopSettings();
-    target = createTarget();
+    const connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    target = createTarget({connection});
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     model = target.model(Application.IndexedDBModel.IndexedDBModel) as Application.IndexedDBModel.IndexedDBModel;
     sinon.stub(model, 'refreshDatabase');
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();  // Silence console error
@@ -557,6 +586,10 @@ describeWithMockConnection('IndexedDBTreeElement live update', () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     indexedDBTreeElement = sidebar.indexedDBListTreeElement;
+  });
+
+  afterEach(() => {
+    target?.dispose('test');
   });
 
   it('updates tree on database, object store, and index changes', async () => {

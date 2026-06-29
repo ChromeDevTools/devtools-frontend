@@ -81,7 +81,14 @@ export class CustomPreviewSection {
       return document.createTextNode(String(jsonML));
     }
 
-    return jsonML[0] === 'object' ? this.layoutObjectTag(jsonML) : this.renderElement(jsonML);
+    if (jsonML[0] !== 'object') {
+      return this.renderElement(jsonML);
+    }
+    if (jsonML.length !== 2) {
+      Common.Console.Console.instance().error('Broken formatter: object reference must contain exactly two elements');
+      return document.createElement('span');
+    }
+    return this.layoutObjectTag(jsonML);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)

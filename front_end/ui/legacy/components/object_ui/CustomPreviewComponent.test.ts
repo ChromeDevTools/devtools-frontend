@@ -7,12 +7,14 @@ import sinon from 'sinon';
 
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {setupSettingsHooks} from '../../../../testing/SettingsHelpers.js';
 import * as UI from '../../legacy.js';
 
 import * as ObjectUI from './object_ui.js';
 
-describeWithEnvironment('CustomPreviewComponent', () => {
+describe('CustomPreviewComponent', () => {
+  setupSettingsHooks();
+
   it('renders a read-only default body for custom previews', async () => {
     const object = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
     sinon.stub(object, 'customPreview').returns({
@@ -41,5 +43,36 @@ describeWithEnvironment('CustomPreviewComponent', () => {
     const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(firstChildNode);
     assert.instanceOf(treeElement, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
     assert.isFalse(treeElement.editable);
+  });
+
+  it('rejects object reference tags that do not have exactly two elements', () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+    sinon.stub(object, 'customPreview').returns({
+      header: JSON.stringify(['span', {}, ['object', {type: 'object', objectId: '1.2.3'}, 0]]),
+    });
+    const runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
+    runtimeModel.createRemoteObject.returns(SDK.RemoteObject.RemoteObject.fromLocalObject({}));
+    sinon.stub(object, 'runtimeModel').returns(runtimeModel);
+
+    new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+
+    sinon.assert.notCalled(runtimeModel.createRemoteObject);
+  });
+
+  it('renders object reference tags with exactly two elements', () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
+    sinon.stub(object, 'customPreview').returns({
+      header: JSON.stringify(['span', {}, ['object', {type: 'object', objectId: '1.2.3'}]]),
+    });
+    const runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
+    runtimeModel.createRemoteObject.returns(SDK.RemoteObject.RemoteObject.fromLocalObject({}));
+    sinon.stub(object, 'runtimeModel').returns(runtimeModel);
+
+    new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+
+    sinon.assert.calledOnceWithMatch(runtimeModel.createRemoteObject, {
+      type: 'object' as Protocol.Runtime.RemoteObjectType,
+      objectId: '1.2.3' as Protocol.Runtime.RemoteObjectId,
+    });
   });
 });

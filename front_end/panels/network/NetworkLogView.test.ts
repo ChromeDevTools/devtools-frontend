@@ -28,11 +28,8 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-  setMockConnectionResponseHandler
-} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {activate} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -41,17 +38,21 @@ import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('NetworkLogView', () => {
+describeWithEnvironment('NetworkLogView', () => {
   let target: SDK.Target.Target;
+  let tabTarget: SDK.Target.Target;
+  let connection: MockCDPConnection;
   let networkLogView: Network.NetworkLogView.NetworkLogView;
   let networkLog: Logs.NetworkLog.NetworkLog;
 
   beforeEach(() => {
-    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
-    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
+    connection = new MockCDPConnection();
+    connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     const dummyStorage = new Common.Settings.SettingsStorage({});
 
     for (const settingName of ['network-color-code-resource-types', 'network.group-by-frame']) {
+      Common.Settings.maybeRemoveSettingExtension(settingName);
       Common.Settings.registerSettingExtension({
         settingName,
         settingType: Common.Settings.SettingType.BOOLEAN,
@@ -72,15 +73,19 @@ describeWithMockConnection('NetworkLogView', () => {
       shortcutsForAction: () => [],
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
     networkLog = Logs.NetworkLog.NetworkLog.instance();
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
   });
 
   afterEach(() => {
     if (networkLogView) {
       networkLogView.detach();
     }
+    target?.dispose('test');
+    tabTarget?.dispose('test');
+    Logs.NetworkLog.NetworkLog.removeInstance();
   });
 
   let nextId = 0;
@@ -1138,6 +1143,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
 
   describe('Request blocking and throttling', () => {
     beforeEach(() => {
+      Common.Settings.Settings.instance().createSetting('network-blocked-urls', []).set([]);
       SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     });
     async function invokeMenuItem(menu: string, action: string): Promise<void> {
@@ -1249,9 +1255,9 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
   });
 
   it('displays throttled requests correctly', async () => {
-    setMockConnectionResponseHandler('Network.setBlockedURLs', () => ({}));
-    setMockConnectionResponseHandler('Network.overrideNetworkState', () => ({}));
-    setMockConnectionResponseHandler(
+    connection.setSuccessHandler('Network.setBlockedURLs', () => ({}));
+    connection.setSuccessHandler('Network.overrideNetworkState', () => ({}));
+    connection.setSuccessHandler(
         'Network.emulateNetworkConditionsByRule',
         params => params.matchedNetworkConditions.length > 0 ? {ruleIds: [ruleId]} : {ruleIds: []});
 
@@ -1325,7 +1331,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
   });
 });
 
-describeWithMockConnection('NetworkLogView placeholder', () => {
+describeWithEnvironment('NetworkLogView placeholder', () => {
   const START_RECORDING_ID = 'network.toggle-recording';
   const RELOAD_ID = 'inspector-main.reload';
 

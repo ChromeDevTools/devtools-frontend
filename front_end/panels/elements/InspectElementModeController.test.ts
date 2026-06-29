@@ -9,13 +9,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
+  describeWithEnvironment,
   registerNoopActions,
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   setMockResourceTree,
 } from '../../testing/ResourceTreeHelpers.js';
@@ -25,12 +23,14 @@ import * as Elements from './elements.js';
 
 const NODE_ID = 1 as Protocol.DOM.NodeId;
 
-describeWithMockConnection('InspectElementModeController', () => {
+describeWithEnvironment('InspectElementModeController', () => {
   let inScopeTarget: SDK.Target.Target;
   let inScopeSubTarget: SDK.Target.Target;
   let outOfScopeTarget: SDK.Target.Target;
   let outOfScopeSubTarget: SDK.Target.Target;
   let modeController: Elements.InspectElementModeController.InspectElementModeController;
+  let tabTarget: SDK.Target.Target;
+  let connection: MockCDPConnection;
 
   function onModeToggle(target: SDK.Target.Target) {
     const model = target.model(SDK.OverlayModel.OverlayModel);
@@ -48,7 +48,8 @@ describeWithMockConnection('InspectElementModeController', () => {
     setMockResourceTree(false);
     stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    connection = new MockCDPConnection();
+    tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
     inScopeTarget = createTarget({parentTarget: tabTarget});
     inScopeSubTarget = createTarget({parentTarget: inScopeTarget});
     outOfScopeTarget = createTarget({parentTarget: tabTarget});
@@ -57,8 +58,12 @@ describeWithMockConnection('InspectElementModeController', () => {
     failOnModeToggle(outOfScopeSubTarget);
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScopeTarget);
     modeController = new Elements.InspectElementModeController.InspectElementModeController();
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.getDocument',
+                                 () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
+  });
+
+  afterEach(() => {
+    tabTarget?.dispose('test');
   });
 
   it('synchronises mode for in scope models', async () => {
@@ -92,17 +97,21 @@ describeWithMockConnection('InspectElementModeController', () => {
   });
 });
 
-describeWithMockConnection('InspectElementModeController panel interactions', () => {
+describeWithEnvironment('InspectElementModeController panel interactions', () => {
   let elementsPanel: sinon.SinonStubbedInstance<Elements.ElementsPanel.ElementsPanel>;
   let node: SDK.DOMModel.DOMNode;
   let viewManager: sinon.SinonStubbedInstance<UI.ViewManager.ViewManager>;
+  let target: SDK.Target.Target;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
     stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
-    setMockConnectionResponseHandler('DOM.pushNodeByPathToFrontend', () => ({nodeId: NODE_ID}));
+    connection = new MockCDPConnection();
+    target = createTarget({connection});
+    connection.setSuccessHandler('DOM.getDocument',
+                                 () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.pushNodeByPathToFrontend', () => ({nodeId: NODE_ID}));
 
     viewManager = sinon.createStubInstance(UI.ViewManager.ViewManager, {
       showView: Promise.resolve(),
@@ -114,6 +123,11 @@ describeWithMockConnection('InspectElementModeController panel interactions', ()
         sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel, {revealAndSelectNode: Promise.resolve()});
     sinon.stub(Elements.ElementsPanel.ElementsPanel, 'instance').returns(elementsPanel);
     node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+  });
+
+  afterEach(() => {
+    UI.Context.Context.instance().setFlavor(Common.ReturnToPanel.ReturnToPanelFlavor, null);
+    target?.dispose('test');
   });
 
   it('node is selected and element panel shown when no return to panel flavor is present', async () => {

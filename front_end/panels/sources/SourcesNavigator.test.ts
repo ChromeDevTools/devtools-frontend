@@ -16,12 +16,9 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
@@ -31,7 +28,7 @@ import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('NetworkNavigatorView', () => {
+describeWithEnvironment('NetworkNavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
   beforeEach(async () => {
     setMockResourceTree(false);
@@ -60,12 +57,14 @@ describeWithMockConnection('NetworkNavigatorView', () => {
   });
 
   describe('reveals main target', () => {
+    let tabTarget: SDK.Target.Target;
+    let prerenderTarget: SDK.Target.Target;
     let target: SDK.Target.Target;
     let project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
 
     beforeEach(async () => {
-      const tabTarget = createTarget({type: SDK.Target.Type.TAB});
-      createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+      tabTarget = createTarget({type: SDK.Target.Type.TAB});
+      prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
       target = createTarget({parentTarget: tabTarget});
       ({project} = createContentProviderUISourceCodes({
          items: [
@@ -80,6 +79,9 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
     afterEach(() => {
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      target?.dispose('test');
+      prerenderTarget?.dispose('test');
+      tabTarget?.dispose('test');
     });
 
     it('shows folder with scripts requests', async () => {
@@ -198,6 +200,8 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
     project.removeProject();
     anotherProject.removeProject();
+    anotherTarget.dispose('test');
+    target.dispose('test');
   });
 
   describe('removing source codes selection throttling', () => {
@@ -205,6 +209,10 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
     beforeEach(() => {
       target = createTarget();
+    });
+
+    afterEach(() => {
+      target?.dispose('test');
     });
 
     it('selects just once when removing multiple sibling source codes', () => {
@@ -462,15 +470,20 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     let resolveFn: (() => void)|null = null;
 
     beforeEach(() => {
-      target = createTarget();
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Debugger.setBlackboxPatterns', () => ({}));
+      connection.setSuccessHandler('Debugger.setBlackboxExecutionContexts', () => ({}));
+      target = createTarget({connection});
       Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(() => {
         if (resolveFn) {
           resolveFn();
           resolveFn = null;
         }
       });
-      setMockConnectionResponseHandler('Debugger.setBlackboxPatterns', () => ({}));
-      setMockConnectionResponseHandler('Debugger.setBlackboxExecutionContexts', () => ({}));
+    });
+
+    afterEach(() => {
+      target?.dispose('test');
     });
 
     const updatePatternSetting = async (settingValue: Common.Settings.RegExpSettingItem[]) => {
@@ -519,6 +532,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       assert.strictEqual(mixedFolder!.tooltip, 'mixed');
       assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
+      await disableIgnoreListing();
       project.removeProject();
     });
 
@@ -617,6 +631,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       assert.strictEqual(mixedFolder!.tooltip, 'mixed (ignore listed)');
       assert.strictEqual(ignoredFolder!.tooltip, 'ignored (ignore listed)');
 
+      await disableIgnoreListing();
       project.removeProject();
     });
   });

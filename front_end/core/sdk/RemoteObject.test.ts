@@ -6,8 +6,8 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 
 import * as SDK from './sdk.js';
 
@@ -411,17 +411,18 @@ describe('RemoteObjectProperty', () => {
   });
 });
 
-describeWithMockConnection('ScopeRemoteObject', () => {
+describeWithEnvironment('ScopeRemoteObject', () => {
   it('preserves writability of properties', async () => {
-    setMockConnectionResponseHandler(
-        'Runtime.getProperties', () => ({
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('Runtime.getProperties',
+                                 () => ({
                                    result: [
                                      {name: 'a', configurable: true, enumerable: true, writable: true},
                                      {name: 'b', configurable: true, enumerable: true, writable: true},
                                      {name: 'c', configurable: true, enumerable: true, writable: true}
                                    ]
                                  }));
-    const target = createTarget();
+    const target = createTarget({connection});
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel) as SDK.RuntimeModel.RuntimeModel;
     const scopeRef = new SDK.RemoteObject.ScopeRef(0, '0' as Protocol.Debugger.CallFrameId);
 
@@ -433,7 +434,7 @@ describeWithMockConnection('ScopeRemoteObject', () => {
   });
 });
 
-describeWithMockConnection('RemoteError', () => {
+describeWithEnvironment('RemoteError', () => {
   let target: SDK.Target.Target;
   let runtimeModel: SDK.RuntimeModel.RuntimeModel;
 

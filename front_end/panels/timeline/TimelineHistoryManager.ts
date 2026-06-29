@@ -7,8 +7,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
-import {createIcon} from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -361,39 +361,43 @@ export class TimelineHistoryManager {
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
 
-    preview.appendChild(this.#buildTextDetails(parsedTrace.metadata, domain));
-    const screenshotAndOverview = preview.createChild('div', 'hbox');
-    screenshotAndOverview.appendChild(this.#buildScreenshotThumbnail(filmStrip));
-    screenshotAndOverview.appendChild(this.#buildOverview(parsedTrace));
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(html`
+      ${this.#renderTextDetails(parsedTrace.metadata, domain)}
+      <div class="hbox">
+        ${this.#renderScreenshotThumbnail(filmStrip)}
+        ${this.#buildOverview(parsedTrace)}
+      </div>
+    `,
+           preview, {host: this});
+
     return data.preview;
   }
 
-  #buildTextDetails(metadata: Trace.Types.File.MetaData|null, title: string): Element {
-    const container = document.createElement('div');
-    container.classList.add('text-details');
-    container.classList.add('hbox');
-    const nameSpan = container.createChild('span', 'name');
-    nameSpan.textContent = title;
-    UI.ARIAUtils.setLabel(nameSpan, title);
-
+  #renderTextDetails(metadata: Trace.Types.File.MetaData|null, title: string): LitTemplate {
+    let metadataText = '';
     if (metadata) {
       const parts = [
         metadata.emulatedDeviceTitle,
         metadata.cpuThrottling ? i18nString(UIStrings.dSlowdown, {PH1: metadata.cpuThrottling}) : undefined,
         metadata.networkThrottling,
       ].filter(Boolean);
-      container.createChild('span', 'metadata').textContent = listFormatter.format(parts as string[]);
+      metadataText = listFormatter.format(parts as string[]);
     }
 
-    return container;
+    return html`
+      <div class="text-details hbox">
+        <span class="name">${title}</span>
+        ${metadataText ? html`<span class="metadata">${metadataText}</span>` : ''}
+      </div>
+    `;
   }
 
-  #buildScreenshotThumbnail(filmStrip: Trace.Extras.FilmStrip.Data|null): Element {
-    const container = document.createElement('div');
-    container.classList.add('screenshot-thumb');
+  #renderScreenshotThumbnail(filmStrip: Trace.Extras.FilmStrip.Data|null): LitTemplate {
     const thumbnailAspectRatio = 3 / 2;
-    container.style.width = this.totalHeight * thumbnailAspectRatio + 'px';
-    container.style.height = this.totalHeight + 'px';
+    const width = this.totalHeight * thumbnailAspectRatio + 'px';
+    const height = this.totalHeight + 'px';
+    const container = html`<div class="screenshot-thumb" style="width: ${width}; height: ${height}"></div>`;
     if (!filmStrip) {
       return container;
     }
@@ -403,12 +407,11 @@ export class TimelineHistoryManager {
     }
     // TODO(paulirish): Adopt Util.ImageCache
     const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
-    void UI.UIUtils.loadImage(uri).then(img => {
-      if (img) {
-        container.appendChild(img);
-      }
-    });
-    return container;
+    return html`
+      <div class="screenshot-thumb" style="width: ${width}; height: ${height}">
+        <img src=${uri}>
+      </div>
+    `;
   }
 
   #buildOverview(parsedTrace: Trace.TraceModel.ParsedTrace): Element {
@@ -582,14 +585,14 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
 
     div.style.width = `${previewWidth}px`;
 
-    const icon = createIcon('arrow-back');
-    icon.title = i18nString(UIStrings.backButtonTooltip);
-    icon.classList.add('back-arrow');
-    div.appendChild(icon);
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(html`
+      <devtools-icon class="back-arrow" title=${
+               i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
+      <span>${this.#landingPageTitle}</span>
+    `,
+           div, {host: this});
 
-    const text = document.createElement('span');
-    text.innerText = this.#landingPageTitle;
-    div.appendChild(text);
     return div;
   }
 
@@ -619,14 +622,11 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
 }
 
 export class ToolbarButton extends UI.Toolbar.ToolbarItem {
-  private contentElement: HTMLElement;
-
   constructor(action: UI.ActionRegistration.Action) {
     const element = document.createElement('button');
     element.classList.add('history-dropdown-button');
     element.setAttribute('jslog', `${VisualLogging.dropDown('history')}`);
     super(element);
-    this.contentElement = this.element.createChild('span', 'content');
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
     action.addEventListener(UI.ActionRegistration.Events.ENABLED, event => this.setEnabled(event.data));
@@ -634,6 +634,7 @@ export class ToolbarButton extends UI.Toolbar.ToolbarItem {
   }
 
   setText(text: string): void {
-    this.contentElement.textContent = text;
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(html`<span class="content">${text}</span>`, this.element, {host: this});
   }
 }

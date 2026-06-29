@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as MobileThrottling from './mobile_throttling.js';
@@ -86,13 +86,12 @@ describeWithEnvironment('ThrottlingManager', () => {
       assert.strictEqual(cpuThrottlingPresets[selector.selectedIndex()], SDK.CPUThrottlingManager.NoThrottlingOption);
     });
   });
-});
-
-describeWithMockConnection('ThrottlingManager', () => {
   describe('DataSaverEmulation', () => {
     it('creates a select element which sets the data saver emulation mode', async () => {
-      setMockConnectionResponseHandler('Emulation.setDataSaverOverride', () => ({}));
-      const emulationModel = createTarget().model(SDK.EmulationModel.EmulationModel);
+      const connection = new MockCDPConnection();
+      connection.setSuccessHandler('Emulation.setDataSaverOverride', () => ({}));
+      const target = createTarget({connection});
+      const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
       assert.exists(emulationModel);
       assert.lengthOf(SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel), 1);
       assert.strictEqual(
@@ -120,6 +119,7 @@ describeWithMockConnection('ThrottlingManager', () => {
       select.selectedIndex = 2;
       select.dispatchEvent(new Event('change'));
       assert.strictEqual((await emulationModelSpy).args[0], SDK.EmulationModel.DataSaverOverride.DISABLED);
+      target.dispose('test');
     });
   });
 });

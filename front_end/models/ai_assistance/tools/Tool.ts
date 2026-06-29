@@ -99,6 +99,7 @@ export const enum ToolName {
   GET_NETWORK_REQUEST_DETAILS = 'getNetworkRequestDetails',
   GET_LIGHTHOUSE_AUDITS = 'getLighthouseAudits',
   RESOLVE_LIGHTHOUSE_PATH = 'resolveLighthousePath',
+  GET_ELEMENT_ACCESSIBILITY_DETAILS = 'getElementAccessibilityDetails',
 }
 
 /**

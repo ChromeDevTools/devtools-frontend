@@ -19,7 +19,10 @@ describeWithMockConnection('AutofillManager', () => {
   beforeEach(() => {
     target = createTarget();
     model = target.model(SDK.AutofillModel.AutofillModel)!;
-    autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
+    autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({
+      forceNew: true,
+      targetManager: SDK.TargetManager.TargetManager.instance(),
+    });
   });
 
   describe('emits AddressFormFilled events', () => {

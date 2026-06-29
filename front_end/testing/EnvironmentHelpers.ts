@@ -10,6 +10,7 @@ import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Formatter from '../models/formatter/formatter.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
@@ -82,6 +83,7 @@ export async function deinitializeGlobalVars() {
 
   // Remove instances.
   deinitializeGlobalLocaleVars();
+  AutofillManager.AutofillManager.AutofillManager.removeInstance();
   Logs.NetworkLog.NetworkLog.removeInstance();
   SDK.TargetManager.TargetManager.removeInstance();
   SDK.CPUThrottlingManager.CPUThrottlingManager.removeInstance();

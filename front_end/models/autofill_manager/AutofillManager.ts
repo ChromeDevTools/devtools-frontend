@@ -4,10 +4,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-
-let autofillManagerInstance: AutofillManager;
 
 export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #address = '';
@@ -15,19 +14,31 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #matches: Match[] = [];
   #autofillModel: SDK.AutofillModel.AutofillModel|null = null;
 
-  private constructor() {
+  constructor(targetManager: SDK.TargetManager.TargetManager) {
     super();
-    SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.ADDRESS_FORM_FILLED, this.#addressFormFilled, this,
-        {scoped: true});
+    targetManager.addModelListener(SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.ADDRESS_FORM_FILLED,
+                                   this.#addressFormFilled, this, {scoped: true});
   }
 
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): AutofillManager {
-    const {forceNew} = opts;
-    if (!autofillManagerInstance || forceNew) {
-      autofillManagerInstance = new AutofillManager();
+  static instance(opts: {
+    forceNew: boolean|null,
+    targetManager: SDK.TargetManager.TargetManager|null,
+  } = {
+    forceNew: null,
+    targetManager: null,
+  }): AutofillManager {
+    const {forceNew, targetManager} = opts;
+    if (!Root.DevToolsContext.globalInstance().has(AutofillManager) || forceNew) {
+      if (!targetManager) {
+        throw new Error('Missing targetManager for AutofillManager');
+      }
+      Root.DevToolsContext.globalInstance().set(AutofillManager, new AutofillManager(targetManager));
     }
-    return autofillManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(AutofillManager);
+  }
+
+  static removeInstance(): void {
+    Root.DevToolsContext.globalInstance().delete(AutofillManager);
   }
 
   async #addressFormFilled({data}: Common.EventTarget.EventTargetEvent<

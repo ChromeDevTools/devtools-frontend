@@ -9,6 +9,7 @@ import type * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
+import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
@@ -49,6 +50,14 @@ export class TestUniverse implements Foundation.Universe.Universe {
    */
   createTarget(options: Parameters<typeof createTarget>[0] = {}): SDK.Target.Target {
     return createTarget({...options, targetManager: this.targetManager});
+  }
+
+  get autofillManager(): AutofillManager.AutofillManager.AutofillManager {
+    if (!this.#context.has(AutofillManager.AutofillManager.AutofillManager)) {
+      this.#context.set(AutofillManager.AutofillManager.AutofillManager,
+                        new AutofillManager.AutofillManager.AutofillManager(this.targetManager));
+    }
+    return this.#context.get(AutofillManager.AutofillManager.AutofillManager);
   }
 
   get console(): Common.Console.Console {

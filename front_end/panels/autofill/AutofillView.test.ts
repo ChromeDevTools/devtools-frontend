@@ -7,6 +7,7 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -260,7 +261,10 @@ describeWithEnvironment('AutofillView', () => {
       const actionTakenStub = sinon.stub(Host.userMetrics, 'actionTaken');
 
       const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
-      const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({forceNew: true});
+      const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({
+        forceNew: true,
+        targetManager: SDK.TargetManager.TargetManager.instance(),
+      });
       const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
       renderElementIntoDOM(autofillView);
       return {manager: autofillManager, view: autofillView, showViewStub, actionTakenStub};

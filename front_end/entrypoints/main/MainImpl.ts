@@ -505,7 +505,7 @@ export class MainImpl {
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
 
-    AutofillManager.AutofillManager.AutofillManager.instance();
+    AutofillManager.AutofillManager.AutofillManager.instance({forceNew: null, targetManager});
 
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();

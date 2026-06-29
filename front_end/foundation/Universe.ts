@@ -5,6 +5,7 @@
 import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
@@ -61,6 +62,9 @@ export class Universe {
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
         resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+
+    const autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager);
+    context.set(AutofillManager.AutofillManager.AutofillManager, autofillManager);
   }
 
   get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader {

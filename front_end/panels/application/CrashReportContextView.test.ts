@@ -7,23 +7,29 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Application from './application.js';
 
-describeWithMockConnection('CrashReportContextView', () => {
+describeWithEnvironment('CrashReportContextView', () => {
   const FRAME_ID = 'frame-1' as Protocol.Page.FrameId;
   const ORIGIN = 'https://example.com';
   const URL = 'https://example.com/index.html';
 
   let target: SDK.Target.Target;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
-    target = createTarget();
+    connection = new MockCDPConnection();
+    target = createTarget({connection});
     target.model(SDK.CrashReportContextModel.CrashReportContextModel);
     target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+  });
+
+  afterEach(() => {
+    target?.dispose('test');
   });
 
   async function createComponent() {
@@ -40,12 +46,12 @@ describeWithMockConnection('CrashReportContextView', () => {
       displayName: () => URL,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
 
-    setMockConnectionResponseHandler(
-        'CrashReportContext.getEntries', () => ({
-                                           entries: [
-                                             {key: 'user_id', value: '12345', frameId: FRAME_ID},
-                                           ],
-                                         }));
+    connection.setSuccessHandler('CrashReportContext.getEntries',
+                                 () => ({
+                                   entries: [
+                                     {key: 'user_id', value: '12345', frameId: FRAME_ID},
+                                   ],
+                                 }));
 
     const {view} = await createComponent();
     const input = await view.nextInput;
@@ -71,13 +77,13 @@ describeWithMockConnection('CrashReportContextView', () => {
       displayName: () => 'https://frame2.com',
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
 
-    setMockConnectionResponseHandler(
-        'CrashReportContext.getEntries', () => ({
-                                           entries: [
-                                             {key: 'k1', value: 'v1', frameId: 'frame-1' as Protocol.Page.FrameId},
-                                             {key: 'k2', value: 'v2', frameId: 'frame-2' as Protocol.Page.FrameId},
-                                           ],
-                                         }));
+    connection.setSuccessHandler('CrashReportContext.getEntries',
+                                 () => ({
+                                   entries: [
+                                     {key: 'k1', value: 'v1', frameId: 'frame-1' as Protocol.Page.FrameId},
+                                     {key: 'k2', value: 'v2', frameId: 'frame-2' as Protocol.Page.FrameId},
+                                   ],
+                                 }));
 
     const {view} = await createComponent();
     const input = await view.nextInput;
@@ -91,13 +97,12 @@ describeWithMockConnection('CrashReportContextView', () => {
     // Explicitly return null for the frame lookup
     sinon.stub(SDK.FrameManager.FrameManager.instance(), 'getFrame').returns(null);
 
-    setMockConnectionResponseHandler(
-        'CrashReportContext.getEntries',
-        () => ({
-          entries: [
-            {key: 'k1', value: 'v1', frameId: 'unknown-frame' as Protocol.Page.FrameId},
-          ],
-        }));
+    connection.setSuccessHandler('CrashReportContext.getEntries',
+                                 () => ({
+                                   entries: [
+                                     {key: 'k1', value: 'v1', frameId: 'unknown-frame' as Protocol.Page.FrameId},
+                                   ],
+                                 }));
 
     const {view} = await createComponent();
     const input = await view.nextInput;
@@ -124,13 +129,13 @@ describeWithMockConnection('CrashReportContextView', () => {
       displayName: () => SHARED_URL,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
 
-    setMockConnectionResponseHandler(
-        'CrashReportContext.getEntries', () => ({
-                                           entries: [
-                                             {key: 'k1', value: 'v1', frameId: 'frame-main' as Protocol.Page.FrameId},
-                                             {key: 'k2', value: 'v2', frameId: 'frame-sub' as Protocol.Page.FrameId},
-                                           ],
-                                         }));
+    connection.setSuccessHandler('CrashReportContext.getEntries',
+                                 () => ({
+                                   entries: [
+                                     {key: 'k1', value: 'v1', frameId: 'frame-main' as Protocol.Page.FrameId},
+                                     {key: 'k2', value: 'v2', frameId: 'frame-sub' as Protocol.Page.FrameId},
+                                   ],
+                                 }));
 
     const {view} = await createComponent();
     const input = await view.nextInput;
@@ -152,13 +157,12 @@ describeWithMockConnection('CrashReportContextView', () => {
       displayName: () => TITLE,
     } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame);
 
-    setMockConnectionResponseHandler(
-        'CrashReportContext.getEntries',
-        () => ({
-          entries: [
-            {key: 'user_id', value: '12345', frameId: 'frame-1' as Protocol.Page.FrameId},
-          ],
-        }));
+    connection.setSuccessHandler('CrashReportContext.getEntries',
+                                 () => ({
+                                   entries: [
+                                     {key: 'user_id', value: '12345', frameId: 'frame-1' as Protocol.Page.FrameId},
+                                   ],
+                                 }));
 
     const {view} = await createComponent();
     const input = await view.nextInput;
@@ -168,9 +172,9 @@ describeWithMockConnection('CrashReportContextView', () => {
   });
 
   it('renders a placeholder when no context is available', async () => {
-    setMockConnectionResponseHandler('CrashReportContext.getEntries', () => ({
-                                                                        entries: [],
-                                                                      }));
+    connection.setSuccessHandler('CrashReportContext.getEntries', () => ({
+                                                                    entries: [],
+                                                                  }));
 
     const {view} = await createComponent();
     const input = await view.nextInput;
@@ -179,6 +183,7 @@ describeWithMockConnection('CrashReportContextView', () => {
   });
 
   it('handles refresh and filter correctly', async () => {
+    connection.setSuccessHandler('CrashReportContext.getEntries', () => ({entries: []}));
     const {view, component} = await createComponent();
     const input = await view.nextInput;
 

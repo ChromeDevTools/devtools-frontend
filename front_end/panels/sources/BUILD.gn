@@ -211,7 +211,6 @@ devtools_ui_module("unittests") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/source_frame:bundle",
-    "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
     "../common:bundle",
     "../coverage:bundle",

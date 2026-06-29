@@ -107,5 +107,6 @@ devtools_ui_module("unittests") {
     "../../../generated",
     "../../../testing",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/legacy/components/inline_editor:bundle",
   ]
 }

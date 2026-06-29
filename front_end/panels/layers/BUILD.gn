@@ -23,6 +23,7 @@ devtools_ui_module("layers") {
     "../../models/geometry:bundle",
     "../../panels/layer_viewer:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
 }

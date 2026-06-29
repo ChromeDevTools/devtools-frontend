@@ -38,7 +38,6 @@ devtools_ui_module("console") {
   ]
 
   deps = [
-    "../../../extension-api",
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -142,6 +141,7 @@ devtools_ui_module("unittests") {
     "../../models/bindings:bundle",
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
+    "../../models/stack_trace:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../testing",

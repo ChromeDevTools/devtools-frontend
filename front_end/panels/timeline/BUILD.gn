@@ -250,6 +250,7 @@ devtools_ui_module("unittests") {
     "../../models/trace_source_maps_resolver:bundle",
     "../../models/workspace:bundle",
     "../../services/trace_bounds:bundle",
+    "../../services/tracing:bundle",
     "../../testing",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/legacy:bundle",

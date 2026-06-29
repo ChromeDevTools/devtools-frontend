@@ -121,7 +121,6 @@ ts_library("unittests") {
     "../../../extension-api",
     "../../core/common:bundle",
     "../../core/platform:bundle",
-    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated",
     "../../testing",

@@ -29,5 +29,9 @@ ts_library("unittests") {
 
   sources = [ "PuppeteerConnection.test.ts" ]
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../core/protocol_client:bundle",
+    "../../generated",
+  ]
 }

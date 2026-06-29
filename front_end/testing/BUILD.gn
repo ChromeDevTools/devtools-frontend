@@ -73,6 +73,7 @@ ts_library("testing") {
     "../foundation:bundle",
     "../generated",
     "../generated:protocol",
+    "../models/ai_assistance:bundle",
     "../models/bindings:bundle",
     "../models/breakpoints:bundle",
     "../models/cpu_profile:bundle",

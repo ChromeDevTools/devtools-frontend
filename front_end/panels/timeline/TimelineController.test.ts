@@ -9,17 +9,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../models/trace/trace.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-  setMockConnectionResponseHandler
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {defaultTraceEvent} from '../../testing/TraceHelpers.js';
 
 import * as Timeline from './timeline.js';
 
-describeWithMockConnection('TimelineController', () => {
+describeWithEnvironment('TimelineController', () => {
   it('calls the callback methods on the client in the expected order', async function() {
     // The test needs at least 0.5s to have progress events be sent. Set a higher timeout to avoid flakiness.
     if (this.timeout() !== 0) {
@@ -56,7 +53,8 @@ describeWithMockConnection('TimelineController', () => {
 
     LiveMetrics.LiveMetrics.instance({forceNew: true});
 
-    const primaryPage = createTarget();
+    const connection = new MockCDPConnection();
+    const primaryPage = createTarget({connection});
     if (!primaryPage) {
       throw new Error('Could not find primary page');
     }
@@ -66,25 +64,25 @@ describeWithMockConnection('TimelineController', () => {
     }
 
     const controller = new Timeline.TimelineController.TimelineController(rootTarget, primaryPage, client);
-    setMockConnectionResponseHandler('Target.setAutoAttach', () => ({}));
-    setMockConnectionResponseHandler('DOM.enable', () => ({}));
-    setMockConnectionResponseHandler('CSS.enable', () => ({}));
-    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
-    setMockConnectionResponseHandler('Overlay.enable', () => ({}));
-    setMockConnectionResponseHandler('Overlay.setShowViewportSizeOnResize', () => ({}));
-    setMockConnectionResponseHandler('Animation.enable', () => ({}));
-    setMockConnectionResponseHandler('DOM.disable', () => ({}));
-    setMockConnectionResponseHandler('CSS.disable', () => ({}));
-    setMockConnectionResponseHandler('Debugger.disable', () => ({}));
-    setMockConnectionResponseHandler('Debugger.setAsyncCallStackDepth', () => ({}));
-    setMockConnectionResponseHandler('Overlay.disable', () => ({}));
-    setMockConnectionResponseHandler('Animation.disable', () => ({}));
-    setMockConnectionResponseHandler('Tracing.start', () => ({}));
-    setMockConnectionResponseHandler('Runtime.evaluate', () => ({} as Protocol.Runtime.EvaluateResponse));
-    setMockConnectionResponseHandler('Runtime.addBinding', () => ({}));
-    setMockConnectionResponseHandler(
-        'Page.addScriptToEvaluateOnNewDocument', () => ({} as Protocol.Page.AddScriptToEvaluateOnNewDocumentResponse));
-    setMockConnectionResponseHandler('Tracing.end', () => {
+    connection.setSuccessHandler('Target.setAutoAttach', () => ({}));
+    connection.setSuccessHandler('DOM.enable', () => ({}));
+    connection.setSuccessHandler('CSS.enable', () => ({}));
+    connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    connection.setSuccessHandler('Overlay.enable', () => ({}));
+    connection.setSuccessHandler('Overlay.setShowViewportSizeOnResize', () => ({}));
+    connection.setSuccessHandler('Animation.enable', () => ({}));
+    connection.setSuccessHandler('DOM.disable', () => ({}));
+    connection.setSuccessHandler('CSS.disable', () => ({}));
+    connection.setSuccessHandler('Debugger.disable', () => ({}));
+    connection.setSuccessHandler('Debugger.setAsyncCallStackDepth', () => ({}));
+    connection.setSuccessHandler('Overlay.disable', () => ({}));
+    connection.setSuccessHandler('Animation.disable', () => ({}));
+    connection.setSuccessHandler('Tracing.start', () => ({}));
+    connection.setSuccessHandler('Runtime.evaluate', () => ({} as Protocol.Runtime.EvaluateResponse));
+    connection.setSuccessHandler('Runtime.addBinding', () => ({}));
+    connection.setSuccessHandler('Page.addScriptToEvaluateOnNewDocument',
+                                 () => ({} as Protocol.Page.AddScriptToEvaluateOnNewDocumentResponse));
+    connection.setSuccessHandler('Tracing.end', () => {
       dispatchEvent(rootTarget, 'Tracing.tracingComplete', {dataLossOccurred: false});
       return {};
     });
@@ -100,5 +98,6 @@ describeWithMockConnection('TimelineController', () => {
     const [collectedEvents] = stubs.loadingComplete.getCall(0).args as [Trace.Types.Events.Event[]];
     // Ensure we collected events during tracing.
     assert.lengthOf(collectedEvents, 1);
+    primaryPage?.dispose('test');
   });
 });

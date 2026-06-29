@@ -1684,12 +1684,51 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       linkifier?: Components.Linkifier.Linkifier,
       emptyPlaceholder?: string|null,
       ): Promise<void> {
-    const properties = await value.populateChildrenIfNeeded();
+    await ObjectPropertyTreeElement.populateChildrenIfNeeded(value);
+    ObjectPropertyTreeElement.populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier,
+                                           emptyPlaceholder);
+  }
+
+  static async populateChildrenIfNeeded(value: ObjectTreeNodeBase): Promise<void> {
+    const children = await value.populateChildrenIfNeeded();
+    await ArrayGroupingTreeElement.populateChildrenIfNeeded(children);
+  }
+
+  static populateImpl(
+      treeElement: UI.TreeOutline.TreeElement,
+      value: ObjectTreeNodeBase,
+      skipProto: boolean,
+      skipGettersAndSetters: boolean,
+      linkifier?: Components.Linkifier.Linkifier,
+      emptyPlaceholder?: string|null,
+      ): void {
+    for (const childNode of ObjectPropertyTreeElement.createNodes(
+             value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder,
+             property => treeElement instanceof ObjectPropertyTreeElement &&
+                 !ObjectPropertiesSection.isDisplayableProperty(property, treeElement.property?.property))) {
+      treeElement.appendChild(childNode);
+    }
+  }
+
+  static *
+      createNodes(
+          value: ObjectTreeNodeBase,
+          skipProto: boolean,
+          skipGettersAndSetters: boolean,
+          linkifier?: Components.Linkifier.Linkifier,
+          emptyPlaceholder?: string|null,
+          isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean,
+          ): Generator<UI.TreeOutline.TreeElement> {
+    const properties = value.children;
+    if (!properties) {
+      return;
+    }
     if (properties.arrayRanges) {
-      await ArrayGroupingTreeElement.populate(treeElement, properties, linkifier);
+      yield* ArrayGroupingTreeElement.createNodes(properties, linkifier, isNotDisplayablePropertyCallback);
     } else {
-      ObjectPropertyTreeElement.populateWithProperties(
-          treeElement, properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
+      yield*
+          ObjectPropertyTreeElement.createPropertyNodes(properties, skipProto, skipGettersAndSetters, linkifier,
+                                                        emptyPlaceholder, isNotDisplayablePropertyCallback);
     }
   }
 
@@ -2089,25 +2128,44 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  static async populate(
-      treeNode: UI.TreeOutline.TreeElement, children: NodeChildren,
-      linkifier?: Components.Linkifier.Linkifier): Promise<void> {
+  static *
+      createNodes(children: NodeChildren, linkifier?: Components.Linkifier.Linkifier,
+                  isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean):
+          Generator<UI.TreeOutline.TreeElement> {
     if (!children.arrayRanges) {
       return;
     }
     if (children.arrayRanges.length === 1) {
-      await ObjectPropertyTreeElement.populate(treeNode, children.arrayRanges[0], false, false, linkifier);
+      yield*
+          ObjectPropertyTreeElement.createNodes(children.arrayRanges[0], false, false, linkifier, null,
+                                                isNotDisplayablePropertyCallback);
     } else {
       for (const child of children.arrayRanges) {
         if (child.singular) {
-          await ObjectPropertyTreeElement.populate(treeNode, child, false, false, linkifier);
+          yield*
+              ObjectPropertyTreeElement.createNodes(child, false, false, linkifier, null,
+                                                    isNotDisplayablePropertyCallback);
         } else {
-          treeNode.appendChild(new ArrayGroupingTreeElement(child, linkifier));
+          yield new ArrayGroupingTreeElement(child, linkifier);
         }
       }
     }
 
-    ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
+    yield*
+        ObjectPropertyTreeElement.createPropertyNodes(children, false, false, linkifier, null,
+                                                      isNotDisplayablePropertyCallback);
+  }
+
+  static async populateChildrenIfNeeded(children: NodeChildren): Promise<void> {
+    if (!children.arrayRanges) {
+      return;
+    }
+    if (children.arrayRanges.length === 1) {
+      await ObjectPropertyTreeElement.populateChildrenIfNeeded(children.arrayRanges[0]);
+    } else {
+      await Promise.all(children.arrayRanges.filter(child => child.singular)
+                            .map(child => ObjectPropertyTreeElement.populateChildrenIfNeeded(child)));
+    }
   }
 
   override onexpand(): void {

@@ -13,12 +13,9 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {addChildFrame, createResource, getMainFrame, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -26,13 +23,14 @@ import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('NavigatorView', () => {
+describeWithEnvironment('NavigatorView', () => {
   let target: SDK.Target.Target;
   let workspace: Workspace.Workspace.WorkspaceImpl;
 
   beforeEach(() => {
     setMockResourceTree(false);
-    setMockConnectionResponseHandler('Page.getResourceTree', async () => {
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('Page.getResourceTree', async () => {
       return {
         frameTree: null,
       } as unknown as Protocol.Page.GetResourceTreeResponse;
@@ -40,7 +38,7 @@ describeWithMockConnection('NavigatorView', () => {
 
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
-    target = createTarget();
+    target = createTarget({connection});
     const targetManager = target.targetManager();
     targetManager.setScopeTarget(target);
     workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -63,6 +61,10 @@ describeWithMockConnection('NavigatorView', () => {
     });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+  });
+
+  afterEach(() => {
+    target?.dispose('test');
   });
 
   function addResourceAndUISourceCode(

@@ -7,9 +7,10 @@ import {assert} from 'chai';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
-import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {createResource, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -17,12 +18,14 @@ import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('ResourceMapping', () => {
+describeWithEnvironment('ResourceMapping', () => {
   let debuggerModel: SDK.DebuggerModel.DebuggerModel;
   let resourceMapping: Bindings.ResourceMapping.ResourceMapping;
   let uiSourceCode: Workspace.UISourceCode.UISourceCode;
   let workspace: Workspace.Workspace.WorkspaceImpl;
   let target: SDK.Target.Target;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   // This test simulates the behavior of the ResourceMapping with the
   // following document, which contains two inline <script>s, one with
@@ -71,20 +74,14 @@ describeWithMockConnection('ResourceMapping', () => {
   const OTHER_SCRIPT_ID = '3' as Protocol.Runtime.ScriptId;
 
   beforeEach(async () => {
-    target = createTarget();
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    mockResourceTree(connection);
+    target = universe.createTarget({connection});
     const targetManager = target.targetManager();
     targetManager.setScopeTarget(target);
-    workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    workspace = universe.workspace;
     resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
 
     // Inject the HTML document resource.
     createResource(getMainFrame(target), url, 'text/html', '');
@@ -104,12 +101,9 @@ describeWithMockConnection('ResourceMapping', () => {
     });
     assert.lengthOf(debuggerModel.scripts(), SCRIPTS.length);
 
-    setMockConnectionResponseHandler('Debugger.getScriptSource', param => {
+    connection.setSuccessHandler('Debugger.getScriptSource', param => {
       return {
         scriptSource: SCRIPTS.find(s => s.scriptId === param.scriptId)?.source ?? '',
-        getError() {
-          return undefined;
-        },
       };
     });
   });
@@ -123,7 +117,7 @@ describeWithMockConnection('ResourceMapping', () => {
   });
 
   it('creates UISourceCode for added out of scope target', () => {
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
+    target.targetManager().setScopeTarget(null);
 
     const otherUrl = urlString`http://example.com/other.html`;
     createResource(getMainFrame(target), otherUrl, 'text/html', '');

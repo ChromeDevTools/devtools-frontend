@@ -11,10 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -23,15 +20,22 @@ import * as Elements from './elements.js';
 
 const NODE_ID = 1 as Protocol.DOM.NodeId;
 
-describeWithMockConnection('PropertiesWidget', () => {
+describeWithEnvironment('PropertiesWidget', () => {
   let target: SDK.Target.Target;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
     stubNoopSettings();
-    target = createTarget();
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
-    setMockConnectionResponseHandler('DOM.getNodesForSubtreeByStyle', () => ({nodeIds: []}));
+    connection = new MockCDPConnection();
+    target = createTarget({connection});
+    connection.setSuccessHandler('DOM.getDocument',
+                                 () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.getNodesForSubtreeByStyle', () => ({nodeIds: []}));
+  });
+
+  afterEach(() => {
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
+    target?.dispose('test');
   });
 
   const updatesUiOnEvent = <T extends keyof SDK.DOMModel.EventTypes>(
@@ -86,22 +90,22 @@ describeWithMockConnection('PropertiesWidget', () => {
       objectId: '1' as Protocol.Runtime.RemoteObjectId,
     });
 
-    setMockConnectionResponseHandler('Runtime.getProperties', () => ({
-                                                                result: [
-                                                                  {
-                                                                    name: 'myGetter',
-                                                                    isOwn: true,
-                                                                    enumerable: true,
-                                                                    configurable: true,
-                                                                    get: {
-                                                                      type: Protocol.Runtime.RemoteObjectType.Function,
-                                                                      objectId: '2' as Protocol.Runtime.RemoteObjectId,
-                                                                      className: 'Function',
-                                                                      description: 'get myGetter()',
-                                                                    },
-                                                                  },
-                                                                ],
-                                                              }));
+    connection.setSuccessHandler('Runtime.getProperties', () => ({
+                                                            result: [
+                                                              {
+                                                                name: 'myGetter',
+                                                                isOwn: true,
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                get: {
+                                                                  type: Protocol.Runtime.RemoteObjectType.Function,
+                                                                  objectId: '2' as Protocol.Runtime.RemoteObjectId,
+                                                                  className: 'Function',
+                                                                  description: 'get myGetter()',
+                                                                },
+                                                              },
+                                                            ],
+                                                          }));
     const callFunctionOn = sinon.stub().resolves({
       result: {
         type: Protocol.Runtime.RemoteObjectType.Object,
@@ -109,7 +113,7 @@ describeWithMockConnection('PropertiesWidget', () => {
         value: null,
       },
     });
-    setMockConnectionResponseHandler('Runtime.callFunctionOn', callFunctionOn);
+    connection.setHandler('Runtime.callFunctionOn', callFunctionOn);
 
     sinon.stub(node, 'resolveToObject').withArgs('properties-sidebar-pane').resolves(object);
     const viewFunction = createViewFunctionStub(Elements.PropertiesWidget.PropertiesWidget);

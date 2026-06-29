@@ -1,0 +1,6 @@
+python_version: "3.11"
+
+wheel: <
+  name: "infra/python/wheels/packaging-py3"
+  version: "version:25.0"
+>

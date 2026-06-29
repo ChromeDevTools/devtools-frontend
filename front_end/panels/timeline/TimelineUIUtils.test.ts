@@ -20,16 +20,10 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {
   createTarget,
-  deinitializeGlobalVars,
   describeWithEnvironment,
   expectConsoleLogs,
-  initializeGlobalVars,
 } from '../../testing/EnvironmentHelpers.js';
-import {
-  clearMockConnectionResponseHandler,
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   loadBasicSourceMapExample,
   setupPageResourceLoaderForSourceMap,
@@ -100,14 +94,9 @@ function getStackTraceForDetailsElement(details: DocumentFragment): string[]|nul
   });
 }
 
-describeWithMockConnection('TimelineUIUtils', function() {
-  before(async () => {
-    await initializeGlobalVars();
-  });
-
-  after(async () => await deinitializeGlobalVars());
-
+describeWithEnvironment('TimelineUIUtils', function() {
   let target: SDK.Target.Target;
+  let connection: MockCDPConnection;
   // Trace events contain script ids as strings. However, the linkifier
   // utilities assume it is a number because that's how it's defined at
   // the protocol level. For practicality, we declare these two
@@ -116,11 +105,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
   const SCRIPT_ID_STRING = String(SCRIPT_ID_NUMBER) as Protocol.Runtime.ScriptId;
 
   beforeEach(() => {
-    setMockConnectionResponseHandler(
-        'Debugger.enable', () => ({debuggerId: 'DEBUGGER_ID' as Protocol.Runtime.UniqueDebuggerId}));
-    setMockConnectionResponseHandler(
-        'Debugger.setInstrumentationBreakpoint', () => ({} as Protocol.Debugger.SetInstrumentationBreakpointResponse));
-    target = createTarget();
+    connection = new MockCDPConnection();
+    connection.setSuccessHandler('Debugger.enable',
+                                 () => ({debuggerId: 'DEBUGGER_ID' as Protocol.Runtime.UniqueDebuggerId}));
+    connection.setSuccessHandler('Debugger.setInstrumentationBreakpoint',
+                                 () => ({} as Protocol.Debugger.SetInstrumentationBreakpointResponse));
+    target = createTarget({connection});
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -136,7 +126,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   afterEach(() => {
-    clearMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend');
+    target?.dispose('test');
   });
 
   describe('script location as an URL', function() {
@@ -527,8 +517,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       // though we return none, we need to mock these calls else the frontend
       // will not work.)
       const documentNode = {nodeId: 1 as Protocol.DOM.BackendNodeId};
-      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode as unknown as Protocol.DOM.Node}));
-      setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => {
+      connection.setSuccessHandler('DOM.getDocument', () => ({root: documentNode as unknown as Protocol.DOM.Node}));
+      connection.setSuccessHandler('DOM.pushNodesByBackendIdsToFrontend', () => {
         return {
           nodeIds: [],
         };

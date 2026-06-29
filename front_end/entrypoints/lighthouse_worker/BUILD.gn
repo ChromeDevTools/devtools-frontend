@@ -22,7 +22,10 @@ devtools_entrypoint("bundle") {
 
   forward_variables_from(devtools_worker_config, "*")
 
-  deps = [ ":lighthouse_worker" ]
+  deps = [
+    ":lighthouse_worker",
+    "../../third_party/lighthouse",
+  ]
 
   visibility = [ "../..:front_end" ]
 }

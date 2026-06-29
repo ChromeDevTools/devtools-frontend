@@ -25,6 +25,7 @@ import * as ChangeManager from './ChangeManager.js';
 import * as AccessibilityContext from './contexts/AccessibilityContext.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
+import * as PerformanceTraceContext from './contexts/PerformanceTraceContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
 import * as ConversationSummary from './ConversationSummary.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
@@ -93,6 +94,7 @@ export {
   PerformanceAgent,
   PerformanceAnnotations,
   PerformanceInsightFormatter,
+  PerformanceTraceContext,
   PerformanceTraceFormatter,
   RequestContext,
   ResolveDevtoolsNodePath,

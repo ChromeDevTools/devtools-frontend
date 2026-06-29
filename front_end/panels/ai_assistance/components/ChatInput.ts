@@ -180,7 +180,7 @@ function getContextRemoveLabel(context: AiAssistanceModel.AiAgent.ConversationCo
   if (context instanceof AiAssistanceModel.RequestContext.RequestContext) {
     return lockedString(UIStringsNotTranslate.removeContextRequest);
   }
-  if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
     return lockedString(UIStringsNotTranslate.removeContextPerfInsight);
   }
   if (context instanceof AiAssistanceModel.StorageAgent.StorageContext) {
@@ -357,7 +357,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
                             PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) :
                             input.context instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext ?
                             html`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` :
-                            input.context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext ?
+                            input.context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext ?
                             html`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` :
                             input.context instanceof AiAssistanceModel.StorageAgent.StorageContext ?
                             html`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` :

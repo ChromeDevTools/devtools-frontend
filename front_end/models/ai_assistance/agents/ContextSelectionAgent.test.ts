@@ -27,7 +27,7 @@ import {
   ContextSelectionAgent,
   DOMNodeContext,
   FileContext,
-  PerformanceAgent,
+  PerformanceTraceContext,
   RequestContext,
   StorageAgent,
   StorageItem,
@@ -149,7 +149,7 @@ describeWithMockConnection('ContextSelectionAgent', function() {
       sinon.assert.calledOnce(performanceRecordAndReload);
       const contextChange = responses.find(r => r.type === AiAgent.ResponseType.CONTEXT_CHANGE);
       assert.exists(contextChange);
-      assert.instanceOf(contextChange.context, PerformanceAgent.PerformanceTraceContext);
+      assert.instanceOf(contextChange.context, PerformanceTraceContext.PerformanceTraceContext);
       assert.strictEqual(contextChange.context.getItem().parsedTrace, trace);
     });
   });

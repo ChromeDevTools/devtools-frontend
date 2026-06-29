@@ -371,7 +371,7 @@ function createV2MarkdownRenderer(conversation?: AiAssistanceModel.AiConversatio
   const resourceTreeModel = primaryTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
   const context = conversation?.selectedContext;
 
-  if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
     options.mainFrameId = focus.parsedTrace.data.Meta.mainFrameId;
     options.lookupTraceEvent = focus.lookupEvent.bind(focus);
@@ -400,7 +400,7 @@ function getMarkdownRenderer(conversation?: AiAssistanceModel.AiConversation.AiC
 
   const context = conversation?.selectedContext;
 
-  if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
     return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
   }
@@ -640,12 +640,12 @@ function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|
   return new AiAssistanceModel.RequestContext.RequestContext(request, calculator);
 }
 
-function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentFocus|null):
-    AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null {
+function createPerformanceTraceContext(focus: AiAssistanceModel.AIContext.AgentFocus|
+                                       null): AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext|null {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
+  return new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(focus);
 }
 
 function createStorageContext(item: AiAssistanceModel.StorageItem.StorageItem|null):
@@ -707,7 +707,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #selectedFile: AiAssistanceModel.FileContext.FileContext|null = null;
   #selectedElement: AiAssistanceModel.DOMNodeContext.DOMNodeContext|null = null;
-  #selectedPerformanceTrace: AiAssistanceModel.PerformanceAgent.PerformanceTraceContext|null = null;
+  #selectedPerformanceTrace: AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext|null = null;
   #selectedRequest: AiAssistanceModel.RequestContext.RequestContext|null = null;
 
   #selectedAccessibility: AiAssistanceModel.AccessibilityContext.AccessibilityContext|null = null;
@@ -1307,7 +1307,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
 
         this.#selectedPerformanceTrace =
-            Boolean(ev.data) ? new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
+            Boolean(ev.data) ? new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(ev.data) : null;
 
         this.#updateConversationState(this.#conversation);
       };
@@ -1535,7 +1535,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (context instanceof AiAssistanceModel.FileContext.FileContext) {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
@@ -1778,7 +1778,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#selectedElement = data;
     } else if (data instanceof AiAssistanceModel.RequestContext.RequestContext) {
       this.#selectedRequest = data;
-    } else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+    } else if (data instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
 
     } else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {

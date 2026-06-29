@@ -390,7 +390,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
               },
             },
           } as Trace.TraceModel.ParsedTrace;
-          return AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(
+          return AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
               parsedTrace,
           );
         },
@@ -491,7 +491,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           Meta: {mainFrameId: '', mainFrameURL: 'https://www.example.com'},
         },
       } as Trace.TraceModel.ParsedTrace;
-      const context = AiAssistanceModel.PerformanceAgent.PerformanceTraceContext.fromParsedTrace(
+      const context = AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
           fakeParsedTrace,
       );
       UI.Context.Context.instance().setFlavor(

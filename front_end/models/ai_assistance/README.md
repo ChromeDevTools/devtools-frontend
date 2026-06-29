@@ -8,7 +8,7 @@ When the user interacts with AI via the AI Assistance Panel, they are having a _
 
 Each agent has a _context_ defined, which represents the selected data that forms the context of the conversation the user is having with that agent. For example:
 
-- The `PerformanceAgent` has an individual performance trace and a specific focus (an insight, or a call tree) as its context.
+- The `PerformanceAgent` uses `PerformanceTraceContext` wrapping an individual performance trace and a specific focus (an insight, or a call tree) as its context.
 - The `StylingAgent` has a DOM Node as its context.
 
 Contexts are defined as subclasses extending the `ConversationContext` abstract class, which defines the following key methods:
@@ -51,9 +51,9 @@ To support skills requiring execution of code or fetching page state (like compu
 
 ## Performance specific documentation
 
-### `TimelineUtils.AIContext.AgentFocus`
+### `PerformanceTraceContext`
 
-The context for `PerformanceAgent` is `AgentFocus`, which supports different behavior for different entry-points of the "Ask AI" feature for a trace. The two entry-points now are "insight" and "call-tree". The agent modifies its capabilities based on this focus.
+The context for `PerformanceAgent` is `PerformanceTraceContext`, which wraps `AgentFocus`. `AgentFocus` supports different behavior for different entry-points of the "Ask AI" feature for a trace (such as a specific performance insight, flame chart call tree, trace event, or the whole parsed trace). `PerformanceTraceContext` implements `ConversationContext<AgentFocus>` to fetch prompt details, user-facing accordion details, and context-specific AI suggestions.
 
 ### Adding "Ask AI" to a new Insight
 
@@ -116,4 +116,5 @@ To prevent prompt injection attacks and cross-origin data leaks, the AI Assistan
 *   **Origin Locking**: Once a conversation session begins, it locks to the origin of the initial data context (e.g. `https://google.com` or a specific file path).
 *   **Opaque Origins**: Any origin classified as opaque (e.g. `data:`, `about:`, `detached` nodes, unparsed `undefined://` or empty origins) is blocked from starting AI assistance (`isOpaqueOrigin()`).
 *   **File Isolation**: Local files (`file://`) do not share a single wildcard origin. Instead, the path is appended (e.g. `file:///path/to/file.js`) to treat each local file as its own unique origin. Swapping local files in the same conversation is blocked.
+*   **Trace Isolation**: Imported performance trace recordings are isolated using the virtual origin `imported-trace://${domain}`. This ensures that loaded local trace files do not share origins with live pages, preventing potential cross-origin prompt injection attacks when switching contexts.
 *   **Equivalence**: `areOriginsEquivalent()` ensures opaque origins are never equivalent to anything (including themselves), forcing a conversation reset on transitions.

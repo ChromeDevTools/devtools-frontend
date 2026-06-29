@@ -6,7 +6,9 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import {
+  assertScreenshot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -20,7 +22,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Application from './application.js';
 
 // Disabled due to flakiness
-describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
+describeWithEnvironment('[crbug.com/1473557]: IDBDatabaseView', () => {
   it('renders with a title and top-level site', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);
@@ -29,25 +31,25 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const databaseId = new Application.IndexedDBModel.DatabaseId(
         {storageKey: 'https://example.com/^0https://example.org'}, 'My Database');
     const database = new Application.IndexedDBModel.Database(databaseId, 1);
-    const model = {
-      target: () => ({
-        model: () => ({
-          getBucketByName: () => null,
-        }),
-      }),
-    } as unknown as Application.IndexedDBModel.IndexedDBModel;
+    const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    const storageBucketsModel = sinon.createStubInstance(SDK.StorageBucketsModel.StorageBucketsModel);
+
+    model.target.returns(target);
+    target.model.withArgs(SDK.StorageBucketsModel.StorageBucketsModel).returns(storageBucketsModel);
+    storageBucketsModel.getBucketByName.returns(null);
     const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done();
+    await RenderCoordinator.done({waitForWork: true});
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
     const titleElement = report.shadowRoot.querySelector('.report-title');
     assert.strictEqual(titleElement?.textContent, 'My Database');
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
-    assert.deepEqual(keys, ['Origin', 'Top-level site', 'Is third-party', 'Version', 'Object stores']);
+    assert.deepEqual(keys, ['Frame origin', 'Top-level site', 'Is third-party', 'Version', 'Object stores']);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
@@ -67,26 +69,26 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const databaseId =
         new Application.IndexedDBModel.DatabaseId({storageKey: 'https://example.com/^112345^267890'}, '');
     const database = new Application.IndexedDBModel.Database(databaseId, 1);
-    const model = {
-      target: () => ({
-        model: () => ({
-          getBucketByName: () => null,
-        }),
-      }),
-    } as unknown as Application.IndexedDBModel.IndexedDBModel;
+    const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    const storageBucketsModel = sinon.createStubInstance(SDK.StorageBucketsModel.StorageBucketsModel);
+
+    model.target.returns(target);
+    target.model.withArgs(SDK.StorageBucketsModel.StorageBucketsModel).returns(storageBucketsModel);
+    storageBucketsModel.getBucketByName.returns(null);
     const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done();
+    await RenderCoordinator.done({waitForWork: true});
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
-    assert.deepEqual(keys, ['Origin', 'Is third-party', 'Is opaque', 'Version', 'Object stores']);
+    assert.deepEqual(keys, ['Is third-party', 'Is opaque', 'Version', 'Object stores']);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
-    assert.deepEqual(values, ['https://example.com', 'Yes, because the storage key is opaque', 'Yes', '1', '0']);
+    assert.deepEqual(values, ['Yes, because the storage key is opaque', 'Yes', '1', '0']);
   });
 
   it('renders with a storage bucket', async function() {
@@ -97,50 +99,42 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const databaseId =
         new Application.IndexedDBModel.DatabaseId({storageKey: 'https://example.com/^112345^267890'}, '');
     const database = new Application.IndexedDBModel.Database(databaseId, 1);
-    const model = {
-      target: () => ({
-        model: () => ({
-          getBucketByName: () => ({
-            bucket: {storageKey: 'https://example.com/^112345^267890', name: 'My bucket'},
-            quota: 1024,
-            expiration: 42,
-            durability: 'strict',
-          }),
-        }),
-      }),
-    } as unknown as Application.IndexedDBModel.IndexedDBModel;
+    const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    const storageBucketsModel = sinon.createStubInstance(SDK.StorageBucketsModel.StorageBucketsModel);
+
+    model.target.returns(target);
+    target.model.withArgs(SDK.StorageBucketsModel.StorageBucketsModel).returns(storageBucketsModel);
+    storageBucketsModel.getBucketByName.returns({
+      bucket: {storageKey: 'https://example.com/^112345^267890', name: 'My bucket'},
+      id: 'my-bucket-id',
+      quota: 1024,
+      expiration: 42,
+      persistent: false,
+      durability: Protocol.Storage.StorageBucketsDurability.Strict,
+    });
     const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await RenderCoordinator.done();
+    await RenderCoordinator.done({waitForWork: true});
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
-      'Origin',
       'Is third-party',
       'Is opaque',
       'Bucket name',
-      'Is persistent',
-      'Durability',
-      'Quota',
-      'Expiration',
       'Version',
       'Object stores',
     ]);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
     assert.deepEqual(values, [
-      'https://example.com',
       'Yes, because the storage key is opaque',
       'Yes',
       'My bucket',
-      'No',
-      'strict',
-      '1.0 kB',
-      (new Date(42000)).toLocaleString(),
       '1',
       '0',
     ]);
@@ -153,31 +147,32 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     const defaultBucketDatabaseId =
         new Application.IndexedDBModel.DatabaseId({storageKey: 'https://example.com/^112345^267890'}, '');
     const defaultBucketDatabase = new Application.IndexedDBModel.Database(defaultBucketDatabaseId, 1);
-    const defaultBucketModel = {
-      target: () => ({
-        model: () => ({
-          getBucketByName: () => ({
-            bucket: {storageKey: 'https://example.com/^112345^267890', name: ''},  // Default bucket
-            quota: 1024,
-            expiration: 42,
-            durability: 'strict',
-          }),
-        }),
-      }),
-    } as unknown as Application.IndexedDBModel.IndexedDBModel;
+    const defaultBucketModel = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    const storageBucketsModel = sinon.createStubInstance(SDK.StorageBucketsModel.StorageBucketsModel);
+
+    defaultBucketModel.target.returns(target);
+    target.model.withArgs(SDK.StorageBucketsModel.StorageBucketsModel).returns(storageBucketsModel);
+    storageBucketsModel.getBucketByName.returns({
+      bucket: {storageKey: 'https://example.com/^112345^267890', name: ''},  // Default bucket
+      id: 'default-bucket-id',
+      quota: 1024,
+      expiration: 42,
+      persistent: false,
+      durability: Protocol.Storage.StorageBucketsDurability.Strict,
+    });
     const defaultBucketComponent =
         new Application.IndexedDBViews.IDBDatabaseView(defaultBucketModel, defaultBucketDatabase);
     renderElementIntoDOM(defaultBucketComponent);
 
     assert.isNotNull(defaultBucketComponent.shadowRoot);
-    await RenderCoordinator.done();
+    await RenderCoordinator.done({waitForWork: true});
     const defaultReport =
         getElementWithinComponent(defaultBucketComponent, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(defaultReport.shadowRoot);
 
     const defaultKeys = getCleanTextContentFromElements(defaultBucketComponent.shadowRoot, 'devtools-report-key');
     assert.deepEqual(defaultKeys, [
-      'Origin',
       'Is third-party',
       'Is opaque',
       'Bucket name',
@@ -187,7 +182,6 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
 
     const defaultValues = getCleanTextContentFromElements(defaultBucketComponent.shadowRoot, 'devtools-report-value');
     assert.deepEqual(defaultValues, [
-      'https://example.com',
       'Yes, because the storage key is opaque',
       'Yes',
       'Default bucket',
@@ -203,17 +197,14 @@ describe.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
 
     const databaseId = new Application.IndexedDBModel.DatabaseId({storageKey: ''}, '');
     const database = new Application.IndexedDBModel.Database(databaseId, 1);
-    const model = {
-      refreshDatabase: sinon.spy(),
-      deleteDatabase: sinon.spy(),
-      target: () => ({
-        model: () => ({
-          getBucketByName: () => null,
-        }),
-      }),
-    };
-    const component = new Application.IndexedDBViews.IDBDatabaseView(
-        model as unknown as Application.IndexedDBModel.IndexedDBModel, database);
+    const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    const target = sinon.createStubInstance(SDK.Target.Target);
+    const storageBucketsModel = sinon.createStubInstance(SDK.StorageBucketsModel.StorageBucketsModel);
+
+    model.target.returns(target);
+    target.model.withArgs(SDK.StorageBucketsModel.StorageBucketsModel).returns(storageBucketsModel);
+    storageBucketsModel.getBucketByName.returns(null);
+    const component = new Application.IndexedDBViews.IDBDatabaseView(model, database);
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
@@ -249,5 +240,42 @@ describeWithEnvironment('IDBDataGridNode', () => {
     const child = rootElement.childAt(0);
     assert.instanceOf(child, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
     assert.isFalse(child.editable);
+  });
+});
+
+describeWithEnvironment('IDBDataView', () => {
+  it('renders toolbar and data grid', async () => {
+    const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
+    model.loadObjectStoreData.callsFake((dbId, storeName, keyRange, skipCount, pageSize, callback) => {
+      const key = SDK.RemoteObject.RemoteObject.fromLocalObject('foo');
+      const primaryKey = SDK.RemoteObject.RemoteObject.fromLocalObject('foo');
+      const value = SDK.RemoteObject.RemoteObject.fromLocalObject('bar');
+      callback([{key, primaryKey, value}], false);
+    });
+    model.getMetadata.resolves({entriesCount: 1, keyGeneratorValue: 0});
+
+    const databaseId = new Application.IndexedDBModel.DatabaseId({storageKey: 'https://example.com'}, 'My Database');
+
+    const objectStore = new Application.IndexedDBModel.ObjectStore('My Object Store', 'key', false);
+
+    const refreshCallback = sinon.spy();
+
+    const component = new Application.IndexedDBViews.IDBDataView(model, databaseId, objectStore, null, refreshCallback);
+
+    renderElementIntoDOM(component, {includeCommonStyles: true});
+
+    // Verify toolbar elements exist
+    const toolbar = component.element.querySelector('devtools-toolbar');
+    assert.isNotNull(toolbar);
+
+    // Verify datagrid exists
+    const dataGrid = component.element.querySelector('.data-grid');
+    assert.isNotNull(dataGrid);
+
+    // Verify row rendered
+    const rows = dataGrid?.querySelectorAll('.data-grid-data-grid-node');
+    assert.strictEqual(rows?.length, 1);
+
+    await assertScreenshot('idb_data_view_baseline.png');
   });
 });

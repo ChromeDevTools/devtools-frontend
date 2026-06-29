@@ -5,25 +5,23 @@
 import {assert} from 'chai';
 
 import * as Protocol from '../../generated/protocol.js';
-import {
-  createTarget,
-} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('OverlayModel', () => {
+describeWithEnvironment('OverlayModel', () => {
   const DOCUMENT_URL_FOR_TEST = urlString`https://example.com/`;
 
   let cssModel: SDK.CSSModel.CSSModel|null;
   let windowControls: SDK.OverlayModel.WindowControls|null;
   let overlayModel: SDK.OverlayModel.OverlayModel|null;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   const header: Protocol.CSS.CSSStyleSheetHeader = {
     styleSheetId: 'stylesheet' as Protocol.DOM.StyleSheetId,
@@ -50,14 +48,16 @@ describeWithMockConnection('OverlayModel', () => {
     height: env(titlebar-area-height);}`;
 
   beforeEach(() => {
-    const target = createTarget({url: DOCUMENT_URL_FOR_TEST});
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    const target = universe.createTarget({connection, url: DOCUMENT_URL_FOR_TEST});
     overlayModel = target.model(SDK.OverlayModel.OverlayModel);
     cssModel = target.model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
     windowControls = new SDK.OverlayModel.WindowControls(cssModel);
 
     // Set up mock response handler to get the default style sheet
-    setMockConnectionResponseHandler('CSS.getStyleSheetText', () => {
+    connection.setSuccessHandler('CSS.getStyleSheetText', () => {
       return {text: defaultStyleSheet};
     });
   });
@@ -67,7 +67,7 @@ describeWithMockConnection('OverlayModel', () => {
     let config;
 
     // Set up mock response handler to set the configuration
-    setMockConnectionResponseHandler('Overlay.setShowWindowControlsOverlay', request => {
+    connection.setSuccessHandler('Overlay.setShowWindowControlsOverlay', request => {
       config = request;
       return request as Protocol.Overlay.SetShowWindowControlsOverlayRequest;
     });
@@ -106,7 +106,7 @@ describeWithMockConnection('OverlayModel', () => {
     let styleSheet;
 
     // Set up mock response handler to set the style sheet
-    setMockConnectionResponseHandler('CSS.setStyleSheetText', req => {
+    connection.setSuccessHandler('CSS.setStyleSheetText', req => {
       styleSheet = req.text;
       return req as unknown as Protocol.CSS.SetStyleSheetTextResponse;
     });

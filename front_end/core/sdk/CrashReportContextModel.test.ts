@@ -5,23 +5,29 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
+import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('CrashReportContextModel', () => {
+describeWithEnvironment('CrashReportContextModel', () => {
   let model: SDK.CrashReportContextModel.CrashReportContextModel;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   beforeEach(() => {
-    const target = createTarget();
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    const target = universe.createTarget({connection});
     model = target.model(SDK.CrashReportContextModel.CrashReportContextModel)!;
     assert.exists(model);
   });
 
   it('can retrieve entries', async () => {
     const frameId = 'frame-1' as Protocol.Page.FrameId;
-    setMockConnectionResponseHandler('CrashReportContext.getEntries', () => {
+    connection.setSuccessHandler('CrashReportContext.getEntries', () => {
       return {
         entries: [
           {key: 'key1', value: 'value1', frameId},
@@ -42,7 +48,7 @@ describeWithMockConnection('CrashReportContextModel', () => {
   });
 
   it('handles empty entries', async () => {
-    setMockConnectionResponseHandler('CrashReportContext.getEntries', () => {
+    connection.setSuccessHandler('CrashReportContext.getEntries', () => {
       return {
         entries: [],
       };
@@ -54,9 +60,10 @@ describeWithMockConnection('CrashReportContextModel', () => {
   });
 
   it('returns null on protocol error', async () => {
-    setMockConnectionResponseHandler('CrashReportContext.getEntries', () => {
+    connection.setFailureHandler('CrashReportContext.getEntries', () => {
       return {
-        getError: () => 'Feature disabled',
+        message: 'Feature disabled',
+        code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
       };
     });
 

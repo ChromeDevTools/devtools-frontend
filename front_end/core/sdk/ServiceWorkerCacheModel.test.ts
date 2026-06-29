@@ -7,21 +7,20 @@ import sinon from 'sinon';
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  clearMockConnectionResponseHandler,
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('ServiceWorkerCacheModel', () => {
+describeWithEnvironment('ServiceWorkerCacheModel', () => {
   let cacheStorageModel: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
   let cache: SDK.ServiceWorkerCacheModel.Cache;
   let target: SDK.Target.Target;
   let manager: SDK.StorageBucketsModel.StorageBucketsModel|null;
   let cacheAgent: ProtocolProxyApi.CacheStorageApi;
+  let universe: TestUniverse;
+  let connection: MockCDPConnection;
 
   const testKey = 'test-key';
   const testStorageBucket = {
@@ -39,7 +38,9 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
   };
 
   beforeEach(() => {
-    target = createTarget();
+    universe = new TestUniverse();
+    connection = new MockCDPConnection();
+    target = universe.createTarget({connection});
     cacheStorageModel = new SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel(target);
     cache = new SDK.ServiceWorkerCacheModel.Cache(
         cacheStorageModel, testStorageBucket, 'test-cache', 'id' as Protocol.CacheStorage.CacheId);
@@ -55,7 +56,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
           resolve(event.data.cache.cacheName);
         });
       });
-      setMockConnectionResponseHandler(
+      connection.setSuccessHandler(
           'CacheStorage.requestCacheNames',
           () => ({
             caches: [{cacheId: 'id', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache'}],
@@ -111,7 +112,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
         resolve();
       });
     });
-    setMockConnectionResponseHandler(
+    connection.setSuccessHandler(
         'CacheStorage.requestCacheNames',
         () => ({
           caches: [{cacheId: 'id', storageKey: testKey, storageBucket: testStorageBucket, cacheName: 'test-cache'}],
@@ -155,7 +156,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
         resolve();
       });
     });
-    setMockConnectionResponseHandler(
+    connection.setSuccessHandler(
         'CacheStorage.requestCacheNames',
         () => ({
           caches: [
@@ -174,7 +175,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
   });
 
   it('removes caches for storage key on clearForStorageKey', async () => {
-    setMockConnectionResponseHandler(
+    connection.setSuccessHandler(
         'CacheStorage.requestCacheNames',
         () => ({
           caches: [
@@ -185,7 +186,7 @@ describeWithMockConnection('ServiceWorkerCacheModel', () => {
     cacheStorageModel.enable();
     manager?.storageBucketCreatedOrUpdated({bucketInfo: testStorageBucketInfo});
     cacheStorageModel.refreshCacheNames();
-    clearMockConnectionResponseHandler('CacheStorage.requestCacheNames');
+    connection.setHandler('CacheStorage.requestCacheNames', null);
 
     cacheStorageModel.clearForStorageKey(testKey);
 

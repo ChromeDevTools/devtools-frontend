@@ -17070,6 +17070,10 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     if (pickerIconPseudoElement) {
       visibleChildren.push(pickerIconPseudoElement);
     }
+    const interestButtonPseudoElement = node.interestButtonPseudoElement();
+    if (interestButtonPseudoElement) {
+      visibleChildren.push(interestButtonPseudoElement);
+    }
     const backdropPseudoElement = node.backdropPseudoElement();
     if (backdropPseudoElement) {
       visibleChildren.push(backdropPseudoElement);

@@ -12263,6 +12263,9 @@
   "panels/profiler/ModuleUIStrings.ts | calculatingDistances": {
     "message": "Calculating distances…"
   },
+  "panels/profiler/ModuleUIStrings.ts | calculatingNativeContextAttribution": {
+    "message": "Calculating native context attribution…"
+  },
   "panels/profiler/ModuleUIStrings.ts | calculatingNodeFlags": {
     "message": "Calculating node flags…"
   },

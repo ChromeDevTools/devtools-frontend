@@ -109,6 +109,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     beforePseudoElement(): DOMNode | undefined;
     afterPseudoElement(): DOMNode | undefined;
     pickerIconPseudoElement(): DOMNode | undefined;
+    interestButtonPseudoElement(): DOMNode | undefined;
     markerPseudoElement(): DOMNode | undefined;
     backdropPseudoElement(): DOMNode | undefined;
     viewTransitionPseudoElements(): DOMNode[];

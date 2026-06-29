@@ -27360,6 +27360,12 @@ var DOMNode = class _DOMNode extends Common21.ObjectWrapper.ObjectWrapper {
       /* Protocol.DOM.PseudoType.PickerIcon */
     )?.at(-1);
   }
+  interestButtonPseudoElement() {
+    return this.#pseudoElements.get(
+      "interest-button"
+      /* Protocol.DOM.PseudoType.InterestButton */
+    )?.at(-1);
+  }
   markerPseudoElement() {
     return this.#pseudoElements.get(
       "marker"

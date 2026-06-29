@@ -401,6 +401,9 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     pickerIconPseudoElement() {
         return this.#pseudoElements.get("picker-icon" /* Protocol.DOM.PseudoType.PickerIcon */)?.at(-1);
     }
+    interestButtonPseudoElement() {
+        return this.#pseudoElements.get("interest-button" /* Protocol.DOM.PseudoType.InterestButton */)?.at(-1);
+    }
     markerPseudoElement() {
         return this.#pseudoElements.get("marker" /* Protocol.DOM.PseudoType.Marker */)?.at(-1);
     }

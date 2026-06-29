@@ -10,28 +10,30 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
 
-describeWithMockConnection('NetworkPanel', () => {
+describeWithEnvironment('NetworkPanel', () => {
   let target: SDK.Target.Target;
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   beforeEach(async () => {
-    target = createTarget();
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('Tracing.start', () => ({}));
+    connection.setSuccessHandler('Tracing.end', () => ({}));
+    target = createTarget({connection});
     networkPanel = await createNetworkPanelForMockConnection();
-    setMockConnectionResponseHandler('Tracing.start', () => ({}));
-    setMockConnectionResponseHandler('Tracing.end', () => ({}));
   });
 
   afterEach(async () => {
     await RenderCoordinator.done();
     networkPanel.detach();
+    target?.dispose('test');
   });
 
   const tracingTests = (inScope: boolean) => () => {
@@ -68,7 +70,8 @@ describeWithMockConnection('NetworkPanel', () => {
   describe('out of scpe', tracingTests(false));
 });
 
-describeWithMockConnection('NetworkPanel', () => {
+describeWithEnvironment('NetworkPanel', () => {
+  let target: SDK.Target.Target;
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   beforeEach(async () => {
@@ -76,7 +79,7 @@ describeWithMockConnection('NetworkPanel', () => {
     UI.ActionRegistration.maybeRemoveActionExtension('network.toggle-recording');
     UI.ActionRegistration.maybeRemoveActionExtension('network.clear');
     await import('./network-meta.js');
-    createTarget();
+    target = createTarget();
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.Settings.instance({
       forceNew: true,
@@ -96,6 +99,7 @@ describeWithMockConnection('NetworkPanel', () => {
   afterEach(async () => {
     await RenderCoordinator.done();
     networkPanel.detach();
+    target?.dispose('test');
   });
 
   it('clears network log on button click', async () => {

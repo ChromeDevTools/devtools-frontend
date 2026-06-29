@@ -10,9 +10,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import {assertScreenshot, dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, registerNoopActions, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  describeWithEnvironment,
+  registerNoopActions,
+  stubNoopSettings
+} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelUtils from '../utils/utils.js';
@@ -21,19 +26,26 @@ import * as Network from './network.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection(`RequestConditionsDrawer with individual request throttling enabled`, () => {
+describeWithEnvironment(`RequestConditionsDrawer with individual request throttling enabled`, () => {
+  let connection: MockCDPConnection;
   beforeEach(() => {
     stubNoopSettings();
-    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
-    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
+    connection = new MockCDPConnection();
+    connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
     ]);
     SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions.conditionsEnabled =
         (true);
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.clear();
     sinon.stub(SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions, 'applyConditions')
         .returns(false);
+  });
+
+  afterEach(() => {
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.clear();
   });
 
   it('shows a placeholder', async () => {
@@ -48,6 +60,7 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
         'To throttle or block a network request, add a rule here manually or via the network panel\'s context menu. Learn more');
 
     await assertScreenshot('request_conditions/throttling_placeholder.png');
+    requestConditionsDrawer.detach();
   });
 
   it('Add pattern button triggers showing the editor view', async () => {
@@ -66,11 +79,12 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
     assert.exists(requestConditionsDrawer.contentElement.querySelector('devtools-prompt'));
 
     await assertScreenshot('request_conditions/throttling_editor.png');
+    requestConditionsDrawer.detach();
   });
 
   describe('affected counts', () => {
     const updatesOnRequestFinishedEvent = (inScope: boolean) => async () => {
-      const target = createTarget();
+      const target = createTarget({connection});
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const networkManager = target.model(SDK.NetworkManager.NetworkManager);
 
@@ -99,6 +113,8 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
       } else {
         await assertScreenshot(`request_conditions/throttling_blocked-not-matched.png`);
       }
+      requestConditionsDrawer.detach();
+      target.dispose('test');
     };
 
     it('are updated upon RequestFinished event (when target is in scope)', updatesOnRequestFinishedEvent(true));
@@ -120,14 +136,18 @@ describeWithMockConnection(`RequestConditionsDrawer with individual request thro
   });
 });
 
-describeWithMockConnection('RequestConditionsDrawer', () => {
+describeWithEnvironment('RequestConditionsDrawer', () => {
   beforeEach(() => {
     stubNoopSettings();
     registerNoopActions([
       'network.add-network-request-blocking-pattern',
       'network.remove-all-network-request-blocking-patterns',
     ]);
-    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true}).requestConditions.clear();
+  });
+
+  afterEach(() => {
+    SDK.NetworkManager.MultitargetNetworkManager.instance().requestConditions.clear();
   });
 
   describe('shows information for upgrading wildcard patterns to URLPatterns', () => {

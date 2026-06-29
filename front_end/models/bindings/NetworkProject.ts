@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../workspace/workspace.js';
@@ -13,21 +14,16 @@ const uiSourceCodeToAttributionMap = new WeakMap<Workspace.UISourceCode.UISource
                                                  }>>();
 const projectToTargetMap = new WeakMap<Workspace.Workspace.Project, SDK.Target.Target>();
 
-let networkProjectManagerInstance: NetworkProjectManager;
-
 export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private constructor() {
-    super();
-  }
 
   static instance({forceNew}: {
     forceNew: boolean,
   } = {forceNew: false}): NetworkProjectManager {
-    if (!networkProjectManagerInstance || forceNew) {
-      networkProjectManagerInstance = new NetworkProjectManager();
+    if (!Root.DevToolsContext.globalInstance().has(NetworkProjectManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(NetworkProjectManager, new NetworkProjectManager());
     }
 
-    return networkProjectManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(NetworkProjectManager);
   }
 }
 

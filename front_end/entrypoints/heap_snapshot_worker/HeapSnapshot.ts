@@ -518,11 +518,11 @@ export class HeapSnapshotNode implements HeapSnapshotItem {
     }
   }
 
-  detachedness(): DOMLinkState {
+  detachedness(): HeapSnapshotModel.HeapSnapshotModel.DOMLinkState {
     return this.#detachednessAndClassIndex() & BITMASK_FOR_DOM_LINK_STATE;
   }
 
-  setDetachedness(detachedness: DOMLinkState): void {
+  setDetachedness(detachedness: HeapSnapshotModel.HeapSnapshotModel.DOMLinkState): void {
     let value = this.#detachednessAndClassIndex();
     value &= ~BITMASK_FOR_DOM_LINK_STATE;  // Clear the old bits.
     value |= detachedness;                 // Set the new bits.
@@ -904,14 +904,7 @@ export class SecondaryInitManager {
   }
 }
 
-/**
- * DOM node link state.
- */
-const enum DOMLinkState {
-  UNKNOWN = 0,
-  ATTACHED = 1,
-  DETACHED = 2,
-}
+// Bitmask for accessing DOMLinkState in the detachedness field.
 const BITMASK_FOR_DOM_LINK_STATE = 3;
 
 // The class index is stored in the upper 30 bits of the detachedness field.
@@ -1163,6 +1156,27 @@ export abstract class HeapSnapshot {
       }
     }
     return undefined;
+  }
+
+  getObjectInfo(nodeIndex: number): HeapSnapshotModel.HeapSnapshotModel.ObjectInfo {
+    const nodesLength = this.nodes.length;
+    const nodeFieldCount = this.nodeFieldCount;
+    if (!Number.isInteger(nodeIndex) || nodeIndex < 0 || nodeIndex >= nodesLength || nodeIndex % nodeFieldCount !== 0) {
+      throw new Error('Invalid nodeIndex ' + nodeIndex);
+    }
+    const node = this.createNode(nodeIndex);
+    return {
+      id: node.id(),
+      name: node.name(),
+      type: node.type(),
+      nodeIndex,
+      detachedness: node.detachedness(),
+      selfSize: node.selfSize(),
+      retainedSize: node.retainedSize(),
+      distance: node.distance(),
+      edgeCount: node.edgesCount(),
+      retainerCount: node.retainersCount(),
+    };
   }
 
   private startInitStep1InSecondThread(secondWorker: PlatformApi.HostRuntime.WorkerMessagePort):
@@ -1555,7 +1569,7 @@ export abstract class HeapSnapshot {
       case 'objectsRetainedByDetachedDomNodes':
         // Traverse the graph, avoiding detached nodes.
         traverse((_node: HeapSnapshotNode, edge: HeapSnapshotEdge) => {
-          return edge.node().detachedness() !== DOMLinkState.DETACHED;
+          return edge.node().detachedness() !== HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED;
         });
         markUnreachableNodes();
         return (node: HeapSnapshotNode) => !getBit(node);
@@ -3036,9 +3050,9 @@ export abstract class HeapSnapshot {
       node.nodeIndex = nodeIndex;
       node.setDetachedness(newState);
 
-      if (newState === DOMLinkState.ATTACHED) {
+      if (newState === HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.ATTACHED) {
         attached.push(nodeOrdinal);
-      } else if (newState === DOMLinkState.DETACHED) {
+      } else if (newState === HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED) {
         // Detached state: Rewire node name.
         addDetachedPrefixToNodeName(snapshot, nodeIndex);
         detached.push(nodeOrdinal);
@@ -3062,7 +3076,7 @@ export abstract class HeapSnapshot {
       node.nodeIndex = nodeOrdinal * this.nodeFieldCount;
       const state = node.detachedness();
       // Bail out for objects that have no known state. For all other objects set that state.
-      if (state === DOMLinkState.UNKNOWN) {
+      if (state === HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.UNKNOWN) {
         continue;
       }
       processNode(this, nodeOrdinal, state);
@@ -3070,7 +3084,7 @@ export abstract class HeapSnapshot {
     // 2. If the parent is attached, then the child is also attached.
     while (attached.length !== 0) {
       const nodeOrdinal = (attached.pop() as number);
-      propagateState(this, nodeOrdinal, DOMLinkState.ATTACHED);
+      propagateState(this, nodeOrdinal, HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.ATTACHED);
     }
     // 3. If the parent is not attached, then the child inherits the parent's state.
     while (detached.length !== 0) {
@@ -3078,10 +3092,10 @@ export abstract class HeapSnapshot {
       node.nodeIndex = nodeOrdinal * this.nodeFieldCount;
       const nodeState = node.detachedness();
       // Ignore if the node has been found through propagating forward attached state.
-      if (nodeState === DOMLinkState.ATTACHED) {
+      if (nodeState === HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.ATTACHED) {
         continue;
       }
-      propagateState(this, nodeOrdinal, DOMLinkState.DETACHED);
+      propagateState(this, nodeOrdinal, HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED);
     }
 
     console.timeEnd('propagateDOMState');

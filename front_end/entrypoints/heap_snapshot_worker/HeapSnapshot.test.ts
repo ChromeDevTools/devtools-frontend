@@ -13,6 +13,9 @@ describe('HeapSnapshot', () => {
     getValue(i: number): number {
       return this[i];
     }
+    setValue(i: number, value: number): void {
+      this[i] = value;
+    }
   }
 
   /* eslint-disable @typescript-eslint/naming-convention */
@@ -135,6 +138,39 @@ describe('HeapSnapshot', () => {
 
   function createHeapSnapshotMock() {
     return postprocessHeapSnapshotMock(createHeapSnapshotMockRaw());
+  }
+
+  function createHeapSnapshotMockWithDetachedness() {
+    return postprocessHeapSnapshotMock({
+      snapshot: {
+        meta: {
+          node_fields: ['type', 'name', 'id', 'self_size', 'retained_size', 'dominator', 'edge_count', 'detachedness'],
+          node_types: [['hidden', 'object'], '', '', '', '', '', '', ''],
+          edge_fields: ['type', 'name_or_index', 'to_node'],
+          edge_types: [['element', 'property', 'shortcut'], '', ''],
+          location_fields: ['object_index', 'script_id', 'line', 'column'],
+          trace_function_info_fields: ['function_id', 'name', 'script_name', 'script_id', 'line', 'column'],
+          trace_node_fields: ['id', 'function_info_index', 'count', 'size', 'children']
+        },
+        node_count: 2,
+        edge_count: 1,
+        trace_function_count: 0
+      },
+      nodes: [
+        // Root node: type=hidden (0), name="" (0), id=1, self_size=0, retained_size=0, dominator=0, edge_count=1, detachedness=unknown (0)
+        0, 0, 1, 0, 0, 0, 1, 0,
+        // Window node: type=object (1), name="Window" (1), id=2, self_size=8, retained_size=8, dominator=0, edge_count=0, detachedness=detached (2)
+        1, 1, 2, 8, 8, 0, 0, 2
+      ],
+      edges: [
+        // Property edge from Root to Window: type=property (1), name="window" (2), to_node=8 (Window)
+        1, 2, 8
+      ],
+      trace_function_infos: [],
+      trace_tree: [],
+      locations: [],
+      strings: ['', 'Window', 'window']
+    });
   }
 
   function createHeapSnapshotMockWithDOM() {
@@ -1703,5 +1739,44 @@ describe('HeapSnapshot', () => {
                   'SharedObject should be in sharedNativeContext aggregates');
     assert.isFalse(indexesShared.has(snapshot.nodeIndexForId(100)!),
                    'JSObject1 should NOT be in sharedNativeContext aggregates');
+  });
+
+  it('heapSnapshotGetObjectInfo', async () => {
+    const snapshot =
+        await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(createHeapSnapshotMockWithDetachedness());
+
+    // Root node
+    const rootInfo = snapshot.getObjectInfo(0);
+
+    // Window node
+    const windowInfo = snapshot.getObjectInfo(8);
+
+    assert.deepEqual(rootInfo, {
+      id: 1,
+      name: '',
+      type: 'hidden',
+      nodeIndex: 0,
+      detachedness: HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.UNKNOWN,
+      selfSize: 0,
+      retainedSize: 8,
+      distance: HeapSnapshotModel.HeapSnapshotModel.baseSystemDistance,
+      edgeCount: 1,
+      retainerCount: 0,
+    });
+
+    assert.deepEqual(windowInfo, {
+      id: 2,
+      name: 'Window',
+      type: 'object',
+      nodeIndex: 8,
+      detachedness: HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED,
+      selfSize: 8,
+      retainedSize: 8,
+      distance: 1,
+      edgeCount: 0,
+      retainerCount: 1,
+    });
+
+    assert.throws(() => snapshot.getObjectInfo(5), 'Invalid nodeIndex 5');
   });
 });

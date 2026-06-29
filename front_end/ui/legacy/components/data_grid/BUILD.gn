@@ -64,6 +64,7 @@ devtools_ui_module("unittests") {
   sources = [
     "DataGrid.test.ts",
     "DataGridElement.test.ts",
+    "ViewportDataGrid.test.ts",
   ]
 
   deps = [

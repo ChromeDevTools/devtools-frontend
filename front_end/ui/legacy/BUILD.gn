@@ -188,6 +188,7 @@ devtools_ui_module("unittests") {
     "InspectorDrawerView.test.ts",
     "InspectorView.test.ts",
     "KeyboardShortcut.test.ts",
+    "ListControl.test.ts",
     "ListModel.test.ts",
     "ListWidget.test.ts",
     "PlusButton.test.ts",

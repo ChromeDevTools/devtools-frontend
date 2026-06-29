@@ -666,4 +666,62 @@ describeWithEnvironment('ObjectTreeExpansionTracker', () => {
 
     assert.isFalse(freshRoot.expanded);
   });
+
+  it('expands properties recursively', async () => {
+    const object = SDK.RemoteObject.RemoteObject.fromLocalObject({
+      foo: {
+        bar: {
+          baz: {
+            quux: {
+              corge: 'plugh',
+            },
+          },
+        },
+        quuz: {
+          garply: 'xyzzy',
+          thud: {
+            wibble: 'wobble',
+          },
+        },
+      },
+    });
+
+    const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(object, 'JSON');
+    const rootElement = section.objectTreeElement();
+    await rootElement.expandRecursively(10);
+
+    await new Promise(requestAnimationFrame);
+
+    assert.strictEqual(rootElement.childCount(), 1);
+    const foo = rootElement.childAt(0)!;
+    assert.isTrue(foo.expanded);
+
+    assert.strictEqual(foo.childCount(), 2);
+    const bar = foo.childAt(0)!;
+    const quuz = foo.childAt(1)!;
+    assert.isTrue(bar.expanded);
+    assert.isTrue(quuz.expanded);
+
+    assert.strictEqual(bar.childCount(), 1);
+    const baz = bar.childAt(0)!;
+    assert.isTrue(baz.expanded);
+
+    assert.strictEqual(baz.childCount(), 1);
+    const quux = baz.childAt(0)!;
+    assert.isTrue(quux.expanded);
+
+    assert.strictEqual(quux.childCount(), 1);
+    const corge = quux.childAt(0)!;
+    assert.isFalse(corge.expanded);
+
+    assert.strictEqual(quuz.childCount(), 2);
+    const garply = quuz.childAt(0)!;
+    const thud = quuz.childAt(1)!;
+    assert.isFalse(garply.expanded);
+    assert.isTrue(thud.expanded);
+
+    assert.strictEqual(thud.childCount(), 1);
+    const wibble = thud.childAt(0)!;
+    assert.isFalse(wibble.expanded);
+  });
 });

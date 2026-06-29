@@ -333,4 +333,30 @@ describe('TextPrompt', () => {
     assert.strictEqual(expression, 'the expression and ');
     assert.strictEqual(query, 'query');
   });
+
+  it('updates hint as user types', async () => {
+    const suggestions = [{text: 'testTextPrompt'}];
+    prompt.initialize(async (expression, query) => suggestions.filter(s => s.text.startsWith(query)));
+    prompt.attachAndStartEditing(div);
+
+    prompt.setText('testT');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'testTextPrompt');
+
+    prompt.setText('testTe');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'testTextPrompt');
+
+    prompt.setText('testTez');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'testTez');
+
+    prompt.setText('testTe');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'testTextPrompt');
+
+    prompt.setText('something_before testT');
+    await prompt.complete();
+    assert.strictEqual(prompt.textWithCurrentSuggestion(), 'something_before testTextPrompt');
+  });
 });

@@ -11,16 +11,13 @@ import {
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Application from './application.js';
 
-describeWithMockConnection('ServiceWorkerCacheView', function() {
+describeWithEnvironment('ServiceWorkerCacheView', function() {
   let target: SDK.Target.Target;
   let cacheStorageModel: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel;
   let cache: SDK.ServiceWorkerCacheModel.Cache;
@@ -32,12 +29,16 @@ describeWithMockConnection('ServiceWorkerCacheView', function() {
   };
 
   beforeEach(() => {
-    target = createTarget();
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('CacheStorage.requestEntries', () => ({cacheDataEntries: [], returnCount: 0}));
+    target = createTarget({connection});
     cacheStorageModel = new SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel(target);
     cache = new SDK.ServiceWorkerCacheModel.Cache(
         cacheStorageModel, testStorageBucket, 'test-cache', 'id' as Protocol.CacheStorage.CacheId);
+  });
 
-    setMockConnectionResponseHandler('CacheStorage.requestEntries', () => ({cacheDataEntries: [], returnCount: 0}));
+  afterEach(() => {
+    target?.dispose('test');
   });
 
   it('creates the expected view structure with toolbar, metadata, grid, and details pane', () => {

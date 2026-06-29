@@ -8,9 +8,8 @@ import sinon from 'sinon';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
@@ -20,7 +19,7 @@ import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('DebuggerWorkspaceBinding', () => {
+describeWithEnvironment('DebuggerWorkspaceBinding', () => {
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
 
   beforeEach(() => {
@@ -39,14 +38,16 @@ describeWithMockConnection('DebuggerWorkspaceBinding', () => {
   });
 
   it('can wait for a uiSourceCode if it is not yet available', async () => {
-    const backend = new MockProtocolBackend();
-    const target = createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
+    const backend = new MockDebuggerBackend();
+    debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+    const target =
+        backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const scriptUrl = urlString`http://script-host/script.js`;
     const scriptInfo = {url: scriptUrl, content: 'console.log(1);', startLine: 0, startColumn: 0, hasSourceURL: false};
 
     // Create a second target.
-    const workerTarget = createTarget({
+    const workerTarget = backend.createTarget({
       id: 'worker' as Protocol.Target.TargetID,
       name: 'worker',
       type: SDK.Target.Type.ServiceWorker,
@@ -54,7 +55,7 @@ describeWithMockConnection('DebuggerWorkspaceBinding', () => {
     });
 
     // Before any script is registered, there shouldn't be any uiSourceCodes.
-    assert.isNull(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptUrl));
+    assert.isNull(backend.universe.workspace.uiSourceCodeForURL(scriptUrl));
 
     // Create promise to await the uiSourceCode given the url and its target.
     const uiSourceCodePromise = debuggerWorkspaceBinding.waitForUISourceCodeAdded(scriptUrl, target);
@@ -153,8 +154,10 @@ describeWithMockConnection('DebuggerWorkspaceBinding', () => {
     });
 
     it('translates source location via the fallback script mapping', async () => {
-      const backend = new MockProtocolBackend();
-      const target = createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
+      const backend = new MockDebuggerBackend();
+      debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+      const target =
+          backend.createTarget({id: 'main' as Protocol.Target.TargetID, name: 'main', type: SDK.Target.Type.FRAME});
       const script = await backend.addScript(
           target, {
             url: Platform.DevToolsPath.urlString`http://example.com/foo.js`,

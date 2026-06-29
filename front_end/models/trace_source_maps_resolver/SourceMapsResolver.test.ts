@@ -12,12 +12,9 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {
@@ -43,21 +40,12 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
   contentScriptURL: string,
   contentScriptId: Protocol.Runtime.ScriptId,
 }> {
-  const target = createTarget();
-
-  const targetManager = SDK.TargetManager.TargetManager.instance();
-  const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-  const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-  const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-    forceNew: true,
-    resourceMapping,
-    targetManager,
-    ignoreListManager,
-    workspace,
-  });
-
-  const backend = new MockProtocolBackend();
+  const backend = new MockDebuggerBackend();
+  const target = backend.createTarget();
+  const {debuggerWorkspaceBinding, targetManager, workspace} = backend.universe;
+  sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
+  sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(workspace);
+  sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance').returns(debuggerWorkspaceBinding);
 
   // The following mock data creates a source mapping from two authored
   // scripts to a single complied script. One of the sources
@@ -102,6 +90,7 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
     debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${contentScriptInfo.url}`, target),
     backend.addScript(target, contentScriptInfo, null),
   ]);
+  await target.model(SDK.DebuggerModel.DebuggerModel)?.sourceMapManager().waitForSourceMapsProcessedForTest();
 
   return {
     authoredScriptURL,
@@ -133,7 +122,7 @@ function parsedTraceFromProfileCalls(profileCalls: Trace.Types.Events.SyntheticP
   return {data} as Trace.TraceModel.ParsedTrace;
 }
 
-describeWithMockConnection('SourceMapsResolver', () => {
+describeWithEnvironment('SourceMapsResolver', () => {
   describe('function name resolving', () => {
     let target: SDK.Target.Target;
     let script: SDK.Script.Script;

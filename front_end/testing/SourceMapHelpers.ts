@@ -8,7 +8,8 @@ import type * as Protocol from '../generated/protocol.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
-import {dispatchEvent, setMockConnectionResponseHandler} from './MockConnection.js';
+import {MockCDPConnection} from './MockCDPConnection.js';
+import {dispatchEvent} from './MockConnection.js';
 
 export interface LoadResult {
   success: boolean;
@@ -81,7 +82,11 @@ export async function loadBasicSourceMapExample(target: SDK.Target.Target):
   }
   debuggerModel.sourceMapManager().addEventListener(
       SDK.SourceMapManager.Events.SourceMapAttached, sourceMapAttachedCallback);
-  setMockConnectionResponseHandler('Debugger.getScriptSource', getScriptSourceHandler);
+  const connection = target.router()?.connection;
+  if (!connection || !(connection instanceof MockCDPConnection)) {
+    throw new Error('Target must use MockCDPConnection');
+  }
+  connection.setSuccessHandler('Debugger.getScriptSource', getScriptSourceHandler);
   // Load the script and source map into the frontend.
   dispatchEvent(target, 'Debugger.scriptParsed', {
     scriptId: SCRIPT_ID,
@@ -111,6 +116,7 @@ export async function loadBasicSourceMapExample(target: SDK.Target.Target):
   if (!sourceMap) {
     throw new Error('Source map could not be registered');
   }
+  await debuggerModel.sourceMapManager().waitForSourceMapsProcessedForTest();
 
   return {sourceMap, script};
 }

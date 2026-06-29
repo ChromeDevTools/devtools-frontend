@@ -8,20 +8,21 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Accessibility from './accessibility.js';
 
-describeWithMockConnection('ARIAAttributesView', () => {
+describeWithEnvironment('ARIAAttributesView', () => {
   let node: SDK.DOMModel.DOMNode;
 
   beforeEach(() => {
-    setMockConnectionResponseHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
-    setMockConnectionResponseHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
     stubNoopSettings();
-    const target = createTarget();
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('Debugger.enable', () => ({} as Protocol.Debugger.EnableResponse));
+    connection.setSuccessHandler('Storage.getStorageKey', () => ({} as Protocol.Storage.GetStorageKeyResponse));
+    const target = createTarget({connection});
     const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
     node = new SDK.DOMModel.DOMNode(domModel);
     node.setAttributesPayload(['role', 'checkbox', 'aria-checked', 'true']);

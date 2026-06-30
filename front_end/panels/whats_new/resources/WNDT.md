@@ -9,7 +9,7 @@ The agent walkthrough in the updated AI assistance panel now renders rich widget
 for performance network tracks, timeline event summaries, network requests,
 syntax-highlighted source code, and inspected file lists.
 
-### [`@container` and `@function`](css-container-function)
+### [@container and @function](css-container-function)
 
 You can now directly edit `@container` and `@function`
 rules within the Styles tab, allowing for seamless experimentation.

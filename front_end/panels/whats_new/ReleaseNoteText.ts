@@ -45,15 +45,15 @@ let releaseNote: ReleaseNote = {
   markdownLinks: [
     {
       key: 'devtools-for-agents',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-149/#devtools-for-agents',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-150/#devtools-for-agents',
     },
     {
       key: 'ai-assistance',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-149/#ai-assistance',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-150/#ai-assistance',
     },
     {
       key: 'css-container-function',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-149/#css-container-function',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-150/#css-container-function',
     }
   ],
   videoLinks: [

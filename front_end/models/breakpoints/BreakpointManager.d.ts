@@ -10,7 +10,7 @@ export declare class BreakpointManager extends Common.ObjectWrapper.ObjectWrappe
     readonly storage: Storage;
     readonly targetManager: SDK.TargetManager.TargetManager;
     readonly debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
-    private constructor();
+    constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, settings: Common.Settings.Settings, restoreInitialBreakpointCount?: number);
     static instance(opts?: {
         forceNew: boolean | null;
         targetManager: SDK.TargetManager.TargetManager | null;

@@ -1,3 +1,4 @@
+import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
 import { type CommandHandlerResponse, MockCDPConnection } from './MockCDPConnection.js';
@@ -78,7 +79,7 @@ export declare class MockDebuggerBackend {
         url: string;
         content: string;
     } | null, scopeObjects?: Protocol.Runtime.RemoteObject[]): Promise<SDK.DebuggerModel.CallFrame>;
-    responderToBreakpointByUrlRequest(url: string, lineNumber: number): (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'>) => Promise<void>;
+    responderToBreakpointByUrlRequest(url: string, lineNumber: number): (response: CommandHandlerResponse<'Debugger.setBreakpointByUrl'> | ProtocolClient.CDPConnection.CommandResult<'Debugger.setBreakpointByUrl'>) => Promise<void>;
     setBreakpointByUrlToFail(url: string, lineNumber: number): void;
     breakpointRemovedPromise(breakpointId: Protocol.Debugger.BreakpointId): Promise<void>;
 }

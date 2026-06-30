@@ -1951,11 +1951,27 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     }
   }
   static async populate(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-    const properties = await value.populateChildrenIfNeeded();
+    await _ObjectPropertyTreeElement.populateChildrenIfNeeded(value);
+    _ObjectPropertyTreeElement.populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
+  }
+  static async populateChildrenIfNeeded(value) {
+    const children = await value.populateChildrenIfNeeded();
+    await ArrayGroupingTreeElement.populateChildrenIfNeeded(children);
+  }
+  static populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+    for (const childNode of _ObjectPropertyTreeElement.createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, (property) => treeElement instanceof _ObjectPropertyTreeElement && !ObjectPropertiesSection.isDisplayableProperty(property, treeElement.property?.property))) {
+      treeElement.appendChild(childNode);
+    }
+  }
+  static *createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+    const properties = value.children;
+    if (!properties) {
+      return;
+    }
     if (properties.arrayRanges) {
-      await ArrayGroupingTreeElement.populate(treeElement, properties, linkifier);
+      yield* ArrayGroupingTreeElement.createNodes(properties, linkifier, isNotDisplayablePropertyCallback);
     } else {
-      _ObjectPropertyTreeElement.populateWithProperties(treeElement, properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
+      yield* _ObjectPropertyTreeElement.createPropertyNodes(properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback);
     }
   }
   static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
@@ -2273,22 +2289,32 @@ var ArrayGroupingTreeElement = class _ArrayGroupingTreeElement extends UI2.TreeO
       this.expand();
     }
   }
-  static async populate(treeNode, children, linkifier) {
+  static *createNodes(children, linkifier, isNotDisplayablePropertyCallback) {
     if (!children.arrayRanges) {
       return;
     }
     if (children.arrayRanges.length === 1) {
-      await ObjectPropertyTreeElement.populate(treeNode, children.arrayRanges[0], false, false, linkifier);
+      yield* ObjectPropertyTreeElement.createNodes(children.arrayRanges[0], false, false, linkifier, null, isNotDisplayablePropertyCallback);
     } else {
       for (const child of children.arrayRanges) {
         if (child.singular) {
-          await ObjectPropertyTreeElement.populate(treeNode, child, false, false, linkifier);
+          yield* ObjectPropertyTreeElement.createNodes(child, false, false, linkifier, null, isNotDisplayablePropertyCallback);
         } else {
-          treeNode.appendChild(new _ArrayGroupingTreeElement(child, linkifier));
+          yield new _ArrayGroupingTreeElement(child, linkifier);
         }
       }
     }
-    ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
+    yield* ObjectPropertyTreeElement.createPropertyNodes(children, false, false, linkifier, null, isNotDisplayablePropertyCallback);
+  }
+  static async populateChildrenIfNeeded(children) {
+    if (!children.arrayRanges) {
+      return;
+    }
+    if (children.arrayRanges.length === 1) {
+      await ObjectPropertyTreeElement.populateChildrenIfNeeded(children.arrayRanges[0]);
+    } else {
+      await Promise.all(children.arrayRanges.filter((child) => child.singular).map((child) => ObjectPropertyTreeElement.populateChildrenIfNeeded(child)));
+    }
   }
   onexpand() {
     this.#child.expanded = true;
@@ -2478,7 +2504,14 @@ var CustomPreviewSection = class _CustomPreviewSection {
     if (!Array.isArray(jsonML)) {
       return document.createTextNode(String(jsonML));
     }
-    return jsonML[0] === "object" ? this.layoutObjectTag(jsonML) : this.renderElement(jsonML);
+    if (jsonML[0] !== "object") {
+      return this.renderElement(jsonML);
+    }
+    if (jsonML.length !== 2) {
+      Common2.Console.Console.instance().error("Broken formatter: object reference must contain exactly two elements");
+      return document.createElement("span");
+    }
+    return this.layoutObjectTag(jsonML);
   }
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -25,6 +25,7 @@ import * as ChangeManager from './ChangeManager.js';
 import * as AccessibilityContext from './contexts/AccessibilityContext.js';
 import * as DOMNodeContext from './contexts/DOMNodeContext.js';
 import * as FileContext from './contexts/FileContext.js';
+import * as PerformanceTraceContext from './contexts/PerformanceTraceContext.js';
 import * as RequestContext from './contexts/RequestContext.js';
 import * as ConversationSummary from './ConversationSummary.js';
 import * as FileFormatter from './data_formatters/FileFormatter.js';
@@ -43,11 +44,12 @@ import * as AIQueries from './performance/AIQueries.js';
 import * as PerformanceAnnotations from './PerformanceAnnotations.js';
 import * as StorageItem from './StorageItem.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
+import * as GetElementAccessibilityDetails from './tools/GetElementAccessibilityDetails.js';
 import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
-import * as ResolveLighthousePath from './tools/ResolveLighthousePath.js';
+import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
 
@@ -76,6 +78,7 @@ export {
   FileAgent,
   FileContext,
   FileFormatter,
+  GetElementAccessibilityDetails,
   GetLighthouseAudits,
   GetNetworkRequestDetails,
   GetStyles,
@@ -91,9 +94,10 @@ export {
   PerformanceAgent,
   PerformanceAnnotations,
   PerformanceInsightFormatter,
+  PerformanceTraceContext,
   PerformanceTraceFormatter,
   RequestContext,
-  ResolveLighthousePath,
+  ResolveDevtoolsNodePath,
   StorageAgent,
   StorageItem,
   StylingAgent,

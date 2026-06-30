@@ -81,6 +81,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline-debug-mode', false),
     createSettingValue("PERFORMANCE" /* Common.Settings.SettingCategory.PERFORMANCE */, 'timeline-invalidation-tracking', false),
     createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'cache-disabled', false),
+    createSettingValue("NETWORK" /* Common.Settings.SettingCategory.NETWORK */, 'network-blocked-patterns', [], "array" /* Common.Settings.SettingType.ARRAY */),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'avif-format-disabled', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'jpeg-xl-format-disabled', false),
     createSettingValue("RENDERING" /* Common.Settings.SettingCategory.RENDERING */, 'emulated-css-media', '', "enum" /* Common.Settings.SettingType.ENUM */),

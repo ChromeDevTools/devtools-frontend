@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/models/autofill_manager"},"files":["../../../../../../front_end/models/autofill_manager/autofill_manager.ts"],"references":[{"path":"./autofill_manager-tsconfig.json"}]}

@@ -4,7 +4,8 @@
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
-import { dispatchEvent, setMockConnectionResponseHandler } from './MockConnection.js';
+import { MockCDPConnection } from './MockCDPConnection.js';
+import { dispatchEvent } from './MockConnection.js';
 export function setupPageResourceLoaderForSourceMap(sourceMapContent) {
     const loadSourceMap = async (_url) => {
         return {
@@ -57,7 +58,11 @@ export async function loadBasicSourceMapExample(target) {
         throw new Error('DebuggerModel was unexpectedly not found');
     }
     debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, sourceMapAttachedCallback);
-    setMockConnectionResponseHandler('Debugger.getScriptSource', getScriptSourceHandler);
+    const connection = target.router()?.connection;
+    if (!connection || !(connection instanceof MockCDPConnection)) {
+        throw new Error('Target must use MockCDPConnection');
+    }
+    connection.setSuccessHandler('Debugger.getScriptSource', getScriptSourceHandler);
     // Load the script and source map into the frontend.
     dispatchEvent(target, 'Debugger.scriptParsed', {
         scriptId: SCRIPT_ID,
@@ -84,6 +89,7 @@ export async function loadBasicSourceMapExample(target) {
     if (!sourceMap) {
         throw new Error('Source map could not be registered');
     }
+    await debuggerModel.sourceMapManager().waitForSourceMapsProcessedForTest();
     return { sourceMap, script };
 }
 //# sourceMappingURL=SourceMapHelpers.js.map

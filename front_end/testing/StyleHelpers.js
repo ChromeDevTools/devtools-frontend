@@ -3,7 +3,10 @@
 // found in the LICENSE file.
 import sinon from 'sinon';
 import * as SDK from '../core/sdk/sdk.js';
-import { clearMockConnectionResponseHandler, setMockConnectionResponseHandler } from './MockConnection.js';
+export function mockGetEnvironmentVariables(connection, environmentVariables = {}) {
+    connection.setHandler('CSS.getEnvironmentVariables', null);
+    connection.setSuccessHandler('CSS.getEnvironmentVariables', () => ({ environmentVariables }));
+}
 export function getMatchedStylesWithStylesheet(payload) {
     payload.cssModel.styleSheetAdded({
         frameId: '',
@@ -20,7 +23,7 @@ export function getMatchedStylesWithStylesheet(payload) {
         endColumn: 0,
         ...payload,
     });
-    return getMatchedStyles(payload, payload.getEnvironmentVariablesCallback);
+    return getMatchedStyles(payload, payload.getEnvironmentVariablesCallback, payload.connection);
 }
 export function getMatchedStylesWithBlankRule(payload) {
     return getMatchedStylesWithProperties({ properties: {}, ...payload });
@@ -62,9 +65,23 @@ export function getMatchedStylesWithProperties(payload) {
     const matchedPayload = [ruleMatch(payload.selector ?? 'div', payload.properties, { range, origin, styleSheetId })];
     return getMatchedStylesWithStylesheet({ styleSheetId, origin, matchedPayload, ...payload });
 }
-export function getMatchedStyles(payload = {}, getEnvironmentVariablesCallback = () => ({ environmentVariables: {} })) {
-    clearMockConnectionResponseHandler('CSS.getEnvironmentVariables');
-    setMockConnectionResponseHandler('CSS.getEnvironmentVariables', getEnvironmentVariablesCallback);
+export function getMatchedStyles(payload, getEnvironmentVariablesCallback = () => ({ environmentVariables: {} }), connection = payload.connection) {
+    connection.setHandler('CSS.getEnvironmentVariables', null);
+    connection.setHandler('CSS.getEnvironmentVariables', params => {
+        const result = getEnvironmentVariablesCallback(params);
+        if (result && 'then' in result) {
+            return Promise.resolve(result).then(res => {
+                if ('getError' in res && typeof res.getError === 'function' && res.getError()) {
+                    return { error: { message: res.getError(), code: -32000 } };
+                }
+                return { result: res };
+            });
+        }
+        if (result && 'getError' in result && typeof result.getError === 'function' && result.getError()) {
+            return { error: { message: result.getError(), code: -32000 } };
+        }
+        return { result: result };
+    });
     let node = payload.node;
     if (!node) {
         node = sinon.createStubInstance(SDK.DOMModel.DOMNode);

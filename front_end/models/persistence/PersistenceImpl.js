@@ -4,13 +4,13 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as BreakpointManager from '../breakpoints/breakpoints.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { Automapping } from './Automapping.js';
-let persistenceInstance;
 export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     #workspace;
     #breakpointManager;
@@ -26,13 +26,13 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance(opts = { forceNew: null, workspace: null, breakpointManager: null }) {
         const { forceNew, workspace, breakpointManager } = opts;
-        if (!persistenceInstance || forceNew) {
+        if (!Root.DevToolsContext.globalInstance().has(PersistenceImpl) || forceNew) {
             if (!workspace || !breakpointManager) {
                 throw new Error('Missing arguments for workspace');
             }
-            persistenceInstance = new PersistenceImpl(workspace, breakpointManager);
+            Root.DevToolsContext.globalInstance().set(PersistenceImpl, new PersistenceImpl(workspace, breakpointManager));
         }
-        return persistenceInstance;
+        return Root.DevToolsContext.globalInstance().get(PersistenceImpl);
     }
     addNetworkInterceptor(interceptor) {
         this.#mapping.addNetworkInterceptor(interceptor);

@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
 import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetStylesTool } from './GetStyles.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
-import { ResolveLighthousePathTool } from './ResolveLighthousePath.js';
+import { ResolveDevtoolsNodePathTool } from './ResolveDevtoolsNodePath.js';
 /**
  * Plain object registry containing concrete instantiated tools.
  *
@@ -21,7 +22,8 @@ export const TOOLS = {
     ["listNetworkRequests" /* ToolName.LIST_NETWORK_REQUESTS */]: new ListNetworkRequestsTool(),
     ["getNetworkRequestDetails" /* ToolName.GET_NETWORK_REQUEST_DETAILS */]: new GetNetworkRequestDetailsTool(),
     ["getLighthouseAudits" /* ToolName.GET_LIGHTHOUSE_AUDITS */]: new GetLighthouseAuditsTool(),
-    ["resolveLighthousePath" /* ToolName.RESOLVE_LIGHTHOUSE_PATH */]: new ResolveLighthousePathTool(),
+    ["resolveDevtoolsNodePath" /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */]: new ResolveDevtoolsNodePathTool(),
+    ["getElementAccessibilityDetails" /* ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS */]: new GetElementAccessibilityDetailsTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

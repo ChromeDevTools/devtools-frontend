@@ -4,7 +4,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 import * as SDK from '../core/sdk/sdk.js';
-import { clearMockConnectionResponseHandler, setMockConnectionResponseHandler, } from './MockConnection.js';
 import { FRAME, getEffectivePayload, getMainFrame, MAIN_FRAME_ID, } from './ResourceHelpers.js';
 export { createResource, DOMAIN, FRAME, FRAME_URL, getEffectivePayload, getMainFrame, LOADER_ID, MAIN_FRAME_ID, SECURITY_ORIGIN, } from './ResourceHelpers.js';
 let childFrameId = 0;
@@ -12,19 +11,6 @@ const MAIN_FRAME = {
     ...FRAME,
     id: MAIN_FRAME_ID,
 };
-export function setMockResourceTree(shouldMock) {
-    if (shouldMock) {
-        setMockConnectionResponseHandler('Page.getResourceTree', () => ({
-            frameTree: {
-                frame: MAIN_FRAME,
-                resources: [],
-            },
-        }));
-    }
-    else {
-        clearMockConnectionResponseHandler('Page.getResourceTree');
-    }
-}
 export function mockResourceTree(connection) {
     connection.setSuccessHandler('Page.getResourceTree', () => ({
         frameTree: {

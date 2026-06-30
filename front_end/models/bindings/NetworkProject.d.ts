@@ -3,7 +3,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../workspace/workspace.js';
 export declare class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-    private constructor();
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): NetworkProjectManager;

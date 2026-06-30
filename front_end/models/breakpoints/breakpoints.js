@@ -24,7 +24,6 @@ import * as Formatter from "./../formatter/formatter.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
 import * as Workspace from "./../workspace/workspace.js";
 var _a;
-var breakpointManagerInstance;
 var INITIAL_RESTORE_BREAKPOINT_COUNT = 100;
 var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
   storage;
@@ -81,13 +80,13 @@ var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
     settings: null
   }) {
     const { forceNew, targetManager, workspace, debuggerWorkspaceBinding, settings, restoreInitialBreakpointCount } = opts;
-    if (!breakpointManagerInstance || forceNew) {
+    if (!Root.DevToolsContext.globalInstance().has(_a) || forceNew) {
       if (!targetManager || !workspace || !debuggerWorkspaceBinding || !settings) {
         throw new Error(`Unable to create settings: targetManager, workspace, debuggerWorkspaceBinding, and settings must be provided: ${new Error().stack}`);
       }
-      breakpointManagerInstance = new _a(targetManager, workspace, debuggerWorkspaceBinding, settings, restoreInitialBreakpointCount);
+      Root.DevToolsContext.globalInstance().set(_a, new _a(targetManager, workspace, debuggerWorkspaceBinding, settings, restoreInitialBreakpointCount));
     }
-    return breakpointManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(_a);
   }
   modelAdded(debuggerModel) {
     if (Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {

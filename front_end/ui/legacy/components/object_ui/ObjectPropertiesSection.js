@@ -1385,12 +1385,29 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         }
     }
     static async populate(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
-        const properties = await value.populateChildrenIfNeeded();
+        await ObjectPropertyTreeElement.populateChildrenIfNeeded(value);
+        ObjectPropertyTreeElement.populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
+    }
+    static async populateChildrenIfNeeded(value) {
+        const children = await value.populateChildrenIfNeeded();
+        await ArrayGroupingTreeElement.populateChildrenIfNeeded(children);
+    }
+    static populateImpl(treeElement, value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder) {
+        for (const childNode of ObjectPropertyTreeElement.createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, property => treeElement instanceof ObjectPropertyTreeElement &&
+            !ObjectPropertiesSection.isDisplayableProperty(property, treeElement.property?.property))) {
+            treeElement.appendChild(childNode);
+        }
+    }
+    static *createNodes(value, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
+        const properties = value.children;
+        if (!properties) {
+            return;
+        }
         if (properties.arrayRanges) {
-            await ArrayGroupingTreeElement.populate(treeElement, properties, linkifier);
+            yield* ArrayGroupingTreeElement.createNodes(properties, linkifier, isNotDisplayablePropertyCallback);
         }
         else {
-            ObjectPropertyTreeElement.populateWithProperties(treeElement, properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder);
+            yield* ObjectPropertyTreeElement.createPropertyNodes(properties, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback);
         }
     }
     static *createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }, skipProto, skipGettersAndSetters, linkifier, emptyPlaceholder, isNotDisplayablePropertyCallback) {
@@ -1727,24 +1744,36 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
             this.expand();
         }
     }
-    static async populate(treeNode, children, linkifier) {
+    static *createNodes(children, linkifier, isNotDisplayablePropertyCallback) {
         if (!children.arrayRanges) {
             return;
         }
         if (children.arrayRanges.length === 1) {
-            await ObjectPropertyTreeElement.populate(treeNode, children.arrayRanges[0], false, false, linkifier);
+            yield* ObjectPropertyTreeElement.createNodes(children.arrayRanges[0], false, false, linkifier, null, isNotDisplayablePropertyCallback);
         }
         else {
             for (const child of children.arrayRanges) {
                 if (child.singular) {
-                    await ObjectPropertyTreeElement.populate(treeNode, child, false, false, linkifier);
+                    yield* ObjectPropertyTreeElement.createNodes(child, false, false, linkifier, null, isNotDisplayablePropertyCallback);
                 }
                 else {
-                    treeNode.appendChild(new ArrayGroupingTreeElement(child, linkifier));
+                    yield new ArrayGroupingTreeElement(child, linkifier);
                 }
             }
         }
-        ObjectPropertyTreeElement.populateWithProperties(treeNode, children, false, false, linkifier);
+        yield* ObjectPropertyTreeElement.createPropertyNodes(children, false, false, linkifier, null, isNotDisplayablePropertyCallback);
+    }
+    static async populateChildrenIfNeeded(children) {
+        if (!children.arrayRanges) {
+            return;
+        }
+        if (children.arrayRanges.length === 1) {
+            await ObjectPropertyTreeElement.populateChildrenIfNeeded(children.arrayRanges[0]);
+        }
+        else {
+            await Promise.all(children.arrayRanges.filter(child => child.singular)
+                .map(child => ObjectPropertyTreeElement.populateChildrenIfNeeded(child)));
+        }
     }
     onexpand() {
         this.#child.expanded = true;

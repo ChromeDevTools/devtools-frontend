@@ -314,7 +314,7 @@ function createV2MarkdownRenderer(conversation) {
     const domModel = primaryTarget?.model(SDK.DOMModel.DOMModel);
     const resourceTreeModel = primaryTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const context = conversation?.selectedContext;
-    if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
         const focus = context.getItem();
         options.mainFrameId = focus.parsedTrace.data.Meta.mainFrameId;
         options.lookupTraceEvent = focus.lookupEvent.bind(focus);
@@ -339,7 +339,7 @@ function getMarkdownRenderer(conversation) {
         return createV2MarkdownRenderer(conversation);
     }
     const context = conversation?.selectedContext;
-    if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
         const focus = context.getItem();
         return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
     }
@@ -531,7 +531,7 @@ function createPerformanceTraceContext(focus) {
     if (!focus) {
         return null;
     }
-    return new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(focus);
+    return new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(focus);
 }
 function createStorageContext(item) {
     if (!item) {
@@ -1044,7 +1044,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         this.#selectedPerformanceTrace =
-            Boolean(ev.data) ? new AiAssistanceModel.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
+            Boolean(ev.data) ? new AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext(ev.data) : null;
         this.#updateConversationState(this.#conversation);
     };
     #handleUISourceCodeFlavorChange = (ev) => {
@@ -1235,7 +1235,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (context instanceof AiAssistanceModel.FileContext.FileContext) {
             return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
         }
-        if (context instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+        if (context instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
             const focus = context.getItem();
             if (focus.callTree) {
                 const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
@@ -1446,7 +1446,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         else if (data instanceof AiAssistanceModel.RequestContext.RequestContext) {
             this.#selectedRequest = data;
         }
-        else if (data instanceof AiAssistanceModel.PerformanceAgent.PerformanceTraceContext) {
+        else if (data instanceof AiAssistanceModel.PerformanceTraceContext.PerformanceTraceContext) {
             this.#selectedPerformanceTrace = data;
         }
         else if (data instanceof AiAssistanceModel.AccessibilityContext.AccessibilityContext) {

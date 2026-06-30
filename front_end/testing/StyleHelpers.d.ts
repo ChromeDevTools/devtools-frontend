@@ -1,14 +1,18 @@
 import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
-import { type ProtocolCommandHandler } from './MockConnection.js';
+import type { MockCDPConnection } from './MockCDPConnection.js';
+import type { ProtocolCommandHandler } from './MockConnection.js';
+export declare function mockGetEnvironmentVariables(connection: MockCDPConnection, environmentVariables?: Record<string, string>): void;
 export declare function getMatchedStylesWithStylesheet(payload: {
     cssModel: SDK.CSSModel.CSSModel;
     origin: Protocol.CSS.StyleSheetOrigin;
     styleSheetId: Protocol.DOM.StyleSheetId;
+    connection: MockCDPConnection;
     getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>;
 } & Partial<Protocol.CSS.CSSStyleSheetHeader> & Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles>;
 export declare function getMatchedStylesWithBlankRule(payload: {
     cssModel: SDK.CSSModel.CSSModel;
+    connection: MockCDPConnection;
     selector?: string;
     range?: Protocol.CSS.SourceRange;
     origin?: Protocol.CSS.StyleSheetOrigin;
@@ -27,13 +31,16 @@ export declare function ruleMatch(selectorOrList: string | Protocol.CSS.Selector
 export declare function getMatchedStylesWithProperties(payload: {
     cssModel: SDK.CSSModel.CSSModel;
     properties: Protocol.CSS.CSSProperty[] | Record<string, string>;
+    connection: MockCDPConnection;
     selector?: string;
     range?: Protocol.CSS.SourceRange;
     origin?: Protocol.CSS.StyleSheetOrigin;
     styleSheetId?: Protocol.DOM.StyleSheetId;
     getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>;
 } & Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles>;
-export declare function getMatchedStyles(payload?: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>, getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles>;
+export declare function getMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload> & {
+    connection: MockCDPConnection;
+}, getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>, connection?: MockCDPConnection): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles>;
 /**
  * For some unit tests we need a DOM Node but it has to have a "real" DOM
  * Model and CSS Model attached because code calls those methods and expect

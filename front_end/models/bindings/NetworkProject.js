@@ -2,19 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 const uiSourceCodeToAttributionMap = new WeakMap();
 const projectToTargetMap = new WeakMap();
-let networkProjectManagerInstance;
 export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
-    constructor() {
-        super();
-    }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!networkProjectManagerInstance || forceNew) {
-            networkProjectManagerInstance = new NetworkProjectManager();
+        if (!Root.DevToolsContext.globalInstance().has(NetworkProjectManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(NetworkProjectManager, new NetworkProjectManager());
         }
-        return networkProjectManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(NetworkProjectManager);
     }
 }
 export class NetworkProject {

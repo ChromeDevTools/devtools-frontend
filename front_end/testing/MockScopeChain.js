@@ -479,7 +479,12 @@ export class MockDebuggerBackend {
         const key = this.#getBreakpointKey(url, lineNumber);
         this.#setBreakpointByUrlResponses.set(key, { response: responsePromise, callback: requestCallback, isOneShot: true });
         return async (response) => {
-            responseCallback(response);
+            if ('result' in response || 'error' in response) {
+                responseCallback(response);
+            }
+            else {
+                responseCallback({ result: response });
+            }
             await requestPromise;
         };
     }

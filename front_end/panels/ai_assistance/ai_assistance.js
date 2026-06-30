@@ -2022,7 +2022,7 @@ function getContextRemoveLabel(context) {
   if (context instanceof AiAssistanceModel5.RequestContext.RequestContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextRequest);
   }
-  if (context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel5.PerformanceTraceContext.PerformanceTraceContext) {
     return lockedString3(UIStringsNotTranslate3.removeContextPerfInsight);
   }
   if (context instanceof AiAssistanceModel5.StorageAgent.StorageContext) {
@@ -2171,7 +2171,7 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     }
   })}
                               ></devtools-widget>` : html6`
-                          ${input.context instanceof AiAssistanceModel5.RequestContext.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel5.FileContext.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel5.AccessibilityContext.AccessibilityContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel5.PerformanceAgent.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel5.StorageAgent.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit4.nothing}
+                          ${input.context instanceof AiAssistanceModel5.RequestContext.RequestContext ? PanelUtils.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel5.FileContext.FileContext ? PanelUtils.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel5.AccessibilityContext.AccessibilityContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel5.PerformanceTraceContext.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel5.StorageAgent.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit4.nothing}
                             <span
                               role="button"
                               class="title"
@@ -7960,7 +7960,7 @@ function createV2MarkdownRenderer(conversation) {
   const domModel = primaryTarget?.model(SDK7.DOMModel.DOMModel);
   const resourceTreeModel = primaryTarget?.model(SDK7.ResourceTreeModel.ResourceTreeModel);
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
     options.mainFrameId = focus.parsedTrace.data.Meta.mainFrameId;
     options.lookupTraceEvent = focus.lookupEvent.bind(focus);
@@ -7982,7 +7982,7 @@ function getMarkdownRenderer(conversation) {
     return createV2MarkdownRenderer(conversation);
   }
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
     return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
   }
@@ -8159,7 +8159,7 @@ function createPerformanceTraceContext(focus) {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext(focus);
+  return new AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext(focus);
 }
 function createStorageContext(item) {
   if (!item) {
@@ -8626,7 +8626,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
       return;
     }
-    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext(ev.data) : null;
+    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext(ev.data) : null;
     this.#updateConversationState(this.#conversation);
   };
   #handleUISourceCodeFlavorChange = (ev) => {
@@ -8811,7 +8811,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (context instanceof AiAssistanceModel9.FileContext.FileContext) {
       return Common7.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
@@ -9018,7 +9018,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       this.#selectedElement = data;
     } else if (data instanceof AiAssistanceModel9.RequestContext.RequestContext) {
       this.#selectedRequest = data;
-    } else if (data instanceof AiAssistanceModel9.PerformanceAgent.PerformanceTraceContext) {
+    } else if (data instanceof AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
     } else if (data instanceof AiAssistanceModel9.AccessibilityContext.AccessibilityContext) {
       this.#selectedAccessibility = data;

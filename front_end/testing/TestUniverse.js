@@ -5,6 +5,7 @@
 import * as Common from '../core/common/common.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { DEFAULT_SETTING_REGISTRATIONS_FOR_TEST } from './SettingsHelpers.js';
@@ -30,6 +31,12 @@ export class TestUniverse {
      */
     createTarget(options = {}) {
         return createTarget({ ...options, targetManager: this.targetManager });
+    }
+    get autofillManager() {
+        if (!this.#context.has(AutofillManager.AutofillManager.AutofillManager)) {
+            this.#context.set(AutofillManager.AutofillManager.AutofillManager, new AutofillManager.AutofillManager.AutofillManager(this.targetManager));
+        }
+        return this.#context.get(AutofillManager.AutofillManager.AutofillManager);
     }
     get console() {
         if (!this.#context.has(Common.Console.Console)) {

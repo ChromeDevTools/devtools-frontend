@@ -70,6 +70,29 @@ export class CSSMetadata {
                 propertyValueSets.set(propertyName, extraValues);
             }
         }
+        // and add common keywords for shorthands
+        const commonKeywordSet = new Set(CommonKeywords);
+        for (const propertyName of this.#longhands.keys()) {
+            // skip "all" because it is a CSS-wide keyword
+            // skip shorthands that are defined in generatedPropertyValues because they have their own value sets
+            if (propertyName === 'all' || propertyValueSets.has(propertyName)) {
+                continue;
+            }
+            const longhands = this.#longhands.get(propertyName);
+            if (!longhands) {
+                continue;
+            }
+            const values = new Array();
+            for (const longhand of longhands) {
+                const longhandValues = propertyValueSets.get(longhand);
+                if (!longhandValues) {
+                    continue;
+                }
+                const commonKeywordsInLonghandValues = longhandValues.intersection(commonKeywordSet);
+                values.push(...commonKeywordsInLonghandValues);
+            }
+            propertyValueSets.set(propertyName, new Set(values));
+        }
         // finally add keywords from alias property, common keywords to value sets and convert property #values
         // into arrays since callers expect arrays
         for (const [propertyName, values] of propertyValueSets) {

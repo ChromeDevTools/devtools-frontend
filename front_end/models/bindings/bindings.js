@@ -913,19 +913,16 @@ __export(NetworkProject_exports, {
   NetworkProjectManager: () => NetworkProjectManager
 });
 import * as Common4 from "./../../core/common/common.js";
+import * as Root from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var uiSourceCodeToAttributionMap = /* @__PURE__ */ new WeakMap();
 var projectToTargetMap = /* @__PURE__ */ new WeakMap();
-var networkProjectManagerInstance;
 var NetworkProjectManager = class _NetworkProjectManager extends Common4.ObjectWrapper.ObjectWrapper {
-  constructor() {
-    super();
-  }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!networkProjectManagerInstance || forceNew) {
-      networkProjectManagerInstance = new _NetworkProjectManager();
+    if (!Root.DevToolsContext.globalInstance().has(_NetworkProjectManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_NetworkProjectManager, new _NetworkProjectManager());
     }
-    return networkProjectManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(_NetworkProjectManager);
   }
 };
 var NetworkProject = class _NetworkProject {
@@ -1469,7 +1466,7 @@ __export(CSSWorkspaceBinding_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/bindings/LiveLocation.js
@@ -2094,12 +2091,12 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
       if (!resourceMapping || !targetManager) {
         throw new Error(`Unable to create CSSWorkspaceBinding: resourceMapping and targetManager must be provided: ${new Error().stack}`);
       }
-      Root.DevToolsContext.globalInstance().set(_CSSWorkspaceBinding, new _CSSWorkspaceBinding(resourceMapping, targetManager));
+      Root2.DevToolsContext.globalInstance().set(_CSSWorkspaceBinding, new _CSSWorkspaceBinding(resourceMapping, targetManager));
     }
-    return Root.DevToolsContext.globalInstance().get(_CSSWorkspaceBinding);
+    return Root2.DevToolsContext.globalInstance().get(_CSSWorkspaceBinding);
   }
   static removeInstance() {
-    Root.DevToolsContext.globalInstance().delete(_CSSWorkspaceBinding);
+    Root2.DevToolsContext.globalInstance().delete(_CSSWorkspaceBinding);
   }
   get modelToInfo() {
     return this.#modelToInfo;
@@ -3264,7 +3261,7 @@ __export(DebuggerWorkspaceBinding_exports, {
 });
 import * as Common14 from "./../../core/common/common.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Workspace17 from "./../workspace/workspace.js";
 
@@ -3395,7 +3392,7 @@ __export(ResourceScriptMapping_exports, {
 import * as Common12 from "./../../core/common/common.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Formatter from "./../formatter/formatter.js";
 import * as TextUtils6 from "./../text_utils/text_utils.js";
@@ -3688,7 +3685,7 @@ var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
     void this.update();
   }
   workingCopyCommitted() {
-    if (Root2.Runtime.hostConfig.devToolsLiveEdit?.enabled === false) {
+    if (Root3.Runtime.hostConfig.devToolsLiveEdit?.enabled === false) {
       return;
     }
     if (this.uiSourceCode.project().canSetFileContent()) {
@@ -3955,12 +3952,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
       if (!resourceMapping || !targetManager || !ignoreListManager || !workspace) {
         throw new Error(`Unable to create DebuggerWorkspaceBinding: resourceMapping, targetManager and IgnoreLIstManager must be provided: ${new Error().stack}`);
       }
-      Root3.DevToolsContext.globalInstance().set(_DebuggerWorkspaceBinding, new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace));
+      Root4.DevToolsContext.globalInstance().set(_DebuggerWorkspaceBinding, new _DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace));
     }
-    return Root3.DevToolsContext.globalInstance().get(_DebuggerWorkspaceBinding);
+    return Root4.DevToolsContext.globalInstance().get(_DebuggerWorkspaceBinding);
   }
   static removeInstance() {
-    Root3.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
+    Root4.DevToolsContext.globalInstance().delete(_DebuggerWorkspaceBinding);
   }
   async computeAutoStepRanges(mode, callFrame) {
     function contained(location, range) {

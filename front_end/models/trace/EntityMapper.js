@@ -98,7 +98,7 @@ export class EntityMapper {
         const sourceLocationEvents = [];
         // The events that don't match the source location, but that we should keep mapped to its current entity.
         const unrelatedEvents = [];
-        currentEntityEvents?.forEach(e => {
+        currentEntityEvents?.forEach((e) => {
             const cf = Helpers.Trace.getStackTraceTopCallFrameInEventPayload(e);
             const matchesCallFrame = cf && Helpers.Trace.isMatchingCallFrame(cf, callFrame);
             if (matchesCallFrame) {

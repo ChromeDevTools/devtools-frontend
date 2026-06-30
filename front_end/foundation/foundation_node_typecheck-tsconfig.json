@@ -57,6 +57,9 @@
       "path": "../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../models/autofill_manager/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/bindings/bundle-tsconfig.json"
     },
     {

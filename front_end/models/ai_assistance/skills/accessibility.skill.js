@@ -8,8 +8,9 @@ export const skill = {
   "description": "Accessibility audits and report querying.",
   "allowedTools": [
     "getLighthouseAudits",
-    "resolveLighthousePath",
-    "getStyles"
+    "resolveDevtoolsNodePath",
+    "getStyles",
+    "getElementAccessibilityDetails"
   ],
-  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveLighthousePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties."
+  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveDevtoolsNodePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties.\n* Use getElementAccessibilityDetails to query detailed accessibility properties (ARIA properties, role, name, focus state) for a resolved element backend node ID."
 };

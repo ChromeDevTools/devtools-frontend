@@ -3,6 +3,7 @@ import type * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
+import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { createTarget } from './TargetHelpers.js';
@@ -33,6 +34,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
      * Convenience shortcut for `createTarget({targetManager: testUniverse.targetManager})`
      */
     createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
+    get autofillManager(): AutofillManager.AutofillManager.AutofillManager;
     get console(): Common.Console.Console;
     get context(): Root.DevToolsContext.DevToolsContext;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;

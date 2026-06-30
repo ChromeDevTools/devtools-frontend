@@ -255,10 +255,10 @@ var AccessibilityAgent_exports = {};
 __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
-import * as Host10 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as Host11 from "./../../core/host/host.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiUtils.js
 var AiUtils_exports = {};
@@ -1713,18 +1713,21 @@ const data = {
   }
 };
 
-// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
-var GetLighthouseAudits_exports = {};
-__export(GetLighthouseAudits_exports, {
-  GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
+// gen/front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js
+var GetElementAccessibilityDetails_exports = {};
+__export(GetElementAccessibilityDetails_exports, {
+  GetElementAccessibilityDetailsTool: () => GetElementAccessibilityDetailsTool
 });
 import * as Host5 from "./../../core/host/host.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
 
-// gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
-var AccessibilityContext_exports = {};
-__export(AccessibilityContext_exports, {
-  AccessibilityContext: () => AccessibilityContext
+// gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
+var DOMNodeContext_exports = {};
+__export(DOMNodeContext_exports, {
+  DOMNodeContext: () => DOMNodeContext
 });
+import * as i18n5 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
 var AiAgent_exports = {};
@@ -2377,7 +2380,269 @@ function sanitizeSuggestions(suggestions) {
   return sanitized;
 }
 
+// gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
+var UIStringsNotTranslate = {
+  /**
+   * @description Heading text for context details of DevTools AI Agent.
+   */
+  dataUsed: "Data used"
+};
+var lockedString2 = i18n5.i18n.lockedString;
+var DOMNodeContext = class extends ConversationContext {
+  #node;
+  constructor(node) {
+    super();
+    this.#node = node;
+  }
+  getURL() {
+    const ownerDocument = this.#node.ownerDocument;
+    if (!ownerDocument) {
+      return "detached";
+    }
+    return ownerDocument.documentURL;
+  }
+  getItem() {
+    return this.#node;
+  }
+  getTitle() {
+    throw new Error("Not implemented");
+  }
+  async getSuggestions() {
+    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
+    if (!layoutProps) {
+      return;
+    }
+    if (layoutProps.isFlex) {
+      return [
+        { title: "How can I make flex items wrap?", jslogContext: "flex-wrap" },
+        { title: "How do I distribute flex items evenly?", jslogContext: "flex-distribute" },
+        { title: "What is flexbox?", jslogContext: "flex-what" }
+      ];
+    }
+    if (layoutProps.isSubgrid) {
+      return [
+        { title: "Where is this grid defined?", jslogContext: "subgrid-where" },
+        { title: "How to overwrite parent grid properties?", jslogContext: "subgrid-override" },
+        { title: "How do subgrids work? ", jslogContext: "subgrid-how" }
+      ];
+    }
+    if (layoutProps.isGrid) {
+      return [
+        { title: "How do I align items in a grid?", jslogContext: "grid-align" },
+        { title: "How to add spacing between grid items?", jslogContext: "grid-gap" },
+        { title: "How does grid layout work?", jslogContext: "grid-how" }
+      ];
+    }
+    if (layoutProps.hasScroll) {
+      return [
+        { title: "How do I remove scrollbars for this element?", jslogContext: "scroll-remove" },
+        { title: "How can I style a scrollbar?", jslogContext: "scroll-style" },
+        { title: "Why does this element scroll?", jslogContext: "scroll-why" }
+      ];
+    }
+    if (layoutProps.containerType) {
+      return [
+        { title: "What are container queries?", jslogContext: "container-what" },
+        { title: "How do I use container-type?", jslogContext: "container-how" },
+        { title: "What's the container context for this element?", jslogContext: "container-context" }
+      ];
+    }
+    return;
+  }
+  async getPromptDetails() {
+    return `# Inspected element
+
+${await this.describe()}`;
+  }
+  async getUserFacingDetails() {
+    return [
+      {
+        title: lockedString2(UIStringsNotTranslate.dataUsed),
+        text: await this.describe()
+      }
+    ];
+  }
+  async describe() {
+    const element = this.#node;
+    let output = `* Element's uid is ${element.backendNodeId()}.
+* Its selector is \`${element.simpleSelector()}\``;
+    const childNodes = await element.getChildNodesPromise();
+    if (childNodes) {
+      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.TEXT_NODE);
+      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.ELEMENT_NODE);
+      switch (elementChildNodes.length) {
+        case 0:
+          output += "\n* It doesn't have any child element nodes";
+          break;
+        case 1:
+          output += `
+* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
+          break;
+        default:
+          output += `
+* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+      }
+      switch (textChildNodes.length) {
+        case 0:
+          output += "\n* It doesn't have any child text nodes";
+          break;
+        case 1:
+          output += "\n* It only has 1 child text node";
+          break;
+        default:
+          output += `
+* It has ${textChildNodes.length} child text nodes`;
+      }
+    }
+    if (element.nextSibling) {
+      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
+      output += `
+* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
+    }
+    if (element.previousSibling) {
+      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
+      output += `
+* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
+    }
+    if (element.isInShadowTree()) {
+      output += "\n* It is in a shadow DOM tree.";
+    }
+    const parentNode = element.parentNode;
+    if (parentNode) {
+      const parentChildrenNodes = await parentNode.getChildNodesPromise();
+      output += `
+* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
+      const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? "an element" : "a non element";
+      output += `
+* Its parent is ${elementOrNodeElementNodeText} node`;
+      if (parentNode.isShadowRoot()) {
+        output += "\n* Its parent is a shadow root.";
+      }
+      if (parentChildrenNodes) {
+        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.ELEMENT_NODE);
+        switch (childElementNodes.length) {
+          case 0:
+            break;
+          case 1:
+            output += "\n* Its parent has only 1 child element node";
+            break;
+          default:
+            output += `
+* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
+            break;
+        }
+        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.TEXT_NODE);
+        switch (siblingTextNodes.length) {
+          case 0:
+            break;
+          case 1:
+            output += "\n* Its parent has only 1 child text node";
+            break;
+          default:
+            output += `
+* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map((node) => `\`${node.simpleSelector()}\``).join(", ")}`;
+            break;
+        }
+      }
+    }
+    return output.trim();
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js
+var GetElementAccessibilityDetailsTool = class {
+  name = "getElementAccessibilityDetails";
+  description = "Get detailed accessibility information for an element on the inspected page by its backend node ID.";
+  parameters = {
+    type: 6,
+    description: "Arguments for getting element accessibility details.",
+    nullable: false,
+    properties: {
+      explanation: {
+        type: 1,
+        description: "Reason for requesting accessibility details.",
+        nullable: false
+      },
+      element: {
+        type: 3,
+        description: "The backend node ID of the element.",
+        nullable: false
+      }
+    },
+    required: ["explanation", "element"]
+  };
+  displayInfoFromArgs(params) {
+    return {
+      title: "Reading accessibility details",
+      thought: params.explanation,
+      action: `getElementAccessibilityDetails(${params.element})`
+    };
+  }
+  /**
+   * Handles the request to retrieve accessibility details.
+   *
+   * Resolves the element backend node ID, validates its origin against the locked origin,
+   * requests the AX subtree via AccessibilityModel, and maps the relevant attributes.
+   */
+  async handler(params, context) {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin) {
+      return { error: "Error: Origin lock is not established." };
+    }
+    const target = context.getTarget();
+    if (!target) {
+      return { error: "Error: Inspected target not found." };
+    }
+    const deferredNode = new SDK5.DOMModel.DeferredDOMNode(target, params.element);
+    const resolved = await deferredNode.resolvePromise();
+    if (!resolved) {
+      return { error: "Error: Could not resolve element by ID." };
+    }
+    const nodeContext = new DOMNodeContext(resolved);
+    if (!nodeContext.isOriginAllowed(establishedOrigin)) {
+      return { error: "Error: Node does not belong to the locked origin." };
+    }
+    const axModel = target.model(SDK5.AccessibilityModel.AccessibilityModel);
+    if (!axModel) {
+      return { error: "Error: Accessibility model not found." };
+    }
+    await axModel.requestAndLoadSubTreeToNode(resolved);
+    const axNode = axModel.axNodeForDOMNode(resolved);
+    if (!axNode) {
+      return { error: "Error: AX node details not found." };
+    }
+    const properties = {
+      role: axNode.role()?.value,
+      name: axNode.name()?.value,
+      properties: axNode.properties()?.map((p) => ({ name: p.name, value: p.value?.value })) ?? []
+    };
+    const snapshot = await resolved.takeSnapshot();
+    return {
+      result: JSON.stringify(properties, null, 2),
+      widgets: [{
+        name: "DOM_TREE",
+        data: {
+          root: snapshot,
+          title: i18n7.i18n.lockedString("Element details"),
+          accessibleRevealLabel: i18n7.i18n.lockedString("Reveal element")
+        }
+      }]
+    };
+  }
+};
+
+// gen/front_end/models/ai_assistance/tools/GetLighthouseAudits.js
+var GetLighthouseAudits_exports = {};
+__export(GetLighthouseAudits_exports, {
+  GetLighthouseAuditsTool: () => GetLighthouseAuditsTool
+});
+import * as Host6 from "./../../core/host/host.js";
+
 // gen/front_end/models/ai_assistance/contexts/AccessibilityContext.js
+var AccessibilityContext_exports = {};
+__export(AccessibilityContext_exports, {
+  AccessibilityContext: () => AccessibilityContext
+});
 var AccessibilityContext = class extends ConversationContext {
   #lh;
   #cachedPayload = null;
@@ -2468,8 +2733,8 @@ var GetNetworkRequestDetails_exports = {};
 __export(GetNetworkRequestDetails_exports, {
   GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
 });
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as Host7 from "./../../core/host/host.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Logs2 from "./../logs/logs.js";
 import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
 
@@ -2480,7 +2745,7 @@ __export(RequestContext_exports, {
   getRequestContextOrigin: () => getRequestContextOrigin
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
 var NetworkRequestFormatter_exports = {};
@@ -2833,14 +3098,14 @@ function formatLines(title, lines, maxLength) {
 }
 
 // gen/front_end/models/ai_assistance/contexts/RequestContext.js
-var UIStringsNotTranslate = {
+var UIStringsNotTranslate2 = {
   request: "Request",
   response: "Response",
   requestUrl: "Request URL",
   timing: "Timing",
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString2 = i18n5.i18n.lockedString;
+var lockedString3 = i18n9.i18n.lockedString;
 function getRequestContextOrigin(request) {
   const origin = extractContextOrigin(request.documentURL);
   if (request.isImportedHar()) {
@@ -2883,25 +3148,25 @@ ${await formatter.formatNetworkRequest()}`;
   async getUserFacingDetails() {
     const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
     const requestContextDetail = {
-      title: lockedString2(UIStringsNotTranslate.request),
-      text: lockedString2(UIStringsNotTranslate.requestUrl) + ": " + this.#request.url() + "\n\n" + formatter.formatRequestHeaders()
+      title: lockedString3(UIStringsNotTranslate2.request),
+      text: lockedString3(UIStringsNotTranslate2.requestUrl) + ": " + this.#request.url() + "\n\n" + formatter.formatRequestHeaders()
     };
     const responseBody = await formatter.formatResponseBody();
     const responseBodyString = responseBody ? `
 
 ${responseBody}` : "";
     const responseContextDetail = {
-      title: lockedString2(UIStringsNotTranslate.response),
+      title: lockedString3(UIStringsNotTranslate2.response),
       text: formatter.formatResponseHeaders() + responseBodyString + `
 
 ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
     };
     const timingContextDetail = {
-      title: lockedString2(UIStringsNotTranslate.timing),
+      title: lockedString3(UIStringsNotTranslate2.timing),
       text: formatter.formatNetworkRequestTiming()
     };
     const initiatorChainContextDetail = {
-      title: lockedString2(UIStringsNotTranslate.requestInitiatorChain),
+      title: lockedString3(UIStringsNotTranslate2.requestInitiatorChain),
       text: formatter.formatRequestInitiatorChain()
     };
     return [
@@ -2914,10 +3179,10 @@ ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
 };
 
 // gen/front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js
-var UIStringsNotTranslate2 = {
+var UIStringsNotTranslate3 = {
   gettingNetworkRequestDetails: "Getting network request details"
 };
-var lockedString3 = i18n7.i18n.lockedString;
+var lockedString4 = i18n11.i18n.lockedString;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails";
   description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
@@ -2936,7 +3201,7 @@ var GetNetworkRequestDetailsTool = class {
   };
   displayInfoFromArgs(args) {
     return {
-      title: lockedString3(UIStringsNotTranslate2.gettingNetworkRequestDetails),
+      title: lockedString4(UIStringsNotTranslate3.gettingNetworkRequestDetails),
       action: `getNetworkRequestDetails(${args.id})`
     };
   }
@@ -2983,184 +3248,8 @@ var GetStyles_exports = {};
 __export(GetStyles_exports, {
   GetStylesTool: () => GetStylesTool
 });
-import * as Host7 from "./../../core/host/host.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-
-// gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
-var DOMNodeContext_exports = {};
-__export(DOMNodeContext_exports, {
-  DOMNodeContext: () => DOMNodeContext
-});
-import * as i18n9 from "./../../core/i18n/i18n.js";
-var UIStringsNotTranslate3 = {
-  /**
-   * @description Heading text for context details of DevTools AI Agent.
-   */
-  dataUsed: "Data used"
-};
-var lockedString4 = i18n9.i18n.lockedString;
-var DOMNodeContext = class extends ConversationContext {
-  #node;
-  constructor(node) {
-    super();
-    this.#node = node;
-  }
-  getURL() {
-    const ownerDocument = this.#node.ownerDocument;
-    if (!ownerDocument) {
-      return "detached";
-    }
-    return ownerDocument.documentURL;
-  }
-  getItem() {
-    return this.#node;
-  }
-  getTitle() {
-    throw new Error("Not implemented");
-  }
-  async getSuggestions() {
-    const layoutProps = await this.#node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(this.#node.id);
-    if (!layoutProps) {
-      return;
-    }
-    if (layoutProps.isFlex) {
-      return [
-        { title: "How can I make flex items wrap?", jslogContext: "flex-wrap" },
-        { title: "How do I distribute flex items evenly?", jslogContext: "flex-distribute" },
-        { title: "What is flexbox?", jslogContext: "flex-what" }
-      ];
-    }
-    if (layoutProps.isSubgrid) {
-      return [
-        { title: "Where is this grid defined?", jslogContext: "subgrid-where" },
-        { title: "How to overwrite parent grid properties?", jslogContext: "subgrid-override" },
-        { title: "How do subgrids work? ", jslogContext: "subgrid-how" }
-      ];
-    }
-    if (layoutProps.isGrid) {
-      return [
-        { title: "How do I align items in a grid?", jslogContext: "grid-align" },
-        { title: "How to add spacing between grid items?", jslogContext: "grid-gap" },
-        { title: "How does grid layout work?", jslogContext: "grid-how" }
-      ];
-    }
-    if (layoutProps.hasScroll) {
-      return [
-        { title: "How do I remove scrollbars for this element?", jslogContext: "scroll-remove" },
-        { title: "How can I style a scrollbar?", jslogContext: "scroll-style" },
-        { title: "Why does this element scroll?", jslogContext: "scroll-why" }
-      ];
-    }
-    if (layoutProps.containerType) {
-      return [
-        { title: "What are container queries?", jslogContext: "container-what" },
-        { title: "How do I use container-type?", jslogContext: "container-how" },
-        { title: "What's the container context for this element?", jslogContext: "container-context" }
-      ];
-    }
-    return;
-  }
-  async getPromptDetails() {
-    return `# Inspected element
-
-${await this.describe()}`;
-  }
-  async getUserFacingDetails() {
-    return [
-      {
-        title: lockedString4(UIStringsNotTranslate3.dataUsed),
-        text: await this.describe()
-      }
-    ];
-  }
-  async describe() {
-    const element = this.#node;
-    let output = `* Element's uid is ${element.backendNodeId()}.
-* Its selector is \`${element.simpleSelector()}\``;
-    const childNodes = await element.getChildNodesPromise();
-    if (childNodes) {
-      const textChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.TEXT_NODE);
-      const elementChildNodes = childNodes.filter((childNode) => childNode.nodeType() === Node.ELEMENT_NODE);
-      switch (elementChildNodes.length) {
-        case 0:
-          output += "\n* It doesn't have any child element nodes";
-          break;
-        case 1:
-          output += `
-* It only has 1 child element node: \`${elementChildNodes[0].simpleSelector()}\``;
-          break;
-        default:
-          output += `
-* It has ${elementChildNodes.length} child element nodes: ${elementChildNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
-      }
-      switch (textChildNodes.length) {
-        case 0:
-          output += "\n* It doesn't have any child text nodes";
-          break;
-        case 1:
-          output += "\n* It only has 1 child text node";
-          break;
-        default:
-          output += `
-* It has ${textChildNodes.length} child text nodes`;
-      }
-    }
-    if (element.nextSibling) {
-      const elementOrNodeElementNodeText = element.nextSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.nextSibling.backendNodeId()})` : "a non element";
-      output += `
-* It has a next sibling and it is ${elementOrNodeElementNodeText} node`;
-    }
-    if (element.previousSibling) {
-      const elementOrNodeElementNodeText = element.previousSibling.nodeType() === Node.ELEMENT_NODE ? `an element (uid=${element.previousSibling.backendNodeId()})` : "a non element";
-      output += `
-* It has a previous sibling and it is ${elementOrNodeElementNodeText} node`;
-    }
-    if (element.isInShadowTree()) {
-      output += "\n* It is in a shadow DOM tree.";
-    }
-    const parentNode = element.parentNode;
-    if (parentNode) {
-      const parentChildrenNodes = await parentNode.getChildNodesPromise();
-      output += `
-* Its parent's selector is \`${parentNode.simpleSelector()}\` (uid=${parentNode.backendNodeId()})`;
-      const elementOrNodeElementNodeText = parentNode.nodeType() === Node.ELEMENT_NODE ? "an element" : "a non element";
-      output += `
-* Its parent is ${elementOrNodeElementNodeText} node`;
-      if (parentNode.isShadowRoot()) {
-        output += "\n* Its parent is a shadow root.";
-      }
-      if (parentChildrenNodes) {
-        const childElementNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.ELEMENT_NODE);
-        switch (childElementNodes.length) {
-          case 0:
-            break;
-          case 1:
-            output += "\n* Its parent has only 1 child element node";
-            break;
-          default:
-            output += `
-* Its parent has ${childElementNodes.length} child element nodes: ${childElementNodes.map((node) => `\`${node.simpleSelector()}\` (uid=${node.backendNodeId()})`).join(", ")}`;
-            break;
-        }
-        const siblingTextNodes = parentChildrenNodes.filter((siblingNode) => siblingNode.nodeType() === Node.TEXT_NODE);
-        switch (siblingTextNodes.length) {
-          case 0:
-            break;
-          case 1:
-            output += "\n* Its parent has only 1 child text node";
-            break;
-          default:
-            output += `
-* Its parent has ${siblingTextNodes.length} child text nodes: ${siblingTextNodes.map((node) => `\`${node.simpleSelector()}\``).join(", ")}`;
-            break;
-        }
-      }
-    }
-    return output.trim();
-  }
-};
-
-// gen/front_end/models/ai_assistance/tools/GetStyles.js
+import * as Host8 from "./../../core/host/host.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 var GetStylesTool = class {
   name = "getStyles";
   description = `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
@@ -3218,13 +3307,13 @@ var GetStylesTool = class {
     for (const uid of params.elements) {
       result[uid] = { computed: {}, authored: {} };
       debugLog(`Action to execute: uid=${uid}`);
-      const node = new SDK5.DOMModel.DeferredDOMNode(target, uid);
+      const node = new SDK6.DOMModel.DeferredDOMNode(target, uid);
       const resolved = await node.resolvePromise();
       if (!resolved) {
         return { error: "Error: Could not find the element with uid=" + uid };
       }
       const newContext = new DOMNodeContext(resolved);
-      if (establishedOrigin !== newContext.getOrigin()) {
+      if (!newContext.isOriginAllowed(establishedOrigin)) {
         return { error: "Error: Node does not belong to the current origin." };
       }
       const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);
@@ -3271,13 +3360,13 @@ var ListNetworkRequests_exports = {};
 __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as Host9 from "./../../core/host/host.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Logs3 from "./../logs/logs.js";
 var UIStringsNotTranslate4 = {
   listingNetworkRequests: "Listing network requests"
 };
-var lockedString5 = i18n11.i18n.lockedString;
+var lockedString5 = i18n13.i18n.lockedString;
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests";
   description = "Gives a list of network requests including URL, status code, and duration.";
@@ -3318,8 +3407,8 @@ var ListNetworkRequestsTool = class {
         id: request.requestId(),
         url: request.url(),
         statusCode: request.statusCode,
-        duration: i18n11.TimeUtilities.secondsToString(request.duration),
-        transferSize: i18n11.ByteUtilities.formatBytesToKb(request.transferSize)
+        duration: i18n13.TimeUtilities.secondsToString(request.duration),
+        transferSize: i18n13.ByteUtilities.formatBytesToKb(request.transferSize)
       });
       requestsToShow.push(request);
     }
@@ -3342,19 +3431,19 @@ var ListNetworkRequestsTool = class {
   }
 };
 
-// gen/front_end/models/ai_assistance/tools/ResolveLighthousePath.js
-var ResolveLighthousePath_exports = {};
-__export(ResolveLighthousePath_exports, {
-  ResolveLighthousePathTool: () => ResolveLighthousePathTool
+// gen/front_end/models/ai_assistance/tools/ResolveDevtoolsNodePath.js
+var ResolveDevtoolsNodePath_exports = {};
+__export(ResolveDevtoolsNodePath_exports, {
+  ResolveDevtoolsNodePathTool: () => ResolveDevtoolsNodePathTool
 });
-import * as Host9 from "./../../core/host/host.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-var ResolveLighthousePathTool = class {
-  name = "resolveLighthousePath";
-  description = "Resolves a Lighthouse path to a backend node ID.";
+import * as Host10 from "./../../core/host/host.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
+var ResolveDevtoolsNodePathTool = class {
+  name = "resolveDevtoolsNodePath";
+  description = "Resolves a DevTools node path to a backend node ID.";
   parameters = {
     type: 6,
-    description: "Arguments for resolving a Lighthouse path to a backend node ID.",
+    description: "Arguments for resolving a DevTools node path to a backend node ID.",
     nullable: false,
     properties: {
       explanation: {
@@ -3364,7 +3453,7 @@ var ResolveLighthousePathTool = class {
       },
       path: {
         type: 1,
-        description: "Lighthouse path string.",
+        description: "DevTools node path string.",
         nullable: false
       }
     },
@@ -3374,7 +3463,7 @@ var ResolveLighthousePathTool = class {
     return {
       title: "Resolving element path",
       thought: params.explanation,
-      action: `resolveLighthousePath('${params.path}')`
+      action: `resolveDevtoolsNodePath('${params.path}')`
     };
   }
   /**
@@ -3390,7 +3479,7 @@ var ResolveLighthousePathTool = class {
       return { error: "Error: Origin lock is not established." };
     }
     const target = context.getTarget();
-    const domModel = target?.model(SDK6.DOMModel.DOMModel);
+    const domModel = target?.model(SDK7.DOMModel.DOMModel);
     if (!domModel) {
       return { error: "Error: Inspected target not found." };
     }
@@ -3398,7 +3487,6 @@ var ResolveLighthousePathTool = class {
     try {
       nodeId = await domModel.pushNodeByPathToFrontend(params.path);
     } catch {
-      return { error: "Error: Could not find node by path." };
     }
     if (!nodeId) {
       return { error: "Error: Could not find node by path." };
@@ -3440,9 +3528,13 @@ var TOOLS = {
     /* ToolName.GET_LIGHTHOUSE_AUDITS */
   ]: new GetLighthouseAuditsTool(),
   [
-    "resolveLighthousePath"
-    /* ToolName.RESOLVE_LIGHTHOUSE_PATH */
-  ]: new ResolveLighthousePathTool()
+    "resolveDevtoolsNodePath"
+    /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */
+  ]: new ResolveDevtoolsNodePathTool(),
+  [
+    "getElementAccessibilityDetails"
+    /* ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS */
+  ]: new GetElementAccessibilityDetailsTool()
 };
 var ToolRegistry = class {
   static get(name) {
@@ -3497,7 +3589,7 @@ If the user asks a question that requires an investigation of a problem, use thi
 `;
 var AccessibilityAgent = class extends AiAgent {
   preamble = preamble;
-  clientFeature = Host10.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  clientFeature = Host11.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   #lighthouseRecording;
   #execJs;
   #changes;
@@ -3526,8 +3618,8 @@ var AccessibilityAgent = class extends AiAgent {
     };
   }
   async preRun() {
-    const target = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target?.model(SDK7.DOMModel.DOMModel);
+    const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
+    const domModel = target?.model(SDK8.DOMModel.DOMModel);
     if (domModel && !domModel.existingDocument()) {
       try {
         await domModel.requestDocument();
@@ -3542,7 +3634,7 @@ var AccessibilityAgent = class extends AiAgent {
    * so that the AI has a valid $0 to start with.
    */
   #getDocumentBodyNode() {
-    const document2 = SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel)?.existingDocument();
+    const document2 = SDK8.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK8.DOMModel.DOMModel)?.existingDocument();
     return document2?.body ?? document2 ?? null;
   }
   async *handleContextDetails(lhr) {
@@ -3558,11 +3650,11 @@ var AccessibilityAgent = class extends AiAgent {
     }
   }
   async #resolvePathToNode(path) {
-    const target = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return null;
     }
-    const domModel = target.model(SDK7.DOMModel.DOMModel);
+    const domModel = target.model(SDK8.DOMModel.DOMModel);
     if (!domModel) {
       return null;
     }
@@ -3604,7 +3696,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n13.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          title: i18n15.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -3664,7 +3756,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n13.i18n.lockedString("Running accessibility audits"),
+          title: i18n15.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -3807,7 +3899,7 @@ var AccessibilityAgent = class extends AiAgent {
         if (!node) {
           return { error: `Could not find the element with path: ${params.path}` };
         }
-        const accessibilityModel = node.domModel().target().model(SDK7.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = node.domModel().target().model(SDK8.AccessibilityModel.AccessibilityModel);
         if (!accessibilityModel) {
           return { error: "Accessibility model not found." };
         }
@@ -3838,8 +3930,8 @@ var AccessibilityAgent = class extends AiAgent {
           name: "DOM_TREE",
           data: {
             root: snapshot,
-            title: i18n13.i18n.lockedString("Element details"),
-            accessibleRevealLabel: i18n13.i18n.lockedString("Reveal element")
+            title: i18n15.i18n.lockedString("Element details"),
+            accessibleRevealLabel: i18n15.i18n.lockedString("Reveal element")
           }
         });
         return {
@@ -3871,8 +3963,8 @@ __export(ContextSelectionAgent_exports, {
 import * as Common10 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as Root8 from "./../../core/root/root.js";
-import * as Logs5 from "./../logs/logs.js";
+import * as Root7 from "./../../core/root/root.js";
+import * as Logs4 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace from "./../workspace/workspace.js";
 
@@ -3989,57 +4081,15 @@ ${new FileFormatter(this.#file).formatFile()}`;
   }
 };
 
-// gen/front_end/models/ai_assistance/StorageItem.js
-var StorageItem_exports = {};
-__export(StorageItem_exports, {
-  CookieItem: () => CookieItem,
-  DOMStorageItem: () => DOMStorageItem,
-  StorageItem: () => StorageItem
-});
-var StorageItem = class {
-  primaryTargetOrigin;
-  origin;
-  constructor(primaryTargetOrigin, origin) {
-    this.primaryTargetOrigin = primaryTargetOrigin;
-    this.origin = origin;
-  }
-};
-var DOMStorageItem = class extends StorageItem {
-  storageKey;
-  type;
-  key;
-  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
-    super(primaryTargetOrigin, origin);
-    this.storageKey = storageKey;
-    this.type = type;
-    this.key = key;
-  }
-};
-var CookieItem = class extends StorageItem {
-  name;
-  constructor(primaryTargetOrigin, origin, name) {
-    super(primaryTargetOrigin, origin);
-    this.name = name;
-  }
-};
-
-// gen/front_end/models/ai_assistance/agents/PerformanceAgent.js
-var PerformanceAgent_exports = {};
-__export(PerformanceAgent_exports, {
-  PerformanceAgent: () => PerformanceAgent,
-  PerformanceTraceContext: () => PerformanceTraceContext,
-  getLabelName: () => getLabelName
+// gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
+var PerformanceTraceContext_exports = {};
+__export(PerformanceTraceContext_exports, {
+  PerformanceTraceContext: () => PerformanceTraceContext
 });
 import * as Common8 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
-import * as Annotations3 from "./../annotations/annotations.js";
-import * as Logs4 from "./../logs/logs.js";
 import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
-import * as TextUtils4 from "./../text_utils/text_utils.js";
 import * as Trace6 from "./../trace/trace.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/PerformanceInsightFormatter.js
@@ -6409,167 +6459,7 @@ function getPerformanceAgentFocusFromModel(model) {
   return AgentFocus.fromParsedTrace(parsedTrace);
 }
 
-// gen/front_end/models/ai_assistance/agents/PerformanceAgent.js
-var UIStringsNotTranslated = {
-  /**
-   * @description Shown when the agent is investigating network activity
-   */
-  networkActivitySummary: "Investigating network activity",
-  /**
-   * @description Shown when the agent is investigating main thread activity
-   */
-  mainThreadActivity: "Investigating main thread activity"
-};
-var lockedString6 = i18n15.i18n.lockedString;
-var GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
-- CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
-which should be used to highlight elements and network requests (respectively).
-
-- CRITICAL: Each time an element or a network request is mentioned, you MUST ALSO call the functions
-  addElementAnnotation (for an element) or addNeworkRequestAnnotation (for a network request).
-- CRITICAL: Don't add more than one annotation per element or network request.
-- These functions should be called as soon as you identify the entity that needs to be highlighted.
-- In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
-- The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
-`;
-var GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS = `
-When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying
-the id and an annotation reason.
-When referring to a network request for which you know the eventKey for, always call the function
-addNetworkRequestAnnotation, specifying the id and an annotation reason.
-- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
-- CRITICAL: Each time you describe an element or network request as being problematic you MUST call the function
-addElementAnnotation and specify an annotation reason.
-- CRITICAL: Each time you describe a network request as being problematic you MUST call the function
-addNetworkRequestAnnotation and specify an annotation reason.
-- CRITICAL: If you spot ANY of the following problems:
-  - Render-blocking elements/network requests.
-  - Significant long task (especially on main thread).
-  - Layout shifts (e.g. due to unsized images).
-  ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
-  elements described in your conclusion.
-`;
-var preamble2 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
-
-Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
-
-You will be provided a summary of a trace: some performance metrics; the most critical network requests; a bottom-up call graph summary; and a brief overview of available insights. Each insight has information about potential performance issues with the page.
-
-Always call getInsightDetails to gather more data on an insight or the actual LCP element BEFORE mentioning any specific details about them.
-
-You have functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
-
-You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
-
-The 3 main performance metrics are:
-- LCP: "Largest Contentful Paint"
-- INP: "Interaction to Next Paint"
-- CLS: "Cumulative Layout Shift"
-
-Trace events referenced in the information given to you will be marked with an \`eventKey\`. For example: \`LCP element: <img src="..."> (eventKey: r-123, ts: 123456)\`
-You can use this key with \`getEventByKey\` to get more information about that trace event. For example: \`getEventByKey('r-123')\`
-You can also use this key with \`selectEventByKey\` to show the user a specific event
-
-## Step-by-step instructions for debugging performance issues
-
-Note: if the user asks a specific question about the trace (such as "What is my LCP?", or "How many requests were render-blocking?"), directly answer their question using available data. However, if the user asks a general question like "What performance issues exist?" or requests an investigation, you MUST NOT give a generic answer. You must treat it as a full performance investigation (Step 1) and call main thread functions to find specific issues. Generic advice like "reduce long tasks" without specific details is UNACCEPTABLE.
-
-
-### Step 1: Determine a performance problem to investigate
-
-- If the trace summary indicates that the main performance metrics (LCP, INP, CLS) are all within good thresholds, acknowledge this to the user. In this case, let the user know that they can try recording a trace with mobile emulation and throttling options and show them how.
-- With help from the user, determine what performance problem to focus on.
-- If the user is not specific about what problem to investigate, help them by doing a investigation yourself focus on performance improvements for better LCP, INP and CLS. Present to the user options with 1-sentence summaries. Mention what performance metrics each option impacts. Call as many functions and confirm the data thoroughly: never present an option without being certain it is a real performance issue.
-- Focus on identifying the problem in Step 1 and save solution suggestions for Step 2.
-- Once a performance problem has been identified for investigation, move on to step 2.
-
-#### Response Structure
-
-- Rank the options from most impactful to least impactful, and present them to the user in that order.
-- Limit the number of performance problem options presented to the user to a maximum of 2.
-
-### Step 2: Suggest solutions
-
-- Suggest solutions to remedy the identified performance problem. Be as specific as possible, using data from the trace via the provided functions to back up everything you say. You should prefer specific solutions, but absent any specific solution you may suggest general solutions (such as from an insight's documentation links).
-- If you are unsure, be honest and present information that can be helpful for further investigation.
-- A good first step to discover solutions is to consider the insights, but you should also validate all potential advice by analyzing the trace until you are confident about the root cause of a performance issue.
-
-#### Response Structure
-
-- If available, point out the root cause(s) of the problem.
-  - Example: "**Root Cause**: The page is slow because of [reason]."
-  - Example: "**Root Causes**:"
-    - [Reason 1]
-    - [Reason 2]
-- if applicable, list actionable solution suggestion(s) in order of impact:
-  - Example: "**Suggestion**: [Suggestion 1]
-  - Example: "**Suggestions**:"
-    - [Suggestion 1]
-    - [Suggestion 2]
-
-## Guidelines
-
-- You must call \`getMainThreadTrackSummaryByLabel\` (with the relevant label) to investigate the main thread activity before giving the user a reply or suggesting solutions for any performance problem or insight. This applies even if you already have some information about that period from \`getInsightDetails\` or the initial trace summary.
-- Dig Deeper: Before replying, you should really dig into the main thread activity to uncover what the performance issues actually are. Do not solely rely on the information from the initial data; ensure you identify the root cause before suggesting solutions.
-- No Shortcutting: Even if the initial facts contain specific line numbers or function names, you are not allowed to reply using only that information. You MUST call \`getMainThreadTrackSummaryByLabel\` to inspect its context before describing it to the user.
-- Look for Aggregated Cost: Performance issues are not always caused by a single "Long Task". Many small, frequent events (like unthrottled \`mousemove\` or \`scroll\` handlers) can add up to significant main thread blockage. Use the Bottom-Up summary in \`getMainThreadTrackSummaryByLabel\` to identify functions with high total time, even if they are not associated with a Long Task.
-- Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
-- Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
-- Base your analysis and advice solely on the data retrieved through the provided functions. Always use the provided functions to gather sufficient data when needed.
-- Use absolute microsecond timestamps for any function that requires a \`min\` and \`max\` bounds. These timestamps can be found in the trace summary or within the details of an insight.
-- Available labels for \`getMainThreadTrackSummaryByLabel\` include:
-  - \`trace-bounds\` (entire trace)
-  - \`nav-to-lcp\` (navigation to LCP)
-  - \`lcp-ttfb\` (LCP TTFB phase)
-  - \`lcp-render-delay\` (LCP render delay phase)
-  - Insight names: \`LCPBreakdown\`, \`INPBreakdown\`, \`CLSCulprits\`, \`ThirdParties\`, \`DocumentLatency\`, \`DOMSize\`, \`DuplicatedJavaScript\`, \`FontDisplay\`, \`ForcedReflow\`, \`ImageDelivery\`, \`LCPDiscovery\`, \`LegacyJavaScript\`, \`NetworkDependencyTree\`, \`RenderBlocking\`, \`SlowCSSSelector\`, \`Viewport\`, \`ModernHTTP\`, \`Cache\`, \`CharacterSet\`
-  - Navigation IDs: \`NAVIGATION_0\`, \`NAVIGATION_1\`, etc.
-- Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
-- Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
-- If you see a generic task like "Task", "Evaluate script" or "(anonymous)" in the main thread activity, try to look at its children to see what actual functions are executed and refer to those. When referencing the main thread activity, be as specific as you can. Ensure you identify to the user relevant functions and which script they were defined in. Avoid referencing "Task", "Evaluate script" and "(anonymous)" nodes if possible and instead focus on their children.
-- Structure your response using markdown headings and bullet points for improved readability.
-- Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
-
-## Strict Constraints
-
-Adhere to the following critical requirements:
-
-- Never show bounds to the user.
-- Never show eventKey to the user.
-- Ensure your responses only use ms for time units.
-- Ensure numbers for time units are rounded to the nearest whole number.
-- Ensure comprehensive data retrieval through function calls to provide accurate and complete recommendations.
-- If the user asks a specific question about web performance that doesn't have anything to do with the trace, don't call any functions and be succinct in your answer.
-- Before suggesting changing the format of an image, consider what format it is already in. For example, if the mime type is image/webp, do not suggest to the user that the image is converted to WebP, as the image is already in that format.
-- Do not mention the functions you call to gather information about the trace (e.g., \`getEventByKey\`, \`getMainThreadTrackSummaryByLabel\`) in your output. These are internal implementation details that should be hidden from the user.
-- Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
-- If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
-- Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
-- Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
-`;
-var extraPreambleWhenNotExternal = `Additional notes:
-
-When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
-- When referring to an event that is a long task: [Long task](#r-123)
-- When referring to a URL for which you know the eventKey of: [https://www.example.com](#s-1827)
-- Never show the eventKey (like "eventKey: s-1852") in your running text. When using markdown links, the URL must be only the hash (e.g., \`#s-1852\`), never \`eventKey: s-1852\`.
-
-When asking the user to make a choice between options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
-`;
-var freshTracePreamble = `Additional notes:
-
-When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
-- For example, if nodeId is 23: [LCP element](#node-23)
-- This link will reveal the element in the Elements panel
-- Never mention node or nodeId when referring to the element, and especially not in the link text.
-- When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
-`;
-var ScorePriority;
-(function(ScorePriority2) {
-  ScorePriority2[ScorePriority2["REQUIRED"] = 3] = "REQUIRED";
-  ScorePriority2[ScorePriority2["CRITICAL"] = 2] = "CRITICAL";
-  ScorePriority2[ScorePriority2["DEFAULT"] = 1] = "DEFAULT";
-})(ScorePriority || (ScorePriority = {}));
+// gen/front_end/models/ai_assistance/contexts/PerformanceTraceContext.js
 var PerformanceTraceContext = class _PerformanceTraceContext extends ConversationContext {
   static fromParsedTrace(parsedTrace) {
     return new _PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
@@ -6584,6 +6474,27 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
   constructor(focus) {
     super();
     this.#focus = focus;
+  }
+  /**
+   * Returns a PerformanceTraceFormatter configured to resolve function
+   * code from source maps using the active page target.
+   *
+   * Note: Function code resolution from source maps is only supported for fresh
+   * recordings (recorded in the current session on the active target page). For
+   * imported traces, it returns null to prevent mismatched source resolution.
+   */
+  createFormatter() {
+    const focus = this.#focus;
+    const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
+    const formatter = new PerformanceTraceFormatter(focus);
+    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
+    formatter.resolveFunctionCode = async (url, line, column) => {
+      if (!target || !isFresh) {
+        return null;
+      }
+      return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
+    };
+    return formatter;
   }
   getURL() {
     const url = this.#focus.parsedTrace.data.Meta.mainFrameURL;
@@ -6685,1143 +6596,122 @@ var PerformanceTraceContext = class _PerformanceTraceContext extends Conversatio
     }
     return suggestions;
   }
-};
-var MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
-var STATIC_LABEL_NAMES = {
-  "nav-to-lcp": "navigation to LCP",
-  "lcp-ttfb": "LCP to TTFB",
-  "lcp-render-delay": "LCP render delay",
-  "trace-bounds": "the entire trace",
-  NO_NAVIGATION: "the period before the first navigation"
-};
-function getLabelName(label, focus) {
-  if (STATIC_LABEL_NAMES[label]) {
-    return STATIC_LABEL_NAMES[label];
-  }
-  const { parsedTrace } = focus;
-  const insightSetById = parsedTrace.insights?.get(label);
-  if (insightSetById) {
-    return `navigation to ${insightSetById.url.href}`;
-  }
-  for (const insightSet of parsedTrace.insights?.values() ?? []) {
-    const model = insightSet.model[label];
-    if (model) {
-      return `${model.title} insight`;
-    }
-  }
-  return label;
-}
-var PerformanceAgent = class extends AiAgent {
-  preamble = preamble2;
-  #formatter = null;
-  #lastEventForEnhancedQuery;
-  #lastInsightForEnhancedQuery;
   /**
-   * Cache of all function calls made by the agent. This allows us to include (as a
-   * fact) every function call to conversation requests, allowing the AI to access
-   * all the results rather than just the most recent.
+   * Returns a markdown-formatted payload containing the trace data facts
+   * (summary, critical requests, activities, third-party code, and longest tasks)
+   * to be included directly in the LLM's prompt.
    *
-   * TODO(b/442392194): I'm not certain this is needed. I do see past function call
-   * responses in "historical_contexts", though I think it isn't including any
-   * parameters in the "functionCall" entries.
+   * Invariant: The content returned here must align with the user-facing details
+   * returned by `getUserFacingDetails()` to ensure complete data transparency.
+   */
+  async getPromptDetails() {
+    const formatter = this.createFormatter();
+    const details = [];
+    const traceSummary = formatter.formatTraceSummary();
+    if (traceSummary) {
+      details.push(`Trace summary:
+${traceSummary}`);
+    }
+    const criticalRequests = await formatter.formatCriticalRequests();
+    if (criticalRequests) {
+      details.push(criticalRequests);
+    }
+    const mainThreadBottomUp = await formatter.formatMainThreadBottomUpSummary();
+    if (mainThreadBottomUp) {
+      details.push(mainThreadBottomUp);
+    }
+    const thirdPartySummary = await formatter.formatThirdPartySummary();
+    if (thirdPartySummary) {
+      details.push(thirdPartySummary);
+    }
+    const longestTasks = await formatter.formatLongestTasks();
+    if (longestTasks) {
+      details.push(longestTasks);
+    }
+    return details.length > 0 ? details.join("\n\n") : null;
+  }
+  /**
+   * Returns structured trace context details to be displayed to the user in the UI
+   * (under the "Analyzing data" disclosure accordion).
    *
-   * The record key is the result of a function's displayInfoFromArgs.
+   * Invariant: The details shown here must correspond exactly to the data sent to
+   * the LLM prompt via `getPromptDetails()`.
    */
-  #functionCallCacheForFocus = /* @__PURE__ */ new Map();
-  #notExternalExtraPreambleFact = {
-    text: extraPreambleWhenNotExternal,
-    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-  };
-  #freshTraceExtraPreambleFact = {
-    text: freshTracePreamble,
-    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-  };
-  #greenDevAnnotationsFact = {
-    text: GREEN_DEV_ANNOTATIONS_INSTRUCTIONS,
-    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-  };
-  #greenDevFreshTraceAnnotationsFact = {
-    text: GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS,
-    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-  };
-  #networkDataDescriptionFact = {
-    text: PerformanceTraceFormatter.networkDataFormatDescription,
-    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-  };
-  #callFrameDataDescriptionFact = {
-    text: PerformanceTraceFormatter.callFrameDataFormatDescription,
-    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-  };
-  #traceFacts = [];
-  /**
-   * These facts do not contain page data, they are static instructions to the
-   * LLM, so we don't need to add them to the disclosure.
-   */
-  #factsToNeverDisclose = /* @__PURE__ */ new Set([
-    this.#callFrameDataDescriptionFact,
-    this.#networkDataDescriptionFact,
-    this.#freshTraceExtraPreambleFact,
-    this.#notExternalExtraPreambleFact,
-    this.#greenDevAnnotationsFact,
-    this.#greenDevFreshTraceAnnotationsFact
-  ]);
-  /**
-   * When we enhance the query with additional information, we need to know it
-   * so we can show it in the disclosure UI. This is cleared and then populated
-   * on each prompt.
-   */
-  #additionalSelectionsForDisclosure = [];
-  get clientFeature() {
-    return Host11.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
-  }
-  get userTier() {
-    return Boolean(Root6.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
-  }
-  get options() {
-    const temperature = Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root6.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
-    return {
-      temperature,
-      modelId
-    };
-  }
-  async *handleContextDetails(context) {
-    if (!context) {
-      return;
-    }
-    const contextDisclosure = [];
-    for (const fact of this.currentFacts()) {
-      if (this.#factsToNeverDisclose.has(fact)) {
-        continue;
-      }
-      contextDisclosure.push(fact.text);
-    }
-    contextDisclosure.push(...this.#additionalSelectionsForDisclosure);
-    const focus = context.getItem();
-    const widgets = this.#getWidgetsForFocus(focus);
-    yield {
-      type: "context",
-      details: [
-        {
-          title: "Trace details",
-          text: contextDisclosure.join("\n")
-        }
-      ],
-      widgets
-    };
-  }
-  // Show different widgets with the first reply depending on the initial context:
-  // Specific task (call tree) -> timeline summary & bottom up tree widgets
-  // LCP Insight -> LCP breakdown & CWV widgets
-  // Whole Trace or insight other than LCP -> CWV widget
-  #getWidgetsForFocus(focus) {
-    const widgets = [];
-    if (focus.callTree) {
-      const event = focus.callTree.selectedNode?.event;
-      if (event) {
-        const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
-        const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-        widgets.push({
-          name: "TIMELINE_RANGE_SUMMARY",
-          data: {
-            bounds,
-            parsedTrace: focus.parsedTrace,
-            track: "main"
-          }
-        });
-        widgets.push({
-          name: "BOTTOM_UP_TREE",
-          data: {
-            bounds,
-            parsedTrace: focus.parsedTrace
-          }
-        });
-      }
-      return widgets;
-    }
-    if (focus.insight) {
-      const insightKey = focus.insight.insightKey;
-      if (Trace6.Insights.Common.isInsightKey(insightKey)) {
-        widgets.push({
-          name: "PERF_INSIGHT",
-          data: {
-            insight: insightKey,
-            insightData: focus.insight
-          }
-        });
-      }
-    }
-    const primaryInsightSet = focus.primaryInsightSet;
-    if (primaryInsightSet) {
-      widgets.push({
-        name: "CORE_VITALS",
-        data: {
-          parsedTrace: focus.parsedTrace,
-          insightSetKey: primaryInsightSet.id
-        }
+  async getUserFacingDetails() {
+    const formatter = this.createFormatter();
+    const details = [];
+    const traceSummary = formatter.formatTraceSummary();
+    if (traceSummary) {
+      details.push({
+        title: "Trace summary",
+        text: traceSummary
       });
     }
-    return widgets;
-  }
-  #callTreeContextSet = /* @__PURE__ */ new WeakSet();
-  #isFunctionResponseTooLarge(response) {
-    return response.length > MAX_FUNCTION_RESULT_BYTE_LENGTH;
-  }
-  /**
-   * Sometimes the model will output URLs as plaintext; or a markdown link
-   * where the link is the actual URL. This function transforms such output
-   * to an eventKey link.
-   *
-   * A simple way to see when this gets utilized is:
-   *   1. go to paulirish.com, record a trace
-   *   2. say "What performance issues exist with my page?"
-   *   3. then say "images"
-   */
-  #parseForKnownUrls(response) {
-    const focus = this.context?.getItem();
-    if (!focus) {
-      return response;
-    }
-    const urlRegex = /(\[(.*?)\][ \t]*\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
-    return response.replace(urlRegex, (match, markdownLink, linkText, linkDest, standaloneUrlText) => {
-      if (markdownLink) {
-        if (linkDest.startsWith("#")) {
-          return match;
-        }
-        const eventKeyMatch = linkDest.match(/eventKey:\s*([^\s,)]+)/);
-        if (eventKeyMatch) {
-          const eventKey2 = eventKeyMatch[1];
-          return `[${linkText}](#${eventKey2})`;
-        }
-        const event = focus.lookupEvent(linkDest);
-        if (event) {
-          return `[${linkText}](#${linkDest})`;
-        }
-      }
-      const urlText = linkDest ?? standaloneUrlText;
-      if (!urlText) {
-        return match;
-      }
-      const request = focus.parsedTrace.data.NetworkRequests.byTime.find((request2) => request2.args.data.url === urlText);
-      if (!request) {
-        return match;
-      }
-      const eventKey = focus.eventsSerializer.keyForEvent(request);
-      if (!eventKey) {
-        return match;
-      }
-      return `[${urlText}](#${eventKey})`;
-    });
-  }
-  #parseMarkdown(response) {
-    const FIVE_BACKTICKS = "`````";
-    if (response.startsWith(FIVE_BACKTICKS) && response.endsWith(FIVE_BACKTICKS)) {
-      return response.slice(FIVE_BACKTICKS.length, -FIVE_BACKTICKS.length);
-    }
-    return response;
-  }
-  parseTextResponse(response) {
-    const parsedResponse = super.parseTextResponse(response);
-    parsedResponse.answer = this.#parseForKnownUrls(parsedResponse.answer);
-    parsedResponse.answer = this.#parseMarkdown(parsedResponse.answer);
-    return parsedResponse;
-  }
-  async enhanceQuery(query, context) {
-    if (!context) {
-      this.clearDeclaredFunctions();
-      return query;
-    }
-    this.clearDeclaredFunctions();
-    this.#declareFunctions(context);
-    const focus = context.getItem();
-    const selected = [];
-    if (focus.event) {
-      const includeEventInfo = focus.event !== this.#lastEventForEnhancedQuery;
-      this.#lastEventForEnhancedQuery = focus.event;
-      if (includeEventInfo) {
-        selected.push(`User selected an event ${this.#formatter?.serializeEvent(focus.event)}.
-
-`);
-      }
-    }
-    if (focus.callTree) {
-      let contextString = "";
-      if (!this.#callTreeContextSet.has(focus.callTree)) {
-        contextString = focus.callTree.serialize();
-        this.#callTreeContextSet.add(focus.callTree);
-      }
-      if (contextString) {
-        selected.push(`User selected the following call tree:
-
-${contextString}
-
-`);
-      }
-    }
-    if (focus.insight) {
-      const includeInsightInfo = focus.insight !== this.#lastInsightForEnhancedQuery;
-      this.#lastInsightForEnhancedQuery = focus.insight;
-      if (includeInsightInfo) {
-        selected.push(`User selected the ${focus.insight.insightKey} insight.
-
-`);
-      }
-    }
-    if (!selected.length) {
-      this.#additionalSelectionsForDisclosure = [];
-      return query;
-    }
-    selected.push(`# User query
-
-${query}`);
-    this.#additionalSelectionsForDisclosure = [...selected];
-    return selected.join("");
-  }
-  async *run(initialQuery, options) {
-    const focus = options.selected?.getItem();
-    this.clearFacts();
-    if (options.selected && focus) {
-      await this.#addFacts(options.selected);
-    }
-    yield* super.run(initialQuery, options);
-  }
-  /**
-   * Clears performance-agent-specific caches and state.
-   * This is called when the conversation needs to be reset (e.g. on navigation)
-   * to prevent stale formatters, trace facts, or selection contexts from leaking
-   * into subsequent runs.
-   */
-  clearCache() {
-    super.clearCache();
-    this.#functionCallCacheForFocus.clear();
-    this.#formatter = null;
-    this.#traceFacts = [];
-    this.#lastEventForEnhancedQuery = void 0;
-    this.#lastInsightForEnhancedQuery = void 0;
-    this.#additionalSelectionsForDisclosure = [];
-    this.#callTreeContextSet = /* @__PURE__ */ new WeakSet();
-  }
-  #createFactForTraceSummary() {
-    if (!this.#formatter) {
-      return;
-    }
-    const text = this.#formatter.formatTraceSummary();
-    if (!text) {
-      return;
-    }
-    this.#traceFacts.push({ text: `Trace summary:
-${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
-  }
-  async #createFactForCriticalRequests() {
-    if (!this.#formatter) {
-      return;
-    }
-    const text = await this.#formatter.formatCriticalRequests();
-    if (!text) {
-      return;
-    }
-    this.#traceFacts.push({
-      text,
-      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-    });
-  }
-  async #createFactForMainThreadBottomUpSummary() {
-    if (!this.#formatter) {
-      return;
-    }
-    const formatter = this.#formatter;
-    const text = await formatter.formatMainThreadBottomUpSummary();
-    if (!text) {
-      return;
-    }
-    this.#traceFacts.push({
-      text,
-      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-    });
-  }
-  async #createFactForThirdPartySummary() {
-    if (!this.#formatter) {
-      return;
-    }
-    const text = await this.#formatter.formatThirdPartySummary();
-    if (!text) {
-      return;
-    }
-    this.#traceFacts.push({
-      text,
-      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-    });
-  }
-  async #createFactForLongestTasks() {
-    if (!this.#formatter) {
-      return;
-    }
-    const text = await this.#formatter.formatLongestTasks();
-    if (!text) {
-      return;
-    }
-    this.#traceFacts.push({
-      text,
-      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
-    });
-  }
-  async #addFacts(context) {
-    const focus = context.getItem();
-    this.addFact(this.#notExternalExtraPreambleFact);
-    const annotationsEnabled = Annotations3.AnnotationRepository.annotationsEnabled();
-    if (annotationsEnabled) {
-      this.addFact(this.#greenDevAnnotationsFact);
-    }
-    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
-    if (isFresh) {
-      this.addFact(this.#freshTraceExtraPreambleFact);
-      if (annotationsEnabled) {
-        this.addFact(this.#greenDevFreshTraceAnnotationsFact);
-      }
-    }
-    this.addFact(this.#callFrameDataDescriptionFact);
-    this.addFact(this.#networkDataDescriptionFact);
-    if (!this.#traceFacts.length) {
-      const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
-      if (!target) {
-        throw new Error("missing target");
-      }
-      this.#formatter = new PerformanceTraceFormatter(focus);
-      this.#formatter.resolveFunctionCode = async (url, line, column) => {
-        if (!target || !isFresh) {
-          return null;
-        }
-        return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
-      };
-      this.#createFactForTraceSummary();
-      await this.#createFactForCriticalRequests();
-      await this.#createFactForMainThreadBottomUpSummary();
-      await this.#createFactForThirdPartySummary();
-      await this.#createFactForLongestTasks();
-    }
-    for (const fact of this.#traceFacts) {
-      this.addFact(fact);
-    }
-    const cachedFunctionCalls = this.#functionCallCacheForFocus.get(focus);
-    if (cachedFunctionCalls) {
-      for (const fact of Object.values(cachedFunctionCalls)) {
-        this.addFact(fact);
-      }
-    }
-  }
-  #cacheFunctionResult(focus, key, result) {
-    const fact = {
-      text: `This is the result of calling ${key}:
-${result}`,
-      metadata: { source: key, score: ScorePriority.DEFAULT }
-    };
-    const cache = this.#functionCallCacheForFocus.get(focus) ?? {};
-    cache[key] = fact;
-    this.#functionCallCacheForFocus.set(focus, cache);
-  }
-  async #handleMainThreadTrackSummary(bounds, focus, functionName, cacheKey) {
-    const formatter = this.#formatter;
-    if (!formatter) {
-      throw new Error("missing formatter");
-    }
-    const summary = await formatter.formatMainThreadTrackSummary(bounds);
-    if (this.#isFunctionResponseTooLarge(summary)) {
-      return {
-        error: `${functionName} response is too large. Try investigating using other functions, or a more narrow bounds`
-      };
-    }
-    this.#cacheFunctionResult(focus, cacheKey, summary);
-    const widgets = [];
-    widgets.push({
-      name: "TIMELINE_RANGE_SUMMARY",
-      data: {
-        parsedTrace: focus.parsedTrace,
-        bounds,
-        track: "main"
-      }
-    });
-    widgets.push({
-      name: "BOTTOM_UP_TREE",
-      data: {
-        bounds,
-        parsedTrace: focus.parsedTrace
-      }
-    });
-    return {
-      result: { summary },
-      widgets
-    };
-  }
-  #declareFunctions(context) {
-    const focus = context.getItem();
-    const { parsedTrace } = focus;
-    const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
-    this.declareFunction("getInsightDetails", {
-      description: "Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          insightSetId: {
-            type: 1,
-            description: 'The id for the specific insight set. Only use the ids given in the "Available insight sets" list.',
-            nullable: false
-          },
-          insightName: {
-            type: 1,
-            description: 'The name of the insight. Only use the insight names given in the "Available insights" list.',
-            nullable: false
-          }
-        },
-        required: ["insightSetId", "insightName"]
-      },
-      displayInfoFromArgs: (params) => {
-        return {
-          title: lockedString6(`Investigating insight ${params.insightName}`),
-          action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
-        };
-      },
-      handler: async (params) => {
-        debugLog("Function call: getInsightDetails", params);
-        const insightSet = parsedTrace.insights?.get(params.insightSetId);
-        if (!insightSet) {
-          const valid = [...parsedTrace.insights?.values() ?? []].map((insightSet2) => `id: ${insightSet2.id}, url: ${insightSet2.url}, bounds: ${this.#formatter?.serializeBounds(insightSet2.bounds)}`).join("; ");
-          return { error: `Invalid insight set id. Valid insight set ids are: ${valid}` };
-        }
-        const insight = insightSet.model[params.insightName];
-        if (!insight) {
-          const valid = Object.keys(insightSet.model).join(", ");
-          return { error: `No insight available. Valid insight names are: ${valid}` };
-        }
-        const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
-        const widgets = [];
-        if (Trace6.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(insight) || Trace6.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
-          const lcpMetric = Trace6.Insights.Common.getLCP(insightSet);
-          const lcpEvent = lcpMetric?.event;
-          if (lcpEvent && Trace6.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
-            const nodeId = lcpEvent.args.data?.nodeId;
-            if (nodeId) {
-              const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
-              const domModel = target?.model(SDK8.DOMModel.DOMModel);
-              if (domModel) {
-                const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
-                const node = nodeMap?.get(nodeId);
-                if (node) {
-                  const lcpSyntheticRequest = insight.lcpRequest;
-                  const [snapshot, imageContent] = await Promise.all([
-                    node.takeSnapshot(),
-                    lcpSyntheticRequest ? this.#getNetworkRequestImageData(lcpSyntheticRequest) : Promise.resolve(void 0)
-                  ]);
-                  let networkRequest;
-                  if (lcpSyntheticRequest) {
-                    networkRequest = {
-                      url: lcpSyntheticRequest.args.data.url,
-                      size: lcpSyntheticRequest.args.data.decodedBodyLength ?? lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
-                      resourceType: lcpSyntheticRequest.args.data.resourceType,
-                      mimeType: lcpSyntheticRequest.args.data.mimeType ?? "",
-                      imageContent
-                    };
-                  }
-                  widgets.push({
-                    name: "DOM_TREE",
-                    data: {
-                      root: snapshot,
-                      networkRequest,
-                      title: lockedString6("LCP element"),
-                      accessibleRevealLabel: lockedString6("Reveal LCP element")
-                    }
-                  });
-                }
-              }
-            }
-          }
-        }
-        const insightKey = params.insightName;
-        if (Trace6.Insights.Common.isInsightKey(insightKey)) {
-          widgets.push({
-            name: "PERF_INSIGHT",
-            data: {
-              insight: insightKey,
-              insightData: insight
-            }
-          });
-        }
-        const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
-        this.#cacheFunctionResult(focus, key, details);
-        return { result: { details }, widgets };
-      }
-    });
-    this.declareFunction("getEventByKey", {
-      description: "Returns detailed information about a specific event. Use the detail returned to validate performance issues, but do not tell the user about irrelevant raw data from a trace event.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          eventKey: {
-            type: 1,
-            description: "The key for the event.",
-            nullable: false
-          }
-        },
-        required: ["eventKey"]
-      },
-      displayInfoFromArgs: (params) => {
-        return { title: lockedString6("Looking at trace event"), action: `getEventByKey('${params.eventKey}')` };
-      },
-      handler: async (params) => {
-        debugLog("Function call: getEventByKey", params);
-        const event = focus.lookupEvent(params.eventKey);
-        if (!event) {
-          return { error: "Invalid eventKey" };
-        }
-        const details = formatEventForAI(event);
-        const key = `getEventByKey('${params.eventKey}')`;
-        this.#cacheFunctionResult(focus, key, details);
-        return {
-          result: { details },
-          widgets: [{
-            name: "TIMELINE_EVENT_SUMMARY",
-            data: {
-              event,
-              parsedTrace
-            }
-          }]
-        };
-      }
-    });
-    const createBounds = (min, max) => {
-      const { min: bMin, max: bMax } = parsedTrace.data.Meta.traceBounds;
-      const clampedMin = Math.max(min ?? bMin, bMin);
-      const clampedMax = Math.min(max ?? bMax, bMax);
-      if (clampedMin > clampedMax) {
-        return null;
-      }
-      return Trace6.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin, clampedMax);
-    };
-    this.declareFunction("getMainThreadTrackSummaryByLabel", {
-      description: "Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          label: {
-            type: 1,
-            description: "The label of the period to investigate (e.g., 'LCPBreakdown', 'CLSCulprits', 'nav-to-lcp').",
-            nullable: false
-          }
-        },
-        required: ["label"]
-      },
-      displayInfoFromArgs: (args) => {
-        const labelName = getLabelName(args.label, focus);
-        return {
-          title: lockedString6(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
-          action: `getMainThreadTrackSummaryByLabel('${args.label}')`
-        };
-      },
-      handler: async (args) => {
-        debugLog("Function call: getMainThreadTrackSummaryByLabel");
-        const bounds = this.#getBoundsForLabel(args.label, focus);
-        if (!bounds) {
-          return { error: `Invalid label: ${args.label}` };
-        }
-        const key = `getMainThreadTrackSummaryByLabel('${args.label}')`;
-        return await this.#handleMainThreadTrackSummary(bounds, focus, "getMainThreadTrackSummaryByLabel", key);
-      }
-    });
-    this.declareFunction("getNetworkTrackSummary", {
-      description: "Returns a summary of the network for the given bounds.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          min: {
-            type: 3,
-            description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
-            nullable: true
-          },
-          max: {
-            type: 3,
-            description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
-            nullable: true
-          }
-        },
-        required: []
-      },
-      displayInfoFromArgs: (args) => {
-        const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
-        const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
-        return {
-          title: lockedString6(UIStringsNotTranslated.networkActivitySummary),
-          action: `getNetworkTrackSummary({min: ${min}, max: ${max}})`
-        };
-      },
-      handler: async (args) => {
-        debugLog("Function call: getNetworkTrackSummary");
-        if (!this.#formatter) {
-          throw new Error("missing formatter");
-        }
-        const bounds = createBounds(args.min, args.max);
-        if (!bounds) {
-          return { error: "invalid bounds" };
-        }
-        const summary = this.#formatter.formatNetworkTrackSummary(bounds);
-        if (this.#isFunctionResponseTooLarge(summary)) {
-          return {
-            error: "getNetworkTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
-          };
-        }
-        const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
-        this.#cacheFunctionResult(focus, key, summary);
-        return {
-          result: { summary },
-          widgets: [{
-            name: "NETWORK_TRACK",
-            data: {
-              parsedTrace,
-              bounds
-            }
-          }]
-        };
-      }
-    });
-    this.declareFunction("getDetailedCallTree", {
-      description: "Returns a detailed call tree for the given main thread event.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          eventKey: {
-            type: 1,
-            description: "The key for the event.",
-            nullable: false
-          }
-        },
-        required: ["eventKey"]
-      },
-      displayInfoFromArgs: (args) => {
-        return { title: lockedString6("Looking at call tree"), action: `getDetailedCallTree('${args.eventKey}')` };
-      },
-      handler: async (args) => {
-        debugLog("Function call: getDetailedCallTree");
-        if (!this.#formatter) {
-          throw new Error("missing formatter");
-        }
-        const event = focus.lookupEvent(args.eventKey);
-        if (!event) {
-          return { error: "Invalid eventKey" };
-        }
-        const tree = AICallTree.fromEvent(event, parsedTrace);
-        if (!tree) {
-          return { error: "No call tree found" };
-        }
-        const formatter = this.#formatter;
-        const callTree = await formatter.formatCallTree(tree);
-        const key = `getDetailedCallTree(${args.eventKey})`;
-        this.#cacheFunctionResult(focus, key, callTree);
-        const { startTime, endTime } = Trace6.Helpers.Timing.eventTimingsMicroSeconds(event);
-        const bounds = Trace6.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
-        const widgets = [
-          {
-            name: "BOTTOM_UP_TREE",
-            data: {
-              bounds,
-              parsedTrace
-            }
-          },
-          {
-            name: "TIMELINE_RANGE_SUMMARY",
-            data: {
-              bounds,
-              parsedTrace,
-              track: "main"
-            }
-          }
-        ];
-        return { result: { callTree }, widgets };
-      }
-    });
-    if (Annotations3.AnnotationRepository.annotationsEnabled()) {
-      this.declareFunction("addElementAnnotation", {
-        description: "Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.",
-        parameters: {
-          type: 6,
-          description: "",
-          nullable: false,
-          properties: {
-            elementId: {
-              type: 1,
-              description: "The UID of the element to annotate.",
-              nullable: false
-            },
-            annotationMessage: {
-              type: 1,
-              description: "The message the annotation should show to the user.",
-              nullable: false
-            }
-          },
-          required: ["elementId", "annotationMessage"]
-        },
-        handler: async (params) => {
-          return await this.addElementAnnotation(params.elementId, params.annotationMessage);
-        }
-      });
-      this.declareFunction("addNetworkRequestAnnotation", {
-        description: "Adds a visual annotation in the Network panel, attached to the request with the specific UID provided. Use it to highlight requests in the Network panel and provide contextual suggestions to the user related to their queries.",
-        parameters: {
-          type: 6,
-          description: "",
-          nullable: false,
-          properties: {
-            eventKey: {
-              type: 1,
-              description: "The event key of the network request to annotate.",
-              nullable: false
-            },
-            annotationMessage: {
-              type: 1,
-              description: "The message the annotation should show to the user.",
-              nullable: false
-            }
-          },
-          required: ["eventKey", "annotationMessage"]
-        },
-        handler: async (params) => {
-          return await this.addNetworkRequestAnnotation(params.eventKey, params.annotationMessage);
-        }
+    const criticalRequests = await formatter.formatCriticalRequests();
+    if (criticalRequests) {
+      details.push({
+        title: "Critical requests",
+        text: criticalRequests
       });
     }
-    this.declareFunction("getFunctionCode", {
-      description: "Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          scriptUrl: {
-            type: 1,
-            description: "The url of the function.",
-            nullable: false
-          },
-          line: {
-            type: 3,
-            description: "The line number where the function is defined.",
-            nullable: false
-          },
-          column: {
-            type: 3,
-            description: "The column number where the function is defined.",
-            nullable: false
-          }
-        },
-        required: ["scriptUrl", "line", "column"]
-      },
-      displayInfoFromArgs: (args) => {
-        return {
-          title: lockedString6("Looking up function code"),
-          action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
-        };
-      },
-      handler: async (args) => {
-        debugLog("Function call: getFunctionCode");
-        if (!isFresh) {
-          return {
-            error: "Cannot use this tool on an imported file."
-          };
-        }
-        if (args.line === void 0) {
-          return { error: "Missing arg: line" };
-        }
-        if (args.column === void 0) {
-          return { error: "Missing arg: column" };
-        }
-        if (!this.#formatter) {
-          throw new Error("missing formatter");
-        }
-        const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
-        if (!target) {
-          throw new Error("missing target");
-        }
-        const url = args.scriptUrl;
-        const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
-        if (!code) {
-          return { error: "Could not find code" };
-        }
-        const result = this.#formatter.formatFunctionCode(code);
-        const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
-        this.#cacheFunctionResult(focus, key, result);
-        return {
-          result: { result },
-          widgets: [{
-            name: "SOURCE_CODE",
-            data: {
-              url: args.scriptUrl,
-              line: args.line,
-              column: args.column,
-              code: code.code
-            }
-          }]
-        };
-      }
-    });
-    const isTraceApp = Root6.Runtime.Runtime.isTraceApp();
-    this.declareFunction("getResourceContent", {
-      description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          url: {
-            type: 1,
-            description: "The url for the resource.",
-            nullable: false
-          }
-        },
-        required: ["url"]
-      },
-      displayInfoFromArgs: (args) => {
-        return { title: lockedString6("Looking at resource content"), action: `getResourceContent('${args.url}')` };
-      },
-      handler: async (args) => {
-        debugLog("Function call: getResourceContent");
-        if (!isFresh) {
-          return { error: "Cannot use this tool on an imported file." };
-        }
-        const url = args.url;
-        const allowedOrigin = context.getOrigin();
-        if (!canResourceContentsBeReadForTrace(url, allowedOrigin)) {
-          return { error: "Resource not found" };
-        }
-        let content;
-        const script = parsedTrace.data.Scripts.scripts.find((script2) => script2.url === url);
-        if (script?.content !== void 0) {
-          content = script.content;
-        } else if (isFresh || isTraceApp) {
-          const resource = SDK8.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
-          if (!resource) {
-            return { error: "Resource not found" };
-          }
-          const data = await resource.requestContentData();
-          if ("error" in data) {
-            return { error: `Could not get resource content: ${data.error}` };
-          }
-          content = data.text;
-        } else {
-          return { error: "Resource not found" };
-        }
-        const key = `getResourceContent(${args.url})`;
-        this.#cacheFunctionResult(focus, key, content);
-        return {
-          result: { content },
-          widgets: [{
-            name: "SOURCE_CODE",
-            data: {
-              url: args.url,
-              code: content
-            }
-          }]
-        };
-      }
-    });
-    this.declareFunction("selectEventByKey", {
-      description: "Selects the event in the flamechart for the user. If the user asks to show them something, it's likely a good idea to call this function.",
-      parameters: {
-        type: 6,
-        description: "",
-        nullable: false,
-        properties: {
-          eventKey: {
-            type: 1,
-            description: "The key for the event.",
-            nullable: false
-          }
-        },
-        required: ["eventKey"]
-      },
-      displayInfoFromArgs: (params) => {
-        return { title: lockedString6("Selecting event"), action: `selectEventByKey('${params.eventKey}')` };
-      },
-      handler: async (params) => {
-        debugLog("Function call: selectEventByKey", params);
-        const event = focus.lookupEvent(params.eventKey);
-        if (!event) {
-          return { error: "Invalid eventKey" };
-        }
-        const revealable = new SDK8.TraceObject.RevealableEvent(event);
-        await Common8.Revealer.reveal(revealable);
-        return {
-          result: { success: true },
-          widgets: [{
-            name: "TIMELINE_EVENT_SUMMARY",
-            data: {
-              event,
-              parsedTrace
-            }
-          }]
-        };
-      }
-    });
-  }
-  #getBoundsForLabel(label, focus) {
-    const { parsedTrace } = focus;
-    const insightSet = focus.primaryInsightSet;
-    if (label === "nav-to-lcp") {
-      if (insightSet) {
-        const lcp = Trace6.Insights.Common.getLCP(insightSet);
-        if (lcp) {
-          return Trace6.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min, lcp.event.ts);
-        }
-      }
-      return null;
+    const mainThreadBottomUp = await formatter.formatMainThreadBottomUpSummary();
+    if (mainThreadBottomUp) {
+      details.push({
+        title: "Main thread activities",
+        text: mainThreadBottomUp
+      });
     }
-    if (label === "lcp-ttfb") {
-      if (insightSet) {
-        const subparts = insightSet.model.LCPBreakdown?.subparts;
-        if (subparts?.ttfb) {
-          return subparts.ttfb;
-        }
-      }
-      return null;
+    const thirdPartySummary = await formatter.formatThirdPartySummary();
+    if (thirdPartySummary) {
+      details.push({
+        title: "Third party summary",
+        text: thirdPartySummary
+      });
     }
-    if (label === "lcp-render-delay") {
-      if (insightSet) {
-        const subparts = insightSet.model.LCPBreakdown?.subparts;
-        if (subparts?.renderDelay) {
-          return subparts.renderDelay;
-        }
-      }
-      return null;
+    const longestTasks = await formatter.formatLongestTasks();
+    if (longestTasks) {
+      details.push({
+        title: "Longest tasks",
+        text: longestTasks
+      });
     }
-    if (label === "trace-bounds") {
-      return parsedTrace.data.Meta.traceBounds;
-    }
-    const insightSetById = parsedTrace.insights?.get(label);
-    if (insightSetById) {
-      return insightSetById.bounds;
-    }
-    if (insightSet) {
-      const model = insightSet.model[label];
-      if (model) {
-        return Trace6.Insights.Common.insightBounds(model, insightSet.bounds);
-      }
-    }
-    for (const is of parsedTrace.insights?.values() ?? []) {
-      const model = is.model[label];
-      if (model) {
-        return Trace6.Insights.Common.insightBounds(model, is.bounds);
-      }
-    }
-    return null;
-  }
-  async addElementAnnotation(elementId, annotationMessage) {
-    if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
-      console.warn("Received agent request to add element annotation with annotations disabled");
-      return { error: "Annotations are not currently enabled" };
-    }
-    console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
-    Annotations3.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
-    return { result: { success: true } };
-  }
-  async addNetworkRequestAnnotation(eventKey, annotationMessage) {
-    if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
-      console.warn("Received agent request to add network request annotation with annotations disabled");
-      return { error: "Annotations are not currently enabled" };
-    }
-    console.log(`AI AGENT EVENT: Performance Agent adding annotation for network request ${eventKey}: '${annotationMessage}'`);
-    let requestId = void 0;
-    const focus = this.context?.getItem();
-    if (focus) {
-      const event = focus.lookupEvent(eventKey);
-      if (event && Trace6.Types.Events.isSyntheticNetworkRequest(event)) {
-        requestId = event.args.data.requestId;
-      }
-    }
-    if (!requestId) {
-      console.warn("Unable to lookup requestId for request with event key", eventKey);
-    }
-    Annotations3.AnnotationRepository.instance().addNetworkRequestAnnotation(annotationMessage, requestId);
-    return { result: { success: true } };
-  }
-  async #getNetworkRequestImageData(lcpRequest) {
-    const target = SDK8.TargetManager.TargetManager.instance().primaryPageTarget();
-    const networkManager = target?.model(SDK8.NetworkManager.NetworkManager);
-    if (!target || !networkManager) {
-      return void 0;
-    }
-    const networkLog = Logs4.NetworkLog.NetworkLog.instance();
-    const requestId = lcpRequest.args.data.requestId;
-    const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
-    if (sdkRequest?.contentType().isImage()) {
-      const contentData = await sdkRequest.requestContentData();
-      if (!TextUtils4.ContentData.ContentData.isError(contentData)) {
-        return contentData;
-      }
-    }
-    return void 0;
+    return details.length > 0 ? details : null;
   }
 };
-function formatEventForAI(event) {
-  if (Trace6.Types.Events.isSyntheticNetworkRequest(event)) {
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: {
-          ...event.args.data,
-          responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null
-        }
-      }
-    });
+
+// gen/front_end/models/ai_assistance/StorageItem.js
+var StorageItem_exports = {};
+__export(StorageItem_exports, {
+  CookieItem: () => CookieItem,
+  DOMStorageItem: () => DOMStorageItem,
+  StorageItem: () => StorageItem
+});
+var StorageItem = class {
+  primaryTargetOrigin;
+  origin;
+  constructor(primaryTargetOrigin, origin) {
+    this.primaryTargetOrigin = primaryTargetOrigin;
+    this.origin = origin;
   }
-  if (Trace6.Types.Events.isResourceReceiveResponse(event)) {
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: {
-          ...event.args.data,
-          headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : void 0
-        }
-      }
-    });
+};
+var DOMStorageItem = class extends StorageItem {
+  storageKey;
+  type;
+  key;
+  constructor(primaryTargetOrigin, origin, storageKey, type, key) {
+    super(primaryTargetOrigin, origin);
+    this.storageKey = storageKey;
+    this.type = type;
+    this.key = key;
   }
-  if (Trace6.Types.Events.isRundownScriptSource(event)) {
-    const safeData = {
-      isolate: event.args.data.isolate,
-      scriptId: event.args.data.scriptId,
-      length: event.args.data.length
-    };
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: safeData
-      }
-    });
+};
+var CookieItem = class extends StorageItem {
+  name;
+  constructor(primaryTargetOrigin, origin, name) {
+    super(primaryTargetOrigin, origin);
+    this.name = name;
   }
-  if (Trace6.Types.Events.isRundownScriptSourceLarge(event)) {
-    const safeData = {
-      isolate: event.args.data.isolate,
-      scriptId: event.args.data.scriptId,
-      splitIndex: event.args.data.splitIndex,
-      splitCount: event.args.data.splitCount
-    };
-    return JSON.stringify({
-      ...event,
-      args: {
-        ...event.args,
-        data: safeData
-      }
-    });
-  }
-  return JSON.stringify(event);
-}
+};
 
 // gen/front_end/models/ai_assistance/agents/StorageAgent.js
 var StorageAgent_exports = {};
@@ -7835,10 +6725,10 @@ __export(StorageAgent_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Root7 from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-var lockedString7 = i18n17.i18n.lockedString;
-var preamble3 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
+import * as Root6 from "./../../core/root/root.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
+var lockedString6 = i18n17.i18n.lockedString;
+var preamble2 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
  You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
 
@@ -7876,7 +6766,7 @@ var preamble3 = `You are a Senior Software Engineer specializing in state audit 
  -   **CRITICAL**: You are a storage debugging assistant. NEVER answer unrelated topics (legal, financial, race, sexuality, medical, religion, politics). If asked, respond: "Sorry, I can't answer that. I'm best at questions about debugging web pages."
  `;
 function isSamePrimaryPageOrigin(context) {
-  const primaryPageTarget = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
+  const primaryPageTarget = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
   return isSamePageOrigin(primaryPageTarget, context);
 }
 function isSamePageOrigin(target, context) {
@@ -7953,14 +6843,14 @@ var StorageContext = class extends ConversationContext {
 };
 var MAX_NUM_CHAR_LENGTH = 1e4;
 var StorageAgent = class _StorageAgent extends AiAgent {
-  preamble = preamble3;
+  preamble = preamble2;
   clientFeature = Host12.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
   get userTier() {
-    return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root6.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root7.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root7.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root6.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root6.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
@@ -7979,7 +6869,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString7("Listing page origins"),
+          title: lockedString6("Listing page origins"),
           action: "listPageOrigins()"
         };
       },
@@ -7988,7 +6878,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
           return { error: "No origin available or not allowed." };
         }
         const origins = /* @__PURE__ */ new Set();
-        for (const frame of SDK9.ResourceTreeModel.ResourceTreeModel.frames()) {
+        for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames()) {
           if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
             continue;
           }
@@ -8028,7 +6918,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString7("Reading storage keys"),
+          title: lockedString6("Reading storage keys"),
           action: `listStorageKeys('${args.type}', '${args.origin}')`
         };
       },
@@ -8088,7 +6978,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString7("Reading storage values"),
+          title: lockedString6("Reading storage values"),
           action: `getStorageValues('${args.type}', ${JSON.stringify(args.keys)}, '${args.origin}'${args.storageKey ? `, '${args.storageKey}'` : ""})`
         };
       },
@@ -8104,13 +6994,13 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         if (options?.approved !== true) {
           const keyString = args.keys.map((k) => `\`${k}\``).join(", ");
           const uniqueTargetOrigins = Array.from(new Set(storages.map((storage) => {
-            const parsed = SDK9.StorageKeyManager.parseStorageKey(storage.storageKey || "");
+            const parsed = SDK10.StorageKeyManager.parseStorageKey(storage.storageKey || "");
             return parsed.origin;
           })));
           const targetsDesc = uniqueTargetOrigins.join(", ");
           return {
             requiresApproval: true,
-            description: lockedString7(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
+            description: lockedString6(`The AI wants to access the value(s) of ${args.type} keys ${keyString} on ${targetsDesc}.`)
           };
         }
         const itemsResult = [];
@@ -8154,7 +7044,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString7("Reading cookies"),
+          title: lockedString6("Reading cookies"),
           action: `listCookies('${args.origin}')`
         };
       },
@@ -8196,7 +7086,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString7("Reading cookie values and metadata"),
+          title: lockedString6("Reading cookie values and metadata"),
           action: `getCookieValues(${JSON.stringify(args.cookieNames)}, '${args.origin}')`
         };
       },
@@ -8213,7 +7103,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         if (options?.approved !== true) {
           return {
             requiresApproval: true,
-            description: lockedString7(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map((name) => `\`${name}\``).join(", ")} on ${args.origin}.`)
+            description: lockedString6(`The AI wants to access the value(s) and metadata of cookie(s) ${args.cookieNames.map((name) => `\`${name}\``).join(", ")} on ${args.origin}.`)
           };
         }
         const cookies = await getCookiesForDomain(target, args.origin);
@@ -8252,12 +7142,12 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString7("Retrieving storage breakdown"),
+          title: lockedString6("Retrieving storage breakdown"),
           action: "getStorageBreakdown()"
         };
       },
       handler: async () => {
-        const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
         if (!target || !this.context || !isSamePageOrigin(target, this.context)) {
           return { error: "No origin available or not allowed." };
         }
@@ -8333,7 +7223,7 @@ ${query}`;
   }
 };
 async function getCookiesForDomain(target, origin) {
-  const cookieModel = target.model(SDK9.CookieModel.CookieModel);
+  const cookieModel = target.model(SDK10.CookieModel.CookieModel);
   if (!cookieModel) {
     return null;
   }
@@ -8344,7 +7234,7 @@ async function getCookiesForDomain(target, origin) {
   return allCookies.filter((cookie) => !cookie.httpOnly());
 }
 function findFrameForOrigin(context, origin) {
-  for (const frame of SDK9.ResourceTreeModel.ResourceTreeModel.frames()) {
+  for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames()) {
     if (frame.securityOrigin === origin) {
       const target = frame.resourceTreeModel().target();
       if (isSamePageOrigin(target.outermostTarget(), context)) {
@@ -8357,7 +7247,7 @@ function findFrameForOrigin(context, origin) {
 function resolveDOMStorages(context, type, origin, storageKey) {
   const resolvedStorages = [];
   const isLocalStorage = type === "localStorage";
-  const domStorageModels = SDK9.TargetManager.TargetManager.instance().models(SDK9.DOMStorageModel.DOMStorageModel);
+  const domStorageModels = SDK10.TargetManager.TargetManager.instance().models(SDK10.DOMStorageModel.DOMStorageModel);
   for (const domStorageModel of domStorageModels) {
     if (!isSamePageOrigin(domStorageModel.target().outermostTarget(), context)) {
       continue;
@@ -8372,14 +7262,14 @@ function resolveDOMStorages(context, type, origin, storageKey) {
       }
       if (storageKey) {
         if (storageKey === currentStorageKey) {
-          const parsedKey2 = SDK9.StorageKeyManager.parseStorageKey(currentStorageKey);
+          const parsedKey2 = SDK10.StorageKeyManager.parseStorageKey(currentStorageKey);
           if (parsedKey2.origin === origin) {
             resolvedStorages.push(storage);
           }
         }
         continue;
       }
-      const parsedKey = SDK9.StorageKeyManager.parseStorageKey(currentStorageKey);
+      const parsedKey = SDK10.StorageKeyManager.parseStorageKey(currentStorageKey);
       if (parsedKey.origin === origin) {
         resolvedStorages.push(storage);
       }
@@ -8389,8 +7279,8 @@ function resolveDOMStorages(context, type, origin, storageKey) {
 }
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString8 = i18n19.i18n.lockedString;
-var preamble4 = `
+var lockedString7 = i18n19.i18n.lockedString;
+var preamble3 = `
 You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
 Your role is to understand the user's query, identify the appropriate specialized agent to handle it, and select the relevant context from the page to assist that agent.
@@ -8426,14 +7316,14 @@ Your role is to understand the user's query, identify the appropriate specialize
 * The only available types are \`#req\` for network request and \`#file\` for source files. Only use ID inside the link, never ask about user selecting by ID.
 `;
 var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
-  preamble = preamble4;
+  preamble = preamble3;
   clientFeature = Host13.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier() {
-    return Root8.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root7.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
-    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root7.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8462,7 +7352,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString8("Listing network requests"),
+          title: lockedString7("Listing network requests"),
           action: "listNetworkRequest()"
         };
       },
@@ -8482,7 +7372,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         }
         let hasCrossOriginRequest = false;
         const requestsToShow = [];
-        for (const request of Logs5.NetworkLog.NetworkLog.instance().requests()) {
+        for (const request of Logs4.NetworkLog.NetworkLog.instance().requests()) {
           const requestOrigin = getRequestContextOrigin(request);
           if (origin && requestOrigin !== origin) {
             hasCrossOriginRequest = true;
@@ -8530,7 +7420,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString8("Getting network request"),
+          title: lockedString7("Getting network request"),
           action: `selectNetworkRequest(${args.id})`
         };
       },
@@ -8547,7 +7437,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             error: "No request found"
           };
         }
-        const request = Logs5.NetworkLog.NetworkLog.instance().requests().find((req) => {
+        const request = Logs4.NetworkLog.NetworkLog.instance().requests().find((req) => {
           if (req.requestId() !== id) {
             return false;
           }
@@ -8583,7 +7473,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString8("Listing source requests"),
+          title: lockedString7("Listing source requests"),
           action: "listSourceFiles()"
         };
       },
@@ -8637,7 +7527,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: (args) => {
         return {
-          title: lockedString8("Getting source file"),
+          title: lockedString7("Getting source file"),
           action: `selectSourceFile(${args.id})`
         };
       },
@@ -8758,7 +7648,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
       },
       displayInfoFromArgs: () => {
         return {
-          title: lockedString8("Select an element on the page or in the Elements panel")
+          title: lockedString7("Select an element on the page or in the Elements panel")
         };
       },
       handler: async (_params, options) => {
@@ -8785,7 +7675,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         };
       }
     });
-    if (Root8.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
+    if (Root7.Runtime.hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
       this.declareFunction("analyzeStorage", {
         description: "Selects the page storage. Use this when asked about browser storage (localStorage, sessionStorage, cookies) and issues related to these.",
         parameters: {
@@ -8797,7 +7687,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
         },
         displayInfoFromArgs: () => {
           return {
-            title: lockedString8("Prepare storage analysis"),
+            title: lockedString7("Prepare storage analysis"),
             action: "analyzeStorage()"
           };
         },
@@ -8871,8 +7761,8 @@ __export(FileAgent_exports, {
   FileAgent: () => FileAgent
 });
 import * as Host14 from "./../../core/host/host.js";
-import * as Root9 from "./../../core/root/root.js";
-var preamble5 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
+import * as Root8 from "./../../core/root/root.js";
+var preamble4 = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
 You are provided with the content of a file from the Chrome DevTools Sources panel. To aid your analysis, you've been given the below links to understand the context of the code and its relationship to other files. When answering questions, prioritize providing these links directly.
 * Source-mapped from: If this code is the source for a mapped file, you'll have a link to that generated file.
 * Source map: If this code has an associated source map, you'll have link to the source map.
@@ -8925,14 +7815,14 @@ External Resources:
 MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 `;
 var FileAgent = class extends AiAgent {
-  preamble = preamble5;
+  preamble = preamble4;
   clientFeature = Host14.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier() {
-    return Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
+    return Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
   get options() {
-    const temperature = Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = Root9.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root8.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
     return {
       temperature,
       modelId
@@ -8970,11 +7860,11 @@ __export(GreenDevAgent_exports, {
 });
 import * as Common11 from "./../../core/common/common.js";
 import * as Host15 from "./../../core/host/host.js";
-import * as Root10 from "./../../core/root/root.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as Root9 from "./../../core/root/root.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Greendev from "./../greendev/greendev.js";
 import * as Workspace3 from "./../workspace/workspace.js";
-var preamble6 = `You are a general purpose web page troubleshooting agent.
+var preamble5 = `You are a general purpose web page troubleshooting agent.
 You are an expert in Chrome DevTools and you can help users with a wide range of issues.
 
 Your job is to use the provided information to understand the problem, connect the dots to
@@ -9280,7 +8170,7 @@ var GreenDevAgent = class _GreenDevAgent extends AiAgent {
 ${codeSuggestionDiff}` });
     return "The fix suggestion has been submitted.";
   }
-  preamble = preamble6;
+  preamble = preamble5;
   get clientFeature() {
     return Host15.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   }
@@ -9288,8 +8178,8 @@ ${codeSuggestionDiff}` });
     return "TESTERS";
   }
   get options() {
-    const temperature = Root10.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root10.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const temperature = Root9.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root9.Runtime.hostConfig.devToolsFreestyler?.modelId;
     return {
       temperature,
       modelId
@@ -9328,7 +8218,7 @@ ${context?.getItem() ?? ""}`;
   }
   static async getNetworkContextData(target) {
     const { frameTree } = await target.pageAgent().invoke_getResourceTree();
-    const resourceTreeModel = target.model(SDK10.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK11.ResourceTreeModel.ResourceTreeModel);
     const allResourceInfo = [];
     function processFrameTree(frameTree2) {
       for (const resource of frameTree2.resources) {
@@ -9360,19 +8250,19 @@ ${context?.getItem() ?? ""}`;
   }
   async getEventListeners(uid) {
     console.warn("[GreenDevAgent] AI Agent is calling getEventListeners with uid:", uid);
-    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return "Target not found.";
     }
-    const domModel = target.model(SDK10.DOMModel.DOMModel);
+    const domModel = target.model(SDK11.DOMModel.DOMModel);
     if (!domModel) {
       return "DOM model not found.";
     }
-    const domDebuggerModel = target.model(SDK10.DOMDebuggerModel.DOMDebuggerModel);
+    const domDebuggerModel = target.model(SDK11.DOMDebuggerModel.DOMDebuggerModel);
     if (!domDebuggerModel) {
       return "DOM debugger model not found.";
     }
-    const debuggerModel = target.model(SDK10.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK11.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return "Debugger model not found.";
     }
@@ -9404,7 +8294,7 @@ ${context?.getItem() ?? ""}`;
   }
   async getNetworkRequests(params) {
     console.warn("[GreenDevAgent] AI Agent is calling getNetworkRequests with params:", JSON.stringify(params, null, 2));
-    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return "Target not found.";
     }
@@ -9439,8 +8329,8 @@ ${context?.getItem() ?? ""}`;
   }
   async getConsoleMessages(params) {
     console.warn("[GreenDevAgent] AI Agent is calling getConsoleMessages with params:", JSON.stringify(params, null, 2));
-    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
-    const consoleModel = target?.model(SDK10.ConsoleModel.ConsoleModel);
+    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+    const consoleModel = target?.model(SDK11.ConsoleModel.ConsoleModel);
     if (!consoleModel) {
       return "Console model not found.";
     }
@@ -9560,15 +8450,15 @@ ${context?.getItem() ?? ""}`;
     if (calledFromAI) {
       console.warn("[GreenDevAgent] AI Agent is calling getReactComponentProps with uid:", uid);
     }
-    const target = SDK10.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return "Target not found.";
     }
-    const domModel = target.model(SDK10.DOMModel.DOMModel);
+    const domModel = target.model(SDK11.DOMModel.DOMModel);
     if (!domModel) {
       return "DOM model not found.";
     }
-    const runtimeModel = target.model(SDK10.RuntimeModel.RuntimeModel);
+    const runtimeModel = target.model(SDK11.RuntimeModel.RuntimeModel);
     if (!runtimeModel) {
       return "Runtime model not found.";
     }
@@ -9796,8 +8686,8 @@ __export(NetworkAgent_exports, {
   NetworkAgent: () => NetworkAgent
 });
 import * as Host16 from "./../../core/host/host.js";
-import * as Root11 from "./../../core/root/root.js";
-var preamble7 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
+import * as Root10 from "./../../core/root/root.js";
+var preamble6 = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
 Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
 * Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.
@@ -9842,14 +8732,14 @@ Request Status: 200 OK
 This request aims to retrieve a list of products matching the search query "laptop" within the "electronics" category. The successful 200 OK status confirms that the server fulfilled the request and returned the relevant data.
 `;
 var NetworkAgent = class extends AiAgent {
-  preamble = preamble7;
+  preamble = preamble6;
   clientFeature = Host16.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier() {
-    return Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+    return Root10.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options() {
-    const temperature = Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = Root11.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
+    const temperature = Root10.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = Root10.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
     return {
       temperature,
       modelId
@@ -9892,8 +8782,8 @@ __export(PatchAgent_exports, {
   PatchAgent: () => PatchAgent
 });
 import * as Host17 from "./../../core/host/host.js";
-import * as Root12 from "./../../core/root/root.js";
-var preamble8 = `You are a highly skilled software engineer with expertise in web development.
+import * as Root11 from "./../../core/root/root.js";
+var preamble7 = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.
 
 # Considerations
@@ -9929,15 +8819,15 @@ var PatchAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble8;
+  preamble = preamble7;
   clientFeature = Host17.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
-    return Root12.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root11.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
     return {
-      temperature: Root12.Runtime.hostConfig.devToolsFreestyler?.temperature,
-      modelId: Root12.Runtime.hostConfig.devToolsFreestyler?.modelId
+      temperature: Root11.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root11.Runtime.hostConfig.devToolsFreestyler?.modelId
     };
   }
   get agentProject() {
@@ -10111,18 +9001,1328 @@ var FileUpdateAgent = class extends AiAgent {
   async *handleContextDetails(_select) {
     return;
   }
-  preamble = preamble8;
+  preamble = preamble7;
   clientFeature = Host17.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
   get userTier() {
-    return Root12.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    return Root11.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
   get options() {
     return {
-      temperature: Root12.Runtime.hostConfig.devToolsFreestyler?.temperature,
-      modelId: Root12.Runtime.hostConfig.devToolsFreestyler?.modelId
+      temperature: Root11.Runtime.hostConfig.devToolsFreestyler?.temperature,
+      modelId: Root11.Runtime.hostConfig.devToolsFreestyler?.modelId
     };
   }
 };
+
+// gen/front_end/models/ai_assistance/agents/PerformanceAgent.js
+var PerformanceAgent_exports = {};
+__export(PerformanceAgent_exports, {
+  PerformanceAgent: () => PerformanceAgent,
+  getLabelName: () => getLabelName
+});
+import * as Common12 from "./../../core/common/common.js";
+import * as Host18 from "./../../core/host/host.js";
+import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Root12 from "./../../core/root/root.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as Tracing2 from "./../../services/tracing/tracing.js";
+import * as Annotations3 from "./../annotations/annotations.js";
+import * as Logs5 from "./../logs/logs.js";
+import * as TextUtils4 from "./../text_utils/text_utils.js";
+import * as Trace7 from "./../trace/trace.js";
+var UIStringsNotTranslated = {
+  /**
+   * @description Shown when the agent is investigating network activity
+   */
+  networkActivitySummary: "Investigating network activity",
+  /**
+   * @description Shown when the agent is investigating main thread activity
+   */
+  mainThreadActivity: "Investigating main thread activity"
+};
+var lockedString8 = i18n21.i18n.lockedString;
+var GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
+- CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
+which should be used to highlight elements and network requests (respectively).
+
+- CRITICAL: Each time an element or a network request is mentioned, you MUST ALSO call the functions
+  addElementAnnotation (for an element) or addNeworkRequestAnnotation (for a network request).
+- CRITICAL: Don't add more than one annotation per element or network request.
+- These functions should be called as soon as you identify the entity that needs to be highlighted.
+- In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
+- The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
+`;
+var GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS = `
+When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying
+the id and an annotation reason.
+When referring to a network request for which you know the eventKey for, always call the function
+addNetworkRequestAnnotation, specifying the id and an annotation reason.
+- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
+- CRITICAL: Each time you describe an element or network request as being problematic you MUST call the function
+addElementAnnotation and specify an annotation reason.
+- CRITICAL: Each time you describe a network request as being problematic you MUST call the function
+addNetworkRequestAnnotation and specify an annotation reason.
+- CRITICAL: If you spot ANY of the following problems:
+  - Render-blocking elements/network requests.
+  - Significant long task (especially on main thread).
+  - Layout shifts (e.g. due to unsized images).
+  ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
+  elements described in your conclusion.
+`;
+var preamble8 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
+
+Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
+
+You will be provided a summary of a trace: some performance metrics; the most critical network requests; a bottom-up call graph summary; and a brief overview of available insights. Each insight has information about potential performance issues with the page.
+
+Always call getInsightDetails to gather more data on an insight or the actual LCP element BEFORE mentioning any specific details about them.
+
+You have functions available to learn more about the trace. Use these to confirm hypotheses, or to further explore the trace when diagnosing performance issues.
+
+You will be given bounds representing a time range within the trace. Bounds include a min and a max time in microseconds. max is always bigger than min in a bounds.
+
+The 3 main performance metrics are:
+- LCP: "Largest Contentful Paint"
+- INP: "Interaction to Next Paint"
+- CLS: "Cumulative Layout Shift"
+
+Trace events referenced in the information given to you will be marked with an \`eventKey\`. For example: \`LCP element: <img src="..."> (eventKey: r-123, ts: 123456)\`
+You can use this key with \`getEventByKey\` to get more information about that trace event. For example: \`getEventByKey('r-123')\`
+You can also use this key with \`selectEventByKey\` to show the user a specific event
+
+## Step-by-step instructions for debugging performance issues
+
+Note: if the user asks a specific question about the trace (such as "What is my LCP?", or "How many requests were render-blocking?"), directly answer their question using available data. However, if the user asks a general question like "What performance issues exist?" or requests an investigation, you MUST NOT give a generic answer. You must treat it as a full performance investigation (Step 1) and call main thread functions to find specific issues. Generic advice like "reduce long tasks" without specific details is UNACCEPTABLE.
+
+
+### Step 1: Determine a performance problem to investigate
+
+- If the trace summary indicates that the main performance metrics (LCP, INP, CLS) are all within good thresholds, acknowledge this to the user. In this case, let the user know that they can try recording a trace with mobile emulation and throttling options and show them how.
+- With help from the user, determine what performance problem to focus on.
+- If the user is not specific about what problem to investigate, help them by doing a investigation yourself focus on performance improvements for better LCP, INP and CLS. Present to the user options with 1-sentence summaries. Mention what performance metrics each option impacts. Call as many functions and confirm the data thoroughly: never present an option without being certain it is a real performance issue.
+- Focus on identifying the problem in Step 1 and save solution suggestions for Step 2.
+- Once a performance problem has been identified for investigation, move on to step 2.
+
+#### Response Structure
+
+- Rank the options from most impactful to least impactful, and present them to the user in that order.
+- Limit the number of performance problem options presented to the user to a maximum of 2.
+
+### Step 2: Suggest solutions
+
+- Suggest solutions to remedy the identified performance problem. Be as specific as possible, using data from the trace via the provided functions to back up everything you say. You should prefer specific solutions, but absent any specific solution you may suggest general solutions (such as from an insight's documentation links).
+- If you are unsure, be honest and present information that can be helpful for further investigation.
+- A good first step to discover solutions is to consider the insights, but you should also validate all potential advice by analyzing the trace until you are confident about the root cause of a performance issue.
+
+#### Response Structure
+
+- If available, point out the root cause(s) of the problem.
+  - Example: "**Root Cause**: The page is slow because of [reason]."
+  - Example: "**Root Causes**:"
+    - [Reason 1]
+    - [Reason 2]
+- if applicable, list actionable solution suggestion(s) in order of impact:
+  - Example: "**Suggestion**: [Suggestion 1]
+  - Example: "**Suggestions**:"
+    - [Suggestion 1]
+    - [Suggestion 2]
+
+## Guidelines
+
+- You must call \`getMainThreadTrackSummaryByLabel\` (with the relevant label) to investigate the main thread activity before giving the user a reply or suggesting solutions for any performance problem or insight. This applies even if you already have some information about that period from \`getInsightDetails\` or the initial trace summary.
+- Dig Deeper: Before replying, you should really dig into the main thread activity to uncover what the performance issues actually are. Do not solely rely on the information from the initial data; ensure you identify the root cause before suggesting solutions.
+- No Shortcutting: Even if the initial facts contain specific line numbers or function names, you are not allowed to reply using only that information. You MUST call \`getMainThreadTrackSummaryByLabel\` to inspect its context before describing it to the user.
+- Look for Aggregated Cost: Performance issues are not always caused by a single "Long Task". Many small, frequent events (like unthrottled \`mousemove\` or \`scroll\` handlers) can add up to significant main thread blockage. Use the Bottom-Up summary in \`getMainThreadTrackSummaryByLabel\` to identify functions with high total time, even if they are not associated with a Long Task.
+- Use the provided functions to get detailed performance data. Prioritize functions that provide context relevant to the performance issue being investigated.
+- Before finalizing your advice, look over it and validate using any relevant functions. If something seems off, refine the advice before giving it to the user.
+- Base your analysis and advice solely on the data retrieved through the provided functions. Always use the provided functions to gather sufficient data when needed.
+- Use absolute microsecond timestamps for any function that requires a \`min\` and \`max\` bounds. These timestamps can be found in the trace summary or within the details of an insight.
+- Available labels for \`getMainThreadTrackSummaryByLabel\` include:
+  - \`trace-bounds\` (entire trace)
+  - \`nav-to-lcp\` (navigation to LCP)
+  - \`lcp-ttfb\` (LCP TTFB phase)
+  - \`lcp-render-delay\` (LCP render delay phase)
+  - Insight names: \`LCPBreakdown\`, \`INPBreakdown\`, \`CLSCulprits\`, \`ThirdParties\`, \`DocumentLatency\`, \`DOMSize\`, \`DuplicatedJavaScript\`, \`FontDisplay\`, \`ForcedReflow\`, \`ImageDelivery\`, \`LCPDiscovery\`, \`LegacyJavaScript\`, \`NetworkDependencyTree\`, \`RenderBlocking\`, \`SlowCSSSelector\`, \`Viewport\`, \`ModernHTTP\`, \`Cache\`, \`CharacterSet\`
+  - Navigation IDs: \`NAVIGATION_0\`, \`NAVIGATION_1\`, etc.
+- Use \`getEventByKey\` to get data on a specific trace event. This is great for root-cause analysis or validating any assumptions.
+- Provide clear, actionable recommendations. Avoid technical jargon unless necessary, and explain any technical terms used.
+- If you see a generic task like "Task", "Evaluate script" or "(anonymous)" in the main thread activity, try to look at its children to see what actual functions are executed and refer to those. When referencing the main thread activity, be as specific as you can. Ensure you identify to the user relevant functions and which script they were defined in. Avoid referencing "Task", "Evaluate script" and "(anonymous)" nodes if possible and instead focus on their children.
+- Structure your response using markdown headings and bullet points for improved readability.
+- Be direct and to the point. Avoid unnecessary introductory phrases or filler content. Focus on delivering actionable advice efficiently.
+
+## Strict Constraints
+
+Adhere to the following critical requirements:
+
+- Never show bounds to the user.
+- Never show eventKey to the user.
+- Ensure your responses only use ms for time units.
+- Ensure numbers for time units are rounded to the nearest whole number.
+- Ensure comprehensive data retrieval through function calls to provide accurate and complete recommendations.
+- If the user asks a specific question about web performance that doesn't have anything to do with the trace, don't call any functions and be succinct in your answer.
+- Before suggesting changing the format of an image, consider what format it is already in. For example, if the mime type is image/webp, do not suggest to the user that the image is converted to WebP, as the image is already in that format.
+- Do not mention the functions you call to gather information about the trace (e.g., \`getEventByKey\`, \`getMainThreadTrackSummaryByLabel\`) in your output. These are internal implementation details that should be hidden from the user.
+- Do not mention that you are an AI, or refer to yourself in the third person. You are simulating a performance expert.
+- If asked about sensitive topics (religion, race, politics, sexuality, gender, etc.), respond with: "My expertise is limited to website performance analysis. I cannot provide information on that topic.".
+- Do not provide answers on non-web-development topics, such as legal, financial, medical, or personal advice.
+- Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
+`;
+var extraPreambleWhenNotExternal = `Additional notes:
+
+When referring to a trace event that has a corresponding \`eventKey\`, annotate your output using markdown link syntax. For example:
+- When referring to an event that is a long task: [Long task](#r-123)
+- When referring to a URL for which you know the eventKey of: [https://www.example.com](#s-1827)
+- Never show the eventKey (like "eventKey: s-1852") in your running text. When using markdown links, the URL must be only the hash (e.g., \`#s-1852\`), never \`eventKey: s-1852\`.
+
+When asking the user to make a choice between options, output a list of choices at the end of your text response. The format is \`SUGGESTIONS: ["suggestion1", "suggestion2", "suggestion3"]\`. This MUST start on a newline, and be a single line.
+`;
+var freshTracePreamble = `Additional notes:
+
+When referring to an element for which you know the nodeId, annotate your output using markdown link syntax:
+- For example, if nodeId is 23: [LCP element](#node-23)
+- This link will reveal the element in the Elements panel
+- Never mention node or nodeId when referring to the element, and especially not in the link text.
+- When referring to the LCP, it's useful to also mention what the LCP element is via its nodeId. Use the markdown link syntax to do so.
+`;
+var ScorePriority;
+(function(ScorePriority2) {
+  ScorePriority2[ScorePriority2["REQUIRED"] = 3] = "REQUIRED";
+  ScorePriority2[ScorePriority2["CRITICAL"] = 2] = "CRITICAL";
+  ScorePriority2[ScorePriority2["DEFAULT"] = 1] = "DEFAULT";
+})(ScorePriority || (ScorePriority = {}));
+var MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
+var STATIC_LABEL_NAMES = {
+  "nav-to-lcp": "navigation to LCP",
+  "lcp-ttfb": "LCP to TTFB",
+  "lcp-render-delay": "LCP render delay",
+  "trace-bounds": "the entire trace",
+  NO_NAVIGATION: "the period before the first navigation"
+};
+function getLabelName(label, focus) {
+  if (STATIC_LABEL_NAMES[label]) {
+    return STATIC_LABEL_NAMES[label];
+  }
+  const { parsedTrace } = focus;
+  const insightSetById = parsedTrace.insights?.get(label);
+  if (insightSetById) {
+    return `navigation to ${insightSetById.url.href}`;
+  }
+  for (const insightSet of parsedTrace.insights?.values() ?? []) {
+    const model = insightSet.model[label];
+    if (model) {
+      return `${model.title} insight`;
+    }
+  }
+  return label;
+}
+var PerformanceAgent = class extends AiAgent {
+  preamble = preamble8;
+  #formatter = null;
+  #lastEventForEnhancedQuery;
+  #lastInsightForEnhancedQuery;
+  /**
+   * Cache of all function calls made by the agent. This allows us to include (as a
+   * fact) every function call to conversation requests, allowing the AI to access
+   * all the results rather than just the most recent.
+   *
+   * TODO(b/442392194): I'm not certain this is needed. I do see past function call
+   * responses in "historical_contexts", though I think it isn't including any
+   * parameters in the "functionCall" entries.
+   *
+   * The record key is the result of a function's displayInfoFromArgs.
+   */
+  #functionCallCacheForFocus = /* @__PURE__ */ new Map();
+  #notExternalExtraPreambleFact = {
+    text: extraPreambleWhenNotExternal,
+    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+  };
+  #freshTraceExtraPreambleFact = {
+    text: freshTracePreamble,
+    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+  };
+  #greenDevAnnotationsFact = {
+    text: GREEN_DEV_ANNOTATIONS_INSTRUCTIONS,
+    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+  };
+  #greenDevFreshTraceAnnotationsFact = {
+    text: GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS,
+    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+  };
+  #networkDataDescriptionFact = {
+    text: PerformanceTraceFormatter.networkDataFormatDescription,
+    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+  };
+  #callFrameDataDescriptionFact = {
+    text: PerformanceTraceFormatter.callFrameDataFormatDescription,
+    metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+  };
+  #traceFacts = [];
+  /**
+   * These facts do not contain page data, they are static instructions to the
+   * LLM, so we don't need to add them to the disclosure.
+   */
+  #factsToNeverDisclose = /* @__PURE__ */ new Set([
+    this.#callFrameDataDescriptionFact,
+    this.#networkDataDescriptionFact,
+    this.#freshTraceExtraPreambleFact,
+    this.#notExternalExtraPreambleFact,
+    this.#greenDevAnnotationsFact,
+    this.#greenDevFreshTraceAnnotationsFact
+  ]);
+  /**
+   * When we enhance the query with additional information, we need to know it
+   * so we can show it in the disclosure UI. This is cleared and then populated
+   * on each prompt.
+   */
+  #additionalSelectionsForDisclosure = [];
+  get clientFeature() {
+    return Host18.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
+  }
+  get userTier() {
+    return Boolean(Root12.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ? "TESTERS" : Root12.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+  }
+  get options() {
+    const temperature = Root12.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root12.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    return {
+      temperature,
+      modelId
+    };
+  }
+  async *handleContextDetails(context) {
+    if (!context) {
+      return;
+    }
+    const contextDisclosure = [];
+    for (const fact of this.currentFacts()) {
+      if (this.#factsToNeverDisclose.has(fact)) {
+        continue;
+      }
+      contextDisclosure.push(fact.text);
+    }
+    contextDisclosure.push(...this.#additionalSelectionsForDisclosure);
+    const focus = context.getItem();
+    const widgets = this.#getWidgetsForFocus(focus);
+    yield {
+      type: "context",
+      details: [
+        {
+          title: "Trace details",
+          text: contextDisclosure.join("\n")
+        }
+      ],
+      widgets
+    };
+  }
+  // Show different widgets with the first reply depending on the initial context:
+  // Specific task (call tree) -> timeline summary & bottom up tree widgets
+  // LCP Insight -> LCP breakdown & CWV widgets
+  // Whole Trace or insight other than LCP -> CWV widget
+  #getWidgetsForFocus(focus) {
+    const widgets = [];
+    if (focus.callTree) {
+      const event = focus.callTree.selectedNode?.event;
+      if (event) {
+        const { startTime, endTime } = Trace7.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace7.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        widgets.push({
+          name: "TIMELINE_RANGE_SUMMARY",
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace,
+            track: "main"
+          }
+        });
+        widgets.push({
+          name: "BOTTOM_UP_TREE",
+          data: {
+            bounds,
+            parsedTrace: focus.parsedTrace
+          }
+        });
+      }
+      return widgets;
+    }
+    if (focus.insight) {
+      const insightKey = focus.insight.insightKey;
+      if (Trace7.Insights.Common.isInsightKey(insightKey)) {
+        widgets.push({
+          name: "PERF_INSIGHT",
+          data: {
+            insight: insightKey,
+            insightData: focus.insight
+          }
+        });
+      }
+    }
+    const primaryInsightSet = focus.primaryInsightSet;
+    if (primaryInsightSet) {
+      widgets.push({
+        name: "CORE_VITALS",
+        data: {
+          parsedTrace: focus.parsedTrace,
+          insightSetKey: primaryInsightSet.id
+        }
+      });
+    }
+    return widgets;
+  }
+  #callTreeContextSet = /* @__PURE__ */ new WeakSet();
+  #isFunctionResponseTooLarge(response) {
+    return response.length > MAX_FUNCTION_RESULT_BYTE_LENGTH;
+  }
+  /**
+   * Sometimes the model will output URLs as plaintext; or a markdown link
+   * where the link is the actual URL. This function transforms such output
+   * to an eventKey link.
+   *
+   * A simple way to see when this gets utilized is:
+   *   1. go to paulirish.com, record a trace
+   *   2. say "What performance issues exist with my page?"
+   *   3. then say "images"
+   */
+  #parseForKnownUrls(response) {
+    const focus = this.context?.getItem();
+    if (!focus) {
+      return response;
+    }
+    const urlRegex = /(\[(.*?)\][ \t]*\((.*?)\))|(https?:\/\/[^\s<>()]+)/g;
+    return response.replace(urlRegex, (match, markdownLink, linkText, linkDest, standaloneUrlText) => {
+      if (markdownLink) {
+        if (linkDest.startsWith("#")) {
+          return match;
+        }
+        const eventKeyMatch = linkDest.match(/eventKey:\s*([^\s,)]+)/);
+        if (eventKeyMatch) {
+          const eventKey2 = eventKeyMatch[1];
+          return `[${linkText}](#${eventKey2})`;
+        }
+        const event = focus.lookupEvent(linkDest);
+        if (event) {
+          return `[${linkText}](#${linkDest})`;
+        }
+      }
+      const urlText = linkDest ?? standaloneUrlText;
+      if (!urlText) {
+        return match;
+      }
+      const request = focus.parsedTrace.data.NetworkRequests.byTime.find((request2) => request2.args.data.url === urlText);
+      if (!request) {
+        return match;
+      }
+      const eventKey = focus.eventsSerializer.keyForEvent(request);
+      if (!eventKey) {
+        return match;
+      }
+      return `[${urlText}](#${eventKey})`;
+    });
+  }
+  #parseMarkdown(response) {
+    const FIVE_BACKTICKS = "`````";
+    if (response.startsWith(FIVE_BACKTICKS) && response.endsWith(FIVE_BACKTICKS)) {
+      return response.slice(FIVE_BACKTICKS.length, -FIVE_BACKTICKS.length);
+    }
+    return response;
+  }
+  parseTextResponse(response) {
+    const parsedResponse = super.parseTextResponse(response);
+    parsedResponse.answer = this.#parseForKnownUrls(parsedResponse.answer);
+    parsedResponse.answer = this.#parseMarkdown(parsedResponse.answer);
+    return parsedResponse;
+  }
+  async enhanceQuery(query, context) {
+    if (!context) {
+      this.clearDeclaredFunctions();
+      return query;
+    }
+    this.clearDeclaredFunctions();
+    this.#declareFunctions(context);
+    const focus = context.getItem();
+    const selected = [];
+    if (focus.event) {
+      const includeEventInfo = focus.event !== this.#lastEventForEnhancedQuery;
+      this.#lastEventForEnhancedQuery = focus.event;
+      if (includeEventInfo) {
+        selected.push(`User selected an event ${this.#formatter?.serializeEvent(focus.event)}.
+
+`);
+      }
+    }
+    if (focus.callTree) {
+      let contextString = "";
+      if (!this.#callTreeContextSet.has(focus.callTree)) {
+        contextString = focus.callTree.serialize();
+        this.#callTreeContextSet.add(focus.callTree);
+      }
+      if (contextString) {
+        selected.push(`User selected the following call tree:
+
+${contextString}
+
+`);
+      }
+    }
+    if (focus.insight) {
+      const includeInsightInfo = focus.insight !== this.#lastInsightForEnhancedQuery;
+      this.#lastInsightForEnhancedQuery = focus.insight;
+      if (includeInsightInfo) {
+        selected.push(`User selected the ${focus.insight.insightKey} insight.
+
+`);
+      }
+    }
+    if (!selected.length) {
+      this.#additionalSelectionsForDisclosure = [];
+      return query;
+    }
+    selected.push(`# User query
+
+${query}`);
+    this.#additionalSelectionsForDisclosure = [...selected];
+    return selected.join("");
+  }
+  async *run(initialQuery, options) {
+    const focus = options.selected?.getItem();
+    this.clearFacts();
+    if (options.selected && focus) {
+      await this.#addFacts(options.selected);
+    }
+    yield* super.run(initialQuery, options);
+  }
+  /**
+   * Clears performance-agent-specific caches and state.
+   * This is called when the conversation needs to be reset (e.g. on navigation)
+   * to prevent stale formatters, trace facts, or selection contexts from leaking
+   * into subsequent runs.
+   */
+  clearCache() {
+    super.clearCache();
+    this.#functionCallCacheForFocus.clear();
+    this.#formatter = null;
+    this.#traceFacts = [];
+    this.#lastEventForEnhancedQuery = void 0;
+    this.#lastInsightForEnhancedQuery = void 0;
+    this.#additionalSelectionsForDisclosure = [];
+    this.#callTreeContextSet = /* @__PURE__ */ new WeakSet();
+  }
+  #createFactForTraceSummary() {
+    if (!this.#formatter) {
+      return;
+    }
+    const text = this.#formatter.formatTraceSummary();
+    if (!text) {
+      return;
+    }
+    this.#traceFacts.push({ text: `Trace summary:
+${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
+  }
+  async #createFactForCriticalRequests() {
+    if (!this.#formatter) {
+      return;
+    }
+    const text = await this.#formatter.formatCriticalRequests();
+    if (!text) {
+      return;
+    }
+    this.#traceFacts.push({
+      text,
+      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+    });
+  }
+  async #createFactForMainThreadBottomUpSummary() {
+    if (!this.#formatter) {
+      return;
+    }
+    const formatter = this.#formatter;
+    const text = await formatter.formatMainThreadBottomUpSummary();
+    if (!text) {
+      return;
+    }
+    this.#traceFacts.push({
+      text,
+      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+    });
+  }
+  async #createFactForThirdPartySummary() {
+    if (!this.#formatter) {
+      return;
+    }
+    const text = await this.#formatter.formatThirdPartySummary();
+    if (!text) {
+      return;
+    }
+    this.#traceFacts.push({
+      text,
+      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+    });
+  }
+  async #createFactForLongestTasks() {
+    if (!this.#formatter) {
+      return;
+    }
+    const text = await this.#formatter.formatLongestTasks();
+    if (!text) {
+      return;
+    }
+    this.#traceFacts.push({
+      text,
+      metadata: { source: "devtools", score: ScorePriority.CRITICAL }
+    });
+  }
+  async #addFacts(context) {
+    const focus = context.getItem();
+    this.addFact(this.#notExternalExtraPreambleFact);
+    const annotationsEnabled = Annotations3.AnnotationRepository.annotationsEnabled();
+    if (annotationsEnabled) {
+      this.addFact(this.#greenDevAnnotationsFact);
+    }
+    const isFresh = Tracing2.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
+    if (isFresh) {
+      this.addFact(this.#freshTraceExtraPreambleFact);
+      if (annotationsEnabled) {
+        this.addFact(this.#greenDevFreshTraceAnnotationsFact);
+      }
+    }
+    this.addFact(this.#callFrameDataDescriptionFact);
+    this.addFact(this.#networkDataDescriptionFact);
+    if (!this.#traceFacts.length) {
+      const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+      if (!target) {
+        throw new Error("missing target");
+      }
+      this.#formatter = context.createFormatter();
+      this.#createFactForTraceSummary();
+      await this.#createFactForCriticalRequests();
+      await this.#createFactForMainThreadBottomUpSummary();
+      await this.#createFactForThirdPartySummary();
+      await this.#createFactForLongestTasks();
+    }
+    for (const fact of this.#traceFacts) {
+      this.addFact(fact);
+    }
+    const cachedFunctionCalls = this.#functionCallCacheForFocus.get(focus);
+    if (cachedFunctionCalls) {
+      for (const fact of Object.values(cachedFunctionCalls)) {
+        this.addFact(fact);
+      }
+    }
+  }
+  #cacheFunctionResult(focus, key, result) {
+    const fact = {
+      text: `This is the result of calling ${key}:
+${result}`,
+      metadata: { source: key, score: ScorePriority.DEFAULT }
+    };
+    const cache = this.#functionCallCacheForFocus.get(focus) ?? {};
+    cache[key] = fact;
+    this.#functionCallCacheForFocus.set(focus, cache);
+  }
+  async #handleMainThreadTrackSummary(bounds, focus, functionName, cacheKey) {
+    const formatter = this.#formatter;
+    if (!formatter) {
+      throw new Error("missing formatter");
+    }
+    const summary = await formatter.formatMainThreadTrackSummary(bounds);
+    if (this.#isFunctionResponseTooLarge(summary)) {
+      return {
+        error: `${functionName} response is too large. Try investigating using other functions, or a more narrow bounds`
+      };
+    }
+    this.#cacheFunctionResult(focus, cacheKey, summary);
+    const widgets = [];
+    widgets.push({
+      name: "TIMELINE_RANGE_SUMMARY",
+      data: {
+        parsedTrace: focus.parsedTrace,
+        bounds,
+        track: "main"
+      }
+    });
+    widgets.push({
+      name: "BOTTOM_UP_TREE",
+      data: {
+        bounds,
+        parsedTrace: focus.parsedTrace
+      }
+    });
+    return {
+      result: { summary },
+      widgets
+    };
+  }
+  #declareFunctions(context) {
+    const focus = context.getItem();
+    const { parsedTrace } = focus;
+    const isFresh = Tracing2.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+    this.declareFunction("getInsightDetails", {
+      description: "Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          insightSetId: {
+            type: 1,
+            description: 'The id for the specific insight set. Only use the ids given in the "Available insight sets" list.',
+            nullable: false
+          },
+          insightName: {
+            type: 1,
+            description: 'The name of the insight. Only use the insight names given in the "Available insights" list.',
+            nullable: false
+          }
+        },
+        required: ["insightSetId", "insightName"]
+      },
+      displayInfoFromArgs: (params) => {
+        return {
+          title: lockedString8(`Investigating insight ${params.insightName}`),
+          action: `getInsightDetails('${params.insightSetId}', '${params.insightName}')`
+        };
+      },
+      handler: async (params) => {
+        debugLog("Function call: getInsightDetails", params);
+        const insightSet = parsedTrace.insights?.get(params.insightSetId);
+        if (!insightSet) {
+          const valid = [...parsedTrace.insights?.values() ?? []].map((insightSet2) => `id: ${insightSet2.id}, url: ${insightSet2.url}, bounds: ${this.#formatter?.serializeBounds(insightSet2.bounds)}`).join("; ");
+          return { error: `Invalid insight set id. Valid insight set ids are: ${valid}` };
+        }
+        const insight = insightSet.model[params.insightName];
+        if (!insight) {
+          const valid = Object.keys(insightSet.model).join(", ");
+          return { error: `No insight available. Valid insight names are: ${valid}` };
+        }
+        const details = new PerformanceInsightFormatter(focus, insight).formatInsight();
+        const widgets = [];
+        if (Trace7.Insights.Models.LCPDiscovery.isLCPDiscoveryInsight(insight) || Trace7.Insights.Models.LCPBreakdown.isLCPBreakdownInsight(insight)) {
+          const lcpMetric = Trace7.Insights.Common.getLCP(insightSet);
+          const lcpEvent = lcpMetric?.event;
+          if (lcpEvent && Trace7.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
+            const nodeId = lcpEvent.args.data?.nodeId;
+            if (nodeId) {
+              const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+              const domModel = target?.model(SDK12.DOMModel.DOMModel);
+              if (domModel) {
+                const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
+                const node = nodeMap?.get(nodeId);
+                if (node) {
+                  const lcpSyntheticRequest = insight.lcpRequest;
+                  const [snapshot, imageContent] = await Promise.all([
+                    node.takeSnapshot(),
+                    lcpSyntheticRequest ? this.#getNetworkRequestImageData(lcpSyntheticRequest) : Promise.resolve(void 0)
+                  ]);
+                  let networkRequest;
+                  if (lcpSyntheticRequest) {
+                    networkRequest = {
+                      url: lcpSyntheticRequest.args.data.url,
+                      size: lcpSyntheticRequest.args.data.decodedBodyLength ?? lcpSyntheticRequest.args.data.encodedDataLength ?? 0,
+                      resourceType: lcpSyntheticRequest.args.data.resourceType,
+                      mimeType: lcpSyntheticRequest.args.data.mimeType ?? "",
+                      imageContent
+                    };
+                  }
+                  widgets.push({
+                    name: "DOM_TREE",
+                    data: {
+                      root: snapshot,
+                      networkRequest,
+                      title: lockedString8("LCP element"),
+                      accessibleRevealLabel: lockedString8("Reveal LCP element")
+                    }
+                  });
+                }
+              }
+            }
+          }
+        }
+        const insightKey = params.insightName;
+        if (Trace7.Insights.Common.isInsightKey(insightKey)) {
+          widgets.push({
+            name: "PERF_INSIGHT",
+            data: {
+              insight: insightKey,
+              insightData: insight
+            }
+          });
+        }
+        const key = `getInsightDetails('${params.insightSetId}', '${params.insightName}')`;
+        this.#cacheFunctionResult(focus, key, details);
+        return { result: { details }, widgets };
+      }
+    });
+    this.declareFunction("getEventByKey", {
+      description: "Returns detailed information about a specific event. Use the detail returned to validate performance issues, but do not tell the user about irrelevant raw data from a trace event.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          eventKey: {
+            type: 1,
+            description: "The key for the event.",
+            nullable: false
+          }
+        },
+        required: ["eventKey"]
+      },
+      displayInfoFromArgs: (params) => {
+        return { title: lockedString8("Looking at trace event"), action: `getEventByKey('${params.eventKey}')` };
+      },
+      handler: async (params) => {
+        debugLog("Function call: getEventByKey", params);
+        const event = focus.lookupEvent(params.eventKey);
+        if (!event) {
+          return { error: "Invalid eventKey" };
+        }
+        const details = formatEventForAI(event);
+        const key = `getEventByKey('${params.eventKey}')`;
+        this.#cacheFunctionResult(focus, key, details);
+        return {
+          result: { details },
+          widgets: [{
+            name: "TIMELINE_EVENT_SUMMARY",
+            data: {
+              event,
+              parsedTrace
+            }
+          }]
+        };
+      }
+    });
+    const createBounds = (min, max) => {
+      const { min: bMin, max: bMax } = parsedTrace.data.Meta.traceBounds;
+      const clampedMin = Math.max(min ?? bMin, bMin);
+      const clampedMax = Math.min(max ?? bMax, bMax);
+      if (clampedMin > clampedMax) {
+        return null;
+      }
+      return Trace7.Helpers.Timing.traceWindowFromMicroSeconds(clampedMin, clampedMax);
+    };
+    this.declareFunction("getMainThreadTrackSummaryByLabel", {
+      description: "Returns a focused, detailed summary of the main thread for a predefined labeled period. Use this to get more relevant detail than the initial trace summary before diagnosing issues.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          label: {
+            type: 1,
+            description: "The label of the period to investigate (e.g., 'LCPBreakdown', 'CLSCulprits', 'nav-to-lcp').",
+            nullable: false
+          }
+        },
+        required: ["label"]
+      },
+      displayInfoFromArgs: (args) => {
+        const labelName = getLabelName(args.label, focus);
+        return {
+          title: lockedString8(`${UIStringsNotTranslated.mainThreadActivity}: ${labelName}`),
+          action: `getMainThreadTrackSummaryByLabel('${args.label}')`
+        };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getMainThreadTrackSummaryByLabel");
+        const bounds = this.#getBoundsForLabel(args.label, focus);
+        if (!bounds) {
+          return { error: `Invalid label: ${args.label}` };
+        }
+        const key = `getMainThreadTrackSummaryByLabel('${args.label}')`;
+        return await this.#handleMainThreadTrackSummary(bounds, focus, "getMainThreadTrackSummaryByLabel", key);
+      }
+    });
+    this.declareFunction("getNetworkTrackSummary", {
+      description: "Returns a summary of the network for the given bounds.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          min: {
+            type: 3,
+            description: `The minimum time of the bounds, in microseconds (the current trace starts at ${parsedTrace.data.Meta.traceBounds.min})`,
+            nullable: true
+          },
+          max: {
+            type: 3,
+            description: `The maximum time of the bounds, in microseconds (the current trace ends at ${parsedTrace.data.Meta.traceBounds.max})`,
+            nullable: true
+          }
+        },
+        required: []
+      },
+      displayInfoFromArgs: (args) => {
+        const min = args.min ?? parsedTrace.data.Meta.traceBounds.min;
+        const max = args.max ?? parsedTrace.data.Meta.traceBounds.max;
+        return {
+          title: lockedString8(UIStringsNotTranslated.networkActivitySummary),
+          action: `getNetworkTrackSummary({min: ${min}, max: ${max}})`
+        };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getNetworkTrackSummary");
+        if (!this.#formatter) {
+          throw new Error("missing formatter");
+        }
+        const bounds = createBounds(args.min, args.max);
+        if (!bounds) {
+          return { error: "invalid bounds" };
+        }
+        const summary = this.#formatter.formatNetworkTrackSummary(bounds);
+        if (this.#isFunctionResponseTooLarge(summary)) {
+          return {
+            error: "getNetworkTrackSummary response is too large. Try investigating using other functions, or a more narrow bounds"
+          };
+        }
+        const key = `getNetworkTrackSummary({min: ${bounds.min}, max: ${bounds.max}})`;
+        this.#cacheFunctionResult(focus, key, summary);
+        return {
+          result: { summary },
+          widgets: [{
+            name: "NETWORK_TRACK",
+            data: {
+              parsedTrace,
+              bounds
+            }
+          }]
+        };
+      }
+    });
+    this.declareFunction("getDetailedCallTree", {
+      description: "Returns a detailed call tree for the given main thread event.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          eventKey: {
+            type: 1,
+            description: "The key for the event.",
+            nullable: false
+          }
+        },
+        required: ["eventKey"]
+      },
+      displayInfoFromArgs: (args) => {
+        return { title: lockedString8("Looking at call tree"), action: `getDetailedCallTree('${args.eventKey}')` };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getDetailedCallTree");
+        if (!this.#formatter) {
+          throw new Error("missing formatter");
+        }
+        const event = focus.lookupEvent(args.eventKey);
+        if (!event) {
+          return { error: "Invalid eventKey" };
+        }
+        const tree = AICallTree.fromEvent(event, parsedTrace);
+        if (!tree) {
+          return { error: "No call tree found" };
+        }
+        const formatter = this.#formatter;
+        const callTree = await formatter.formatCallTree(tree);
+        const key = `getDetailedCallTree(${args.eventKey})`;
+        this.#cacheFunctionResult(focus, key, callTree);
+        const { startTime, endTime } = Trace7.Helpers.Timing.eventTimingsMicroSeconds(event);
+        const bounds = Trace7.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+        const widgets = [
+          {
+            name: "BOTTOM_UP_TREE",
+            data: {
+              bounds,
+              parsedTrace
+            }
+          },
+          {
+            name: "TIMELINE_RANGE_SUMMARY",
+            data: {
+              bounds,
+              parsedTrace,
+              track: "main"
+            }
+          }
+        ];
+        return { result: { callTree }, widgets };
+      }
+    });
+    if (Annotations3.AnnotationRepository.annotationsEnabled()) {
+      this.declareFunction("addElementAnnotation", {
+        description: "Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            elementId: {
+              type: 1,
+              description: "The UID of the element to annotate.",
+              nullable: false
+            },
+            annotationMessage: {
+              type: 1,
+              description: "The message the annotation should show to the user.",
+              nullable: false
+            }
+          },
+          required: ["elementId", "annotationMessage"]
+        },
+        handler: async (params) => {
+          return await this.addElementAnnotation(params.elementId, params.annotationMessage);
+        }
+      });
+      this.declareFunction("addNetworkRequestAnnotation", {
+        description: "Adds a visual annotation in the Network panel, attached to the request with the specific UID provided. Use it to highlight requests in the Network panel and provide contextual suggestions to the user related to their queries.",
+        parameters: {
+          type: 6,
+          description: "",
+          nullable: false,
+          properties: {
+            eventKey: {
+              type: 1,
+              description: "The event key of the network request to annotate.",
+              nullable: false
+            },
+            annotationMessage: {
+              type: 1,
+              description: "The message the annotation should show to the user.",
+              nullable: false
+            }
+          },
+          required: ["eventKey", "annotationMessage"]
+        },
+        handler: async (params) => {
+          return await this.addNetworkRequestAnnotation(params.eventKey, params.annotationMessage);
+        }
+      });
+    }
+    this.declareFunction("getFunctionCode", {
+      description: "Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          scriptUrl: {
+            type: 1,
+            description: "The url of the function.",
+            nullable: false
+          },
+          line: {
+            type: 3,
+            description: "The line number where the function is defined.",
+            nullable: false
+          },
+          column: {
+            type: 3,
+            description: "The column number where the function is defined.",
+            nullable: false
+          }
+        },
+        required: ["scriptUrl", "line", "column"]
+      },
+      displayInfoFromArgs: (args) => {
+        return {
+          title: lockedString8("Looking up function code"),
+          action: `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`
+        };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getFunctionCode");
+        if (!isFresh) {
+          return {
+            error: "Cannot use this tool on an imported file."
+          };
+        }
+        if (args.line === void 0) {
+          return { error: "Missing arg: line" };
+        }
+        if (args.column === void 0) {
+          return { error: "Missing arg: column" };
+        }
+        if (!this.#formatter) {
+          throw new Error("missing formatter");
+        }
+        const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+        if (!target) {
+          throw new Error("missing target");
+        }
+        const url = args.scriptUrl;
+        const code = await this.#formatter.resolveFunctionCodeAtLocation(url, args.line, args.column);
+        if (!code) {
+          return { error: "Could not find code" };
+        }
+        const result = this.#formatter.formatFunctionCode(code);
+        const key = `getFunctionCode('${args.scriptUrl}', ${args.line}, ${args.column})`;
+        this.#cacheFunctionResult(focus, key, result);
+        return {
+          result: { result },
+          widgets: [{
+            name: "SOURCE_CODE",
+            data: {
+              url: args.scriptUrl,
+              line: args.line,
+              column: args.column,
+              code: code.code
+            }
+          }]
+        };
+      }
+    });
+    const isTraceApp = Root12.Runtime.Runtime.isTraceApp();
+    this.declareFunction("getResourceContent", {
+      description: "Returns the content of the resource with the given url. Only use this for text resource types. This function is helpful for getting script contents in order to further analyze main thread activity and suggest code improvements. When analyzing the main thread activity, always call this function to get more detail. Always call this function when asked to provide specifics about what is happening in the code. Never ask permission to call this function, just do it.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          url: {
+            type: 1,
+            description: "The url for the resource.",
+            nullable: false
+          }
+        },
+        required: ["url"]
+      },
+      displayInfoFromArgs: (args) => {
+        return { title: lockedString8("Looking at resource content"), action: `getResourceContent('${args.url}')` };
+      },
+      handler: async (args) => {
+        debugLog("Function call: getResourceContent");
+        if (!isFresh) {
+          return { error: "Cannot use this tool on an imported file." };
+        }
+        const url = args.url;
+        const allowedOrigin = context.getOrigin();
+        if (!canResourceContentsBeReadForTrace(url, allowedOrigin)) {
+          return { error: "Resource not found" };
+        }
+        let content;
+        const script = parsedTrace.data.Scripts.scripts.find((script2) => script2.url === url);
+        if (script?.content !== void 0) {
+          content = script.content;
+        } else if (isFresh || isTraceApp) {
+          const resource = SDK12.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          if (!resource) {
+            return { error: "Resource not found" };
+          }
+          const data = await resource.requestContentData();
+          if ("error" in data) {
+            return { error: `Could not get resource content: ${data.error}` };
+          }
+          content = data.text;
+        } else {
+          return { error: "Resource not found" };
+        }
+        if (content === void 0) {
+          return { error: "Resource content not found" };
+        }
+        const key = `getResourceContent(${args.url})`;
+        this.#cacheFunctionResult(focus, key, content);
+        return {
+          result: { content },
+          widgets: [{
+            name: "SOURCE_CODE",
+            data: {
+              url: args.url,
+              code: content
+            }
+          }]
+        };
+      }
+    });
+    this.declareFunction("selectEventByKey", {
+      description: "Selects the event in the flamechart for the user. If the user asks to show them something, it's likely a good idea to call this function.",
+      parameters: {
+        type: 6,
+        description: "",
+        nullable: false,
+        properties: {
+          eventKey: {
+            type: 1,
+            description: "The key for the event.",
+            nullable: false
+          }
+        },
+        required: ["eventKey"]
+      },
+      displayInfoFromArgs: (params) => {
+        return { title: lockedString8("Selecting event"), action: `selectEventByKey('${params.eventKey}')` };
+      },
+      handler: async (params) => {
+        debugLog("Function call: selectEventByKey", params);
+        const event = focus.lookupEvent(params.eventKey);
+        if (!event) {
+          return { error: "Invalid eventKey" };
+        }
+        const revealable = new SDK12.TraceObject.RevealableEvent(event);
+        await Common12.Revealer.reveal(revealable);
+        return {
+          result: { success: true },
+          widgets: [{
+            name: "TIMELINE_EVENT_SUMMARY",
+            data: {
+              event,
+              parsedTrace
+            }
+          }]
+        };
+      }
+    });
+  }
+  #getBoundsForLabel(label, focus) {
+    const { parsedTrace } = focus;
+    const insightSet = focus.primaryInsightSet;
+    if (label === "nav-to-lcp") {
+      if (insightSet) {
+        const lcp = Trace7.Insights.Common.getLCP(insightSet);
+        if (lcp) {
+          return Trace7.Helpers.Timing.traceWindowFromMicroSeconds(insightSet.bounds.min, lcp.event.ts);
+        }
+      }
+      return null;
+    }
+    if (label === "lcp-ttfb") {
+      if (insightSet) {
+        const subparts = insightSet.model.LCPBreakdown?.subparts;
+        if (subparts?.ttfb) {
+          return subparts.ttfb;
+        }
+      }
+      return null;
+    }
+    if (label === "lcp-render-delay") {
+      if (insightSet) {
+        const subparts = insightSet.model.LCPBreakdown?.subparts;
+        if (subparts?.renderDelay) {
+          return subparts.renderDelay;
+        }
+      }
+      return null;
+    }
+    if (label === "trace-bounds") {
+      return parsedTrace.data.Meta.traceBounds;
+    }
+    const insightSetById = parsedTrace.insights?.get(label);
+    if (insightSetById) {
+      return insightSetById.bounds;
+    }
+    if (insightSet) {
+      const model = insightSet.model[label];
+      if (model) {
+        return Trace7.Insights.Common.insightBounds(model, insightSet.bounds);
+      }
+    }
+    for (const is of parsedTrace.insights?.values() ?? []) {
+      const model = is.model[label];
+      if (model) {
+        return Trace7.Insights.Common.insightBounds(model, is.bounds);
+      }
+    }
+    return null;
+  }
+  async addElementAnnotation(elementId, annotationMessage) {
+    if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
+      console.warn("Received agent request to add element annotation with annotations disabled");
+      return { error: "Annotations are not currently enabled" };
+    }
+    console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
+    Annotations3.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
+    return { result: { success: true } };
+  }
+  async addNetworkRequestAnnotation(eventKey, annotationMessage) {
+    if (!Annotations3.AnnotationRepository.annotationsEnabled()) {
+      console.warn("Received agent request to add network request annotation with annotations disabled");
+      return { error: "Annotations are not currently enabled" };
+    }
+    console.log(`AI AGENT EVENT: Performance Agent adding annotation for network request ${eventKey}: '${annotationMessage}'`);
+    let requestId = void 0;
+    const focus = this.context?.getItem();
+    if (focus) {
+      const event = focus.lookupEvent(eventKey);
+      if (event && Trace7.Types.Events.isSyntheticNetworkRequest(event)) {
+        requestId = event.args.data.requestId;
+      }
+    }
+    if (!requestId) {
+      console.warn("Unable to lookup requestId for request with event key", eventKey);
+    }
+    Annotations3.AnnotationRepository.instance().addNetworkRequestAnnotation(annotationMessage, requestId);
+    return { result: { success: true } };
+  }
+  async #getNetworkRequestImageData(lcpRequest) {
+    const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+    const networkManager = target?.model(SDK12.NetworkManager.NetworkManager);
+    if (!target || !networkManager) {
+      return void 0;
+    }
+    const networkLog = Logs5.NetworkLog.NetworkLog.instance();
+    const requestId = lcpRequest.args.data.requestId;
+    const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
+    if (sdkRequest?.contentType().isImage()) {
+      const contentData = await sdkRequest.requestContentData();
+      if (!TextUtils4.ContentData.ContentData.isError(contentData)) {
+        return contentData;
+      }
+    }
+    return void 0;
+  }
+};
+function formatEventForAI(event) {
+  if (Trace7.Types.Events.isSyntheticNetworkRequest(event)) {
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: {
+          ...event.args.data,
+          responseHeaders: event.args.data.responseHeaders ? sanitizeHeaders(event.args.data.responseHeaders) : null
+        }
+      }
+    });
+  }
+  if (Trace7.Types.Events.isResourceReceiveResponse(event)) {
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: {
+          ...event.args.data,
+          headers: event.args.data.headers ? sanitizeHeaders(event.args.data.headers) : void 0
+        }
+      }
+    });
+  }
+  if (Trace7.Types.Events.isRundownScriptSource(event)) {
+    const safeData = {
+      isolate: event.args.data.isolate,
+      scriptId: event.args.data.scriptId,
+      length: event.args.data.length
+    };
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: safeData
+      }
+    });
+  }
+  if (Trace7.Types.Events.isRundownScriptSourceLarge(event)) {
+    const safeData = {
+      isolate: event.args.data.isolate,
+      scriptId: event.args.data.scriptId,
+      splitIndex: event.args.data.splitIndex,
+      splitCount: event.args.data.splitCount
+    };
+    return JSON.stringify({
+      ...event,
+      args: {
+        ...event.args,
+        data: safeData
+      }
+    });
+  }
+  return JSON.stringify(event);
+}
 
 // gen/front_end/models/ai_assistance/agents/StylingAgent.js
 var StylingAgent_exports = {};
@@ -10130,9 +10330,9 @@ __export(StylingAgent_exports, {
   AI_ASSISTANCE_FILTER_REGEX: () => AI_ASSISTANCE_FILTER_REGEX,
   StylingAgent: () => StylingAgent
 });
-import * as Host18 from "./../../core/host/host.js";
+import * as Host19 from "./../../core/host/host.js";
 import * as Root13 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as Greendev2 from "./../greendev/greendev.js";
 import * as Annotations4 from "./../annotations/annotations.js";
 import * as Emulation from "./../emulation/emulation.js";
@@ -10237,7 +10437,7 @@ var MULTIMODAL_ENHANCEMENT_PROMPTS = {
 var AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 var StylingAgent = class extends AiAgent {
   preamble = preamble9;
-  clientFeature = Host18.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  clientFeature = Host19.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier() {
     const greenDevEmulationEnabled = Greendev2.Prototypes.instance().isEnabled("emulationCapabilities");
     return greenDevEmulationEnabled ? "TESTERS" : Root13.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -10287,7 +10487,7 @@ var StylingAgent = class extends AiAgent {
         }
         return await getStylesTool.handler(args, {
           conversationContext: context,
-          getTarget: () => SDK11.TargetManager.TargetManager.instance().primaryPageTarget() ?? context.getItem().domModel().target(),
+          getTarget: () => SDK13.TargetManager.TargetManager.instance().primaryPageTarget() ?? context.getItem().domModel().target(),
           getEstablishedOrigin: () => context.getOrigin()
         });
       }
@@ -10455,7 +10655,7 @@ var StylingAgent = class extends AiAgent {
     try {
       if (selectedNode) {
         const target = selectedNode.domModel().target();
-        const emulationModel = target.model(SDK11.EmulationModel.EmulationModel);
+        const emulationModel = target.model(SDK13.EmulationModel.EmulationModel);
         if (emulationModel) {
           let type = "none";
           if (visionDeficiency && visionDeficiency !== "none") {
@@ -10515,7 +10715,7 @@ var StylingAgent = class extends AiAgent {
     }
     try {
       if (selectedNode) {
-        const accessibilityModel = selectedNode.domModel().target().model(SDK11.AccessibilityModel.AccessibilityModel);
+        const accessibilityModel = selectedNode.domModel().target().model(SDK13.AccessibilityModel.AccessibilityModel);
         if (accessibilityModel) {
           await accessibilityModel.resumeModel();
           const axResponse = await accessibilityModel.agent.invoke_getFullAXTree({});
@@ -10595,8 +10795,8 @@ var AiAgent2_exports = {};
 __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
-import * as Host19 from "./../../core/host/host.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as Host20 from "./../../core/host/host.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/skills/accessibility.skill.js
 var skill = {
@@ -10604,10 +10804,11 @@ var skill = {
   "description": "Accessibility audits and report querying.",
   "allowedTools": [
     "getLighthouseAudits",
-    "resolveLighthousePath",
-    "getStyles"
+    "resolveDevtoolsNodePath",
+    "getStyles",
+    "getElementAccessibilityDetails"
   ],
-  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveLighthousePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties."
+  "instructions": "You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveDevtoolsNodePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties.\n* Use getElementAccessibilityDetails to query detailed accessibility properties (ARIA properties, role, name, focus state) for a resolved element backend node ID."
 };
 
 // gen/front_end/models/ai_assistance/skills/network.skill.js
@@ -10674,7 +10875,7 @@ If the user asks a question that requires an investigation or debugging, use thi
 var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble10;
-  clientFeature = Host19.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
+  clientFeature = Host20.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
   userTier = "TESTERS";
   #changes = new ChangeManager();
   #execJs;
@@ -10822,7 +11023,7 @@ ${skillObj.instructions}
           createExtensionScope: this.#createExtensionScope.bind(this),
           execJs: this.#execJs,
           getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
-          getTarget: () => SDK12.TargetManager.TargetManager.instance().primaryPageTarget(),
+          getTarget: () => SDK14.TargetManager.TargetManager.instance().primaryPageTarget(),
           getEstablishedOrigin: () => this.#getConversationOrigin(),
           lighthouseRecording: this.#lighthouseRecording
         };
@@ -10848,11 +11049,11 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common13 from "./../../core/common/common.js";
-import * as Host20 from "./../../core/host/host.js";
+import * as Common14 from "./../../core/common/common.js";
+import * as Host21 from "./../../core/host/host.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Greendev3 from "./../greendev/greendev.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
@@ -10862,22 +11063,22 @@ __export(AiHistoryStorage_exports, {
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var MAX_RECENT_PROMPTS_COUNT = 20;
 var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
-var AiHistoryStorage = class _AiHistoryStorage extends Common12.ObjectWrapper.ObjectWrapper {
+var AiHistoryStorage = class _AiHistoryStorage extends Common13.ObjectWrapper.ObjectWrapper {
   #historySetting;
   #imageHistorySettings;
   #recentPromptsSetting;
-  #mutex = new Common12.Mutex.Mutex();
+  #mutex = new Common13.Mutex.Mutex();
   #maxStorageSize;
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
     super();
-    this.#historySetting = Common12.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
-    this.#imageHistorySettings = Common12.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
-    this.#recentPromptsSetting = Common12.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
+    this.#historySetting = Common13.Settings.Settings.instance().createSetting("ai-assistance-history-entries", []);
+    this.#imageHistorySettings = Common13.Settings.Settings.instance().createSetting("ai-assistance-history-images", []);
+    this.#recentPromptsSetting = Common13.Settings.Settings.instance().createSetting("ai-assistance-recent-prompts", []);
     this.#maxStorageSize = maxStorageSize;
   }
   clearForTest() {
@@ -11055,7 +11256,7 @@ var AiConversation = class _AiConversation {
   #onInspectElement;
   #networkTimeCalculator;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host20.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host21.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -11326,15 +11527,15 @@ ${item.text.trim()}`);
         this.#navigationOccurredDuringRun = true;
       }
     };
-    const targetManager = SDK13.TargetManager.TargetManager.instance();
-    targetManager.addModelListener(SDK13.ResourceTreeModel.ResourceTreeModel, SDK13.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    const targetManager = SDK15.TargetManager.TargetManager.instance();
+    targetManager.addModelListener(SDK15.ResourceTreeModel.ResourceTreeModel, SDK15.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     try {
       if (this.isBlockedByOrigin) {
         throw new Error("cross-origin context data should not be included");
       }
       yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
-      targetManager.removeModelListener(SDK13.ResourceTreeModel.ResourceTreeModel, SDK13.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+      targetManager.removeModelListener(SDK15.ResourceTreeModel.ResourceTreeModel, SDK15.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     }
   }
   #getQueryAfterSelection(initialQuery, selection) {
@@ -11416,9 +11617,9 @@ function isAiAssistanceContextSelectionAgentEnabled() {
   return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled);
 }
 function getPrimaryPageOrigin() {
-  const target = SDK13.TargetManager.TargetManager.instance().primaryPageTarget();
+  const target = SDK15.TargetManager.TargetManager.instance().primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? new Common13.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+  return inspectedURL ? new Common14.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
 }
 
 // gen/front_end/models/ai_assistance/BuiltInAi.js
@@ -11426,11 +11627,11 @@ var BuiltInAi_exports = {};
 __export(BuiltInAi_exports, {
   BuiltInAi: () => BuiltInAi
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as Host21 from "./../../core/host/host.js";
+import * as Common15 from "./../../core/common/common.js";
+import * as Host22 from "./../../core/host/host.js";
 import * as Root15 from "./../../core/root/root.js";
 var builtInAiInstance;
-var BuiltInAi = class _BuiltInAi extends Common14.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common15.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;
@@ -11608,31 +11809,31 @@ Your instructions are as follows:
     if (this.#hasGpu) {
       switch (this.#availability) {
         case "unavailable":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             0
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_HAS_GPU */
           );
           break;
         case "downloadable":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             1
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_HAS_GPU */
           );
           break;
         case "downloading":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             2
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_HAS_GPU */
           );
           break;
         case "available":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             3
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_HAS_GPU */
           );
           break;
         case "disabled":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             4
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_HAS_GPU */
           );
@@ -11641,31 +11842,31 @@ Your instructions are as follows:
     } else {
       switch (this.#availability) {
         case "unavailable":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             5
             /* Host.UserMetrics.BuiltInAiAvailability.UNAVAILABLE_NO_GPU */
           );
           break;
         case "downloadable":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             6
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADABLE_NO_GPU */
           );
           break;
         case "downloading":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             7
             /* Host.UserMetrics.BuiltInAiAvailability.DOWNLOADING_NO_GPU */
           );
           break;
         case "available":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             8
             /* Host.UserMetrics.BuiltInAiAvailability.AVAILABLE_NO_GPU */
           );
           break;
         case "disabled":
-          Host21.userMetrics.builtInAiAvailability(
+          Host22.userMetrics.builtInAiAvailability(
             9
             /* Host.UserMetrics.BuiltInAiAvailability.DISABLED_NO_GPU */
           );
@@ -11680,7 +11881,7 @@ var ConversationSummary_exports = {};
 __export(ConversationSummary_exports, {
   ConversationSummary: () => ConversationSummary
 });
-import * as Host22 from "./../../core/host/host.js";
+import * as Host23 from "./../../core/host/host.js";
 import * as Root16 from "./../../core/root/root.js";
 var preamble11 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
@@ -11790,7 +11991,7 @@ ${conversation}`;
       aidaClient: this.#aidaClient,
       preamble: preamble11,
       query: enhancedQuery,
-      clientFeature: Host22.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
+      clientFeature: Host23.AidaClient.ClientFeature.CHROME_CONVERSATION_SUMMARY_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11811,7 +12012,7 @@ var PerformanceAnnotations_exports = {};
 __export(PerformanceAnnotations_exports, {
   PerformanceAnnotations: () => PerformanceAnnotations
 });
-import * as Host23 from "./../../core/host/host.js";
+import * as Host24 from "./../../core/host/host.js";
 import * as Root17 from "./../../core/root/root.js";
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
@@ -11910,7 +12111,7 @@ ${AI_LABEL_GENERATION_PROMPT}`;
       aidaClient: this.#aidaClient,
       preamble: callTreePreamble,
       query,
-      clientFeature: Host23.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
+      clientFeature: Host24.AidaClient.ClientFeature.CHROME_PERFORMANCE_ANNOTATIONS_AGENT,
       temperature,
       modelId,
       userTier,
@@ -11950,6 +12151,7 @@ export {
   FileAgent_exports as FileAgent,
   FileContext_exports as FileContext,
   FileFormatter_exports as FileFormatter,
+  GetElementAccessibilityDetails_exports as GetElementAccessibilityDetails,
   GetLighthouseAudits_exports as GetLighthouseAudits,
   GetNetworkRequestDetails_exports as GetNetworkRequestDetails,
   GetStyles_exports as GetStyles,
@@ -11965,9 +12167,10 @@ export {
   PerformanceAgent_exports as PerformanceAgent,
   PerformanceAnnotations_exports as PerformanceAnnotations,
   PerformanceInsightFormatter_exports as PerformanceInsightFormatter,
+  PerformanceTraceContext_exports as PerformanceTraceContext,
   PerformanceTraceFormatter_exports as PerformanceTraceFormatter,
   RequestContext_exports as RequestContext,
-  ResolveLighthousePath_exports as ResolveLighthousePath,
+  ResolveDevtoolsNodePath_exports as ResolveDevtoolsNodePath,
   StorageAgent_exports as StorageAgent,
   StorageItem_exports as StorageItem,
   StylingAgent_exports as StylingAgent,

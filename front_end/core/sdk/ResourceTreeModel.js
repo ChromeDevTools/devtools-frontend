@@ -75,8 +75,8 @@ export class ResourceTreeModel extends SDKModel {
         }
         return null;
     }
-    static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
-        for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
+    static reloadAllPages(bypassCache, scriptToEvaluateOnLoad, targetManager = TargetManager.instance()) {
+        for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
             if (resourceTreeModel.target().parentTarget()?.type() !== Type.FRAME) {
                 resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
             }

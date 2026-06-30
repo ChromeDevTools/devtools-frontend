@@ -5,7 +5,7 @@ import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import { raf } from './DOMHelpers.js';
 import { cleanTestDOM } from './DOMHooks.js';
 import { deinitializeGlobalVars, initializeGlobalVars } from './EnvironmentHelpers.js';
-import { setMockResourceTree } from './ResourceTreeHelpers.js';
+import { FRAME, MAIN_FRAME_ID } from './ResourceHelpers.js';
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.
 const responseMap = new Map();
@@ -42,6 +42,18 @@ export function dispatchEvent(target, eventName, ...payload) {
     }
     target.dispatch({ method: event, params: payload[0] });
 }
+const MAIN_FRAME = {
+    ...FRAME,
+    id: MAIN_FRAME_ID,
+};
+function setMockResourceTree() {
+    setMockConnectionResponseHandler('Page.getResourceTree', () => ({
+        frameTree: {
+            frame: MAIN_FRAME,
+            resources: [],
+        },
+    }));
+}
 async function enable({ reset = true } = {}) {
     if (reset) {
         responseMap.clear();
@@ -50,7 +62,7 @@ async function enable({ reset = true } = {}) {
     // before it can run. This function will ensure those things are
     // minimally there.
     await initializeGlobalVars({ reset });
-    setMockResourceTree(true);
+    setMockResourceTree();
     ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(() => new MockTransport());
 }
 class MockTransport extends ProtocolClient.ConnectionTransport.ConnectionTransport {

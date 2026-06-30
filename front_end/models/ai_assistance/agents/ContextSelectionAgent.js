@@ -12,11 +12,11 @@ import { isOpaqueOrigin } from '../AiOrigins.js';
 import { AccessibilityContext } from '../contexts/AccessibilityContext.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { FileContext } from '../contexts/FileContext.js';
+import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 import { getRequestContextOrigin, RequestContext } from '../contexts/RequestContext.js';
 import { debugLog } from '../debug.js';
 import { StorageItem } from '../StorageItem.js';
 import { AiAgent, } from './AiAgent.js';
-import { PerformanceTraceContext } from './PerformanceAgent.js';
 import { StorageContext } from './StorageAgent.js';
 const lockedString = i18n.i18n.lockedString;
 /**

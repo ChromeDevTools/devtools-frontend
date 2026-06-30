@@ -9,17 +9,15 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Annotations from '../../annotations/annotations.js';
 import * as Logs from '../../logs/logs.js';
-import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
-import { canResourceContentsBeReadForTrace, extractContextOrigin } from '../AiOrigins.js';
+import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
 import { sanitizeHeaders } from '../data_formatters/NetworkRequestFormatter.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import { debugLog } from '../debug.js';
 import { AICallTree } from '../performance/AICallTree.js';
-import { AgentFocus } from '../performance/AIContext.js';
-import { AiAgent, ConversationContext, } from './AiAgent.js';
+import { AiAgent, } from './AiAgent.js';
 const UIStringsNotTranslated = {
     /**
      * @description Shown when the agent is investigating network activity
@@ -192,130 +190,6 @@ var ScorePriority;
     ScorePriority[ScorePriority["CRITICAL"] = 2] = "CRITICAL";
     ScorePriority[ScorePriority["DEFAULT"] = 1] = "DEFAULT";
 })(ScorePriority || (ScorePriority = {}));
-export class PerformanceTraceContext extends ConversationContext {
-    static fromParsedTrace(parsedTrace) {
-        return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
-    }
-    static fromInsight(parsedTrace, insight) {
-        return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight));
-    }
-    static fromCallTree(callTree) {
-        return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree));
-    }
-    #focus;
-    constructor(focus) {
-        super();
-        this.#focus = focus;
-    }
-    getURL() {
-        const url = this.#focus.parsedTrace.data.Meta.mainFrameURL;
-        try {
-            new URL(url);
-            return url;
-        }
-        catch {
-            const { min, max } = this.#focus.parsedTrace.data.Meta.traceBounds;
-            return `trace-${min}-${max}`;
-        }
-    }
-    /**
-     * Returns the origin for a performance trace in the AI context.
-     *
-     * To prevent cross-origin prompt injection attacks, imported traces
-     * are isolated from live pages. We assign them a virtual origin
-     * (`imported-trace://${domain}`) so they do not share the origin of live pages
-     * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
-     * between imported trace data and live pages.
-     */
-    getOrigin() {
-        const parsedTrace = this.#focus.parsedTrace;
-        const url = this.getURL();
-        const origin = extractContextOrigin(url);
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
-        if (!isFresh) {
-            const parsed = Common.ParsedURL.ParsedURL.fromString(origin);
-            return `imported-trace://${parsed ? parsed.domain() : origin}`;
-        }
-        return origin;
-    }
-    getItem() {
-        return this.#focus;
-    }
-    getTitle() {
-        const focus = this.#focus;
-        let url = focus.primaryInsightSet?.url;
-        if (!url) {
-            url = new URL(focus.parsedTrace.data.Meta.mainFrameURL);
-        }
-        const parts = [`Trace: ${url.hostname}`];
-        if (focus.insight) {
-            parts.push(focus.insight.title);
-        }
-        if (focus.event) {
-            parts.push(Trace.Name.forEntry(focus.event));
-        }
-        if (focus.callTree) {
-            const node = focus.callTree.selectedNode ?? focus.callTree.rootNode;
-            parts.push(Trace.Name.forEntry(node.event));
-        }
-        return parts.join(' – ');
-    }
-    /**
-     * Presents the default suggestions that are shown when the user first clicks
-     * "Ask AI".
-     */
-    async getSuggestions() {
-        const focus = this.#focus;
-        if (focus.callTree) {
-            return [
-                { title: 'What\'s the purpose of this work?', jslogContext: 'performance-default' },
-                { title: 'Where is time being spent?', jslogContext: 'performance-default' },
-                { title: 'How can I optimize this?', jslogContext: 'performance-default' },
-            ];
-        }
-        if (focus.insight) {
-            return new PerformanceInsightFormatter(focus, focus.insight).getSuggestions();
-        }
-        const suggestions = [{ title: 'What performance issues exist with my page?', jslogContext: 'performance-default' }];
-        const insightSet = focus.primaryInsightSet;
-        if (insightSet) {
-            const lcp = Trace.Insights.Common.getLCP(insightSet);
-            const cls = Trace.Insights.Common.getCLS(insightSet);
-            const inp = Trace.Insights.Common.getINP(insightSet);
-            const ModelHandlers = Trace.Handlers.ModelHandlers;
-            const GOOD = "good" /* Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD */;
-            const poorMetrics = new Set();
-            if (lcp && ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value) !== GOOD) {
-                suggestions.push({ title: 'How can I improve LCP?', jslogContext: 'performance-default' });
-                poorMetrics.add(Trace.Insights.Types.InsightKeys.LCP_BREAKDOWN);
-                poorMetrics.add(Trace.Insights.Types.InsightKeys.LCP_DISCOVERY);
-            }
-            if (inp && ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value) !== GOOD) {
-                suggestions.push({ title: 'How can I improve INP?', jslogContext: 'performance-default' });
-                poorMetrics.add(Trace.Insights.Types.InsightKeys.INP_BREAKDOWN);
-            }
-            if (cls && ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value) !== GOOD) {
-                suggestions.push({ title: 'How can I improve CLS?', jslogContext: 'performance-default' });
-                poorMetrics.add(Trace.Insights.Types.InsightKeys.CLS_CULPRITS);
-            }
-            // Add up to 4 suggestions total (including those already added) from the top failing insights
-            // that aren't already covered by CWV suggestions.
-            const additionalSuggestionsRequired = Math.max(0, 4 - suggestions.length);
-            if (additionalSuggestionsRequired > 0) {
-                const failingInsightSuggestions = Object.values(insightSet.model)
-                    .filter(model => {
-                    return model.state !== 'pass' && Trace.Insights.Common.isInsightKey(model.insightKey) &&
-                        !poorMetrics.has(model.insightKey);
-                })
-                    .map(model => new PerformanceInsightFormatter(focus, model).getSuggestions().at(-1))
-                    .filter((suggestion) => !!suggestion)
-                    .slice(0, additionalSuggestionsRequired);
-                suggestions.push(...failingInsightSuggestions);
-            }
-        }
-        return suggestions;
-    }
-}
 // 16k Tokens * ~4 char per token.
 const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
 const STATIC_LABEL_NAMES = {
@@ -746,14 +620,7 @@ export class PerformanceAgent extends AiAgent {
             if (!target) {
                 throw new Error('missing target');
             }
-            this.#formatter = new PerformanceTraceFormatter(focus);
-            this.#formatter.resolveFunctionCode =
-                async (url, line, column) => {
-                    if (!target || !isFresh) {
-                        return null;
-                    }
-                    return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
-                };
+            this.#formatter = context.createFormatter();
             this.#createFactForTraceSummary();
             await this.#createFactForCriticalRequests();
             await this.#createFactForMainThreadBottomUpSummary();
@@ -1271,7 +1138,7 @@ export class PerformanceAgent extends AiAgent {
                 // Then, check ResourceTreeModel, but only when it is valid. Don't want to
                 // use if viewing a loaded trace from DevTools attached to an unrelated
                 // page.
-                const script = parsedTrace.data.Scripts.scripts.find(script => script.url === url);
+                const script = parsedTrace.data.Scripts.scripts.find((script) => script.url === url);
                 if (script?.content !== undefined) {
                     content = script.content;
                 }
@@ -1288,6 +1155,9 @@ export class PerformanceAgent extends AiAgent {
                 }
                 else {
                     return { error: 'Resource not found' };
+                }
+                if (content === undefined) {
+                    return { error: 'Resource content not found' };
                 }
                 const key = `getResourceContent(${args.url})`;
                 this.#cacheFunctionResult(focus, key, content);

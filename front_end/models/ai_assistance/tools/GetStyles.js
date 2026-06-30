@@ -68,7 +68,7 @@ export class GetStylesTool {
                 return { error: 'Error: Could not find the element with uid=' + uid };
             }
             const newContext = new DOMNodeContext(resolved);
-            if (establishedOrigin !== newContext.getOrigin()) {
+            if (!newContext.isOriginAllowed(establishedOrigin)) {
                 return { error: 'Error: Node does not belong to the current origin.' };
             }
             const styles = await resolved.domModel().cssModel().getComputedStyle(resolved.id);

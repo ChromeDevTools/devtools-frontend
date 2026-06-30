@@ -9719,6 +9719,26 @@ var CSSMetadata = class _CSSMetadata {
         propertyValueSets.set(propertyName, extraValues);
       }
     }
+    const commonKeywordSet = new Set(CommonKeywords);
+    for (const propertyName of this.#longhands.keys()) {
+      if (propertyName === "all" || propertyValueSets.has(propertyName)) {
+        continue;
+      }
+      const longhands = this.#longhands.get(propertyName);
+      if (!longhands) {
+        continue;
+      }
+      const values = new Array();
+      for (const longhand of longhands) {
+        const longhandValues = propertyValueSets.get(longhand);
+        if (!longhandValues) {
+          continue;
+        }
+        const commonKeywordsInLonghandValues = longhandValues.intersection(commonKeywordSet);
+        values.push(...commonKeywordsInLonghandValues);
+      }
+      propertyValueSets.set(propertyName, new Set(values));
+    }
     for (const [propertyName, values] of propertyValueSets) {
       const aliasFor = this.#aliasesFor.get(propertyName);
       if (aliasFor) {
@@ -29260,8 +29280,8 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     return null;
   }
-  static reloadAllPages(bypassCache, scriptToEvaluateOnLoad) {
-    for (const resourceTreeModel of TargetManager.instance().models(_ResourceTreeModel)) {
+  static reloadAllPages(bypassCache, scriptToEvaluateOnLoad, targetManager = TargetManager.instance()) {
+    for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
       if (resourceTreeModel.target().parentTarget()?.type() !== Type.FRAME) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }

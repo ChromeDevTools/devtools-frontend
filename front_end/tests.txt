@@ -177,16 +177,18 @@ models/ai_assistance/agents/StylingAgent.test.js
 models/ai_assistance/contexts/AccessibilityContext.test.js
 models/ai_assistance/contexts/DOMNodeContext.test.js
 models/ai_assistance/contexts/FileContext.test.js
+models/ai_assistance/contexts/PerformanceTraceContext.test.js
 models/ai_assistance/contexts/RequestContext.test.js
 models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIContext.test.js
 models/ai_assistance/performance/AIQueries.test.js
 models/ai_assistance/tools/ExecuteJavaScript.test.js
+models/ai_assistance/tools/GetElementAccessibilityDetails.test.js
 models/ai_assistance/tools/GetLighthouseAudits.test.js
 models/ai_assistance/tools/GetNetworkRequestDetails.test.js
 models/ai_assistance/tools/GetStyles.test.js
 models/ai_assistance/tools/ListNetworkRequests.test.js
-models/ai_assistance/tools/ResolveLighthousePath.test.js
+models/ai_assistance/tools/ResolveDevtoolsNodePath.test.js
 models/ai_assistance/tools/ToolRegistry.test.js
 models/ai_code_completion/AiCodeCompletion.test.js
 models/ai_code_generation/AiCodeGeneration.test.js
@@ -734,6 +736,7 @@ ui/legacy/Infobar.test.js
 ui/legacy/InspectorDrawerView.test.js
 ui/legacy/InspectorView.test.js
 ui/legacy/KeyboardShortcut.test.js
+ui/legacy/ListControl.test.js
 ui/legacy/ListModel.test.js
 ui/legacy/ListWidget.test.js
 ui/legacy/PlusButton.test.js
@@ -759,6 +762,7 @@ ui/legacy/components/color_picker/Spectrum.test.js
 ui/legacy/components/cookie_table/CookiesTable.test.js
 ui/legacy/components/data_grid/DataGrid.test.js
 ui/legacy/components/data_grid/DataGridElement.test.js
+ui/legacy/components/data_grid/ViewportDataGrid.test.js
 ui/legacy/components/inline_editor/AnimationTimingModel.test.js
 ui/legacy/components/inline_editor/AnimationTimingUI.test.js
 ui/legacy/components/inline_editor/BezierUI.test.js

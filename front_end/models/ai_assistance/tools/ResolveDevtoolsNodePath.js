@@ -5,17 +5,18 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 /**
- * A tool that resolves a Lighthouse-style element path to a backend node ID.
+ * A tool that resolves a DevTools node path to a backend node ID.
  *
  * This is used by the AI assistant to identify specific DOM nodes referred to in
- * Lighthouse reports. It ensures the resolved node belongs to the locked origin.
+ * Lighthouse reports or other sources using node paths. It ensures the resolved node
+ * belongs to the locked origin.
  */
-export class ResolveLighthousePathTool {
-    name = "resolveLighthousePath" /* ToolName.RESOLVE_LIGHTHOUSE_PATH */;
-    description = 'Resolves a Lighthouse path to a backend node ID.';
+export class ResolveDevtoolsNodePathTool {
+    name = "resolveDevtoolsNodePath" /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */;
+    description = 'Resolves a DevTools node path to a backend node ID.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-        description: 'Arguments for resolving a Lighthouse path to a backend node ID.',
+        description: 'Arguments for resolving a DevTools node path to a backend node ID.',
         nullable: false,
         properties: {
             explanation: {
@@ -25,7 +26,7 @@ export class ResolveLighthousePathTool {
             },
             path: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'Lighthouse path string.',
+                description: 'DevTools node path string.',
                 nullable: false,
             },
         },
@@ -35,7 +36,7 @@ export class ResolveLighthousePathTool {
         return {
             title: 'Resolving element path',
             thought: params.explanation,
-            action: `resolveLighthousePath('${params.path}')`,
+            action: `resolveDevtoolsNodePath('${params.path}')`,
         };
     }
     /**
@@ -57,12 +58,12 @@ export class ResolveLighthousePathTool {
         }
         let nodeId;
         try {
-            // Resolves the Lighthouse path (a representation of the path to a node)
+            // Resolves the DevTools node path (a representation of the path to a node)
             // and ensures the node is loaded into the frontend DOM model, returning its ID.
             nodeId = await domModel.pushNodeByPathToFrontend(params.path);
         }
         catch {
-            return { error: 'Error: Could not find node by path.' };
+            // pushNodeByPathToFrontend can fail or return undefined
         }
         if (!nodeId) {
             return { error: 'Error: Could not find node by path.' };
@@ -82,4 +83,4 @@ export class ResolveLighthousePathTool {
         };
     }
 }
-//# sourceMappingURL=ResolveLighthousePath.js.map
+//# sourceMappingURL=ResolveDevtoolsNodePath.js.map

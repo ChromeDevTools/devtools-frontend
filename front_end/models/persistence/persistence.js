@@ -1315,12 +1315,12 @@ __export(PersistenceImpl_exports, {
 import * as Common5 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as Platform7 from "./../../core/platform/platform.js";
+import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as BreakpointManager from "./../breakpoints/breakpoints.js";
 import * as TextUtils4 from "./../text_utils/text_utils.js";
 import * as Workspace3 from "./../workspace/workspace.js";
-var persistenceInstance;
 var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.ObjectWrapper {
   #workspace;
   #breakpointManager;
@@ -1336,13 +1336,13 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
   }
   static instance(opts = { forceNew: null, workspace: null, breakpointManager: null }) {
     const { forceNew, workspace, breakpointManager } = opts;
-    if (!persistenceInstance || forceNew) {
+    if (!Root.DevToolsContext.globalInstance().has(_PersistenceImpl) || forceNew) {
       if (!workspace || !breakpointManager) {
         throw new Error("Missing arguments for workspace");
       }
-      persistenceInstance = new _PersistenceImpl(workspace, breakpointManager);
+      Root.DevToolsContext.globalInstance().set(_PersistenceImpl, new _PersistenceImpl(workspace, breakpointManager));
     }
-    return persistenceInstance;
+    return Root.DevToolsContext.globalInstance().get(_PersistenceImpl);
   }
   addNetworkInterceptor(interceptor) {
     this.#mapping.addNetworkInterceptor(interceptor);

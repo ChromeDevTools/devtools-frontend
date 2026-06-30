@@ -1,38 +1,13 @@
 import * as Host from '../../../core/host/host.js';
 import * as Trace from '../../trace/trace.js';
-import { AICallTree } from '../performance/AICallTree.js';
-import { AgentFocus } from '../performance/AIContext.js';
-import { AiAgent, type ContextResponse, ConversationContext, type ConversationSuggestions, type FunctionCallHandlerResult, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
+import type { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
+import type { AgentFocus } from '../performance/AIContext.js';
+import { AiAgent, type ContextResponse, type ConversationContext, type FunctionCallHandlerResult, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
 /**
  * Labels used to identify specific periods or categories in the trace for getting main thread summary.
  * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
  */
 export type MainThreadSectionLabel = 'nav-to-lcp' | 'lcp-ttfb' | 'lcp-render-delay' | 'trace-bounds' | 'NO_NAVIGATION' | `NAVIGATION_${string}` | keyof Trace.Insights.Types.InsightModels;
-export declare class PerformanceTraceContext extends ConversationContext<AgentFocus> {
-    #private;
-    static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext;
-    static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel): PerformanceTraceContext;
-    static fromCallTree(callTree: AICallTree): PerformanceTraceContext;
-    constructor(focus: AgentFocus);
-    getURL(): string;
-    /**
-     * Returns the origin for a performance trace in the AI context.
-     *
-     * To prevent cross-origin prompt injection attacks, imported traces
-     * are isolated from live pages. We assign them a virtual origin
-     * (`imported-trace://${domain}`) so they do not share the origin of live pages
-     * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
-     * between imported trace data and live pages.
-     */
-    getOrigin(): string;
-    getItem(): AgentFocus;
-    getTitle(): string;
-    /**
-     * Presents the default suggestions that are shown when the user first clicks
-     * "Ask AI".
-     */
-    getSuggestions(): Promise<ConversationSuggestions | undefined>;
-}
 /**
  * Converts the label name we use in the code to a human readable one that is
  * shown to the user.

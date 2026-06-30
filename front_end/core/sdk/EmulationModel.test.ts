@@ -97,4 +97,28 @@ describeWithMockConnection('EmulationModel', () => {
     sinon.assert.calledOnce(spySetDisabledImageTypes);
     sinon.assert.calledWith(spySetDisabledImageTypes, {imageTypes: [Protocol.Emulation.DisabledImageType.Jxl]});
   });
+
+  it('`setSafeAreaInsets` forwards insets to setSafeAreaInsetsOverride', async () => {
+    const parentTarget = createTarget();
+    const target = createTarget({parentTarget});
+    const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
+    assert.isNotNull(emulationModel);
+    const spy = sinon.stub(target.emulationAgent(), 'invoke_setSafeAreaInsetsOverride');
+
+    await emulationModel.setSafeAreaInsets({top: 59, left: 0, bottom: 34, right: 0});
+
+    sinon.assert.calledOnceWithExactly(spy, {insets: {top: 59, left: 0, bottom: 34, right: 0}});
+  });
+
+  it('`setSafeAreaInsets` with empty insets clears the override', async () => {
+    const parentTarget = createTarget();
+    const target = createTarget({parentTarget});
+    const emulationModel = target.model(SDK.EmulationModel.EmulationModel);
+    assert.isNotNull(emulationModel);
+    const spy = sinon.stub(target.emulationAgent(), 'invoke_setSafeAreaInsetsOverride');
+
+    await emulationModel.setSafeAreaInsets({});
+
+    sinon.assert.calledOnceWithExactly(spy, {insets: {}});
+  });
 });

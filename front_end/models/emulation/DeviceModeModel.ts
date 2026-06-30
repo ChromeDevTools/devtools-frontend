@@ -577,6 +577,25 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.#mode.insets;
   }
 
+  private currentSafeAreaInsets(): Insets|null {
+    if (this.#type !== Type.Device || !this.#mode) {
+      return null;
+    }
+    return this.#mode.safeAreaInsets ?? null;
+  }
+
+  private applySafeAreaInsets(insets: Insets|null): void {
+    if (!this.#emulationModel) {
+      return;
+    }
+    if (insets) {
+      void this.#emulationModel.setSafeAreaInsets(
+          {top: insets.top, left: insets.left, bottom: insets.bottom, right: insets.right});
+    } else {
+      void this.#emulationModel.setSafeAreaInsets({});
+    }
+  }
+
   private getScreenOrientationType(): Protocol.Emulation.ScreenOrientationType {
     if (!this.#mode) {
       throw new Error('Mode required to get orientation type.');
@@ -653,6 +672,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (overlayModel) {
       overlayModel.setShowViewportSizeOnResize(this.#type === Type.None);
     }
+    this.applySafeAreaInsets(this.currentSafeAreaInsets());
     this.dispatchEventToListeners(Events.UPDATED);
   }
 

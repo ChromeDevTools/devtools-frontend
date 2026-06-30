@@ -250,6 +250,10 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
     }
   }
 
+  async setSafeAreaInsets(insets: Protocol.Emulation.SafeAreaInsets): Promise<void> {
+    await this.#emulationAgent.invoke_setSafeAreaInsetsOverride({insets});
+  }
+
   overlayModel(): OverlayModel|null {
     return this.#overlayModel;
   }

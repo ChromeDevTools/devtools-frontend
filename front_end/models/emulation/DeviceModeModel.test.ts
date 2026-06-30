@@ -222,6 +222,121 @@ describeWithMockConnection('DeviceModeModel', () => {
     }
   });
 
+  function createSafeAreaDevice(): EmulationModel.EmulatedDevices.EmulatedDevice {
+    const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
+    device.userAgent = 'test-ua';
+    device.vertical = {width: 430, height: 932, outlineInsets: null, outlineImage: null, hinge: null};
+    device.horizontal = {width: 932, height: 430, outlineInsets: null, outlineImage: null, hinge: null};
+    device.modes = [
+      {
+        title: 'default',
+        orientation: EmulationModel.EmulatedDevices.Vertical,
+        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
+        image: null,
+        safeAreaInsets: new EmulationModel.DeviceModeModel.Insets(0, 59, 0, 34),
+      },
+      {
+        title: 'default',
+        orientation: EmulationModel.EmulatedDevices.Horizontal,
+        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
+        image: null,
+        safeAreaInsets: new EmulationModel.DeviceModeModel.Insets(59, 0, 59, 21),
+      },
+    ];
+    return device;
+  }
+
+  it('sends the active mode safe-area insets when emulating a device', () => {
+    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+    const spy = sinon.stub(target.emulationAgent(), 'invoke_setSafeAreaInsetsOverride');
+
+    try {
+      const device = createSafeAreaDevice();
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0]);
+
+      sinon.assert.called(spy);
+      assert.deepEqual(spy.lastCall.args[0], {insets: {top: 59, left: 0, bottom: 34, right: 0}});
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
+
+  it('sends the landscape safe-area insets when emulating the horizontal mode', () => {
+    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+    const spy = sinon.stub(target.emulationAgent(), 'invoke_setSafeAreaInsetsOverride');
+
+    try {
+      const device = createSafeAreaDevice();
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, device.modes[1]);
+
+      sinon.assert.called(spy);
+      assert.deepEqual(spy.lastCall.args[0], {insets: {top: 0, left: 59, bottom: 21, right: 59}});
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
+
+  it('clears the safe-area override for a device without safe-area data', () => {
+    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+    const spy = sinon.stub(target.emulationAgent(), 'invoke_setSafeAreaInsetsOverride');
+
+    try {
+      const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
+      device.userAgent = 'test-ua';
+      device.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: null, hinge: null};
+      const mode: EmulationModel.EmulatedDevices.Mode = {
+        title: 'default',
+        orientation: EmulationModel.EmulatedDevices.Vertical,
+        insets: new EmulationModel.DeviceModeModel.Insets(0, 0, 0, 0),
+        image: null,
+      };
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode);
+
+      sinon.assert.called(spy);
+      assert.deepEqual(spy.lastCall.args[0], {insets: {}});
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
+
+  it('does not change device metrics when safe-area insets are present', () => {
+    const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
+    const em = target.model(SDK.EmulationModel.EmulationModel);
+    assert.exists(em);
+    deviceModeModel.modelAdded(em);
+    const metricsSpy = sinon.stub(target.emulationAgent(), 'invoke_setDeviceMetricsOverride');
+
+    try {
+      const deviceWithoutSafeArea = createSafeAreaDevice();
+      delete deviceWithoutSafeArea.modes[0].safeAreaInsets;
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, deviceWithoutSafeArea,
+                              deviceWithoutSafeArea.modes[0]);
+      sinon.assert.called(metricsSpy);
+      const metricsWithoutSafeArea = structuredClone(metricsSpy.lastCall.args[0]);
+
+      metricsSpy.resetHistory();
+
+      const deviceWithSafeArea = createSafeAreaDevice();
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, deviceWithSafeArea,
+                              deviceWithSafeArea.modes[0]);
+      sinon.assert.called(metricsSpy);
+      const metricsWithSafeArea = structuredClone(metricsSpy.lastCall.args[0]);
+
+      assert.deepEqual(metricsWithSafeArea, metricsWithoutSafeArea);
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
+
   it('uses modern default mobile user agent and metadata', () => {
     const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
     const setUserAgentOverride =

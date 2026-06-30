@@ -16,10 +16,10 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -27,27 +27,33 @@ import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('NetworkNavigatorView', () => {
+describe('NetworkNavigatorView', () => {
+  setupRuntimeHooks();
+  setupLocaleHooks();
   let workspace: Workspace.Workspace.WorkspaceImpl;
+  let backend: MockDebuggerBackend;
+
   beforeEach(async () => {
+    backend = new MockDebuggerBackend();
+    workspace = backend.universe.workspace;
+    const targetManager = backend.universe.targetManager;
+    const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
-    workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(workspace);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(debuggerWorkspaceBinding);
+    sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
+
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       targetManager,
       workspace,
       debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
+      settings: backend.universe.settings,
     });
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
@@ -58,6 +64,7 @@ describeWithEnvironment('NetworkNavigatorView', () => {
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
       target.dispose('afterEach');
     }
+    sinon.restore();
   });
 
   describe('reveals main target', () => {
@@ -67,9 +74,9 @@ describeWithEnvironment('NetworkNavigatorView', () => {
     let project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
 
     beforeEach(async () => {
-      tabTarget = createTarget({type: SDK.Target.Type.TAB});
-      prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
-      target = createTarget({parentTarget: tabTarget});
+      tabTarget = backend.createTarget({type: SDK.Target.Type.TAB});
+      prerenderTarget = backend.createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+      target = backend.createTarget({parentTarget: tabTarget});
       ({project} = createContentProviderUISourceCodes({
          items: [
            {url: urlString`http://example.com/`, mimeType: 'text/html'},
@@ -165,7 +172,7 @@ describeWithEnvironment('NetworkNavigatorView', () => {
   });
 
   it('updates in scope change', () => {
-    const target = createTarget();
+    const target = backend.createTarget();
     const {project} = createContentProviderUISourceCodes({
       items: [
         {url: urlString`http://example.com/`, mimeType: 'text/html'},
@@ -176,7 +183,7 @@ describeWithEnvironment('NetworkNavigatorView', () => {
       projectType: Workspace.Workspace.projectTypes.Network,
       target,
     });
-    const anotherTarget = createTarget();
+    const anotherTarget = backend.createTarget();
     const {project: anotherProject} = createContentProviderUISourceCodes({
       items: [
         {url: urlString`http://example.org/`, mimeType: 'text/html'},
@@ -212,7 +219,7 @@ describeWithEnvironment('NetworkNavigatorView', () => {
     let target: SDK.Target.Target;
 
     beforeEach(() => {
-      target = createTarget();
+      target = backend.createTarget();
     });
 
     afterEach(() => {
@@ -419,8 +426,6 @@ describeWithEnvironment('NetworkNavigatorView', () => {
     });
 
     it('selects just once when excution-context-destroyed event removes sibling source codes', async () => {
-      const backend = new MockProtocolBackend();
-
       dispatchEvent(target, 'Runtime.executionContextCreated', {
         context: {
           id: 2 as Protocol.Runtime.ExecutionContextId,
@@ -474,10 +479,9 @@ describeWithEnvironment('NetworkNavigatorView', () => {
     let resolveFn: (() => void)|null = null;
 
     beforeEach(() => {
-      const connection = new MockCDPConnection();
-      connection.setSuccessHandler('Debugger.setBlackboxPatterns', () => ({}));
-      connection.setSuccessHandler('Debugger.setBlackboxExecutionContexts', () => ({}));
-      target = createTarget({connection});
+      backend.cdpConnection.setSuccessHandler('Debugger.setBlackboxPatterns', () => ({}));
+      backend.cdpConnection.setSuccessHandler('Debugger.setBlackboxExecutionContexts', () => ({}));
+      target = backend.createTarget();
       Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(() => {
         if (resolveFn) {
           resolveFn();

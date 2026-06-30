@@ -182,7 +182,7 @@ function initialize(): void {
       name: 'LCP',
       value: metric.value as Trace.Types.Timing.Milli,
       startedHidden: Boolean(startedHidden),
-      phases: {
+      subparts: {
         timeToFirstByte: metric.attribution.timeToFirstByte as Trace.Types.Timing.Milli,
         resourceLoadDelay: metric.attribution.resourceLoadDelay as Trace.Types.Timing.Milli,
         resourceLoadTime: metric.attribution.resourceLoadDuration as Trace.Types.Timing.Milli,
@@ -213,7 +213,7 @@ function initialize(): void {
     const event: Spec.InteractionEntryEvent = {
       name: 'InteractionEntry',
       duration: interaction.value as Trace.Types.Timing.Milli,
-      phases: {
+      subparts: {
         inputDelay: interaction.attribution.inputDelay as Trace.Types.Timing.Milli,
         processingDuration: interaction.attribution.processingDuration as Trace.Types.Timing.Milli,
         presentationDelay: interaction.attribution.presentationDelay as Trace.Types.Timing.Milli,
@@ -238,7 +238,7 @@ function initialize(): void {
     const event: Spec.InpChangeEvent = {
       name: 'INP',
       value: metric.value as Trace.Types.Timing.Milli,
-      phases: {
+      subparts: {
         inputDelay: metric.attribution.inputDelay as Trace.Types.Timing.Milli,
         processingDuration: metric.attribution.processingDuration as Trace.Types.Timing.Milli,
         presentationDelay: metric.attribution.presentationDelay as Trace.Types.Timing.Milli,

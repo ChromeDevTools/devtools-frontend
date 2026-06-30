@@ -123,9 +123,9 @@ const UIStrings = {
    */
   recDynamicContentCLS: 'Dynamic content can influence what layout shifts happen.',
   /**
-   * @description Column header for table cell values representing the phase/component/stage/section of a larger duration.
+   * @description Column header for table cell values representing the subpart/component/stage/section of a larger duration.
    */
-  phase: 'Phase',
+  subpart: 'Subpart',
   /**
    * @description Tooltip text for a link that goes to documentation explaining the Largest Contentful Paint (LCP) metric. "LCP" is an acronym and should not be translated.
    */
@@ -145,7 +145,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCard.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type PhaseTable = Array<[string, Trace.Types.Timing.Milli, Trace.Types.Timing.Milli?]>;
+export type SubpartTable = Array<[string, Trace.Types.Timing.Milli, Trace.Types.Timing.Milli?]>;
 
 export interface MetricCardData {
   metric: 'LCP'|'CLS'|'INP';
@@ -153,7 +153,7 @@ export interface MetricCardData {
   fieldValue?: number|string;
   histogram?: CrUXManager.MetricResponse['histogram'];
   tooltipContainer?: HTMLElement;
-  phases?: PhaseTable;
+  subparts?: SubpartTable;
   warnings?: string[];
 }
 
@@ -566,30 +566,30 @@ export class MetricCard extends HTMLElement {
     // clang-format on
   }
 
-  #renderPhaseTable(phases: PhaseTable): Lit.LitTemplate {
-    const hasFieldData = phases.every(phase => phase[2] !== undefined);
+  #renderSubpartTable(subparts: SubpartTable): Lit.LitTemplate {
+    const hasFieldData = subparts.every(subpart => subpart[2] !== undefined);
 
     // clang-format off
     return html`
       <hr class="divider">
-      <div class="phase-table" role="table">
-        <div class="phase-table-row phase-table-header-row" role="row">
-          <div role="columnheader" style="grid-column: 1">${i18nString(UIStrings.phase)}</div>
-          <div role="columnheader" class="phase-table-value" style="grid-column: 2">${i18nString(UIStrings.localValue)}</div>
+      <div class="subpart-table" role="table">
+        <div class="subpart-table-row subpart-table-header-row" role="row">
+          <div role="columnheader" style="grid-column: 1">${i18nString(UIStrings.subpart)}</div>
+          <div role="columnheader" class="subpart-table-value" style="grid-column: 2">${i18nString(UIStrings.localValue)}</div>
           ${hasFieldData ? html`
             <div
               role="columnheader"
-              class="phase-table-value"
+              class="subpart-table-value"
               style="grid-column: 3"
               title=${i18nString(UIStrings.field75thPercentile)}>${i18nString(UIStrings.fieldP75)}</div>
           ` : nothing}
         </div>
-        ${phases.map(phase => html`
-          <div class="phase-table-row" role="row">
-            <div role="cell">${phase[0]}</div>
-            <div role="cell" class="phase-table-value">${i18n.TimeUtilities.preciseMillisToString(phase[1])}</div>
-            ${phase[2] !== undefined ? html`
-              <div role="cell" class="phase-table-value">${i18n.TimeUtilities.preciseMillisToString(phase[2])}</div>
+        ${subparts.map(subpart => html`
+          <div class="subpart-table-row" role="row">
+            <div role="cell">${subpart[0]}</div>
+            <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[1])}</div>
+            ${subpart[2] !== undefined ? html`
+              <div role="cell" class="subpart-table-value">${i18n.TimeUtilities.preciseMillisToString(subpart[2])}</div>
             ` : nothing}
           </div>
         `)}
@@ -659,7 +659,7 @@ export class MetricCard extends HTMLElement {
                   ${this.#renderDetailedCompareString()}
                   <hr class="divider">
                   ${this.#renderFieldHistogram()}
-                  ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases) : nothing}
+                  ${localValue && this.#data.subparts ? this.#renderSubpartTable(this.#data.subparts) : nothing}
                 </div>
               </div>
             </div>

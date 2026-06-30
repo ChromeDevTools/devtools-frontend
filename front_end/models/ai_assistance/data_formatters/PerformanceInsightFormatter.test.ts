@@ -35,7 +35,7 @@ describe('PerformanceInsightFormatter', function() {
       snapshotTester.assert(this, output);
     });
 
-    it('formats correctly when the LCP is text based and has no load delay or time phases', async function() {
+    it('formats correctly when the LCP is text based and has no load delay or time subparts', async function() {
       const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz', undefined, {
         withTimelinePanel: false,
       });

@@ -236,31 +236,31 @@ const UIStrings = {
    */
   clearCurrentLog: 'Clear the current log',
   /**
-   * @description Title for a page load phase that measures the time between when the page load starts and the time when the first byte of the initial document is downloaded.
+   * @description Title for a page load subpart that measures the time between when the page load starts and the time when the first byte of the initial document is downloaded.
    */
   timeToFirstByte: 'Time to first byte',
   /**
-   * @description Title for a page load phase that measures the time between when the first byte of the initial document is downloaded and when the request for the largest image content starts.
+   * @description Title for a page load subpart that measures the time between when the first byte of the initial document is downloaded and when the request for the largest image content starts.
    */
   resourceLoadDelay: 'Resource load delay',
   /**
-   * @description Title for a page load phase that measures the time between when the request for the largest image content starts and when it finishes.
+   * @description Title for a page load subpart that measures the time between when the request for the largest image content starts and when it finishes.
    */
   resourceLoadDuration: 'Resource load duration',
   /**
-   * @description Title for a page load phase that measures the time between when the request for the largest image content finishes and when the largest image element is rendered on the page.
+   * @description Title for a page load subpart that measures the time between when the request for the largest image content finishes and when the largest image element is rendered on the page.
    */
   elementRenderDelay: 'Element render delay',
   /**
-   * @description Title for a phase during a user interaction that measures the time between when the interaction starts and when the browser starts running interaction handlers.
+   * @description Title for a subpart during a user interaction that measures the time between when the interaction starts and when the browser starts running interaction handlers.
    */
   inputDelay: 'Input delay',
   /**
-   * @description Title for a phase during a user interaction that measures the time between when the browser starts running interaction handlers and when the browser finishes running interaction handlers.
+   * @description Title for a subpart during a user interaction that measures the time between when the browser starts running interaction handlers and when the browser finishes running interaction handlers.
    */
   processingDuration: 'Processing duration',
   /**
-   * @description Title for a phase during a user interaction that measures the time between when the browser finishes running interaction handlers and when the browser renders the next visual frame that shows the result of the interaction.
+   * @description Title for a subpart during a user interaction that measures the time between when the browser finishes running interaction handlers and when the browser renders the next visual frame that shows the result of the interaction.
    */
   presentationDelay: 'Presentation delay',
   /**
@@ -276,11 +276,11 @@ const UIStrings = {
    */
   showClsCluster: 'Go to worst layout shift cluster.',
   /**
-   * @description Column header for table cell values representing the phase/component/stage/section of a larger duration.
+   * @description Column header for table cell values representing the subpart/component/stage/section of a larger duration.
    */
-  phase: 'Phase',
+  subpart: 'Subpart',
   /**
-   * @description Column header for table cell values representing a phase duration (in milliseconds) that was measured in the developers local environment.
+   * @description Column header for table cell values representing a subpart duration (in milliseconds) that was measured in the developers local environment.
    */
   duration: 'Local duration (ms)',
   /**
@@ -328,7 +328,7 @@ export interface ViewOutput {
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement|DocumentFragment) => void;
 
-function getLcpFieldPhases(cruxManager: CrUXManager.CrUXManager): LiveMetrics.LcpValue['phases']|null {
+function getLcpFieldSubparts(cruxManager: CrUXManager.CrUXManager): LiveMetrics.LcpValue['subparts']|null {
   const ttfb =
       cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_time_to_first_byte')?.percentiles?.p75;
   const loadDelay =
@@ -484,9 +484,9 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
   const fieldData = input.cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
   const nodeLink =
       input.lcpValue?.nodeRef && PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
-  const phases = input.lcpValue?.phases;
+  const subparts = input.lcpValue?.subparts;
 
-  const fieldPhases = getLcpFieldPhases(input.cruxManager);
+  const fieldSubparts = getLcpFieldSubparts(input.cruxManager);
 
   // clang-format off
   return html`
@@ -496,11 +496,11 @@ function renderLcpCard(input: ViewInput): Lit.LitTemplate {
       fieldValue: fieldData?.percentiles?.p75,
       histogram: fieldData?.histogram,
       warnings: input.lcpValue?.warnings,
-      phases: phases && [
-        [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte, fieldPhases?.timeToFirstByte],
-        [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay, fieldPhases?.resourceLoadDelay],
-        [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime, fieldPhases?.resourceLoadTime],
-        [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay, fieldPhases?.elementRenderDelay],
+      subparts: subparts && [
+        [i18nString(UIStrings.timeToFirstByte), subparts.timeToFirstByte, fieldSubparts?.timeToFirstByte],
+        [i18nString(UIStrings.resourceLoadDelay), subparts.resourceLoadDelay, fieldSubparts?.resourceLoadDelay],
+        [i18nString(UIStrings.resourceLoadDuration), subparts.resourceLoadTime, fieldSubparts?.resourceLoadTime],
+        [i18nString(UIStrings.elementRenderDelay), subparts.elementRenderDelay, fieldSubparts?.elementRenderDelay],
       ],
     })}>
       ${nodeLink ? html`
@@ -551,7 +551,7 @@ function renderClsCard(input: ViewInput): Lit.LitTemplate {
 
 function renderInpCard(input: ViewInput): Lit.LitTemplate {
   const fieldData = input.cruxManager.getSelectedFieldMetricData('interaction_to_next_paint');
-  const phases = input.inpValue?.phases;
+  const subparts = input.inpValue?.subparts;
   const interaction = input.inpValue && input.interactions.get(input.inpValue.interactionId);
 
   // clang-format off
@@ -562,10 +562,10 @@ function renderInpCard(input: ViewInput): Lit.LitTemplate {
       fieldValue: fieldData?.percentiles?.p75,
       histogram: fieldData?.histogram,
       warnings: input.inpValue?.warnings,
-      phases: phases && [
-        [i18nString(UIStrings.inputDelay), phases.inputDelay],
-        [i18nString(UIStrings.processingDuration), phases.processingDuration],
-        [i18nString(UIStrings.presentationDelay), phases.presentationDelay],
+      subparts: subparts && [
+        [i18nString(UIStrings.inputDelay), subparts.inputDelay],
+        [i18nString(UIStrings.processingDuration), subparts.processingDuration],
+        [i18nString(UIStrings.presentationDelay), subparts.presentationDelay],
       ],
     })}>
       ${interaction ? html`
@@ -873,30 +873,30 @@ function renderInteractionsLog(input: ViewInput, output: ViewOutput): Lit.LitTem
                 ></devtools-icon>` : nothing}
                 <span class="interaction-duration">${metricValue}</span>
               </summary>
-              <div class="phase-table" role="table">
-                <div class="phase-table-row phase-table-header-row" role="row">
-                  <div role="columnheader">${i18nString(UIStrings.phase)}</div>
+              <div class="subpart-table" role="table">
+                <div class="subpart-table-row subpart-table-header-row" role="row">
+                  <div role="columnheader">${i18nString(UIStrings.subpart)}</div>
                   <div role="columnheader">
                     ${interaction.longAnimationFrameTimings.length ? html`
-                      <button
-                        class="log-extra-details-button"
-                        title=${i18nString(UIStrings.logToConsole)}
-                        @click=${() => input.logExtraInteractionDetails(interaction)}
-                      >${i18nString(UIStrings.duration)}</button>
-                    ` : i18nString(UIStrings.duration)}
+                       <button
+                         class="log-extra-details-button"
+                         title=${i18nString(UIStrings.logToConsole)}
+                         @click=${() => input.logExtraInteractionDetails(interaction)}
+                       >${i18nString(UIStrings.duration)}</button>
+                     ` : i18nString(UIStrings.duration)}
                   </div>
                 </div>
-                <div class="phase-table-row" role="row">
+                <div class="subpart-table-row" role="row">
                   <div role="cell">${i18nString(UIStrings.inputDelay)}</div>
-                  <div role="cell">${Math.round(interaction.phases.inputDelay)}</div>
+                  <div role="cell">${Math.round(interaction.subparts.inputDelay)}</div>
                 </div>
-                <div class="phase-table-row" role="row">
+                <div class="subpart-table-row" role="row">
                   <div role="cell">${i18nString(UIStrings.processingDuration)}</div>
-                  <div role="cell">${Math.round(interaction.phases.processingDuration)}</div>
+                  <div role="cell">${Math.round(interaction.subparts.processingDuration)}</div>
                 </div>
-                <div class="phase-table-row" role="row">
+                <div class="subpart-table-row" role="row">
                   <div role="cell">${i18nString(UIStrings.presentationDelay)}</div>
-                  <div role="cell">${Math.round(interaction.phases.presentationDelay)}</div>
+                  <div role="cell">${Math.round(interaction.subparts.presentationDelay)}</div>
                 </div>
               </div>
             </details>

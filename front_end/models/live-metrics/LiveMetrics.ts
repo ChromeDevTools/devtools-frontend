@@ -291,7 +291,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         const warnings: string[] = [];
         const lcpEvent: LcpValue = {
           value: webVitalsEvent.value,
-          phases: webVitalsEvent.phases,
+          subparts: webVitalsEvent.subparts,
           warnings,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
@@ -323,7 +323,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'INP': {
         const inpEvent: InpValue = {
           value: webVitalsEvent.value,
-          phases: webVitalsEvent.phases,
+          subparts: webVitalsEvent.subparts,
           interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
         };
         this.#inpValue = inpEvent;
@@ -345,7 +345,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
             interactionType: webVitalsEvent.interactionType,
             duration: webVitalsEvent.duration,
             eventNames: [],
-            phases: webVitalsEvent.phases,
+            subparts: webVitalsEvent.subparts,
             startTime: webVitalsEvent.startTime,
             nextPaintTime: webVitalsEvent.nextPaintTime,
             longAnimationFrameTimings: webVitalsEvent.longAnimationFrameEntries,
@@ -610,12 +610,12 @@ export interface MetricValue {
 }
 
 export interface LcpValue extends MetricValue {
-  phases: Spec.LcpPhases;
+  subparts: Spec.LcpSubparts;
   nodeRef?: SDK.DOMModel.DOMNode;
 }
 
 export interface InpValue extends MetricValue {
-  phases: Spec.InpPhases;
+  subparts: Spec.InpSubparts;
   interactionId: InteractionId;
 }
 
@@ -636,7 +636,7 @@ export interface Interaction {
   duration: number;
   startTime: number;
   nextPaintTime: number;
-  phases: Spec.InpPhases;
+  subparts: Spec.InpSubparts;
   longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
   nodeRef?: SDK.DOMModel.DOMNode;
 }

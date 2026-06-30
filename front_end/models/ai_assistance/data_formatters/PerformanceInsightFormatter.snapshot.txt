@@ -3,7 +3,7 @@ Content:
 ## Insight Title: LCP breakdown
 
 ## Insight Summary:
-This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 subparts (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 240 ms.
@@ -45,7 +45,7 @@ Response headers
 - server: Apache
 - access-control-allow-headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 
-We can break this time down into the 4 phases that combine to make the LCP time:
+We can break this time down into the 4 subparts that combine to make the LCP time:
 
 - Time to first byte: 2 ms (0.7% of total LCP time)
 - Resource load delay: 53 ms (22.1% of total LCP time)
@@ -65,7 +65,7 @@ Content:
 ## Insight Title: LCP breakdown
 
 ## Insight Summary:
-This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 subparts (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 129 ms.
@@ -91,7 +91,7 @@ From a service worker: No
 Initiators (root request to the request that directly loaded this one): none
 
 
-We can break this time down into the 4 phases that combine to make the LCP time:
+We can break this time down into the 4 subparts that combine to make the LCP time:
 
 - Time to first byte: 8 ms (6.1% of total LCP time)
 - Resource load delay: 33 ms (25.7% of total LCP time)
@@ -106,18 +106,18 @@ We can break this time down into the 4 phases that combine to make the LCP time:
 - https://web.dev/articles/optimize-lcp
 === end content
 
-Title: PerformanceInsightFormatter LCP breakdown formats correctly when the LCP is text based and has no load delay or time phases
+Title: PerformanceInsightFormatter LCP breakdown formats correctly when the LCP is text based and has no load delay or time subparts
 Content:
 ## Insight Title: LCP breakdown
 
 ## Insight Summary:
-This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
+This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 subparts (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.
 
 ## Detailed analysis:
 The Largest Contentful Paint (LCP) time for this navigation was 106 ms.
 The LCP element is text and was not fetched from the network.
 
-We can break this time down into the 2 phases that combine to make the LCP time:
+We can break this time down into the 2 subparts that combine to make the LCP time:
 
 - Time to first byte: 6 ms (5.7% of total LCP time)
 - Element render delay: 100 ms (94.3% of total LCP time)
@@ -561,15 +561,15 @@ Interaction to Next Paint (INP) is a metric that tracks the responsiveness of th
 - Needs improvement: more than 200 milliseconds and 500 milliseconds or less.
 - Bad: over 500 milliseconds.
 
-For a given slow interaction, we can break it down into 3 phases:
+For a given slow interaction, we can break it down into 3 subparts:
 1. Input delay: starts when the user initiates an interaction with the page, and ends when the event callbacks for the interaction begin to run.
 2. Processing duration: the time it takes for the event callbacks to run to completion.
 3. Presentation delay: the time it takes for the browser to present the next frame which contains the visual result of the interaction.
 
-The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.
+The sum of these three subparts is the total latency. It is important to optimize each of these subparts to ensure interactions take as little time as possible. Focusing on the subpart that has the largest score is a good way to start optimizing.
 
 ## Detailed analysis:
-The longest interaction on the page was a `click` which had a total duration of `980 ms`. The timings of each of the three phases were:
+The longest interaction on the page was a `click` which had a total duration of `980 ms`. The timings of each of the three subparts were:
 
 1. Input delay: 1 ms
 2. Processing duration: 977 ms

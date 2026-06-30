@@ -37,7 +37,7 @@ describeWithEnvironment('LiveMetrics', () => {
       liveMetrics.setStatusForTesting({
         lcp: {
           value: 100 as Milli,
-          phases: {
+          subparts: {
             timeToFirstByte: 0 as Milli,
             resourceLoadDelay: 0 as Milli,
             resourceLoadTime: 0 as Milli,
@@ -47,7 +47,7 @@ describeWithEnvironment('LiveMetrics', () => {
         cls: {value: 0.1, clusterShiftIds: []},
         inp: {
           value: 50 as Milli,
-          phases: {inputDelay: 0 as Milli, processingDuration: 0 as Milli, presentationDelay: 0 as Milli},
+          subparts: {inputDelay: 0 as Milli, processingDuration: 0 as Milli, presentationDelay: 0 as Milli},
           interactionId: 'interaction-1-1'
         },
         interactions:
@@ -115,7 +115,7 @@ describeWithEnvironment('LiveMetrics', () => {
     const lcpEvent = (value: number): Spec.LcpChangeEvent => ({
       name: 'LCP',
       value: value as Milli,
-      phases: {
+      subparts: {
         timeToFirstByte: 0 as Milli,
         resourceLoadDelay: 0 as Milli,
         resourceLoadTime: 0 as Milli,
@@ -172,7 +172,7 @@ describeWithEnvironment('LiveMetrics', () => {
         duration: 100,
         startTime: 0,
         nextPaintTime: 100,
-        phases: {inputDelay: 10 as Milli, processingDuration: 80 as Milli, presentationDelay: 10 as Milli},
+        subparts: {inputDelay: 10 as Milli, processingDuration: 80 as Milli, presentationDelay: 10 as Milli},
         longAnimationFrameTimings: [],
       };
 

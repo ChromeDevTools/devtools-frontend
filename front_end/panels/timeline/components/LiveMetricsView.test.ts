@@ -194,7 +194,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
-        phases: {
+        subparts: {
           inputDelay: 100 as Milli,
           processingDuration: 300 as Milli,
           presentationDelay: 100 as Milli,
@@ -209,7 +209,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
+          subparts: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -219,7 +219,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -245,10 +245,11 @@ describeWithEnvironment('LiveMetricsView', () => {
     assert.strictEqual(durationEl1.textContent, '500 ms');
     assert.strictEqual(durationEl1.className, 'metric-value needs-improvement dim');
 
-    const phases1 =
-        Array.from(interactionsEls[0].querySelectorAll<HTMLElement>('.phase-table-row:not(.phase-table-header-row)'))
+    const subparts1 =
+        Array
+            .from(interactionsEls[0].querySelectorAll<HTMLElement>('.subpart-table-row:not(.subpart-table-header-row)'))
             .map(el => el.innerText);
-    assert.deepEqual(phases1, [
+    assert.deepEqual(subparts1, [
       'Input delay\n100',
       'Processing duration\n300',
       'Presentation delay\n100',
@@ -264,10 +265,11 @@ describeWithEnvironment('LiveMetricsView', () => {
     assert.strictEqual(durationEl2.textContent, '30 ms');
     assert.strictEqual(durationEl2.className, 'metric-value good dim');
 
-    const phases2 =
-        Array.from(interactionsEls[1].querySelectorAll<HTMLElement>('.phase-table-row:not(.phase-table-header-row)'))
+    const subparts2 =
+        Array
+            .from(interactionsEls[1].querySelectorAll<HTMLElement>('.subpart-table-row:not(.subpart-table-header-row)'))
             .map(el => el.innerText);
-    assert.deepEqual(phases2, [
+    assert.deepEqual(subparts2, [
       'Input delay\n10',
       'Processing duration\n10',
       'Presentation delay\n10',
@@ -279,7 +281,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
-        phases: {
+        subparts: {
           inputDelay: 100 as Milli,
           processingDuration: 300 as Milli,
           presentationDelay: 100 as Milli,
@@ -294,7 +296,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
+          subparts: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [{
             renderStart: 0,
             duration: 0,
@@ -308,7 +310,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -331,7 +333,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 50,
-        phases: {
+        subparts: {
           inputDelay: 10 as Milli,
           processingDuration: 30 as Milli,
           presentationDelay: 10 as Milli,
@@ -346,7 +348,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -356,7 +358,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
+          subparts: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -464,7 +466,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
-        phases: {
+        subparts: {
           inputDelay: 100 as Milli,
           processingDuration: 300 as Milli,
           presentationDelay: 100 as Milli,
@@ -479,7 +481,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
+          subparts: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -489,7 +491,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -520,7 +522,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
-        phases: {
+        subparts: {
           inputDelay: 100 as Milli,
           processingDuration: 300 as Milli,
           presentationDelay: 100 as Milli,
@@ -535,7 +537,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -557,7 +559,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 50,
-        phases: {
+        subparts: {
           inputDelay: 10 as Milli,
           processingDuration: 30 as Milli,
           presentationDelay: 10 as Milli,
@@ -572,7 +574,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -582,7 +584,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
+          subparts: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -614,7 +616,7 @@ describeWithEnvironment('LiveMetricsView', () => {
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 50,
-        phases: {
+        subparts: {
           inputDelay: 10 as Milli,
           processingDuration: 30 as Milli,
           presentationDelay: 10 as Milli,
@@ -629,7 +631,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
+          subparts: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -639,7 +641,7 @@ describeWithEnvironment('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
+          subparts: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),

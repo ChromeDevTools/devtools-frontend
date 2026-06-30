@@ -36,6 +36,10 @@ export class BrowserWrapper {
       return;
     }
     for (const file of fs.readdirSync(crashesPath)) {
+      const target = path.join(TestConfig.artifactsDir, file);
+      if (fs.existsSync(target)) {
+        continue;
+      }
       console.error('Collecting crash dump:', file);
       fs.copyFileSync(path.join(crashesPath, file), path.join(TestConfig.artifactsDir, file));
     }

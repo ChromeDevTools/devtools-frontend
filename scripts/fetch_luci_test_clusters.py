@@ -9,6 +9,7 @@ import subprocess
 import urllib.request
 import urllib.error
 import datetime
+import argparse
 
 
 def get_luci_token() -> str:
@@ -39,9 +40,11 @@ def get_flaky_clusters(project_name: str) -> dict:
     payload = {
         "project":
         project_name,
-        # Order by exonerated presubmit-blocking failures (strongest indicator of flakiness)
+        "failureFilter":
+        'realm = "devtools-frontend:ci"',
+        # Order by total failures
         "orderBy":
-        "metrics.`critical-failures-exonerated`.value desc",
+        "metrics.`failures`.value desc",
         "metrics": [
             f"projects/{project_name}/metrics/critical-failures-exonerated",
             f"projects/{project_name}/metrics/failures",
@@ -61,8 +64,6 @@ def get_flaky_clusters(project_name: str) -> dict:
                                  headers=headers,
                                  method='POST')
 
-    print(
-        f"Fetching flaky clusters for {project_name} over the last 7 days...")
     try:
         with urllib.request.urlopen(req) as response:
             raw_data = response.read().decode('utf-8')
@@ -79,35 +80,62 @@ def get_flaky_clusters(project_name: str) -> dict:
     return json.loads(raw_data)
 
 
-if __name__ == "__main__":
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--format", choices=["json"], help="Output format")
+    args = parser.parse_args()
+
     project = "devtools-frontend"
+    is_json = args.format == "json"
+
+    if not is_json:
+        print(f"Fetching flaky clusters for {project} over the last 7 days...")
 
     try:
         data = get_flaky_clusters(project)
         clusters = data.get("clusterSummaries", [])
 
-        print(f"\nTop Flaky Clusters for {project}:")
-        print("=" * 60)
+        # Filter out chromium tests
+        # Chromium tests usually contain "ninja://" or "Unexpected Diff" (inspector-protocol)
+        def is_chromium_test(title: str) -> bool:
+            return "ninja://" in title or "Unexpected Diff" in title or ".cc(" in title
 
-        # Print the top 10 results
-        for cluster in clusters[:10]:
-            title = cluster.get("title", "No Title")
-            cluster_id = cluster.get("clusterId", {}).get("id", "Unknown ID")
-            metrics = cluster.get("metrics", {})
+        clusters = [
+            c for c in clusters if not is_chromium_test(c.get("title", ""))
+        ]
 
-            # Extract metric values (defaults to 0 if not present)
-            exonerated = metrics.get("critical-failures-exonerated",
-                                     {}).get("value", 0)
-            total_failures = metrics.get("failures", {}).get("value", 0)
-            human_cls_failed = metrics.get("human-cls-failed-presubmit",
-                                           {}).get("value", 0)
+        clusters = [
+            c for c in clusters if int(
+                c.get("metrics", {}).get("failures", {}).get("value", 0)) > 25
+        ]
 
-            print(f"Cluster: {title}")
-            print(f"ID:      {cluster_id}")
-            print(f"Impact:  {exonerated} critical failures exonerated")
-            print(f"         {total_failures} total failures")
-            print(f"         {human_cls_failed} user CLs failed presubmit")
-            print("-" * 60)
+        if is_json:
+            print(json.dumps(clusters, indent=2))
+        else:
+            print(f"\nFlaky Clusters for {project}:")
+            print("=" * 60)
+
+            for cluster in clusters:
+                title = cluster.get("title", "No Title")
+                cluster_id = cluster.get("clusterId",
+                                         {}).get("id", "Unknown ID")
+                algorithm = cluster.get("clusterId",
+                                        {}).get("algorithm",
+                                                "Unknown Algorithm")
+                metrics = cluster.get("metrics", {})
+
+                # Extract metric values (defaults to 0 if not present)
+                exonerated = metrics.get("critical-failures-exonerated",
+                                         {}).get("value", 0)
+                total_failures = metrics.get("failures", {}).get("value", 0)
+                human_cls_failed = metrics.get("human-cls-failed-presubmit",
+                                               {}).get("value", 0)
+                cluster_link = f"https://luci-analysis.appspot.com/p/{project}/clusters/{algorithm}/{cluster_id}"
+
+                print(f"Cluster: {title}")
+                print(f"Link:    {cluster_link}")
+                print(f"Impact:  {total_failures} total failures")
+                print("-" * 60)
 
     except subprocess.CalledProcessError:
         print(
@@ -115,3 +143,7 @@ if __name__ == "__main__":
         )
     except urllib.error.URLError as e:
         print(f"Network error querying LUCI Analysis: {e.reason}")
+
+
+if __name__ == "__main__":
+    main()

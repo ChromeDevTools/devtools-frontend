@@ -30,7 +30,8 @@
     "start": "vpython3 third_party/node/node.py --output scripts/run_start.mjs",
     "webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js",
     "watch": "npm run build -- --watch",
-    "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js"
+    "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js",
+    "test-health": "node scripts/test_health.ts"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "16.0.3",

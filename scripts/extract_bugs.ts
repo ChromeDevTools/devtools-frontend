@@ -11,7 +11,7 @@ const argv = yargs(hideBin(process.argv))
                  .option('format', {
                    alias: 'f',
                    describe: 'Output format',
-                   choices: ['list', 'b'],
+                   choices: ['list', 'b', 'json'],
                    default: 'list',
                  })
                  .option('sources', {
@@ -117,7 +117,13 @@ if (argv.sources.includes('chromium')) {
   }
 }
 
-if (argv.format === 'b') {
+if (argv.format === 'json') {
+  const result = Array.from(bugs).map(bug => ({
+                                        bug: `crbug.com/${bug}`,
+                                        file: bugToFile.get(bug) ?? '',
+                                      }));
+  console.log(JSON.stringify(result, null, 2));
+} else if (argv.format === 'b') {
   console.log(`id: (${Array.from(bugs).join('|')})`);
 } else {
   for (const bug of bugs) {

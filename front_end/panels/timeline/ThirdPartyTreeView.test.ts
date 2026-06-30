@@ -6,13 +6,20 @@ import {assert} from 'chai';
 
 import * as Trace from '../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
 
-describeWithEnvironment('Third party tree', function() {
+describe('Third party tree', function() {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
   it('does not select the first row by default', async function() {
     const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const treeView = new Timeline.ThirdPartyTreeView.ThirdPartyTreeViewWidget();

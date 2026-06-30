@@ -218,26 +218,30 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     });
 
     it('with preset option', async () => {
-      const {view} = await createWidget();
+      const {view, widget} = await createWidget();
 
       view.input.onMenuItemSelected(new Menus.SelectMenu.SelectMenuItemSelectedEvent(4));
 
       sinon.assert.calledOnceWithExactly(setOptionSpy, SDK.CPUThrottlingManager.MidTierThrottlingOption);
+
+      widget.detach();
     });
 
     it('with calibrated option', async () => {
-      const {view} = await createWidget();
+      const {view, widget} = await createWidget();
 
       view.input.onMenuItemSelected(new Menus.SelectMenu.SelectMenuItemSelectedEvent('low-tier-mobile'));
 
       sinon.assert.calledOnceWithExactly(
           setOptionSpy, SDK.CPUThrottlingManager.CalibratedLowTierMobileThrottlingOption);
+
+      widget.detach();
     });
   });
 
   it('reacts to changes in CPU throttling manager', async () => {
     cpuThrottlingManager.setCPUThrottlingOption(SDK.CPUThrottlingManager.NoThrottlingOption);
-    const {view} = await createWidget();
+    const {view, widget} = await createWidget();
 
     assert.strictEqual(view.input.currentOption, SDK.CPUThrottlingManager.NoThrottlingOption);
 
@@ -245,14 +249,18 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     await view.nextInput;
 
     assert.strictEqual(view.input.currentOption, SDK.CPUThrottlingManager.LowTierThrottlingOption);
+
+    widget.detach();
   });
 
   it('reacts to changes in CPU throttling manager when it is unmounted and then remounted', async () => {
     // Change the conditions before the component is put into the DOM.
     cpuThrottlingManager.setCPUThrottlingOption(SDK.CPUThrottlingManager.LowTierThrottlingOption);
-    const {view} = await createWidget();
+    const {view, widget} = await createWidget();
 
     // Ensure that the component picks up the new changes and has selected the right throttling setting
     assert.strictEqual(view.input.currentOption, SDK.CPUThrottlingManager.LowTierThrottlingOption);
+
+    widget.detach();
   });
 });

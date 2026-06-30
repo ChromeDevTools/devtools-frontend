@@ -12,7 +12,11 @@ import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  deinitializeGlobalVars,
+  initializeGlobalVars,
+} from '../../testing/EnvironmentHelpers.js';
 import {
   allThreadEntriesInTrace,
   microsecondsTraceWindow,
@@ -56,10 +60,15 @@ function clearPersistTrackConfigSettings() {
   networkGroupSetting.set(null);
 }
 
-describeWithEnvironment('TimelineFlameChartView', function() {
-  before(() => {
+describe('TimelineFlameChartView', function() {
+  before(async () => {
+    await initializeGlobalVars();
     // In case any previous test suite set this.
     clearPersistTrackConfigSettings();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
   });
 
   beforeEach(() => {

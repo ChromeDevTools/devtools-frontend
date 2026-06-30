@@ -26,7 +26,8 @@ import {
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {
   createTarget,
-  describeWithEnvironment,
+  deinitializeGlobalVars,
+  initializeGlobalVars,
   registerNoopActions,
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
@@ -3327,7 +3328,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 });
 
-describeWithEnvironment('AiAssistancePanel.ActionDelegate', () => {
+describe('AiAssistancePanel.ActionDelegate', () => {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
+
   beforeEach(async () => {
     UI.ViewManager.ViewManager.instance({forceNew: true});
     UI.InspectorView.InspectorView.instance({forceNew: true});

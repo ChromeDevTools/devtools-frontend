@@ -19,6 +19,7 @@ const {AiCodeGenerationTeaser, AiCodeGenerationTeaserDisplayState} = PanelCommon
 
 describeWithEnvironment('AiCodeGenerationTeaser', () => {
   beforeEach(() => {
+    Common.Settings.Settings.instance().createSetting('ai-code-generation-used', false);
     AiCodeGenerationTeaser.setDiscoveryTeaserShownInSessionForTest(false);
   });
 

@@ -19,7 +19,12 @@ import {
   getMenuForToolbarButton
 } from '../../testing/ContextMenuHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {
+  createTarget,
+  deinitializeGlobalVars,
+  initializeGlobalVars,
+  updateHostConfig
+} from '../../testing/EnvironmentHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -55,7 +60,10 @@ const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
   };
 };
 
-describeWithEnvironment('WebMCPView (View)', () => {
+describe('WebMCPView (View)', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   it('calls onCallSelect with correct tab when clicking different columns', async () => {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     const sdkTarget = createTarget();
@@ -612,7 +620,10 @@ describeWithEnvironment('WebMCPView (View)', () => {
   });
 });
 
-describeWithEnvironment('WebMCPView Presenter', () => {
+describe('WebMCPView Presenter', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   let target: SDK.Target.Target;
   async function setup() {
     updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
@@ -983,7 +994,10 @@ describe('filterToolCalls', () => {
   });
 });
 
-describeWithEnvironment('ToolDetailsWidget', () => {
+describe('ToolDetailsWidget', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   beforeEach(() => {
     Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
   });
@@ -1083,7 +1097,10 @@ describeWithEnvironment('ToolDetailsWidget', () => {
   });
 });
 
-describeWithEnvironment('PayloadWidget (View)', () => {
+describe('PayloadWidget (View)', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   const {PAYLOAD_DEFAULT_VIEW} = Application.WebMCPView;
 
   it('renders parsed JSON input', async () => {
@@ -1117,7 +1134,10 @@ describeWithEnvironment('PayloadWidget (View)', () => {
   });
 });
 
-describeWithEnvironment('PayloadWidget', () => {
+describe('PayloadWidget', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   const {PayloadWidget} = Application.WebMCPView;
   async function createWidget() {
     const view = createViewFunctionStub(PayloadWidget);
@@ -1366,7 +1386,10 @@ describe('parseToolSchema', () => {
   });
 });
 
-describeWithEnvironment('WebMCPView JSON Editor', () => {
+describe('WebMCPView JSON Editor', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   const createDefaultViewInput = (): Application.WebMCPView.ViewInput => {
     return {
       filters: {text: ''},

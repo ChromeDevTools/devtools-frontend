@@ -23,6 +23,10 @@ import * as Sources from './sources.js';
 
 describeWithEnvironment('SourcesPanel', () => {
   function setUpEnvironment() {
+    registerNoopActions([
+      'debugger.toggle-pause', 'debugger.step-over', 'debugger.step-into', 'debugger.step-out', 'debugger.step',
+      'debugger.toggle-breakpoints-active'
+    ]);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
@@ -58,10 +62,6 @@ describeWithEnvironment('SourcesPanel', () => {
   }
 
   it('Shows Debug with Ai menu and submenu items', () => {
-    registerNoopActions([
-      'debugger.toggle-pause', 'debugger.step-over', 'debugger.step-into', 'debugger.step-out', 'debugger.step',
-      'debugger.toggle-breakpoints-active'
-    ]);
     registerActions([{
       actionId: 'drjones.sources-panel-context',
       title: () => 'Debug with AI' as Platform.UIString.LocalizedString,

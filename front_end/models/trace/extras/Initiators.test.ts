@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import type * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
@@ -16,7 +16,15 @@ import * as Extras from './extras.js';
  * can find it here:
  * https://github.com/ChromeDevTools/performance-stories/tree/main/resource-initiators
  */
-describeWithEnvironment('getNetworkInitiator', () => {
+describe('getNetworkInitiator', () => {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
+
   const {getNetworkInitiator} = Extras.Initiators;
 
   let parsedTrace: Handlers.Types.HandlerData;

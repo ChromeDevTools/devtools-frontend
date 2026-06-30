@@ -16,7 +16,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
-  describeWithEnvironment,
+  deinitializeGlobalVars,
+  initializeGlobalVars,
   registerNoopActions,
 } from '../../testing/EnvironmentHelpers.js';
 import {type StubbedFileManager, stubFileManager} from '../../testing/FileManagerHelpers.js';
@@ -36,7 +37,15 @@ async function contentDataToFile(contentData: TextUtils.ContentData.ContentData)
   return JSON.parse(text) as Trace.Types.File.TraceFile;
 }
 
-describeWithEnvironment('TimelinePanel', function() {
+describe('TimelinePanel', function() {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
+
   let timeline: Timeline.TimelinePanel.TimelinePanel;
   let traceModel: Trace.TraceModel.Model;
   let resourceLoader: SDK.PageResourceLoader.PageResourceLoader;

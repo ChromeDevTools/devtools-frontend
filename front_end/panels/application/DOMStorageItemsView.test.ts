@@ -8,13 +8,21 @@ import sinon from 'sinon';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
-import {describeWithEnvironment, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars, setupActionRegistry} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-describeWithEnvironment('DOMStorageItemsView', () => {
-  before(() => {
+describe('DOMStorageItemsView', () => {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
+
+  beforeEach(() => {
     UI.ActionRegistration.maybeRemoveActionExtension('ai-assistance.storage-floating-button');
     UI.ActionRegistration.maybeRemoveActionExtension('ai-assistance.application-panel-context');
     UI.ActionRegistration.registerActionExtension({

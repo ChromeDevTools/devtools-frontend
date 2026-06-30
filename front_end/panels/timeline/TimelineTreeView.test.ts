@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 import * as Trace from '../../models/trace/trace.js';
 import {assertScreenshot} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace, renderWidgetInVbox} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -27,7 +27,14 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   element = document.createElement('div');
 }
 
-describeWithEnvironment('TimelineTreeView', function() {
+describe('TimelineTreeView', function() {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
   const mockViewDelegate = new MockViewDelegate();
 
   describe('EventsTimelineTreeView', function() {

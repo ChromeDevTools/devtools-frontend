@@ -16,11 +16,18 @@ import {
   dispatchKeyDownEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {
+  deinitializeGlobalVars,
+  describeWithEnvironment,
+  initializeGlobalVars
+} from '../../../testing/EnvironmentHelpers.js';
 
 import * as TimelineComponents from './components.js';
 
-describeWithEnvironment('Ignore List Setting', () => {
+describe('Ignore List Setting', () => {
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
+
   async function renderIgnoreListSetting(): Promise<HTMLElement> {
     const component = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
     renderElementIntoDOM(component);

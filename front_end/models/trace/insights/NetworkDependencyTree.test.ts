@@ -6,7 +6,11 @@ import {assert} from 'chai';
 
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {
+  deinitializeGlobalVars,
+  describeWithEnvironment,
+  initializeGlobalVars,
+} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
@@ -16,7 +20,14 @@ import type {InsightSetContextWithNavigation, RelatedEventsMap} from './types.js
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('NetworkDependencyTree', function() {
+describe('NetworkDependencyTree', function() {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
   let insight: Trace.Insights.Types.InsightModels['NetworkDependencyTree'];
 
   before(async function() {
@@ -134,6 +145,14 @@ describeWithEnvironment('NetworkDependencyTree', function() {
 });
 
 describe('generatePreconnectedOrigins', () => {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
+
   describe('generatePreconnectedOriginsFromDom', () => {
     const mockParsedTrace = {
       NetworkRequests: {
@@ -257,7 +276,7 @@ describe('generatePreconnectedOrigins', () => {
     });
   });
 
-  describeWithEnvironment('PreconnectedOriginFromResponseHeader', function() {
+  describe('PreconnectedOriginFromResponseHeader', function() {
     let insight: Trace.Insights.Types.InsightModels['NetworkDependencyTree'];
     let documentRequest: Trace.Types.Events.SyntheticNetworkRequest|undefined;
 

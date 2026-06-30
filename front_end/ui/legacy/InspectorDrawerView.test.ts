@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 
@@ -28,8 +28,11 @@ function getDrawerOrientationSettingByDock(dockMode: LegacyUI.InspectorView.Dock
   return (setting.get() as LegacyUI.InspectorView.DrawerOrientationByDockMode)[dockMode];
 }
 
-describeWithEnvironment('InspectorDrawerView', () => {
+describe('InspectorDrawerView', () => {
   setupSettingsHooks();
+
+  before(async () => await initializeGlobalVars());
+  after(async () => await deinitializeGlobalVars());
 
   function createInspectorViewWithDockState(dockState: LegacyUI.DockController.DockState): {
     inspectorView: LegacyUI.InspectorView.InspectorView,

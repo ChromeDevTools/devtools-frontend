@@ -76,6 +76,8 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
       'https://example.org',
       'Yes, because the origin is outside of the top-level site',
     ]);
+
+    view.detach();
   });
 
   it('renders metadata with storage bucket info when found', async () => {
@@ -114,5 +116,7 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
       'Yes, because the origin is outside of the top-level site',
       'test-bucket',
     ]);
+
+    view.detach();
   });
 });

@@ -77,7 +77,9 @@ export async function deinitializeGlobalVars() {
   delete globalObject.ls;
 
   for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-    target.dispose('deinitializeGlobalVars');
+    if (typeof target.dispose === 'function') {
+      target.dispose('deinitializeGlobalVars');
+    }
   }
 
   // Remove instances.
@@ -117,9 +119,9 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
   reset: true,
 }) {
   return describe(title, function() {
-    before(async () => await initializeGlobalVars(opts));
+    beforeEach(async () => await initializeGlobalVars(opts));
     fn.call(this);
-    after(async () => await deinitializeGlobalVars());
+    afterEach(async () => await deinitializeGlobalVars());
   });
 }
 
@@ -128,9 +130,9 @@ describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) =
 }) {
   // eslint-disable-next-line mocha/no-exclusive-tests
   return describe.only(title, function() {
-    before(async () => await initializeGlobalVars(opts));
+    beforeEach(async () => await initializeGlobalVars(opts));
     fn.call(this);
-    after(async () => await deinitializeGlobalVars());
+    afterEach(async () => await deinitializeGlobalVars());
   });
 };
 describeWithEnvironment.skip = function(title: string, fn: (this: Mocha.Suite) => void, _opts: {reset: boolean} = {
@@ -153,14 +155,14 @@ export function createFakeRegExpSetting(name: string, defaultValue: string): Com
 }
 
 export function setupActionRegistry() {
-  before(function() {
+  beforeEach(function() {
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
     UI.ShortcutRegistry.ShortcutRegistry.instance({
       forceNew: true,
       actionRegistry,
     });
   });
-  after(function() {
+  afterEach(function() {
     if (UI) {
       UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
       UI.ActionRegistry.ActionRegistry.removeInstance();

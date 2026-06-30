@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import type * as Platform from '../../core/platform/platform.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
 
@@ -23,10 +23,11 @@ describe('View', () => {
     });
   });
 
-  describeWithEnvironment('TabbedViewLocation', () => {
+  describe('TabbedViewLocation', () => {
     let tabbedLocation: UI.View.TabbedViewLocation;
     let viewManager: UI.ViewManager.ViewManager;
     before(async () => {
+      await initializeGlobalVars();
       ['first', 'second', 'third', 'fourth'].forEach(title => {
         UI.ViewManager.registerViewExtension({
           // @ts-expect-error
@@ -43,6 +44,8 @@ describe('View', () => {
       viewManager = UI.ViewManager.ViewManager.instance({forceNew: true});
       tabbedLocation = viewManager.createTabbedLocation(() => {}, 'mock-location', true, true);
     });
+
+    after(async () => await deinitializeGlobalVars());
 
     it('Creates an empty tabbed location', () => {
       assert.deepEqual(tabbedLocation.tabbedPane().tabIds(), []);

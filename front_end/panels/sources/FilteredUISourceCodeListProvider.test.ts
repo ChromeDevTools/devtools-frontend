@@ -189,6 +189,7 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     }
 
     beforeEach(() => {
+      setUpEnvironment();
       createContentProviderUISourceCodes(
           {items: [{url: url1, mimeType: 'text/javascript'}, {url: url2, mimeType: 'text/javascript'}]});
 

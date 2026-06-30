@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
 import {
   type ConsoleAPIExtensionTestData,
   makeCompleteEvent,
@@ -42,7 +42,14 @@ async function createUserTimingsDataFromEvents(events: readonly Trace.Types.Even
   return Trace.Handlers.ModelHandlers.UserTimings.data();
 }
 
-describeWithEnvironment('UserTimingsHandler', function() {
+describe('UserTimingsHandler', function() {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => {
+    await deinitializeGlobalVars();
+  });
   let timingsData: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', function() {
     async function getTimingsDataFromEvents(events: readonly Trace.Types.Events.Event[]):

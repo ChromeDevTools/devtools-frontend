@@ -3,16 +3,16 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import * as sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {MockProtocolBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
@@ -20,25 +20,23 @@ import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('Inline variable view scope helpers', () => {
+describe('Inline variable view scope helpers', () => {
+  setupSettingsHooks();
+
   const URL = urlString`file:///tmp/example.js`;
   let target: SDK.Target.Target;
-  let backend: MockProtocolBackend;
+  let backend: MockDebuggerBackend;
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    target = createTarget();
-    backend = new MockProtocolBackend();
+    backend = new MockDebuggerBackend();
+    target = backend.createTarget();
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   async function toOffsetWithSourceMap(

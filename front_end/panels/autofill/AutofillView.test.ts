@@ -261,10 +261,8 @@ describeWithEnvironment('AutofillView', () => {
       const actionTakenStub = sinon.stub(Host.userMetrics, 'actionTaken');
 
       const view = createViewFunctionStub(Autofill.AutofillView.AutofillView);
-      const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance({
-        forceNew: true,
-        targetManager: SDK.TargetManager.TargetManager.instance(),
-      });
+      const autofillManager =
+          new AutofillManager.AutofillManager.AutofillManager(SDK.TargetManager.TargetManager.instance());
       const autofillView = new Autofill.AutofillView.AutofillView(autofillManager, view);
       renderElementIntoDOM(autofillView);
       return {manager: autofillManager, view: autofillView, showViewStub, actionTakenStub};

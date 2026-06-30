@@ -298,7 +298,7 @@ export class AutofillView extends UI.Widget.VBox {
   #matches: AutofillManager.AutofillManager.Match[] = [];
   #highlightedMatches: AutofillManager.AutofillManager.Match[] = [];
 
-  constructor(autofillManager = AutofillManager.AutofillManager.AutofillManager.instance(), view = DEFAULT_VIEW) {
+  constructor(autofillManager: AutofillManager.AutofillManager.AutofillManager, view = DEFAULT_VIEW) {
     super({useShadowDom: true});
     this.#autofillManager = autofillManager;
     this.#view = view;

@@ -36,8 +36,9 @@ UI.ViewManager.registerViewExtension({
   commandPrompt: i18nLazyString(UIStrings.showAutofill),
   order: 100,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
-  async loadView() {
+  async loadView(universe) {
     const Autofill = await loadAutofillModule();
-    return new Autofill.AutofillView.AutofillView();
+    const {autofillManager} = universe;
+    return new Autofill.AutofillView.AutofillView(autofillManager);
   },
 });

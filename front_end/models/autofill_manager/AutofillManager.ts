@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -18,23 +17,6 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     super();
     targetManager.addModelListener(SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.ADDRESS_FORM_FILLED,
                                    this.#addressFormFilled, this, {scoped: true});
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-    targetManager: SDK.TargetManager.TargetManager|null,
-  } = {
-    forceNew: null,
-    targetManager: null,
-  }): AutofillManager {
-    const {forceNew, targetManager} = opts;
-    if (!Root.DevToolsContext.globalInstance().has(AutofillManager) || forceNew) {
-      if (!targetManager) {
-        throw new Error('Missing targetManager for AutofillManager');
-      }
-      Root.DevToolsContext.globalInstance().set(AutofillManager, new AutofillManager(targetManager));
-    }
-    return Root.DevToolsContext.globalInstance().get(AutofillManager);
   }
 
   async #addressFormFilled({data}: Common.EventTarget.EventTargetEvent<

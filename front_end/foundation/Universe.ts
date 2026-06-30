@@ -19,6 +19,7 @@ export class Universe {
   //                            static method, we can move it out of the `DevToolsContext` and store it
   //                            directly on the `Universe`.
   readonly context: Root.DevToolsContext.DevToolsContext;
+  readonly autofillManager: AutofillManager.AutofillManager.AutofillManager;
 
   constructor(options: CreationOptions) {
     const context = new Root.DevToolsContext.WritableDevToolsContext();
@@ -63,8 +64,7 @@ export class Universe {
         resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
 
-    const autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager);
-    context.set(AutofillManager.AutofillManager.AutofillManager, autofillManager);
+    this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager);
   }
 
   get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader {

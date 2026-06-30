@@ -43,7 +43,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Foundation from '../../foundation/foundation.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
@@ -504,8 +503,6 @@ export class MainImpl {
       isolatedFileSystemManager,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
     });
-
-    AutofillManager.AutofillManager.AutofillManager.instance({forceNew: null, targetManager});
 
     LiveMetrics.LiveMetrics.instance();
     CrUXManager.CrUXManager.instance();

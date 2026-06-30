@@ -11,6 +11,7 @@ import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as EmulationModel from '../models/emulation/emulation.js';
 import * as Formatter from '../models/formatter/formatter.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
@@ -99,6 +100,7 @@ export async function deinitializeGlobalVars() {
   Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
   ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.removeInstance();
   Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+  EmulationModel.DeviceModeModel.DeviceModeModel.removeInstance();
 
   cleanupSettings();
 

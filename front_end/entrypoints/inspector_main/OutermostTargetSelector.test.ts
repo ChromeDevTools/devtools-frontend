@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {
   createTarget,
 } from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
@@ -22,7 +23,16 @@ describeWithMockConnection('OutermostTargetSelector', () => {
   let selector: InspectorMain.OutermostTargetSelector.OutermostTargetSelector;
 
   beforeEach(() => {
-    tabTarget = createTarget({type: SDK.Target.Type.TAB, url: 'http://example.com/', name: 'tab'});
+    tabTarget = createTarget({
+      type: SDK.Target.Type.TAB,
+      url: 'http://example.com/',
+      name: 'tab',
+      connection: new MockCDPConnection([
+        ['Target.setAutoAttach', () => ({result: {}})],
+        ['Target.setDiscoverTargets', () => ({result: {}})],
+        ['Target.setRemoteLocations', () => ({result: {}})],
+      ]),
+    });
     primaryTarget = createTarget({parentTarget: tabTarget, url: 'http://example.com/', name: 'primary'});
     prerenderTarget = createTarget(
         {parentTarget: tabTarget, subtype: 'prerender', url: 'http://example.com/prerender1', name: 'prerender1'});

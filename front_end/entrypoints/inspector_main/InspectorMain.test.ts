@@ -57,6 +57,7 @@ describeWithEnvironment('InspectorMainImpl', () => {
 
   beforeEach(() => {
     connection = new MockCDPConnection();
+    sinon.stub(ProtocolClient.ConnectionTransport.ConnectionTransport, 'setFactory');
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const originalCreateTarget = targetManager.createTarget;
     createTargetStub =

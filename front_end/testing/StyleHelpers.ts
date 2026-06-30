@@ -8,7 +8,10 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as Protocol from '../generated/protocol.js';
 
 import type {MockCDPConnection} from './MockCDPConnection.js';
-import type {ProtocolCommandHandler} from './MockConnection.js';
+
+type GetEnvironmentVariablesCallback = (params: unknown) =>
+    Omit<Protocol.CSS.GetEnvironmentVariablesResponse, 'getError'>|{getError(): string}|
+    PromiseLike<Omit<Protocol.CSS.GetEnvironmentVariablesResponse, 'getError'>|{getError(): string}>;
 
 export function mockGetEnvironmentVariables(connection: MockCDPConnection,
                                             environmentVariables: Record<string, string> = {}) {
@@ -21,7 +24,7 @@ export function getMatchedStylesWithStylesheet(payload: {
   origin: Protocol.CSS.StyleSheetOrigin,
   styleSheetId: Protocol.DOM.StyleSheetId,
   connection: MockCDPConnection,
-  getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>,
+  getEnvironmentVariablesCallback?: GetEnvironmentVariablesCallback,
 }&Partial<Protocol.CSS.CSSStyleSheetHeader>&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>):
     Promise<SDK.CSSMatchedStyles.CSSMatchedStyles> {
   payload.cssModel.styleSheetAdded({
@@ -49,7 +52,7 @@ export function getMatchedStylesWithBlankRule(payload: {
   range?: Protocol.CSS.SourceRange,
   origin?: Protocol.CSS.StyleSheetOrigin,
   styleSheetId?: Protocol.DOM.StyleSheetId,
-  getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>,
+  getEnvironmentVariablesCallback?: GetEnvironmentVariablesCallback,
 }&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
   return getMatchedStylesWithProperties({properties: {}, ...payload});
 }
@@ -119,7 +122,7 @@ export function getMatchedStylesWithProperties(payload: {
   range?: Protocol.CSS.SourceRange,
   origin?: Protocol.CSS.StyleSheetOrigin,
   styleSheetId?: Protocol.DOM.StyleSheetId,
-  getEnvironmentVariablesCallback?: ProtocolCommandHandler<'CSS.getEnvironmentVariables'>,
+  getEnvironmentVariablesCallback?: GetEnvironmentVariablesCallback,
 }&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
   const styleSheetId = payload.styleSheetId ?? '0' as Protocol.DOM.StyleSheetId;
   const range = payload.range;
@@ -130,8 +133,7 @@ export function getMatchedStylesWithProperties(payload: {
 
 export function getMatchedStyles(
     payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>&{connection: MockCDPConnection},
-    getEnvironmentVariablesCallback: ProtocolCommandHandler<'CSS.getEnvironmentVariables'> = () =>
-        ({environmentVariables: {}}),
+    getEnvironmentVariablesCallback: GetEnvironmentVariablesCallback = () => ({environmentVariables: {}}),
     connection: MockCDPConnection = payload.connection) {
   connection.setHandler('CSS.getEnvironmentVariables', null);
   connection.setHandler('CSS.getEnvironmentVariables', params => {

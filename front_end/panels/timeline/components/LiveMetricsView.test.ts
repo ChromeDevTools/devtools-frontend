@@ -13,7 +13,9 @@ import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {doubleRaf, raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createTarget, registerActions} from '../../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {mockResourceTree} from '../../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
@@ -704,7 +706,9 @@ describeWithMockConnection('LiveMetricsView', () => {
     let mockFieldData: CrUXManager.PageResult;
 
     beforeEach(async () => {
-      const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+      const connection = new MockCDPConnection([]);
+      mockResourceTree(connection);
+      const tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
       target = createTarget({parentTarget: tabTarget});
 
       mockFieldData = {

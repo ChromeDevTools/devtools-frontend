@@ -17,7 +17,9 @@ import {
 } from '../../testing/ConsoleHelpers.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -267,7 +269,9 @@ describeWithMockConnection('ConsoleViewMessage', () => {
 
     async function createConsoleMessageWithIgnoreListing(
         ignoreListFn: (url: string) => boolean, withBuiltinFrames?: boolean): Promise<HTMLElement> {
-      const target = createTarget();
+      const connection = new MockCDPConnection([]);
+      mockResourceTree(connection);
+      const target = createTarget({connection});
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const stackTrace = createStackTrace([
         'USER_ID::userNestedFunction::http://example.com/script.js::40::15',
@@ -388,7 +392,9 @@ describeWithMockConnection('ConsoleViewMessage', () => {
     // stack) has non-ignore-listed frames, the toggle should still appear.
     it('shows expandable list when all inline frames are ignored but structured trace has non-ignored frames',
        async () => {
-         const target = createTarget();
+         const connection = new MockCDPConnection([]);
+         mockResourceTree(connection);
+         const target = createTarget({connection});
          const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
          const errorStackTrace = createStackTrace([
            'USER_ID::userNestedFunction::http://example.com/script.js::40::15',

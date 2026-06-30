@@ -200,6 +200,10 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
   }
 
+  static removeInstance(): void {
+    deviceModeModelInstance = null;
+  }
+
   dispose(): void {
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.EmulationModel.EmulationModel, this);
   }

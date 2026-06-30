@@ -8,7 +8,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Trace from '../../models/trace/trace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 
 import * as LiveMetrics from './live-metrics.js';
 import * as Spec from './web-vitals-injected/spec/spec.js';
@@ -21,7 +23,9 @@ describeWithMockConnection('LiveMetrics', () => {
   let tabTarget: SDK.Target.Target;
 
   beforeEach(() => {
-    tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    const connection = new MockCDPConnection([]);
+    mockResourceTree(connection);
+    tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
     primaryTarget = createTarget({
       parentTarget: tabTarget,
       type: SDK.Target.Type.FRAME,

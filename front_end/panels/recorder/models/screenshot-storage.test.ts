@@ -15,7 +15,7 @@ let instance: Recorder.ScreenshotStorage.ScreenshotStorage;
 
 describeWithEnvironment('ScreenshotStorage', () => {
   beforeEach(() => {
-    instance = Recorder.ScreenshotStorage.ScreenshotStorage.instance();
+    instance = Recorder.ScreenshotStorage.ScreenshotStorage.instance({forceNew: true});
     instance.clear();
   });
 

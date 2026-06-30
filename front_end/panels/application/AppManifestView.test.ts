@@ -10,7 +10,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Application from './application.js';
@@ -28,7 +30,9 @@ describeWithMockConnection('AppManifestView', () => {
 
   beforeEach(() => {
     stubNoopSettings();
-    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    const connection = new MockCDPConnection([]);
+    mockResourceTree(connection);
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     viewFunction = createViewFunctionStub(Application.AppManifestView.AppManifestView);

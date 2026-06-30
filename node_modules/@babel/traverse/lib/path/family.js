@@ -119,12 +119,16 @@ function getStatementListCompletion(paths, context) {
           completions.push(...lastNormalCompletions);
           if (lastNormalCompletions.some(c => c.path.isDeclaration())) {
             completions.push(...statementCompletions);
-            replaceBreakStatementInBreakCompletion(statementCompletions, true);
+            if (!context.shouldPreserveBreak) {
+              replaceBreakStatementInBreakCompletion(statementCompletions, true);
+            }
           }
-          replaceBreakStatementInBreakCompletion(statementCompletions, false);
+          if (!context.shouldPreserveBreak) {
+            replaceBreakStatementInBreakCompletion(statementCompletions, false);
+          }
         } else {
           completions.push(...statementCompletions);
-          if (!context.shouldPopulateBreak) {
+          if (!context.shouldPopulateBreak && !context.shouldPreserveBreak) {
             replaceBreakStatementInBreakCompletion(statementCompletions, true);
           }
         }
@@ -148,7 +152,7 @@ function getStatementListCompletion(paths, context) {
   } else if (paths.length) {
     for (let i = paths.length - 1; i >= 0; i--) {
       const pathCompletions = _getCompletionRecords(paths[i], context);
-      if (pathCompletions.length > 1 || pathCompletions.length === 1 && !pathCompletions[0].path.isVariableDeclaration()) {
+      if (pathCompletions.length > 1 || pathCompletions.length === 1 && !pathCompletions[0].path.isVariableDeclaration() && !pathCompletions[0].path.isEmptyStatement()) {
         completions.push(...pathCompletions);
         break;
       }
@@ -178,7 +182,8 @@ function _getCompletionRecords(path, context) {
     return getStatementListCompletion(path.get("consequent"), {
       canHaveBreak: true,
       shouldPopulateBreak: false,
-      inCaseClause: true
+      inCaseClause: true,
+      shouldPreserveBreak: context.shouldPreserveBreak
     });
   } else if (path.isBreakStatement()) {
     records.push(BreakCompletion(path));
@@ -187,11 +192,12 @@ function _getCompletionRecords(path, context) {
   }
   return records;
 }
-function getCompletionRecords() {
+function getCompletionRecords(shouldPreserveBreak = false) {
   const records = _getCompletionRecords(this, {
     canHaveBreak: false,
     shouldPopulateBreak: false,
-    inCaseClause: false
+    inCaseClause: false,
+    shouldPreserveBreak
   });
   return records.map(r => r.path);
 }

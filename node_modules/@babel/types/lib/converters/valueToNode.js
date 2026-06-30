@@ -50,7 +50,11 @@ function valueToNode(value) {
     return result;
   }
   if (typeof value === "bigint") {
-    return (0, _index.bigIntLiteral)(value.toString());
+    if (value < 0) {
+      return (0, _index.unaryExpression)("-", (0, _index.bigIntLiteral)(-value));
+    } else {
+      return (0, _index.bigIntLiteral)(value);
+    }
   }
   if (isRegExp(value)) {
     const pattern = value.source;

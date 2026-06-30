@@ -76,7 +76,7 @@
     "mocha": "11.7.5",
     "ora": "9.0.0",
     "postcss": "8.5.15",
-    "puppeteer-core": "25.0.4",
+    "puppeteer-core": "25.2.0",
     "rollup": "4.60.4",
     "rollup-plugin-sourcemaps2": "0.5.4",
     "sinon": "22.0.0",

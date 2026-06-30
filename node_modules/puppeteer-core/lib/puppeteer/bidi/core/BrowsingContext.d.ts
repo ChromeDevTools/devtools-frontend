@@ -109,6 +109,7 @@ export declare class BrowsingContext extends EventEmitter<{
     removePreloadScript(script: string): Promise<void>;
     setGeolocationOverride(options: SetGeoLocationOverrideOptions): Promise<void>;
     setTimezoneOverride(timezoneId?: string): Promise<void>;
+    setLocaleOverride(locale?: string): Promise<void>;
     setScreenOrientationOverride(screenOrientation: Bidi.Emulation.ScreenOrientation | null): Promise<void>;
     getCookies(options?: GetCookiesOptions): Promise<Bidi.Network.Cookie[]>;
     setCookie(cookie: Bidi.Storage.PartialCookie): Promise<void>;

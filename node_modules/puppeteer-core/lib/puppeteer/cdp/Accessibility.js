@@ -161,7 +161,7 @@ export class Accessibility {
                     }
                     catch (error) {
                         // Frames can get detached at any time resulting in errors.
-                        debugError(error);
+                        debugError?.(error);
                     }
                 }
                 catch (e_1) {
@@ -172,9 +172,9 @@ export class Accessibility {
                     __disposeResources(env_1);
                 }
             }
-            for (const child of root.children) {
-                await populateIframes(child);
-            }
+            await Promise.all(root.children.map(child => {
+                return populateIframes(child);
+            }));
         };
         let needle = defaultRoot;
         if (!defaultRoot) {

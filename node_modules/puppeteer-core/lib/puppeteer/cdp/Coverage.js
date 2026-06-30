@@ -180,7 +180,7 @@ export class JSCoverage {
         }
         catch (error) {
             // This might happen if the page has already navigated away.
-            debugError(error);
+            debugError?.(error);
         }
     }
     async stop() {
@@ -277,7 +277,7 @@ export class CSSCoverage {
         }
         catch (error) {
             // This might happen if the page has already navigated away.
-            debugError(error);
+            debugError?.(error);
         }
     }
     async stop() {

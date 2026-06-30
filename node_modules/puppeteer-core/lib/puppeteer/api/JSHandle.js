@@ -89,7 +89,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { debugError, withSourcePuppeteerURLIfNone } from '../common/util.js';
+import { withSourcePuppeteerURLIfNone, debugCatchError } from '../common/util.js';
 import { moveable, throwIfDisposed } from '../util/decorators.js';
 import { disposeSymbol, asyncDisposeSymbol } from '../util/disposable.js';
 /**
@@ -181,14 +181,7 @@ let JSHandle = (() => {
          */
         async getProperties() {
             const propertyNames = await this.evaluate(object => {
-                const enumerableProperties = [];
-                const descriptors = Object.getOwnPropertyDescriptors(object);
-                for (const propertyName in descriptors) {
-                    if (descriptors[propertyName]?.enumerable) {
-                        enumerableProperties.push(propertyName);
-                    }
-                }
-                return enumerableProperties;
+                return Object.keys(object ?? {});
             });
             const map = new Map();
             const results = await Promise.all(propertyNames.map(key => {
@@ -214,7 +207,7 @@ let JSHandle = (() => {
         }
         /** @internal */
         [(_getProperty_decorators = [throwIfDisposed()], _getProperties_decorators = [throwIfDisposed()], disposeSymbol)]() {
-            return void this[asyncDisposeSymbol]().catch(debugError);
+            return void this[asyncDisposeSymbol]().catch(debugCatchError);
         }
         /** @internal */
         [asyncDisposeSymbol]() {

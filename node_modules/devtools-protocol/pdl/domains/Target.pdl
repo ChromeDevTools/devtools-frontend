@@ -21,18 +21,24 @@ domain Target
       string url
       # Whether the target has an attached client.
       boolean attached
+      # Id of the parent target, if any. For example, "iframe" target may have a "page" parent.
+      optional TargetID parentId
       # Opener target Id
       optional TargetID openerId
       # Whether the target has access to the originating window.
       experimental boolean canAccessOpener
       # Frame id of originating window (is only set if target has an opener).
       experimental optional Page.FrameId openerFrameId
-      # Id of the parent frame, only present for the "iframe" targets.
+      # Id of the parent frame, present for "iframe" and "worker" targets. For nested workers,
+      # this is the "ancestor" frame that created the first worker in the nested chain.
       experimental optional Page.FrameId parentFrameId
       experimental optional Browser.BrowserContextID browserContextId
       # Provides additional details for specific target types. For example, for
       # the type of "page", this may be set to "prerender".
       experimental optional string subtype
+      # Embedder-specific target metadata. This is only set for targets of
+      # type "tab".
+      experimental optional object embedderData
 
   # A filter used by target query/discovery/auto-attach operations.
   experimental type FilterEntry extends object
@@ -343,8 +349,8 @@ domain Target
       # This can be the page or tab target ID.
       TargetID targetId
       # The id of the panel we want DevTools to open initially. Currently
-      # supported panels are elements, console, network, sources, resources
-      # and performance.
+      # supported panels are elements, console, network, sources, resources,
+      # timeline, chrome-recorder, heap-profiler, lighthouse, and security.
       optional string panelId
     returns
       # The targetId of DevTools page target.

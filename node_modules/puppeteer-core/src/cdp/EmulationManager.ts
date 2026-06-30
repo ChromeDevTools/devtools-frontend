@@ -7,7 +7,7 @@ import type {Protocol} from 'devtools-protocol';
 
 import {type CDPSession, CDPSessionEvent} from '../api/CDPSession.js';
 import type {GeolocationOptions, MediaFeature} from '../api/Page.js';
-import {debugError} from '../common/util.js';
+import {debugError, debugCatchError} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 import {assert} from '../util/assert.js';
 import {invokeAtMostOnceForArguments} from '../util/decorators.js';
@@ -28,6 +28,11 @@ interface IdleOverridesState {
 
 interface TimezoneState {
   timezoneId?: string;
+  active: boolean;
+}
+
+interface LocaleState {
+  locale?: string;
   active: boolean;
 }
 
@@ -148,6 +153,13 @@ export class EmulationManager implements ClientProvider {
     this,
     this.#emulateTimezone,
   );
+  #localeState = new EmulatedState<LocaleState>(
+    {
+      active: false,
+    },
+    this,
+    this.#emulateLocale,
+  );
   #visionDeficiencyState = new EmulatedState<VisionDeficiencyState>(
     {
       active: false,
@@ -235,7 +247,7 @@ export class EmulationManager implements ClientProvider {
     // the target is unpaused.
     void Promise.all(
       this.#states.map(s => {
-        return s.sync().catch(debugError);
+        return s.sync().catch(debugCatchError);
       }),
     );
   }
@@ -281,7 +293,7 @@ export class EmulationManager implements ClientProvider {
         client.send('Emulation.setTouchEmulationEnabled', {
           enabled: false,
         }),
-      ]).catch(debugError);
+      ]).catch(debugCatchError);
       return;
     }
     const {viewport} = viewportState;
@@ -308,7 +320,7 @@ export class EmulationManager implements ClientProvider {
           if (
             err.message.includes('Target does not support metrics override')
           ) {
-            debugError(err);
+            debugError?.(err);
             return;
           }
           throw err;
@@ -370,6 +382,26 @@ export class EmulationManager implements ClientProvider {
   async emulateTimezone(timezoneId?: string): Promise<void> {
     await this.#timezoneState.setState({
       timezoneId,
+      active: true,
+    });
+  }
+
+  @invokeAtMostOnceForArguments
+  async #emulateLocale(
+    client: CDPSession,
+    localeState: LocaleState,
+  ): Promise<void> {
+    if (!localeState.active) {
+      return;
+    }
+    await client.send('Emulation.setLocaleOverride', {
+      locale: localeState.locale,
+    });
+  }
+
+  async emulateLocale(locale?: string): Promise<void> {
+    await this.#localeState.setState({
+      locale,
       active: true,
     });
   }

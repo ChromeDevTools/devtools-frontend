@@ -97,6 +97,7 @@ exports.assertForXStatement = assertForXStatement;
 exports.assertFunction = assertFunction;
 exports.assertFunctionDeclaration = assertFunctionDeclaration;
 exports.assertFunctionExpression = assertFunctionExpression;
+exports.assertFunctionParameter = assertFunctionParameter;
 exports.assertFunctionParent = assertFunctionParent;
 exports.assertFunctionTypeAnnotation = assertFunctionTypeAnnotation;
 exports.assertFunctionTypeParam = assertFunctionTypeParam;
@@ -304,6 +305,7 @@ exports.assertV8IntrinsicIdentifier = assertV8IntrinsicIdentifier;
 exports.assertVariableDeclaration = assertVariableDeclaration;
 exports.assertVariableDeclarator = assertVariableDeclarator;
 exports.assertVariance = assertVariance;
+exports.assertVoidPattern = assertVoidPattern;
 exports.assertVoidTypeAnnotation = assertVoidTypeAnnotation;
 exports.assertWhile = assertWhile;
 exports.assertWhileStatement = assertWhileStatement;
@@ -871,6 +873,9 @@ function assertPipelineBareFunction(node, opts) {
 function assertPipelinePrimaryTopicReference(node, opts) {
   assert("PipelinePrimaryTopicReference", node, opts);
 }
+function assertVoidPattern(node, opts) {
+  assert("VoidPattern", node, opts);
+}
 function assertTSParameterProperty(node, opts) {
   assert("TSParameterProperty", node, opts);
 }
@@ -1128,6 +1133,9 @@ function assertPureish(node, opts) {
 }
 function assertDeclaration(node, opts) {
   assert("Declaration", node, opts);
+}
+function assertFunctionParameter(node, opts) {
+  assert("FunctionParameter", node, opts);
 }
 function assertPatternLike(node, opts) {
   assert("PatternLike", node, opts);

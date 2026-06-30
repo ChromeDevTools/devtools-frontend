@@ -49,12 +49,36 @@ import { PassThrough } from 'node:stream';
 import { bufferCount, concatMap, filter, from, fromEvent, lastValueFrom, map, takeUntil, tap, } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { debug } from '../common/Debug.js';
-import { debugError, fromEmitterEvent } from '../common/util.js';
+import { fromEmitterEvent, debugCatchError } from '../common/util.js';
 import { guarded } from '../util/decorators.js';
 import { asyncDisposeSymbol } from '../util/disposable.js';
 const CRF_VALUE = 30;
 const DEFAULT_FPS = 30;
 const debugFfmpeg = debug('puppeteer:ffmpeg');
+/**
+ * Computes how many encoder frames to emit for a captured frame that spans
+ * `[previousTimestamp, timestamp]`, so that the cumulative number of emitted
+ * frames tracks a constant-`fps` grid anchored at `startTimestamp`.
+ *
+ * Counting each interval independently with
+ * `Math.round(fps * (timestamp - previousTimestamp))` is wrong when frames are
+ * captured faster than `fps`: every sub-`1/fps` interval still rounds up to a
+ * whole frame, so the emitted frame count grows with the capture rate instead
+ * of staying at `fps * duration`, which stretches playback (and, for very high
+ * capture rates, the per-interval value rounds down to 0 and frames are
+ * dropped). Differencing the rounded cumulative position keeps the total at
+ * `Math.round(fps * (lastTimestamp - startTimestamp))`, independent of the
+ * capture rate.
+ *
+ * Timestamps are in seconds (CDP `Page.screencastFrame` metadata timestamps).
+ *
+ * @internal
+ */
+export function countFrames(startTimestamp, previousTimestamp, timestamp, fps) {
+    const end = Math.round((timestamp - startTimestamp) * fps);
+    const start = Math.round((previousTimestamp - startTimestamp) * fps);
+    return Math.max(0, end - start);
+}
 /**
  * @public
  */
@@ -143,15 +167,17 @@ let ScreenRecorder = (() => {
                     'nobuffer',
                 ],
                 // Forces input to be read from standard input, and forces png input
-                // image format.
-                ['-f', 'image2pipe', '-vcodec', 'png', '-i', 'pipe:0'],
+                // image format. `-framerate` is an input option and must appear before
+                // `-i`; otherwise ffmpeg ignores it and the image2pipe demuxer falls
+                // back to its default 25fps, stretching the output timeline relative to
+                // the frames we feed it at `fps`.
+                // prettier-ignore
+                ['-framerate', `${fps}`, '-f', 'image2pipe', '-vcodec', 'png', '-i', 'pipe:0'],
                 // No audio
                 ['-an'],
                 // This drastically reduces stalling when cpu is overbooked. By default
                 // VP9 tries to use all available threads?
                 ['-threads', '1'],
-                // Specifies the frame rate we are giving ffmpeg.
-                ['-framerate', `${fps}`],
                 // Disable bitrate.
                 ['-b:v', '0'],
                 // Specifies the encoding and format we are using.
@@ -165,13 +191,15 @@ let ScreenRecorder = (() => {
             ].flat(), { stdio: ['pipe', 'pipe', 'pipe'] });
             this.#process.stdout.pipe(this);
             this.#process.stderr.on('data', (data) => {
-                debugFfmpeg(data.toString('utf8'));
+                debugFfmpeg?.(data.toString('utf8'));
             });
             this.#page = page;
             const { client } = this.#page.mainFrame();
             client.once(CDPSessionEvent.Disconnected, () => {
-                void this.stop().catch(debugError);
+                void this.stop().catch(debugCatchError);
             });
+            // Anchor for the constant-fps grid; set to the first frame's timestamp.
+            let startTimestamp;
             this.#lastFrame = lastValueFrom(fromEmitterEvent(client, 'Page.screencastFrame').pipe(tap(event => {
                 void client.send('Page.screencastFrameAck', {
                     sessionId: event.sessionId,
@@ -184,7 +212,8 @@ let ScreenRecorder = (() => {
                     timestamp: event.metadata.timestamp,
                 };
             }), bufferCount(2, 1), concatMap(([{ timestamp: previousTimestamp, buffer }, { timestamp }]) => {
-                return from(Array(Math.round(fps * Math.max(timestamp - previousTimestamp, 0))).fill(buffer));
+                startTimestamp ??= previousTimestamp;
+                return from(Array(countFrames(startTimestamp, previousTimestamp, timestamp, fps)).fill(buffer));
             }), map(buffer => {
                 void this.#writeFrame(buffer);
                 return [buffer, performance.now()];
@@ -254,7 +283,7 @@ let ScreenRecorder = (() => {
                 return;
             }
             // Stopping the screencast will flush the frames.
-            await this.#page._stopScreencast().catch(debugError);
+            await this.#page._stopScreencast().catch(debugCatchError);
             this.#controller.abort();
             // Repeat the last frame for the remaining frames.
             const [buffer, timestamp] = await this.#lastFrame;

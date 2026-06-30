@@ -4,11 +4,9 @@ var _utils = require("./utils.js");
 var _placeholders = require("./placeholders.js");
 var _core = require("./core.js");
 const defineType = (0, _utils.defineAliasedType)("Miscellaneous");
-{
-  defineType("Noop", {
-    visitor: []
-  });
-}
+defineType("Noop", {
+  visitor: []
+});
 defineType("Placeholder", {
   visitor: [],
   builder: ["expectedNode", "name"],

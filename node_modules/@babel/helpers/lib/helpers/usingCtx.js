@@ -20,10 +20,10 @@ function _usingCtx() {
         throw new TypeError("using declarations can only be used with objects, functions, null, or undefined.");
       }
       if (isAwait) {
-        var dispose = value[Symbol.asyncDispose || Symbol.for("Symbol.asyncDispose")];
+        var dispose = value[Symbol.asyncDispose || Symbol["for"]("Symbol.asyncDispose")];
       }
       if (dispose === undefined) {
-        dispose = value[Symbol.dispose || Symbol.for("Symbol.dispose")];
+        dispose = value[Symbol.dispose || Symbol["for"]("Symbol.dispose")];
         if (isAwait) {
           var inner = dispose;
         }

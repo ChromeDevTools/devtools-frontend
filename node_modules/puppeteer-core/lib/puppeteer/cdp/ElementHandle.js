@@ -108,7 +108,7 @@ let CdpElementHandle = (() => {
                 });
             }
             catch (error) {
-                debugError(error);
+                debugError?.(error);
                 // Fallback to Element.scrollIntoView if DOM.scrollIntoViewIfNeeded is not supported
                 await super.scrollIntoView();
             }

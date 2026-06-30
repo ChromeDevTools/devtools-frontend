@@ -9,7 +9,6 @@ var _index = require("../validators/generated/index.js");
 var _index2 = require("../builders/generated/index.js");
 var _productions = require("../builders/productions.js");
 var _cloneNode = require("../clone/cloneNode.js");
-;
 function gatherSequenceExpressions(nodes, declars) {
   const exprs = [];
   let ensureLastUndefined = true;

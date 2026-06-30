@@ -13,13 +13,17 @@ exports.ClassProperty = ClassProperty;
 exports.StaticBlock = StaticBlock;
 exports._classMethodHead = _classMethodHead;
 var _t = require("@babel/types");
+var _expressions = require("./expressions.js");
+var _typescript = require("./typescript.js");
+var _flow = require("./flow.js");
+var _methods = require("./methods.js");
 const {
   isExportDefaultDeclaration,
   isExportNamedDeclaration
 } = _t;
 function ClassDeclaration(node, parent) {
   const inExport = isExportDefaultDeclaration(parent) || isExportNamedDeclaration(parent);
-  if (!inExport || !this._shouldPrintDecoratorsBeforeExport(parent)) {
+  if (!inExport || !_expressions._shouldPrintDecoratorsBeforeExport.call(this, parent)) {
     this.printJoin(node.decorators);
   }
   if (node.declare) {
@@ -57,12 +61,11 @@ function ClassBody(node) {
   if (node.body.length === 0) {
     this.tokenChar(125);
   } else {
-    this.newline();
     const separator = classBodyEmptySemicolonsPrinter(this, node);
     separator == null || separator(-1);
-    const exit = this.enterDelimited();
-    this.printJoin(node.body, true, true, separator, true);
-    exit();
+    const oldNoLineTerminatorAfterNode = this.enterDelimited();
+    this.printJoin(node.body, true, true, separator, true, true);
+    this._noLineTerminatorAfterNode = oldNoLineTerminatorAfterNode;
     if (!this.endsWith(10)) this.newline();
     this.rightBrace(node);
   }
@@ -90,7 +93,7 @@ function classBodyEmptySemicolonsPrinter(printer, node) {
     const end = nextLocIndex === node.body.length ? node.end : node.body[nextLocIndex].start;
     let tok;
     while (k < indexes.length && printer.tokenMap.matchesOriginal(tok = printer._tokens[indexes[k]], ";") && tok.start < end) {
-      printer.token(";", undefined, occurrenceCount++);
+      printer.tokenChar(59, occurrenceCount++);
       k++;
     }
   };
@@ -102,13 +105,13 @@ function ClassProperty(node) {
     const endLine = (_node$key$loc = node.key.loc) == null || (_node$key$loc = _node$key$loc.end) == null ? void 0 : _node$key$loc.line;
     if (endLine) this.catchUp(endLine);
   }
-  this.tsPrintClassMemberModifiers(node);
+  _typescript._tsPrintClassMemberModifiers.call(this, node);
   if (node.computed) {
     this.tokenChar(91);
     this.print(node.key);
     this.tokenChar(93);
   } else {
-    this._variance(node);
+    _flow._variance.call(this, node);
     this.print(node.key);
   }
   if (node.optional) {
@@ -131,7 +134,7 @@ function ClassAccessorProperty(node) {
   this.printJoin(node.decorators);
   const endLine = (_node$key$loc2 = node.key.loc) == null || (_node$key$loc2 = _node$key$loc2.end) == null ? void 0 : _node$key$loc2.line;
   if (endLine) this.catchUp(endLine);
-  this.tsPrintClassMemberModifiers(node);
+  _typescript._tsPrintClassMemberModifiers.call(this, node);
   this.word("accessor", true);
   this.space();
   if (node.computed) {
@@ -139,7 +142,7 @@ function ClassAccessorProperty(node) {
     this.print(node.key);
     this.tokenChar(93);
   } else {
-    this._variance(node);
+    _flow._variance.call(this, node);
     this.print(node.key);
   }
   if (node.optional) {
@@ -159,7 +162,7 @@ function ClassAccessorProperty(node) {
 }
 function ClassPrivateProperty(node) {
   this.printJoin(node.decorators);
-  this.tsPrintClassMemberModifiers(node);
+  _typescript._tsPrintClassMemberModifiers.call(this, node);
   this.print(node.key);
   if (node.optional) {
     this.tokenChar(63);
@@ -177,12 +180,12 @@ function ClassPrivateProperty(node) {
   this.semicolon();
 }
 function ClassMethod(node) {
-  this._classMethodHead(node);
+  _classMethodHead.call(this, node);
   this.space();
   this.print(node.body);
 }
 function ClassPrivateMethod(node) {
-  this._classMethodHead(node);
+  _classMethodHead.call(this, node);
   this.space();
   this.print(node.body);
 }
@@ -193,8 +196,8 @@ function _classMethodHead(node) {
     const endLine = (_node$key$loc3 = node.key.loc) == null || (_node$key$loc3 = _node$key$loc3.end) == null ? void 0 : _node$key$loc3.line;
     if (endLine) this.catchUp(endLine);
   }
-  this.tsPrintClassMemberModifiers(node);
-  this._methodHead(node);
+  _typescript._tsPrintClassMemberModifiers.call(this, node);
+  _methods._methodHead.call(this, node);
 }
 function StaticBlock(node) {
   this.word("static");

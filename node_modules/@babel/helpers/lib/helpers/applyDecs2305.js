@@ -90,8 +90,8 @@ function applyDecs2305(targetClass, memberDecs, classDecs, classDecsHaveThis, in
             newValue = _;
           }
         } else {
-          ctx.static = isStatic;
-          ctx.private = isPrivate;
+          ctx["static"] = isStatic;
+          ctx["private"] = isPrivate;
           var get, set;
           if (!isPrivate) {
             get = function (target) {
@@ -211,14 +211,14 @@ function applyDecs2305(targetClass, memberDecs, classDecs, classDecsHaveThis, in
     return ret;
   }
   function defineMetadata(Class, metadata) {
-    return Object.defineProperty(Class, Symbol.metadata || Symbol.for("Symbol.metadata"), {
+    return Object.defineProperty(Class, Symbol.metadata || Symbol["for"]("Symbol.metadata"), {
       configurable: true,
       enumerable: true,
       value: metadata
     });
   }
   if (arguments.length >= 6) {
-    var parentMetadata = parentClass[Symbol.metadata || Symbol.for("Symbol.metadata")];
+    var parentMetadata = parentClass[Symbol.metadata || Symbol["for"]("Symbol.metadata")];
   }
   var metadata = Object.create(parentMetadata == null ? null : parentMetadata);
   var e = applyMemberDecs(targetClass, memberDecs, instanceBrand, metadata);

@@ -123,7 +123,6 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
-      fenced-unpartitioned-storage-read
       focus-without-user-activation
       fullscreen
       frobulate
@@ -169,6 +168,7 @@ domain Page
       sub-apps
       summarizer
       sync-xhr
+      tools
       translator
       unload
       usb
@@ -1619,6 +1619,7 @@ domain Page
       EmbedderExtensionMessaging
       EmbedderExtensionMessagingForOpenPort
       EmbedderExtensionSentMessageToCachedFrame
+      EmbedderExtensionFrame
       RequestedByWebViewClient
       PostMessageByWebViewClient
       CacheControlNoStoreDeviceBoundSessionTerminated

@@ -9,9 +9,7 @@ exports.TemplateLiteral = TemplateLiteral;
 exports._printTemplate = _printTemplate;
 function TaggedTemplateExpression(node) {
   this.print(node.tag);
-  {
-    this.print(node.typeParameters);
-  }
+  this.print(node.typeParameters);
   this.print(node.quasi);
 }
 function TemplateElement() {
@@ -34,7 +32,7 @@ function _printTemplate(node, substitutions) {
   this.token(partRaw + "`", true);
 }
 function TemplateLiteral(node) {
-  this._printTemplate(node, node.expressions);
+  _printTemplate.call(this, node, node.expressions);
 }
 
 //# sourceMappingURL=template-literals.js.map

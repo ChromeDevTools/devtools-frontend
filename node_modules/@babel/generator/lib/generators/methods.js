@@ -17,39 +17,40 @@ var _index = require("../node/index.js");
 const {
   isIdentifier
 } = _t;
-function _params(node, idNode, parentNode) {
+function _params(node, noLineTerminator, idNode, parentNode) {
   this.print(node.typeParameters);
-  const nameInfo = _getFuncIdName.call(this, idNode, parentNode);
-  if (nameInfo) {
-    this.sourceIdentifierName(nameInfo.name, nameInfo.pos);
+  if (idNode !== undefined || parentNode !== undefined) {
+    const nameInfo = _getFuncIdName.call(this, idNode, parentNode);
+    if (nameInfo) {
+      this.sourceIdentifierName(nameInfo.name, nameInfo.pos);
+    }
   }
   this.tokenChar(40);
-  this._parameters(node.params, ")");
-  const noLineTerminator = node.type === "ArrowFunctionExpression";
+  _parameters.call(this, node.params, 41);
   this.print(node.returnType, noLineTerminator);
   this._noLineTerminator = noLineTerminator;
 }
 function _parameters(parameters, endToken) {
-  const exit = this.enterDelimited();
+  const oldNoLineTerminatorAfterNode = this.enterDelimited();
   const trailingComma = this.shouldPrintTrailingComma(endToken);
   const paramLength = parameters.length;
   for (let i = 0; i < paramLength; i++) {
-    this._param(parameters[i]);
+    _param.call(this, parameters[i]);
     if (trailingComma || i < paramLength - 1) {
-      this.token(",", null, i);
+      this.tokenChar(44, i);
       this.space();
     }
   }
-  this.token(endToken);
-  exit();
+  this.tokenChar(endToken);
+  this._noLineTerminatorAfterNode = oldNoLineTerminatorAfterNode;
 }
 function _param(parameter) {
-  this.printJoin(parameter.decorators);
-  this.print(parameter);
+  this.printJoin(parameter.decorators, undefined, undefined, undefined, undefined, true);
+  this.print(parameter, undefined, true);
   if (parameter.optional) {
     this.tokenChar(63);
   }
-  this.print(parameter.typeAnnotation);
+  this.print(parameter.typeAnnotation, undefined, true);
 }
 function _methodHead(node) {
   const kind = node.kind;
@@ -77,7 +78,11 @@ function _methodHead(node) {
   if (node.optional) {
     this.tokenChar(63);
   }
-  this._params(node, node.computed && node.key.type !== "StringLiteral" ? undefined : node.key, undefined);
+  if (this._buf._map) {
+    _params.call(this, node, false, node.computed && node.key.type !== "StringLiteral" ? undefined : node.key);
+  } else {
+    _params.call(this, node, false);
+  }
 }
 function _predicate(node, noLineTerminatorAfter) {
   if (node.predicate) {
@@ -88,18 +93,18 @@ function _predicate(node, noLineTerminatorAfter) {
     this.print(node.predicate, noLineTerminatorAfter);
   }
 }
-function _functionHead(node, parent) {
+function _functionHead(node, parent, hasPredicate) {
   if (node.async) {
     this.word("async");
     if (!this.format.preserveFormat) {
-      this._endsWithInnerRaw = false;
+      this._innerCommentsState = 0;
     }
     this.space();
   }
   this.word("function");
   if (node.generator) {
     if (!this.format.preserveFormat) {
-      this._endsWithInnerRaw = false;
+      this._innerCommentsState = 0;
     }
     this.tokenChar(42);
   }
@@ -107,13 +112,17 @@ function _functionHead(node, parent) {
   if (node.id) {
     this.print(node.id);
   }
-  this._params(node, node.id, parent);
-  if (node.type !== "TSDeclareFunction") {
-    this._predicate(node);
+  if (this._buf._map) {
+    _params.call(this, node, false, node.id, parent);
+  } else {
+    _params.call(this, node, false);
+  }
+  if (hasPredicate) {
+    _predicate.call(this, node);
   }
 }
 function FunctionExpression(node, parent) {
-  this._functionHead(node, parent);
+  _functionHead.call(this, node, parent, true);
   this.space();
   this.print(node.body);
 }
@@ -122,12 +131,12 @@ function ArrowFunctionExpression(node, parent) {
     this.word("async", true);
     this.space();
   }
-  if (this._shouldPrintArrowParamsParens(node)) {
-    this._params(node, undefined, parent);
+  if (_shouldPrintArrowParamsParens.call(this, node)) {
+    _params.call(this, node, true, undefined, this._buf._map ? parent : undefined);
   } else {
     this.print(node.params[0], true);
   }
-  this._predicate(node, true);
+  _predicate.call(this, node, true);
   this.space();
   this.printInnerComments();
   this.token("=>");

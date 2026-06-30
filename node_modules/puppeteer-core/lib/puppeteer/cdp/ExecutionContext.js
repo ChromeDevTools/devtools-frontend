@@ -147,7 +147,7 @@ export class ExecutionContext extends EventEmitter {
                         return;
                     }
                 }
-                debugError(error);
+                debugError?.(error);
             }
         }
         catch (e_1) {
@@ -185,7 +185,7 @@ export class ExecutionContext extends EventEmitter {
             await binding?.run(this, seq, args, isTrivial);
         }
         catch (err) {
-            debugError(err);
+            debugError?.(err);
         }
     }
     get id() {
@@ -227,7 +227,7 @@ export class ExecutionContext extends EventEmitter {
         catch (err) {
             // If the binding cannot be added, the context is broken. We cannot
             // recover so we ignore the error.
-            debugError(err);
+            debugError?.(err);
         }
     }
     /**

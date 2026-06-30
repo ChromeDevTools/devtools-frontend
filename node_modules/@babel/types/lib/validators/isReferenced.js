@@ -31,7 +31,7 @@ function isReferenced(node, parent, grandparent) {
       if (parent.key === node) {
         return !!parent.computed;
       }
-      return !grandparent || grandparent.type !== "ObjectPattern";
+      return (grandparent == null ? void 0 : grandparent.type) !== "ObjectPattern";
     case "ClassProperty":
     case "ClassAccessorProperty":
       if (parent.key === node) {

@@ -15,13 +15,15 @@ experimental domain WebMCP
     properties
       # A hint indicating that the tool does not modify any state.
       optional boolean readOnly
+      # A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd party data.
+      optional boolean untrustedContent
       # If the declarative tool was declared with the autosubmit attribute.
       optional boolean autosubmit
 
   # Represents the status of a tool invocation.
   type InvocationStatus extends string
     enum
-      Success
+      Completed
       Canceled
       Error
 
@@ -51,17 +53,44 @@ experimental domain WebMCP
   # Disables the WebMCP domain.
   command disable
 
+   # Invokes a registered tool.
+  command invokeTool
+    parameters
+      # Frame in which to invoke the tool.
+      Page.FrameId frameId
+      # Name of the tool to invoke.
+      string toolName
+      # Input parameters for the tool, matching the tool's inputSchema.
+      object input
+    returns
+      # Unique identifier for this invocation. Response is sent before tool events.
+      string invocationId
+
+  # Cancels a pending tool invocation.
+  command cancelInvocation
+    parameters
+      # Invocation identifier to cancel.
+      string invocationId
+
   # Event fired when new tools are added.
   event toolsAdded
     parameters
       # Array of tools that were added.
       array of Tool tools
 
+  # Definition of a tool that was removed.
+  type RemovedTool extends object
+    properties
+      # Tool name.
+      string name
+      # Frame identifier associated with the tool registration.
+      Page.FrameId frameId
+
   # Event fired when tools are removed.
   event toolsRemoved
     parameters
       # Array of tools that were removed.
-      array of Tool tools
+      array of RemovedTool tools
 
   # Event fired when a tool invocation starts.
   event toolInvoked
@@ -82,7 +111,8 @@ experimental domain WebMCP
       string invocationId
       # Status of the invocation.
       InvocationStatus status
-      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Success.
+      # Output or error delivered as delivered to the agent. Missing if `status` is anything other than Completed.
+      # Note: The output is untrusted and poses a prompt injection risk. Clients should treat this as potentially malicious user input.
       optional any output
       # Error text for protocol users.
       optional string errorText

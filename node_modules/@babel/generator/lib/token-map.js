@@ -22,7 +22,7 @@ class TokenMap {
       const indexes = this._getTokensIndexesOfNode(node);
       if (indexes.length > 0) this._nodesToTokenIndexes.set(node, indexes);
     });
-    this._tokensCache = null;
+    this._tokensCache.clear();
   }
   has(node) {
     return this._nodesToTokenIndexes.has(node);
@@ -55,11 +55,14 @@ class TokenMap {
   findMatching(node, test, occurrenceCount = 0) {
     const indexes = this._nodesToTokenIndexes.get(node);
     if (indexes) {
+      if (typeof test === "number") {
+        test = String.fromCharCode(test);
+      }
       let i = 0;
       const count = occurrenceCount;
       if (count > 1) {
         const cache = this._nodesOccurrencesCountCache.get(node);
-        if (cache && cache.test === test && cache.count < count) {
+        if ((cache == null ? void 0 : cache.test) === test && cache.count < count) {
           i = cache.i + 1;
           occurrenceCount -= cache.count + 1;
         }
@@ -103,6 +106,7 @@ class TokenMap {
     return this.matchesOriginal(tok, test);
   }
   _getTokensIndexesOfNode(node) {
+    var _node$declaration;
     if (node.start == null || node.end == null) return [];
     const {
       first,
@@ -110,7 +114,7 @@ class TokenMap {
     } = this._findTokensOfNode(node, 0, this._tokens.length - 1);
     let low = first;
     const children = childrenIterator(node);
-    if ((node.type === "ExportNamedDeclaration" || node.type === "ExportDefaultDeclaration") && node.declaration && node.declaration.type === "ClassDeclaration") {
+    if ((node.type === "ExportNamedDeclaration" || node.type === "ExportDefaultDeclaration") && ((_node$declaration = node.declaration) == null ? void 0 : _node$declaration.type) === "ClassDeclaration") {
       children.next();
     }
     const indexes = [];

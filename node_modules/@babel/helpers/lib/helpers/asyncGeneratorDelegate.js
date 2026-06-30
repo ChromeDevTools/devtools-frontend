@@ -28,8 +28,8 @@ function _asyncGeneratorDelegate(inner) {
     }
     return pump("next", value);
   };
-  if (typeof inner.throw === "function") {
-    iter.throw = function (value) {
+  if (typeof inner["throw"] === "function") {
+    iter["throw"] = function (value) {
       if (waiting) {
         waiting = false;
         throw value;
@@ -37,8 +37,8 @@ function _asyncGeneratorDelegate(inner) {
       return pump("throw", value);
     };
   }
-  if (typeof inner.return === "function") {
-    iter.return = function (value) {
+  if (typeof inner["return"] === "function") {
+    iter["return"] = function (value) {
       if (waiting) {
         waiting = false;
         return value;

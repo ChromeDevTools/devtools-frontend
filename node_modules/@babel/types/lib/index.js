@@ -574,9 +574,7 @@ const react = exports.react = {
   isCompatTag: _isCompatTag.default,
   buildChildren: _buildChildren.default
 };
-{
-  exports.toSequenceExpression = _toSequenceExpression.default;
-}
+exports.toSequenceExpression = _toSequenceExpression.default;
 if (process.env.BABEL_TYPES_8_BREAKING) {
   console.warn("BABEL_TYPES_8_BREAKING is not supported anymore. Use the latest Babel 8.0.0 pre-release instead!");
 }

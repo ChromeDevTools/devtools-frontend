@@ -93,7 +93,7 @@ import { WEB_PERMISSION_TO_PROTOCOL_PERMISSION } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { UnsupportedOperation } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError } from '../common/util.js';
+import { debugError, debugCatchError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
 import { UserContext } from './core/UserContext.js';
@@ -249,7 +249,7 @@ let BidiBrowserContext = (() => {
                     }
                     catch (error) {
                         // Tolerate not supporting `browsingContext.setViewport`. Only log it.
-                        debugError(error);
+                        debugError?.(error);
                     }
                 }
                 if (options?.type === 'window' && options?.windowBounds !== undefined) {
@@ -258,7 +258,7 @@ let BidiBrowserContext = (() => {
                     }
                     catch (error) {
                         // Tolerate not supporting `browser.setClientWindowState`. Only log it.
-                        debugError(error);
+                        debugError?.(error);
                     }
                 }
                 return page;
@@ -277,7 +277,7 @@ let BidiBrowserContext = (() => {
                 await this.userContext.remove();
             }
             catch (error) {
-                debugError(error);
+                debugError?.(error);
             }
             this.#targets.clear();
         }
@@ -307,7 +307,7 @@ let BidiBrowserContext = (() => {
                 // TODO: some permissions are outdated and setting them to denied does
                 // not work.
                 if (!permissionsSet.has(permission)) {
-                    return result.catch(debugError);
+                    return result.catch(debugCatchError);
                 }
                 return result;
             }));
@@ -337,7 +337,7 @@ let BidiBrowserContext = (() => {
                     .setPermissions(origin, {
                     name: permission,
                 }, "prompt" /* Bidi.Permissions.PermissionState.Prompt */)
-                    .catch(debugError);
+                    .catch(debugCatchError);
             });
             this.#overrides = [];
             await Promise.all(promises);

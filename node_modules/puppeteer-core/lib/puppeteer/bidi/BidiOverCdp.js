@@ -3,12 +3,12 @@
  * Copyright 2023 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import * as BidiMapper from 'chromium-bidi/lib/bidiMapper/BidiMapper.js';
+import { BidiMapper } from 'chromium-bidi';
 import { debug } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { BidiConnection } from './Connection.js';
 const bidiServerLogger = (prefix, ...args) => {
-    debug(`bidi:${prefix}`)(args);
+    debug(`bidi:${prefix}`)?.(args);
 };
 /**
  * @internal

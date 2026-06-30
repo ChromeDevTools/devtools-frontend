@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.allExpandedTypes = exports.VISITOR_KEYS = exports.NODE_PARENT_VALIDATIONS = exports.NODE_FIELDS = exports.FLIPPED_ALIAS_KEYS = exports.DEPRECATED_KEYS = exports.BUILDER_KEYS = exports.ALIAS_KEYS = void 0;
+exports.allExpandedTypes = exports.VISITOR_KEYS = exports.NODE_UNION_SHAPES__PRIVATE = exports.NODE_PARENT_VALIDATIONS = exports.NODE_FIELDS = exports.FLIPPED_ALIAS_KEYS = exports.DEPRECATED_KEYS = exports.BUILDER_KEYS = exports.ALIAS_KEYS = void 0;
 exports.arrayOf = arrayOf;
 exports.arrayOfType = arrayOfType;
 exports.assertEach = assertEach;
@@ -30,6 +30,7 @@ const NODE_FIELDS = exports.NODE_FIELDS = {};
 const BUILDER_KEYS = exports.BUILDER_KEYS = {};
 const DEPRECATED_KEYS = exports.DEPRECATED_KEYS = {};
 const NODE_PARENT_VALIDATIONS = exports.NODE_PARENT_VALIDATIONS = {};
+const NODE_UNION_SHAPES__PRIVATE = exports.NODE_UNION_SHAPES__PRIVATE = {};
 function getType(val) {
   if (Array.isArray(val)) {
     return "array";
@@ -206,7 +207,7 @@ function chain(...fns) {
   }
   return validate;
 }
-const validTypeOpts = new Set(["aliases", "builder", "deprecatedAlias", "fields", "inherits", "visitor", "validate"]);
+const validTypeOpts = new Set(["aliases", "builder", "deprecatedAlias", "fields", "inherits", "visitor", "validate", "unionShape"]);
 const validFieldKeys = new Set(["default", "optional", "deprecated", "validate"]);
 const store = {};
 function defineAliasedType(...aliases) {
@@ -285,6 +286,9 @@ function defineType(type, opts = {}) {
   });
   if (opts.validate) {
     NODE_PARENT_VALIDATIONS[type] = opts.validate;
+  }
+  if (opts.unionShape) {
+    NODE_UNION_SHAPES__PRIVATE[type] = opts.unionShape;
   }
   store[type] = opts;
 }

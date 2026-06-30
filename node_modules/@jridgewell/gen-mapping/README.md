@@ -224,4 +224,4 @@ Fastest is gen-mapping:      decoded output
 ```
 
 [source-map]: https://www.npmjs.com/package/source-map
-[trace-mapping]: https://github.com/jridgewell/trace-mapping
+[trace-mapping]: https://github.com/jridgewell/sourcemaps/tree/main/packages/trace-mapping

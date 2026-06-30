@@ -73,7 +73,7 @@ export class BidiConnection extends EventEmitter {
                 method,
                 params,
             });
-            debugProtocolSend(stringifiedMessage);
+            debugProtocolSend?.(stringifiedMessage);
             this.#transport.send(stringifiedMessage);
         });
     }
@@ -86,7 +86,7 @@ export class BidiConnection extends EventEmitter {
                 return setTimeout(f, this.#delay);
             });
         }
-        debugProtocolReceive(message);
+        debugProtocolReceive?.(message);
         const object = JSON.parse(message);
         if ('type' in object) {
             switch (object.type) {
@@ -116,7 +116,7 @@ export class BidiConnection extends EventEmitter {
         if ('id' in object) {
             this.#callbacks.reject(object.id, `Protocol Error. Message is not in BiDi protocol format: '${message}'`, object.message);
         }
-        debugError(object);
+        debugError?.(object);
     }
     /**
      * Unbinds the connection, but keeps the transport open. Useful when the transport will

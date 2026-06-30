@@ -14,8 +14,9 @@ export interface CustomQuerySelector {
 }
 /**
  * This class mimics the injected {@link CustomQuerySelectorRegistry}.
+ *
  */
-declare class CustomQuerySelectorRegistry {
+export declare class CustomQuerySelectorRegistry {
     #private;
     register(name: string, handler: CustomQueryHandler): void;
     unregister(name: string): void;
@@ -26,5 +27,4 @@ declare class CustomQuerySelectorRegistry {
  * @internal
  */
 export declare const customQuerySelectors: CustomQuerySelectorRegistry;
-export {};
 //# sourceMappingURL=CustomQuerySelector.d.ts.map

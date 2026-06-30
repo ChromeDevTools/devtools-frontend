@@ -239,7 +239,7 @@ let BidiFrame = (() => {
                     this.page().trustedEmitter.emit("pageerror" /* PageEvent.PageError */, error);
                 }
                 else {
-                    debugError(`Unhandled LogEntry with type "${entry.type}", text "${entry.text}" and level "${entry.level}"`);
+                    debugError?.(`Unhandled LogEntry with type "${entry.type}", text "${entry.text}" and level "${entry.level}"`);
                 }
             });
             this.browsingContext.on('worker', realm => {

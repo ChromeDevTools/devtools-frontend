@@ -3,7 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import type * as ChromiumBidi from 'chromium-bidi/lib/protocol/protocol.js';
+import type { Protocol as ChromiumBidi } from 'chromium-bidi';
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import type { EventsWithWildcard } from '../common/EventEmitter.js';
 import { EventEmitter } from '../common/EventEmitter.js';

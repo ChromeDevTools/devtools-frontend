@@ -92,6 +92,7 @@ export declare class BidiPage extends Page {
     emulateCPUThrottling(factor: number | null): Promise<void>;
     emulateMediaFeatures(features?: MediaFeature[]): Promise<void>;
     emulateTimezone(timezoneId?: string): Promise<void>;
+    emulateLocale(locale?: string): Promise<void>;
     emulateIdleState(overrides?: {
         isUserActive: boolean;
         isScreenUnlocked: boolean;

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import NodeWebSocket from 'ws';
-import { debugError } from '../common/util.js';
+import { debugCatchError } from '../common/util.js';
 import { packageVersion } from '../util/version.js';
 /**
  * @internal
@@ -44,7 +44,7 @@ export class NodeWebSocketTransport {
             }
         });
         // Silently log all errors - we don't know what to do with them.
-        this.#ws.addEventListener('error', debugError);
+        this.#ws.addEventListener('error', debugCatchError);
     }
     send(message) {
         this.#ws.send(message);

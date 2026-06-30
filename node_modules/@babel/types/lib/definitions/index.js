@@ -45,6 +45,12 @@ Object.defineProperty(exports, "NODE_PARENT_VALIDATIONS", {
     return _utils.NODE_PARENT_VALIDATIONS;
   }
 });
+Object.defineProperty(exports, "NODE_UNION_SHAPES__PRIVATE", {
+  enumerable: true,
+  get: function () {
+    return _utils.NODE_UNION_SHAPES__PRIVATE;
+  }
+});
 Object.defineProperty(exports, "PLACEHOLDERS", {
   enumerable: true,
   get: function () {

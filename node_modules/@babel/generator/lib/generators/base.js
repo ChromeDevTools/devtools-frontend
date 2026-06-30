@@ -18,13 +18,12 @@ function File(node) {
 }
 function Program(node) {
   var _node$directives;
-  this.noIndentInnerCommentsHere();
-  this.printInnerComments();
+  this.printInnerComments(false);
   const directivesLen = (_node$directives = node.directives) == null ? void 0 : _node$directives.length;
   if (directivesLen) {
     var _node$directives$trai;
     const newline = node.body.length ? 2 : 1;
-    this.printSequence(node.directives, undefined, newline);
+    this.printSequence(node.directives, undefined, undefined, newline);
     if (!((_node$directives$trai = node.directives[directivesLen - 1].trailingComments) != null && _node$directives$trai.length)) {
       this.newline(newline);
     }
@@ -34,18 +33,18 @@ function Program(node) {
 function BlockStatement(node) {
   var _node$directives2;
   this.tokenChar(123);
-  const exit = this.enterDelimited();
+  const oldNoLineTerminatorAfterNode = this.enterDelimited();
   const directivesLen = (_node$directives2 = node.directives) == null ? void 0 : _node$directives2.length;
   if (directivesLen) {
     var _node$directives$trai2;
     const newline = node.body.length ? 2 : 1;
-    this.printSequence(node.directives, true, newline);
+    this.printSequence(node.directives, true, true, newline);
     if (!((_node$directives$trai2 = node.directives[directivesLen - 1].trailingComments) != null && _node$directives$trai2.length)) {
       this.newline(newline);
     }
   }
-  this.printSequence(node.body, true);
-  exit();
+  this.printSequence(node.body, true, true);
+  this._noLineTerminatorAfterNode = oldNoLineTerminatorAfterNode;
   this.rightBrace(node);
 }
 function Directive(node) {
@@ -73,7 +72,7 @@ function DirectiveLiteral(node) {
 }
 function InterpreterDirective(node) {
   this.token(`#!${node.value}`);
-  this.newline(1, true);
+  this._newline();
 }
 function Placeholder(node) {
   this.token("%%");

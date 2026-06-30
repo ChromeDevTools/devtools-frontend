@@ -75,6 +75,7 @@ let BrowsingContext = (() => {
     let _removePreloadScript_decorators;
     let _setGeolocationOverride_decorators;
     let _setTimezoneOverride_decorators;
+    let _setLocaleOverride_decorators;
     let _setScreenOrientationOverride_decorators;
     let _getCookies_decorators;
     let _setCookie_decorators;
@@ -114,6 +115,7 @@ let BrowsingContext = (() => {
             __esDecorate(this, null, _removePreloadScript_decorators, { kind: "method", name: "removePreloadScript", static: false, private: false, access: { has: obj => "removePreloadScript" in obj, get: obj => obj.removePreloadScript }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setGeolocationOverride_decorators, { kind: "method", name: "setGeolocationOverride", static: false, private: false, access: { has: obj => "setGeolocationOverride" in obj, get: obj => obj.setGeolocationOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setTimezoneOverride_decorators, { kind: "method", name: "setTimezoneOverride", static: false, private: false, access: { has: obj => "setTimezoneOverride" in obj, get: obj => obj.setTimezoneOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _setLocaleOverride_decorators, { kind: "method", name: "setLocaleOverride", static: false, private: false, access: { has: obj => "setLocaleOverride" in obj, get: obj => obj.setLocaleOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setScreenOrientationOverride_decorators, { kind: "method", name: "setScreenOrientationOverride", static: false, private: false, access: { has: obj => "setScreenOrientationOverride" in obj, get: obj => obj.setScreenOrientationOverride }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getCookies_decorators, { kind: "method", name: "getCookies", static: false, private: false, access: { has: obj => "getCookies" in obj, get: obj => obj.getCookies }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _setCookie_decorators, { kind: "method", name: "setCookie", static: false, private: false, access: { has: obj => "setCookie" in obj, get: obj => obj.setCookie }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -423,6 +425,12 @@ let BrowsingContext = (() => {
                 contexts: [this.id],
             });
         }
+        async setLocaleOverride(locale) {
+            await this.userContext.browser.session.send('emulation.setLocaleOverride', {
+                locale: locale ?? null,
+                contexts: [this.id],
+            });
+        }
         async setScreenOrientationOverride(screenOrientation) {
             await this.#session.send('emulation.setScreenOrientationOverride', {
                 screenOrientation,
@@ -516,6 +524,9 @@ let BrowsingContext = (() => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _setTimezoneOverride_decorators = [throwIfDisposed(context => {
+                // SAFETY: Disposal implies this exists.
+                return context.#reason;
+            })], _setLocaleOverride_decorators = [throwIfDisposed(context => {
                 // SAFETY: Disposal implies this exists.
                 return context.#reason;
             })], _setScreenOrientationOverride_decorators = [throwIfDisposed(context => {

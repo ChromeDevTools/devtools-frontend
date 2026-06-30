@@ -8,7 +8,7 @@ var _checkInRHS = require("./checkInRHS.js");
 var _setFunctionName = require("./setFunctionName.js");
 var _toPropertyKey = require("./toPropertyKey.js");
 function applyDecs2311(targetClass, classDecs, memberDecs, classDecsHaveThis, instanceBrand, parentClass) {
-  var symbolMetadata = Symbol.metadata || Symbol.for("Symbol.metadata");
+  var symbolMetadata = Symbol.metadata || Symbol["for"]("Symbol.metadata");
   var defineProperty = Object.defineProperty;
   var create = Object.create;
   var metadata;
@@ -115,8 +115,8 @@ function applyDecs2311(targetClass, classDecs, memberDecs, classDecsHaveThis, in
           newValue = _;
         }
       } else {
-        ctx.static = isStatic;
-        ctx.private = isPrivate;
+        ctx["static"] = isStatic;
+        ctx["private"] = isPrivate;
         _ = ctx.access = {
           has: isPrivate ? hasPrivateBrand.bind() : function (target) {
             return name in target;

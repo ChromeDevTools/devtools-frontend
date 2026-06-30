@@ -37,7 +37,7 @@ function AsyncFromSyncIterator(s) {
       return AsyncFromSyncIteratorContinuation(this.n.apply(this.s, arguments));
     },
     return: function (value) {
-      var ret = this.s.return;
+      var ret = this.s["return"];
       if (ret === undefined) {
         return Promise.resolve({
           value: value,
@@ -47,7 +47,7 @@ function AsyncFromSyncIterator(s) {
       return AsyncFromSyncIteratorContinuation(ret.apply(this.s, arguments));
     },
     throw: function (maybeError) {
-      var thr = this.s.return;
+      var thr = this.s["return"];
       if (thr === undefined) {
         return Promise.reject(maybeError);
       }

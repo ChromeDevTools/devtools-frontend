@@ -97,6 +97,7 @@ exports.isForXStatement = isForXStatement;
 exports.isFunction = isFunction;
 exports.isFunctionDeclaration = isFunctionDeclaration;
 exports.isFunctionExpression = isFunctionExpression;
+exports.isFunctionParameter = isFunctionParameter;
 exports.isFunctionParent = isFunctionParent;
 exports.isFunctionTypeAnnotation = isFunctionTypeAnnotation;
 exports.isFunctionTypeParam = isFunctionTypeParam;
@@ -304,6 +305,7 @@ exports.isV8IntrinsicIdentifier = isV8IntrinsicIdentifier;
 exports.isVariableDeclaration = isVariableDeclaration;
 exports.isVariableDeclarator = isVariableDeclarator;
 exports.isVariance = isVariance;
+exports.isVoidPattern = isVoidPattern;
 exports.isVoidTypeAnnotation = isVoidTypeAnnotation;
 exports.isWhile = isWhile;
 exports.isWhileStatement = isWhileStatement;
@@ -1236,6 +1238,11 @@ function isPipelinePrimaryTopicReference(node, opts) {
   if (node.type !== "PipelinePrimaryTopicReference") return false;
   return opts == null || (0, _shallowEqual.default)(node, opts);
 }
+function isVoidPattern(node, opts) {
+  if (!node) return false;
+  if (node.type !== "VoidPattern") return false;
+  return opts == null || (0, _shallowEqual.default)(node, opts);
+}
 function isTSParameterProperty(node, opts) {
   if (!node) return false;
   if (node.type !== "TSParameterProperty") return false;
@@ -2090,7 +2097,7 @@ function isDeclaration(node, opts) {
   }
   return opts == null || (0, _shallowEqual.default)(node, opts);
 }
-function isPatternLike(node, opts) {
+function isFunctionParameter(node, opts) {
   if (!node) return false;
   switch (node.type) {
     case "Identifier":
@@ -2098,6 +2105,25 @@ function isPatternLike(node, opts) {
     case "AssignmentPattern":
     case "ArrayPattern":
     case "ObjectPattern":
+    case "VoidPattern":
+      break;
+    case "Placeholder":
+      if (node.expectedNode === "Identifier") break;
+    default:
+      return false;
+  }
+  return opts == null || (0, _shallowEqual.default)(node, opts);
+}
+function isPatternLike(node, opts) {
+  if (!node) return false;
+  switch (node.type) {
+    case "Identifier":
+    case "MemberExpression":
+    case "RestElement":
+    case "AssignmentPattern":
+    case "ArrayPattern":
+    case "ObjectPattern":
+    case "VoidPattern":
     case "TSAsExpression":
     case "TSSatisfiesExpression":
     case "TSTypeAssertion":
@@ -2274,6 +2300,7 @@ function isPattern(node, opts) {
     case "AssignmentPattern":
     case "ArrayPattern":
     case "ObjectPattern":
+    case "VoidPattern":
       break;
     case "Placeholder":
       if (node.expectedNode === "Pattern") break;

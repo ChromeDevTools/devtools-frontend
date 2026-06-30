@@ -155,6 +155,10 @@ export interface Commands {
     params: Bidi.Emulation.SetScriptingEnabledParameters;
     returnType: Bidi.Emulation.SetScriptingEnabledResult;
   };
+  'emulation.setScrollbarTypeOverride': {
+    params: Bidi.Emulation.SetScrollbarTypeOverrideParameters;
+    returnType: Bidi.Emulation.SetScrollbarTypeOverrideResult;
+  };
   'emulation.setTimezoneOverride': {
     params: Bidi.Emulation.SetTimezoneOverrideParameters;
     returnType: Bidi.Emulation.SetTimezoneOverrideResult;

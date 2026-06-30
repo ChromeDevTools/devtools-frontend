@@ -56,7 +56,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { EventEmitter } from '../common/EventEmitter.js';
-import { debugError } from '../common/util.js';
+import { debugError, debugCatchError } from '../common/util.js';
 import { DisposableStack } from '../util/disposable.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
 import { BidiElementHandle } from './ElementHandle.js';
@@ -125,7 +125,7 @@ export class ExposableFunction {
             catch (error) {
                 // If it errors, the frame probably doesn't support call function. We
                 // fail gracefully.
-                debugError(error);
+                debugError?.(error);
             }
         }));
     }
@@ -193,7 +193,7 @@ export class ExposableFunction {
                     }
                 }
                 catch (error) {
-                    debugError(error);
+                    debugError?.(error);
                 }
                 return;
             }
@@ -203,7 +203,7 @@ export class ExposableFunction {
                 }, result);
             }
             catch (error) {
-                debugError(error);
+                debugError?.(error);
             }
         }
         catch (e_2) {
@@ -233,7 +233,7 @@ export class ExposableFunction {
         return;
     }
     [Symbol.dispose]() {
-        void this[Symbol.asyncDispose]().catch(debugError);
+        void this[Symbol.asyncDispose]().catch(debugCatchError);
     }
     async [Symbol.asyncDispose]() {
         this.#disposables.dispose();
@@ -253,7 +253,7 @@ export class ExposableFunction {
                 ]);
             }
             catch (error) {
-                debugError(error);
+                debugError?.(error);
             }
         }));
     }

@@ -7,8 +7,8 @@ exports.default = filterItems;
 exports.isRequired = isRequired;
 exports.targetsSupported = targetsSupported;
 var _semver = require("semver");
-var _plugins = require("@babel/compat-data/plugins");
 var _utils = require("./utils.js");
+const pluginsCompatData = require("@babel/compat-data/plugins");
 function targetsSupported(target, support) {
   const targetEnvironments = Object.keys(target);
   if (targetEnvironments.length === 0) {
@@ -34,7 +34,7 @@ function targetsSupported(target, support) {
   return unsupportedEnvironments.length === 0;
 }
 function isRequired(name, targets, {
-  compatData = _plugins,
+  compatData = pluginsCompatData,
   includes,
   excludes
 } = {}) {

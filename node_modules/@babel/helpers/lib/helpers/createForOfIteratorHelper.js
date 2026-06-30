@@ -51,8 +51,8 @@ function _createForOfIteratorHelper(o, allowArrayLike) {
     },
     f: function () {
       try {
-        if (!normalCompletion && it.return != null) {
-          it.return();
+        if (!normalCompletion && it["return"] != null) {
+          it["return"]();
         }
       } finally {
         if (didErr) throw err;

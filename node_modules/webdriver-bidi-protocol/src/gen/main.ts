@@ -550,6 +550,7 @@ export namespace BrowsingContext {
     navigation: BrowsingContext.Navigation | null;
     timestamp: JsUint;
     url: string;
+    userContext?: Browser.UserContext;
   };
 }
 export namespace BrowsingContext {
@@ -679,6 +680,7 @@ export namespace BrowsingContext {
 export namespace BrowsingContext {
   export type CreateResult = {
     context: BrowsingContext.BrowsingContext;
+    userContext?: Browser.UserContext;
   };
 }
 export namespace BrowsingContext {
@@ -929,6 +931,7 @@ export namespace BrowsingContext {
     context: BrowsingContext.BrowsingContext;
     timestamp: JsUint;
     url: string;
+    userContext?: Browser.UserContext;
   };
 }
 export namespace BrowsingContext {
@@ -1005,6 +1008,7 @@ export namespace BrowsingContext {
     context: BrowsingContext.BrowsingContext;
     accepted: boolean;
     type: BrowsingContext.UserPromptType;
+    userContext?: Browser.UserContext;
     userText?: string;
   };
 }
@@ -1020,6 +1024,7 @@ export namespace BrowsingContext {
     handler: Session.UserPromptHandlerType;
     message: string;
     type: BrowsingContext.UserPromptType;
+    userContext?: Browser.UserContext;
     defaultValue?: string;
   };
 }
@@ -1031,6 +1036,7 @@ export type EmulationCommand =
   | Emulation.SetScreenOrientationOverride
   | Emulation.SetScreenSettingsOverride
   | Emulation.SetScriptingEnabled
+  | Emulation.SetScrollbarTypeOverride
   | Emulation.SetTimezoneOverride
   | Emulation.SetTouchOverride
   | Emulation.SetUserAgentOverride;
@@ -1040,6 +1046,7 @@ export type EmulationResult =
   | Emulation.SetLocaleOverrideResult
   | Emulation.SetScreenOrientationOverrideResult
   | Emulation.SetScriptingEnabledResult
+  | Emulation.SetScrollbarTypeOverrideResult
   | Emulation.SetTimezoneOverrideResult
   | Emulation.SetTouchOverrideResult
   | Emulation.SetUserAgentOverrideResult;
@@ -1286,6 +1293,25 @@ export namespace Emulation {
   export type SetScriptingEnabledResult = EmptyResult;
 }
 export namespace Emulation {
+  export type SetScrollbarTypeOverride = {
+    method: 'emulation.setScrollbarTypeOverride';
+    params: Emulation.SetScrollbarTypeOverrideParameters;
+  };
+}
+export namespace Emulation {
+  export type SetScrollbarTypeOverrideParameters = {
+    scrollbarType: 'classic' | 'overlay' | null;
+    contexts?: [
+      BrowsingContext.BrowsingContext,
+      ...BrowsingContext.BrowsingContext[],
+    ];
+    userContexts?: [Browser.UserContext, ...Browser.UserContext[]];
+  };
+}
+export namespace Emulation {
+  export type SetScrollbarTypeOverrideResult = EmptyResult;
+}
+export namespace Emulation {
   export type SetTimezoneOverride = {
     method: 'emulation.setTimezoneOverride';
     params: Emulation.SetTimezoneOverrideParameters;
@@ -1381,6 +1407,7 @@ export namespace Network {
     redirectCount: JsUint;
     request: Network.RequestData;
     timestamp: JsUint;
+    userContext?: Browser.UserContext | null;
     intercepts?: [Network.Intercept, ...Network.Intercept[]];
   };
 }
@@ -2059,6 +2086,7 @@ export namespace Script {
   export type WindowRealmInfo = Script.BaseRealmInfo & {
     type: 'window';
     context: BrowsingContext.BrowsingContext;
+    userContext?: Browser.UserContext;
     sandbox?: string;
   };
 }
@@ -2367,6 +2395,7 @@ export namespace Script {
   export type Source = {
     realm: Script.Realm;
     context?: BrowsingContext.BrowsingContext;
+    userContext?: Browser.UserContext;
   };
 }
 export namespace Script {
@@ -2914,6 +2943,7 @@ export namespace Input {
 export namespace Input {
   export type FileDialogInfo = {
     context: BrowsingContext.BrowsingContext;
+    userContext?: Browser.UserContext;
     element?: Script.SharedReference;
     multiple: boolean;
   };

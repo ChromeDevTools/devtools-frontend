@@ -113,6 +113,20 @@ export class WebWorker extends EventEmitter {
         func = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, func);
         return await this.mainRealm().evaluateHandle(func, ...args);
     }
+    /**
+     * Waits for the provided function, `workerFunction`, to return a truthy value when
+     * evaluated in the page's context.
+     *
+     * @param workerFunction - Function to be evaluated in browser context until it
+     * returns a truthy value.
+     * @param options - Options for configuring waiting behavior.
+     */
+    waitForFunction(workerFunction, options = {}, ...args) {
+        return this.mainRealm().waitForFunction(workerFunction, {
+            polling: 100,
+            ...options,
+        }, ...args);
+    }
     async close() {
         throw new UnsupportedOperation('WebWorker.close() is not supported');
     }

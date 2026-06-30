@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Target, TargetType } from '../api/Target.js';
-import { debugError } from '../common/util.js';
+import { debugCatchError } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { CdpPage } from './Page.js';
 import { CdpWebWorker } from './WebWorker.js';
@@ -178,7 +178,7 @@ export class PageTarget extends CdpTarget {
         this.#defaultViewport = defaultViewport ?? undefined;
     }
     _initialize() {
-        this._initializedDeferred
+        void this._initializedDeferred
             .valueOrThrow()
             .then(async (result) => {
             if (result === InitializationStatus.ABORTED) {
@@ -199,7 +199,7 @@ export class PageTarget extends CdpTarget {
             openerPage.emit("popup" /* PageEvent.Popup */, popupPage);
             return true;
         })
-            .catch(debugError);
+            .catch(debugCatchError);
         this._checkIfInitialized();
     }
     async page() {

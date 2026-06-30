@@ -1,0 +1,78 @@
+{
+  "name": "yargs-parser",
+  "version": "22.0.0",
+  "description": "the mighty option parser used by yargs",
+  "main": "build/lib/index.js",
+  "exports": {
+    ".": [
+      {
+        "import": "./build/lib/index.js"
+      },
+      "./build/lib/index.js"
+    ],
+    "./browser": [
+      "./browser.js"
+    ]
+  },
+  "type": "module",
+  "module": "./build/lib/index.js",
+  "scripts": {
+    "check": "gts lint",
+    "fix": "gts fix",
+    "pretest": "rimraf build && tsc -p tsconfig.test.json",
+    "test": "c8 --reporter=text --reporter=html mocha test/*.mjs",
+    "test:browser": "start-server-and-test 'serve ./ -p 8080' http://127.0.0.1:8080/package.json 'node ./test/browser/yargs-test.cjs'",
+    "pretest:typescript": "npm run pretest",
+    "test:typescript": "c8 mocha ./build/test/typescript/*.js",
+    "coverage": "c8 report --check-coverage",
+    "precompile": "rimraf build",
+    "compile": "tsc",
+    "prepare": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yargs/yargs-parser.git"
+  },
+  "keywords": [
+    "argument",
+    "parser",
+    "yargs",
+    "command",
+    "cli",
+    "parsing",
+    "option",
+    "args",
+    "argument"
+  ],
+  "author": "Ben Coe <ben@npmjs.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
+    "@types/chai": "^5.2.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.15.3",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "c8": "^10.1.3",
+    "chai": "^5.2.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^8.57.1",
+    "gts": "^5.3.1",
+    "mocha": "^11.1.0",
+    "puppeteer": "^24.6.1",
+    "rimraf": "^6.0.1",
+    "serve": "^14.0.0",
+    "start-server-and-test": "^2.0.11",
+    "typescript": "^5.8.3"
+  },
+  "files": [
+    "browser.js",
+    "build",
+    "!*.d.ts",
+    "!*.d.cts"
+  ],
+  "engines": {
+    "node": "^20.19.0 || ^22.12.0 || >=23"
+  }
+}

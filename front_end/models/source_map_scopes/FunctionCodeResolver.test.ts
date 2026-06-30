@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import type * as Protocol from '../../generated/protocol.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -17,27 +19,25 @@ import * as SourceMapScopes from './source_map_scopes.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('FunctionCodeResolver', function() {
+describe('FunctionCodeResolver', function() {
   const snapshotTester = new SnapshotTester(this, import.meta);
+  setupRuntimeHooks();
+  setupSettingsHooks();
 
   const URL = urlString`file:///tmp/example.js`;
   let target: SDK.Target.Target;
-  let backend: MockProtocolBackend;
+  let backend: MockDebuggerBackend;
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    backend = new MockProtocolBackend();
-    target = createTarget();
+    backend = new MockDebuggerBackend();
+    target = backend.createTarget();
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   // This was minified with 'esbuild --sourcemap=linked --minify' v0.25.9.
@@ -212,8 +212,9 @@ describeWithMockConnection('FunctionCodeResolver', function() {
     }
 
     it('only retrieves code from projects associated with the specified target', async () => {
-      const target1 = createTarget();
-      const target2 = createTarget();
+      const parentTarget = backend.createTarget({type: SDK.Target.Type.BROWSER});
+      const target1 = backend.createTarget({parentTarget, id: 'child1' as Protocol.Target.TargetID});
+      const target2 = backend.createTarget({parentTarget, id: 'child2' as Protocol.Target.TargetID});
       await backend.addScript(target2, {url: URL, content: exampleSource}, null);
 
       // Attempt to retrieve code using target1

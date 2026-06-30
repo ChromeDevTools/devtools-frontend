@@ -121,7 +121,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
 
   private update(): void {
     const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
-    const seenLayers = new Map<SDK.LayerTreeBase.Layer, boolean>();
+    const seenLayers = new Set<SDK.LayerTreeBase.Layer>();
     let root: (SDK.LayerTreeBase.Layer|null)|null = null;
     if (this.layerTree) {
       if (!showInternalLayers) {
@@ -135,58 +135,81 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
     let layerCount = 0;
     let totalLayerMemory = 0;
 
-    function updateLayer(this: LayerTreeOutline, layer: SDK.LayerTreeBase.Layer): void {
-      if (!layer.drawsContent() && !showInternalLayers) {
-        return;
-      }
-      if (seenLayers.get(layer)) {
-        console.assert(false, 'Duplicate layer: ' + layer.id());
-      }
-      seenLayers.set(layer, true);
+    const childrenMap = new Map<SDK.LayerTreeBase.Layer, SDK.LayerTreeBase.Layer[]>();
 
-      layerCount++;
-      totalLayerMemory += layer.gpuMemoryUsage();
+    if (this.layerTree && root) {
+      const buildTree = (layer: SDK.LayerTreeBase.Layer): void => {
+        if (!layer.drawsContent() && !showInternalLayers) {
+          return;
+        }
 
-      let node: LayerTreeElement|null = layerToTreeElement.get(layer) || null;
-      let parentLayer = layer.parent();
-      // Skip till nearest visible ancestor.
-      while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
-        parentLayer = parentLayer.parent();
-      }
-      const parent =
-          layer === root ? this.treeOutline.rootElement() : parentLayer && layerToTreeElement.get(parentLayer);
-      if (!parent) {
-        console.assert(false, 'Parent is not in the tree');
-        return;
-      }
-      if (!node) {
-        node = new LayerTreeElement(this, layer);
-        parent.appendChild(node);
-        // Expand all new non-content layers to expose content layers better.
-        if (!layer.drawsContent()) {
-          node.expand();
+        layerCount++;
+        totalLayerMemory += layer.gpuMemoryUsage();
+
+        if (layer === root) {
+          return;
         }
-      } else {
-        if (node.parent !== parent) {
-          const oldSelection = this.treeOutline.selectedTreeElement;
-          if (node.parent) {
-            node.parent.removeChild(node);
-          }
-          parent.appendChild(node);
-          if (oldSelection && oldSelection !== this.treeOutline.selectedTreeElement) {
-            oldSelection.select();
-          }
+
+        let parentLayer = layer.parent();
+        // Skip till nearest visible ancestor.
+        while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
+          parentLayer = parentLayer.parent();
         }
-        node.update();
-      }
+
+        if (parentLayer) {
+          let children = childrenMap.get(parentLayer);
+          if (!children) {
+            children = [];
+            childrenMap.set(parentLayer, children);
+          }
+          children.push(layer);
+        } else {
+          console.assert(false, 'Internal error: multiple root layers');
+        }
+      };
+
+      this.layerTree.forEachLayer(buildTree, root);
     }
-    if (root && this.layerTree) {
-      this.layerTree.forEachLayer(updateLayer.bind(this), root);
+
+    const syncNode =
+        (layer: SDK.LayerTreeBase.Layer, parent: UI.TreeOutline.TreeOutline|UI.TreeOutline.TreeElement): void => {
+          seenLayers.add(layer);
+          let node: LayerTreeElement|null = layerToTreeElement.get(layer) || null;
+          if (!node) {
+            node = new LayerTreeElement(this, layer);
+            parent.appendChild(node);
+            // Expand all new non-content layers to expose content layers better.
+            if (!layer.drawsContent()) {
+              node.expand();
+            }
+          } else {
+            if (node.parent !== parent) {
+              const oldSelection = this.treeOutline.selectedTreeElement;
+              if (node.parent) {
+                node.parent.removeChild(node);
+              }
+              parent.appendChild(node);
+              if (oldSelection && oldSelection !== this.treeOutline.selectedTreeElement) {
+                oldSelection.select();
+              }
+            }
+            node.update();
+          }
+
+          const children = childrenMap.get(layer) || [];
+          for (const child of children) {
+            syncNode(child, node);
+          }
+        };
+
+    if (root && (root.drawsContent() || showInternalLayers)) {
+      syncNode(root, this.treeOutline.rootElement());
     }
+
     // Clean up layers that don't exist anymore from tree.
     const rootElement = this.treeOutline.rootElement();
     for (let node = rootElement.firstChild(); node instanceof LayerTreeElement && !node.root;) {
-      if (seenLayers.get(node.layer)) {
+      if (seenLayers.has(node.layer)) {
         node = node.traverseNextTreeElement(false);
       } else {
         const nextNode = node.nextSibling || node.parent;

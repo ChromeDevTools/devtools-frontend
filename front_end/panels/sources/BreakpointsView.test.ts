@@ -20,11 +20,11 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {
-  createTarget,
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {
   createContentProviderUISourceCode,
   setupMockedUISourceCode,
@@ -699,26 +699,35 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
   });
 });
 
-describeWithMockConnection('BreakpointsSidebarController', () => {
+describe('BreakpointsSidebarController', () => {
+  setupRuntimeHooks();
+  setupLocaleHooks();
+
+  let backend: MockDebuggerBackend;
+  let target: SDK.Target.Target;
+
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+    backend = new MockDebuggerBackend();
+
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
+
+    target = backend.createTarget();
+
     Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
-      targetManager,
-      workspace,
-      debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
+      targetManager: backend.universe.targetManager,
+      workspace: backend.universe.workspace,
+      debuggerWorkspaceBinding: backend.universe.debuggerWorkspaceBinding,
+      settings: backend.universe.settings,
     });
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   const DEFAULT_BREAKPOINT:
@@ -807,8 +816,6 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
         Common.Revealer.RevealerRegistry.instance(),
         'reveal');  // Prevent pending reveal promises after tests are done.
 
-    const backend = new MockProtocolBackend();
-    const target = createTarget();
     target.targetManager().setScopeTarget(target);
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
 
@@ -830,12 +837,14 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
     // Set up sdk and ui location, and a mapping between them, such that we can identify that
     // the hit breakpoint is the one we are adding.
     const responderPromise = backend.responderToBreakpointByUrlRequest(uiSourceCode.url(), 0)({
-      breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
-      locations: [{
-        scriptId: script.scriptId,
-        lineNumber: 0,
-        columnNumber: 0,
-      }]
+      result: {
+        breakpointId: 'DUMMY_BREAKPOINT' as Protocol.Debugger.BreakpointId,
+        locations: [{
+          scriptId: script.scriptId,
+          lineNumber: 0,
+          columnNumber: 0,
+        }]
+      }
     });
     const b1 = await breakpointManager.setBreakpoint(uiSourceCode, 0, 0, ...DEFAULT_BREAKPOINT);
     assert.exists(b1);
@@ -892,26 +901,32 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
   });
 });
 
-describeWithMockConnection('BreakpointsView', () => {
+describe('BreakpointsView', () => {
+  setupRuntimeHooks();
+  setupLocaleHooks();
+
+  let backend: MockDebuggerBackend;
+
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+    backend = new MockDebuggerBackend();
+
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
+
     Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
-      targetManager,
-      workspace,
-      debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance()
+      targetManager: backend.universe.targetManager,
+      workspace: backend.universe.workspace,
+      debuggerWorkspaceBinding: backend.universe.debuggerWorkspaceBinding,
+      settings: backend.universe.settings,
     });
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   it('correctly expands breakpoint groups', async () => {

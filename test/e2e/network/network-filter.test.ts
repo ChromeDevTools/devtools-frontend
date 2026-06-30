@@ -111,23 +111,22 @@ describe('The Network Tab', function() {
     await devToolsPage.waitForNone('.data-grid-data-grid-node > .name-column');
   });
 
-  // Mac doesn't consistently respect force-cache
-  // TODO(crbug.com/1412665): This test is flaky.
-  it.skip('[crbug.com/40822085] can filter by cache status in the log view', async ({devToolsPage, inspectedPage}) => {
-    await navigateToNetworkTab(
-        `requests.html?num=5&cache=no-store&nocache=${Math.random()}`, devToolsPage, inspectedPage);
+  it('can filter by cache status in the log view', async ({devToolsPage, inspectedPage}) => {
+    await navigateToNetworkTab('resources-from-cache.html', devToolsPage, inspectedPage);
+    await setCacheDisabled(false, devToolsPage);
+    await waitForSomeRequestsToAppear(3, devToolsPage);
     await setPersistLog(true, devToolsPage);
-    await navigateToNetworkTab(
-        `requests.html?num=3&cache=force-cache&nocache=${Math.random()}`, devToolsPage, inspectedPage);
+    await navigateToNetworkTab('resources-from-cache.html', devToolsPage, inspectedPage);
+    await waitForSomeRequestsToAppear(6, devToolsPage);
+
     await devToolsPage.typeText('-is:from-cache');
-    let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
-    assert.lengthOf(nodes, 7);
+    let nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 3);
+    assert.lengthOf(nodes, 3);
 
     await clearTextFilter(devToolsPage);
     await devToolsPage.typeText('is:from-cache');
-    nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 1);
+    nodes = await devToolsPage.waitForMany('.data-grid-data-grid-node > .name-column', 3);
     assert.lengthOf(nodes, 3);
-    await setPersistLog(false, devToolsPage);
   });
 
   it('require operator to filter by scheme', async ({devToolsPage, inspectedPage}) => {

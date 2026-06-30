@@ -141,14 +141,23 @@ export class FileSystem implements Workspace.Workspace.Project {
     return [];
   }
 
-  async findFilesMatchingSearchRequest(
-      _searchConfig: Workspace.SearchConfig.SearchConfig,
-      _filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
-      _progress: Common.Progress.Progress): Promise<Map<Workspace.UISourceCode.UISourceCode, SearchMatch[]|null>> {
+  async findFilesMatchingSearchRequest(_searchConfig: Workspace.SearchConfig.SearchConfig,
+                                       _filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+                                       progress: Common.Progress.Progress):
+      Promise<Map<Workspace.UISourceCode.UISourceCode, SearchMatch[]|null>> {
+    // Defer completion to the next microtask to avoid triggering premature
+    // completion events in CompositeProgress setup loops.
+    await Promise.resolve();
+    progress.done = true;
     return new Map();
   }
 
-  indexContent(_progress: Common.Progress.Progress): void {
+  indexContent(progress: Common.Progress.Progress): void {
+    // Defer completion to the next microtask to avoid triggering premature
+    // completion events in CompositeProgress setup loops.
+    queueMicrotask(() => {
+      progress.done = true;
+    });
   }
 
   uiSourceCodeForURL(_url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode|null {

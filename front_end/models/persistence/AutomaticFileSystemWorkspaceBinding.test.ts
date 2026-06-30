@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -36,6 +37,35 @@ describe('Persistence', () => {
         const fileSystem = new FileSystem({root, uuid, state: 'disconnected'}, automaticFileSystemManager, workspace);
 
         assert.strictEqual(fileSystem.displayName(), 'bar');
+      });
+
+      it('marks the progress as done when indexing content', async () => {
+        const automaticFileSystemManager = sinon.createStubInstance(AutomaticFileSystemManager);
+        const workspace = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
+        const fileSystem = new FileSystem({root, uuid, state: 'disconnected'}, automaticFileSystemManager, workspace);
+
+        const progress = new Common.Progress.Progress();
+        fileSystem.indexContent(progress);
+
+        await new Promise<void>(resolve => {
+          queueMicrotask(() => resolve());
+        });
+        assert.isTrue(progress.done);
+      });
+
+      it('marks the progress as done when finding files matching search request', async () => {
+        const automaticFileSystemManager = sinon.createStubInstance(AutomaticFileSystemManager);
+        const workspace = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
+        const fileSystem = new FileSystem({root, uuid, state: 'disconnected'}, automaticFileSystemManager, workspace);
+
+        const progress = new Common.Progress.Progress();
+        const searchConfig = sinon.createStubInstance(Workspace.SearchConfig.SearchConfig);
+        void fileSystem.findFilesMatchingSearchRequest(searchConfig, [], progress);
+
+        await new Promise<void>(resolve => {
+          queueMicrotask(() => resolve());
+        });
+        assert.isTrue(progress.done);
       });
     });
 

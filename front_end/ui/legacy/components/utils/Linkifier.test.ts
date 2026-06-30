@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -15,15 +14,12 @@ import type * as StackTrace from '../../../../models/stack_trace/stack_trace.js'
 import * as Workspace from '../../../../models/workspace/workspace.js';
 import {findMenuItemWithLabel} from '../../../../testing/ContextMenuHelpers.js';
 import {
-  createTarget,
   describeWithEnvironment,
 } from '../../../../testing/EnvironmentHelpers.js';
 import {
-  describeWithMockConnection,
   dispatchEvent,
 } from '../../../../testing/MockConnection.js';
-import {MockProtocolBackend} from '../../../../testing/MockScopeChain.js';
-import {setMockResourceTree} from '../../../../testing/ResourceTreeHelpers.js';
+import {MockDebuggerBackend} from '../../../../testing/MockScopeChain.js';
 import {TestUniverse} from '../../../../testing/TestUniverse.js';
 import * as UI from '../../legacy.js';
 
@@ -41,17 +37,24 @@ function foo(x) {
 }
 `;
 
-describeWithMockConnection('Linkifier', () => {
+describeWithEnvironment('Linkifier', () => {
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
+  });
+
   function setUpEnvironment() {
-    setMockResourceTree(false);
-    const target = createTarget();
+    const backend = new MockDebuggerBackend();
+    const target = backend.createTarget();
     const linkifier = new Components.Linkifier.Linkifier(100, false);
     linkifier.targetAdded(target);
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const workspace = backend.universe.workspace;
     const forceNew = true;
-    const targetManager = target.targetManager();
+    const targetManager = backend.universe.targetManager;
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+    const ignoreListManager = backend.universe.ignoreListManager;
+    sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(ignoreListManager);
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
@@ -60,8 +63,7 @@ describeWithMockConnection('Linkifier', () => {
       workspace,
     });
     Breakpoints.BreakpointManager.BreakpointManager.instance(
-        {forceNew, targetManager, workspace, debuggerWorkspaceBinding, settings: Common.Settings.Settings.instance()});
-    const backend = new MockProtocolBackend();
+        {forceNew, targetManager, workspace, debuggerWorkspaceBinding, settings: backend.universe.settings});
     return {target, linkifier, backend};
   }
 
@@ -416,14 +418,16 @@ describeWithMockConnection('Linkifier', () => {
 
          const responder = backend.responderToBreakpointByUrlRequest(url, lineNumber);
          void responder({
-           breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
-           locations: [
-             {
-               scriptId: script.scriptId,
-               lineNumber,
-               columnNumber,
-             },
-           ],
+           result: {
+             breakpointId: 'BREAK_ID' as Protocol.Debugger.BreakpointId,
+             locations: [
+               {
+                 scriptId: script.scriptId,
+                 lineNumber,
+                 columnNumber,
+               },
+             ],
+           },
          });
          const breakpoint = await breakpointManager.setBreakpoint(
              uiSourceCode, lineNumber, columnNumber, 'x' as Breakpoints.BreakpointManager.UserCondition,
@@ -474,6 +478,7 @@ describeWithMockConnection('Linkifier', () => {
       // Detach the source map and check we get the update event.
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(debuggerModel);
+      await debuggerModel.sourceMapManager().waitForSourceMapsProcessedForTest();
       debuggerModel.sourceMapManager().detachSourceMap(script);
 
       await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();

@@ -16,7 +16,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
-import {addChildFrame, createResource, getMainFrame, setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {addChildFrame, createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
@@ -28,7 +28,6 @@ describeWithEnvironment('NavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
 
   beforeEach(() => {
-    setMockResourceTree(false);
     const connection = new MockCDPConnection();
     connection.setSuccessHandler('Page.getResourceTree', async () => {
       return {

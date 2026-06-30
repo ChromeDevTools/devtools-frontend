@@ -13,9 +13,8 @@ import {
   raf,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import {getMainFrame, navigate, setMockResourceTree} from '../../../testing/ResourceTreeHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {getMainFrame, navigate} from '../../../testing/ResourceTreeHelpers.js';
 import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 
 import * as ApplicationComponents from './components.js';
@@ -28,17 +27,22 @@ async function renderBackForwardCacheView(): Promise<ApplicationComponents.BackF
   return component;
 }
 
-describeWithMockConnection('BackForwardCacheView', () => {
+describeWithEnvironment('BackForwardCacheView', () => {
   let target: SDK.Target.Target;
   let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
 
   beforeEach(async () => {
-    setMockResourceTree(false);
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     resourceTreeModel =
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
+  });
+
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
   });
 
   it('updates BFCacheView on main frame navigation', async () => {

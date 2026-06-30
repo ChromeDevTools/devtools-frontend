@@ -14,9 +14,6 @@ import {
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {
-  setMockResourceTree,
-} from '../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
@@ -45,7 +42,6 @@ describeWithEnvironment('InspectElementModeController', () => {
   }
 
   beforeEach(() => {
-    setMockResourceTree(false);
     stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
     connection = new MockCDPConnection();

@@ -10,7 +10,7 @@ import type * as ProtocolProxyApi from '../generated/protocol-proxy-api.js';
 import {raf} from './DOMHelpers.js';
 import {cleanTestDOM} from './DOMHooks.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
-import {setMockResourceTree} from './ResourceTreeHelpers.js';
+import {FRAME, MAIN_FRAME_ID} from './ResourceHelpers.js';
 
 type ProtocolCommand = keyof ProtocolMapping.Commands;
 type CommandParams<C extends keyof ProtocolMapping.Commands> = ProtocolClient.CDPConnection.CommandParams<C>;
@@ -80,6 +80,20 @@ export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
   target.dispatch({method: event, params: payload[0]});
 }
 
+const MAIN_FRAME = {
+  ...FRAME,
+  id: MAIN_FRAME_ID,
+};
+
+function setMockResourceTree(): void {
+  setMockConnectionResponseHandler('Page.getResourceTree', () => ({
+                                                             frameTree: {
+                                                               frame: MAIN_FRAME,
+                                                               resources: [],
+                                                             },
+                                                           }));
+}
+
 async function enable({reset = true} = {}) {
   if (reset) {
     responseMap.clear();
@@ -89,7 +103,7 @@ async function enable({reset = true} = {}) {
   // before it can run. This function will ensure those things are
   // minimally there.
   await initializeGlobalVars({reset});
-  setMockResourceTree(true);
+  setMockResourceTree();
 
   ProtocolClient.ConnectionTransport.ConnectionTransport.setFactory(() => new MockTransport());
 }

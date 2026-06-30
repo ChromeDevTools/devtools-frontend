@@ -10,10 +10,6 @@ import * as Protocol from '../generated/protocol.js';
 
 import type {MockCDPConnection} from './MockCDPConnection.js';
 import {
-  clearMockConnectionResponseHandler,
-  setMockConnectionResponseHandler,
-} from './MockConnection.js';
-import {
   FRAME,
   getEffectivePayload,
   getMainFrame,
@@ -38,19 +34,6 @@ const MAIN_FRAME = {
   ...FRAME,
   id: MAIN_FRAME_ID,
 };
-
-export function setMockResourceTree(shouldMock: boolean) {
-  if (shouldMock) {
-    setMockConnectionResponseHandler('Page.getResourceTree', () => ({
-                                                               frameTree: {
-                                                                 frame: MAIN_FRAME,
-                                                                 resources: [],
-                                                               },
-                                                             }));
-  } else {
-    clearMockConnectionResponseHandler('Page.getResourceTree');
-  }
-}
 
 export function mockResourceTree(connection: MockCDPConnection) {
   connection.setSuccessHandler('Page.getResourceTree', () => ({

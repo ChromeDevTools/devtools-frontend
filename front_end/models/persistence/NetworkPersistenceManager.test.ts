@@ -13,11 +13,10 @@ import * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
   deinitializeGlobalVars,
+  describeWithEnvironment,
   initializeGlobalVars,
 } from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
-import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -40,11 +39,17 @@ const setUpEnvironmentWithUISourceCode =
       return {workspace, project, uiSourceCode, networkPersistenceManager};
     };
 
-describeWithMockConnection('NetworkPersistenceManager', () => {
+describeWithEnvironment('NetworkPersistenceManager', () => {
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
     const target = createTarget();
     sinon.stub(target.fetchAgent(), 'invoke_enable');
+  });
+
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
   });
 
   it('can create an overridden file with Local Overrides enabled', async () => {
@@ -82,7 +87,13 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithMockConnection('NetworkPersistenceManager', () => {
+describeWithEnvironment('NetworkPersistenceManager', () => {
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
+  });
+
   it('does not create interception patterns for forbidden URLs', async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
     const target = createTarget();
@@ -124,12 +135,11 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithMockConnection('NetworkPersistenceManager', () => {
+describeWithEnvironment('NetworkPersistenceManager', () => {
   let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
 
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
-    setMockResourceTree(false);
     const target = createTarget();
     networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, [
       {
@@ -720,9 +730,15 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
   });
 });
 
-describeWithMockConnection('NetworkPersistenceManager', () => {
+describeWithEnvironment('NetworkPersistenceManager', () => {
   beforeEach(() => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
+  });
+
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
   });
 
   it('updates active state when target detach and attach', async () => {

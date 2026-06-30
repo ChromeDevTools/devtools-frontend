@@ -20,7 +20,6 @@ import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHe
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
-import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -31,7 +30,6 @@ const {urlString} = Platform.DevToolsPath;
 describeWithEnvironment('NetworkNavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
   beforeEach(async () => {
-    setMockResourceTree(false);
     const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
     workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -54,6 +52,12 @@ describeWithEnvironment('NetworkNavigatorView', () => {
     Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+  });
+
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
   });
 
   describe('reveals main target', () => {

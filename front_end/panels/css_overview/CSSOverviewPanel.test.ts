@@ -7,23 +7,24 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
-import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as CSSOverview from './css_overview.js';
 
-describeWithMockConnection('CSSOverviewPanel', () => {
+describeWithEnvironment('CSSOverviewPanel', () => {
   let target: SDK.Target.Target;
 
   beforeEach(async () => {
-    setMockResourceTree(false);
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
+  });
+
+  afterEach(() => {
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      target.dispose('afterEach');
+    }
   });
 
   it('reacts to start event and sends completion event', async () => {

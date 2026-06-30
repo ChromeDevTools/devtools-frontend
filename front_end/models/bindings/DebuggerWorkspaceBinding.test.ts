@@ -10,7 +10,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
-import {setMockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {protocolCallFrame, stringifyStackTrace} from '../../testing/StackTraceHelpers.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -34,7 +33,6 @@ describeWithEnvironment('DebuggerWorkspaceBinding', () => {
       ignoreListManager,
       workspace,
     });
-    setMockResourceTree(false);
   });
 
   it('can wait for a uiSourceCode if it is not yet available', async () => {

@@ -1879,6 +1879,7 @@ grd_files_unbundled_sources = [
   "front_end/panels/mobile_throttling/throttlingSettingsTab.css.js",
   "front_end/panels/network/BinaryResourceView.js",
   "front_end/panels/network/EventSourceMessagesView.js",
+  "front_end/panels/network/LinkPreloadGenerator.js",
   "front_end/panels/network/NetworkConfigView.js",
   "front_end/panels/network/NetworkDataGridNode.js",
   "front_end/panels/network/NetworkFrameGrouper.js",

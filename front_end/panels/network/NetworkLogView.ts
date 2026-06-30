@@ -61,6 +61,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {canPreloadRequest, generatePreloadLink} from './LinkPreloadGenerator.js';
 import {
   Events,
   type EventTypes,
@@ -284,6 +285,11 @@ const UIStrings = {
    * refers to the format the data will be copied as, which is compatible with the fetch web API.
    */
   copyAsFetch: 'Copy as `fetch`',
+  /**
+   * @description A context menu command in the Network panel, for copying a resource's link element
+   * to the clipboard. 'preload' refers to the HTML link relation format the data will be copied as.
+   */
+  copyAsPreload: 'Copy as preload element',
   /**
    * @description Text in Network Log View of the Network panel. An action that copies a command to
    * the developer's clipboard. The command allows the developer to replay this specific network
@@ -1812,6 +1818,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       copyMenu.defaultSection().appendItem(
           i18nString(UIStrings.copyAsNodejsFetch), this.copyFetchCall.bind(this, request, FetchStyle.NODE_JS),
           {disabled: disableIfBlob, jslogContext: 'copy-as-nodejs-fetch'});
+      this.appendCopyAsPreloadItem(copyMenu, request);
 
       if (Host.Platform.isWin()) {
         copyMenu.footerSection().appendItem(
@@ -2009,6 +2016,27 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(request => this.applyFilter(request));
     const commands = await this.generateAllCurlCommand(requests, platform);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
+  }
+
+  private copyPreloadElement(request: SDK.NetworkRequest.NetworkRequest): void {
+    const preloadLink = generatePreloadLink(request);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(preloadLink);
+  }
+
+  private appendCopyAsPreloadItem(copyMenu: UI.ContextMenu.SubMenu, request: SDK.NetworkRequest.NetworkRequest): void {
+    const isHttpOrHttps = request.parsedURL.scheme === 'http' || request.parsedURL.scheme === 'https';
+    const isGetRequest = request.requestMethod === 'GET';
+
+    const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
+    const resourceTreeModel = networkManager?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const isMainDocument = Boolean(resourceTreeModel?.mainFrame && resourceTreeModel.mainFrame.id === request.frameId &&
+                                   request.resourceType() === Common.ResourceType.resourceTypes.Document);
+
+    const disablePreload =
+        !isHttpOrHttps || request.isBlobRequest() || !isGetRequest || isMainDocument || !canPreloadRequest(request);
+    copyMenu.defaultSection().appendItem(i18nString(UIStrings.copyAsPreload),
+                                         this.copyPreloadElement.bind(this, request),
+                                         {disabled: disablePreload, jslogContext: 'copy-as-preload'});
   }
 
   private async copyFetchCall(request: SDK.NetworkRequest.NetworkRequest, style: FetchStyle): Promise<void> {

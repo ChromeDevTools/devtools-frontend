@@ -39,7 +39,32 @@ describe('The Network Tab search', function() {
     }
 
     await searchInput.press('Enter');
-    await devToolsPage.waitFor('.search-result');
+  }
+
+  async function waitForSearchResults(devToolsPage: DevToolsPage,
+                                      expectedMatches: Array<{request: string, matches: string[]}>) {
+    const sortedExpected = expectedMatches.toSorted((a, b) => a.request.localeCompare(b.request));
+    await devToolsPage.waitForFunction(async () => {
+      const results = (await getSearchResults(devToolsPage)).toSorted((a, b) => a.request.localeCompare(b.request));
+
+      if (results.length !== sortedExpected.length) {
+        return false;
+      }
+      for (let i = 0; i < sortedExpected.length; i++) {
+        if (results[i].request !== sortedExpected[i].request) {
+          return false;
+        }
+        if (results[i].matches.length !== sortedExpected[i].matches.length) {
+          return false;
+        }
+        for (let j = 0; j < sortedExpected[i].matches.length; j++) {
+          if (!results[i].matches[j].includes(sortedExpected[i].matches[j])) {
+            return false;
+          }
+        }
+      }
+      return true;
+    });
   }
 
   async function getSearchResults(devToolsPage: DevToolsPage): Promise<Array<{request: string, matches: string[]}>> {
@@ -59,106 +84,94 @@ describe('The Network Tab search', function() {
     return results;
   }
 
-  // Flaky on Mac.
-  it.skipOnPlatforms(['mac'], '[crbug.com/407750483]: can search request URLs', async ({devToolsPage, inspectedPage}: {
-                                                                                  devToolsPage: DevToolsPage,
-                                                                                  inspectedPage: InspectedPage,
-                                                                                }) => {
+  it('can search request URLs', async ({devToolsPage, inspectedPage}: {
+                                  devToolsPage: DevToolsPage,
+                                  inspectedPage: InspectedPage,
+                                }) => {
     await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
-    await inspectedPage.evaluate(() => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.json`))));
+    await inspectedPage.evaluate(
+        () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
     await waitForSomeRequestsToAppear(6, devToolsPage);
 
     await devToolsPage.summonSearchBox();
     await devToolsPage.waitFor('.search-toolbar-input');
     await performSearch(devToolsPage, 'search-result');
-
-    const results = await getSearchResults(devToolsPage);
-    assert.lengthOf(results, 3);
-    for (const result of results) {
-      assert.lengthOf(result.matches, 1);
-      assert.include(result.matches[0], 'e2e/resources/network');
-    }
+    await waitForSearchResults(devToolsPage, [
+      {request: 'search-result-1.js', matches: ['e2e/resources/network']},
+      {request: 'search-result-2.js', matches: ['e2e/resources/network']},
+      {request: 'search-result-3.js', matches: ['e2e/resources/network']},
+    ]);
   });
 
-  // Flaky on Mac.
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/407750483]: can search request bodies with case-insensitive regex',
-      async ({devToolsPage, inspectedPage}: {
-        devToolsPage: DevToolsPage,
-        inspectedPage: InspectedPage,
-      }) => {
+  it('can search request bodies with case-insensitive regex', async ({devToolsPage, inspectedPage}: {
+                                                                devToolsPage: DevToolsPage,
+                                                                inspectedPage: InspectedPage,
+                                                              }) => {
+    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await inspectedPage.evaluate(
+        () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
+    await waitForSomeRequestsToAppear(6, devToolsPage);
+
+    await devToolsPage.summonSearchBox();
+    await devToolsPage.waitFor('.search-toolbar-input');
+    await performSearch(devToolsPage, 'd.search', true, true);
+    await waitForSearchResults(devToolsPage, [
+      {request: 'search-result-1.js', matches: ['dosearch()']},
+      {request: 'search-result-2.js', matches: ['doSearch()']},
+      {request: 'search-result-3.js', matches: ['d.Search()']},
+    ]);
+  });
+
+  it('can search request bodies with case-sensitive regex', async ({devToolsPage, inspectedPage}: {
+                                                              devToolsPage: DevToolsPage,
+                                                              inspectedPage: InspectedPage,
+                                                            }) => {
+    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await inspectedPage.evaluate(
+        () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
+    await waitForSomeRequestsToAppear(6, devToolsPage);
+
+    await devToolsPage.summonSearchBox();
+    await devToolsPage.waitFor('.search-toolbar-input');
+    await performSearch(devToolsPage, 'd.search', true, false);
+    await waitForSearchResults(devToolsPage, [
+      {request: 'search-result-1.js', matches: ['dosearch()']},
+    ]);
+  });
+
+  it('can search request bodies with case-insensitive text', async ({devToolsPage, inspectedPage}: {
+                                                               devToolsPage: DevToolsPage,
+                                                               inspectedPage: InspectedPage,
+                                                             }) => {
+    await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
+    await inspectedPage.evaluate(
+        () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
+    await waitForSomeRequestsToAppear(6, devToolsPage);
+
+    await devToolsPage.summonSearchBox();
+    await devToolsPage.waitFor('.search-toolbar-input');
+    await performSearch(devToolsPage, 'd.search', false, true);
+    await waitForSearchResults(devToolsPage, [
+      {request: 'search-result-3.js', matches: ['d.Search()']},
+    ]);
+  });
+
+  it(
+      'reveals the request in the network log when a search result is clicked', async ({devToolsPage, inspectedPage}: {
+                                                                                  devToolsPage: DevToolsPage,
+                                                                                  inspectedPage: InspectedPage,
+                                                                                }) => {
         await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
-        await inspectedPage.evaluate(() => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`))));
-        await waitForSomeRequestsToAppear(6, devToolsPage);
-
-        await devToolsPage.summonSearchBox();
-        await devToolsPage.waitFor('.search-toolbar-input');
-        await performSearch(devToolsPage, 'd.search', true, true);
-
-        const results = await getSearchResults(devToolsPage);
-        assert.deepEqual(results.sort((a, b) => a.request.localeCompare(b.request)), [
-          {request: 'search-result-1.js', matches: ['dosearch()']},
-          {request: 'search-result-2.js', matches: ['doSearch()']},
-          {request: 'search-result-3.js', matches: ['d.Search()']}
-        ]);
-      });
-
-  // Flaky on Mac.
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/407750483]: can search request bodies with case-sensitive regex',
-      async ({devToolsPage, inspectedPage}: {
-        devToolsPage: DevToolsPage,
-        inspectedPage: InspectedPage,
-      }) => {
-        await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
-        await inspectedPage.evaluate(() => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`))));
-        await waitForSomeRequestsToAppear(6, devToolsPage);
-
-        await devToolsPage.summonSearchBox();
-        await devToolsPage.waitFor('.search-toolbar-input');
-        await performSearch(devToolsPage, 'd.search', true, false);
-
-        const results = await getSearchResults(devToolsPage);
-        assert.deepEqual(results.sort((a, b) => a.request.localeCompare(b.request)), [
-          {request: 'search-result-1.js', matches: ['dosearch()']},
-        ]);
-      });
-
-  // Flaky on Mac.
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/407750483]: can search request bodies with case-insensitive text',
-      async ({devToolsPage, inspectedPage}: {
-        devToolsPage: DevToolsPage,
-        inspectedPage: InspectedPage,
-      }) => {
-        await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
-        await inspectedPage.evaluate(() => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`))));
-        await waitForSomeRequestsToAppear(6, devToolsPage);
-
-        await devToolsPage.summonSearchBox();
-        await devToolsPage.waitFor('.search-toolbar-input');
-        await performSearch(devToolsPage, 'd.search', false, true);
-
-        const results = await getSearchResults(devToolsPage);
-        assert.deepEqual(
-            results.sort((a, b) => a.request.localeCompare(b.request)),
-            [{request: 'search-result-3.js', matches: ['d.Search()']}]);
-      });
-
-  // Flaky on Mac.
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/407750483]: reveals the request in the network log when a search result is clicked',
-      async ({devToolsPage, inspectedPage}: {
-        devToolsPage: DevToolsPage,
-        inspectedPage: InspectedPage,
-      }) => {
-        await navigateToNetworkTab(SIMPLE_PAGE_URL, devToolsPage, inspectedPage);
-        await inspectedPage.evaluate(() => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`))));
+        await inspectedPage.evaluate(
+            () => Promise.all([1, 2, 3].map(i => fetch(`search-result-${i}.js`).then(r => r.text()))));
         await waitForSomeRequestsToAppear(6, devToolsPage);
 
         await devToolsPage.summonSearchBox();
         await devToolsPage.waitFor('.search-toolbar-input');
         await performSearch(devToolsPage, 'd.search', false, true);
+        await waitForSearchResults(devToolsPage, [
+          {request: 'search-result-3.js', matches: ['d.Search()']},
+        ]);
 
         // Click on the first match. There should be only one.
         const firstMatch = await devToolsPage.waitFor('.search-match-content');

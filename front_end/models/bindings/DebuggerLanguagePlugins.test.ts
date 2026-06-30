@@ -9,10 +9,11 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {protocolCallFrame, stringifyFrame} from '../../testing/StackTraceHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as StackTrace from '../stack_trace/stack_trace.js';
 import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
@@ -84,19 +85,11 @@ describe('DebuggerLanguagePluginManager', () => {
       }
     }
 
+    let universe: TestUniverse;
     beforeEach(() => {
-      target = createTarget();
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-      const targetManager = target.targetManager();
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-      debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-        ignoreListManager,
-        workspace,
-      });
+      universe = new TestUniverse();
+      target = universe.createTarget();
+      debuggerWorkspaceBinding = universe.debuggerWorkspaceBinding;
       pluginManager = debuggerWorkspaceBinding.pluginManager;
     });
 

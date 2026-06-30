@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -372,22 +371,13 @@ describeWithEnvironment('ThreadAppender', function() {
   describe('ignore listing', () => {
     let ignoreListManager: Workspace.IgnoreListManager.IgnoreListManager;
     beforeEach(() => {
-      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      SDK.TargetManager.TargetManager.instance({forceNew: true});
+      Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
       ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-        ignoreListManager,
-        workspace,
-      });
     });
     afterEach(() => {
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
       Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     });
     it('removes entries from the data that match the ignored URL', async function() {
@@ -486,22 +476,13 @@ describeWithEnvironment('ThreadAppender', function() {
   });
   describe('showAllEvents', () => {
     beforeEach(() => {
-      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-        ignoreListManager,
-        workspace,
-      });
+      SDK.TargetManager.TargetManager.instance({forceNew: true});
+      Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     });
     afterEach(() => {
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
       Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     });
     it('appends unknown events to the flame chart data only when the experiment is enabled', async function() {
@@ -532,23 +513,14 @@ describeWithEnvironment('ThreadAppender', function() {
     // We have to set these up because the ThreadAppender includes logic for
     // ignoring events that relies on the IgnoreListManager.
     beforeEach(() => {
-      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-        ignoreListManager,
-        workspace,
-      });
+      SDK.TargetManager.TargetManager.instance({forceNew: true});
+      Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     });
 
     afterEach(() => {
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
       Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     });
 

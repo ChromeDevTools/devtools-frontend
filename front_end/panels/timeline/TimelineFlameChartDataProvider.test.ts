@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
@@ -26,22 +25,13 @@ const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   beforeEach(() => {
-    const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+    SDK.TargetManager.TargetManager.instance({forceNew: true});
+    Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+    Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
   });
   afterEach(() => {
     SDK.TargetManager.TargetManager.removeInstance();
     Workspace.Workspace.WorkspaceImpl.removeInstance();
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
     Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
   });
 

@@ -5,39 +5,30 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../../models/bindings/bindings.js';
+import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
 
 import * as Sources from './sources.js';
 
 describeWithEnvironment('DebuggerPausedMessage', () => {
+  let universe: TestUniverse;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
   let breakpointManager: Breakpoints.BreakpointManager.BreakpointManager;
   let pausedMessage: Sources.DebuggerPausedMessage.DebuggerPausedMessage;
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+    universe = new TestUniverse();
+    debuggerWorkspaceBinding = universe.debuggerWorkspaceBinding;
     breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
-      targetManager,
-      workspace,
+      targetManager: universe.targetManager,
+      workspace: universe.workspace,
       debuggerWorkspaceBinding,
-      settings: Common.Settings.Settings.instance(),
+      settings: universe.settings,
     });
     pausedMessage = new Sources.DebuggerPausedMessage.DebuggerPausedMessage();
   });

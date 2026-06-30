@@ -4,26 +4,35 @@
 
 import {assert} from 'chai';
 
+import type * as SDK from '../../../core/sdk/sdk.js';
 import {
   assertScreenshot,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  setMockConnectionResponseHandler,
-} from '../../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {createViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 
 import * as ApplicationComponents from './components.js';
 const {BounceTrackingMitigationsView, DEFAULT_VIEW, ScreenStatusType} =
     ApplicationComponents.BounceTrackingMitigationsView;
 
-describeWithMockConnection('BounceTrackingMitigationsView', () => {
+describeWithEnvironment('BounceTrackingMitigationsView', () => {
+  let target: SDK.Target.Target;
+  let connection: MockCDPConnection;
+
+  beforeEach(() => {
+    connection = new MockCDPConnection();
+  });
+
+  afterEach(() => {
+    target?.dispose('test');
+  });
+
   it('shows no message or table if the force run button has not been clicked', async () => {
-    createTarget();
-    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
-    setMockConnectionResponseHandler('Storage.runBounceTrackingMitigations', () => ({deletedSites: []}));
+    target = createTarget({connection});
+    connection.setSuccessHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
+    connection.setSuccessHandler('Storage.runBounceTrackingMitigations', () => ({deletedSites: []}));
 
     const view = createViewFunctionStub(BounceTrackingMitigationsView);
     new BounceTrackingMitigationsView(undefined, view);
@@ -36,8 +45,8 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
   });
 
   it('shows a message indicating that Bounce Tracking Mitigations are disabled', async () => {
-    createTarget();
-    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: false}));
+    target = createTarget({connection});
+    connection.setSuccessHandler('SystemInfo.getFeatureState', () => ({featureEnabled: false}));
 
     const view = createViewFunctionStub(BounceTrackingMitigationsView);
     new BounceTrackingMitigationsView(undefined, view);
@@ -51,10 +60,10 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
   async function testForceRunClick(deletedSites: string[]) {
     const {promise: lock, resolve: freeLock} = Promise.withResolvers();
-    createTarget();
-    setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
+    target = createTarget({connection});
+    connection.setSuccessHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
     const runBounceTrackingMitigationsPromise = new Promise(resolve => {
-      setMockConnectionResponseHandler('Storage.runBounceTrackingMitigations', async () => {
+      connection.setSuccessHandler('Storage.runBounceTrackingMitigations', async () => {
         await lock;
         resolve(undefined);
         return {deletedSites};

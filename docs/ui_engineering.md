@@ -209,7 +209,9 @@ assert.deepStrictEqual((await viewCall).headersForSourceURL, [{...}]);
 
 // ❌ not recommended: mocking CDP responses to make the models behave in a certain way
 // while testing a presenter is fragile.
-setMockConnectionResponseHandler('CSS.getHeaders', () => ({}));
+const connection = new MockCDPConnection();
+connection.setSuccessHandler('CSS.getHeaders', () => ({}));
+createTarget({connection});
 const presenter = new Presenter();
 presenter.doSomething();
 ```

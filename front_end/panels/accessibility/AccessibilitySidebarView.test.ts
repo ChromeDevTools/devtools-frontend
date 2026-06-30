@@ -9,15 +9,15 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Accessibility from './accessibility.js';
 
 const NODE_ID = 1 as Protocol.DOM.NodeId;
 
-describeWithMockConnection('AccessibilitySidebarView', () => {
+describeWithEnvironment('AccessibilitySidebarView', () => {
   let target: SDK.Target.Target;
   let view: Accessibility.AccessibilitySidebarView.AccessibilitySidebarView;
 
@@ -30,10 +30,11 @@ describeWithMockConnection('AccessibilitySidebarView', () => {
       title: () => 'Toggle Accessibility Tree' as Platform.UIString.LocalizedString,
       toggleable: true,
     });
-    target = createTarget();
-    setMockConnectionResponseHandler(
-        'DOM.getDocument', () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
-    setMockConnectionResponseHandler('DOM.getNodesForSubtreeByStyle', () => ({nodeIds: []}));
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('DOM.getDocument',
+                                 () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
+    connection.setSuccessHandler('DOM.getNodesForSubtreeByStyle', () => ({nodeIds: []}));
+    target = createTarget({connection});
   });
 
   afterEach(() => {

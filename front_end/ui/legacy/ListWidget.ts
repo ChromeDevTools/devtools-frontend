@@ -64,6 +64,7 @@ export class ListWidget<T> extends VBox {
   private editElement: HTMLElement|null;
   private emptyPlaceholder: Element|null;
   private isTable: boolean;
+  private headerElement: Element|null = null;
   constructor(delegate: Delegate<T>, delegatesFocus = true, isTable = false) {
     super({useShadowDom: true, delegatesFocus});
     this.registerRequiredCSS(listWidgetStyles);
@@ -100,8 +101,19 @@ export class ListWidget<T> extends VBox {
     this.elements = [];
     this.lastSeparator = false;
     this.list.removeChildren();
+    if (this.headerElement) {
+      this.list.appendChild(this.headerElement);
+    }
     this.updatePlaceholder();
     this.stopEditing();
+  }
+
+  setHeader(header: Element): void {
+    if (this.headerElement) {
+      this.headerElement.remove();
+    }
+    this.headerElement = header;
+    this.list.insertBefore(header, this.list.firstChild);
   }
 
   updateItem(index: number, newItem: T, editable: boolean, focusable = true, controlLabels: {

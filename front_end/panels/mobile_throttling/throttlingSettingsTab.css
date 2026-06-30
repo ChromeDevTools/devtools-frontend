@@ -148,3 +148,8 @@
   align-items: center;
   gap: 5px;
 }
+
+.conditions-list-header {
+  font-weight: bold;
+  border-bottom: 1px solid var(--sys-color-divider);
+}

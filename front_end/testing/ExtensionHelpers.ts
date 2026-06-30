@@ -5,16 +5,21 @@
 import sinon from 'sinon';
 
 import type {Chrome} from '../../extension-api/ExtensionAPI.js';
+import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
+import * as SDK from '../core/sdk/sdk.js';
 import type * as Extensions from '../models/extensions/extensions.js';
+import * as Logs from '../models/logs/logs.js';
+import * as Workspace from '../models/workspace/workspace.js';
 import * as PanelCommon from '../panels/common/common.js';
 
 import {describeWithEnvironment, setupActionRegistry} from './EnvironmentHelpers.js';
-import {describeWithMockConnection} from './MockConnection.js';
+import {MockDebuggerBackend} from './MockScopeChain.js';
 
-interface ExtensionContext {
+export interface ExtensionContext {
   chrome: Partial<Chrome.DevTools.Chrome>;
   extensionDescriptor: Extensions.ExtensionAPI.ExtensionDescriptor;
+  backend?: Partial<MockDebuggerBackend>;
 }
 
 export function getExtensionOrigin() {
@@ -36,7 +41,7 @@ export function describeWithDevtoolsExtension(
     chrome: {},
   };
 
-  function setup() {
+  function setupExtensionHelper() {
     const server = PanelCommon.ExtensionServer.ExtensionServer.instance({forceNew: true});
     sinon.stub(server, 'addExtensionFrame');
 
@@ -52,21 +57,35 @@ export function describeWithDevtoolsExtension(
     server.addExtension(extensionDescriptor);
   }
 
-  function cleanup() {
+  function cleanupExtensionHelper() {
     const chrome: Partial<Chrome.DevTools.Chrome> = {};
     (window as {chrome?: Partial<Chrome.DevTools.Chrome>}).chrome = chrome;
     context.chrome = chrome;
+    sinon.restore();
   }
 
-  return describeWithMockConnection(`with-extension-${title}`, function() {
-    beforeEach(cleanup);
-    beforeEach(setup);
-    afterEach(cleanup);
+  return describeWithEnvironment(`with-extension-${title}`, function() {
+    setupActionRegistry();
 
-    describeWithEnvironment(title, function() {
-      setupActionRegistry();
-      fn.call(this, context);
+    let backend: MockDebuggerBackend;
+
+    beforeEach(() => {
+      cleanupExtensionHelper();
+      backend = new MockDebuggerBackend();
+      context.backend = backend;
+      sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
+      sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
+      sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
+
+      const networkLog = new Logs.NetworkLog.NetworkLog();
+      sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
+
+      setupExtensionHelper();
     });
+
+    afterEach(cleanupExtensionHelper);
+
+    fn.call(this, context);
   });
 }
 

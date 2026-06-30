@@ -247,12 +247,26 @@ describeWithEnvironment('IDBDataView', () => {
   it('renders toolbar and data grid', async () => {
     const model = sinon.createStubInstance(Application.IndexedDBModel.IndexedDBModel);
     model.loadObjectStoreData.callsFake((dbId, storeName, keyRange, skipCount, pageSize, callback) => {
-      const key = SDK.RemoteObject.RemoteObject.fromLocalObject('foo');
-      const primaryKey = SDK.RemoteObject.RemoteObject.fromLocalObject('foo');
-      const value = SDK.RemoteObject.RemoteObject.fromLocalObject('bar');
-      callback([{key, primaryKey, value}], false);
+      const entries = [
+        {
+          key: SDK.RemoteObject.RemoteObject.fromLocalObject('string_key'),
+          primaryKey: SDK.RemoteObject.RemoteObject.fromLocalObject('string_key'),
+          value: SDK.RemoteObject.RemoteObject.fromLocalObject('string_value'),
+        },
+        {
+          key: SDK.RemoteObject.RemoteObject.fromLocalObject(42),
+          primaryKey: SDK.RemoteObject.RemoteObject.fromLocalObject(42),
+          value: SDK.RemoteObject.RemoteObject.fromLocalObject({name: 'Item', count: 5}),
+        },
+        {
+          key: SDK.RemoteObject.RemoteObject.fromLocalObject('boolean_key'),
+          primaryKey: SDK.RemoteObject.RemoteObject.fromLocalObject('boolean_key'),
+          value: SDK.RemoteObject.RemoteObject.fromLocalObject(true),
+        },
+      ];
+      callback(entries, false);
     });
-    model.getMetadata.resolves({entriesCount: 1, keyGeneratorValue: 0});
+    model.getMetadata.resolves({entriesCount: 3, keyGeneratorValue: 0});
 
     const databaseId = new Application.IndexedDBModel.DatabaseId({storageKey: 'https://example.com'}, 'My Database');
 
@@ -263,6 +277,9 @@ describeWithEnvironment('IDBDataView', () => {
     const component = new Application.IndexedDBViews.IDBDataView(model, databaseId, objectStore, null, refreshCallback);
 
     renderElementIntoDOM(component, {includeCommonStyles: true});
+    component.element.style.height = '200px';
+    component.element.style.width = '600px';
+    component.update(objectStore);
 
     // Verify toolbar elements exist
     const toolbar = component.element.querySelector('devtools-toolbar');
@@ -274,8 +291,8 @@ describeWithEnvironment('IDBDataView', () => {
 
     // Verify row rendered
     const rows = dataGrid?.querySelectorAll('.data-grid-data-grid-node');
-    assert.strictEqual(rows?.length, 1);
+    assert.strictEqual(rows?.length, 3);
 
-    await assertScreenshot('idb_data_view_baseline.png');
+    await assertScreenshot('application/idb_data_view_baseline.png');
   });
 });

@@ -262,9 +262,8 @@ export class IDBDataView extends UI.View.SimpleView {
   private lastKey?: any;
   private summaryBarElement?: HTMLElement;
 
-  constructor(
-      model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
-      refreshObjectStoreCallback: () => void) {
+  constructor(model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
+              refreshObjectStoreCallback: () => void) {
     super({
       title: i18nString(UIStrings.idb),
       viewId: 'idb',
@@ -287,8 +286,8 @@ export class IDBDataView extends UI.View.SimpleView {
     this.deleteSelectedButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
       void this.deleteButtonClicked(null);
     });
-    this.deleteSelectedButton.element.setAttribute(
-        'jslog', `${VisualLogging.action('delete-selected').track({click: true})}`);
+    this.deleteSelectedButton.element.setAttribute('jslog',
+                                                   `${VisualLogging.action('delete-selected').track({click: true})}`);
 
     this.clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearObjectStore), 'clear');
     this.clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
@@ -434,8 +433,8 @@ export class IDBDataView extends UI.View.SimpleView {
     this.updateData(false);
   }
 
-  private populateContextMenu(
-      contextMenu: UI.ContextMenu.ContextMenu, gridNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
+  private populateContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
+                              gridNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
     const node = (gridNode as IDBDataGridNode);
     if (node.valueObjectPresentation) {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.expandRecursively), () => {
@@ -510,26 +509,7 @@ export class IDBDataView extends UI.View.SimpleView {
     function callback(this: IDBDataView, entries: Entry[], hasMore: boolean): void {
       this.clear();
       this.entries = entries;
-      let selectedNode: IDBDataGridNode|null = null;
-      for (let i = 0; i < entries.length; ++i) {
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const data: any = {};
-        data['number'] = i + skipCount;
-        data['key'] = entries[i].key;
-        data['primary-key'] = entries[i].primaryKey;
-        data['value'] = entries[i].value;
-
-        const node = new IDBDataGridNode(data);
-        this.dataGrid.rootNode().appendChild(node);
-        if (data['number'] <= selected) {
-          selectedNode = node;
-        }
-      }
-
-      if (selectedNode) {
-        selectedNode.select();
-      }
+      this.populateDataGrid(entries, skipCount, selected);
       this.pageBackButton.setEnabled(Boolean(skipCount));
       this.pageForwardButton.setEnabled(hasMore);
       this.needsRefresh.setVisible(false);
@@ -539,14 +519,36 @@ export class IDBDataView extends UI.View.SimpleView {
 
     const idbKeyRange = key ? window.IDBKeyRange.lowerBound(key) : null;
     if (this.isIndex && this.index) {
-      this.model.loadIndexData(
-          this.databaseId, this.objectStore.name, this.index.name, idbKeyRange, skipCount, pageSize,
-          callback.bind(this));
+      this.model.loadIndexData(this.databaseId, this.objectStore.name, this.index.name, idbKeyRange, skipCount,
+                               pageSize, callback.bind(this));
     } else {
-      this.model.loadObjectStoreData(
-          this.databaseId, this.objectStore.name, idbKeyRange, skipCount, pageSize, callback.bind(this));
+      this.model.loadObjectStoreData(this.databaseId, this.objectStore.name, idbKeyRange, skipCount, pageSize,
+                                     callback.bind(this));
     }
     void this.model.getMetadata(this.databaseId, this.objectStore).then(this.updateSummaryBar.bind(this));
+  }
+
+  private populateDataGrid(entries: Entry[], skipCount: number, selected: number): void {
+    let selectedNode: IDBDataGridNode|null = null;
+    for (let i = 0; i < entries.length; ++i) {
+      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const data: any = {};
+      data['number'] = i + skipCount;
+      data['key'] = entries[i].key;
+      data['primary-key'] = entries[i].primaryKey;
+      data['value'] = entries[i].value;
+
+      const node = new IDBDataGridNode(data);
+      this.dataGrid.rootNode().appendChild(node);
+      if (data['number'] <= selected) {
+        selectedNode = node;
+      }
+    }
+
+    if (selectedNode) {
+      selectedNode.select();
+    }
   }
 
   private updateSummaryBar(metadata: ObjectStoreMetadata|null): void {
@@ -578,10 +580,10 @@ export class IDBDataView extends UI.View.SimpleView {
   }
 
   private async clearButtonClicked(): Promise<void> {
-    const ok = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.objectStoreWillBeCleared),
-        i18nString(UIStrings.confirmClearObjectStore, {PH1: this.objectStore.name}), this.element,
-        {jslogContext: 'clear-object-store-confirmation'});
+    const ok =
+        await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.objectStoreWillBeCleared),
+                                            i18nString(UIStrings.confirmClearObjectStore, {PH1: this.objectStore.name}),
+                                            this.element, {jslogContext: 'clear-object-store-confirmation'});
     if (ok) {
       this.clearButton.setEnabled(false);
       this.clearingObjectStore = true;

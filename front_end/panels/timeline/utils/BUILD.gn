@@ -65,6 +65,7 @@ devtools_ui_module("unittests") {
     "../../../core/sdk:bundle",
     "../../../generated",
     "../../../models/bindings:bundle",
+    "../../../models/formatter:bundle",
     "../../../models/trace:bundle",
     "../../../models/trace_source_maps_resolver:bundle",
     "../../../models/workspace:bundle",

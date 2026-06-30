@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
+
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -128,5 +130,46 @@ describe('RequestInitiatorView', () => {
     await UI.Widget.Widget.allUpdatesComplete;
 
     await assertScreenshot('network/request-initiator-view-chain-and-stack.png');
+  });
+
+  it('truncates very long URLs in the initiator chain', async () => {
+    const component = document.createElement('div');
+    renderElementIntoDOM(component, {includeCommonStyles: true});
+
+    const longUrl = 'https://example.com/' +
+        'a'.repeat(150) + '/path.js';
+    const request =
+        SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId, urlString`${longUrl}`,
+                                                 urlString`https://example.com`, null, null, null);
+
+    const initiator = SDK.NetworkRequest.NetworkRequest.create('initiatorId' as Protocol.Network.RequestId,
+                                                               urlString`https://example.com/initiator.js`,
+                                                               urlString`https://example.com`, null, null, null);
+
+    const initiatorGraph = {initiators: new Set([initiator, request]), initiated: new Map()};
+
+    Network.RequestInitiatorView.DEFAULT_VIEW({
+      initiatorGraph,
+      stackTrace: null,
+      request,
+    },
+                                              undefined, component);
+
+    // devtools-tree uses a MutationObserver to asynchronously copy elements from the light DOM template to the shadow DOM.
+    // We yield back to the event loop so the mutation observer can run and populate the shadow root.
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const devtoolsTree = component.querySelector('devtools-tree');
+    assert.isOk(devtoolsTree);
+    const shadowRoot = devtoolsTree.shadowRoot;
+    assert.isOk(shadowRoot);
+
+    const spans = shadowRoot.querySelectorAll('span');
+    const urlSpan = Array.from(spans).find(span => span.title === longUrl);
+    assert.isOk(urlSpan);
+    const textContent = urlSpan.textContent;
+    assert.isOk(textContent);
+    assert.isTrue(textContent.includes('…'));
+    assert.isTrue(textContent.length < longUrl.length);
   });
 });

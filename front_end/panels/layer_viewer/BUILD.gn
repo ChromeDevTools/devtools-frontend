@@ -34,6 +34,7 @@ devtools_ui_module("layer_viewer") {
     "../../core/sdk:bundle",
     "../../generated",
     "../../models/geometry:bundle",
+    "../../ui/components/tree_outline:bundle",
     "../../ui/i18n:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",

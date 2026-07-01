@@ -141,6 +141,8 @@ export class AdsView extends UI.Widget.Widget {
       averageViewportAdCount: 0,
       totalAdCpuTime: 0,
       totalAdNetworkBytes: 0,
+      updateAdFrames: [],
+      removeAdFrames: [],
     };
     this.requestUpdate();
   }
@@ -209,6 +211,8 @@ export class AdsView extends UI.Widget.Widget {
       averageViewportAdCount: 0,
       totalAdCpuTime: 0,
       totalAdNetworkBytes: 0,
+      updateAdFrames: [],
+      removeAdFrames: [],
     };
     this.requestUpdate();
   }

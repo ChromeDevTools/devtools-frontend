@@ -25,6 +25,8 @@ describeWithEnvironment('AdsView', () => {
                                                          averageViewportAdCount: 2,
                                                          totalAdCpuTime: 150,
                                                          totalAdNetworkBytes: 2048,
+                                                         updateAdFrames: [],
+                                                         removeAdFrames: [],
                                                        }
                                                      }));
 
@@ -85,6 +87,8 @@ describeWithEnvironment('AdsView', () => {
                                                          averageViewportAdCount: 0,
                                                          totalAdCpuTime: 0,
                                                          totalAdNetworkBytes: 0,
+                                                         updateAdFrames: [],
+                                                         removeAdFrames: [],
                                                        }
                                                      }));
 

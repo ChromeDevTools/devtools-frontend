@@ -34,7 +34,9 @@ function expectErrors() {
   expectError(/Protocol Error: the message with wrong session id/);
 }
 
-describe('Timespan', function() {
+// TODO(crbug.com/530174267): Timespan tests are temporarily disabled because EventTiming
+// traces may not be consistently produced by synthetic clicks in the updated CfT.
+describe.skip('[crbug.com/530174267]: Timespan', function() {
   // The tests in this suite are particularly slow
   if (this.timeout() !== 0) {
     this.timeout(60_000);

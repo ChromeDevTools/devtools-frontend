@@ -617,7 +617,7 @@
     {
       // https://chromestatus.com/feature/6046278267043840
       name: "AnimationEventAnimation",
-      status: "experimental",
+      status: "stable",
     },
     {
       // https://chromestatus.com/feature/5083257285378048
@@ -693,7 +693,11 @@
     },
     {
       name: "AriaActions",
-      status: "stable",
+      // Not yet implemented on ChromeOS or Android, per the M151 launch
+      // intent (https://groups.google.com/a/chromium.org/g/blink-dev/c/DNE6dB1AS0Y).
+      // Note that omitting the "Android" key disables the feature on both
+      // Chrome for Android and Android WebView.
+      status: {"Win": "stable", "Mac": "stable", "Linux": "stable"},
     },
     {
       name: "AriaNotify",
@@ -1523,11 +1527,6 @@
       status: "stable",
     },
     {
-      // Let transforms affect anchor() and anchor-size() functions.
-      name: "CSSAnchorWithTransforms",
-      status: "stable",
-    },
-    {
       // https://drafts.csswg.org/web-animations-2/#iteration-composite-operation
       name: "CSSAnimationIterationComposite",
       status: "experimental",
@@ -1760,7 +1759,7 @@
     },
     {
       name: "CSSLineClamp",
-      status: "stable",
+      status: "experimental",
     },
     {
       name: "CSSLineClampAsShorthand",
@@ -1770,7 +1769,7 @@
     {
       name: "CSSLineClampLineBreakingEllipsis",
       depends_on: ["CSSLineClamp"],
-      status: "stable",
+      status: "experimental",
     },
     {
       // Implements `counter-increment` and `counter-set` for the non-<li>
@@ -2339,6 +2338,17 @@
       status: "experimental",
     },
     {
+      // Prevents the change event from being fired within
+      // HTMLFieldSetElement::ChildrenChanged because we aren't supposed to
+      // fire events during mutations like that.
+      // https://issues.chromium.org/issues/523756329
+      // https://issues.chromium.org/issues/523748081
+      // https://issues.chromium.org/issues/523737685
+      // Enabled in 151, safe to remove in 153.
+      name: "DisableFormControlChangeEventDuringMutation",
+      status: "stable",
+    },
+    {
       name: "DisableReduceAcceptLanguage",
       origin_trial_feature_name: "DisableReduceAcceptLanguage",
       origin_trial_type: "deprecation",
@@ -2365,7 +2375,7 @@
     },
     {
       name: "DisconnectWebSocketOnBFCache",
-      status: "test",
+      status: "stable",
     },
     {
       // `kHidden` and `kHiddenButPainting` visibility states are treated as
@@ -2621,6 +2631,11 @@
       browser_process_read_access: true,
     },
     {
+      name: "EmailVerificationStatusIndicator",
+      status: "experimental",
+      depends_on: ["EmailVerificationProtocol"],
+    },
+    {
       // This was added in M151 and can be removed after M153.
       // https://issues.chromium.org/issues/525074815
       name: "EmbeddedContentCenterAlignBaseline",
@@ -2787,7 +2802,7 @@
     {
       name: "FedCmMultipleRequests",
       depends_on: ["FedCm"],
-      status: "test",
+      status: "stable",
       public: true,
       base_feature: "none",
     },
@@ -4165,7 +4180,7 @@
       // https://github.com/whatwg/fetch/pull/1931
       // https://github.com/whatwg/html/pull/12513
       name: "NavigationTimingRedirectTimingViaTAO",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "NavigatorContentUtils",
@@ -4276,6 +4291,13 @@
       origin_trial_feature_name: "NotificationTriggers",
       status: "experimental",
       base_feature: "none",
+    },
+    {
+      // Notify selection controller of selection changes even when the new
+      // selection matches the old selection, keeping the selection state in
+      // sync. This flag ships in M151 and can be removed in M153.
+      name: "NotifySelectionControllerOnUnchangedSelection",
+      status: "stable",
     },
     {
       name: "NumberInputFullWidthChars",
@@ -4958,6 +4980,14 @@
       // enabled to make the whole feature work.
     },
     {
+      // Kill switch for https://crbug.com/376516545.
+      // Releases paint holding (deferred compositor commits) early for pages
+      // that finish parsing and produce a first paint but never reach First
+      // Contentful Paint (e.g. background-color only pages).
+      name: "ReleasePaintHoldingWithoutContentfulPaint",
+      status: "stable",
+    },
+    {
       name: "RelOpenerBcgDependencyHint",
       status: "experimental",
     },
@@ -5066,7 +5096,7 @@
     },
     {
       name: "RequestMainFrameAfterFirstVideoFrame",
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "ResolveVarStylesOnCopy",
@@ -5723,6 +5753,11 @@
       status: "stable",
     },
     {
+      // See crbug.com/502616235.
+      name: "SkipViewTransitionSnapshotResumeRendering",
+      status: "stable",
+    },
+    {
       name: "SmallerViewportUnits",
       status: "stable",
     },
@@ -5761,9 +5796,7 @@
     },
     {
       name: "SoftNavigationHeuristics",
-      status: "experimental",
-      origin_trial_allows_third_party: true,
-      origin_trial_feature_name: "SoftNavigationHeuristics",
+      status: "stable",
     },
     {
       name: "SortedLayoutShiftSourcesByImpactArea",
@@ -5980,6 +6013,9 @@
       status: "stable",
     },
     {
+      name: "SvgNewZoom",
+    },
+    {
       // Structured access to SVG path segments via getPathData/setPathData.
       // https://issues.chromium.org/40441025
       name: "SVGPathDataAPI",
@@ -6057,7 +6093,7 @@
     {
       // Remove <table>'s explicit `border-color: gray` UA stylesheet rule,
       // since it is non-standard. See crbug.com/494554835.
-      // This shipped in M149, and can be removed in M151.
+      // This shipped in M149, was updated in M151, and can be removed in M153.
       name: "TableDefaultBorderColorCurrentColor",
       status: "stable",
     },

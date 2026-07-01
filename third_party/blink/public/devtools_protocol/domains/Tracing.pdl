@@ -130,6 +130,17 @@ domain Tracing
       experimental optional binary perfettoConfig
       # Backend type (defaults to `auto`)
       experimental optional TracingBackend tracingBackend
+      # Maximum width and height (in pixels) of each captured screenshot.
+      # Only used when the `disabled-by-default-devtools.screenshot` category is
+      # enabled. Defaults to 500. The combined memory footprint of screenshots
+      # (`screenshotMaxSize` * `screenshotMaxSize` * 4 * `screenshotMaxCount`)
+      # is clamped to the existing per-session budget.
+      experimental optional integer screenshotMaxSize
+      # Maximum number of screenshots captured during a single tracing session.
+      # Only used when the `disabled-by-default-devtools.screenshot` category is
+      # enabled. Defaults to 450. Clamped together with `screenshotMaxSize` to
+      # stay within the per-session screenshot memory budget.
+      experimental optional integer screenshotMaxCount
 
   experimental event bufferUsage
     parameters

@@ -8,6 +8,19 @@ experimental domain Ads
   depends on Page
   depends on Runtime
 
+  # Ad frame data.
+  type AdFrameData extends object
+    properties
+      # The DevTools frame token.
+      Page.FrameId frameId
+      # The initial origin of the frame. To minimize the payload size, this is
+      # only sent once per frame.
+      optional string initialOrigin
+      # The network bytes of the frame.
+      number networkBytes
+      # The CPU time of the frame, in milliseconds.
+      number cpuTime
+
   # Ad metrics for a page.
   type AdMetrics extends object
     properties
@@ -26,6 +39,10 @@ experimental domain Ads
       number totalAdCpuTime
       # The total ad network bytes.
       number totalAdNetworkBytes
+      # The list of ad frames that have been updated since the last event.
+      array of AdFrameData updateAdFrames
+      # The list of ad frame IDs that have been removed since the last event.
+      array of Page.FrameId removeAdFrames
 
   # Retrieves ad metrics for the current page.
   command getAdMetrics

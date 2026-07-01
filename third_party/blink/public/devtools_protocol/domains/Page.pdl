@@ -640,6 +640,13 @@ domain Page
       # Whether or not universal access should be granted to the isolated world. This is a powerful
       # option, use with caution.
       optional boolean grantUniveralAccess
+      # An optional content security policy to set for the isolated world.
+      # If omitted, any existing CSP for the world will be cleared.
+      # Note that clearing or updating the CSP does not immediately affect the active
+      # context in the same document because LocalDOMWindow caches the
+      # ContentSecurityPolicy object. The change takes effect on subsequent
+      # navigations when a new window context is created.
+      optional string contentSecurityPolicy
     returns
       # Execution context of the isolated world.
       Runtime.ExecutionContextId executionContextId

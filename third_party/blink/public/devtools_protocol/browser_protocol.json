@@ -609,6 +609,34 @@
             ],
             "types": [
                 {
+                    "id": "AdFrameData",
+                    "description": "Ad frame data.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "frameId",
+                            "description": "The DevTools frame token.",
+                            "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "initialOrigin",
+                            "description": "The initial origin of the frame. To minimize the payload size, this is\nonly sent once per frame.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "networkBytes",
+                            "description": "The network bytes of the frame.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "cpuTime",
+                            "description": "The CPU time of the frame, in milliseconds.",
+                            "type": "number"
+                        }
+                    ]
+                },
+                {
                     "id": "AdMetrics",
                     "description": "Ad metrics for a page.",
                     "type": "object",
@@ -642,6 +670,22 @@
                             "name": "totalAdNetworkBytes",
                             "description": "The total ad network bytes.",
                             "type": "number"
+                        },
+                        {
+                            "name": "updateAdFrames",
+                            "description": "The list of ad frames that have been updated since the last event.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AdFrameData"
+                            }
+                        },
+                        {
+                            "name": "removeAdFrames",
+                            "description": "The list of ad frame IDs that have been removed since the last event.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Page.FrameId"
+                            }
                         }
                     ]
                 }
@@ -2318,7 +2362,9 @@
                         "LowContrast",
                         "FontSizeTooSmall",
                         "FontSizeTooLarge",
-                        "InvalidSizeValue"
+                        "InvalidSizeValue",
+                        "NonSecureContext",
+                        "MissingTransientUserActivation"
                     ]
                 },
                 {
@@ -7282,6 +7328,7 @@
                         "select-listbox",
                         "permission-icon",
                         "overscroll-area-parent",
+                        "overscroll-backdrop",
                         "skeleton"
                     ]
                 },
@@ -23645,6 +23692,12 @@
                             "description": "Whether or not universal access should be granted to the isolated world. This is a powerful\noption, use with caution.",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "contentSecurityPolicy",
+                            "description": "An optional content security policy to set for the isolated world.\nIf omitted, any existing CSP for the world will be cleared.\nNote that clearing or updating the CSP does not immediately affect the active\ncontext in the same document because LocalDOMWindow caches the\nContentSecurityPolicy object. The change takes effect on subsequent\nnavigations when a new window context is created.",
+                            "optional": true,
+                            "type": "string"
                         }
                     ],
                     "returns": [
@@ -29984,6 +30037,20 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "TracingBackend"
+                        },
+                        {
+                            "name": "screenshotMaxSize",
+                            "description": "Maximum width and height (in pixels) of each captured screenshot.\nOnly used when the `disabled-by-default-devtools.screenshot` category is\nenabled. Defaults to 500. The combined memory footprint of screenshots\n(`screenshotMaxSize` * `screenshotMaxSize` * 4 * `screenshotMaxCount`)\nis clamped to the existing per-session budget.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "screenshotMaxCount",
+                            "description": "Maximum number of screenshots captured during a single tracing session.\nOnly used when the `disabled-by-default-devtools.screenshot` category is\nenabled. Defaults to 450. Clamped together with `screenshotMaxSize` to\nstay within the per-session screenshot memory budget.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "integer"
                         }
                     ]
                 }

@@ -743,6 +743,8 @@ experimental domain Audits
       FontSizeTooSmall
       FontSizeTooLarge
       InvalidSizeValue
+      NonSecureContext
+      MissingTransientUserActivation
 
   # This issue warns about improper usage of the <permission> element.
   type PermissionElementIssueDetails extends object

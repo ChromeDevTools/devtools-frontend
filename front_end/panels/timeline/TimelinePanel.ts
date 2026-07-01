@@ -2149,14 +2149,21 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     // Annotation Overlays.
     currentManager?.addEventListener(AnnotationModifiedEvent.eventName, this.#onAnnotationModifiedEventBound);
 
-    // To calculate the activity we might want to zoom in, we use the top-most main-thread track
-    const topMostMainThreadAppender =
-        this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
-    if (topMostMainThreadAppender) {
-      const zoomedInBounds = Trace.Extras.MainThreadActivity.calculateWindow(
-          parsedTrace.data.Meta.traceBounds, topMostMainThreadAppender.getEntries());
-
-      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
+    // To calculate the activity we might want to zoom in, we use the top-most main-thread track.
+    // If the trace has an active breadcrumb that is not the initial full trace breadcrumb, we do
+    // not zoom in, but keep the window at the active breadcrumb bounds.
+    const breadcrumbs = currentManager?.getTimelineBreadcrumbs();
+    const hasActiveBreadcrumb = breadcrumbs ? breadcrumbs.activeBreadcrumb !== breadcrumbs.initialBreadcrumb : false;
+    if (!hasActiveBreadcrumb) {
+      const topMostMainThreadAppender =
+          this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
+      const zoomWindow = calculateAutoZoomWindow(
+          parsedTrace.data.Meta.traceBounds,
+          topMostMainThreadAppender?.getEntries(),
+      );
+      if (zoomWindow) {
+        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomWindow);
+      }
     }
 
     // Add overlays for annotations loaded from the trace file
@@ -3205,4 +3212,21 @@ export const enum Events {
 export interface EventTypes {
   [Events.IS_VIEWING_TRACE]: boolean;
   [Events.RECORDING_COMPLETED]: {traceIndex: number}|{errorText: string};
+}
+
+/**
+ * Calculates the window to auto-zoom into when a trace is loaded.
+ * We only auto-zoom to the main thread activity if there is no active breadcrumb,
+ * as we want to preserve the active breadcrumb's window if one exists.
+ *
+ * @returns the window to zoom into, or null if no auto-zoom should be applied.
+ */
+export function calculateAutoZoomWindow(
+    traceBounds: Trace.Types.Timing.TraceWindowMicro,
+    topMostMainThreadAppenderEntries: readonly Trace.Types.Events.Event[]|undefined,
+    ): Trace.Types.Timing.TraceWindowMicro|null {
+  if (!topMostMainThreadAppenderEntries || topMostMainThreadAppenderEntries.length === 0) {
+    return null;
+  }
+  return Trace.Extras.MainThreadActivity.calculateWindow(traceBounds, topMostMainThreadAppenderEntries);
 }

@@ -12,6 +12,7 @@ import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import {dispatchClickEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {
@@ -20,6 +21,7 @@ import {
   registerNoopActions,
 } from '../../testing/EnvironmentHelpers.js';
 import {type StubbedFileManager, stubFileManager} from '../../testing/FileManagerHelpers.js';
+import {makeCompleteEvent} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -232,6 +234,57 @@ describe('TimelinePanel', function() {
       const key = k as keyof Trace.Types.File.MetaData;
       assert.deepEqual(file.metadata[key], metadata[key]);
     }
+  });
+
+  function makeFakeBounds(min: number, max: number): Trace.Types.Timing.TraceWindowMicro {
+    return {
+      min: Trace.Types.Timing.Micro(min),
+      max: Trace.Types.Timing.Micro(max),
+      range: Trace.Types.Timing.Micro(max - min),
+    };
+  }
+
+  describe('calculateAutoZoomWindow', () => {
+    it('returns null if there are no main thread entries', () => {
+      const bounds = makeFakeBounds(100, 1000);
+      const zoomWindow = Timeline.TimelinePanel.calculateAutoZoomWindow(
+          bounds,
+          [],
+      );
+      assert.isNull(zoomWindow);
+    });
+
+    it('returns the calculated window if main thread entries exist', () => {
+      const bounds = makeFakeBounds(100, 1000);
+      const event1 = makeCompleteEvent('Program', 100, 50);
+      const event2 = makeCompleteEvent('Program', 200, 50);
+      const zoomWindow = Timeline.TimelinePanel.calculateAutoZoomWindow(
+          bounds,
+          [event1, event2],
+      );
+      assert.isNotNull(zoomWindow);
+      assert.strictEqual(zoomWindow?.min, Trace.Types.Timing.Micro(100));
+      assert.strictEqual(zoomWindow?.max, Trace.Types.Timing.Micro(257.5));
+    });
+  });
+
+  it('correctly sets minimap bounds and visible window when loading a trace with breadcrumbs', async function() {
+    const boundsManager = TraceBounds.TraceBounds.BoundsManager.instance();
+
+    const {traceEvents, metadata} = await TraceLoader.traceFile(this, 'web-dev-modifications.json.gz');
+    await timeline.loadingComplete(traceEvents as Trace.Types.Events.Event[], null, metadata);
+
+    const state = boundsManager.state();
+    assert.isOk(state);
+
+    const activeBreadcrumb =
+        Timeline.ModificationsManager.ModificationsManager.activeManager()?.getTimelineBreadcrumbs().activeBreadcrumb;
+    assert.isOk(activeBreadcrumb);
+
+    // The minimap bounds and the visible window should match the active breadcrumb window
+    // and not be overwritten by the default main-thread activity auto-zoom range.
+    assert.deepEqual(state.micro.minimapTraceBounds, activeBreadcrumb.window);
+    assert.deepEqual(state.micro.timelineTraceWindow, activeBreadcrumb.window);
   });
 
   describe('auto-toggling the sidebar', () => {

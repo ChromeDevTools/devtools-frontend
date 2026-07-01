@@ -244,6 +244,7 @@ export class InspectorDrawerView {
     const wasDrawerVisible = this.isVisibleForEvents();
     this.tabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
     this.#splitWidget.showBoth();
+    this.#updatePresentation(this.isMinimized());
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
   }
 
@@ -251,8 +252,8 @@ export class InspectorDrawerView {
     const wasDrawerVisible = this.isVisibleForEvents();
     const wasMinimized = this.isMinimized();
     this.#splitWidget.hideSidebar(!wasMinimized);
+    this.#updatePresentation(false);
     if (wasMinimized) {
-      this.#updatePresentation(false);
       this.#splitWidget.setSidebarMinimized(false);
       this.#splitWidget.setResizable(true);
     }
@@ -341,11 +342,12 @@ export class InspectorDrawerView {
   }
 
   #updatePresentation(minimized: boolean): void {
+    const requireVerticalMinimumWidth =
+        this.#splitWidget.isVertical() && this.#splitWidget.sidebarIsShowing() && !minimized;
+    this.#setInspectorMinimumSize(requireVerticalMinimumWidth ? this.#minimumSizes.inspectorWidthWhenVertical :
+                                                                this.#minimumSizes.inspectorWidthWhenHorizontal,
+                                  this.#minimumSizes.inspectorHeight);
     const drawerIsVertical = this.#splitWidget.isVertical();
-    this.#setInspectorMinimumSize(
-        drawerIsVertical ? this.#minimumSizes.inspectorWidthWhenVertical :
-                           this.#minimumSizes.inspectorWidthWhenHorizontal,
-        this.#minimumSizes.inspectorHeight);
     this.updatePresentation({
       isVertical: drawerIsVertical,
       isMinimized: minimized,

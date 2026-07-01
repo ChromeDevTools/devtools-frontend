@@ -922,4 +922,52 @@ describe('InspectorDrawerView', () => {
       assert.isTrue(inspectorView.isDrawerMinimized());
     });
   });
+
+  describe('inspector minimum width', () => {
+    it('uses horizontal minimum width when vertical drawer is hidden', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      assert.isTrue(inspectorView.isDrawerOrientationVertical());
+      assert.isFalse(inspectorView.drawerVisible());
+
+      // 250px corresponds to MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER
+      // (minimum main panel width + slack for borders).
+      assert.strictEqual(inspectorView.constraints().minimum.width, 250);
+    });
+
+    it('uses vertical minimum width when vertical drawer is shown and expanded', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      assert.isTrue(inspectorView.isDrawerOrientationVertical());
+      assert.isTrue(inspectorView.drawerVisible());
+      assert.isFalse(inspectorView.isDrawerMinimized());
+
+      // 530px corresponds to MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER
+      // (minimum main panel width + minimum vertical drawer width + slack for borders).
+      assert.strictEqual(inspectorView.constraints().minimum.width, 530);
+    });
+
+    it('uses horizontal minimum width when vertical drawer is minimized', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      inspectorView.setDrawerMinimized(true);
+      assert.isTrue(inspectorView.isDrawerOrientationVertical());
+      assert.isTrue(inspectorView.drawerVisible());
+      assert.isTrue(inspectorView.isDrawerMinimized());
+
+      // 250px corresponds to MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER
+      assert.strictEqual(inspectorView.constraints().minimum.width, 250);
+    });
+
+    it('uses horizontal minimum width when vertical drawer is closed after being open', () => {
+      const {inspectorView} = createInspectorViewWithDockState(DockState.BOTTOM);
+      inspectorView.showDrawer({focus: false, hasTargetDrawer: false});
+      // 530px corresponds to MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER
+      assert.strictEqual(inspectorView.constraints().minimum.width, 530);
+
+      inspectorView.closeDrawer();
+
+      // 250px corresponds to MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER
+      assert.strictEqual(inspectorView.constraints().minimum.width, 250);
+    });
+  });
 });

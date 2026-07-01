@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @devtools/no-imperative-dom-api */
-
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, render} from '../../ui/lit/lit.js';
 
 import layerTreeOutlineStyles from './layerTreeOutline.css.js';
 import {
@@ -41,21 +40,49 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.TreeOutline.TreeOutline>(
-    UI.TreeOutline.TreeOutline) implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
+
+export interface ViewInput {
+  treeOutlineElement: HTMLElement;
+  layerCount: number;
+  totalLayerMemory: number;
+}
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
+const DEFAULT_VIEW: View = (input, _output, target) => {
+  render(html`
+    <style>${layerTreeOutlineStyles}</style>
+    <div class="vbox layer-tree-wrapper">
+      <div style="flex-grow: 1; overflow: auto; display: flex;">
+        ${input.treeOutlineElement}
+      </div>
+      <div class="hbox layer-summary">
+        <span class="layer-count">${i18nString(UIStrings.layerCount, {
+           PH1: input.layerCount
+         })}</span>
+        <span>${i18n.ByteUtilities.bytesToString(input.totalLayerMemory)}</span>
+      </div>
+    </div>
+  `,
+         target);
+};
+
+export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
+    UI.Widget.Widget) implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
   private layerViewHost: LayerViewHost;
   private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private lastHoveredNode: LayerTreeElement|null;
-  private layerCountElement: HTMLSpanElement;
-  private layerMemoryElement: HTMLSpanElement;
-  override element: HTMLElement;
   private layerTree?: SDK.LayerTreeBase.LayerTreeBase|null;
   private layerSnapshotMap?: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
 
-  constructor(layerViewHost: LayerViewHost) {
+  #view: View;
+  #layerCount = 0;
+  #totalLayerMemory = 0;
+
+  constructor(layerViewHost: LayerViewHost, view: View = DEFAULT_VIEW) {
     super();
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
+    this.#view = view;
 
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.treeOutline.element.classList.add('layer-tree', 'overflow-auto');
@@ -66,22 +93,21 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
 
     this.lastHoveredNode = null;
 
-    const summaryElement = document.createElement('div');
-    summaryElement.classList.add('hbox', 'layer-summary');
-    this.layerCountElement = document.createElement('span');
-    this.layerCountElement.classList.add('layer-count');
-    this.layerMemoryElement = document.createElement('span');
-    summaryElement.appendChild(this.layerCountElement);
-    summaryElement.appendChild(this.layerMemoryElement);
-
-    const wrapperElement = document.createElement('div');
-    wrapperElement.classList.add('vbox', 'layer-tree-wrapper');
-    wrapperElement.appendChild(this.treeOutline.element);
-    wrapperElement.appendChild(summaryElement);
-    this.element = wrapperElement;
-    UI.DOMUtilities.appendStyle(this.element, layerTreeOutlineStyles);
-
     this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      treeOutlineElement: this.treeOutline.element,
+      layerCount: this.#layerCount,
+      totalLayerMemory: this.#totalLayerMemory,
+    },
+               {}, this.contentElement);
   }
 
   override focus(): void {
@@ -232,8 +258,9 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
       }
     }
 
-    this.layerCountElement.textContent = i18nString(UIStrings.layerCount, {PH1: layerCount});
-    this.layerMemoryElement.textContent = i18n.ByteUtilities.bytesToString(totalLayerMemory);
+    this.#layerCount = layerCount;
+    this.#totalLayerMemory = totalLayerMemory;
+    this.requestUpdate();
   }
 
   private onMouseMove(event: MouseEvent): void {

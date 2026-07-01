@@ -19,6 +19,11 @@
   }
 
   .layer-tree-wrapper {
+    height: 100%;
+    flex-grow: 1;
+  }
+
+  .layer-tree {
     flex-grow: 1;
   }
 }

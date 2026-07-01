@@ -12,7 +12,7 @@ describeWithEnvironment('LayerTreeOutline', () => {
   it('renders a layer tree', async () => {
     const layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
     const treeOutline = new LayerViewer.LayerTreeOutline.LayerTreeOutline(layerViewHost);
-    renderElementIntoDOM(treeOutline.element, {includeCommonStyles: true});
+    renderElementIntoDOM(treeOutline, {includeCommonStyles: true});
 
     const rootLayer = {
       id: () => '1',

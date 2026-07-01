@@ -220,6 +220,15 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
     this.sectionToRegistration = new WeakMap();
 
+    this.createOthersOriginView();
+    this.setupToolbar();
+
+    this.eventListeners = new Map();
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
+    this.updateListVisibility();
+  }
+
+  private createOthersOriginView(): void {
     const othersDiv = this.contentElement.createChild('div', 'service-workers-other-origin');
     othersDiv.setAttribute('jslog', `${VisualLogging.section('other-origin')}`);
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
@@ -231,7 +240,9 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     const seeOthers = Link.create('chrome://serviceworker-internals', i18nString(UIStrings.seeAllRegistrations),
                                   undefined, 'view-all', 0, /* allowPrivileged=*/ true);
     othersSectionRow.appendChild(seeOthers);
+  }
 
+  private setupToolbar(): void {
     this.toolbar.appendToolbarItem(
         MobileThrottling.ThrottlingManager.throttlingManager().createOfflineToolbarCheckbox());
     const updateOnReloadSetting =
@@ -246,10 +257,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     const fallbackToNetwork = new UI.Toolbar.ToolbarSettingCheckbox(
         bypassServiceWorkerSetting, i18nString(UIStrings.bypassTheServiceWorkerAndLoad));
     this.toolbar.appendToolbarItem(fallbackToNetwork);
-
-    this.eventListeners = new Map();
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.ServiceWorkerManager.ServiceWorkerManager, this);
-    this.updateListVisibility();
   }
 
   modelAdded(serviceWorkerManager: SDK.ServiceWorkerManager.ServiceWorkerManager): void {
@@ -542,10 +549,10 @@ export class Section {
 
   scheduleUpdate(): void {
     if (throttleDisabledForDebugging) {
-      void this.update();
+      void this.performUpdate();
       return;
     }
-    void this.throttler.schedule(this.update.bind(this));
+    void this.throttler.schedule(this.performUpdate.bind(this));
   }
 
   private addVersion(versionsStack: Element, icon: string, label: string): Element {
@@ -601,7 +608,7 @@ export class Section {
     }
   }
 
-  private update(): Promise<void> {
+  private performUpdate(): Promise<void> {
     const fingerprint = this.registration.fingerprint();
     if (fingerprint === this.fingerprint) {
       return Promise.resolve();

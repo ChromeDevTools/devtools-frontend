@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -11,19 +12,33 @@ import {NetworkLog} from './NetworkLog.js';
 
 const modelToEventListeners = new WeakMap<SDK.LogModel.LogModel, Common.EventTarget.EventDescriptor[]>();
 
-let instance: LogManager|null = null;
-
 export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogModel.LogModel> {
-  private constructor() {
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
+  readonly #targetManager: SDK.TargetManager.TargetManager;
+  readonly #networkLog: NetworkLog;
+
+  constructor(
+      targetManager: SDK.TargetManager.TargetManager,
+      networkLog: NetworkLog,
+  ) {
+    this.#targetManager = targetManager;
+    this.#networkLog = networkLog;
+    this.#targetManager.observeModels(SDK.LogModel.LogModel, this);
   }
 
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): LogManager {
-    if (!instance || forceNew) {
-      instance = new LogManager();
+    if (!Root.DevToolsContext.globalInstance().has(LogManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(LogManager,
+                                                new LogManager(
+                                                    SDK.TargetManager.TargetManager.instance(),
+                                                    NetworkLog.instance(),
+                                                    ));
     }
 
-    return instance;
+    return Root.DevToolsContext.globalInstance().get(LogManager);
+  }
+
+  static removeInstance(): void {
+    Root.DevToolsContext.globalInstance().delete(LogManager);
   }
 
   modelAdded(logModel: SDK.LogModel.LogModel): void {
@@ -56,7 +71,7 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
         target.model(SDK.RuntimeModel.RuntimeModel), entry.source, entry.level, entry.text, details);
 
     if (entry.networkRequestId) {
-      NetworkLog.instance().associateConsoleMessageWithRequest(consoleMessage, entry.networkRequestId);
+      this.#networkLog.associateConsoleMessageWithRequest(consoleMessage, entry.networkRequestId);
     }
 
     const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
@@ -66,11 +81,11 @@ export class LogManager implements SDK.TargetManager.SDKModelObserver<SDK.LogMod
       // user can see messages from the worker which has been already destroyed.
       // When opening DevTools, give us some time to connect to the worker and
       // not report the message twice if the worker is still alive.
-      if (SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
+      if (this.#targetManager.targetById(workerId)) {
         return;
       }
       window.setTimeout(() => {
-        if (!SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
+        if (!this.#targetManager.targetById(workerId)) {
           consoleModel?.addMessage(consoleMessage);
         }
       }, 1000);

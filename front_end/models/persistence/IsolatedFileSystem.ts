@@ -58,29 +58,28 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   readonly #initialGitFolders = new Set<Platform.DevToolsPath.EncodedPathString>();
   private readonly fileLocks = new Map<Platform.DevToolsPath.EncodedPathString, Promise<unknown>>();
 
-  constructor(
-      manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
-      embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem, type: PlatformFileSystemType,
-      automatic: boolean) {
+  constructor(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
+              embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem,
+              type: PlatformFileSystemType, automatic: boolean, settings: Common.Settings.Settings) {
     super(path, type, automatic);
     this.manager = manager;
     this.#embedderPath = embedderPath;
     this.domFileSystem = domFileSystem;
-    this.excludedFoldersSetting =
-        Common.Settings.Settings.instance().createLocalSetting('workspace-excluded-folders', {});
+    this.excludedFoldersSetting = settings.createLocalSetting('workspace-excluded-folders', {});
     this.#excludedFolders = new Set(this.excludedFoldersSetting.get()[path] || []);
   }
 
-  static async create(
-      manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
-      embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string, rootURL: string,
-      automatic: boolean): Promise<IsolatedFileSystem|null> {
+  static async create(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
+                      embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string,
+                      rootURL: string, automatic: boolean,
+                      settings: Common.Settings.Settings = Common.Settings.Settings.instance()):
+      Promise<IsolatedFileSystem|null> {
     const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
       return null;
     }
 
-    const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type, automatic);
+    const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type, automatic, settings);
     return await fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
       console.error(error);
       return null;

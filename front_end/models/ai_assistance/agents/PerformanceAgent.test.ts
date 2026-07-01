@@ -12,14 +12,15 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import {createNetworkRequest, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
-  createTarget,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
   updateHostConfig
 } from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError} from '../../../testing/InsightHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Bindings from '../../bindings/bindings.js';
@@ -53,8 +54,13 @@ function deleteAllWidgetData(responses: AiAgent.ResponseData[]): void {
   }
 }
 
-describeWithMockConnection('PerformanceAgent', function() {
+describe('PerformanceAgent', function() {
+  setupLocaleHooks();
+  setupSettingsHooks();
+
   const snapshotTester = new SnapshotTester(this, import.meta);
+  let universe: TestUniverse;
+
   function mockHostConfig(modelId?: string, temperature?: number) {
     updateHostConfig({
       devToolsAiAssistancePerformanceAgent: {
@@ -65,17 +71,11 @@ describeWithMockConnection('PerformanceAgent', function() {
   }
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+    universe = new TestUniverse();
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(universe.workspace);
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(universe.debuggerWorkspaceBinding);
   });
 
   describe('buildRequest', () => {
@@ -153,18 +153,7 @@ describeWithMockConnection('PerformanceAgent', function() {
 
   describe('PerformanceAgent – call tree focus', function() {
     beforeEach(() => {
-      const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-      const targetManager = SDK.TargetManager.TargetManager.instance();
-      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-      const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-        forceNew: true,
-        resourceMapping,
-        targetManager,
-        ignoreListManager,
-        workspace,
-      });
-      createTarget();
+      universe.createTarget();
       // For call tree focus tests, we want to simulate a fresh trace by default.
       sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
     });
@@ -317,18 +306,7 @@ describeWithMockConnection('PerformanceAgent', function() {
   }
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
-    createTarget();
+    universe.createTarget();
   });
 
   it('uses the mainFrameURL as the origin if it is valid', async function() {
@@ -2342,8 +2320,8 @@ code
 
       Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
 
-      const target1 = createTarget();
-      const target2 = createTarget();
+      const target1 = universe.createTarget();
+      const target2 = universe.createTarget();
 
       const debuggerModel1 = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
       debuggerModel1.scripts.returns([]);

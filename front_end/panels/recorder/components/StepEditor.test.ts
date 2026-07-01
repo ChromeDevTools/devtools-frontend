@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './components.js';
+
 import {assert} from 'chai';
 
 import {
@@ -31,8 +33,7 @@ const triggerMicroTaskQueue = async (n = 1) => {
   }
 };
 
-// Disabled due to flakiness
-describe.skip('[crbug.com/505637246]StepEditor', () => {
+describe('StepEditor', () => {
   setupLocaleHooks();
   async function renderEditor(
       step: Models.Schema.Step,

@@ -120,7 +120,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         uiI18n.getFormatLocalizedString(
           str_, UIStrings.checkSForPossibleReasons,
           {
-            PH1: Link.create('about:gpu', undefined, undefined, 'about-gpu')
+            PH1: Link.create('chrome://gpu', undefined, undefined, 'about-gpu', 0, true)
           }
         )
       ],

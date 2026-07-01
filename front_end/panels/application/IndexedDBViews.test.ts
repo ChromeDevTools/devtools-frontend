@@ -21,8 +21,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-// Disabled due to flakiness
-describeWithEnvironment('[crbug.com/1473557]: IDBDatabaseView', () => {
+describeWithEnvironment('IDBDatabaseView', () => {
   it('renders with a title and top-level site', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);
@@ -280,6 +279,7 @@ describeWithEnvironment('IDBDataView', () => {
     component.element.style.height = '200px';
     component.element.style.width = '600px';
     component.update(objectStore);
+    component.focus();
 
     // Verify toolbar elements exist
     const toolbar = component.element.querySelector('devtools-toolbar');

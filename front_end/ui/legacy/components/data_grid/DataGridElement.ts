@@ -291,7 +291,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
 
   #findNextExistingNode(element: Element): DataGridElementNode|null {
     for (let e = element.nextElementSibling; e; e = e.nextElementSibling) {
-      const nextNode = DataGridElementNode.get(e);
+      const nextNode = getNode(e);
       if (nextNode) {
         return nextNode;
       }
@@ -302,7 +302,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
   override addNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
       const parentRow = element.parentElement?.closest('td')?.closest('tr');
-      const parentDataGridNode = parentRow ? DataGridElementNode.get(parentRow) : undefined;
+      const parentDataGridNode = parentRow ? getNode(parentRow) : undefined;
       const parentNode = parentDataGridNode || this.#dataGrid.rootNode();
       const nextNode = this.#findNextExistingNode(element);
       const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
@@ -333,9 +333,9 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
 
   override removeNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
-      const node = DataGridElementNode.get(element);
+      const node = getNode(element);
       if (node) {
-        DataGridElementNode.remove(node);
+        removeNode(node);
       }
     }
   }
@@ -345,7 +345,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
       node = node.parentNode;
     }
     const dataRow = node instanceof HTMLElement ? node.closest('tr') : null;
-    const dataGridNode = dataRow ? DataGridElementNode.get(dataRow) : null;
+    const dataGridNode = dataRow ? getNode(dataRow) : null;
     if (dataGridNode && dataRow) {
       if (attributeName === 'selected') {
         if (hasBooleanAttribute(dataRow, 'selected')) {
@@ -372,7 +372,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
 
   #updateCreationNode(): void {
     if (this.#usedCreationNode) {
-      DataGridElementNode.remove(this.#usedCreationNode);
+      removeNode(this.#usedCreationNode);
       this.#usedCreationNode = null;
       this.#dataGrid.creationNode = undefined;
     }
@@ -380,7 +380,7 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     if (!placeholder) {
       this.#dataGrid.creationNode?.remove();
       this.#dataGrid.creationNode = undefined;
-    } else if (!DataGridElementNode.get(placeholder)) {
+    } else if (!getNode(placeholder)) {
       this.#dataGrid.creationNode?.remove();
       const node = new DataGridElementNode(placeholder, this);
       this.#dataGrid.creationNode = node;
@@ -447,22 +447,19 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
   }
 }
 
+const elementToNode = new WeakMap<Element, DataGridElementNode>();
+
 class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
-  static #elementToNode = new WeakMap<Element, DataGridElementNode>();
   #configElement: Element;
   #dataGridElement: DataGridElement;
   #addedClasses = new Set<string>();
   constructor(configElement: Element, dataGridElement: DataGridElement) {
     super();
     this.#configElement = configElement;
-    DataGridElementNode.#elementToNode.set(configElement, this);
+    elementToNode.set(configElement, this);
     this.#dataGridElement = dataGridElement;
     this.#updateData();
     this.isCreationNode = hasBooleanAttribute(this.#configElement, 'placeholder');
-  }
-
-  static get(configElement: Element|undefined): DataGridElementNode|undefined {
-    return configElement && DataGridElementNode.#elementToNode.get(configElement);
   }
 
   get configElement(): Element {
@@ -576,11 +573,6 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     return cell;
   }
 
-  static remove(node: DataGridElementNode): void {
-    DataGridElementNode.#elementToNode.delete(node.#configElement);
-    node.remove();
-  }
-
   override deselect(): void {
     super.deselect();
     if (this.isCreationNode) {
@@ -633,7 +625,7 @@ class IfExpandedDirective extends Lit.Directive.Directive {
     if (!(element instanceof HTMLElement)) {
       return false;
     }
-    const node = DataGridElementNode.get(element.closest('tr') ?? undefined);
+    const node = getNode(element.closest('tr') ?? undefined);
     if (!node) {
       return false;
     }
@@ -641,3 +633,15 @@ class IfExpandedDirective extends Lit.Directive.Directive {
   }
 }
 export const ifExpanded = Lit.Directive.directive(IfExpandedDirective);
+
+function getNode(element: Element|undefined): DataGridElementNode|undefined {
+  return element ? elementToNode.get(element) : undefined;
+}
+
+function removeNode(node: DataGridElementNode): void {
+  const configElement = node.configElement;
+  if (configElement) {
+    elementToNode.delete(configElement);
+  }
+  node.remove();
+}

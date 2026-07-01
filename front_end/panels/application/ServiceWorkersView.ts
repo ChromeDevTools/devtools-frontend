@@ -460,13 +460,13 @@ export class Section {
   private readonly networkRequests: Buttons.Button.Button;
   private readonly updateButton: Buttons.Button.Button;
   private readonly deleteButton: Buttons.Button.Button;
-  private sourceField: Element;
-  private readonly statusField: Element;
-  private readonly clientsField: Element;
+  private sourceField: HTMLElement;
+  private readonly statusField: HTMLElement;
+  private readonly clientsField: HTMLElement;
   private readonly clientInfoCache: Map<string, Protocol.Target.TargetInfo>;
   private readonly throttler: Common.Throttler.Throttler;
-  private updateCycleField?: Element;
-  private routerField?: Element;
+  private updateCycleField?: HTMLElement;
+  private routerField?: HTMLElement;
 
   constructor(
       manager: SDK.ServiceWorkerManager.ServiceWorkerManager, section: UI.ReportView.Section,
@@ -568,7 +568,7 @@ export class Section {
     this.clientsField.removeChildren();
     this.section.setFieldVisible(i18nString(UIStrings.clients), Boolean(version.controlledClients.length));
     for (const client of version.controlledClients) {
-      const clientLabelText = this.clientsField.createChild('div', 'service-worker-client');
+      const clientLabelText = this.clientsField.createChild('div', 'service-worker-client') as HTMLElement;
       const info = this.clientInfoCache.get(client);
       if (info) {
         this.updateClientInfo(clientLabelText, info);
@@ -747,7 +747,7 @@ export class Section {
     void this.manager.dispatchPeriodicSyncEvent(this.registration.id, tag);
   }
 
-  private onClientInfo(element: Element, targetInfoResponse: Protocol.Target.GetTargetInfoResponse): void {
+  private onClientInfo(element: HTMLElement, targetInfoResponse: Protocol.Target.GetTargetInfoResponse): void {
     const targetInfo = targetInfoResponse.targetInfo;
     if (!targetInfo) {
       return;
@@ -756,7 +756,7 @@ export class Section {
     this.updateClientInfo(element, targetInfo);
   }
 
-  private updateClientInfo(element: Element, targetInfo: Protocol.Target.TargetInfo): void {
+  private updateClientInfo(element: HTMLElement, targetInfo: Protocol.Target.TargetInfo): void {
     if (targetInfo.type !== 'page' && targetInfo.type === 'iframe') {
       const clientString = element.createChild('span', 'service-worker-client-string');
       UI.UIUtils.createTextChild(clientString, i18nString(UIStrings.workerS, {PH1: targetInfo.url}));
@@ -795,7 +795,7 @@ export class Section {
     void this.manager.stopWorker(versionId);
   }
 
-  private wrapWidget(container: Element): Element {
+  private wrapWidget(container: Element): HTMLElement {
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(container, {
       cssFile: [
         serviceWorkersViewStyles,

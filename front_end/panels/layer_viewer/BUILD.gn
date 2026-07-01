@@ -76,7 +76,10 @@ devtools_entrypoint("meta") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [ "layer_viewer.test.ts" ]
+  sources = [
+    "LayerTreeOutline.test.ts",
+    "layer_viewer.test.ts",
+  ]
 
   deps = [
     ":bundle",

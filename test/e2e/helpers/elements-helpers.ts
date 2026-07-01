@@ -1014,17 +1014,6 @@ export const toggleClassesPaneCheckbox = async (checkboxLabel: string, devToolsP
   await Promise.all([nodeChange, veEvents]);
 };
 
-export const uncheckStylesPaneCheckbox = async (checkboxLabel: string, devToolsPage: DevToolsPage) => {
-  console.error('uncheckStylesPaneCheckbox', checkboxLabel);
-  const initialValue = await getContentOfSelectedNode(devToolsPage);
-  await devToolsPage.click(`.enabled-button[aria-label="${checkboxLabel}"]`);
-  await waitForSelectedNodeChange(initialValue, devToolsPage);
-  await expectVeEvents(
-      [veClick(`Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: ${
-          checkboxLabel.split(' ')[0]} > Toggle`)],
-      undefined, devToolsPage);
-};
-
 export const assertSelectedNodeClasses = async (expectedClasses: string[], devToolsPage: DevToolsPage) => {
   const nodeText = await getContentOfSelectedNode(devToolsPage);
   const match = nodeText.match(/class=\u200B"([^"]*)/);

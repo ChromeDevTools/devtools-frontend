@@ -11,6 +11,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as Logs from '../models/logs/logs.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
 import {DEFAULT_SETTING_REGISTRATIONS_FOR_TEST} from './SettingsHelpers.js';
@@ -113,6 +114,13 @@ export class TestUniverse implements Foundation.Universe.Universe {
       this.#context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
     }
     return this.#context.get(SDK.NetworkManager.MultitargetNetworkManager);
+  }
+
+  get networkLog(): Logs.NetworkLog.NetworkLog {
+    if (!this.#context.has(Logs.NetworkLog.NetworkLog)) {
+      this.#context.set(Logs.NetworkLog.NetworkLog, new Logs.NetworkLog.NetworkLog(this.targetManager, this.settings));
+    }
+    return this.#context.get(Logs.NetworkLog.NetworkLog);
   }
 
   get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader {

@@ -25,6 +25,8 @@ describe('Universe', () => {
           {settingName: 'skip-anonymous-scripts', settingType: SettingType.BOOLEAN, defaultValue: false},
           {settingName: 'enable-ignore-listing', settingType: SettingType.BOOLEAN, defaultValue: true},
           {settingName: 'request-blocking-enabled', settingType: SettingType.BOOLEAN, defaultValue: false},
+          {settingName: 'network-log.record-log', settingType: SettingType.BOOLEAN, defaultValue: true},
+          {settingName: 'network-log.preserve-log', settingType: SettingType.BOOLEAN, defaultValue: false},
         ],
       },
     });

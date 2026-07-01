@@ -19,6 +19,7 @@ const ALLOWED_RETURN_TYPES = new Set([
   'Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding',
   'Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding',
   'Bindings.ResourceMapping.ResourceMapping',
+  'Logs.NetworkLog.NetworkLog',
   'SDK.FrameManager.FrameManager',
   'SDK.NetworkManager.MultitargetNetworkManager',
   'SDK.PageResourceLoader.PageResourceLoader',

@@ -180,6 +180,7 @@ export function createIssuesFromProtocolIssue(
 
 export interface IssuesManagerCreationOptions {
   forceNew: boolean;
+  frameManager?: SDK.FrameManager.FrameManager;
   /** Throw an error if this is not the first instance created */
   ensureFirst: boolean;
   showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>;
@@ -224,18 +225,20 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #thirdPartyCookiePhaseoutIssueCount = new Map<IssueKind, number>();
   #issuesById = new Map<string, Issue>();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
+  #frameManager: SDK.FrameManager.FrameManager;
 
-  constructor(
-      private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
-      private readonly hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>) {
+  constructor(private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
+              private readonly hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>,
+              frameManager: SDK.FrameManager.FrameManager = SDK.FrameManager.FrameManager.instance()) {
     super();
+    this.#frameManager = frameManager;
     new SourceFrameIssuesManager(this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
-    SDK.FrameManager.FrameManager.instance().addEventListener(
-        SDK.FrameManager.Events.FRAME_ADDED_TO_TARGET, this.#onFrameAddedToTarget, this);
+    this.#frameManager.addEventListener(SDK.FrameManager.Events.FRAME_ADDED_TO_TARGET, this.#onFrameAddedToTarget,
+                                        this);
 
     // issueFilter uses the 'show-third-party-issues' setting. Clients of IssuesManager need
     // a full update when the setting changes to get an up-to-date issues list.
@@ -263,7 +266,8 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     }
 
     if (!issuesManagerInstance || opts.forceNew) {
-      issuesManagerInstance = new IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting);
+      issuesManagerInstance =
+          new IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting, opts.frameManager);
     }
 
     return issuesManagerInstance;

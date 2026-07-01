@@ -68,7 +68,7 @@ export class Universe {
     const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
 
-    this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager);
+    this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
   }
 
   get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader {

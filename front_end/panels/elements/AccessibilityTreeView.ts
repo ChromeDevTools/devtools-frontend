@@ -19,11 +19,14 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
   private inspectedDOMNode: SDK.DOMModel.DOMNode|null = null;
   private root: SDK.AccessibilityModel.AccessibilityNode|null = null;
 
-  constructor(
-      accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>) {
+  readonly #frameManager: SDK.FrameManager.FrameManager;
+
+  constructor(accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>,
+              frameManager: SDK.FrameManager.FrameManager = SDK.FrameManager.FrameManager.instance()) {
     super();
     this.registerRequiredCSS(accessibilityTreeViewStyles);
     this.accessibilityTreeComponent = accessibilityTreeComponent;
+    this.#frameManager = frameManager;
 
     const container = this.contentElement.createChild('div');
 
@@ -75,11 +78,11 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
 
   async refreshAccessibilityTree(): Promise<void> {
     if (!this.root) {
-      const frameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+      const frameId = this.#frameManager.getOutermostFrame()?.id;
       if (!frameId) {
         throw new Error('No top frame');
       }
-      this.root = await AccessibilityTreeUtils.getRootNode(frameId);
+      this.root = await AccessibilityTreeUtils.getRootNode(frameId, this.#frameManager);
       if (!this.root) {
         throw new Error('No root');
       }
@@ -90,15 +93,15 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
 
   async renderTree(): Promise<void> {
     if (!this.root) {
-      const frameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+      const frameId = this.#frameManager.getOutermostFrame()?.id;
       if (frameId) {
-        this.root = await AccessibilityTreeUtils.getRootNode(frameId);
+        this.root = await AccessibilityTreeUtils.getRootNode(frameId, this.#frameManager);
       }
     }
     if (!this.root) {
       return;
     }
-    const treeData = await AccessibilityTreeUtils.sdkNodeToAXTreeNodes(this.root);
+    const treeData = await AccessibilityTreeUtils.sdkNodeToAXTreeNodes(this.root, this.#frameManager);
     this.accessibilityTreeComponent.data = {
       defaultRenderer: AccessibilityTreeUtils.accessibilityNodeRenderer,
       tree: treeData,
@@ -113,7 +116,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
   // Given a selected DOM node, asks the model to load the missing subtree from the root to the
   // selected node and then re-renders the tree.
   async loadSubTreeIntoAccessibilityModel(selectedNode: SDK.DOMModel.DOMNode): Promise<void> {
-    const ancestors = await AccessibilityTreeUtils.getNodeAndAncestorsFromDOMNode(selectedNode);
+    const ancestors = await AccessibilityTreeUtils.getNodeAndAncestorsFromDOMNode(selectedNode, this.#frameManager);
     const inspectedAXNode = ancestors.find(node => node.backendDOMNodeId() === selectedNode.backendNodeId());
     if (!inspectedAXNode) {
       return;
@@ -160,7 +163,7 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
       void this.renderTree();
       return;
     }
-    const outermostFrameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+    const outermostFrameId = this.#frameManager.getOutermostFrame()?.id;
     if (data.root?.getFrameId() !== outermostFrameId) {
       void this.renderTree();
       return;

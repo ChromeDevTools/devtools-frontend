@@ -12,9 +12,12 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #filledFields: Protocol.Autofill.FilledField[] = [];
   #matches: Match[] = [];
   #autofillModel: SDK.AutofillModel.AutofillModel|null = null;
+  #frameManager: SDK.FrameManager.FrameManager;
 
-  constructor(targetManager: SDK.TargetManager.TargetManager) {
+  constructor(targetManager: SDK.TargetManager.TargetManager,
+              frameManager: SDK.FrameManager.FrameManager = SDK.FrameManager.FrameManager.instance()) {
     super();
+    this.#frameManager = frameManager;
     targetManager.addModelListener(SDK.AutofillModel.AutofillModel, SDK.AutofillModel.Events.ADDRESS_FORM_FILLED,
                                    this.#addressFormFilled, this, {scoped: true});
   }
@@ -45,7 +48,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   highlightFilledField(filledField: Protocol.Autofill.FilledField): void {
     const backendNodeId = filledField.fieldId;
-    const target = SDK.FrameManager.FrameManager.instance().getFrame(filledField.frameId)?.resourceTreeModel().target();
+    const target = this.#frameManager.getFrame(filledField.frameId)?.resourceTreeModel().target();
     if (target) {
       const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
       const domModel = target.model(SDK.DOMModel.DOMModel);

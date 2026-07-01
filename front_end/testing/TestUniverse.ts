@@ -56,7 +56,7 @@ export class TestUniverse implements Foundation.Universe.Universe {
   get autofillManager(): AutofillManager.AutofillManager.AutofillManager {
     if (!this.#context.has(AutofillManager.AutofillManager.AutofillManager)) {
       this.#context.set(AutofillManager.AutofillManager.AutofillManager,
-                        new AutofillManager.AutofillManager.AutofillManager(this.targetManager));
+                        new AutofillManager.AutofillManager.AutofillManager(this.targetManager, this.frameManager));
     }
     return this.#context.get(AutofillManager.AutofillManager.AutofillManager);
   }

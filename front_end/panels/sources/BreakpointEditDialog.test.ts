@@ -135,8 +135,7 @@ describeWithEnvironment('BreakpointEditDialog', function() {
     assert.strictEqual(editor.state.doc.sliceString(0), 'x === 42');
   });
 
-  // Flaky
-  it.skip('[crbug.com/505352053] focuses the editor input field after changing the breakpoint type', async () => {
+  it('focuses the editor input field after changing the breakpoint type', async () => {
     const {dialog, editor} = await getDialogAndEditor(0, '', false, () => {});
     renderElementIntoDOM(dialog.contentElement);
 
@@ -146,19 +145,17 @@ describeWithEnvironment('BreakpointEditDialog', function() {
     assert.isTrue(editor.hasFocus);
   });
 
-  // Flaky
-  it.skip(
-      '[crbug.com/505352053] focuses the editor when focus() is called, even if it is not yet rendered', async () => {
-        const {dialog, editor} = await getDialogAndEditor(0, '', false, () => {});
-        renderElementIntoDOM(dialog.contentElement);
-        assert.isFalse(editor.hasFocus);
+  it('focuses the editor when focus() is called, even if it is not yet rendered', async () => {
+    const {dialog, editor} = await getDialogAndEditor(0, '', false, () => {});
+    renderElementIntoDOM(dialog.contentElement);
+    assert.isFalse(editor.hasFocus);
 
-        // Trigger an update to test the focus() method waiting for it.
-        dialog.editorLineNumber = 1;
-        dialog.focus();
+    // Trigger an update to test the focus() method waiting for it.
+    dialog.editorLineNumber = 1;
+    dialog.focus();
 
-        await dialog.updateComplete;
+    await dialog.updateComplete;
 
-        assert.isTrue(editor.hasFocus);
-      });
+    assert.isTrue(editor.hasFocus);
+  });
 });

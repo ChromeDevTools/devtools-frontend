@@ -52,7 +52,7 @@ describeWithEnvironment('Export Conversation as Markdown', () => {
     await AiAssistancePanel.ExportConversation.saveToDisk(conversation);
     sinon.assert.calledOnce(fileManager.save);
     sinon.assert.calledOnce(fileManager.close);
-    const expectedSnakeCaseForPrompt = 'this_is_a_very_long_title_that_should_be_truncated_w';
+    const expectedSnakeCaseForPrompt = 'this_is_a_very_long_title_that_should_be_truncated_';
     const [fileName] = fileManager.save.getCall(0).args;
     assert.strictEqual(fileName, `devtools_${expectedSnakeCaseForPrompt}.md`);
   });

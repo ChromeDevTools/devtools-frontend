@@ -139,10 +139,11 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
   #groups: CPUThrottlingGroup[] = [];
   #calibratedThrottlingSetting: Common.Settings.Setting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>;
   readonly #view: View;
+  readonly #cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
-    this.#currentOption = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingOption();
+    this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
     this.#calibratedThrottlingSetting =
         Common.Settings.Settings.instance().createSetting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>(
             'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
@@ -157,8 +158,8 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
 
   override wasShown(): void {
     super.wasShown();
-    SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onOptionChange, this);
+    this.#cpuThrottlingManager.addEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onOptionChange,
+                                                this);
     this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
     this.#onOptionChange();
   }
@@ -166,12 +167,12 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
   override willHide(): void {
     super.willHide();
     this.#calibratedThrottlingSetting.removeChangeListener(this.#onCalibratedSettingChanged, this);
-    SDK.CPUThrottlingManager.CPUThrottlingManager.instance().removeEventListener(
-        SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onOptionChange, this);
+    this.#cpuThrottlingManager.removeEventListener(SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onOptionChange,
+                                                   this);
   }
 
   #onOptionChange(): void {
-    this.#currentOption = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingOption();
+    this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
 
     this.requestUpdate();
   }

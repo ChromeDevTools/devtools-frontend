@@ -47,12 +47,6 @@ describeWithEnvironment('LighthouseProtocolService', () => {
     }
   });
 
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('test');
-    }
-  });
-
   it('suspends all targets', async () => {
     const service = new Lighthouse.LighthouseProtocolService.ProtocolService();
     await service.attach(urlString`https://example.com/page`);

@@ -39,12 +39,6 @@ describeWithEnvironment('BackForwardCacheView', () => {
         target.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel;
   });
 
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
-  });
-
   it('updates BFCacheView on main frame navigation', async () => {
     await renderBackForwardCacheView();
     navigate(getMainFrame(target), {}, Protocol.Page.NavigationType.BackForwardCacheRestore);

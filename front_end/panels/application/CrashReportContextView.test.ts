@@ -28,10 +28,6 @@ describeWithEnvironment('CrashReportContextView', () => {
     target.model(SDK.ResourceTreeModel.ResourceTreeModel);
   });
 
-  afterEach(() => {
-    target?.dispose('test');
-  });
-
   async function createComponent() {
     const view = createViewFunctionStub(Application.CrashReportContextView.CrashReportContextView);
     const component = new Application.CrashReportContextView.CrashReportContextView(view);

@@ -46,12 +46,6 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
     sinon.stub(target.fetchAgent(), 'invoke_enable');
   });
 
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
-  });
-
   it('can create an overridden file with Local Overrides enabled', async () => {
     const url = 'http://www.example.com/list-fetch.json';
     const resourceType = Common.ResourceType.resourceTypes.Document;
@@ -88,12 +82,6 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
 });
 
 describeWithEnvironment('NetworkPersistenceManager', () => {
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
-  });
-
   it('does not create interception patterns for forbidden URLs', async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
     const target = createTarget();
@@ -733,12 +721,6 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
 describeWithEnvironment('NetworkPersistenceManager', () => {
   beforeEach(() => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
-  });
-
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
   });
 
   it('updates active state when target detach and attach', async () => {

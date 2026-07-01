@@ -58,10 +58,6 @@ describeWithEnvironment('InspectElementModeController', () => {
                                  () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
   });
 
-  afterEach(() => {
-    tabTarget?.dispose('test');
-  });
-
   it('synchronises mode for in scope models', async () => {
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
       assert.isFalse(Boolean(target.model(SDK.OverlayModel.OverlayModel)?.inspectModeEnabled()));
@@ -97,14 +93,13 @@ describeWithEnvironment('InspectElementModeController panel interactions', () =>
   let elementsPanel: sinon.SinonStubbedInstance<Elements.ElementsPanel.ElementsPanel>;
   let node: SDK.DOMModel.DOMNode;
   let viewManager: sinon.SinonStubbedInstance<UI.ViewManager.ViewManager>;
-  let target: SDK.Target.Target;
   let connection: MockCDPConnection;
 
   beforeEach(() => {
     stubNoopSettings();
     registerNoopActions(['elements.toggle-element-search']);
     connection = new MockCDPConnection();
-    target = createTarget({connection});
+    createTarget({connection});
     connection.setSuccessHandler('DOM.getDocument',
                                  () => ({root: {nodeId: NODE_ID}} as Protocol.DOM.GetDocumentResponse));
     connection.setSuccessHandler('DOM.pushNodeByPathToFrontend', () => ({nodeId: NODE_ID}));
@@ -123,7 +118,6 @@ describeWithEnvironment('InspectElementModeController panel interactions', () =>
 
   afterEach(() => {
     UI.Context.Context.instance().setFlavor(Common.ReturnToPanel.ReturnToPanelFlavor, null);
-    target?.dispose('test');
   });
 
   it('node is selected and element panel shown when no return to panel flavor is present', async () => {

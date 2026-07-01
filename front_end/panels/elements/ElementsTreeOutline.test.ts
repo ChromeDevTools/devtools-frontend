@@ -34,10 +34,6 @@ describeWithMockConnection('ElementsTreeOutline', () => {
     model = modelBeforeAssertion;
   });
 
-  afterEach(() => {
-    target.dispose('NO_REASON');
-  });
-
   it('should include the ::checkmark pseudo element', () => {
     const optionNode = SDK.DOMModel.DOMNode.create(model, null, false, {
       nodeId: 1 as Protocol.DOM.NodeId,

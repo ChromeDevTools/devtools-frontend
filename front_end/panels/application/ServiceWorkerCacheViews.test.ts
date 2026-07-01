@@ -37,10 +37,6 @@ describeWithEnvironment('ServiceWorkerCacheView', function() {
         cacheStorageModel, testStorageBucket, 'test-cache', 'id' as Protocol.CacheStorage.CacheId);
   });
 
-  afterEach(() => {
-    target?.dispose('test');
-  });
-
   it('creates the expected view structure with toolbar, metadata, grid, and details pane', () => {
     const view = new Application.ServiceWorkerCacheViews.ServiceWorkerCacheView(cacheStorageModel, cache);
 

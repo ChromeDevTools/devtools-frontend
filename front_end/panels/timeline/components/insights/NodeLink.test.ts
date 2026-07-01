@@ -21,9 +21,6 @@ function nodeId<T extends Protocol.DOM.BackendNodeId|Protocol.DOM.NodeId>(x: num
 
 describeWithEnvironment('NodeLink', () => {
   let target: SDK.Target.Target;
-  afterEach(() => {
-    target?.dispose('test');
-  });
 
   it('renders a node link', async () => {
     const linkifyStub = sinon.stub(PanelsCommon.DOMLinkifier.Linkifier.instance(), 'linkify').callsFake(() => {

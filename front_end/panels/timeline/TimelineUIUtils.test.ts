@@ -125,10 +125,6 @@ describeWithEnvironment('TimelineUIUtils', function() {
     });
   });
 
-  afterEach(() => {
-    target?.dispose('test');
-  });
-
   describe('script location as an URL', function() {
     it('makes the script location of a call frame a full URL when the inspected target is not the same the call frame was taken from (e.g. a loaded file)',
        async function() {

@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import type * as SDK from '../../../core/sdk/sdk.js';
 import {
   assertScreenshot,
   renderElementIntoDOM,
@@ -18,19 +17,14 @@ const {BounceTrackingMitigationsView, DEFAULT_VIEW, ScreenStatusType} =
     ApplicationComponents.BounceTrackingMitigationsView;
 
 describeWithEnvironment('BounceTrackingMitigationsView', () => {
-  let target: SDK.Target.Target;
   let connection: MockCDPConnection;
 
   beforeEach(() => {
     connection = new MockCDPConnection();
   });
 
-  afterEach(() => {
-    target?.dispose('test');
-  });
-
   it('shows no message or table if the force run button has not been clicked', async () => {
-    target = createTarget({connection});
+    createTarget({connection});
     connection.setSuccessHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
     connection.setSuccessHandler('Storage.runBounceTrackingMitigations', () => ({deletedSites: []}));
 
@@ -45,7 +39,7 @@ describeWithEnvironment('BounceTrackingMitigationsView', () => {
   });
 
   it('shows a message indicating that Bounce Tracking Mitigations are disabled', async () => {
-    target = createTarget({connection});
+    createTarget({connection});
     connection.setSuccessHandler('SystemInfo.getFeatureState', () => ({featureEnabled: false}));
 
     const view = createViewFunctionStub(BounceTrackingMitigationsView);
@@ -60,7 +54,7 @@ describeWithEnvironment('BounceTrackingMitigationsView', () => {
 
   async function testForceRunClick(deletedSites: string[]) {
     const {promise: lock, resolve: freeLock} = Promise.withResolvers();
-    target = createTarget({connection});
+    createTarget({connection});
     connection.setSuccessHandler('SystemInfo.getFeatureState', () => ({featureEnabled: true}));
     const runBounceTrackingMitigationsPromise = new Promise(resolve => {
       connection.setSuccessHandler('Storage.runBounceTrackingMitigations', async () => {

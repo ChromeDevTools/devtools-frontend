@@ -542,12 +542,6 @@ describeWithMockConnection('ConsoleView', () => {
       Common.Settings.Settings.instance().createSetting('console-group-similar', true).set(true);
     });
 
-    afterEach(() => {
-      if (target) {
-        target.dispose('test cleanup');
-      }
-    });
-
     for (const level
              of [Protocol.Log.LogEntryLevel.Error,
                  Protocol.Log.LogEntryLevel.Warning,

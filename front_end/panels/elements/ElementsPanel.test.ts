@@ -76,7 +76,6 @@ describeWithEnvironment('ElementsPanel', () => {
 
   afterEach(() => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-    target?.dispose('test');
   });
 
   const createsTreeOutlines = (inScope: boolean) => () => {

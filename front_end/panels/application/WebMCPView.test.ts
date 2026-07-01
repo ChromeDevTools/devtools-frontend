@@ -640,6 +640,7 @@ describe('WebMCPView Presenter', () => {
   afterEach(() => {
     target?.dispose('test');
   });
+
   it('passes tools to the view sorted by name', async () => {
     const {model, viewStub} = await setup();
     model.toolsAdded({

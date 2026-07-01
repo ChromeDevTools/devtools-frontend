@@ -35,7 +35,6 @@ describeWithEnvironment('PropertiesWidget', () => {
 
   afterEach(() => {
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-    target?.dispose('test');
   });
 
   const updatesUiOnEvent = <T extends keyof SDK.DOMModel.EventTypes>(

@@ -33,7 +33,6 @@ describeWithEnvironment('NetworkPanel', () => {
   afterEach(async () => {
     await RenderCoordinator.done();
     networkPanel.detach();
-    target?.dispose('test');
   });
 
   const tracingTests = (inScope: boolean) => () => {
@@ -71,7 +70,6 @@ describeWithEnvironment('NetworkPanel', () => {
 });
 
 describeWithEnvironment('NetworkPanel', () => {
-  let target: SDK.Target.Target;
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   beforeEach(async () => {
@@ -79,7 +77,7 @@ describeWithEnvironment('NetworkPanel', () => {
     UI.ActionRegistration.maybeRemoveActionExtension('network.toggle-recording');
     UI.ActionRegistration.maybeRemoveActionExtension('network.clear');
     await import('./network-meta.js');
-    target = createTarget();
+    createTarget();
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.Settings.instance({
       forceNew: true,
@@ -99,7 +97,6 @@ describeWithEnvironment('NetworkPanel', () => {
   afterEach(async () => {
     await RenderCoordinator.done();
     networkPanel.detach();
-    target?.dispose('test');
   });
 
   it('clears network log on button click', async () => {

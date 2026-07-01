@@ -21,12 +21,6 @@ describeWithEnvironment('CSSOverviewPanel', () => {
     target = createTarget({parentTarget: tabTarget});
   });
 
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
-  });
-
   it('reacts to start event and sends completion event', async () => {
     const view = createViewFunctionStub(CSSOverview.CSSOverviewPanel.CSSOverviewPanel);
     new CSSOverview.CSSOverviewPanel.CSSOverviewPanel(view);

@@ -42,10 +42,6 @@ describeWithEnvironment('IndexedDBModel', () => {
     manager = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
   });
 
-  afterEach(() => {
-    target?.dispose('test');
-  });
-
   describe('StorageKeyAdded', () => {
     it('registers database only when the model is enabled', async () => {
       const databaseAddedSpy = sinon.spy(indexedDBModel, 'dispatchEventToListeners');

@@ -56,7 +56,6 @@ describeWithEnvironment('DeviceModeToolbar', () => {
   setupLocaleHooks();
 
   let tabTarget: SDK.Target.Target|undefined;
-  let prerenderTarget: SDK.Target.Target|undefined;
   let target: SDK.Target.Target;
   let deviceModeModel: EmulationModel.DeviceModeModel.DeviceModeModel;
   let toolbar: Emulation.DeviceModeToolbar.DeviceModeToolbar;
@@ -82,7 +81,7 @@ describeWithEnvironment('DeviceModeToolbar', () => {
     } as unknown as Common.Settings.Settings);
 
     tabTarget = createTarget({type: SDK.Target.Type.TAB});
-    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance({forceNew: true});
 
@@ -105,9 +104,6 @@ describeWithEnvironment('DeviceModeToolbar', () => {
     await UI.Widget.Widget.allUpdatesComplete;
     toolbar?.detach();
     deviceModeModel?.dispose();
-    target?.dispose('test');
-    prerenderTarget?.dispose('test');
-    tabTarget?.dispose('test');
   });
 
   /**

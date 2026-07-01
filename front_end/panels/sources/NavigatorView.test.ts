@@ -62,10 +62,6 @@ describeWithEnvironment('NavigatorView', () => {
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
   });
 
-  afterEach(() => {
-    target?.dispose('test');
-  });
-
   function addResourceAndUISourceCode(
       url: Platform.DevToolsPath.UrlString, frame: SDK.ResourceTreeModel.ResourceTreeFrame, content: string,
       mimeType: string) {

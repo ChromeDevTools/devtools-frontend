@@ -64,7 +64,6 @@ class SharedStorageTreeElementListener {
 describeWithEnvironment('ApplicationPanelSidebar', () => {
   let target: SDK.Target.Target;
   let tabTarget: SDK.Target.Target;
-  let prerenderTarget: SDK.Target.Target;
 
   const TEST_ORIGIN_A = 'http://www.example.com/';
   const TEST_SITE_A = 'http://example.com';
@@ -142,16 +141,10 @@ describeWithEnvironment('ApplicationPanelSidebar', () => {
                                  () => ({} as Protocol.Storage.GetSharedStorageEntriesResponse));
     connection.setSuccessHandler('Storage.setSharedStorageTracking', () => ({}));
     tabTarget = createTarget({type: SDK.Target.Type.TAB, connection});
-    prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView').resolves();  // Silence console error
-  });
-
-  afterEach(() => {
-    target?.dispose('test');
-    prerenderTarget?.dispose('test');
-    tabTarget?.dispose('test');
   });
 
   it('shows WebMCP only if the WebMCP config is enabled', async () => {
@@ -490,9 +483,6 @@ describeWithEnvironment('IDBDatabaseTreeElement', () => {
     target = createTarget({connection});
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
   });
-  afterEach(() => {
-    target?.dispose('test');
-  });
   expectConsoleLogs({
     error: ['Error: No LanguageSelector instance exists yet.'],
   });
@@ -519,9 +509,6 @@ describeWithEnvironment('ResourcesSection', () => {
       const connection = new MockCDPConnection();
       mockResourceTree(connection);
       target = createTarget({connection});
-    });
-    afterEach(() => {
-      target?.dispose('test');
     });
 
     expectConsoleLogs({
@@ -586,10 +573,6 @@ describeWithEnvironment('IndexedDBTreeElement live update', () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     indexedDBTreeElement = sidebar.indexedDBListTreeElement;
-  });
-
-  afterEach(() => {
-    target?.dispose('test');
   });
 
   it('updates tree on database, object store, and index changes', async () => {

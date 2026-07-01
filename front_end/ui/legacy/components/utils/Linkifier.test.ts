@@ -38,12 +38,6 @@ function foo(x) {
 `;
 
 describeWithEnvironment('Linkifier', () => {
-  afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
-  });
-
   function setUpEnvironment() {
     const backend = new MockDebuggerBackend();
     const target = backend.createTarget();

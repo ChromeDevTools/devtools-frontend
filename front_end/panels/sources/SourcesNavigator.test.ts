@@ -61,21 +61,17 @@ describe('NetworkNavigatorView', () => {
   });
 
   afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('afterEach');
-    }
     sinon.restore();
   });
 
   describe('reveals main target', () => {
     let tabTarget: SDK.Target.Target;
-    let prerenderTarget: SDK.Target.Target;
     let target: SDK.Target.Target;
     let project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
 
     beforeEach(async () => {
       tabTarget = backend.createTarget({type: SDK.Target.Type.TAB});
-      prerenderTarget = backend.createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+      backend.createTarget({parentTarget: tabTarget, subtype: 'prerender'});
       target = backend.createTarget({parentTarget: tabTarget});
       ({project} = createContentProviderUISourceCodes({
          items: [
@@ -90,9 +86,6 @@ describe('NetworkNavigatorView', () => {
 
     afterEach(() => {
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      target?.dispose('test');
-      prerenderTarget?.dispose('test');
-      tabTarget?.dispose('test');
     });
 
     it('shows folder with scripts requests', async () => {
@@ -220,10 +213,6 @@ describe('NetworkNavigatorView', () => {
 
     beforeEach(() => {
       target = backend.createTarget();
-    });
-
-    afterEach(() => {
-      target?.dispose('test');
     });
 
     it('selects just once when removing multiple sibling source codes', () => {
@@ -488,10 +477,6 @@ describe('NetworkNavigatorView', () => {
           resolveFn = null;
         }
       });
-    });
-
-    afterEach(() => {
-      target?.dispose('test');
     });
 
     const updatePatternSetting = async (settingValue: Common.Settings.RegExpSettingItem[]) => {

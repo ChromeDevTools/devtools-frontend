@@ -83,8 +83,6 @@ describeWithEnvironment('NetworkLogView', () => {
     if (networkLogView) {
       networkLogView.detach();
     }
-    target?.dispose('test');
-    tabTarget?.dispose('test');
     Logs.NetworkLog.NetworkLog.removeInstance();
   });
 

@@ -22,9 +22,6 @@ import * as InspectorMain from './inspector_main.js';
 
 describeWithEnvironment('FocusDebuggeeActionDelegate', () => {
   afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('test cleanup');
-    }
     SDK.TargetManager.TargetManager.removeInstance();
   });
 
@@ -69,9 +66,6 @@ describeWithEnvironment('InspectorMainImpl', () => {
   });
 
   afterEach(() => {
-    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-      target.dispose('test cleanup');
-    }
     SDK.TargetManager.TargetManager.removeInstance();
     createTargetStub.restore();
   });

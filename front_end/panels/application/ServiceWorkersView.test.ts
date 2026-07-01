@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Application from './application.js';
@@ -28,7 +28,7 @@ describeWithEnvironment('ServiceWorkersView', () => {
 
   it('shows service worker registrations', async () => {
     view = new Application.ServiceWorkersView.ServiceWorkersView();
-    renderElementIntoDOM(view);
+    renderElementIntoDOM(view, {includeCommonStyles: true});
     const serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
     assert.exists(serviceWorkersManager);
     const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
@@ -46,6 +46,7 @@ describeWithEnvironment('ServiceWorkersView', () => {
     const sectionTitle = view.currentWorkersView.contentElement.querySelector('.report-section-title');
     assert.exists(sectionTitle);
     assert.strictEqual(sectionTitle.textContent, SCOPE_URL);
+    await assertScreenshot('application/service-workers-view-basic.png');
   });
 
   describe('router info', () => {

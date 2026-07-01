@@ -10,14 +10,14 @@ import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import {
   deinitializeGlobalVars,
-  initializeGlobalVars,
+  describeWithEnvironment,
+  initializeGlobalVars
 } from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as Emulation from './emulation.js';
 
-describeWithMockConnection('AdvancedApp', () => {
+describeWithEnvironment('AdvancedApp', () => {
   beforeEach(async () => {
     await deinitializeGlobalVars();
     Common.Settings.registerSettingsForTest([

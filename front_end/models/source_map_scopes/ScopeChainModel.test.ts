@@ -8,12 +8,11 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as SourceMapScopes from './source_map_scopes.js';
 
-describeWithMockConnection('ScopeChainModel', () => {
+describeWithEnvironment('ScopeChainModel', () => {
   let clock: sinon.SinonFakeTimers;
   let stubPluginManager: sinon.SinonStubbedInstance<Bindings.DebuggerLanguagePlugins.DebuggerLanguagePluginManager>;
 

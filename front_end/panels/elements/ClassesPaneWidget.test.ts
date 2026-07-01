@@ -7,15 +7,14 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
 const CLASS_NAMES = ['class-1', 'class-2', 'class-3'];
 
-describeWithMockConnection('ClassesPaneWidget', () => {
+describeWithEnvironment('ClassesPaneWidget', () => {
   let target: SDK.Target.Target;
   let view: Elements.ClassesPaneWidget.ClassesPaneWidget;
 

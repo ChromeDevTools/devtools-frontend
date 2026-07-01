@@ -6,14 +6,14 @@ import {assert} from 'chai';
 
 import * as Trace from '../../../models/trace/trace.js';
 import {cleanTextContent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Timeline from '../timeline.js';
 
 import * as TimelineComponents from './components.js';
 
-describeWithMockConnection('NetworkRequestDetails', () => {
+describeWithEnvironment('NetworkRequestDetails', () => {
   async function makeDetailsComponent(
       parsedTrace: Trace.TraceModel.ParsedTrace, request: Trace.Types.Events.SyntheticNetworkRequest,
       entityMapper: Trace.EntityMapper.EntityMapper):

@@ -6,12 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {
-  createTarget,
-} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   FRAME_URL,
   getInitializedResourceTreeModel,
@@ -25,7 +20,7 @@ import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('ConsoleMessage', () => {
+describeWithEnvironment('ConsoleMessage', () => {
   const scriptId1 = '1' as Protocol.Runtime.ScriptId;
   const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 

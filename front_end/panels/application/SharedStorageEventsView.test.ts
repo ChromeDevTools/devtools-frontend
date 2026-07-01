@@ -7,14 +7,14 @@ import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
 import {raf} from '../../testing/DOMHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Resources from './application.js';
 
 import View = Resources.SharedStorageEventsView;
 
-describeWithMockConnection('SharedStorageEventsView', () => {
+describeWithEnvironment('SharedStorageEventsView', () => {
   const TEST_ORIGIN_A = 'http://a.test';
   const TEST_SITE_A = TEST_ORIGIN_A;
   const TEST_ORIGIN_B = 'http://b.test';

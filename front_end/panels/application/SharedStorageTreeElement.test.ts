@@ -9,11 +9,7 @@ import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {
-  createTarget,
-  stubNoopSettings,
-} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {SECURITY_ORIGIN} from '../../testing/ResourceTreeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -53,7 +49,7 @@ class SharedStorageItemsListener {
   }
 }
 
-describeWithMockConnection('SharedStorageTreeElement', function() {
+describeWithEnvironment('SharedStorageTreeElement', function() {
   let target: SDK.Target.Target;
   let sharedStorageModel: Application.SharedStorageModel.SharedStorageModel;
   let sharedStorage: Application.SharedStorageModel.SharedStorageForOrigin;

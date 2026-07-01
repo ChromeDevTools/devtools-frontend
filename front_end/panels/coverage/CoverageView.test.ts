@@ -10,8 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -87,7 +86,7 @@ const setupTargetAndModels = () => {
   return {startSpy, stopSpy, target};
 };
 
-describeWithMockConnection('CoverageView', () => {
+describeWithEnvironment('CoverageView', () => {
   beforeEach(() => {
     registerNoopActions([
       'coverage.clear',

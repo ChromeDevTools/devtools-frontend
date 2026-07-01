@@ -8,8 +8,7 @@ import sinon from 'sinon';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
-import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 
 import * as UIHelpers from './helpers.js';
 
@@ -147,7 +146,7 @@ describe('openInNewTab', () => {
     sinon.assert.callCount(stub, 0);
   });
 
-  describeWithMockConnection('chrome:// link', () => {
+  describeWithEnvironment('chrome:// link', () => {
     it('calls invoke_createTarget for chrome:// links when privileged navigation is allowed', async () => {
       const target = createTarget();
       const spy = sinon.spy(target.targetAgent(), 'invoke_createTarget');

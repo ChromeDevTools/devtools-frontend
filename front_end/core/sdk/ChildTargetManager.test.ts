@@ -7,12 +7,7 @@ import sinon from 'sinon';
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {
-  createTarget,
-} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as SDK from './sdk.js';
 
@@ -36,7 +31,7 @@ function createSessionId() {
   return ('SESSION_ID' + ++nextSessionId) as Protocol.Target.SessionID;
 }
 
-describeWithMockConnection('ChildTargetManager', () => {
+describeWithEnvironment('ChildTargetManager', () => {
   it('adds subtargets', async () => {
     const target = createTarget();
     const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(target);

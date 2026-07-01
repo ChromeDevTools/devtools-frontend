@@ -9,14 +9,8 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {
-  createTarget,
-  registerNoopActions,
-} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -27,7 +21,7 @@ function compileScriptResponse(exception?: string): Protocol.Runtime.CompileScri
   return {exceptionDetails, getError: () => {}} as unknown as Protocol.Runtime.CompileScriptResponse;
 }
 
-describeWithMockConnection('ConsoleContextSelector', () => {
+describeWithEnvironment('ConsoleContextSelector', () => {
   let target: SDK.Target.Target;
   let consolePrompt: Console.ConsolePrompt.ConsolePrompt;
   let evaluateOnTarget: sinon.SinonStub;

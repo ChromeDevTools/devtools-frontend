@@ -24,13 +24,12 @@ import {
   MockAidaFetchError,
   setupAutomaticFileSystem,
 } from '../../testing/AiAssistanceHelpers.js';
-import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
-describeWithMockConnection('PatchWidget', () => {
+describeWithEnvironment('PatchWidget', () => {
   let showFreDialogStub: sinon.SinonStub<Parameters<typeof PanelCommon.FreDialog.show>, Promise<boolean>>;
   beforeEach(() => {
     Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(true);

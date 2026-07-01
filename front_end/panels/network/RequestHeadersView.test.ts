@@ -20,7 +20,7 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {
@@ -111,7 +111,7 @@ const getRowHighlightStatus = (container: HTMLDetailsElement) => {
   });
 };
 
-describeWithMockConnection('RequestHeadersView', () => {
+describeWithEnvironment('RequestHeadersView', () => {
   let component: Network.RequestHeadersView.RequestHeadersView|null|undefined = null;
 
   beforeEach(() => {

@@ -9,13 +9,12 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Emulation from './emulation.js';
 
-describeWithMockConnection('MediaQueryInspector', () => {
+describeWithEnvironment('MediaQueryInspector', () => {
   let target: SDK.Target.Target;
   let throttler: Common.Throttler.Throttler;
   let inspector: Emulation.MediaQueryInspector.MediaQueryInspector;

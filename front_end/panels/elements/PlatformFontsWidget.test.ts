@@ -7,11 +7,11 @@ import sinon from 'sinon';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as ComputedStyle from '../../models/computed_style/computed_style.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Elements from './elements.js';
 
-describeWithMockConnection('PlatformFontsWidget', () => {
+describeWithEnvironment('PlatformFontsWidget', () => {
   it('correctly displays font stats', async () => {
     const sharedModel = {} as ComputedStyle.ComputedStyleModel.ComputedStyleModel;
     sharedModel.addEventListener = sinon.stub();

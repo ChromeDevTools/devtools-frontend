@@ -6,11 +6,10 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-describeWithMockConnection('CheckFormsIssuesTrigger', () => {
+describeWithEnvironment('CheckFormsIssuesTrigger', () => {
   it('should call `checkFormsIssues` on devtools open.', async () => {
     const parentTarget = createTarget();
     const target = createTarget({parentTarget});

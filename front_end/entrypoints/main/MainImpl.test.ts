@@ -7,15 +7,12 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {getMenuForToolbarButton} from '../../testing/ContextMenuHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Main from './main.js';
 
-describeWithMockConnection('MainMenuItem', () => {
+describeWithEnvironment('MainMenuItem', () => {
   beforeEach(async () => {
     stubNoopSettings();
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({

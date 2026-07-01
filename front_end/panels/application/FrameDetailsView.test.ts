@@ -14,11 +14,8 @@ import {
   raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import type * as ReportView from '../../ui/components/report_view/report_view.js';
 
 import * as Application from './application.js';
@@ -85,7 +82,7 @@ const makeFrame = (target: SDK.Target.Target) => {
   return newFrame;
 };
 
-describeWithMockConnection('FrameDetailsView', () => {
+describeWithEnvironment('FrameDetailsView', () => {
   beforeEach(() => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const targetManager = SDK.TargetManager.TargetManager.instance();

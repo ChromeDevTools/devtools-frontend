@@ -8,14 +8,13 @@ import sinon from 'sinon';
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as PerformanceMonitor from './performance_monitor.js';
 
-describeWithMockConnection('PerformanceMonitor', () => {
+describeWithEnvironment('PerformanceMonitor', () => {
   let target: SDK.Target.Target;
   let performanceMonitor: PerformanceMonitor.PerformanceMonitor.PerformanceMonitorImpl;
 

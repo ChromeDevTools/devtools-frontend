@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
@@ -95,7 +95,7 @@ function createOriginMap(): Components.OriginMap.OriginMap {
   return view;
 }
 
-describeWithMockConnection('OriginMap', () => {
+describeWithEnvironment('OriginMap', () => {
   let cruxManager: CrUXManager.CrUXManager;
   let targetManager: SDK.TargetManager.TargetManager;
   let mockFieldData: CrUXManager.PageResult;

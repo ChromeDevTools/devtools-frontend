@@ -7,12 +7,11 @@ import sinon from 'sinon';
 
 import * as ProtocolModule from '../../generated/protocol.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('DOMModel', () => {
+describeWithEnvironment('DOMModel', () => {
   it('updates the document on an documentUpdate event if there already is a previous document', async () => {
     const parentTarget = createTarget();
     const target = createTarget({parentTarget});

@@ -5,12 +5,11 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('DOMStorageModel', () => {
+describeWithEnvironment('DOMStorageModel', () => {
   let domStorageModel: SDK.DOMStorageModel.DOMStorageModel;
   let domStorage: SDK.DOMStorageModel.DOMStorage;
   let target: SDK.Target.Target;

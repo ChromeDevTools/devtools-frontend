@@ -9,15 +9,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 import {stripLitHtmlCommentNodes} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
 import * as PanelsCommon from '../common/common.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
-describeWithMockConnection('LighthouseReportRenderer', () => {
+describeWithEnvironment('LighthouseReportRenderer', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   let Lighthouse: typeof LighthouseModule;
   let target: SDK.Target.Target;

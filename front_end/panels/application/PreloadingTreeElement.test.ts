@@ -6,13 +6,12 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import type * as Resources from './application.js';
 import * as Application from './application.js';
 
-describeWithMockConnection('PreloadingTreeElement', () => {
+describeWithEnvironment('PreloadingTreeElement', () => {
   it('shows view even if initialization happens after selection', () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);

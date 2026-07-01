@@ -8,15 +8,14 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 
 import * as Elements from './elements.js';
 
 const MAIN_FRAME_ID = 'MAIN_FRAME_ID' as Protocol.Page.FrameId;
 
-describeWithMockConnection('AccessibilityTreeView', () => {
+describeWithEnvironment('AccessibilityTreeView', () => {
   let target: SDK.Target.Target;
   let treeComponent: TreeOutline.TreeOutline.TreeOutline<Elements.AccessibilityTreeUtils.AXTreeNodeData>;
 

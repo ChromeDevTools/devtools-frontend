@@ -12,13 +12,9 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {
-  createTarget,
-  describeWithEnvironment,
-} from '../../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../testing/ExpectStubCall.js';
 import {TestPlugin} from '../../../testing/LanguagePluginHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {MockExecutionContext} from '../../../testing/MockExecutionContext.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
@@ -321,7 +317,7 @@ describeWithEnvironment('TextEditor', () => {
   });
 });
 
-describeWithMockConnection('TextEditor autocompletion', () => {
+describeWithEnvironment('TextEditor autocompletion', () => {
   it('does not complete on language plugin frames', async () => {
     const executionContext = new MockExecutionContext(createTarget());
     const {debuggerModel} = executionContext;

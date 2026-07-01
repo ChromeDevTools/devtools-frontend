@@ -11,14 +11,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
-describeWithMockConnection('LayoutPane', () => {
+describeWithEnvironment('LayoutPane', () => {
   let target: SDK.Target.Target;
   let domModel: SDK.DOMModel.DOMModel;
   let overlayModel: SDK.OverlayModel.OverlayModel;

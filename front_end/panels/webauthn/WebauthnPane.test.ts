@@ -8,15 +8,12 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
 
 import type * as WebauthnModule from './webauthn.js';
 
-describeWithMockConnection('WebAuthn pane', () => {
+describeWithEnvironment('WebAuthn pane', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   let Webauthn: typeof WebauthnModule;
 

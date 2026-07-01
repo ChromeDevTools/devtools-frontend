@@ -5,11 +5,8 @@
 import {assert} from 'chai';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-  dispatchEvent,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as Platform from '../platform/platform.js';
 
@@ -17,7 +14,7 @@ import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('PreloadingModel', () => {
+describeWithEnvironment('PreloadingModel', () => {
   it('adds and deletes rule sets and preloading attempts', async () => {
     const target = createTarget();
     const model = target.model(SDK.PreloadingModel.PreloadingModel);

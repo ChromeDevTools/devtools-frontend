@@ -8,13 +8,17 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, expectConsoleLogs, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {
+  createTarget,
+  describeWithEnvironment,
+  expectConsoleLogs,
+  stubNoopSettings
+} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-describeWithMockConnection('StorageBucketsTreeElement', function() {
+describeWithEnvironment('StorageBucketsTreeElement', function() {
   let target: SDK.Target.Target;
   let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager;
   let storageBucketsModel: SDK.StorageBucketsModel.StorageBucketsModel|null;

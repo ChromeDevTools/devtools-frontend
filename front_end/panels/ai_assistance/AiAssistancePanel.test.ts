@@ -27,13 +27,13 @@ import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
 import {
   createTarget,
   deinitializeGlobalVars,
+  describeWithEnvironment,
   initializeGlobalVars,
   registerNoopActions,
-  updateHostConfig,
+  updateHostConfig
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
@@ -47,7 +47,7 @@ import * as AiAssistancePanel from './ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('AI Assistance Panel', () => {
+describeWithEnvironment('AI Assistance Panel', () => {
   setupSettingsHooks();
 
   let viewManagerIsViewVisibleStub: sinon.SinonStub<[viewId: string], boolean>;

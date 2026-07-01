@@ -7,13 +7,12 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
 
-describeWithMockConnection('ThreadsSidebarPane', () => {
+describeWithEnvironment('ThreadsSidebarPane', () => {
   const {ThreadsSidebarPane} = Sources.ThreadsSidebarPane;
   let threadsSidebarPane: Sources.ThreadsSidebarPane.ThreadsSidebarPane;
   let view: sinon.SinonSpy;

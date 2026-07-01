@@ -8,8 +8,7 @@ import sinon from 'sinon';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -33,7 +32,7 @@ const context2: Protocol.WebAudio.BaseAudioContext = {
   maxOutputChannelCount: 2,
 };
 
-describeWithMockConnection('WebAudioView', () => {
+describeWithEnvironment('WebAudioView', () => {
   beforeEach(() => {
     UI.ActionRegistration.registerActionExtension({
       actionId: 'components.collect-garbage',

@@ -16,9 +16,7 @@ import {findMenuItemWithLabel} from '../../../../testing/ContextMenuHelpers.js';
 import {
   describeWithEnvironment,
 } from '../../../../testing/EnvironmentHelpers.js';
-import {
-  dispatchEvent,
-} from '../../../../testing/MockConnection.js';
+import {dispatchEvent} from '../../../../testing/MockConnection.js';
 import {MockDebuggerBackend} from '../../../../testing/MockScopeChain.js';
 import {TestUniverse} from '../../../../testing/TestUniverse.js';
 import * as UI from '../../legacy.js';

@@ -5,8 +5,7 @@
 import {assert} from 'chai';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as SDK from './sdk.js';
 
@@ -16,7 +15,7 @@ function assertPropertValues<T>(object: T, expectedKeyValuePairs: Array<[key: st
   }
 }
 
-describeWithMockConnection('CSSStyleDeclaration', () => {
+describeWithEnvironment('CSSStyleDeclaration', () => {
   it('should correctly construct new CSSStyleDeclaration', () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);

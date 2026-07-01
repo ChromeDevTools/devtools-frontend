@@ -9,13 +9,13 @@ import * as Common from '../../core/common/common.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-describeWithMockConnection('DeviceBoundSessionsView', () => {
+describeWithEnvironment('DeviceBoundSessionsView', () => {
   const mockSessionId = 'session-id-123';
   const mockSite = 'https://example.com';
 

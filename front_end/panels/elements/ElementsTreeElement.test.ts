@@ -15,8 +15,8 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, registerActions} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, registerActions} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {html} from '../../ui/lit/lit.js';
 import * as PanelsCommon from '../common/common.js';
 
@@ -142,7 +142,7 @@ describe('ElementsTreeElement', () => {
   });
 });
 
-describeWithMockConnection('ElementsTreeElement', () => {
+describeWithEnvironment('ElementsTreeElement', () => {
   const DEFAULT_LAYOUT_PROPERTIES = {
     isFlex: false,
     isGrid: false,
@@ -682,7 +682,7 @@ describeWithMockConnection('ElementsTreeElement', () => {
      });
 });
 
-describeWithMockConnection('ElementsTreeElement highlighting', () => {
+describeWithEnvironment('ElementsTreeElement highlighting', () => {
   let domModel: SDK.DOMModel.DOMModel;
   let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;
   let containerNode: SDK.DOMModel.DOMNode;
@@ -1051,7 +1051,7 @@ describeWithMockConnection('ElementsTreeElement highlighting', () => {
   });
 });
 
-describeWithMockConnection('ElementsTreeElement in Snapshot Mode', () => {
+describeWithEnvironment('ElementsTreeElement in Snapshot Mode', () => {
   let target: SDK.Target.Target;
   let domModel: SDK.DOMModel.DOMModel;
   let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;

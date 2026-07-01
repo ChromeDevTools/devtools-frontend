@@ -16,9 +16,8 @@ import {
   createStackTrace,
 } from '../../testing/ConsoleHelpers.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -29,7 +28,7 @@ import * as Console from './console.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import consoleViewStyles from './consoleView.css.js';
 
-describeWithMockConnection('ConsoleViewMessage', () => {
+describeWithEnvironment('ConsoleViewMessage', () => {
   describe('anchor rendering', () => {
     it('links to the top frame for normal console message', () => {
       const target = createTarget();

@@ -8,14 +8,14 @@ import sinon from 'sinon';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Workspace from '../../workspace/workspace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('FileContext', () => {
+describeWithEnvironment('FileContext', () => {
   beforeEach(() => {
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const targetManager = SDK.TargetManager.TargetManager.instance();

@@ -9,13 +9,13 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Sources from './sources.js';
 
-describeWithMockConnection('ScopeChainSidebarPane', () => {
+describeWithEnvironment('ScopeChainSidebarPane', () => {
   let backend: MockDebuggerBackend;
   let target: SDK.Target.Target;
 

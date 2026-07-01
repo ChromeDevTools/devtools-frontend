@@ -4,12 +4,12 @@
 
 import {assert} from 'chai';
 
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 
 import * as TimelineComponents from './components.js';
 
-describeWithMockConnection('TimelineSummary', () => {
+describeWithEnvironment('TimelineSummary', () => {
   async function setupWidget(): Promise<{
     widget: TimelineComponents.TimelineSummary.CategorySummary,
     view: ViewFunctionStub<typeof TimelineComponents.TimelineSummary.CategorySummary>,

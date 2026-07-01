@@ -5,18 +5,13 @@
 import {assert} from 'chai';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {
-  createTarget,
-} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as InspectorMain from './inspector_main.js';
 
-describeWithMockConnection('OutermostTargetSelector', () => {
+describeWithEnvironment('OutermostTargetSelector', () => {
   let tabTarget: SDK.Target.Target;
   let primaryTarget: SDK.Target.Target;
   let prerenderTarget: SDK.Target.Target;

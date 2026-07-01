@@ -8,9 +8,8 @@ import sinon from 'sinon';
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {
   getInitializedResourceTreeModel,
   getMainFrame,
@@ -116,7 +115,7 @@ class SharedStorageListener {
   }
 }
 
-describeWithMockConnection('SharedStorageModel', () => {
+describeWithEnvironment('SharedStorageModel', () => {
   let sharedStorageModel: Resources.SharedStorageModel.SharedStorageModel;
   let target: SDK.Target.Target;
   let listener: SharedStorageListener;

@@ -11,11 +11,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {
-  deinitializeGlobalVars,
-  describeWithEnvironment,
-} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setUpEnvironment} from '../../testing/OverridesHelpers.js';
 
 import * as NetworkForward from './forward/forward.js';
@@ -45,7 +41,7 @@ function getOverrideIndicator(view: Network.NetworkItemView.NetworkItemView, tab
   return statusDot ? statusDot as HTMLElement : null;
 }
 
-describeWithMockConnection('NetworkItemView', () => {
+describeWithEnvironment('NetworkItemView', () => {
   beforeEach(() => {
     setUpEnvironment();
   });

@@ -9,9 +9,8 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockExecutionContext} from '../../testing/MockExecutionContext.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -101,7 +100,7 @@ async function addStyleSheet(
   return uiSourceCode;
 }
 
-describeWithMockConnection('PresentationConsoleMessageHelper', () => {
+describeWithEnvironment('PresentationConsoleMessageHelper', () => {
   const url = urlString`http://example.test/test.css`;
   let helper: Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageHelper;
   let executionContext: SDK.RuntimeModel.ExecutionContext;

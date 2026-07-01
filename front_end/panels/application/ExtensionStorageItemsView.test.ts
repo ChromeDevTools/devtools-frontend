@@ -9,10 +9,7 @@ import type * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -66,7 +63,7 @@ class ExtensionStorageItemsListener {
   }
 }
 
-describeWithMockConnection('ExtensionStorageItemsView', function() {
+describeWithEnvironment('ExtensionStorageItemsView', function() {
   let target: SDK.Target.Target;
   let extensionStorageModel: Resources.ExtensionStorageModel.ExtensionStorageModel|null;
   let extensionStorage: Resources.ExtensionStorageModel.ExtensionStorage;

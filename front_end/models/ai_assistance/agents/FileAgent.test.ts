@@ -9,16 +9,16 @@ import * as Host from '../../../core/host/host.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {createUISourceCode, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
+  describeWithEnvironment,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
-  updateHostConfig,
+  updateHostConfig
 } from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as Bindings from '../../bindings/bindings.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {AiAgent, FileAgent, FileContext} from '../ai_assistance.js';
 
-describeWithMockConnection('FileAgent', () => {
+describeWithEnvironment('FileAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
     updateHostConfig({
       devToolsAiAssistanceFileAgent: {

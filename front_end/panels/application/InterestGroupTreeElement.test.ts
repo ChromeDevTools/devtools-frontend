@@ -7,12 +7,11 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Resources from './application.js';
 
-describeWithMockConnection('InterestGroupTreeElement', () => {
+describeWithEnvironment('InterestGroupTreeElement', () => {
   const OWNER = 'OWNER';
   const NAME = 'NAME';
   const DETAILS = {

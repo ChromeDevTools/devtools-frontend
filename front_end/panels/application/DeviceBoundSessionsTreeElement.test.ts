@@ -8,15 +8,14 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {findMenuItemWithLabel} from '../../testing/ContextMenuHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type {TreeElement} from '../../ui/legacy/Treeoutline.js';
 
 import * as Application from './application.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
 
-describeWithMockConnection('DeviceBoundSessionsTreeElement', () => {
+describeWithEnvironment('DeviceBoundSessionsTreeElement', () => {
   let model: Application.DeviceBoundSessionsModel.DeviceBoundSessionsModel;
   let target: SDK.Target.Target;
   let mockPanel: ResourcesPanel;

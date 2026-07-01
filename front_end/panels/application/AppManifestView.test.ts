@@ -9,9 +9,8 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -19,7 +18,7 @@ import * as Application from './application.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('AppManifestView', () => {
+describeWithEnvironment('AppManifestView', () => {
   const FIXTURES_96X96_URL = `${new URL('./fixtures/96x96.png', import.meta.url)}`;
   const FIXTURES_320X320_URL = `${new URL('./fixtures/320x320.png', import.meta.url)}`;
   const FIXTURES_640X320_URL = `${new URL('./fixtures/640x320.png', import.meta.url)}`;

@@ -6,8 +6,8 @@ import {assert} from 'chai';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {createFakeSetting, createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {
   mkInspectorCspIssue,
@@ -16,7 +16,7 @@ import {
 } from '../../testing/StubIssue.js';
 import * as IssuesManager from '../issues_manager/issues_manager.js';
 
-describeWithMockConnection('IssuesManager', () => {
+describeWithEnvironment('IssuesManager', () => {
   let target: SDK.Target.Target;
   let model: SDK.IssuesModel.IssuesModel;
 

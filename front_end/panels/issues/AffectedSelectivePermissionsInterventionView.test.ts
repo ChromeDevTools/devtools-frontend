@@ -10,15 +10,15 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {raf} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
-import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
+import {dispatchEvent} from '../../testing/MockConnection.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Issues from './issues.js';
 
-describeWithMockConnection('AffectedSelectivePermissionsInterventionView', () => {
+describeWithEnvironment('AffectedSelectivePermissionsInterventionView', () => {
   setupLocaleHooks();
 
   const mockModel = new MockIssuesModel([]) as unknown as SDK.IssuesModel.IssuesModel;

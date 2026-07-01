@@ -9,13 +9,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
-import {
-  createTarget,
-  stubNoopSettings,
-  waitFor,
-} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings, waitFor} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Animation from './animation.js';
@@ -128,7 +123,7 @@ const waitForAll = async(selector: string, root?: Element|ShadowRoot): Promise<N
   return elements || null;
 };
 
-describeWithMockConnection('AnimationTimeline', () => {
+describeWithEnvironment('AnimationTimeline', () => {
   let target: SDK.Target.Target;
   let view: Animation.AnimationTimeline.AnimationTimeline;
 
@@ -677,7 +672,7 @@ describeWithMockConnection('AnimationTimeline', () => {
   });
 });
 
-describeWithMockConnection('AnimationTimeline', () => {
+describeWithEnvironment('AnimationTimeline', () => {
   it('shows placeholder showing that the panel is waiting for animations', async () => {
     const view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
     const placeholder = await waitFor('.animation-timeline-buffer-hint', view.element.shadowRoot!) as HTMLElement;

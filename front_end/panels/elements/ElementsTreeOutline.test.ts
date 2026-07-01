@@ -9,16 +9,13 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Elements from './elements.js';
 
-describeWithMockConnection('ElementsTreeOutline', () => {
+describeWithEnvironment('ElementsTreeOutline', () => {
   let target: SDK.Target.Target;
   let model: SDK.DOMModel.DOMModel;
   let treeOutline: Elements.ElementsTreeOutline.ElementsTreeOutline;

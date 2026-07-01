@@ -8,7 +8,7 @@ import * as Common from '../../../core/common/common.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
@@ -70,7 +70,7 @@ function createMockHistogram() {
   ];
 }
 
-describeWithMockConnection('MetricCard', () => {
+describeWithEnvironment('MetricCard', () => {
   beforeEach(async () => {
     const dummyStorage = new Common.Settings.SettingsStorage({});
     Common.Settings.Settings.instance({

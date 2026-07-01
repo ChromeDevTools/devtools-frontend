@@ -15,7 +15,7 @@ import {
   deinitializeGlobalVars,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
-  updateHostConfig,
+  updateHostConfig
 } from '../../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';

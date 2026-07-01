@@ -7,8 +7,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as EmulationModel from '../emulation/emulation.js';
 
@@ -81,7 +80,7 @@ describe('Rect', () => {
   });
 });
 
-describeWithMockConnection('DeviceModeModel', () => {
+describeWithEnvironment('DeviceModeModel', () => {
   let target: SDK.Target.Target;
 
   beforeEach(() => {

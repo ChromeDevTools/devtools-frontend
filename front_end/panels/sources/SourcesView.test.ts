@@ -14,11 +14,7 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {
-  createTarget,
-  describeWithEnvironment,
-} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   createContentProviderUISourceCodes,
   createFileSystemUISourceCode,
@@ -170,7 +166,7 @@ describeWithEnvironment('SourcesView', () => {
   });
 });
 
-describeWithMockConnection('SourcesView', () => {
+describeWithEnvironment('SourcesView', () => {
   let target1: SDK.Target.Target;
   let target2: SDK.Target.Target;
 

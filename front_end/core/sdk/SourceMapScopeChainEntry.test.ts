@@ -6,13 +6,12 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import type * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('SourceMapScopeRemoteObject', () => {
+describeWithEnvironment('SourceMapScopeRemoteObject', () => {
   let callFrame: sinon.SinonStubbedInstance<SDK.DebuggerModel.CallFrame>;
 
   beforeEach(() => {

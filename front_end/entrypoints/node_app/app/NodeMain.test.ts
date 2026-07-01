@@ -7,12 +7,11 @@ import sinon from 'sinon';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as App from './app.js';
 
-describeWithMockConnection('NodeChildTargetManager', () => {
+describeWithEnvironment('NodeChildTargetManager', () => {
   it('attaches Node.js targets without a parent target', () => {
     const browserTarget = createTarget({type: SDK.Target.Type.BROWSER});
     const childTargetManager = browserTarget.model(App.NodeMain.NodeChildTargetManager);

@@ -6,13 +6,12 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import type * as LighthouseModule from './lighthouse.js';
 
-describeWithMockConnection('LighthouseController', () => {
+describeWithEnvironment('LighthouseController', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   let Lighthouse: typeof LighthouseModule;
   let target: SDK.Target.Target;

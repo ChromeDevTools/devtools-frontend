@@ -8,12 +8,11 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Application from './application.js';
 
-describeWithMockConnection('ServiceWorkersView', () => {
+describeWithEnvironment('ServiceWorkersView', () => {
   let target: SDK.Target.Target;
   let view: Application.ServiceWorkersView.ServiceWorkersView;
 

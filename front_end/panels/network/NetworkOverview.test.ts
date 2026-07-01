@@ -9,14 +9,13 @@ import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Network from './network.js';
 
-describeWithMockConnection('NetworkOverview', () => {
+describeWithEnvironment('NetworkOverview', () => {
   let target: SDK.Target.Target;
   let networkOverview: Network.NetworkOverview.NetworkOverview;
 

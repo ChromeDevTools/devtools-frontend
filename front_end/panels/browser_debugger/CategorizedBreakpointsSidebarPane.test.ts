@@ -8,8 +8,7 @@ import sinon from 'sinon';
 import type {CategorizedBreakpoint} from '../../core/sdk/CategorizedBreakpoint.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -40,7 +39,7 @@ class TestSidebarPane extends BrowserDebugger.CategorizedBreakpointsSidebarPane.
   }
 }
 
-describeWithMockConnection('CategorizedBreakpointsSidebarPane', () => {
+describeWithEnvironment('CategorizedBreakpointsSidebarPane', () => {
   it('sorts and groups the breakpoint', async () => {
     const pane = new TestSidebarPane();
     pane.update();

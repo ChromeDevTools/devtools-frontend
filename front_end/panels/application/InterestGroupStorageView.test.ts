@@ -7,8 +7,8 @@ import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
 import {raf} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Resources from './application.js';
@@ -50,7 +50,7 @@ class InterestGroupDetailsGetterFails {
   }
 }
 
-describeWithMockConnection('InterestGroupStorageView', () => {
+describeWithEnvironment('InterestGroupStorageView', () => {
   it('records events', () => {
     const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
     events.forEach(event => {

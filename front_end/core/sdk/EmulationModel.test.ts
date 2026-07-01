@@ -6,13 +6,12 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Common from '../common/common.js';
 
 import * as SDK from './sdk.js';
 
-describeWithMockConnection('EmulationModel', () => {
+describeWithEnvironment('EmulationModel', () => {
   it('should track screen orientation lock state from CDP events', () => {
     const parentTarget = createTarget();
     const target = createTarget({parentTarget});

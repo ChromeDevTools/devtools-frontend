@@ -8,14 +8,13 @@ import sinon from 'sinon';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
-import {createTarget, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {SECURITY_ORIGIN} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Resources from './application.js';
 
-describeWithMockConnection('StorageView', () => {
+describeWithEnvironment('StorageView', () => {
   const testKey = 'test-storage-key';
   let target: SDK.Target.Target;
   let domStorageModel: SDK.DOMStorageModel.DOMStorageModel|null;

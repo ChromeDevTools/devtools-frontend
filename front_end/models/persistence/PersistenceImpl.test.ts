@@ -8,10 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {createFileSystemFileForPersistenceTests} from '../../testing/PersistenceHelpers.js';
 import {
@@ -25,7 +22,7 @@ import * as Workspace from '../workspace/workspace.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('PersistenceImpl', () => {
+describeWithEnvironment('PersistenceImpl', () => {
   const FILE_SYSTEM_BREAK_ID = 'BREAK_ID' as Protocol.Debugger.BreakpointId;
   const FILE_SYSTEM_SCRIPT_ID = 'FILE_SYSTEM_SCRIPT' as Protocol.Runtime.ScriptId;
   const NETWORK_BREAKPOINT_ID = 'BREAKPOINT_ID';

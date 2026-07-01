@@ -7,15 +7,14 @@ import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('ResourceUtils', () => {
+describeWithEnvironment('ResourceUtils', () => {
   const INSPECTED_URL_SCHEME = 'http://';
   const INSPECTED_URL_DOMAIN = 'example.com';
   const OTHER_DOMAIN = 'example.org';

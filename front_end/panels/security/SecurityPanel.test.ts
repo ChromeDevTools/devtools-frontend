@@ -8,15 +8,14 @@ import sinon from 'sinon';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 
 import * as Security from './security.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('SecurityPanelSidebarTree', () => {
+describeWithEnvironment('SecurityPanelSidebarTree', () => {
   describe('updateOrigin', () => {
     it('correctly updates the URL scheme highlighting', () => {
       const origin = urlString`https://foo.bar`;
@@ -38,7 +37,7 @@ describeWithMockConnection('SecurityPanelSidebarTree', () => {
   });
 });
 
-describeWithMockConnection('SecurityPanel', () => {
+describeWithEnvironment('SecurityPanel', () => {
   let target: SDK.Target.Target;
   let prerenderTarget: SDK.Target.Target;
 

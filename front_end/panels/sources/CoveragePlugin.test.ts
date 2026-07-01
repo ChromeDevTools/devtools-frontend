@@ -9,8 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as Coverage from '../coverage/coverage.js';
@@ -19,7 +18,7 @@ import * as Sources from './sources.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('CoveragePlugin', () => {
+describeWithEnvironment('CoveragePlugin', () => {
   let target: SDK.Target.Target;
   let uiSourceCode: Workspace.UISourceCode.UISourceCode;
   let model: Coverage.CoverageModel.CoverageModel;

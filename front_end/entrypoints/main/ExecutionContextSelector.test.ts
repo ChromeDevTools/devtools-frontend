@@ -5,12 +5,7 @@
 import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {
-  createTarget,
-} from '../../testing/EnvironmentHelpers.js';
-import {
-  describeWithMockConnection,
-} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {
   getMainFrame,
 } from '../../testing/ResourceTreeHelpers.js';
@@ -18,7 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Main from './main.js';
 
-describeWithMockConnection('ExecutionContextSelector', () => {
+describeWithEnvironment('ExecutionContextSelector', () => {
   it('switches to the default context once available', () => {
     new Main.ExecutionContextSelector.ExecutionContextSelector(
         SDK.TargetManager.TargetManager.instance(), UI.Context.Context.instance());

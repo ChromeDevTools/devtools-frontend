@@ -10,7 +10,6 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as FormatterModels from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import {stringifyFrame} from '../../testing/StackTraceHelpers.js';
 import * as ScopesCodec from '../../third_party/source-map-scopes-codec/source-map-scopes-codec.js';
@@ -325,7 +324,7 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
-  describeWithMockConnection('resolveMappedScopeChain', () => {
+  describeWithEnvironment('resolveMappedScopeChain', () => {
     function setUpCallFrameAndSourceMap(options: {
       generatedPausedPosition: {line: number, column: number},
       mappedPausedPosition?: {sourceIndex: number, line: number, column: number},
@@ -739,7 +738,7 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
-  describeWithMockConnection('createFromAst', () => {
+  describeWithEnvironment('createFromAst', () => {
     it('creates scope info from a JavaScript AST with named mappings', () => {
       const generatedCode = `function f(n) { console.log(n); } function b() { f(42); }`;
 

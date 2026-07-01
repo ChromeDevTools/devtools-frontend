@@ -9,14 +9,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('AccessibilityAgent', () => {
+describeWithEnvironment('AccessibilityAgent', () => {
   const mockReport = {
     lighthouseVersion: '1.0.0',
     userAgent: 'test user agent',

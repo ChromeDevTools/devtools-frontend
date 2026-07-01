@@ -6,13 +6,12 @@ import {assert} from 'chai';
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {createTarget} from '../../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 
 import * as ApplicationComponents from './components.js';
 
-describeWithMockConnection('AdsView', () => {
+describeWithEnvironment('AdsView', () => {
   let target: SDK.Target.Target;
   let connection: MockCDPConnection;
 

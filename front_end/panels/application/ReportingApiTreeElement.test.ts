@@ -4,12 +4,12 @@
 
 import {assert} from 'chai';
 
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
-describeWithMockConnection('ReportingApiTreeElement', () => {
+describeWithEnvironment('ReportingApiTreeElement', () => {
   it('has children for reports and context', () => {
     const panel = {
       showView: () => {},

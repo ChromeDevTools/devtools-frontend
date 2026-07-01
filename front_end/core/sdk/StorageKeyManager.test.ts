@@ -4,15 +4,14 @@
 
 import {assert} from 'chai';
 
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('StorageKeyManager', () => {
+describeWithEnvironment('StorageKeyManager', () => {
   let manager: SDK.StorageKeyManager.StorageKeyManager;
   beforeEach(() => {
     const target = createTarget();

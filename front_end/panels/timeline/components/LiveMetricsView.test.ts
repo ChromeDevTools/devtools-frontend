@@ -12,9 +12,8 @@ import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {doubleRaf, raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {createTarget, registerActions} from '../../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, registerActions} from '../../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {mockResourceTree} from '../../../testing/ResourceTreeHelpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
@@ -157,7 +156,7 @@ function createInteractionsMap(interactions: LiveMetrics.Interaction[]): LiveMet
   return new Map(interactions.map(interaction => [interaction.interactionId, interaction]));
 }
 
-describeWithMockConnection('LiveMetricsView', () => {
+describeWithEnvironment('LiveMetricsView', () => {
   const mockHandleAction = sinon.stub();
 
   beforeEach(async () => {

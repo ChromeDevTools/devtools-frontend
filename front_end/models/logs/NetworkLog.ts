@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -18,8 +19,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let networkLogInstance: NetworkLog|undefined;
-
 export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
   #requests: SDK.NetworkRequest.NetworkRequest[] = [];
@@ -32,15 +31,21 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   readonly #modelListeners = new WeakMap<SDK.NetworkManager.NetworkManager, Common.EventTarget.EventDescriptor[]>();
   readonly #initiatorData = new WeakMap<SDK.NetworkRequest.NetworkRequest, InitiatorData>();
   #isRecording = true;
+  readonly #targetManager: SDK.TargetManager.TargetManager;
+  readonly #settings: Common.Settings.Settings;
 
-  constructor() {
+  constructor(
+      targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
+      settings: Common.Settings.Settings = Common.Settings.Settings.instance(),
+  ) {
     super();
+    this.#targetManager = targetManager;
+    this.#settings = settings;
 
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
-    const recordLogSetting: Common.Settings.Setting<boolean> =
-        Common.Settings.Settings.instance().moduleSetting('network-log.record-log');
+    this.#targetManager.observeModels(SDK.NetworkManager.NetworkManager, this);
+    const recordLogSetting: Common.Settings.Setting<boolean> = this.#settings.moduleSetting('network-log.record-log');
     recordLogSetting.addChangeListener(() => {
-      const preserveLogSetting = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log');
+      const preserveLogSetting = this.#settings.moduleSetting('network-log.preserve-log');
       if (!preserveLogSetting.get() && recordLogSetting.get()) {
         this.reset(true);
       }
@@ -49,14 +54,15 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   static instance(): NetworkLog {
-    if (!networkLogInstance) {
-      networkLogInstance = new NetworkLog();
+    if (!Root.DevToolsContext.globalInstance().has(NetworkLog)) {
+      Root.DevToolsContext.globalInstance().set(NetworkLog, new NetworkLog());
     }
-    return networkLogInstance;
+
+    return Root.DevToolsContext.globalInstance().get(NetworkLog);
   }
 
   static removeInstance(): void {
-    networkLogInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(NetworkLog);
   }
 
   modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void {
@@ -102,11 +108,10 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     }
     this.#isRecording = enabled;
     if (enabled) {
-      SDK.TargetManager.TargetManager.instance().observeModels(SDK.NetworkManager.NetworkManager, this);
+      this.#targetManager.observeModels(SDK.NetworkManager.NetworkManager, this);
     } else {
-      SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.NetworkManager.NetworkManager, this);
-      SDK.TargetManager.TargetManager.instance()
-          .models(SDK.NetworkManager.NetworkManager)
+      this.#targetManager.unobserveModels(SDK.NetworkManager.NetworkManager, this);
+      this.#targetManager.models(SDK.NetworkManager.NetworkManager)
           .forEach(this.removeNetworkManagerListeners.bind(this));
     }
   }
@@ -289,7 +294,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
   }
 
   private willReloadPage(): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').get()) {
+    if (!this.#settings.moduleSetting('network-log.preserve-log').get()) {
       this.reset(true);
     }
   }
@@ -310,7 +315,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       return;
     }
 
-    const preserveLog = Common.Settings.Settings.instance().moduleSetting('network-log.preserve-log').get();
+    const preserveLog = this.#settings.moduleSetting('network-log.preserve-log').get();
 
     const oldRequests = this.#requests;
     const oldManagerRequests =
@@ -501,8 +506,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     this.#requestsSet.clear();
     this.#requestsMap.clear();
     this.#unresolvedPreflightRequests.clear();
-    const managers = new Set<SDK.NetworkManager.NetworkManager>(
-        SDK.TargetManager.TargetManager.instance().models(SDK.NetworkManager.NetworkManager));
+    const managers =
+        new Set<SDK.NetworkManager.NetworkManager>(this.#targetManager.models(SDK.NetworkManager.NetworkManager));
     for (const manager of this.#pageLoadForManager.keys()) {
       if (!managers.has(manager)) {
         this.#pageLoadForManager.delete(manager);

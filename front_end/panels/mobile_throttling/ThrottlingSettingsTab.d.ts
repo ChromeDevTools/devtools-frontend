@@ -28,7 +28,10 @@ export declare class CPUThrottlingCard {
 }
 export declare class ThrottlingSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
     #private;
-    private readonly list;
+    /** List of default network throttling presets (read-only in UI) */
+    private readonly presetsList;
+    /** List of custom user-defined network throttling profiles */
+    private readonly customList;
     private readonly customUserConditions;
     private editor?;
     private cpuThrottlingCard;

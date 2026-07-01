@@ -111,9 +111,10 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
     #groups = [];
     #calibratedThrottlingSetting;
     #view;
+    #cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
-        this.#currentOption = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingOption();
+        this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
         this.#calibratedThrottlingSetting =
             Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         this.#resetGroups();
@@ -125,17 +126,17 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
     }
     wasShown() {
         super.wasShown();
-        SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, this.#onOptionChange, this);
+        this.#cpuThrottlingManager.addEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, this.#onOptionChange, this);
         this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
         this.#onOptionChange();
     }
     willHide() {
         super.willHide();
         this.#calibratedThrottlingSetting.removeChangeListener(this.#onCalibratedSettingChanged, this);
-        SDK.CPUThrottlingManager.CPUThrottlingManager.instance().removeEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, this.#onOptionChange, this);
+        this.#cpuThrottlingManager.removeEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, this.#onOptionChange, this);
     }
     #onOptionChange() {
-        this.#currentOption = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingOption();
+        this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
         this.requestUpdate();
     }
     #onCalibratedSettingChanged() {

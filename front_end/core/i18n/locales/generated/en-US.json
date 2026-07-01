@@ -10151,6 +10151,12 @@
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | cpuThrottlingPresets": {
     "message": "CPU throttling presets"
   },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | customProfiles": {
+    "message": "Custom profiles"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | defaultProfiles": {
+    "message": "Default profiles"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
     "message": "{PH1} ms"
   },
@@ -10174,9 +10180,6 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | needsCalibration": {
     "message": "Needs calibration"
-  },
-  "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
-    "message": "Network throttling profiles"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
     "message": "Off"
@@ -10921,6 +10924,9 @@
   },
   "panels/network/NetworkLogView.ts | copyAsPowershell": {
     "message": "Copy as PowerShell"
+  },
+  "panels/network/NetworkLogView.ts | copyAsPreload": {
+    "message": "Copy as preload element"
   },
   "panels/network/NetworkLogView.ts | copyRequestHeaders": {
     "message": "Copy request headers"
@@ -12140,6 +12146,12 @@
   "panels/profiler/HeapSnapshotView.ts | objectsAllocatedBetweenSAndS": {
     "message": "Objects allocated between {PH1} and {PH2}"
   },
+  "panels/profiler/HeapSnapshotView.ts | objectsAttributedToNativeContextS": {
+    "message": "Native context {PH1}@{PH2} ({PH3})"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsNotAttributedToNativeContextS": {
+    "message": "Objects not attributed to a native context ({PH1})"
+  },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
     "message": "Objects retained by DevTools Console"
   },
@@ -12151,6 +12163,9 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByEventHandlers": {
     "message": "Objects retained by Event Handlers"
+  },
+  "panels/profiler/HeapSnapshotView.ts | objectsSharedBetweenNativeContextsS": {
+    "message": "Objects shared between native contexts ({PH1})"
   },
   "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
     "message": "Other JS objects"

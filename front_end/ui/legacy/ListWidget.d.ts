@@ -13,9 +13,11 @@ export declare class ListWidget<T> extends VBox {
     private editElement;
     private emptyPlaceholder;
     private isTable;
+    private headerElement;
     constructor(delegate: Delegate<T>, delegatesFocus?: boolean, isTable?: boolean);
     get items(): T[];
     clear(): void;
+    setHeader(header: Element): void;
     updateItem(index: number, newItem: T, editable: boolean, focusable?: boolean, controlLabels?: {
         edit?: string;
         delete?: string;

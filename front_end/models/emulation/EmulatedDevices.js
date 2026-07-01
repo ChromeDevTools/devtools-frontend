@@ -87,6 +87,14 @@ export class EmulatedDevice {
             function parseInsets(json) {
                 return new Insets(parseIntValue(json, 'left'), parseIntValue(json, 'top'), parseIntValue(json, 'right'), parseIntValue(json, 'bottom'));
             }
+            function parseCutoutShape(json) {
+                const shape = parseValue(json, 'shape', 'string');
+                if (shape !== "pill" /* CutoutShape.PILL */ && shape !== "notch" /* CutoutShape.NOTCH */ && shape !== "circle" /* CutoutShape.CIRCLE */ &&
+                    shape !== "rectangle" /* CutoutShape.RECTANGLE */) {
+                    throw new Error('Emulated device mode has unsupported cutout shape: ' + shape);
+                }
+                return shape;
+            }
             function parseRGBA(json) {
                 const result = {};
                 result.r = parseIntValue(json, 'r');
@@ -218,6 +226,43 @@ export class EmulatedDevice {
                     throw new Error('Emulated device mode \'' + mode.title + '\'has wrong mode insets');
                 }
                 mode.image = parseValue(modes[i], 'image', 'string', null);
+                const safeAreaInsets = parseValue(modes[i], 'safe-area-insets', 'object', null);
+                if (safeAreaInsets) {
+                    mode.safeAreaInsets = parseInsets(safeAreaInsets);
+                }
+                const cutout = parseValue(modes[i], 'cutout', 'object', null);
+                if (cutout) {
+                    const shape = parseCutoutShape(cutout);
+                    const baseCutout = {
+                        x: parseIntValue(cutout, 'x'),
+                        y: parseIntValue(cutout, 'y'),
+                        width: parseIntValue(cutout, 'width'),
+                        height: parseIntValue(cutout, 'height'),
+                    };
+                    if (shape === "pill" /* CutoutShape.PILL */) {
+                        mode.cutout = { shape, ...baseCutout, borderRadius: parseIntValue(cutout, 'border-radius') };
+                    }
+                    else if (shape === "notch" /* CutoutShape.NOTCH */) {
+                        mode.cutout = {
+                            shape,
+                            ...baseCutout,
+                            upperRadius: parseIntValue(cutout, 'upper-radius'),
+                            lowerRadius: parseIntValue(cutout, 'lower-radius'),
+                        };
+                    }
+                    else if (shape === "circle" /* CutoutShape.CIRCLE */) {
+                        mode.cutout = {
+                            shape,
+                            ...baseCutout,
+                            cx: parseIntValue(cutout, 'cx'),
+                            cy: parseIntValue(cutout, 'cy'),
+                            radius: parseIntValue(cutout, 'radius'),
+                        };
+                    }
+                    else {
+                        mode.cutout = { shape, ...baseCutout };
+                    }
+                }
                 result.modes.push(mode);
             }
             result.#showByDefault = parseValue(json, 'show-by-default', 'boolean', undefined);
@@ -306,6 +351,37 @@ export class EmulatedDevice {
                 },
                 image: this.modes[i].image || undefined,
             };
+            const safeAreaInsets = this.modes[i].safeAreaInsets;
+            if (safeAreaInsets) {
+                mode['safe-area-insets'] = {
+                    left: safeAreaInsets.left,
+                    top: safeAreaInsets.top,
+                    right: safeAreaInsets.right,
+                    bottom: safeAreaInsets.bottom,
+                };
+            }
+            const cutout = this.modes[i].cutout;
+            if (cutout) {
+                mode.cutout = {
+                    shape: cutout.shape,
+                    x: cutout.x,
+                    y: cutout.y,
+                    width: cutout.width,
+                    height: cutout.height,
+                };
+                if (cutout.shape === "pill" /* CutoutShape.PILL */) {
+                    mode.cutout['border-radius'] = cutout.borderRadius;
+                }
+                else if (cutout.shape === "notch" /* CutoutShape.NOTCH */) {
+                    mode.cutout['upper-radius'] = cutout.upperRadius;
+                    mode.cutout['lower-radius'] = cutout.lowerRadius;
+                }
+                else if (cutout.shape === "circle" /* CutoutShape.CIRCLE */) {
+                    mode.cutout.cx = cutout.cx;
+                    mode.cutout.cy = cutout.cy;
+                    mode.cutout.radius = cutout.radius;
+                }
+            }
             json['modes'].push(mode);
         }
         json['show-by-default'] = this.#showByDefault;

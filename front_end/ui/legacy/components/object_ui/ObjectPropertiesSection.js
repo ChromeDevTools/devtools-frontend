@@ -136,7 +136,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const EXPANDABLE_MAX_DEPTH = 100;
+export const EXPANDABLE_MAX_DEPTH = 100;
 const objectPropertiesSectionMap = new WeakMap();
 let cachedSortAlphabeticallySetting;
 export function sortPropertiesAlphabeticallySetting() {
@@ -350,7 +350,10 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
         else {
             this.options.expansionTracker?.collapse(this);
         }
-        this.#expanded = val;
+        if (this.#expanded !== val) {
+            this.#expanded = val;
+            this.dispatchEventToListeners("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, val);
+        }
     }
     get readOnly() {
         return this.options.readOnly;
@@ -363,6 +366,9 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
     }
     set includeNullOrUndefinedValues(value) {
         this.setFilter({ includeNullOrUndefinedValues: value, regex: this.filter?.regex ?? null });
+    }
+    get canExpandRecursively() {
+        return true;
     }
     get sortPropertiesAlphabetically() {
         if (this.isWasm) {
@@ -380,11 +386,14 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
     }
     // Performs a pre-order tree traversal over the populated children. If any children need to be populated, callers must
     // do that while walking (pre-order visitation enables that).
-    *#walk(maxDepth = -1) {
+    *#walk(maxDepth = -1, filter) {
+        if (filter && !filter(this)) {
+            return;
+        }
         function* walkChildren(children) {
             if (children) {
                 for (const child of children) {
-                    yield* child.#walk(Math.max(-1, maxDepth - 1));
+                    yield* child.#walk(Math.max(-1, maxDepth - 1), filter);
                 }
             }
         }
@@ -396,7 +405,7 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     async expandRecursively(maxDepth) {
-        for (const node of this.#walk(maxDepth)) {
+        for (const node of this.#walk(maxDepth, n => n.canExpandRecursively)) {
             await node.populateChildrenIfNeeded();
             node.expanded = true;
         }
@@ -627,6 +636,9 @@ export class ObjectTreeNode extends ObjectTreeNodeBase {
     }
     get isFiltered() {
         return Boolean(this.filter && !this.property.match(this.filter));
+    }
+    get canExpandRecursively() {
+        return this.property.name !== '[[Prototype]]';
     }
     get name() {
         return this.property.name;
@@ -1373,6 +1385,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         this.property.addEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.#updateValue, this);
         this.property.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.#updateChildren, this);
         this.property.addEventListener("filter-changed" /* ObjectTreeNodeBase.Events.FILTER_CHANGED */, this.#updateFilter, this);
+        this.property.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.#onExpandedChanged, this);
         this.toggleOnClick = true;
         this.linkifier = linkifier;
         this.maxNumPropertiesToShow = InitialVisibleChildrenLimit;
@@ -1552,6 +1565,15 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     #updateFilter() {
         this.hidden = this.property.isFiltered;
+    }
+    #onExpandedChanged(event) {
+        const expanded = event.data;
+        if (expanded) {
+            this.expand();
+        }
+        else {
+            this.collapse();
+        }
     }
     getContextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
@@ -1738,10 +1760,20 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
         super(Platform.StringUtilities.sprintf('[%d … %d]', child.range.fromIndex, child.range.toIndex), true);
         this.#child = child;
         this.#child.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.onpopulate, this);
+        this.#child.addEventListener("expanded-changed" /* ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.#onExpandedChanged, this);
         this.toggleOnClick = true;
         this.linkifier = linkifier;
         if (child.expanded) {
             this.expand();
+        }
+    }
+    #onExpandedChanged(event) {
+        const expanded = event.data;
+        if (expanded) {
+            this.expand();
+        }
+        else {
+            this.collapse();
         }
     }
     static *createNodes(children, linkifier, isNotDisplayablePropertyCallback) {

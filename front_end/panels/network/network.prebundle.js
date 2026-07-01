@@ -29,6 +29,7 @@ import './NetworkOverview.js';
 import './NetworkPanel.js';
 import * as BinaryResourceView from './BinaryResourceView.js';
 import * as EventSourceMessagesView from './EventSourceMessagesView.js';
+import * as LinkPreloadGenerator from './LinkPreloadGenerator.js';
 import * as NetworkConfigView from './NetworkConfigView.js';
 import * as NetworkDataGridNode from './NetworkDataGridNode.js';
 import * as NetworkFrameGrouper from './NetworkFrameGrouper.js';
@@ -54,5 +55,5 @@ import * as ResourceDirectSocketChunkView from './ResourceDirectSocketChunkView.
 import * as ResourceWebSocketFrameView from './ResourceWebSocketFrameView.js';
 import * as ShowMoreDetailsWidget from './ShowMoreDetailsWidget.js';
 import * as SignedExchangeInfoView from './SignedExchangeInfoView.js';
-export { BinaryResourceView, EventSourceMessagesView, NetworkConfigView, NetworkDataGridNode, NetworkFrameGrouper, NetworkItemView, NetworkLogView, NetworkLogViewColumns, NetworkManageCustomHeadersView, NetworkOverview, NetworkPanel, NetworkSearchScope, NetworkWaterfallColumn, RequestConditionsDrawer, RequestCookiesView, RequestDeviceBoundSessionsView, RequestHeadersView, RequestHTMLView, RequestInitiatorView, RequestPayloadView, RequestPreviewView, RequestResponseView, RequestTimingView, ResourceDirectSocketChunkView, ResourceWebSocketFrameView, ShowMoreDetailsWidget, SignedExchangeInfoView, };
+export { BinaryResourceView, EventSourceMessagesView, LinkPreloadGenerator, NetworkConfigView, NetworkDataGridNode, NetworkFrameGrouper, NetworkItemView, NetworkLogView, NetworkLogViewColumns, NetworkManageCustomHeadersView, NetworkOverview, NetworkPanel, NetworkSearchScope, NetworkWaterfallColumn, RequestConditionsDrawer, RequestCookiesView, RequestDeviceBoundSessionsView, RequestHeadersView, RequestHTMLView, RequestInitiatorView, RequestPayloadView, RequestPreviewView, RequestResponseView, RequestTimingView, ResourceDirectSocketChunkView, ResourceWebSocketFrameView, ShowMoreDetailsWidget, SignedExchangeInfoView, };
 //# sourceMappingURL=network.prebundle.js.map

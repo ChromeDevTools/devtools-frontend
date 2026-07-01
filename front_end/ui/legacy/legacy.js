@@ -7284,6 +7284,7 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
   #showMode = "Both";
   #savedShowMode;
   #autoAdjustOrientation = false;
+  #zoomManager = ZoomManager.instance();
   constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
     super(element, { useShadowDom: true });
     this.element.classList.add("split-widget");
@@ -7565,18 +7566,18 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
     return this.#resizerWidget.isEnabled();
   }
   setSidebarSize(size) {
-    const sizeDIP = ZoomManager.instance().cssToDIP(size);
+    const sizeDIP = this.#zoomManager.cssToDIP(size);
     this.#savedSidebarSizeDIP = sizeDIP;
     this.#saveSetting();
     this.#setSidebarSizeDIP(sizeDIP, false, true);
   }
   sidebarSize() {
     const sizeDIP = Math.max(0, this.#sidebarSizeDIP);
-    return ZoomManager.instance().dipToCSS(sizeDIP);
+    return this.#zoomManager.dipToCSS(sizeDIP);
   }
   totalSize() {
     const sizeDIP = Math.max(0, this.#totalSizeDIP());
-    return ZoomManager.instance().dipToCSS(sizeDIP);
+    return this.#zoomManager.dipToCSS(sizeDIP);
   }
   /**
    * Returns total size in DIP.
@@ -7587,7 +7588,7 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
       this.#totalSizeCSS = this.#isVertical ? width : height;
       this.#totalSizeOtherDimensionCSS = this.#isVertical ? height : width;
     }
-    return ZoomManager.instance().cssToDIP(this.#totalSizeCSS);
+    return this.#zoomManager.cssToDIP(this.#totalSizeCSS);
   }
   #updateShowMode(showMode) {
     this.#showMode = showMode;
@@ -7608,7 +7609,7 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
       this.#resizerElementSize = this.#isVertical ? this.#resizerElement.offsetWidth : this.#resizerElement.offsetHeight;
     }
     this.#removeAllLayoutProperties();
-    const sizeCSS = ZoomManager.instance().dipToCSS(sizeDIP);
+    const sizeCSS = this.#zoomManager.dipToCSS(sizeDIP);
     const sidebarSizeValue = sizeCSS + "px";
     const mainSizeValue = this.#totalSizeCSS - sizeCSS + "px";
     this.#sidebarElement.style.flexBasis = sidebarSizeValue;
@@ -7655,8 +7656,8 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
     } else {
       animatedMarginPropertyName = this.#secondIsSidebar ? "margin-bottom" : "margin-top";
     }
-    const marginFrom = reverse ? "0" : "-" + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + "px";
-    const marginTo = reverse ? "-" + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + "px" : "0";
+    const marginFrom = reverse ? "0" : "-" + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + "px";
+    const marginTo = reverse ? "-" + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + "px" : "0";
     this.contentElement.style.setProperty(animatedMarginPropertyName, marginFrom);
     this.contentElement.style.setProperty("overflow", "hidden");
     if (!reverse) {
@@ -7708,7 +7709,7 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
   }
   #applyConstraints(sidebarSize, userAction) {
     const totalSize = this.#totalSizeDIP();
-    const zoomFactor = this.#constraintsInDip ? 1 : ZoomManager.instance().zoomFactor();
+    const zoomFactor = this.#constraintsInDip ? 1 : this.#zoomManager.zoomFactor();
     let constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
     let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
     if (!minSidebarSize) {
@@ -7760,11 +7761,11 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
   wasShown() {
     super.wasShown();
     this.#forceUpdateLayout();
-    ZoomManager.instance().addEventListener("ZoomChanged", this.onZoomChanged, this);
+    this.#zoomManager.addEventListener("ZoomChanged", this.onZoomChanged, this);
   }
   willHide() {
     super.willHide();
-    ZoomManager.instance().removeEventListener("ZoomChanged", this.onZoomChanged, this);
+    this.#zoomManager.removeEventListener("ZoomChanged", this.onZoomChanged, this);
   }
   onResize() {
     this.#maybeAutoAdjustOrientation();
@@ -7808,7 +7809,7 @@ var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
   }
   #onResizeUpdate(event) {
     const offset = event.data.currentPosition - event.data.startPosition;
-    const offsetDIP = ZoomManager.instance().cssToDIP(offset);
+    const offsetDIP = this.#zoomManager.cssToDIP(offset);
     const newSizeDIP = this.#secondIsSidebar ? this.#resizeStartSizeDIP - offsetDIP : this.#resizeStartSizeDIP + offsetDIP;
     const constrainedSizeDIP = this.#applyConstraints(newSizeDIP, true);
     this.#savedSidebarSizeDIP = constrainedSizeDIP;
@@ -19114,6 +19115,7 @@ var ListWidget = class extends VBox {
   editElement;
   emptyPlaceholder;
   isTable;
+  headerElement = null;
   constructor(delegate, delegatesFocus = true, isTable = false) {
     super({ useShadowDom: true, delegatesFocus });
     this.registerRequiredCSS(listWidget_css_default);
@@ -19143,8 +19145,18 @@ var ListWidget = class extends VBox {
     this.elements = [];
     this.lastSeparator = false;
     this.list.removeChildren();
+    if (this.headerElement) {
+      this.list.appendChild(this.headerElement);
+    }
     this.updatePlaceholder();
     this.stopEditing();
+  }
+  setHeader(header) {
+    if (this.headerElement) {
+      this.headerElement.remove();
+    }
+    this.headerElement = header;
+    this.list.insertBefore(header, this.list.firstChild);
   }
   updateItem(index, newItem, editable, focusable = true, controlLabels = {}) {
     if (index < 0 || index >= this.#items.length) {

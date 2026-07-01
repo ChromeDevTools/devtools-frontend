@@ -15,6 +15,7 @@ export declare class EmulationModel extends SDKModel<EmulationModelEventTypes> i
     supportsDeviceEmulation(): boolean;
     resetPageScaleFactor(): Promise<void>;
     emulateDevice(metrics: Protocol.Page.SetDeviceMetricsOverrideRequest | null): Promise<void>;
+    setSafeAreaInsets(insets: Protocol.Emulation.SafeAreaInsets): Promise<void>;
     overlayModel(): OverlayModel | null;
     setPressureSourceOverrideEnabled(enabled: boolean): Promise<void>;
     setPressureStateOverride(pressureState: string): Promise<void>;

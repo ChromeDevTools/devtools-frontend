@@ -9,6 +9,7 @@ import * as Platform from '../core/platform/platform.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as EmulationModel from '../models/emulation/emulation.js';
 import * as Formatter from '../models/formatter/formatter.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
@@ -62,7 +63,9 @@ export async function deinitializeGlobalVars() {
     delete globalObject.SDK;
     delete globalObject.ls;
     for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
-        target.dispose('deinitializeGlobalVars');
+        if (typeof target.dispose === 'function') {
+            target.dispose('deinitializeGlobalVars');
+        }
     }
     // Remove instances.
     deinitializeGlobalLocaleVars();
@@ -81,6 +84,7 @@ export async function deinitializeGlobalVars() {
     Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
     ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.removeInstance();
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
+    EmulationModel.DeviceModeModel.DeviceModeModel.removeInstance();
     cleanupSettings();
     // Protect against the dynamic import not having happened.
     if (UI) {
@@ -97,9 +101,9 @@ export function describeWithEnvironment(title, fn, opts = {
     reset: true,
 }) {
     return describe(title, function () {
-        before(async () => await initializeGlobalVars(opts));
+        beforeEach(async () => await initializeGlobalVars(opts));
         fn.call(this);
-        after(async () => await deinitializeGlobalVars());
+        afterEach(async () => await deinitializeGlobalVars());
     });
 }
 describeWithEnvironment.only = function (title, fn, opts = {
@@ -107,9 +111,9 @@ describeWithEnvironment.only = function (title, fn, opts = {
 }) {
     // eslint-disable-next-line mocha/no-exclusive-tests
     return describe.only(title, function () {
-        before(async () => await initializeGlobalVars(opts));
+        beforeEach(async () => await initializeGlobalVars(opts));
         fn.call(this);
-        after(async () => await deinitializeGlobalVars());
+        afterEach(async () => await deinitializeGlobalVars());
     });
 };
 describeWithEnvironment.skip = function (title, fn, _opts = {
@@ -129,14 +133,14 @@ export function createFakeRegExpSetting(name, defaultValue) {
     return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
 }
 export function setupActionRegistry() {
-    before(function () {
+    beforeEach(function () {
         const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
         UI.ShortcutRegistry.ShortcutRegistry.instance({
             forceNew: true,
             actionRegistry,
         });
     });
-    after(function () {
+    afterEach(function () {
         if (UI) {
             UI.ShortcutRegistry.ShortcutRegistry.removeInstance();
             UI.ActionRegistry.ActionRegistry.removeInstance();

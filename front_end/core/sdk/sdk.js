@@ -35926,6 +35926,9 @@ var EmulationModel = class extends SDKModel {
       await this.#emulationAgent.invoke_clearDeviceMetricsOverride();
     }
   }
+  async setSafeAreaInsets(insets) {
+    await this.#emulationAgent.invoke_setSafeAreaInsetsOverride({ insets });
+  }
   overlayModel() {
     return this.#overlayModel;
   }

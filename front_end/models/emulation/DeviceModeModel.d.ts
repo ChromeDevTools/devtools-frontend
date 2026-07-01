@@ -19,6 +19,7 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     static tryInstance(opts?: {
         forceNew: boolean;
     }): DeviceModeModel | null;
+    static removeInstance(): void;
     dispose(): void;
     static widthValidator(value: string): {
         valid: boolean;
@@ -79,6 +80,8 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     private preferredScaledHeight;
     private currentOutline;
     private currentInsets;
+    private currentSafeAreaInsets;
+    private applySafeAreaInsets;
     private getScreenOrientationType;
     private calculateAndEmulate;
     private calculateFitScale;

@@ -1060,6 +1060,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "copy-as-hex",
   "copy-as-nodejs-fetch",
   "copy-as-powershell",
+  "copy-as-preload",
   "copy-as-utf",
   "copy-color",
   "copy-console",

@@ -93,6 +93,7 @@ extensions/can-open-resources-with-columns.test.js
 extensions/can-reveal-requests.test.js
 extensions/can-search-in-extension-panel.test.js
 extensions/debugger-language-plugins.test.js
+extensions/mock-extension.test.js
 host/out-of-process.test.js
 host/user-metrics.test.js
 inline_editor/color-swatch.test.js

@@ -11,9 +11,8 @@ __export(AutofillManager_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
-var AutofillManager = class _AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
+var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #address = "";
   #filledFields = [];
   #matches = [];
@@ -21,19 +20,6 @@ var AutofillManager = class _AutofillManager extends Common.ObjectWrapper.Object
   constructor(targetManager) {
     super();
     targetManager.addModelListener(SDK.AutofillModel.AutofillModel, "AddressFormFilled", this.#addressFormFilled, this, { scoped: true });
-  }
-  static instance(opts = {
-    forceNew: null,
-    targetManager: null
-  }) {
-    const { forceNew, targetManager } = opts;
-    if (!Root.DevToolsContext.globalInstance().has(_AutofillManager) || forceNew) {
-      if (!targetManager) {
-        throw new Error("Missing targetManager for AutofillManager");
-      }
-      Root.DevToolsContext.globalInstance().set(_AutofillManager, new _AutofillManager(targetManager));
-    }
-    return Root.DevToolsContext.globalInstance().get(_AutofillManager);
   }
   async #addressFormFilled({ data }) {
     this.#autofillModel = data.autofillModel;

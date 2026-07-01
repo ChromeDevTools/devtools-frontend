@@ -165,6 +165,8 @@ export declare class NetworkLogView extends NetworkLogView_base implements SDK.T
     private copyAllURLs;
     private copyCurlCommand;
     private copyAllCurlCommand;
+    private copyPreloadElement;
+    private appendCopyAsPreloadItem;
     private copyFetchCall;
     private copyAllFetchCall;
     private copyPowerShellCommand;

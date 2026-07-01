@@ -80,7 +80,36 @@ export interface Mode {
     orientation: string;
     insets: Insets;
     image: string | null;
+    safeAreaInsets?: Insets;
+    cutout?: Cutout;
 }
+export declare const enum CutoutShape {
+    PILL = "pill",
+    NOTCH = "notch",
+    CIRCLE = "circle",
+    RECTANGLE = "rectangle"
+}
+export interface BaseCutout {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+export type Cutout = BaseCutout & ({
+    shape: CutoutShape.RECTANGLE;
+} | {
+    shape: CutoutShape.PILL;
+    borderRadius: number;
+} | {
+    shape: CutoutShape.NOTCH;
+    upperRadius: number;
+    lowerRadius: number;
+} | {
+    shape: CutoutShape.CIRCLE;
+    cx: number;
+    cy: number;
+    radius: number;
+});
 export interface Orientation {
     width: number;
     height: number;
@@ -97,6 +126,25 @@ export interface JSONMode {
         right: number;
         top: number;
         bottom: number;
+    };
+    'safe-area-insets'?: {
+        left: number;
+        right: number;
+        top: number;
+        bottom: number;
+    };
+    cutout?: {
+        shape: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        'border-radius'?: number;
+        'upper-radius'?: number;
+        'lower-radius'?: number;
+        cx?: number;
+        cy?: number;
+        radius?: number;
     };
 }
 declare const emulatedDevices: ({

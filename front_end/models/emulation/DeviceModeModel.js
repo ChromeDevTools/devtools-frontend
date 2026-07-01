@@ -173,6 +173,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             return null;
         }
     }
+    static removeInstance() {
+        deviceModeModelInstance = null;
+    }
     dispose() {
         SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.EmulationModel.EmulationModel, this);
     }
@@ -484,6 +487,23 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.#mode.insets;
     }
+    currentSafeAreaInsets() {
+        if (this.#type !== Type.Device || !this.#mode) {
+            return null;
+        }
+        return this.#mode.safeAreaInsets ?? null;
+    }
+    applySafeAreaInsets(insets) {
+        if (!this.#emulationModel) {
+            return;
+        }
+        if (insets) {
+            void this.#emulationModel.setSafeAreaInsets({ top: insets.top, left: insets.left, bottom: insets.bottom, right: insets.right });
+        }
+        else {
+            void this.#emulationModel.setSafeAreaInsets({});
+        }
+    }
     getScreenOrientationType() {
         if (!this.#mode) {
             throw new Error('Mode required to get orientation type.');
@@ -549,6 +569,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         if (overlayModel) {
             overlayModel.setShowViewportSizeOnResize(this.#type === Type.None);
         }
+        this.applySafeAreaInsets(this.currentSafeAreaInsets());
         this.dispatchEventToListeners("Updated" /* Events.UPDATED */);
     }
     calculateFitScale(screenWidth, screenHeight, outline, insets) {

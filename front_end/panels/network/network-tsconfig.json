@@ -38,6 +38,7 @@
   "files": [
     "../../../../../../front_end/panels/network/BinaryResourceView.ts",
     "../../../../../../front_end/panels/network/EventSourceMessagesView.ts",
+    "../../../../../../front_end/panels/network/LinkPreloadGenerator.ts",
     "../../../../../../front_end/panels/network/NetworkConfigView.ts",
     "../../../../../../front_end/panels/network/NetworkDataGridNode.ts",
     "../../../../../../front_end/panels/network/NetworkFrameGrouper.ts",

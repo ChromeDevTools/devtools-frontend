@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
     #address = '';
@@ -13,19 +12,6 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
     constructor(targetManager) {
         super();
         targetManager.addModelListener(SDK.AutofillModel.AutofillModel, "AddressFormFilled" /* SDK.AutofillModel.Events.ADDRESS_FORM_FILLED */, this.#addressFormFilled, this, { scoped: true });
-    }
-    static instance(opts = {
-        forceNew: null,
-        targetManager: null,
-    }) {
-        const { forceNew, targetManager } = opts;
-        if (!Root.DevToolsContext.globalInstance().has(AutofillManager) || forceNew) {
-            if (!targetManager) {
-                throw new Error('Missing targetManager for AutofillManager');
-            }
-            Root.DevToolsContext.globalInstance().set(AutofillManager, new AutofillManager(targetManager));
-        }
-        return Root.DevToolsContext.globalInstance().get(AutofillManager);
     }
     async #addressFormFilled({ data }) {
         this.#autofillModel = data.autofillModel;

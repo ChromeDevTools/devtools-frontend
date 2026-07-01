@@ -7850,7 +7850,7 @@ __export(NetworkLogView_exports, {
   overrideFilter: () => overrideFilter
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common17 from "./../../core/common/common.js";
+import * as Common18 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
@@ -7899,13 +7899,79 @@ import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
 
+// gen/front_end/panels/network/LinkPreloadGenerator.js
+var LinkPreloadGenerator_exports = {};
+__export(LinkPreloadGenerator_exports, {
+  canPreloadRequest: () => canPreloadRequest,
+  generatePreloadLink: () => generatePreloadLink
+});
+import * as Common14 from "./../../core/common/common.js";
+var resourceTypeToAsAttribute = /* @__PURE__ */ new Map([
+  [Common14.ResourceType.resourceTypes.Document, "document"],
+  [Common14.ResourceType.resourceTypes.Stylesheet, "style"],
+  [Common14.ResourceType.resourceTypes.Image, "image"],
+  [Common14.ResourceType.resourceTypes.Font, "font"],
+  [Common14.ResourceType.resourceTypes.Script, "script"],
+  [Common14.ResourceType.resourceTypes.TextTrack, "track"],
+  [Common14.ResourceType.resourceTypes.Manifest, "manifest"],
+  [Common14.ResourceType.resourceTypes.Fetch, "fetch"],
+  [Common14.ResourceType.resourceTypes.XHR, "fetch"],
+  [Common14.ResourceType.resourceTypes.Wasm, "fetch"]
+]);
+function escapeHTML(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+function parsePreloadLinkOrigins(request) {
+  const requestOrigin = request.parsedURL.securityOrigin();
+  const documentURL = request.documentURL;
+  const documentOrigin = documentURL ? Common14.ParsedURL.ParsedURL.fromString(documentURL)?.securityOrigin() ?? null : null;
+  return { requestOrigin, documentOrigin };
+}
+function determinePreloadLinkHref(request, isSameOrigin) {
+  if (isSameOrigin && request.parsedURL.isValid) {
+    return request.parsedURL.path + (request.parsedURL.queryParams ? "?" + request.parsedURL.queryParams : "");
+  }
+  return request.url();
+}
+function determinePreloadLinkCrossOrigin(request, isCrossOrigin) {
+  const resourceType = request.resourceType();
+  const asValue = resourceTypeToAsAttribute.get(resourceType);
+  const isFont = resourceType === Common14.ResourceType.resourceTypes.Font;
+  const isFetch = asValue === "fetch";
+  const secFetchMode = request.requestHeaderValue("sec-fetch-mode")?.toLowerCase();
+  const needsCrossOrigin = isFont || isFetch || secFetchMode === "cors";
+  if (!needsCrossOrigin) {
+    return "";
+  }
+  const hasCredentials = request.includedRequestCookies().length > 0 || Boolean(request.requestHeaderValue("cookie") || request.requestHeaderValue("authorization"));
+  const useCredentials = isCrossOrigin && hasCredentials;
+  return useCredentials ? ' crossorigin="use-credentials"' : " crossorigin";
+}
+function canPreloadRequest(request) {
+  return resourceTypeToAsAttribute.has(request.resourceType());
+}
+function generatePreloadLink(request) {
+  const { requestOrigin, documentOrigin } = parsePreloadLinkOrigins(request);
+  const isSameOrigin = Boolean(requestOrigin && documentOrigin && requestOrigin === documentOrigin);
+  const isCrossOrigin = Boolean(requestOrigin && documentOrigin && requestOrigin !== documentOrigin);
+  const url = determinePreloadLinkHref(request, isSameOrigin);
+  const escapedUrl = escapeHTML(url);
+  const resourceType = request.resourceType();
+  const escapedMimeType = request.mimeType ? escapeHTML(request.mimeType) : "";
+  const asValue = resourceTypeToAsAttribute.get(resourceType);
+  const asAttr = `as="${asValue ?? "fetch"}"`;
+  const crossoriginAttr = determinePreloadLinkCrossOrigin(request, isCrossOrigin);
+  const typeAttr = escapedMimeType ? ` type="${escapedMimeType}"` : "";
+  return `<link rel="preload" href="${escapedUrl}" ${asAttr}${typeAttr}${crossoriginAttr}>`;
+}
+
 // gen/front_end/panels/network/NetworkFrameGrouper.js
 var NetworkFrameGrouper_exports = {};
 __export(NetworkFrameGrouper_exports, {
   FrameGroupNode: () => FrameGroupNode,
   NetworkFrameGrouper: () => NetworkFrameGrouper
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -7940,7 +8006,7 @@ var FrameGroupNode = class extends NetworkGroupNode {
     this.frame = frame;
   }
   displayName() {
-    return new Common14.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || "<iframe>";
+    return new Common15.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || "<iframe>";
   }
   renderCell(cell, columnId) {
     super.renderCell(cell, columnId);
@@ -8430,7 +8496,7 @@ var NetworkLogViewColumns_exports = {};
 __export(NetworkLogViewColumns_exports, {
   NetworkLogViewColumns: () => NetworkLogViewColumns
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
@@ -8613,7 +8679,7 @@ var NetworkWaterfallColumn_exports = {};
 __export(NetworkWaterfallColumn_exports, {
   NetworkWaterfallColumn: () => NetworkWaterfallColumn
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as NetworkTimeCalculator3 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as RenderCoordinator2 from "./../../ui/components/render_coordinator/render_coordinator.js";
 import * as PerfUI3 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -9153,7 +9219,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     ]);
     const waitingStyleMap = /* @__PURE__ */ new Map();
     const downloadingStyleMap = /* @__PURE__ */ new Map();
-    for (const resourceType of Object.values(Common15.ResourceType.resourceTypes)) {
+    for (const resourceType of Object.values(Common16.ResourceType.resourceTypes)) {
       let color = baseResourceTypeColors.get(resourceType.name());
       if (!color) {
         color = baseResourceTypeColors.get("other");
@@ -9169,7 +9235,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     }
     return [waitingStyleMap, downloadingStyleMap];
     function toBorderColor(color) {
-      const parsedColor = Common15.Color.parse(color)?.as(
+      const parsedColor = Common16.Color.parse(color)?.as(
         "hsl"
         /* Common.Color.Format.HSL */
       );
@@ -9179,10 +9245,10 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
       let { s, l } = parsedColor;
       s /= 2;
       l -= Math.min(l, 0.2);
-      return new Common15.Color.HSL(parsedColor.h, s, l, parsedColor.alpha).asString();
+      return new Common16.Color.HSL(parsedColor.h, s, l, parsedColor.alpha).asString();
     }
     function toWaitingColor(color) {
-      const parsedColor = Common15.Color.parse(color)?.as(
+      const parsedColor = Common16.Color.parse(color)?.as(
         "hsl"
         /* Common.Color.Format.HSL */
       );
@@ -9191,7 +9257,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
       }
       let { l } = parsedColor;
       l *= 1.1;
-      return new Common15.Color.HSL(parsedColor.h, parsedColor.s, l, parsedColor.alpha).asString();
+      return new Common16.Color.HSL(parsedColor.h, parsedColor.s, l, parsedColor.alpha).asString();
     }
   }
   resetPaths() {
@@ -9230,7 +9296,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     if (!request) {
       return null;
     }
-    const useTimingBars = !Common15.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
+    const useTimingBars = !Common16.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
     let range;
     let start;
     let end;
@@ -9359,7 +9425,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
   didDrawForTest() {
   }
   draw() {
-    const useTimingBars = !Common15.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
+    const useTimingBars = !Common16.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
     const nodes = this.nodes;
     const context = this.canvas.getContext("2d");
     if (!context) {
@@ -9742,7 +9808,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   scrollerTouchStartPos;
   constructor(networkLogView, timeCalculator, durationCalculator, networkLogLargeRowsSetting) {
     this.networkLogView = networkLogView;
-    this.persistentSettings = Common16.Settings.Settings.instance().createSetting("network-log-columns", {});
+    this.persistentSettings = Common17.Settings.Settings.instance().createSetting("network-log-columns", {});
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(this.updateRowsSize, this);
     this.eventDividers = /* @__PURE__ */ new Map();
@@ -10298,7 +10364,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       hide: () => {
         this.popupLinkifier.reset();
         if (descriptor) {
-          Common16.EventTarget.removeEventListeners([descriptor]);
+          Common17.EventTarget.removeEventListeners([descriptor]);
         }
       }
     };
@@ -10827,6 +10893,11 @@ var UIStrings22 = {
    */
   copyAsFetch: "Copy as `fetch`",
   /**
+   * @description A context menu command in the Network panel, for copying a resource's link element
+   * to the clipboard. 'preload' refers to the HTML link relation format the data will be copied as.
+   */
+  copyAsPreload: "Copy as preload element",
+  /**
    * @description Text in Network Log View of the Network panel. An action that copies a command to
    * the developer's clipboard. The command allows the developer to replay this specific network
    * request in Node.js, a desktop application/framework. 'Node.js fetch' is a noun phrase for the
@@ -11055,7 +11126,7 @@ var UIStrings22 = {
 };
 var str_22 = i18n43.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
-var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventMixin(UI25.Widget.VBox) {
+var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventMixin(UI25.Widget.VBox) {
   networkInvertFilterSetting;
   networkHideDataURLSetting;
   networkHideChromeExtensions;
@@ -11105,14 +11176,14 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     this.element.id = "network-container";
     this.element.classList.add("no-node-selected");
     this.networkRequestToNode = /* @__PURE__ */ new WeakMap();
-    this.networkInvertFilterSetting = Common17.Settings.Settings.instance().createSetting("network-invert-filter", false);
-    this.networkHideDataURLSetting = Common17.Settings.Settings.instance().createSetting("network-hide-data-url", false);
-    this.networkHideChromeExtensions = Common17.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
-    this.networkShowBlockedCookiesOnlySetting = Common17.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
-    this.networkOnlyBlockedRequestsSetting = Common17.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
-    this.networkOnlyThirdPartySetting = Common17.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
-    this.networkResourceTypeFiltersSetting = Common17.Settings.Settings.instance().createSetting("network-resource-type-filters", {});
-    this.networkShowOptionsToGenerateHarWithSensitiveData = Common17.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
+    this.networkInvertFilterSetting = Common18.Settings.Settings.instance().createSetting("network-invert-filter", false);
+    this.networkHideDataURLSetting = Common18.Settings.Settings.instance().createSetting("network-hide-data-url", false);
+    this.networkHideChromeExtensions = Common18.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
+    this.networkShowBlockedCookiesOnlySetting = Common18.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
+    this.networkOnlyBlockedRequestsSetting = Common18.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
+    this.networkOnlyThirdPartySetting = Common18.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
+    this.networkResourceTypeFiltersSetting = Common18.Settings.Settings.instance().createSetting("network-resource-type-filters", {});
+    this.networkShowOptionsToGenerateHarWithSensitiveData = Common18.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
     this.progressBarContainer = progressBarContainer;
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
@@ -11149,7 +11220,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     UI25.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString22(UIStrings22.invertsFilter));
     filterBar.addFilter(this.invertFilterUI);
     filterBar.addDivider();
-    const filterItems = Object.entries(Common17.ResourceType.resourceCategories).map(([key, category]) => ({
+    const filterItems = Object.entries(Common18.ResourceType.resourceCategories).map(([key, category]) => ({
       name: category.name,
       label: () => category.shortTitle(),
       title: category.title(),
@@ -11176,22 +11247,22 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     this.summaryToolbarInternal = this.element.createChild("devtools-toolbar", "network-summary-bar");
     this.summaryToolbarInternal.setAttribute("role", "status");
     new UI25.DropTarget.DropTarget(this.element, [UI25.DropTarget.Type.File], i18nString22(UIStrings22.dropHarFilesHere), this.handleDrop.bind(this));
-    Common17.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").addChangeListener(this.invalidateAllItems.bind(this, false), this);
+    Common18.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").addChangeListener(this.invalidateAllItems.bind(this, false), this);
     SDK16.TargetManager.TargetManager.instance().observeModels(SDK16.NetworkManager.NetworkManager, this, { scoped: true });
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestAdded, this.onRequestUpdated, this);
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestUpdated, this.onRequestUpdated, this);
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestRemoved, this.onRequestRemoved, this);
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.Reset, this.reset, this);
     this.updateGroupByFrame();
-    Common17.Settings.Settings.instance().moduleSetting("network.group-by-frame").addChangeListener(() => this.updateGroupByFrame());
+    Common18.Settings.Settings.instance().moduleSetting("network.group-by-frame").addChangeListener(() => this.updateGroupByFrame());
     this.filterBar = filterBar;
-    this.textFilterSetting = Common17.Settings.Settings.instance().createSetting("network-text-filter", "");
+    this.textFilterSetting = Common18.Settings.Settings.instance().createSetting("network-text-filter", "");
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
   }
   updateGroupByFrame() {
-    const value = Common17.Settings.Settings.instance().moduleSetting("network.group-by-frame").get();
+    const value = Common18.Settings.Settings.instance().moduleSetting("network.group-by-frame").get();
     this.setGrouping(value ? "Frame" : null);
   }
   static sortSearchValues(key, values) {
@@ -11371,7 +11442,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     }
   }
   async onLoadFromFile(file) {
-    const outputStream = new Common17.StringOutputStream.StringOutputStream();
+    const outputStream = new Common18.StringOutputStream.StringOutputStream();
     const reader = new Bindings3.FileUtils.ChunkedFileReader(
       file,
       /* chunkSize */
@@ -11395,7 +11466,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     Logs5.NetworkLog.NetworkLog.instance().importRequests(HAR.Importer.Importer.requestsFromHARLog(harRoot.log));
   }
   harLoadFailed(message) {
-    Common17.Console.Console.instance().error("Failed to load HAR file with following error: " + message);
+    Common18.Console.Console.instance().error("Failed to load HAR file with following error: " + message);
   }
   setGrouping(groupKey) {
     if (this.activeGroupLookup) {
@@ -11453,7 +11524,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.Load, this.loadEventFired, this);
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
-    const preserveLog = Common17.Settings.Settings.instance().moduleSetting("network-log.preserve-log").get();
+    const preserveLog = Common18.Settings.Settings.instance().moduleSetting("network-log.preserve-log").get();
     if (!preserveLog) {
       this.reset();
     }
@@ -11653,7 +11724,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
         selectedResourceSize += requestResourceSize;
       }
       const networkManager = SDK16.NetworkManager.NetworkManager.forRequest(request);
-      if (networkManager && request.url() === networkManager.target().inspectedURL() && request.resourceType() === Common17.ResourceType.resourceTypes.Document && networkManager.target().parentTarget()?.type() !== SDK16.Target.Type.FRAME) {
+      if (networkManager && request.url() === networkManager.target().inspectedURL() && request.resourceType() === Common18.ResourceType.resourceTypes.Document && networkManager.target().parentTarget()?.type() !== SDK16.Target.Type.FRAME) {
         baseTime = request.fromPrefetchCache() ? request.issueTime() : request.startTime;
       }
       if (request.endTime > maxTime) {
@@ -12090,6 +12161,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
         1
         /* FetchStyle.NODE_JS */
       ), { disabled: disableIfBlob, jslogContext: "copy-as-nodejs-fetch" });
+      this.appendCopyAsPreloadItem(copyMenu, request);
       if (Host10.Platform.isWin()) {
         copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings22.copyAllListedAsCurlCmd) : i18nString22(UIStrings22.copyAllAsCurlCmd), this.copyAllCurlCommand.bind(this, "win"), { jslogContext: "copy-all-as-curl-cmd" });
         copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings22.copyAllListedAsCurlBash) : i18nString22(UIStrings22.copyAllAsCurlBash), this.copyAllCurlCommand.bind(this, "unix"), { jslogContext: "copy-all-as-curl-bash" });
@@ -12203,7 +12275,7 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
   harRequests() {
     const requests = Logs5.NetworkLog.NetworkLog.instance().requests().filter((request) => this.applyFilter(request));
     return requests.filter(_NetworkLogView.getHTTPRequestsFilter).filter((request) => {
-      return request.finished || request.resourceType() === Common17.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime || Boolean(request.eventSourceMessages()?.length);
+      return request.finished || request.resourceType() === Common18.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime || Boolean(request.eventSourceMessages()?.length);
     });
   }
   async copyAllAsHAR(options) {
@@ -12224,6 +12296,19 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     const requests = Logs5.NetworkLog.NetworkLog.instance().requests().filter((request) => this.applyFilter(request));
     const commands = await this.generateAllCurlCommand(requests, platform);
     Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
+  }
+  copyPreloadElement(request) {
+    const preloadLink = generatePreloadLink(request);
+    Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(preloadLink);
+  }
+  appendCopyAsPreloadItem(copyMenu, request) {
+    const isHttpOrHttps = request.parsedURL.scheme === "http" || request.parsedURL.scheme === "https";
+    const isGetRequest = request.requestMethod === "GET";
+    const networkManager = SDK16.NetworkManager.NetworkManager.forRequest(request);
+    const resourceTreeModel = networkManager?.target().model(SDK16.ResourceTreeModel.ResourceTreeModel);
+    const isMainDocument = Boolean(resourceTreeModel?.mainFrame && resourceTreeModel.mainFrame.id === request.frameId && request.resourceType() === Common18.ResourceType.resourceTypes.Document);
+    const disablePreload = !isHttpOrHttps || request.isBlobRequest() || !isGetRequest || isMainDocument || !canPreloadRequest(request);
+    copyMenu.defaultSection().appendItem(i18nString22(UIStrings22.copyAsPreload), this.copyPreloadElement.bind(this, request), { disabled: disablePreload, jslogContext: "copy-as-preload" });
   }
   async copyFetchCall(request, style) {
     const command = await this.generateFetchCall(request, style);
@@ -12249,10 +12334,10 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
       return;
     }
     const url = mainTarget.inspectedURL();
-    const parsedURL = Common17.ParsedURL.ParsedURL.fromString(url);
+    const parsedURL = Common18.ParsedURL.ParsedURL.fromString(url);
     const filename = parsedURL ? parsedURL.host : "network-log";
     const stream = new Bindings3.FileUtils.FileOutputStream();
-    if (!await stream.open(Common17.ParsedURL.ParsedURL.concatenate(filename, ".har"))) {
+    if (!await stream.open(Common18.ParsedURL.ParsedURL.concatenate(filename, ".har"))) {
       return;
     }
     const progressIndicator = this.progressBarContainer.createChild("devtools-progress");
@@ -12264,14 +12349,14 @@ var NetworkLogView = class _NetworkLogView extends Common17.ObjectWrapper.eventM
     const requestLocation = NetworkForward4.UIRequestLocation.UIRequestLocation.responseHeaderMatch(request, { name: "", value: "" });
     const networkPersistenceManager = Persistence2.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistenceManager.project()) {
-      Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
+      Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
-      await Common17.Revealer.reveal(requestLocation);
+      await Common18.Revealer.reveal(requestLocation);
     } else {
       UI25.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources2.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
-        await Common17.Revealer.reveal(requestLocation);
+        await Common18.Revealer.reveal(requestLocation);
       });
     }
   }
@@ -12765,7 +12850,7 @@ var overrideFilter = {
   content: "content",
   headers: "headers"
 };
-var MoreFiltersDropDownUI = class extends Common17.ObjectWrapper.ObjectWrapper {
+var MoreFiltersDropDownUI = class extends Common18.ObjectWrapper.ObjectWrapper {
   filterElement;
   dropDownButton;
   networkHideDataURLSetting;
@@ -12777,11 +12862,11 @@ var MoreFiltersDropDownUI = class extends Common17.ObjectWrapper.ObjectWrapper {
   activeFiltersCountAdorner;
   constructor() {
     super();
-    this.networkHideDataURLSetting = Common17.Settings.Settings.instance().createSetting("network-hide-data-url", false);
-    this.networkHideChromeExtensionsSetting = Common17.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
-    this.networkShowBlockedCookiesOnlySetting = Common17.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
-    this.networkOnlyBlockedRequestsSetting = Common17.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
-    this.networkOnlyThirdPartySetting = Common17.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
+    this.networkHideDataURLSetting = Common18.Settings.Settings.instance().createSetting("network-hide-data-url", false);
+    this.networkHideChromeExtensionsSetting = Common18.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
+    this.networkShowBlockedCookiesOnlySetting = Common18.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
+    this.networkOnlyBlockedRequestsSetting = Common18.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
+    this.networkOnlyThirdPartySetting = Common18.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
     this.filterElement = document.createElement("div");
     this.filterElement.setAttribute("aria-label", "Show only/hide requests dropdown");
     this.filterElement.setAttribute("jslog", `${VisualLogging15.dropDown("more-filters").track({ click: true })}`);
@@ -13056,7 +13141,7 @@ __export(NetworkPanel_exports, {
   SearchNetworkView: () => SearchNetworkView
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common18 from "./../../core/common/common.js";
+import * as Common19 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
@@ -13423,9 +13508,9 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     super("network");
     this.registerRequiredCSS(networkPanel_css_default);
     this.displayScreenshotDelay = displayScreenshotDelay;
-    this.networkLogShowOverviewSetting = Common18.Settings.Settings.instance().createSetting("network-log-show-overview", true);
-    this.networkLogLargeRowsSetting = Common18.Settings.Settings.instance().createSetting("network-log-large-rows", false);
-    this.networkRecordFilmStripSetting = Common18.Settings.Settings.instance().createSetting("network-record-film-strip-setting", false);
+    this.networkLogShowOverviewSetting = Common19.Settings.Settings.instance().createSetting("network-log-show-overview", true);
+    this.networkLogLargeRowsSetting = Common19.Settings.Settings.instance().createSetting("network-log-large-rows", false);
+    this.networkRecordFilmStripSetting = Common19.Settings.Settings.instance().createSetting("network-record-film-strip-setting", false);
     this.toggleRecordAction = UI26.ActionRegistry.ActionRegistry.instance().getAction("network.toggle-recording");
     this.networkItemView = null;
     this.filmStripView = null;
@@ -13444,8 +13529,8 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.filterBar.show(panel3.contentElement);
     this.filterBar.addEventListener("Changed", this.handleFilterChanged.bind(this));
     const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
-    settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString24(UIStrings24.showMoreInformationInRequestRows)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.groupByFrame), Common18.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString24(UIStrings24.groupRequestsByTopLevelRequest)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.showOverview), this.networkLogShowOverviewSetting, i18nString24(UIStrings24.showOverviewOfNetworkRequests)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.captureScreenshots), this.networkRecordFilmStripSetting, i18nString24(UIStrings24.captureScreenshotsWhenLoadingA)));
-    this.showSettingsPaneSetting = Common18.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
+    settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString24(UIStrings24.showMoreInformationInRequestRows)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.groupByFrame), Common19.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString24(UIStrings24.groupRequestsByTopLevelRequest)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.showOverview), this.networkLogShowOverviewSetting, i18nString24(UIStrings24.showOverviewOfNetworkRequests)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.captureScreenshots), this.networkRecordFilmStripSetting, i18nString24(UIStrings24.captureScreenshotsWhenLoadingA)));
+    this.showSettingsPaneSetting = Common19.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
     settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get());
     this.showSettingsPaneSetting.addChangeListener(() => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get()));
     this.filmStripPlaceholderElement = panel3.contentElement.createChild("div", "network-film-strip-placeholder");
@@ -13511,8 +13596,8 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
     this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
-    this.preserveLogSetting = Common18.Settings.Settings.instance().moduleSetting("network-log.preserve-log");
-    this.recordLogSetting = Common18.Settings.Settings.instance().moduleSetting("network-log.record-log");
+    this.preserveLogSetting = Common19.Settings.Settings.instance().moduleSetting("network-log.preserve-log");
+    this.recordLogSetting = Common19.Settings.Settings.instance().moduleSetting("network-log.record-log");
     this.recordLogSetting.addChangeListener(({ data }) => this.toggleRecord(data));
     this.throttlingSelect = this.createThrottlingConditionsSelect();
     this.setupToolbarButtons(splitWidget);
@@ -13588,7 +13673,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(new UI26.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString24(UIStrings24.doNotClearLogOnPageReload), i18nString24(UIStrings24.preserveLog)));
     this.panelToolbar.appendSeparator();
-    const disableCacheCheckbox = new UI26.Toolbar.ToolbarSettingCheckbox(Common18.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings24.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings24.disableCache));
+    const disableCacheCheckbox = new UI26.Toolbar.ToolbarSettingCheckbox(Common19.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings24.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings24.disableCache));
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
     this.panelToolbar.appendToolbarItem(this.throttlingSelect);
     const networkConditionsButton = new UI26.Toolbar.ToolbarButton(i18nString24(UIStrings24.moreNetworkConditions), "network-settings", void 0, "network-conditions");
@@ -13621,7 +13706,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     );
     exportHarMenuButton.setTitle(i18nString24(UIStrings24.exportHar));
     this.panelToolbar.appendToolbarItem(exportHarMenuButton);
-    const networkShowOptionsToGenerateHarWithSensitiveData = Common18.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
+    const networkShowOptionsToGenerateHarWithSensitiveData = Common19.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
     const updateShowOptionsToGenerateHarWithSensitiveData = () => {
       const showOptionsToGenerateHarWithSensitiveData = networkShowOptionsToGenerateHarWithSensitiveData.get();
       exportHarButton.setVisible(!showOptionsToGenerateHarWithSensitiveData);
@@ -13841,7 +13926,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
       request = requests[0];
     }
     if (reveal) {
-      await Common18.Revealer.reveal(request);
+      await Common19.Revealer.reveal(request);
       await this.selectAndActivateRequest(request);
     }
     const requestNode = this.networkLogView?.nodeForRequest(request);
@@ -14118,6 +14203,7 @@ var SearchNetworkView = class _SearchNetworkView extends Search.SearchView.Searc
 export {
   BinaryResourceView_exports as BinaryResourceView,
   EventSourceMessagesView_exports as EventSourceMessagesView,
+  LinkPreloadGenerator_exports as LinkPreloadGenerator,
   NetworkConfigView_exports as NetworkConfigView,
   NetworkDataGridNode_exports as NetworkDataGridNode,
   NetworkFrameGrouper_exports as NetworkFrameGrouper,

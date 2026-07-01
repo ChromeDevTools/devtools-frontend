@@ -154,4 +154,9 @@ export default `/*
   gap: 5px;
 }
 
+.conditions-list-header {
+  font-weight: bold;
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
 /*# sourceURL=${import.meta.resolve('./throttlingSettingsTab.css')} */`;

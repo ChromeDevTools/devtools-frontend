@@ -47,6 +47,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
     #showMode = "Both" /* ShowMode.BOTH */;
     #savedShowMode;
     #autoAdjustOrientation = false;
+    #zoomManager = ZoomManager.instance();
     constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
         super(element, { useShadowDom: true });
         this.element.classList.add('split-widget');
@@ -334,18 +335,18 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
         return this.#resizerWidget.isEnabled();
     }
     setSidebarSize(size) {
-        const sizeDIP = ZoomManager.instance().cssToDIP(size);
+        const sizeDIP = this.#zoomManager.cssToDIP(size);
         this.#savedSidebarSizeDIP = sizeDIP;
         this.#saveSetting();
         this.#setSidebarSizeDIP(sizeDIP, false, true);
     }
     sidebarSize() {
         const sizeDIP = Math.max(0, this.#sidebarSizeDIP);
-        return ZoomManager.instance().dipToCSS(sizeDIP);
+        return this.#zoomManager.dipToCSS(sizeDIP);
     }
     totalSize() {
         const sizeDIP = Math.max(0, this.#totalSizeDIP());
-        return ZoomManager.instance().dipToCSS(sizeDIP);
+        return this.#zoomManager.dipToCSS(sizeDIP);
     }
     /**
      * Returns total size in DIP.
@@ -356,7 +357,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
             this.#totalSizeCSS = this.#isVertical ? width : height;
             this.#totalSizeOtherDimensionCSS = this.#isVertical ? height : width;
         }
-        return ZoomManager.instance().cssToDIP(this.#totalSizeCSS);
+        return this.#zoomManager.cssToDIP(this.#totalSizeCSS);
     }
     #updateShowMode(showMode) {
         this.#showMode = showMode;
@@ -380,7 +381,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
         // Invalidate layout below.
         this.#removeAllLayoutProperties();
         // this.#totalSizeDIP is available below since we successfully applied constraints.
-        const sizeCSS = ZoomManager.instance().dipToCSS(sizeDIP);
+        const sizeCSS = this.#zoomManager.dipToCSS(sizeDIP);
         const sidebarSizeValue = sizeCSS + 'px';
         const mainSizeValue = (this.#totalSizeCSS - sizeCSS) + 'px';
         // With `box-sizing: border-box` on the sidebar (set in splitWidget.css),
@@ -440,8 +441,8 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
         else {
             animatedMarginPropertyName = this.#secondIsSidebar ? 'margin-bottom' : 'margin-top';
         }
-        const marginFrom = reverse ? '0' : '-' + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + 'px';
-        const marginTo = reverse ? '-' + ZoomManager.instance().dipToCSS(this.#sidebarSizeDIP) + 'px' : '0';
+        const marginFrom = reverse ? '0' : '-' + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + 'px';
+        const marginTo = reverse ? '-' + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + 'px' : '0';
         // This order of things is important.
         // 1. Resize main element early and force layout.
         this.contentElement.style.setProperty(animatedMarginPropertyName, marginFrom);
@@ -502,7 +503,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
     }
     #applyConstraints(sidebarSize, userAction) {
         const totalSize = this.#totalSizeDIP();
-        const zoomFactor = this.#constraintsInDip ? 1 : ZoomManager.instance().zoomFactor();
+        const zoomFactor = this.#constraintsInDip ? 1 : this.#zoomManager.zoomFactor();
         let constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry.Constraints();
         let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
         if (!minSidebarSize) {
@@ -558,11 +559,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
     wasShown() {
         super.wasShown();
         this.#forceUpdateLayout();
-        ZoomManager.instance().addEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.onZoomChanged, this);
+        this.#zoomManager.addEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.onZoomChanged, this);
     }
     willHide() {
         super.willHide();
-        ZoomManager.instance().removeEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.onZoomChanged, this);
+        this.#zoomManager.removeEventListener("ZoomChanged" /* ZoomManagerEvents.ZOOM_CHANGED */, this.onZoomChanged, this);
     }
     onResize() {
         this.#maybeAutoAdjustOrientation();
@@ -607,7 +608,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
     }
     #onResizeUpdate(event) {
         const offset = event.data.currentPosition - event.data.startPosition;
-        const offsetDIP = ZoomManager.instance().cssToDIP(offset);
+        const offsetDIP = this.#zoomManager.cssToDIP(offset);
         const newSizeDIP = this.#secondIsSidebar ? this.#resizeStartSizeDIP - offsetDIP : this.#resizeStartSizeDIP + offsetDIP;
         const constrainedSizeDIP = this.#applyConstraints(newSizeDIP, true);
         this.#savedSidebarSizeDIP = constrainedSizeDIP;

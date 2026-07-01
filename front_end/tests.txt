@@ -501,6 +501,7 @@ panels/media/TickingFlameChartHelpers.test.js
 panels/mobile_throttling/NetworkThrottlingSelector.test.js
 panels/mobile_throttling/ThrottlingManager.test.js
 panels/mobile_throttling/ThrottlingSettingsTab.test.js
+panels/network/LinkPreloadGenerator.test.js
 panels/network/NetworkConfigView.test.js
 panels/network/NetworkDataGridNode.test.js
 panels/network/NetworkItemView.test.js

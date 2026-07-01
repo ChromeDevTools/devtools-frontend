@@ -11,7 +11,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Logs from '../../logs/logs.js';
@@ -21,7 +21,8 @@ import {AiAgent, NetworkAgent, RequestContext} from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('NetworkAgent', function() {
+describe('NetworkAgent', function() {
+  setupSettingsHooks();
   const snapshotTester = new SnapshotTester(this, import.meta);
   function mockHostConfig(modelId?: string, temperature?: number) {
     updateHostConfig({

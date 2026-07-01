@@ -20,6 +20,7 @@ const ALLOWED_RETURN_TYPES = new Set([
   'Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding',
   'Bindings.ResourceMapping.ResourceMapping',
   'Logs.NetworkLog.NetworkLog',
+  'SDK.CPUThrottlingManager.CPUThrottlingManager',
   'SDK.FrameManager.FrameManager',
   'SDK.NetworkManager.MultitargetNetworkManager',
   'SDK.PageResourceLoader.PageResourceLoader',

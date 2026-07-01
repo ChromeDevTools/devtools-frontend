@@ -51,6 +51,9 @@ export class Universe {
         new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
     context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
 
+    const cpuThrottlingManager = new SDK.CPUThrottlingManager.CPUThrottlingManager(settings, targetManager);
+    context.set(SDK.CPUThrottlingManager.CPUThrottlingManager, cpuThrottlingManager);
+
     const workspace = new Workspace.Workspace.WorkspaceImpl();
     context.set(Workspace.Workspace.WorkspaceImpl, workspace);
 
@@ -69,6 +72,10 @@ export class Universe {
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
 
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
+  }
+
+  get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager {
+    return this.context.get(SDK.CPUThrottlingManager.CPUThrottlingManager);
   }
 
   get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader {

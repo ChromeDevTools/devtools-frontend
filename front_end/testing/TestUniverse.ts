@@ -73,6 +73,14 @@ export class TestUniverse implements Foundation.Universe.Universe {
     return this.#context;
   }
 
+  get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager {
+    if (!this.#context.has(SDK.CPUThrottlingManager.CPUThrottlingManager)) {
+      this.#context.set(SDK.CPUThrottlingManager.CPUThrottlingManager,
+                        new SDK.CPUThrottlingManager.CPUThrottlingManager(this.settings, this.targetManager));
+    }
+    return this.#context.get(SDK.CPUThrottlingManager.CPUThrottlingManager);
+  }
+
   get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding {
     if (!this.#context.has(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding)) {
       this.#context.set(

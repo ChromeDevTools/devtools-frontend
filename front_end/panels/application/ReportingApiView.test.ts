@@ -7,7 +7,8 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -244,8 +245,10 @@ describeWithMockConnection('ReportingApiView', () => {
       target.style.height = '400px';
     });
 
-    afterEach(() => {
+    afterEach(async () => {
       stub.restore();
+      cleanTestDOM();
+      await raf();
     });
 
     it('updates report details', async () => {

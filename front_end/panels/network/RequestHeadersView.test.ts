@@ -16,8 +16,10 @@ import {
   dispatchCopyEvent,
   dispatchKeyDownEvent,
   getCleanTextContentFromElements,
+  raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
+import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
@@ -115,6 +117,11 @@ describeWithMockConnection('RequestHeadersView', () => {
   beforeEach(() => {
     setUpEnvironment();
     resetRecordedMetrics();
+  });
+
+  afterEach(async () => {
+    cleanTestDOM();
+    await raf();
   });
 
   it('renders the General section', async () => {

@@ -7,7 +7,8 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Protocol from '../../generated/protocol.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -25,8 +26,10 @@ describeWithMockConnection('DeviceBoundSessionsView', () => {
       return original.call(this, 'en-US', {timeZone: 'UTC'});
     });
   });
-  afterEach(() => {
+  afterEach(async () => {
     toLocaleStringStub.restore();
+    cleanTestDOM();
+    await raf();
   });
 
   function createMockSession(): Application.DeviceBoundSessionsModel.SessionAndEvents {

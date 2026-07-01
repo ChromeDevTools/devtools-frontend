@@ -7,7 +7,8 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {
   createTarget,
   stubNoopSettings,
@@ -153,8 +154,10 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     view.detach();
+    cleanTestDOM();
+    await raf();
   });
 
   const updatesUiOnEvent = (inScope: boolean) => async () => {

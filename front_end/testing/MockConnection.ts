@@ -7,8 +7,6 @@ import type * as SDK from '../core/sdk/sdk.js';
 import type {ProtocolMapping} from '../generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../generated/protocol-proxy-api.js';
 
-import {raf} from './DOMHelpers.js';
-import {cleanTestDOM} from './DOMHooks.js';
 import {deinitializeGlobalVars, initializeGlobalVars} from './EnvironmentHelpers.js';
 
 export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
@@ -38,8 +36,6 @@ async function enable({reset = true} = {}) {
 async function disable() {
   // Some Widgets rely on Global vars to be there so they
   // can properly remove state once they detach.
-  cleanTestDOM();
-  await raf();
   await deinitializeGlobalVars();
 }
 
@@ -47,11 +43,9 @@ async function disable() {
  * @deprecated use `describeWithEnvironment` instead. They are near equivalent.
  * `describeWithMockConnection` cleans up DOM and waits one more animation frame
  */
-export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
-  reset: true,
-}) {
+export function describeWithMockConnection(title: string, fn: (this: Mocha.Suite) => void) {
   return describe(title, function() {
-    beforeEach(async () => await enable(opts));
+    beforeEach(async () => await enable());
     fn.call(this);
     afterEach(disable);
   });

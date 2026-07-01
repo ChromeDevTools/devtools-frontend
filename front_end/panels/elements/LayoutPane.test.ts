@@ -9,7 +9,8 @@ import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -29,6 +30,11 @@ describeWithMockConnection('LayoutPane', () => {
     getNodesByStyle = sinon.stub(domModel, 'getNodesByStyle').resolves([]);
     overlayModel = target.model(SDK.OverlayModel.OverlayModel) as SDK.OverlayModel.OverlayModel;
     assert.exists(overlayModel);
+  });
+
+  afterEach(async () => {
+    cleanTestDOM();
+    await raf();
   });
 
   async function renderComponent() {

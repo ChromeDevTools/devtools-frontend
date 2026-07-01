@@ -18,9 +18,9 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
 import {spyCall} from '../../testing/ExpectStubCall.js';
 import {
-  describeWithDevtoolsExtension,
   type ExtensionContext,
   getExtensionOrigin,
+  setupDevtoolsExtensionHooks,
 } from '../../testing/ExtensionHelpers.js';
 import type {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {addChildFrame, FRAME_URL, getMainFrame, mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
@@ -45,7 +45,9 @@ function getBackend(context: ExtensionContext): MockDebuggerBackend {
   return context.backend as MockDebuggerBackend;
 }
 
-describeWithDevtoolsExtension('Extensions', {}, context => {
+describe('Extensions', () => {
+  const context = setupDevtoolsExtensionHooks();
+
   it('are initialized after the target is initialized and navigated to a non-privileged URL', async () => {
     // This check is a proxy for verifying that the extension has been initialized. Outside of the test the extension
     // API is available as soon as the extension page is loaded, which we don't do in the test.
@@ -228,7 +230,9 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extensions', {}, context => {
+describe('Extensions', () => {
+  const context = setupDevtoolsExtensionHooks();
+
   beforeEach(() => {
     getBackend(context).createTarget().setInspectedURL(urlString`http://example.com`);
   });
@@ -257,7 +261,9 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extensions', {}, context => {
+describe('Extensions', () => {
+  const context = setupDevtoolsExtensionHooks();
+
   expectConsoleLogs({
     error: [
       'Extension server error: Invalid argument urlScheme: Scheme is forbidden',
@@ -281,7 +287,9 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extensions', {}, context => {
+describe('Extensions', () => {
+  const context = setupDevtoolsExtensionHooks();
+
   beforeEach(() => {
     getBackend(context).createTarget().setInspectedURL(Platform.DevToolsPath.urlString`http://example.com`);
   });
@@ -309,7 +317,9 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extensions', {}, context => {
+describe('Extensions', () => {
+  const context = setupDevtoolsExtensionHooks();
+
   expectConsoleLogs({
     warn: ['evaluate: the main frame is not yet available'],
     error: [
@@ -618,7 +628,8 @@ function waitForFunction<T>(fn: () => T): Promise<T> {
   });
 }
 
-describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => {
+describe('Runtime hosts policy', () => {
+  const context = setupDevtoolsExtensionHooks({hostsPolicy});
   expectConsoleLogs({error: ['Extension server error: Operation failed: Permission denied']});
 
   for (const protocol of ['devtools', 'chrome', 'chrome-untrusted', 'chrome-error', 'chrome-search']) {
@@ -1254,7 +1265,8 @@ function assertIsStatus<T>(value: T|
   }
 }
 
-describeWithDevtoolsExtension('Wasm extension API', {}, context => {
+describe('Wasm extension API', () => {
+  const context = setupDevtoolsExtensionHooks();
   let stopId: unknown;
   beforeEach(() => {
     const target = getBackend(context).createTarget();
@@ -1359,7 +1371,8 @@ class StubLanguageExtension implements Chrome.DevTools.LanguageExtensionPlugin {
   }
 }
 
-describeWithDevtoolsExtension('Language Extension API', {}, context => {
+describe('Language Extension API', () => {
+  const context = setupDevtoolsExtensionHooks();
   it('reports loaded resources', async () => {
     const target = getBackend(context).createTarget();
     target.setInspectedURL(urlString`http://example.com`);
@@ -1388,8 +1401,9 @@ describeWithDevtoolsExtension('Language Extension API', {}, context => {
 });
 
 for (const allowFileAccess of [true, false]) {
-  describeWithDevtoolsExtension(
-      `Language Extension API with {allowFileAccess: ${allowFileAccess}}`, {allowFileAccess}, context => {
+  describe(
+      `Language Extension API with {allowFileAccess: ${allowFileAccess}}`, () => {
+        const context = setupDevtoolsExtensionHooks({allowFileAccess});
         let target: SDK.Target.Target;
         beforeEach(() => {
           target = getBackend(context).createTarget();
@@ -1435,7 +1449,8 @@ for (const allowFileAccess of [true, false]) {
       });
 }
 
-describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
+describe('validate attachSourceMapURL ', () => {
+  const context = setupDevtoolsExtensionHooks();
   let backend: MockDebuggerBackend;
   let target: SDK.Target.Target;
   let debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
@@ -1507,7 +1522,8 @@ describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
   });
 });
 
-describeWithDevtoolsExtension('Extension panel with non-ASCII titles', {}, context => {
+describe('Extension panel with non-ASCII titles', () => {
+  const context = setupDevtoolsExtensionHooks();
   beforeEach(() => {
     getBackend(context).createTarget().setInspectedURL(urlString`http://example.com`);
   });

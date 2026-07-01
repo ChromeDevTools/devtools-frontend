@@ -776,11 +776,6 @@ export default defineConfig([
     settings: {
       'mocha/additionalCustomNames': [
         {
-          name: 'describeWithDevtoolsExtension',
-          type: 'suite',
-          interfaces: ['BDD', 'TDD'],
-        },
-        {
           name: 'describeWithEnvironment',
           type: 'suite',
           interfaces: ['BDD', 'TDD'],

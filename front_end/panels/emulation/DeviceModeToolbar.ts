@@ -519,22 +519,24 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
 
     const device = this.model.device();
 
-    if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device && device) {
-      this.lastMode.set(device, (this.model.mode() as EmulationModel.EmulatedDevices.Mode));
-    }
+    if (this.model.type() !== EmulationModel.DeviceModeModel.Type.None) {
+      if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device && device) {
+        this.lastMode.set(device, (this.model.mode() as EmulationModel.EmulatedDevices.Mode));
+      }
 
-    const value = this.persistenceSetting.get();
-    const currentMode = this.model.mode();
-    if (device) {
-      value.device = device.title;
-      value.orientation = currentMode ? currentMode.orientation : '';
-      value.mode = currentMode ? currentMode.title : '';
-    } else {
-      value.device = '';
-      value.orientation = '';
-      value.mode = '';
+      const value = this.persistenceSetting.get();
+      const currentMode = this.model.mode();
+      if (device) {
+        value.device = device.title;
+        value.orientation = currentMode ? currentMode.orientation : '';
+        value.mode = currentMode ? currentMode.title : '';
+      } else {
+        value.device = '';
+        value.orientation = '';
+        value.mode = '';
+      }
+      this.persistenceSetting.set(value);
     }
-    this.persistenceSetting.set(value);
 
     let modeButtonTitle = i18nString(UIStrings.rotate);
     let modeButtonDisabled = false;

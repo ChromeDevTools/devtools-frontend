@@ -12,13 +12,15 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
+  deinitializeGlobalVars,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
   updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../../testing/MockConnection.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
-import * as Bindings from '../../bindings/bindings.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as Logs from '../../logs/logs.js';
 import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
@@ -35,8 +37,11 @@ import {
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithMockConnection('ContextSelectionAgent', function() {
+describe('ContextSelectionAgent', function() {
   const snapshotTester = new SnapshotTester(this, import.meta);
+
+  setupLocaleHooks();
+  setupSettingsHooks();
 
   function mockHostConfig() {
     updateHostConfig({
@@ -50,17 +55,12 @@ describeWithMockConnection('ContextSelectionAgent', function() {
   }
 
   beforeEach(() => {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
-    const ignoreListManager = Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
-    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
-      forceNew: true,
-      resourceMapping,
-      targetManager,
-      ignoreListManager,
-      workspace,
-    });
+    const universe = new TestUniverse();
+    sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(universe.ignoreListManager);
+  });
+
+  afterEach(async () => {
+    await deinitializeGlobalVars();
   });
 
   describe('buildRequest', () => {

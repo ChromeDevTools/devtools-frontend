@@ -165,12 +165,10 @@ describe('The Performance panel', function() {
     );
   });
 
-  // This test started failing on Feb 11 2026 on mac after merging:
-  // https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/7567531/1
-  it.skipOnPlatforms(['mac'], '[crbug.com/484325128] CSS style invalidation results verification', async ({
-                                                                                                     devToolsPage,
-                                                                                                     inspectedPage,
-                                                                                                   }) => {
+  it('CSS style invalidation results verification', async ({
+                                                      devToolsPage,
+                                                      inspectedPage,
+                                                    }) => {
     await navigateToPerformanceTab(
         'selectorStats/css-style-invalidation',
         devToolsPage,
@@ -179,10 +177,23 @@ describe('The Performance panel', function() {
     await enableCSSSelectorStats(devToolsPage);
     await startRecording(devToolsPage);
 
-    // click the 'add/remove article' button and 'toggle emphasis' button to trigger CSS style invalidation
-    await inspectedPage.bringToFront();
-    await inspectedPage.click('#addRemoveArticle');
-    await inspectedPage.click('#toggleEmphasis');
+    // Trigger both DOM changes synchronously to ensure they are batched into a single
+    // style recalculation, and force them to be in different frames.
+    await inspectedPage.evaluate(() => {
+      return new Promise<void>(resolve => {
+        document.getElementById('addRemoveArticle')?.click();
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            document.getElementById('toggleEmphasis')?.click();
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                resolve();
+              });
+            });
+          });
+        });
+      });
+    });
 
     await devToolsPage.bringToFront();
     await stopRecording(devToolsPage);

@@ -72,8 +72,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   static async create(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
                       embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string,
                       rootURL: string, automatic: boolean,
-                      settings: Common.Settings.Settings = Common.Settings.Settings.instance()):
-      Promise<IsolatedFileSystem|null> {
+                      settings: Common.Settings.Settings): Promise<IsolatedFileSystem|null> {
     const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
       return null;

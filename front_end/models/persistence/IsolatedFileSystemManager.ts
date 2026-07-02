@@ -33,8 +33,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   readonly #workspaceFolderExcludePatternSetting: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
   private readonly fileSystemsLoadedPromise: Promise<IsolatedFileSystem[]>;
-  private constructor() {
+  readonly #settings: Common.Settings.Settings;
+  private constructor(settings: Common.Settings.Settings = Common.Settings.Settings.instance()) {
     super();
+    this.#settings = settings;
 
     this.#fileSystems = new Map();
     this.callbacks = new Map();
@@ -90,7 +92,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-    this.#workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting(
+    this.#workspaceFolderExcludePatternSetting = this.#settings.createRegExpSetting(
         'workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
 
     this.fileSystemRequestResolve = null;
@@ -160,7 +162,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     const fileSystemURL = Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath);
     const promise = IsolatedFileSystem.create(
         this, fileSystemURL, embedderPath, hostFileSystemTypeToPlatformFileSystemType(fileSystem.type),
-        fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === 'automatic');
+        fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === 'automatic', this.#settings);
     return promise.then(storeFileSystem.bind(this));
 
     function storeFileSystem(this: IsolatedFileSystemManager, fileSystem: IsolatedFileSystem|null): IsolatedFileSystem|

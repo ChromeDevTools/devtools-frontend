@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 
 import {NativeFunctions} from './NativeFunctions.js';
-
-let javaScriptMetadataInstance: JavaScriptMetadataImpl;
 
 export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScriptMetaData {
   private readonly uniqueFunctions: Map<string, string[][]>;
@@ -15,11 +14,11 @@ export class JavaScriptMetadataImpl implements Common.JavaScriptMetaData.JavaScr
     forceNew: boolean|null,
   } = {forceNew: null}): JavaScriptMetadataImpl {
     const {forceNew} = opts;
-    if (!javaScriptMetadataInstance || forceNew) {
-      javaScriptMetadataInstance = new JavaScriptMetadataImpl();
+    if (!Root.DevToolsContext.globalInstance().has(JavaScriptMetadataImpl) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(JavaScriptMetadataImpl, new JavaScriptMetadataImpl());
     }
 
-    return javaScriptMetadataInstance;
+    return Root.DevToolsContext.globalInstance().get(JavaScriptMetadataImpl);
   }
   constructor() {
     this.uniqueFunctions = new Map();

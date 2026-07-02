@@ -25,13 +25,17 @@ export class CompilerSourceMappingContentProvider implements TextUtils.ContentPr
   readonly #sourceURL: Platform.DevToolsPath.UrlString;
   readonly #contentType: Common.ResourceType.ResourceType;
   readonly #initiator: PageResourceLoadInitiator;
+  readonly #pageResourceLoader: PageResourceLoader;
 
-  constructor(
-      sourceURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
-      initiator: PageResourceLoadInitiator) {
+  constructor(sourceURL: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType,
+              initiator: PageResourceLoadInitiator,
+              pageResourceLoader: PageResourceLoader = initiator.target ?
+                  initiator.target.targetManager().context.get(PageResourceLoader) :
+                  PageResourceLoader.instance()) {
     this.#sourceURL = sourceURL;
     this.#contentType = contentType;
     this.#initiator = initiator;
+    this.#pageResourceLoader = pageResourceLoader;
   }
 
   contentURL(): Platform.DevToolsPath.UrlString {
@@ -44,7 +48,7 @@ export class CompilerSourceMappingContentProvider implements TextUtils.ContentPr
 
   async requestContentData(): Promise<TextUtils.ContentData.ContentDataOrError> {
     try {
-      const {content} = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
+      const {content} = await this.#pageResourceLoader.loadResource(this.#sourceURL, this.#initiator);
       return new TextUtils.ContentData.ContentData(
           content, /* isBase64=*/ false, this.#contentType.canonicalMimeType());
     } catch (e) {

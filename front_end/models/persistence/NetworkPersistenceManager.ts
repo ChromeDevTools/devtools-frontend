@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
@@ -14,8 +15,6 @@ import * as Workspace from '../workspace/workspace.js';
 import {type FileSystem, FileSystemWorkspaceBinding} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
-
-let networkPersistenceManagerInstance: NetworkPersistenceManager|null;
 
 const forbiddenUrls = ['chromewebstore.google.com', 'chrome.google.com'];
 
@@ -45,16 +44,14 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   readonly #eventDispatchThrottler = new Common.Throttler.Throttler(50);
   #headerOverridesForEventDispatch = new Set<Workspace.UISourceCode.UISourceCode>();
 
-  private constructor(
+  constructor(
       workspace: Workspace.Workspace.WorkspaceImpl,
-      persistence: PersistenceImpl = PersistenceImpl.instance(),
-      breakpointManager:
-          Breakpoints.BreakpointManager.BreakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(),
-      targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance(),
-      settings: Common.Settings.Settings = Common.Settings.Settings.instance(),
-      isolatedFileSystemManager: IsolatedFileSystemManager = IsolatedFileSystemManager.instance(),
-      multitargetNetworkManager:
-          SDK.NetworkManager.MultitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance(),
+      persistence: PersistenceImpl,
+      breakpointManager: Breakpoints.BreakpointManager.BreakpointManager,
+      targetManager: SDK.TargetManager.TargetManager,
+      settings: Common.Settings.Settings,
+      isolatedFileSystemManager: IsolatedFileSystemManager,
+      multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager,
   ) {
     super();
 
@@ -98,14 +95,29 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     workspace: Workspace.Workspace.WorkspaceImpl|null,
   } = {forceNew: null, workspace: null}): NetworkPersistenceManager {
     const {forceNew, workspace} = opts;
-    if (!networkPersistenceManagerInstance || forceNew) {
+    if (!Root.DevToolsContext.globalInstance().has(NetworkPersistenceManager) || forceNew) {
       if (!workspace) {
         throw new Error('Missing workspace for NetworkPersistenceManager');
       }
-      networkPersistenceManagerInstance = new NetworkPersistenceManager(workspace);
+      Root.DevToolsContext.globalInstance().set(
+          NetworkPersistenceManager,
+          new NetworkPersistenceManager(
+              workspace,
+              PersistenceImpl.instance(),
+              Breakpoints.BreakpointManager.BreakpointManager.instance(),
+              SDK.TargetManager.TargetManager.instance(),
+              Common.Settings.Settings.instance(),
+              IsolatedFileSystemManager.instance(),
+              SDK.NetworkManager.MultitargetNetworkManager.instance(),
+              ),
+      );
     }
 
-    return networkPersistenceManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(NetworkPersistenceManager);
+  }
+
+  static removeInstance(): void {
+    Root.DevToolsContext.globalInstance().delete(NetworkPersistenceManager);
   }
 
   active(): boolean {

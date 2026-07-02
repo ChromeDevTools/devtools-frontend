@@ -21,6 +21,7 @@ import * as CspEvaluator from '../../third_party/csp_evaluator/csp_evaluator.js'
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as ExpandableList from '../../ui/components/expandable_list/expandable_list.js';
 import type * as ReportView from '../../ui/components/report_view/report_view.js';
+import * as UIHelpers from '../../ui/helpers/helpers.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
@@ -680,7 +681,7 @@ function renderSingleCSP(cspInfo: Protocol.Network.ContentSecurityPolicyStatus, 
             .accessibleLabel=${i18nString(UIStrings.learnMore)}
             .variant=${Buttons.Button.Variant.ICON}
             .size=${Buttons.Button.Size.SMALL}
-            @click=${()=> {window.location.href = 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only';}}
+            @click=${()=> {UIHelpers.openInNewTab('https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only');}}
             jslog=${VisualLogging.link('learn-more.csp-report-only').track({click: true})}
             ></devtools-button>`}
       </devtools-report-key>

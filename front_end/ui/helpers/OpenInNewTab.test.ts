@@ -81,6 +81,41 @@ describe('openInNewTab', () => {
     }
   });
 
+  it('adds `utm_source` and `utm_medium` search parameters to MDN documentation set links', () => {
+    const URLs = [
+      'https://developer.mozilla.org/en-US/docs/Web/CSS/display',
+      'https://developer.mozilla.org/docs/Web/API/StorageAccessHandle/createObjectURL',
+    ];
+    for (const url of URLs) {
+      const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+      openInNewTab(url);
+
+      sinon.assert.calledOnce(stub);
+      const resultingUrl = new URL(stub.args[0][0]);
+      assert.strictEqual(resultingUrl.searchParams.get('utm_source'), 'chrome-devtools');
+      assert.strictEqual(resultingUrl.searchParams.get('utm_medium'), 'referral');
+      stub.restore();
+    }
+  });
+
+  it('doesn\'t override or add UTM parameters to MDN links if either `utm_source` or `utm_medium` is already set',
+     () => {
+       const URLs = [
+         'https://developer.mozilla.org/en-US/docs/Web/CSS/display?utm_source=custom-source',
+         'https://developer.mozilla.org/docs/Web/API/StorageAccessHandle/createObjectURL?utm_medium=custom-medium',
+         'https://developer.mozilla.org/docs/Web/HTTP/Headers?utm_source=custom-source&utm_medium=custom-medium',
+       ];
+       for (const url of URLs) {
+         const stub = sinon.stub(InspectorFrontendHostInstance, 'openInNewTab');
+
+         openInNewTab(url);
+
+         sinon.assert.calledOnceWithExactly(stub, urlString`${url}`);
+         stub.restore();
+       }
+     });
+
   it('adds `utm_campaign` search parameter to Google documentation set links', () => {
     const CHANNELS: Array<typeof Root.Runtime.hostConfig.channel> = [
       'stable',

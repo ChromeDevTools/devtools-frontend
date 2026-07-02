@@ -5,7 +5,6 @@
 import sinon from 'sinon';
 
 import type {Chrome} from '../../extension-api/ExtensionAPI.js';
-import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Extensions from '../models/extensions/extensions.js';
@@ -79,7 +78,6 @@ export function setupDevtoolsExtensionHooks(
     context.backend = backend;
     sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
-    sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
 
     const networkLog = new Logs.NetworkLog.NetworkLog();
     sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);

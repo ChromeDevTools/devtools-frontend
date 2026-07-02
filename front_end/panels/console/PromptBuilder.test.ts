@@ -17,6 +17,7 @@ import {
   createStackTrace,
 } from '../../testing/ConsoleHelpers.js';
 import {raf} from '../../testing/DOMHelpers.js';
+import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
@@ -228,12 +229,12 @@ export const y = "";
       sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
           .returns(backend.universe.debuggerWorkspaceBinding);
       sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
-      sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
       sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
       sinon.restore();
+      await deinitializeGlobalVars();
     });
 
     const PROMPT_PREFIX = 'Please explain the following console error or warning:';
@@ -568,6 +569,7 @@ export const y = "";
     let backend: MockDebuggerBackend;
 
     setupLocaleHooks();
+    setupSettingsHooks();
 
     beforeEach(() => {
       backend = new MockDebuggerBackend();

@@ -20,6 +20,7 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {
+  deinitializeGlobalVars,
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
@@ -726,8 +727,9 @@ describe('BreakpointsSidebarController', () => {
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     sinon.restore();
+    await deinitializeGlobalVars();
   });
 
   const DEFAULT_BREAKPOINT:
@@ -925,8 +927,9 @@ describe('BreakpointsView', () => {
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     sinon.restore();
+    await deinitializeGlobalVars();
   });
 
   it('correctly expands breakpoint groups', async () => {

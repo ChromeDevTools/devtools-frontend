@@ -10,7 +10,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -35,6 +35,7 @@ describe('NetworkAgent', function() {
 
   afterEach(async () => {
     await RenderCoordinator.done();
+    await deinitializeGlobalVars();
   });
 
   describe('buildRequest', () => {

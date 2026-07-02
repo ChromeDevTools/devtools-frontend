@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -50,7 +50,6 @@ describe('CoverageDeocrationManager', () => {
     mockResourceTree(backend.cdpConnection);
     target = backend.createTarget({connection: backend.cdpConnection});
     sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
-    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
 
     workspace = backend.universe.workspace;
     debuggerBinding = backend.universe.debuggerWorkspaceBinding;
@@ -64,7 +63,6 @@ describe('CoverageDeocrationManager', () => {
     // Wait for the resource tree model to load; otherwise, our uiSourceCodes could be asynchronously
     // invalidated during the test.
     await getInitializedResourceTreeModel(target);
-    sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
     sinon.stub(Formatter.FormatterWorkerPool.FormatterWorkerPool.instance(), 'javaScriptScopeTree').resolves(null);
   });
 

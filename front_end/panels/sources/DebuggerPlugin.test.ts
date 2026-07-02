@@ -6,11 +6,11 @@ import {assert} from 'chai';
 import * as sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {MockDebuggerBackend, parseScopeChain} from '../../testing/MockScopeChain.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -32,11 +32,11 @@ describe('Inline variable view scope helpers', () => {
     target = backend.createTarget();
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(backend.universe.debuggerWorkspaceBinding);
-    sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     sinon.restore();
+    await deinitializeGlobalVars();
   });
 
   async function toOffsetWithSourceMap(

@@ -12,10 +12,11 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../../models/bindings/bindings.js';
+import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {deinitializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
 import {MockDebuggerBackend} from '../../testing/MockScopeChain.js';
@@ -43,8 +44,6 @@ describe('NetworkNavigatorView', () => {
 
     sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(workspace);
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
-    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
-        .returns(debuggerWorkspaceBinding);
     sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
     sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
 
@@ -60,8 +59,9 @@ describe('NetworkNavigatorView', () => {
     UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     sinon.restore();
+    await deinitializeGlobalVars();
   });
 
   describe('reveals main target', () => {

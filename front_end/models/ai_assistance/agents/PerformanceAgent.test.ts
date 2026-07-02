@@ -12,6 +12,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import {createNetworkRequest, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
+  deinitializeGlobalVars,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
   updateHostConfig
@@ -23,12 +24,10 @@ import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import {allThreadEntriesInTrace} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as Bindings from '../../bindings/bindings.js';
 import * as Logs from '../../logs/logs.js';
 import type * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
-import * as Workspace from '../../workspace/workspace.js';
 import {
   AiAgent,
   AICallTree,
@@ -73,9 +72,10 @@ describe('PerformanceAgent', function() {
   beforeEach(() => {
     universe = new TestUniverse();
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
-    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(universe.workspace);
-    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
-        .returns(universe.debuggerWorkspaceBinding);
+  });
+
+  afterEach(async () => {
+    await deinitializeGlobalVars();
   });
 
   describe('buildRequest', () => {

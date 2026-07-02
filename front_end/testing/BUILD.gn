@@ -80,6 +80,7 @@ ts_library("testing") {
     "../models/extensions:bundle",
     "../models/formatter:bundle",
     "../models/issues_manager:bundle",
+    "../models/javascript_metadata:bundle",
     "../models/logs:bundle",
     "../models/persistence:bundle",
     "../models/project_settings:bundle",

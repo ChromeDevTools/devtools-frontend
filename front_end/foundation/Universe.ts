@@ -7,6 +7,7 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
@@ -73,6 +74,9 @@ export class Universe {
 
     const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
     context.set(Logs.LogManager.LogManager, logManager);
+
+    const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
+    context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
 
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
   }

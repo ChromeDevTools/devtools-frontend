@@ -14,6 +14,7 @@ devtools_foundation_module("foundation") {
     "../core/sdk:bundle",
     "../models/autofill_manager:bundle",
     "../models/bindings:bundle",
+    "../models/javascript_metadata:bundle",
     "../models/logs:bundle",
     "../models/workspace:bundle",
   ]

@@ -11,6 +11,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Workspace from '../models/workspace/workspace.js';
 
@@ -122,6 +123,14 @@ export class TestUniverse implements Foundation.Universe.Universe {
                         new Logs.LogManager.LogManager(this.targetManager, this.networkLog));
     }
     return this.#context.get(Logs.LogManager.LogManager);
+  }
+
+  get javaScriptMetadata(): JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl {
+    if (!this.#context.has(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl)) {
+      this.#context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl,
+                        new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl());
+    }
+    return this.#context.get(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl);
   }
 
   get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager {

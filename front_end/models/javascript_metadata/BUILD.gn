@@ -26,6 +26,8 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
+    "../../foundation/*",
+    "../../testing/*",
     "../../ui/components/text_editor/*",
     "../../ui/legacy/components/object_ui/*",
   ]

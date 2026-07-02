@@ -71,6 +71,9 @@ export class Universe {
     const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
 
+    const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
+    context.set(Logs.LogManager.LogManager, logManager);
+
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
   }
 

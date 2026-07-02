@@ -116,6 +116,14 @@ export class TestUniverse implements Foundation.Universe.Universe {
     return this.#context.get(Workspace.IgnoreListManager.IgnoreListManager);
   }
 
+  get logManager(): Logs.LogManager.LogManager {
+    if (!this.#context.has(Logs.LogManager.LogManager)) {
+      this.#context.set(Logs.LogManager.LogManager,
+                        new Logs.LogManager.LogManager(this.targetManager, this.networkLog));
+    }
+    return this.#context.get(Logs.LogManager.LogManager);
+  }
+
   get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager {
     if (!this.#context.has(SDK.NetworkManager.MultitargetNetworkManager)) {
       const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(this.targetManager);

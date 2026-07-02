@@ -49,7 +49,6 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
-import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as ProjectSettings from '../../models/project_settings/project_settings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -434,7 +433,6 @@ export class MainImpl {
     UI.ViewManager.ViewManager.instance({forceNew: true, universe: this.#universe});
 
     // These instances need to be created early so they don't miss any events about requests/issues/etc.
-    Logs.LogManager.LogManager.instance();
     IssuesManager.IssuesManager.IssuesManager.instance({
       forceNew: true,
       ensureFirst: true,

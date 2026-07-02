@@ -12,6 +12,7 @@ export declare function isIssueCodeSupported(code: Protocol.Audits.InspectorIssu
 export declare function createIssuesFromProtocolIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue): Issue[];
 export interface IssuesManagerCreationOptions {
     forceNew: boolean;
+    frameManager?: SDK.FrameManager.FrameManager;
     /** Throw an error if this is not the first instance created */
     ensureFirst: boolean;
     showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>;
@@ -39,7 +40,7 @@ export declare class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     #private;
     private readonly showThirdPartyIssuesSetting?;
     private readonly hideIssueSetting?;
-    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined);
+    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined, frameManager?: SDK.FrameManager.FrameManager);
     static instance(opts?: IssuesManagerCreationOptions): IssuesManager;
     static removeInstance(): void;
     modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void;

@@ -67,16 +67,16 @@ var { html } = Lit;
 function isLeafNode(node) {
   return node.numChildren() === 0 && node.role()?.value !== "Iframe";
 }
-function getModel(frameId) {
-  const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+function getModel(frameId, frameManager = SDK.FrameManager.FrameManager.instance()) {
+  const frame = frameManager.getFrame(frameId);
   const model = frame?.resourceTreeModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
   if (!model) {
     throw new Error("Could not instantiate model for frameId");
   }
   return model;
 }
-async function getRootNode(frameId) {
-  const model = getModel(frameId);
+async function getRootNode(frameId, frameManager = SDK.FrameManager.FrameManager.instance()) {
+  const model = getModel(frameId, frameManager);
   const root = await model.requestRootNode(frameId);
   if (!root) {
     throw new Error("No accessibility root for frame");
@@ -95,30 +95,30 @@ function getFrameIdForNodeOrDocument(node) {
   }
   return frameId;
 }
-async function getNodeAndAncestorsFromDOMNode(domNode) {
+async function getNodeAndAncestorsFromDOMNode(domNode, frameManager = SDK.FrameManager.FrameManager.instance()) {
   let frameId = getFrameIdForNodeOrDocument(domNode);
-  const model = getModel(frameId);
+  const model = getModel(frameId, frameManager);
   const result = await model.requestAndLoadSubTreeToNode(domNode);
   if (!result) {
     throw new Error("Could not retrieve accessibility node for inspected DOM node");
   }
-  const outermostFrameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+  const outermostFrameId = frameManager.getOutermostFrame()?.id;
   if (!outermostFrameId) {
     return result;
   }
   while (frameId !== outermostFrameId) {
-    const node = await SDK.FrameManager.FrameManager.instance().getFrame(frameId)?.getOwnerDOMNodeOrDocument();
+    const node = await frameManager.getFrame(frameId)?.getOwnerDOMNodeOrDocument();
     if (!node) {
       break;
     }
     frameId = getFrameIdForNodeOrDocument(node);
-    const model2 = getModel(frameId);
+    const model2 = getModel(frameId, frameManager);
     const ancestors = await model2.requestAndLoadSubTreeToNode(node);
     result.push(...ancestors || []);
   }
   return result;
 }
-async function getChildren(node) {
+async function getChildren(node, frameManager = SDK.FrameManager.FrameManager.instance()) {
   if (node.role()?.value === "Iframe") {
     const domNode = await node.deferredDOMNode()?.resolvePromise();
     if (!domNode) {
@@ -128,12 +128,12 @@ async function getChildren(node) {
     if (!frameId) {
       throw new Error("No owner frameId on iframe node");
     }
-    const localRoot = await getRootNode(frameId);
+    const localRoot = await getRootNode(frameId, frameManager);
     return [localRoot];
   }
   return await node.accessibilityModel().requestAXChildren(node.id(), node.getFrameId() || void 0);
 }
-async function sdkNodeToAXTreeNodes(sdkNode) {
+async function sdkNodeToAXTreeNodes(sdkNode, frameManager = SDK.FrameManager.FrameManager.instance()) {
   const treeNodeData = sdkNode;
   if (isLeafNode(sdkNode)) {
     return [{
@@ -144,8 +144,8 @@ async function sdkNodeToAXTreeNodes(sdkNode) {
   return [{
     treeNodeData,
     children: async () => {
-      const childNodes = await getChildren(sdkNode);
-      const childTreeNodes = await Promise.all(childNodes.map((childNode) => sdkNodeToAXTreeNodes(childNode)));
+      const childNodes = await getChildren(sdkNode, frameManager);
+      const childTreeNodes = await Promise.all(childNodes.map((childNode) => sdkNodeToAXTreeNodes(childNode, frameManager)));
       return childTreeNodes.flat(1);
     },
     id: getNodeId(sdkNode)
@@ -189,10 +189,12 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   accessibilityTreeComponent;
   inspectedDOMNode = null;
   root = null;
-  constructor(accessibilityTreeComponent) {
+  #frameManager;
+  constructor(accessibilityTreeComponent, frameManager = SDK2.FrameManager.FrameManager.instance()) {
     super();
     this.registerRequiredCSS(accessibilityTreeView_css_default);
     this.accessibilityTreeComponent = accessibilityTreeComponent;
+    this.#frameManager = frameManager;
     const container = this.contentElement.createChild("div");
     container.classList.add("accessibility-tree-view-container");
     container.setAttribute("jslog", `${VisualLogging.tree("full-accessibility")}`);
@@ -231,11 +233,11 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   }
   async refreshAccessibilityTree() {
     if (!this.root) {
-      const frameId = SDK2.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+      const frameId = this.#frameManager.getOutermostFrame()?.id;
       if (!frameId) {
         throw new Error("No top frame");
       }
-      this.root = await getRootNode(frameId);
+      this.root = await getRootNode(frameId, this.#frameManager);
       if (!this.root) {
         throw new Error("No root");
       }
@@ -245,15 +247,15 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   }
   async renderTree() {
     if (!this.root) {
-      const frameId = SDK2.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+      const frameId = this.#frameManager.getOutermostFrame()?.id;
       if (frameId) {
-        this.root = await getRootNode(frameId);
+        this.root = await getRootNode(frameId, this.#frameManager);
       }
     }
     if (!this.root) {
       return;
     }
-    const treeData = await sdkNodeToAXTreeNodes(this.root);
+    const treeData = await sdkNodeToAXTreeNodes(this.root, this.#frameManager);
     this.accessibilityTreeComponent.data = {
       defaultRenderer: accessibilityNodeRenderer,
       tree: treeData,
@@ -265,7 +267,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   // Given a selected DOM node, asks the model to load the missing subtree from the root to the
   // selected node and then re-renders the tree.
   async loadSubTreeIntoAccessibilityModel(selectedNode) {
-    const ancestors = await getNodeAndAncestorsFromDOMNode(selectedNode);
+    const ancestors = await getNodeAndAncestorsFromDOMNode(selectedNode, this.#frameManager);
     const inspectedAXNode = ancestors.find((node) => node.backendDOMNodeId() === selectedNode.backendNodeId());
     if (!inspectedAXNode) {
       return;
@@ -306,7 +308,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
       void this.renderTree();
       return;
     }
-    const outermostFrameId = SDK2.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+    const outermostFrameId = this.#frameManager.getOutermostFrame()?.id;
     if (data.root?.getFrameId() !== outermostFrameId) {
       void this.renderTree();
       return;

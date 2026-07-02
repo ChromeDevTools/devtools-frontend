@@ -9,13 +9,13 @@ export type InteractionEntryGroupId = number & {
 };
 export type UniqueLayoutShiftId = `layout-shift-${number}-${number}`;
 export declare function getUniqueLayoutShiftId(entry: LayoutShift): UniqueLayoutShiftId;
-export interface LcpPhases {
+export interface LcpSubparts {
     timeToFirstByte: Trace.Types.Timing.Milli;
     resourceLoadDelay: Trace.Types.Timing.Milli;
     resourceLoadTime: Trace.Types.Timing.Milli;
     elementRenderDelay: Trace.Types.Timing.Milli;
 }
-export interface InpPhases {
+export interface InpSubparts {
     inputDelay: Trace.Types.Timing.Milli;
     processingDuration: Trace.Types.Timing.Milli;
     presentationDelay: Trace.Types.Timing.Milli;
@@ -23,7 +23,7 @@ export interface InpPhases {
 export interface LcpChangeEvent {
     name: 'LCP';
     value: Trace.Types.Timing.Milli;
-    phases: LcpPhases;
+    subparts: LcpSubparts;
     startedHidden: boolean;
     nodeIndex?: number;
 }
@@ -36,7 +36,7 @@ export interface InpChangeEvent {
     name: 'INP';
     value: Trace.Types.Timing.Milli;
     interactionType: INPAttribution['interactionType'];
-    phases: InpPhases;
+    subparts: InpSubparts;
     startTime: number;
     entryGroupId: InteractionEntryGroupId;
 }
@@ -74,7 +74,7 @@ export interface InteractionEntryEvent {
     startTime: number;
     nextPaintTime: number;
     duration: Trace.Types.Timing.Milli;
-    phases: InpPhases;
+    subparts: InpSubparts;
     nodeIndex?: number;
     longAnimationFrameEntries: PerformanceLongAnimationFrameTimingJSON[];
 }

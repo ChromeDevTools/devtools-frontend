@@ -5457,7 +5457,7 @@ var PerformanceInsightFormatter = class {
       case "LCPBreakdown":
         return [
           { title: "Help me optimize my LCP score" },
-          { title: "Which LCP phase was most problematic?" },
+          { title: "Which LCP subpart was most problematic?" },
           { title: "What can I do to reduce the LCP time for this page load?" }
         ];
       case "NetworkDependencyTree":
@@ -5793,7 +5793,7 @@ ${imageDetails}`;
     if (!event) {
       return "";
     }
-    const inpInfoForEvent = `The longest interaction on the page was a \`${event.type}\` which had a total duration of \`${this.#formatMicro(event.dur)}\`. The timings of each of the three phases were:
+    const inpInfoForEvent = `The longest interaction on the page was a \`${event.type}\` which had a total duration of \`${this.#formatMicro(event.dur)}\`. The timings of each of the three subparts were:
 
 1. Input delay: ${this.#formatMicro(event.inputDelay)}
 2. Processing duration: ${this.#formatMicro(event.mainThreadHandling)}
@@ -5810,17 +5810,17 @@ ${imageDetails}`;
     if (!lcpMs || !subparts) {
       return "";
     }
-    const phaseBulletPoints = [];
+    const subpartBulletPoints = [];
     Object.values(subparts).forEach((subpart) => {
-      const phaseMilli = Trace4.Helpers.Timing.microToMilli(subpart.range);
-      const percentage = (phaseMilli / lcpMs * 100).toFixed(1);
-      phaseBulletPoints.push({ name: subpart.label, value: this.#formatMilli(phaseMilli), percentage });
+      const subpartMilli = Trace4.Helpers.Timing.microToMilli(subpart.range);
+      const percentage = (subpartMilli / lcpMs * 100).toFixed(1);
+      subpartBulletPoints.push({ name: subpart.label, value: this.#formatMilli(subpartMilli), percentage });
     });
     return `${this.#lcpMetricSharedContext()}
 
-We can break this time down into the ${phaseBulletPoints.length} phases that combine to make the LCP time:
+We can break this time down into the ${subpartBulletPoints.length} subparts that combine to make the LCP time:
 
-${phaseBulletPoints.map((phase) => `- ${phase.name}: ${phase.value} (${phase.percentage}% of total LCP time)`).join("\n")}`;
+${subpartBulletPoints.map((subpart) => `- ${subpart.name}: ${subpart.value} (${subpart.percentage}% of total LCP time)`).join("\n")}`;
   }
   /**
    * Create an AI prompt string out of the LCP Brekdown Insight model to use with Ask AI.
@@ -6284,12 +6284,12 @@ ${this.#links()}`;
 - Needs improvement: more than 200 milliseconds and 500 milliseconds or less.
 - Bad: over 500 milliseconds.
 
-For a given slow interaction, we can break it down into 3 phases:
+For a given slow interaction, we can break it down into 3 subparts:
 1. Input delay: starts when the user initiates an interaction with the page, and ends when the event callbacks for the interaction begin to run.
 2. Processing duration: the time it takes for the event callbacks to run to completion.
 3. Presentation delay: the time it takes for the browser to present the next frame which contains the visual result of the interaction.
 
-The sum of these three phases is the total latency. It is important to optimize each of these phases to ensure interactions take as little time as possible. Focusing on the phase that has the largest score is a good way to start optimizing.`;
+The sum of these three subparts is the total latency. It is important to optimize each of these subparts to ensure interactions take as little time as possible. Focusing on the subpart that has the largest score is a good way to start optimizing.`;
       case "LCPDiscovery":
         return `This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if the LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
 1. Did the resource have \`fetchpriority=high\` applied?
@@ -6298,7 +6298,7 @@ The sum of these three phases is the total latency. It is important to optimize 
 
 It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.`;
       case "LCPBreakdown":
-        return "This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.";
+        return "This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 subparts (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element.";
       case "NetworkDependencyTree":
         return `This insight analyzes the network dependency tree to identify:
 - The maximum critical path latency (the longest chain of network requests that the browser must download before it can render the page).

@@ -82,7 +82,7 @@ var generatedProperties = [
     ],
     "name": "-alternative-webkit-line-clamp-longhand",
     "runtime_flag": "CSSLineClamp",
-    "runtime_flag_status": "stable"
+    "runtime_flag_status": "experimental"
   },
   {
     "longhands": [
@@ -315,6 +315,12 @@ var generatedProperties = [
   },
   {
     "inherited": true,
+    "keywords": [
+      "sideways",
+      "upright",
+      "sideways-right",
+      "vertical-right"
+    ],
     "name": "-webkit-text-orientation"
   },
   {
@@ -2739,6 +2745,35 @@ var generatedProperties = [
     "name": "direction"
   },
   {
+    "devtools_keywords": [
+      "inline",
+      "block",
+      "list-item",
+      "inline-block",
+      "table",
+      "inline-table",
+      "table-row-group",
+      "table-header-group",
+      "table-footer-group",
+      "table-row",
+      "table-column-group",
+      "table-column",
+      "table-cell",
+      "table-caption",
+      "-webkit-box",
+      "-webkit-inline-box",
+      "flex",
+      "inline-flex",
+      "grid",
+      "inline-grid",
+      "contents",
+      "flow-root",
+      "none",
+      "flow",
+      "math",
+      "ruby",
+      "ruby-text"
+    ],
     "keywords": [
       "inline",
       "block",
@@ -3492,8 +3527,6 @@ var generatedProperties = [
     "inherited": true,
     "keywords": [
       "auto",
-      "optimizespeed",
-      "optimizequality",
       "-webkit-optimize-contrast",
       "pixelated",
       "crisp-edges"
@@ -3653,6 +3686,13 @@ var generatedProperties = [
     "name": "lighting-color"
   },
   {
+    "devtools_keywords": [
+      "auto",
+      "loose",
+      "normal",
+      "strict",
+      "anywhere"
+    ],
     "inherited": true,
     "keywords": [
       "auto",
@@ -3665,6 +3705,12 @@ var generatedProperties = [
     "name": "line-break"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "auto",
+      "ellipsis",
+      "no-ellipsis"
+    ],
     "keywords": [
       "none",
       "auto",
@@ -3674,7 +3720,7 @@ var generatedProperties = [
     ],
     "name": "line-clamp",
     "runtime_flag": "CSSLineClamp",
-    "runtime_flag_status": "stable"
+    "runtime_flag_status": "experimental"
   },
   {
     "is_descriptor": true,
@@ -4147,6 +4193,18 @@ var generatedProperties = [
     "name": "outline-offset"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "auto",
+      "inset",
+      "groove",
+      "outset",
+      "ridge",
+      "dotted",
+      "dashed",
+      "solid",
+      "double"
+    ],
     "keywords": [
       "none",
       "hidden",
@@ -5376,6 +5434,17 @@ var generatedProperties = [
     "name": "table-layout"
   },
   {
+    "devtools_keywords": [
+      "left",
+      "right",
+      "center",
+      "justify",
+      "-webkit-left",
+      "-webkit-right",
+      "-webkit-center",
+      "start",
+      "end"
+    ],
     "inherited": true,
     "keywords": [
       "left",
@@ -5392,6 +5461,15 @@ var generatedProperties = [
     "name": "text-align"
   },
   {
+    "devtools_keywords": [
+      "auto",
+      "start",
+      "end",
+      "left",
+      "right",
+      "center",
+      "justify"
+    ],
     "inherited": true,
     "keywords": [
       "auto",
@@ -5575,7 +5653,8 @@ var generatedProperties = [
     "keywords": [
       "sideways",
       "mixed",
-      "upright"
+      "upright",
+      "sideways-right"
     ],
     "name": "text-orientation"
   },
@@ -5632,6 +5711,13 @@ var generatedProperties = [
     "name": "text-spacing-trim"
   },
   {
+    "devtools_keywords": [
+      "none",
+      "capitalize",
+      "uppercase",
+      "lowercase",
+      "math-auto"
+    ],
     "inherited": true,
     "keywords": [
       "none",
@@ -5689,6 +5775,9 @@ var generatedProperties = [
     "name": "text-wrap-style"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "keywords": [
       "none",
       "all"
@@ -5900,6 +5989,12 @@ var generatedProperties = [
     "name": "unicode-range"
   },
   {
+    "devtools_keywords": [
+      "auto",
+      "none",
+      "text",
+      "all"
+    ],
     "inherited": true,
     "keywords": [
       "auto",
@@ -5969,6 +6064,9 @@ var generatedProperties = [
     "name": "view-transition-group"
   },
   {
+    "devtools_keywords": [
+      "none"
+    ],
     "keywords": [
       "none",
       "auto"
@@ -6205,6 +6303,14 @@ var generatedPropertyValues = {
       "underline",
       "spelling-error",
       "grammar-error"
+    ]
+  },
+  "-webkit-text-orientation": {
+    "values": [
+      "sideways",
+      "upright",
+      "sideways-right",
+      "vertical-right"
     ]
   },
   "-webkit-text-security": {
@@ -7304,9 +7410,7 @@ var generatedPropertyValues = {
       "flow",
       "math",
       "ruby",
-      "ruby-text",
-      "grid-lanes",
-      "inline-grid-lanes"
+      "ruby-text"
     ]
   },
   "dominant-baseline": {
@@ -7755,8 +7859,6 @@ var generatedPropertyValues = {
   "image-rendering": {
     "values": [
       "auto",
-      "optimizespeed",
-      "optimizequality",
       "-webkit-optimize-contrast",
       "pixelated",
       "crisp-edges"
@@ -7851,8 +7953,7 @@ var generatedPropertyValues = {
       "loose",
       "normal",
       "strict",
-      "anywhere",
-      "after-white-space"
+      "anywhere"
     ]
   },
   "line-clamp": {
@@ -7860,8 +7961,7 @@ var generatedPropertyValues = {
       "none",
       "auto",
       "ellipsis",
-      "no-ellipsis",
-      "-webkit-legacy"
+      "no-ellipsis"
     ]
   },
   "line-height": {
@@ -8156,7 +8256,7 @@ var generatedPropertyValues = {
   "outline-style": {
     "values": [
       "none",
-      "hidden",
+      "auto",
       "inset",
       "groove",
       "outset",
@@ -8743,8 +8843,7 @@ var generatedPropertyValues = {
       "-webkit-right",
       "-webkit-center",
       "start",
-      "end",
-      "match-parent"
+      "end"
     ]
   },
   "text-align-last": {
@@ -8755,8 +8854,7 @@ var generatedPropertyValues = {
       "left",
       "right",
       "center",
-      "justify",
-      "match-parent"
+      "justify"
     ]
   },
   "text-anchor": {
@@ -8864,7 +8962,8 @@ var generatedPropertyValues = {
     "values": [
       "sideways",
       "mixed",
-      "upright"
+      "upright",
+      "sideways-right"
     ]
   },
   "text-overflow": {
@@ -8906,8 +9005,6 @@ var generatedPropertyValues = {
       "capitalize",
       "uppercase",
       "lowercase",
-      "full-width",
-      "full-size-kana",
       "math-auto"
     ]
   },
@@ -8941,8 +9038,7 @@ var generatedPropertyValues = {
   },
   "timeline-scope": {
     "values": [
-      "none",
-      "all"
+      "none"
     ]
   },
   "timeline-trigger-active-range-end": {
@@ -9059,8 +9155,7 @@ var generatedPropertyValues = {
       "auto",
       "none",
       "text",
-      "all",
-      "contain"
+      "all"
     ]
   },
   "vector-effect": {
@@ -9108,8 +9203,7 @@ var generatedPropertyValues = {
   },
   "view-transition-name": {
     "values": [
-      "none",
-      "auto"
+      "none"
     ]
   },
   "view-transition-scope": {
@@ -33948,10 +34042,12 @@ var CompilerSourceMappingContentProvider = class {
   #sourceURL;
   #contentType;
   #initiator;
-  constructor(sourceURL, contentType, initiator) {
+  #pageResourceLoader;
+  constructor(sourceURL, contentType, initiator, pageResourceLoader = initiator.target ? initiator.target.targetManager().context.get(PageResourceLoader) : PageResourceLoader.instance()) {
     this.#sourceURL = sourceURL;
     this.#contentType = contentType;
     this.#initiator = initiator;
+    this.#pageResourceLoader = pageResourceLoader;
   }
   contentURL() {
     return this.#sourceURL;
@@ -33961,7 +34057,7 @@ var CompilerSourceMappingContentProvider = class {
   }
   async requestContentData() {
     try {
-      const { content } = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
+      const { content } = await this.#pageResourceLoader.loadResource(this.#sourceURL, this.#initiator);
       return new TextUtils26.ContentData.ContentData(
         content,
         /* isBase64=*/
@@ -35715,6 +35811,7 @@ __export(CPUThrottlingManager_exports, {
 });
 import * as Common35 from "./../common/common.js";
 import * as i18n35 from "./../i18n/i18n.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EmulationModel.js
 var EmulationModel_exports = {};
@@ -36268,7 +36365,6 @@ var UIStrings16 = {
 var str_16 = i18n35.i18n.registerUIStrings("core/sdk/CPUThrottlingManager.ts", UIStrings16);
 var i18nString16 = i18n35.i18n.getLocalizedString.bind(void 0, str_16);
 var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
-var throttlingManagerInstance;
 var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWrapper.ObjectWrapper {
   #targetManager;
   #cpuThrottlingOption;
@@ -36290,13 +36386,13 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWr
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!throttlingManagerInstance || forceNew) {
-      throttlingManagerInstance = new _CPUThrottlingManager(Common35.Settings.Settings.instance(), TargetManager.instance());
+    if (!Root11.DevToolsContext.globalInstance().has(_CPUThrottlingManager) || forceNew) {
+      Root11.DevToolsContext.globalInstance().set(_CPUThrottlingManager, new _CPUThrottlingManager(opts.settings ?? Common35.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance()));
     }
-    return throttlingManagerInstance;
+    return Root11.DevToolsContext.globalInstance().get(_CPUThrottlingManager);
   }
   static removeInstance() {
-    throttlingManagerInstance = void 0;
+    Root11.DevToolsContext.globalInstance().delete(_CPUThrottlingManager);
   }
   cpuThrottlingRate() {
     return this.#cpuThrottlingOption.rate();

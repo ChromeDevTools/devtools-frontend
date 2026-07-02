@@ -18,10 +18,14 @@ export class CompilerSourceMappingContentProvider {
     #sourceURL;
     #contentType;
     #initiator;
-    constructor(sourceURL, contentType, initiator) {
+    #pageResourceLoader;
+    constructor(sourceURL, contentType, initiator, pageResourceLoader = initiator.target ?
+        initiator.target.targetManager().context.get(PageResourceLoader) :
+        PageResourceLoader.instance()) {
         this.#sourceURL = sourceURL;
         this.#contentType = contentType;
         this.#initiator = initiator;
+        this.#pageResourceLoader = pageResourceLoader;
     }
     contentURL() {
         return this.#sourceURL;
@@ -31,7 +35,7 @@ export class CompilerSourceMappingContentProvider {
     }
     async requestContentData() {
         try {
-            const { content } = await PageResourceLoader.instance().loadResource(this.#sourceURL, this.#initiator);
+            const { content } = await this.#pageResourceLoader.loadResource(this.#sourceURL, this.#initiator);
             return new TextUtils.ContentData.ContentData(content, /* isBase64=*/ false, this.#contentType.canonicalMimeType());
         }
         catch (e) {

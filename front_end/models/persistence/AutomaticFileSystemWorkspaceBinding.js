@@ -91,10 +91,19 @@ export class FileSystem {
     async searchInFileContent(_uiSourceCode, _query, _caseSensitive, _isRegex) {
         return [];
     }
-    async findFilesMatchingSearchRequest(_searchConfig, _filesMatchingFileQuery, _progress) {
+    async findFilesMatchingSearchRequest(_searchConfig, _filesMatchingFileQuery, progress) {
+        // Defer completion to the next microtask to avoid triggering premature
+        // completion events in CompositeProgress setup loops.
+        await Promise.resolve();
+        progress.done = true;
         return new Map();
     }
-    indexContent(_progress) {
+    indexContent(progress) {
+        // Defer completion to the next microtask to avoid triggering premature
+        // completion events in CompositeProgress setup loops.
+        queueMicrotask(() => {
+            progress.done = true;
+        });
     }
     uiSourceCodeForURL(_url) {
         return null;

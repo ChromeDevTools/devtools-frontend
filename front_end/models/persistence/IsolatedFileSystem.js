@@ -53,21 +53,20 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     #initialFilePaths = new Set();
     #initialGitFolders = new Set();
     fileLocks = new Map();
-    constructor(manager, path, embedderPath, domFileSystem, type, automatic) {
+    constructor(manager, path, embedderPath, domFileSystem, type, automatic, settings) {
         super(path, type, automatic);
         this.manager = manager;
         this.#embedderPath = embedderPath;
         this.domFileSystem = domFileSystem;
-        this.excludedFoldersSetting =
-            Common.Settings.Settings.instance().createLocalSetting('workspace-excluded-folders', {});
+        this.excludedFoldersSetting = settings.createLocalSetting('workspace-excluded-folders', {});
         this.#excludedFolders = new Set(this.excludedFoldersSetting.get()[path] || []);
     }
-    static async create(manager, path, embedderPath, type, name, rootURL, automatic) {
+    static async create(manager, path, embedderPath, type, name, rootURL, automatic, settings) {
         const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
         if (!domFileSystem) {
             return null;
         }
-        const fileSystem = new _a(manager, path, embedderPath, domFileSystem, type, automatic);
+        const fileSystem = new _a(manager, path, embedderPath, domFileSystem, type, automatic, settings);
         return await fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
             console.error(error);
             return null;

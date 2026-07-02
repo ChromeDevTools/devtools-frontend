@@ -210,20 +210,20 @@ var IsolatedFileSystem = class extends PlatformFileSystem {
   #initialFilePaths = /* @__PURE__ */ new Set();
   #initialGitFolders = /* @__PURE__ */ new Set();
   fileLocks = /* @__PURE__ */ new Map();
-  constructor(manager, path, embedderPath, domFileSystem, type, automatic) {
+  constructor(manager, path, embedderPath, domFileSystem, type, automatic, settings) {
     super(path, type, automatic);
     this.manager = manager;
     this.#embedderPath = embedderPath;
     this.domFileSystem = domFileSystem;
-    this.excludedFoldersSetting = Common2.Settings.Settings.instance().createLocalSetting("workspace-excluded-folders", {});
+    this.excludedFoldersSetting = settings.createLocalSetting("workspace-excluded-folders", {});
     this.#excludedFolders = new Set(this.excludedFoldersSetting.get()[path] || []);
   }
-  static async create(manager, path, embedderPath, type, name, rootURL, automatic) {
+  static async create(manager, path, embedderPath, type, name, rootURL, automatic, settings) {
     const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
       return null;
     }
-    const fileSystem = new _a(manager, path, embedderPath, domFileSystem, type, automatic);
+    const fileSystem = new _a(manager, path, embedderPath, domFileSystem, type, automatic, settings);
     return await fileSystem.initializeFilePaths().then(() => fileSystem).catch((error) => {
       console.error(error);
       return null;
@@ -725,8 +725,10 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   #workspaceFolderExcludePatternSetting;
   fileSystemRequestResolve;
   fileSystemsLoadedPromise;
-  constructor() {
+  #settings;
+  constructor(settings = Common3.Settings.Settings.instance()) {
     super();
+    this.#settings = settings;
     this.#fileSystems = /* @__PURE__ */ new Map();
     this.callbacks = /* @__PURE__ */ new Map();
     this.progresses = /* @__PURE__ */ new Map();
@@ -771,7 +773,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
       defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
     }
     const defaultExcludedFoldersPattern = defaultExcludedFolders.join("|");
-    this.#workspaceFolderExcludePatternSetting = Common3.Settings.Settings.instance().createRegExpSetting("workspace-folder-exclude-pattern", defaultExcludedFoldersPattern, Host2.Platform.isWin() ? "i" : "");
+    this.#workspaceFolderExcludePatternSetting = this.#settings.createRegExpSetting("workspace-folder-exclude-pattern", defaultExcludedFoldersPattern, Host2.Platform.isWin() ? "i" : "");
     this.fileSystemRequestResolve = null;
     this.fileSystemsLoadedPromise = this.requestFileSystems();
   }
@@ -819,7 +821,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   #addFileSystem(fileSystem, dispatchEvent) {
     const embedderPath = fileSystem.fileSystemPath;
     const fileSystemURL = Common3.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath);
-    const promise = IsolatedFileSystem.create(this, fileSystemURL, embedderPath, hostFileSystemTypeToPlatformFileSystemType(fileSystem.type), fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === "automatic");
+    const promise = IsolatedFileSystem.create(this, fileSystemURL, embedderPath, hostFileSystemTypeToPlatformFileSystemType(fileSystem.type), fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === "automatic", this.#settings);
     return promise.then(storeFileSystem.bind(this));
     function storeFileSystem(fileSystem2) {
       if (!fileSystem2) {
@@ -2251,10 +2253,15 @@ var FileSystem2 = class {
   async searchInFileContent(_uiSourceCode, _query, _caseSensitive, _isRegex) {
     return [];
   }
-  async findFilesMatchingSearchRequest(_searchConfig, _filesMatchingFileQuery, _progress) {
+  async findFilesMatchingSearchRequest(_searchConfig, _filesMatchingFileQuery, progress) {
+    await Promise.resolve();
+    progress.done = true;
     return /* @__PURE__ */ new Map();
   }
-  indexContent(_progress) {
+  indexContent(progress) {
+    queueMicrotask(() => {
+      progress.done = true;
+    });
   }
   uiSourceCodeForURL(_url) {
     return null;
@@ -2348,18 +2355,24 @@ __export(NetworkPersistenceManager_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as Platform11 from "./../../core/platform/platform.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 import * as TextUtils6 from "./../text_utils/text_utils.js";
 import * as Workspace9 from "./../workspace/workspace.js";
-var networkPersistenceManagerInstance;
 var forbiddenUrls = ["chromewebstore.google.com", "chrome.google.com"];
 var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9.ObjectWrapper.ObjectWrapper {
   #bindings = /* @__PURE__ */ new WeakMap();
   #originalResponseContentPromises = /* @__PURE__ */ new WeakMap();
   #savingForOverrides = /* @__PURE__ */ new WeakSet();
-  #enabledSetting = Common9.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled");
+  #enabledSetting;
   #workspace;
+  #persistence;
+  #breakpointManager;
+  #targetManager;
+  #settings;
+  #isolatedFileSystemManager;
+  #multitargetNetworkManager;
   #networkUISourceCodeForEncodedPath = /* @__PURE__ */ new Map();
   #interceptionHandlerBound;
   #updateInterceptionThrottler = new Common9.Throttler.Throttler(50);
@@ -2371,10 +2384,17 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   #sourceCodeToBindProcessMutex = /* @__PURE__ */ new WeakMap();
   #eventDispatchThrottler = new Common9.Throttler.Throttler(50);
   #headerOverridesForEventDispatch = /* @__PURE__ */ new Set();
-  constructor(workspace) {
+  constructor(workspace, persistence, breakpointManager, targetManager, settings, isolatedFileSystemManager, multitargetNetworkManager) {
     super();
-    this.#enabledSetting.addChangeListener(this.enabledChanged, this);
     this.#workspace = workspace;
+    this.#persistence = persistence;
+    this.#breakpointManager = breakpointManager;
+    this.#targetManager = targetManager;
+    this.#settings = settings;
+    this.#isolatedFileSystemManager = isolatedFileSystemManager;
+    this.#multitargetNetworkManager = multitargetNetworkManager;
+    this.#enabledSetting = this.#settings.moduleSetting("persistence-network-overrides-enabled");
+    this.#enabledSetting.addChangeListener(this.enabledChanged, this);
     this.#interceptionHandlerBound = this.interceptionHandler.bind(this);
     this.#workspace.addEventListener(Workspace9.Workspace.Events.ProjectAdded, (event) => {
       void this.onProjectAdded(event.data);
@@ -2382,10 +2402,10 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     this.#workspace.addEventListener(Workspace9.Workspace.Events.ProjectRemoved, (event) => {
       void this.onProjectRemoved(event.data);
     });
-    PersistenceImpl.instance().addNetworkInterceptor(this.canHandleNetworkUISourceCode.bind(this));
-    Breakpoints.BreakpointManager.BreakpointManager.instance().addUpdateBindingsCallback(this.networkUISourceCodeAdded.bind(this));
+    this.#persistence.addNetworkInterceptor(this.canHandleNetworkUISourceCode.bind(this));
+    this.#breakpointManager.addUpdateBindingsCallback(this.networkUISourceCodeAdded.bind(this));
     void this.enabledChanged();
-    SDK3.TargetManager.TargetManager.instance().observeTargets(this);
+    this.#targetManager.observeTargets(this);
   }
   targetAdded() {
     void this.updateActiveProject();
@@ -2395,13 +2415,16 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   static instance(opts = { forceNew: null, workspace: null }) {
     const { forceNew, workspace } = opts;
-    if (!networkPersistenceManagerInstance || forceNew) {
+    if (!Root2.DevToolsContext.globalInstance().has(_NetworkPersistenceManager) || forceNew) {
       if (!workspace) {
         throw new Error("Missing workspace for NetworkPersistenceManager");
       }
-      networkPersistenceManagerInstance = new _NetworkPersistenceManager(workspace);
+      Root2.DevToolsContext.globalInstance().set(_NetworkPersistenceManager, new _NetworkPersistenceManager(workspace, PersistenceImpl.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance(), SDK3.TargetManager.TargetManager.instance(), Common9.Settings.Settings.instance(), IsolatedFileSystemManager.instance(), SDK3.NetworkManager.MultitargetNetworkManager.instance()));
     }
-    return networkPersistenceManagerInstance;
+    return Root2.DevToolsContext.globalInstance().get(_NetworkPersistenceManager);
+  }
+  static removeInstance() {
+    Root2.DevToolsContext.globalInstance().delete(_NetworkPersistenceManager);
   }
   active() {
     return this.#active;
@@ -2425,16 +2448,16 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     if (this.#enabled) {
       Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.PersistenceNetworkOverridesEnabled);
       this.#eventDescriptors = [
-        Workspace9.Workspace.WorkspaceImpl.instance().addEventListener(Workspace9.Workspace.Events.UISourceCodeRenamed, (event) => {
+        this.#workspace.addEventListener(Workspace9.Workspace.Events.UISourceCodeRenamed, (event) => {
           void this.uiSourceCodeRenamedListener(event);
         }),
-        Workspace9.Workspace.WorkspaceImpl.instance().addEventListener(Workspace9.Workspace.Events.UISourceCodeAdded, (event) => {
+        this.#workspace.addEventListener(Workspace9.Workspace.Events.UISourceCodeAdded, (event) => {
           void this.uiSourceCodeAdded(event);
         }),
-        Workspace9.Workspace.WorkspaceImpl.instance().addEventListener(Workspace9.Workspace.Events.UISourceCodeRemoved, (event) => {
+        this.#workspace.addEventListener(Workspace9.Workspace.Events.UISourceCodeRemoved, (event) => {
           void this.uiSourceCodeRemovedListener(event);
         }),
-        Workspace9.Workspace.WorkspaceImpl.instance().addEventListener(Workspace9.Workspace.Events.WorkingCopyCommitted, (event) => this.onUISourceCodeWorkingCopyCommitted(event.data.uiSourceCode))
+        this.#workspace.addEventListener(Workspace9.Workspace.Events.WorkingCopyCommitted, (event) => this.onUISourceCodeWorkingCopyCommitted(event.data.uiSourceCode))
       ];
       await this.updateActiveProject();
     } else {
@@ -2457,7 +2480,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   async updateActiveProject() {
     const wasActive = this.#active;
-    this.#active = Boolean(this.#enabledSetting.get() && SDK3.TargetManager.TargetManager.instance().rootTarget() && this.#project);
+    this.#active = Boolean(this.#enabledSetting.get() && this.#targetManager.rootTarget() && this.#project);
     if (this.#active === wasActive) {
       return;
     }
@@ -2471,7 +2494,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
       await Promise.all([...this.#project.uiSourceCodes()].map((uiSourceCode) => this.filesystemUISourceCodeRemoved(uiSourceCode)));
       this.#networkUISourceCodeForEncodedPath.clear();
     }
-    PersistenceImpl.instance().refreshAutomapping();
+    this.#persistence.refreshAutomapping();
   }
   encodedPathFromUrl(url, ignoreInactive) {
     return Common9.ParsedURL.ParsedURL.rawPathToEncodedPathString(this.rawPathFromUrl(url, ignoreInactive));
@@ -2550,7 +2573,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     );
     const folderUrlFromRequest = Common9.ParsedURL.ParsedURL.substring(fileUrlFromRequest, 0, fileUrlFromRequest.lastIndexOf("/"));
     const headersFileUrl = Common9.ParsedURL.ParsedURL.concatenate(folderUrlFromRequest, "/", HEADERS_FILENAME);
-    return Workspace9.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(headersFileUrl);
+    return this.#workspace.uiSourceCodeForURL(headersFileUrl);
   }
   async getOrCreateHeadersUISourceCodeFromUrl(url) {
     let uiSourceCode = this.getHeadersUISourceCodeFromUrl(url);
@@ -2593,7 +2616,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   #innerUnbind(binding) {
     this.#bindings.delete(binding.network);
     this.#bindings.delete(binding.fileSystem);
-    return PersistenceImpl.instance().removeBinding(binding);
+    return this.#persistence.removeBinding(binding);
   }
   async #bind(networkUISourceCode, fileSystemUISourceCode) {
     const mutex = this.#getOrCreateMutex(networkUISourceCode);
@@ -2622,11 +2645,11 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     const binding = new PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this.#bindings.set(networkUISourceCode, binding);
     this.#bindings.set(fileSystemUISourceCode, binding);
-    await PersistenceImpl.instance().addBinding(binding);
+    await this.#persistence.addBinding(binding);
     const uiSourceCodeOfTruth = this.#savingForOverrides.has(networkUISourceCode) ? networkUISourceCode : fileSystemUISourceCode;
     const contentDataOrError = await uiSourceCodeOfTruth.requestContentData();
     const { content, isEncoded } = TextUtils6.ContentData.ContentData.asDeferredContent(contentDataOrError);
-    PersistenceImpl.instance().syncContent(uiSourceCodeOfTruth, content || "", isEncoded);
+    this.#persistence.syncContent(uiSourceCodeOfTruth, content || "", isEncoded);
   }
   onUISourceCodeWorkingCopyCommitted(uiSourceCode) {
     void this.saveUISourceCodeForOverrides(uiSourceCode);
@@ -2654,7 +2677,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
     if (this.#shouldPromptSaveForOverridesDialog(uiSourceCode)) {
       Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.OverrideContentContextMenuSetup);
       await new Promise((resolve) => this.dispatchEventToListeners("LocalOverridesRequested", resolve));
-      await IsolatedFileSystemManager.instance().addFileSystem("overrides");
+      await this.#isolatedFileSystemManager.addFileSystem("overrides");
     }
     if (!this.project()) {
       Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.OverrideContentContextMenuAbandonSetup);
@@ -2864,7 +2887,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   async #innerUpdateInterceptionPatterns() {
     this.#headerOverridesMap.clear();
     if (!this.#active || !this.#project) {
-      return await SDK3.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns([], this.#interceptionHandlerBound);
+      return await this.#multitargetNetworkManager.setInterceptionHandlerForPatterns([], this.#interceptionHandlerBound);
     }
     let patterns = /* @__PURE__ */ new Set();
     for (const uiSourceCode of this.#project.uiSourceCodes()) {
@@ -2886,7 +2909,7 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
         patterns.add(head);
       }
     }
-    return await SDK3.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(Array.from(patterns).map((pattern) => ({
+    return await this.#multitargetNetworkManager.setInterceptionHandlerForPatterns(Array.from(patterns).map((pattern) => ({
       urlPattern: pattern,
       requestStage: "Response"
       /* Protocol.Fetch.RequestStage.Response */

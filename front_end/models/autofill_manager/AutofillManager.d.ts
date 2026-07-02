@@ -3,7 +3,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 export declare class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(targetManager: SDK.TargetManager.TargetManager);
+    constructor(targetManager: SDK.TargetManager.TargetManager, frameManager?: SDK.FrameManager.FrameManager);
     getLastFilledAddressForm(): AddressFormFilledEvent | null;
     highlightFilledField(filledField: Protocol.Autofill.FilledField): void;
     clearHighlightedFilledFields(): void;

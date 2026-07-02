@@ -4382,7 +4382,7 @@ import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI10 from "./../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing6, render as render7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html6, nothing as nothing6, render as render7 } from "./../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
@@ -4451,6 +4451,14 @@ var UIStrings10 = {
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/network/RequestInitiatorView.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
+var MAX_URL_LENGTH = 150;
+function trimUrl(url) {
+  if (url.length <= MAX_URL_LENGTH) {
+    return url;
+  }
+  const halfMaxLength = Math.floor(MAX_URL_LENGTH / 2);
+  return url.substring(0, halfMaxLength) + "\u2026" + url.substring(url.length - halfMaxLength);
+}
 var DEFAULT_VIEW6 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
@@ -4487,9 +4495,13 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     const isCurrentRequest = index === initiators.length - 1;
     const hasFurtherInitiatedNodes = index + 1 < initiators.length;
     const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing6;
+    const url = request.url();
+    const title = url.length < 2e3 ? url : void 0;
     return html6`
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
-            <span style=${isCurrentRequest ? "font-weight: bold" : ""}>${request.url()}</span>
+            <span style=${isCurrentRequest ? "font-weight: bold" : ""} title=${Directives2.ifDefined(title)}>
+              ${trimUrl(url)}
+            </span>
             ${hasFurtherInitiatedNodes || renderedChildren !== nothing6 ? html6`
               <ul role="group">
                 ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
@@ -4514,9 +4526,13 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         visited.add(child);
       }
       const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing6;
+      const url = child.url();
+      const title = url.length < 2e3 ? url : void 0;
       return html6`
         <li role="treeitem" aria-expanded="true" open>
-          <span>${child.url()}</span>
+          <span title=${Directives2.ifDefined(title)}>
+            ${trimUrl(url)}
+          </span>
           ${renderedChildren !== nothing6 ? html6`<ul role="group">${renderedChildren}</ul>` : nothing6}
         </li>
       `;
@@ -4854,7 +4870,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/network/RequestPayloadView.js
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html7, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
@@ -5003,7 +5019,7 @@ var requestPayloadView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
 // gen/front_end/panels/network/RequestPayloadView.js
-var { classMap } = Directives2;
+var { classMap } = Directives3;
 var { widget: widget5 } = UI11.Widget;
 var { ifExpanded } = UI11.TreeOutline;
 var UIStrings11 = {
@@ -5959,7 +5975,7 @@ import * as NetworkTimeCalculator from "./../../models/network_time_calculator/n
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html10, nothing as nothing8, render as render11 } from "./../../ui/lit/lit.js";
+import { Directives as Directives4, html as html10, nothing as nothing8, render as render11 } from "./../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
@@ -6234,7 +6250,7 @@ tr.synthetic {
 /*# sourceURL=${import.meta.resolve("./networkTimingTable.css")} */`;
 
 // gen/front_end/panels/network/RequestTimingView.js
-var { repeat, classMap: classMap2, ifDefined: ifDefined2 } = Directives3;
+var { repeat, classMap: classMap2, ifDefined: ifDefined2 } = Directives4;
 var UIStrings15 = {
   /**
    * @description Text used to label the time taken to receive an HTTP/2 Push message.

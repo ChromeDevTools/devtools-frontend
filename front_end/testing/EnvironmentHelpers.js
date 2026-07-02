@@ -82,6 +82,7 @@ export async function deinitializeGlobalVars() {
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
     IssuesManager.IssuesManager.IssuesManager.removeInstance();
     Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
     ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.removeInstance();
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
     EmulationModel.DeviceModeModel.DeviceModeModel.removeInstance();

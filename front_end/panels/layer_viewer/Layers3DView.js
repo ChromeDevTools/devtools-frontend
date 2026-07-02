@@ -83,7 +83,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         text: i18nString(UIStrings.webglSupportIsDisabledInYour),
         extraElements: [
             uiI18n.getFormatLocalizedString(str_, UIStrings.checkSForPossibleReasons, {
-                PH1: Link.create('about:gpu', undefined, undefined, 'about-gpu')
+                PH1: Link.create('chrome://gpu', undefined, undefined, 'about-gpu', 0, true)
             })
         ],
     })}</div>` : Lit.nothing}

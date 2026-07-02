@@ -239,7 +239,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                 const warnings = [];
                 const lcpEvent = {
                     value: webVitalsEvent.value,
-                    phases: webVitalsEvent.phases,
+                    subparts: webVitalsEvent.subparts,
                     warnings,
                 };
                 if (webVitalsEvent.nodeIndex !== undefined) {
@@ -268,7 +268,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             case 'INP': {
                 const inpEvent = {
                     value: webVitalsEvent.value,
-                    phases: webVitalsEvent.phases,
+                    subparts: webVitalsEvent.subparts,
                     interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
                 };
                 this.#inpValue = inpEvent;
@@ -286,7 +286,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                         interactionType: webVitalsEvent.interactionType,
                         duration: webVitalsEvent.duration,
                         eventNames: [],
-                        phases: webVitalsEvent.phases,
+                        subparts: webVitalsEvent.subparts,
                         startTime: webVitalsEvent.startTime,
                         nextPaintTime: webVitalsEvent.nextPaintTime,
                         longAnimationFrameTimings: webVitalsEvent.longAnimationFrameEntries,

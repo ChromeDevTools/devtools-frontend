@@ -10,8 +10,8 @@ export declare class IsolatedFileSystem extends PlatformFileSystem {
     private readonly excludedFoldersSetting;
     private readonly excludedEmbedderFolders;
     private readonly fileLocks;
-    constructor(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString, embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem, type: PlatformFileSystemType, automatic: boolean);
-    static create(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString, embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string, rootURL: string, automatic: boolean): Promise<IsolatedFileSystem | null>;
+    constructor(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString, embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem, type: PlatformFileSystemType, automatic: boolean, settings: Common.Settings.Settings);
+    static create(manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString, embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string, rootURL: string, automatic: boolean, settings: Common.Settings.Settings): Promise<IsolatedFileSystem | null>;
     static errorMessage(error: DOMError): string;
     private serializedFileOperation;
     getMetadata(path: Platform.DevToolsPath.EncodedPathString): Promise<Metadata | null>;

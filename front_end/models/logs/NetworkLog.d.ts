@@ -4,7 +4,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 export declare class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
     #private;
-    constructor();
+    constructor(targetManager?: SDK.TargetManager.TargetManager, settings?: Common.Settings.Settings);
     static instance(): NetworkLog;
     static removeInstance(): void;
     modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void;

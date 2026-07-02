@@ -6887,14 +6887,15 @@ var InspectorDrawerView = class {
     const wasDrawerVisible = this.isVisibleForEvents();
     this.tabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
     this.#splitWidget.showBoth();
+    this.#updatePresentation(this.isMinimized());
     this.#dispatchPaneVisibilityChangedIfNeeded(wasDrawerVisible);
   }
   hide() {
     const wasDrawerVisible = this.isVisibleForEvents();
     const wasMinimized = this.isMinimized();
     this.#splitWidget.hideSidebar(!wasMinimized);
+    this.#updatePresentation(false);
     if (wasMinimized) {
-      this.#updatePresentation(false);
       this.#splitWidget.setSidebarMinimized(false);
       this.#splitWidget.setResizable(true);
     }
@@ -6966,8 +6967,9 @@ var InspectorDrawerView = class {
     this.#minimizeExpandButton.setTitle(i18nString8(UIStrings8.minimizeDrawer));
   }
   #updatePresentation(minimized) {
+    const requireVerticalMinimumWidth = this.#splitWidget.isVertical() && this.#splitWidget.sidebarIsShowing() && !minimized;
+    this.#setInspectorMinimumSize(requireVerticalMinimumWidth ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal, this.#minimumSizes.inspectorHeight);
     const drawerIsVertical = this.#splitWidget.isVertical();
-    this.#setInspectorMinimumSize(drawerIsVertical ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal, this.#minimumSizes.inspectorHeight);
     this.updatePresentation({
       isVertical: drawerIsVertical,
       isMinimized: minimized,
@@ -21770,7 +21772,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     color: currentcolor;
   }
 
-  & *:not(devtools-icon) {
+  & *:not(devtools-icon, .new-badge) {
     color: inherit;
   }
 }

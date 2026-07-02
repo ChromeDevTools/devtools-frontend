@@ -19,7 +19,7 @@ export const generatedProperties = [
         ],
         "name": "-alternative-webkit-line-clamp-longhand",
         "runtime_flag": "CSSLineClamp",
-        "runtime_flag_status": "stable"
+        "runtime_flag_status": "experimental"
     },
     {
         "longhands": [
@@ -252,6 +252,12 @@ export const generatedProperties = [
     },
     {
         "inherited": true,
+        "keywords": [
+            "sideways",
+            "upright",
+            "sideways-right",
+            "vertical-right"
+        ],
         "name": "-webkit-text-orientation"
     },
     {
@@ -2676,6 +2682,35 @@ export const generatedProperties = [
         "name": "direction"
     },
     {
+        "devtools_keywords": [
+            "inline",
+            "block",
+            "list-item",
+            "inline-block",
+            "table",
+            "inline-table",
+            "table-row-group",
+            "table-header-group",
+            "table-footer-group",
+            "table-row",
+            "table-column-group",
+            "table-column",
+            "table-cell",
+            "table-caption",
+            "-webkit-box",
+            "-webkit-inline-box",
+            "flex",
+            "inline-flex",
+            "grid",
+            "inline-grid",
+            "contents",
+            "flow-root",
+            "none",
+            "flow",
+            "math",
+            "ruby",
+            "ruby-text"
+        ],
         "keywords": [
             "inline",
             "block",
@@ -3429,8 +3464,6 @@ export const generatedProperties = [
         "inherited": true,
         "keywords": [
             "auto",
-            "optimizespeed",
-            "optimizequality",
             "-webkit-optimize-contrast",
             "pixelated",
             "crisp-edges"
@@ -3590,6 +3623,13 @@ export const generatedProperties = [
         "name": "lighting-color"
     },
     {
+        "devtools_keywords": [
+            "auto",
+            "loose",
+            "normal",
+            "strict",
+            "anywhere"
+        ],
         "inherited": true,
         "keywords": [
             "auto",
@@ -3602,6 +3642,12 @@ export const generatedProperties = [
         "name": "line-break"
     },
     {
+        "devtools_keywords": [
+            "none",
+            "auto",
+            "ellipsis",
+            "no-ellipsis"
+        ],
         "keywords": [
             "none",
             "auto",
@@ -3611,7 +3657,7 @@ export const generatedProperties = [
         ],
         "name": "line-clamp",
         "runtime_flag": "CSSLineClamp",
-        "runtime_flag_status": "stable"
+        "runtime_flag_status": "experimental"
     },
     {
         "is_descriptor": true,
@@ -4084,6 +4130,18 @@ export const generatedProperties = [
         "name": "outline-offset"
     },
     {
+        "devtools_keywords": [
+            "none",
+            "auto",
+            "inset",
+            "groove",
+            "outset",
+            "ridge",
+            "dotted",
+            "dashed",
+            "solid",
+            "double"
+        ],
         "keywords": [
             "none",
             "hidden",
@@ -5313,6 +5371,17 @@ export const generatedProperties = [
         "name": "table-layout"
     },
     {
+        "devtools_keywords": [
+            "left",
+            "right",
+            "center",
+            "justify",
+            "-webkit-left",
+            "-webkit-right",
+            "-webkit-center",
+            "start",
+            "end"
+        ],
         "inherited": true,
         "keywords": [
             "left",
@@ -5329,6 +5398,15 @@ export const generatedProperties = [
         "name": "text-align"
     },
     {
+        "devtools_keywords": [
+            "auto",
+            "start",
+            "end",
+            "left",
+            "right",
+            "center",
+            "justify"
+        ],
         "inherited": true,
         "keywords": [
             "auto",
@@ -5512,7 +5590,8 @@ export const generatedProperties = [
         "keywords": [
             "sideways",
             "mixed",
-            "upright"
+            "upright",
+            "sideways-right"
         ],
         "name": "text-orientation"
     },
@@ -5569,6 +5648,13 @@ export const generatedProperties = [
         "name": "text-spacing-trim"
     },
     {
+        "devtools_keywords": [
+            "none",
+            "capitalize",
+            "uppercase",
+            "lowercase",
+            "math-auto"
+        ],
         "inherited": true,
         "keywords": [
             "none",
@@ -5626,6 +5712,9 @@ export const generatedProperties = [
         "name": "text-wrap-style"
     },
     {
+        "devtools_keywords": [
+            "none"
+        ],
         "keywords": [
             "none",
             "all"
@@ -5837,6 +5926,12 @@ export const generatedProperties = [
         "name": "unicode-range"
     },
     {
+        "devtools_keywords": [
+            "auto",
+            "none",
+            "text",
+            "all"
+        ],
         "inherited": true,
         "keywords": [
             "auto",
@@ -5906,6 +6001,9 @@ export const generatedProperties = [
         "name": "view-transition-group"
     },
     {
+        "devtools_keywords": [
+            "none"
+        ],
         "keywords": [
             "none",
             "auto"
@@ -6142,6 +6240,14 @@ export const generatedPropertyValues = {
             "underline",
             "spelling-error",
             "grammar-error"
+        ]
+    },
+    "-webkit-text-orientation": {
+        "values": [
+            "sideways",
+            "upright",
+            "sideways-right",
+            "vertical-right"
         ]
     },
     "-webkit-text-security": {
@@ -7241,9 +7347,7 @@ export const generatedPropertyValues = {
             "flow",
             "math",
             "ruby",
-            "ruby-text",
-            "grid-lanes",
-            "inline-grid-lanes"
+            "ruby-text"
         ]
     },
     "dominant-baseline": {
@@ -7692,8 +7796,6 @@ export const generatedPropertyValues = {
     "image-rendering": {
         "values": [
             "auto",
-            "optimizespeed",
-            "optimizequality",
             "-webkit-optimize-contrast",
             "pixelated",
             "crisp-edges"
@@ -7788,8 +7890,7 @@ export const generatedPropertyValues = {
             "loose",
             "normal",
             "strict",
-            "anywhere",
-            "after-white-space"
+            "anywhere"
         ]
     },
     "line-clamp": {
@@ -7797,8 +7898,7 @@ export const generatedPropertyValues = {
             "none",
             "auto",
             "ellipsis",
-            "no-ellipsis",
-            "-webkit-legacy"
+            "no-ellipsis"
         ]
     },
     "line-height": {
@@ -8093,7 +8193,7 @@ export const generatedPropertyValues = {
     "outline-style": {
         "values": [
             "none",
-            "hidden",
+            "auto",
             "inset",
             "groove",
             "outset",
@@ -8680,8 +8780,7 @@ export const generatedPropertyValues = {
             "-webkit-right",
             "-webkit-center",
             "start",
-            "end",
-            "match-parent"
+            "end"
         ]
     },
     "text-align-last": {
@@ -8692,8 +8791,7 @@ export const generatedPropertyValues = {
             "left",
             "right",
             "center",
-            "justify",
-            "match-parent"
+            "justify"
         ]
     },
     "text-anchor": {
@@ -8801,7 +8899,8 @@ export const generatedPropertyValues = {
         "values": [
             "sideways",
             "mixed",
-            "upright"
+            "upright",
+            "sideways-right"
         ]
     },
     "text-overflow": {
@@ -8843,8 +8942,6 @@ export const generatedPropertyValues = {
             "capitalize",
             "uppercase",
             "lowercase",
-            "full-width",
-            "full-size-kana",
             "math-auto"
         ]
     },
@@ -8878,8 +8975,7 @@ export const generatedPropertyValues = {
     },
     "timeline-scope": {
         "values": [
-            "none",
-            "all"
+            "none"
         ]
     },
     "timeline-trigger-active-range-end": {
@@ -8996,8 +9092,7 @@ export const generatedPropertyValues = {
             "auto",
             "none",
             "text",
-            "all",
-            "contain"
+            "all"
         ]
     },
     "vector-effect": {
@@ -9045,8 +9140,7 @@ export const generatedPropertyValues = {
     },
     "view-transition-name": {
         "values": [
-            "none",
-            "auto"
+            "none"
         ]
     },
     "view-transition-scope": {

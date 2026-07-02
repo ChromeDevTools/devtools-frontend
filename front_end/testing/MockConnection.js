@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
-import { deinitializeGlobalVars, initializeGlobalVars } from './EnvironmentHelpers.js';
 export function dispatchEvent(target, eventName, ...payload) {
     const event = eventName;
     const [domain] = ProtocolClient.InspectorBackend.splitQualifiedName(event);
@@ -14,36 +13,4 @@ export function dispatchEvent(target, eventName, ...payload) {
     }
     target.dispatch({ method: event, params: payload[0] });
 }
-async function enable({ reset = true } = {}) {
-    // The DevTools frontend code expects certain things to be in place
-    // before it can run. This function will ensure those things are
-    // minimally there.
-    await initializeGlobalVars({ reset });
-}
-async function disable() {
-    // Some Widgets rely on Global vars to be there so they
-    // can properly remove state once they detach.
-    await deinitializeGlobalVars();
-}
-/**
- * @deprecated use `describeWithEnvironment` instead. They are near equivalent.
- * `describeWithMockConnection` cleans up DOM and waits one more animation frame
- */
-export function describeWithMockConnection(title, fn) {
-    return describe(title, function () {
-        beforeEach(async () => await enable());
-        fn.call(this);
-        afterEach(disable);
-    });
-}
-describeWithMockConnection.only = function (title, fn, opts = {
-    reset: true,
-}) {
-    // eslint-disable-next-line mocha/no-exclusive-tests
-    return describe.only(title, function () {
-        beforeEach(async () => await enable(opts));
-        fn.call(this);
-        afterEach(disable);
-    });
-};
 //# sourceMappingURL=MockConnection.js.map

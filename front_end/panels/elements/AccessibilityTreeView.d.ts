@@ -4,10 +4,11 @@ import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
 export declare class AccessibilityTreeView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<SDK.AccessibilityModel.AccessibilityModel> {
+    #private;
     private accessibilityTreeComponent;
     private inspectedDOMNode;
     private root;
-    constructor(accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>);
+    constructor(accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>, frameManager?: SDK.FrameManager.FrameManager);
     wasShown(): Promise<void>;
     refreshAccessibilityTree(): Promise<void>;
     renderTree(): Promise<void>;

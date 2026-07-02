@@ -1173,7 +1173,7 @@
               name: 'LCP',
               value: metric.value,
               startedHidden: Boolean(startedHidden),
-              phases: {
+              subparts: {
                   timeToFirstByte: metric.attribution.timeToFirstByte,
                   resourceLoadDelay: metric.attribution.resourceLoadDelay,
                   resourceLoadTime: metric.attribution.resourceLoadDuration,
@@ -1201,7 +1201,7 @@
           const event = {
               name: 'InteractionEntry',
               duration: interaction.value,
-              phases: {
+              subparts: {
                   inputDelay: interaction.attribution.inputDelay,
                   processingDuration: interaction.attribution.processingDuration,
                   presentationDelay: interaction.attribution.presentationDelay,
@@ -1224,7 +1224,7 @@
           const event = {
               name: 'INP',
               value: metric.value,
-              phases: {
+              subparts: {
                   inputDelay: metric.attribution.inputDelay,
                   processingDuration: metric.attribution.processingDuration,
                   presentationDelay: metric.attribution.presentationDelay,

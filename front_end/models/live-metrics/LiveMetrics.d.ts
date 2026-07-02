@@ -35,11 +35,11 @@ export interface MetricValue {
     warnings?: string[];
 }
 export interface LcpValue extends MetricValue {
-    phases: Spec.LcpPhases;
+    subparts: Spec.LcpSubparts;
     nodeRef?: SDK.DOMModel.DOMNode;
 }
 export interface InpValue extends MetricValue {
-    phases: Spec.InpPhases;
+    subparts: Spec.InpSubparts;
     interactionId: InteractionId;
 }
 export interface ClsValue extends MetricValue {
@@ -57,7 +57,7 @@ export interface Interaction {
     duration: number;
     startTime: number;
     nextPaintTime: number;
-    phases: Spec.InpPhases;
+    subparts: Spec.InpSubparts;
     longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
     nodeRef?: SDK.DOMModel.DOMNode;
 }

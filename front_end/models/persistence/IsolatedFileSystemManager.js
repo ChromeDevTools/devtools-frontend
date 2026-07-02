@@ -24,8 +24,10 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     #workspaceFolderExcludePatternSetting;
     fileSystemRequestResolve;
     fileSystemsLoadedPromise;
-    constructor() {
+    #settings;
+    constructor(settings = Common.Settings.Settings.instance()) {
         super();
+        this.#settings = settings;
         this.#fileSystems = new Map();
         this.callbacks = new Map();
         this.progresses = new Map();
@@ -73,7 +75,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
             defaultExcludedFolders = defaultExcludedFolders.concat(defaultLinuxExcludedFolders);
         }
         const defaultExcludedFoldersPattern = defaultExcludedFolders.join('|');
-        this.#workspaceFolderExcludePatternSetting = Common.Settings.Settings.instance().createRegExpSetting('workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
+        this.#workspaceFolderExcludePatternSetting = this.#settings.createRegExpSetting('workspace-folder-exclude-pattern', defaultExcludedFoldersPattern, Host.Platform.isWin() ? 'i' : '');
         this.fileSystemRequestResolve = null;
         this.fileSystemsLoadedPromise = this.requestFileSystems();
     }
@@ -123,7 +125,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     #addFileSystem(fileSystem, dispatchEvent) {
         const embedderPath = fileSystem.fileSystemPath;
         const fileSystemURL = Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath);
-        const promise = IsolatedFileSystem.create(this, fileSystemURL, embedderPath, hostFileSystemTypeToPlatformFileSystemType(fileSystem.type), fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === 'automatic');
+        const promise = IsolatedFileSystem.create(this, fileSystemURL, embedderPath, hostFileSystemTypeToPlatformFileSystemType(fileSystem.type), fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === 'automatic', this.#settings);
         return promise.then(storeFileSystem.bind(this));
         function storeFileSystem(fileSystem) {
             if (!fileSystem) {

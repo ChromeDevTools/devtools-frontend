@@ -262,4 +262,12 @@ export interface EventTypes {
         errorText: string;
     };
 }
+/**
+ * Calculates the window to auto-zoom into when a trace is loaded.
+ * We only auto-zoom to the main thread activity if there is no active breadcrumb,
+ * as we want to preserve the active breadcrumb's window if one exists.
+ *
+ * @returns the window to zoom into, or null if no auto-zoom should be applied.
+ */
+export declare function calculateAutoZoomWindow(traceBounds: Trace.Types.Timing.TraceWindowMicro, topMostMainThreadAppenderEntries: readonly Trace.Types.Events.Event[] | undefined): Trace.Types.Timing.TraceWindowMicro | null;
 export {};

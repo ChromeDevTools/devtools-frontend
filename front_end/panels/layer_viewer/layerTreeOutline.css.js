@@ -9,21 +9,28 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.layer-summary {
-  border-top: 1px solid var(--sys-color-divider);
-  justify-content: space-between;
-  padding: 4px 10px;
-  flex-shrink: 0;
-}
+@scope to (devtools-widget > *) {
+  .layer-summary {
+    border-top: 1px solid var(--sys-color-divider);
+    justify-content: space-between;
+    padding: 4px 10px;
+    flex-shrink: 0;
+  }
 
-.layer-count {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .layer-count {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.layer-tree-wrapper {
-  flex-grow: 1;
+  .layer-tree-wrapper {
+    height: 100%;
+    flex-grow: 1;
+  }
+
+  .layer-tree {
+    flex-grow: 1;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./layerTreeOutline.css')} */`;

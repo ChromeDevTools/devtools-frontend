@@ -2852,7 +2852,7 @@ import * as TraceBounds13 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing5 from "./../../services/tracing/tracing.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html5, nothing as nothing2, render as render5 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html6, nothing as nothing2, render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as TimelineComponents5 from "./components/components.js";
 
@@ -3097,7 +3097,7 @@ var imagePreview_css_default = `/*
 import * as LegacyComponents from "./../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport17 from "./../../ui/legacy/theme_support/theme_support.js";
-import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
 import * as PanelsCommon2 from "./../common/common.js";
 import * as TimelineComponents4 from "./components/components.js";
 import * as Extensions2 from "./extensions/extensions.js";
@@ -3116,6 +3116,7 @@ __export(TimelinePanel_exports, {
   TimeRangeRevealer: () => TimeRangeRevealer,
   TimelinePanel: () => TimelinePanel,
   TraceRevealer: () => TraceRevealer,
+  calculateAutoZoomWindow: () => calculateAutoZoomWindow,
   headerHeight: () => headerHeight,
   rowHeight: () => rowHeight
 });
@@ -4064,8 +4065,8 @@ import * as Common7 from "./../../core/common/common.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Trace16 from "./../../models/trace/trace.js";
-import { createIcon } from "./../../ui/kit/kit.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
+import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/TimelineEventOverview.js
@@ -4966,35 +4967,37 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
       lastUsed: Date.now()
     };
     parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
-    preview.appendChild(this.#buildTextDetails(parsedTrace.metadata, domain));
-    const screenshotAndOverview = preview.createChild("div", "hbox");
-    screenshotAndOverview.appendChild(this.#buildScreenshotThumbnail(filmStrip));
-    screenshotAndOverview.appendChild(this.#buildOverview(parsedTrace));
+    render2(html2`
+      ${this.#renderTextDetails(parsedTrace.metadata, domain)}
+      <div class="hbox">
+        ${this.#renderScreenshotThumbnail(filmStrip)}
+        ${this.#buildOverview(parsedTrace)}
+      </div>
+    `, preview, { host: this });
     return data.preview;
   }
-  #buildTextDetails(metadata, title) {
-    const container = document.createElement("div");
-    container.classList.add("text-details");
-    container.classList.add("hbox");
-    const nameSpan = container.createChild("span", "name");
-    nameSpan.textContent = title;
-    UI5.ARIAUtils.setLabel(nameSpan, title);
+  #renderTextDetails(metadata, title) {
+    let metadataText = "";
     if (metadata) {
       const parts = [
         metadata.emulatedDeviceTitle,
         metadata.cpuThrottling ? i18nString14(UIStrings14.dSlowdown, { PH1: metadata.cpuThrottling }) : void 0,
         metadata.networkThrottling
       ].filter(Boolean);
-      container.createChild("span", "metadata").textContent = listFormatter.format(parts);
+      metadataText = listFormatter.format(parts);
     }
-    return container;
+    return html2`
+      <div class="text-details hbox">
+        <span class="name">${title}</span>
+        ${metadataText ? html2`<span class="metadata">${metadataText}</span>` : ""}
+      </div>
+    `;
   }
-  #buildScreenshotThumbnail(filmStrip) {
-    const container = document.createElement("div");
-    container.classList.add("screenshot-thumb");
+  #renderScreenshotThumbnail(filmStrip) {
     const thumbnailAspectRatio = 3 / 2;
-    container.style.width = this.totalHeight * thumbnailAspectRatio + "px";
-    container.style.height = this.totalHeight + "px";
+    const width = this.totalHeight * thumbnailAspectRatio + "px";
+    const height = this.totalHeight + "px";
+    const container = html2`<div class="screenshot-thumb" style="width: ${width}; height: ${height}"></div>`;
     if (!filmStrip) {
       return container;
     }
@@ -5003,12 +5006,11 @@ var TimelineHistoryManager = class _TimelineHistoryManager {
       return container;
     }
     const uri = Trace16.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
-    void UI5.UIUtils.loadImage(uri).then((img) => {
-      if (img) {
-        container.appendChild(img);
-      }
-    });
-    return container;
+    return html2`
+      <div class="screenshot-thumb" style="width: ${width}; height: ${height}">
+        <img src=${uri}>
+      </div>
+    `;
   }
   #buildOverview(parsedTrace) {
     const container = document.createElement("div");
@@ -5152,13 +5154,10 @@ var DropDown = class _DropDown {
     div.classList.add("preview-item");
     div.classList.add("landing-page-item");
     div.style.width = `${previewWidth}px`;
-    const icon = createIcon("arrow-back");
-    icon.title = i18nString14(UIStrings14.backButtonTooltip);
-    icon.classList.add("back-arrow");
-    div.appendChild(icon);
-    const text = document.createElement("span");
-    text.innerText = this.#landingPageTitle;
-    div.appendChild(text);
+    render2(html2`
+      <devtools-icon class="back-arrow" title=${i18nString14(UIStrings14.backButtonTooltip)} name="arrow-back"></devtools-icon>
+      <span>${this.#landingPageTitle}</span>
+    `, div, { host: this });
     return div;
   }
   heightForItem(_parsedTraceIndex) {
@@ -5182,20 +5181,18 @@ var DropDown = class _DropDown {
   static instance = null;
 };
 var ToolbarButton = class extends UI5.Toolbar.ToolbarItem {
-  contentElement;
   constructor(action2) {
     const element = document.createElement("button");
     element.classList.add("history-dropdown-button");
     element.setAttribute("jslog", `${VisualLogging3.dropDown("history")}`);
     super(element);
-    this.contentElement = this.element.createChild("span", "content");
     this.element.addEventListener("click", () => void action2.execute(), false);
     this.setEnabled(action2.enabled());
     action2.addEventListener("Enabled", (event) => this.setEnabled(event.data));
     this.setTitle(action2.title());
   }
   setText(text) {
-    this.contentElement.textContent = text;
+    render2(html2`<span class="content">${text}</span>`, this.element, { host: this });
   }
 };
 
@@ -8130,10 +8127,14 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false
     });
     currentManager?.addEventListener(AnnotationModifiedEvent.eventName, this.#onAnnotationModifiedEventBound);
-    const topMostMainThreadAppender = this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
-    if (topMostMainThreadAppender) {
-      const zoomedInBounds = Trace22.Extras.MainThreadActivity.calculateWindow(parsedTrace.data.Meta.traceBounds, topMostMainThreadAppender.getEntries());
-      TraceBounds9.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomedInBounds);
+    const breadcrumbs = currentManager?.getTimelineBreadcrumbs();
+    const hasActiveBreadcrumb = breadcrumbs ? breadcrumbs.activeBreadcrumb !== breadcrumbs.initialBreadcrumb : false;
+    if (!hasActiveBreadcrumb) {
+      const topMostMainThreadAppender = this.flameChart.getMainDataProvider().compatibilityTracksAppenderInstance().threadAppenders().at(0);
+      const zoomWindow = calculateAutoZoomWindow(parsedTrace.data.Meta.traceBounds, topMostMainThreadAppender?.getEntries());
+      if (zoomWindow) {
+        TraceBounds9.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(zoomWindow);
+      }
     }
     const currModificationManager = ModificationsManager.activeManager();
     if (currModificationManager) {
@@ -8939,6 +8940,12 @@ var SelectedInsight = class {
     this.insight = insight;
   }
 };
+function calculateAutoZoomWindow(traceBounds, topMostMainThreadAppenderEntries) {
+  if (!topMostMainThreadAppenderEntries || topMostMainThreadAppenderEntries.length === 0) {
+    return null;
+  }
+  return Trace22.Extras.MainThreadActivity.calculateWindow(traceBounds, topMostMainThreadAppenderEntries);
+}
 
 // gen/front_end/panels/timeline/TimelineUIUtils.js
 import * as Utils3 from "./utils/utils.js";
@@ -9617,7 +9624,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         break;
     }
     const div = document.createElement("div");
-    render2(html2`<devtools-link href=${link}>${i18nString19(UIStrings19.learnMore)}</devtools-link> about ${name}.`, div);
+    render3(html3`<devtools-link href=${link}>${i18nString19(UIStrings19.learnMore)}</devtools-link> about ${name}.`, div);
     return div;
   }
   static buildConsumeCacheDetails(eventData, contentHelper) {
@@ -10134,7 +10141,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     for (const relatedNode of relatedNodes) {
       if (relatedNode) {
         const nodeSpan = document.createElement("span");
-        render2(PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
+        render3(PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(relatedNode), nodeSpan);
         contentHelper.appendElementRow(relatedNodeLabel || i18nString19(UIStrings19.relatedNode), nodeSpan);
       }
     }
@@ -10301,7 +10308,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       const node = invalidation.args.data.nodeId && relatedNodesMap ? relatedNodesMap.get(invalidation.args.data.nodeId) : null;
       if (node) {
         const nodeSpan2 = document.createElement("span");
-        render2(PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan2);
+        render3(PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node), nodeSpan2);
         return nodeSpan2;
       }
       if (invalidation.args.data.nodeName) {
@@ -13372,7 +13379,7 @@ async function getPaintProfilerSnapshot(paintProfilerModel, paint) {
 }
 
 // gen/front_end/panels/timeline/TimelinePaintProfilerView.js
-var { html: html3, render: render3 } = Lit;
+var { html: html4, render: render4 } = Lit;
 var { createRef, ref } = Lit.Directives;
 var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
   logAndImageSplitWidget;
@@ -13523,7 +13530,7 @@ var TimelinePaintProfilerView = class extends UI13.SplitWidget.SplitWidget {
 };
 var DEFAULT_VIEW2 = (input, output, target) => {
   const imageElementRef = createRef();
-  render3(html3`
+  render4(html4`
   <div class="paint-profiler-image-view fill">
     <div class="paint-profiler-image-container" style="-webkit-transform: ${input.imageContainerWebKitTransform}">
       <img src=${input.imageURL} display=${input.imageContainerHidden ? "none" : "block"} ${ref(imageElementRef)}>
@@ -13628,7 +13635,7 @@ import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Trace29 from "./../../models/trace/trace.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
-import { html as html4, render as render4 } from "./../../ui/lit/lit.js";
+import { html as html5, render as render5 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/timelineSelectorStatsView.css.js
@@ -13739,7 +13746,7 @@ var str_23 = i18n45.i18n.registerUIStrings("panels/timeline/TimelineSelectorStat
 var i18nString23 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var SelectorTimingsKey = Trace29.Types.Events.SelectorTimingsKey;
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render4(html4`
+  render5(html5`
       <devtools-data-grid striped name=${i18nString23(UIStrings23.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
@@ -13777,7 +13784,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
     const locations = timing.locations;
     const locationMessage = locations ? null : locations === null ? "" : i18nString23(UIStrings23.unableToLinkViaStyleSheetId, { PH1: styleSheetId });
-    return html4`<tr>
+    return html5`<tr>
             <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
               ${(timing[SelectorTimingsKey.Elapsed] / 1e3).toFixed(3)}
             </td>
@@ -13792,7 +13799,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <td title=${timing[SelectorTimingsKey.Selector]}>
              ${timing[SelectorTimingsKey.Selector]}
             </td>
-            <td data-value=${styleSheetId}>${locations ? html4`${locations.map((location, itemIndex) => html4`
+            <td data-value=${styleSheetId}>${locations ? html5`${locations.map((location, itemIndex) => html5`
                 <devtools-linkifier .data=${location}></devtools-linkifier
                 >${itemIndex !== locations.length - 1 ? "," : ""}`)}` : locationMessage}
             </td>
@@ -14532,7 +14539,7 @@ var Tab;
   Tab2["SelectorStats"] = "selector-stats";
 })(Tab || (Tab = {}));
 var SUMMARY_DEFAULT_VIEW = (input, _output, target) => {
-  render5(html5`
+  render6(html6`
         <style>${timelineDetailsView_css_default}</style>
         ${Directives2.until(renderSelectedEventDetails(input))}
         ${input.selectedRange ? generateRangeSummaryDetails(input) : nothing2}
@@ -14579,13 +14586,13 @@ var SummaryView = class extends UI15.Widget.Widget {
   }
 };
 function generateRangeSummaryDetails(input) {
-  return html5`${widget(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
+  return html6`${widget(TimelineComponents5.TimelineRangeSummaryView.TimelineRangeSummaryView, {
     data: {
       parsedTrace: input.parsedTrace,
       events: input.selectedRange?.events,
       startTime: input.selectedRange?.startTime,
       endTime: input.selectedRange?.endTime,
-      thirdPartyTreeTemplate: input.selectedRange ? html5`${widget(ThirdPartyTreeViewWidget, {
+      thirdPartyTreeTemplate: input.selectedRange ? html6`${widget(ThirdPartyTreeViewWidget, {
         model: {
           parsedTrace: input.parsedTrace,
           entityMapper: input.entityMapper,
@@ -14606,7 +14613,7 @@ async function renderSelectedEventDetails(input) {
   }
   const traceRecordingIsFresh = parsedTrace ? Tracing5.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace) : false;
   if (Trace30.Types.Events.isSyntheticLayoutShift(selectedEvent) || Trace30.Types.Events.isSyntheticLayoutShiftCluster(selectedEvent)) {
-    return html5`
+    return html6`
       <devtools-widget data-layout-shift-details ${widget(TimelineComponents5.LayoutShiftDetails.LayoutShiftDetails, {
       event: selectedEvent,
       parsedTrace: input.parsedTrace,
@@ -14615,7 +14622,7 @@ async function renderSelectedEventDetails(input) {
       ></devtools-widget>`;
   }
   if (Trace30.Types.Events.isSyntheticNetworkRequest(selectedEvent)) {
-    return html5`
+    return html6`
       <devtools-widget data-network-request-details ${widget(TimelineComponents5.NetworkRequestDetails.NetworkRequestDetails, {
       request: selectedEvent,
       entityMapper: input.entityMapper,
@@ -14629,10 +14636,10 @@ async function renderSelectedEventDetails(input) {
   if (Trace30.Types.Events.isLegacyTimelineFrame(selectedEvent) && input.filmStrip) {
     const matchedFilmStripFrame = getFilmStripFrame(input.filmStrip, selectedEvent);
     const content = TimelineUIUtils.generateDetailsContentForFrame(selectedEvent, input.filmStrip, matchedFilmStripFrame);
-    return html5`${content}`;
+    return html6`${content}`;
   }
   const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(parsedTrace, selectedEvent, linkifier, true, input.entityMapper);
-  return html5`${traceEventDetails}`;
+  return html6`${traceEventDetails}`;
 }
 var filmStripFrameCache = /* @__PURE__ */ new WeakMap();
 function getFilmStripFrame(filmStrip, frame) {
@@ -14668,7 +14675,7 @@ import * as Trace32 from "./../../models/trace/trace.js";
 import * as PerfUI15 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport23 from "./../../ui/legacy/theme_support/theme_support.js";
-import { html as html6, render as render6 } from "./../../ui/lit/lit.js";
+import { html as html7, render as render7 } from "./../../ui/lit/lit.js";
 import * as TimelineComponents6 from "./components/components.js";
 
 // gen/front_end/panels/timeline/NetworkTrackAppender.js
@@ -15203,7 +15210,7 @@ var TimelineFlameChartNetworkDataProvider = class {
     if (Trace32.Types.Events.isSyntheticNetworkRequest(event)) {
       const element = document.createElement("div");
       const root = UI16.UIUtils.createShadowRootWithCoreStyles(element, { cssFile: timelineFlamechartPopover_css_default });
-      render6(html6`
+      render7(html7`
         <div class="timeline-flamechart-popover">
           ${TimelineComponents6.NetworkRequestTooltip.NetworkRequestTooltip.createWidgetElement(event, this.#entityMapper || void 0)}
         </div>`, root);
@@ -18878,7 +18885,7 @@ var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
 /*# sourceURL=${import.meta.resolve("./networkTrackWidget.css")} */`;
 
 // gen/front_end/panels/timeline/components/NetworkTrackWidget.js
-var { html: html7 } = Lit2;
+var { html: html8 } = Lit2;
 var NetworkTrackWidget = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #flameChartContainer = document.createElement("div");
@@ -18922,7 +18929,7 @@ var NetworkTrackWidget = class extends HTMLElement {
     if (!this.#parsedTrace) {
       return;
     }
-    const output = html7`
+    const output = html8`
         <style>${networkTrackWidget_css_default}</style>
         ${this.#flameChartContainer}
       `;

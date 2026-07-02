@@ -5,6 +5,8 @@ import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
+import * as Logs from '../models/logs/logs.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { createTarget } from './TargetHelpers.js';
 export interface CreationOptions extends Partial<Foundation.Universe.CreationOptions> {
@@ -37,11 +39,15 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get autofillManager(): AutofillManager.AutofillManager.AutofillManager;
     get console(): Common.Console.Console;
     get context(): Root.DevToolsContext.DevToolsContext;
+    get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;
     get debuggerWorkspaceBinding(): Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
     get frameManager(): SDK.FrameManager.FrameManager;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
+    get logManager(): Logs.LogManager.LogManager;
+    get javaScriptMetadata(): JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl;
     get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager;
+    get networkLog(): Logs.NetworkLog.NetworkLog;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
     get targetManager(): SDK.TargetManager.TargetManager;
     get settings(): Common.Settings.Settings;

@@ -8,7 +8,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, nothing, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import requestInitiatorViewStyles from './requestInitiatorView.css.js';
 import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
@@ -29,6 +29,17 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const MAX_URL_LENGTH = 150;
+function trimUrl(url) {
+    if (url.length <= MAX_URL_LENGTH) {
+        return url;
+    }
+    // To avoid performance issues with extremely long URLs (e.g. 2MB base64 data URLs),
+    // we do a fast O(1) slice instead of using the O(N) Platform.StringUtilities.trimMiddle
+    // utility which instantiates Intl.Segmenter and iterates over every grapheme.
+    const halfMaxLength = Math.floor(MAX_URL_LENGTH / 2);
+    return url.substring(0, halfMaxLength) + '…' + url.substring(url.length - halfMaxLength);
+}
 export const DEFAULT_VIEW = (input, _output, target) => {
     const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
     if (!hasInitiatorData) {
@@ -67,10 +78,16 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const isCurrentRequest = (index === initiators.length - 1);
         const hasFurtherInitiatedNodes = index + 1 < initiators.length;
         const renderedChildren = isCurrentRequest ? renderInitiatedNodes(initiated, request, visited) : nothing;
+        const url = request.url();
+        // To avoid layout and rendering lag from extremely long URLs (like data: URLs),
+        // we only set the title/tooltip attribute if the URL is under 2000 characters.
+        const title = url.length < 2000 ? url : undefined;
         // clang-format off
         return html `
           <li role="treeitem" ?selected=${isCurrentRequest} aria-expanded="true" open>
-            <span style=${isCurrentRequest ? 'font-weight: bold' : ''}>${request.url()}</span>
+            <span style=${isCurrentRequest ? 'font-weight: bold' : ''} title=${Directives.ifDefined(title)}>
+              ${trimUrl(url)}
+            </span>
             ${hasFurtherInitiatedNodes || renderedChildren !== nothing ? html `
               <ul role="group">
                 ${renderInitiatorNodes(initiators, index + 1, initiated, visited)}
@@ -96,9 +113,15 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                 visited.add(child);
             }
             const renderedChildren = shouldRecurse ? renderInitiatedNodes(initiated, child, visited) : nothing;
+            const url = child.url();
+            // To avoid layout and rendering lag from extremely long URLs (like data: URLs),
+            // we only set the title/tooltip attribute if the URL is under 2000 characters.
+            const title = url.length < 2000 ? url : undefined;
             return html `
         <li role="treeitem" aria-expanded="true" open>
-          <span>${child.url()}</span>
+          <span title=${Directives.ifDefined(title)}>
+            ${trimUrl(url)}
+          </span>
           ${renderedChildren !== nothing ? html `<ul role="group">${renderedChildren}</ul>` : nothing}
         </li>
       `;

@@ -15671,9 +15671,6 @@
   "panels/timeline/components/LiveMetricsView.ts | percentDevices": {
     "message": "{PH1}% mobile, {PH2}% desktop"
   },
-  "panels/timeline/components/LiveMetricsView.ts | phase": {
-    "message": "Phase"
-  },
   "panels/timeline/components/LiveMetricsView.ts | presentationDelay": {
     "message": "Presentation delay"
   },
@@ -15700,6 +15697,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Go to the INP interaction."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | subpart": {
+    "message": "Subpart"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tablet"
@@ -15767,9 +15767,6 @@
   "panels/timeline/components/MetricCard.ts | percentage": {
     "message": "{PH1}%"
   },
-  "panels/timeline/components/MetricCard.ts | phase": {
-    "message": "Phase"
-  },
   "panels/timeline/components/MetricCard.ts | poor": {
     "message": "Poor"
   },
@@ -15796,6 +15793,9 @@
   },
   "panels/timeline/components/MetricCard.ts | recViewportLCP": {
     "message": "Screen size can influence what the LCP element is. Ensure you are testing common viewport sizes."
+  },
+  "panels/timeline/components/MetricCard.ts | subpart": {
+    "message": "Subpart"
   },
   "panels/timeline/components/MetricCard.ts | viewCardDetails": {
     "message": "View card details"

@@ -17,8 +17,10 @@ var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #filledFields = [];
   #matches = [];
   #autofillModel = null;
-  constructor(targetManager) {
+  #frameManager;
+  constructor(targetManager, frameManager = SDK.FrameManager.FrameManager.instance()) {
     super();
+    this.#frameManager = frameManager;
     targetManager.addModelListener(SDK.AutofillModel.AutofillModel, "AddressFormFilled", this.#addressFormFilled, this, { scoped: true });
   }
   async #addressFormFilled({ data }) {
@@ -44,7 +46,7 @@ var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
   }
   highlightFilledField(filledField) {
     const backendNodeId = filledField.fieldId;
-    const target = SDK.FrameManager.FrameManager.instance().getFrame(filledField.frameId)?.resourceTreeModel().target();
+    const target = this.#frameManager.getFrame(filledField.frameId)?.resourceTreeModel().target();
     if (target) {
       const deferredNode = new SDK.DOMModel.DeferredDOMNode(target, backendNodeId);
       const domModel = target.model(SDK.DOMModel.DOMModel);

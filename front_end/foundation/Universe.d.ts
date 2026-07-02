@@ -10,5 +10,6 @@ export declare class Universe {
     readonly context: Root.DevToolsContext.DevToolsContext;
     readonly autofillManager: AutofillManager.AutofillManager.AutofillManager;
     constructor(options: CreationOptions);
+    get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
 }

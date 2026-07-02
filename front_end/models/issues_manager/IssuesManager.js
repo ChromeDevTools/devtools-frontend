@@ -189,14 +189,16 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
     #thirdPartyCookiePhaseoutIssueCount = new Map();
     #issuesById = new Map();
     #issuesByOutermostTarget = new Map();
-    constructor(showThirdPartyIssuesSetting, hideIssueSetting) {
+    #frameManager;
+    constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK.FrameManager.FrameManager.instance()) {
         super();
         this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
         this.hideIssueSetting = hideIssueSetting;
+        this.#frameManager = frameManager;
         new SourceFrameIssuesManager(this);
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.IssuesModel.IssuesModel, this);
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-        SDK.FrameManager.FrameManager.instance().addEventListener("FrameAddedToTarget" /* SDK.FrameManager.Events.FRAME_ADDED_TO_TARGET */, this.#onFrameAddedToTarget, this);
+        this.#frameManager.addEventListener("FrameAddedToTarget" /* SDK.FrameManager.Events.FRAME_ADDED_TO_TARGET */, this.#onFrameAddedToTarget, this);
         // issueFilter uses the 'show-third-party-issues' setting. Clients of IssuesManager need
         // a full update when the setting changes to get an up-to-date issues list.
         this.showThirdPartyIssuesSetting?.addChangeListener(() => this.#updateFilteredIssues());
@@ -218,7 +220,8 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper {
             throw new Error('IssuesManager was already created. Either set "ensureFirst" to false or make sure that this invocation is really the first one.');
         }
         if (!issuesManagerInstance || opts.forceNew) {
-            issuesManagerInstance = new IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting);
+            issuesManagerInstance =
+                new IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting, opts.frameManager);
         }
         return issuesManagerInstance;
     }

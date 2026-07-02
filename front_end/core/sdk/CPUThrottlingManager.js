@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import * as Root from '../root/root.js';
 import { EmulationModel } from './EmulationModel.js';
 import { TargetManager } from './TargetManager.js';
 const UIStrings = {
@@ -31,7 +32,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-let throttlingManagerInstance;
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     #targetManager;
     #cpuThrottlingOption;
@@ -48,14 +48,13 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
-        if (!throttlingManagerInstance || forceNew) {
-            throttlingManagerInstance =
-                new CPUThrottlingManager(Common.Settings.Settings.instance(), TargetManager.instance());
+        if (!Root.DevToolsContext.globalInstance().has(CPUThrottlingManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(CPUThrottlingManager, new CPUThrottlingManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance()));
         }
-        return throttlingManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(CPUThrottlingManager);
     }
     static removeInstance() {
-        throttlingManagerInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(CPUThrottlingManager);
     }
     cpuThrottlingRate() {
         return this.#cpuThrottlingOption.rate();

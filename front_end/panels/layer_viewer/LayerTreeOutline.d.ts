@@ -2,6 +2,12 @@ import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LayerView, type LayerViewHost, type Selection } from './LayerViewHost.js';
+export interface ViewInput {
+    treeOutlineElement: HTMLElement;
+    layerCount: number;
+    totalLayerMemory: number;
+}
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 declare const LayerTreeOutline_base: (new (...args: any[]) => {
     __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -10,17 +16,17 @@ declare const LayerTreeOutline_base: (new (...args: any[]) => {
     hasEventListeners(eventType: Events.PAINT_PROFILER_REQUESTED): boolean;
     dispatchEventToListeners<T extends Events.PAINT_PROFILER_REQUESTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
     dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.TreeOutline.TreeOutline;
+}) & typeof UI.Widget.Widget;
 export declare class LayerTreeOutline extends LayerTreeOutline_base implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
+    #private;
     private layerViewHost;
     private treeOutline;
     private lastHoveredNode;
-    private layerCountElement;
-    private layerMemoryElement;
-    element: HTMLElement;
     private layerTree?;
     private layerSnapshotMap?;
-    constructor(layerViewHost: LayerViewHost);
+    constructor(layerViewHost: LayerViewHost, view?: View);
+    wasShown(): void;
+    performUpdate(): void;
     focus(): void;
     selectObject(selection: Selection | null): void;
     hoverObject(selection: Selection | null): void;

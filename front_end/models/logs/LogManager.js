@@ -2,19 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { NetworkLog } from './NetworkLog.js';
 const modelToEventListeners = new WeakMap();
-let instance = null;
 export class LogManager {
-    constructor() {
-        SDK.TargetManager.TargetManager.instance().observeModels(SDK.LogModel.LogModel, this);
+    #targetManager;
+    #networkLog;
+    constructor(targetManager, networkLog) {
+        this.#targetManager = targetManager;
+        this.#networkLog = networkLog;
+        this.#targetManager.observeModels(SDK.LogModel.LogModel, this);
     }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!instance || forceNew) {
-            instance = new LogManager();
+        if (!Root.DevToolsContext.globalInstance().has(LogManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(LogManager, new LogManager(SDK.TargetManager.TargetManager.instance(), NetworkLog.instance()));
         }
-        return instance;
+        return Root.DevToolsContext.globalInstance().get(LogManager);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(LogManager);
     }
     modelAdded(logModel) {
         const eventListeners = [];
@@ -42,7 +49,7 @@ export class LogManager {
         };
         const consoleMessage = new SDK.ConsoleModel.ConsoleMessage(target.model(SDK.RuntimeModel.RuntimeModel), entry.source, entry.level, entry.text, details);
         if (entry.networkRequestId) {
-            NetworkLog.instance().associateConsoleMessageWithRequest(consoleMessage, entry.networkRequestId);
+            this.#networkLog.associateConsoleMessageWithRequest(consoleMessage, entry.networkRequestId);
         }
         const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
         if (consoleMessage.source === "worker" /* Protocol.Log.LogEntrySource.Worker */) {
@@ -51,11 +58,11 @@ export class LogManager {
             // user can see messages from the worker which has been already destroyed.
             // When opening DevTools, give us some time to connect to the worker and
             // not report the message twice if the worker is still alive.
-            if (SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
+            if (this.#targetManager.targetById(workerId)) {
                 return;
             }
             window.setTimeout(() => {
-                if (!SDK.TargetManager.TargetManager.instance().targetById(workerId)) {
+                if (!this.#targetManager.targetById(workerId)) {
                     consoleModel?.addMessage(consoleMessage);
                 }
             }, 1000);

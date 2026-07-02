@@ -10,7 +10,10 @@ export async function saveToDisk(conversation) {
     const titleFormatted = Platform.StringUtilities.toSnakeCase(conversation.title || '');
     const prefix = 'devtools_';
     const suffix = '.md';
-    const maxTitleLength = 64 - prefix.length - suffix.length;
+    // The Windows save dialog / Chrome wrapper limits the suggested filename
+    // to 63 characters (due to a 64-byte null-terminated buffer).
+    // Capping the total filename length at 63 avoids truncation of the extension.
+    const maxTitleLength = 63 - prefix.length - suffix.length;
     let finalTitle = titleFormatted || 'conversation';
     if (finalTitle.length > maxTitleLength) {
         finalTitle = finalTitle.substring(0, maxTitleLength);

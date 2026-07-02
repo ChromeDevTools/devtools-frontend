@@ -1,10 +1,10 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import layerTreeOutlineStyles from './layerTreeOutline.css.js';
 import { LayerSelection, } from './LayerViewHost.js';
 const UIStrings = {
@@ -30,19 +30,36 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOutline.TreeOutline) {
+const DEFAULT_VIEW = (input, _output, target) => {
+    render(html `
+    <style>${layerTreeOutlineStyles}</style>
+    <div class="vbox layer-tree-wrapper">
+      <div style="flex-grow: 1; overflow: auto; display: flex;">
+        ${input.treeOutlineElement}
+      </div>
+      <div class="hbox layer-summary">
+        <span class="layer-count">${i18nString(UIStrings.layerCount, {
+        PH1: input.layerCount
+    })}</span>
+        <span>${i18n.ByteUtilities.bytesToString(input.totalLayerMemory)}</span>
+      </div>
+    </div>
+  `, target);
+};
+export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     layerViewHost;
     treeOutline;
     lastHoveredNode;
-    layerCountElement;
-    layerMemoryElement;
-    element;
     layerTree;
     layerSnapshotMap;
-    constructor(layerViewHost) {
+    #view;
+    #layerCount = 0;
+    #totalLayerMemory = 0;
+    constructor(layerViewHost, view = DEFAULT_VIEW) {
         super();
         this.layerViewHost = layerViewHost;
         this.layerViewHost.registerView(this);
+        this.#view = view;
         this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
         this.treeOutline.element.classList.add('layer-tree', 'overflow-auto');
         this.treeOutline.element.addEventListener('mousemove', this.onMouseMove.bind(this), false);
@@ -50,20 +67,18 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOut
         this.treeOutline.element.addEventListener('contextmenu', this.onContextMenu.bind(this), true);
         UI.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString(UIStrings.layersTreePane));
         this.lastHoveredNode = null;
-        const summaryElement = document.createElement('div');
-        summaryElement.classList.add('hbox', 'layer-summary');
-        this.layerCountElement = document.createElement('span');
-        this.layerCountElement.classList.add('layer-count');
-        this.layerMemoryElement = document.createElement('span');
-        summaryElement.appendChild(this.layerCountElement);
-        summaryElement.appendChild(this.layerMemoryElement);
-        const wrapperElement = document.createElement('div');
-        wrapperElement.classList.add('vbox', 'layer-tree-wrapper');
-        wrapperElement.appendChild(this.treeOutline.element);
-        wrapperElement.appendChild(summaryElement);
-        this.element = wrapperElement;
-        UI.DOMUtilities.appendStyle(this.element, layerTreeOutlineStyles);
         this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            treeOutlineElement: this.treeOutline.element,
+            layerCount: this.#layerCount,
+            totalLayerMemory: this.#totalLayerMemory,
+        }, {}, this.contentElement);
     }
     focus() {
         this.treeOutline.focus();
@@ -99,7 +114,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOut
     }
     update() {
         const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
-        const seenLayers = new Map();
+        const seenLayers = new Set();
         let root = null;
         if (this.layerTree) {
             if (!showInternalLayers) {
@@ -111,27 +126,39 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOut
         }
         let layerCount = 0;
         let totalLayerMemory = 0;
-        function updateLayer(layer) {
-            if (!layer.drawsContent() && !showInternalLayers) {
-                return;
-            }
-            if (seenLayers.get(layer)) {
-                console.assert(false, 'Duplicate layer: ' + layer.id());
-            }
-            seenLayers.set(layer, true);
-            layerCount++;
-            totalLayerMemory += layer.gpuMemoryUsage();
+        const childrenMap = new Map();
+        if (this.layerTree && root) {
+            const buildTree = (layer) => {
+                if (!layer.drawsContent() && !showInternalLayers) {
+                    return;
+                }
+                layerCount++;
+                totalLayerMemory += layer.gpuMemoryUsage();
+                if (layer === root) {
+                    return;
+                }
+                let parentLayer = layer.parent();
+                // Skip till nearest visible ancestor.
+                while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
+                    parentLayer = parentLayer.parent();
+                }
+                if (parentLayer) {
+                    let children = childrenMap.get(parentLayer);
+                    if (!children) {
+                        children = [];
+                        childrenMap.set(parentLayer, children);
+                    }
+                    children.push(layer);
+                }
+                else {
+                    console.assert(false, 'Internal error: multiple root layers');
+                }
+            };
+            this.layerTree.forEachLayer(buildTree, root);
+        }
+        const syncNode = (layer, parent) => {
+            seenLayers.add(layer);
             let node = layerToTreeElement.get(layer) || null;
-            let parentLayer = layer.parent();
-            // Skip till nearest visible ancestor.
-            while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
-                parentLayer = parentLayer.parent();
-            }
-            const parent = layer === root ? this.treeOutline.rootElement() : parentLayer && layerToTreeElement.get(parentLayer);
-            if (!parent) {
-                console.assert(false, 'Parent is not in the tree');
-                return;
-            }
             if (!node) {
                 node = new LayerTreeElement(this, layer);
                 parent.appendChild(node);
@@ -153,14 +180,18 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOut
                 }
                 node.update();
             }
-        }
-        if (root && this.layerTree) {
-            this.layerTree.forEachLayer(updateLayer.bind(this), root);
+            const children = childrenMap.get(layer) || [];
+            for (const child of children) {
+                syncNode(child, node);
+            }
+        };
+        if (root && (root.drawsContent() || showInternalLayers)) {
+            syncNode(root, this.treeOutline.rootElement());
         }
         // Clean up layers that don't exist anymore from tree.
         const rootElement = this.treeOutline.rootElement();
         for (let node = rootElement.firstChild(); node instanceof LayerTreeElement && !node.root;) {
-            if (seenLayers.get(node.layer)) {
+            if (seenLayers.has(node.layer)) {
                 node = node.traverseNextTreeElement(false);
             }
             else {
@@ -183,8 +214,9 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.TreeOut
                 }
             }
         }
-        this.layerCountElement.textContent = i18nString(UIStrings.layerCount, { PH1: layerCount });
-        this.layerMemoryElement.textContent = i18n.ByteUtilities.bytesToString(totalLayerMemory);
+        this.#layerCount = layerCount;
+        this.#totalLayerMemory = totalLayerMemory;
+        this.requestUpdate();
     }
     onMouseMove(event) {
         const node = this.treeOutline.treeElementFromEvent(event);

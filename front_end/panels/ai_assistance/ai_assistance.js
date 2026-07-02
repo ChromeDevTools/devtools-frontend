@@ -7676,7 +7676,7 @@ async function saveToDisk(conversation) {
   const titleFormatted = Platform7.StringUtilities.toSnakeCase(conversation.title || "");
   const prefix = "devtools_";
   const suffix = ".md";
-  const maxTitleLength = 64 - prefix.length - suffix.length;
+  const maxTitleLength = 63 - prefix.length - suffix.length;
   let finalTitle = titleFormatted || "conversation";
   if (finalTitle.length > maxTitleLength) {
     finalTitle = finalTitle.substring(0, maxTitleLength);

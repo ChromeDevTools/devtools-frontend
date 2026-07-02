@@ -180,7 +180,7 @@ export default `/*
 }
 
 .interaction {
-  --phase-table-margin: 120px;
+  --subpart-table-margin: 120px;
   --details-indicator-width: 18px;
 
   summary {
@@ -205,7 +205,7 @@ export default `/*
 
 .interaction-type {
   font-weight: var(--ref-typeface-weight-medium);
-  width: calc(var(--phase-table-margin) - var(--details-indicator-width));
+  width: calc(var(--subpart-table-margin) - var(--details-indicator-width));
   flex-shrink: 0;
 }
 
@@ -349,18 +349,18 @@ devtools-link {
   }
 }
 
-.phase-table {
+.subpart-table {
   border-top: 1px solid var(--sys-color-divider);
   padding: 7px 4px;
-  margin-left: var(--phase-table-margin);
+  margin-left: var(--subpart-table-margin);
 }
 
-.phase-table-row {
+.subpart-table-row {
   display: flex;
   justify-content: space-between;
 }
 
-.phase-table-header-row {
+.subpart-table-header-row {
   font-weight: var(--ref-typeface-weight-medium);
   margin-bottom: 4px;
 }

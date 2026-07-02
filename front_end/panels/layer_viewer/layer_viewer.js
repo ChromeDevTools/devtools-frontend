@@ -537,6 +537,7 @@ __export(LayerTreeOutline_exports, {
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
+import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/layer_viewer/layerTreeOutline.css.js
 var layerTreeOutline_css_default = `/*
@@ -545,21 +546,28 @@ var layerTreeOutline_css_default = `/*
  * found in the LICENSE file.
  */
 
-.layer-summary {
-  border-top: 1px solid var(--sys-color-divider);
-  justify-content: space-between;
-  padding: 4px 10px;
-  flex-shrink: 0;
-}
+@scope to (devtools-widget > *) {
+  .layer-summary {
+    border-top: 1px solid var(--sys-color-divider);
+    justify-content: space-between;
+    padding: 4px 10px;
+    flex-shrink: 0;
+  }
 
-.layer-count {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .layer-count {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.layer-tree-wrapper {
-  flex-grow: 1;
+  .layer-tree-wrapper {
+    height: 100%;
+    flex-grow: 1;
+  }
+
+  .layer-tree {
+    flex-grow: 1;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve("./layerTreeOutline.css")} */`;
@@ -588,19 +596,36 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/layer_viewer/LayerTreeOutline.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOutline.TreeOutline) {
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render2(html2`
+    <style>${layerTreeOutline_css_default}</style>
+    <div class="vbox layer-tree-wrapper">
+      <div style="flex-grow: 1; overflow: auto; display: flex;">
+        ${input.treeOutlineElement}
+      </div>
+      <div class="hbox layer-summary">
+        <span class="layer-count">${i18nString3(UIStrings3.layerCount, {
+    PH1: input.layerCount
+  })}</span>
+        <span>${i18n5.ByteUtilities.bytesToString(input.totalLayerMemory)}</span>
+      </div>
+    </div>
+  `, target);
+};
+var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget.Widget) {
   layerViewHost;
   treeOutline;
   lastHoveredNode;
-  layerCountElement;
-  layerMemoryElement;
-  element;
   layerTree;
   layerSnapshotMap;
-  constructor(layerViewHost) {
+  #view;
+  #layerCount = 0;
+  #totalLayerMemory = 0;
+  constructor(layerViewHost, view = DEFAULT_VIEW2) {
     super();
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
+    this.#view = view;
     this.treeOutline = new UI2.TreeOutline.TreeOutlineInShadow();
     this.treeOutline.element.classList.add("layer-tree", "overflow-auto");
     this.treeOutline.element.addEventListener("mousemove", this.onMouseMove.bind(this), false);
@@ -608,20 +633,18 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOu
     this.treeOutline.element.addEventListener("contextmenu", this.onContextMenu.bind(this), true);
     UI2.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString3(UIStrings3.layersTreePane));
     this.lastHoveredNode = null;
-    const summaryElement = document.createElement("div");
-    summaryElement.classList.add("hbox", "layer-summary");
-    this.layerCountElement = document.createElement("span");
-    this.layerCountElement.classList.add("layer-count");
-    this.layerMemoryElement = document.createElement("span");
-    summaryElement.appendChild(this.layerCountElement);
-    summaryElement.appendChild(this.layerMemoryElement);
-    const wrapperElement = document.createElement("div");
-    wrapperElement.classList.add("vbox", "layer-tree-wrapper");
-    wrapperElement.appendChild(this.treeOutline.element);
-    wrapperElement.appendChild(summaryElement);
-    this.element = wrapperElement;
-    UI2.DOMUtilities.appendStyle(this.element, layerTreeOutline_css_default);
     this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view({
+      treeOutlineElement: this.treeOutline.element,
+      layerCount: this.#layerCount,
+      totalLayerMemory: this.#totalLayerMemory
+    }, {}, this.contentElement);
   }
   focus() {
     this.treeOutline.focus();
@@ -656,7 +679,7 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOu
   }
   update() {
     const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
-    const seenLayers = /* @__PURE__ */ new Map();
+    const seenLayers = /* @__PURE__ */ new Set();
     let root = null;
     if (this.layerTree) {
       if (!showInternalLayers) {
@@ -668,26 +691,37 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOu
     }
     let layerCount = 0;
     let totalLayerMemory = 0;
-    function updateLayer(layer) {
-      if (!layer.drawsContent() && !showInternalLayers) {
-        return;
-      }
-      if (seenLayers.get(layer)) {
-        console.assert(false, "Duplicate layer: " + layer.id());
-      }
-      seenLayers.set(layer, true);
-      layerCount++;
-      totalLayerMemory += layer.gpuMemoryUsage();
+    const childrenMap = /* @__PURE__ */ new Map();
+    if (this.layerTree && root) {
+      const buildTree = (layer) => {
+        if (!layer.drawsContent() && !showInternalLayers) {
+          return;
+        }
+        layerCount++;
+        totalLayerMemory += layer.gpuMemoryUsage();
+        if (layer === root) {
+          return;
+        }
+        let parentLayer = layer.parent();
+        while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
+          parentLayer = parentLayer.parent();
+        }
+        if (parentLayer) {
+          let children = childrenMap.get(parentLayer);
+          if (!children) {
+            children = [];
+            childrenMap.set(parentLayer, children);
+          }
+          children.push(layer);
+        } else {
+          console.assert(false, "Internal error: multiple root layers");
+        }
+      };
+      this.layerTree.forEachLayer(buildTree, root);
+    }
+    const syncNode = (layer, parent) => {
+      seenLayers.add(layer);
       let node = layerToTreeElement.get(layer) || null;
-      let parentLayer = layer.parent();
-      while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers) {
-        parentLayer = parentLayer.parent();
-      }
-      const parent = layer === root ? this.treeOutline.rootElement() : parentLayer && layerToTreeElement.get(parentLayer);
-      if (!parent) {
-        console.assert(false, "Parent is not in the tree");
-        return;
-      }
       if (!node) {
         node = new LayerTreeElement(this, layer);
         parent.appendChild(node);
@@ -707,13 +741,17 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOu
         }
         node.update();
       }
-    }
-    if (root && this.layerTree) {
-      this.layerTree.forEachLayer(updateLayer.bind(this), root);
+      const children = childrenMap.get(layer) || [];
+      for (const child of children) {
+        syncNode(child, node);
+      }
+    };
+    if (root && (root.drawsContent() || showInternalLayers)) {
+      syncNode(root, this.treeOutline.rootElement());
     }
     const rootElement = this.treeOutline.rootElement();
     for (let node = rootElement.firstChild(); node instanceof LayerTreeElement && !node.root; ) {
-      if (seenLayers.get(node.layer)) {
+      if (seenLayers.has(node.layer)) {
         node = node.traverseNextTreeElement(false);
       } else {
         const nextNode = node.nextSibling || node.parent;
@@ -735,8 +773,9 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.TreeOu
         }
       }
     }
-    this.layerCountElement.textContent = i18nString3(UIStrings3.layerCount, { PH1: layerCount });
-    this.layerMemoryElement.textContent = i18n5.ByteUtilities.bytesToString(totalLayerMemory);
+    this.#layerCount = layerCount;
+    this.#totalLayerMemory = totalLayerMemory;
+    this.requestUpdate();
   }
   onMouseMove(event) {
     const node = this.treeOutline.treeElementFromEvent(event);
@@ -799,7 +838,7 @@ var Layers3DView_exports = {};
 __export(Layers3DView_exports, {
   BorderColor: () => BorderColor,
   BorderWidth: () => BorderWidth,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   FragmentShader: () => FragmentShader,
   HoveredBorderColor: () => HoveredBorderColor,
   HoveredImageMaskColor: () => HoveredImageMaskColor,
@@ -1130,7 +1169,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
 };
 
 // gen/front_end/panels/layer_viewer/Layers3DView.js
-var { html: html2, render: render2, Directives: { ref } } = Lit2;
+var { html: html3, render: render3, Directives: { ref } } = Lit2;
 var { widget: widget2 } = UI4.Widget;
 var UIStrings5 = {
   /**
@@ -1185,21 +1224,21 @@ var textureCoordAttributes = /* @__PURE__ */ new Map();
 var uniformMatrixLocations = /* @__PURE__ */ new Map();
 var uniformSamplerLocations = /* @__PURE__ */ new Map();
 var imageForTexture = /* @__PURE__ */ new Map();
-var DEFAULT_VIEW2 = (input, output, target) => {
-  render2(html2`<style>
+var DEFAULT_VIEW3 = (input, output, target) => {
+  render3(html3`<style>
       ${layers3DView_css_default}
     </style>
     ${input.panelToolbar}
-    ${input.error === "missing-root" ? html2`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "missing-root" ? html3`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
     header: i18nString5(UIStrings5.noLayerInformation),
     text: i18nString5(UIStrings5.layerExplanation)
   })}</div>` : Lit2.nothing}
-    ${input.error === "webgl-disabled" ? html2`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "webgl-disabled" ? html3`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
     header: i18nString5(UIStrings5.cantDisplayLayers),
     text: i18nString5(UIStrings5.webglSupportIsDisabledInYour),
     extraElements: [
       uiI18n.getFormatLocalizedString(str_5, UIStrings5.checkSForPossibleReasons, {
-        PH1: Link.create("about:gpu", void 0, void 0, "about-gpu")
+        PH1: Link.create("chrome://gpu", void 0, void 0, "about-gpu", 0, true)
       })
     ]
   })}</div>` : Lit2.nothing}
@@ -1253,7 +1292,7 @@ var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBo
   #view;
   #error;
   #canvasElement;
-  constructor(layerViewHost, view = DEFAULT_VIEW2) {
+  constructor(layerViewHost, view = DEFAULT_VIEW3) {
     super();
     this.#view = view;
     this.layerViewHost = layerViewHost;
@@ -2232,7 +2271,7 @@ var paintProfiler_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./paintProfiler.css")} */`;
 
 // gen/front_end/panels/layer_viewer/PaintProfilerView.js
-var { html: html3, render: render3, nothing: nothing3 } = Lit3;
+var { html: html4, render: render4, nothing: nothing3 } = Lit3;
 var { ref: ref2 } = Lit3.Directives;
 var UIStrings6 = {
   /**
@@ -2367,8 +2406,8 @@ function calculatePieChartData(input, canvasWidth, samplesPerBar, emptyPieChartD
     slices
   };
 }
-var DEFAULT_VIEW3 = (input, output, target) => {
-  const getTemplate = (pieChartData2) => html3`
+var DEFAULT_VIEW4 = (input, output, target) => {
+  const getTemplate = (pieChartData2) => html4`
     <style>${paintProfiler_css_default}</style>
     <div class="paint-profiler-canvas-container" ${ref2(output.onCanvasContainerCreated)}>
       <canvas class="fill"></canvas>
@@ -2386,7 +2425,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     total: 0,
     slices: []
   };
-  render3(getTemplate(emptyPieChartData), target);
+  render4(getTemplate(emptyPieChartData), target);
   const canvasContainer = target.querySelector(".paint-profiler-canvas-container");
   const canvas2 = target.querySelector("canvas");
   if (!canvas2 || !canvasContainer) {
@@ -2405,7 +2444,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   const samplesPerBar = Math.ceil(input.log.length / maxBars);
   renderCanvas(canvas2, context, input, samplesPerBar);
   const pieChartData = calculatePieChartData(input, canvas2.width, samplesPerBar, emptyPieChartData);
-  render3(getTemplate(pieChartData), target);
+  render4(getTemplate(pieChartData), target);
 };
 var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.eventMixin(UI5.Widget.Widget) {
   canvasContainer;
@@ -2427,7 +2466,7 @@ var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.e
   #isResizeEnabled = false;
   #view;
   #viewOutput;
-  constructor(element, view = DEFAULT_VIEW3) {
+  constructor(element, view = DEFAULT_VIEW4) {
     super(element);
     this.#view = view;
     this.innerBarWidth = 4 * window.devicePixelRatio;
@@ -2664,12 +2703,12 @@ function paramsToString(params) {
 }
 function renderProperty(name, value) {
   const isObject = value !== null && typeof value === "object";
-  return html3`
+  return html4`
     <li role="treeitem">
-      <span>${name}: </span>${isObject ? html3`
+      <span>${name}: </span>${isObject ? html4`
           <ul role="group">
             ${Object.entries(value).map(([key, val]) => renderProperty(key, val))}
-          </ul>` : html3`
+          </ul>` : html4`
           <span>${JSON.stringify(value)}</span>`}
     </li>
   `;
@@ -2677,10 +2716,10 @@ function renderProperty(name, value) {
 function renderLogItem(logItem) {
   const hasParams = Boolean(logItem.params && Object.keys(logItem.params).length > 0);
   const titleText = logItem.method + "(" + paramsToString(logItem.params) + ")";
-  return html3`
+  return html4`
     <li role="treeitem">
       ${titleText}
-      ${hasParams ? html3`
+      ${hasParams ? html4`
         <ul role="group">
           ${Object.entries(logItem.params || {}).map(([key, val]) => renderProperty(key, val))}
         </ul>` : nothing3}
@@ -2688,12 +2727,12 @@ function renderLogItem(logItem) {
   `;
 }
 var COMMAND_LOG_DEFAULT_VIEW = (input, _output, target) => {
-  render3(html3`
+  render4(html4`
     <div class="overflow-auto flex-auto vbox">
       <devtools-tree
           autofocus
           aria-label=${i18nString6(UIStrings6.commandLog)}
-          .template=${html3`
+          .template=${html4`
         <ul role="tree">
           ${input.visibleLogItems.map((item) => renderLogItem(item))}
         </ul>`}>

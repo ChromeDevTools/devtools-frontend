@@ -412,6 +412,28 @@ export declare namespace Accessibility {
  */
 export declare namespace Ads {
     /**
+     * Ad frame data.
+     */
+    interface AdFrameData {
+        /**
+         * The DevTools frame token.
+         */
+        frameId: Page.FrameId;
+        /**
+         * The initial origin of the frame. To minimize the payload size, this is
+         * only sent once per frame.
+         */
+        initialOrigin?: string;
+        /**
+         * The network bytes of the frame.
+         */
+        networkBytes: number;
+        /**
+         * The CPU time of the frame, in milliseconds.
+         */
+        cpuTime: number;
+    }
+    /**
      * Ad metrics for a page.
      */
     interface AdMetrics {
@@ -442,6 +464,14 @@ export declare namespace Ads {
          * The total ad network bytes.
          */
         totalAdNetworkBytes: number;
+        /**
+         * The list of ad frames that have been updated since the last event.
+         */
+        updateAdFrames: AdFrameData[];
+        /**
+         * The list of ad frame IDs that have been removed since the last event.
+         */
+        removeAdFrames: Page.FrameId[];
     }
     interface GetAdMetricsResponse extends ProtocolResponseWithError {
         metrics: AdMetrics;
@@ -1502,7 +1532,9 @@ export declare namespace Audits {
         LowContrast = "LowContrast",
         FontSizeTooSmall = "FontSizeTooSmall",
         FontSizeTooLarge = "FontSizeTooLarge",
-        InvalidSizeValue = "InvalidSizeValue"
+        InvalidSizeValue = "InvalidSizeValue",
+        NonSecureContext = "NonSecureContext",
+        MissingTransientUserActivation = "MissingTransientUserActivation"
     }
     /**
      * This issue warns about improper usage of the <permission> element.
@@ -4445,6 +4477,7 @@ export declare namespace DOM {
         SelectListbox = "select-listbox",
         PermissionIcon = "permission-icon",
         OverscrollAreaParent = "overscroll-area-parent",
+        OverscrollBackdrop = "overscroll-backdrop",
         Skeleton = "skeleton"
     }
     /**
@@ -14667,6 +14700,15 @@ export declare namespace Page {
          * option, use with caution.
          */
         grantUniveralAccess?: boolean;
+        /**
+         * An optional content security policy to set for the isolated world.
+         * If omitted, any existing CSP for the world will be cleared.
+         * Note that clearing or updating the CSP does not immediately affect the active
+         * context in the same document because LocalDOMWindow caches the
+         * ContentSecurityPolicy object. The change takes effect on subsequent
+         * navigations when a new window context is created.
+         */
+        contentSecurityPolicy?: string;
     }
     interface CreateIsolatedWorldResponse extends ProtocolResponseWithError {
         /**
@@ -18486,6 +18528,21 @@ export declare namespace Tracing {
          * Backend type (defaults to `auto`)
          */
         tracingBackend?: TracingBackend;
+        /**
+         * Maximum width and height (in pixels) of each captured screenshot.
+         * Only used when the `disabled-by-default-devtools.screenshot` category is
+         * enabled. Defaults to 500. The combined memory footprint of screenshots
+         * (`screenshotMaxSize` * `screenshotMaxSize` * 4 * `screenshotMaxCount`)
+         * is clamped to the existing per-session budget.
+         */
+        screenshotMaxSize?: integer;
+        /**
+         * Maximum number of screenshots captured during a single tracing session.
+         * Only used when the `disabled-by-default-devtools.screenshot` category is
+         * enabled. Defaults to 450. Clamped together with `screenshotMaxSize` to
+         * stay within the per-session screenshot memory budget.
+         */
+        screenshotMaxCount?: integer;
     }
     interface BufferUsageEvent {
         /**

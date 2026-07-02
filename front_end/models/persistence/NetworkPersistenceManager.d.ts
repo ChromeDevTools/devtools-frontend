@@ -2,16 +2,20 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
+import { IsolatedFileSystemManager } from './IsolatedFileSystemManager.js';
+import { PersistenceImpl } from './PersistenceImpl.js';
 export declare class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
     #private;
-    private constructor();
+    constructor(workspace: Workspace.Workspace.WorkspaceImpl, persistence: PersistenceImpl, breakpointManager: Breakpoints.BreakpointManager.BreakpointManager, targetManager: SDK.TargetManager.TargetManager, settings: Common.Settings.Settings, isolatedFileSystemManager: IsolatedFileSystemManager, multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager);
     targetAdded(): void;
     targetRemoved(): void;
     static instance(opts?: {
         forceNew: boolean | null;
         workspace: Workspace.Workspace.WorkspaceImpl | null;
     }): NetworkPersistenceManager;
+    static removeInstance(): void;
     active(): boolean;
     project(): Workspace.Workspace.Project | null;
     originalContentForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<string | null> | null;

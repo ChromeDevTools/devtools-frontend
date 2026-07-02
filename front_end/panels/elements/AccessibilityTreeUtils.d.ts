@@ -5,8 +5,8 @@ import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline
 import * as Lit from '../../ui/lit/lit.js';
 export type AXTreeNodeData = SDK.AccessibilityModel.AccessibilityNode;
 export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<AXTreeNodeData>;
-export declare function getRootNode(frameId: Protocol.Page.FrameId): Promise<SDK.AccessibilityModel.AccessibilityNode>;
-export declare function getNodeAndAncestorsFromDOMNode(domNode: SDK.DOMModel.DOMNode): Promise<SDK.AccessibilityModel.AccessibilityNode[]>;
-export declare function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.AccessibilityNode): Promise<AXTreeNode[]>;
+export declare function getRootNode(frameId: Protocol.Page.FrameId, frameManager?: SDK.FrameManager.FrameManager): Promise<SDK.AccessibilityModel.AccessibilityNode>;
+export declare function getNodeAndAncestorsFromDOMNode(domNode: SDK.DOMModel.DOMNode, frameManager?: SDK.FrameManager.FrameManager): Promise<SDK.AccessibilityModel.AccessibilityNode[]>;
+export declare function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.AccessibilityNode, frameManager?: SDK.FrameManager.FrameManager): Promise<AXTreeNode[]>;
 export declare function accessibilityNodeRenderer(node: AXTreeNode): Lit.TemplateResult;
 export declare function getNodeId(node: SDK.AccessibilityModel.AccessibilityNode): string;

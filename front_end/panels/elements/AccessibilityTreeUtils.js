@@ -8,16 +8,16 @@ const { html } = Lit;
 function isLeafNode(node) {
     return node.numChildren() === 0 && node.role()?.value !== 'Iframe';
 }
-function getModel(frameId) {
-    const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
+function getModel(frameId, frameManager = SDK.FrameManager.FrameManager.instance()) {
+    const frame = frameManager.getFrame(frameId);
     const model = frame?.resourceTreeModel().target().model(SDK.AccessibilityModel.AccessibilityModel);
     if (!model) {
         throw new Error('Could not instantiate model for frameId');
     }
     return model;
 }
-export async function getRootNode(frameId) {
-    const model = getModel(frameId);
+export async function getRootNode(frameId, frameManager = SDK.FrameManager.FrameManager.instance()) {
+    const model = getModel(frameId, frameManager);
     const root = await model.requestRootNode(frameId);
     if (!root) {
         throw new Error('No accessibility root for frame');
@@ -37,30 +37,30 @@ function getFrameIdForNodeOrDocument(node) {
     }
     return frameId;
 }
-export async function getNodeAndAncestorsFromDOMNode(domNode) {
+export async function getNodeAndAncestorsFromDOMNode(domNode, frameManager = SDK.FrameManager.FrameManager.instance()) {
     let frameId = getFrameIdForNodeOrDocument(domNode);
-    const model = getModel(frameId);
+    const model = getModel(frameId, frameManager);
     const result = await model.requestAndLoadSubTreeToNode(domNode);
     if (!result) {
         throw new Error('Could not retrieve accessibility node for inspected DOM node');
     }
-    const outermostFrameId = SDK.FrameManager.FrameManager.instance().getOutermostFrame()?.id;
+    const outermostFrameId = frameManager.getOutermostFrame()?.id;
     if (!outermostFrameId) {
         return result;
     }
     while (frameId !== outermostFrameId) {
-        const node = await SDK.FrameManager.FrameManager.instance().getFrame(frameId)?.getOwnerDOMNodeOrDocument();
+        const node = await frameManager.getFrame(frameId)?.getOwnerDOMNodeOrDocument();
         if (!node) {
             break;
         }
         frameId = getFrameIdForNodeOrDocument(node);
-        const model = getModel(frameId);
+        const model = getModel(frameId, frameManager);
         const ancestors = await model.requestAndLoadSubTreeToNode(node);
         result.push(...ancestors || []);
     }
     return result;
 }
-async function getChildren(node) {
+async function getChildren(node, frameManager = SDK.FrameManager.FrameManager.instance()) {
     if (node.role()?.value === 'Iframe') {
         const domNode = await node.deferredDOMNode()?.resolvePromise();
         if (!domNode) {
@@ -70,12 +70,12 @@ async function getChildren(node) {
         if (!frameId) {
             throw new Error('No owner frameId on iframe node');
         }
-        const localRoot = await getRootNode(frameId);
+        const localRoot = await getRootNode(frameId, frameManager);
         return [localRoot];
     }
     return await node.accessibilityModel().requestAXChildren(node.id(), node.getFrameId() || undefined);
 }
-export async function sdkNodeToAXTreeNodes(sdkNode) {
+export async function sdkNodeToAXTreeNodes(sdkNode, frameManager = SDK.FrameManager.FrameManager.instance()) {
     const treeNodeData = sdkNode;
     if (isLeafNode(sdkNode)) {
         return [{
@@ -86,8 +86,8 @@ export async function sdkNodeToAXTreeNodes(sdkNode) {
     return [{
             treeNodeData,
             children: async () => {
-                const childNodes = await getChildren(sdkNode);
-                const childTreeNodes = await Promise.all(childNodes.map(childNode => sdkNodeToAXTreeNodes(childNode)));
+                const childNodes = await getChildren(sdkNode, frameManager);
+                const childTreeNodes = await Promise.all(childNodes.map(childNode => sdkNodeToAXTreeNodes(childNode, frameManager)));
                 return childTreeNodes.flat(1);
             },
             id: getNodeId(sdkNode),

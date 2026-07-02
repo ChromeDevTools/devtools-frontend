@@ -103,7 +103,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     color: currentcolor;
   }
 
-  & *:not(devtools-icon) {
+  & *:not(devtools-icon, .new-badge) {
     color: inherit;
   }
 }

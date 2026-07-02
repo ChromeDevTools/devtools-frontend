@@ -54,6 +54,7 @@ core/sdk/AutofillModel.test.js
 core/sdk/CPUThrottlingManager.test.js
 core/sdk/CSSContainerQuery.test.js
 core/sdk/DebuggerModel.test.js
+core/sdk/FrameManager.test.js
 core/sdk/NetworkManager.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js

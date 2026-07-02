@@ -6,8 +6,8 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
-import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { TimelineEventOverviewCPUActivity, TimelineEventOverviewNetwork, TimelineEventOverviewResponsiveness, } from './TimelineEventOverview.js';
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
@@ -272,35 +272,38 @@ export class TimelineHistoryManager {
             lastUsed: Date.now(),
         };
         parsedTraceIndexToPerformancePreviewData.set(parsedTraceIndex, data);
-        preview.appendChild(this.#buildTextDetails(parsedTrace.metadata, domain));
-        const screenshotAndOverview = preview.createChild('div', 'hbox');
-        screenshotAndOverview.appendChild(this.#buildScreenshotThumbnail(filmStrip));
-        screenshotAndOverview.appendChild(this.#buildOverview(parsedTrace));
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `
+      ${this.#renderTextDetails(parsedTrace.metadata, domain)}
+      <div class="hbox">
+        ${this.#renderScreenshotThumbnail(filmStrip)}
+        ${this.#buildOverview(parsedTrace)}
+      </div>
+    `, preview, { host: this });
         return data.preview;
     }
-    #buildTextDetails(metadata, title) {
-        const container = document.createElement('div');
-        container.classList.add('text-details');
-        container.classList.add('hbox');
-        const nameSpan = container.createChild('span', 'name');
-        nameSpan.textContent = title;
-        UI.ARIAUtils.setLabel(nameSpan, title);
+    #renderTextDetails(metadata, title) {
+        let metadataText = '';
         if (metadata) {
             const parts = [
                 metadata.emulatedDeviceTitle,
                 metadata.cpuThrottling ? i18nString(UIStrings.dSlowdown, { PH1: metadata.cpuThrottling }) : undefined,
                 metadata.networkThrottling,
             ].filter(Boolean);
-            container.createChild('span', 'metadata').textContent = listFormatter.format(parts);
+            metadataText = listFormatter.format(parts);
         }
-        return container;
+        return html `
+      <div class="text-details hbox">
+        <span class="name">${title}</span>
+        ${metadataText ? html `<span class="metadata">${metadataText}</span>` : ''}
+      </div>
+    `;
     }
-    #buildScreenshotThumbnail(filmStrip) {
-        const container = document.createElement('div');
-        container.classList.add('screenshot-thumb');
+    #renderScreenshotThumbnail(filmStrip) {
         const thumbnailAspectRatio = 3 / 2;
-        container.style.width = this.totalHeight * thumbnailAspectRatio + 'px';
-        container.style.height = this.totalHeight + 'px';
+        const width = this.totalHeight * thumbnailAspectRatio + 'px';
+        const height = this.totalHeight + 'px';
+        const container = html `<div class="screenshot-thumb" style="width: ${width}; height: ${height}"></div>`;
         if (!filmStrip) {
             return container;
         }
@@ -310,12 +313,11 @@ export class TimelineHistoryManager {
         }
         // TODO(paulirish): Adopt Util.ImageCache
         const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(lastFrame.screenshotEvent);
-        void UI.UIUtils.loadImage(uri).then(img => {
-            if (img) {
-                container.appendChild(img);
-            }
-        });
-        return container;
+        return html `
+      <div class="screenshot-thumb" style="width: ${width}; height: ${height}">
+        <img src=${uri}>
+      </div>
+    `;
     }
     #buildOverview(parsedTrace) {
         const container = document.createElement('div');
@@ -454,13 +456,11 @@ export class DropDown {
         div.classList.add('preview-item');
         div.classList.add('landing-page-item');
         div.style.width = `${previewWidth}px`;
-        const icon = createIcon('arrow-back');
-        icon.title = i18nString(UIStrings.backButtonTooltip);
-        icon.classList.add('back-arrow');
-        div.appendChild(icon);
-        const text = document.createElement('span');
-        text.innerText = this.#landingPageTitle;
-        div.appendChild(text);
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `
+      <devtools-icon class="back-arrow" title=${i18nString(UIStrings.backButtonTooltip)} name="arrow-back"></devtools-icon>
+      <span>${this.#landingPageTitle}</span>
+    `, div, { host: this });
         return div;
     }
     heightForItem(_parsedTraceIndex) {
@@ -484,20 +484,19 @@ export class DropDown {
     static instance = null;
 }
 export class ToolbarButton extends UI.Toolbar.ToolbarItem {
-    contentElement;
     constructor(action) {
         const element = document.createElement('button');
         element.classList.add('history-dropdown-button');
         element.setAttribute('jslog', `${VisualLogging.dropDown('history')}`);
         super(element);
-        this.contentElement = this.element.createChild('span', 'content');
         this.element.addEventListener('click', () => void action.execute(), false);
         this.setEnabled(action.enabled());
         action.addEventListener("Enabled" /* UI.ActionRegistration.Events.ENABLED */, event => this.setEnabled(event.data));
         this.setTitle(action.title());
     }
     setText(text) {
-        this.contentElement.textContent = text;
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `<span class="content">${text}</span>`, this.element, { host: this });
     }
 }
 //# sourceMappingURL=TimelineHistoryManager.js.map

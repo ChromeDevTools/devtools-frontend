@@ -201,21 +201,21 @@ details.environment-recs[open] > summary::before {
   }
 }
 
-.phase-table {
+.subpart-table {
   display: grid;
   column-gap: var(--sys-size-3);
   white-space: nowrap;
 }
 
-.phase-table-row {
+.subpart-table-row {
   display: contents;
 }
 
-.phase-table-value {
+.subpart-table-value {
   text-align: right;
 }
 
-.phase-table-header-row {
+.subpart-table-header-row {
   font-weight: var(--ref-typeface-weight-medium);
 }
 

@@ -149,6 +149,16 @@ export const generatedProperties: ({
     is_descriptor?: undefined;
     is_property?: undefined;
 } | {
+    devtools_keywords: string[];
+    keywords: string[];
+    name: string;
+    longhands?: undefined;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+    inherited?: undefined;
+    is_descriptor?: undefined;
+    is_property?: undefined;
+} | {
     name: string;
     runtime_flag: string;
     runtime_flag_status: string;
@@ -197,6 +207,26 @@ export const generatedProperties: ({
     runtime_flag_status?: undefined;
     keywords?: undefined;
     devtools_keywords?: undefined;
+    is_property?: undefined;
+} | {
+    devtools_keywords: string[];
+    inherited: boolean;
+    keywords: string[];
+    name: string;
+    longhands?: undefined;
+    runtime_flag?: undefined;
+    runtime_flag_status?: undefined;
+    is_descriptor?: undefined;
+    is_property?: undefined;
+} | {
+    devtools_keywords: string[];
+    keywords: string[];
+    name: string;
+    runtime_flag: string;
+    runtime_flag_status: string;
+    longhands?: undefined;
+    inherited?: undefined;
+    is_descriptor?: undefined;
     is_property?: undefined;
 } | {
     keywords: string[];
@@ -295,6 +325,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "-webkit-text-decorations-in-effect": {
+        values: string[];
+    };
+    "-webkit-text-orientation": {
         values: string[];
     };
     "-webkit-text-security": {

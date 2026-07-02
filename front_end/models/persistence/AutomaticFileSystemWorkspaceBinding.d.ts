@@ -39,8 +39,8 @@ export declare class FileSystem implements Workspace.Workspace.Project {
     remove(): void;
     removeUISourceCode(_url: Platform.DevToolsPath.UrlString): void;
     searchInFileContent(_uiSourceCode: Workspace.UISourceCode.UISourceCode, _query: string, _caseSensitive: boolean, _isRegex: boolean): Promise<SearchMatch[]>;
-    findFilesMatchingSearchRequest(_searchConfig: Workspace.SearchConfig.SearchConfig, _filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[], _progress: Common.Progress.Progress): Promise<Map<Workspace.UISourceCode.UISourceCode, SearchMatch[] | null>>;
-    indexContent(_progress: Common.Progress.Progress): void;
+    findFilesMatchingSearchRequest(_searchConfig: Workspace.SearchConfig.SearchConfig, _filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[], progress: Common.Progress.Progress): Promise<Map<Workspace.UISourceCode.UISourceCode, SearchMatch[] | null>>;
+    indexContent(progress: Common.Progress.Progress): void;
     uiSourceCodeForURL(_url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode | null;
     uiSourceCodes(): Iterable<Workspace.UISourceCode.UISourceCode>;
 }

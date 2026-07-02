@@ -9621,16 +9621,16 @@ var JavaScriptMetadata_exports = {};
 __export(JavaScriptMetadata_exports, {
   JavaScriptMetadataImpl: () => JavaScriptMetadataImpl
 });
-var javaScriptMetadataInstance;
+import * as Root from "./../../core/root/root.js";
 var JavaScriptMetadataImpl = class _JavaScriptMetadataImpl {
   uniqueFunctions;
   receiverMethods;
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!javaScriptMetadataInstance || forceNew) {
-      javaScriptMetadataInstance = new _JavaScriptMetadataImpl();
+    if (!Root.DevToolsContext.globalInstance().has(_JavaScriptMetadataImpl) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_JavaScriptMetadataImpl, new _JavaScriptMetadataImpl());
     }
-    return javaScriptMetadataInstance;
+    return Root.DevToolsContext.globalInstance().get(_JavaScriptMetadataImpl);
   }
   constructor() {
     this.uniqueFunctions = /* @__PURE__ */ new Map();

@@ -54,6 +54,7 @@ core/sdk/AutofillModel.test.js
 core/sdk/CPUThrottlingManager.test.js
 core/sdk/CSSContainerQuery.test.js
 core/sdk/DebuggerModel.test.js
+core/sdk/FrameManager.test.js
 core/sdk/NetworkManager.test.js
 core/sdk/PageResourceLoader.test.js
 core/sdk/RuntimeModel.test.js
@@ -121,7 +122,6 @@ core/sdk/DOMModel.test.js
 core/sdk/DOMStorageModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
-core/sdk/FrameManager.test.js
 core/sdk/NetworkRequest.test.js
 core/sdk/OverlayColorGenerator.test.js
 core/sdk/OverlayModel.test.js
@@ -476,6 +476,7 @@ panels/explain/components/ConsoleInsight.test.js
 panels/issues/AffectedSelectivePermissionsInterventionView.test.js
 panels/issues/IssueView.test.js
 panels/issues/IssuesPane.test.js
+panels/layer_viewer/LayerTreeOutline.test.js
 panels/layer_viewer/layer_viewer.test.js
 panels/layers/LayersPanel.test.js
 panels/lighthouse/LighthouseController.test.js

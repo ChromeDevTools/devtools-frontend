@@ -85,7 +85,6 @@ export declare class DropDown implements UI.ListControl.ListDelegate<number> {
     static instance: DropDown | null;
 }
 export declare class ToolbarButton extends UI.Toolbar.ToolbarItem {
-    private contentElement;
     constructor(action: UI.ActionRegistration.Action);
     setText(text: string): void;
 }

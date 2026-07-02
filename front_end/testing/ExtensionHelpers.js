@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import sinon from 'sinon';
-import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as Logs from '../models/logs/logs.js';
@@ -55,7 +54,6 @@ export function setupDevtoolsExtensionHooks(extension = {}) {
         context.backend = backend;
         sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
         sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
-        sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
         const networkLog = new Logs.NetworkLog.NetworkLog();
         sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
         setupExtensionHelper();

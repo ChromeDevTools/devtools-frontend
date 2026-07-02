@@ -1,17 +1,17 @@
 // Copyright 2018 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Root from '../../core/root/root.js';
 import { NativeFunctions } from './NativeFunctions.js';
-let javaScriptMetadataInstance;
 export class JavaScriptMetadataImpl {
     uniqueFunctions;
     receiverMethods;
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
-        if (!javaScriptMetadataInstance || forceNew) {
-            javaScriptMetadataInstance = new JavaScriptMetadataImpl();
+        if (!Root.DevToolsContext.globalInstance().has(JavaScriptMetadataImpl) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(JavaScriptMetadataImpl, new JavaScriptMetadataImpl());
         }
-        return javaScriptMetadataInstance;
+        return Root.DevToolsContext.globalInstance().get(JavaScriptMetadataImpl);
     }
     constructor() {
         this.uniqueFunctions = new Map();

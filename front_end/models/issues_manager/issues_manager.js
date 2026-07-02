@@ -5258,14 +5258,16 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   #thirdPartyCookiePhaseoutIssueCount = /* @__PURE__ */ new Map();
   #issuesById = /* @__PURE__ */ new Map();
   #issuesByOutermostTarget = /* @__PURE__ */ new Map();
-  constructor(showThirdPartyIssuesSetting, hideIssueSetting) {
+  #frameManager;
+  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK3.FrameManager.FrameManager.instance()) {
     super();
     this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
     this.hideIssueSetting = hideIssueSetting;
+    this.#frameManager = frameManager;
     new SourceFrameIssuesManager(this);
     SDK3.TargetManager.TargetManager.instance().observeModels(SDK3.IssuesModel.IssuesModel, this);
     SDK3.TargetManager.TargetManager.instance().addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-    SDK3.FrameManager.FrameManager.instance().addEventListener("FrameAddedToTarget", this.#onFrameAddedToTarget, this);
+    this.#frameManager.addEventListener("FrameAddedToTarget", this.#onFrameAddedToTarget, this);
     this.showThirdPartyIssuesSetting?.addChangeListener(() => this.#updateFilteredIssues());
     this.hideIssueSetting?.addChangeListener(() => this.#updateFilteredIssues());
     SDK3.TargetManager.TargetManager.instance().observeTargets({
@@ -5286,7 +5288,7 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
       throw new Error('IssuesManager was already created. Either set "ensureFirst" to false or make sure that this invocation is really the first one.');
     }
     if (!issuesManagerInstance || opts.forceNew) {
-      issuesManagerInstance = new _IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting);
+      issuesManagerInstance = new _IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting, opts.frameManager);
     }
     return issuesManagerInstance;
   }

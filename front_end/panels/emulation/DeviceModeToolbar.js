@@ -96,16 +96,9 @@ const UIStrings = {
     moreOptions: 'More options',
     /**
      * @description A menu item in the drop-down box that allows the user to select the zoom level.
-     * Labels the value which corresponds to the 'fit to window' zoom level, represented by the
-     * placeholder, which is a number. In the Device Mode Toolbar.
-     * @example {30.0} PH1
+     * Labels the option to automatically fit the preview to the available window space. In the Device Mode Toolbar.
      */
-    fitToWindowPercentage: '{PH1}% (fit to window)',
-    /**
-     * @description A checkbox setting that appears in the context menu for the zoom level, in the
-     * Device Mode Toolbar.
-     */
-    autoadjustZoom: 'Auto-adjust zoom',
+    fitToWindow: 'Fit to window',
     /**
      * @description A menu item in the drop-down box that allows the user to select the device pixel
      * ratio. Labels the default value which varies between device types, represented by the
@@ -224,7 +217,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeToolbar.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { ifDefined, live } = Directives;
 const { widget } = UI.Widget;
-const { bindToSetting } = UI.UIUtils;
 function createSizeInput(title, jslogContext, value, disabled, placeholder, onChange) {
     return html `
       <input type="number"
@@ -292,16 +284,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
               title=${i18nString(UIStrings.zoom)}
               aria-label=${i18nString(UIStrings.zoom)}
               @change=${input.onScaleChange}
-              .value=${String(input.scaleOptions.find(o => o.selected)?.value || '')}
+              .value=${String(input.scaleOptions.find(o => o.selected)?.value ?? '')}
               jslog=${VisualLogging.dropDown().track({ change: true }).context('scale')}>
         ${input.scaleOptions.map(o => html `<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
       </select>
-
-      <devtools-button .data=${{ variant: "toolbar" /* Buttons.Button.Variant.TOOLBAR */, iconName: 'center-focus-weak',
-        toggledIconName: 'center-focus-weak', toggleType: "primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */ }}
-                       class="toolbar-button" title=${i18nString(UIStrings.autoadjustZoom)}
-                       ${bindToSetting(input.autoAdjustScaleSetting)}>
-      </devtools-button>
 
       <div class="device-mode-empty-toolbar-element"></div>
 
@@ -314,7 +300,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     title=${i18nString(UIStrings.devicePixelRatio)}
                     aria-label=${i18nString(UIStrings.devicePixelRatio)}
                     @change=${input.onDeviceScaleChange}
-                    .value=${String(input.dprOptions.find(o => o.selected)?.value || '')}
+                    .value=${String(input.dprOptions.find(o => o.selected)?.value ?? '')}
                     jslog=${VisualLogging.dropDown().track({ change: true }).context('device-pixel-ratio')}
                     ?disabled=${!input.isResponsive}>
                 ${input.dprOptions.map(o => html `<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
@@ -412,6 +398,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         this.showUserAgentTypeSetting.addChangeListener(this.requestUpdate, this);
         this.autoAdjustScaleSetting =
             Common.Settings.Settings.instance().createSetting('emulation.auto-adjust-scale', true);
+        this.autoAdjustScaleSetting.addChangeListener(this.requestUpdate, this);
         this.lastMode = new Map();
         this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();
         this.emulatedDevicesList.addEventListener("CustomDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED */, this.deviceListChanged, this);
@@ -569,37 +556,51 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     }
     getScaleOptions() {
         const values = [0.5, 0.75, 1, 1.25, 1.5, 2];
-        let fitValue = null;
-        if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device) {
-            fitValue = this.model.fitScale();
-            const fitValuePct = (fitValue * 100).toFixed(0);
-            let found = false;
-            for (let i = 0; i < values.length; ++i) {
-                if ((values[i] * 100).toFixed(0) === fitValuePct) {
-                    found = true;
-                    values[i] = fitValue;
-                    break;
-                }
-            }
-            if (!found) {
-                values.push(fitValue);
-                values.sort((a, b) => a - b);
-            }
-        }
+        const isAutoAdjusting = this.autoAdjustScaleSetting.get();
         const currentScale = this.model.scaleSetting().get();
-        return values.map(value => {
-            let title = (value * 100).toFixed(0) + '%';
-            let jslogContext = title;
-            if (value === fitValue) {
-                title = i18nString(UIStrings.fitToWindowPercentage, { PH1: (value * 100).toFixed(0) });
-                jslogContext = 'fit-to-window';
-            }
-            return { title, value, selected: currentScale === value, jslogContext };
-        });
+        if (!isAutoAdjusting && !values.includes(currentScale)) {
+            values.push(currentScale);
+            values.sort((a, b) => a - b);
+        }
+        const options = [
+            {
+                title: i18nString(UIStrings.fitToWindow),
+                value: 0,
+                selected: isAutoAdjusting,
+                jslogContext: 'fit-to-window',
+            },
+        ];
+        for (const value of values) {
+            const title = (value * 100).toFixed(0) + '%';
+            options.push({
+                title,
+                value,
+                selected: !isAutoAdjusting && currentScale === value,
+                jslogContext: title,
+            });
+        }
+        return options;
     }
     onScaleChange(event) {
         const value = Number(event.target.value);
-        this.model.scaleSetting().set(value);
+        if (value === 0) {
+            this.autoAdjustScaleSetting.set(true);
+            if (this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
+                const appliedSize = this.model.appliedDeviceSize();
+                this.model.setSizeAndScaleToFit(appliedSize.width, appliedSize.height);
+            }
+            else {
+                const device = this.model.device();
+                const mode = this.model.mode();
+                if (device && mode) {
+                    this.model.emulate(EmulationModel.DeviceModeModel.Type.Device, device, mode, undefined);
+                }
+            }
+        }
+        else {
+            this.autoAdjustScaleSetting.set(false);
+            this.model.scaleSetting().set(value);
+        }
     }
     getDeviceScaleFactorOptions() {
         const deviceScaleFactorSetting = this.model.deviceScaleFactorSetting();

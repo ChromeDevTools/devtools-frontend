@@ -243,6 +243,7 @@ import * as SDK from "./../../../core/sdk/sdk.js";
 import * as UI2 from "./../../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../../ui/lit/lit.js";
 import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "./../../common/common.js";
 import * as MobileThrottling from "./../../mobile_throttling/mobile_throttling.js";
 
 // gen/front_end/panels/timeline/components/cpuThrottlingSelector.css.js
@@ -314,7 +315,7 @@ var str_2 = i18n3.i18n.registerUIStrings("panels/timeline/components/CPUThrottli
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var DEFAULT_VIEW = (input, _output, target) => {
   let recommendedInfoEl;
-  if (input.recommendedOption && input.currentOption === SDK.CPUThrottlingManager.NoThrottlingOption) {
+  if (input.recommendedOption && input.currentOption === PanelsCommon.CPUThrottlingOption.NoThrottlingOption) {
     recommendedInfoEl = html2`<devtools-icon
         title=${i18nString2(UIStrings2.recommendedThrottlingReason)}
         name=info></devtools-icon>`;
@@ -376,7 +377,7 @@ var CPUThrottlingSelector = class extends UI2.Widget.Widget {
   #cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
   constructor(element, view = DEFAULT_VIEW) {
     super(element);
-    this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
+    this.#currentOption = MobileThrottling.ThrottlingManager.throttlingManager().cpuThrottlingOption();
     this.#calibratedThrottlingSetting = Common.Settings.Settings.instance().createSetting(
       "calibrated-cpu-throttling",
       {},
@@ -402,7 +403,7 @@ var CPUThrottlingSelector = class extends UI2.Widget.Widget {
     this.#cpuThrottlingManager.removeEventListener("RateChanged", this.#onOptionChange, this);
   }
   #onOptionChange() {
-    this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
+    this.#currentOption = MobileThrottling.ThrottlingManager.throttlingManager().cpuThrottlingOption();
     this.requestUpdate();
   }
   #onCalibratedSettingChanged() {
@@ -413,9 +414,9 @@ var CPUThrottlingSelector = class extends UI2.Widget.Widget {
     let option;
     if (typeof event.itemValue === "string") {
       if (event.itemValue === "low-tier-mobile") {
-        option = SDK.CPUThrottlingManager.CalibratedLowTierMobileThrottlingOption;
+        option = PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption;
       } else if (event.itemValue === "mid-tier-mobile") {
-        option = SDK.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
+        option = PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption;
       }
     } else {
       const rate = Number(event.itemValue);
@@ -2814,7 +2815,7 @@ import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
 import * as LegacyComponents from "./../../../ui/legacy/components/utils/utils.js";
 import * as UI9 from "./../../../ui/legacy/legacy.js";
 import * as Lit10 from "./../../../ui/lit/lit.js";
-import * as PanelsCommon from "./../../common/common.js";
+import * as PanelsCommon2 from "./../../common/common.js";
 var { html: html10 } = Lit10;
 var { widget: widget2 } = UI9.Widget;
 var DEFAULT_VIEW5 = (input, output, target) => {
@@ -2895,7 +2896,7 @@ var NodeLink = class extends UI9.Widget.Widget {
       this.#linkifiedNodeForBackendId.set(this.#backendNodeId, "NO_NODE_FOUND");
       return;
     }
-    const linkedNode = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, this.#options);
+    const linkedNode = PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(node, this.#options);
     this.#linkifiedNodeForBackendId.set(this.#backendNodeId, linkedNode);
     return linkedNode;
   }
@@ -4672,7 +4673,7 @@ import * as uiI18n4 from "./../../../ui/i18n/i18n.js";
 import * as UI11 from "./../../../ui/legacy/legacy.js";
 import * as Lit14 from "./../../../ui/lit/lit.js";
 import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon2 from "./../../common/common.js";
+import * as PanelsCommon3 from "./../../common/common.js";
 
 // gen/front_end/panels/timeline/components/liveMetricsView.css.js
 var liveMetricsView_css_default = `/*
@@ -5453,7 +5454,7 @@ function createMetricCardRef(cardData) {
 }
 function renderLcpCard(input) {
   const fieldData = input.cruxManager.getSelectedFieldMetricData("largest_contentful_paint");
-  const nodeLink2 = input.lcpValue?.nodeRef && PanelsCommon2.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
+  const nodeLink2 = input.lcpValue?.nodeRef && PanelsCommon3.DOMLinkifier.Linkifier.instance().linkify(input.lcpValue?.nodeRef);
   const subparts = input.lcpValue?.subparts;
   const fieldSubparts = getLcpFieldSubparts(input.cruxManager);
   return html14`
@@ -5474,7 +5475,7 @@ function renderLcpCard(input) {
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString14(UIStrings15.lcpElement)}</span>
             <span class="related-info-link">
-             ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: input.lcpValue?.nodeRef })}
+             ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, { node: input.lcpValue?.nodeRef })}
             </span>
           </div>
         ` : nothing13}
@@ -5561,7 +5562,7 @@ function renderRecordingSettings(input) {
   const fieldEnabled = input.cruxManager.getConfigSetting().get().enabled;
   const deviceRec = getDeviceRec(input.cruxManager) || i18nString14(UIStrings15.notEnoughData);
   const networkRec = getNetworkRecTitle(input.cruxManager) || i18nString14(UIStrings15.notEnoughData);
-  const recs = PanelsCommon2.ThrottlingUtils.getThrottlingRecommendations();
+  const recs = PanelsCommon3.ThrottlingUtils.getThrottlingRecommendations();
   return html14`
     <h3 class="card-title">${i18nString14(UIStrings15.environmentSettings)}</h3>
     <div class="device-toolbar-description">${md(i18nString14(UIStrings15.useDeviceToolbar))}</div>
@@ -5753,7 +5754,7 @@ function renderInteractionsLog(input, output) {
                   ${interaction.interactionType} ${isInp ? html14`<span class="interaction-inp-chip" title=${i18nString14(UIStrings15.inpInteraction)}>INP</span>` : nothing13}
                 </span>
                 <span class="interaction-node">
-                  ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
+                  ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, { node: interaction.nodeRef })}
                 </span>
                 ${isP98Excluded ? html14`<devtools-icon
                   class="interaction-info"
@@ -5829,7 +5830,7 @@ function renderLayoutShiftsLog(input, output) {
             <div class="layout-shift-nodes">
               ${layoutShift.affectedNodeRefs.map((node) => html14`
                 <div class="layout-shift-node">
-                  ${widget3(PanelsCommon2.DOMLinkifier.DOMNodeLink, { node })}
+                  ${widget3(PanelsCommon3.DOMLinkifier.DOMNodeLink, { node })}
                 </div>
               `)}
             </div>

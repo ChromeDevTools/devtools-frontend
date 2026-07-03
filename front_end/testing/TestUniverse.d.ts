@@ -5,8 +5,11 @@ import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as Logs from '../models/logs/logs.js';
+import * as Persistence from '../models/persistence/persistence.js';
+import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { createTarget } from './TargetHelpers.js';
 export interface CreationOptions extends Partial<Foundation.Universe.CreationOptions> {
@@ -37,11 +40,13 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
      */
     createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
     get autofillManager(): AutofillManager.AutofillManager.AutofillManager;
+    get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager;
     get console(): Common.Console.Console;
     get context(): Root.DevToolsContext.DevToolsContext;
     get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;
     get debuggerWorkspaceBinding(): Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+    get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager;
     get frameManager(): SDK.FrameManager.FrameManager;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
     get logManager(): Logs.LogManager.LogManager;
@@ -49,6 +54,8 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager;
     get networkLog(): Logs.NetworkLog.NetworkLog;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
+    get persistence(): Persistence.Persistence.PersistenceImpl;
+    get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;
     get targetManager(): SDK.TargetManager.TargetManager;
     get settings(): Common.Settings.Settings;
     get workspace(): Workspace.Workspace.WorkspaceImpl;

@@ -1,5 +1,4 @@
 import '../../../ui/kit/kit.js';
-import '../../../ui/legacy/legacy.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type { EditableSpan } from './EditableSpan.js';

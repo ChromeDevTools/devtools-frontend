@@ -1821,6 +1821,9 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       /* setExpanded */
     );
   }
+  blurCanvasForTesting() {
+    this.canvas.blur();
+  }
   bulkExpandGroups(indexes) {
     if (indexes.length === 0) {
       return;

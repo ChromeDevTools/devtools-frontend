@@ -2,35 +2,6 @@ import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Lit from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { type ColumnDescriptor, type ResizeMethod } from './DataGrid.js';
-/**
- * A data grid (table) element that can be used as progressive enhancement over a <table> element.
- *
- * It can be used as
- * ```
- * <devtools-data-grid striped name=${'Display Name'}>
- *   <table>
- *     <tr>
- *       <th id="column-1">Column 1</th>
- *       <th id="column-2">Column 2</th>
- *     </tr>
- *     <tr>
- *       <td>Value 1</td>
- *       <td>Value 2</td>
- *     </tr>
- *   </table>
- * </devtools-data-grid>
- * ```
- * where a row with <th> configures the columns and rows with <td> provide the data.
- *
- * Under the hood it uses SortableDataGrid, which extends ViewportDataGrid so only
- * visible rows are layed out and sorting is provided out of the box.
- *
- * @property filters Set of text filters to be applied to the data grid.
- * @attribute inline If true, the data grid will render inline instead of taking a full container height.
- * @attribute resize Column resize method, one of 'nearest' (default), 'first' or 'last'.
- * @attribute striped If true, the data grid will have striped rows.
- * @attribute displayName
- */
 export declare class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
     #private;
     static readonly observedAttributes: string[];

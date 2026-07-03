@@ -37,7 +37,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Annotations from '../../models/annotations/annotations.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
@@ -237,8 +236,6 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.#domTreeWidget.onSelectedNodeChanged = this.selectedNodeChanged.bind(this);
         this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
         this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
-        this.#domTreeWidget.onElementExpanded = this.handleElementExpanded.bind(this);
-        this.#domTreeWidget.onElementCollapsed = this.handleElementCollapsed.bind(this);
         this.#domTreeWidget.setWordWrap(Common.Settings.Settings.instance().moduleSetting('dom-word-wrap').get());
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.DOMModel.DOMModel, this, { scoped: true });
         SDK.TargetManager.TargetManager.instance().addEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, event => this.targetNameChanged(event.data));
@@ -246,9 +243,6 @@ export class ElementsPanel extends UI.Panel.Panel {
             .moduleSetting('show-ua-shadow-dom')
             .addChangeListener(this.showUAShadowDOMChanged.bind(this));
         PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded" /* PanelCommon.ExtensionServer.Events.SidebarPaneAdded */, this.extensionSidebarPaneAdded, this);
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
-        }
     }
     // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
     // For that case, we want to only run this function once.
@@ -270,16 +264,6 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.#computedStyleWidget.matchedStyles = matchedCascade;
         if (matchedCascade) {
             this.#computedStyleWidget.propertyTraces = this.#computedStyleModel.computePropertyTraces(matchedCascade);
-        }
-    }
-    handleElementExpanded() {
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
-        }
-    }
-    handleElementCollapsed() {
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
         }
     }
     showAccessibilityTree() {
@@ -407,9 +391,6 @@ export class ElementsPanel extends UI.Panel.Panel {
         UI.Context.Context.instance().setFlavor(ElementsPanel, this);
         this.#domTreeWidget.show(this.domTreeContainer);
         this.evaluateTrackingComputedStyleUpdatesForNode();
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
-        }
     }
     willHide() {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
@@ -1080,48 +1061,6 @@ export class ElementsPanel extends UI.Panel.Panel {
     }
     copyStyles(node) {
         this.#domTreeWidget.copyStyles(node);
-    }
-    async resolveInitialState(parentElement, reveal, lookupId, anchor) {
-        if (!this.isShowing()) {
-            return null;
-        }
-        if (!anchor) {
-            const backendNodeId = Number(lookupId);
-            if (isNaN(backendNodeId)) {
-                return null;
-            }
-            const rootDOMNode = this.#domTreeWidget.rootDOMNode;
-            if (!rootDOMNode) {
-                return null;
-            }
-            const domModel = rootDOMNode.domModel();
-            const nodes = await domModel.pushNodesByBackendIdsToFrontend(new Set([backendNodeId]));
-            if (!nodes) {
-                return null;
-            }
-            const foundNode = nodes.get(backendNodeId);
-            if (!foundNode) {
-                return null;
-            }
-            anchor = foundNode;
-        }
-        const element = this.#domTreeWidget.treeElementForNode(anchor);
-        if (!element) {
-            return null;
-        }
-        if (reveal) {
-            // The node must have been revealed in order to calculate its position.
-            await Common.Revealer.reveal(anchor);
-        }
-        // The tree element element starts at the top-left of the expand/collapse arrow). We
-        // want to aim for the tagname instead.
-        const offsetToTagName = 22;
-        const yPadding = 5;
-        const targetRect = element.listItemElement.getBoundingClientRect();
-        const parentRect = parentElement.getBoundingClientRect();
-        const relativeX = targetRect.x - parentRect.x + offsetToTagName;
-        const relativeY = targetRect.y - parentRect.y + yPadding;
-        return { x: relativeX, y: relativeY };
     }
     static firstInspectElementCompletedForTest = function () { };
     static firstInspectElementNodeNameForTest = '';

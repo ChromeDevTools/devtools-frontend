@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
+import { CalibratedMidTierMobileThrottlingOption, MidTierThrottlingOption, } from './CPUThrottlingOption.js';
 /**
  * Computes the recommended CPU and network throttling presets based on CrUX
  * field metric data.
@@ -10,9 +11,9 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 export function getThrottlingRecommendations() {
     const cruxManager = CrUXManager.CrUXManager.instance();
     const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData('round_trip_time');
-    let cpuOption = SDK.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
+    let cpuOption = CalibratedMidTierMobileThrottlingOption;
     if (cpuOption.rate() === 0) {
-        cpuOption = SDK.CPUThrottlingManager.MidTierThrottlingOption;
+        cpuOption = MidTierThrottlingOption;
     }
     const networkConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
     return {

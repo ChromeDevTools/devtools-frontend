@@ -92,9 +92,6 @@
       "path": "../../models/ai_assistance/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/annotations/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/bindings/bundle-tsconfig.json"
     },
     {

@@ -2013,8 +2013,8 @@ __export(AutomaticFileSystemManager_exports, {
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as ProjectSettings from "./../project_settings/project_settings.js";
-var automaticFileSystemManagerInstance;
 var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Common7.ObjectWrapper.ObjectWrapper {
   #automaticFileSystem;
   #availability = "unavailable";
@@ -2062,21 +2062,21 @@ var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Commo
    * @returns the singleton.
    */
   static instance({ forceNew, inspectorFrontendHost, projectSettingsModel } = { forceNew: false, inspectorFrontendHost: null, projectSettingsModel: null }) {
-    if (!automaticFileSystemManagerInstance || forceNew) {
+    if (!Root2.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager) || forceNew) {
       if (!inspectorFrontendHost || !projectSettingsModel) {
         throw new Error("Unable to create AutomaticFileSystemManager: inspectorFrontendHost, and projectSettingsModel must be provided");
       }
-      automaticFileSystemManagerInstance = new _AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
+      Root2.DevToolsContext.globalInstance().set(_AutomaticFileSystemManager, new _AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel));
     }
-    return automaticFileSystemManagerInstance;
+    return Root2.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager);
   }
   /**
    * Clears the `AutomaticFileSystemManager` singleton (if any);
    */
   static removeInstance() {
-    if (automaticFileSystemManagerInstance) {
-      automaticFileSystemManagerInstance.#dispose();
-      automaticFileSystemManagerInstance = void 0;
+    if (Root2.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager)) {
+      Root2.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager).#dispose();
+      Root2.DevToolsContext.globalInstance().delete(_AutomaticFileSystemManager);
     }
   }
   #dispose() {
@@ -2355,7 +2355,7 @@ __export(NetworkPersistenceManager_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 import * as TextUtils6 from "./../text_utils/text_utils.js";
@@ -2415,16 +2415,16 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   static instance(opts = { forceNew: null, workspace: null }) {
     const { forceNew, workspace } = opts;
-    if (!Root2.DevToolsContext.globalInstance().has(_NetworkPersistenceManager) || forceNew) {
+    if (!Root3.DevToolsContext.globalInstance().has(_NetworkPersistenceManager) || forceNew) {
       if (!workspace) {
         throw new Error("Missing workspace for NetworkPersistenceManager");
       }
-      Root2.DevToolsContext.globalInstance().set(_NetworkPersistenceManager, new _NetworkPersistenceManager(workspace, PersistenceImpl.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance(), SDK3.TargetManager.TargetManager.instance(), Common9.Settings.Settings.instance(), IsolatedFileSystemManager.instance(), SDK3.NetworkManager.MultitargetNetworkManager.instance()));
+      Root3.DevToolsContext.globalInstance().set(_NetworkPersistenceManager, new _NetworkPersistenceManager(workspace, PersistenceImpl.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance(), SDK3.TargetManager.TargetManager.instance(), Common9.Settings.Settings.instance(), IsolatedFileSystemManager.instance(), SDK3.NetworkManager.MultitargetNetworkManager.instance()));
     }
-    return Root2.DevToolsContext.globalInstance().get(_NetworkPersistenceManager);
+    return Root3.DevToolsContext.globalInstance().get(_NetworkPersistenceManager);
   }
   static removeInstance() {
-    Root2.DevToolsContext.globalInstance().delete(_NetworkPersistenceManager);
+    Root3.DevToolsContext.globalInstance().delete(_NetworkPersistenceManager);
   }
   active() {
     return this.#active;

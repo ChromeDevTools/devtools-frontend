@@ -106,7 +106,6 @@ export declare class TabbedPane extends TabbedPane_base {
     calculateConstraints(): Geometry.Constraints;
     setPlaceholderElement(element: Element, focusedElement?: Element): void;
     waitForTabElementUpdate(): Promise<void>;
-    updateTabAnnotationIcons(): void;
     performUpdate(): void;
     private adjustToolbarWidth;
     private hideTabElement;
@@ -154,7 +153,6 @@ export declare class TabbedPane extends TabbedPane_base {
     leftToolbar(): Toolbar;
     rightToolbar(): Toolbar;
     setAllowTabReorder(allow: boolean, automatic?: boolean): void;
-    setTabAnnotationIcon(id: string, iconVisible: boolean): void;
     private keyDown;
 }
 export interface EventData {
@@ -197,8 +195,6 @@ export declare class TabbedPaneTab {
     set title(title: string);
     get jslogContext(): string;
     set jslogContext(jslogContext: string | undefined);
-    get tabAnnotationIcon(): boolean;
-    set tabAnnotationIcon(iconVisible: boolean);
     isCloseable(): boolean;
     setIcon(icon: Icon | null): void;
     setSuffixElement(suffixElement: HTMLElement | LitTemplate | null): void;
@@ -215,7 +211,6 @@ export declare class TabbedPaneTab {
     private createSuffixElement;
     private createMeasureClone;
     createTabElement(measuring: boolean): HTMLElement;
-    private createTabAnnotationIcon;
     private createCloseIconButton;
     private createPreviewIcon;
     private isCloseIconClicked;

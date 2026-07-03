@@ -110,9 +110,6 @@
       "path": "../../models/ai_code_completion/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/annotations/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/badges/bundle-tsconfig.json"
     },
     {

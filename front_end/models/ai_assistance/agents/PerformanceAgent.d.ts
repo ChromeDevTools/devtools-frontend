@@ -2,7 +2,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Trace from '../../trace/trace.js';
 import type { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 import type { AgentFocus } from '../performance/AIContext.js';
-import { AiAgent, type ContextResponse, type ConversationContext, type FunctionCallHandlerResult, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
+import { AiAgent, type ContextResponse, type ConversationContext, type ParsedResponse, type RequestOptions, type ResponseData } from './AiAgent.js';
 /**
  * Labels used to identify specific periods or categories in the trace for getting main thread summary.
  * Supports hardcoded phases, dynamic navigation IDs (`NAVIGATION_X`), and insight models.
@@ -37,6 +37,4 @@ export declare class PerformanceAgent extends AiAgent<AgentFocus> {
      * into subsequent runs.
      */
     clearCache(): void;
-    addElementAnnotation(elementId: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
-    addNetworkRequestAnnotation(eventKey: string, annotationMessage: string): Promise<FunctionCallHandlerResult<unknown>>;
 }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 /** The security origin for all DevTools (front-end) resources. */
 const DEVTOOLS_SECURITY_ORIGIN = 'devtools://devtools';
@@ -45,7 +46,6 @@ function isLocalFrame(frame) {
 }
 const EMPTY_PROJECT_SETTINGS = Object.freeze({});
 const IDLE_PROMISE = Promise.resolve();
-let projectSettingsModelInstance;
 export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper {
     #pageResourceLoader;
     #targetManager;
@@ -94,22 +94,22 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper {
      * @returns the singleton.
      */
     static instance({ forceNew, hostConfig, pageResourceLoader, targetManager }) {
-        if (!projectSettingsModelInstance || forceNew) {
+        if (!Root.DevToolsContext.globalInstance().has(ProjectSettingsModel) || forceNew) {
             if (!hostConfig || !pageResourceLoader || !targetManager) {
                 throw new Error('Unable to create ProjectSettingsModel: ' +
                     'hostConfig, pageResourceLoader, and targetManager must be provided');
             }
-            projectSettingsModelInstance = new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager);
+            Root.DevToolsContext.globalInstance().set(ProjectSettingsModel, new ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager));
         }
-        return projectSettingsModelInstance;
+        return Root.DevToolsContext.globalInstance().get(ProjectSettingsModel);
     }
     /**
-     * Clears the `ProjectSettingsModel` singleton (if any).
+     * Clears the `ProjectSettingsModel` singleton (if any);
      */
     static removeInstance() {
-        if (projectSettingsModelInstance) {
-            projectSettingsModelInstance.#dispose();
-            projectSettingsModelInstance = undefined;
+        if (Root.DevToolsContext.globalInstance().has(ProjectSettingsModel)) {
+            Root.DevToolsContext.globalInstance().get(ProjectSettingsModel).#dispose();
+            Root.DevToolsContext.globalInstance().delete(ProjectSettingsModel);
         }
     }
     #dispose() {

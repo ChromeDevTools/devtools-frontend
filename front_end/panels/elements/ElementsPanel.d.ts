@@ -54,8 +54,6 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     getTreeOutlineForTesting(): ElementsTreeOutline | undefined;
     constructor();
     private evaluateTrackingComputedStyleUpdatesForNode;
-    private handleElementExpanded;
-    private handleElementCollapsed;
     private showAccessibilityTree;
     private showDOMTree;
     toggleAccessibilityTree(): void;
@@ -140,10 +138,6 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void;
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
     copyStyles(node: SDK.DOMModel.DOMNode): void;
-    resolveInitialState(parentElement: Element, reveal: boolean, lookupId: string, anchor?: SDK.DOMModel.DOMNode | SDK.NetworkRequest.NetworkRequest): Promise<{
-        x: number;
-        y: number;
-    } | null>;
     protected static firstInspectElementCompletedForTest: () => void;
     protected static firstInspectElementNodeNameForTest: string;
 }

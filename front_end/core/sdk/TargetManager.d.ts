@@ -17,6 +17,7 @@ export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<Ev
      */
     readonly context: Root.DevToolsContext.DevToolsContext;
     get settings(): Common.Settings.Settings;
+    getConsole(): Common.Console.Console;
     /**
      * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
      */

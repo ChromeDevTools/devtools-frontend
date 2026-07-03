@@ -7,9 +7,6 @@ import * as AccessibilityAgent from './agents/AccessibilityAgent.js';
 import * as AiAgent from './agents/AiAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
-import * as GreenDevAgent from './agents/GreenDevAgent.js';
-import * as GreenDevAgentAntigravityCliSocketClient from './agents/GreenDevAgentAntigravityCliSocketClient.js';
-import * as GreenDevAgentGeminiCliSocketClient from './agents/GreenDevAgentGeminiCliSocketClient.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
 import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
@@ -82,9 +79,6 @@ export {
   GetLighthouseAudits,
   GetNetworkRequestDetails,
   GetStyles,
-  GreenDevAgent,
-  GreenDevAgentAntigravityCliSocketClient,
-  GreenDevAgentGeminiCliSocketClient,
   Injected,
   LighthouseFormatter,
   ListNetworkRequests,

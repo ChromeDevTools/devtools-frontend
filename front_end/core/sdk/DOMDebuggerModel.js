@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import { CategorizedBreakpoint } from './CategorizedBreakpoint.js';
 import { DOMModel, Events as DOMModelEvents } from './DOMModel.js';
 import { RemoteObject } from './RemoteObject.js';
@@ -387,7 +388,6 @@ export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
     }
     static listener = 'listener:';
 }
-let domDebuggerManagerInstance;
 export class DOMDebuggerManager {
     #xhrBreakpointsSetting;
     #xhrBreakpoints = new Map();
@@ -494,10 +494,13 @@ export class DOMDebuggerManager {
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew, targetManager } = opts;
-        if (!domDebuggerManagerInstance || forceNew) {
-            domDebuggerManagerInstance = new DOMDebuggerManager(targetManager);
+        if (!Root.DevToolsContext.globalInstance().has(DOMDebuggerManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(DOMDebuggerManager, new DOMDebuggerManager(targetManager ?? TargetManager.instance()));
         }
-        return domDebuggerManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(DOMDebuggerManager);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(DOMDebuggerManager);
     }
     cspViolationBreakpoints() {
         return this.#cspViolationsToBreakOn.slice();

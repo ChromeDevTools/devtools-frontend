@@ -70,18 +70,18 @@ var PanelUtils = class _PanelUtils {
   static getIconForNetworkRequest(request) {
     let type = request.resourceType();
     if (_PanelUtils.isFailedNetworkRequest(request)) {
-      let iconName2;
+      let iconName;
       let title;
       if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
         title = i18nString(UIStrings.prefetchFailed, { PH1: type.title() });
-        iconName2 = "warning-filled";
+        iconName = "warning-filled";
       } else {
         title = i18nString(UIStrings.requestFailed, { PH1: type.title() });
-        iconName2 = "cross-circle-filled";
+        iconName = "cross-circle-filled";
       }
       return html`<devtools-icon
           class="icon"
-          name=${iconName2}
+          name=${iconName}
           title=${title}
           role=img
         ></devtools-icon>`;
@@ -96,18 +96,15 @@ var PanelUtils = class _PanelUtils {
     }
     const isHeaderOverridden = request.hasOverriddenHeaders();
     const isContentOverridden = request.hasOverriddenContent;
+    let overrideTitle;
     if (isHeaderOverridden || isContentOverridden) {
-      let title;
       if (isHeaderOverridden && isContentOverridden) {
-        title = i18nString(UIStrings.requestContentHeadersOverridden);
+        overrideTitle = i18nString(UIStrings.requestContentHeadersOverridden);
       } else if (isContentOverridden) {
-        title = i18nString(UIStrings.requestContentOverridden);
+        overrideTitle = i18nString(UIStrings.requestContentOverridden);
       } else {
-        title = i18nString(UIStrings.requestHeadersOverridden);
+        overrideTitle = i18nString(UIStrings.requestHeadersOverridden);
       }
-      return html`<div class="network-override-marker">
-          <devtools-icon class="icon" name="document" role=img title=${title}></devtools-icon>
-        </div>`;
     }
     const typeFromMime = Common.ResourceType.ResourceType.fromMimeType(request.mimeType);
     if (typeFromMime !== type && typeFromMime !== Common.ResourceType.resourceTypes.Other) {
@@ -119,8 +116,9 @@ var PanelUtils = class _PanelUtils {
         type = typeFromMime;
       }
     }
+    let iconElement;
     if (type === Common.ResourceType.resourceTypes.Image) {
-      return html`<div class="image icon">
+      iconElement = html`<div class="image icon">
         <img
           class="image-network-icon-preview"
           title=${iconTitleForRequest(request)}
@@ -132,19 +130,26 @@ var PanelUtils = class _PanelUtils {
       })}
         />
       </div>`;
-    }
-    if (type !== Common.ResourceType.resourceTypes.Manifest && Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === "application/json") {
-      return html`<devtools-icon
+    } else if (type !== Common.ResourceType.resourceTypes.Manifest && Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === "application/json") {
+      iconElement = html`<devtools-icon
           class="icon" name="file-json" title=${iconTitleForRequest(request)} role=img
           style="color:var(--icon-file-script)">
         </devtools-icon>`;
+    } else {
+      const { iconName, color } = _PanelUtils.iconDataForResourceType(type);
+      iconElement = html`<devtools-icon
+          class="icon" name=${iconName} title=${iconTitleForRequest(request)}
+          style=${styleMap({ color })}>
+        </devtools-icon>`;
     }
-    const { iconName, color } = _PanelUtils.iconDataForResourceType(type);
-    return html`<devtools-icon
-        class="icon" name=${iconName} title=${iconTitleForRequest(request)}
-        style=${styleMap({ color })}>
-      </devtools-icon>`;
+    if (overrideTitle) {
+      return html`<div class="network-override-marker">${iconElement}</div>`;
+    }
+    return iconElement;
     function iconTitleForRequest(request2) {
+      if (overrideTitle) {
+        return overrideTitle;
+      }
       const throttlingConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(request2);
       if (!throttlingConditions?.urlPattern) {
         return request2.resourceType().title();

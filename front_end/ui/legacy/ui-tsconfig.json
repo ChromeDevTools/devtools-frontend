@@ -117,9 +117,6 @@
       "path": "../../foundation/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/annotations/bundle-tsconfig.json"
-    },
-    {
       "path": "../../models/geometry/bundle-tsconfig.json"
     },
     {

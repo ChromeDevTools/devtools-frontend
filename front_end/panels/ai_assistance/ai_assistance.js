@@ -11,17 +11,15 @@ import * as Host7 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as Root8 from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as AiAssistanceModel9 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Badges from "./../../models/badges/badges.js";
-import * as Greendev from "./../../models/greendev/greendev.js";
 import * as Workspace8 from "./../../models/workspace/workspace.js";
 import * as Buttons9 from "./../../ui/components/buttons/buttons.js";
 import * as Snackbars4 from "./../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import * as Lit11 from "./../../ui/lit/lit.js";
+import * as Lit10 from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as LighthousePanel2 from "./../lighthouse/lighthouse.js";
 import * as NetworkForward2 from "./../network/forward/forward.js";
@@ -7514,154 +7512,6 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
   }
 };
 
-// gen/front_end/panels/ai_assistance/components/StylingAgentMarkdownRenderer.js
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as Marked3 from "./../../third_party/marked/marked.js";
-import * as Lit10 from "./../../ui/lit/lit.js";
-import * as PanelsCommon6 from "./../common/common.js";
-var { html: html15 } = Lit10.StaticHtml;
-var { until: until4 } = Lit10.Directives;
-var StylingAgentMarkdownRenderer = class _StylingAgentMarkdownRenderer extends MarkdownRendererWithCodeBlock {
-  mainFrameId;
-  constructor(mainFrameId = "") {
-    super();
-    this.mainFrameId = mainFrameId;
-  }
-  #renderTableFromJson(data) {
-    if (!Array.isArray(data) || data.length === 0 || typeof data[0] !== "object" || data[0] === null) {
-      return null;
-    }
-    const headers = Object.keys(data[0]);
-    const requiredKeys = ["Problem", "Element", "NodeId", "Details"];
-    if (!requiredKeys.every((key) => headers.includes(key))) {
-      return null;
-    }
-    const problemIndex = headers.indexOf("Problem");
-    if (problemIndex > -1) {
-      const problemHeader = headers.splice(problemIndex, 1);
-      headers.unshift(...problemHeader);
-    }
-    return html15`
-      <table style="width: 100%;">
-        <thead>
-          <tr>
-            ${headers.map((header) => html15`<th style="text-align: left;">${header === "NodeId" ? "" : header}</th>`)}
-          </tr>
-        </thead>
-        <tbody>
-          ${data.flatMap((row) => {
-      return html15`
-            <tr>
-              ${headers.map((header) => {
-        if (header === "NodeId") {
-          return html15`<td>${this.#renderLinkifiedText(row[header])}</td>`;
-        }
-        if (header === "Details") {
-          return html15`<td><a href="#" @click=${this.#toggleDetailsRow}>Details</a></td>`;
-        }
-        return html15`<td>${row[header]}</td>`;
-      })}
-            </tr>
-            <tr class="details-row" style="display: none;">
-              <td colspan=${headers.length} style="background-color: #f0f0f0; padding: 1em;">
-                <devtools-markdown-view .data=${{
-        tokens: Marked3.Marked.lexer(row["Details"]),
-        renderer: new _StylingAgentMarkdownRenderer(this.mainFrameId)
-      }}></devtools-markdown-view>
-              </td>
-            </tr>
-          `;
-    })}
-        </tbody>
-      </table>
-      <br><div>To investigate these problems, please click one of the provided links (above), to set as context, and ask me further questions about the problem.</div>
-    `;
-  }
-  templateForToken(token) {
-    if (token.type === "code") {
-      try {
-        const data = JSON.parse(token.text);
-        const table = this.#renderTableFromJson(data);
-        if (table) {
-          return table;
-        }
-      } catch {
-      }
-    }
-    if (token.type === "link" && token.href.startsWith("#")) {
-      let nodeId = void 0;
-      if (token.href.startsWith("#node-")) {
-        nodeId = Number(token.href.replace("#node-", ""));
-      } else if (token.href.startsWith("#")) {
-        nodeId = Number(token.href.replace("#", ""));
-      }
-      if (nodeId) {
-        return html15`<span>${until4(this.#linkifyNode(nodeId, token.text).then((node) => node || token.text), token.text)}</span>`;
-      }
-    }
-    return super.templateForToken(token);
-  }
-  #toggleDetailsRow(e) {
-    e.preventDefault();
-    const link4 = e.target;
-    const currentRow = link4.closest("tr");
-    if (!currentRow) {
-      return;
-    }
-    const detailsRow = currentRow.nextElementSibling;
-    if (detailsRow?.classList.contains("details-row")) {
-      if (detailsRow.style.display === "none") {
-        detailsRow.style.display = "table-row";
-        link4.textContent = "Hide";
-      } else {
-        detailsRow.style.display = "none";
-        link4.textContent = "Details";
-      }
-    }
-  }
-  #renderLinkifiedText(text) {
-    if (text.indexOf(",") === -1) {
-      const nodeId = Number(text);
-      if (isNaN(nodeId)) {
-        return html15`${text}`;
-      }
-      return this.#renderSingleLink(nodeId);
-    }
-    const nodeIdsStr = text.split(",").map((s) => s.trim()).filter(Boolean);
-    return html15`${nodeIdsStr.map((idStr) => {
-      const nodeId = Number(idStr);
-      if (isNaN(nodeId)) {
-        return html15`<div>${idStr}</div>`;
-      }
-      return html15`<div>${this.#renderSingleLink(nodeId)}</div>`;
-    })}`;
-  }
-  #renderSingleLink(nodeId) {
-    const label = `link`;
-    return html15`<span>${until4(this.#linkifyNode(nodeId, label).then((node) => node || label), label)}</span>`;
-  }
-  async #linkifyNode(backendNodeId, label) {
-    if (backendNodeId === void 0) {
-      return;
-    }
-    const target = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
-    const domModel = target?.model(SDK6.DOMModel.DOMModel);
-    if (!domModel) {
-      return void 0;
-    }
-    const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([backendNodeId]));
-    const node = domNodesMap?.get(backendNodeId);
-    if (!node) {
-      return;
-    }
-    if (node.frameId() !== this.mainFrameId) {
-      return;
-    }
-    const linkedNode = PanelsCommon6.DOMLinkifier.Linkifier.instance().linkify(node, { textContent: label });
-    return linkedNode;
-  }
-};
-
 // gen/front_end/panels/ai_assistance/ExportConversation.js
 var ExportConversation_exports = {};
 __export(ExportConversation_exports, {
@@ -7687,7 +7537,7 @@ async function saveToDisk(conversation) {
 }
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-var { html: html16 } = Lit11;
+var { html: html15 } = Lit10;
 var { widget: widget5 } = UI11.Widget;
 var AI_ASSISTANCE_SEND_FEEDBACK = "https://crbug.com/364805393";
 var AI_ASSISTANCE_HELP = "https://developer.chrome.com/docs/devtools/ai-assistance";
@@ -7886,9 +7736,6 @@ var i18nString6 = i18n21.i18n.getLocalizedString.bind(void 0, str_6);
 var lockedString8 = i18n21.i18n.lockedString;
 function selectedElementFilter(maybeNode) {
   if (maybeNode) {
-    if (Greendev.Prototypes.instance().isEnabled("emulationCapabilities")) {
-      return maybeNode;
-    }
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
   }
   return null;
@@ -7909,10 +7756,7 @@ async function getEmptyStateSuggestions(conversation) {
       return [
         { title: "What can you help me with?", jslogContext: "styling-default" },
         { title: "Why isn\u2019t this element visible?", jslogContext: "styling-default" },
-        {
-          title: Greendev.Prototypes.instance().isEnabled("emulationCapabilities") ? "Are there display issues on this page for people using an Android phone?" : "How do I center this element?",
-          jslogContext: "styling-default"
-        }
+        { title: "How do I center this element?", jslogContext: "styling-default" }
       ];
     case "drjones-file":
       return [
@@ -7956,9 +7800,9 @@ async function getEmptyStateSuggestions(conversation) {
 }
 function createV2MarkdownRenderer(conversation) {
   const options = {};
-  const primaryTarget = SDK7.TargetManager.TargetManager.instance().primaryPageTarget();
-  const domModel = primaryTarget?.model(SDK7.DOMModel.DOMModel);
-  const resourceTreeModel = primaryTarget?.model(SDK7.ResourceTreeModel.ResourceTreeModel);
+  const primaryTarget = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
+  const domModel = primaryTarget?.model(SDK6.DOMModel.DOMModel);
+  const resourceTreeModel = primaryTarget?.model(SDK6.ResourceTreeModel.ResourceTreeModel);
   const context = conversation?.selectedContext;
   if (context instanceof AiAssistanceModel9.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
@@ -7989,14 +7833,8 @@ function getMarkdownRenderer(conversation) {
   if (conversation?.type === "drjones-performance-full") {
     return new PerformanceAgentMarkdownRenderer();
   }
-  if (Greendev.Prototypes.instance().isEnabled("emulationCapabilities") && conversation?.type === "freestyler" && SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel)) {
-    const domModel = SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel);
-    const resourceTreeModel = domModel?.target().model(SDK7.ResourceTreeModel.ResourceTreeModel);
-    const mainFrameId = resourceTreeModel?.mainFrame?.id;
-    return new StylingAgentMarkdownRenderer(mainFrameId);
-  }
   if (conversation?.type === "accessibility") {
-    const domModel = SDK7.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK7.DOMModel.DOMModel);
+    const domModel = SDK6.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK6.DOMModel.DOMModel);
     const mainDocumentURL = domModel?.existingDocument()?.documentURL;
     return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);
   }
@@ -8004,10 +7842,10 @@ function getMarkdownRenderer(conversation) {
 }
 function toolbarView(input) {
   const hasAiV2 = Boolean(Root8.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-  return html16`
+  return html15`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging9.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
-      ${input.showChatActions ? html16`<devtools-button
+      ${input.showChatActions ? html15`<devtools-button
           title=${i18nString6(UIStrings6.newChat)}
           aria-label=${i18nString6(UIStrings6.newChat)}
           .iconName=${"plus"}
@@ -8021,8 +7859,8 @@ function toolbarView(input) {
           .iconName=${"history"}
           .jslogContext=${"freestyler.history"}
           .populateMenuCall=${input.populateHistoryMenu}
-        ></devtools-menu-button>` : Lit11.nothing}
-        ${input.showActiveConversationActions ? html16`
+        ></devtools-menu-button>` : Lit10.nothing}
+        ${input.showActiveConversationActions ? html15`
           <devtools-button
               title=${i18nString6(UIStrings6.deleteChat)}
               aria-label=${i18nString6(UIStrings6.deleteChat)}
@@ -8031,7 +7869,7 @@ function toolbarView(input) {
               .variant=${"toolbar"}
               @click=${input.onDeleteClick}>
           </devtools-button>
-          ${hasAiV2 ? Lit11.nothing : html16`
+          ${hasAiV2 ? Lit10.nothing : html15`
             <devtools-button
               title=${i18nString6(UIStrings6.exportConversation)}
               aria-label=${i18nString6(UIStrings6.exportConversation)}
@@ -8041,7 +7879,7 @@ function toolbarView(input) {
               .variant=${"toolbar"}
               @click=${input.onExportConversationClick}>
             </devtools-button>
-            `}` : Lit11.nothing}
+            `}` : Lit10.nothing}
       </devtools-toolbar>
       <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
         <devtools-link
@@ -8073,9 +7911,9 @@ function defaultView(input, output, target) {
   function renderState() {
     switch (input.state) {
       case "chat-view": {
-        return html16`<devtools-ai-chat-view
+        return html15`<devtools-ai-chat-view
           .props=${input.props}
-          ${Lit11.Directives.ref((el) => {
+          ${Lit10.Directives.ref((el) => {
           if (!el || !(el instanceof ChatView)) {
             return;
           }
@@ -8084,10 +7922,10 @@ function defaultView(input, output, target) {
         ></devtools-ai-chat-view>`;
       }
       case "explore-view":
-        return html16`<devtools-widget class="fill-panel" ${widget5(ExploreWidget)}>
+        return html15`<devtools-widget class="fill-panel" ${widget5(ExploreWidget)}>
                     </devtools-widget>`;
       case "disabled-view":
-        return html16`<devtools-widget class="fill-panel" ${widget5(DisabledWidget, input.props)}>
+        return html15`<devtools-widget class="fill-panel" ${widget5(DisabledWidget, input.props)}>
                     </devtools-widget>`;
     }
   }
@@ -8100,7 +7938,7 @@ function defaultView(input, output, target) {
         walkthroughIsForLastMessage = true;
       }
     }
-    Lit11.render(html16`
+    Lit10.render(html15`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">
         <devtools-split-view
@@ -8113,18 +7951,18 @@ function defaultView(input, output, target) {
           <div slot="main" class="main-view">
             ${renderState()}
           </div>
-          ${shouldShowWalkthrough ? html16`
+          ${shouldShowWalkthrough ? html15`
             <devtools-widget slot="sidebar" ${widget5(WalkthroughView, {
       message: input.props.walkthrough.activeSidebarMessage,
       isLoading: input.props.isLoading && walkthroughIsForLastMessage,
       markdownRenderer: input.props.markdownRenderer,
       onToggle: input.props.walkthrough.onToggle
-    })}></devtools-widget>` : Lit11.nothing}
+    })}></devtools-widget>` : Lit10.nothing}
         </devtools-split-view>
       </div>
     `, target);
   } else {
-    Lit11.render(html16`
+    Lit10.render(html15`
       ${toolbarView(input)}
       <div class="ai-assistance-view-container">${renderState()}</div>
     `, target);
@@ -8538,8 +8376,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#viewOutput.chatView?.restoreScrollPosition();
     this.#viewOutput.chatView?.focusTextInput();
     void this.#handleAidaAvailabilityChange();
-    this.#selectedElement = createDOMNodeContext(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK7.DOMModel.DOMNode)));
-    this.#selectedRequest = createRequestContext(UI11.Context.Context.instance().flavor(SDK7.NetworkRequest.NetworkRequest));
+    this.#selectedElement = createDOMNodeContext(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK6.DOMModel.DOMNode)));
+    this.#selectedRequest = createRequestContext(UI11.Context.Context.instance().flavor(SDK6.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI11.Context.Context.instance().flavor(AiAssistanceModel9.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI11.Context.Context.instance().flavor(Workspace8.UISourceCode.UISourceCode));
     this.#selectedAccessibility = createAccessibilityContext(UI11.Context.Context.instance().flavor(LighthousePanel2.LighthousePanel.ActiveLighthouseReport));
@@ -8548,15 +8386,15 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
-    UI11.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI11.Context.Context.instance().addFlavorChangeListener(SDK7.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI11.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI11.Context.Context.instance().addFlavorChangeListener(SDK6.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel9.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(AiAssistanceModel9.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(Workspace8.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI11.Context.Context.instance().addFlavorChangeListener(LighthousePanel2.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI11.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
-    SDK7.TargetManager.TargetManager.instance().addModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
-    SDK7.TargetManager.TargetManager.instance().addModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
+    SDK6.TargetManager.TargetManager.instance().addModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
+    SDK6.TargetManager.TargetManager.instance().addModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     UI11.Context.Context.instance().addFlavorChangeListener(TimelinePanel2.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
     this.#bindTimelineTraceListener();
     this.#selectDefaultAgentIfNeeded();
@@ -8567,16 +8405,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host7.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction?.removeEventListener("Toggled", this.requestUpdate, this);
-    UI11.Context.Context.instance().removeFlavorChangeListener(SDK7.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
-    UI11.Context.Context.instance().removeFlavorChangeListener(SDK7.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI11.Context.Context.instance().removeFlavorChangeListener(SDK6.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI11.Context.Context.instance().removeFlavorChangeListener(SDK6.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI11.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel9.AIContext.AgentFocus, this.#handlePerformanceTraceFlavorChange);
     UI11.Context.Context.instance().removeFlavorChangeListener(AiAssistanceModel9.StorageItem.StorageItem, this.#handleStorageItemFlavorChange);
     UI11.Context.Context.instance().removeFlavorChangeListener(Workspace8.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI11.Context.Context.instance().removeFlavorChangeListener(LighthousePanel2.LighthousePanel.ActiveLighthouseReport, this.#handleLighthouseReportFlavorChange);
     UI11.ViewManager.ViewManager.instance().removeEventListener("ViewVisibilityChanged", this.#selectDefaultAgentIfNeeded, this);
     UI11.Context.Context.instance().removeFlavorChangeListener(TimelinePanel2.TimelinePanel.TimelinePanel, this.#bindTimelineTraceListener, this);
-    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
-    SDK7.TargetManager.TargetManager.instance().removeModelListener(SDK7.DOMModel.DOMModel, SDK7.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
+    SDK6.TargetManager.TargetManager.instance().removeModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
+    SDK6.TargetManager.TargetManager.instance().removeModelListener(SDK6.DOMModel.DOMModel, SDK6.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     if (this.#timelinePanelInstance) {
       this.#timelinePanelInstance.removeEventListener("IsViewingTrace", this.requestUpdate, this);
       this.#timelinePanelInstance = null;
@@ -8815,7 +8653,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
-        const revealable = new SDK7.TraceObject.RevealableEvent(event);
+        const revealable = new SDK6.TraceObject.RevealableEvent(event);
         return Common7.Revealer.reveal(revealable);
       }
       if (focus.insight) {
@@ -8984,9 +8822,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     this.#updateConversationState();
     this.#resetWalkthrough();
     UI11.ARIAUtils.LiveAnnouncer.alert(i18nString6(UIStrings6.newChatCreated));
-    if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      Annotations.AnnotationRepository.instance().deleteAllAnnotations();
-    }
   }
   #cancel() {
     this.#runAbortController.abort();
@@ -9043,16 +8878,16 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       const handleInspectModeToggled = (ev) => {
         if (!ev.data) {
           window.setTimeout(() => {
-            resolve(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK7.DOMModel.DOMNode)));
+            resolve(selectedElementFilter(UI11.Context.Context.instance().flavor(SDK6.DOMModel.DOMNode)));
             removeListeners();
           }, 50);
         }
       };
       const removeListeners = () => {
-        UI11.Context.Context.instance().removeFlavorChangeListener(SDK7.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+        UI11.Context.Context.instance().removeFlavorChangeListener(SDK6.DOMModel.DOMNode, handleDOMNodeFlavorChange);
         this.#toggleSearchElementAction?.removeEventListener("Toggled", handleInspectModeToggled);
       };
-      UI11.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, handleDOMNodeFlavorChange);
+      UI11.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, handleDOMNodeFlavorChange);
       this.#toggleSearchElementAction?.addEventListener("Toggled", handleInspectModeToggled);
       this.#runAbortController.signal.addEventListener("abort", () => {
         resolve(null);
@@ -9077,12 +8912,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     if (this.#conversation.isEmpty) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
     }
-    const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled("emulationCapabilities");
     let multimodalInput;
-    const pendingInput = this.#conversation.getPendingMultimodalInput();
-    if (greenDevEmulationEnabled && pendingInput) {
-      multimodalInput = pendingInput;
-    } else if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
+    if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
       multimodalInput = {
         input: imageInput,
         id: crypto.randomUUID(),

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as PanelsCommon from '../common/common.js';
 const UIStrings = {
     /**
      * @description Text to display to user while a calibration process is running.
@@ -187,13 +188,13 @@ export class CalibrationController {
             if (actualScore < midScore) {
                 if (actualScore < lowScore) {
                     this.#result = {
-                        low: SDK.CPUThrottlingManager.CalibrationError.DEVICE_TOO_WEAK,
-                        mid: SDK.CPUThrottlingManager.CalibrationError.DEVICE_TOO_WEAK,
+                        low: PanelsCommon.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
+                        mid: PanelsCommon.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK,
                     };
                     return;
                 }
                 // Can still emulate the low-end device.
-                this.#result = { mid: SDK.CPUThrottlingManager.CalibrationError.DEVICE_TOO_WEAK };
+                this.#result = { mid: PanelsCommon.CPUThrottlingOption.CalibrationError.DEVICE_TOO_WEAK };
                 isHalfwayDone = true;
             }
         }

@@ -8,6 +8,7 @@ import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PanelCommon from '../../panels/common/common.js';
+import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttling.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as RecordingMetadata from './RecordingMetadata.js';
 const UIStrings = {
@@ -294,9 +295,9 @@ export class TimelineController {
         // temporarily disable throttling whilst the final trace event collection
         // takes place. Once it is done, we re-enable it (this is the existing
         // behaviour within DevTools; the throttling settling is sticky + global).
-        const throttlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+        const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
         const optionDuringRecording = throttlingManager.cpuThrottlingOption();
-        throttlingManager.setCPUThrottlingOption(SDK.CPUThrottlingManager.NoThrottlingOption);
+        throttlingManager.setCPUThrottlingOption(PanelCommon.CPUThrottlingOption.NoThrottlingOption);
         this.client.loadingStarted();
         // Give `TimelinePanel.#executeNewTrace` a chance to retain source maps from SDK.SourceMap.SourceMapManager.
         SDK.SourceMap.SourceMap.retainRawSourceMaps = true;

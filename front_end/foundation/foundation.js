@@ -14,8 +14,11 @@ import * as Root from "./../core/root/root.js";
 import * as SDK from "./../core/sdk/sdk.js";
 import * as AutofillManager from "./../models/autofill_manager/autofill_manager.js";
 import * as Bindings from "./../models/bindings/bindings.js";
+import * as Breakpoints from "./../models/breakpoints/breakpoints.js";
 import * as JavaScriptMetadata from "./../models/javascript_metadata/javascript_metadata.js";
 import * as Logs from "./../models/logs/logs.js";
+import * as Persistence from "./../models/persistence/persistence.js";
+import * as ProjectSettings from "./../models/project_settings/project_settings.js";
 import * as Workspace from "./../models/workspace/workspace.js";
 var Universe = class {
   // TODO(crbug.com/493763857): Once a singleton is no longer a singleton (i.e. it has no 'instance')
@@ -41,8 +44,12 @@ var Universe = class {
     context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
     const pageResourceLoader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
     context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
+    const projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(options.hostConfig, pageResourceLoader, targetManager);
+    context.set(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel, projectSettingsModel);
     const cpuThrottlingManager = new SDK.CPUThrottlingManager.CPUThrottlingManager(settings, targetManager);
     context.set(SDK.CPUThrottlingManager.CPUThrottlingManager, cpuThrottlingManager);
+    const domDebuggerManager = new SDK.DOMDebuggerModel.DOMDebuggerManager(targetManager);
+    context.set(SDK.DOMDebuggerModel.DOMDebuggerManager, domDebuggerManager);
     const workspace = new Workspace.Workspace.WorkspaceImpl();
     context.set(Workspace.Workspace.WorkspaceImpl, workspace);
     const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
@@ -52,6 +59,10 @@ var Universe = class {
     context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+    const breakpointManager = new Breakpoints.BreakpointManager.BreakpointManager(targetManager, workspace, debuggerWorkspaceBinding, settings);
+    context.set(Breakpoints.BreakpointManager.BreakpointManager, breakpointManager);
+    const persistence = new Persistence.Persistence.PersistenceImpl(workspace, breakpointManager);
+    context.set(Persistence.Persistence.PersistenceImpl, persistence);
     const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
     const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
@@ -60,11 +71,23 @@ var Universe = class {
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
   }
+  get breakpointManager() {
+    return this.context.get(Breakpoints.BreakpointManager.BreakpointManager);
+  }
   get cpuThrottlingManager() {
     return this.context.get(SDK.CPUThrottlingManager.CPUThrottlingManager);
   }
+  get domDebuggerManager() {
+    return this.context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
+  }
   get pageResourceLoader() {
     return this.context.get(SDK.PageResourceLoader.PageResourceLoader);
+  }
+  get persistence() {
+    return this.context.get(Persistence.Persistence.PersistenceImpl);
+  }
+  get projectSettingsModel() {
+    return this.context.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
   }
 };
 export {

@@ -1,4 +1,5 @@
 import * as SDK from '../../core/sdk/sdk.js';
+import * as PanelsCommon from '../common/common.js';
 export declare class ThrottlingPresets {
     static getNoThrottlingConditions(): Conditions;
     static getOfflineConditions(): Conditions;
@@ -8,13 +9,13 @@ export declare class ThrottlingPresets {
     static getMobilePresets(): Array<Conditions | PlaceholderConditions>;
     static getAdvancedMobilePresets(): Conditions[];
     static networkPresets: SDK.NetworkManager.Conditions[];
-    static cpuThrottlingPresets: SDK.CPUThrottlingManager.CPUThrottlingOption[];
+    static cpuThrottlingPresets: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption[];
 }
 export interface Conditions {
     title: string;
     description: string;
     network: SDK.NetworkManager.Conditions;
-    cpuThrottlingOption: SDK.CPUThrottlingManager.CPUThrottlingOption;
+    cpuThrottlingOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption;
     jslogContext?: string;
 }
 export interface NetworkThrottlingConditionsGroup {

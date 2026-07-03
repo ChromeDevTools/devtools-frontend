@@ -20,7 +20,12 @@ function openInNewTab(url, allowPrivileged) {
       }
     });
   } else {
-    if (["developer.chrome.com", "developers.google.com", "web.dev"].includes(url.hostname)) {
+    if (url.hostname === "developer.mozilla.org") {
+      if (!url.searchParams.has("utm_source") && !url.searchParams.has("utm_medium")) {
+        url.searchParams.append("utm_source", "chrome-devtools");
+        url.searchParams.append("utm_medium", "referral");
+      }
+    } else if (["developer.chrome.com", "developers.google.com", "web.dev"].includes(url.hostname)) {
       if (!url.searchParams.has("utm_source")) {
         url.searchParams.append("utm_source", "devtools");
       }

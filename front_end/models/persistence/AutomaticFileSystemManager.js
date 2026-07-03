@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as ProjectSettings from '../project_settings/project_settings.js';
-let automaticFileSystemManagerInstance;
 /**
  * Automatically connects and disconnects workspace folders.
  *
@@ -57,22 +57,22 @@ export class AutomaticFileSystemManager extends Common.ObjectWrapper.ObjectWrapp
      * @returns the singleton.
      */
     static instance({ forceNew, inspectorFrontendHost, projectSettingsModel } = { forceNew: false, inspectorFrontendHost: null, projectSettingsModel: null }) {
-        if (!automaticFileSystemManagerInstance || forceNew) {
+        if (!Root.DevToolsContext.globalInstance().has(AutomaticFileSystemManager) || forceNew) {
             if (!inspectorFrontendHost || !projectSettingsModel) {
                 throw new Error('Unable to create AutomaticFileSystemManager: ' +
                     'inspectorFrontendHost, and projectSettingsModel must be provided');
             }
-            automaticFileSystemManagerInstance = new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel);
+            Root.DevToolsContext.globalInstance().set(AutomaticFileSystemManager, new AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel));
         }
-        return automaticFileSystemManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(AutomaticFileSystemManager);
     }
     /**
      * Clears the `AutomaticFileSystemManager` singleton (if any);
      */
     static removeInstance() {
-        if (automaticFileSystemManagerInstance) {
-            automaticFileSystemManagerInstance.#dispose();
-            automaticFileSystemManagerInstance = undefined;
+        if (Root.DevToolsContext.globalInstance().has(AutomaticFileSystemManager)) {
+            Root.DevToolsContext.globalInstance().get(AutomaticFileSystemManager).#dispose();
+            Root.DevToolsContext.globalInstance().delete(AutomaticFileSystemManager);
         }
     }
     #dispose() {

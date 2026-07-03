@@ -299,6 +299,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance;
+// Total time to wait for source maps to load before giving up so trace processing can proceed.
+const SOURCE_MAP_LOAD_TIMEOUT_MS = 5000;
 export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Panel) {
     dropTarget;
     recordingOptionUIControls;
@@ -2246,11 +2248,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             }
         };
         metadata.sourceMaps = [];
+        await this.#handleSourceMapPromise(parsedTrace, handleScript);
+    }
+    async #handleSourceMapPromise(parsedTrace, handleScript) {
         const promises = [];
         for (const script of parsedTrace?.data.Scripts.scripts.values() ?? []) {
             promises.push(handleScript(script));
         }
-        await Promise.all(promises);
+        const timeout = new Promise(resolve => setTimeout(resolve, SOURCE_MAP_LOAD_TIMEOUT_MS));
+        await Promise.race([Promise.allSettled(promises), timeout]);
     }
     #createSourceMapResolver(isFreshRecording, metadata) {
         const debuggerModelForFrameId = new Map();
@@ -2276,7 +2282,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             }
             return await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
         }
-        return async function resolveSourceMap(params) {
+        async function resolveSourceMap(params) {
             const { scriptId, scriptUrl, sourceUrl, sourceMapUrl, frame, cachedRawSourceMap } = params;
             if (cachedRawSourceMap) {
                 return new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? '', cachedRawSourceMap);
@@ -2323,6 +2329,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             };
             const payload = await SDK.SourceMapManager.tryLoadSourceMap(TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
             return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
+        }
+        const timeout = new Promise(resolve => setTimeout(() => resolve(null), SOURCE_MAP_LOAD_TIMEOUT_MS));
+        return function resolveSourceMapWithTimeout(params) {
+            return Promise.race([resolveSourceMap(params), timeout]);
         };
     }
     async #retainResourceContentsForEnhancedTrace(parsedTrace, metadata) {

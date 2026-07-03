@@ -47,7 +47,7 @@ export declare class AutomaticFileSystemManager extends Common.ObjectWrapper.Obj
     /**
      * @internal
      */
-    private constructor();
+    constructor(inspectorFrontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI, projectSettingsModel: ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
     /**
      * Yields the `AutomaticFileSystemManager` singleton.
      *

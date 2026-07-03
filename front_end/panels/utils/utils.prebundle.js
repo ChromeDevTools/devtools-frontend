@@ -105,22 +105,17 @@ export class PanelUtils {
         }
         const isHeaderOverridden = request.hasOverriddenHeaders();
         const isContentOverridden = request.hasOverriddenContent;
+        let overrideTitle;
         if (isHeaderOverridden || isContentOverridden) {
-            let title;
             if (isHeaderOverridden && isContentOverridden) {
-                title = i18nString(UIStrings.requestContentHeadersOverridden);
+                overrideTitle = i18nString(UIStrings.requestContentHeadersOverridden);
             }
             else if (isContentOverridden) {
-                title = i18nString(UIStrings.requestContentOverridden);
+                overrideTitle = i18nString(UIStrings.requestContentOverridden);
             }
             else {
-                title = i18nString(UIStrings.requestHeadersOverridden);
+                overrideTitle = i18nString(UIStrings.requestHeadersOverridden);
             }
-            // clang-format off
-            return html `<div class="network-override-marker">
-          <devtools-icon class="icon" name="document" role=img title=${title}></devtools-icon>
-        </div>`;
-            // clang-format on
         }
         // Pick icon based on MIME type in the following cases:
         // - If the MIME type is 'image': some images have request type of 'fetch' or etc.
@@ -139,9 +134,10 @@ export class PanelUtils {
                 type = typeFromMime;
             }
         }
+        let iconElement;
         if (type === Common.ResourceType.resourceTypes.Image) {
             // clang-format off
-            return html `<div class="image icon">
+            iconElement = html `<div class="image icon">
         <img
           class="image-network-icon-preview"
           title=${iconTitleForRequest(request)}
@@ -154,26 +150,35 @@ export class PanelUtils {
         />
       </div>`;
             // clang-format on
+            // Exclude Manifest here because it has mimeType:application/json but it has its own icon
         }
-        // Exclude Manifest here because it has mimeType:application/json but it has its own icon
-        if (type !== Common.ResourceType.resourceTypes.Manifest &&
+        else if (type !== Common.ResourceType.resourceTypes.Manifest &&
             Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === 'application/json') {
             // clang-format off
-            return html `<devtools-icon
+            iconElement = html `<devtools-icon
           class="icon" name="file-json" title=${iconTitleForRequest(request)} role=img
           style="color:var(--icon-file-script)">
         </devtools-icon>`;
             // clang-format on
         }
-        // Others
-        const { iconName, color } = PanelUtils.iconDataForResourceType(type);
-        // clang-format off
-        return html `<devtools-icon
-        class="icon" name=${iconName} title=${iconTitleForRequest(request)}
-        style=${styleMap({ color })}>
-      </devtools-icon>`;
-        // clang-format on
+        else {
+            // Others
+            const { iconName, color } = PanelUtils.iconDataForResourceType(type);
+            // clang-format off
+            iconElement = html `<devtools-icon
+          class="icon" name=${iconName} title=${iconTitleForRequest(request)}
+          style=${styleMap({ color })}>
+        </devtools-icon>`;
+            // clang-format on
+        }
+        if (overrideTitle) {
+            return html `<div class="network-override-marker">${iconElement}</div>`;
+        }
+        return iconElement;
         function iconTitleForRequest(request) {
+            if (overrideTitle) {
+                return overrideTitle;
+            }
             const throttlingConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(request);
             if (!throttlingConditions?.urlPattern) {
                 return request.resourceType().title();

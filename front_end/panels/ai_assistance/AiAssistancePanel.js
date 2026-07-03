@@ -9,9 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
-import * as Annotations from '../../models/annotations/annotations.js';
 import * as Badges from '../../models/badges/badges.js';
-import * as Greendev from '../../models/greendev/greendev.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
@@ -32,7 +30,6 @@ import { ExploreWidget } from './components/ExploreWidget.js';
 import { MarkdownRendererWithCodeBlock } from './components/MarkdownRendererWithCodeBlock.js';
 import { OptInChangeDialog } from './components/OptInChangeDialog.js';
 import { PerformanceAgentMarkdownRenderer } from './components/PerformanceAgentMarkdownRenderer.js';
-import { StylingAgentMarkdownRenderer } from './components/StylingAgentMarkdownRenderer.js';
 import { WalkthroughView, } from './components/WalkthroughView.js';
 import { saveToDisk } from './ExportConversation.js';
 import { isAiAssistancePatchingEnabled } from './PatchWidget.js';
@@ -238,9 +235,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 function selectedElementFilter(maybeNode) {
     if (maybeNode) {
-        if (Greendev.Prototypes.instance().isEnabled('emulationCapabilities')) {
-            return maybeNode;
-        }
         return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
     }
     return null;
@@ -261,12 +255,7 @@ async function getEmptyStateSuggestions(conversation) {
             return [
                 { title: 'What can you help me with?', jslogContext: 'styling-default' },
                 { title: 'Why isn’t this element visible?', jslogContext: 'styling-default' },
-                {
-                    title: Greendev.Prototypes.instance().isEnabled('emulationCapabilities') ?
-                        'Are there display issues on this page for people using an Android phone?' :
-                        'How do I center this element?',
-                    jslogContext: 'styling-default'
-                },
+                { title: 'How do I center this element?', jslogContext: 'styling-default' },
             ];
         case "drjones-file" /* AiAssistanceModel.AiHistoryStorage.ConversationType.FILE */:
             return [
@@ -346,14 +335,6 @@ function getMarkdownRenderer(conversation) {
     if (conversation?.type === "drjones-performance-full" /* AiAssistanceModel.AiHistoryStorage.ConversationType.PERFORMANCE */) {
         // Handle historical conversations (can't linkify anything).
         return new PerformanceAgentMarkdownRenderer();
-    }
-    if (Greendev.Prototypes.instance().isEnabled('emulationCapabilities') &&
-        conversation?.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */ &&
-        SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel)) {
-        const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
-        const resourceTreeModel = domModel?.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-        const mainFrameId = resourceTreeModel?.mainFrame?.id;
-        return new StylingAgentMarkdownRenderer(mainFrameId);
     }
     if (conversation?.type === "accessibility" /* AiAssistanceModel.AiHistoryStorage.ConversationType.ACCESSIBILITY */) {
         const domModel = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK.DOMModel.DOMModel);
@@ -1409,9 +1390,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#updateConversationState();
         this.#resetWalkthrough();
         UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            Annotations.AnnotationRepository.instance().deleteAllAnnotations();
-        }
     }
     #cancel() {
         this.#runAbortController.abort();
@@ -1516,13 +1494,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (this.#conversation.isEmpty) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
         }
-        const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled('emulationCapabilities');
         let multimodalInput;
-        const pendingInput = this.#conversation.getPendingMultimodalInput();
-        if (greenDevEmulationEnabled && pendingInput) {
-            multimodalInput = pendingInput;
-        }
-        else if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
+        if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
             multimodalInput = {
                 input: imageInput,
                 id: crypto.randomUUID(),

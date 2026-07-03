@@ -10,6 +10,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../common/common.js';
 import { CalibrationController } from './CalibrationController.js';
 import { ThrottlingPresets } from './ThrottlingPresets.js';
 import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
@@ -215,7 +216,8 @@ export class CPUThrottlingCard {
     state = 'cta';
     warnings = [];
     constructor() {
-        this.setting = Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
+        this.setting =
+            Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         this.element = document.createElement('devtools-card');
         this.element.heading = i18nString(UIStrings.cpuThrottlingPresets);
         const descriptionEl = this.element.createChild('span');
@@ -301,7 +303,7 @@ export class CPUThrottlingCard {
                 return i18nString(UIStrings.needsCalibration);
             }
             if (typeof result === 'string') {
-                return SDK.CPUThrottlingManager.calibrationErrorToString(result);
+                return PanelsCommon.CPUThrottlingOption.calibrationErrorToString(result);
             }
             // Shouldn't happen, but let's not throw an error (.toFixed) if the setting
             // somehow was saved with a non-number.

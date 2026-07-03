@@ -34,7 +34,6 @@ import * as i18n34 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK18 from "./../../core/sdk/sdk.js";
-import * as Annotations from "./../../models/annotations/annotations.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
 import * as TreeOutline13 from "./../../ui/components/tree_outline/tree_outline.js";
@@ -15517,10 +15516,6 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   };
   onDocumentUpdated = () => {
   };
-  onElementExpanded = () => {
-  };
-  onElementCollapsed = () => {
-  };
   #maxTreeDepth;
   #enableContextMenu = true;
   #showComments = true;
@@ -15698,11 +15693,9 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
       },
       onElementCollapsed: () => {
         this.#clearHighlightedNode();
-        this.onElementCollapsed();
       },
       onElementExpanded: () => {
         this.#clearHighlightedNode();
-        this.onElementExpanded();
       }
     }, this.#viewOutput, this.contentElement);
     if (firstRender && this.#viewOutput.elementsTreeOutline) {
@@ -18760,16 +18753,11 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#domTreeWidget.onSelectedNodeChanged = this.selectedNodeChanged.bind(this);
     this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
-    this.#domTreeWidget.onElementExpanded = this.handleElementExpanded.bind(this);
-    this.#domTreeWidget.onElementCollapsed = this.handleElementCollapsed.bind(this);
     this.#domTreeWidget.setWordWrap(Common13.Settings.Settings.instance().moduleSetting("dom-word-wrap").get());
     SDK18.TargetManager.TargetManager.instance().observeModels(SDK18.DOMModel.DOMModel, this, { scoped: true });
     SDK18.TargetManager.TargetManager.instance().addEventListener("NameChanged", (event) => this.targetNameChanged(event.data));
     Common13.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
-    if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations.AnnotationType.ELEMENT_NODE, this.resolveInitialState.bind(this), this.#domTreeWidget.element);
-    }
   }
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
   // For that case, we want to only run this function once.
@@ -18790,16 +18778,6 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#computedStyleWidget.matchedStyles = matchedCascade;
     if (matchedCascade) {
       this.#computedStyleWidget.propertyTraces = this.#computedStyleModel.computePropertyTraces(matchedCascade);
-    }
-  }
-  handleElementExpanded() {
-    if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
-    }
-  }
-  handleElementCollapsed() {
-    if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
     }
   }
   showAccessibilityTree() {
@@ -18919,9 +18897,6 @@ ${node.simpleSelector()} {}`, false);
     UI21.Context.Context.instance().setFlavor(_ElementsPanel, this);
     this.#domTreeWidget.show(this.domTreeContainer);
     this.evaluateTrackingComputedStyleUpdatesForNode();
-    if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations.AnnotationType.ELEMENT_NODE);
-    }
   }
   willHide() {
     SDK18.OverlayModel.OverlayModel.hideDOMNodeHighlight();
@@ -19562,45 +19537,6 @@ ${node.simpleSelector()} {}`, false);
   }
   copyStyles(node) {
     this.#domTreeWidget.copyStyles(node);
-  }
-  async resolveInitialState(parentElement, reveal, lookupId, anchor) {
-    if (!this.isShowing()) {
-      return null;
-    }
-    if (!anchor) {
-      const backendNodeId = Number(lookupId);
-      if (isNaN(backendNodeId)) {
-        return null;
-      }
-      const rootDOMNode = this.#domTreeWidget.rootDOMNode;
-      if (!rootDOMNode) {
-        return null;
-      }
-      const domModel = rootDOMNode.domModel();
-      const nodes = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([backendNodeId]));
-      if (!nodes) {
-        return null;
-      }
-      const foundNode = nodes.get(backendNodeId);
-      if (!foundNode) {
-        return null;
-      }
-      anchor = foundNode;
-    }
-    const element = this.#domTreeWidget.treeElementForNode(anchor);
-    if (!element) {
-      return null;
-    }
-    if (reveal) {
-      await Common13.Revealer.reveal(anchor);
-    }
-    const offsetToTagName = 22;
-    const yPadding = 5;
-    const targetRect = element.listItemElement.getBoundingClientRect();
-    const parentRect = parentElement.getBoundingClientRect();
-    const relativeX = targetRect.x - parentRect.x + offsetToTagName;
-    const relativeY = targetRect.y - parentRect.y + yPadding;
-    return { x: relativeX, y: relativeY };
   }
   static firstInspectElementCompletedForTest = function() {
   };

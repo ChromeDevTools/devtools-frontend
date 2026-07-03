@@ -3145,7 +3145,7 @@ import * as UI8 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport15 from "./../../ui/legacy/theme_support/theme_support.js";
 import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "./../common/common.js";
-import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
+import * as MobileThrottling2 from "./../mobile_throttling/mobile_throttling.js";
 
 // gen/front_end/panels/timeline/ActiveFilters.js
 var instance = null;
@@ -3657,6 +3657,7 @@ import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
 import * as LiveMetrics from "./../../models/live-metrics/live-metrics.js";
 import * as Trace14 from "./../../models/trace/trace.js";
 import * as PanelCommon from "./../common/common.js";
+import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 
 // gen/front_end/panels/timeline/RecordingMetadata.js
@@ -3960,9 +3961,9 @@ var TimelineController = class {
     }
     SDK5.TargetManager.TargetManager.instance().removeModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
     SDK5.TargetManager.TargetManager.instance().removeModelListener(SDK5.ResourceTreeModel.ResourceTreeModel, SDK5.ResourceTreeModel.Events.Load, this.#onLoadEventFired, this);
-    const throttlingManager = SDK5.CPUThrottlingManager.CPUThrottlingManager.instance();
+    const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
     const optionDuringRecording = throttlingManager.cpuThrottlingOption();
-    throttlingManager.setCPUThrottlingOption(SDK5.CPUThrottlingManager.NoThrottlingOption);
+    throttlingManager.setCPUThrottlingOption(PanelCommon.CPUThrottlingOption.NoThrottlingOption);
     this.client.loadingStarted();
     SDK5.SourceMap.SourceMap.retainRawSourceMaps = true;
     const [fieldData] = await Promise.all([
@@ -6610,6 +6611,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("panels/timeline/TimelinePanel.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var timelinePanelInstance;
+var SOURCE_MAP_LOAD_TIMEOUT_MS = 5e3;
 var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMixin(UI8.Panel.Panel) {
   dropTarget;
   recordingOptionUIControls;
@@ -7407,7 +7409,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     this.settingsPane.setAttribute("jslog", `${VisualLogging4.pane("timeline-settings-pane").track({ resize: true })}`);
     const cpuThrottlingPane = this.settingsPane.createChild("div");
     cpuThrottlingPane.append(i18nString18(UIStrings18.cpu));
-    this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
+    this.cpuThrottlingSelect = MobileThrottling2.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
     cpuThrottlingPane.append(this.cpuThrottlingSelect.control.element);
     this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting, i18nString18(UIStrings18.capturesSelectorStats)));
     const networkThrottlingPane = this.settingsPane.createChild("div");
@@ -7425,7 +7427,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   createNetworkConditionsSelectToolbarItem() {
     const toolbarItem = new UI8.Toolbar.ToolbarItem(document.createElement("div"));
-    this.networkThrottlingSelect = MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString18(UIStrings18.networkConditions));
+    this.networkThrottlingSelect = MobileThrottling2.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString18(UIStrings18.networkConditions));
     return toolbarItem;
   }
   prepareToLoadTimeline() {
@@ -8522,11 +8524,15 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       }
     };
     metadata.sourceMaps = [];
+    await this.#handleSourceMapPromise(parsedTrace, handleScript);
+  }
+  async #handleSourceMapPromise(parsedTrace, handleScript) {
     const promises = [];
     for (const script of parsedTrace?.data.Scripts.scripts.values() ?? []) {
       promises.push(handleScript(script));
     }
-    await Promise.all(promises);
+    const timeout = new Promise((resolve) => setTimeout(resolve, SOURCE_MAP_LOAD_TIMEOUT_MS));
+    await Promise.race([Promise.allSettled(promises), timeout]);
   }
   #createSourceMapResolver(isFreshRecording, metadata) {
     const debuggerModelForFrameId = /* @__PURE__ */ new Map();
@@ -8552,7 +8558,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       }
       return await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
     }
-    return async function resolveSourceMap(params) {
+    async function resolveSourceMap(params) {
       const { scriptId, scriptUrl, sourceUrl, sourceMapUrl, frame, cachedRawSourceMap } = params;
       if (cachedRawSourceMap) {
         return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? "", cachedRawSourceMap);
@@ -8586,6 +8592,10 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       };
       const payload = await SDK7.SourceMapManager.tryLoadSourceMap(_TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
       return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
+    }
+    const timeout = new Promise((resolve) => setTimeout(() => resolve(null), SOURCE_MAP_LOAD_TIMEOUT_MS));
+    return function resolveSourceMapWithTimeout(params) {
+      return Promise.race([resolveSourceMap(params), timeout]);
     };
   }
   async #retainResourceContentsForEnhancedTrace(parsedTrace, metadata) {

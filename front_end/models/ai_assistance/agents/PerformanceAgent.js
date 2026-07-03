@@ -7,7 +7,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
-import * as Annotations from '../../annotations/annotations.js';
 import * as Logs from '../../logs/logs.js';
 import * as TextUtils from '../../text_utils/text_utils.js';
 import * as Trace from '../../trace/trace.js';
@@ -34,34 +33,6 @@ const lockedString = i18n.i18n.lockedString;
  * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
-const GREEN_DEV_ANNOTATIONS_INSTRUCTIONS = `
-- CRITICAL: You also have access to functions called addElementAnnotation and addNeworkRequestAnnotation,
-which should be used to highlight elements and network requests (respectively).
-
-- CRITICAL: Each time an element or a network request is mentioned, you MUST ALSO call the functions
-  addElementAnnotation (for an element) or addNeworkRequestAnnotation (for a network request).
-- CRITICAL: Don't add more than one annotation per element or network request.
-- These functions should be called as soon as you identify the entity that needs to be highlighted.
-- In addition to this, the addElementAnnotation function should always be called for the LCP element, if known.
-- The annotationMessage should be descriptive and relevant to why the element or network request is being highlighted.
-`;
-const GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS = `
-When referring to an element for which you know the nodeId, always call the function addElementAnnotation, specifying
-the id and an annotation reason.
-When referring to a network request for which you know the eventKey for, always call the function
-addNetworkRequestAnnotation, specifying the id and an annotation reason.
-- CRITICAL: Each time you add an annotating link you MUST ALSO call the function addElementAnnotation.
-- CRITICAL: Each time you describe an element or network request as being problematic you MUST call the function
-addElementAnnotation and specify an annotation reason.
-- CRITICAL: Each time you describe a network request as being problematic you MUST call the function
-addNetworkRequestAnnotation and specify an annotation reason.
-- CRITICAL: If you spot ANY of the following problems:
-  - Render-blocking elements/network requests.
-  - Significant long task (especially on main thread).
-  - Layout shifts (e.g. due to unsized images).
-  ... then you MUST call addNetworkRequestAnnotation for ALL network requests and addaddElementAnnotation for all
-  elements described in your conclusion.
-`;
 /**
  * Preamble clocks in at ~1341 tokens.
  *   The prose is around 4.5 chars per token.
@@ -251,14 +222,6 @@ export class PerformanceAgent extends AiAgent {
         text: freshTracePreamble,
         metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
     };
-    #greenDevAnnotationsFact = {
-        text: GREEN_DEV_ANNOTATIONS_INSTRUCTIONS,
-        metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
-    };
-    #greenDevFreshTraceAnnotationsFact = {
-        text: GREEN_DEV_FRESH_TRACE_ANNOTATIONS_INSTRUCTIONS,
-        metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
-    };
     #networkDataDescriptionFact = {
         text: PerformanceTraceFormatter.networkDataFormatDescription,
         metadata: { source: 'devtools', score: ScorePriority.CRITICAL }
@@ -277,8 +240,6 @@ export class PerformanceAgent extends AiAgent {
         this.#networkDataDescriptionFact,
         this.#freshTraceExtraPreambleFact,
         this.#notExternalExtraPreambleFact,
-        this.#greenDevAnnotationsFact,
-        this.#greenDevFreshTraceAnnotationsFact,
     ]);
     /**
      * When we enhance the query with additional information, we need to know it
@@ -290,9 +251,7 @@ export class PerformanceAgent extends AiAgent {
         return Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_FULL_AGENT;
     }
     get userTier() {
-        return Boolean(Root.Runtime.hostConfig.devToolsGreenDevUi?.enabled) ?
-            'TESTERS' :
-            Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+        return Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
     }
     get options() {
         const temperature = Root.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
@@ -602,16 +561,9 @@ export class PerformanceAgent extends AiAgent {
     async #addFacts(context) {
         const focus = context.getItem();
         this.addFact(this.#notExternalExtraPreambleFact);
-        const annotationsEnabled = Annotations.AnnotationRepository.annotationsEnabled();
-        if (annotationsEnabled) {
-            this.addFact(this.#greenDevAnnotationsFact);
-        }
         const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
         if (isFresh) {
             this.addFact(this.#freshTraceExtraPreambleFact);
-            if (annotationsEnabled) {
-                this.addFact(this.#greenDevFreshTraceAnnotationsFact);
-            }
         }
         this.addFact(this.#callFrameDataDescriptionFact);
         this.addFact(this.#networkDataDescriptionFact);
@@ -979,58 +931,6 @@ export class PerformanceAgent extends AiAgent {
                 return { result: { callTree }, widgets };
             },
         });
-        if (Annotations.AnnotationRepository.annotationsEnabled()) {
-            this.declareFunction('addElementAnnotation', {
-                description: 'Adds a visual annotation in the Elements panel, attached to a node with the specific UID provided. Use it to highlight nodes in the Elements panel and provide contextual suggestions to the user related to their queries.',
-                parameters: {
-                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                    description: '',
-                    nullable: false,
-                    properties: {
-                        elementId: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The UID of the element to annotate.',
-                            nullable: false,
-                        },
-                        annotationMessage: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The message the annotation should show to the user.',
-                            nullable: false,
-                        },
-                    },
-                    required: ['elementId', 'annotationMessage']
-                },
-                handler: async (params) => {
-                    return await this.addElementAnnotation(params.elementId, params.annotationMessage);
-                },
-            });
-            this.declareFunction('addNetworkRequestAnnotation', {
-                description: 'Adds a visual annotation in the Network panel, attached to the request with the specific UID provided. ' +
-                    'Use it to highlight requests in the Network panel and provide contextual suggestions to the user ' +
-                    'related to their queries.',
-                parameters: {
-                    type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
-                    description: '',
-                    nullable: false,
-                    properties: {
-                        eventKey: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The event key of the network request to annotate.',
-                            nullable: false,
-                        },
-                        annotationMessage: {
-                            type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'The message the annotation should show to the user.',
-                            nullable: false,
-                        },
-                    },
-                    required: ['eventKey', 'annotationMessage']
-                },
-                handler: async (params) => {
-                    return await this.addNetworkRequestAnnotation(params.eventKey, params.annotationMessage);
-                },
-            });
-        }
         this.declareFunction('getFunctionCode', {
             description: 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.',
             parameters: {
@@ -1262,37 +1162,6 @@ export class PerformanceAgent extends AiAgent {
             }
         }
         return null;
-    }
-    async addElementAnnotation(elementId, annotationMessage) {
-        if (!Annotations.AnnotationRepository.annotationsEnabled()) {
-            console.warn('Received agent request to add element annotation with annotations disabled');
-            return { error: 'Annotations are not currently enabled' };
-        }
-        // eslint-disable-next-line no-console
-        console.log(`AI AGENT EVENT: Performance Agent adding annotation for element ${elementId}: '${annotationMessage}'`);
-        Annotations.AnnotationRepository.instance().addElementsAnnotation(annotationMessage, elementId);
-        return { result: { success: true } };
-    }
-    async addNetworkRequestAnnotation(eventKey, annotationMessage) {
-        if (!Annotations.AnnotationRepository.annotationsEnabled()) {
-            console.warn('Received agent request to add network request annotation with annotations disabled');
-            return { error: 'Annotations are not currently enabled' };
-        }
-        // eslint-disable-next-line no-console
-        console.log(`AI AGENT EVENT: Performance Agent adding annotation for network request ${eventKey}: '${annotationMessage}'`);
-        let requestId = undefined;
-        const focus = this.context?.getItem();
-        if (focus) {
-            const event = focus.lookupEvent(eventKey);
-            if (event && Trace.Types.Events.isSyntheticNetworkRequest(event)) {
-                requestId = event.args.data.requestId;
-            }
-        }
-        if (!requestId) {
-            console.warn('Unable to lookup requestId for request with event key', eventKey);
-        }
-        Annotations.AnnotationRepository.instance().addNetworkRequestAnnotation(annotationMessage, requestId);
-        return { result: { success: true } };
     }
     async #getNetworkRequestImageData(lcpRequest) {
         const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();

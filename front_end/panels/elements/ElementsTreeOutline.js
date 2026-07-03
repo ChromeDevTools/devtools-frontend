@@ -176,8 +176,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     onSelectedNodeChanged = () => { };
     onElementsTreeUpdated = () => { };
     onDocumentUpdated = () => { };
-    onElementExpanded = () => { };
-    onElementCollapsed = () => { };
     #maxTreeDepth;
     #enableContextMenu = true;
     #showComments = true;
@@ -359,11 +357,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             },
             onElementCollapsed: () => {
                 this.#clearHighlightedNode();
-                this.onElementCollapsed();
             },
             onElementExpanded: () => {
                 this.#clearHighlightedNode();
-                this.onElementExpanded();
             },
         }, this.#viewOutput, this.contentElement);
         if (firstRender && this.#viewOutput.elementsTreeOutline) {

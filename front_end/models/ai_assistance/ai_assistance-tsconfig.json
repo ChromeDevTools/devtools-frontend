@@ -54,9 +54,6 @@
     "../../../../../../front_end/models/ai_assistance/agents/ContextSelectionAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/ExecuteJavascript.ts",
     "../../../../../../front_end/models/ai_assistance/agents/FileAgent.ts",
-    "../../../../../../front_end/models/ai_assistance/agents/GreenDevAgent.ts",
-    "../../../../../../front_end/models/ai_assistance/agents/GreenDevAgentAntigravityCliSocketClient.ts",
-    "../../../../../../front_end/models/ai_assistance/agents/GreenDevAgentGeminiCliSocketClient.ts",
     "../../../../../../front_end/models/ai_assistance/agents/NetworkAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/PatchAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/PerformanceAgent.ts",
@@ -128,9 +125,6 @@
       "path": "../../third_party/diff/bundle-tsconfig.json"
     },
     {
-      "path": "../annotations/bundle-tsconfig.json"
-    },
-    {
       "path": "../bindings/bundle-tsconfig.json"
     },
     {
@@ -138,9 +132,6 @@
     },
     {
       "path": "../emulation/bundle-tsconfig.json"
-    },
-    {
-      "path": "../greendev/bundle-tsconfig.json"
     },
     {
       "path": "../lighthouse/bundle-tsconfig.json"

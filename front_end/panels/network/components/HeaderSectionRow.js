@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import '../../../ui/kit/kit.js';
-import '../../../ui/legacy/legacy.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -11,11 +10,16 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 const { render, html } = Lit;
 const UIStrings = {
+    /**
+     * @description A context menu item to copy the value of a header.
+     */
+    copyValue: 'Copy value',
     /**
      * @description Comment used in decoded X-Client-Data HTTP header output in Headers View of the Network panel
      */
@@ -164,6 +168,7 @@ export class HeaderSectionRow extends HTMLElement {
         <div
           class=${headerValueClasses}
           @copy=${() => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}
+          @contextmenu=${this.#onContextMenu}
         >
           ${this.#renderHeaderValue()}
         </div>
@@ -421,6 +426,19 @@ export class HeaderSectionRow extends HTMLElement {
             valueEL.dispatchEvent(new Event('input'));
         }
         event.preventDefault();
+    }
+    #onContextMenu(event) {
+        if (!this.#header) {
+            return;
+        }
+        event.stopPropagation();
+        event.preventDefault();
+        const contextMenu = new UI.ContextMenu.ContextMenu(event);
+        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), () => {
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(this.#header?.value || '');
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
+        });
+        void contextMenu.show();
     }
 }
 customElements.define('devtools-header-section-row', HeaderSectionRow);

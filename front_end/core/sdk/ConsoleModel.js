@@ -46,6 +46,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsoleModel extends SDKModel {
+    #console;
     #messages = [];
     #messagesByTimestamp = new Platform.MapUtilities.Multimap();
     #messageByExceptionId = new Map();
@@ -56,6 +57,7 @@ export class ConsoleModel extends SDKModel {
     #targetListeners = new WeakMap();
     constructor(target) {
         super(target);
+        this.#console = target.targetManager().getConsole();
         const resourceTreeModel = target.model(ResourceTreeModel);
         if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
             this.initTarget(target);
@@ -112,7 +114,7 @@ export class ConsoleModel extends SDKModel {
         if ('error' in result) {
             return;
         }
-        await Common.Console.Console.instance().showPromise();
+        await this.#console.showPromise();
         this.dispatchEventToListeners(Events.CommandEvaluated, { result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails });
     }
     addCommandMessage(executionContext, text) {
@@ -231,10 +233,10 @@ export class ConsoleModel extends SDKModel {
         if (settings.moduleSetting('preserve-console-log').get()) {
             const { frame } = event.data;
             if (frame.backForwardCacheDetails.restoredFromCache) {
-                Common.Console.Console.instance().log(i18nString(UIStrings.bfcacheNavigation, { PH1: frame.url }));
+                this.#console.log(i18nString(UIStrings.bfcacheNavigation, { PH1: frame.url }));
             }
             else {
-                Common.Console.Console.instance().log(i18nString(UIStrings.navigatedToS, { PH1: frame.url }));
+                this.#console.log(i18nString(UIStrings.navigatedToS, { PH1: frame.url }));
             }
         }
     }
@@ -329,6 +331,13 @@ export class ConsoleModel extends SDKModel {
         return this.#violations;
     }
     async saveToTempVariable(currentExecutionContext, remoteObject) {
+        const failedToSave = (result) => {
+            let message = i18nString(UIStrings.failedToSaveToTempVariable);
+            if (result) {
+                message = message + ' ' + result.description;
+            }
+            this.#console.error(message);
+        };
         if (!remoteObject || !currentExecutionContext) {
             failedToSave(null);
             return;
@@ -363,13 +372,6 @@ export class ConsoleModel extends SDKModel {
             // @ts-expect-error Assignment to global object
             this[name] = value;
             return name;
-        }
-        function failedToSave(result) {
-            let message = i18nString(UIStrings.failedToSaveToTempVariable);
-            if (result) {
-                message = message + ' ' + result.description;
-            }
-            Common.Console.Console.instance().error(message);
         }
     }
 }

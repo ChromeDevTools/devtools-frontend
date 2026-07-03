@@ -63,8 +63,6 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     }>) => void;
     onElementsTreeUpdated: (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => void;
     onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void;
-    onElementExpanded: () => void;
-    onElementCollapsed: () => void;
     set maxRows(maxRows: number | undefined);
     get maxRows(): number | undefined;
     set visibleWidth(width: number);

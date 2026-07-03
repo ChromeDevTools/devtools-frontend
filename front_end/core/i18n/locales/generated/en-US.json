@@ -245,21 +245,6 @@
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Profile {PH1}"
   },
-  "core/sdk/CPUThrottlingManager.ts | calibratedLowTierMobile": {
-    "message": "Low-tier mobile"
-  },
-  "core/sdk/CPUThrottlingManager.ts | calibratedMidTierMobile": {
-    "message": "Mid-tier mobile"
-  },
-  "core/sdk/CPUThrottlingManager.ts | calibrationErrorDeviceTooWeak": {
-    "message": "Device is not powerful enough"
-  },
-  "core/sdk/CPUThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× slowdown"
-  },
-  "core/sdk/CPUThrottlingManager.ts | noThrottling": {
-    "message": "No throttling"
-  },
   "core/sdk/CSSStyleSheetHeader.ts | couldNotFindTheOriginalStyle": {
     "message": "Could not find the original style sheet."
   },
@@ -6770,6 +6755,21 @@
   "panels/common/common.ts | cancel": {
     "message": "Cancel"
   },
+  "panels/common/CPUThrottlingOption.ts | calibratedLowTierMobile": {
+    "message": "Low-tier mobile"
+  },
+  "panels/common/CPUThrottlingOption.ts | calibratedMidTierMobile": {
+    "message": "Mid-tier mobile"
+  },
+  "panels/common/CPUThrottlingOption.ts | calibrationErrorDeviceTooWeak": {
+    "message": "Device is not powerful enough"
+  },
+  "panels/common/CPUThrottlingOption.ts | dSlowdown": {
+    "message": "{PH1}× slowdown"
+  },
+  "panels/common/CPUThrottlingOption.ts | noThrottling": {
+    "message": "No throttling"
+  },
   "panels/common/DOMLinkifier.ts | node": {
     "message": "<node>"
   },
@@ -8513,9 +8513,6 @@
   "panels/emulation/DeviceModeToolbar.ts | addDeviceType": {
     "message": "Add device type"
   },
-  "panels/emulation/DeviceModeToolbar.ts | autoadjustZoom": {
-    "message": "Auto-adjust zoom"
-  },
   "panels/emulation/DeviceModeToolbar.ts | closeDevtools": {
     "message": "Close DevTools"
   },
@@ -8540,8 +8537,8 @@
   "panels/emulation/DeviceModeToolbar.ts | edit": {
     "message": "Edit…"
   },
-  "panels/emulation/DeviceModeToolbar.ts | fitToWindowPercentage": {
-    "message": "{PH1}% (fit to window)"
+  "panels/emulation/DeviceModeToolbar.ts | fitToWindow": {
+    "message": "Fit to window"
   },
   "panels/emulation/DeviceModeToolbar.ts | heightLeaveEmptyForFull": {
     "message": "Height (leave empty for full)"
@@ -10297,6 +10294,9 @@
   },
   "panels/network/components/HeaderSectionRow.ts | activeClientExperimentVariationIds": {
     "message": "Active client experiment variation IDs that trigger server-side behavior."
+  },
+  "panels/network/components/HeaderSectionRow.ts | copyValue": {
+    "message": "Copy value"
   },
   "panels/network/components/HeaderSectionRow.ts | decoded": {
     "message": "Decoded:"
@@ -14090,9 +14090,6 @@
   "panels/settings/settings-meta.ts | experiments": {
     "message": "Experiments"
   },
-  "panels/settings/settings-meta.ts | greenDevProtoTypes": {
-    "message": "GreenDev"
-  },
   "panels/settings/settings-meta.ts | ignoreList": {
     "message": "Ignore list"
   },
@@ -14110,9 +14107,6 @@
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Show Experiments"
-  },
-  "panels/settings/settings-meta.ts | showGreenDev": {
-    "message": "Show GreenDev"
   },
   "panels/settings/settings-meta.ts | showIgnoreList": {
     "message": "Show Ignore list"
@@ -14134,9 +14128,6 @@
   },
   "panels/settings/SettingsScreen.ts | experimentsFound": {
     "message": "{n, plural, =1 {# experiment found} other {# experiments found}}"
-  },
-  "panels/settings/SettingsScreen.ts | greenDevUnstable": {
-    "message": "Warning: All these features are prototype and very unstable. They exist for user testing and are not designed to be relied on."
   },
   "panels/settings/SettingsScreen.ts | learnMore": {
     "message": "Learn more"
@@ -18310,9 +18301,6 @@
   },
   "ui/legacy/TabbedPane.ts | moveTabRight": {
     "message": "Move right"
-  },
-  "ui/legacy/TabbedPane.ts | panelContainsAnnotation": {
-    "message": "This panel has one or more annotations"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Preview feature"

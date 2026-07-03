@@ -7,8 +7,11 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Bindings from '../models/bindings/bindings.js';
+import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as Logs from '../models/logs/logs.js';
+import * as Persistence from '../models/persistence/persistence.js';
+import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { DEFAULT_SETTING_REGISTRATIONS_FOR_TEST } from './SettingsHelpers.js';
 import { createTarget } from './TargetHelpers.js';
@@ -40,6 +43,12 @@ export class TestUniverse {
         }
         return this.#context.get(AutofillManager.AutofillManager.AutofillManager);
     }
+    get breakpointManager() {
+        if (!this.#context.has(Breakpoints.BreakpointManager.BreakpointManager)) {
+            this.#context.set(Breakpoints.BreakpointManager.BreakpointManager, new Breakpoints.BreakpointManager.BreakpointManager(this.targetManager, this.workspace, this.debuggerWorkspaceBinding, this.settings));
+        }
+        return this.#context.get(Breakpoints.BreakpointManager.BreakpointManager);
+    }
     get console() {
         if (!this.#context.has(Common.Console.Console)) {
             this.#context.set(Common.Console.Console, new Common.Console.Console());
@@ -67,6 +76,12 @@ export class TestUniverse {
             this.#context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(this.#resourceMapping, this.targetManager, this.ignoreListManager, this.workspace));
         }
         return this.#context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
+    }
+    get domDebuggerManager() {
+        if (!this.#context.has(SDK.DOMDebuggerModel.DOMDebuggerManager)) {
+            this.#context.set(SDK.DOMDebuggerModel.DOMDebuggerManager, new SDK.DOMDebuggerModel.DOMDebuggerManager(this.targetManager));
+        }
+        return this.#context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
     }
     get frameManager() {
         if (!this.#context.has(SDK.FrameManager.FrameManager)) {
@@ -115,6 +130,18 @@ export class TestUniverse {
         }
         return this.#context.get(SDK.PageResourceLoader.PageResourceLoader);
     }
+    get persistence() {
+        if (!this.#context.has(Persistence.Persistence.PersistenceImpl)) {
+            this.#context.set(Persistence.Persistence.PersistenceImpl, new Persistence.Persistence.PersistenceImpl(this.workspace, this.breakpointManager));
+        }
+        return this.#context.get(Persistence.Persistence.PersistenceImpl);
+    }
+    get projectSettingsModel() {
+        if (!this.#context.has(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel)) {
+            this.#context.set(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel, new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(this.#creationOptions?.hostConfig ?? {}, this.pageResourceLoader, this.targetManager));
+        }
+        return this.#context.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+    }
     get targetManager() {
         if (!this.#context.has(SDK.TargetManager.TargetManager)) {
             // `SDKModel` instances pull their dependencies from the context we pass here.
@@ -128,6 +155,9 @@ export class TestUniverse {
                 get(ctor) {
                     if (ctor === Common.Settings.Settings.prototype.constructor) {
                         return universe.settings;
+                    }
+                    if (ctor === Common.Console.Console.prototype.constructor) {
+                        return universe.console;
                     }
                     if (ctor === SDK.FrameManager.FrameManager.prototype.constructor) {
                         return universe.frameManager;

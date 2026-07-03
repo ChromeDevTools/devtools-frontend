@@ -22,9 +22,8 @@ export default `/*
   margin: var(--sys-size-3) 0;
 }
 
-.row.header-editable {
-  font-family: var(--monospace-font-family);
-  font-size: var(--monospace-font-size);
+.row:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .header-name {
@@ -62,7 +61,8 @@ export default `/*
   display: flex;
   overflow-wrap: anywhere;
   margin-inline-end: 14px;
-  font: var(--sys-typescale-body4-regular);
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
 }
 
 .header-badge-text {

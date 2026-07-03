@@ -1,7 +1,8 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
+import { type CPUThrottlingOption } from './CPUThrottlingOption.js';
 export interface ThrottlingRecommendations {
-    cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption | null;
+    cpuOption: CPUThrottlingOption | null;
     networkConditions: SDK.NetworkManager.Conditions | null;
 }
 /**

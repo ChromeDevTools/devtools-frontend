@@ -52,7 +52,7 @@ export class MobileThrottlingSelector {
     conditionsChanged() {
         this.populateOptions();
         const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
-        const cpuThrottlingOption = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingOption();
+        const cpuThrottlingOption = throttlingManager().cpuThrottlingOption();
         for (let index = 0; index < this.options.length; ++index) {
             const option = this.options[index];
             if (option && 'network' in option && option.network === networkConditions &&

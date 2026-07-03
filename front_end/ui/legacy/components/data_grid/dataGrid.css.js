@@ -115,6 +115,16 @@ export default `/*
   padding: 1px 4px;
 }
 
+.data-grid.auto-row-height tbody tr {
+  height: auto;
+}
+
+.data-grid.auto-row-height td {
+  white-space: normal;
+  height: auto;
+}
+
+
 .data-grid td {
   vertical-align: top;
   user-select: text;

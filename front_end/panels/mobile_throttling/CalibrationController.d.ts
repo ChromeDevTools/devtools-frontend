@@ -1,4 +1,4 @@
-import * as SDK from '../../core/sdk/sdk.js';
+import * as PanelsCommon from '../common/common.js';
 /**
  * Runs a calibration process to determine ideal CPU throttling rates to target a low-tier and mid-tier device.
  *
@@ -20,6 +20,6 @@ export declare class CalibrationController {
         progress: number;
     }, void>;
     abort(): void;
-    result(): SDK.CPUThrottlingManager.CalibratedCPUThrottling | undefined;
+    result(): PanelsCommon.CPUThrottlingOption.CalibratedCPUThrottling | undefined;
     end(): Promise<void>;
 }

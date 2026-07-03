@@ -7871,7 +7871,6 @@ import * as Host10 from "./../../core/host/host.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
-import * as Annotations from "./../../models/annotations/annotations.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as HAR from "./../../models/har/har.js";
 import * as Logs5 from "./../../models/logs/logs.js";
@@ -11508,12 +11507,6 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
   summaryToolbar() {
     return this.summaryToolbarInternal;
   }
-  getDataGrid() {
-    if (Annotations.AnnotationRepository.annotationsEnabled()) {
-      return this.dataGrid;
-    }
-    return null;
-  }
   modelAdded(networkManager) {
     const target = networkManager.target();
     if (target.outermostTarget() !== target) {
@@ -13162,12 +13155,10 @@ import * as Host11 from "./../../core/host/host.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
-import * as Annotations2 from "./../../models/annotations/annotations.js";
 import * as Logs6 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator5 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as Trace2 from "./../../models/trace/trace.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
-import * as PanelCommon from "./../common/common.js";
 import * as NetworkForward6 from "./forward/forward.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -13594,12 +13585,6 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.splitWidget.setSidebarWidget(this.networkLogView);
     this.fileSelectorElement = UI26.UIUtils.createFileSelectorElement(this.networkLogView.onLoadFromFile.bind(this.networkLogView));
     panel3.element.appendChild(this.fileSelectorElement);
-    if (Annotations2.AnnotationRepository.annotationsEnabled()) {
-      const dataGrid = this.networkLogView.getDataGrid();
-      if (dataGrid) {
-        PanelCommon.AnnotationManager.instance().initializePlacementForAnnotationType(Annotations2.AnnotationType.NETWORK_REQUEST, this.resolveInitialState.bind(this), dataGrid.scrollContainer);
-      }
-    }
     this.detailsWidget = new UI26.Widget.VBox();
     this.detailsWidget.element.classList.add("network-details-view");
     this.splitWidget.setMainWidget(this.detailsWidget);
@@ -13838,9 +13823,6 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     super.wasShown();
     UI26.Context.Context.instance().setFlavor(_NetworkPanel, this);
     UI26.UIUserMetrics.UIUserMetrics.instance().panelLoaded("network", "DevTools.Launch.Network");
-    if (Annotations2.AnnotationRepository.annotationsEnabled()) {
-      void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations2.AnnotationType.NETWORK_REQUEST);
-    }
   }
   willHide() {
     UI26.Context.Context.instance().setFlavor(_NetworkPanel, null);
@@ -13924,38 +13906,6 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.splitWidget.showBoth();
     return this.networkItemView;
   }
-  async resolveInitialState(parentElement, reveal, lookupId, anchor) {
-    let request = anchor;
-    if (!this.isShowing()) {
-      return null;
-    }
-    if (!request) {
-      const networkManager = SDK17.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK17.NetworkManager.NetworkManager);
-      if (!networkManager) {
-        return null;
-      }
-      const requests = Logs6.NetworkLog.NetworkLog.instance().requestsForId(lookupId);
-      if (requests.length === 0) {
-        console.warn("Network Request list is empty");
-        return null;
-      }
-      request = requests[0];
-    }
-    if (reveal) {
-      await Common19.Revealer.reveal(request);
-      await this.selectAndActivateRequest(request);
-    }
-    const requestNode = this.networkLogView?.nodeForRequest(request);
-    if (requestNode?.element()) {
-      const targetRect = requestNode.element().getBoundingClientRect();
-      const parentRect = parentElement.getBoundingClientRect();
-      const relativeX = 4;
-      const relativeY = targetRect.y - parentRect.y + parentElement.scrollTop;
-      return { x: relativeX, y: relativeY };
-    }
-    console.warn("Could not find element for request:", anchor);
-    return null;
-  }
   updateUI() {
     if (this.detailsWidget) {
       this.detailsWidget.element.classList.toggle("network-details-view-tall-header", this.networkLogLargeRowsSetting.get());
@@ -14031,11 +13981,6 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.calculator.updateBoundaries(request);
     this.overviewPane.setBounds(Trace2.Types.Timing.Milli(this.calculator.minimumBoundary() * 1e3), Trace2.Types.Timing.Milli(this.calculator.maximumBoundary() * 1e3));
     this.networkOverview.updateRequest(request);
-    if (Annotations2.AnnotationRepository.annotationsEnabled()) {
-      requestAnimationFrame(() => {
-        void PanelCommon.AnnotationManager.instance().resolveAnnotationsOfType(Annotations2.AnnotationType.NETWORK_REQUEST);
-      });
-    }
   }
   resolveLocation(locationName) {
     if (locationName === "network-sidebar") {

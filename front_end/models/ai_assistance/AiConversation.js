@@ -6,7 +6,6 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Greendev from '../greendev/greendev.js';
 import { AccessibilityAgent } from './agents/AccessibilityAgent.js';
 import { ContextSelectionAgent } from './agents/ContextSelectionAgent.js';
 import { FileAgent } from './agents/FileAgent.js';
@@ -144,10 +143,6 @@ export class AiConversation {
     }
     get selectedContext() {
         return this.#contexts.at(0);
-    }
-    getPendingMultimodalInput() {
-        const greenDevEmulationEnabled = Greendev.Prototypes.instance().isEnabled('emulationCapabilities');
-        return greenDevEmulationEnabled ? this.#agent.popPendingMultimodalInput() : undefined;
     }
     #reconstructHistory(historyWithoutImages) {
         const imageHistory = AiHistoryStorage.instance().getImageHistory();

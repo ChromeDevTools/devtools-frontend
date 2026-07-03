@@ -9,6 +9,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import * as PanelsCommon from '../../common/common.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 import cpuThrottlingSelectorStyles from './cpuThrottlingSelector.css.js';
 const { render, html } = Lit;
@@ -49,7 +50,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/CPUThrottli
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const DEFAULT_VIEW = (input, _output, target) => {
     let recommendedInfoEl;
-    if (input.recommendedOption && input.currentOption === SDK.CPUThrottlingManager.NoThrottlingOption) {
+    if (input.recommendedOption && input.currentOption === PanelsCommon.CPUThrottlingOption.NoThrottlingOption) {
         recommendedInfoEl = html `<devtools-icon
         title=${i18nString(UIStrings.recommendedThrottlingReason)}
         name=info></devtools-icon>`;
@@ -114,7 +115,7 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
     #cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
     constructor(element, view = DEFAULT_VIEW) {
         super(element);
-        this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
+        this.#currentOption = MobileThrottling.ThrottlingManager.throttlingManager().cpuThrottlingOption();
         this.#calibratedThrottlingSetting =
             Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         this.#resetGroups();
@@ -136,7 +137,7 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
         this.#cpuThrottlingManager.removeEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, this.#onOptionChange, this);
     }
     #onOptionChange() {
-        this.#currentOption = this.#cpuThrottlingManager.cpuThrottlingOption();
+        this.#currentOption = MobileThrottling.ThrottlingManager.throttlingManager().cpuThrottlingOption();
         this.requestUpdate();
     }
     #onCalibratedSettingChanged() {
@@ -147,10 +148,10 @@ export class CPUThrottlingSelector extends UI.Widget.Widget {
         let option;
         if (typeof event.itemValue === 'string') {
             if (event.itemValue === 'low-tier-mobile') {
-                option = SDK.CPUThrottlingManager.CalibratedLowTierMobileThrottlingOption;
+                option = PanelsCommon.CPUThrottlingOption.CalibratedLowTierMobileThrottlingOption;
             }
             else if (event.itemValue === 'mid-tier-mobile') {
-                option = SDK.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
+                option = PanelsCommon.CPUThrottlingOption.CalibratedMidTierMobileThrottlingOption;
             }
         }
         else {

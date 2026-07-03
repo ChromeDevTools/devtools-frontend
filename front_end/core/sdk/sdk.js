@@ -12016,6 +12016,13 @@ var TargetManager = class _TargetManager extends Common4.ObjectWrapper.ObjectWra
   get settings() {
     return this.context.get(Common4.Settings.Settings);
   }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getConsole() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(Common4.Console.Console)) {
+      return Common4.Console.Console.instance();
+    }
+    return this.context.get(Common4.Console.Console);
+  }
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners;
   #modelObservers;
@@ -35240,6 +35247,7 @@ var UIStrings15 = {
 var str_15 = i18n33.i18n.registerUIStrings("core/sdk/ConsoleModel.ts", UIStrings15);
 var i18nString15 = i18n33.i18n.getLocalizedString.bind(void 0, str_15);
 var ConsoleModel = class _ConsoleModel extends SDKModel {
+  #console;
   #messages = [];
   #messagesByTimestamp = new Platform18.MapUtilities.Multimap();
   #messageByExceptionId = /* @__PURE__ */ new Map();
@@ -35250,6 +35258,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   #targetListeners = /* @__PURE__ */ new WeakMap();
   constructor(target) {
     super(target);
+    this.#console = target.targetManager().getConsole();
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
       this.initTarget(target);
@@ -35310,7 +35319,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     if ("error" in result) {
       return;
     }
-    await Common34.Console.Console.instance().showPromise();
+    await this.#console.showPromise();
     this.dispatchEventToListeners(Events11.CommandEvaluated, { result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails });
   }
   addCommandMessage(executionContext, text) {
@@ -35419,9 +35428,9 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     if (settings.moduleSetting("preserve-console-log").get()) {
       const { frame } = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
-        Common34.Console.Console.instance().log(i18nString15(UIStrings15.bfcacheNavigation, { PH1: frame.url }));
+        this.#console.log(i18nString15(UIStrings15.bfcacheNavigation, { PH1: frame.url }));
       } else {
-        Common34.Console.Console.instance().log(i18nString15(UIStrings15.navigatedToS, { PH1: frame.url }));
+        this.#console.log(i18nString15(UIStrings15.navigatedToS, { PH1: frame.url }));
       }
     }
   }
@@ -35515,6 +35524,13 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     return this.#violations;
   }
   async saveToTempVariable(currentExecutionContext, remoteObject) {
+    const failedToSave = (result2) => {
+      let message = i18nString15(UIStrings15.failedToSaveToTempVariable);
+      if (result2) {
+        message = message + " " + result2.description;
+      }
+      this.#console.error(message);
+    };
     if (!remoteObject || !currentExecutionContext) {
       failedToSave(null);
       return;
@@ -35558,13 +35574,6 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       const name = prefix + index;
       this[name] = value;
       return name;
-    }
-    function failedToSave(result2) {
-      let message = i18nString15(UIStrings15.failedToSaveToTempVariable);
-      if (result2) {
-        message = message + " " + result2.description;
-      }
-      Common34.Console.Console.instance().error(message);
     }
   }
 };
@@ -35798,19 +35807,9 @@ var MessageSourceDisplayName = /* @__PURE__ */ new Map([
 // gen/front_end/core/sdk/CPUThrottlingManager.js
 var CPUThrottlingManager_exports = {};
 __export(CPUThrottlingManager_exports, {
-  CPUThrottlingManager: () => CPUThrottlingManager,
-  CPUThrottlingRates: () => CPUThrottlingRates,
-  CalibratedLowTierMobileThrottlingOption: () => CalibratedLowTierMobileThrottlingOption,
-  CalibratedMidTierMobileThrottlingOption: () => CalibratedMidTierMobileThrottlingOption,
-  CalibrationError: () => CalibrationError,
-  ExtraSlowThrottlingOption: () => ExtraSlowThrottlingOption,
-  LowTierThrottlingOption: () => LowTierThrottlingOption,
-  MidTierThrottlingOption: () => MidTierThrottlingOption,
-  NoThrottlingOption: () => NoThrottlingOption,
-  calibrationErrorToString: () => calibrationErrorToString
+  CPUThrottlingManager: () => CPUThrottlingManager
 });
 import * as Common35 from "./../common/common.js";
-import * as i18n35 from "./../i18n/i18n.js";
 import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EmulationModel.js
@@ -36339,49 +36338,15 @@ var DeviceOrientation = class _DeviceOrientation {
 SDKModel.register(EmulationModel, { capabilities: 256, autostart: true });
 
 // gen/front_end/core/sdk/CPUThrottlingManager.js
-var UIStrings16 = {
-  /**
-   * @description Text label for a menu item indicating that no throttling is applied.
-   */
-  noThrottling: "No throttling",
-  /**
-   * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
-   * @example {2} PH1
-   */
-  dSlowdown: "{PH1}\xD7 slowdown",
-  /**
-   * @description Text label for a menu item indicating an average mobile device.
-   */
-  calibratedMidTierMobile: "Mid-tier mobile",
-  /**
-   * @description Text label for a menu item indicating a below-average mobile device.
-   */
-  calibratedLowTierMobile: "Low-tier mobile",
-  /**
-   * @description Text label indicating why an option is not available, because the user's device is not fast enough to emulate a device.
-   */
-  calibrationErrorDeviceTooWeak: "Device is not powerful enough"
-};
-var str_16 = i18n35.i18n.registerUIStrings("core/sdk/CPUThrottlingManager.ts", UIStrings16);
-var i18nString16 = i18n35.i18n.getLocalizedString.bind(void 0, str_16);
-var i18nLazyString2 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_16);
 var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWrapper.ObjectWrapper {
   #targetManager;
-  #cpuThrottlingOption;
-  #calibratedThrottlingSetting;
+  #cpuThrottlingRate;
   #hardwareConcurrency;
   #pendingMainTargetPromise;
   constructor(settings, targetManager) {
     super();
     this.#targetManager = targetManager;
-    this.#cpuThrottlingOption = NoThrottlingOption;
-    this.#calibratedThrottlingSetting = settings.createSetting(
-      "calibrated-cpu-throttling",
-      {},
-      "Global"
-      /* Common.Settings.SettingStorageType.GLOBAL */
-    );
-    this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
+    this.#cpuThrottlingRate = 1;
     targetManager.observeModels(EmulationModel, this);
   }
   static instance(opts = { forceNew: null }) {
@@ -36395,35 +36360,17 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWr
     Root11.DevToolsContext.globalInstance().delete(_CPUThrottlingManager);
   }
   cpuThrottlingRate() {
-    return this.#cpuThrottlingOption.rate();
+    return this.#cpuThrottlingRate;
   }
-  cpuThrottlingOption() {
-    return this.#cpuThrottlingOption;
-  }
-  #onCalibratedSettingChanged() {
-    const currentOption = this.#cpuThrottlingOption;
-    if (!currentOption.calibratedDeviceType) {
+  setCPUThrottlingRate(rate) {
+    if (rate === this.#cpuThrottlingRate) {
       return;
     }
-    const rate = this.#cpuThrottlingOption.rate();
-    if (rate === 0) {
-      this.setCPUThrottlingOption(NoThrottlingOption);
-      return;
-    }
+    this.#cpuThrottlingRate = rate;
     for (const emulationModel of this.#targetManager.models(EmulationModel)) {
-      void emulationModel.setCPUThrottlingRate(rate);
+      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRate);
     }
-    this.dispatchEventToListeners("RateChanged", rate);
-  }
-  setCPUThrottlingOption(option) {
-    if (option === this.#cpuThrottlingOption) {
-      return;
-    }
-    this.#cpuThrottlingOption = option;
-    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
-      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
-    }
-    this.dispatchEventToListeners("RateChanged", this.#cpuThrottlingOption.rate());
+    this.dispatchEventToListeners("RateChanged", this.#cpuThrottlingRate);
   }
   setHardwareConcurrency(concurrency) {
     this.#hardwareConcurrency = concurrency;
@@ -36467,8 +36414,8 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWr
     return result.value;
   }
   modelAdded(emulationModel) {
-    if (this.#cpuThrottlingOption !== NoThrottlingOption) {
-      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOption.rate());
+    if (this.#cpuThrottlingRate !== 1) {
+      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRate);
     }
     if (this.#hardwareConcurrency !== void 0) {
       void emulationModel.setHardwareConcurrency(this.#hardwareConcurrency);
@@ -36482,75 +36429,6 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWr
   modelRemoved(_emulationModel) {
   }
 };
-var CPUThrottlingRates;
-(function(CPUThrottlingRates2) {
-  CPUThrottlingRates2[CPUThrottlingRates2["NO_THROTTLING"] = 1] = "NO_THROTTLING";
-  CPUThrottlingRates2[CPUThrottlingRates2["MID_TIER_MOBILE"] = 4] = "MID_TIER_MOBILE";
-  CPUThrottlingRates2[CPUThrottlingRates2["LOW_TIER_MOBILE"] = 6] = "LOW_TIER_MOBILE";
-  CPUThrottlingRates2[CPUThrottlingRates2["EXTRA_SLOW"] = 20] = "EXTRA_SLOW";
-  CPUThrottlingRates2[CPUThrottlingRates2["MidTierMobile"] = 4] = "MidTierMobile";
-  CPUThrottlingRates2[CPUThrottlingRates2["LowEndMobile"] = 6] = "LowEndMobile";
-})(CPUThrottlingRates || (CPUThrottlingRates = {}));
-function makeFixedPresetThrottlingOption(rate) {
-  return {
-    title: rate === 1 ? i18nLazyString2(UIStrings16.noThrottling) : i18nLazyString2(UIStrings16.dSlowdown, { PH1: rate }),
-    rate: () => rate,
-    jslogContext: rate === 1 ? "cpu-no-throttling" : `cpu-throttled-${rate}`
-  };
-}
-var NoThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.NO_THROTTLING);
-var MidTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.MID_TIER_MOBILE);
-var LowTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.LOW_TIER_MOBILE);
-var ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.EXTRA_SLOW);
-function makeCalibratedThrottlingOption(calibratedDeviceType) {
-  const getSettingValue = () => {
-    const setting = Common35.Settings.Settings.instance().createSetting(
-      "calibrated-cpu-throttling",
-      {},
-      "Global"
-      /* Common.Settings.SettingStorageType.GLOBAL */
-    );
-    const value = setting.get();
-    if (calibratedDeviceType === "low-tier-mobile") {
-      return value.low ?? null;
-    }
-    if (calibratedDeviceType === "mid-tier-mobile") {
-      return value.mid ?? null;
-    }
-    return null;
-  };
-  return {
-    title() {
-      const typeString = calibratedDeviceType === "low-tier-mobile" ? i18nString16(UIStrings16.calibratedLowTierMobile) : i18nString16(UIStrings16.calibratedMidTierMobile);
-      const value = getSettingValue();
-      if (typeof value === "number") {
-        return `${typeString} \u2013 ${value.toFixed(1)}\xD7`;
-      }
-      return typeString;
-    },
-    rate() {
-      const value = getSettingValue();
-      if (typeof value === "number") {
-        return value;
-      }
-      return 0;
-    },
-    calibratedDeviceType,
-    jslogContext: `cpu-throttled-calibrated-${calibratedDeviceType}`
-  };
-}
-var CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption("low-tier-mobile");
-var CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption("mid-tier-mobile");
-var CalibrationError;
-(function(CalibrationError2) {
-  CalibrationError2["DEVICE_TOO_WEAK"] = "DEVICE_TOO_WEAK";
-})(CalibrationError || (CalibrationError = {}));
-function calibrationErrorToString(error) {
-  if (error === CalibrationError.DEVICE_TOO_WEAK) {
-    return i18nString16(UIStrings16.calibrationErrorDeviceTooWeak);
-  }
-  return error;
-}
 
 // gen/front_end/core/sdk/CrashReportContextModel.js
 var CrashReportContextModel_exports = {};
@@ -36584,6 +36462,7 @@ __export(DOMDebuggerModel_exports, {
   EventListener: () => EventListener
 });
 import * as Platform19 from "./../platform/platform.js";
+import * as Root12 from "./../root/root.js";
 var DOMDebuggerModel = class extends SDKModel {
   agent;
   #runtimeModel;
@@ -36943,7 +36822,6 @@ var DOMEventListenerBreakpoint = class extends CategorizedBreakpoint {
   }
   static listener = "listener:";
 };
-var domDebuggerManagerInstance;
 var DOMDebuggerManager = class _DOMDebuggerManager {
   #xhrBreakpointsSetting;
   #xhrBreakpoints = /* @__PURE__ */ new Map();
@@ -37076,10 +36954,13 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
-    if (!domDebuggerManagerInstance || forceNew) {
-      domDebuggerManagerInstance = new _DOMDebuggerManager(targetManager);
+    if (!Root12.DevToolsContext.globalInstance().has(_DOMDebuggerManager) || forceNew) {
+      Root12.DevToolsContext.globalInstance().set(_DOMDebuggerManager, new _DOMDebuggerManager(targetManager ?? TargetManager.instance()));
     }
-    return domDebuggerManagerInstance;
+    return Root12.DevToolsContext.globalInstance().get(_DOMDebuggerManager);
+  }
+  static removeInstance() {
+    Root12.DevToolsContext.globalInstance().delete(_DOMDebuggerManager);
   }
   cspViolationBreakpoints() {
     return this.#cspViolationsToBreakOn.slice();
@@ -38818,7 +38699,7 @@ __export(ServiceWorkerCacheModel_exports, {
   ServiceWorkerCacheModel: () => ServiceWorkerCacheModel
 });
 import * as Common38 from "./../common/common.js";
-import * as i18n37 from "./../i18n/i18n.js";
+import * as i18n35 from "./../i18n/i18n.js";
 
 // gen/front_end/core/sdk/StorageBucketsModel.js
 var StorageBucketsModel_exports = {};
@@ -38952,7 +38833,7 @@ var StorageBucketsModel = class extends SDKModel {
 SDKModel.register(StorageBucketsModel, { capabilities: 8192, autostart: false });
 
 // gen/front_end/core/sdk/ServiceWorkerCacheModel.js
-var UIStrings17 = {
+var UIStrings16 = {
   /**
    * @description Text in Service Worker Cache Model
    * @example {https://cache} PH1
@@ -38960,8 +38841,8 @@ var UIStrings17 = {
    */
   serviceworkercacheagentError: "`ServiceWorkerCacheAgent` error deleting cache entry {PH1} in cache: {PH2}"
 };
-var str_17 = i18n37.i18n.registerUIStrings("core/sdk/ServiceWorkerCacheModel.ts", UIStrings17);
-var i18nString17 = i18n37.i18n.getLocalizedString.bind(void 0, str_17);
+var str_16 = i18n35.i18n.registerUIStrings("core/sdk/ServiceWorkerCacheModel.ts", UIStrings16);
+var i18nString16 = i18n35.i18n.getLocalizedString.bind(void 0, str_16);
 var ServiceWorkerCacheModel = class extends SDKModel {
   cacheAgent;
   #storageAgent;
@@ -39027,7 +38908,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   async deleteCacheEntry(cache, request) {
     const response = await this.cacheAgent.invoke_deleteEntry({ cacheId: cache.cacheId, request });
     if (response.getError()) {
-      Common38.Console.Console.instance().error(i18nString17(UIStrings17.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
+      Common38.Console.Console.instance().error(i18nString16(UIStrings16.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
       return;
     }
   }
@@ -39221,8 +39102,8 @@ __export(ServiceWorkerManager_exports, {
   ServiceWorkerVersionState: () => ServiceWorkerVersionState
 });
 import * as Common39 from "./../common/common.js";
-import * as i18n39 from "./../i18n/i18n.js";
-var UIStrings18 = {
+import * as i18n37 from "./../i18n/i18n.js";
+var UIStrings17 = {
   /**
    * @description Service worker running status displayed in the Service Workers view in the Application panel
    */
@@ -39271,9 +39152,9 @@ var UIStrings18 = {
    */
   sSS: "{PH1} #{PH2} ({PH3})"
 };
-var str_18 = i18n39.i18n.registerUIStrings("core/sdk/ServiceWorkerManager.ts", UIStrings18);
-var i18nString18 = i18n39.i18n.getLocalizedString.bind(void 0, str_18);
-var i18nLazyString3 = i18n39.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
+var str_17 = i18n37.i18n.registerUIStrings("core/sdk/ServiceWorkerManager.ts", UIStrings17);
+var i18nString17 = i18n37.i18n.getLocalizedString.bind(void 0, str_17);
+var i18nLazyString2 = i18n37.i18n.getLazilyComputedLocalizedString.bind(void 0, str_17);
 var ServiceWorkerManager = class extends SDKModel {
   #agent;
   #registrations = /* @__PURE__ */ new Map();
@@ -39581,45 +39462,45 @@ var ServiceWorkerVersion = class {
     [
       "running"
       /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running */
-    ]: i18nLazyString3(UIStrings18.running),
+    ]: i18nLazyString2(UIStrings17.running),
     [
       "starting"
       /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting */
-    ]: i18nLazyString3(UIStrings18.starting),
+    ]: i18nLazyString2(UIStrings17.starting),
     [
       "stopped"
       /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped */
-    ]: i18nLazyString3(UIStrings18.stopped),
+    ]: i18nLazyString2(UIStrings17.stopped),
     [
       "stopping"
       /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping */
-    ]: i18nLazyString3(UIStrings18.stopping)
+    ]: i18nLazyString2(UIStrings17.stopping)
   };
   ServiceWorkerVersion2.Status = {
     [
       "activated"
       /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated */
-    ]: i18nLazyString3(UIStrings18.activated),
+    ]: i18nLazyString2(UIStrings17.activated),
     [
       "activating"
       /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating */
-    ]: i18nLazyString3(UIStrings18.activating),
+    ]: i18nLazyString2(UIStrings17.activating),
     [
       "installed"
       /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed */
-    ]: i18nLazyString3(UIStrings18.installed),
+    ]: i18nLazyString2(UIStrings17.installed),
     [
       "installing"
       /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing */
-    ]: i18nLazyString3(UIStrings18.installing),
+    ]: i18nLazyString2(UIStrings17.installing),
     [
       "new"
       /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.New */
-    ]: i18nLazyString3(UIStrings18.new),
+    ]: i18nLazyString2(UIStrings17.new),
     [
       "redundant"
       /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant */
-    ]: i18nLazyString3(UIStrings18.redundant)
+    ]: i18nLazyString2(UIStrings17.redundant)
   };
 })(ServiceWorkerVersion || (ServiceWorkerVersion = {}));
 var ServiceWorkerRegistration = class {
@@ -39737,7 +39618,7 @@ var ServiceWorkerContextNamer = class {
     const parsedUrl = Common39.ParsedURL.ParsedURL.fromString(context.origin);
     const label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : context.name;
     const localizedStatus = ServiceWorkerVersion.Status[version.status];
-    context.setLabel(i18nString18(UIStrings18.sSS, { PH1: label, PH2: version.id, PH3: localizedStatus() }));
+    context.setLabel(i18nString17(UIStrings17.sSS, { PH1: label, PH2: version.id, PH3: localizedStatus() }));
   }
 };
 SDKModel.register(ServiceWorkerManager, { capabilities: 16384, autostart: true });

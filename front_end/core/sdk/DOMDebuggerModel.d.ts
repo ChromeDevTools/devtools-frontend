@@ -109,6 +109,7 @@ export declare class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerM
         forceNew: boolean | null;
         targetManager?: TargetManager;
     }): DOMDebuggerManager;
+    static removeInstance(): void;
     cspViolationBreakpoints(): CSPViolationBreakpoint[];
     private createEventListenerBreakpoints;
     resolveEventListenerBreakpoint({ eventName, targetName }: EventListenerPausedDetailsAuxData): DOMEventListenerBreakpoint | null;

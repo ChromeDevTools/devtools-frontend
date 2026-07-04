@@ -6482,6 +6482,36 @@ export declare namespace DeviceOrientation {
     }
 }
 /**
+ * This domain allows interacting with the Digital Credentials API for automation.
+ */
+export declare namespace DigitalCredentials {
+    /**
+     * The type of virtual wallet action.
+     */
+    const enum VirtualWalletBehavior {
+        Respond = "respond",
+        Decline = "decline",
+        Wait = "wait",
+        Clear = "clear"
+    }
+    interface SetVirtualWalletBehaviorRequest {
+        /**
+         * The behavior of the virtual wallet.
+         */
+        behavior: VirtualWalletBehavior;
+        /**
+         * The protocol identifier (e.g. "openid4vp"). Required when |behavior| is
+         * "respond", forbidden otherwise.
+         */
+        protocol?: string;
+        /**
+         * The response data object returned by the wallet.
+         * Required when |behavior| is "respond", forbidden otherwise.
+         */
+        response?: any;
+    }
+}
+/**
  * This domain emulates different environments for the page.
  */
 export declare namespace Emulation {
@@ -11134,10 +11164,12 @@ export declare namespace Network {
     type DeviceBoundSessionEventId = OpaqueIdentifier<string, 'Protocol.Network.DeviceBoundSessionEventId'>;
     /**
      * A fetch result for a device bound session creation or refresh.
+     * LINT_SKIP.IfChange(DeviceBoundSessionFetchResult)
      */
     const enum DeviceBoundSessionFetchResult {
         Success = "Success",
-        KeyError = "KeyError",
+        SigningKeyGenerationError = "SigningKeyGenerationError",
+        AttestationKeyGenerationError = "AttestationKeyGenerationError",
         SigningError = "SigningError",
         TransientSigningError = "TransientSigningError",
         ServerRequestedTermination = "ServerRequestedTermination",

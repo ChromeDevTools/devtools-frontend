@@ -6,6 +6,7 @@ import * as Host from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import { assertNotNullOrUndefined } from '../platform/platform.js';
 import * as Root from '../root/root.js';
+import { FrameManager } from './FrameManager.js';
 import { SDKModel } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
@@ -30,6 +31,13 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
             return Common.Console.Console.instance();
         }
         return this.context.get(Common.Console.Console);
+    }
+    // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+    getFrameManager() {
+        if ('has' in this.context && typeof this.context.has === 'function' && !this.context.has(FrameManager)) {
+            return FrameManager.instance();
+        }
+        return this.context.get(FrameManager);
     }
     /* eslint-disable @typescript-eslint/no-explicit-any */
     #modelListeners;

@@ -5,7 +5,7 @@ import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 export declare class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDKModelObserver<RuntimeModel> {
     #private;
     constructor(targetManager?: TargetManager);
-    static instance({ forceNew, targetManager }?: {
+    static instance(opts?: {
         forceNew: boolean;
         targetManager?: TargetManager;
     }): IsolateManager;

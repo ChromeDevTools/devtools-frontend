@@ -4661,6 +4661,9 @@
   "panels/application/DeviceBoundSessionsView.ts | allowedRefreshInitiators": {
     "message": "Allowed refresh initiators"
   },
+  "panels/application/DeviceBoundSessionsView.ts | attestationKeyGenerationError": {
+    "message": "Attestation key generation error"
+  },
   "panels/application/DeviceBoundSessionsView.ts | boundCookieSetForbidden": {
     "message": "Registration in a context that cannot set bound cookies"
   },
@@ -4841,9 +4844,6 @@
   "panels/application/DeviceBoundSessionsView.ts | invalidSessionParams": {
     "message": "Invalid session parameters"
   },
-  "panels/application/DeviceBoundSessionsView.ts | keyError": {
-    "message": "Key error"
-  },
   "panels/application/DeviceBoundSessionsView.ts | keyId": {
     "message": "ID"
   },
@@ -5000,6 +5000,9 @@
   "panels/application/DeviceBoundSessionsView.ts | signingError": {
     "message": "Signing error"
   },
+  "panels/application/DeviceBoundSessionsView.ts | signingKeyGenerationError": {
+    "message": "Signing key generation error"
+  },
   "panels/application/DeviceBoundSessionsView.ts | signingQuotaExceeded": {
     "message": "Signing quota exceeded"
   },
@@ -5032,6 +5035,9 @@
   },
   "panels/application/DeviceBoundSessionsView.ts | transientHttpError": {
     "message": "Transient HTTP error"
+  },
+  "panels/application/DeviceBoundSessionsView.ts | transientSigningError": {
+    "message": "Transient signing error"
   },
   "panels/application/DeviceBoundSessionsView.ts | type": {
     "message": "Type"
@@ -7204,6 +7210,15 @@
   },
   "panels/console/ConsoleViewMessage.ts | consoleWasCleared": {
     "message": "Console was cleared"
+  },
+  "panels/console/ConsoleViewMessage.ts | copyAsCsv": {
+    "message": "Copy as CSV"
+  },
+  "panels/console/ConsoleViewMessage.ts | copyAsMarkdown": {
+    "message": "Copy as Markdown"
+  },
+  "panels/console/ConsoleViewMessage.ts | copyTableAs": {
+    "message": "Copy table as"
   },
   "panels/console/ConsoleViewMessage.ts | deprecationS": {
     "message": "[Deprecation] {PH1}"

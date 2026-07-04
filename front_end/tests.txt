@@ -763,6 +763,7 @@ ui/legacy/components/color_picker/Spectrum.test.js
 ui/legacy/components/cookie_table/CookiesTable.test.js
 ui/legacy/components/data_grid/DataGrid.test.js
 ui/legacy/components/data_grid/DataGridElement.test.js
+ui/legacy/components/data_grid/DataGridExporter.test.js
 ui/legacy/components/data_grid/ViewportDataGrid.test.js
 ui/legacy/components/inline_editor/AnimationTimingModel.test.js
 ui/legacy/components/inline_editor/AnimationTimingUI.test.js

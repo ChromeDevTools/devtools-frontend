@@ -42,6 +42,9 @@ export const DIALOG_VERTICAL_PADDING = 3;
  **/
 export const DIALOG_PADDING_FROM_WINDOW = 3 * CONNECTOR_HEIGHT;
 export const MODAL = 'MODAL';
+/**
+ * @deprecated in favor of UI.Dialog.Dialog.
+ */
 export class Dialog extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #forceDialogCloseInDevToolsBound = this.#forceDialogCloseInDevToolsMutation.bind(this);

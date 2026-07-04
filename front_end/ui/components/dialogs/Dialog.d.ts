@@ -18,6 +18,9 @@ export declare const DIALOG_PADDING_FROM_WINDOW: number;
 type DialogAnchor = HTMLElement | DOMRect | DOMPoint;
 export declare const MODAL = "MODAL";
 export type DialogOrigin = DialogAnchor | null | (() => DialogAnchor) | typeof MODAL;
+/**
+ * @deprecated in favor of UI.Dialog.Dialog.
+ */
 export declare class Dialog extends HTMLElement {
     #private;
     get origin(): DialogOrigin;

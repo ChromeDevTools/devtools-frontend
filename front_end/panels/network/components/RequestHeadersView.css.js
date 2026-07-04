@@ -133,7 +133,7 @@ div.raw-headers-row {
 }
 
 .inline-icon {
-  vertical-align: middle;
+  vertical-align: sub;
 }
 
 .header-grid-container {

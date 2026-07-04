@@ -585,6 +585,7 @@ __export(FlameChart_exports, {
   FlameChartTimelineData: () => FlameChartTimelineData,
   MinimalTimeWindowMs: () => MinimalTimeWindowMs,
   RulerHeight: () => RulerHeight,
+  calculatePopoverOffset: () => calculatePopoverOffset,
   sortDecorationsForRenderingOrder: () => sortDecorationsForRenderingOrder
 });
 import * as Common from "./../../../../core/common/common.js";
@@ -1647,26 +1648,16 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     const infoHeight = this.popoverElement.clientHeight;
     const offsetX = 10;
     const offsetY = 6 + this.#tooltipPopoverYAdjustment;
-    let x;
-    let y;
-    for (let pass = 0; pass < 2; ++pass) {
-      for (let quadrant = 0; quadrant < 4; ++quadrant) {
-        const dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
-        const dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
-        x = Platform2.NumberUtilities.clamp(mouseX + dx, 0, parentWidth - infoWidth);
-        y = Platform2.NumberUtilities.clamp(mouseY + dy, 0, parentHeight - infoHeight);
-        const popoverFits = pass === 0 ? (
-          // Will the whole popover be visible?
-          (x >= mouseX || mouseX >= x + infoWidth) && (y >= mouseY || mouseY >= y + infoHeight)
-        ) : (
-          // Will the popover fit well in 1 dimension? (Though we typically see it fit in both, here. Shrug.)
-          x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight
-        );
-        if (popoverFits) {
-          break;
-        }
-      }
-    }
+    const { x, y } = calculatePopoverOffset({
+      mouseX,
+      mouseY,
+      parentWidth,
+      parentHeight,
+      infoWidth,
+      infoHeight,
+      offsetX,
+      offsetY
+    });
     this.popoverElement.style.left = x + "px";
     this.popoverElement.style.top = y + "px";
   }
@@ -2586,11 +2577,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
         const groupIndex = sortedGroupIndexes[i];
         const nextIndex = sortedGroupIndexes[i + 1] ?? sortedGroupIndexes.length;
         if (y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[nextIndex]) {
-          const context = this.context;
-          context.save();
-          context.font = this.#font;
-          const headerRight = HEADER_LEFT_PADDING + (this.#inTrackConfigEditMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0) + this.labelWidthForGroup(context, groups[groupIndex]);
-          context.restore();
+          const headerRight = HEADER_LEFT_PADDING + (this.#inTrackConfigEditMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0) + this.labelWidthForGroup(this.context, groups[groupIndex]);
           const mouseInHeaderRow = y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[groupIndex] + groups[groupIndex].style.height;
           if (this.#inTrackConfigEditMode) {
             if (mouseInHeaderRow) {
@@ -3364,7 +3351,11 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
    * @returns the width of the label of the group.
    */
   labelWidthForGroup(context, group) {
-    return EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING + UI3.UIUtils.measureTextWidth(context, group.name) + HEADER_LABEL_X_PADDING - HEADER_LEFT_PADDING;
+    context.save();
+    context.font = this.#font;
+    const width = EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING + UI3.UIUtils.measureTextWidth(context, group.name) + HEADER_LABEL_X_PADDING - HEADER_LEFT_PADDING;
+    context.restore();
+    return width;
   }
   drawCollapsedOverviewForGroup(group, y, endLevel) {
     const range = new Common.SegmentedRange.SegmentedRange(mergeCallback);
@@ -4213,6 +4204,36 @@ var FlameChartTimelineData = class _FlameChartTimelineData {
     this.initiatorsData = [];
   }
 };
+function calculatePopoverOffset(options) {
+  const { mouseX, mouseY, parentWidth, parentHeight, infoWidth, infoHeight, offsetX, offsetY } = options;
+  const quadrants = [
+    { left: false, top: false },
+    // 0: Bottom-Right
+    { left: false, top: true },
+    // 1: Top-Right
+    { left: true, top: false },
+    // 2: Bottom-Left
+    { left: true, top: true }
+    // 3: Top-Left
+  ];
+  let x = 0;
+  let y = 0;
+  for (let pass = 0; pass < 2; ++pass) {
+    for (const { left, top } of quadrants) {
+      const dx = left ? -offsetX - infoWidth : offsetX;
+      const dy = top ? -offsetY - infoHeight : offsetY;
+      x = Platform2.NumberUtilities.clamp(mouseX + dx, 0, Math.max(0, parentWidth - infoWidth));
+      y = Platform2.NumberUtilities.clamp(mouseY + dy, 0, Math.max(0, parentHeight - infoHeight));
+      const mouseOverlapsX = mouseX > x && mouseX < x + infoWidth;
+      const mouseOverlapsY = mouseY > y && mouseY < y + infoHeight;
+      const popoverFits = pass === 0 ? !mouseOverlapsX && !mouseOverlapsY : !(mouseOverlapsX && mouseOverlapsY);
+      if (popoverFits) {
+        return { x, y };
+      }
+    }
+  }
+  return { x, y };
+}
 
 // gen/front_end/ui/legacy/components/perf_ui/ChartViewport.js
 var ChartViewport = class extends UI4.Widget.VBox {

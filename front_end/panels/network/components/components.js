@@ -152,7 +152,7 @@ div.raw-headers-row {
 }
 
 .inline-icon {
-  vertical-align: middle;
+  vertical-align: sub;
 }
 
 .header-grid-container {
@@ -676,10 +676,12 @@ var HeaderSectionRow_css_default = `/*
 }
 
 .call-to-action-body {
+  display: flex;
+  gap: var(--sys-size-4);
   padding: 6px 0;
-  margin-left: 9.5px;
+  margin-left: var(--sys-size-1);
   border-left: 2px solid var(--issue-color-yellow);
-  padding-left: 18px;
+  padding-left: 11px;
   line-height: 20px;
 }
 
@@ -708,7 +710,7 @@ var HeaderSectionRow_css_default = `/*
 }
 
 .inline-icon {
-  vertical-align: middle;
+  margin-top: var(--sys-size-2);
 }
 
 .row-flex-icon {
@@ -1208,10 +1210,12 @@ var RequestHeaderSection_css_default = `/*
   }
 
   .call-to-action-body {
+    display: flex;
+    gap: var(--sys-size-4);
     padding: 6px 0;
-    margin-left: 9.5px;
+    margin-left: var(--sys-size-1);
     border-left: 2px solid var(--issue-color-yellow);
-    padding-left: 18px;
+    padding-left: 11px;
     line-height: 20px;
   }
 
@@ -1240,7 +1244,7 @@ var RequestHeaderSection_css_default = `/*
   }
 
   .inline-icon {
-    vertical-align: middle;
+    margin-top: var(--sys-size-2);
   }
 
   @media (forced-colors: active) {
@@ -1301,9 +1305,8 @@ function renderProvisionalHeadersWarning(isRequestCached) {
   return html4`
     <div class="call-to-action">
       <div class="call-to-action-body">
+        <devtools-icon class="inline-icon medium" name='warning-filled'></devtools-icon>
         <div class="explanation" title=${cautionTitle}>
-          <devtools-icon class="inline-icon medium" name='warning-filled'>
-          </devtools-icon>
           ${cautionText} <devtools-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString3(UIStrings3.learnMore)}</devtools-link>
         </div>
       </div>

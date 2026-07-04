@@ -29,13 +29,16 @@ var Universe = class {
   constructor(options) {
     const context = new Root.DevToolsContext.WritableDevToolsContext();
     this.context = context;
+    const console = new Common.Console.Console();
+    context.set(Common.Console.Console, console);
     const settings = Common.Settings.Settings.instance({
       forceNew: true,
+      console,
       ...options.settingsCreationOptions
     });
     context.set(Common.Settings.Settings, settings);
-    const console = new Common.Console.Console();
-    context.set(Common.Console.Console, console);
+    const isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager(settings, console);
+    context.set(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager, isolatedFileSystemManager);
     const targetManager = new SDK.TargetManager.TargetManager(context, options.overrideAutoStartModels);
     context.set(SDK.TargetManager.TargetManager, targetManager);
     const frameManager = new SDK.FrameManager.FrameManager(targetManager);
@@ -46,12 +49,16 @@ var Universe = class {
     context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
     const projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(options.hostConfig, pageResourceLoader, targetManager);
     context.set(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel, projectSettingsModel);
+    const automaticFileSystemManager = new Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager(options.inspectorFrontendHost, projectSettingsModel);
+    context.set(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager, automaticFileSystemManager);
     const cpuThrottlingManager = new SDK.CPUThrottlingManager.CPUThrottlingManager(settings, targetManager);
     context.set(SDK.CPUThrottlingManager.CPUThrottlingManager, cpuThrottlingManager);
     const domDebuggerManager = new SDK.DOMDebuggerModel.DOMDebuggerManager(targetManager);
     context.set(SDK.DOMDebuggerModel.DOMDebuggerManager, domDebuggerManager);
     const workspace = new Workspace.Workspace.WorkspaceImpl();
     context.set(Workspace.Workspace.WorkspaceImpl, workspace);
+    const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
+    context.set(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding, automaticFileSystemWorkspaceBinding);
     const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
     context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
@@ -63,6 +70,8 @@ var Universe = class {
     context.set(Breakpoints.BreakpointManager.BreakpointManager, breakpointManager);
     const persistence = new Persistence.Persistence.PersistenceImpl(workspace, breakpointManager);
     context.set(Persistence.Persistence.PersistenceImpl, persistence);
+    const networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(workspace, persistence, breakpointManager, targetManager, settings, isolatedFileSystemManager, multitargetNetworkManager);
+    context.set(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, networkPersistenceManager);
     const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
     const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
@@ -70,6 +79,12 @@ var Universe = class {
     const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
+  }
+  get automaticFileSystemManager() {
+    return this.context.get(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
+  }
+  get automaticFileSystemWorkspaceBinding() {
+    return this.context.get(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding);
   }
   get breakpointManager() {
     return this.context.get(Breakpoints.BreakpointManager.BreakpointManager);
@@ -80,6 +95,12 @@ var Universe = class {
   get domDebuggerManager() {
     return this.context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
   }
+  get isolatedFileSystemManager() {
+    return this.context.get(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager);
+  }
+  get networkPersistenceManager() {
+    return this.context.get(Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
+  }
   get pageResourceLoader() {
     return this.context.get(SDK.PageResourceLoader.PageResourceLoader);
   }
@@ -88,6 +109,9 @@ var Universe = class {
   }
   get projectSettingsModel() {
     return this.context.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);
+  }
+  get settings() {
+    return this.context.get(Common.Settings.Settings);
   }
 };
 export {

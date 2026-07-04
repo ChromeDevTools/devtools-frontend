@@ -54,6 +54,8 @@ declare namespace ProtocolProxyApi {
 
     DeviceOrientation: DeviceOrientationApi;
 
+    DigitalCredentials: DigitalCredentialsApi;
+
     Emulation: EmulationApi;
 
     EventBreakpoints: EventBreakpointsApi;
@@ -168,6 +170,8 @@ declare namespace ProtocolProxyApi {
     DeviceAccess: DeviceAccessDispatcher;
 
     DeviceOrientation: DeviceOrientationDispatcher;
+
+    DigitalCredentials: DigitalCredentialsDispatcher;
 
     Emulation: EmulationDispatcher;
 
@@ -1637,6 +1641,17 @@ declare namespace ProtocolProxyApi {
 
   }
   export interface DeviceOrientationDispatcher {
+  }
+
+  export interface DigitalCredentialsApi {
+    /**
+     * Sets the behavior of the virtual wallet for digital credential requests
+     * issued from this frame.
+     */
+    invoke_setVirtualWalletBehavior(params: Protocol.DigitalCredentials.SetVirtualWalletBehaviorRequest): Promise<Protocol.ProtocolResponseWithError>;
+
+  }
+  export interface DigitalCredentialsDispatcher {
   }
 
   export interface EmulationApi {

@@ -63,9 +63,8 @@ function renderProvisionalHeadersWarning(isRequestCached) {
     return html `
     <div class="call-to-action">
       <div class="call-to-action-body">
+        <devtools-icon class="inline-icon medium" name='warning-filled'></devtools-icon>
         <div class="explanation" title=${cautionTitle}>
-          <devtools-icon class="inline-icon medium" name='warning-filled'>
-          </devtools-icon>
           ${cautionText} <devtools-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</devtools-link>
         </div>
       </div>

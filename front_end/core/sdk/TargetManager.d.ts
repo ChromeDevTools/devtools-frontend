@@ -2,6 +2,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
+import { FrameManager } from './FrameManager.js';
 import { SDKModel, type SDKModelConstructor } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
 export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -18,6 +19,7 @@ export declare class TargetManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     readonly context: Root.DevToolsContext.DevToolsContext;
     get settings(): Common.Settings.Settings;
     getConsole(): Common.Console.Console;
+    getFrameManager(): FrameManager;
     /**
      * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
      */

@@ -39,6 +39,7 @@ import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
+import * as Root from "./../../core/root/root.js";
 
 // gen/front_end/models/persistence/IsolatedFileSystem.js
 var IsolatedFileSystem_exports = {};
@@ -717,7 +718,6 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("models/persistence/IsolatedFileSystemManager.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var isolatedFileSystemManagerInstance;
 var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3.ObjectWrapper.ObjectWrapper {
   #fileSystems;
   callbacks;
@@ -726,9 +726,11 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   fileSystemRequestResolve;
   fileSystemsLoadedPromise;
   #settings;
-  constructor(settings = Common3.Settings.Settings.instance()) {
+  #console;
+  constructor(settings, console2) {
     super();
     this.#settings = settings;
+    this.#console = console2;
     this.#fileSystems = /* @__PURE__ */ new Map();
     this.callbacks = /* @__PURE__ */ new Map();
     this.progresses = /* @__PURE__ */ new Map();
@@ -777,15 +779,18 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     this.fileSystemRequestResolve = null;
     this.fileSystemsLoadedPromise = this.requestFileSystems();
   }
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!isolatedFileSystemManagerInstance || forceNew) {
-      isolatedFileSystemManagerInstance = new _IsolatedFileSystemManager();
+  static instance(opts = {}) {
+    const forceNew = opts.forceNew ?? null;
+    const settings = opts.settings ?? Common3.Settings.Settings.instance();
+    const console2 = opts.console ?? Common3.Console.Console.instance();
+    if (!Root.DevToolsContext.globalInstance().has(_IsolatedFileSystemManager) || forceNew) {
+      const instance = new _IsolatedFileSystemManager(settings, console2);
+      Root.DevToolsContext.globalInstance().set(_IsolatedFileSystemManager, instance);
     }
-    return isolatedFileSystemManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(_IsolatedFileSystemManager);
   }
   static removeInstance() {
-    isolatedFileSystemManagerInstance = null;
+    Root.DevToolsContext.globalInstance().delete(_IsolatedFileSystemManager);
   }
   requestFileSystems() {
     const { resolve, promise } = Promise.withResolvers();
@@ -844,7 +849,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     const { errorMessage, fileSystem } = event.data;
     if (errorMessage) {
       if (errorMessage !== "<selection cancelled>" && errorMessage !== "<permission denied>") {
-        Common3.Console.Console.instance().error(i18nString3(UIStrings3.unableToAddFilesystemS, { PH1: errorMessage }));
+        this.#console.error(i18nString3(UIStrings3.unableToAddFilesystemS, { PH1: errorMessage }));
       }
       if (!this.fileSystemRequestResolve) {
         return;
@@ -1317,7 +1322,7 @@ __export(PersistenceImpl_exports, {
 import * as Common5 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as BreakpointManager from "./../breakpoints/breakpoints.js";
@@ -1338,13 +1343,13 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
   }
   static instance(opts = { forceNew: null, workspace: null, breakpointManager: null }) {
     const { forceNew, workspace, breakpointManager } = opts;
-    if (!Root.DevToolsContext.globalInstance().has(_PersistenceImpl) || forceNew) {
+    if (!Root2.DevToolsContext.globalInstance().has(_PersistenceImpl) || forceNew) {
       if (!workspace || !breakpointManager) {
         throw new Error("Missing arguments for workspace");
       }
-      Root.DevToolsContext.globalInstance().set(_PersistenceImpl, new _PersistenceImpl(workspace, breakpointManager));
+      Root2.DevToolsContext.globalInstance().set(_PersistenceImpl, new _PersistenceImpl(workspace, breakpointManager));
     }
-    return Root.DevToolsContext.globalInstance().get(_PersistenceImpl);
+    return Root2.DevToolsContext.globalInstance().get(_PersistenceImpl);
   }
   addNetworkInterceptor(interceptor) {
     this.#mapping.addNetworkInterceptor(interceptor);
@@ -2013,7 +2018,7 @@ __export(AutomaticFileSystemManager_exports, {
 });
 import * as Common7 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as ProjectSettings from "./../project_settings/project_settings.js";
 var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Common7.ObjectWrapper.ObjectWrapper {
   #automaticFileSystem;
@@ -2062,21 +2067,21 @@ var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Commo
    * @returns the singleton.
    */
   static instance({ forceNew, inspectorFrontendHost, projectSettingsModel } = { forceNew: false, inspectorFrontendHost: null, projectSettingsModel: null }) {
-    if (!Root2.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager) || forceNew) {
+    if (!Root3.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager) || forceNew) {
       if (!inspectorFrontendHost || !projectSettingsModel) {
         throw new Error("Unable to create AutomaticFileSystemManager: inspectorFrontendHost, and projectSettingsModel must be provided");
       }
-      Root2.DevToolsContext.globalInstance().set(_AutomaticFileSystemManager, new _AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel));
+      Root3.DevToolsContext.globalInstance().set(_AutomaticFileSystemManager, new _AutomaticFileSystemManager(inspectorFrontendHost, projectSettingsModel));
     }
-    return Root2.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager);
+    return Root3.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager);
   }
   /**
    * Clears the `AutomaticFileSystemManager` singleton (if any);
    */
   static removeInstance() {
-    if (Root2.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager)) {
-      Root2.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager).#dispose();
-      Root2.DevToolsContext.globalInstance().delete(_AutomaticFileSystemManager);
+    if (Root3.DevToolsContext.globalInstance().has(_AutomaticFileSystemManager)) {
+      Root3.DevToolsContext.globalInstance().get(_AutomaticFileSystemManager).#dispose();
+      Root3.DevToolsContext.globalInstance().delete(_AutomaticFileSystemManager);
     }
   }
   #dispose() {
@@ -2173,6 +2178,7 @@ __export(AutomaticFileSystemWorkspaceBinding_exports, {
 });
 import * as Common8 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
+import * as Root4 from "./../../core/root/root.js";
 import * as Workspace7 from "./../workspace/workspace.js";
 var FileSystem2 = class {
   automaticFileSystem;
@@ -2270,7 +2276,6 @@ var FileSystem2 = class {
     return [];
   }
 };
-var automaticFileSystemWorkspaceBindingInstance;
 var AutomaticFileSystemWorkspaceBinding = class _AutomaticFileSystemWorkspaceBinding {
   #automaticFileSystemManager;
   #fileSystem = null;
@@ -2299,21 +2304,23 @@ var AutomaticFileSystemWorkspaceBinding = class _AutomaticFileSystemWorkspaceBin
     isolatedFileSystemManager: null,
     workspace: null
   }) {
-    if (!automaticFileSystemWorkspaceBindingInstance || forceNew) {
+    if (!Root4.DevToolsContext.globalInstance().has(_AutomaticFileSystemWorkspaceBinding) || forceNew) {
       if (!automaticFileSystemManager || !isolatedFileSystemManager || !workspace) {
         throw new Error("Unable to create AutomaticFileSystemWorkspaceBinding: automaticFileSystemManager, isolatedFileSystemManager, and workspace must be provided");
       }
-      automaticFileSystemWorkspaceBindingInstance = new _AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
+      const automaticFileSystemWorkspaceBinding = new _AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
+      Root4.DevToolsContext.globalInstance().set(_AutomaticFileSystemWorkspaceBinding, automaticFileSystemWorkspaceBinding);
     }
-    return automaticFileSystemWorkspaceBindingInstance;
+    return Root4.DevToolsContext.globalInstance().get(_AutomaticFileSystemWorkspaceBinding);
   }
   /**
    * Clears the `AutomaticFileSystemWorkspaceBinding` singleton (if any);
    */
   static removeInstance() {
-    if (automaticFileSystemWorkspaceBindingInstance) {
-      automaticFileSystemWorkspaceBindingInstance.#dispose();
-      automaticFileSystemWorkspaceBindingInstance = void 0;
+    if (Root4.DevToolsContext.globalInstance().has(_AutomaticFileSystemWorkspaceBinding)) {
+      const automaticFileSystemWorkspaceBinding = Root4.DevToolsContext.globalInstance().get(_AutomaticFileSystemWorkspaceBinding);
+      automaticFileSystemWorkspaceBinding.#dispose();
+      Root4.DevToolsContext.globalInstance().delete(_AutomaticFileSystemWorkspaceBinding);
     }
   }
   #dispose() {
@@ -2355,7 +2362,7 @@ __export(NetworkPersistenceManager_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as Root5 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
 import * as TextUtils6 from "./../text_utils/text_utils.js";
@@ -2415,16 +2422,16 @@ var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9
   }
   static instance(opts = { forceNew: null, workspace: null }) {
     const { forceNew, workspace } = opts;
-    if (!Root3.DevToolsContext.globalInstance().has(_NetworkPersistenceManager) || forceNew) {
+    if (!Root5.DevToolsContext.globalInstance().has(_NetworkPersistenceManager) || forceNew) {
       if (!workspace) {
         throw new Error("Missing workspace for NetworkPersistenceManager");
       }
-      Root3.DevToolsContext.globalInstance().set(_NetworkPersistenceManager, new _NetworkPersistenceManager(workspace, PersistenceImpl.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance(), SDK3.TargetManager.TargetManager.instance(), Common9.Settings.Settings.instance(), IsolatedFileSystemManager.instance(), SDK3.NetworkManager.MultitargetNetworkManager.instance()));
+      Root5.DevToolsContext.globalInstance().set(_NetworkPersistenceManager, new _NetworkPersistenceManager(workspace, PersistenceImpl.instance(), Breakpoints.BreakpointManager.BreakpointManager.instance(), SDK3.TargetManager.TargetManager.instance(), Common9.Settings.Settings.instance(), IsolatedFileSystemManager.instance(), SDK3.NetworkManager.MultitargetNetworkManager.instance()));
     }
-    return Root3.DevToolsContext.globalInstance().get(_NetworkPersistenceManager);
+    return Root5.DevToolsContext.globalInstance().get(_NetworkPersistenceManager);
   }
   static removeInstance() {
-    Root3.DevToolsContext.globalInstance().delete(_NetworkPersistenceManager);
+    Root5.DevToolsContext.globalInstance().delete(_NetworkPersistenceManager);
   }
   active() {
     return this.#active;

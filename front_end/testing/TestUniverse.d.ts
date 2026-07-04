@@ -1,5 +1,5 @@
 import * as Common from '../core/common/common.js';
-import type * as Host from '../core/host/host.js';
+import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
@@ -40,6 +40,8 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
      */
     createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
     get autofillManager(): AutofillManager.AutofillManager.AutofillManager;
+    get automaticFileSystemManager(): Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager;
+    get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;
     get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager;
     get console(): Common.Console.Console;
     get context(): Root.DevToolsContext.DevToolsContext;
@@ -50,9 +52,11 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get frameManager(): SDK.FrameManager.FrameManager;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
     get logManager(): Logs.LogManager.LogManager;
+    get isolatedFileSystemManager(): Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager;
     get javaScriptMetadata(): JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl;
     get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager;
     get networkLog(): Logs.NetworkLog.NetworkLog;
+    get networkPersistenceManager(): Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;

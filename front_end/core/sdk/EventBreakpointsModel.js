@@ -1,6 +1,7 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Root from '../../core/root/root.js';
 import { CategorizedBreakpoint } from './CategorizedBreakpoint.js';
 import { SDKModel } from './SDKModel.js';
 import { TargetManager } from './TargetManager.js';
@@ -40,7 +41,6 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
     }
     static instrumentationPrefix = 'instrumentation:';
 }
-let eventBreakpointManagerInstance;
 export class EventBreakpointsManager {
     #eventListenerBreakpoints = [];
     #targetManager;
@@ -101,10 +101,13 @@ export class EventBreakpointsManager {
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew, targetManager } = opts;
-        if (!eventBreakpointManagerInstance || forceNew) {
-            eventBreakpointManagerInstance = new EventBreakpointsManager(targetManager);
+        if (!Root.DevToolsContext.globalInstance().has(EventBreakpointsManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(EventBreakpointsManager, new EventBreakpointsManager(targetManager ?? TargetManager.instance()));
         }
-        return eventBreakpointManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(EventBreakpointsManager);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(EventBreakpointsManager);
     }
     createInstrumentationBreakpoints(category, instrumentationNames) {
         for (const instrumentationName of instrumentationNames) {

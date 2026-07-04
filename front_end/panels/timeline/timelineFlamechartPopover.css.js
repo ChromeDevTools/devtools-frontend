@@ -40,6 +40,8 @@ export default `/*
 .timeline-flamechart-popover span.popoverinfo-url-origin {
   color: var(--sys-color-token-subtle);
   font-size: 11px;
+  white-space: normal;
+  word-break: break-all;
 }
 
 .timeline-flamechart-popover span.popoverinfo-url-origin {

@@ -3633,36 +3633,22 @@ __export(ScreenshotsHandler_exports, {
 });
 import * as Helpers15 from "./../helpers/helpers.js";
 import * as Types23 from "./../types/types.js";
-var unpairedAsyncEvents = [];
 var legacyScreenshotEvents = [];
 var modernScreenshotEvents = [];
 var syntheticScreenshots = [];
-var frameSequenceToTs = {};
 function reset22() {
-  unpairedAsyncEvents = [];
   legacyScreenshotEvents = [];
   syntheticScreenshots = [];
   modernScreenshotEvents = [];
-  frameSequenceToTs = {};
 }
 function handleEvent22(event) {
   if (Types23.Events.isLegacyScreenshot(event)) {
     legacyScreenshotEvents.push(event);
   } else if (Types23.Events.isScreenshot(event)) {
     modernScreenshotEvents.push(event);
-  } else if (Types23.Events.isPipelineReporter(event)) {
-    unpairedAsyncEvents.push(event);
   }
 }
 async function finalize22() {
-  const pipelineReporterEvents = Helpers15.Trace.createMatchedSortedSyntheticEvents(unpairedAsyncEvents);
-  frameSequenceToTs = Object.fromEntries(pipelineReporterEvents.map((evt) => {
-    const args = evt.args.data.beginEvent.args;
-    const frameReporter = "frame_reporter" in args ? args.frame_reporter : args.chrome_frame_reporter;
-    const frameSequenceId = frameReporter.frame_sequence;
-    const presentationTs = Types23.Timing.Micro(evt.ts + evt.dur);
-    return [frameSequenceId, presentationTs];
-  }));
   for (const snapshotEvent of legacyScreenshotEvents) {
     const { cat, name, ph, pid, tid } = snapshotEvent;
     const syntheticEvent = Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
@@ -3672,8 +3658,7 @@ async function finalize22() {
       ph,
       pid,
       tid,
-      // TODO(paulirish, crbug.com/41363012): investigate why getPresentationTimestamp(snapshotEvent) seems less accurate. Resolve screenshot timing inaccuracy.
-      // `getPresentationTimestamp(snapshotEvent) - snapshotEvent.ts` is how many microsec the screenshot should be adjusted to the right/later
+      // TODO(paulirish, crbug.com/41363012): fix snapshot timestamps.
       ts: snapshotEvent.ts,
       args: {
         dataUri: `data:image/jpg;base64,${snapshotEvent.args.snapshot}`

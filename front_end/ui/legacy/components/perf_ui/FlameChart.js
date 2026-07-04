@@ -734,7 +734,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
             mouseX = coordinate?.x ? coordinate.x - canvasViewportOffsetX : mouseX;
             mouseY = coordinate?.y ? coordinate.y - canvasViewportOffsetY : mouseY;
         }
-        // The parent dimensions are the maximum the popover can use.
         const parentWidth = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientWidth : 0;
         const parentHeight = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientHeight : 0;
         const infoWidth = this.popoverElement.clientWidth;
@@ -743,37 +742,16 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
         const offsetX = 10;
         // Incorporate any network flamechart height into dynamic positioning
         const offsetY = 6 + this.#tooltipPopoverYAdjustment;
-        let x;
-        let y;
-        /**
-         * Fancy positioning algorithm. It optimizes for consistent positioning, not obstructing any of the popover, and not positioning atop the mouse cursor.
-         *
-         * Take the mouse cursor position (mouseX/mouseY) and split up the area into four quadrants
-         *     0: bottom-right. 1: top-right. 2: bottom-left. 3: top-left.
-         *
-         * We attempt this in two passes, first is for keeping the whole popover visible, the second is slightly relaxed.
-         *   If we hit the second pass, its because the tooltip size is close to the size of the available (parent*) space.
-         * In each pass, we loop through the quadrants
-         *   If the tooltip can fit (after some adjustments) within a quadrant, we `break` and that x,y is used.
-         */
-        for (let pass = 0; pass < 2; ++pass) {
-            for (let quadrant = 0; quadrant < 4; ++quadrant) {
-                // The bitwise AND operator is used to generate the 4 unique combinations of two booleans. (true+false, true+true, etc)
-                const dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
-                const dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
-                // mouseX+dx is ideal, but clamp against the available space (It will be adapted to fit)
-                x = Platform.NumberUtilities.clamp(mouseX + dx, 0, parentWidth - infoWidth);
-                y = Platform.NumberUtilities.clamp(mouseY + dy, 0, parentHeight - infoHeight);
-                const popoverFits = pass === 0 ?
-                    // Will the whole popover be visible?
-                    (x >= mouseX || mouseX >= x + infoWidth) && (y >= mouseY || mouseY >= y + infoHeight) :
-                    // Will the popover fit well in 1 dimension? (Though we typically see it fit in both, here. Shrug.)
-                    x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight;
-                if (popoverFits) {
-                    break;
-                }
-            }
-        }
+        const { x, y } = calculatePopoverOffset({
+            mouseX,
+            mouseY,
+            parentWidth,
+            parentHeight,
+            infoWidth,
+            infoHeight,
+            offsetX,
+            offsetY,
+        });
         this.popoverElement.style.left = x + 'px';
         this.popoverElement.style.top = y + 'px';
     }
@@ -1775,12 +1753,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
                 if (y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[nextIndex]) {
                     // This section is used to calculate the position of current group's header
                     // If we are in edit mode, the track label is pushed right to make room for the icons.
-                    const context = this.context;
-                    context.save();
-                    context.font = this.#font;
                     const headerRight = HEADER_LEFT_PADDING + (this.#inTrackConfigEditMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0) +
-                        this.labelWidthForGroup(context, groups[groupIndex]);
-                    context.restore();
+                        this.labelWidthForGroup(this.context, groups[groupIndex]);
                     const mouseInHeaderRow = y >= this.groupOffsets[groupIndex] && y < this.groupOffsets[groupIndex] + groups[groupIndex].style.height;
                     if (this.#inTrackConfigEditMode) {
                         if (mouseInHeaderRow) {
@@ -2649,8 +2623,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
      * @returns the width of the label of the group.
      */
     labelWidthForGroup(context, group) {
-        return EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING +
+        context.save();
+        context.font = this.#font;
+        const width = EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING +
             UI.UIUtils.measureTextWidth(context, group.name) + HEADER_LABEL_X_PADDING - HEADER_LEFT_PADDING;
+        context.restore();
+        return width;
     }
     drawCollapsedOverviewForGroup(group, y, endLevel) {
         const range = new Common.SegmentedRange.SegmentedRange(mergeCallback);
@@ -3621,5 +3599,46 @@ export class FlameChartTimelineData {
     emptyInitiators() {
         this.initiatorsData = [];
     }
+}
+/**
+ * Calculates the positioning coordinates (x, y) for a popover window relative to the mouse.
+ *
+ * It uses a two-pass quadrant placement algorithm:
+ * - Pass 0: Tries to find a quadrant where the popover fits fully on screen without overlapping the mouse.
+ * - Pass 1: Relaxed fit; allows overlapping the mouse if the popover is too large for the available space,
+ *   clamping it strictly to remain within the parent bounds [0, parentWidth - infoWidth].
+ *
+ * Quadrants:
+ * 0: bottom-right (x + offsetX, y + offsetY)
+ * 1: top-right (x + offsetX, y - offsetY - height)
+ * 2: bottom-left (x - offsetX - width, y + offsetY)
+ * 3: top-left (x - offsetX - width, y - offsetY - height)
+ */
+export function calculatePopoverOffset(options) {
+    const { mouseX, mouseY, parentWidth, parentHeight, infoWidth, infoHeight, offsetX, offsetY } = options;
+    const quadrants = [
+        { left: false, top: false }, // 0: Bottom-Right
+        { left: false, top: true }, // 1: Top-Right
+        { left: true, top: false }, // 2: Bottom-Left
+        { left: true, top: true }, // 3: Top-Left
+    ];
+    let x = 0;
+    let y = 0;
+    for (let pass = 0; pass < 2; ++pass) {
+        for (const { left, top } of quadrants) {
+            const dx = left ? -offsetX - infoWidth : offsetX;
+            const dy = top ? -offsetY - infoHeight : offsetY;
+            // Ensure upper bound of clamp is never negative (minimum of 0) to avoid errors when infoWidth/infoHeight > parent container bounds
+            x = Platform.NumberUtilities.clamp(mouseX + dx, 0, Math.max(0, parentWidth - infoWidth));
+            y = Platform.NumberUtilities.clamp(mouseY + dy, 0, Math.max(0, parentHeight - infoHeight));
+            const mouseOverlapsX = mouseX > x && mouseX < x + infoWidth;
+            const mouseOverlapsY = mouseY > y && mouseY < y + infoHeight;
+            const popoverFits = pass === 0 ? (!mouseOverlapsX && !mouseOverlapsY) : !(mouseOverlapsX && mouseOverlapsY);
+            if (popoverFits) {
+                return { x, y };
+            }
+        }
+    }
+    return { x, y };
 }
 //# sourceMappingURL=FlameChart.js.map

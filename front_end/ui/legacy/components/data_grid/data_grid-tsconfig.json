@@ -38,6 +38,7 @@
   "files": [
     "../../../../../../../../front_end/ui/legacy/components/data_grid/DataGrid.ts",
     "../../../../../../../../front_end/ui/legacy/components/data_grid/DataGridElement.ts",
+    "../../../../../../../../front_end/ui/legacy/components/data_grid/DataGridExporter.ts",
     "../../../../../../../../front_end/ui/legacy/components/data_grid/ShowMoreDataGridNode.ts",
     "../../../../../../../../front_end/ui/legacy/components/data_grid/SortableDataGrid.ts",
     "../../../../../../../../front_end/ui/legacy/components/data_grid/ViewportDataGrid.ts",

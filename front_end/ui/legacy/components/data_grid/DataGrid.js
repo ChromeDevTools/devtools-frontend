@@ -149,6 +149,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
     resizeMethod;
     headerContextMenuCallback;
     rowContextMenuCallback;
+    tableContextMenuCallback;
     elementToDataGridNode;
     disclosureColumnId;
     sortColumnCell;
@@ -215,6 +216,7 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
         this.resizeMethod = "nearest" /* ResizeMethod.NEAREST */;
         this.headerContextMenuCallback = null;
         this.rowContextMenuCallback = null;
+        this.tableContextMenuCallback = null;
         this.elementToDataGridNode = new WeakMap();
     }
     setEditCallback(editCallback, _internalToken) {
@@ -1257,6 +1259,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
             this.dispatchEventToListeners("OpenedNode" /* Events.OPENED_NODE */, gridNode);
         }
     }
+    setTableContextMenuCallback(callback) {
+        this.tableContextMenuCallback = callback;
+    }
     setHeaderContextMenuCallback(callback) {
         this.headerContextMenuCallback = callback;
     }
@@ -1268,6 +1273,9 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
+        if (this.tableContextMenuCallback) {
+            this.tableContextMenuCallback(contextMenu);
+        }
         const target = event.target;
         const sortableVisibleColumns = this.visibleColumnsArray.filter(column => {
             return (column.sortable && column.title);

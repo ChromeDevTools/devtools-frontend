@@ -1968,9 +1968,7 @@ export const generatedProperties = [
         "keywords": [
             "auto"
         ],
-        "name": "column-height",
-        "runtime_flag": "MulticolColumnWrapping",
-        "runtime_flag_status": "stable"
+        "name": "column-height"
     },
     {
         "longhands": [
@@ -2134,9 +2132,7 @@ export const generatedProperties = [
             "nowrap",
             "wrap"
         ],
-        "name": "column-wrap",
-        "runtime_flag": "MulticolColumnWrapping",
-        "runtime_flag_status": "stable"
+        "name": "column-wrap"
     },
     {
         "devtools_keywords": [

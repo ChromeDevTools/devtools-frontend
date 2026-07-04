@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
-import { Console } from './Console.js';
 import { ObjectWrapper } from './Object.js';
 import { getLocalizedSettingsCategory, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, } from './SettingRegistration.js';
 import { VersionController } from './VersionController.js';
@@ -19,7 +18,9 @@ export class Settings {
     #registry = new Map();
     moduleSettings = new Map();
     #logSettingAccess;
-    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration }) {
+    #console;
+    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console }) {
+        this.#console = console;
         this.syncedStorage = syncedStorage;
         this.globalStorage = globalStorage;
         this.localStorage = localStorage;
@@ -49,10 +50,17 @@ export class Settings {
     static hasInstance() {
         return Root.DevToolsContext.globalInstance().has(Settings);
     }
-    static instance(opts = { forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null, settingRegistrations: null }) {
-        const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration } = opts;
+    static instance(opts = {
+        forceNew: null,
+        syncedStorage: null,
+        globalStorage: null,
+        localStorage: null,
+        settingRegistrations: null,
+        console: null
+    }) {
+        const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, } = opts;
         if (!Root.DevToolsContext.globalInstance().has(Settings) || forceNew) {
-            if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations) {
+            if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations || !console) {
                 throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
             }
             Root.DevToolsContext.globalInstance().set(Settings, new Settings({
@@ -61,7 +69,8 @@ export class Settings {
                 localStorage,
                 settingRegistrations,
                 logSettingAccess,
-                runSettingsMigration
+                runSettingsMigration,
+                console,
             }));
         }
         return Root.DevToolsContext.globalInstance().get(Settings);
@@ -132,7 +141,7 @@ export class Settings {
         const storage = this.storageFromType(storageType);
         let setting = this.#registry.get(key);
         if (!setting) {
-            setting = new Setting(key, defaultValue, this.#eventSupport, storage, this.#logSettingAccess);
+            setting = new Setting(key, defaultValue, this.#eventSupport, storage, this.#console, this.#logSettingAccess);
             this.#registry.set(key, setting);
         }
         return setting;
@@ -142,7 +151,7 @@ export class Settings {
     }
     createRegExpSetting(key, defaultValue, regexFlags, storageType) {
         if (!this.#registry.get(key)) {
-            this.#registry.set(key, new RegExpSetting(key, defaultValue, this.#eventSupport, this.storageFromType(storageType), regexFlags, this.#logSettingAccess));
+            this.#registry.set(key, new RegExpSetting(key, defaultValue, this.#eventSupport, this.storageFromType(storageType), this.#console, regexFlags, this.#logSettingAccess));
         }
         return this.#registry.get(key);
     }
@@ -235,8 +244,8 @@ export class SettingsStorage {
     keys() {
         return Object.keys(this.object);
     }
-    dumpSizes() {
-        Console.instance().log('Ten largest settings: ');
+    dumpSizes(commonConsole) {
+        commonConsole.log('Ten largest settings: ');
         // @ts-expect-error __proto__ optimization
         const sizes = { __proto__: null };
         for (const key in this.object) {
@@ -248,7 +257,7 @@ export class SettingsStorage {
         }
         keys.sort(comparator);
         for (let i = 0; i < 10 && i < keys.length; ++i) {
-            Console.instance().log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
+            commonConsole.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
         }
     }
 }
@@ -284,12 +293,14 @@ export class Setting {
     #deprecation = null;
     #loggedInitialAccess = false;
     #logSettingAccess;
-    constructor(name, defaultValue, eventSupport, storage, logSettingAccess) {
+    #console;
+    constructor(name, defaultValue, eventSupport, storage, console, logSettingAccess) {
         this.name = name;
         this.defaultValue = defaultValue;
         this.eventSupport = eventSupport;
         this.storage = storage;
         storage.register(this.name);
+        this.#console = console;
         this.#logSettingAccess = logSettingAccess;
     }
     setSerializer(serializer) {
@@ -426,7 +437,7 @@ export class Setting {
             }
         }
         catch (e) {
-            Console.instance().error('Cannot stringify setting with name: ' + this.name + ', error: ' + e.message);
+            this.#console.error('Cannot stringify setting with name: ' + this.name + ', error: ' + e.message);
         }
         this.eventSupport.dispatchEventToListeners(this.name, value);
     }
@@ -506,16 +517,16 @@ export class Setting {
     printSettingsSavingError(message, value) {
         const errorMessage = 'Error saving setting with name: ' + this.name + ', value length: ' + value.length + '. Error: ' + message;
         console.error(errorMessage);
-        Console.instance().error(errorMessage);
-        this.storage.dumpSizes();
+        this.#console.error(errorMessage);
+        this.storage.dumpSizes(this.#console);
     }
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class RegExpSetting extends Setting {
     #regexFlags;
     #regex;
-    constructor(name, defaultValue, eventSupport, storage, regexFlags, logSettingAccess) {
-        super(name, defaultValue ? [{ pattern: defaultValue }] : [], eventSupport, storage, logSettingAccess);
+    constructor(name, defaultValue, eventSupport, storage, console, regexFlags, logSettingAccess) {
+        super(name, defaultValue ? [{ pattern: defaultValue }] : [], eventSupport, storage, console, logSettingAccess);
         this.#regexFlags = regexFlags;
     }
     get() {

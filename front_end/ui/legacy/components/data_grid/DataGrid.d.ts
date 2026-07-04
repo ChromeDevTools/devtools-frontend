@@ -31,6 +31,7 @@ export declare class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<
     private resizeMethod;
     private headerContextMenuCallback;
     private rowContextMenuCallback;
+    private tableContextMenuCallback;
     elementToDataGridNode: WeakMap<Node, DataGridNode<T>>;
     disclosureColumnId?: string;
     private sortColumnCell?;
@@ -119,6 +120,7 @@ export declare class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<
     markColumnAsSortedBy(columnId: string, sortOrder: Order): void;
     headerTableHeader(columnId: string): Element;
     private mouseDownInDataTable;
+    setTableContextMenuCallback(callback: ((arg0: UI.ContextMenu.ContextMenu) => void) | null): void;
     setHeaderContextMenuCallback(callback: ((arg0: UI.ContextMenu.SubMenu) => void) | null): void;
     setRowContextMenuCallback(callback: ((arg0: UI.ContextMenu.ContextMenu, arg1: DataGridNode<T>) => void) | null): void;
     private contextMenu;

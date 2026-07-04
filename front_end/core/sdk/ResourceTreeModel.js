@@ -5,7 +5,6 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 import { DOMModel } from './DOMModel.js';
-import { FrameManager } from './FrameManager.js';
 import { Events as NetworkManagerEvents, NetworkManager } from './NetworkManager.js';
 import { Resource } from './Resource.js';
 import { ExecutionContext, RuntimeModel } from './RuntimeModel.js';
@@ -19,6 +18,7 @@ export class ResourceTreeModel extends SDKModel {
     storageAgent;
     #securityOriginManager;
     #storageKeyManager;
+    #frameManager;
     framesInternal = new Map();
     #cachedResourcesProcessed = false;
     #pendingReloadOptions = null;
@@ -28,6 +28,7 @@ export class ResourceTreeModel extends SDKModel {
     #pendingBackForwardCacheNotUsedEvents = new Set();
     constructor(target) {
         super(target);
+        this.#frameManager = target.targetManager().getFrameManager();
         const networkManager = target.model(NetworkManager);
         if (networkManager) {
             networkManager.addEventListener(NetworkManagerEvents.RequestFinished, this.onRequestFinished, this);
@@ -181,8 +182,8 @@ export class ResourceTreeModel extends SDKModel {
         this.updateSecurityOrigins();
         void this.updateStorageKeys();
         if (frame.backForwardCacheDetails.restoredFromCache) {
-            FrameManager.instance().modelRemoved(this);
-            FrameManager.instance().modelAdded(this);
+            this.#frameManager.modelRemoved(this);
+            this.#frameManager.modelAdded(this);
             void this.#buildResourceTree();
         }
     }

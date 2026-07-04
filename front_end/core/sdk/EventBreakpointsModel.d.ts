@@ -57,6 +57,7 @@ export declare class EventBreakpointsManager implements SDKModelObserver<EventBr
         forceNew: boolean | null;
         targetManager?: TargetManager;
     }): EventBreakpointsManager;
+    static removeInstance(): void;
     private createInstrumentationBreakpoints;
     eventListenerBreakpoints(): EventListenerBreakpoint[];
     resolveEventListenerBreakpoint({ eventName }: EventListenerPausedDetailsAuxData): EventListenerBreakpoint | null;

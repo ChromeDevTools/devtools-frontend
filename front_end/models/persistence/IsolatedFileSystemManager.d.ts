@@ -9,9 +9,11 @@ export declare class IsolatedFileSystemManager extends Common.ObjectWrapper.Obje
     private readonly progresses;
     private fileSystemRequestResolve;
     private readonly fileSystemsLoadedPromise;
-    private constructor();
+    constructor(settings: Common.Settings.Settings, console: Common.Console.Console);
     static instance(opts?: {
-        forceNew: boolean | null;
+        forceNew?: boolean | null;
+        settings?: Common.Settings.Settings | null;
+        console?: Common.Console.Console | null;
     }): IsolatedFileSystemManager;
     static removeInstance(): void;
     private requestFileSystems;

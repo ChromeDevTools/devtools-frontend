@@ -1,5 +1,6 @@
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
+import type { Console } from './Console.js';
 import type { EventDescriptor, EventTargetEvent, GenericEvents } from './EventTarget.js';
 import { ObjectWrapper } from './Object.js';
 import { getLocalizedSettingsCategory, type LearnMore, maybeRemoveSettingExtension, type RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, type SettingExtensionOption, type SettingRegistration, SettingType } from './SettingRegistration.js';
@@ -10,6 +11,7 @@ export interface SettingsCreationOptions {
     settingRegistrations: SettingRegistration[];
     logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
     runSettingsMigration?: boolean;
+    console: Console;
 }
 export declare class Settings {
     #private;
@@ -19,7 +21,7 @@ export declare class Settings {
     settingNameSet: Set<string>;
     orderValuesBySettingCategory: Map<SettingCategory, Set<number>>;
     readonly moduleSettings: Map<string, Setting<unknown>>;
-    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration }: SettingsCreationOptions);
+    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console }: SettingsCreationOptions);
     getRegisteredSettings(): SettingRegistration[];
     static hasInstance(): boolean;
     static instance(opts?: {
@@ -28,6 +30,7 @@ export declare class Settings {
         globalStorage: SettingsStorage | null;
         localStorage: SettingsStorage | null;
         settingRegistrations: SettingRegistration[] | null;
+        console: Console | null;
         logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>;
         runSettingsMigration?: boolean;
     }): Settings;
@@ -85,7 +88,7 @@ export declare class SettingsStorage {
     remove(name: string): void;
     removeAll(): void;
     keys(): string[];
-    dumpSizes(): void;
+    dumpSizes(commonConsole: Console): void;
 }
 export declare class Deprecation {
     readonly disabled: boolean;
@@ -99,7 +102,7 @@ export declare class Setting<V> {
     readonly defaultValue: V;
     private readonly eventSupport;
     readonly storage: SettingsStorage;
-    constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage, logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>);
+    constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage, console: Console, logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>);
     setSerializer(serializer: Serializer<unknown, V>): void;
     addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor;
     removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void;
@@ -130,7 +133,7 @@ export declare class Setting<V> {
 }
 export declare class RegExpSetting extends Setting<any> {
     #private;
-    constructor(name: string, defaultValue: string, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage, regexFlags?: string, logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>);
+    constructor(name: string, defaultValue: string, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage, console: Console, regexFlags?: string, logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>);
     get(): string;
     getAsArray(): RegExpSettingItem[];
     set(value: string): void;

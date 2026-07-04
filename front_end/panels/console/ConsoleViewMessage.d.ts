@@ -5,6 +5,7 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import { Icon } from '../../ui/kit/kit.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
@@ -165,6 +166,11 @@ export declare class ConsoleTableMessageView extends ConsoleViewMessage {
     contentElement(): HTMLElement;
     private buildTableMessage;
     approximateFastHeight(): number;
+    private populateTableContextMenu;
+    private copyTableAsMarkdown;
+    private copyTableAsCSV;
+    getDataGridForTest(): DataGrid.SortableDataGrid.SortableDataGrid<unknown> | null;
+    populateTableContextMenuForTest(contextMenu: UI.ContextMenu.ContextMenu): void;
 }
 export declare const getMaxTokenizableStringLength: () => number;
 export declare const setMaxTokenizableStringLength: (length: number) => void;

@@ -2483,6 +2483,14 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Sets the behavior of the virtual wallet for digital credential requests
+     * issued from this frame.
+     */
+    'DigitalCredentials.setVirtualWalletBehavior': {
+      paramsType: [Protocol.DigitalCredentials.SetVirtualWalletBehaviorRequest];
+      returnType: void;
+    };
+    /**
      * Tells whether emulation is supported.
      */
     'Emulation.canEmulate': {

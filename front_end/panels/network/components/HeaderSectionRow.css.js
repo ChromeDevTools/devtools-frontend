@@ -90,10 +90,12 @@ export default `/*
 }
 
 .call-to-action-body {
+  display: flex;
+  gap: var(--sys-size-4);
   padding: 6px 0;
-  margin-left: 9.5px;
+  margin-left: var(--sys-size-1);
   border-left: 2px solid var(--issue-color-yellow);
-  padding-left: 18px;
+  padding-left: 11px;
   line-height: 20px;
 }
 
@@ -122,7 +124,7 @@ export default `/*
 }
 
 .inline-icon {
-  vertical-align: middle;
+  margin-top: var(--sys-size-2);
 }
 
 .row-flex-icon {

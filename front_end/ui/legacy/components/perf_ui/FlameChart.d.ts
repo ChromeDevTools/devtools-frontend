@@ -728,4 +728,40 @@ export interface PersistedGroupConfig {
     originalIndex: number;
     visualIndex: number;
 }
+export interface PopoverOffsetOptions {
+    /** The horizontal offset of the mouse relative to the flame chart. */
+    mouseX: number;
+    /** The vertical offset of the mouse relative to the flame chart. */
+    mouseY: number;
+    /** The width of the parent container holding the popover. */
+    parentWidth: number;
+    /** The height of the parent container holding the popover. */
+    parentHeight: number;
+    /** The measured width of the popover element itself. */
+    infoWidth: number;
+    /** The measured height of the popover element itself. */
+    infoHeight: number;
+    /** The horizontal offset spacing to keep between the popover and the mouse position. */
+    offsetX: number;
+    /** The vertical offset spacing to keep between the popover and the mouse position. */
+    offsetY: number;
+}
+/**
+ * Calculates the positioning coordinates (x, y) for a popover window relative to the mouse.
+ *
+ * It uses a two-pass quadrant placement algorithm:
+ * - Pass 0: Tries to find a quadrant where the popover fits fully on screen without overlapping the mouse.
+ * - Pass 1: Relaxed fit; allows overlapping the mouse if the popover is too large for the available space,
+ *   clamping it strictly to remain within the parent bounds [0, parentWidth - infoWidth].
+ *
+ * Quadrants:
+ * 0: bottom-right (x + offsetX, y + offsetY)
+ * 1: top-right (x + offsetX, y - offsetY - height)
+ * 2: bottom-left (x - offsetX - width, y + offsetY)
+ * 3: top-left (x - offsetX - width, y - offsetY - height)
+ */
+export declare function calculatePopoverOffset(options: PopoverOffsetOptions): {
+    x: number;
+    y: number;
+};
 export {};

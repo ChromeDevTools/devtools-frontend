@@ -55,7 +55,7 @@ export declare class AutomaticFileSystemWorkspaceBinding {
     /**
      * @internal
      */
-    private constructor();
+    constructor(automaticFileSystemManager: AutomaticFileSystemManager, isolatedFileSystemManager: IsolatedFileSystemManager, workspace: Workspace.Workspace.WorkspaceImpl);
     /**
      * Yields the `AutomaticFileSystemWorkspaceBinding` singleton.
      *

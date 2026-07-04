@@ -10,7 +10,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
     #matches = [];
     #autofillModel = null;
     #frameManager;
-    constructor(targetManager, frameManager = SDK.FrameManager.FrameManager.instance()) {
+    constructor(targetManager, frameManager) {
         super();
         this.#frameManager = frameManager;
         targetManager.addModelListener(SDK.AutofillModel.AutofillModel, "AddressFormFilled" /* SDK.AutofillModel.Events.ADDRESS_FORM_FILLED */, this.#addressFormFilled, this, { scoped: true });

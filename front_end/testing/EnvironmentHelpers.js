@@ -73,6 +73,7 @@ export async function deinitializeGlobalVars() {
     SDK.TargetManager.TargetManager.removeInstance();
     SDK.CPUThrottlingManager.CPUThrottlingManager.removeInstance();
     SDK.FrameManager.FrameManager.removeInstance();
+    SDK.EventBreakpointsModel.EventBreakpointsManager.removeInstance();
     Common.Settings.Settings.removeInstance();
     Common.Revealer.RevealerRegistry.removeInstance();
     Common.Console.Console.removeInstance();
@@ -127,11 +128,11 @@ describeWithEnvironment.skip = function (title, fn, _opts = {
 };
 export function createFakeSetting(name, defaultValue) {
     const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
-    return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
+    return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage, Common.Console.Console.instance());
 }
 export function createFakeRegExpSetting(name, defaultValue) {
     const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
-    return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage);
+    return new Common.Settings.RegExpSetting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage, Common.Console.Console.instance());
 }
 export function setupActionRegistry() {
     beforeEach(function () {

@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
+import * as Root from '../root/root.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { TargetManager } from './TargetManager.js';
-let isolateManagerInstance;
 export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
     #isolates = new Map();
     /**
@@ -19,11 +19,12 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#targetManager = targetManager;
         this.#targetManager.observeModels(RuntimeModel, this);
     }
-    static instance({ forceNew, targetManager } = { forceNew: false }) {
-        if (!isolateManagerInstance || forceNew) {
-            isolateManagerInstance = new IsolateManager(targetManager);
+    static instance(opts = { forceNew: false }) {
+        const { forceNew, targetManager } = opts;
+        if (!Root.DevToolsContext.globalInstance().has(IsolateManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(IsolateManager, new IsolateManager(targetManager));
         }
-        return isolateManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(IsolateManager);
     }
     observeIsolates(observer) {
         if (this.#observers.has(observer)) {

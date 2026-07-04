@@ -555,6 +555,7 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
   resizeMethod;
   headerContextMenuCallback;
   rowContextMenuCallback;
+  tableContextMenuCallback;
   elementToDataGridNode;
   disclosureColumnId;
   sortColumnCell;
@@ -618,6 +619,7 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
     this.resizeMethod = "nearest";
     this.headerContextMenuCallback = null;
     this.rowContextMenuCallback = null;
+    this.tableContextMenuCallback = null;
     this.elementToDataGridNode = /* @__PURE__ */ new WeakMap();
   }
   setEditCallback(editCallback, _internalToken) {
@@ -1585,6 +1587,9 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
       this.dispatchEventToListeners("OpenedNode", gridNode);
     }
   }
+  setTableContextMenuCallback(callback) {
+    this.tableContextMenuCallback = callback;
+  }
   setHeaderContextMenuCallback(callback) {
     this.headerContextMenuCallback = callback;
   }
@@ -1596,6 +1601,9 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
       return;
     }
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    if (this.tableContextMenuCallback) {
+      this.tableContextMenuCallback(contextMenu);
+    }
     const target = event.target;
     const sortableVisibleColumns = this.visibleColumnsArray.filter((column) => {
       return column.sortable && column.title;
@@ -3748,8 +3756,74 @@ function removeNode(node) {
   }
   node.remove();
 }
+
+// gen/front_end/ui/legacy/components/data_grid/DataGridExporter.js
+var DataGridExporter_exports = {};
+__export(DataGridExporter_exports, {
+  exportToCSV: () => exportToCSV,
+  exportToMarkdown: () => exportToMarkdown
+});
+function exportToMarkdown(dataGrid) {
+  const grid = serializeGrid(dataGrid, escapeMarkdown);
+  if (grid.length === 0) {
+    return "";
+  }
+  const header = "| " + grid[0].join(" | ") + " |";
+  const separator = "| " + grid[0].map(() => "---").join(" | ") + " |";
+  const body = grid.slice(1).map((row) => "| " + row.join(" | ") + " |");
+  return [header, separator, ...body].join("\n");
+}
+function exportToCSV(dataGrid) {
+  const grid = serializeGrid(dataGrid, escapeCSV);
+  return grid.map((row) => row.join(",")).join("\n");
+}
+function serializeGrid(dataGrid, cellEscaper) {
+  const columns = dataGrid.visibleColumnsArray;
+  if (columns.length === 0) {
+    return [];
+  }
+  const rows = dataGrid.rootNode().children;
+  const result = [];
+  result.push(columns.map((col) => cellEscaper(String(col.title || ""))));
+  for (const row of rows) {
+    result.push(columns.map((col) => {
+      const cellValue = row.data[col.id];
+      const cellText = extractText(cellValue);
+      return cellEscaper(cellText);
+    }));
+  }
+  return result;
+}
+function extractText(value) {
+  if (value instanceof Node) {
+    return value.textContent || "";
+  }
+  if (value === void 0 || value === null) {
+    return "";
+  }
+  return String(value);
+}
+function escapeMarkdown(val) {
+  return val.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/([\\`*_{}[\]()#+\-.!|])/g, "\\$1").replace(/\r?\n/g, "<br>");
+}
+function escapeCSV(val) {
+  let needQuotes = false;
+  let escaped = val;
+  if (escaped.includes('"')) {
+    escaped = escaped.replace(/"/g, '""');
+    needQuotes = true;
+  }
+  if (escaped.includes(",") || escaped.includes("\n") || escaped.includes("\r")) {
+    needQuotes = true;
+  }
+  if (needQuotes) {
+    return `"${escaped}"`;
+  }
+  return escaped;
+}
 export {
   DataGrid_exports as DataGrid,
+  DataGridExporter_exports as DataGridExporter,
   ShowMoreDataGridNode_exports as ShowMoreDataGridNode,
   SortableDataGrid_exports as SortableDataGrid,
   ViewportDataGrid_exports as ViewportDataGrid,

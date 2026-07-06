@@ -4,6 +4,7 @@ import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
+import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
 export interface CreationOptions {
@@ -20,11 +21,14 @@ export declare class Universe {
     get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;
     get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager;
     get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
+    get cruxManager(): CrUXManager.CrUXManager;
     get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager;
     get isolatedFileSystemManager(): Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager;
+    get isolateManager(): SDK.IsolateManager.IsolateManager;
     get networkPersistenceManager(): Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;
     get settings(): Common.Settings.Settings;
+    get targetManager(): SDK.TargetManager.TargetManager;
 }

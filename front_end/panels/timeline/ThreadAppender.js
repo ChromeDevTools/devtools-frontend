@@ -231,7 +231,7 @@ export class ThreadAppender {
         }
         const visualLoggingName = this.#visualLoggingNameForThread();
         const group = buildTrackHeader(visualLoggingName, currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded, 
-        /* showStackContextMenu= */ true);
+        /* showStackContextMenu= */ true, this.trackName(), this.#url || undefined);
         this.#compatibilityBuilder.registerTrackForGroup(group, this);
     }
     #visualLoggingNameForThread() {

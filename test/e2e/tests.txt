@@ -197,7 +197,6 @@ sources/inline-breakpoint.test.js
 sources/inline-scripts.test.js
 sources/inline-variable.test.js
 sources/link-to-correct-source-line.test.js
-sources/live-edit-moving-breakpoint.test.js
 sources/navigator-view.test.js
 sources/overrides.test.js
 sources/pause-button.test.js

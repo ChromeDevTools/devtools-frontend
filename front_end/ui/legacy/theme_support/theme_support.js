@@ -86,7 +86,7 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     const useSystemPreferred = this.setting.get() === "systemPreferred" || isForcedColorsMode;
     this.#themeName = useSystemPreferred ? systemPreferredTheme : this.setting.get();
     document2.documentElement.classList.toggle("theme-with-dark-background", this.#themeName === "dark");
-    const useChromeTheme = Common.Settings.moduleSetting("chrome-theme-colors").get();
+    const useChromeTheme = Common.Settings.Settings.instance().moduleSetting("chrome-theme-colors").get();
     const isIncognito = Root.Runtime.hostConfig.isOffTheRecord === true;
     if (isIncognito) {
       document2.documentElement.classList.toggle("baseline-grayscale", true);
@@ -109,7 +109,7 @@ var ThemeSupport = class _ThemeSupport extends EventTarget {
     }
   }
   #fetchColorsAndApplyHostTheme(document2) {
-    const useChromeTheme = Common.Settings.moduleSetting("chrome-theme-colors").get();
+    const useChromeTheme = Common.Settings.Settings.instance().moduleSetting("chrome-theme-colors").get();
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode() || !useChromeTheme) {
       this.#applyThemeToDocument(document2);
       return;

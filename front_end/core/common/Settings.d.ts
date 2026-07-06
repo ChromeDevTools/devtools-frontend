@@ -156,7 +156,13 @@ export declare const enum SettingStorageType {
      */
     SESSION = "Session"
 }
+/**
+ * @deprecated Use `Common.Settings.Settings.instance().moduleSetting(settingName)` instead.
+ */
 export declare function moduleSetting(settingName: string): Setting<unknown>;
+/**
+ * @deprecated Use `Common.Settings.Settings.instance().settingForTest(settingName)` instead.
+ */
 export declare function settingForTest(settingName: string): Setting<unknown>;
 export { getLocalizedSettingsCategory, maybeRemoveSettingExtension, RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, SettingExtensionOption, SettingRegistration, SettingType, };
 export interface Serializer<I, O> {

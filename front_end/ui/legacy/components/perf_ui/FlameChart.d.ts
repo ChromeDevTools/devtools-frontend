@@ -445,6 +445,7 @@ export declare class FlameChart extends FlameChart_base implements NetworkTimeCa
      * Now this function is only used for tests.
      */
     setEditModeForTest(editMode: boolean): void;
+    getPopoverElementForTest(): HTMLElement;
     /**
      * Returns the visibility of a level in the.
      * flame chart.
@@ -696,7 +697,10 @@ export interface Group {
     /** Should be turned on if the track supports user editable stacks. */
     showStackContextMenu?: boolean;
     jslogContext?: string;
-    description?: string;
+    /** A full, non-truncated description of the track (e.g. full title with URL) to be shown in the tooltip on hover. */
+    fullTrackName?: string;
+    /** The raw URL of the track, if applicable, used for right-click copy actions. */
+    url?: string;
 }
 export interface GroupStyle {
     height: number;

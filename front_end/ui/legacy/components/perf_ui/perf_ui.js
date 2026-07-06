@@ -589,6 +589,7 @@ __export(FlameChart_exports, {
   sortDecorationsForRenderingOrder: () => sortDecorationsForRenderingOrder
 });
 import * as Common from "./../../../../core/common/common.js";
+import * as Host2 from "./../../../../core/host/host.js";
 import * as i18n3 from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Trace from "./../../../../models/trace/trace.js";
@@ -1036,7 +1037,15 @@ var UIStrings2 = {
   /**
    * @description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
    */
-  exitTrackConfigurationMode: "Finish configuring tracks"
+  exitTrackConfigurationMode: "Finish configuring tracks",
+  /**
+   * @description Context menu option to copy the name of the track.
+   */
+  copyTrackName: "Copy track name",
+  /**
+   * @description Context menu option to copy the URL of the track.
+   */
+  copyTrackUrl: "Copy track URL"
 };
 var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/perf_ui/FlameChart.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
@@ -1128,6 +1137,18 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
   #selectedElementOutlineEnabled = true;
   #indexToDrawOverride = /* @__PURE__ */ new Map();
   #persistedGroupConfig = null;
+  /**
+   * Caches the middle-truncated display names of track header labels to avoid recalculating
+   * truncation during draw operations. The cache is invalidated when the panel is resized,
+   * when track configuration edit mode is toggled, or when the trace data is reset.
+   *
+   * The `names` map uses the static `groupIndex` (which is invariant to track reordering)
+   * as the key, and maps it to the truncated string drawn on the canvas.
+   */
+  #urlTruncations = {
+    names: /* @__PURE__ */ new Map(),
+    lastWidth: 0
+  };
   #boundOnThemeChanged = this.#onThemeChanged.bind(this);
   constructor(dataProvider, flameChartDelegate, optionalConfig = {}) {
     super({ useShadowDom: true });
@@ -1623,8 +1644,12 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       return;
     }
     const group = data.groups.at(groupIndex);
-    if (group?.description) {
-      this.popoverElement.innerText = group?.description;
+    if (!group) {
+      return;
+    }
+    const fullTrackName = group.fullTrackName;
+    if (fullTrackName) {
+      this.popoverElement.innerText = fullTrackName;
       this.updatePopoverOffset();
     }
     this.lastPopoverState = {
@@ -2015,19 +2040,6 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     this.dataProvider.modifyTree(treeAction, index);
     this.update();
   }
-  #buildEnterEditModeContextMenu(event) {
-    if (this.#inTrackConfigEditMode) {
-      return;
-    }
-    this.contextMenu = new UI3.ContextMenu.ContextMenu(event);
-    const label = i18nString2(UIStrings2.enterTrackConfigurationMode);
-    this.contextMenu.defaultSection().appendItem(label, () => {
-      this.enterTrackConfigurationMode();
-    }, {
-      jslogContext: "track-configuration-enter"
-    });
-    void this.contextMenu.show();
-  }
   #buildExitEditModeContextMenu(event) {
     if (this.#inTrackConfigEditMode === false) {
       return;
@@ -2041,6 +2053,39 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     });
     void this.contextMenu.show();
   }
+  #buildTrackHeaderContextMenu(event, groupIndex) {
+    const data = this.timelineData();
+    if (!data) {
+      return;
+    }
+    const group = data.groups.at(groupIndex);
+    if (!group) {
+      return;
+    }
+    this.contextMenu = new UI3.ContextMenu.ContextMenu(event);
+    this.contextMenu.defaultSection().appendItem(i18nString2(UIStrings2.copyTrackName), () => {
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(group.name);
+    }, {
+      jslogContext: "timeline.copy-track-name"
+    });
+    if (group.url) {
+      this.contextMenu.defaultSection().appendItem(i18nString2(UIStrings2.copyTrackUrl), () => {
+        Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(group.url);
+      }, {
+        jslogContext: "timeline.copy-track-url"
+      });
+    }
+    if (this.#hasTrackConfigurationMode()) {
+      this.contextMenu.defaultSection().appendSeparator();
+      const label = i18nString2(UIStrings2.enterTrackConfigurationMode);
+      this.contextMenu.defaultSection().appendItem(label, () => {
+        this.enterTrackConfigurationMode();
+      }, {
+        jslogContext: "track-configuration-enter"
+      });
+    }
+    void this.contextMenu.show();
+  }
   #hasTrackConfigurationMode() {
     return Boolean(this.dataProvider.hasTrackConfigurationMode?.());
   }
@@ -2050,8 +2095,9 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       this.#buildExitEditModeContextMenu(event);
       return;
     }
-    if (hoverType === "INSIDE_TRACK_HEADER" && this.#hasTrackConfigurationMode()) {
-      this.#buildEnterEditModeContextMenu(event);
+    if (hoverType === "INSIDE_TRACK_HEADER") {
+      this.#buildTrackHeaderContextMenu(event, groupIndex);
+      return;
     }
     const isFakedFromKeyboardPress = event.detail === KEYBOARD_FAKED_CONTEXT_MENU_DETAIL;
     const entryIndexToUse = isFakedFromKeyboardPress ? this.selectedEntryIndex : this.highlightedEntryIndex;
@@ -2636,6 +2682,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     if (!this.#hasTrackConfigurationMode()) {
       return;
     }
+    this.#urlTruncations.names.clear();
     const div = document.createElement("div");
     div.classList.add("flame-chart-edit-confirm");
     const button = new Buttons.Button.Button();
@@ -2662,6 +2709,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     }
   }
   #exitEditMode() {
+    this.#urlTruncations.names.clear();
     this.#removeEditModeButton();
     this.#inTrackConfigEditMode = false;
     this.dispatchEventToListeners("TracksReorderStateChange", false);
@@ -3040,6 +3088,10 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     if (!this.rawTimelineData) {
       return;
     }
+    if (width !== this.#urlTruncations.lastWidth) {
+      this.#urlTruncations.names.clear();
+      this.#urlTruncations.lastWidth = width;
+    }
     const groups = this.rawTimelineData.groups || [];
     if (!groups.length) {
       return;
@@ -3106,17 +3158,27 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
         context.fillRect(iconsWidth + HEADER_LEFT_PADDING, offset + HEADER_LABEL_Y_PADDING, labelBackgroundWidth, group.style.height - 2 * HEADER_LABEL_Y_PADDING);
       }
       context.fillStyle = this.#inTrackConfigEditMode && group.hidden ? ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-token-subtle", this.contentElement) : group.style.color;
-      const titleStart = iconsWidth + EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING;
+      const nestingLevel = group.style.nestingLevel || 0;
+      const titleStart = iconsWidth + EXPANSION_ARROW_INDENT * (nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING;
       const y = offset + group.style.height - this.textBaseline;
-      context.fillText(group.name, titleStart, y);
+      let displayName = this.#urlTruncations.names.get(groupIndex);
+      if (displayName === void 0) {
+        displayName = group.name;
+        const maxTextWidth = (width - titleStart - HEADER_LABEL_X_PADDING) * 0.85;
+        if (context.measureText(displayName).width > maxTextWidth) {
+          displayName = UI3.UIUtils.trimTextMiddle(context, displayName, maxTextWidth);
+        }
+        this.#urlTruncations.names.set(groupIndex, displayName);
+      }
+      context.fillText(displayName, titleStart, y);
       if (group.subtitle) {
-        const titleMetrics = context.measureText(group.name);
+        const titleMetrics = context.measureText(displayName);
         context.font = this.#subtitleFont;
         context.fillText(group.subtitle, titleStart + titleMetrics.width + PADDING_BETWEEN_TITLE_AND_SUBTITLE, y - 1);
         context.font = this.#font;
       }
       if (this.#inTrackConfigEditMode && group.hidden) {
-        context.fillRect(titleStart, offset + group.style.height / 2, UI3.UIUtils.measureTextWidth(context, group.name), 1);
+        context.fillRect(titleStart, offset + group.style.height / 2, UI3.UIUtils.measureTextWidth(context, displayName), 1);
       }
       if (trackConfigurationAllowed) {
         if (this.#inTrackConfigEditMode) {
@@ -3579,6 +3641,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     this.viewportElement.appendChild(element);
   }
   processTimelineData(timelineData) {
+    this.#urlTruncations.names.clear();
     if (!timelineData) {
       this.timelineLevels = null;
       this.visibleLevelOffsets = null;
@@ -4024,6 +4087,9 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
   setEditModeForTest(editMode) {
     this.#inTrackConfigEditMode = editMode;
   }
+  getPopoverElementForTest() {
+    return this.popoverElement;
+  }
   /**
    * Returns the visibility of a level in the.
    * flame chart.
@@ -4094,6 +4160,8 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
       this.#removeEditModeButton();
       this.#inTrackConfigEditMode = false;
     }
+    this.#urlTruncations.names.clear();
+    this.#urlTruncations.lastWidth = 0;
     this.chartViewport.reset();
     this.rawTimelineData = null;
     this.rawTimelineDataLength = 0;
@@ -4709,7 +4777,7 @@ __export(FilmStripView_exports, {
   FilmStripView: () => FilmStripView
 });
 import * as Common3 from "./../../../../core/common/common.js";
-import * as Host2 from "./../../../../core/host/host.js";
+import * as Host3 from "./../../../../core/host/host.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Trace2 from "./../../../../models/trace/trace.js";
 import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
@@ -4982,14 +5050,14 @@ var Dialog2 = class _Dialog {
     const keyboardEvent = event;
     switch (keyboardEvent.key) {
       case "ArrowLeft":
-        if (Host2.Platform.isMac() && keyboardEvent.metaKey) {
+        if (Host3.Platform.isMac() && keyboardEvent.metaKey) {
           this.onFirstFrame();
         } else {
           this.onPrevFrame();
         }
         break;
       case "ArrowRight":
-        if (Host2.Platform.isMac() && keyboardEvent.metaKey) {
+        if (Host3.Platform.isMac() && keyboardEvent.metaKey) {
           this.onLastFrame();
         } else {
           this.onNextFrame();

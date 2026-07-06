@@ -51,7 +51,7 @@ function buildGroupStyle(extra) {
   };
   return Object.assign(defaultGroupStyle, extra);
 }
-function buildTrackHeader(jslogContext, startLevel, name, style, selectable, expanded, showStackContextMenu) {
+function buildTrackHeader(jslogContext, startLevel, name, style, selectable, expanded, showStackContextMenu, fullTrackName, url) {
   const group = {
     startLevel,
     name,
@@ -62,6 +62,12 @@ function buildTrackHeader(jslogContext, startLevel, name, style, selectable, exp
   };
   if (jslogContext !== null) {
     group.jslogContext = jslogContext;
+  }
+  if (fullTrackName !== void 0) {
+    group.fullTrackName = fullTrackName;
+  }
+  if (url !== void 0) {
+    group.url = url;
   }
   return group;
 }
@@ -1845,7 +1851,9 @@ var ThreadAppender = class {
       true,
       this.#expanded,
       /* showStackContextMenu= */
-      true
+      true,
+      this.trackName(),
+      this.#url || void 0
     );
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
@@ -7280,7 +7288,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
   }
   #setupNavigationSetting() {
-    const currentNavSetting = Common10.Settings.moduleSetting("flamechart-selected-navigation").get();
+    const currentNavSetting = Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get();
     const hideTheDialogForTests = localStorage.getItem("hide-shortcuts-dialog-for-test");
     const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
     this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
@@ -7301,14 +7309,14 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         /* isNavClassic */
         false
       ) };
-      Common10.Settings.moduleSetting("flamechart-selected-navigation").set("modern");
+      Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").set("modern");
     });
     this.#classicNavRadioButton.radio.addEventListener("change", () => {
       this.#shortcutsDialog.data = { shortcuts: this.#getShortcutsInfo(
         /* isNavClassic */
         true
       ) };
-      Common10.Settings.moduleSetting("flamechart-selected-navigation").set("classic");
+      Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").set("classic");
     });
     this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton.label);
     this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton.label);
@@ -7316,7 +7324,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     return this.#navigationRadioButtons;
   }
   #updateNavigationSettingSelection() {
-    const currentNavSetting = Common10.Settings.moduleSetting("flamechart-selected-navigation").get();
+    const currentNavSetting = Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get();
     if (currentNavSetting === "classic") {
       this.#classicNavRadioButton.radio.checked = true;
       Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
@@ -8189,7 +8197,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     }
     if (this.#traceEngineModel.size() === 1) {
       this.#setupNavigationSetting();
-      if (Common10.Settings.moduleSetting("flamechart-selected-navigation").get() === "classic") {
+      if (Common10.Settings.Settings.instance().moduleSetting("flamechart-selected-navigation").get() === "classic") {
         Host2.userMetrics.navigationSettingAtFirstTimelineLoad(
           0
           /* Host.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE */
@@ -15518,7 +15526,8 @@ var timelineFlameChartView_css_default = `/*
   pointer-events: none;
   padding: var(--sys-size-3) var(--sys-size-4);
   border-radius: var(--sys-shape-corner-extra-small);
-  white-space: nowrap;
+  white-space: pre-wrap;
+  word-break: break-all;
   max-width: 80%;
   box-shadow: var(--sys-elevation-level2);
 }

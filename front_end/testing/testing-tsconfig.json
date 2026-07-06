@@ -140,6 +140,9 @@
       "path": "../models/cpu_profile/bundle-tsconfig.json"
     },
     {
+      "path": "../models/crux-manager/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/extensions/bundle-tsconfig.json"
     },
     {

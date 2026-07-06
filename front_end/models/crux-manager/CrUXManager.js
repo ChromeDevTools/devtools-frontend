@@ -18,7 +18,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // b/349721878
 const CRUX_API_KEY = 'AIzaSyCCSOx25vrb5z0tbedCB3_JRzzbVW6Uwgw';
 const DEFAULT_ENDPOINT = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${CRUX_API_KEY}`;
-let cruxManagerInstance;
 /** TODO: Potentially support `TABLET`. Tablet field data will always be `null` until then. **/
 export const DEVICE_SCOPE_LIST = ['ALL', 'DESKTOP', 'PHONE'];
 const pageScopeList = ['origin', 'url'];
@@ -41,10 +40,12 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
     #configSetting;
     #endpoint = DEFAULT_ENDPOINT;
     #pageResult;
+    #targetManager;
     fieldDeviceOption = 'AUTO';
     fieldPageScope = 'url';
-    constructor() {
+    constructor(targetManager, settings) {
         super();
+        this.#targetManager = targetManager;
         /**
          * In an incognito or guest window - which is called an "OffTheRecord"
          * profile in Chromium -, we do not want to persist the user consent and
@@ -58,18 +59,21 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
          */
         const useSessionStorage = Root.Runtime.hostConfig.isOffTheRecord === true;
         const storageTypeForConsent = useSessionStorage ? "Session" /* Common.Settings.SettingStorageType.SESSION */ : "Global" /* Common.Settings.SettingStorageType.GLOBAL */;
-        this.#configSetting = Common.Settings.Settings.instance().createSetting('field-data', { enabled: false, override: '', originMappings: [], overrideEnabled: false }, storageTypeForConsent);
+        this.#configSetting = settings.createSetting('field-data', { enabled: false, override: '', originMappings: [], overrideEnabled: false }, storageTypeForConsent);
         this.#configSetting.addChangeListener(() => {
             void this.refresh();
         });
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
+        this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this.#onFrameNavigated, this);
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
-        if (!cruxManagerInstance || forceNew) {
-            cruxManagerInstance = new CrUXManager();
+        if (!Root.DevToolsContext.globalInstance().has(CrUXManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(CrUXManager, new CrUXManager(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
         }
-        return cruxManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(CrUXManager);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(CrUXManager);
     }
     /** The most recent page result from the CrUX service. */
     get pageResult() {
@@ -154,7 +158,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
         return result;
     }
     async #getInspectedURL() {
-        const targetManager = SDK.TargetManager.TargetManager.instance();
+        const targetManager = this.#targetManager;
         let inspectedURL = targetManager.inspectedURL();
         if (!inspectedURL) {
             inspectedURL = await new Promise(resolve => {

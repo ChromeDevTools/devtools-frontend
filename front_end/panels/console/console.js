@@ -4333,7 +4333,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   }
   #getConsoleInsightsEnabledSetting() {
     try {
-      return Common4.Settings.moduleSetting("console-insights-enabled");
+      return Common4.Settings.Settings.instance().moduleSetting("console-insights-enabled");
     } catch {
       return;
     }

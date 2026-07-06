@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 export type StandardMetricNames = 'cumulative_layout_shift' | 'first_contentful_paint' | 'first_input_delay' | 'interaction_to_next_paint' | 'largest_contentful_paint' | 'experimental_time_to_first_byte' | 'round_trip_time' | 'largest_contentful_paint_image_time_to_first_byte' | 'largest_contentful_paint_image_resource_load_delay' | 'largest_contentful_paint_image_resource_load_duration' | 'largest_contentful_paint_image_element_render_delay';
 export type MetricNames = StandardMetricNames | 'form_factors';
 export type FormFactor = 'DESKTOP' | 'PHONE' | 'TABLET';
@@ -76,10 +77,11 @@ export declare class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<Even
     #private;
     fieldDeviceOption: DeviceOption;
     fieldPageScope: PageScope;
-    private constructor();
+    constructor(targetManager: SDK.TargetManager.TargetManager, settings: Common.Settings.Settings);
     static instance(opts?: {
         forceNew: boolean | null;
     }): CrUXManager;
+    static removeInstance(): void;
     /** The most recent page result from the CrUX service. */
     get pageResult(): PageResult | undefined;
     getConfigSetting(): Common.Settings.Setting<ConfigSetting>;

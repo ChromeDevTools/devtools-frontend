@@ -105,7 +105,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-    void Common.Revealer.reveal(Common.Settings.moduleSetting('receive-gdp-badges'));
+    void Common.Revealer.reveal(Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges'));
 }
 export class BadgeNotification extends UI.Widget.Widget {
     jslogContext = '';

@@ -315,7 +315,7 @@ function getRegisteredActionExtensions() {
   return Array.from(registeredActions.values()).filter((action6) => {
     const settingName = action6.setting();
     try {
-      if (settingName && !Common2.Settings.moduleSetting(settingName).get()) {
+      if (settingName && !Common2.Settings.Settings.instance().moduleSetting(settingName).get()) {
         return false;
       }
     } catch (err) {
@@ -8494,7 +8494,7 @@ var InspectorView = class _InspectorView extends VBox {
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(event) || event.altKey || event.shiftKey) {
       return;
     }
-    const panelShortcutEnabled = Common11.Settings.moduleSetting("shortcut-panel-switch").get();
+    const panelShortcutEnabled = Common11.Settings.Settings.instance().moduleSetting("shortcut-panel-switch").get();
     if (panelShortcutEnabled) {
       let panelIndex = -1;
       if (event.keyCode > 48 && event.keyCode < 58) {

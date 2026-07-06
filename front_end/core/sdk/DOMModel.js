@@ -4,13 +4,11 @@
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import { CSSModel } from './CSSModel.js';
-import { FrameManager } from './FrameManager.js';
 import { OverlayModel } from './OverlayModel.js';
 import { RemoteObject } from './RemoteObject.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './ResourceTreeModel.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
-import { TargetManager } from './TargetManager.js';
 /** Keep this list in sync with https://w3c.github.io/aria/#state_prop_def **/
 export const ARIA_ATTRIBUTES = new Set([
     'role',
@@ -80,6 +78,7 @@ export var DOMNodeEvents;
 })(DOMNodeEvents || (DOMNodeEvents = {}));
 export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     #domModel;
+    #frameManager;
     #agent;
     ownerDocument;
     #isInShadowTree;
@@ -144,6 +143,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     constructor(domModel) {
         super();
         this.#domModel = domModel;
+        this.#frameManager = domModel.target().targetManager().getFrameManager();
         this.#agent = this.#domModel.getAgent();
     }
     static create(domModel, doc, isInShadowTree, payload, retainedNodes) {
@@ -245,7 +245,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     async requestChildDocument(frameId, notInTarget) {
-        const frame = await FrameManager.instance().getOrWaitForFrame(frameId, notInTarget);
+        const frame = await this.#frameManager.getOrWaitForFrame(frameId, notInTarget);
         const childModel = frame.resourceTreeModel()?.target().model(DOMModel);
         return await (childModel?.requestDocument() || null);
     }
@@ -268,7 +268,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         if (!this.isIframe() || !this.#frameOwnerFrameId) {
             return undefined;
         }
-        const frame = FrameManager.instance().getFrame(this.#frameOwnerFrameId);
+        const frame = this.#frameManager.getFrame(this.#frameOwnerFrameId);
         if (frame && frame.adFrameType() !== "none" /* Protocol.Page.AdFrameType.None */) {
             // The frame is ad-related, but provenance information is unavailable.
             return {};
@@ -1232,7 +1232,7 @@ export class DOMModel extends SDKModel {
     overlayModel() {
         return this.target().model(OverlayModel);
     }
-    static cancelSearch(targetManager = TargetManager.instance()) {
+    static cancelSearch(targetManager) {
         for (const domModel of targetManager.models(DOMModel)) {
             domModel.cancelSearch();
         }

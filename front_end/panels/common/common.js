@@ -2541,7 +2541,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   `, target);
 };
 function revealBadgeSettings() {
-  void Common5.Revealer.reveal(Common5.Settings.moduleSetting("receive-gdp-badges"));
+  void Common5.Revealer.reveal(Common5.Settings.Settings.instance().moduleSetting("receive-gdp-badges"));
 }
 var BadgeNotification = class extends UI9.Widget.Widget {
   jslogContext = "";

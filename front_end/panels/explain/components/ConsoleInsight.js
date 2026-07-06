@@ -698,7 +698,7 @@ export class ConsoleInsight extends UI.Widget.Widget {
     // on -> entrypoints are shown, and console insights can be generated
     #getConsoleInsightsEnabledSetting() {
         try {
-            return Common.Settings.moduleSetting('console-insights-enabled');
+            return Common.Settings.Settings.instance().moduleSetting('console-insights-enabled');
         }
         catch {
             return;

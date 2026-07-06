@@ -14,6 +14,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
     #clientData = new Map();
     #sourceMaps = new Map();
     #attachingClient = null;
+    #sourceMapCache = SourceMapCache.create();
     constructor(target, factory) {
         super();
         this.#target = target;
@@ -95,7 +96,7 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
                     //     SourceMapManager in their respective constructors.
                     const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
                     clientData.sourceMapPromise =
-                        loadSourceMap(resourceLoader, sourceMapURL, client.debugId(), initiator)
+                        loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator)
                             .then(payload => {
                             const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
                             if (this.#clientData.get(client) === clientData) {
@@ -160,12 +161,12 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
         return Promise.all(this.#sourceMaps.keys().map(sourceMap => sourceMap.waitForScopeInfo()));
     }
 }
-async function loadSourceMap(resourceLoader, url, debugId, initiator) {
+async function loadSourceMap(resourceLoader, sourceMapCache, url, debugId, initiator) {
     try {
         if (debugId) {
             const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
                 Platform.DevToolsPath.EmptyUrlString;
-            const cachedSourceMap = await SourceMapCache.instance().get(debugId, securityOrigin);
+            const cachedSourceMap = await sourceMapCache.get(debugId, securityOrigin);
             if (cachedSourceMap) {
                 return cachedSourceMap;
             }
@@ -176,7 +177,7 @@ async function loadSourceMap(resourceLoader, url, debugId, initiator) {
             // In case something goes wrong with updating the cache, we still want to use the source map.
             const securityOrigin = initiator.initiatorUrl ? Common.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) :
                 Platform.DevToolsPath.EmptyUrlString;
-            await SourceMapCache.instance().set(sourceMap.debugId, securityOrigin, sourceMap).catch();
+            await sourceMapCache.set(sourceMap.debugId, securityOrigin, sourceMap).catch();
         }
         return sourceMap;
     }
@@ -186,7 +187,7 @@ async function loadSourceMap(resourceLoader, url, debugId, initiator) {
 }
 export async function tryLoadSourceMap(resourceLoader, url, initiator) {
     try {
-        return await loadSourceMap(resourceLoader, url, null, initiator);
+        return await loadSourceMap(resourceLoader, SourceMapCache.create(), url, null, initiator);
     }
     catch (cause) {
         console.error(cause);

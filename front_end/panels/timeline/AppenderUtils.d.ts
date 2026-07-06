@@ -21,11 +21,12 @@ export declare function buildGroupStyle(extra?: Partial<PerfUI.FlameChart.GroupS
  * @param style the GroupStyle for the track header.
  * @param selectable if the track is selectable.
  * @param expanded if the track is expanded.
- * @param track this is set only when `selectable` is true, and it is used for selecting a track in the details panel.
  * @param showStackContextMenu whether menu with options to merge/collapse entries in track is shown.
+ * @param fullTrackName a full, non-truncated description of the track to be shown in the tooltip on hover.
+ * @param url the raw URL of the track, if applicable, used for right-click copy actions.
  * @returns the group that built from the give data
  */
-export declare function buildTrackHeader(jslogContext: VisualLoggingTrackName | null, startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean, showStackContextMenu?: boolean): PerfUI.FlameChart.Group;
+export declare function buildTrackHeader(jslogContext: VisualLoggingTrackName | null, startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean, showStackContextMenu?: boolean, fullTrackName?: string, url?: string): PerfUI.FlameChart.Group;
 /**
  * Returns the time info shown when an event is hovered in the timeline.
  * @param totalTime the total time of the hovered event.

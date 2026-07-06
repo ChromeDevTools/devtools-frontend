@@ -8234,7 +8234,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
   }
   #getAiAssistanceEnabledSetting() {
     try {
-      return Common7.Settings.moduleSetting("ai-assistance-enabled");
+      return Common7.Settings.Settings.instance().moduleSetting("ai-assistance-enabled");
     } catch {
       return;
     }

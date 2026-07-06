@@ -43,11 +43,12 @@ export function buildGroupStyle(extra) {
  * @param style the GroupStyle for the track header.
  * @param selectable if the track is selectable.
  * @param expanded if the track is expanded.
- * @param track this is set only when `selectable` is true, and it is used for selecting a track in the details panel.
  * @param showStackContextMenu whether menu with options to merge/collapse entries in track is shown.
+ * @param fullTrackName a full, non-truncated description of the track to be shown in the tooltip on hover.
+ * @param url the raw URL of the track, if applicable, used for right-click copy actions.
  * @returns the group that built from the give data
  */
-export function buildTrackHeader(jslogContext, startLevel, name, style, selectable, expanded, showStackContextMenu) {
+export function buildTrackHeader(jslogContext, startLevel, name, style, selectable, expanded, showStackContextMenu, fullTrackName, url) {
     const group = {
         startLevel,
         name: name,
@@ -58,6 +59,12 @@ export function buildTrackHeader(jslogContext, startLevel, name, style, selectab
     };
     if (jslogContext !== null) {
         group.jslogContext = jslogContext;
+    }
+    if (fullTrackName !== undefined) {
+        group.fullTrackName = fullTrackName;
+    }
+    if (url !== undefined) {
+        group.url = url;
     }
     return group;
 }

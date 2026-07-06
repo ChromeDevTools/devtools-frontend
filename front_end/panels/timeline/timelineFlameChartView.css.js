@@ -151,7 +151,8 @@ export default `/*
   pointer-events: none;
   padding: var(--sys-size-3) var(--sys-size-4);
   border-radius: var(--sys-shape-corner-extra-small);
-  white-space: nowrap;
+  white-space: pre-wrap;
+  word-break: break-all;
   max-width: 80%;
   box-shadow: var(--sys-elevation-level2);
 }

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-let fileManagerInstance;
+import * as Root from '../../core/root/root.js';
 export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
     #saveCallbacks = new Map();
     constructor() {
@@ -14,10 +14,13 @@ export class FileManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
-        if (!fileManagerInstance || forceNew) {
-            fileManagerInstance = new FileManager();
+        if (!Root.DevToolsContext.globalInstance().has(FileManager) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(FileManager, new FileManager());
         }
-        return fileManagerInstance;
+        return Root.DevToolsContext.globalInstance().get(FileManager);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(FileManager);
     }
     /**
      * {@link FileManager.close | close} *must* be called, for the InspectorFrontendHostStub case, to complete the saving.

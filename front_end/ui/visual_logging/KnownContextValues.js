@@ -1255,6 +1255,7 @@ export const knownContextValues = new Set([
     'custom',
     'custom-accepted-encodings',
     'custom-color-palette',
+    'custom-element',
     'custom-emulated-device-list',
     'custom-formatters',
     'custom-header-for-test',

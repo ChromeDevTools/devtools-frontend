@@ -72,6 +72,9 @@
       "path": "../models/crux-manager/bundle-tsconfig.json"
     },
     {
+      "path": "../models/emulation/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/javascript_metadata/bundle-tsconfig.json"
     },
     {

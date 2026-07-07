@@ -52,4 +52,7 @@ export function fontFamily() {
     }
     return _fontFamily;
 }
+export function setFontFamilyForTests(family) {
+    _fontFamily = family;
+}
 //# sourceMappingURL=Platform.js.map

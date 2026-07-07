@@ -5,6 +5,7 @@ export var RegisteredAdorners;
 (function (RegisteredAdorners) {
     RegisteredAdorners["AD"] = "ad";
     RegisteredAdorners["CONTAINER"] = "container";
+    RegisteredAdorners["CUSTOM_ELEMENT"] = "custom-element";
     RegisteredAdorners["FLEX"] = "flex";
     RegisteredAdorners["GRID"] = "grid";
     RegisteredAdorners["GRID_LANES"] = "grid-lanes";

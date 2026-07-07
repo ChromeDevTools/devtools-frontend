@@ -8,3 +8,4 @@ export declare function isWin(): boolean;
  **/
 export declare function setPlatformForTests(platform: string): void;
 export declare function fontFamily(): string;
+export declare function setFontFamilyForTests(family: string): void;

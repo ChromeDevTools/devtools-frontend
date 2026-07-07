@@ -114,10 +114,10 @@ const CONNECTION_TYPES = new Map([
  * to in multiple places, and this ensures we don't have accidental typos which
  * mean extra settings get mistakenly created.
  */
-export function customUserNetworkConditionsSetting(settings = Common.Settings.Settings.instance()) {
+export function customUserNetworkConditionsSetting(settings) {
     return settings.moduleSetting('custom-network-conditions');
 }
-export function activeNetworkThrottlingKeySetting(settings = Common.Settings.Settings.instance()) {
+export function activeNetworkThrottlingKeySetting(settings) {
     return settings.createSetting('active-network-condition-key', "NO_THROTTLING" /* PredefinedThrottlingConditionKey.NO_THROTTLING */);
 }
 export class NetworkManager extends SDKModel {
@@ -470,9 +470,11 @@ const MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH = 250 * 1024 * 1024; // bytes
 export class FetchDispatcher {
     #fetchAgent;
     #manager;
+    #multitargetNetworkManager;
     constructor(agent, manager) {
         this.#fetchAgent = agent;
         this.#manager = manager;
+        this.#multitargetNetworkManager = this.#manager.target().targetManager().getNetworkManager();
     }
     requestPaused({ requestId, request, resourceType, responseStatusCode, responseHeaders, networkId }) {
         const networkRequest = networkId ? this.#manager.requestForId(networkId) : null;
@@ -481,13 +483,14 @@ export class FetchDispatcher {
         if (networkRequest?.originalResponseHeaders.length === 0 && responseHeaders) {
             networkRequest.originalResponseHeaders = responseHeaders;
         }
-        void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
+        void this.#multitargetNetworkManager.requestIntercepted(new InterceptedRequest(this.#multitargetNetworkManager, this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
     }
     authRequired({}) {
     }
 }
 export class NetworkDispatcher {
     #manager;
+    #multitargetNetworkManager;
     #requestsById = new Map();
     #requestsByURL = new Map();
     #requestsByLoaderId = new Map();
@@ -503,7 +506,8 @@ export class NetworkDispatcher {
     #requestIdToTrustTokenEvent = new Map();
     constructor(manager) {
         this.#manager = manager;
-        MultitargetNetworkManager.instance().addEventListener("RequestIntercepted" /* MultitargetNetworkManager.Events.REQUEST_INTERCEPTED */, this.#markAsIntercepted.bind(this));
+        this.#multitargetNetworkManager = this.#manager.target().targetManager().getNetworkManager();
+        this.#multitargetNetworkManager.addEventListener("RequestIntercepted" /* MultitargetNetworkManager.Events.REQUEST_INTERCEPTED */, this.#markAsIntercepted.bind(this));
     }
     #markAsIntercepted(event) {
         const request = this.requestForId(event.data);
@@ -938,7 +942,7 @@ export class NetworkDispatcher {
         return newNetworkRequest;
     }
     maybeAdoptMainResourceRequest(requestId) {
-        const request = MultitargetNetworkManager.instance().inflightMainResourceRequests.get(requestId);
+        const request = this.#multitargetNetworkManager.inflightMainResourceRequests.get(requestId);
         if (!request) {
             return null;
         }
@@ -975,7 +979,7 @@ export class NetworkDispatcher {
         // request to fetch the main worker script, the request ID is the future
         // worker target ID and, therefore, it is unique.
         if (networkRequest.loaderId === networkRequest.requestId() || networkRequest.loaderId === '') {
-            MultitargetNetworkManager.instance().inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
+            this.#multitargetNetworkManager.inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
         }
         this.#manager.dispatchEventToListeners(Events.RequestStarted, { request: networkRequest, originalRequest });
     }
@@ -997,7 +1001,7 @@ export class NetworkDispatcher {
             }
         }
         this.#manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
-        MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
+        this.#multitargetNetworkManager.inflightMainResourceRequests.delete(networkRequest.requestId());
         const settings = this.#manager.target().targetManager().settings;
         if (settings.moduleSetting('monitoring-xhr-enabled').get() &&
             networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {
@@ -1927,6 +1931,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     }
 }
 export class InterceptedRequest {
+    #multitargetNetworkManager;
     #fetchAgent;
     #hasResponded = false;
     request;
@@ -1935,7 +1940,8 @@ export class InterceptedRequest {
     responseHeaders;
     requestId;
     networkRequest;
-    constructor(fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders) {
+    constructor(multitargetNetworkManager, fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders) {
+        this.#multitargetNetworkManager = multitargetNetworkManager;
         this.#fetchAgent = fetchAgent;
         this.request = request;
         this.resourceType = resourceType;
@@ -2018,7 +2024,7 @@ export class InterceptedRequest {
             this.networkRequest.hasOverriddenContent = isBodyOverridden;
         }
         void this.#fetchAgent.invoke_fulfillRequest({ requestId: this.requestId, responseCode, body, responseHeaders });
-        MultitargetNetworkManager.instance().dispatchEventToListeners("RequestFulfilled" /* MultitargetNetworkManager.Events.REQUEST_FULFILLED */, this.request.url);
+        this.#multitargetNetworkManager.dispatchEventToListeners("RequestFulfilled" /* MultitargetNetworkManager.Events.REQUEST_FULFILLED */, this.request.url);
     }
     continueRequestWithoutChange() {
         console.assert(!this.#hasResponded);

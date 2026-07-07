@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { CSSModel } from './CSSModel.js';
-import { MultitargetNetworkManager } from './NetworkManager.js';
 import { OverlayModel } from './OverlayModel.js';
 import { SDKModel } from './SDKModel.js';
 export class EmulationModel extends SDKModel {
+    #multitargetNetworkManager;
     #emulationAgent;
     #deviceOrientationAgent;
     #cssModel;
@@ -21,6 +21,7 @@ export class EmulationModel extends SDKModel {
     #lockedOrientation;
     constructor(target) {
         super(target);
+        this.#multitargetNetworkManager = target.targetManager().getNetworkManager();
         this.#emulationAgent = target.emulationAgent();
         this.#deviceOrientationAgent = target.deviceOrientationAgent();
         this.#screenOrientationLocked = false;
@@ -222,7 +223,7 @@ export class EmulationModel extends SDKModel {
                 this.#emulationAgent.invoke_clearGeolocationOverride(),
                 this.#emulationAgent.invoke_setTimezoneOverride({ timezoneId: '' }),
                 this.#emulationAgent.invoke_setLocaleOverride({ locale: '' }),
-                this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: MultitargetNetworkManager.instance().currentUserAgent() }),
+                this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: this.#multitargetNetworkManager.currentUserAgent() }),
             ]);
         }
         else if (location.unavailable) {
@@ -230,7 +231,7 @@ export class EmulationModel extends SDKModel {
                 this.#emulationAgent.invoke_setGeolocationOverride({}),
                 this.#emulationAgent.invoke_setTimezoneOverride({ timezoneId: '' }),
                 this.#emulationAgent.invoke_setLocaleOverride({ locale: '' }),
-                this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: MultitargetNetworkManager.instance().currentUserAgent() }),
+                this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: this.#multitargetNetworkManager.currentUserAgent() }),
             ]);
         }
         else {
@@ -264,7 +265,7 @@ export class EmulationModel extends SDKModel {
                     .then(result => processEmulationResult('emulation-set-locale', result)),
                 this.#emulationAgent
                     .invoke_setUserAgentOverride({
-                    userAgent: MultitargetNetworkManager.instance().currentUserAgent(),
+                    userAgent: this.#multitargetNetworkManager.currentUserAgent(),
                     acceptLanguage: location.locale,
                 })
                     .then(result => processEmulationResult('emulation-set-user-agent', result)),

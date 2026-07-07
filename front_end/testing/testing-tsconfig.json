@@ -203,6 +203,9 @@
       "path": "../services/trace_bounds/bundle-tsconfig.json"
     },
     {
+      "path": "../third_party/chromium/ahem/ahem-tsconfig.json"
+    },
+    {
       "path": "../third_party/codemirror.next/bundle-tsconfig.json"
     },
     {

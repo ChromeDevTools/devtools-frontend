@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 import { CSSModel } from './CSSModel.js';
 import { OverlayModel } from './OverlayModel.js';
 import { RemoteObject } from './RemoteObject.js';
@@ -834,6 +835,26 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     isXMLNode() {
         return Boolean(this.#xmlVersion);
     }
+    isCustomElement() {
+        if (this.nodeType() !== Node.ELEMENT_NODE || this.isXMLNode()) {
+            return false;
+        }
+        const localName = this.localName() || this.nodeName().toLowerCase();
+        if (localName.includes('-')) {
+            const builtInExclusionList = [
+                'annotation-xml',
+                'color-profile',
+                'font-face',
+                'font-face-src',
+                'font-face-uri',
+                'font-face-format',
+                'font-face-name',
+                'missing-glyph',
+            ];
+            return !builtInExclusionList.includes(localName);
+        }
+        return this.getAttribute('is') !== undefined;
+    }
     setMarker(name, value) {
         if (value === null) {
             if (!this.#markers.has(name)) {
@@ -1427,7 +1448,7 @@ export class DOMModel extends SDKModel {
         else {
             this.#document = null;
         }
-        DOMModelUndoStack.instance().dispose(this);
+        this.#undoStack().dispose(this);
         if (!this.parentModel()) {
             this.dispatchEventToListeners(Events.DocumentUpdated, this);
         }
@@ -1724,7 +1745,7 @@ export class DOMModel extends SDKModel {
         return this.agent.invoke_getElementByRelation({ nodeId, relation }).then(({ nodeId }) => nodeId);
     }
     markUndoableState(minorChange) {
-        void DOMModelUndoStack.instance().markUndoableState(this, minorChange || false);
+        void this.#undoStack().markUndoableState(this, minorChange || false);
     }
     async nodeForLocation(x, y, includeUserAgentShadowDOM) {
         const response = await this.agent.invoke_getNodeForLocation({ x, y, includeUserAgentShadowDOM });
@@ -1751,7 +1772,15 @@ export class DOMModel extends SDKModel {
     }
     dispose() {
         this.#resourceTreeModel?.removeEventListener(ResourceTreeModelEvents.DocumentOpened, this.onDocumentOpened, this);
-        DOMModelUndoStack.instance().dispose(this);
+        this.#undoStack().dispose(this);
+    }
+    // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+    #undoStack() {
+        const context = this.target().targetManager().context;
+        if ('has' in context && typeof context.has === 'function' && context.has(DOMModelUndoStack)) {
+            return context.get(DOMModelUndoStack);
+        }
+        return DOMModelUndoStack.instance();
     }
     parentModel() {
         const parentTarget = this.target().parentTarget();
@@ -1850,7 +1879,6 @@ class DOMDispatcher {
         this.#domModel.adRelatedStateUpdated(nodeId, adProvenance);
     }
 }
-let domModelUndoStackInstance = null;
 export class DOMModelUndoStack {
     #stack;
     #index;
@@ -1862,10 +1890,10 @@ export class DOMModelUndoStack {
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
-        if (!domModelUndoStackInstance || forceNew) {
-            domModelUndoStackInstance = new DOMModelUndoStack();
+        if (!Root.DevToolsContext.globalInstance().has(DOMModelUndoStack) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(DOMModelUndoStack, new DOMModelUndoStack());
         }
-        return domModelUndoStackInstance;
+        return Root.DevToolsContext.globalInstance().get(DOMModelUndoStack);
     }
     async markUndoableState(model, minorChange) {
         // Both minor and major changes get into the #stack, but minor updates are coalesced.

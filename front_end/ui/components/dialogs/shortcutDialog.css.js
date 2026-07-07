@@ -18,28 +18,28 @@ export default `/*
 }
 
 .keybinds-list-item {
-  display: block;
-  min-width: 315px;
-  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* Default to 315px min-width on desktop, but on narrow viewports shrink to fit
+   * within --dialog-max-width minus var(--sys-size-13) (16px left + 16px right dialog padding). */
+  min-width: min(315px, calc(var(--dialog-max-width, 1000px) - var(--sys-size-13)));
+  gap: var(--sys-size-4);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: var(--sys-size-4) 0;
-  position: relative;
-
 
   &:last-of-type {
     border-bottom: unset;
   }
 
   .keybinds-list-title {
-    /* Put the list title absolute so it is out the flow, this enables the
-     * shortcuts to sit on the same row as the title */
-    position: absolute;
-    top: var(--sys-size-4);
-    left: 0;
-    /* Put the text vertically central so it aligns with the shortcuts shown  */
     display: flex;
     align-items: center;
-    height: var(--sys-size-11); /* IMPORTANT: this has to be the same height as .keybinds-key to maintain text alignment */
+    min-height: var(--sys-size-11); /* IMPORTANT: this has to be at least the same height as .keybinds-key to maintain text alignment */
+    white-space: normal;
+    overflow-wrap: break-word;
+    flex: 1 1 120px;
   }
 }
 
@@ -47,6 +47,8 @@ export default `/*
   display: flex;
   gap: var(--sys-size-5);
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 
   .keybinds-join-text, .footnote {
     color: var(--sys-color-on-surface-subtle);
@@ -63,6 +65,7 @@ export default `/*
   flex-direction: column;
   align-items: flex-end;
   gap: var(--sys-size-3);
+  max-width: 100%;
 }
 
 .nav-radio-buttons {

@@ -115,6 +115,7 @@ var RegisteredAdorners;
 (function(RegisteredAdorners2) {
   RegisteredAdorners2["AD"] = "ad";
   RegisteredAdorners2["CONTAINER"] = "container";
+  RegisteredAdorners2["CUSTOM_ELEMENT"] = "custom-element";
   RegisteredAdorners2["FLEX"] = "flex";
   RegisteredAdorners2["GRID"] = "grid";
   RegisteredAdorners2["GRID_LANES"] = "grid-lanes";

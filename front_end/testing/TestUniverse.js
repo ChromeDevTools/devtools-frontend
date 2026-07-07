@@ -10,6 +10,7 @@ import * as AutofillManager from '../models/autofill_manager/autofill_manager.js
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
+import * as Emulation from '../models/emulation/emulation.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
@@ -97,11 +98,29 @@ export class TestUniverse {
         }
         return this.#context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     }
+    get deviceModeModel() {
+        if (!this.#context.has(Emulation.DeviceModeModel.DeviceModeModel)) {
+            this.#context.set(Emulation.DeviceModeModel.DeviceModeModel, new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings, this.multitargetNetworkManager));
+        }
+        return this.#context.get(Emulation.DeviceModeModel.DeviceModeModel);
+    }
     get domDebuggerManager() {
         if (!this.#context.has(SDK.DOMDebuggerModel.DOMDebuggerManager)) {
             this.#context.set(SDK.DOMDebuggerModel.DOMDebuggerManager, new SDK.DOMDebuggerModel.DOMDebuggerManager(this.targetManager));
         }
         return this.#context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
+    }
+    get domModelUndoStack() {
+        if (!this.#context.has(SDK.DOMModel.DOMModelUndoStack)) {
+            this.#context.set(SDK.DOMModel.DOMModelUndoStack, new SDK.DOMModel.DOMModelUndoStack());
+        }
+        return this.#context.get(SDK.DOMModel.DOMModelUndoStack);
+    }
+    get eventBreakpointsManager() {
+        if (!this.#context.has(SDK.EventBreakpointsModel.EventBreakpointsManager)) {
+            this.#context.set(SDK.EventBreakpointsModel.EventBreakpointsManager, new SDK.EventBreakpointsModel.EventBreakpointsManager(this.targetManager));
+        }
+        return this.#context.get(SDK.EventBreakpointsModel.EventBreakpointsManager);
     }
     get frameManager() {
         if (!this.#context.has(SDK.FrameManager.FrameManager)) {
@@ -200,11 +219,17 @@ export class TestUniverse {
                     if (ctor === SDK.FrameManager.FrameManager.prototype.constructor) {
                         return universe.frameManager;
                     }
+                    if (ctor === SDK.DOMModel.DOMModelUndoStack.prototype.constructor) {
+                        return universe.domModelUndoStack;
+                    }
                     if (ctor === SDK.PageResourceLoader.PageResourceLoader.prototype.constructor) {
                         return universe.pageResourceLoader;
                     }
                     if (ctor === SDK.IsolateManager.IsolateManager.prototype.constructor) {
                         return universe.isolateManager;
+                    }
+                    if (ctor === SDK.NetworkManager.MultitargetNetworkManager.prototype.constructor) {
+                        return universe.multitargetNetworkManager;
                     }
                     throw new Error(`Class ${ctor.name} not set-up as a dependency for SDKModels in TestUniverse.ts. Add it to LazyContext#get in TestUniverse.ts`);
                 }

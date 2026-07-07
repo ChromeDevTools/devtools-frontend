@@ -22,6 +22,7 @@ export interface LayoutProperties {
     isGrid: boolean;
     isSubgrid: boolean;
     isGridLanes: boolean;
+    isContents?: boolean;
     containerType?: string;
     hasScroll: boolean;
 }

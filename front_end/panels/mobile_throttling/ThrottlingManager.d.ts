@@ -18,6 +18,7 @@ export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrappe
     private constructor();
     static instance(opts?: {
         forceNew: boolean | null;
+        settings?: Common.Settings.Settings;
     }): ThrottlingManager;
     createOfflineToolbarCheckbox(): UI.Toolbar.ToolbarCheckbox;
     createMobileThrottlingButton(): UI.Toolbar.ToolbarMenuButton;

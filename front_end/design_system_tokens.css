@@ -639,6 +639,12 @@
   }
 
   &.platform-screenshot-test {
+    --default-font-family: ahem;
+    --monospace-font-family: ahem;
+    --source-code-font-family: ahem;
+  }
+
+  &.platform-screenshot-e2e-test {
     --default-font-family: roboto;
     --monospace-font-family: roboto;
     --source-code-font-family: roboto;

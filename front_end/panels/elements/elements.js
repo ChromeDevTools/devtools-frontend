@@ -11893,6 +11893,7 @@ import * as Root4 from "./../../core/root/root.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
+import * as Bindings5 from "./../../models/bindings/bindings.js";
 import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
@@ -12468,6 +12469,11 @@ var UIStrings12 = {
    */
   viewSourceCode: "View source code",
   /**
+   * @description Label of an adorner in the Elements panel. When clicked, it reveals
+   * the definition of the custom element in the Sources panel.
+   */
+  showCustomElementDefinition: "Show custom element definition",
+  /**
    * @description Context menu item in Elements panel to assess visibility of an element via AI.
    */
   assessVisibility: "Assess visibility",
@@ -12934,7 +12940,7 @@ function maybeRenderAdAdorner(input) {
   `;
 }
 var DEFAULT_VIEW3 = (input, output, target) => {
-  const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
+  const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner || input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner || input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner || input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner || input.showCustomElementAdorner;
   const gutterContainerClasses = {
     "has-decorations": input.decorations.length || input.descendantDecorations.length,
     "gutter-container": true,
@@ -12968,6 +12974,18 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
+        </devtools-adorner>` : nothing4}
+        ${input.showCustomElementAdorner ? html10`<devtools-adorner
+          class="custom-element clickable"
+          role=button
+          tabindex=0
+          .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}
+          jslog=${VisualLogging8.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT).track({ click: true })}
+          aria-label=${i18nString11(UIStrings12.showCustomElementDefinition)}
+          @click=${input.onCustomElementAdornerClick}
+          @keydown=${handleAdornerKeydown(input.onCustomElementAdornerClick)}
+          ${adornerRef()}>
+          <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}</span>
         </devtools-adorner>` : nothing4}
         ${input.showContainerAdorner ? html10`<devtools-adorner
           class=clickable
@@ -13302,6 +13320,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
       showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
+      showCustomElementAdorner: this.node().isCustomElement() && !this.isClosingTag(),
+      onCustomElementAdornerClick: this.treeOutline?.disableEdits ? () => {
+      } : (event) => void this.#onCustomElementAdornerClick(event),
       showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
       startingStyleAdornerActive: this.#startingStyleAdornerActive,
       onStartingStyleAdornerClick: this.treeOutline?.disableEdits ? () => {
@@ -13443,6 +13464,9 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   }
   isClosingTag() {
     return !isOpeningTag(this.tagTypeContext);
+  }
+  isDisplayContents() {
+    return Boolean(this.#layout?.isContents);
   }
   node() {
     return this.nodeInternal;
@@ -13637,11 +13661,14 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       showScrollSnapAdorner: false,
       scrollSnapAdornerActive: false,
       showSlotAdorner: false,
+      showCustomElementAdorner: false,
       showStartingStyleAdorner: false,
       startingStyleAdornerActive: false,
       onStartingStyleAdornerClick: () => {
       },
       onSlotAdornerClick: () => {
+      },
+      onCustomElementAdornerClick: () => {
       },
       topLayerIndex: -1,
       onViewSourceAdornerClick: () => {
@@ -14773,6 +14800,40 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     this.#startingStyleAdornerActive = !this.#startingStyleAdornerActive;
     this.performUpdate();
+  }
+  async #onCustomElementAdornerClick(event) {
+    event.stopPropagation();
+    const node = this.node();
+    const object = await node.resolveToObject("");
+    if (!object) {
+      return;
+    }
+    let constructorObject = null;
+    try {
+      const result = await object.callFunction(function() {
+        const selector = this.getAttribute("is") || this.tagName.toLowerCase();
+        return typeof customElements !== "undefined" && customElements.get(selector) || this.constructor;
+      });
+      constructorObject = result.object;
+    } finally {
+      object.release();
+    }
+    if (!constructorObject) {
+      return;
+    }
+    try {
+      if (constructorObject.type === "function") {
+        const functionDetails = await SDK13.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
+        if (functionDetails?.location) {
+          const uiLocation = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
+          if (uiLocation) {
+            void Common8.Revealer.reveal(uiLocation);
+          }
+        }
+      }
+    } finally {
+      constructorObject.release();
+    }
   }
 };
 var InitialChildrenLimit = 500;
@@ -16462,7 +16523,8 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
   }
   highlightTreeElement(element, showInfo) {
     if (element instanceof ElementsTreeElement) {
-      element.node().domModel().overlayModel().highlightInOverlay({ node: element.node(), selectorList: void 0 }, "all", showInfo);
+      const selectorList = element.isDisplayContents() ? "*" : void 0;
+      element.node().domModel().overlayModel().highlightInOverlay({ node: element.node(), selectorList }, "all", showInfo);
       return;
     }
     if (element instanceof ShortcutTreeElement) {

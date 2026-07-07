@@ -457,21 +457,23 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
     const heightValue = isFullHeight ? "" : String(size.height);
     const heightPlaceholder = String(size.height);
     const device = this.model.device();
-    if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device && device) {
-      this.lastMode.set(device, this.model.mode());
+    if (this.model.type() !== EmulationModel.DeviceModeModel.Type.None) {
+      if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device && device) {
+        this.lastMode.set(device, this.model.mode());
+      }
+      const value = this.persistenceSetting.get();
+      const currentMode = this.model.mode();
+      if (device) {
+        value.device = device.title;
+        value.orientation = currentMode ? currentMode.orientation : "";
+        value.mode = currentMode ? currentMode.title : "";
+      } else {
+        value.device = "";
+        value.orientation = "";
+        value.mode = "";
+      }
+      this.persistenceSetting.set(value);
     }
-    const value = this.persistenceSetting.get();
-    const currentMode = this.model.mode();
-    if (device) {
-      value.device = device.title;
-      value.orientation = currentMode ? currentMode.orientation : "";
-      value.mode = currentMode ? currentMode.title : "";
-    } else {
-      value.device = "";
-      value.orientation = "";
-      value.mode = "";
-    }
-    this.persistenceSetting.set(value);
     let modeButtonTitle = i18nString(UIStrings.rotate);
     let modeButtonDisabled = false;
     if (this.model.isScreenOrientationLocked()) {
@@ -679,7 +681,7 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
   }
   appendOptionsMenuItems(contextMenu) {
     const model = this.model;
-    appendToggleItem(contextMenu.headerSection(), this.deviceOutlineSetting, i18nString(UIStrings.hideDeviceFrame), i18nString(UIStrings.showDeviceFrame), model.type() !== EmulationModel.DeviceModeModel.Type.Device, "device-frame");
+    appendToggleItem(contextMenu.headerSection(), this.deviceOutlineSetting, i18nString(UIStrings.hideDeviceFrame), i18nString(UIStrings.showDeviceFrame), !model.canShowDeviceFrame(), "device-frame");
     appendToggleItem(contextMenu.headerSection(), this.showMediaInspectorSetting, i18nString(UIStrings.hideMediaQueries), i18nString(UIStrings.showMediaQueries), void 0, "media-queries");
     appendToggleItem(contextMenu.headerSection(), this.showRulersSetting, i18nString(UIStrings.hideRulers), i18nString(UIStrings.showRulers), void 0, "rulers");
     appendToggleItem(contextMenu.defaultSection(), this.showDeviceScaleFactorSetting, i18nString(UIStrings.removeDevicePixelRatio), i18nString(UIStrings.addDevicePixelRatio), void 0, "device-pixel-ratio");
@@ -691,7 +693,7 @@ var DeviceModeToolbar = class extends UI.Widget.Widget {
       if (typeof disabled === "undefined") {
         disabled = model.type() === EmulationModel.DeviceModeModel.Type.None;
       }
-      const isEnabled = setting.get();
+      const isEnabled = Boolean(setting.get() && !disabled);
       const jslogContext = `${context}-${isEnabled ? "disable" : "enable"}`;
       section.appendItem(isEnabled ? title1 : title2, setting.set.bind(setting, !setting.get()), { disabled, jslogContext });
     }

@@ -65,6 +65,8 @@ export interface ViewInput {
     onViewSourceAdornerClick: () => void;
     onSlotAdornerClick: (e: Event) => void;
     showSlotAdorner: boolean;
+    showCustomElementAdorner: boolean;
+    onCustomElementAdornerClick: (e: Event) => void;
     slotName?: string;
     showStartingStyleAdorner: boolean;
     startingStyleAdornerActive: boolean;
@@ -109,6 +111,7 @@ export declare class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     performUpdate(clearNode?: boolean): void;
     highlightAttribute(attributeName: string): void;
     isClosingTag(): boolean;
+    isDisplayContents(): boolean;
     node(): SDK.DOMModel.DOMNode;
     isEditing(): boolean;
     highlightSearchResults(searchQuery: string): void;

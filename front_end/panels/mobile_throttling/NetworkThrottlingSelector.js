@@ -132,6 +132,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     });
 };
 export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+    #settings;
     #recommendedConditions = null;
     #jslogContext;
     #currentConditions;
@@ -147,9 +148,10 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.
         select.performUpdate();
         return select;
     }
-    constructor(element, options = {}, view = DEFAULT_VIEW) {
+    constructor(element, options = {}, settings = Common.Settings.Settings.instance(), view = DEFAULT_VIEW) {
         super(element);
-        SDK.NetworkManager.customUserNetworkConditionsSetting().addChangeListener(this.requestUpdate, this);
+        this.#settings = settings;
+        SDK.NetworkManager.customUserNetworkConditionsSetting(settings).addChangeListener(this.requestUpdate, this);
         this.#jslogContext = options.jslogContext;
         this.#currentConditions = options.currentConditions;
         this.#title = options.title;
@@ -202,7 +204,7 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.
         const cruxManager = CrUXManager.CrUXManager.instance();
         const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
         if (bind) {
-            this.#jslogContext = SDK.NetworkManager.activeNetworkThrottlingKeySetting().name;
+            this.#jslogContext = SDK.NetworkManager.activeNetworkThrottlingKeySetting(this.#settings).name;
             ThrottlingManager.instance(); // Instantiate the throttling manager to connect network manager with the setting
             this.#currentConditions = multitargetNetworkManager.networkConditions();
             this.addEventListener("ConditionsChanged" /* Events.CONDITIONS_CHANGED */, this.#onConditionsChanged);
@@ -234,10 +236,10 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.
         this.requestUpdate();
     }
     performUpdate() {
-        const customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting();
+        const customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting(this.#settings);
         const customNetworkConditions = customNetworkConditionsSetting.get();
         const onAddCustomConditions = () => {
-            void Common.Revealer.reveal(SDK.NetworkManager.customUserNetworkConditionsSetting());
+            void Common.Revealer.reveal(customNetworkConditionsSetting);
         };
         const onSelect = (conditions) => {
             this.dispatchEventToListeners("ConditionsChanged" /* Events.CONDITIONS_CHANGED */, conditions);

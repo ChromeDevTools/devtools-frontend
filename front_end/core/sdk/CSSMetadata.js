@@ -1399,6 +1399,17 @@ const extraPropertyValues = new Map([
         ]),
     ],
     [
+        'text-wrap',
+        new Set([
+            'auto',
+            'wrap',
+            'nowrap',
+            'balance',
+            'pretty',
+            'stable',
+        ]),
+    ],
+    [
         'corner-shape',
         new Set([
             'round',

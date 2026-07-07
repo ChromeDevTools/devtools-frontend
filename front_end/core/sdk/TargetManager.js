@@ -7,6 +7,7 @@ import * as Platform from '../platform/platform.js';
 import { assertNotNullOrUndefined } from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import { FrameManager } from './FrameManager.js';
+import { MultitargetNetworkManager } from './NetworkManager.js';
 import { SDKModel } from './SDKModel.js';
 import { Target, Type as TargetType } from './Target.js';
 export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
@@ -38,6 +39,14 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
             return FrameManager.instance();
         }
         return this.context.get(FrameManager);
+    }
+    // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+    getNetworkManager() {
+        if ('has' in this.context && typeof this.context.has === 'function' &&
+            !this.context.has(MultitargetNetworkManager)) {
+            return MultitargetNetworkManager.instance();
+        }
+        return this.context.get(MultitargetNetworkManager);
     }
     /* eslint-disable @typescript-eslint/no-explicit-any */
     #modelListeners;

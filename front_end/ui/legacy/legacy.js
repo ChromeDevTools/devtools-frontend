@@ -22542,6 +22542,19 @@ var TreeElement = class {
     }
     render10(icons, this.leadingIconsElement);
   }
+  setTrailingIcons(icons) {
+    if (!this.trailingIconsElement && !icons.length) {
+      return;
+    }
+    if (!this.trailingIconsElement) {
+      this.trailingIconsElement = document.createElement("div");
+      this.trailingIconsElement.classList.add("trailing-icons");
+      this.trailingIconsElement.classList.add("icons-container");
+      this.listItemNode.appendChild(this.trailingIconsElement);
+      this.ensureSelection();
+    }
+    render10(icons, this.trailingIconsElement);
+  }
   get tooltip() {
     return this.tooltipInternal;
   }

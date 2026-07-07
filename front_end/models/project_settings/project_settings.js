@@ -11,7 +11,6 @@ __export(ProjectSettingsModel_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 var DEVTOOLS_SECURITY_ORIGIN = "devtools://devtools";
 var WELL_KNOWN_DEVTOOLS_JSON_PATH = "/.well-known/appspecific/com.chrome.devtools.json";
@@ -29,7 +28,7 @@ function isLocalFrame(frame) {
 }
 var EMPTY_PROJECT_SETTINGS = Object.freeze({});
 var IDLE_PROMISE = Promise.resolve();
-var ProjectSettingsModel = class _ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper {
+var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #pageResourceLoader;
   #targetManager;
   #availability = "unavailable";
@@ -71,30 +70,7 @@ var ProjectSettingsModel = class _ProjectSettingsModel extends Common.ObjectWrap
       }
     }
   }
-  /**
-   * Yields the `ProjectSettingsModel` singleton.
-   *
-   * @returns the singleton.
-   */
-  static instance({ forceNew, hostConfig, pageResourceLoader, targetManager }) {
-    if (!Root.DevToolsContext.globalInstance().has(_ProjectSettingsModel) || forceNew) {
-      if (!hostConfig || !pageResourceLoader || !targetManager) {
-        throw new Error("Unable to create ProjectSettingsModel: hostConfig, pageResourceLoader, and targetManager must be provided");
-      }
-      Root.DevToolsContext.globalInstance().set(_ProjectSettingsModel, new _ProjectSettingsModel(hostConfig, pageResourceLoader, targetManager));
-    }
-    return Root.DevToolsContext.globalInstance().get(_ProjectSettingsModel);
-  }
-  /**
-   * Clears the `ProjectSettingsModel` singleton (if any);
-   */
-  static removeInstance() {
-    if (Root.DevToolsContext.globalInstance().has(_ProjectSettingsModel)) {
-      Root.DevToolsContext.globalInstance().get(_ProjectSettingsModel).#dispose();
-      Root.DevToolsContext.globalInstance().delete(_ProjectSettingsModel);
-    }
-  }
-  #dispose() {
+  disposeForTest() {
     this.#targetManager.removeEventListener("InspectedURLChanged", this.#inspectedURLChanged, this);
   }
   #inspectedURLChanged(event) {

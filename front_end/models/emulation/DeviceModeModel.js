@@ -4,6 +4,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Geometry from '../geometry/geometry.js';
 import { Horizontal, HorizontalSpanned, Vertical, VerticalSpanned, } from './EmulatedDevices.js';
@@ -72,7 +73,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let deviceModeModelInstance;
 export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #screenRect;
     #visiblePageRect;
@@ -100,8 +100,14 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #onModelAvailable;
     #outlineRect;
     #screenOrientationLocked;
-    constructor() {
+    #targetManager;
+    #settings;
+    #multitargetNetworkManager;
+    constructor(targetManager, settings, multitargetNetworkManager) {
         super();
+        this.#targetManager = targetManager;
+        this.#settings = settings;
+        this.#multitargetNetworkManager = multitargetNetworkManager;
         this.#screenRect = new Rect(0, 0, 1, 1);
         this.#visiblePageRect = new Rect(0, 0, 1, 1);
         this.#availableSize = new Geometry.Size(1, 1);
@@ -110,14 +116,14 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#appliedDeviceSize = new Geometry.Size(1, 1);
         this.#appliedDeviceScaleFactor = globalThis.devicePixelRatio;
         this.#appliedUserAgentType = "Desktop" /* UA.DESKTOP */;
-        this.#scaleSetting = Common.Settings.Settings.instance().createSetting('emulation.device-scale', 1);
+        this.#scaleSetting = this.#settings.createSetting('emulation.device-scale', 1);
         // We've used to allow zero before.
         if (!this.#scaleSetting.get()) {
             this.#scaleSetting.set(1);
         }
         this.#scaleSetting.addChangeListener(this.scaleSettingChanged, this);
         this.#scale = 1;
-        this.#widthSetting = Common.Settings.Settings.instance().createSetting('emulation.device-width', 400);
+        this.#widthSetting = this.#settings.createSetting('emulation.device-width', 400);
         if (this.#widthSetting.get() < MinDeviceSize) {
             this.#widthSetting.set(MinDeviceSize);
         }
@@ -125,7 +131,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             this.#widthSetting.set(MaxDeviceSize);
         }
         this.#widthSetting.addChangeListener(this.widthSettingChanged, this);
-        this.#heightSetting = Common.Settings.Settings.instance().createSetting('emulation.device-height', 0);
+        this.#heightSetting = this.#settings.createSetting('emulation.device-height', 0);
         if (this.#heightSetting.get() && this.#heightSetting.get() < MinDeviceSize) {
             this.#heightSetting.set(MinDeviceSize);
         }
@@ -133,14 +139,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             this.#heightSetting.set(MaxDeviceSize);
         }
         this.#heightSetting.addChangeListener(this.heightSettingChanged, this);
-        this.#uaSetting = Common.Settings.Settings.instance().createSetting('emulation.device-ua', "Mobile" /* UA.MOBILE */);
+        this.#uaSetting = this.#settings.createSetting('emulation.device-ua', "Mobile" /* UA.MOBILE */);
         this.#uaSetting.addChangeListener(this.uaSettingChanged, this);
-        this.#deviceScaleFactorSetting =
-            Common.Settings.Settings.instance().createSetting('emulation.device-scale-factor', 0);
+        this.#deviceScaleFactorSetting = this.#settings.createSetting('emulation.device-scale-factor', 0);
         this.#deviceScaleFactorSetting.addChangeListener(this.deviceScaleFactorSettingChanged, this);
-        this.#deviceOutlineSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-device-outline');
+        this.#deviceOutlineSetting = this.#settings.createSetting('emulation.show-device-outline', false);
         this.#deviceOutlineSetting.addChangeListener(this.deviceOutlineSettingChanged, this);
-        this.#toolbarControlsEnabledSetting = Common.Settings.Settings.instance().createSetting('emulation.toolbar-controls-enabled', true, "Session" /* Common.Settings.SettingStorageType.SESSION */);
+        this.#toolbarControlsEnabledSetting = this.#settings.createSetting('emulation.toolbar-controls-enabled', true, "Session" /* Common.Settings.SettingStorageType.SESSION */);
         this.#type = Type.None;
         this.#device = null;
         this.#mode = null;
@@ -150,13 +155,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#emulationModel = null;
         this.#onModelAvailable = null;
         this.#screenOrientationLocked = false;
-        SDK.TargetManager.TargetManager.instance().observeModels(SDK.EmulationModel.EmulationModel, this);
+        this.#targetManager.observeModels(SDK.EmulationModel.EmulationModel, this);
     }
     static instance(opts) {
-        if (!deviceModeModelInstance || opts?.forceNew) {
-            deviceModeModelInstance = new DeviceModeModel();
+        if (!Root.DevToolsContext.globalInstance().has(DeviceModeModel) || opts?.forceNew) {
+            Root.DevToolsContext.globalInstance().set(DeviceModeModel, new DeviceModeModel(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance(), SDK.NetworkManager.MultitargetNetworkManager.instance()));
         }
-        return deviceModeModelInstance;
+        return Root.DevToolsContext.globalInstance().get(DeviceModeModel);
     }
     /**
      * This wraps `instance()` in a try/catch because in some DevTools entry points
@@ -174,10 +179,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     static removeInstance() {
-        deviceModeModelInstance = null;
+        if (Root.DevToolsContext.globalInstance().has(DeviceModeModel)) {
+            Root.DevToolsContext.globalInstance().get(DeviceModeModel).dispose();
+        }
+        Root.DevToolsContext.globalInstance().delete(DeviceModeModel);
     }
     dispose() {
-        SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.EmulationModel.EmulationModel, this);
+        this.#targetManager.unobserveModels(SDK.EmulationModel.EmulationModel, this);
     }
     static widthValidator(value) {
         let valid = false;
@@ -313,6 +321,9 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         return (this.#device && this.#mode && this.#deviceOutlineSetting.get()) ? this.#device.outlineImage(this.#mode) :
             '';
     }
+    canShowDeviceFrame() {
+        return Boolean(this.#device && this.#mode && this.#device.outlineImage(this.#mode));
+    }
     outlineRect() {
         return this.#outlineRect || null;
     }
@@ -352,7 +363,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         return false;
     }
     enabledSetting() {
-        return Common.Settings.Settings.instance().createSetting('emulation.show-device-mode', false);
+        return this.#settings.createSetting('emulation.show-device-mode', false);
     }
     scaleSetting() {
         return this.#scaleSetting;
@@ -377,7 +388,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         this.#uaSetting.set("Mobile" /* UA.MOBILE */);
     }
     modelAdded(emulationModel) {
-        if (emulationModel.target() === SDK.TargetManager.TargetManager.instance().primaryPageTarget() &&
+        if (emulationModel.target() === this.#targetManager.primaryPageTarget() &&
             emulationModel.supportsDeviceEmulation()) {
             this.#emulationModel = emulationModel;
             if (this.#onModelAvailable) {
@@ -604,7 +615,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         // When the user agent string is empty (e.g. custom desktop device without
         // a UA override), metadata must also be cleared. The backend rejects
         // setUserAgentOverride calls that provide metadata without a UA string.
-        SDK.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(userAgent, userAgent ? userAgentMetadata : null);
+        this.#multitargetNetworkManager.setUserAgentOverride(userAgent, userAgent ? userAgentMetadata : null);
     }
     applyDeviceMetrics(screenSize, insets, outline, scale, deviceScaleFactor, mobile, screenOrientation, resetPageScaleFactor) {
         screenSize.width = Math.max(1, Math.floor(screenSize.width));
@@ -723,7 +734,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     applyTouch(touchEnabled, mobile) {
         this.#touchEnabled = touchEnabled;
         this.#touchMobile = mobile;
-        for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
+        for (const emulationModel of this.#targetManager.models(SDK.EmulationModel.EmulationModel)) {
             void emulationModel.emulateTouch(touchEnabled, mobile);
         }
     }

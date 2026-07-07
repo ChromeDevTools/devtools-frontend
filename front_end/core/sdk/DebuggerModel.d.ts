@@ -22,7 +22,7 @@ export declare class DebuggerModel extends SDKModel<EventTypes> {
     continueToLocationCallback: ((arg0: DebuggerPausedDetails) => boolean) | null;
     evaluateOnCallFrameCallback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult | null>) | null;
     constructor(target: Target);
-    static selectSymbolSource(debugSymbols: Protocol.Debugger.DebugSymbols[] | null): Protocol.Debugger.DebugSymbols | null;
+    static selectSymbolSource(debugSymbols: Protocol.Debugger.DebugSymbols[] | null, devToolsConsole: Common.Console.Console): Protocol.Debugger.DebugSymbols | null;
     sourceMapManager(): SourceMapManager<Script>;
     runtimeModel(): RuntimeModel;
     debuggerEnabled(): boolean;

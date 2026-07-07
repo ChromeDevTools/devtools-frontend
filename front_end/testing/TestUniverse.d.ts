@@ -7,6 +7,7 @@ import * as AutofillManager from '../models/autofill_manager/autofill_manager.js
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
+import * as Emulation from '../models/emulation/emulation.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
@@ -50,7 +51,10 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get cruxManager(): CrUXManager.CrUXManager;
     get cssWorkspaceBinding(): Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;
     get debuggerWorkspaceBinding(): Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+    get deviceModeModel(): Emulation.DeviceModeModel.DeviceModeModel;
     get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager;
+    get domModelUndoStack(): SDK.DOMModel.DOMModelUndoStack;
+    get eventBreakpointsManager(): SDK.EventBreakpointsModel.EventBreakpointsManager;
     get frameManager(): SDK.FrameManager.FrameManager;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
     get isolateManager(): SDK.IsolateManager.IsolateManager;

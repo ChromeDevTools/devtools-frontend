@@ -6,10 +6,11 @@ export interface SaveCallbackParam {
 }
 export declare class FileManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    private constructor();
+    constructor();
     static instance(opts?: {
         forceNew: boolean | null;
     }): FileManager;
+    static removeInstance(): void;
     /**
      * {@link FileManager.close | close} *must* be called, for the InspectorFrontendHostStub case, to complete the saving.
      * @param url The url of the file to save. **NOTE:** The backend truncates this filename to 64 characters.

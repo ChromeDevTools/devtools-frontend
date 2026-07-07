@@ -1153,7 +1153,8 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     }
     highlightTreeElement(element, showInfo) {
         if (element instanceof ElementsTreeElement) {
-            element.node().domModel().overlayModel().highlightInOverlay({ node: element.node(), selectorList: undefined }, 'all', showInfo);
+            const selectorList = element.isDisplayContents() ? '*' : undefined;
+            element.node().domModel().overlayModel().highlightInOverlay({ node: element.node(), selectorList }, 'all', showInfo);
             return;
         }
         if (element instanceof ShortcutTreeElement) {

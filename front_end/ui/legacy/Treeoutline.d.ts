@@ -135,6 +135,7 @@ export declare class TreeElement {
     titleAsText(): string;
     startEditingTitle<T>(editingConfig: Config<T>): void;
     setLeadingIcons(icons: Icon[] | Lit.TemplateResult[]): void;
+    setTrailingIcons(icons: Icon[] | Lit.TemplateResult[]): void;
     get tooltip(): string;
     set tooltip(x: string);
     isExpandable(): boolean;

@@ -39,7 +39,7 @@ export declare class NetworkThrottlingSelect extends NetworkThrottlingSelect_bas
         jslogContext?: string;
         currentConditions?: SDK.NetworkManager.Conditions;
         includeBlocking?: true;
-    }, view?: ViewFunction);
+    }, settings?: Common.Settings.Settings, view?: ViewFunction);
     get disabled(): boolean;
     set disabled(disabled: boolean);
     get recommendedConditions(): SDK.NetworkManager.Conditions | null;

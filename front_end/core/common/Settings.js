@@ -566,17 +566,5 @@ export class RegExpSetting extends Setting {
         return this.#regex;
     }
 }
-/**
- * @deprecated Use `Common.Settings.Settings.instance().moduleSetting(settingName)` instead.
- */
-export function moduleSetting(settingName) {
-    return Settings.instance().moduleSetting(settingName);
-}
-/**
- * @deprecated Use `Common.Settings.Settings.instance().settingForTest(settingName)` instead.
- */
-export function settingForTest(settingName) {
-    return Settings.instance().settingForTest(settingName);
-}
 export { getLocalizedSettingsCategory, maybeRemoveSettingExtension, registerSettingExtension, registerSettingsForTest, resetSettings, };
 //# sourceMappingURL=Settings.js.map

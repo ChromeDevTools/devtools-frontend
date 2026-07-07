@@ -5,76 +5,76 @@ import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
 const UIStrings = {
     /**
-     * @description Title of the Elements Panel
+     * @description Title of the Elements panel.
      */
     elements: 'Elements',
     /**
-     * @description Text for DevTools AI
+     * @description Text for DevTools AI.
      */
     ai: 'AI',
     /**
-     * @description Text for DevTools appearance
+     * @description Text for DevTools appearance.
      */
     appearance: 'Appearance',
     /**
-     * @description Name of the Sources panel
+     * @description Title of the Sources panel.
      */
     sources: 'Sources',
     /**
-     * @description Title of the Network tool
+     * @description Title of the Network panel.
      */
     network: 'Network',
     /**
-     * @description Text for the performance of something
+     * @description Title of the Performance panel.
      */
     performance: 'Performance',
     /**
-     * @description Title of the Console tool
+     * @description Title of the Console panel.
      */
     console: 'Console',
     /**
-     * @description A title of the 'Persistence' setting category
+     * @description Title of the Persistence setting category.
      */
     persistence: 'Persistence',
     /**
-     * @description Text that refers to the debugger
+     * @description Title of the Debugger setting category.
      */
     debugger: 'Debugger',
     /**
-     * @description Text describing global shortcuts and settings that are available throughout the DevTools
+     * @description Title of the Global setting category for shortcuts and settings available throughout DevTools.
      */
     global: 'Global',
     /**
-     * @description Title of the Rendering tool
+     * @description Title of the Rendering tool.
      */
     rendering: 'Rendering',
     /**
-     * @description Title of a section on CSS Grid tooling
+     * @description Title of the Grid setting category for CSS Grid tooling.
      */
     grid: 'Grid',
     /**
-     * @description Text for the mobile platform, as opposed to desktop
+     * @description Title of the Mobile setting category.
      */
     mobile: 'Mobile',
     /**
-     * @description Text for the memory of the page
+     * @description Title of the Memory panel setting category.
      */
     memory: 'Memory',
     /**
-     * @description Text for the extension of the page
+     * @description Title of the Extension setting category.
      */
     extension: 'Extension',
     /**
-     * @description Text for the adorner of the page
+     * @description Title of the Adorner setting category.
      */
     adorner: 'Adorner',
     /**
-     * @description Header for the "Account" section in the settings UI. The "Account"
-     * section allows users see their signed in account and configure which DevTools data is synced via Chrome Sync.
+     * @description Header for the Account section in the settings UI. The Account
+     * section allows users to see their signed-in account and configure which DevTools data is synced via Chrome Sync.
      */
     account: 'Account',
     /**
-     * @description Text for the privacy section of the page.
+     * @description Title of the Privacy setting category.
      */
     privacy: 'Privacy',
 };

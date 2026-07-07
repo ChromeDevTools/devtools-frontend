@@ -11141,6 +11141,17 @@ var extraPropertyValues = /* @__PURE__ */ new Map([
     ])
   ],
   [
+    "text-wrap",
+    /* @__PURE__ */ new Set([
+      "auto",
+      "wrap",
+      "nowrap",
+      "balance",
+      "pretty",
+      "stable"
+    ])
+  ],
+  [
     "corner-shape",
     /* @__PURE__ */ new Set([
       "round",
@@ -11441,7 +11452,7 @@ __export(CookieModel_exports, {
 });
 import * as Common25 from "./../common/common.js";
 import * as Platform16 from "./../platform/platform.js";
-import * as Root8 from "./../root/root.js";
+import * as Root9 from "./../root/root.js";
 
 // gen/front_end/core/sdk/Cookie.js
 var Cookie_exports = {};
@@ -11737,7 +11748,7 @@ import * as TextUtils21 from "./../../models/text_utils/text_utils.js";
 import * as Common24 from "./../common/common.js";
 import * as i18n15 from "./../i18n/i18n.js";
 import * as Platform15 from "./../platform/platform.js";
-import * as Root7 from "./../root/root.js";
+import * as Root8 from "./../root/root.js";
 
 // gen/front_end/core/sdk/TargetManager.js
 var TargetManager_exports = {};
@@ -11750,7 +11761,7 @@ import * as Common23 from "./../common/common.js";
 import * as Host4 from "./../host/host.js";
 import * as Platform14 from "./../platform/platform.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../platform/platform.js";
-import * as Root6 from "./../root/root.js";
+import * as Root7 from "./../root/root.js";
 
 // gen/front_end/core/sdk/FrameManager.js
 var FrameManager_exports = {};
@@ -11758,7 +11769,7 @@ __export(FrameManager_exports, {
   FrameManager: () => FrameManager
 });
 import * as Common22 from "./../common/common.js";
-import * as Root5 from "./../root/root.js";
+import * as Root6 from "./../root/root.js";
 
 // gen/front_end/core/sdk/ResourceTreeModel.js
 var ResourceTreeModel_exports = {};
@@ -11790,6 +11801,7 @@ __export(DOMModel_exports, {
 });
 import * as Common18 from "./../common/common.js";
 import * as Platform11 from "./../platform/platform.js";
+import * as Root5 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -20285,6 +20297,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       return null;
     }
     const display = styles.get("display");
+    const isContents = display === "contents";
     const isFlex = display === "flex" || display === "inline-flex";
     const isGrid = display === "grid" || display === "inline-grid";
     const isSubgrid = (isGrid && (styles.get("grid-template-columns")?.startsWith("subgrid") || styles.get("grid-template-rows")?.startsWith("subgrid"))) ?? false;
@@ -20297,6 +20310,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       isGrid,
       isSubgrid,
       isGridLanes,
+      isContents,
       containerType: isContainer ? containerType : void 0,
       hasScroll
     };
@@ -21311,7 +21325,7 @@ var RuntimeModel = class extends SDKModel {
     const result = await this.queryObjects(object);
     object.release();
     if ("error" in result) {
-      Common12.Console.Console.instance().error(result.error);
+      this.target().targetManager().getConsole().error(result.error);
       return;
     }
     this.dispatchEventToListeners(Events4.QueryObjectRequested, { objects: result.objects, executionContextId });
@@ -22124,7 +22138,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       resourceTreeModel.addEventListener(Events.FrameNavigated, this.onFrameNavigated, this);
     }
   }
-  static selectSymbolSource(debugSymbols) {
+  static selectSymbolSource(debugSymbols, devToolsConsole) {
     if (!debugSymbols || debugSymbols.length === 0) {
       return null;
     }
@@ -22144,7 +22158,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     }
     console.assert(debugSymbolsSource !== null, "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes");
     if (debugSymbolsSource && debugSymbols.length > 1) {
-      Common14.Console.Console.instance().warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
+      devToolsConsole.warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
     }
     return debugSymbolsSource;
   }
@@ -22510,7 +22524,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     if (executionContextAuxData && "isDefault" in executionContextAuxData) {
       isContentScript = !executionContextAuxData["isDefault"];
     }
-    const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols);
+    const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
     const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
     this.registerScript(script);
     this.dispatchEventToListeners(Events5.ParsedScriptSource, script);
@@ -25208,6 +25222,26 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
   isXMLNode() {
     return Boolean(this.#xmlVersion);
   }
+  isCustomElement() {
+    if (this.nodeType() !== Node.ELEMENT_NODE || this.isXMLNode()) {
+      return false;
+    }
+    const localName = this.localName() || this.nodeName().toLowerCase();
+    if (localName.includes("-")) {
+      const builtInExclusionList = [
+        "annotation-xml",
+        "color-profile",
+        "font-face",
+        "font-face-src",
+        "font-face-uri",
+        "font-face-format",
+        "font-face-name",
+        "missing-glyph"
+      ];
+      return !builtInExclusionList.includes(localName);
+    }
+    return this.getAttribute("is") !== void 0;
+  }
   setMarker(name, value) {
     if (value === null) {
       if (!this.#markers.has(name)) {
@@ -25779,7 +25813,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     } else {
       this.#document = null;
     }
-    DOMModelUndoStack.instance().dispose(this);
+    this.#undoStack().dispose(this);
     if (!this.parentModel()) {
       this.dispatchEventToListeners(Events6.DocumentUpdated, this);
     }
@@ -26070,7 +26104,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     return this.agent.invoke_getElementByRelation({ nodeId, relation }).then(({ nodeId: nodeId2 }) => nodeId2);
   }
   markUndoableState(minorChange) {
-    void DOMModelUndoStack.instance().markUndoableState(this, minorChange || false);
+    void this.#undoStack().markUndoableState(this, minorChange || false);
   }
   async nodeForLocation(x, y, includeUserAgentShadowDOM) {
     const response = await this.agent.invoke_getNodeForLocation({ x, y, includeUserAgentShadowDOM });
@@ -26097,7 +26131,15 @@ var DOMModel = class _DOMModel extends SDKModel {
   }
   dispose() {
     this.#resourceTreeModel?.removeEventListener(Events.DocumentOpened, this.onDocumentOpened, this);
-    DOMModelUndoStack.instance().dispose(this);
+    this.#undoStack().dispose(this);
+  }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  #undoStack() {
+    const context = this.target().targetManager().context;
+    if ("has" in context && typeof context.has === "function" && context.has(DOMModelUndoStack)) {
+      return context.get(DOMModelUndoStack);
+    }
+    return DOMModelUndoStack.instance();
   }
   parentModel() {
     const parentTarget = this.target().parentTarget();
@@ -26194,7 +26236,6 @@ var DOMDispatcher = class {
     this.#domModel.adRelatedStateUpdated(nodeId, adProvenance);
   }
 };
-var domModelUndoStackInstance = null;
 var DOMModelUndoStack = class _DOMModelUndoStack {
   #stack;
   #index;
@@ -26206,10 +26247,10 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!domModelUndoStackInstance || forceNew) {
-      domModelUndoStackInstance = new _DOMModelUndoStack();
+    if (!Root5.DevToolsContext.globalInstance().has(_DOMModelUndoStack) || forceNew) {
+      Root5.DevToolsContext.globalInstance().set(_DOMModelUndoStack, new _DOMModelUndoStack());
     }
-    return domModelUndoStackInstance;
+    return Root5.DevToolsContext.globalInstance().get(_DOMModelUndoStack);
   }
   async markUndoableState(model, minorChange) {
     if (this.#lastModelWithMinorChange && model !== this.#lastModelWithMinorChange) {
@@ -27502,13 +27543,13 @@ var FrameManager = class _FrameManager extends Common22.ObjectWrapper.ObjectWrap
     targetManager.observeModels(ResourceTreeModel, this);
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!Root5.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
-      Root5.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
+    if (!Root6.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
+      Root6.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
     }
-    return Root5.DevToolsContext.globalInstance().get(_FrameManager);
+    return Root6.DevToolsContext.globalInstance().get(_FrameManager);
   }
   static removeInstance() {
-    Root5.DevToolsContext.globalInstance().delete(_FrameManager);
+    Root6.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
     const addListener = resourceTreeModel.addEventListener(Events.FrameAdded, this.frameAdded, this);
@@ -27688,6 +27729,13 @@ var TargetManager = class _TargetManager extends Common23.ObjectWrapper.ObjectWr
     }
     return this.context.get(FrameManager);
   }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getNetworkManager() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(MultitargetNetworkManager)) {
+      return MultitargetNetworkManager.instance();
+    }
+    return this.context.get(MultitargetNetworkManager);
+  }
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners;
   #modelObservers;
@@ -27718,13 +27766,13 @@ var TargetManager = class _TargetManager extends Common23.ObjectWrapper.ObjectWr
     this.#overrideAutoStartModels = overrideAutoStartModels;
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!Root6.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
-      Root6.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root6.DevToolsContext.globalInstance()));
+    if (!Root7.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
+      Root7.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root7.DevToolsContext.globalInstance()));
     }
-    return Root6.DevToolsContext.globalInstance().get(_TargetManager);
+    return Root7.DevToolsContext.globalInstance().get(_TargetManager);
   }
   static removeInstance() {
-    Root6.DevToolsContext.globalInstance().delete(_TargetManager);
+    Root7.DevToolsContext.globalInstance().delete(_TargetManager);
   }
   onInspectedURLChange(target) {
     if (target !== this.#scopeTarget) {
@@ -27958,7 +28006,7 @@ var TargetManager = class _TargetManager extends Common23.ObjectWrapper.ObjectWr
     return this.#browserTarget;
   }
   async maybeAttachInitialTarget() {
-    if (!Boolean(Root6.Runtime.Runtime.queryParam("browserConnection"))) {
+    if (!Boolean(Root7.Runtime.Runtime.queryParam("browserConnection"))) {
       return false;
     }
     if (!this.#browserTarget) {
@@ -28205,10 +28253,10 @@ var CONNECTION_TYPES = /* @__PURE__ */ new Map([
     /* Protocol.Network.ConnectionType.Wimax */
   ]
 ]);
-function customUserNetworkConditionsSetting(settings = Common24.Settings.Settings.instance()) {
+function customUserNetworkConditionsSetting(settings) {
   return settings.moduleSetting("custom-network-conditions");
 }
-function activeNetworkThrottlingKeySetting(settings = Common24.Settings.Settings.instance()) {
+function activeNetworkThrottlingKeySetting(settings) {
   return settings.createSetting(
     "active-network-condition-key",
     "NO_THROTTLING"
@@ -28238,7 +28286,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       maxTotalBufferSize: MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH,
       reportDirectSocketTraffic: true
     });
-    if (Root7.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled) {
+    if (Root8.Runtime.hostConfig.devToolsEnableDurableMessages?.enabled) {
       const preserveLogSetting = settings.moduleSetting("network-log.preserve-log");
       this.#updateDurableMessages(preserveLogSetting.get());
       preserveLogSetting.addChangeListener(this.preserveLogChanged, this);
@@ -28550,22 +28598,25 @@ var MAX_RESPONSE_BODY_TOTAL_BUFFER_LENGTH = 250 * 1024 * 1024;
 var FetchDispatcher = class {
   #fetchAgent;
   #manager;
+  #multitargetNetworkManager;
   constructor(agent, manager) {
     this.#fetchAgent = agent;
     this.#manager = manager;
+    this.#multitargetNetworkManager = this.#manager.target().targetManager().getNetworkManager();
   }
   requestPaused({ requestId, request, resourceType, responseStatusCode, responseHeaders, networkId }) {
     const networkRequest = networkId ? this.#manager.requestForId(networkId) : null;
     if (networkRequest?.originalResponseHeaders.length === 0 && responseHeaders) {
       networkRequest.originalResponseHeaders = responseHeaders;
     }
-    void MultitargetNetworkManager.instance().requestIntercepted(new InterceptedRequest(this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
+    void this.#multitargetNetworkManager.requestIntercepted(new InterceptedRequest(this.#multitargetNetworkManager, this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
   }
   authRequired({}) {
   }
 };
 var NetworkDispatcher = class {
   #manager;
+  #multitargetNetworkManager;
   #requestsById = /* @__PURE__ */ new Map();
   #requestsByURL = /* @__PURE__ */ new Map();
   #requestsByLoaderId = /* @__PURE__ */ new Map();
@@ -28581,7 +28632,8 @@ var NetworkDispatcher = class {
   #requestIdToTrustTokenEvent = /* @__PURE__ */ new Map();
   constructor(manager) {
     this.#manager = manager;
-    MultitargetNetworkManager.instance().addEventListener("RequestIntercepted", this.#markAsIntercepted.bind(this));
+    this.#multitargetNetworkManager = this.#manager.target().targetManager().getNetworkManager();
+    this.#multitargetNetworkManager.addEventListener("RequestIntercepted", this.#markAsIntercepted.bind(this));
   }
   #markAsIntercepted(event) {
     const request = this.requestForId(event.data);
@@ -28983,7 +29035,7 @@ var NetworkDispatcher = class {
     return newNetworkRequest;
   }
   maybeAdoptMainResourceRequest(requestId) {
-    const request = MultitargetNetworkManager.instance().inflightMainResourceRequests.get(requestId);
+    const request = this.#multitargetNetworkManager.inflightMainResourceRequests.get(requestId);
     if (!request) {
       return null;
     }
@@ -29015,7 +29067,7 @@ var NetworkDispatcher = class {
       this.#requestsByLoaderId.set(loaderId, networkRequest);
     }
     if (networkRequest.loaderId === networkRequest.requestId() || networkRequest.loaderId === "") {
-      MultitargetNetworkManager.instance().inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
+      this.#multitargetNetworkManager.inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
     }
     this.#manager.dispatchEventToListeners(Events8.RequestStarted, { request: networkRequest, originalRequest });
   }
@@ -29036,7 +29088,7 @@ var NetworkDispatcher = class {
       }
     }
     this.#manager.dispatchEventToListeners(Events8.RequestFinished, networkRequest);
-    MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
+    this.#multitargetNetworkManager.inflightMainResourceRequests.delete(networkRequest.requestId());
     const settings = this.#manager.target().targetManager().settings;
     if (settings.moduleSetting("monitoring-xhr-enabled").get() && networkRequest.resourceType().category() === Common24.ResourceType.resourceCategories.XHR) {
       let message;
@@ -29709,16 +29761,16 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
-    if (!Root7.DevToolsContext.globalInstance().has(_MultitargetNetworkManager) || forceNew) {
-      Root7.DevToolsContext.globalInstance().set(_MultitargetNetworkManager, new _MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
+    if (!Root8.DevToolsContext.globalInstance().has(_MultitargetNetworkManager) || forceNew) {
+      Root8.DevToolsContext.globalInstance().set(_MultitargetNetworkManager, new _MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
     }
-    return Root7.DevToolsContext.globalInstance().get(_MultitargetNetworkManager);
+    return Root8.DevToolsContext.globalInstance().get(_MultitargetNetworkManager);
   }
   static dispose() {
-    Root7.DevToolsContext.globalInstance().delete(_MultitargetNetworkManager);
+    Root8.DevToolsContext.globalInstance().delete(_MultitargetNetworkManager);
   }
   static patchUserAgentWithChromeVersion(uaString) {
-    const chromeVersion = Root7.Runtime.getChromeVersion();
+    const chromeVersion = Root8.Runtime.getChromeVersion();
     if (chromeVersion.length > 0) {
       const additionalAppVersion = chromeVersion.split(".", 1)[0] + ".0.100.0";
       return Platform15.StringUtilities.sprintf(uaString, chromeVersion, additionalAppVersion);
@@ -29729,7 +29781,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     if (!userAgentMetadata.brands) {
       return;
     }
-    const chromeVersion = Root7.Runtime.getChromeVersion();
+    const chromeVersion = Root8.Runtime.getChromeVersion();
     if (chromeVersion.length === 0) {
       return;
     }
@@ -29963,6 +30015,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   }
 };
 var InterceptedRequest = class _InterceptedRequest {
+  #multitargetNetworkManager;
   #fetchAgent;
   #hasResponded = false;
   request;
@@ -29971,7 +30024,8 @@ var InterceptedRequest = class _InterceptedRequest {
   responseHeaders;
   requestId;
   networkRequest;
-  constructor(fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders) {
+  constructor(multitargetNetworkManager, fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders) {
+    this.#multitargetNetworkManager = multitargetNetworkManager;
     this.#fetchAgent = fetchAgent;
     this.request = request;
     this.resourceType = resourceType;
@@ -30040,7 +30094,7 @@ var InterceptedRequest = class _InterceptedRequest {
       this.networkRequest.hasOverriddenContent = isBodyOverridden;
     }
     void this.#fetchAgent.invoke_fulfillRequest({ requestId: this.requestId, responseCode, body, responseHeaders });
-    MultitargetNetworkManager.instance().dispatchEventToListeners("RequestFulfilled", this.request.url);
+    this.#multitargetNetworkManager.dispatchEventToListeners("RequestFulfilled", this.request.url);
   }
   continueRequestWithoutChange() {
     console.assert(!this.#hasResponded);
@@ -30298,8 +30352,8 @@ var CookieModel = class extends SDKModel {
     if (cookie.expires()) {
       expires = Math.floor(Date.parse(`${cookie.expires()}`) / 1e3);
     }
-    const schemeBindingEnabled = Boolean(Root8.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
-    const portBindingEnabled = Boolean(Root8.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
+    const schemeBindingEnabled = Boolean(Root9.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
+    const portBindingEnabled = Boolean(Root9.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
     const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
@@ -34104,7 +34158,7 @@ import * as i18n29 from "./../i18n/i18n.js";
 import * as Common33 from "./../common/common.js";
 import * as Host7 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root10 from "./../root/root.js";
+import * as Root11 from "./../root/root.js";
 
 // gen/front_end/core/sdk/RehydratingConnection.js
 var RehydratingConnection_exports = {};
@@ -34115,7 +34169,7 @@ __export(RehydratingConnection_exports, {
 import * as Common32 from "./../common/common.js";
 import * as i18n27 from "./../i18n/i18n.js";
 import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root9 from "./../root/root.js";
+import * as Root10 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EnhancedTracesParser.js
 var EnhancedTracesParser_exports = {};
@@ -34515,9 +34569,9 @@ var RehydratingConnectionTransport = class {
   }
   /** Returns true if found a trace URL. */
   #maybeHandleLoadingFromUrl() {
-    let traceUrl = Root9.Runtime.Runtime.queryParam("traceURL");
+    let traceUrl = Root10.Runtime.Runtime.queryParam("traceURL");
     if (!traceUrl) {
-      const timelineUrl = Root9.Runtime.Runtime.queryParam("loadTimelineFromURL");
+      const timelineUrl = Root10.Runtime.Runtime.queryParam("loadTimelineFromURL");
       if (timelineUrl) {
         traceUrl = decodeURIComponent(timelineUrl);
       }
@@ -35050,11 +35104,11 @@ async function initMainConnection(createRootTarget, onConnectionLost) {
   Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
-  if (Root10.Runtime.Runtime.isTraceApp()) {
+  if (Root11.Runtime.Runtime.isTraceApp()) {
     return new RehydratingConnectionTransport(onConnectionLost);
   }
-  const wsParam = Root10.Runtime.Runtime.queryParam("ws");
-  const wssParam = Root10.Runtime.Runtime.queryParam("wss");
+  const wsParam = Root11.Runtime.Runtime.queryParam("ws");
+  const wssParam = Root11.Runtime.Runtime.queryParam("wss");
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
@@ -35819,7 +35873,7 @@ __export(CPUThrottlingManager_exports, {
   CPUThrottlingManager: () => CPUThrottlingManager
 });
 import * as Common35 from "./../common/common.js";
-import * as Root11 from "./../root/root.js";
+import * as Root12 from "./../root/root.js";
 
 // gen/front_end/core/sdk/EmulationModel.js
 var EmulationModel_exports = {};
@@ -35829,6 +35883,7 @@ __export(EmulationModel_exports, {
   Location: () => Location2
 });
 var EmulationModel = class extends SDKModel {
+  #multitargetNetworkManager;
   #emulationAgent;
   #deviceOrientationAgent;
   #cssModel;
@@ -35844,6 +35899,7 @@ var EmulationModel = class extends SDKModel {
   #lockedOrientation;
   constructor(target) {
     super(target);
+    this.#multitargetNetworkManager = target.targetManager().getNetworkManager();
     this.#emulationAgent = target.emulationAgent();
     this.#deviceOrientationAgent = target.deviceOrientationAgent();
     this.#screenOrientationLocked = false;
@@ -36052,14 +36108,14 @@ var EmulationModel = class extends SDKModel {
         this.#emulationAgent.invoke_clearGeolocationOverride(),
         this.#emulationAgent.invoke_setTimezoneOverride({ timezoneId: "" }),
         this.#emulationAgent.invoke_setLocaleOverride({ locale: "" }),
-        this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: MultitargetNetworkManager.instance().currentUserAgent() })
+        this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: this.#multitargetNetworkManager.currentUserAgent() })
       ]);
     } else if (location.unavailable) {
       await Promise.all([
         this.#emulationAgent.invoke_setGeolocationOverride({}),
         this.#emulationAgent.invoke_setTimezoneOverride({ timezoneId: "" }),
         this.#emulationAgent.invoke_setLocaleOverride({ locale: "" }),
-        this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: MultitargetNetworkManager.instance().currentUserAgent() })
+        this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: this.#multitargetNetworkManager.currentUserAgent() })
       ]);
     } else {
       let processEmulationResult = function(errorType, result) {
@@ -36085,7 +36141,7 @@ var EmulationModel = class extends SDKModel {
           locale: location.locale
         }).then((result) => processEmulationResult("emulation-set-locale", result)),
         this.#emulationAgent.invoke_setUserAgentOverride({
-          userAgent: MultitargetNetworkManager.instance().currentUserAgent(),
+          userAgent: this.#multitargetNetworkManager.currentUserAgent(),
           acceptLanguage: location.locale
         }).then((result) => processEmulationResult("emulation-set-user-agent", result))
       ]);
@@ -36360,13 +36416,13 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWr
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!Root11.DevToolsContext.globalInstance().has(_CPUThrottlingManager) || forceNew) {
-      Root11.DevToolsContext.globalInstance().set(_CPUThrottlingManager, new _CPUThrottlingManager(opts.settings ?? Common35.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance()));
+    if (!Root12.DevToolsContext.globalInstance().has(_CPUThrottlingManager) || forceNew) {
+      Root12.DevToolsContext.globalInstance().set(_CPUThrottlingManager, new _CPUThrottlingManager(opts.settings ?? Common35.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance()));
     }
-    return Root11.DevToolsContext.globalInstance().get(_CPUThrottlingManager);
+    return Root12.DevToolsContext.globalInstance().get(_CPUThrottlingManager);
   }
   static removeInstance() {
-    Root11.DevToolsContext.globalInstance().delete(_CPUThrottlingManager);
+    Root12.DevToolsContext.globalInstance().delete(_CPUThrottlingManager);
   }
   cpuThrottlingRate() {
     return this.#cpuThrottlingRate;
@@ -36471,7 +36527,7 @@ __export(DOMDebuggerModel_exports, {
   EventListener: () => EventListener
 });
 import * as Platform19 from "./../platform/platform.js";
-import * as Root12 from "./../root/root.js";
+import * as Root13 from "./../root/root.js";
 var DOMDebuggerModel = class extends SDKModel {
   agent;
   #runtimeModel;
@@ -36963,13 +37019,13 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
-    if (!Root12.DevToolsContext.globalInstance().has(_DOMDebuggerManager) || forceNew) {
-      Root12.DevToolsContext.globalInstance().set(_DOMDebuggerManager, new _DOMDebuggerManager(targetManager ?? TargetManager.instance()));
+    if (!Root13.DevToolsContext.globalInstance().has(_DOMDebuggerManager) || forceNew) {
+      Root13.DevToolsContext.globalInstance().set(_DOMDebuggerManager, new _DOMDebuggerManager(targetManager ?? TargetManager.instance()));
     }
-    return Root12.DevToolsContext.globalInstance().get(_DOMDebuggerManager);
+    return Root13.DevToolsContext.globalInstance().get(_DOMDebuggerManager);
   }
   static removeInstance() {
-    Root12.DevToolsContext.globalInstance().delete(_DOMDebuggerManager);
+    Root13.DevToolsContext.globalInstance().delete(_DOMDebuggerManager);
   }
   cspViolationBreakpoints() {
     return this.#cspViolationsToBreakOn.slice();
@@ -37254,7 +37310,7 @@ __export(EventBreakpointsModel_exports, {
   EventBreakpointsManager: () => EventBreakpointsManager,
   EventBreakpointsModel: () => EventBreakpointsModel
 });
-import * as Root13 from "./../root/root.js";
+import * as Root14 from "./../root/root.js";
 var EventBreakpointsModel = class extends SDKModel {
   agent;
   constructor(target) {
@@ -37346,13 +37402,13 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
-    if (!Root13.DevToolsContext.globalInstance().has(_EventBreakpointsManager) || forceNew) {
-      Root13.DevToolsContext.globalInstance().set(_EventBreakpointsManager, new _EventBreakpointsManager(targetManager ?? TargetManager.instance()));
+    if (!Root14.DevToolsContext.globalInstance().has(_EventBreakpointsManager) || forceNew) {
+      Root14.DevToolsContext.globalInstance().set(_EventBreakpointsManager, new _EventBreakpointsManager(targetManager ?? TargetManager.instance()));
     }
-    return Root13.DevToolsContext.globalInstance().get(_EventBreakpointsManager);
+    return Root14.DevToolsContext.globalInstance().get(_EventBreakpointsManager);
   }
   static removeInstance() {
-    Root13.DevToolsContext.globalInstance().delete(_EventBreakpointsManager);
+    Root14.DevToolsContext.globalInstance().delete(_EventBreakpointsManager);
   }
   createInstrumentationBreakpoints(category, instrumentationNames) {
     for (const instrumentationName of instrumentationNames) {
@@ -37393,7 +37449,7 @@ __export(IsolateManager_exports, {
   MemoryTrendWindowMs: () => MemoryTrendWindowMs
 });
 import * as Common37 from "./../common/common.js";
-import * as Root14 from "./../root/root.js";
+import * as Root15 from "./../root/root.js";
 var IsolateManager = class _IsolateManager extends Common37.ObjectWrapper.ObjectWrapper {
   #isolates = /* @__PURE__ */ new Map();
   /**
@@ -37410,10 +37466,10 @@ var IsolateManager = class _IsolateManager extends Common37.ObjectWrapper.Object
   }
   static instance(opts = { forceNew: false }) {
     const { forceNew, targetManager } = opts;
-    if (!Root14.DevToolsContext.globalInstance().has(_IsolateManager) || forceNew) {
-      Root14.DevToolsContext.globalInstance().set(_IsolateManager, new _IsolateManager(targetManager));
+    if (!Root15.DevToolsContext.globalInstance().has(_IsolateManager) || forceNew) {
+      Root15.DevToolsContext.globalInstance().set(_IsolateManager, new _IsolateManager(targetManager));
     }
-    return Root14.DevToolsContext.globalInstance().get(_IsolateManager);
+    return Root15.DevToolsContext.globalInstance().get(_IsolateManager);
   }
   observeIsolates(observer) {
     if (this.#observers.has(observer)) {

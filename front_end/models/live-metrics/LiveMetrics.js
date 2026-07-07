@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Spec from './web-vitals-injected/spec/spec.js';
@@ -21,7 +22,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/live-metrics/LiveMetrics.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const LIVE_METRICS_WORLD_NAME = 'DevTools Performance Metrics';
-let liveMetricsInstance;
 class InjectedScript {
     static #injectedScript;
     static async get() {
@@ -35,6 +35,7 @@ class InjectedScript {
 }
 export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     #enabled = false;
+    #isCollectingMetrics = false;
     #target;
     #scriptIdentifier;
     #lastResetContextId;
@@ -46,15 +47,17 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     #layoutShifts = [];
     #lastEmulationChangeTime;
     #mutex = new Common.Mutex.Mutex();
-    #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-    constructor() {
+    #targetManager;
+    #deviceModeModel;
+    constructor(targetManager, deviceModeModel) {
         super();
-        const targetManager = SDK.TargetManager.TargetManager.instance();
-        targetManager.observeTargets(this, { scoped: true });
-        targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+        this.#targetManager = targetManager;
+        this.#deviceModeModel = deviceModeModel;
+        this.#targetManager.observeTargets(this, { scoped: true });
+        this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     }
     #onPrimaryPageChanged(event) {
-        const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const primaryTarget = this.#targetManager.primaryPageTarget();
         if (!primaryTarget) {
             return;
         }
@@ -67,17 +70,17 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     }
     async #switchToTarget(newTarget) {
         if (this.#target) {
-            await this.disable();
+            await this.#stopCollectingMetrics();
         }
         this.#target = newTarget;
-        await this.enable();
+        await this.#startCollectingMetrics();
     }
     static instance(opts = { forceNew: false }) {
         const { forceNew } = opts;
-        if (!liveMetricsInstance || forceNew) {
-            liveMetricsInstance = new LiveMetrics();
+        if (!Root.DevToolsContext.globalInstance().has(LiveMetrics) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(LiveMetrics, new LiveMetrics(SDK.TargetManager.TargetManager.instance(), EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()));
         }
-        return liveMetricsInstance;
+        return Root.DevToolsContext.globalInstance().get(LiveMetrics);
     }
     get lcpValue() {
         return this.#lcpValue;
@@ -400,28 +403,44 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     }
     async targetAdded(target) {
         // Scoped observers can also receive events for OOPIFs and workers.
-        if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+        if (target !== this.#targetManager.primaryPageTarget()) {
             return;
         }
         this.#target = target;
-        await this.enable();
+        await this.#startCollectingMetrics();
     }
     async targetRemoved(target) {
         // Scoped observers can also receive events for OOPIFs and workers.
         if (target !== this.#target) {
             return;
         }
-        await this.disable();
+        await this.#stopCollectingMetrics();
         this.#target = undefined;
     }
     async enable() {
+        if (this.#enabled) {
+            return;
+        }
+        this.#enabled = true;
+        if (this.#target) {
+            await this.#startCollectingMetrics();
+        }
+    }
+    async disable() {
+        if (!this.#enabled) {
+            return;
+        }
+        this.#enabled = false;
+        await this.#stopCollectingMetrics();
+    }
+    async #startCollectingMetrics() {
         if (Host.InspectorFrontendHost.isUnderTest()) {
             // Enabling this impacts a lot of layout tests; we will work on fixing
             // them but for now it is easier to not run this page in layout tests.
             // b/360064852
             return;
         }
-        if (!this.#target || this.#enabled) {
+        if (!this.#target || !this.#enabled || this.#isCollectingMetrics) {
             return;
         }
         // Only frame targets will actually give us CWV
@@ -460,10 +479,10 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         });
         this.#scriptIdentifier = identifier;
         this.#deviceModeModel?.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.#onEmulationChanged, this);
-        this.#enabled = true;
+        this.#isCollectingMetrics = true;
     }
-    async disable() {
-        if (!this.#target || !this.#enabled) {
+    async #stopCollectingMetrics() {
+        if (!this.#target || !this.#isCollectingMetrics) {
             return;
         }
         // Reset to ensure clean state when re-enabling on a new target.
@@ -488,7 +507,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         }
         this.#scriptIdentifier = undefined;
         this.#deviceModeModel?.removeEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.#onEmulationChanged, this);
-        this.#enabled = false;
+        this.#isCollectingMetrics = false;
     }
 }
 //# sourceMappingURL=LiveMetrics.js.map

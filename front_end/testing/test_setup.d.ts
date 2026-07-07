@@ -1,3 +1,4 @@
+import '../third_party/chromium/ahem/ahem.js';
 declare global {
     namespace Mocha {
         interface Suite {
@@ -8,4 +9,3 @@ declare global {
         }
     }
 }
-export {};

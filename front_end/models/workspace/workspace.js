@@ -11,7 +11,7 @@ __export(FileManager_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
-var fileManagerInstance;
+import * as Root from "./../../core/root/root.js";
 var FileManager = class _FileManager extends Common.ObjectWrapper.ObjectWrapper {
   #saveCallbacks = /* @__PURE__ */ new Map();
   constructor() {
@@ -22,10 +22,13 @@ var FileManager = class _FileManager extends Common.ObjectWrapper.ObjectWrapper 
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!fileManagerInstance || forceNew) {
-      fileManagerInstance = new _FileManager();
+    if (!Root.DevToolsContext.globalInstance().has(_FileManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_FileManager, new _FileManager());
     }
-    return fileManagerInstance;
+    return Root.DevToolsContext.globalInstance().get(_FileManager);
+  }
+  static removeInstance() {
+    Root.DevToolsContext.globalInstance().delete(_FileManager);
   }
   /**
    * {@link FileManager.close | close} *must* be called, for the InspectorFrontendHostStub case, to complete the saving.
@@ -78,7 +81,7 @@ __export(IgnoreListManager_exports, {
 import * as Common4 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Root3 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/workspace/WorkspaceImpl.js
@@ -90,7 +93,7 @@ __export(WorkspaceImpl_exports, {
   projectTypes: () => projectTypes
 });
 import * as Common3 from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 
 // gen/front_end/models/workspace/UISourceCode.js
 var UISourceCode_exports = {};
@@ -755,13 +758,13 @@ var WorkspaceImpl = class _WorkspaceImpl extends Common3.ObjectWrapper.ObjectWra
   #hasResourceContentTrackingExtensions = false;
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!Root.DevToolsContext.globalInstance().has(_WorkspaceImpl) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_WorkspaceImpl, new _WorkspaceImpl());
+    if (!Root2.DevToolsContext.globalInstance().has(_WorkspaceImpl) || forceNew) {
+      Root2.DevToolsContext.globalInstance().set(_WorkspaceImpl, new _WorkspaceImpl());
     }
-    return Root.DevToolsContext.globalInstance().get(_WorkspaceImpl);
+    return Root2.DevToolsContext.globalInstance().get(_WorkspaceImpl);
   }
   static removeInstance() {
-    Root.DevToolsContext.globalInstance().delete(_WorkspaceImpl);
+    Root2.DevToolsContext.globalInstance().delete(_WorkspaceImpl);
   }
   uiSourceCode(projectId, url) {
     const project = this.#projects.get(projectId);
@@ -909,12 +912,12 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
   }) {
     const { forceNew } = opts;
     if (forceNew) {
-      Root2.DevToolsContext.globalInstance().set(_IgnoreListManager, new _IgnoreListManager(opts.settings ?? Common4.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
+      Root3.DevToolsContext.globalInstance().set(_IgnoreListManager, new _IgnoreListManager(opts.settings ?? Common4.Settings.Settings.instance(), opts.targetManager ?? SDK.TargetManager.TargetManager.instance()));
     }
-    return Root2.DevToolsContext.globalInstance().get(_IgnoreListManager);
+    return Root3.DevToolsContext.globalInstance().get(_IgnoreListManager);
   }
   static removeInstance() {
-    Root2.DevToolsContext.globalInstance().delete(_IgnoreListManager);
+    Root3.DevToolsContext.globalInstance().delete(_IgnoreListManager);
   }
   addChangeListener(listener) {
     this.#listeners.add(listener);

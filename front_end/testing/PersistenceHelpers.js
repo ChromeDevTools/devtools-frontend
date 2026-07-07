@@ -11,7 +11,7 @@ import { createFileSystemUISourceCode } from './UISourceCodeHelpers.js';
  * Persistence testing. As soon as a script is added that has the given `networkScriptUrl` and the `content`,
  * PersistenceImpl will try to bind the network uiSourceCode with this file system uiSourceCode.
  **/
-export function createFileSystemFileForPersistenceTests(fileSystemScript, networkScriptUrl, content, target) {
+export function createFileSystemFileForPersistenceTests(fileSystemScript, networkScriptUrl, content, target, universe) {
     // First, set up a network resource that is described by the networkScriptUrl. This resource
     // file is required for a binding to be created.
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(networkScriptUrl);
@@ -29,6 +29,7 @@ export function createFileSystemFileForPersistenceTests(fileSystemScript, networ
         metadata,
         autoMapping: true,
         type: fileSystemScript.type,
+        universe,
     });
 }
 function dispatchDocumentOpened(target, origin) {

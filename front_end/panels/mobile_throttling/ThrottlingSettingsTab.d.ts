@@ -1,4 +1,5 @@
 import '../../ui/kit/kit.js';
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { type Card } from '../../ui/kit/kit.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -16,7 +17,7 @@ export declare class CPUThrottlingCard {
     private progress;
     private state;
     private warnings;
-    constructor();
+    constructor(settings: Common.Settings.Settings);
     wasShown(): void;
     willHide(): void;
     private updateState;
@@ -35,7 +36,7 @@ export declare class ThrottlingSettingsTab extends UI.Widget.VBox implements UI.
     private readonly customUserConditions;
     private editor?;
     private cpuThrottlingCard;
-    constructor();
+    constructor(settings: Common.Settings.Settings);
     wasShown(): void;
     willHide(): void;
     private conditionsUpdated;

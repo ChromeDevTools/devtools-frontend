@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import type * as SDK from '../core/sdk/sdk.js';
+import type * as Foundation from '../foundation/foundation.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -16,6 +17,7 @@ export declare function createContentProviderUISourceCodes(options: {
     projectType?: Workspace.Workspace.projectTypes;
     projectId?: string;
     target?: SDK.Target.Target;
+    universe?: Foundation.Universe.Universe;
 }): {
     project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
     uiSourceCodes: Workspace.UISourceCode.UISourceCode[];
@@ -28,6 +30,7 @@ export declare function createContentProviderUISourceCode(options: {
     projectId?: string;
     metadata?: Workspace.UISourceCode.UISourceCodeMetadata;
     target?: SDK.Target.Target;
+    universe?: Foundation.Universe.Universe;
 }): {
     project: Bindings.ContentProviderBasedProject.ContentProviderBasedProject;
     uiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -40,6 +43,7 @@ export declare function createFileSystemUISourceCode(options: {
     autoMapping?: boolean;
     type?: Persistence.PlatformFileSystem.PlatformFileSystemType;
     metadata?: Workspace.UISourceCode.UISourceCodeMetadata;
+    universe?: Foundation.Universe.Universe;
 }): {
     uiSourceCode: Workspace.UISourceCode.UISourceCode;
     project: Persistence.FileSystemWorkspaceBinding.FileSystem;

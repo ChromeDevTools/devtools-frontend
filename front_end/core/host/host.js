@@ -2256,6 +2256,7 @@ __export(Platform_exports, {
   isMac: () => isMac,
   isWin: () => isWin,
   platform: () => platform,
+  setFontFamilyForTests: () => setFontFamilyForTests,
   setPlatformForTests: () => setPlatformForTests
 });
 var _platform;
@@ -2301,6 +2302,9 @@ function fontFamily() {
       break;
   }
   return _fontFamily;
+}
+function setFontFamilyForTests(family) {
+  _fontFamily = family;
 }
 
 // gen/front_end/core/host/UserMetrics.js

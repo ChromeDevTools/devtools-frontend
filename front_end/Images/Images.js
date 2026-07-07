@@ -28,6 +28,7 @@ style.setProperty('--image-file-accelerometer-back', 'url(\"' + new URL(new URL(
 style.setProperty('--image-file-accelerometer-front', 'url(\"' + new URL(new URL('accelerometer-front.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-account-tree', 'url(\"' + new URL(new URL('account-tree.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-add-photo', 'url(\"' + new URL(new URL('add-photo.svg', import.meta.url).href).toString() + '\")');
+style.setProperty('--image-file-ads', 'url(\"' + new URL(new URL('ads.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-ai-explorer-badge', 'url(\"' + new URL(new URL('ai-explorer-badge.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-align-content-center', 'url(\"' + new URL(new URL('align-content-center.svg', import.meta.url).href).toString() + '\")');
 style.setProperty('--image-file-align-content-end', 'url(\"' + new URL(new URL('align-content-end.svg', import.meta.url).href).toString() + '\")');

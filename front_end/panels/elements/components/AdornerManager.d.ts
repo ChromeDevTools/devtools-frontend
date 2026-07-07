@@ -6,6 +6,7 @@ type AdornerSettingsMap = Map<string, boolean>;
 export declare enum RegisteredAdorners {
     AD = "ad",
     CONTAINER = "container",
+    CUSTOM_ELEMENT = "custom-element",
     FLEX = "flex",
     GRID = "grid",
     GRID_LANES = "grid-lanes",

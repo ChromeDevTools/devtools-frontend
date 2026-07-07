@@ -41,6 +41,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -291,6 +292,11 @@ const UIStrings = {
      * @description Label of an adorner next to the html node in the Elements panel.
      */
     viewSourceCode: 'View source code',
+    /**
+     * @description Label of an adorner in the Elements panel. When clicked, it reveals
+     * the definition of the custom element in the Sources panel.
+     */
+    showCustomElementDefinition: 'Show custom element definition',
     /**
      * @description Context menu item in Elements panel to assess visibility of an element via AI.
      */
@@ -777,7 +783,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
     const hasAdorners = !!input.adProvenance || input.showContainerAdorner || input.showFlexAdorner ||
         input.showGridAdorner || input.showGridLanesAdorner || input.showMediaAdorner || input.showPopoverAdorner ||
         input.showTopLayerAdorner || input.showViewSourceAdorner || input.showScrollAdorner ||
-        input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner;
+        input.showScrollSnapAdorner || input.showSlotAdorner || input.showStartingStyleAdorner ||
+        input.showCustomElementAdorner;
     const gutterContainerClasses = {
         'has-decorations': input.decorations.length || input.descendantDecorations.length,
         'gutter-container': true,
@@ -810,6 +817,18 @@ export const DEFAULT_VIEW = (input, output, target) => {
           @click=${input.onViewSourceAdornerClick}
           ${adornerRef()}>
           <span>${ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
+        </devtools-adorner>` : nothing}
+        ${input.showCustomElementAdorner ? html `<devtools-adorner
+          class="custom-element clickable"
+          role=button
+          tabindex=0
+          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT).track({ click: true })}
+          aria-label=${i18nString(UIStrings.showCustomElementDefinition)}
+          @click=${input.onCustomElementAdornerClick}
+          @keydown=${handleAdornerKeydown(input.onCustomElementAdornerClick)}
+          ${adornerRef()}>
+          <span>${ElementsComponents.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}</span>
         </devtools-adorner>` : nothing}
         ${input.showContainerAdorner ? html `<devtools-adorner
           class=clickable
@@ -1151,6 +1170,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !this.isClosingTag(),
             scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
             showSlotAdorner: Boolean(this.nodeInternal.assignedSlot) && !this.isClosingTag(),
+            showCustomElementAdorner: this.node().isCustomElement() && !this.isClosingTag(),
+            onCustomElementAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => void this.#onCustomElementAdornerClick(event),
             showStartingStyleAdorner: this.nodeInternal.affectedByStartingStyles() && !this.isClosingTag(),
             startingStyleAdornerActive: this.#startingStyleAdornerActive,
             onStartingStyleAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onStartingStyleAdornerClick(event),
@@ -1165,11 +1186,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             topLayerIndex: this.node().topLayerIndex(),
             onViewSourceAdornerClick: this.treeOutline?.disableEdits ? () => { } : this.revealHTMLInSources.bind(this),
             onGutterClick: this.showContextMenu.bind(this),
-            onContainerAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onContainerAdornerClick(event),
-            onFlexAdornerClick: this.treeOutline?.disableEdits ? () => { } :
-                (event) => this.#onFlexAdornerClick(event),
-            onGridAdornerClick: this.treeOutline?.disableEdits ? () => { } :
-                (event) => this.#onGridAdornerClick(event),
+            onContainerAdornerClick: this.treeOutline?.disableEdits ? () => { } :
+                (event) => this.#onContainerAdornerClick(event),
+            onFlexAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onFlexAdornerClick(event),
+            onGridAdornerClick: this.treeOutline?.disableEdits ? () => { } : (event) => this.#onGridAdornerClick(event),
             onMediaAdornerClick: this.treeOutline?.disableEdits ? () => { } :
                 (event) => this.#onMediaAdornerClick(event),
             onPopoverAdornerClick: this.treeOutline?.disableEdits ? () => { } :
@@ -1295,6 +1315,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     isClosingTag() {
         return !isOpeningTag(this.tagTypeContext);
+    }
+    isDisplayContents() {
+        return Boolean(this.#layout?.isContents);
     }
     node() {
         return this.nodeInternal;
@@ -1495,10 +1518,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             showScrollSnapAdorner: false,
             scrollSnapAdornerActive: false,
             showSlotAdorner: false,
+            showCustomElementAdorner: false,
             showStartingStyleAdorner: false,
             startingStyleAdornerActive: false,
             onStartingStyleAdornerClick: () => { },
             onSlotAdornerClick: () => { },
+            onCustomElementAdornerClick: () => { },
             topLayerIndex: -1,
             onViewSourceAdornerClick: () => { },
             onGutterClick: () => { },
@@ -2678,6 +2703,42 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         }
         this.#startingStyleAdornerActive = !this.#startingStyleAdornerActive;
         this.performUpdate();
+    }
+    async #onCustomElementAdornerClick(event) {
+        event.stopPropagation();
+        const node = this.node();
+        const object = await node.resolveToObject('');
+        if (!object) {
+            return;
+        }
+        let constructorObject = null;
+        try {
+            const result = await object.callFunction(function () {
+                const selector = this.getAttribute('is') || this.tagName.toLowerCase();
+                return (typeof customElements !== 'undefined' && customElements.get(selector)) || this.constructor;
+            });
+            constructorObject = result.object;
+        }
+        finally {
+            object.release();
+        }
+        if (!constructorObject) {
+            return;
+        }
+        try {
+            if (constructorObject.type === 'function') {
+                const functionDetails = await SDK.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
+                if (functionDetails?.location) {
+                    const uiLocation = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
+                    if (uiLocation) {
+                        void Common.Revealer.reveal(uiLocation);
+                    }
+                }
+            }
+        }
+        finally {
+            constructorObject.release();
+        }
     }
 }
 export const InitialChildrenLimit = 500;

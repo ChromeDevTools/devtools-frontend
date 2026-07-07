@@ -1,5 +1,6 @@
 import type * as Platform from '../core/platform/platform.js';
 import type * as SDK from '../core/sdk/sdk.js';
+import type * as Foundation from '../foundation/foundation.js';
 import type * as Persistence from '../models/persistence/persistence.js';
 import * as Workspace from '../models/workspace/workspace.js';
 /**
@@ -11,7 +12,7 @@ export declare function createFileSystemFileForPersistenceTests(fileSystemScript
     fileSystemFileUrl: Platform.DevToolsPath.UrlString;
     fileSystemPath: Platform.DevToolsPath.UrlString;
     type?: Persistence.PlatformFileSystem.PlatformFileSystemType;
-}, networkScriptUrl: Platform.DevToolsPath.UrlString, content: string, target: SDK.Target.Target): {
+}, networkScriptUrl: Platform.DevToolsPath.UrlString, content: string, target: SDK.Target.Target, universe?: Foundation.Universe.Universe): {
     uiSourceCode: Workspace.UISourceCode.UISourceCode;
     project: Persistence.FileSystemWorkspaceBinding.FileSystem;
 };

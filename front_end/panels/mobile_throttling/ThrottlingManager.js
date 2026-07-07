@@ -106,16 +106,16 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
     get hardwareConcurrencyOverrideEnabled() {
         return this.#hardwareConcurrencyOverrideEnabled;
     }
-    constructor() {
+    constructor(settings) {
         super();
         this.cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
         this.cpuThrottlingManager.addEventListener("RateChanged" /* SDK.CPUThrottlingManager.Events.RATE_CHANGED */, (event) => this.onCPUThrottlingRateChangedOnSDK(event.data));
         this.cpuThrottlingControls = new Set();
         this.cpuThrottlingOptions = ThrottlingPresets.cpuThrottlingPresets;
-        this.customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting();
-        this.currentNetworkThrottlingConditionKeySetting = SDK.NetworkManager.activeNetworkThrottlingKeySetting();
+        this.customNetworkConditionsSetting = SDK.NetworkManager.customUserNetworkConditionsSetting(settings);
+        this.currentNetworkThrottlingConditionKeySetting = SDK.NetworkManager.activeNetworkThrottlingKeySetting(settings);
         this.calibratedCpuThrottlingSetting =
-            Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
+            settings.createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         this.calibratedCpuThrottlingSetting.addChangeListener(this.onCalibratedSettingChanged, this);
         SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged" /* SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, () => {
             this.lastNetworkThrottlingConditions = this.#getCurrentNetworkConditions();
@@ -137,9 +137,9 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         return custom ?? SDK.NetworkManager.NoThrottlingConditions;
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, settings } = opts;
         if (!throttlingManagerInstance || forceNew) {
-            throttlingManagerInstance = new ThrottlingManager();
+            throttlingManagerInstance = new ThrottlingManager(settings ?? Common.Settings.Settings.instance());
         }
         return throttlingManagerInstance;
     }

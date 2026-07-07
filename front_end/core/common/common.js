@@ -3547,55 +3547,55 @@ __export(Revealer_exports, {
 import * as i18n from "./../i18n/i18n.js";
 var UIStrings = {
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   elementsPanel: "Elements panel",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
-  stylesSidebar: "styles sidebar",
+  stylesSidebar: "Styles sidebar",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   changesDrawer: "Changes drawer",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   issuesView: "Issues view",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   networkPanel: "Network panel",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   requestConditionsDrawer: "Request conditions drawer",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   applicationPanel: "Application panel",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   sourcesPanel: "Sources panel",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   timelinePanel: "Performance panel",
   /**
-   * @description The UI destination when right clicking an item that can be revealed
+   * @description The UI destination when right-clicking an item that can be revealed.
    */
   memoryInspectorPanel: "Memory inspector panel",
   /**
-   * @description The UI destination when revealing loaded resources through the Developer Resources Panel
+   * @description The UI destination when revealing loaded resources through the Developer resources panel.
    */
-  developerResourcesPanel: "Developer Resources panel",
+  developerResourcesPanel: "Developer resources panel",
   /**
-   * @description The UI destination when revealing loaded resources through the Animations panel
+   * @description The UI destination when revealing loaded resources through the Animations panel.
    */
   animationsPanel: "Animations panel",
   /**
-   * @description The UI destination when revealing an item in the Lighthouse panel
+   * @description The UI destination when revealing an item in the Lighthouse panel.
    */
   lighthousePanel: "Lighthouse panel"
 };
@@ -4637,7 +4637,7 @@ __export(ResourceType_exports, {
 import * as i18n3 from "./../i18n/i18n.js";
 var UIStrings2 = {
   /**
-   * @description Text that appears in a tooltip the fetch and xhr resource types filter.
+   * @description Text that appears in a tooltip for the Fetch and XHR resource types filter.
    */
   fetchAndXHR: "`Fetch` and `XHR`",
   /**
@@ -4649,7 +4649,7 @@ var UIStrings2 = {
    */
   js: "JS",
   /**
-   * @description Text that appears on a button for the css resource type filter.
+   * @description Text that appears on a button for the CSS resource type filter.
    */
   css: "CSS",
   /**
@@ -4669,7 +4669,7 @@ var UIStrings2 = {
    */
   doc: "Doc",
   /**
-   * @description Text that appears on a button for the websocket, webtransport, directsocket resource type filter.
+   * @description Text that appears on a button for the WebSocket, WebTransport, and DirectSocket resource type filter.
    */
   socketShort: "Socket",
   /**
@@ -4685,67 +4685,67 @@ var UIStrings2 = {
    */
   manifest: "Manifest",
   /**
-   * @description Text for other types of items
+   * @description Text for other types of items.
    */
   other: "Other",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   document: "Document",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   stylesheet: "Stylesheet",
   /**
-   * @description Text in Image View of the Sources panel
+   * @description Text in Image view of the Sources panel.
    */
   image: "Image",
   /**
-   * @description Label for a group of JavaScript files
+   * @description Label for a group of JavaScript files.
    */
   script: "Script",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   texttrack: "TextTrack",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   fetch: "Fetch",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   eventsource: "EventSource",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   websocket: "WebSocket",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   webtransport: "WebTransport",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   directsocket: "DirectSocket",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   signedexchange: "SignedExchange",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   ping: "Ping",
   /**
-   * @description Name of a network resource type
+   * @description Name of a network resource type.
    */
   cspviolationreport: "CSPViolationReport",
   /**
-   * @description Name of a network initiator type
+   * @description Name of a network initiator type.
    */
   preflight: "Preflight",
   /**
-   * @description Name of a network initiator type for FedCM requests
+   * @description Name of a network initiator type for FedCM requests.
    */
   fedcm: "FedCM"
 };
@@ -5225,76 +5225,76 @@ import * as i18n5 from "./../i18n/i18n.js";
 import * as Root2 from "./../root/root.js";
 var UIStrings3 = {
   /**
-   * @description Title of the Elements Panel
+   * @description Title of the Elements panel.
    */
   elements: "Elements",
   /**
-   * @description Text for DevTools AI
+   * @description Text for DevTools AI.
    */
   ai: "AI",
   /**
-   * @description Text for DevTools appearance
+   * @description Text for DevTools appearance.
    */
   appearance: "Appearance",
   /**
-   * @description Name of the Sources panel
+   * @description Title of the Sources panel.
    */
   sources: "Sources",
   /**
-   * @description Title of the Network tool
+   * @description Title of the Network panel.
    */
   network: "Network",
   /**
-   * @description Text for the performance of something
+   * @description Title of the Performance panel.
    */
   performance: "Performance",
   /**
-   * @description Title of the Console tool
+   * @description Title of the Console panel.
    */
   console: "Console",
   /**
-   * @description A title of the 'Persistence' setting category
+   * @description Title of the Persistence setting category.
    */
   persistence: "Persistence",
   /**
-   * @description Text that refers to the debugger
+   * @description Title of the Debugger setting category.
    */
   debugger: "Debugger",
   /**
-   * @description Text describing global shortcuts and settings that are available throughout the DevTools
+   * @description Title of the Global setting category for shortcuts and settings available throughout DevTools.
    */
   global: "Global",
   /**
-   * @description Title of the Rendering tool
+   * @description Title of the Rendering tool.
    */
   rendering: "Rendering",
   /**
-   * @description Title of a section on CSS Grid tooling
+   * @description Title of the Grid setting category for CSS Grid tooling.
    */
   grid: "Grid",
   /**
-   * @description Text for the mobile platform, as opposed to desktop
+   * @description Title of the Mobile setting category.
    */
   mobile: "Mobile",
   /**
-   * @description Text for the memory of the page
+   * @description Title of the Memory panel setting category.
    */
   memory: "Memory",
   /**
-   * @description Text for the extension of the page
+   * @description Title of the Extension setting category.
    */
   extension: "Extension",
   /**
-   * @description Text for the adorner of the page
+   * @description Title of the Adorner setting category.
    */
   adorner: "Adorner",
   /**
-   * @description Header for the "Account" section in the settings UI. The "Account"
-   * section allows users see their signed in account and configure which DevTools data is synced via Chrome Sync.
+   * @description Header for the Account section in the settings UI. The Account
+   * section allows users to see their signed-in account and configure which DevTools data is synced via Chrome Sync.
    */
   account: "Account",
   /**
-   * @description Text for the privacy section of the page.
+   * @description Title of the Privacy setting category.
    */
   privacy: "Privacy"
 };
@@ -5394,11 +5394,9 @@ __export(Settings_exports, {
   SettingsStorage: () => SettingsStorage,
   getLocalizedSettingsCategory: () => getLocalizedSettingsCategory,
   maybeRemoveSettingExtension: () => maybeRemoveSettingExtension,
-  moduleSetting: () => moduleSetting,
   registerSettingExtension: () => registerSettingExtension,
   registerSettingsForTest: () => registerSettingsForTest,
-  resetSettings: () => resetSettings,
-  settingForTest: () => settingForTest
+  resetSettings: () => resetSettings
 });
 import * as Platform5 from "./../platform/platform.js";
 import * as Root4 from "./../root/root.js";
@@ -6712,12 +6710,6 @@ var RegExpSetting = class extends Setting {
     return this.#regex;
   }
 };
-function moduleSetting(settingName) {
-  return Settings.instance().moduleSetting(settingName);
-}
-function settingForTest(settingName) {
-  return Settings.instance().settingForTest(settingName);
-}
 
 // gen/front_end/core/common/SimpleHistoryManager.js
 var SimpleHistoryManager_exports = {};

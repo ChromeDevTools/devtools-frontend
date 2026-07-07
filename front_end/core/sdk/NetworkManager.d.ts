@@ -15,8 +15,8 @@ import { type SDKModelObserver, TargetManager } from './TargetManager.js';
  * to in multiple places, and this ensures we don't have accidental typos which
  * mean extra settings get mistakenly created.
  */
-export declare function customUserNetworkConditionsSetting(settings?: Common.Settings.Settings): Common.Settings.Setting<Conditions[]>;
-export declare function activeNetworkThrottlingKeySetting(settings?: Common.Settings.Settings): Common.Settings.Setting<ThrottlingConditionKey>;
+export declare function customUserNetworkConditionsSetting(settings: Common.Settings.Settings): Common.Settings.Setting<Conditions[]>;
+export declare function activeNetworkThrottlingKeySetting(settings: Common.Settings.Settings): Common.Settings.Setting<ThrottlingConditionKey>;
 export declare class NetworkManager extends SDKModel<EventTypes> {
     #private;
     readonly dispatcher: NetworkDispatcher;
@@ -326,7 +326,7 @@ export declare class InterceptedRequest {
     responseHeaders: Protocol.Fetch.HeaderEntry[] | undefined;
     requestId: Protocol.Fetch.RequestId;
     networkRequest: NetworkRequest | null;
-    constructor(fetchAgent: ProtocolProxyApi.FetchApi, request: Protocol.Network.Request, resourceType: Protocol.Network.ResourceType, requestId: Protocol.Fetch.RequestId, networkRequest: NetworkRequest | null, responseStatusCode?: number, responseHeaders?: Protocol.Fetch.HeaderEntry[]);
+    constructor(multitargetNetworkManager: MultitargetNetworkManager, fetchAgent: ProtocolProxyApi.FetchApi, request: Protocol.Network.Request, resourceType: Protocol.Network.ResourceType, requestId: Protocol.Fetch.RequestId, networkRequest: NetworkRequest | null, responseStatusCode?: number, responseHeaders?: Protocol.Fetch.HeaderEntry[]);
     hasResponded(): boolean;
     static mergeSetCookieHeaders(originalSetCookieHeaders: Protocol.Fetch.HeaderEntry[], setCookieHeadersFromOverrides: Protocol.Fetch.HeaderEntry[]): Protocol.Fetch.HeaderEntry[];
     continueRequestWithContent(contentBlob: Blob, encoded: boolean, responseHeaders: Protocol.Fetch.HeaderEntry[], isBodyOverridden: boolean): Promise<void>;

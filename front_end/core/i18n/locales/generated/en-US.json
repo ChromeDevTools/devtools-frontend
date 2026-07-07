@@ -93,7 +93,7 @@
     "message": "Changes drawer"
   },
   "core/common/Revealer.ts | developerResourcesPanel": {
-    "message": "Developer Resources panel"
+    "message": "Developer resources panel"
   },
   "core/common/Revealer.ts | elementsPanel": {
     "message": "Elements panel"
@@ -117,7 +117,7 @@
     "message": "Sources panel"
   },
   "core/common/Revealer.ts | stylesSidebar": {
-    "message": "styles sidebar"
+    "message": "Styles sidebar"
   },
   "core/common/Revealer.ts | timelinePanel": {
     "message": "Performance panel"
@@ -3394,6 +3394,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "No document detected"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | experimental": {
+    "message": "Experimental"
   },
   "panels/application/ApplicationPanelSidebar.ts | explainCookies": {
     "message": "Explain cookies"
@@ -8218,6 +8221,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
     "message": "Show element associated with the commandfor attribute"
+  },
+  "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
+    "message": "Show custom element definition"
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Show iframe details"

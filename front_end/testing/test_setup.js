@@ -5,6 +5,7 @@
  * This file is automatically loaded and run by Karma because it automatically
  * loads and injects all *.js files it finds.
  */
+import '../third_party/chromium/ahem/ahem.js';
 import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
@@ -15,36 +16,9 @@ import { cleanTestDOM, setupTestDOM } from './DOMHooks.js';
 import { createFakeSetting, resetHostConfig } from './EnvironmentHelpers.js';
 import { TraceLoader } from './TraceLoader.js';
 import { checkForPendingActivity, startTrackingAsyncActivity, stopTrackingAsyncActivity, } from './TrackAsyncOperations.js';
-const LOADING_TIMEOUT = 5_000;
 async function setupTestFont() {
     document.documentElement.classList.add('platform-screenshot-test');
-    await new Promise((resolve, reject) => {
-        const timer = window.setTimeout(() => reject('Failing loading the fonts from the network'), LOADING_TIMEOUT);
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap';
-        link.onload = ev => {
-            clearTimeout(timer);
-            resolve(ev);
-        };
-        document.head.appendChild(link);
-    });
-    const loadFontsPromise = Promise
-        .all([
-        document.fonts.load('400 16px "Roboto"'), // Normal
-        document.fonts.load('500 16px "Roboto"'), // Medium
-        document.fonts.load('700 16px "Roboto"'), // Bold
-        document.fonts.load('italic 400 16px "Roboto"'),
-        document.fonts.load('italic 500 16px "Roboto"'),
-        document.fonts.load('italic 700 16px "Roboto"'),
-    ])
-        .then(async () => {
-        return await document.fonts.ready;
-    });
-    await Promise.race([
-        loadFontsPromise,
-        new Promise((_res, rej) => setTimeout(() => rej('Failing loading the fonts from the network'), LOADING_TIMEOUT)),
-    ]);
+    Host.Platform.setFontFamilyForTests('ahem');
 }
 before(async function () {
     // All setup function should manage their own timeout

@@ -5,7 +5,7 @@ import * as Geometry from '../geometry/geometry.js';
 import { type EmulatedDevice, type Mode } from './EmulatedDevices.js';
 export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.SDKModelObserver<SDK.EmulationModel.EmulationModel> {
     #private;
-    private constructor();
+    constructor(targetManager: SDK.TargetManager.TargetManager, settings: Common.Settings.Settings, multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager);
     static instance(opts?: {
         forceNew: boolean;
     }): DeviceModeModel;
@@ -46,6 +46,7 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     type(): Type;
     screenImage(): string;
     outlineImage(): string;
+    canShowDeviceFrame(): boolean;
     outlineRect(): Rect | null;
     screenRect(): Rect;
     visiblePageRect(): Rect;

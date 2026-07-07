@@ -215,9 +215,8 @@ export class CPUThrottlingCard {
     progress;
     state = 'cta';
     warnings = [];
-    constructor() {
-        this.setting =
-            Common.Settings.Settings.instance().createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
+    constructor(settings) {
+        this.setting = settings.createSetting('calibrated-cpu-throttling', {}, "Global" /* Common.Settings.SettingStorageType.GLOBAL */);
         this.element = document.createElement('devtools-card');
         this.element.heading = i18nString(UIStrings.cpuThrottlingPresets);
         const descriptionEl = this.element.createChild('span');
@@ -421,7 +420,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
      * profile; we always use this counter which is only ever incremented.
      */
     #customUserConditionsCount;
-    constructor() {
+    constructor(settings) {
         super({
             jslog: `${VisualLogging.pane('throttling-conditions')}`,
             useShadowDom: true,
@@ -429,7 +428,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
         this.registerRequiredCSS(throttlingSettingsTabStyles);
         const settingsContent = this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
         settingsContent.classList.add('settings-card-container', 'throttling-conditions-settings');
-        this.cpuThrottlingCard = new CPUThrottlingCard();
+        this.cpuThrottlingCard = new CPUThrottlingCard(settings);
         settingsContent.append(this.cpuThrottlingCard.element);
         const addButton = new Buttons.Button.Button();
         addButton.classList.add('add-conditions-button');
@@ -451,7 +450,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
         this.customList.setHeader(createHeaderRow());
         const customContainer = createProfilesCard(i18nString(UIStrings.customProfiles), this.customList, settingsContent);
         customContainer.appendChild(addButton);
-        this.customUserConditions = SDK.NetworkManager.customUserNetworkConditionsSetting();
+        this.customUserConditions = SDK.NetworkManager.customUserNetworkConditionsSetting(settings);
         this.customUserConditions.addChangeListener(this.conditionsUpdated, this);
         const customConditions = this.customUserConditions.get();
         // We need to parse out the current max condition key index. If the last

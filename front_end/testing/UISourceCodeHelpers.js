@@ -11,7 +11,7 @@ import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as Workspace from '../models/workspace/workspace.js';
 const { urlString } = Platform.DevToolsPath;
 export function createContentProviderUISourceCodes(options) {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const workspace = options.universe?.workspace || Workspace.Workspace.WorkspaceImpl.instance();
     const projectType = options.projectType || Workspace.Workspace.projectTypes.Formatter;
     assert.notEqual(projectType, Workspace.Workspace.projectTypes.FileSystem, 'For creating file system UISourceCodes use \'createFileSystemUISourceCode\' helper.');
     const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(workspace, options.projectId || 'PROJECT_ID', projectType, 'Test project', false /* isServiceProject*/);
@@ -30,8 +30,8 @@ export function createContentProviderUISourceCodes(options) {
     return { project, uiSourceCodes };
 }
 export function createContentProviderUISourceCode(options) {
-    const { url, content, mimeType, metadata, projectType, projectId, target } = options;
-    const { project, uiSourceCodes } = createContentProviderUISourceCodes({ items: [{ url, content, mimeType, metadata }], projectType, projectId, target });
+    const { url, content, mimeType, metadata, projectType, projectId, target, universe } = options;
+    const { project, uiSourceCodes } = createContentProviderUISourceCodes({ items: [{ url, content, mimeType, metadata }], projectType, projectId, target, universe });
     return { project, uiSourceCode: uiSourceCodes[0] };
 }
 class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
@@ -68,8 +68,9 @@ class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {
     }
 }
 export function createFileSystemUISourceCode(options) {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
+    const workspace = options.universe?.workspace || Workspace.Workspace.WorkspaceImpl.instance();
+    const isolatedFileSystemManager = options.universe?.isolatedFileSystemManager ||
+        Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
     const fileSystemWorkspaceBinding = new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(isolatedFileSystemManager, workspace);
     const fileSystemPath = urlString `${options.fileSystemPath || ''}`;
     const type = options.type || '';

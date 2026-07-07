@@ -14,7 +14,6 @@ import * as Formatter from '../models/formatter/formatter.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
-import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import { deinitializeGlobalLocaleVars, initializeGlobalLocaleVars } from './LocaleHelpers.js';
 import { cleanupRuntime, setupRuntime } from './RuntimeHelpers.js';
@@ -84,7 +83,6 @@ export async function deinitializeGlobalVars() {
     IssuesManager.IssuesManager.IssuesManager.removeInstance();
     Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.removeInstance();
-    ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.removeInstance();
     Formatter.FormatterWorkerPool.FormatterWorkerPool.removeInstance();
     EmulationModel.DeviceModeModel.DeviceModeModel.removeInstance();
     cleanupSettings();

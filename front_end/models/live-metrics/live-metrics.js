@@ -3,6 +3,7 @@ import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
+import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 import * as EmulationModel from "./../emulation/emulation.js";
 import * as Spec from "./web-vitals-injected/spec/spec.js";
@@ -19,7 +20,6 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("models/live-metrics/LiveMetrics.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var LIVE_METRICS_WORLD_NAME = "DevTools Performance Metrics";
-var liveMetricsInstance;
 var InjectedScript = class {
   static #injectedScript;
   static async get() {
@@ -33,6 +33,7 @@ var InjectedScript = class {
 };
 var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
   #enabled = false;
+  #isCollectingMetrics = false;
   #target;
   #scriptIdentifier;
   #lastResetContextId;
@@ -44,15 +45,17 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
   #layoutShifts = [];
   #lastEmulationChangeTime;
   #mutex = new Common.Mutex.Mutex();
-  #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-  constructor() {
+  #targetManager;
+  #deviceModeModel;
+  constructor(targetManager, deviceModeModel) {
     super();
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    targetManager.observeTargets(this, { scoped: true });
-    targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    this.#targetManager = targetManager;
+    this.#deviceModeModel = deviceModeModel;
+    this.#targetManager.observeTargets(this, { scoped: true });
+    this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
   }
   #onPrimaryPageChanged(event) {
-    const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const primaryTarget = this.#targetManager.primaryPageTarget();
     if (!primaryTarget) {
       return;
     }
@@ -64,17 +67,17 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
   }
   async #switchToTarget(newTarget) {
     if (this.#target) {
-      await this.disable();
+      await this.#stopCollectingMetrics();
     }
     this.#target = newTarget;
-    await this.enable();
+    await this.#startCollectingMetrics();
   }
   static instance(opts = { forceNew: false }) {
     const { forceNew } = opts;
-    if (!liveMetricsInstance || forceNew) {
-      liveMetricsInstance = new _LiveMetrics();
+    if (!Root.DevToolsContext.globalInstance().has(_LiveMetrics) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_LiveMetrics, new _LiveMetrics(SDK.TargetManager.TargetManager.instance(), EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()));
     }
-    return liveMetricsInstance;
+    return Root.DevToolsContext.globalInstance().get(_LiveMetrics);
   }
   get lcpValue() {
     return this.#lcpValue;
@@ -378,24 +381,40 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     this.#sendStatusUpdate();
   }
   async targetAdded(target) {
-    if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (target !== this.#targetManager.primaryPageTarget()) {
       return;
     }
     this.#target = target;
-    await this.enable();
+    await this.#startCollectingMetrics();
   }
   async targetRemoved(target) {
     if (target !== this.#target) {
       return;
     }
-    await this.disable();
+    await this.#stopCollectingMetrics();
     this.#target = void 0;
   }
   async enable() {
+    if (this.#enabled) {
+      return;
+    }
+    this.#enabled = true;
+    if (this.#target) {
+      await this.#startCollectingMetrics();
+    }
+  }
+  async disable() {
+    if (!this.#enabled) {
+      return;
+    }
+    this.#enabled = false;
+    await this.#stopCollectingMetrics();
+  }
+  async #startCollectingMetrics() {
     if (Host.InspectorFrontendHost.isUnderTest()) {
       return;
     }
-    if (!this.#target || this.#enabled) {
+    if (!this.#target || !this.#enabled || this.#isCollectingMetrics) {
       return;
     }
     if (this.#target.type() !== SDK.Target.Type.FRAME) {
@@ -427,10 +446,10 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     });
     this.#scriptIdentifier = identifier;
     this.#deviceModeModel?.addEventListener("Updated", this.#onEmulationChanged, this);
-    this.#enabled = true;
+    this.#isCollectingMetrics = true;
   }
-  async disable() {
-    if (!this.#target || !this.#enabled) {
+  async #stopCollectingMetrics() {
+    if (!this.#target || !this.#isCollectingMetrics) {
       return;
     }
     this.#lastResetContextId = void 0;
@@ -453,7 +472,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     }
     this.#scriptIdentifier = void 0;
     this.#deviceModeModel?.removeEventListener("Updated", this.#onEmulationChanged, this);
-    this.#enabled = false;
+    this.#isCollectingMetrics = false;
   }
 };
 export {

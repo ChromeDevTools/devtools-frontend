@@ -538,6 +538,7 @@ export class NetworkDispatcher {
         networkRequest.setReferrerPolicy(request.referrerPolicy);
         networkRequest.setIsSameSite(request.isSameSite || false);
         networkRequest.setIsAdRelated(request.isAdRelated || false);
+        networkRequest.setIsLinkPreload(request.isLinkPreload || false);
     }
     updateNetworkRequestWithResponse(networkRequest, response) {
         if (response.url && networkRequest.url() !== response.url) {
@@ -1396,7 +1397,7 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper {
     #enabled;
     #conditions;
     #ruleIds = new Set();
-    static createFromSetting(setting, settings = Common.Settings.Settings.instance()) {
+    static createFromSetting(setting, settings) {
         if ('urlPattern' in setting) {
             const pattern = RequestURLPattern.create(setting.urlPattern) ?? {
                 wildcardURL: setting.urlPattern,

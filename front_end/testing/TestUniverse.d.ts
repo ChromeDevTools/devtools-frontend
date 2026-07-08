@@ -9,10 +9,12 @@ import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
+import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
+import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 import { createTarget } from './TargetHelpers.js';
 export interface CreationOptions extends Partial<Foundation.Universe.CreationOptions> {
     pageResourceLoaderOptions?: {
@@ -36,6 +38,7 @@ export interface CreationOptions extends Partial<Foundation.Universe.CreationOpt
  */
 export declare class TestUniverse implements Foundation.Universe.Universe {
     #private;
+    readonly supportsEmulation = true;
     constructor(options?: CreationOptions);
     /**
      * Convenience shortcut for `createTarget({targetManager: testUniverse.targetManager})`
@@ -55,12 +58,14 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager;
     get domModelUndoStack(): SDK.DOMModel.DOMModelUndoStack;
     get eventBreakpointsManager(): SDK.EventBreakpointsModel.EventBreakpointsManager;
+    get fileManager(): Workspace.FileManager.FileManager;
     get frameManager(): SDK.FrameManager.FrameManager;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
     get isolateManager(): SDK.IsolateManager.IsolateManager;
     get logManager(): Logs.LogManager.LogManager;
     get isolatedFileSystemManager(): Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager;
     get javaScriptMetadata(): JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl;
+    get liveMetrics(): LiveMetrics.LiveMetrics;
     get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager;
     get networkLog(): Logs.NetworkLog.NetworkLog;
     get networkPersistenceManager(): Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
@@ -70,4 +75,5 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get targetManager(): SDK.TargetManager.TargetManager;
     get settings(): Common.Settings.Settings;
     get workspace(): Workspace.Workspace.WorkspaceImpl;
+    get workspaceDiff(): WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 }

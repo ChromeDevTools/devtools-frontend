@@ -61,50 +61,50 @@ import consoleViewStyles from './consoleView.css.js';
 import { SymbolizedErrorWidget } from './SymbolizedErrorWidget.js';
 const UIStrings = {
     /**
-     * @description Message element text content in Console View Message of the Console panel. Shown
-     * when the user tried to run console.clear() but the 'Preserve log' option is enabled, which stops
+     * @description Message element text content in Console view message of the Console panel. Shown
+     * when the user tried to run console.clear() but the 'Keep log' option is enabled, which stops
      * the log from being cleared.
      */
-    consoleclearWasPreventedDueTo: '`console.clear()` was prevented due to \'Preserve log\'',
+    consoleclearWasPreventedDueTo: '`console.clear()` was prevented due to \'Keep log\'',
     /**
      * @description Text shown in the Console panel after the user has cleared the console, which
      * removes all messages from the console so that it is empty.
      */
     consoleWasCleared: 'Console was cleared',
     /**
-     * @description Message element title in Console View Message of the Console panel
+     * @description Message element title in Console view message of the Console panel.
      * @example {Ctrl+L} PH1
      */
     clearAllMessagesWithS: 'Clear all messages with {PH1}',
     /**
-     * @description Message prefix in Console View Message of the Console panel
+     * @description Message prefix in Console view message of the Console panel.
      */
     assertionFailed: 'Assertion failed: ',
     /**
-     * @description Message text in Console View Message of the Console panel
+     * @description Message text in Console view message of the Console panel.
      * @example {console.log(1)} PH1
      */
     violationS: '`[Violation]` {PH1}',
     /**
-     * @description Message text in Console View Message of the Console panel
+     * @description Message text in Console view message of the Console panel.
      * @example {console.log(1)} PH1
      */
     interventionS: '`[Intervention]` {PH1}',
     /**
-     * @description Message text in Console View Message of the Console panel
+     * @description Message text in Console view message of the Console panel.
      * @example {console.log(1)} PH1
      */
     deprecationS: '`[Deprecation]` {PH1}',
     /**
-     * @description Note title in Console View Message of the Console panel
+     * @description Note title in Console view message of the Console panel.
      */
-    thisValueWillNotBeCollectedUntil: 'This value will not be collected until console is cleared.',
+    thisValueWillNotBeCollectedUntil: 'This value won’t be collected until console is cleared.',
     /**
-     * @description Note title in Console View Message of the Console panel
+     * @description Note title in Console view message of the Console panel.
      */
     thisValueWasEvaluatedUponFirst: 'This value was evaluated upon first expanding. It may have changed since then.',
     /**
-     * @description Note title in Console View Message of the Console panel
+     * @description Note title in Console view message of the Console panel.
      */
     functionWasResolvedFromBound: 'Function was resolved from bound function.',
     /**
@@ -113,24 +113,24 @@ const UIStrings = {
      */
     exception: '<exception>',
     /**
-     * @description Text to indicate an item is a warning
+     * @description Text to indicate an item is a warning.
      */
     warning: 'Warning',
     /**
-     * @description Text for errors
+     * @description Text for errors.
      */
     error: 'Error',
     /**
      * @description Accessible label for an icon. The icon is used to mark console messages that
      * originate from a logpoint. Logpoints are special breakpoints that log a user-provided JavaScript
-     * expression to the DevTools console.
+     * expression to the DevTools Console.
      */
     logpoint: 'Logpoint',
     /**
      * @description Accessible label for an icon. The icon is used to mark console messages that
      * originate from conditional breakpoints.
      */
-    cndBreakpoint: 'Conditional Breakpoint',
+    cndBreakpoint: 'Conditional breakpoint',
     /**
      * @description Announced by the screen reader to indicate how many times a particular message in
      * the console was repeated.
@@ -147,87 +147,87 @@ const UIStrings = {
      */
     errorS: '{n, plural, =1 {Error, Repeated # time} other {Error, Repeated # times}}',
     /**
-     * @description Text appended to grouped console messages that are related to URL requests
+     * @description Text appended to grouped console messages that are related to URL requests.
      */
     url: '<URL>',
     /**
-     * @description Text appended to grouped console messages about tasks that took longer than N ms
+     * @description Text appended to grouped console messages about tasks that took longer than N ms.
      */
     tookNms: 'took <N>ms',
     /**
-     * @description Text appended to grouped console messages about tasks that are related to some DOM event
+     * @description Text appended to grouped console messages about tasks that are related to some DOM event.
      */
     someEvent: '<some> event',
     /**
-     * @description Text appended to grouped console messages about tasks that are related to a particular milestone
+     * @description Text appended to grouped console messages about tasks that are related to a particular milestone.
      */
     Mxx: ' M<XX>',
     /**
-     * @description Text appended to grouped console messages about tasks that are related to autofill completions
+     * @description Text appended to grouped console messages about tasks that are related to autofill completions.
      */
     attribute: '<attribute>',
     /**
-     * @description Text for the index of something
+     * @description Text for the index of something.
      */
     index: '(index)',
     /**
-     * @description Text for the value of something
+     * @description Text for the value of something.
      */
     value: 'Value',
     /**
-     * @description Title of the Console tool
+     * @description Title of the Console tool.
      */
     console: 'Console',
     /**
-     * @description Message to indicate a console message with a stack table is expanded
+     * @description Message to indicate a console message with a stack table is expanded.
      */
     stackMessageExpanded: 'Stack table expanded',
     /**
-     * @description Message to indicate a console message with a stack table is collapsed
+     * @description Message to indicate a console message with a stack table is collapsed.
      */
     stackMessageCollapsed: 'Stack table collapsed',
     /**
-     * @description Message to offer insights for a console error message
+     * @description Message to offer insights for a console error message.
      */
     explainThisError: 'Understand this error',
     /**
-     * @description Message to offer insights for a console warning message
+     * @description Message to offer insights for a console warning message.
      */
     explainThisWarning: 'Understand this warning',
     /**
-     * @description Message to offer insights for a console message
+     * @description Message to offer insights for a console message.
      */
     explainThisMessage: 'Understand this message',
     /**
-     * @description Message to offer insights for a console error message
+     * @description Message to offer insights for a console error message.
      */
-    explainThisErrorWithAI: 'Understand this error. Powered by AI.',
+    explainThisErrorWithAI: 'Understand this error',
     /**
-     * @description Message to offer insights for a console warning message
+     * @description Message to offer insights for a console warning message.
      */
-    explainThisWarningWithAI: 'Understand this warning. Powered by AI.',
+    explainThisWarningWithAI: 'Understand this warning',
     /**
-     * @description Message to offer insights for a console message
+     * @description Message to offer insights for a console message.
      */
-    explainThisMessageWithAI: 'Understand this message. Powered by AI',
+    explainThisMessageWithAI: 'Understand this message',
     /**
-     * @description Element text content in Object Properties Section
+     * @description Element text content in Object properties section.
      */
     dots: '(...)',
     /**
-     * @description Element title in Object Properties Section
+     * @description Element title in Object properties section.
      */
     invokePropertyGetter: 'Invoke property getter',
     /**
-     * @description Context menu item to copy table data
+     * @description Context menu item to copy table data.
      */
     copyTableAs: 'Copy table as',
     /**
-     * @description Submenu item to copy table as Markdown
+     * @description Submenu item to copy table as Markdown.
      */
     copyAsMarkdown: 'Copy as Markdown',
     /**
-     * @description Submenu item to copy table as CSV
+     * @description Submenu item to copy table as CSV.
      */
     copyAsCsv: 'Copy as CSV',
 };

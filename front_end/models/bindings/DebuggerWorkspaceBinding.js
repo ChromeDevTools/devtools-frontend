@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -22,16 +21,19 @@ export class DebuggerWorkspaceBinding {
     pluginManager;
     ignoreListManager;
     workspace;
+    #settings;
     constructor(resourceMapping, targetManager, ignoreListManager, workspace) {
         this.resourceMapping = resourceMapping;
         this.resourceMapping.debuggerWorkspaceBinding = this;
         this.ignoreListManager = ignoreListManager;
         this.workspace = workspace;
+        this.#settings = targetManager.settings;
         this.#debuggerModelToData = new Map();
         targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
         this.ignoreListManager.addEventListener("IGNORED_SCRIPT_RANGES_UPDATED" /* Workspace.IgnoreListManager.Events.IGNORED_SCRIPT_RANGES_UPDATED */, event => this.updateLocations(event.data));
         this.#liveLocationPromises = new Set();
-        this.pluginManager = new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this);
+        this.pluginManager =
+            new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this, targetManager.getConsole());
     }
     setFunctionRanges(uiSourceCode, ranges) {
         for (const modelData of this.#debuggerModelToData.values()) {
@@ -376,8 +378,7 @@ export class DebuggerWorkspaceBinding {
         }
         const functionLocation = frame.functionLocation();
         if (!autoSteppingContext || debuggerPausedDetails.reason !== "step" /* Protocol.Debugger.PausedEventReason.Step */ ||
-            !functionLocation || !frame.script.isWasm() ||
-            !Common.Settings.Settings.instance().moduleSetting('wasm-auto-stepping').get() ||
+            !functionLocation || !frame.script.isWasm() || !this.#settings.moduleSetting('wasm-auto-stepping').get() ||
             !this.pluginManager.hasPluginForScript(frame.script)) {
             return true;
         }

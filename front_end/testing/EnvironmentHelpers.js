@@ -73,10 +73,12 @@ export async function deinitializeGlobalVars() {
     SDK.CPUThrottlingManager.CPUThrottlingManager.removeInstance();
     SDK.FrameManager.FrameManager.removeInstance();
     SDK.EventBreakpointsModel.EventBreakpointsManager.removeInstance();
+    SDK.PageResourceLoader.PageResourceLoader.removeInstance();
     Common.Settings.Settings.removeInstance();
     Common.Revealer.RevealerRegistry.removeInstance();
     Common.Console.Console.removeInstance();
     Workspace.Workspace.WorkspaceImpl.removeInstance();
+    Workspace.FileManager.FileManager.removeInstance();
     Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();

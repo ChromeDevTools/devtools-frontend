@@ -111,6 +111,7 @@ export declare class NetworkRequestNode extends NetworkNode {
     static ResponseCookiesCountComparator(a: NetworkNode, b: NetworkNode): number;
     static PriorityComparator(a: NetworkNode, b: NetworkNode): number;
     static IsAdRelatedComparator(a: NetworkNode, b: NetworkNode): number;
+    static IsPreloadedComparator(a: NetworkNode, b: NetworkNode): number;
     static RenderBlockingComparator(a: NetworkNode, b: NetworkNode): number;
     static RequestPropertyComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
     static RequestURLComparator(a: NetworkNode, b: NetworkNode): number;

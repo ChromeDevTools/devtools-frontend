@@ -99,7 +99,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-bar.blocking,
 .-theme-preserve {
-  background-color: var(--network-overview-blocking); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: var(--network-waterfall-blocking); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.proxy,

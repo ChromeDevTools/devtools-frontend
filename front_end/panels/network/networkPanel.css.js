@@ -35,6 +35,7 @@ export default `/*
 :root {
   --network-overview-total: var(--sys-color-neutral-bright);
   --network-overview-blocking: var(--ref-palette-neutral0);
+  --network-waterfall-blocking: var(--sys-color-neutral-bright);
   --network-overview-connecting: var(--ref-palette-yellow60);
   --network-overview-service-worker: var(--sys-color-orange-bright);
   --network-overview-service-worker-respond-with: var(--sys-color-cyan-bright);

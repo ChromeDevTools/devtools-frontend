@@ -11,31 +11,31 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import playerMessagesViewStyles from './playerMessagesView.css.js';
 const UIStrings = {
     /**
-     * @description A context menu item in the Console View of the Console panel
+     * @description A context menu item in the Console view of the Console panel.
      */
     default: 'Default',
     /**
-     * @description Text in Network Throttling Selector of the Network panel
+     * @description Text in Network throttling selector of the Network panel.
      */
     custom: 'Custom',
     /**
-     * @description Text for everything
+     * @description Text for everything.
      */
     all: 'All',
     /**
-     * @description Text for errors
+     * @description Text for errors.
      */
     error: 'Error',
     /**
-     * @description Text to indicate an item is a warning
+     * @description Text to indicate an item is a warning.
      */
     warning: 'Warning',
     /**
-     * @description Sdk console message message level info of level Labels in Console View of the Console panel
+     * @description Sdk console message level info in Console view of the Console panel.
      */
     info: 'Info',
     /**
-     * @description Debug log level
+     * @description Debug log level.
      */
     debug: 'Debug',
     /**
@@ -43,25 +43,25 @@ const UIStrings = {
      */
     logLevel: 'Log level:',
     /**
-     * @description Default text for user-text-entry for searching log messages.
+     * @description Default text for user text entry for searching log messages.
      */
     filterByLogMessages: 'Filter by log messages',
     /**
      * @description The label for the group name that this error belongs to.
      */
-    errorGroupLabel: 'Error Group:',
+    errorGroupLabel: 'Error group:',
     /**
      * @description The label for the numeric code associated with this error.
      */
-    errorCodeLabel: 'Error Code:',
+    errorCodeLabel: 'Error code:',
     /**
      * @description The label for extra data associated with an error.
      */
     errorDataLabel: 'Data:',
     /**
-     * @description The label for the stacktrace associated with the error.
+     * @description The label for the stack trace associated with the error.
      */
-    errorStackLabel: 'Stacktrace:',
+    errorStackLabel: 'Stack trace:',
     /**
      * @description The label for a root cause error associated with this error.
      */

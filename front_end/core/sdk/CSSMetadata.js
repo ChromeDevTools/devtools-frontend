@@ -370,13 +370,24 @@ export function cssMetadata() {
 }
 /**
  * The pipe character '|' indicates where text selection should be set.
+ *
+ * Spec: https://drafts.csswg.org/css-images-4/#image-values
+ * <image> = <url> | <image()> | <image-set()> | <cross-fade()> | <element()> | <gradient>
+ * <gradient> = [
+ * <linear-gradient()> | <repeating-linear-gradient()> |
+ * <radial-gradient()> | <repeating-radial-gradient()> |
+ * <conic-gradient()>  | <repeating-conic-gradient()> ]
  */
 const imageValuePresetMap = new Map([
-    ['linear-gradient', 'linear-gradient(|45deg, black, transparent|)'],
-    ['radial-gradient', 'radial-gradient(|black, transparent|)'],
-    ['repeating-linear-gradient', 'repeating-linear-gradient(|45deg, black, transparent 100px|)'],
-    ['repeating-radial-gradient', 'repeating-radial-gradient(|black, transparent 100px|)'],
-    ['url', 'url(||)'],
+    ['linear-gradient()', 'linear-gradient(|45deg, black, transparent|)'],
+    ['radial-gradient()', 'radial-gradient(|black, transparent|)'],
+    ['conic-gradient()', 'conic-gradient(|from 45deg, red, orange, yellow, green, teal, blue, purple|)'],
+    ['repeating-linear-gradient()', 'repeating-linear-gradient(|45deg, black, transparent 100px|)'],
+    ['repeating-radial-gradient()', 'repeating-radial-gradient(|black, transparent 100px|)'],
+    ['repeating-conic-gradient()', 'repeating-conic-gradient(|black 0deg 25%, white 0deg 50%|)'], // Checkerboard
+    ['url()', 'url(||)'],
+    ['image-set()', 'image-set(|url("") 1x, url("") 2x|)'],
+    ['cross-fade()', 'cross-fade(|url("") 50%, url("") 50%|)'],
 ]);
 const filterValuePresetMap = new Map([
     ['blur', 'blur(|1px|)'],
@@ -396,8 +407,16 @@ const cornerShapeValuePresetMap = new Map([
     ['superellipse(infinity)', 'superellipse(|infinity|)'],
 ]);
 const valuePresets = new Map([
-    ['filter', filterValuePresetMap], ['backdrop-filter', filterValuePresetMap], ['background', imageValuePresetMap],
-    ['background-image', imageValuePresetMap], ['-webkit-mask-image', imageValuePresetMap],
+    ['filter', filterValuePresetMap],
+    ['backdrop-filter', filterValuePresetMap],
+    ['background', imageValuePresetMap],
+    ['background-image', imageValuePresetMap],
+    ['mask-image', imageValuePresetMap],
+    ['-webkit-mask-image', imageValuePresetMap],
+    ['list-style', imageValuePresetMap],
+    ['list-style-image', imageValuePresetMap],
+    ['border-image', imageValuePresetMap],
+    ['border-image-source', imageValuePresetMap],
     [
         'transform',
         new Map([
@@ -748,7 +767,44 @@ const extraPropertyValues = new Map([
     ['-webkit-text-emphasis-position', textEmphasisPosition],
     ['alignment-baseline', new Set(['before-edge', 'after-edge', 'text-before-edge', 'text-after-edge', 'hanging'])],
     ['page-break-before', new Set(['left', 'right', 'always', 'avoid'])],
-    ['border-image', new Set(['repeat', 'stretch', 'space', 'round'])],
+    [
+        'border-image',
+        new Set([
+            'none', // border-image-source
+            'repeat',
+            'stretch',
+            'space',
+            'round',
+            'auto', // border-image-width
+            'fill', // border-image-slice
+            'linear-gradient()',
+            'radial-gradient()',
+            'conic-gradient()',
+            'repeating-linear-gradient()',
+            'repeating-radial-gradient()',
+            'repeating-conic-gradient()',
+            'image-set()',
+            'cross-fade()',
+            'url()',
+        ]),
+    ],
+    ['border-image-width', new Set(['auto'])],
+    ['border-image-slice', new Set(['fill'])],
+    [
+        'border-image-source',
+        new Set([
+            'none',
+            'linear-gradient()',
+            'radial-gradient()',
+            'conic-gradient()',
+            'repeating-linear-gradient()',
+            'repeating-radial-gradient()',
+            'repeating-conic-gradient()',
+            'image-set()',
+            'cross-fade()',
+            'url()',
+        ]),
+    ],
     [
         'text-decoration',
         new Set(['blink', 'line-through', 'overline', 'underline', 'wavy', 'double', 'solid', 'dashed', 'dotted']),
@@ -1061,16 +1117,31 @@ const extraPropertyValues = new Map([
             'border-box',
             'content-box',
             'padding-box',
-            'linear-gradient',
-            'radial-gradient',
-            'repeating-linear-gradient',
-            'repeating-radial-gradient',
-            'url',
+            'text', // background-clip
+            'linear-gradient()',
+            'radial-gradient()',
+            'conic-gradient()',
+            'repeating-linear-gradient()',
+            'repeating-radial-gradient()',
+            'repeating-conic-gradient()',
+            'image-set()',
+            'cross-fade()',
+            'url()',
         ]),
     ],
     [
         'background-image',
-        new Set(['linear-gradient', 'radial-gradient', 'repeating-linear-gradient', 'repeating-radial-gradient', 'url']),
+        new Set([
+            'linear-gradient()',
+            'radial-gradient()',
+            'conic-gradient()',
+            'repeating-linear-gradient()',
+            'repeating-radial-gradient()',
+            'repeating-conic-gradient()',
+            'image-set()',
+            'cross-fade()',
+            'url()',
+        ]),
     ],
     ['background-position', new Set(['top', 'bottom', 'left', 'right', 'center'])],
     ['background-position-x', new Set(['left', 'right', 'center'])],
@@ -1323,8 +1394,32 @@ const extraPropertyValues = new Map([
         ]),
     ],
     [
+        'mask-image',
+        new Set([
+            'linear-gradient()',
+            'radial-gradient()',
+            'conic-gradient()',
+            'repeating-linear-gradient()',
+            'repeating-radial-gradient()',
+            'repeating-conic-gradient()',
+            'image-set()',
+            'cross-fade()',
+            'url()',
+        ]),
+    ],
+    [
         '-webkit-mask-image',
-        new Set(['linear-gradient', 'radial-gradient', 'repeating-linear-gradient', 'repeating-radial-gradient', 'url']),
+        new Set([
+            'linear-gradient()',
+            'radial-gradient()',
+            'conic-gradient()',
+            'repeating-linear-gradient()',
+            'repeating-radial-gradient()',
+            'repeating-conic-gradient()',
+            'image-set()',
+            'cross-fade()',
+            'url()',
+        ]),
     ],
     ['-webkit-mask-origin', new Set(['border', 'border-box', 'content', 'content-box', 'padding', 'padding-box'])],
     ['-webkit-mask-position', new Set(['top', 'bottom', 'left', 'right', 'center'])],

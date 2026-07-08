@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Workspace from '../workspace/workspace.js';
 export interface ChunkedReader {
     fileSize(): number;
     loadedSize(): number;
@@ -24,7 +25,7 @@ export declare class ChunkedFileReader implements ChunkedReader {
 }
 export declare class FileOutputStream implements Common.StringOutputStream.OutputStream {
     #private;
-    constructor();
+    constructor(fileManager: Workspace.FileManager.FileManager);
     open(fileName: Platform.DevToolsPath.RawPathString | Platform.DevToolsPath.UrlString): Promise<boolean>;
     write(data: string): Promise<void>;
     close(): Promise<void>;

@@ -22,36 +22,36 @@ const { createRef, ref, repeat } = Directives;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description A context menu item in the Console Pin Pane of the Console panel
+     * @description A context menu item in the live expressions section of the Console panel.
      */
     removeExpression: 'Remove expression',
     /**
-     * @description A context menu item in the Console Pin Pane of the Console panel
+     * @description A context menu item in the live expressions section of the Console panel.
      */
     removeAllExpressions: 'Remove all expressions',
     /**
-     * @description Screen reader label for delete button on a non-blank live expression
+     * @description Screen reader label for delete button on a non-blank live expression.
      * @example {document} PH1
      */
     removeExpressionS: 'Remove expression: {PH1}',
     /**
-     * @description Screen reader label for delete button on a blank live expression
+     * @description Screen reader label for delete button on a blank live expression.
      */
     removeBlankExpression: 'Remove blank expression',
     /**
-     * @description Text in Console Pin Pane of the Console panel
+     * @description Text in the live expressions section of the Console panel.
      */
     liveExpressionEditor: 'Live expression editor',
     /**
-     * @description Text in Console Pin Pane of the Console panel
+     * @description Text in the live expressions section of the Console panel.
      */
     expression: 'Expression',
     /**
-     * @description Side effect label title in Console Pin Pane of the Console panel
+     * @description Side effect label title in the live expressions section of the Console panel.
      */
     evaluateAllowingSideEffects: 'Evaluate, allowing side effects',
     /**
-     * @description Text of a DOM element in Console Pin Pane of the Console panel
+     * @description Text of a DOM element in the live expressions section of the Console panel.
      */
     notAvailable: 'not available',
     /**
@@ -62,9 +62,9 @@ const UIStrings = {
      * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
      * @example {allow pasting} PH1
      */
-    doNotPaste: 'Don\'t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type “{PH1}” below to allow pasting.',
+    doNotPaste: 'Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow pasting.',
     /**
-     * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+     * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
      */
     allowPasting: 'allow pasting',
     /**

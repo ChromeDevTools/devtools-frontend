@@ -8,21 +8,21 @@ import * as Root from '../../core/root/root.js';
 import { debugLog } from './debug.js';
 const UIStrings = {
     /**
-     * @description Message shown to the user if the age check is not successful.
+     * @description Message shown to the user if the age check isn’t successful.
      */
-    ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
+    ageRestricted: 'This feature is only available to users 18 years or older.',
     /**
-     * @description The error message when the user is not logged in into Chrome.
+     * @description The error message when the user isn’t logged in to Chrome.
      */
-    notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account.',
+    notLoggedIn: 'This feature is only available when you sign in to Chrome with your Google account.',
     /**
      * @description Message shown when the user is offline.
      */
     offline: 'This feature is only available with an active internet connection.',
     /**
-     * @description Text informing the user that AI assistance is not available in Incognito mode or Guest mode.
+     * @description Text informing the user that AI assistance isn’t available in Incognito mode or Guest mode.
      */
-    notAvailableInIncognitoMode: 'AI assistance is not available in Incognito mode or Guest mode.',
+    notAvailableInIncognitoMode: 'AI assistance isn’t available in Incognito mode or Guest mode.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/ai_assistance/AiUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

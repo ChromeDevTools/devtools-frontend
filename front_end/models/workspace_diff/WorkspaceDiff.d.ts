@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as FormatterModule from '../formatter/formatter.js';
+import * as Persistence from '../persistence/persistence.js';
 import * as Workspace from '../workspace/workspace.js';
 interface DiffResponse {
     diff: Diff.Diff.DiffArray;
@@ -10,7 +11,7 @@ export declare class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrappe
     #private;
     /** used in web tests */
     private readonly loadingUISourceCodes;
-    constructor(workspace: Workspace.Workspace.WorkspaceImpl);
+    constructor(workspace: Workspace.Workspace.WorkspaceImpl, persistence?: Persistence.Persistence.PersistenceImpl, networkPersistenceManager?: Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
     requestDiff(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<DiffResponse | null>;
     subscribeToDiffChange(uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: () => void, thisObj?: Object): void;
     unsubscribeFromDiffChange(uiSourceCode: Workspace.UISourceCode.UISourceCode, callback: () => void, thisObj?: Object): void;
@@ -32,7 +33,7 @@ export interface EventTypes {
 export declare class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourceCodeDiffEventTypes> {
     #private;
     dispose: boolean;
-    constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode);
+    constructor(uiSourceCode: Workspace.UISourceCode.UISourceCode, networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
     requestDiff(): Promise<DiffResponse | null>;
     originalContent(): Promise<string | null>;
 }

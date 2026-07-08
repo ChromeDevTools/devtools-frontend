@@ -26,7 +26,8 @@ export declare const enum IsFilterType {
     RUNNING = "running",
     FROM_CACHE = "from-cache",
     SERVICE_WORKER_INTERCEPTED = "service-worker-intercepted",
-    SERVICE_WORKER_INITIATED = "service-worker-initiated"
+    SERVICE_WORKER_INITIATED = "service-worker-initiated",
+    PRELOAD = "preloaded"
 }
 export declare const enum MixedContentFilterValues {
     ALL = "all",

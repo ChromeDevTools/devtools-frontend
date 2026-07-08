@@ -540,7 +540,7 @@ export class CoverageView extends UI.Widget.VBox {
         return !this.#textFilter || this.#textFilter.test(url);
     }
     async exportReport() {
-        const fos = new Bindings.FileUtils.FileOutputStream();
+        const fos = new Bindings.FileUtils.FileOutputStream(Workspace.FileManager.FileManager.instance());
         const fileName = `Coverage-${Platform.DateUtilities.toISO8601Compact(new Date())}.json`;
         const accepted = await fos.open(fileName);
         if (!accepted) {

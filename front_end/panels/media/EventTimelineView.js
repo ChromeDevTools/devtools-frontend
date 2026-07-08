@@ -9,13 +9,13 @@ import { ColdColorScheme, HotColorScheme, TickingFlameChart, } from './TickingFl
 const NO_NORMALIZED_TIMESTAMP = -1.5;
 const UIStrings = {
     /**
-     * @description Title of the 'Playback Status' button
+     * @description Title of the 'Playback status' button.
      */
-    playbackStatus: 'Playback Status',
+    playbackStatus: 'Playback status',
     /**
-     * @description Title of the 'Buffering Status' button
+     * @description Title of the 'Buffering status' button.
      */
-    bufferingStatus: 'Buffering Status',
+    bufferingStatus: 'Buffering status',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/EventTimelineView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

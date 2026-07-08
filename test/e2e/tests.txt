@@ -61,6 +61,7 @@ elements/color-picker.test.js
 elements/computed-pane-properties.test.js
 elements/css-hints.test.js
 elements/dom-breakpoints.test.js
+elements/edit-as-html-select-all.test.js
 elements/element-breadcrumbs.test.js
 elements/elements-tree.test.js
 elements/filter-matched-styles.test.js

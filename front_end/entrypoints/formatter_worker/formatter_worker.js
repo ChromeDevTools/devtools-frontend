@@ -3593,7 +3593,6 @@ var CSSFormatter_exports = {};
 __export(CSSFormatter_exports, {
   CSSFormatter: () => CSSFormatter
 });
-import * as Platform4 from "./../../core/platform/platform.js";
 
 // gen/front_end/entrypoints/formatter_worker/FormatterWorker.js
 var FormatterWorker_exports = {};
@@ -4604,7 +4603,7 @@ var HTMLModel = class {
   }
   #build(text) {
     const tokenizer = createTokenizer("text/html");
-    let baseOffset = 0, lastOffset = 0;
+    let lastOffset = 0;
     let pendingToken = null;
     const pushToken = (token) => {
       this.#tokens.push(token);
@@ -4616,8 +4615,6 @@ var HTMLModel = class {
       return;
     };
     const processToken = (tokenValue, type, tokenStart, tokenEnd) => {
-      tokenStart += baseOffset;
-      tokenEnd += baseOffset;
       lastOffset = tokenEnd;
       const tokenType = type ? new Set(type.split(" ")) : /* @__PURE__ */ new Set();
       const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
@@ -4643,8 +4640,7 @@ var HTMLModel = class {
       return pushToken(token);
     };
     while (true) {
-      baseOffset = lastOffset;
-      tokenizer(text.substring(lastOffset), processToken);
+      tokenizer(text, processToken, lastOffset);
       if (pendingToken) {
         pushToken(pendingToken);
         pendingToken = null;
@@ -4662,7 +4658,8 @@ var HTMLModel = class {
           lastOffset = text.length;
           break;
         }
-        if (text.substring(lastOffset + 2).toLowerCase().startsWith(element.name)) {
+        const sliced = text.slice(lastOffset + 2, lastOffset + 2 + element.name.length);
+        if (sliced.toLowerCase() === element.name) {
           break;
         }
         lastOffset += 2;
@@ -5583,8 +5580,12 @@ function createTokenizer(mimeType) {
   if (!mode.token) {
     throw new Error(`Could not find CodeMirror mode with token method: ${mimeType}`);
   }
-  return (line, callback) => {
+  return (line, callback, startOffset = 0) => {
     const stream = new CodeMirror.StringStream(line);
+    if (startOffset) {
+      stream.pos = startOffset;
+      stream.start = startOffset;
+    }
     while (!stream.eol()) {
       const style = mode.token(stream, state);
       const value = stream.current();
@@ -5660,6 +5661,7 @@ var CSSFormatter = class {
   #fromOffset;
   #lineEndings;
   #lastLine = -1;
+  #currentLineIndex = 0;
   #state = {};
   constructor(builder) {
     this.#builder = builder;
@@ -5670,6 +5672,7 @@ var CSSFormatter = class {
     this.#toOffset = toOffset;
     this.#state = {};
     this.#lastLine = -1;
+    this.#currentLineIndex = 0;
     const tokenize = createTokenizer("text/css");
     const oldEnforce = this.#builder.setEnforceSpaceBetweenWords(false);
     tokenize(text.substring(this.#fromOffset, this.#toOffset), this.#tokenCallback.bind(this));
@@ -5677,7 +5680,10 @@ var CSSFormatter = class {
   }
   #tokenCallback(token, type, startPosition) {
     startPosition += this.#fromOffset;
-    const startLine = Platform4.ArrayUtilities.lowerBound(this.#lineEndings, startPosition, Platform4.ArrayUtilities.DEFAULT_COMPARATOR);
+    while (this.#currentLineIndex < this.#lineEndings.length && this.#lineEndings[this.#currentLineIndex] < startPosition) {
+      this.#currentLineIndex++;
+    }
+    const startLine = this.#currentLineIndex;
     if (startLine !== this.#lastLine) {
       this.#state.eatWhitespace = true;
     }

@@ -10,16 +10,19 @@ import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
+import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
+import * as WorkspaceDiff from '../models/workspace_diff/workspace_diff.js';
 export class Universe {
     // TODO(crbug.com/493763857): Once a singleton is no longer a singleton (i.e. it has no 'instance')
     //                            static method, we can move it out of the `DevToolsContext` and store it
     //                            directly on the `Universe`.
     context;
     autofillManager;
+    supportsEmulation;
     constructor(options) {
         const context = new Root.DevToolsContext.WritableDevToolsContext();
         this.context = context;
@@ -42,8 +45,13 @@ export class Universe {
         context.set(SDK.FrameManager.FrameManager, frameManager);
         const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
         context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
-        const deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings, multitargetNetworkManager);
-        context.set(Emulation.DeviceModeModel.DeviceModeModel, deviceModeModel);
+        this.supportsEmulation = options.supportsEmulation;
+        let deviceModeModel = null;
+        if (options.supportsEmulation) {
+            deviceModeModel =
+                new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings, multitargetNetworkManager);
+            context.set(Emulation.DeviceModeModel.DeviceModeModel, deviceModeModel);
+        }
         const pageResourceLoader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
         context.set(SDK.PageResourceLoader.PageResourceLoader, pageResourceLoader);
         const projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(options.hostConfig, pageResourceLoader, targetManager);
@@ -64,6 +72,8 @@ export class Universe {
         context.set(SDK.DOMModel.DOMModelUndoStack, domModelUndoStack);
         const workspace = new Workspace.Workspace.WorkspaceImpl();
         context.set(Workspace.Workspace.WorkspaceImpl, workspace);
+        const fileManager = new Workspace.FileManager.FileManager();
+        context.set(Workspace.FileManager.FileManager, fileManager);
         const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
         context.set(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding, automaticFileSystemWorkspaceBinding);
         const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
@@ -79,12 +89,16 @@ export class Universe {
         context.set(Persistence.Persistence.PersistenceImpl, persistence);
         const networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(workspace, persistence, breakpointManager, targetManager, settings, isolatedFileSystemManager, multitargetNetworkManager);
         context.set(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, networkPersistenceManager);
+        const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(workspace, persistence, networkPersistenceManager);
+        context.set(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl, workspaceDiff);
         const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
         context.set(Logs.NetworkLog.NetworkLog, networkLog);
         const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
         context.set(Logs.LogManager.LogManager, logManager);
         const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
         context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
+        const liveMetrics = new LiveMetrics.LiveMetrics(targetManager, deviceModeModel);
+        context.set(LiveMetrics.LiveMetrics, liveMetrics);
         this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
     }
     get automaticFileSystemManager() {
@@ -102,8 +116,9 @@ export class Universe {
     get cruxManager() {
         return this.context.get(CrUXManager.CrUXManager);
     }
+    // The DeviceModeModel may not be present, as emulation is only present for the `devtools_app` entrypoint, but not for the others.
     get deviceModeModel() {
-        return this.context.get(Emulation.DeviceModeModel.DeviceModeModel);
+        return this.supportsEmulation ? this.context.get(Emulation.DeviceModeModel.DeviceModeModel) : null;
     }
     get domDebuggerManager() {
         return this.context.get(SDK.DOMDebuggerModel.DOMDebuggerManager);
@@ -114,6 +129,9 @@ export class Universe {
     get eventBreakpointsManager() {
         return this.context.get(SDK.EventBreakpointsModel.EventBreakpointsManager);
     }
+    get fileManager() {
+        return this.context.get(Workspace.FileManager.FileManager);
+    }
     get isolatedFileSystemManager() {
         return this.context.get(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager);
     }
@@ -122,6 +140,9 @@ export class Universe {
     }
     get networkPersistenceManager() {
         return this.context.get(Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
+    }
+    get liveMetrics() {
+        return this.context.get(LiveMetrics.LiveMetrics);
     }
     get pageResourceLoader() {
         return this.context.get(SDK.PageResourceLoader.PageResourceLoader);
@@ -140,6 +161,9 @@ export class Universe {
     }
     get workspace() {
         return this.context.get(Workspace.Workspace.WorkspaceImpl);
+    }
+    get workspaceDiff() {
+        return this.context.get(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl);
     }
 }
 //# sourceMappingURL=Universe.js.map

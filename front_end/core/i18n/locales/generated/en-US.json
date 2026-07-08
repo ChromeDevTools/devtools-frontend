@@ -1500,13 +1500,13 @@
     "message": "XSLTProcessor and XSLT Processing Instructions have been deprecated by all browsers. These features will be removed from this browser soon."
   },
   "models/ai_assistance/AiUtils.ts | ageRestricted": {
-    "message": "This feature is only available to users who are 18 years of age or older."
+    "message": "This feature is only available to users 18 years or older."
   },
   "models/ai_assistance/AiUtils.ts | notAvailableInIncognitoMode": {
-    "message": "AI assistance is not available in Incognito mode or Guest mode."
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode."
   },
   "models/ai_assistance/AiUtils.ts | notLoggedIn": {
-    "message": "This feature is only available when you sign into Chrome with your Google account."
+    "message": "This feature is only available when you sign in to Chrome with your Google account."
   },
   "models/ai_assistance/AiUtils.ts | offline": {
     "message": "This feature is only available with an active internet connection."
@@ -1551,7 +1551,7 @@
     "message": "Device pixel ratio must be less than or equal to {PH1}."
   },
   "models/emulation/DeviceModeModel.ts | heightCannotBeEmpty": {
-    "message": "Height cannot be empty."
+    "message": "Height can’t be empty."
   },
   "models/emulation/DeviceModeModel.ts | heightMustBeANumber": {
     "message": "Height must be a number."
@@ -1563,7 +1563,7 @@
     "message": "Height must be less than or equal to {PH1}."
   },
   "models/emulation/DeviceModeModel.ts | widthCannotBeEmpty": {
-    "message": "Width cannot be empty."
+    "message": "Width can’t be empty."
   },
   "models/emulation/DeviceModeModel.ts | widthMustBeANumber": {
     "message": "Width must be a number."
@@ -6894,7 +6894,7 @@
     "message": "Clear console history"
   },
   "panels/console/console-meta.ts | collapseConsoleTraceMessagesByDefault": {
-    "message": "Do not automatically expand console.trace() messages"
+    "message": "Don’t automatically expand console.trace() messages"
   },
   "panels/console/console-meta.ts | console": {
     "message": "Console"
@@ -6909,28 +6909,28 @@
     "message": "Create live expression"
   },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
-    "message": "Do not autocomplete from history"
+    "message": "Don’t autocomplete from history"
   },
   "panels/console/console-meta.ts | doNotAutocompleteOnEnter": {
-    "message": "Do not accept autocomplete suggestion on Enter"
+    "message": "Don’t accept autocomplete suggestion on Enter"
   },
   "panels/console/console-meta.ts | doNotEagerlyEvaluateConsole": {
-    "message": "Do not eagerly evaluate console prompt text"
+    "message": "Don’t eagerly evaluate Console prompt text"
   },
   "panels/console/console-meta.ts | doNotGroupSimilarMessages": {
-    "message": "Don't group similar messages"
+    "message": "Don’t group similar messages"
   },
   "panels/console/console-meta.ts | doNotShowCorsErrorsIn": {
-    "message": "Don't show CORS errors in console"
+    "message": "Don’t show CORS errors in console"
   },
   "panels/console/console-meta.ts | doNotTreatEvaluationAsUser": {
-    "message": "Do not treat evaluation as user activation"
+    "message": "Don’t treat evaluation as user activation"
   },
   "panels/console/console-meta.ts | eagerEvaluation": {
     "message": "Eager evaluation"
   },
   "panels/console/console-meta.ts | eagerlyEvaluateConsolePromptText": {
-    "message": "Eagerly evaluate console prompt text"
+    "message": "Eagerly evaluate Console prompt text"
   },
   "panels/console/console-meta.ts | evaluateTriggersUserActivation": {
     "message": "Treat code evaluation as user action"
@@ -6993,7 +6993,7 @@
     "message": "allow pasting"
   },
   "panels/console/ConsolePinPane.ts | doNotPaste": {
-    "message": "Don't paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type “{PH1}” below to allow pasting."
+    "message": "Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow pasting."
   },
   "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
     "message": "Do you trust this code?"
@@ -7032,7 +7032,7 @@
     "message": "Console prompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type “{PH1}” below and press Enter to allow pasting."
+    "message": "Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below and press Enter to allow pasting."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n, plural, =0 {No errors} =1 {# error} other {# errors}}"
@@ -7092,7 +7092,7 @@
     "message": "Default levels"
   },
   "panels/console/ConsoleView.ts | doNotClearLogOnPageReload": {
-    "message": "Do not clear log on page reload / navigation"
+    "message": "Don’t clear log on page reload / navigation"
   },
   "panels/console/ConsoleView.ts | eagerlyEvaluateTextInThePrompt": {
     "message": "Eagerly evaluate text in the prompt"
@@ -7119,7 +7119,7 @@
     "message": "Hide all"
   },
   "panels/console/ConsoleView.ts | hideConsoleSidebar": {
-    "message": "Hide console sidebar"
+    "message": "Hide Console sidebar"
   },
   "panels/console/ConsoleView.ts | hideMessagesFromS": {
     "message": "Hide messages from {PH1}"
@@ -7128,16 +7128,16 @@
     "message": "Info"
   },
   "panels/console/ConsoleView.ts | issuesWithColon": {
-    "message": "{n, plural, =0 {No Issues} =1 {# Issue:} other {# Issues:}}"
+    "message": "{n, plural, =0 {No issues} =1 {# issue:} other {# issues:}}"
   },
   "panels/console/ConsoleView.ts | issueToolbarClickToGoToTheIssuesTab": {
-    "message": "Click to go to the issues tab"
+    "message": "Click to go to the Issues tab"
   },
   "panels/console/ConsoleView.ts | issueToolbarClickToView": {
     "message": "Click to view {issueEnumeration}"
   },
   "panels/console/ConsoleView.ts | issueToolbarTooltipGeneral": {
-    "message": "Some problems no longer generate console messages, but are surfaced in the issues tab."
+    "message": "Some problems no longer generate console messages, but are surfaced in the Issues tab."
   },
   "panels/console/ConsoleView.ts | logLevelS": {
     "message": "Log level: {PH1}"
@@ -7152,10 +7152,10 @@
     "message": "Only show messages from the current context (top, iframe, worker, extension)"
   },
   "panels/console/ConsoleView.ts | overriddenByFilterSidebar": {
-    "message": "Log levels are controlled by the console sidebar."
+    "message": "Log levels are controlled by the Console sidebar."
   },
   "panels/console/ConsoleView.ts | preserveLog": {
-    "message": "Preserve log"
+    "message": "Keep log"
   },
   "panels/console/ConsoleView.ts | replayXhr": {
     "message": "Replay XHR"
@@ -7173,7 +7173,7 @@
     "message": "{n, plural, =1 {# hidden} other {# hidden}}"
   },
   "panels/console/ConsoleView.ts | showConsoleSidebar": {
-    "message": "Show console sidebar"
+    "message": "Show Console sidebar"
   },
   "panels/console/ConsoleView.ts | showCorsErrorsInConsole": {
     "message": "CORS errors in console"
@@ -7203,13 +7203,13 @@
     "message": "Clear all messages with {PH1}"
   },
   "panels/console/ConsoleViewMessage.ts | cndBreakpoint": {
-    "message": "Conditional Breakpoint"
+    "message": "Conditional breakpoint"
   },
   "panels/console/ConsoleViewMessage.ts | console": {
     "message": "Console"
   },
   "panels/console/ConsoleViewMessage.ts | consoleclearWasPreventedDueTo": {
-    "message": "console.clear() was prevented due to 'Preserve log'"
+    "message": "console.clear() was prevented due to 'Keep log'"
   },
   "panels/console/ConsoleViewMessage.ts | consoleWasCleared": {
     "message": "Console was cleared"
@@ -7242,19 +7242,19 @@
     "message": "Understand this error"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisErrorWithAI": {
-    "message": "Understand this error. Powered by AI."
+    "message": "Understand this error"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
     "message": "Understand this message"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisMessageWithAI": {
-    "message": "Understand this message. Powered by AI"
+    "message": "Understand this message"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
     "message": "Understand this warning"
   },
   "panels/console/ConsoleViewMessage.ts | explainThisWarningWithAI": {
-    "message": "Understand this warning. Powered by AI."
+    "message": "Understand this warning"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "Function was resolved from bound function."
@@ -7290,7 +7290,7 @@
     "message": "This value was evaluated upon first expanding. It may have changed since then."
   },
   "panels/console/ConsoleViewMessage.ts | thisValueWillNotBeCollectedUntil": {
-    "message": "This value will not be collected until console is cleared."
+    "message": "This value won’t be collected until console is cleared."
   },
   "panels/console/ConsoleViewMessage.ts | tookNms": {
     "message": "took <N>ms"
@@ -7632,7 +7632,7 @@
     "message": "Error"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | failure": {
-    "message": "failure"
+    "message": "Failure"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | initiator": {
     "message": "Initiator"
@@ -7644,7 +7644,7 @@
     "message": "{n, plural, =1 {# resource matches} other {# resources match}}"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | pending": {
-    "message": "pending"
+    "message": "Pending"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | sBytes": {
     "message": "{n, plural, =1 {# byte} other {# bytes}}"
@@ -7653,10 +7653,10 @@
     "message": "Status"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | success": {
-    "message": "success"
+    "message": "Success"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | totalBytes": {
-    "message": "Total Bytes"
+    "message": "Total bytes"
   },
   "panels/developer_resources/DeveloperResourcesListView.ts | url": {
     "message": "URL"
@@ -8218,6 +8218,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | scrollIntoView": {
     "message": "Scroll into view"
+  },
+  "panels/elements/ElementsTreeElement.ts | selectAll": {
+    "message": "Select all"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
     "message": "Show element associated with the commandfor attribute"
@@ -9795,10 +9798,10 @@
     "message": "Value"
   },
   "panels/media/EventTimelineView.ts | bufferingStatus": {
-    "message": "Buffering Status"
+    "message": "Buffering status"
   },
   "panels/media/EventTimelineView.ts | playbackStatus": {
-    "message": "Playback Status"
+    "message": "Playback status"
   },
   "panels/media/MainView.ts | mediaPlayerDescription": {
     "message": "On this page you can view and export media player details."
@@ -9876,16 +9879,16 @@
     "message": "Caused by:"
   },
   "panels/media/PlayerMessagesView.ts | errorCodeLabel": {
-    "message": "Error Code:"
+    "message": "Error code:"
   },
   "panels/media/PlayerMessagesView.ts | errorDataLabel": {
     "message": "Data:"
   },
   "panels/media/PlayerMessagesView.ts | errorGroupLabel": {
-    "message": "Error Group:"
+    "message": "Error group:"
   },
   "panels/media/PlayerMessagesView.ts | errorStackLabel": {
-    "message": "Stacktrace:"
+    "message": "Stack trace:"
   },
   "panels/media/PlayerMessagesView.ts | filterByLogMessages": {
     "message": "Filter by log messages"
@@ -11128,6 +11131,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | isAdRelated": {
     "message": "Is Ad-Related"
+  },
+  "panels/network/NetworkLogViewColumns.ts | isPreloaded": {
+    "message": "Preloaded"
   },
   "panels/network/NetworkLogViewColumns.ts | latency": {
     "message": "Latency"
@@ -12480,7 +12486,7 @@
     "message": "Add custom property"
   },
   "panels/protocol_monitor/JSONEditor.ts | addParameter": {
-    "message": "Add a parameter"
+    "message": "Add parameter"
   },
   "panels/protocol_monitor/JSONEditor.ts | copyCommand": {
     "message": "Copy command"
@@ -12492,7 +12498,7 @@
     "message": "Reset to default value"
   },
   "panels/protocol_monitor/JSONEditor.ts | selectTarget": {
-    "message": "Select a target"
+    "message": "Select target"
   },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCmdEnter": {
     "message": "Send command - ⌘+Enter"
@@ -12522,7 +12528,7 @@
     "message": "Filter"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
-    "message": "Hide  CDP command editor"
+    "message": "Hide CDP command editor"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Method"
@@ -12546,13 +12552,13 @@
     "message": "Select a message to see its details"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
-    "message": "Select a target"
+    "message": "Select target"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommand": {
     "message": "Send a raw CDP command"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | sendRawCDPCommandExplanation": {
-    "message": "Format: 'Domain.commandName' for a command without parameters, or '{\"command\":\"Domain.commandName\", \"parameters\": {...}}' as a JSON object for a command with parameters. 'cmd'/'method' and 'args'/'params'/'arguments' are also supported as alternative keys for the JSON object."
+    "message": "Format: 'Domain.commandName' for a command without parameters, or '{\"command\":\"Domain.commandName\", \"parameters\": {…}}' as a JSON object for a command with parameters. 'cmd'/'method' and 'args'/'params'/'arguments' are also supported as alternative keys for the JSON object."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
@@ -17211,7 +17217,7 @@
     "message": "ID"
   },
   "panels/webauthn/WebauthnPane.ts | isResident": {
-    "message": "Is Resident"
+    "message": "Is resident"
   },
   "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
     "message": "New authenticator"
@@ -17244,7 +17250,7 @@
     "message": "Set {PH1} as the active authenticator"
   },
   "panels/webauthn/WebauthnPane.ts | signCount": {
-    "message": "Signature Count"
+    "message": "Signature count"
   },
   "panels/webauthn/WebauthnPane.ts | supportsHmacSecret": {
     "message": "Supports hmac-secret"
@@ -17265,7 +17271,7 @@
     "message": "Transport"
   },
   "panels/webauthn/WebauthnPane.ts | userHandle": {
-    "message": "User Handle"
+    "message": "User handle"
   },
   "panels/webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
     "message": "Use WebAuthn for phishing-resistant authentication."
@@ -18022,6 +18028,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "{PH1} selection regions"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | formatting": {
+    "message": "Formatting…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "Line {PH1}, Column {PH2}"

@@ -255,6 +255,8 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     isSameSite(): boolean | null;
     setIsAdRelated(isAdRelated: boolean): void;
     isAdRelated(): boolean;
+    setIsLinkPreload(isLinkPreload: boolean): void;
+    isLinkPreload(): boolean;
     getAssociatedData(key: string): object | null;
     setAssociatedData(key: string, data: object): void;
     deleteAssociatedData(key: string): void;

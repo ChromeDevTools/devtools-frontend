@@ -81,7 +81,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         styleMap.set("ssl" /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */, { fillStyle: RequestTimeRangeNameToColor["ssl" /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */] });
         styleMap.set("dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */, { fillStyle: RequestTimeRangeNameToColor["dns" /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */] });
         styleMap.set("proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */, { fillStyle: RequestTimeRangeNameToColor["proxy" /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */] });
-        styleMap.set("blocking" /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */, { fillStyle: RequestTimeRangeNameToColor["blocking" /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */] });
+        styleMap.set("blocking" /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */, { fillStyle: '--network-waterfall-blocking' });
         styleMap.set("push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */, { fillStyle: RequestTimeRangeNameToColor["push" /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */] });
         styleMap.set("queueing" /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */, {
             fillStyle: RequestTimeRangeNameToColor["queueing" /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */],

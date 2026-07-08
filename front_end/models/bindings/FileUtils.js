@@ -136,26 +136,29 @@ export class ChunkedFileReader {
     }
 }
 export class FileOutputStream {
+    #fileManager;
     #writeCallbacks;
     #fileName;
     #closed;
-    constructor() {
+    constructor(fileManager) {
+        this.#fileManager = fileManager;
         this.#writeCallbacks = [];
     }
     async open(fileName) {
         this.#closed = false;
         this.#writeCallbacks = [];
         this.#fileName = fileName;
-        const saveResponse = await Workspace.FileManager.FileManager.instance().save(this.#fileName, TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA, /* forceSaveAs=*/ true);
+        const saveResponse = await this.#fileManager.save(this.#fileName, TextUtils.ContentData.EMPTY_TEXT_CONTENT_DATA, 
+        /* forceSaveAs=*/ true);
         if (saveResponse) {
-            Workspace.FileManager.FileManager.instance().addEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
+            this.#fileManager.addEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
         }
         return Boolean(saveResponse);
     }
     write(data) {
         return new Promise(resolve => {
             this.#writeCallbacks.push(resolve);
-            Workspace.FileManager.FileManager.instance().append(this.#fileName, data);
+            this.#fileManager.append(this.#fileName, data);
         });
     }
     async close() {
@@ -163,8 +166,8 @@ export class FileOutputStream {
         if (this.#writeCallbacks.length) {
             return;
         }
-        Workspace.FileManager.FileManager.instance().removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
-        Workspace.FileManager.FileManager.instance().close(this.#fileName);
+        this.#fileManager.removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
+        this.#fileManager.close(this.#fileName);
     }
     onAppendDone(event) {
         if (event.data !== this.#fileName) {
@@ -180,8 +183,8 @@ export class FileOutputStream {
         if (!this.#closed) {
             return;
         }
-        Workspace.FileManager.FileManager.instance().removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
-        Workspace.FileManager.FileManager.instance().close(this.#fileName);
+        this.#fileManager.removeEventListener("AppendedToURL" /* Workspace.FileManager.Events.APPENDED_TO_URL */, this.onAppendDone, this);
+        this.#fileManager.close(this.#fileName);
     }
 }
 //# sourceMappingURL=FileUtils.js.map

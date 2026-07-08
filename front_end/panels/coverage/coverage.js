@@ -2004,7 +2004,7 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     return !this.#textFilter || this.#textFilter.test(url);
   }
   async exportReport() {
-    const fos = new Bindings.FileUtils.FileOutputStream();
+    const fos = new Bindings.FileUtils.FileOutputStream(Workspace7.FileManager.FileManager.instance());
     const fileName = `Coverage-${Platform3.DateUtilities.toISO8601Compact(/* @__PURE__ */ new Date())}.json`;
     const accepted = await fos.open(fileName);
     if (!accepted) {

@@ -1,7 +1,6 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Platform from '../../core/platform/platform.js';
 import { createTokenizer } from './FormatterWorker.js';
 const cssTrimEnd = (tokenValue) => {
     // https://drafts.csswg.org/css-syntax/#whitespace
@@ -14,6 +13,7 @@ export class CSSFormatter {
     #fromOffset;
     #lineEndings;
     #lastLine = -1;
+    #currentLineIndex = 0;
     #state = {};
     constructor(builder) {
         this.#builder = builder;
@@ -24,14 +24,24 @@ export class CSSFormatter {
         this.#toOffset = toOffset;
         this.#state = {};
         this.#lastLine = -1;
+        this.#currentLineIndex = 0;
         const tokenize = createTokenizer('text/css');
         const oldEnforce = this.#builder.setEnforceSpaceBetweenWords(false);
         tokenize(text.substring(this.#fromOffset, this.#toOffset), this.#tokenCallback.bind(this));
         this.#builder.setEnforceSpaceBetweenWords(oldEnforce);
     }
     #tokenCallback(token, type, startPosition) {
+        // startPosition is relative to the start of the CSS block.
+        // Convert it to an absolute document offset to match this.#lineEndings.
         startPosition += this.#fromOffset;
-        const startLine = Platform.ArrayUtilities.lowerBound(this.#lineEndings, startPosition, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
+        // Find the line index containing startPosition.
+        // Since CodeMirror processes tokens sequentially in increasing order of their offset,
+        // we can perform an amortized O(1) linear scan forward by tracking the current index.
+        while (this.#currentLineIndex < this.#lineEndings.length &&
+            this.#lineEndings[this.#currentLineIndex] < startPosition) {
+            this.#currentLineIndex++;
+        }
+        const startLine = this.#currentLineIndex;
         if (startLine !== this.#lastLine) {
             this.#state.eatWhitespace = true;
         }

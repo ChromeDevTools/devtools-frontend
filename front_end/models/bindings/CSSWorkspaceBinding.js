@@ -105,12 +105,14 @@ export class CSSWorkspaceBinding {
 }
 export class ModelInfo {
     #eventListeners;
+    #cssWorkspaceBinding;
     #resourceMapping;
     #stylesSourceMapping;
     #sassSourceMapping;
     #locations;
     #unboundLocations;
     constructor(cssModel, resourceMapping, cssWorkspaceBinding) {
+        this.#cssWorkspaceBinding = cssWorkspaceBinding;
         this.#eventListeners = [
             cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, event => {
                 void this.styleSheetAdded(event);
@@ -131,7 +133,7 @@ export class ModelInfo {
         return this.#locations;
     }
     async createLiveLocation(rawLocation, updateDelegate, locationPool) {
-        const location = new LiveLocation(rawLocation, this, updateDelegate, locationPool);
+        const location = new LiveLocation(rawLocation, this, this.#cssWorkspaceBinding, updateDelegate, locationPool);
         const header = rawLocation.header();
         if (header) {
             location.setHeader(header);
@@ -216,13 +218,15 @@ export class LiveLocation extends LiveLocationWithPool {
     #lineNumber;
     #columnNumber;
     #info;
+    #cssWorkspaceBinding;
     #header;
-    constructor(rawLocation, info, updateDelegate, locationPool) {
+    constructor(rawLocation, info, cssWorkspaceBinding, updateDelegate, locationPool) {
         super(updateDelegate, locationPool);
         this.url = rawLocation.url;
         this.#lineNumber = rawLocation.lineNumber;
         this.#columnNumber = rawLocation.columnNumber;
         this.#info = info;
+        this.#cssWorkspaceBinding = cssWorkspaceBinding;
         this.#header = null;
     }
     header() {
@@ -236,7 +240,7 @@ export class LiveLocation extends LiveLocationWithPool {
             return null;
         }
         const rawLocation = new SDK.CSSModel.CSSLocation(this.#header, this.#lineNumber, this.#columnNumber);
-        return CSSWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
+        return this.#cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
     }
     dispose() {
         super.dispose();

@@ -50,7 +50,7 @@ export declare class ModelInfo {
 export declare class LiveLocation extends LiveLocationWithPool {
     #private;
     readonly url: Platform.DevToolsPath.UrlString;
-    constructor(rawLocation: SDK.CSSModel.CSSLocation, info: ModelInfo, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool);
+    constructor(rawLocation: SDK.CSSModel.CSSLocation, info: ModelInfo, cssWorkspaceBinding: CSSWorkspaceBinding, updateDelegate: (arg0: LiveLocationInterface) => Promise<void>, locationPool: LiveLocationPool);
     header(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader | null;
     setHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader | null): void;
     uiLocation(): Promise<Workspace.UISourceCode.UILocation | null>;

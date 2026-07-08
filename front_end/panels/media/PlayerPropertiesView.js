@@ -26,11 +26,11 @@ const UIStrings = {
      */
     decoder: 'Decoder',
     /**
-     * @description Title of the 'Properties' tool in the sidebar of the elements tool
+     * @description Title of the 'Properties' tool in the sidebar of the Elements tool.
      */
     properties: 'Properties',
     /**
-     * @description Menu label for text tracks, it is followed by a number, like 'Text Track #1'
+     * @description Menu label for text tracks, it is followed by a number, like 'Text track #1'.
      */
     textTrack: 'Text track',
     /**
@@ -39,19 +39,19 @@ const UIStrings = {
      */
     noTextTracks: 'No text tracks',
     /**
-     * @description Media property giving the width x height of the video
+     * @description Media property giving the width x height of the video.
      */
     resolution: 'Resolution',
     /**
-     * @description Media property giving the file size of the media
+     * @description Media property giving the file size of the media.
      */
     fileSize: 'File size',
     /**
-     * @description Media property giving the media file bitrate
+     * @description Media property giving the media file bitrate.
      */
     bitrate: 'Bitrate',
     /**
-     * @description Text for the duration of something
+     * @description Text for the duration of something.
      */
     duration: 'Duration',
     /**
@@ -59,7 +59,7 @@ const UIStrings = {
      */
     startTime: 'Start time',
     /**
-     * @description Media property signaling whether the media is streaming
+     * @description Media property signaling whether the media is streaming.
      */
     streaming: 'Streaming',
     /**
@@ -67,19 +67,19 @@ const UIStrings = {
      */
     playbackFrameUrl: 'Playback frame URL',
     /**
-     * @description Media property giving the title of the frame where the media is embedded
+     * @description Media property giving the title of the frame where the media is embedded.
      */
     playbackFrameTitle: 'Playback frame title',
     /**
-     * @description Media property describing whether the file is single or cross origin in nature
+     * @description Media property describing whether the file is single or cross-origin in nature.
      */
     singleoriginPlayback: 'Single-origin playback',
     /**
-     * @description Media property describing support for range http headers
+     * @description Media property describing support for range HTTP headers.
      */
     rangeHeaderSupport: '`Range` header support',
     /**
-     * @description Media property giving the media file frame rate
+     * @description Media property giving the media file frame rate.
      */
     frameRate: 'Frame rate',
     /**
@@ -93,24 +93,24 @@ const UIStrings = {
      */
     videoFreezingScore: 'Video freezing score',
     /**
-     * @description Media property giving the name of the renderer being used
+     * @description Media property giving the name of the renderer being used.
      */
     rendererName: 'Renderer name',
     /**
-     * @description Media property giving the name of the decoder being used
+     * @description Media property giving the name of the decoder being used.
      */
     decoderName: 'Decoder name',
     /**
-     * @description There is no decoder
+     * @description There is no decoder.
      */
     noDecoder: 'No decoder',
     /**
-     * @description Media property signaling whether a hardware decoder is being used
+     * @description Media property signaling whether a hardware decoder is being used.
      */
     hardwareDecoder: 'Hardware decoder',
     /**
      * @description Media property signaling whether the content is encrypted. This is a noun phrase for
-     *a demultiplexer that does decryption.
+     * a demultiplexer that does decryption.
      */
     decryptingDemuxer: 'Decrypting demuxer',
     /**
@@ -126,7 +126,7 @@ const UIStrings = {
      */
     hardwareEncoder: 'Hardware encoder',
     /**
-     * @description Property for adaptive (HLS) playback which shows the start/end time of the loaded content buffer
+     * @description Property for adaptive (HLS) playback which shows the start/end time of the loaded content buffer.
      */
     hlsBufferedRanges: 'Buffered media ranges',
 };

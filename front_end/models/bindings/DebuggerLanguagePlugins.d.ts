@@ -1,4 +1,5 @@
 import type { Chrome } from '../../../extension-api/ExtensionAPI.js';
+import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -59,7 +60,7 @@ export declare class DebuggerLanguagePluginManager implements SDK.TargetManager.
     private readonly callFrameByStopId;
     private readonly stopIdByCallFrame;
     private nextStopId;
-    constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: DebuggerWorkspaceBinding);
+    constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: DebuggerWorkspaceBinding, console: Common.Console.Console);
     private evaluateOnCallFrame;
     stopIdForCallFrame(callFrame: SDK.DebuggerModel.CallFrame): StopId;
     callFrameForStopId(stopId: StopId): SDK.DebuggerModel.CallFrame | undefined;

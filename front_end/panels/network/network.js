@@ -232,6 +232,7 @@ __export(RequestConditionsDrawer_exports, {
 import "./../../ui/components/lists/lists.js";
 import "./../../ui/components/tooltips/tooltips.js";
 import "./../../ui/legacy/legacy.js";
+import * as Common2 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
@@ -757,7 +758,7 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     if (this.#editingCondition) {
       this.#cancelEdit(this.#editingCondition);
     }
-    const condition = SDK.NetworkManager.RequestCondition.createFromSetting({ url: Platform.DevToolsPath.EmptyUrlString, enabled: true });
+    const condition = SDK.NetworkManager.RequestCondition.createFromSetting({ url: Platform.DevToolsPath.EmptyUrlString, enabled: true }, Common2.Settings.Settings.instance());
     this.#editingCondition = condition;
     this.requestUpdate();
   }
@@ -1062,7 +1063,7 @@ __export(EventSourceMessagesView_exports, {
   EventSourceMessagesView: () => EventSourceMessagesView
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common2 from "./../../core/common/common.js";
+import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
@@ -1128,7 +1129,7 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
   clearAllButton;
   filterTextInput;
   filterRegex;
-  messageFilterSetting = Common2.Settings.Settings.instance().createSetting("network-event-source-message-filter", "");
+  messageFilterSetting = Common3.Settings.Settings.instance().createSetting("network-event-source-message-filter", "");
   constructor(request) {
     super({ jslog: `${VisualLogging3.pane("event-stream").track({ resize: true })}` });
     this.registerRequiredCSS(eventSourceMessagesView_css_default);
@@ -1259,7 +1260,7 @@ __export(NetworkConfigView_exports, {
   NetworkConfigView: () => NetworkConfigView,
   userAgentGroups: () => userAgentGroups
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common4 from "./../../core/common/common.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
@@ -1466,8 +1467,8 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     return networkConfigViewInstance;
   }
   static createUserAgentSelectAndInput(title) {
-    const userAgentSetting = Common3.Settings.Settings.instance().createSetting("custom-user-agent", "");
-    const userAgentMetadataSetting = Common3.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
+    const userAgentSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent", "");
+    const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
     const userAgentSelectElement = document.createElement("select");
     userAgentSelectElement.setAttribute("jslog", `${VisualLogging4.dropDown().track({ change: true }).context(userAgentSetting.name)}`);
     UI5.ARIAUtils.setLabel(userAgentSelectElement, title);
@@ -1554,7 +1555,7 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   }
   createCacheSection() {
     const section5 = this.createSection(i18nString5(UIStrings5.caching), "network-config-disable-cache");
-    section5.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common3.Settings.Settings.instance().moduleSetting("cache-disabled")));
+    section5.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common4.Settings.Settings.instance().moduleSetting("cache-disabled")));
   }
   createNetworkThrottlingSection() {
     const title = i18nString5(UIStrings5.networkThrottling);
@@ -1564,8 +1565,8 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     section5.appendChild(saveDataSelect);
   }
   createUserAgentSection() {
-    const userAgentMetadataSetting = Common3.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
-    const customUserAgentSetting = Common3.Settings.Settings.instance().createSetting("custom-user-agent", "");
+    const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
+    const customUserAgentSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent", "");
     const title = i18nString5(UIStrings5.userAgent);
     const section5 = this.createSection(title, "network-config-ua");
     const autoCheckbox = UI5.UIUtils.CheckboxLabel.create(i18nString5(UIStrings5.selectAutomatically), true, void 0, customUserAgentSetting.name);
@@ -1630,8 +1631,8 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     }
   }
   createAcceptedEncodingSection() {
-    const useCustomAcceptedEncodingSetting = Common3.Settings.Settings.instance().createSetting("use-custom-accepted-encodings", false);
-    const customAcceptedEncodingSetting = Common3.Settings.Settings.instance().createSetting("custom-accepted-encodings", `${"gzip"},${"br"},${"deflate"}`);
+    const useCustomAcceptedEncodingSetting = Common4.Settings.Settings.instance().createSetting("use-custom-accepted-encodings", false);
+    const customAcceptedEncodingSetting = Common4.Settings.Settings.instance().createSetting("custom-accepted-encodings", `${"gzip"},${"br"},${"deflate"}`);
     const title = i18nString5(UIStrings5.acceptedEncoding);
     const section5 = this.createSection(title, "network-config-accepted-encoding");
     const autoCheckbox = UI5.UIUtils.CheckboxLabel.create(i18nString5(UIStrings5.selectAutomatically), true, void 0, useCustomAcceptedEncodingSetting.name);
@@ -2133,7 +2134,7 @@ __export(NetworkDataGridNode_exports, {
   NetworkRequestNode: () => NetworkRequestNode,
   _backgroundColors: () => _backgroundColors
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common5 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
@@ -2790,6 +2791,22 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
     return aRequest.identityCompare(bRequest);
   }
+  static IsPreloadedComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest && !bRequest) {
+      return 0;
+    }
+    if (!aRequest || !bRequest) {
+      return !aRequest ? -1 : 1;
+    }
+    const aIsPreloaded = aRequest.isLinkPreload();
+    const bIsPreloaded = bRequest.isLinkPreload();
+    if (aIsPreloaded === bIsPreloaded) {
+      return aRequest.identityCompare(bRequest);
+    }
+    return aIsPreloaded ? 1 : -1;
+  }
   static RenderBlockingComparator(a, b) {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -2940,7 +2957,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     if (this.requestInternal.fromEarlyHints()) {
       return i18nString6(UIStrings6.earlyHints);
     }
-    if (resourceType === Common4.ResourceType.resourceTypes.Other || resourceType === Common4.ResourceType.resourceTypes.Image) {
+    if (resourceType === Common5.ResourceType.resourceTypes.Other || resourceType === Common5.ResourceType.resourceTypes.Image) {
       simpleType = mimeType.replace(/^(application|image)\//, "");
     }
     if (this.requestInternal.isRedirect()) {
@@ -2962,7 +2979,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     return this.parentView().rowHeight();
   }
   isPrefetch() {
-    return this.requestInternal.resourceType() === Common4.ResourceType.resourceTypes.Prefetch;
+    return this.requestInternal.resourceType() === Common5.ResourceType.resourceTypes.Prefetch;
   }
   throttlingConditions() {
     return SDK5.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.requestInternal);
@@ -3050,6 +3067,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       }
       case "is-ad-related": {
         this.setTextAndTitle(cell, this.requestInternal.isAdRelated().toLocaleString());
+        break;
+      }
+      case "is-preloaded": {
+        this.setTextAndTitle(cell, this.requestInternal.isLinkPreload().toLocaleString());
         break;
       }
       case "render-blocking": {
@@ -3473,7 +3494,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       const throttlingConditionsTitle = typeof throttlingConditions.conditions.title === "string" ? throttlingConditions.conditions.title : throttlingConditions.conditions.title();
       const icon = createIcon("watch");
       icon.title = i18nString6(UIStrings6.wasThrottled, { PH1: throttlingConditionsTitle });
-      icon.addEventListener("click", () => void Common4.Revealer.reveal(throttlingConditions));
+      icon.addEventListener("click", () => void Common5.Revealer.reveal(throttlingConditions));
       cell.append(icon);
     }
     if (this.requestInternal.duration > 0) {
@@ -3554,7 +3575,7 @@ var NetworkItemView_exports = {};
 __export(NetworkItemView_exports, {
   NetworkItemView: () => NetworkItemView
 });
-import * as Common13 from "./../../core/common/common.js";
+import * as Common14 from "./../../core/common/common.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
@@ -3570,7 +3591,7 @@ __export(RequestCookiesView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   RequestCookiesView: () => RequestCookiesView
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common6 from "./../../core/common/common.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as uiI18n2 from "./../../ui/i18n/i18n.js";
@@ -3757,7 +3778,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
   constructor(request, view = DEFAULT_VIEW3) {
     super();
     this.request = request;
-    this.showFilteredOutCookiesSetting = Common5.Settings.Settings.instance().createSetting(
+    this.showFilteredOutCookiesSetting = Common6.Settings.Settings.instance().createSetting(
       "show-filtered-out-request-cookies",
       /* defaultValue */
       false
@@ -3885,7 +3906,7 @@ __export(RequestHeadersView_exports, {
   renderGeneralSection: () => renderGeneralSection
 });
 import "./../../ui/kit/kit.js";
-import * as Common6 from "./../../core/common/common.js";
+import * as Common7 from "./../../core/common/common.js";
 import * as Host4 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Platform4 from "./../../core/platform/platform.js";
@@ -4194,7 +4215,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     this.#request?.addEventListener(SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
     this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-    Common6.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").addChangeListener(this.requestUpdate, this);
+    Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").addChangeListener(this.requestUpdate, this);
   }
   wasShown() {
     super.wasShown();
@@ -4213,7 +4234,7 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     this.#request?.removeEventListener(SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
-    Common6.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").removeChangeListener(this.requestUpdate, this);
+    Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").removeChangeListener(this.requestUpdate, this);
   }
   #resetAndRefreshHeadersView() {
     this.#request?.deleteAssociatedData(NetworkComponents.ResponseHeaderSection.RESPONSE_HEADER_SECTION_DATA_KEY);
@@ -4280,7 +4301,7 @@ function renderHeaderOverridesLink(input) {
     event.preventDefault();
     input.revealHeadersFile?.();
   };
-  const overridesSetting = Common6.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled");
+  const overridesSetting = Common7.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled");
   const fileIcon = html5`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
@@ -4321,7 +4342,7 @@ function renderGeneralRow(input, name, value, id, classNames) {
     `;
 }
 function renderCategory(data) {
-  const expandedSetting = Common6.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
+  const expandedSetting = Common7.Settings.Settings.instance().createSetting("request-info-" + data.name + "-category-expanded", true);
   const isOpen = (expandedSetting ? expandedSetting.get() : true) || data.forceOpen;
   return html5`
       <details ?open=${isOpen} @toggle=${onToggle} aria-label=${data.title}>
@@ -4623,7 +4644,7 @@ __export(RequestPayloadView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
   RequestPayloadView: () => RequestPayloadView
 });
-import * as Common7 from "./../../core/common/common.js";
+import * as Common8 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
@@ -5119,9 +5140,9 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     return html7`<devtools-tree-wrapper
           .treeElement=${section5}></devtools-tree-wrapper>`;
   };
-  const queryStringExpandedSetting = Common7.Settings.Settings.instance().createSetting("request-info-query-string-category-expanded", true);
-  const formDataExpandedSetting = Common7.Settings.Settings.instance().createSetting("request-info-form-data-category-expanded", true);
-  const requestPayloadExpandedSetting = Common7.Settings.Settings.instance().createSetting("request-info-request-payload-category-expanded", true);
+  const queryStringExpandedSetting = Common8.Settings.Settings.instance().createSetting("request-info-query-string-category-expanded", true);
+  const formDataExpandedSetting = Common8.Settings.Settings.instance().createSetting("request-info-form-data-category-expanded", true);
+  const requestPayloadExpandedSetting = Common8.Settings.Settings.instance().createSetting("request-info-request-payload-category-expanded", true);
   const toggleURLDecoding = (e) => {
     e.consume();
     input.setURLDecoding(!input.decodeRequestParameters);
@@ -5871,7 +5892,7 @@ __export(RequestResponseView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW9,
   RequestResponseView: () => RequestResponseView
 });
-import * as Common8 from "./../../core/common/common.js";
+import * as Common9 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
 import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
@@ -5933,7 +5954,7 @@ var RequestResponseView = class extends UI15.Widget.VBox {
       const isWasm = contentData.mimeType === "application/wasm";
       renderAsText = contentData.isTextContent || isWasm;
       const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils2.TextUtils.isMinified(contentData.content().text);
-      const mediaType = Common8.ResourceType.ResourceType.mediaTypeForMetrics(mimeType, this.request.resourceType().isFromSourceMap(), isMinified, false, false);
+      const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(mimeType, this.request.resourceType().isFromSourceMap(), isMinified, false, false);
       Host7.userMetrics.networkPanelResponsePreviewOpened(mediaType);
     }
     const viewInput = { request: this.request, contentData, mimeType, renderAsText };
@@ -5946,7 +5967,7 @@ var RequestResponseView = class extends UI15.Widget.VBox {
     this.#view(viewInput, viewOutput, this.contentElement);
   }
   getMimeTypeForDisplay() {
-    if (Common8.ResourceType.ResourceType.simplifyContentType(this.request.mimeType) === "application/json") {
+    if (Common9.ResourceType.ResourceType.simplifyContentType(this.request.mimeType) === "application/json") {
       return this.request.mimeType;
     }
     return this.request.resourceType().canonicalMimeType() || this.request.mimeType;
@@ -5965,7 +5986,7 @@ __export(RequestTimingView_exports, {
   RequestTimingView: () => RequestTimingView
 });
 import "./../../ui/kit/kit.js";
-import * as Common9 from "./../../core/common/common.js";
+import * as Common10 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
@@ -6075,7 +6096,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-bar.blocking,
 .-theme-preserve {
-  background-color: var(--network-overview-blocking); /* stylelint-disable-line plugin/use_theme_colors */
+  background-color: var(--network-waterfall-blocking); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
 .network-timing-bar.proxy,
@@ -6522,13 +6543,13 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
 var DEFAULT_VIEW10 = (input, output, target) => {
   const revealThrottled = () => {
     if (input.wasThrottled) {
-      void Common9.Revealer.reveal(input.wasThrottled);
+      void Common10.Revealer.reveal(input.wasThrottled);
     }
   };
   const scale = 100 / (input.endTime - input.startTime);
   const isClickable = (range) => range.name === "serviceworker-respondwith" || range.name === "serviceworker-routerevaluation";
   const addServerTiming = (serverTiming) => {
-    const colorGenerator = new Common9.Color.Generator({ min: 0, max: 360, count: 36 }, { min: 50, max: 80, count: void 0 }, 80);
+    const colorGenerator = new Common10.Color.Generator({ min: 0, max: 360, count: 36 }, { min: 50, max: 80, count: void 0 }, 80);
     const isTotal = serverTiming.metric.toLowerCase() === "total";
     const metricDesc = [serverTiming.metric, serverTiming.description].filter(Boolean).join(" \u2014 ");
     const left = serverTiming.value === null ? -1 : scale * (input.endTime - input.startTime - serverTiming.value / 1e3);
@@ -6889,7 +6910,7 @@ var ResourceDirectSocketChunkView_exports = {};
 __export(ResourceDirectSocketChunkView_exports, {
   ResourceDirectSocketChunkView: () => ResourceDirectSocketChunkView
 });
-import * as Common11 from "./../../core/common/common.js";
+import * as Common12 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
@@ -6899,7 +6920,7 @@ import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/ResourceChunkView.js
-import * as Common10 from "./../../core/common/common.js";
+import * as Common11 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
@@ -7035,7 +7056,7 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
   messageFilterSetting;
   constructor(request, messageFilterSettingKey, splitWidgetSettingKey, dataGridDisplayName, filterUsingRegexHint) {
     super();
-    this.messageFilterSetting = Common10.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
+    this.messageFilterSetting = Common11.Settings.Settings.instance().createSetting(messageFilterSettingKey, "");
     this.registerRequiredCSS(resourceChunkView_css_default);
     this.request = request;
     this.element.classList.add("resource-chunk-view");
@@ -7339,7 +7360,7 @@ var ResourceChunkNode = class extends DataGridItem {
   binaryView() {
     if (!this.#binaryView) {
       if (this.dataText().length > 0) {
-        this.#binaryView = new BinaryResourceView(TextUtils5.StreamingContentData.StreamingContentData.from(new TextUtils5.ContentData.ContentData(this.dataText(), true, "application/octet-stream")), Platform7.DevToolsPath.EmptyUrlString, Common11.ResourceType.resourceTypes.DirectSocket);
+        this.#binaryView = new BinaryResourceView(TextUtils5.StreamingContentData.StreamingContentData.from(new TextUtils5.ContentData.ContentData(this.dataText(), true, "application/octet-stream")), Platform7.DevToolsPath.EmptyUrlString, Common12.ResourceType.resourceTypes.DirectSocket);
       }
     }
     return this.#binaryView;
@@ -7354,7 +7375,7 @@ var ResourceWebSocketFrameView_exports = {};
 __export(ResourceWebSocketFrameView_exports, {
   ResourceWebSocketFrameView: () => ResourceWebSocketFrameView
 });
-import * as Common12 from "./../../core/common/common.js";
+import * as Common13 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
@@ -7534,7 +7555,7 @@ var ResourceFrameNode = class extends DataGridItem {
     }
     if (!this.#binaryView) {
       if (this.#dataText.length > 0) {
-        this.#binaryView = new BinaryResourceView(TextUtils6.StreamingContentData.StreamingContentData.from(new TextUtils6.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")), Platform8.DevToolsPath.EmptyUrlString, Common12.ResourceType.resourceTypes.WebSocket);
+        this.#binaryView = new BinaryResourceView(TextUtils6.StreamingContentData.StreamingContentData.from(new TextUtils6.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")), Platform8.DevToolsPath.EmptyUrlString, Common13.ResourceType.resourceTypes.WebSocket);
       }
     }
     return this.#binaryView;
@@ -7675,7 +7696,7 @@ var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
     this.headerElement().setAttribute("jslog", `${VisualLogging13.toolbar("request-details").track({
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
-    if (request.resourceType() === Common13.ResourceType.resourceTypes.DirectSocket) {
+    if (request.resourceType() === Common14.ResourceType.resourceTypes.DirectSocket) {
       this.#firstTab = "direct-socket-connection";
       this.appendTab("direct-socket-connection", i18nString19(UIStrings19.connectionInfo), new NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView(request), i18nString19(UIStrings19.headers));
     } else {
@@ -7684,7 +7705,7 @@ var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
       this.#headersViewComponent.request = request;
       this.appendTab("headers-component", i18nString19(UIStrings19.headers), this.#headersViewComponent, i18nString19(UIStrings19.headers));
     }
-    this.#resourceViewTabSetting = Common13.Settings.Settings.instance().createSetting("resource-view-tab", this.#firstTab);
+    this.#resourceViewTabSetting = Common14.Settings.Settings.instance().createSetting("resource-view-tab", this.#firstTab);
     if (this.#request.hasOverriddenHeaders()) {
       const statusDot = document.createElement("div");
       statusDot.className = "status-dot";
@@ -7693,10 +7714,10 @@ var NetworkItemView = class extends UI20.TabbedPane.TabbedPane {
     }
     void this.maybeAppendPayloadPanel();
     this.addEventListener(UI20.TabbedPane.Events.TabSelected, this.tabSelected, this);
-    if (request.resourceType() === Common13.ResourceType.resourceTypes.WebSocket) {
+    if (request.resourceType() === Common14.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
       this.appendTab("web-socket-frames", i18nString19(UIStrings19.messages), frameView, i18nString19(UIStrings19.websocketMessages));
-    } else if (request.resourceType() === Common13.ResourceType.resourceTypes.DirectSocket) {
+    } else if (request.resourceType() === Common14.ResourceType.resourceTypes.DirectSocket) {
       this.appendTab("direct-socket-chunks", i18nString19(UIStrings19.messages), new ResourceDirectSocketChunkView(request), i18nString19(UIStrings19.directsocketMessages));
     } else if (request.mimeType === "text/event-stream") {
       this.appendTab("eventSource", i18nString19(UIStrings19.eventstream), new EventSourceMessagesView(request));
@@ -7866,7 +7887,7 @@ __export(NetworkLogView_exports, {
   overrideFilter: () => overrideFilter
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common18 from "./../../core/common/common.js";
+import * as Common19 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
@@ -7877,6 +7898,7 @@ import * as Logs5 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as Persistence2 from "./../../models/persistence/persistence.js";
 import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
+import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Sources2 from "./../sources/sources.js";
 import * as Adorners from "./../../ui/components/adorners/adorners.js";
@@ -7920,18 +7942,18 @@ __export(LinkPreloadGenerator_exports, {
   canPreloadRequest: () => canPreloadRequest,
   generatePreloadLink: () => generatePreloadLink
 });
-import * as Common14 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 var resourceTypeToAsAttribute = /* @__PURE__ */ new Map([
-  [Common14.ResourceType.resourceTypes.Document, "document"],
-  [Common14.ResourceType.resourceTypes.Stylesheet, "style"],
-  [Common14.ResourceType.resourceTypes.Image, "image"],
-  [Common14.ResourceType.resourceTypes.Font, "font"],
-  [Common14.ResourceType.resourceTypes.Script, "script"],
-  [Common14.ResourceType.resourceTypes.TextTrack, "track"],
-  [Common14.ResourceType.resourceTypes.Manifest, "manifest"],
-  [Common14.ResourceType.resourceTypes.Fetch, "fetch"],
-  [Common14.ResourceType.resourceTypes.XHR, "fetch"],
-  [Common14.ResourceType.resourceTypes.Wasm, "fetch"]
+  [Common15.ResourceType.resourceTypes.Document, "document"],
+  [Common15.ResourceType.resourceTypes.Stylesheet, "style"],
+  [Common15.ResourceType.resourceTypes.Image, "image"],
+  [Common15.ResourceType.resourceTypes.Font, "font"],
+  [Common15.ResourceType.resourceTypes.Script, "script"],
+  [Common15.ResourceType.resourceTypes.TextTrack, "track"],
+  [Common15.ResourceType.resourceTypes.Manifest, "manifest"],
+  [Common15.ResourceType.resourceTypes.Fetch, "fetch"],
+  [Common15.ResourceType.resourceTypes.XHR, "fetch"],
+  [Common15.ResourceType.resourceTypes.Wasm, "fetch"]
 ]);
 function escapeHTML(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -7939,7 +7961,7 @@ function escapeHTML(str) {
 function parsePreloadLinkOrigins(request) {
   const requestOrigin = request.parsedURL.securityOrigin();
   const documentURL = request.documentURL;
-  const documentOrigin = documentURL ? Common14.ParsedURL.ParsedURL.fromString(documentURL)?.securityOrigin() ?? null : null;
+  const documentOrigin = documentURL ? Common15.ParsedURL.ParsedURL.fromString(documentURL)?.securityOrigin() ?? null : null;
   return { requestOrigin, documentOrigin };
 }
 function determinePreloadLinkHref(request, isSameOrigin) {
@@ -7951,7 +7973,7 @@ function determinePreloadLinkHref(request, isSameOrigin) {
 function determinePreloadLinkCrossOrigin(request, isCrossOrigin) {
   const resourceType = request.resourceType();
   const asValue = resourceTypeToAsAttribute.get(resourceType);
-  const isFont = resourceType === Common14.ResourceType.resourceTypes.Font;
+  const isFont = resourceType === Common15.ResourceType.resourceTypes.Font;
   const isFetch = asValue === "fetch";
   const secFetchMode = request.requestHeaderValue("sec-fetch-mode")?.toLowerCase();
   const needsCrossOrigin = isFont || isFetch || secFetchMode === "cors";
@@ -7986,7 +8008,7 @@ __export(NetworkFrameGrouper_exports, {
   FrameGroupNode: () => FrameGroupNode,
   NetworkFrameGrouper: () => NetworkFrameGrouper
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
 import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
 import * as UI21 from "./../../ui/legacy/legacy.js";
@@ -8021,7 +8043,7 @@ var FrameGroupNode = class extends NetworkGroupNode {
     this.frame = frame;
   }
   displayName() {
-    return new Common15.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || "<iframe>";
+    return new Common16.ParsedURL.ParsedURL(this.frame.url).domain() || this.frame.name || "<iframe>";
   }
   renderCell(cell, columnId) {
     super.renderCell(cell, columnId);
@@ -8511,7 +8533,7 @@ var NetworkLogViewColumns_exports = {};
 __export(NetworkLogViewColumns_exports, {
   NetworkLogViewColumns: () => NetworkLogViewColumns
 });
-import * as Common17 from "./../../core/common/common.js";
+import * as Common18 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
@@ -8694,7 +8716,7 @@ var NetworkWaterfallColumn_exports = {};
 __export(NetworkWaterfallColumn_exports, {
   NetworkWaterfallColumn: () => NetworkWaterfallColumn
 });
-import * as Common16 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as NetworkTimeCalculator3 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as RenderCoordinator2 from "./../../ui/components/render_coordinator/render_coordinator.js";
 import * as PerfUI3 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -9168,10 +9190,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
       "proxy"
       /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */
     ] });
-    styleMap.set("blocking", { fillStyle: RequestTimeRangeNameToColor[
-      "blocking"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */
-    ] });
+    styleMap.set("blocking", { fillStyle: "--network-waterfall-blocking" });
     styleMap.set("push", { fillStyle: RequestTimeRangeNameToColor[
       "push"
       /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */
@@ -9234,7 +9253,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     ]);
     const waitingStyleMap = /* @__PURE__ */ new Map();
     const downloadingStyleMap = /* @__PURE__ */ new Map();
-    for (const resourceType of Object.values(Common16.ResourceType.resourceTypes)) {
+    for (const resourceType of Object.values(Common17.ResourceType.resourceTypes)) {
       let color = baseResourceTypeColors.get(resourceType.name());
       if (!color) {
         color = baseResourceTypeColors.get("other");
@@ -9250,7 +9269,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     }
     return [waitingStyleMap, downloadingStyleMap];
     function toBorderColor(color) {
-      const parsedColor = Common16.Color.parse(color)?.as(
+      const parsedColor = Common17.Color.parse(color)?.as(
         "hsl"
         /* Common.Color.Format.HSL */
       );
@@ -9260,10 +9279,10 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
       let { s, l } = parsedColor;
       s /= 2;
       l -= Math.min(l, 0.2);
-      return new Common16.Color.HSL(parsedColor.h, s, l, parsedColor.alpha).asString();
+      return new Common17.Color.HSL(parsedColor.h, s, l, parsedColor.alpha).asString();
     }
     function toWaitingColor(color) {
-      const parsedColor = Common16.Color.parse(color)?.as(
+      const parsedColor = Common17.Color.parse(color)?.as(
         "hsl"
         /* Common.Color.Format.HSL */
       );
@@ -9272,7 +9291,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
       }
       let { l } = parsedColor;
       l *= 1.1;
-      return new Common16.Color.HSL(parsedColor.h, parsedColor.s, l, parsedColor.alpha).asString();
+      return new Common17.Color.HSL(parsedColor.h, parsedColor.s, l, parsedColor.alpha).asString();
     }
   }
   resetPaths() {
@@ -9311,7 +9330,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
     if (!request) {
       return null;
     }
-    const useTimingBars = !Common16.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
+    const useTimingBars = !Common17.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
     let range;
     let start;
     let end;
@@ -9440,7 +9459,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI23.Widget.V
   didDrawForTest() {
   }
   draw() {
-    const useTimingBars = !Common16.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
+    const useTimingBars = !Common17.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").get() && !this.calculator.startAtZero;
     const nodes = this.nodes;
     const context = this.canvas.getContext("2d");
     if (!context) {
@@ -9790,7 +9809,11 @@ var UIStrings21 = {
   /**
    * @description Text in Network Log View Columns of the Network panel
    */
-  renderBlocking: "Render-blocking"
+  renderBlocking: "Render-blocking",
+  /**
+   * @description Text to show whether a request is preloaded
+   */
+  isPreloaded: "Preloaded"
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/NetworkLogViewColumns.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
@@ -9823,7 +9846,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   scrollerTouchStartPos;
   constructor(networkLogView, timeCalculator, durationCalculator, networkLogLargeRowsSetting) {
     this.networkLogView = networkLogView;
-    this.persistentSettings = Common17.Settings.Settings.instance().createSetting("network-log-columns", {});
+    this.persistentSettings = Common18.Settings.Settings.instance().createSetting("network-log-columns", {});
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(this.updateRowsSize, this);
     this.eventDividers = /* @__PURE__ */ new Map();
@@ -10379,7 +10402,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       hide: () => {
         this.popupLinkifier.reset();
         if (descriptor) {
-          Common17.EventTarget.removeEventListeners([descriptor]);
+          Common18.EventTarget.removeEventListeners([descriptor]);
         }
       }
     };
@@ -10680,6 +10703,11 @@ var DEFAULT_COLUMNS = [
     id: "render-blocking",
     title: i18nLazyString3(UIStrings21.renderBlocking),
     sortingFunction: NetworkRequestNode.RenderBlockingComparator
+  },
+  {
+    id: "is-preloaded",
+    title: i18nLazyString3(UIStrings21.isPreloaded),
+    sortingFunction: NetworkRequestNode.IsPreloadedComparator
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {
@@ -11141,7 +11169,7 @@ var UIStrings22 = {
 };
 var str_22 = i18n43.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
-var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventMixin(UI25.Widget.VBox) {
+var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventMixin(UI25.Widget.VBox) {
   networkInvertFilterSetting;
   networkHideDataURLSetting;
   networkHideChromeExtensions;
@@ -11191,14 +11219,14 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     this.element.id = "network-container";
     this.element.classList.add("no-node-selected");
     this.networkRequestToNode = /* @__PURE__ */ new WeakMap();
-    this.networkInvertFilterSetting = Common18.Settings.Settings.instance().createSetting("network-invert-filter", false);
-    this.networkHideDataURLSetting = Common18.Settings.Settings.instance().createSetting("network-hide-data-url", false);
-    this.networkHideChromeExtensions = Common18.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
-    this.networkShowBlockedCookiesOnlySetting = Common18.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
-    this.networkOnlyBlockedRequestsSetting = Common18.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
-    this.networkOnlyThirdPartySetting = Common18.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
-    this.networkResourceTypeFiltersSetting = Common18.Settings.Settings.instance().createSetting("network-resource-type-filters", {});
-    this.networkShowOptionsToGenerateHarWithSensitiveData = Common18.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
+    this.networkInvertFilterSetting = Common19.Settings.Settings.instance().createSetting("network-invert-filter", false);
+    this.networkHideDataURLSetting = Common19.Settings.Settings.instance().createSetting("network-hide-data-url", false);
+    this.networkHideChromeExtensions = Common19.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
+    this.networkShowBlockedCookiesOnlySetting = Common19.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
+    this.networkOnlyBlockedRequestsSetting = Common19.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
+    this.networkOnlyThirdPartySetting = Common19.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
+    this.networkResourceTypeFiltersSetting = Common19.Settings.Settings.instance().createSetting("network-resource-type-filters", {});
+    this.networkShowOptionsToGenerateHarWithSensitiveData = Common19.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
     this.progressBarContainer = progressBarContainer;
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
@@ -11235,7 +11263,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     UI25.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString22(UIStrings22.invertsFilter));
     filterBar.addFilter(this.invertFilterUI);
     filterBar.addDivider();
-    const filterItems = Object.entries(Common18.ResourceType.resourceCategories).map(([key, category]) => ({
+    const filterItems = Object.entries(Common19.ResourceType.resourceCategories).map(([key, category]) => ({
       name: category.name,
       label: () => category.shortTitle(),
       title: category.title(),
@@ -11262,22 +11290,22 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     this.summaryToolbarInternal = this.element.createChild("devtools-toolbar", "network-summary-bar");
     this.summaryToolbarInternal.setAttribute("role", "status");
     new UI25.DropTarget.DropTarget(this.element, [UI25.DropTarget.Type.File], i18nString22(UIStrings22.dropHarFilesHere), this.handleDrop.bind(this));
-    Common18.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").addChangeListener(this.invalidateAllItems.bind(this, false), this);
+    Common19.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").addChangeListener(this.invalidateAllItems.bind(this, false), this);
     SDK16.TargetManager.TargetManager.instance().observeModels(SDK16.NetworkManager.NetworkManager, this, { scoped: true });
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestAdded, this.onRequestUpdated, this);
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestUpdated, this.onRequestUpdated, this);
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestRemoved, this.onRequestRemoved, this);
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.Reset, this.reset, this);
     this.updateGroupByFrame();
-    Common18.Settings.Settings.instance().moduleSetting("network.group-by-frame").addChangeListener(() => this.updateGroupByFrame());
+    Common19.Settings.Settings.instance().moduleSetting("network.group-by-frame").addChangeListener(() => this.updateGroupByFrame());
     this.filterBar = filterBar;
-    this.textFilterSetting = Common18.Settings.Settings.instance().createSetting("network-text-filter", "");
+    this.textFilterSetting = Common19.Settings.Settings.instance().createSetting("network-text-filter", "");
     if (this.textFilterSetting.get()) {
       this.textFilterUI.setValue(this.textFilterSetting.get());
     }
   }
   updateGroupByFrame() {
-    const value = Common18.Settings.Settings.instance().moduleSetting("network.group-by-frame").get();
+    const value = Common19.Settings.Settings.instance().moduleSetting("network.group-by-frame").get();
     this.setGrouping(value ? "Frame" : null);
   }
   static sortSearchValues(key, values) {
@@ -11327,6 +11355,9 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
   }
   static initiatedByServiceWorkerFilter(request) {
     return request.initiatedByServiceWorker();
+  }
+  static linkPreloadRequestFilter(request) {
+    return request.isLinkPreload();
   }
   static requestResponseHeaderFilter(value, request) {
     return request.responseHeaderValue(value) !== void 0;
@@ -11457,7 +11488,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     }
   }
   async onLoadFromFile(file) {
-    const outputStream = new Common18.StringOutputStream.StringOutputStream();
+    const outputStream = new Common19.StringOutputStream.StringOutputStream();
     const reader = new Bindings3.FileUtils.ChunkedFileReader(
       file,
       /* chunkSize */
@@ -11481,7 +11512,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     Logs5.NetworkLog.NetworkLog.instance().importRequests(HAR.Importer.Importer.requestsFromHARLog(harRoot.log));
   }
   harLoadFailed(message) {
-    Common18.Console.Console.instance().error("Failed to load HAR file with following error: " + message);
+    Common19.Console.Console.instance().error("Failed to load HAR file with following error: " + message);
   }
   setGrouping(groupKey) {
     if (this.activeGroupLookup) {
@@ -11533,7 +11564,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.Load, this.loadEventFired, this);
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
     }
-    const preserveLog = Common18.Settings.Settings.instance().moduleSetting("network-log.preserve-log").get();
+    const preserveLog = Common19.Settings.Settings.instance().moduleSetting("network-log.preserve-log").get();
     if (!preserveLog) {
       this.reset();
     }
@@ -11575,6 +11606,11 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
       NetworkForward4.UIFilter.FilterType.Is,
       "service-worker-initiated"
       /* NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INITIATED */
+    );
+    this.suggestionBuilder.addItem(
+      NetworkForward4.UIFilter.FilterType.Is,
+      "preloaded"
+      /* NetworkForward.UIFilter.IsFilterType.PRELOAD */
     );
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.LargerThan, "100");
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.LargerThan, "10k");
@@ -11733,7 +11769,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
         selectedResourceSize += requestResourceSize;
       }
       const networkManager = SDK16.NetworkManager.NetworkManager.forRequest(request);
-      if (networkManager && request.url() === networkManager.target().inspectedURL() && request.resourceType() === Common18.ResourceType.resourceTypes.Document && networkManager.target().parentTarget()?.type() !== SDK16.Target.Type.FRAME) {
+      if (networkManager && request.url() === networkManager.target().inspectedURL() && request.resourceType() === Common19.ResourceType.resourceTypes.Document && networkManager.target().parentTarget()?.type() !== SDK16.Target.Type.FRAME) {
         baseTime = request.fromPrefetchCache() ? request.issueTime() : request.startTime;
       }
       if (request.endTime > maxTime) {
@@ -12284,7 +12320,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
   harRequests() {
     const requests = Logs5.NetworkLog.NetworkLog.instance().requests().filter((request) => this.applyFilter(request));
     return requests.filter(_NetworkLogView.getHTTPRequestsFilter).filter((request) => {
-      return request.finished || request.resourceType() === Common18.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime || Boolean(request.eventSourceMessages()?.length);
+      return request.finished || request.resourceType() === Common19.ResourceType.resourceTypes.WebSocket && request.responseReceivedTime || Boolean(request.eventSourceMessages()?.length);
     });
   }
   async copyAllAsHAR(options) {
@@ -12315,7 +12351,7 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     const isGetRequest = request.requestMethod === "GET";
     const networkManager = SDK16.NetworkManager.NetworkManager.forRequest(request);
     const resourceTreeModel = networkManager?.target().model(SDK16.ResourceTreeModel.ResourceTreeModel);
-    const isMainDocument = Boolean(resourceTreeModel?.mainFrame && resourceTreeModel.mainFrame.id === request.frameId && request.resourceType() === Common18.ResourceType.resourceTypes.Document);
+    const isMainDocument = Boolean(resourceTreeModel?.mainFrame && resourceTreeModel.mainFrame.id === request.frameId && request.resourceType() === Common19.ResourceType.resourceTypes.Document);
     const disablePreload = !isHttpOrHttps || request.isBlobRequest() || !isGetRequest || isMainDocument || !canPreloadRequest(request);
     copyMenu.defaultSection().appendItem(i18nString22(UIStrings22.copyAsPreload), this.copyPreloadElement.bind(this, request), { disabled: disablePreload, jslogContext: "copy-as-preload" });
   }
@@ -12343,10 +12379,10 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
       return;
     }
     const url = mainTarget.inspectedURL();
-    const parsedURL = Common18.ParsedURL.ParsedURL.fromString(url);
+    const parsedURL = Common19.ParsedURL.ParsedURL.fromString(url);
     const filename = parsedURL ? parsedURL.host : "network-log";
-    const stream = new Bindings3.FileUtils.FileOutputStream();
-    if (!await stream.open(Common18.ParsedURL.ParsedURL.concatenate(filename, ".har"))) {
+    const stream = new Bindings3.FileUtils.FileOutputStream(Workspace3.FileManager.FileManager.instance());
+    if (!await stream.open(Common19.ParsedURL.ParsedURL.concatenate(filename, ".har"))) {
       return;
     }
     const progressIndicator = this.progressBarContainer.createChild("devtools-progress");
@@ -12358,14 +12394,14 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
     const requestLocation = NetworkForward4.UIRequestLocation.UIRequestLocation.responseHeaderMatch(request, { name: "", value: "" });
     const networkPersistenceManager = Persistence2.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     if (networkPersistenceManager.project()) {
-      Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
+      Common19.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
-      await Common18.Revealer.reveal(requestLocation);
+      await Common19.Revealer.reveal(requestLocation);
     } else {
       UI25.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
         await Sources2.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
-        await Common18.Revealer.reveal(requestLocation);
+        await Common19.Revealer.reveal(requestLocation);
       });
     }
   }
@@ -12469,6 +12505,9 @@ var NetworkLogView = class _NetworkLogView extends Common18.ObjectWrapper.eventM
         }
         if (value.toLowerCase() === "service-worker-initiated") {
           return _NetworkLogView.initiatedByServiceWorkerFilter;
+        }
+        if (value.toLowerCase() === "preloaded") {
+          return _NetworkLogView.linkPreloadRequestFilter;
         }
         break;
       case NetworkForward4.UIFilter.FilterType.LargerThan:
@@ -12859,7 +12898,7 @@ var overrideFilter = {
   content: "content",
   headers: "headers"
 };
-var MoreFiltersDropDownUI = class extends Common18.ObjectWrapper.ObjectWrapper {
+var MoreFiltersDropDownUI = class extends Common19.ObjectWrapper.ObjectWrapper {
   filterElement;
   dropDownButton;
   networkHideDataURLSetting;
@@ -12871,11 +12910,11 @@ var MoreFiltersDropDownUI = class extends Common18.ObjectWrapper.ObjectWrapper {
   activeFiltersCountAdorner;
   constructor() {
     super();
-    this.networkHideDataURLSetting = Common18.Settings.Settings.instance().createSetting("network-hide-data-url", false);
-    this.networkHideChromeExtensionsSetting = Common18.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
-    this.networkShowBlockedCookiesOnlySetting = Common18.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
-    this.networkOnlyBlockedRequestsSetting = Common18.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
-    this.networkOnlyThirdPartySetting = Common18.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
+    this.networkHideDataURLSetting = Common19.Settings.Settings.instance().createSetting("network-hide-data-url", false);
+    this.networkHideChromeExtensionsSetting = Common19.Settings.Settings.instance().createSetting("network-hide-chrome-extensions", false);
+    this.networkShowBlockedCookiesOnlySetting = Common19.Settings.Settings.instance().createSetting("network-show-blocked-cookies-only-setting", false);
+    this.networkOnlyBlockedRequestsSetting = Common19.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
+    this.networkOnlyThirdPartySetting = Common19.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
     this.filterElement = document.createElement("div");
     this.filterElement.setAttribute("aria-label", "Show only/hide requests dropdown");
     this.filterElement.setAttribute("jslog", `${VisualLogging15.dropDown("more-filters").track({ click: true })}`);
@@ -13150,7 +13189,7 @@ __export(NetworkPanel_exports, {
   SearchNetworkView: () => SearchNetworkView
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common19 from "./../../core/common/common.js";
+import * as Common20 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
@@ -13158,7 +13197,7 @@ import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as Logs6 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator5 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as Trace2 from "./../../models/trace/trace.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
+import * as Workspace4 from "./../../models/workspace/workspace.js";
 import * as NetworkForward6 from "./forward/forward.js";
 import * as Tracing from "./../../services/tracing/tracing.js";
 import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -13201,6 +13240,7 @@ var networkPanel_css_default = `/*
 :root {
   --network-overview-total: var(--sys-color-neutral-bright);
   --network-overview-blocking: var(--ref-palette-neutral0);
+  --network-waterfall-blocking: var(--sys-color-neutral-bright);
   --network-overview-connecting: var(--ref-palette-yellow60);
   --network-overview-service-worker: var(--sys-color-orange-bright);
   --network-overview-service-worker-respond-with: var(--sys-color-cyan-bright);
@@ -13515,9 +13555,9 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     super("network");
     this.registerRequiredCSS(networkPanel_css_default);
     this.displayScreenshotDelay = displayScreenshotDelay;
-    this.networkLogShowOverviewSetting = Common19.Settings.Settings.instance().createSetting("network-log-show-overview", true);
-    this.networkLogLargeRowsSetting = Common19.Settings.Settings.instance().createSetting("network-log-large-rows", false);
-    this.networkRecordFilmStripSetting = Common19.Settings.Settings.instance().createSetting("network-record-film-strip-setting", false);
+    this.networkLogShowOverviewSetting = Common20.Settings.Settings.instance().createSetting("network-log-show-overview", true);
+    this.networkLogLargeRowsSetting = Common20.Settings.Settings.instance().createSetting("network-log-large-rows", false);
+    this.networkRecordFilmStripSetting = Common20.Settings.Settings.instance().createSetting("network-record-film-strip-setting", false);
     this.toggleRecordAction = UI26.ActionRegistry.ActionRegistry.instance().getAction("network.toggle-recording");
     this.networkItemView = null;
     this.filmStripView = null;
@@ -13536,8 +13576,8 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.filterBar.show(panel3.contentElement);
     this.filterBar.addEventListener("Changed", this.handleFilterChanged.bind(this));
     const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
-    settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString24(UIStrings24.showMoreInformationInRequestRows)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.groupByFrame), Common19.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString24(UIStrings24.groupRequestsByTopLevelRequest)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.showOverview), this.networkLogShowOverviewSetting, i18nString24(UIStrings24.showOverviewOfNetworkRequests)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.captureScreenshots), this.networkRecordFilmStripSetting, i18nString24(UIStrings24.captureScreenshotsWhenLoadingA)));
-    this.showSettingsPaneSetting = Common19.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
+    settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString24(UIStrings24.showMoreInformationInRequestRows)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.groupByFrame), Common20.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString24(UIStrings24.groupRequestsByTopLevelRequest)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.showOverview), this.networkLogShowOverviewSetting, i18nString24(UIStrings24.showOverviewOfNetworkRequests)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings24.captureScreenshots), this.networkRecordFilmStripSetting, i18nString24(UIStrings24.captureScreenshotsWhenLoadingA)));
+    this.showSettingsPaneSetting = Common20.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
     settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get());
     this.showSettingsPaneSetting.addChangeListener(() => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get()));
     this.filmStripPlaceholderElement = panel3.contentElement.createChild("div", "network-film-strip-placeholder");
@@ -13597,8 +13637,8 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.networkLogShowOverviewSetting.addChangeListener(this.toggleShowOverview, this);
     this.networkLogLargeRowsSetting.addChangeListener(this.toggleLargerRequests, this);
     this.networkRecordFilmStripSetting.addChangeListener(this.toggleRecordFilmStrip, this);
-    this.preserveLogSetting = Common19.Settings.Settings.instance().moduleSetting("network-log.preserve-log");
-    this.recordLogSetting = Common19.Settings.Settings.instance().moduleSetting("network-log.record-log");
+    this.preserveLogSetting = Common20.Settings.Settings.instance().moduleSetting("network-log.preserve-log");
+    this.recordLogSetting = Common20.Settings.Settings.instance().moduleSetting("network-log.record-log");
     this.recordLogSetting.addChangeListener(({ data }) => this.toggleRecord(data));
     this.throttlingSelect = this.createThrottlingConditionsSelect();
     this.setupToolbarButtons(splitWidget);
@@ -13674,7 +13714,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(new UI26.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString24(UIStrings24.doNotClearLogOnPageReload), i18nString24(UIStrings24.preserveLog)));
     this.panelToolbar.appendSeparator();
-    const disableCacheCheckbox = new UI26.Toolbar.ToolbarSettingCheckbox(Common19.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings24.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings24.disableCache));
+    const disableCacheCheckbox = new UI26.Toolbar.ToolbarSettingCheckbox(Common20.Settings.Settings.instance().moduleSetting("cache-disabled"), i18nString24(UIStrings24.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings24.disableCache));
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
     this.panelToolbar.appendToolbarItem(this.throttlingSelect);
     const networkConditionsButton = new UI26.Toolbar.ToolbarButton(i18nString24(UIStrings24.moreNetworkConditions), "network-settings", void 0, "network-conditions");
@@ -13707,7 +13747,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     );
     exportHarMenuButton.setTitle(i18nString24(UIStrings24.exportHar));
     this.panelToolbar.appendToolbarItem(exportHarMenuButton);
-    const networkShowOptionsToGenerateHarWithSensitiveData = Common19.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
+    const networkShowOptionsToGenerateHarWithSensitiveData = Common20.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
     const updateShowOptionsToGenerateHarWithSensitiveData = () => {
       const showOptionsToGenerateHarWithSensitiveData = networkShowOptionsToGenerateHarWithSensitiveData.get();
       exportHarButton.setVisible(!showOptionsToGenerateHarWithSensitiveData);
@@ -13945,7 +13985,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
       }
       return;
     }
-    if (target instanceof Workspace3.UISourceCode.UISourceCode) {
+    if (target instanceof Workspace4.UISourceCode.UISourceCode) {
       const resource = SDK17.ResourceTreeModel.ResourceTreeModel.resourceForURL(target.url());
       if (resource?.request) {
         appendRevealItem(resource.request);

@@ -3,19 +3,23 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as FormatterModule from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
-    #persistence = Persistence.Persistence.PersistenceImpl.instance();
+    #persistence;
+    #networkPersistenceManager;
     #diffs = new WeakMap();
     /** used in web tests */
     loadingUISourceCodes = new Map();
     #modified = new Set();
-    constructor(workspace) {
+    constructor(workspace, persistence = Persistence.Persistence.PersistenceImpl.instance(), networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance()) {
         super();
+        this.#persistence = persistence;
+        this.#networkPersistenceManager = networkPersistenceManager;
         workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this.#uiSourceCodeChanged, this);
         workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this.#uiSourceCodeChanged, this);
         workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded, this);
@@ -38,7 +42,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
     #uiSourceCodeDiff(uiSourceCode) {
         let diff = this.#diffs.get(uiSourceCode);
         if (!diff) {
-            diff = new UISourceCodeDiff(uiSourceCode);
+            diff = new UISourceCodeDiff(uiSourceCode, this.#networkPersistenceManager);
             this.#diffs.set(uiSourceCode, diff);
         }
         return diff;
@@ -144,12 +148,14 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
 }
 export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
     #uiSourceCode;
+    #networkPersistenceManager;
     #requestDiffPromise = null;
     #pendingChanges = null;
     dispose = false;
-    constructor(uiSourceCode) {
+    constructor(uiSourceCode, networkPersistenceManager) {
         super();
         this.#uiSourceCode = uiSourceCode;
+        this.#networkPersistenceManager = networkPersistenceManager;
         uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#uiSourceCodeChanged, this);
         uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#uiSourceCodeChanged, this);
     }
@@ -177,7 +183,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
         return this.#requestDiffPromise;
     }
     async originalContent() {
-        const originalNetworkContent = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().originalContentForUISourceCode(this.#uiSourceCode);
+        const originalNetworkContent = this.#networkPersistenceManager.originalContentForUISourceCode(this.#uiSourceCode);
         if (originalNetworkContent) {
             return await originalNetworkContent;
         }
@@ -229,11 +235,10 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
         };
     }
 }
-let workspaceDiffImplInstance = null;
 export function workspaceDiff({ forceNew } = {}) {
-    if (!workspaceDiffImplInstance || forceNew) {
-        workspaceDiffImplInstance = new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance());
+    if (!Root.DevToolsContext.globalInstance().has(WorkspaceDiffImpl) || forceNew) {
+        Root.DevToolsContext.globalInstance().set(WorkspaceDiffImpl, new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance()));
     }
-    return workspaceDiffImplInstance;
+    return Root.DevToolsContext.globalInstance().get(WorkspaceDiffImpl);
 }
 //# sourceMappingURL=WorkspaceDiff.js.map

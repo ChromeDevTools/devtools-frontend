@@ -331,15 +331,17 @@ export class ExtensionRemoteObject extends SDK.RemoteObject.RemoteObject {
 export class DebuggerLanguagePluginManager {
     #workspace;
     #debuggerWorkspaceBinding;
+    #console;
     #plugins;
     #debuggerModelToData;
     #rawModuleHandles;
     callFrameByStopId = new Map();
     stopIdByCallFrame = new Map();
     nextStopId = 0n;
-    constructor(targetManager, workspace, debuggerWorkspaceBinding) {
+    constructor(targetManager, workspace, debuggerWorkspaceBinding, console) {
         this.#workspace = workspace;
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+        this.#console = console;
         this.#plugins = [];
         this.#debuggerModelToData = new Map();
         targetManager.observeModels(SDK.DebuggerModel.DebuggerModel, this);
@@ -413,7 +415,8 @@ export class DebuggerLanguagePluginManager {
             const scripts = rawModuleHandle.scripts.filter(script => script.debuggerModel !== debuggerModel);
             if (scripts.length === 0) {
                 rawModuleHandle.plugin.removeRawModule(rawModuleId).catch(error => {
-                    Common.Console.Console.instance().error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
+                    this.#console.error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), 
+                    /* show=*/ false);
                 });
                 this.#rawModuleHandles.delete(rawModuleId);
             }
@@ -519,7 +522,7 @@ export class DebuggerLanguagePluginManager {
             }
         }
         catch (error) {
-            Common.Console.Console.instance().error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
+            this.#console.error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
         }
         return null;
     }
@@ -538,7 +541,7 @@ export class DebuggerLanguagePluginManager {
             return Promise.resolve(null);
         }
         return Promise.all(locationPromises).then(locations => locations.flat()).catch(error => {
-            Common.Console.Console.instance().error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
+            this.#console.error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
             return null;
         });
         async function getLocations(rawModuleId, plugin, script) {
@@ -679,7 +682,7 @@ export class DebuggerLanguagePluginManager {
             let rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
             if (!rawModuleHandle) {
                 const sourceFileURLsPromise = (async () => {
-                    const console = Common.Console.Console.instance();
+                    const console = this.#console;
                     const url = script.sourceURL;
                     const symbolsUrl = (script.debugSymbols?.externalURL) || '';
                     if (symbolsUrl) {
@@ -793,7 +796,7 @@ export class DebuggerLanguagePluginManager {
             return Array.from(scopes.values());
         }
         catch (error) {
-            Common.Console.Console.instance().error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
+            this.#console.error(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }), /* show=*/ false);
             return null;
         }
     }
@@ -820,7 +823,7 @@ export class DebuggerLanguagePluginManager {
             return functionInfo;
         }
         catch (error) {
-            Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }));
+            this.#console.warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }));
             return { frames: [] };
         }
     }
@@ -849,7 +852,7 @@ export class DebuggerLanguagePluginManager {
             }));
         }
         catch (error) {
-            Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }));
+            this.#console.warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }));
             return [];
         }
     }
@@ -878,7 +881,7 @@ export class DebuggerLanguagePluginManager {
             }));
         }
         catch (error) {
-            Common.Console.Console.instance().warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }));
+            this.#console.warn(i18nString(UIStrings.errorInDebuggerLanguagePlugin, { PH1: error.message }));
             return [];
         }
     }

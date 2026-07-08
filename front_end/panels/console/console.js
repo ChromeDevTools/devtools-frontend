@@ -68,15 +68,15 @@ var consoleContextSelector_css_default = `/*
 var { render, nothing, html } = Lit;
 var UIStrings = {
   /**
-   * @description Title of toolbar item in console context selector of the console panel
+   * @description Title of toolbar item in Console context selector of the Console panel.
    */
   javascriptContextNotSelected: "JavaScript context: Not selected",
   /**
-   * @description Text in Console Context Selector of the Console panel
+   * @description Text in Console context selector of the Console panel.
    */
   extension: "Extension",
   /**
-   * @description Text in Console Context Selector of the Console panel
+   * @description Text in Console context selector of the Console panel.
    * @example {top} PH1
    */
   javascriptContextS: "JavaScript context: {PH1}"
@@ -1845,50 +1845,50 @@ var SymbolizedErrorWidget = class extends UI2.Widget.Widget {
 // gen/front_end/panels/console/ConsoleViewMessage.js
 var UIStrings2 = {
   /**
-   * @description Message element text content in Console View Message of the Console panel. Shown
-   * when the user tried to run console.clear() but the 'Preserve log' option is enabled, which stops
+   * @description Message element text content in Console view message of the Console panel. Shown
+   * when the user tried to run console.clear() but the 'Keep log' option is enabled, which stops
    * the log from being cleared.
    */
-  consoleclearWasPreventedDueTo: "`console.clear()` was prevented due to 'Preserve log'",
+  consoleclearWasPreventedDueTo: "`console.clear()` was prevented due to 'Keep log'",
   /**
    * @description Text shown in the Console panel after the user has cleared the console, which
    * removes all messages from the console so that it is empty.
    */
   consoleWasCleared: "Console was cleared",
   /**
-   * @description Message element title in Console View Message of the Console panel
+   * @description Message element title in Console view message of the Console panel.
    * @example {Ctrl+L} PH1
    */
   clearAllMessagesWithS: "Clear all messages with {PH1}",
   /**
-   * @description Message prefix in Console View Message of the Console panel
+   * @description Message prefix in Console view message of the Console panel.
    */
   assertionFailed: "Assertion failed: ",
   /**
-   * @description Message text in Console View Message of the Console panel
+   * @description Message text in Console view message of the Console panel.
    * @example {console.log(1)} PH1
    */
   violationS: "`[Violation]` {PH1}",
   /**
-   * @description Message text in Console View Message of the Console panel
+   * @description Message text in Console view message of the Console panel.
    * @example {console.log(1)} PH1
    */
   interventionS: "`[Intervention]` {PH1}",
   /**
-   * @description Message text in Console View Message of the Console panel
+   * @description Message text in Console view message of the Console panel.
    * @example {console.log(1)} PH1
    */
   deprecationS: "`[Deprecation]` {PH1}",
   /**
-   * @description Note title in Console View Message of the Console panel
+   * @description Note title in Console view message of the Console panel.
    */
-  thisValueWillNotBeCollectedUntil: "This value will not be collected until console is cleared.",
+  thisValueWillNotBeCollectedUntil: "This value won\u2019t be collected until console is cleared.",
   /**
-   * @description Note title in Console View Message of the Console panel
+   * @description Note title in Console view message of the Console panel.
    */
   thisValueWasEvaluatedUponFirst: "This value was evaluated upon first expanding. It may have changed since then.",
   /**
-   * @description Note title in Console View Message of the Console panel
+   * @description Note title in Console view message of the Console panel.
    */
   functionWasResolvedFromBound: "Function was resolved from bound function.",
   /**
@@ -1897,24 +1897,24 @@ var UIStrings2 = {
    */
   exception: "<exception>",
   /**
-   * @description Text to indicate an item is a warning
+   * @description Text to indicate an item is a warning.
    */
   warning: "Warning",
   /**
-   * @description Text for errors
+   * @description Text for errors.
    */
   error: "Error",
   /**
    * @description Accessible label for an icon. The icon is used to mark console messages that
    * originate from a logpoint. Logpoints are special breakpoints that log a user-provided JavaScript
-   * expression to the DevTools console.
+   * expression to the DevTools Console.
    */
   logpoint: "Logpoint",
   /**
    * @description Accessible label for an icon. The icon is used to mark console messages that
    * originate from conditional breakpoints.
    */
-  cndBreakpoint: "Conditional Breakpoint",
+  cndBreakpoint: "Conditional breakpoint",
   /**
    * @description Announced by the screen reader to indicate how many times a particular message in
    * the console was repeated.
@@ -1931,87 +1931,87 @@ var UIStrings2 = {
    */
   errorS: "{n, plural, =1 {Error, Repeated # time} other {Error, Repeated # times}}",
   /**
-   * @description Text appended to grouped console messages that are related to URL requests
+   * @description Text appended to grouped console messages that are related to URL requests.
    */
   url: "<URL>",
   /**
-   * @description Text appended to grouped console messages about tasks that took longer than N ms
+   * @description Text appended to grouped console messages about tasks that took longer than N ms.
    */
   tookNms: "took <N>ms",
   /**
-   * @description Text appended to grouped console messages about tasks that are related to some DOM event
+   * @description Text appended to grouped console messages about tasks that are related to some DOM event.
    */
   someEvent: "<some> event",
   /**
-   * @description Text appended to grouped console messages about tasks that are related to a particular milestone
+   * @description Text appended to grouped console messages about tasks that are related to a particular milestone.
    */
   Mxx: " M<XX>",
   /**
-   * @description Text appended to grouped console messages about tasks that are related to autofill completions
+   * @description Text appended to grouped console messages about tasks that are related to autofill completions.
    */
   attribute: "<attribute>",
   /**
-   * @description Text for the index of something
+   * @description Text for the index of something.
    */
   index: "(index)",
   /**
-   * @description Text for the value of something
+   * @description Text for the value of something.
    */
   value: "Value",
   /**
-   * @description Title of the Console tool
+   * @description Title of the Console tool.
    */
   console: "Console",
   /**
-   * @description Message to indicate a console message with a stack table is expanded
+   * @description Message to indicate a console message with a stack table is expanded.
    */
   stackMessageExpanded: "Stack table expanded",
   /**
-   * @description Message to indicate a console message with a stack table is collapsed
+   * @description Message to indicate a console message with a stack table is collapsed.
    */
   stackMessageCollapsed: "Stack table collapsed",
   /**
-   * @description Message to offer insights for a console error message
+   * @description Message to offer insights for a console error message.
    */
   explainThisError: "Understand this error",
   /**
-   * @description Message to offer insights for a console warning message
+   * @description Message to offer insights for a console warning message.
    */
   explainThisWarning: "Understand this warning",
   /**
-   * @description Message to offer insights for a console message
+   * @description Message to offer insights for a console message.
    */
   explainThisMessage: "Understand this message",
   /**
-   * @description Message to offer insights for a console error message
+   * @description Message to offer insights for a console error message.
    */
-  explainThisErrorWithAI: "Understand this error. Powered by AI.",
+  explainThisErrorWithAI: "Understand this error",
   /**
-   * @description Message to offer insights for a console warning message
+   * @description Message to offer insights for a console warning message.
    */
-  explainThisWarningWithAI: "Understand this warning. Powered by AI.",
+  explainThisWarningWithAI: "Understand this warning",
   /**
-   * @description Message to offer insights for a console message
+   * @description Message to offer insights for a console message.
    */
-  explainThisMessageWithAI: "Understand this message. Powered by AI",
+  explainThisMessageWithAI: "Understand this message",
   /**
-   * @description Element text content in Object Properties Section
+   * @description Element text content in Object properties section.
    */
   dots: "(...)",
   /**
-   * @description Element title in Object Properties Section
+   * @description Element title in Object properties section.
    */
   invokePropertyGetter: "Invoke property getter",
   /**
-   * @description Context menu item to copy table data
+   * @description Context menu item to copy table data.
    */
   copyTableAs: "Copy table as",
   /**
-   * @description Submenu item to copy table as Markdown
+   * @description Submenu item to copy table as Markdown.
    */
   copyAsMarkdown: "Copy as Markdown",
   /**
-   * @description Submenu item to copy table as CSV
+   * @description Submenu item to copy table as CSV.
    */
   copyAsCsv: "Copy as CSV"
 };
@@ -4709,36 +4709,36 @@ var { createRef, ref: ref2, repeat } = Directives;
 var { widget } = UI6.Widget;
 var UIStrings3 = {
   /**
-   * @description A context menu item in the Console Pin Pane of the Console panel
+   * @description A context menu item in the live expressions section of the Console panel.
    */
   removeExpression: "Remove expression",
   /**
-   * @description A context menu item in the Console Pin Pane of the Console panel
+   * @description A context menu item in the live expressions section of the Console panel.
    */
   removeAllExpressions: "Remove all expressions",
   /**
-   * @description Screen reader label for delete button on a non-blank live expression
+   * @description Screen reader label for delete button on a non-blank live expression.
    * @example {document} PH1
    */
   removeExpressionS: "Remove expression: {PH1}",
   /**
-   * @description Screen reader label for delete button on a blank live expression
+   * @description Screen reader label for delete button on a blank live expression.
    */
   removeBlankExpression: "Remove blank expression",
   /**
-   * @description Text in Console Pin Pane of the Console panel
+   * @description Text in the live expressions section of the Console panel.
    */
   liveExpressionEditor: "Live expression editor",
   /**
-   * @description Text in Console Pin Pane of the Console panel
+   * @description Text in the live expressions section of the Console panel.
    */
   expression: "Expression",
   /**
-   * @description Side effect label title in Console Pin Pane of the Console panel
+   * @description Side effect label title in the live expressions section of the Console panel.
    */
   evaluateAllowingSideEffects: "Evaluate, allowing side effects",
   /**
-   * @description Text of a DOM element in Console Pin Pane of the Console panel
+   * @description Text of a DOM element in the live expressions section of the Console panel.
    */
   notAvailable: "not available",
   /**
@@ -4749,9 +4749,9 @@ var UIStrings3 = {
    * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  doNotPaste: "Don't paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below to allow pasting.",
+  doNotPaste: "Don\u2019t paste code you don\u2019t understand or haven\u2019t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type \u201C{PH1}\u201D below to allow pasting.",
   /**
-   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
    */
   allowPasting: "allow pasting",
   /**
@@ -5306,34 +5306,34 @@ devtools-icon {
 // gen/front_end/panels/console/ConsoleSidebar.js
 var UIStrings4 = {
   /**
-   * @description Filter name in Console Sidebar of the Console panel. This is shown when we fail to
+   * @description Filter name in Console sidebar of the Console panel. This is shown when we fail to
    * parse a URL when trying to display console messages from each URL separately. This might be
    * because the console message does not come from any particular URL. This should be translated as
    * a term that indicates 'not one of the other URLs listed here'.
    */
   other: "<other>",
   /**
-   * @description Text in Console Sidebar of the Console panel to show how many user messages exist.
+   * @description Text in Console sidebar of the Console panel to show how many user messages exist.
    */
   dUserMessages: "{n, plural, =0 {No user messages} =1 {# user message} other {# user messages}}",
   /**
-   * @description Text in Console Sidebar of the Console panel to show how many messages exist.
+   * @description Text in Console sidebar of the Console panel to show how many messages exist.
    */
   dMessages: "{n, plural, =0 {No messages} =1 {# message} other {# messages}}",
   /**
-   * @description Text in Console Sidebar of the Console panel to show how many errors exist.
+   * @description Text in Console sidebar of the Console panel to show how many errors exist.
    */
   dErrors: "{n, plural, =0 {No errors} =1 {# error} other {# errors}}",
   /**
-   * @description Text in Console Sidebar of the Console panel to show how many warnings exist.
+   * @description Text in Console sidebar of the Console panel to show how many warnings exist.
    */
   dWarnings: "{n, plural, =0 {No warnings} =1 {# warning} other {# warnings}}",
   /**
-   * @description Text in Console Sidebar of the Console panel to show how many info messages exist.
+   * @description Text in Console sidebar of the Console panel to show how many info messages exist.
    */
   dInfo: "{n, plural, =0 {No info} =1 {# info} other {# info}}",
   /**
-   * @description Text in Console Sidebar of the Console panel to show how many verbose messages exist.
+   * @description Text in Console sidebar of the Console panel to show how many verbose messages exist.
    */
   dVerbose: "{n, plural, =0 {No verbose} =1 {# verbose} other {# verbose}}"
 };
@@ -6162,6 +6162,7 @@ import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Logs3 from "./../../models/logs/logs.js";
 import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
+import * as Workspace2 from "./../../models/workspace/workspace.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
 import * as IssueCounter2 from "./../../ui/components/issue_counter/issue_counter.js";
@@ -6229,11 +6230,11 @@ var UIStrings5 = {
   /**
    * @description Label for button which links to Issues tab, specifying how many issues there are.
    */
-  issuesWithColon: "{n, plural, =0 {No Issues} =1 {# Issue:} other {# Issues:}}",
+  issuesWithColon: "{n, plural, =0 {No issues} =1 {# issue:} other {# issues:}}",
   /**
-   * @description Text for the tooltip of the issue counter toolbar item
+   * @description Text for the tooltip of the issue counter toolbar item.
    */
-  issueToolbarTooltipGeneral: "Some problems no longer generate console messages, but are surfaced in the issues tab.",
+  issueToolbarTooltipGeneral: "Some problems no longer generate console messages, but are surfaced in the Issues tab.",
   /**
    * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
    * there are in the Issues tab broken down by kind.
@@ -6244,33 +6245,33 @@ var UIStrings5 = {
    * @description Text for the tooltip of the issue counter toolbar item. The placeholder indicates how many issues
    * there are in the Issues tab broken down by kind.
    */
-  issueToolbarClickToGoToTheIssuesTab: "Click to go to the issues tab",
+  issueToolbarClickToGoToTheIssuesTab: "Click to go to the Issues tab",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Label for the search box input field in the Console view.
    */
   findStringInLogs: "Find string in logs",
   /**
-   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in console view of the console panel
+   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in Console view of the Console panel.
    */
   consoleSettings: "Console settings",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of a setting under the Console category that can be invoked through the command menu.
    */
   groupSimilarMessagesInConsole: "Group similar messages",
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu
+   * @description Title of a setting under the Console category that can be invoked through the command menu.
    */
   showCorsErrorsInConsole: "CORS errors in console",
   /**
-   * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
+   * @description Tooltip for the the Console sidebar toggle in the Console panel. Command to
    * open/show the sidebar.
    */
-  showConsoleSidebar: "Show console sidebar",
+  showConsoleSidebar: "Show Console sidebar",
   /**
-   * @description Tooltip for the the console sidebar toggle in the Console panel. Command to
+   * @description Tooltip for the the Console sidebar toggle in the Console panel. Command to
    * open/show the sidebar.
    */
-  hideConsoleSidebar: "Hide console sidebar",
+  hideConsoleSidebar: "Hide Console sidebar",
   /**
    * @description Screen reader announcement when the sidebar is shown in the Console panel.
    */
@@ -6280,23 +6281,23 @@ var UIStrings5 = {
    */
   consoleSidebarHidden: "Console sidebar hidden",
   /**
-   * @description Tooltip text that appears on the setting to preserve log when hovering over the item
+   * @description Tooltip text that appears on the setting to preserve log when hovering over the item.
    */
-  doNotClearLogOnPageReload: "Do not clear log on page reload / navigation",
+  doNotClearLogOnPageReload: "Don\u2019t clear log on page reload / navigation",
   /**
-   * @description Text to preserve the log after refreshing
+   * @description Text to preserve the log after refreshing.
    */
-  preserveLog: "Preserve log",
+  preserveLog: "Keep log",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Title of a setting under the Console category to show network requests in the console.
    */
   networkMessages: "Network messages",
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
+   * @description Tooltip text that appears on the setting when hovering over it in Console view of the Console panel.
    */
   onlyShowMessagesFromTheCurrentContext: "Only show messages from the current context (`top`, `iframe`, `worker`, extension)",
   /**
-   * @description Alternative title text of a setting in Console View of the Console panel
+   * @description Alternative title text of a setting in Console view of the Console panel.
    */
   selectedContextOnly: "Selected context only",
   /**
@@ -6304,7 +6305,7 @@ var UIStrings5 = {
    */
   logXMLHttpRequests: "Log XMLHttpRequests",
   /**
-   * @description Tooltip text that appears on the setting when hovering over it in Console View of the Console panel
+   * @description Tooltip text that appears on the setting when hovering over it in Console view of the Console panel.
    */
   eagerlyEvaluateTextInThePrompt: "Eagerly evaluate text in the prompt",
   /**
@@ -6316,96 +6317,96 @@ var UIStrings5 = {
    */
   treatEvaluationAsUserActivation: "Treat evaluation as user activation",
   /**
-   * @description Text in Console View of the Console panel, indicating that a number of console
+   * @description Text in Console view of the Console panel, indicating that a number of console
    * messages have been hidden.
    */
   sHidden: "{n, plural, =1 {# hidden} other {# hidden}}",
   /**
-   * @description Alert message for screen readers when the console is cleared
+   * @description Alert message for screen readers when the console is cleared.
    */
   consoleCleared: "Console cleared",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Context menu item to filter out console messages originating from a specific script or file.
    * @example {index.js} PH1
    */
   hideMessagesFromS: "Hide messages from {PH1}",
   /**
-   * @description Text to save content as a specific file type
+   * @description Text to save content as a specific file type.
    */
   saveAs: "Save as\u2026",
   /**
-   * @description Text to copy Console log to clipboard
+   * @description Text to copy console log to clipboard.
    */
   copyConsole: "Copy console",
   /**
-   * @description A context menu item in the Console View of the Console panel
+   * @description A context menu item in the Console view of the Console panel.
    */
   copyVisibleStyledSelection: "Copy visible styled selection",
   /**
-   * @description Text to replay an XHR request
+   * @description Text to replay an XHR request.
    */
   replayXhr: "Replay XHR",
   /**
-   * @description Text to indicate DevTools is writing to a file
+   * @description Text to indicate DevTools is writing to a file.
    */
   writingFile: "Writing file\u2026",
   /**
-   * @description Text to indicate the searching is in progress
+   * @description Text to indicate the searching is in progress.
    */
   searching: "Searching\u2026",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Placeholder hint text inside the filter input box in the Console view.
    */
   egEventdCdnUrlacom: "e.g. `/eventd/ -cdn url:a.com`",
   /**
-   * @description Sdk console message message level verbose of level Labels in Console View of the Console panel
+   * @description Label for the verbose log level option in the filter dropdown in the Console view.
    */
   verbose: "Verbose",
   /**
-   * @description Sdk console message message level info of level Labels in Console View of the Console panel
+   * @description Label for the info log level option in the filter dropdown in the Console view.
    */
   info: "Info",
   /**
-   * @description Sdk console message message level warning of level Labels in Console View of the Console panel
+   * @description Label for the warning log level option in the filter dropdown in the Console view.
    */
   warnings: "Warnings",
   /**
-   * @description Text for errors
+   * @description Label for the error log level option in the filter dropdown in the Console view.
    */
   errors: "Errors",
   /**
    * @description Tooltip text of the info icon shown next to the filter drop down
    *              in the Console panels main toolbar when the sidebar is active.
    */
-  overriddenByFilterSidebar: "Log levels are controlled by the console sidebar.",
+  overriddenByFilterSidebar: "Log levels are controlled by the Console sidebar.",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Label for the custom log levels option in the filter dropdown in the Console view.
    */
   customLevels: "Custom levels",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Option in the log level filter menu to show only a specific log level.
    * @example {Warnings} PH1
    */
   sOnly: "{PH1} only",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Option in the log level filter menu to show all log levels.
    */
   allLevels: "All levels",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Option in the log level filter menu to show default log levels.
    */
   defaultLevels: "Default levels",
   /**
-   * @description Text in Console View of the Console panel
+   * @description Option in the log level filter menu to hide all log levels.
    */
   hideAll: "Hide all",
   /**
-   * @description Title of level menu button in console view of the console panel
+   * @description Title of level menu button in Console view of the Console panel.
    * @example {All levels} PH1
    */
   logLevelS: "Log level: {PH1}",
   /**
-   * @description A context menu item in the Console View of the Console panel
+   * @description A context menu item in the Console view of the Console panel.
    */
   default: "Default",
   /**
@@ -7266,7 +7267,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     const url = SDK7.TargetManager.TargetManager.instance().scopeTarget().inspectedURL();
     const parsedURL = Common7.ParsedURL.ParsedURL.fromString(url);
     const filename = Platform5.StringUtilities.sprintf("%s-%d.log", parsedURL ? parsedURL.host : "console", Date.now());
-    const stream = new Bindings4.FileUtils.FileOutputStream();
+    const stream = new Bindings4.FileUtils.FileOutputStream(Workspace2.FileManager.FileManager.instance());
     const progressIndicator = document.createElement("devtools-progress");
     progressIndicator.title = i18nString5(UIStrings5.writingFile);
     progressIndicator.totalWork = this.itemCount();
@@ -8010,16 +8011,16 @@ var consolePrompt_css_default = `/*
 var { Direction } = TextEditor2.TextEditorHistory;
 var UIStrings6 = {
   /**
-   * @description Text in Console Prompt of the Console panel
+   * @description Text in Console prompt of the Console panel.
    */
   consolePrompt: "Console prompt",
   /**
-   * @description Warning shown to users when pasting text into the DevTools console. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
+   * @description Warning shown to users when pasting text into the DevTools Console. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  selfXssWarning: "Warning: Don\u2019t paste code into the DevTools Console that you don\u2019t understand or haven\u2019t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below and press Enter to allow pasting.",
+  selfXssWarning: "Warning: Don\u2019t paste code into the DevTools Console that you don\u2019t understand or haven\u2019t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type \u201C{PH1}\u201D below and press Enter to allow pasting.",
   /**
-   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
+   * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
    */
   allowPasting: "allow pasting"
 };

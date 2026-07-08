@@ -53,7 +53,7 @@ export declare const enum Capability {
 }
 export declare class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor();
+    constructor(settings?: Common.Settings.Settings);
     static instance(): EmulatedDevicesList;
     private updateStandardDevices;
     private listFromJSONV1;

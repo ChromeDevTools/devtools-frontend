@@ -202,7 +202,7 @@ export declare class RequestURLPattern {
 }
 export declare class RequestCondition extends Common.ObjectWrapper.ObjectWrapper<RequestCondition.EventTypes> {
     #private;
-    static createFromSetting(setting: RequestConditionsSetting, settings?: Common.Settings.Settings): RequestCondition;
+    static createFromSetting(setting: RequestConditionsSetting, settings: Common.Settings.Settings): RequestCondition;
     static create(pattern: RequestURLPattern, conditions: ThrottlingConditions): RequestCondition;
     private constructor();
     get isBlocking(): boolean;

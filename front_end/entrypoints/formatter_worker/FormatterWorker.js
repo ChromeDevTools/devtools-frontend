@@ -10,6 +10,9 @@ import { IdentityFormatter } from './IdentityFormatter.js';
 import { JavaScriptFormatter } from './JavaScriptFormatter.js';
 import { JSONFormatter } from './JSONFormatter.js';
 import { substituteExpression } from './Substitute.js';
+/**
+ * Creates a tokenizer for the specified MIME type.
+ */
 export function createTokenizer(mimeType) {
     const mode = CodeMirror.getMode({ indentUnit: 2 }, mimeType);
     const state = CodeMirror.startState(mode);
@@ -19,8 +22,12 @@ export function createTokenizer(mimeType) {
     if (!mode.token) {
         throw new Error(`Could not find CodeMirror mode with token method: ${mimeType}`);
     }
-    return (line, callback) => {
+    return (line, callback, startOffset = 0) => {
         const stream = new CodeMirror.StringStream(line);
+        if (startOffset) {
+            stream.pos = startOffset;
+            stream.start = startOffset;
+        }
         while (!stream.eol()) {
             const style = mode.token(stream, state);
             const value = stream.current();

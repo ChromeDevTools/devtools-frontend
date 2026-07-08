@@ -91,6 +91,10 @@ var UIStrings = {
    */
   loading: "Loading\u2026",
   /**
+   * @description Text when a file is currently being pretty printed/formatted in the editor
+   */
+  formatting: "Formatting\u2026",
+  /**
    * @description Shown at the bottom of the Sources panel when the user has made multiple
    * simultaneous text selections in the text editor.
    * @example {2} PH1
@@ -371,6 +375,7 @@ var SourceFrameImpl = class extends Common.ObjectWrapper.eventMixin(UI.View.Simp
     let newSelection;
     if (this.prettyInternal) {
       const content = this.rawContent instanceof CodeMirror.Text ? this.rawContent.sliceString(0) : this.rawContent || "";
+      this.textEditor.state = this.placeholderEditorState(i18nString(UIStrings.formatting));
       const formatInfo = await Formatter.ScriptFormatter.formatScriptContent(this.contentType, content);
       this.formattedMap = formatInfo.formattedMapping;
       await this.setContent(formatInfo.formattedContent);

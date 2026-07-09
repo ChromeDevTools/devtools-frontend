@@ -119,6 +119,12 @@ export class TestUniverse {
         }
         return this.#context.get(SDK.DOMModel.DOMModelUndoStack);
     }
+    get emulatedDevicesList() {
+        if (!this.#context.has(Emulation.EmulatedDevices.EmulatedDevicesList)) {
+            this.#context.set(Emulation.EmulatedDevices.EmulatedDevicesList, new Emulation.EmulatedDevices.EmulatedDevicesList(this.settings));
+        }
+        return this.#context.get(Emulation.EmulatedDevices.EmulatedDevicesList);
+    }
     get eventBreakpointsManager() {
         if (!this.#context.has(SDK.EventBreakpointsModel.EventBreakpointsManager)) {
             this.#context.set(SDK.EventBreakpointsModel.EventBreakpointsManager, new SDK.EventBreakpointsModel.EventBreakpointsManager(this.targetManager));
@@ -131,11 +137,23 @@ export class TestUniverse {
         }
         return this.#context.get(Workspace.FileManager.FileManager);
     }
+    get fileSystemWorkspaceBinding() {
+        if (!this.#context.has(Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding)) {
+            this.#context.set(Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding, new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(this.isolatedFileSystemManager, this.workspace));
+        }
+        return this.#context.get(Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding);
+    }
     get frameManager() {
         if (!this.#context.has(SDK.FrameManager.FrameManager)) {
             this.#context.set(SDK.FrameManager.FrameManager, new SDK.FrameManager.FrameManager(this.targetManager));
         }
         return this.#context.get(SDK.FrameManager.FrameManager);
+    }
+    get hostConfigTracker() {
+        if (!this.#context.has(Host.AidaClient.HostConfigTracker)) {
+            this.#context.set(Host.AidaClient.HostConfigTracker, new Host.AidaClient.HostConfigTracker());
+        }
+        return this.#context.get(Host.AidaClient.HostConfigTracker);
     }
     get ignoreListManager() {
         if (!this.#context.has(Workspace.IgnoreListManager.IgnoreListManager)) {
@@ -191,6 +209,12 @@ export class TestUniverse {
             this.#context.set(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(this.workspace, this.persistence, this.breakpointManager, this.targetManager, this.settings, this.isolatedFileSystemManager, this.multitargetNetworkManager));
         }
         return this.#context.get(Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
+    }
+    get networkProjectManager() {
+        if (!this.#context.has(Bindings.NetworkProject.NetworkProjectManager)) {
+            this.#context.set(Bindings.NetworkProject.NetworkProjectManager, new Bindings.NetworkProject.NetworkProjectManager());
+        }
+        return this.#context.get(Bindings.NetworkProject.NetworkProjectManager);
     }
     get pageResourceLoader() {
         if (!this.#context.has(SDK.PageResourceLoader.PageResourceLoader)) {

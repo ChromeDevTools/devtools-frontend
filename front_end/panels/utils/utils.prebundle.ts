@@ -86,10 +86,14 @@ export class PanelUtils {
     if (PanelUtils.isFailedNetworkRequest(request)) {
       let iconName: string;
       let title: string;
-      // Failed prefetch network requests are displayed as warnings instead of errors.
-      if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
-        title = i18nString(UIStrings.prefetchFailed, {PH1: type.title()});
+      // Failed prefetch and preload network requests are displayed as warnings instead of errors.
+      if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch || request.isPreloadRequest()) {
         iconName = 'warning-filled';
+        if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
+          title = i18nString(UIStrings.prefetchFailed, {PH1: type.title()});
+        } else {
+          title = i18nString(UIStrings.requestFailed, {PH1: type.title()});
+        }
       } else {
         title = i18nString(UIStrings.requestFailed, {PH1: type.title()});
         iconName = 'cross-circle-filled';

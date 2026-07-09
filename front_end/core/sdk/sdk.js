@@ -23791,23 +23791,23 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       domModel.overlayModel().highlightInOverlay({ object, selectorList: void 0 });
     }
   }
-  static hideDOMNodeHighlight(targetManager = TargetManager.instance()) {
+  static hideDOMNodeHighlight(targetManager) {
     for (const overlayModel of targetManager.models(_OverlayModel)) {
       overlayModel.delayedHideHighlight(0);
     }
   }
-  static async muteHighlight(targetManager = TargetManager.instance()) {
+  static async muteHighlight(targetManager) {
     return await Promise.all(targetManager.models(_OverlayModel).map((model) => model.suspendModel()));
   }
-  static async unmuteHighlight(targetManager = TargetManager.instance()) {
+  static async unmuteHighlight(targetManager) {
     return await Promise.all(targetManager.models(_OverlayModel).map((model) => model.resumeModel()));
   }
-  static highlightRect(rect, targetManager = TargetManager.instance()) {
+  static highlightRect(rect, targetManager) {
     for (const overlayModel of targetManager.models(_OverlayModel)) {
       void overlayModel.highlightRect(rect);
     }
   }
-  static clearHighlight(targetManager = TargetManager.instance()) {
+  static clearHighlight(targetManager) {
     for (const overlayModel of targetManager.models(_OverlayModel)) {
       void overlayModel.clearHighlight();
     }
@@ -31824,6 +31824,9 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   isPreflightRequest() {
     return this.#initiator !== null && this.#initiator !== void 0 && this.#initiator.type === "preflight";
   }
+  isPreloadRequest() {
+    return this.#initiator !== null && this.#initiator !== void 0 && this.#initiator.type === "preload";
+  }
   redirectDestination() {
     return this.#redirectDestination;
   }
@@ -32719,7 +32722,10 @@ var DirectSocketChunkType;
 var AccessibilityModel_exports = {};
 __export(AccessibilityModel_exports, {
   AccessibilityModel: () => AccessibilityModel,
-  AccessibilityNode: () => AccessibilityNode
+  AccessibilityNode: () => AccessibilityNode,
+  getNodeAndAncestorsFromDOMNode: () => getNodeAndAncestorsFromDOMNode,
+  getRootNode: () => getRootNode,
+  isPrintableType: () => isPrintableType
 });
 var AccessibilityNode = class {
   #accessibilityModel;
@@ -32863,6 +32869,56 @@ var AccessibilityNode = class {
   getFrameId() {
     return this.#frameId || this.parentNode()?.getFrameId() || null;
   }
+  isLeafNode() {
+    return this.numChildren() === 0 && this.role()?.value !== "Iframe";
+  }
+  getNodeId() {
+    return this.getFrameId() + "#" + this.id();
+  }
+  async getChildren(frameManager = FrameManager.instance()) {
+    if (this.role()?.value === "Iframe") {
+      const domNode = await this.deferredDOMNode()?.resolvePromise();
+      if (!domNode) {
+        throw new Error("Could not find corresponding DOMNode");
+      }
+      const frameId = domNode.frameOwnerFrameId();
+      if (!frameId) {
+        throw new Error("No owner frameId on iframe node");
+      }
+      const localRoot = await getRootNode(frameId, frameManager);
+      return [localRoot];
+    }
+    return await this.accessibilityModel().requestAXChildren(this.id(), this.getFrameId() || void 0);
+  }
+  async axNodeToText(depth = 0, frameManager = FrameManager.instance()) {
+    const indent = "  ".repeat(depth);
+    const role = this.role()?.value || "";
+    const name = this.name()?.value || "";
+    const properties = this.properties() || [];
+    const ignored = this.ignored();
+    let childDepth = depth + 1;
+    const lines = [];
+    if (ignored) {
+      if (depth === 0) {
+        lines.push("Ignored\n");
+      } else {
+        childDepth = depth;
+      }
+    } else {
+      let line = `${indent}${role} "${name}"`;
+      for (const prop of properties) {
+        if (prop.value && isPrintableType(prop.value.type)) {
+          line += ` ${prop.name}: ${prop.value.value}`;
+        }
+      }
+      lines.push(line + "\n");
+    }
+    const children = await this.getChildren(frameManager);
+    for (const child of children) {
+      lines.push(await child.axNodeToText(childDepth, frameManager));
+    }
+    return lines.join("");
+  }
 };
 var AccessibilityModel = class extends SDKModel {
   agent;
@@ -33003,6 +33059,68 @@ var AccessibilityModel = class extends SDKModel {
   }
 };
 SDKModel.register(AccessibilityModel, { capabilities: 2, autostart: false });
+function getModel(frameId, frameManager = FrameManager.instance()) {
+  const frame = frameManager.getFrame(frameId);
+  const model = frame?.resourceTreeModel().target().model(AccessibilityModel);
+  if (!model) {
+    throw new Error("Could not instantiate model for frameId");
+  }
+  return model;
+}
+async function getRootNode(frameId, frameManager = FrameManager.instance()) {
+  const model = getModel(frameId, frameManager);
+  const root = await model.requestRootNode(frameId);
+  if (!root) {
+    throw new Error("No accessibility root for frame");
+  }
+  return root;
+}
+function getFrameIdForNodeOrDocument(node) {
+  let frameId;
+  if (node instanceof DOMDocument) {
+    frameId = node.body?.frameId();
+  } else {
+    frameId = node.frameId();
+  }
+  if (!frameId) {
+    throw new Error("No frameId for DOM node");
+  }
+  return frameId;
+}
+async function getNodeAndAncestorsFromDOMNode(domNode, frameManager = FrameManager.instance()) {
+  let frameId = getFrameIdForNodeOrDocument(domNode);
+  const model = getModel(frameId, frameManager);
+  const result = await model.requestAndLoadSubTreeToNode(domNode);
+  if (!result) {
+    throw new Error("Could not retrieve accessibility node for inspected DOM node");
+  }
+  const outermostFrameId = frameManager.getOutermostFrame()?.id;
+  if (!outermostFrameId) {
+    return result;
+  }
+  while (frameId !== outermostFrameId) {
+    const node = await frameManager.getFrame(frameId)?.getOwnerDOMNodeOrDocument();
+    if (!node) {
+      break;
+    }
+    frameId = getFrameIdForNodeOrDocument(node);
+    const model2 = getModel(frameId, frameManager);
+    const ancestors = await model2.requestAndLoadSubTreeToNode(node);
+    result.push(...ancestors || []);
+  }
+  return result;
+}
+function isPrintableType(valueType) {
+  switch (valueType) {
+    case "boolean":
+    case "booleanOrUndefined":
+    case "string":
+    case "number":
+      return true;
+    default:
+      return false;
+  }
+}
 
 // gen/front_end/core/sdk/AnimationModel.js
 var AnimationModel_exports = {};
@@ -35633,7 +35751,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     return this.#messages;
   }
   // messages[] are not ordered by timestamp.
-  static allMessagesUnordered(targetManager = TargetManager.instance()) {
+  static allMessagesUnordered(targetManager) {
     const messages = [];
     for (const target of targetManager.targets()) {
       const targetMessages = target.model(_ConsoleModel)?.messages() || [];
@@ -35641,7 +35759,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
     return messages;
   }
-  static requestClearMessages(targetManager = TargetManager.instance()) {
+  static requestClearMessages(targetManager) {
     for (const logModel of targetManager.models(LogModel)) {
       logModel.requestClear();
     }
@@ -35665,7 +35783,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   errors() {
     return this.#errors;
   }
-  static allErrors(targetManager = TargetManager.instance()) {
+  static allErrors(targetManager) {
     let errors = 0;
     for (const target of targetManager.targets()) {
       errors += target.model(_ConsoleModel)?.errors() || 0;
@@ -35675,7 +35793,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   warnings() {
     return this.#warnings;
   }
-  static allWarnings(targetManager = TargetManager.instance()) {
+  static allWarnings(targetManager) {
     let warnings = 0;
     for (const target of targetManager.targets()) {
       warnings += target.model(_ConsoleModel)?.warnings() || 0;
@@ -38783,9 +38901,9 @@ var ScreenCaptureModel = class extends SDKModel {
       default:
         throw new Error("Unexpected or unspecified screnshotMode");
     }
-    await OverlayModel.muteHighlight();
+    await OverlayModel.muteHighlight(this.target().targetManager());
     const result = await this.#agent.invoke_captureScreenshot(properties);
-    await OverlayModel.unmuteHighlight();
+    await OverlayModel.unmuteHighlight(this.target().targetManager());
     return result.data;
   }
   screencastFrame({ data, metadata, sessionId }) {

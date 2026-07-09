@@ -31,6 +31,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import dataGridStyles from './dataGrid.css.js';
+export { dataGridStyles };
 const UIStrings = {
     /**
      * @description Accessible text label for expandible nodes in datagrids

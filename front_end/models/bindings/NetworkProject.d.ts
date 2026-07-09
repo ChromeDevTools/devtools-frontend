@@ -6,6 +6,7 @@ export declare class NetworkProjectManager extends Common.ObjectWrapper.ObjectWr
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): NetworkProjectManager;
+    static removeInstance(): void;
 }
 export declare const enum Events {
     FRAME_ATTRIBUTION_ADDED = "FrameAttributionAdded",

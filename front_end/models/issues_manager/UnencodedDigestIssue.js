@@ -6,13 +6,13 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     *@description Title for HTTP Unencoded Digest specification url
+     * @description Title for HTTP Unencoded Digest specification URL.
      */
     unencodedDigestHeader: 'HTTP Unencoded Digest specification',
     /**
-     *@description Title for the URL of the integration of unencoded-digest and SRI.
+     * @description Title for the URL of the integration of unencoded-digest and SRI.
      */
-    integrityIntegration: 'Server-Initiated Integrity Checks',
+    integrityIntegration: 'Server-initiated integrity checks',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/UnencodedDigestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

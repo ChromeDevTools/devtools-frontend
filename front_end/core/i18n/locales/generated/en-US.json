@@ -479,6 +479,12 @@
   "core/sdk/sdk-meta.ts | captureAsyncStackTraces": {
     "message": "Capture async stack traces"
   },
+  "core/sdk/sdk-meta.ts | cpuPressure": {
+    "message": "CPU Pressure"
+  },
+  "core/sdk/sdk-meta.ts | critical": {
+    "message": "Critical"
+  },
   "core/sdk/sdk-meta.ts | cssSourceMaps": {
     "message": "CSS source maps"
   },
@@ -487,6 +493,9 @@
   },
   "core/sdk/sdk-meta.ts | deuteranopia": {
     "message": "Deuteranopia (no green)"
+  },
+  "core/sdk/sdk-meta.ts | devicebased": {
+    "message": "Device-based"
   },
   "core/sdk/sdk-meta.ts | disableAsyncStackTraces": {
     "message": "Disable async stack traces"
@@ -514,6 +523,9 @@
   },
   "core/sdk/sdk-meta.ts | disableNetworkRequestBlocking": {
     "message": "Disable network request blocking"
+  },
+  "core/sdk/sdk-meta.ts | disablePaused": {
+    "message": "Disable paused state overlay"
   },
   "core/sdk/sdk-meta.ts | disableWebpFormat": {
     "message": "Disable WebP format"
@@ -587,6 +599,9 @@
   "core/sdk/sdk-meta.ts | emulateDeuteranopia": {
     "message": "Emulate deuteranopia (no green)"
   },
+  "core/sdk/sdk-meta.ts | emulateIdleDetectorState": {
+    "message": "Emulate Idle Detector state"
+  },
   "core/sdk/sdk-meta.ts | emulateOsTextScale": {
     "message": "Emulate OS text scale"
   },
@@ -635,6 +650,12 @@
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "Extend grid lines"
   },
+  "core/sdk/sdk-meta.ts | fair": {
+    "message": "Fair"
+  },
+  "core/sdk/sdk-meta.ts | forceEnabled": {
+    "message": "Force enabled"
+  },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "Hide frames per second (FPS) meter"
   },
@@ -670,6 +691,15 @@
   },
   "core/sdk/sdk-meta.ts | noEmulation": {
     "message": "No emulation"
+  },
+  "core/sdk/sdk-meta.ts | noIdleEmulation": {
+    "message": "No idle emulation"
+  },
+  "core/sdk/sdk-meta.ts | nominal": {
+    "message": "Nominal"
+  },
+  "core/sdk/sdk-meta.ts | noPressureEmulation": {
+    "message": "No override"
   },
   "core/sdk/sdk-meta.ts | osTextScaleEmulation100": {
     "message": "100% (default)"
@@ -731,6 +761,9 @@
   "core/sdk/sdk-meta.ts | screen": {
     "message": "screen"
   },
+  "core/sdk/sdk-meta.ts | serious": {
+    "message": "Serious"
+  },
   "core/sdk/sdk-meta.ts | showAreaNames": {
     "message": "Show area names"
   },
@@ -770,8 +803,23 @@
   "core/sdk/sdk-meta.ts | showTrackSizes": {
     "message": "Show track sizes"
   },
+  "core/sdk/sdk-meta.ts | touch": {
+    "message": "Touch"
+  },
   "core/sdk/sdk-meta.ts | tritanopia": {
     "message": "Tritanopia (no blue)"
+  },
+  "core/sdk/sdk-meta.ts | userActiveScreenLocked": {
+    "message": "User active, screen locked"
+  },
+  "core/sdk/sdk-meta.ts | userActiveScreenUnlocked": {
+    "message": "User active, screen unlocked"
+  },
+  "core/sdk/sdk-meta.ts | userIdleScreenLocked": {
+    "message": "User idle, screen locked"
+  },
+  "core/sdk/sdk-meta.ts | userIdleScreenUnlocked": {
+    "message": "User idle, screen unlocked"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
     "message": "Deprecated syntax found for metric \"{PH1}\". Please use: <name>;dur=<duration>;desc=<description>"
@@ -856,9 +904,6 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | cssMediaType": {
     "message": "CSS media type"
-  },
-  "entrypoints/inspector_main/inspector_main-meta.ts | disablePaused": {
-    "message": "Disable paused state overlay"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
     "message": "Do not auto-open DevTools for popups"
@@ -1499,18 +1544,6 @@
   "generated/Deprecation.ts | XSLT": {
     "message": "XSLTProcessor and XSLT Processing Instructions have been deprecated by all browsers. These features will be removed from this browser soon."
   },
-  "models/ai_assistance/AiUtils.ts | ageRestricted": {
-    "message": "This feature is only available to users 18 years or older."
-  },
-  "models/ai_assistance/AiUtils.ts | notAvailableInIncognitoMode": {
-    "message": "AI assistance isn’t available in Incognito mode or Guest mode."
-  },
-  "models/ai_assistance/AiUtils.ts | notLoggedIn": {
-    "message": "This feature is only available when you sign in to Chrome with your Google account."
-  },
-  "models/ai_assistance/AiUtils.ts | offline": {
-    "message": "This feature is only available with an active internet connection."
-  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
@@ -1602,10 +1635,10 @@
     "message": "Content Security Policy - Eval"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicyInlineCode": {
-    "message": "Content Security Policy - Inline Code"
+    "message": "Content Security Policy - Inline code"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | contentSecurityPolicySource": {
-    "message": "Content Security Policy - Source Allowlists"
+    "message": "Content Security Policy - Source allowlists"
   },
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesFixViolations": {
     "message": "Trusted Types - Fix violations"
@@ -1614,16 +1647,16 @@
     "message": "Trusted Types - Policy violation"
   },
   "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Changes to Chrome's treatment of third-party cookies"
+    "message": "Changes to Chrome’s treatment of third-party cookies"
   },
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
-    "message": "Third-party cookie is blocked in Chrome either because of Chrome flags or browser configuration."
+    "message": "Third-party cookie blocked in Chrome due to Chrome flags or browser settings."
   },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "File a bug"
   },
   "models/issues_manager/CookieIssue.ts | howSchemefulSamesiteWorks": {
-    "message": "How Schemeful Same-Site Works"
+    "message": "How Schemeful Same-Site works"
   },
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite cookies explained"
@@ -1680,13 +1713,13 @@
     "message": "The label elements"
   },
   "models/issues_manager/HeavyAdIssue.ts | handlingHeavyAdInterventions": {
-    "message": "Handling Heavy Ad Interventions"
+    "message": "Handling heavy ad interventions"
   },
   "models/issues_manager/Issue.ts | breakingChangeIssue": {
     "message": "A breaking change issue: the page may stop working in an upcoming version of Chrome"
   },
   "models/issues_manager/Issue.ts | breakingChanges": {
-    "message": "Breaking Changes"
+    "message": "Breaking changes"
   },
   "models/issues_manager/Issue.ts | improvementIssue": {
     "message": "An improvement issue: there is an opportunity to improve the page"
@@ -1698,13 +1731,13 @@
     "message": "A page error issue: the page is not working correctly"
   },
   "models/issues_manager/Issue.ts | pageErrors": {
-    "message": "Page Errors"
+    "message": "Page errors"
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Preventing mixed content"
   },
   "models/issues_manager/PartitioningBlobURLIssue.ts | chromeStatusEntry": {
-    "message": "Chrome Status Entry"
+    "message": "Chrome Status entry"
   },
   "models/issues_manager/PartitioningBlobURLIssue.ts | partitioningBlobURL": {
     "message": "Partitioning BlobURL"
@@ -1713,7 +1746,7 @@
     "message": "Document compatibility mode"
   },
   "models/issues_manager/SelectivePermissionsInterventionIssue.ts | selectivePermissionsIntervention": {
-    "message": "Selective Permissions Intervention"
+    "message": "Selective permissions intervention"
   },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Enabling SharedArrayBuffer"
@@ -1728,7 +1761,7 @@
     "message": "Signature-based Integrity"
   },
   "models/issues_manager/UnencodedDigestIssue.ts | integrityIntegration": {
-    "message": "Server-Initiated Integrity Checks"
+    "message": "Server-initiated integrity checks"
   },
   "models/issues_manager/UnencodedDigestIssue.ts | unencodedDigestHeader": {
     "message": "HTTP Unencoded Digest specification"
@@ -3162,7 +3195,7 @@
     "message": "History"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | inputDisclaimerForEmptyState": {
-    "message": "This is an experimental AI feature and won't always get it right."
+    "message": "This is an experimental AI feature and won’t always get it right."
   },
   "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
     "message": "New chat"
@@ -3195,7 +3228,7 @@
     "message": "AI assistance is not available in Incognito mode or Guest mode"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | notLoggedIn": {
-    "message": "This feature is only available when you are signed into Chrome with your Google account"
+    "message": "This feature is only available when you are signed in to Chrome with your Google account"
   },
   "panels/ai_assistance/components/DisabledWidget.ts | offline": {
     "message": "Check your internet connection and try again"
@@ -7539,13 +7572,13 @@
     "message": "Text colors: {PH1}"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | thereAreNoFonts": {
-    "message": "There are no fonts."
+    "message": "No fonts"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | thereAreNoMediaQueries": {
-    "message": "There are no media queries."
+    "message": "No media queries"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | thereAreNoUnusedDeclarations": {
-    "message": "There are no unused declarations."
+    "message": "No unused declarations"
   },
   "panels/css_overview/CSSOverviewCompletedView.ts | typeSelectors": {
     "message": "Type selectors"
@@ -7675,6 +7708,9 @@
   },
   "panels/developer_resources/DeveloperResourcesView.ts | resourcesCurrentlyLoading": {
     "message": "{PH1} resources, {PH2} currently loading"
+  },
+  "panels/elements/AccessibilityTreeView.ts | copy": {
+    "message": "Copy"
   },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Add new class"
@@ -10644,7 +10680,7 @@
     "message": "Chrome used a HTTP/3 connection due to the DNS record indicating HTTP/3 support. There was no race against establishing a connection using a different HTTP version."
   },
   "panels/network/NetworkDataGridNode.ts | earlyHints": {
-    "message": "early-hints"
+    "message": "Early-hints"
   },
   "panels/network/NetworkDataGridNode.ts | failed": {
     "message": "(failed)"
@@ -13425,7 +13461,7 @@
     "message": "Location name"
   },
   "panels/sensors/LocationsSettingsTab.ts | locationNameCannotBeEmpty": {
-    "message": "Location name cannot be empty"
+    "message": "Location name can’t be empty"
   },
   "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
     "message": "Location name must be less than {PH1} characters"
@@ -13457,26 +13493,8 @@
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "accelerometer"
   },
-  "panels/sensors/sensors-meta.ts | cpuPressure": {
-    "message": "CPU Pressure"
-  },
-  "panels/sensors/sensors-meta.ts | critical": {
-    "message": "Critical"
-  },
-  "panels/sensors/sensors-meta.ts | devicebased": {
-    "message": "Device-based"
-  },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
     "message": "device orientation"
-  },
-  "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
-    "message": "Emulate Idle Detector state"
-  },
-  "panels/sensors/sensors-meta.ts | fair": {
-    "message": "Fair"
-  },
-  "panels/sensors/sensors-meta.ts | forceEnabled": {
-    "message": "Force enabled"
   },
   "panels/sensors/sensors-meta.ts | geolocation": {
     "message": "geolocation"
@@ -13490,20 +13508,8 @@
   "panels/sensors/sensors-meta.ts | locations": {
     "message": "Locations"
   },
-  "panels/sensors/sensors-meta.ts | noIdleEmulation": {
-    "message": "No idle emulation"
-  },
-  "panels/sensors/sensors-meta.ts | nominal": {
-    "message": "Nominal"
-  },
-  "panels/sensors/sensors-meta.ts | noPressureEmulation": {
-    "message": "No override"
-  },
   "panels/sensors/sensors-meta.ts | sensors": {
     "message": "Sensors"
-  },
-  "panels/sensors/sensors-meta.ts | serious": {
-    "message": "Serious"
   },
   "panels/sensors/sensors-meta.ts | showLocations": {
     "message": "Show Locations"
@@ -13514,26 +13520,11 @@
   "panels/sensors/sensors-meta.ts | timezones": {
     "message": "timezones"
   },
-  "panels/sensors/sensors-meta.ts | touch": {
-    "message": "Touch"
-  },
-  "panels/sensors/sensors-meta.ts | userActiveScreenLocked": {
-    "message": "User active, screen locked"
-  },
-  "panels/sensors/sensors-meta.ts | userActiveScreenUnlocked": {
-    "message": "User active, screen unlocked"
-  },
-  "panels/sensors/sensors-meta.ts | userIdleScreenLocked": {
-    "message": "User idle, screen locked"
-  },
-  "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
-    "message": "User idle, screen unlocked"
-  },
   "panels/sensors/SensorsView.ts | accuracy": {
     "message": "Accuracy"
   },
   "panels/sensors/SensorsView.ts | adjustWithMousewheelOrUpdownKeys": {
-    "message": "Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01"
+    "message": "Adjust with mousewheel or up/down keys. {PH1}: ±10, Shift: ±1, Alt: ±0.01."
   },
   "panels/sensors/SensorsView.ts | alpha": {
     "message": "α (alpha)"
@@ -13633,6 +13624,9 @@
   },
   "panels/sensors/SensorsView.ts | timezoneId": {
     "message": "Timezone ID"
+  },
+  "panels/settings/AISettingsTab.ts | ageRestricted": {
+    "message": "This feature is only available to users 18 years or older."
   },
   "panels/settings/AISettingsTab.ts | aIAnnotationsFeatureDescription": {
     "message": "Automatically generate titles for performance trace annotations"
@@ -13750,6 +13744,15 @@
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Learn more"
+  },
+  "panels/settings/AISettingsTab.ts | notAvailableInIncognitoMode": {
+    "message": "AI assistance isn’t available in Incognito mode or Guest mode."
+  },
+  "panels/settings/AISettingsTab.ts | notLoggedIn": {
+    "message": "This feature is only available when you sign in to Chrome with your Google account."
+  },
+  "panels/settings/AISettingsTab.ts | offline": {
+    "message": "This feature is only available with an active internet connection."
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Google Privacy Policy"
@@ -17151,16 +17154,16 @@
     "message": "Audio context: {PH1}"
   },
   "panels/web_audio/WebAudioView.ts | callbackBufferSize": {
-    "message": "Callback Buffer Size"
+    "message": "Callback buffer size"
   },
   "panels/web_audio/WebAudioView.ts | callbackInterval": {
-    "message": "Callback Interval"
+    "message": "Callback interval"
   },
   "panels/web_audio/WebAudioView.ts | currentTime": {
-    "message": "Current Time"
+    "message": "Current time"
   },
   "panels/web_audio/WebAudioView.ts | maxOutputChannels": {
-    "message": "Max Output Channels"
+    "message": "Max output channels"
   },
   "panels/web_audio/WebAudioView.ts | noRecordings": {
     "message": "(no recordings)"
@@ -17172,10 +17175,10 @@
     "message": "Open a page that uses Web Audio API to start monitoring."
   },
   "panels/web_audio/WebAudioView.ts | renderCapacity": {
-    "message": "Render Capacity"
+    "message": "Render capacity"
   },
   "panels/web_audio/WebAudioView.ts | sampleRate": {
-    "message": "Sample Rate"
+    "message": "Sample rate"
   },
   "panels/web_audio/WebAudioView.ts | state": {
     "message": "State"
@@ -17289,7 +17292,7 @@
     "message": "bug"
   },
   "panels/whats_new/whats_new-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
-    "message": "Don't show what's new after each update"
+    "message": "Don’t show what’s new after each update"
   },
   "panels/whats_new/whats_new-meta.ts | releaseNotes": {
     "message": "Release notes"
@@ -17298,13 +17301,13 @@
     "message": "Report a DevTools issue"
   },
   "panels/whats_new/whats_new-meta.ts | showWhatsNew": {
-    "message": "Show what's new"
+    "message": "Show what’s new"
   },
   "panels/whats_new/whats_new-meta.ts | showWhatsNewAfterEachUpdate": {
-    "message": "Show what's new after each update"
+    "message": "Show what’s new after each update"
   },
   "panels/whats_new/whats_new-meta.ts | whatsNew": {
-    "message": "What's new"
+    "message": "What’s new"
   },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "Close"

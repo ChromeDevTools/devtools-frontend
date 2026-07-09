@@ -25,7 +25,6 @@ export interface AiConversationOptions {
     isReadOnly?: boolean;
     aidaClient?: Host.AidaClient.AidaClient;
     changeManager?: ChangeManager;
-    isExternal?: boolean;
     performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
@@ -38,6 +37,8 @@ export declare class AiConversation {
     readonly history: ResponseData[];
     constructor(options: AiConversationOptions);
     get isReadOnly(): boolean;
+    static titleForSerialized(serialized: SerializedConversation): string | undefined;
+    static title(query: string): string;
     get title(): string | undefined;
     get isEmpty(): boolean;
     setContext(updateContext: ConversationContext<unknown> | null): void;

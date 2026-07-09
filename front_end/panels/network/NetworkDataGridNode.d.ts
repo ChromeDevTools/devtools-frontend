@@ -132,6 +132,7 @@ export declare class NetworkRequestNode extends NetworkNode {
     isNavigationRequest(): boolean;
     nodeSelfHeight(): number;
     private isPrefetch;
+    private isPreload;
     throttlingConditions(): SDK.NetworkManager.AppliedNetworkConditions | undefined;
     isWarning(): boolean;
     isError(): boolean;

@@ -6,7 +6,7 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     * @description Title for Client Hint specification url link
+     * @description Title for Client Hint specification URL link.
      */
     clientHintsInfrastructure: 'Client Hints Infrastructure',
 };

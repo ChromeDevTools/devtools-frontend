@@ -44,7 +44,8 @@ export class PresentationConsoleMessageManager {
     #sourceFrameMessageManager = new PresentationSourceFrameMessageManager();
     constructor() {
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, event => this.consoleMessageAdded(event.data));
-        SDK.ConsoleModel.ConsoleModel.allMessagesUnordered().forEach(this.consoleMessageAdded, this);
+        SDK.ConsoleModel.ConsoleModel.allMessagesUnordered(SDK.TargetManager.TargetManager.instance())
+            .forEach(this.consoleMessageAdded, this);
         SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
     }
     consoleMessageAdded(consoleMessage) {

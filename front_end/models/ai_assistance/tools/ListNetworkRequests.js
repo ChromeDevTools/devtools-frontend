@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Logs from '../../logs/logs.js';
 import { isOpaqueOrigin } from '../AiOrigins.js';
 import { getRequestContextOrigin } from '../contexts/RequestContext.js';
+import { formatBytesToKb, seconds } from '../data_formatters/UnitFormatters.js';
 const UIStringsNotTranslate = {
     listingNetworkRequests: 'Listing network requests',
 };
@@ -61,8 +62,8 @@ export class ListNetworkRequestsTool {
                 id: request.requestId(),
                 url: request.url(),
                 statusCode: request.statusCode,
-                duration: i18n.TimeUtilities.secondsToString(request.duration),
-                transferSize: i18n.ByteUtilities.formatBytesToKb(request.transferSize),
+                duration: seconds(request.duration),
+                transferSize: formatBytesToKb(request.transferSize),
             });
             requestsToShow.push(request);
         }

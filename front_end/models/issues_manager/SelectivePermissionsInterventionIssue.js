@@ -5,9 +5,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Title for a learn more link in Selective Permissions Intervention issue description
+     * @description Title for a learn more link in selective permissions intervention issue description.
      */
-    selectivePermissionsIntervention: 'Selective Permissions Intervention',
+    selectivePermissionsIntervention: 'Selective permissions intervention',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SelectivePermissionsInterventionIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

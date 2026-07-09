@@ -338,6 +338,10 @@ export class AiAgent {
                 else if (err instanceof Host.AidaClient.AidaBlockError) {
                     error = "block" /* ErrorType.BLOCK */;
                 }
+                else if (err instanceof Host.AidaClient.AidaQuotaError ||
+                    (err instanceof Error && err.message.toLowerCase().includes('quota'))) {
+                    error = "quota" /* ErrorType.QUOTA */;
+                }
                 yield this.#createErrorResponse(error);
                 break;
             }

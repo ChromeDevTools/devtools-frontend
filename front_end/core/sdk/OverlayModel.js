@@ -7,7 +7,6 @@ import { DebuggerModel, Events as DebuggerModelEvents } from './DebuggerModel.js
 import { DeferredDOMNode, DOMModel, DOMNodeEvents, Events as DOMModelEvents } from './DOMModel.js';
 import { OverlayPersistentHighlighter } from './OverlayPersistentHighlighter.js';
 import { SDKModel } from './SDKModel.js';
-import { TargetManager } from './TargetManager.js';
 const UIStrings = {
     /**
      * @description Text in Overlay Model
@@ -111,23 +110,23 @@ export class OverlayModel extends SDKModel {
             domModel.overlayModel().highlightInOverlay({ object, selectorList: undefined });
         }
     }
-    static hideDOMNodeHighlight(targetManager = TargetManager.instance()) {
+    static hideDOMNodeHighlight(targetManager) {
         for (const overlayModel of targetManager.models(OverlayModel)) {
             overlayModel.delayedHideHighlight(0);
         }
     }
-    static async muteHighlight(targetManager = TargetManager.instance()) {
+    static async muteHighlight(targetManager) {
         return await Promise.all(targetManager.models(OverlayModel).map(model => model.suspendModel()));
     }
-    static async unmuteHighlight(targetManager = TargetManager.instance()) {
+    static async unmuteHighlight(targetManager) {
         return await Promise.all(targetManager.models(OverlayModel).map(model => model.resumeModel()));
     }
-    static highlightRect(rect, targetManager = TargetManager.instance()) {
+    static highlightRect(rect, targetManager) {
         for (const overlayModel of targetManager.models(OverlayModel)) {
             void overlayModel.highlightRect(rect);
         }
     }
-    static clearHighlight(targetManager = TargetManager.instance()) {
+    static clearHighlight(targetManager) {
         for (const overlayModel of targetManager.models(OverlayModel)) {
             void overlayModel.clearHighlight();
         }

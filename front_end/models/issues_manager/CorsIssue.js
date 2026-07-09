@@ -5,13 +5,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Label for the link for CORS Local Network Access issues
+     * @description Label for the link for CORS Local Network Access issues.
      */
     corsLocalNetworkAccess: 'Local Network Access',
     /**
-     * @description Label for the link for CORS network issues
+     * @description Label for the link for CORS network issues.
      */
-    CORS: 'Cross-Origin Resource Sharing (`CORS`)',
+    CORS: 'Cross-Origin Resource Sharing (CORS)',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CorsIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

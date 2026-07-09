@@ -595,7 +595,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     }
     setActiveProperty(treeElement) {
         if (this.isActivePropertyHighlighted) {
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         }
         this.isActivePropertyHighlighted = false;
         if (!this.node()) {

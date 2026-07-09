@@ -6,7 +6,7 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     * @description Title for Client Hint specification url link
+     * @description Title for Federated Credential Management User Info API specification URL link.
      */
     fedCmUserInfo: 'Federated Credential Management User Info API',
 };

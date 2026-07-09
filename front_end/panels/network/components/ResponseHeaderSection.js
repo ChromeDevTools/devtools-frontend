@@ -484,7 +484,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
         }
         else { // If folder for local overrides has not been provided yet
             UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
-                await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
+                await Sources.SourcesNavigator.OverridesNavigatorView.setupNewWorkspace();
                 await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
             });
         }

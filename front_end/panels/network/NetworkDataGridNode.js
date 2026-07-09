@@ -176,7 +176,7 @@ const UIStrings = {
     /**
      * @description Cell title in Network Data Grid Node of the Network panel
      */
-    earlyHints: 'early-hints',
+    earlyHints: 'Early-hints',
     /**
      * @description Text in Network Data Grid Node of the Network panel
      */
@@ -868,9 +868,6 @@ export class NetworkRequestNode extends NetworkNode {
         const mimeType = this.requestInternal.mimeType || this.requestInternal.requestContentType() || '';
         const resourceType = this.requestInternal.resourceType();
         let simpleType = resourceType.name();
-        if (this.requestInternal.fromEarlyHints()) {
-            return i18nString(UIStrings.earlyHints);
-        }
         if (resourceType === Common.ResourceType.resourceTypes.Other ||
             resourceType === Common.ResourceType.resourceTypes.Image) {
             simpleType = mimeType.replace(/^(application|image)\//, '');
@@ -896,14 +893,17 @@ export class NetworkRequestNode extends NetworkNode {
     isPrefetch() {
         return this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Prefetch;
     }
+    isPreload() {
+        return this.requestInternal.isPreloadRequest();
+    }
     throttlingConditions() {
         return SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.requestInternal);
     }
     isWarning() {
-        return this.isFailed() && this.isPrefetch();
+        return this.isFailed() && (this.isPrefetch() || this.isPreload());
     }
     isError() {
-        return this.isFailed() && !this.isPrefetch();
+        return this.isFailed() && !this.isPrefetch() && !this.isPreload();
     }
     createCells(trElement) {
         this.initiatorCell = null;
@@ -1370,9 +1370,15 @@ export class NetworkRequestNode extends NetworkNode {
                 break;
             }
             default: {
-                UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.otherC));
+                // Early hints are not technically an InitiatorType in Chromium but
+                // probably should be (it is in Resource Timing). See:
+                // https://chromium-review.googlesource.com/c/chromium/src/+/5348938/comments/7cf39a37_dae12d06
+                // But to developers it IS the initiator and more useful to know than
+                // the default "other" that otherwise shows for early-hint requests.
+                const initiatorText = request.fromEarlyHints() ? i18nString(UIStrings.earlyHints) : i18nString(UIStrings.otherC);
+                UI.Tooltip.Tooltip.install(cell, initiatorText);
                 cell.classList.add('network-dim-cell');
-                cell.appendChild(document.createTextNode(i18nString(UIStrings.otherC)));
+                cell.appendChild(document.createTextNode(initiatorText));
             }
         }
     }

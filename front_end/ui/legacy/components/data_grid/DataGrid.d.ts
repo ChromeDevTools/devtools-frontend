@@ -1,6 +1,8 @@
 import * as Common from '../../../../core/common/common.js';
 import * as UI from '../../legacy.js';
+import dataGridStyles from './dataGrid.css.js';
 import type { DataGridInternalToken } from './DataGridElement.js';
+export { dataGridStyles };
 export declare class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
     #private;
     element: HTMLDivElement;

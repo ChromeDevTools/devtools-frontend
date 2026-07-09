@@ -5,7 +5,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Label for the link for Mixed Content Issues
+     * @description Label for the link for mixed content issues.
      */
     preventingMixedContent: 'Preventing mixed content',
 };

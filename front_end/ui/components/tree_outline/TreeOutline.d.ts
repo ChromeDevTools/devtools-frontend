@@ -29,6 +29,14 @@ export declare class ItemMouseOverEvent<TreeNodeDataType> extends Event {
     };
     constructor(node: TreeNode<TreeNodeDataType>);
 }
+export declare class ItemContextMenuEvent<TreeNodeDataType> extends Event {
+    static readonly eventName = "itemcontextmenu";
+    data: {
+        node: TreeNode<TreeNodeDataType>;
+        originalEvent: MouseEvent;
+    };
+    constructor(node: TreeNode<TreeNodeDataType>, originalEvent: MouseEvent);
+}
 export declare class ItemMouseOutEvent<TreeNodeDataType> extends Event {
     static readonly eventName = "itemmouseout";
     data: {
@@ -84,6 +92,12 @@ export declare class TreeOutline<TreeNodeDataType> extends HTMLElement {
     collapseChildrenOfNode(domNode: HTMLLIElement): Promise<void>;
 }
 declare global {
+    interface HTMLElementEventMap {
+        [ItemSelectedEvent.eventName]: ItemSelectedEvent<unknown>;
+        [ItemMouseOverEvent.eventName]: ItemMouseOverEvent<unknown>;
+        [ItemMouseOutEvent.eventName]: ItemMouseOutEvent<unknown>;
+        [ItemContextMenuEvent.eventName]: ItemContextMenuEvent<unknown>;
+    }
     interface HTMLElementTagNameMap {
         'devtools-tree-outline': TreeOutline<unknown>;
     }

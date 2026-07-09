@@ -160,6 +160,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     inlineStyle;
     highlightMode;
     computedStyle;
+    boxModelInternal = null;
     isEditingMetrics;
     view;
     constructor(computedStyleModel, view = DEFAULT_VIEW) {
@@ -170,6 +171,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         this.inlineStyle = null;
         this.highlightMode = '';
         this.computedStyle = null;
+        this.boxModelInternal = null;
         this.view = view;
     }
     async performUpdate() {
@@ -193,26 +195,25 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
             }, undefined, this.contentElement);
             return await Promise.resolve();
         }
-        function callback(style) {
-            if (!style || this.node() !== node) {
-                this.computedStyle = null;
-                return;
-            }
-            this.computedStyle = style;
-            this.updateMetrics(style);
-        }
         if (!node.id) {
             return await Promise.resolve();
         }
-        const promises = [
-            cssModel.getComputedStyle(node.id).then(callback.bind(this)),
-            cssModel.getInlineStyles(node.id).then(inlineStyleResult => {
-                if (inlineStyleResult && this.node() === node) {
-                    this.inlineStyle = inlineStyleResult.inlineStyle;
-                }
-            }),
-        ];
-        return await Promise.all(promises);
+        const [style, boxModel, inlineStyleResult] = await Promise.all([
+            cssModel.getComputedStyle(node.id),
+            node.boxModel().catch(() => null),
+            cssModel.getInlineStyles(node.id),
+        ]);
+        if (!style || this.node() !== node) {
+            this.computedStyle = null;
+            this.boxModelInternal = null;
+            return;
+        }
+        this.computedStyle = style;
+        this.boxModelInternal = boxModel;
+        if (inlineStyleResult && this.node() === node) {
+            this.inlineStyle = inlineStyleResult.inlineStyle;
+        }
+        this.updateMetrics(style, 'all', boxModel);
     }
     onCSSModelChanged() {
         this.requestUpdate();
@@ -243,13 +244,60 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         }
         else {
             this.highlightMode = '';
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         }
         if (this.computedStyle) {
-            this.updateMetrics(this.computedStyle, mode);
+            this.updateMetrics(this.computedStyle, mode, this.boxModelInternal);
         }
     }
-    getContentAreaWidthPx(style) {
+    /**
+     * Checks whether the array represents a valid Protocol.DOM.Quad (8 coordinates: 4 corner points).
+     */
+    isDOMQuad(quad) {
+        return Boolean(quad && quad.length === 8);
+    }
+    /**
+     * Calculates the rendered content box width from a DOM Quad.
+     * A Quad contains 8 numbers representing 4 corner points clockwise from top-left:
+     *   P0 (x=quad[0], y=quad[1]): Top-Left
+     *   P1 (x=quad[2], y=quad[3]): Top-Right
+     *   P2 (x=quad[4], y=quad[5]): Bottom-Right
+     *   P3 (x=quad[6], y=quad[7]): Bottom-Left
+     *
+     * Math.hypot(quad[2] - quad[0], quad[3] - quad[1]) is the distance from Top-Left to Top-Right (top edge).
+     * Math.hypot(quad[4] - quad[6], quad[5] - quad[7]) is the distance from Bottom-Left to Bottom-Right (bottom edge).
+     * Averaging the top and bottom edges gives the rendered width, which accounts for scrollbars and handles
+     * rotated or skewed elements.
+     */
+    computeQuadWidth(quad) {
+        const topWidth = Math.hypot(quad[2] - quad[0], quad[3] - quad[1]);
+        const bottomWidth = Math.hypot(quad[4] - quad[6], quad[5] - quad[7]);
+        return (topWidth + bottomWidth) / 2;
+    }
+    /**
+     * Calculates the rendered content box height from a DOM Quad.
+     * Math.hypot(quad[6] - quad[0], quad[7] - quad[1]) is the distance from Top-Left to Bottom-Left (left edge).
+     * Math.hypot(quad[4] - quad[2], quad[5] - quad[3]) is the distance from Top-Right to Bottom-Right (right edge).
+     * Averaging the left and right edges gives the rendered height, which accounts for scrollbars and handles
+     * rotated or skewed elements.
+     */
+    computeQuadHeight(quad) {
+        const leftHeight = Math.hypot(quad[6] - quad[0], quad[7] - quad[1]);
+        const rightHeight = Math.hypot(quad[4] - quad[2], quad[5] - quad[3]);
+        return (leftHeight + rightHeight) / 2;
+    }
+    /**
+     * Computes the content area width in pixels for display in the Box Model diagram.
+     * - Branch 1: If a DOM quad is available, we compute width directly
+     *   from the rendered quad. This accurately reflects the content box when scrollbars are present
+     *   (which getComputedStyle does not subtract).
+     * - Branch 2: Fallback to parsing the CSS 'width' property from getComputedStyle.
+     */
+    getContentAreaWidthPx(style, boxModel) {
+        if (boxModel && this.isDOMQuad(boxModel.content)) {
+            const width = this.computeQuadWidth(boxModel.content);
+            return Platform.NumberUtilities.toFixedIfFloating(width.toString());
+        }
         let width = style.get('width');
         if (!width) {
             return '';
@@ -263,7 +311,18 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         }
         return Platform.NumberUtilities.toFixedIfFloating(width);
     }
-    getContentAreaHeightPx(style) {
+    /**
+     * Computes the content area height in pixels for display in the Box Model diagram.
+     * - Branch 1: If a DOM quad is available, we compute height directly
+     *   from the rendered quad. This accurately reflects the content box when scrollbars are present
+     *   (which getComputedStyle does not subtract).
+     * - Branch 2: Fallback to parsing the CSS 'height' property from getComputedStyle.
+     */
+    getContentAreaHeightPx(style, boxModel) {
+        if (boxModel && this.isDOMQuad(boxModel.content)) {
+            const height = this.computeQuadHeight(boxModel.content);
+            return Platform.NumberUtilities.toFixedIfFloating(height.toString());
+        }
         let height = style.get('height');
         if (!height) {
             return '';
@@ -277,13 +336,14 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
         }
         return Platform.NumberUtilities.toFixedIfFloating(height);
     }
-    updateMetrics(style, highlightedMode = 'all') {
+    updateMetrics(style, highlightedMode = 'all', boxModel) {
+        const boxModelToUse = boxModel ?? this.boxModelInternal;
         this.view({
             style,
             highlightedMode,
             node: this.node(),
-            contentWidth: this.getContentAreaWidthPx(style),
-            contentHeight: this.getContentAreaHeightPx(style),
+            contentWidth: this.getContentAreaWidthPx(style, boxModelToUse),
+            contentHeight: this.getContentAreaHeightPx(style, boxModelToUse),
             onHighlightNode: this.highlightDOMNode.bind(this),
             onStartEditing: this.startEditing.bind(this),
         }, undefined, this.contentElement);

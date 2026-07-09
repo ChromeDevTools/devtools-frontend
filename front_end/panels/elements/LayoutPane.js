@@ -74,7 +74,7 @@ const nodeToLayoutElement = (node) => {
             node.highlight();
         },
         hideHighlight: () => {
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         },
         toggle: (_value) => {
             throw new Error('Not implemented');

@@ -31,6 +31,14 @@ export class ItemMouseOverEvent extends Event {
         this.data = { node };
     }
 }
+export class ItemContextMenuEvent extends Event {
+    static eventName = 'itemcontextmenu';
+    data;
+    constructor(node, originalEvent) {
+        super(ItemContextMenuEvent.eventName, { bubbles: true, composed: true });
+        this.data = { node, originalEvent };
+    }
+}
 export class ItemMouseOutEvent extends Event {
     static eventName = 'itemmouseout';
     data;
@@ -249,14 +257,26 @@ export class TreeOutline extends HTMLElement {
         }
         void this.#focusTreeNode(domNode);
     }
+    #onContextMenu(event, node) {
+        if (!node) {
+            return;
+        }
+        const innerEvent = new ItemContextMenuEvent(node, event);
+        this.dispatchEvent(innerEvent);
+        if (innerEvent.defaultPrevented) {
+            event.stopPropagation();
+            event.preventDefault();
+            void this.#focusTreeNode(event.currentTarget?.parentElement);
+        }
+    }
     async #focusTreeNode(domNode) {
         const treeNode = this.#domNodeToTreeNodeMap.get(domNode);
         if (!treeNode) {
             return;
         }
         this.#selectedTreeNode = treeNode;
-        await this.#render();
         this.dispatchEvent(new ItemSelectedEvent(treeNode));
+        await this.#render();
         void RenderCoordinator.write('DOMNode focus', () => {
             domNode.focus();
         });
@@ -400,6 +420,7 @@ export class TreeOutline extends HTMLElement {
         })}
       >
         <span class="arrow-and-key-wrapper"
+          @contextmenu=${(event) => this.#onContextMenu(event, node)}
           @mouseover=${() => {
             this.dispatchEvent(new ItemMouseOverEvent(node));
         }}

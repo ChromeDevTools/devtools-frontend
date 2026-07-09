@@ -109,7 +109,7 @@ var ConsoleContextSelector = class {
     return this.#toolbarItem;
   }
   highlightedItemChanged(_from, to, fromElement, toElement) {
-    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     if (to?.frameId) {
       const frame = SDK.FrameManager.FrameManager.instance().getFrame(to.frameId);
       if (frame && !frame.isOutermostFrame()) {
@@ -5068,7 +5068,7 @@ var ConsolePinPresenter = class extends UI6.Widget.Widget {
     }
     this.#hovered = hovered;
     if (!hovered && this.#lastNode) {
-      SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
     }
   }
   async focus() {
@@ -5118,7 +5118,7 @@ var ConsolePinPresenter = class extends UI6.Widget.Widget {
       if (node) {
         SDK5.OverlayModel.OverlayModel.highlightObjectAsDOMNode(node);
       } else if (this.#lastNode) {
-        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
       }
     }
     this.#lastNode = node || null;
@@ -6739,7 +6739,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     this.aiCodeCompletionSummaryToolbar?.setLoading(false);
   }
   clearConsole() {
-    SDK7.ConsoleModel.ConsoleModel.requestClearMessages();
+    SDK7.ConsoleModel.ConsoleModel.requestClearMessages(SDK7.TargetManager.TargetManager.instance());
     this.prompt.clearAiCodeCompletionCache();
   }
   collapseAll() {
@@ -8196,7 +8196,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI11.Widget.W
       SDK8.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result.object);
     } else if (this.highlightingNode) {
       this.highlightingNode = false;
-      SDK8.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      SDK8.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK8.TargetManager.TargetManager.instance());
     }
     if (result && executionContext) {
       executionContext.runtimeModel.releaseEvaluationResult(result);
@@ -8206,7 +8206,7 @@ var ConsolePrompt = class extends Common8.ObjectWrapper.eventMixin(UI11.Widget.W
     super.willHide();
     if (this.highlightingNode) {
       this.highlightingNode = false;
-      SDK8.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      SDK8.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK8.TargetManager.TargetManager.instance());
     }
   }
   history() {

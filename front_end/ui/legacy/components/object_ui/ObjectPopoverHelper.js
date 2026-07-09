@@ -31,7 +31,7 @@ export class ObjectPopoverHelper {
     }
     dispose() {
         if (this.resultHighlightedAsDOM) {
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         }
         if (this.linkifier) {
             this.linkifier.dispose();

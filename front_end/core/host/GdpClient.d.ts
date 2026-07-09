@@ -49,10 +49,10 @@ export interface GetProfileResponse {
 export declare const GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profile/u/me";
 export declare class GdpClient {
     #private;
-    private constructor();
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): GdpClient;
+    static removeInstance(): void;
     /**
      * Fetches the user's GDP profile and eligibility status.
      *

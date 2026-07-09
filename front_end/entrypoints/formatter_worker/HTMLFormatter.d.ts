@@ -33,6 +33,8 @@ declare class FormatterElement {
     parent: FormatterElement | null;
     openTag: Tag | null;
     closeTag: Tag | null;
+    hasComments: boolean;
+    hasContent: boolean;
     constructor(name: string);
 }
 export {};

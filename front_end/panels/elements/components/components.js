@@ -11,6 +11,7 @@ __export(AccessibilityTreeNode_exports, {
 });
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as Platform from "./../../../core/platform/platform.js";
+import * as SDK from "./../../../core/sdk/sdk.js";
 import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as UI from "./../../../ui/legacy/legacy.js";
 import { html, nothing, render } from "./../../../ui/lit/lit.js";
@@ -67,17 +68,6 @@ function truncateTextIfNeeded(text) {
   }
   return text;
 }
-function isPrintable(valueType) {
-  switch (valueType) {
-    case "boolean":
-    case "booleanOrUndefined":
-    case "string":
-    case "number":
-      return true;
-    default:
-      return false;
-  }
-}
 var AccessibilityTreeNode = class extends HTMLElement {
   #shadow = UI.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: accessibilityTreeNode_css_default });
   #ignored = true;
@@ -96,7 +86,7 @@ var AccessibilityTreeNode = class extends HTMLElement {
   async #render() {
     const role = html`<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
     const name = html`"<span class='attribute-value'>${this.#name}</span>"`;
-    const properties = this.#properties.map(({ name: name2, value }) => isPrintable(value.type) ? html` <span class='attribute-name'>${name2}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` : nothing);
+    const properties = this.#properties.map(({ name: name2, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ? html` <span class='attribute-name'>${name2}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` : nothing);
     const content = this.#ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
     await RenderCoordinator.write(`Accessibility node ${this.#id} render`, () => {
       render(html`<div class='container'>${content}</div>`, this.#shadow, { host: this });
@@ -1306,7 +1296,7 @@ __export(CSSQuery_exports, {
 });
 import "./../../../ui/components/tooltips/tooltips.js";
 import "./../../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as SDK from "./../../../core/sdk/sdk.js";
+import * as SDK2 from "./../../../core/sdk/sdk.js";
 import * as UI3 from "./../../../ui/legacy/legacy.js";
 import * as Lit from "./../../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
@@ -1369,14 +1359,14 @@ var CSSQuery = class extends HTMLElement {
     }
     const prefix = "if(";
     const suffix = ": 1)";
-    const ast = SDK.CSSPropertyParser.tokenizeDeclaration("--query", prefix + queryText + suffix);
+    const ast = SDK2.CSSPropertyParser.tokenizeDeclaration("--query", prefix + queryText + suffix);
     if (!ast) {
       return;
     }
-    const matcher = new SDK.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style);
-    const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
-    const matchedNodes = SDK.CSSPropertyParser.TreeSearch.findAll(ast, (node) => {
-      return matchedResult.getMatch(node) instanceof SDK.CSSPropertyParserMatchers.VariableNameMatch;
+    const matcher = new SDK2.CSSPropertyParserMatchers.VariableNameMatcher(matchedStyles, style);
+    const matchedResult = SDK2.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [matcher]);
+    const matchedNodes = SDK2.CSSPropertyParser.TreeSearch.findAll(ast, (node) => {
+      return matchedResult.getMatch(node) instanceof SDK2.CSSPropertyParserMatchers.VariableNameMatch;
     });
     matchedNodes.sort((a, b) => a.from - b.from);
     const sections = [];
@@ -1619,7 +1609,7 @@ __export(ElementsBreadcrumbs_exports, {
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
 import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as SDK2 from "./../../../core/sdk/sdk.js";
+import * as SDK3 from "./../../../core/sdk/sdk.js";
 import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
 import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
 import * as Lit3 from "./../../../ui/lit/lit.js";
@@ -1875,13 +1865,13 @@ var ElementsBreadcrumbs = class extends HTMLElement {
     return () => node.highlight();
   }
   #onCrumbMouseLeave() {
-    SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance());
   }
   #onCrumbFocus(node) {
     return () => node.highlight();
   }
   #onCrumbBlur() {
-    SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance());
   }
   #engageResizeObserver() {
     if (!this.#resizeObserver || this.#isObservingResize === true) {
@@ -2155,7 +2145,7 @@ __export(QueryContainer_exports, {
 });
 import "./../../../ui/kit/kit.js";
 import "./../../../ui/components/node_text/node_text.js";
-import * as SDK3 from "./../../../core/sdk/sdk.js";
+import * as SDK4 from "./../../../core/sdk/sdk.js";
 import * as Lit4 from "./../../../ui/lit/lit.js";
 import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
 
@@ -2198,7 +2188,7 @@ var queryContainer_css_default = `/*
 
 // gen/front_end/panels/elements/components/QueryContainer.js
 var { render: render10, html: html10 } = Lit4;
-var { PhysicalAxis, QueryAxis } = SDK3.CSSContainerQuery;
+var { PhysicalAxis, QueryAxis } = SDK4.CSSContainerQuery;
 var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
   static eventName = "queriedsizerequested";
   constructor() {
@@ -2228,7 +2218,7 @@ var QueryContainer = class extends HTMLElement {
     this.dispatchEvent(new QueriedSizeRequestedEvent());
   }
   #onContainerLinkMouseLeave() {
-    SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK4.TargetManager.TargetManager.instance());
     this.#isContainerLinkHovered = false;
     this.#render();
   }

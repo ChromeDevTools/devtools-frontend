@@ -25,27 +25,27 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n from "./../../core/i18n/i18n.js";
 var UIStrings = {
   /**
-   * @description The kind of an issue (plural) (Issues are categorized into kinds).
+   * @description The kind of an issue (plural, issues are categorized into kinds).
    */
   improvements: "Improvements",
   /**
-   * @description The kind of an issue (plural) (Issues are categorized into kinds).
+   * @description The kind of an issue (plural, issues are categorized into kinds).
    */
-  pageErrors: "Page Errors",
+  pageErrors: "Page errors",
   /**
-   * @description The kind of an issue (plural) (Issues are categorized into kinds).
+   * @description The kind of an issue (plural, issues are categorized into kinds).
    */
-  breakingChanges: "Breaking Changes",
+  breakingChanges: "Breaking changes",
   /**
-   * @description A description for a kind of issue we display in the issues tab.
+   * @description A description for a kind of issue we display in the Issues tab.
    */
   pageErrorIssue: "A page error issue: the page is not working correctly",
   /**
-   * @description A description for a kind of issue we display in the issues tab.
+   * @description A description for a kind of issue we display in the Issues tab.
    */
   breakingChangeIssue: "A breaking change issue: the page may stop working in an upcoming version of Chrome",
   /**
-   * @description A description for a kind of issue we display in the issues tab.
+   * @description A description for a kind of issue we display in the Issues tab.
    */
   improvementIssue: "An improvement issue: there is an opportunity to improve the page"
 };
@@ -500,7 +500,7 @@ async function getIssueTitleFromMarkdownDescription(description) {
 // gen/front_end/models/issues_manager/ClientHintIssue.js
 var UIStrings2 = {
   /**
-   * @description Title for Client Hint specification url link
+   * @description Title for Client Hint specification URL link.
    */
   clientHintsInfrastructure: "Client Hints Infrastructure"
 };
@@ -572,7 +572,7 @@ __export(ConnectionAllowlistIssue_exports, {
 import * as i18n5 from "./../../core/i18n/i18n.js";
 var UIStrings3 = {
   /**
-   *@description Title for Connection-Allowlist specification url
+   * @description Title for Connection-Allowlist specification URL.
    */
   connectionAllowlistHeader: "Connection-Allowlist specification"
 };
@@ -632,23 +632,23 @@ __export(ContentSecurityPolicyIssue_exports, {
 import * as i18n7 from "./../../core/i18n/i18n.js";
 var UIStrings4 = {
   /**
-   * @description Title for CSP url link
+   * @description Title for CSP URL link.
    */
-  contentSecurityPolicySource: "Content Security Policy - Source Allowlists",
+  contentSecurityPolicySource: "Content Security Policy - Source allowlists",
   /**
-   * @description Title for CSP inline issue link
+   * @description Title for CSP inline issue link.
    */
-  contentSecurityPolicyInlineCode: "Content Security Policy - Inline Code",
+  contentSecurityPolicyInlineCode: "Content Security Policy - Inline code",
   /**
-   * @description Title for the CSP eval link
+   * @description Title for the CSP eval link.
    */
   contentSecurityPolicyEval: "Content Security Policy - Eval",
   /**
-   * @description Title for Trusted Types policy violation issue link. https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
+   * @description Title for Trusted Types policy violation issue link (https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API).
    */
   trustedTypesFixViolations: "Trusted Types - Fix violations",
   /**
-   * @description Title for Trusted Types policy violation issue link. https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
+   * @description Title for Trusted Types policy violation issue link (https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API).
    */
   trustedTypesPolicyViolation: "Trusted Types - Policy violation"
 };
@@ -768,9 +768,9 @@ __export(CookieDeprecationMetadataIssue_exports, {
 import * as i18n9 from "./../../core/i18n/i18n.js";
 var UIStrings5 = {
   /**
-   * @description Label for a link for third-party cookie Issues.
+   * @description Label for a link for third-party cookie issues.
    */
-  thirdPartyPhaseoutExplained: "Changes to Chrome's treatment of third-party cookies"
+  thirdPartyPhaseoutExplained: "Changes to Chrome\u2019s treatment of third-party cookies"
 };
 var str_5 = i18n9.i18n.registerUIStrings("models/issues_manager/CookieDeprecationMetadataIssue.ts", UIStrings5);
 var i18nString2 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -828,21 +828,21 @@ import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var UIStrings6 = {
   /**
-   * @description Label for the link for SameSiteCookies Issues
+   * @description Label for the link for SameSite cookie issues.
    */
   samesiteCookiesExplained: "SameSite cookies explained",
   /**
-   * @description Label for the link for Schemeful Same-Site Issues
+   * @description Label for the link for Schemeful Same-Site issues.
    */
-  howSchemefulSamesiteWorks: "How Schemeful Same-Site Works",
+  howSchemefulSamesiteWorks: "How Schemeful Same-Site works",
   /**
-   * @description Label for a link for cross-site redirect Issues.
+   * @description Label for a link for cross-site redirect issues.
    */
   fileCrosSiteRedirectBug: "File a bug",
   /**
-   * @description text to show in Console panel when a third-party cookie is blocked in Chrome.
+   * @description Text to show in Console panel when a third-party cookie is blocked in Chrome.
    */
-  consoleTpcdErrorMessage: "Third-party cookie is blocked in Chrome either because of Chrome flags or browser configuration."
+  consoleTpcdErrorMessage: "Third-party cookie blocked in Chrome due to Chrome flags or browser settings."
 };
 var str_6 = i18n11.i18n.registerUIStrings("models/issues_manager/CookieIssue.ts", UIStrings6);
 var i18nLazyString4 = i18n11.i18n.getLazilyComputedLocalizedString.bind(void 0, str_6);
@@ -1287,13 +1287,13 @@ __export(CorsIssue_exports, {
 import * as i18n13 from "./../../core/i18n/i18n.js";
 var UIStrings7 = {
   /**
-   * @description Label for the link for CORS Local Network Access issues
+   * @description Label for the link for CORS Local Network Access issues.
    */
   corsLocalNetworkAccess: "Local Network Access",
   /**
-   * @description Label for the link for CORS network issues
+   * @description Label for the link for CORS network issues.
    */
-  CORS: "Cross-Origin Resource Sharing (`CORS`)"
+  CORS: "Cross-Origin Resource Sharing (CORS)"
 };
 var str_7 = i18n13.i18n.registerUIStrings("models/issues_manager/CorsIssue.ts", UIStrings7);
 var i18nString3 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
@@ -1485,11 +1485,11 @@ __export(CrossOriginEmbedderPolicyIssue_exports, {
 import * as i18n15 from "./../../core/i18n/i18n.js";
 var UIStrings8 = {
   /**
-   * @description Link text for a link to external documentation
+   * @description Link text for a link to external documentation.
    */
   coopAndCoep: "COOP and COEP",
   /**
-   * @description Title for an external link to more information in the issues view
+   * @description Title for an external link to more information in the Issues view.
    */
   samesiteAndSameorigin: "Same-Site and Same-Origin"
 };
@@ -2060,16 +2060,16 @@ var DEPRECATIONS_METADATA = {
 // gen/front_end/models/issues_manager/DeprecationIssue.js
 var UIStrings10 = {
   /**
-   * @description This links to the chrome feature status page when one exists.
+   * @description This links to the Chrome feature status page when one exists.
    */
   feature: "Check the feature status page for more details.",
   /**
-   * @description This links to the chromium dash schedule when a milestone is set.
+   * @description This links to the Chromium Dash schedule when a milestone is set.
    * @example {100} milestone
    */
   milestone: "This change will go into effect with milestone {milestone}.",
   /**
-   * @description Title of issue raised when a deprecated feature is used
+   * @description Title of issue raised when a deprecated feature is used.
    */
   title: "Deprecated feature used"
 };
@@ -2241,7 +2241,7 @@ __export(EmailVerificationRequestIssue_exports, {
 import * as i18n19 from "./../../core/i18n/i18n.js";
 var UIStrings11 = {
   /**
-   * @description Title for Email Verification Protocol specification url link
+   * @description Title for Email Verification Protocol specification URL link.
    */
   emailVerification: "Email Verification Protocol"
 };
@@ -2853,7 +2853,7 @@ __export(FederatedAuthUserInfoRequestIssue_exports, {
 import * as i18n21 from "./../../core/i18n/i18n.js";
 var UIStrings12 = {
   /**
-   * @description Title for Client Hint specification url link
+   * @description Title for Federated Credential Management User Info API specification URL link.
    */
   fedCmUserInfo: "Federated Credential Management User Info API"
 };
@@ -3013,31 +3013,31 @@ __export(GenericIssue_exports, {
 import * as i18n23 from "./../../core/i18n/i18n.js";
 var UIStrings13 = {
   /**
-   * @description title for autofill documentation page
+   * @description Title for autofill documentation page.
    */
   howDoesAutofillWorkPageTitle: "How does autofill work?",
   /**
-   * @description title for label form elements usage example page
+   * @description Title for label form elements usage example page.
    */
   labelFormlementsPageTitle: "The label elements",
   /**
-   * @description title for input form elements usage example page
+   * @description Title for input form elements usage example page.
    */
   inputFormElementPageTitle: "The form input element",
   /**
-   * @description title for autocomplete attribute documentation page.
+   * @description Title for autocomplete attribute documentation page.
    */
   autocompleteAttributePageTitle: "HTML attribute: autocomplete",
   /**
-   * @description title for CORB explainer.
+   * @description Title for CORB explainer.
    */
   corbExplainerPageTitle: "CORB explainer",
   /**
-   * @description title for history intervention documentation page.
+   * @description Title for history intervention documentation page.
    */
   historyManipulationInterventionPageTitle: "History manipulation intervention explainer",
   /**
-   * @description title for back-to-ad intervention documentation page.
+   * @description Title for back-to-ad intervention documentation page.
    */
   backToAdInterventionPageTitle: "Back-to-ad intervention explainer"
 };
@@ -3342,9 +3342,9 @@ __export(HeavyAdIssue_exports, {
 import * as i18n25 from "./../../core/i18n/i18n.js";
 var UIStrings14 = {
   /**
-   * @description Title for a learn more link in Heavy Ads issue description
+   * @description Title for a learn more link in heavy ads issue description.
    */
-  handlingHeavyAdInterventions: "Handling Heavy Ad Interventions"
+  handlingHeavyAdInterventions: "Handling heavy ad interventions"
 };
 var str_13 = i18n25.i18n.registerUIStrings("models/issues_manager/HeavyAdIssue.ts", UIStrings14);
 var i18nString4 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
@@ -3381,7 +3381,7 @@ var HeavyAdIssue = class _HeavyAdIssue extends Issue {
   static fromInspectorIssue(issuesModel, inspectorIssue) {
     const heavyAdIssueDetails = inspectorIssue.details.heavyAdIssueDetails;
     if (!heavyAdIssueDetails) {
-      console.warn("Heavy Ad issue without details received.");
+      console.warn("Heavy ad issue without details received.");
       return [];
     }
     return [new _HeavyAdIssue(heavyAdIssueDetails, issuesModel)];
@@ -3404,7 +3404,7 @@ __export(MixedContentIssue_exports, {
 import * as i18n27 from "./../../core/i18n/i18n.js";
 var UIStrings15 = {
   /**
-   * @description Label for the link for Mixed Content Issues
+   * @description Label for the link for mixed content issues.
    */
   preventingMixedContent: "Preventing mixed content"
 };
@@ -3461,13 +3461,13 @@ __export(PartitioningBlobURLIssue_exports, {
 import * as i18n29 from "./../../core/i18n/i18n.js";
 var UIStrings16 = {
   /**
-   * @description Title for Partitioning BlobURL explainer url link.
+   * @description Title for Partitioning BlobURL explainer URL link.
    */
   partitioningBlobURL: "Partitioning BlobURL",
   /**
-   * @description Title for Chrome Status Entry url link.
+   * @description Title for Chrome Status entry URL link.
    */
-  chromeStatusEntry: "Chrome Status Entry"
+  chromeStatusEntry: "Chrome Status entry"
 };
 var str_15 = i18n29.i18n.registerUIStrings("models/issues_manager/PartitioningBlobURLIssue.ts", UIStrings16);
 var i18nString6 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
@@ -3763,7 +3763,7 @@ __export(QuirksModeIssue_exports, {
 import * as i18n31 from "./../../core/i18n/i18n.js";
 var UIStrings17 = {
   /**
-   * @description Link title for the Quirks Mode issue in the Issues panel
+   * @description Link title for the Quirks Mode issue in the Issues panel.
    */
   documentCompatibilityMode: "Document compatibility mode"
 };
@@ -3813,9 +3813,9 @@ __export(SelectivePermissionsInterventionIssue_exports, {
 import * as i18n33 from "./../../core/i18n/i18n.js";
 var UIStrings18 = {
   /**
-   * @description Title for a learn more link in Selective Permissions Intervention issue description
+   * @description Title for a learn more link in selective permissions intervention issue description.
    */
-  selectivePermissionsIntervention: "Selective Permissions Intervention"
+  selectivePermissionsIntervention: "Selective permissions intervention"
 };
 var str_17 = i18n33.i18n.registerUIStrings("models/issues_manager/SelectivePermissionsInterventionIssue.ts", UIStrings18);
 var i18nString8 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
@@ -3861,10 +3861,10 @@ __export(SharedArrayBufferIssue_exports, {
 import * as i18n35 from "./../../core/i18n/i18n.js";
 var UIStrings19 = {
   /**
-   * @description Label for the link for SharedArrayBuffer Issues. The full text reads "Enabling `SharedArrayBuffer`"
+   * @description Label for the link for SharedArrayBuffer issues. The full text reads "Enabling SharedArrayBuffer"
    * and is the title of an article that describes how to enable a JavaScript feature called SharedArrayBuffer.
    */
-  enablingSharedArrayBuffer: "Enabling `SharedArrayBuffer`"
+  enablingSharedArrayBuffer: "Enabling SharedArrayBuffer"
 };
 var str_18 = i18n35.i18n.registerUIStrings("models/issues_manager/SharedArrayBufferIssue.ts", UIStrings19);
 var i18nString9 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
@@ -4228,7 +4228,7 @@ import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
 var UIStrings20 = {
   /**
-   * @description Title for Bounce Tracking Mitigation explainer url link.
+   * @description Title for Bounce Tracking Mitigation explainer URL link.
    */
   bounceTrackingMitigations: "Bounce tracking mitigations"
 };
@@ -4275,7 +4275,7 @@ var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
 import * as i18n39 from "./../../core/i18n/i18n.js";
 var UIStrings21 = {
   /**
-   * @description Title for Client Hint specification url link
+   * @description Title for Federated Credential Management API specification URL link.
    */
   fedCm: "Federated Credential Management API"
 };
@@ -4537,7 +4537,7 @@ __export(SharedDictionaryIssue_exports, {
 import * as i18n41 from "./../../core/i18n/i18n.js";
 var UIStrings22 = {
   /**
-   * @description Title for Compression Dictionary Transport specification url link
+   * @description Title for Compression Dictionary Transport specification URL link.
    */
   compressionDictionaryTransport: "Compression Dictionary Transport"
 };
@@ -4973,11 +4973,11 @@ __export(SRIMessageSignatureIssue_exports, {
 import * as i18n43 from "./../../core/i18n/i18n.js";
 var UIStrings23 = {
   /**
-   * @description Title for HTTP Message Signatures specification url
+   * @description Title for HTTP Message Signatures specification URL.
    */
   httpMessageSignatures: "HTTP Message Signatures (RFC9421)",
   /**
-   * @description Title for Signature-based Integrity specification url
+   * @description Title for Signature-based Integrity specification URL.
    */
   signatureBasedIntegrity: "Signature-based Integrity"
 };
@@ -5058,13 +5058,13 @@ __export(UnencodedDigestIssue_exports, {
 import * as i18n45 from "./../../core/i18n/i18n.js";
 var UIStrings24 = {
   /**
-   *@description Title for HTTP Unencoded Digest specification url
+   * @description Title for HTTP Unencoded Digest specification URL.
    */
   unencodedDigestHeader: "HTTP Unencoded Digest specification",
   /**
-   *@description Title for the URL of the integration of unencoded-digest and SRI.
+   * @description Title for the URL of the integration of unencoded-digest and SRI.
    */
-  integrityIntegration: "Server-Initiated Integrity Checks"
+  integrityIntegration: "Server-initiated integrity checks"
 };
 var str_23 = i18n45.i18n.registerUIStrings("models/issues_manager/UnencodedDigestIssue.ts", UIStrings24);
 var i18nLazyString13 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);

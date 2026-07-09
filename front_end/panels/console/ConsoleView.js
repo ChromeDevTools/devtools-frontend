@@ -589,7 +589,7 @@ export class ConsoleView extends UI.Widget.VBox {
         this.aiCodeCompletionSummaryToolbar?.setLoading(false);
     }
     clearConsole() {
-        SDK.ConsoleModel.ConsoleModel.requestClearMessages();
+        SDK.ConsoleModel.ConsoleModel.requestClearMessages(SDK.TargetManager.TargetManager.instance());
         this.prompt.clearAiCodeCompletionCache();
     }
     collapseAll() {

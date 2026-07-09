@@ -724,6 +724,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         return (this.#initiator !== null && this.#initiator !== undefined &&
             this.#initiator.type === "preflight" /* Protocol.Network.InitiatorType.Preflight */);
     }
+    isPreloadRequest() {
+        return (this.#initiator !== null && this.#initiator !== undefined &&
+            this.#initiator.type === "preload" /* Protocol.Network.InitiatorType.Preload */);
+    }
     redirectDestination() {
         return this.#redirectDestination;
     }

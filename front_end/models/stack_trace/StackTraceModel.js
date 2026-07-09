@@ -17,9 +17,9 @@ import { EvalOrigin, Trie } from './Trie.js';
 export class StackTraceModel extends SDK.SDKModel.SDKModel {
     #trie = new Trie();
     #mutex = new Common.Mutex.Mutex();
-    /** @returns the {@link StackTraceModel} for the target, or the model for the primaryPageTarget when passing null/undefined */
+    /** @returns the {@link StackTraceModel} for the target. Throws if the target or its model cannot be found. */
     static #modelForTarget(target) {
-        const model = (target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget())?.model(_a);
+        const model = target?.model(_a);
         if (!model) {
             throw new Error('Unable to find StackTraceModel');
         }
@@ -113,7 +113,7 @@ export class StackTraceModel extends SDK.SDKModel.SDKModel {
                     // Skip empty async fragments, they don't add value.
                     continue;
                 }
-                const model = _a.#modelForTarget(target);
+                const model = _a.#modelForTarget(target ?? this.target().targetManager().primaryPageTarget());
                 const targetDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
                 const asyncFrames = asyncStackTrace.callFrames.map((frame) => {
                     const isWasm = targetDebuggerModel?.isWasm(frame.scriptId) ?? false;

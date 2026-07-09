@@ -1924,7 +1924,7 @@ var UIStrings = {
    */
   inputTextAriaDescription: "You can also use one of the suggested prompts above to start your conversation",
   /**
-   * @description Label added to the button that reveals the selected context item in DevTools
+   * @description Label added to the button that reveals the selected context item in DevTools.
    */
   revealContextDescription: "Reveal the selected context item in DevTools",
   /**
@@ -1964,7 +1964,7 @@ var UIStringsNotTranslate3 = {
   /**
    * @description Text displayed when the chat input is disabled due to reading past conversation.
    */
-  pastConversation: "You're viewing a past conversation.",
+  pastConversation: "You\u2019re viewing a past conversation.",
   /**
    * @description Message displayed in toast in case of any failures while taking a screenshot of the page.
    */
@@ -3927,6 +3927,10 @@ var UIStringsNotTranslate4 = {
    */
   systemError: "Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue. If this keeps happening, update Chrome to the latest version.",
   /**
+   * @description The error message when the user is out of quota or rate limited.
+   */
+  quotaError: "You reached your limit for AI assistance requests. Try again later.",
+  /**
    * @description The error message when the LLM gets stuck in a loop (max steps reached).
    */
   maxStepsError: "Seems like I am stuck with the investigation. It would be better if you start over.",
@@ -5247,6 +5251,9 @@ function renderError(message) {
       case "unknown":
       case "block":
         errorMessage = UIStringsNotTranslate4.systemError;
+        break;
+      case "quota":
+        errorMessage = UIStringsNotTranslate4.quotaError;
         break;
       case "max-steps":
         errorMessage = UIStringsNotTranslate4.maxStepsError;
@@ -6810,9 +6817,9 @@ var disabledWidget_css_default = `/*
 // gen/front_end/panels/ai_assistance/components/DisabledWidget.js
 var UIStrings4 = {
   /**
-   * @description The error message when the user is not logged in into Chrome.
+   * @description The error message when the user is not signed in to Chrome.
    */
-  notLoggedIn: "This feature is only available when you are signed into Chrome with your Google account",
+  notLoggedIn: "This feature is only available when you are signed in to Chrome with your Google account",
   /**
    * @description Message shown when the user is offline.
    */
@@ -7545,7 +7552,7 @@ var WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
 var WALKTHROUGH_SIDEBAR_INITIAL_WIDTH = 400;
 var UIStrings6 = {
   /**
-   * @description AI assistance UI text creating a new chat.
+   * @description AI assistance UI text for creating a new chat.
    */
   newChat: "New chat",
   /**
@@ -7553,11 +7560,11 @@ var UIStrings6 = {
    */
   help: "Help",
   /**
-   * @description AI assistant UI tooltip text for the settings button (gear icon).
+   * @description AI assistance UI tooltip text for the settings button (gear icon).
    */
   settings: "Settings",
   /**
-   * @description AI assistant UI tooltip sending feedback.
+   * @description AI assistance UI tooltip for sending feedback.
    */
   sendFeedback: "Send feedback",
   /**
@@ -7569,33 +7576,33 @@ var UIStrings6 = {
    */
   chatDeleted: "Chat deleted",
   /**
-   * @description AI assistance UI text creating selecting a history entry.
+   * @description AI assistance UI text for selecting a history entry.
    */
   history: "History",
   /**
-   * @description AI assistance UI text deleting the current chat session from local history.
+   * @description AI assistance UI text for deleting the current chat session from local history.
    */
   deleteChat: "Delete local chat",
   /**
-   * @description AI assistance UI text that deletes all local history entries.
+   * @description AI assistance UI text for deleting all local history entries.
    */
   clearChatHistory: "Clear local chats",
   /**
-   *@description AI assistance UI text for the export conversation button.
+   * @description AI assistance UI text for the export conversation button.
    */
   exportConversation: "Export conversation",
   /**
-   * @description AI assistance UI text explains that he user had no pas conversations.
+   * @description AI assistance UI text explaining that the user has no past conversations.
    */
   noPastConversations: "No past conversations",
   /**
-   * @description Placeholder text for an inactive text field. When active, it's used for the user's input to the GenAI assistance.
+   * @description Placeholder text for an inactive text field. When active, it’s used for the user’s input to AI assistance.
    */
   followTheSteps: "Follow the steps above to ask a question",
   /**
    * @description Disclaimer text right after the chat input.
    */
-  inputDisclaimerForEmptyState: "This is an experimental AI feature and won't always get it right.",
+  inputDisclaimerForEmptyState: "This is an experimental AI feature and won\u2019t always get it right.",
   /**
    * @description The message shown in a toast when the response is copied to the clipboard.
    */
@@ -7685,7 +7692,7 @@ var UIStringsNotTranslate7 = {
   /**
    * @description Disclaimer text right after the chat input.
    */
-  inputDisclaimerForFile: "Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won't always get it right.",
+  inputDisclaimerForFile: "Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
   /**
    * @description Disclaimer text right after the chat input.
    */
@@ -7693,7 +7700,7 @@ var UIStringsNotTranslate7 = {
   /**
    * @description Disclaimer text right after the chat input.
    */
-  inputDisclaimerForPerformance: "Chat messages and trace data from your performance trace are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won't always get it right.",
+  inputDisclaimerForPerformance: "Chat messages and trace data from your performance trace are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\u2019t always get it right.",
   /**
    * @description Disclaimer text right after the chat input.
    */
@@ -8325,7 +8332,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
       isReadOnly: false,
       aidaClient: this.#aidaClient,
       changeManager: this.#changeManager,
-      isExternal: false,
       performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
       onInspectElement: this.#handleInspectElement.bind(this),
       networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -8348,7 +8354,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
             isReadOnly: false,
             aidaClient: this.#aidaClient,
             changeManager: this.#changeManager,
-            isExternal: false,
             performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
             onInspectElement: this.#handleInspectElement.bind(this),
             networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -8743,7 +8748,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
         isReadOnly: false,
         aidaClient: this.#aidaClient,
         changeManager: this.#changeManager,
-        isExternal: false,
         performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
         onInspectElement: this.#handleInspectElement.bind(this),
         networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -8766,14 +8770,21 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI11.Panel.Panel {
     }
   }
   #populateHistoryMenu(contextMenu) {
-    const historicalConversations = AiAssistanceModel9.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map((serializedConversation) => AiAssistanceModel9.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
-    for (const conversation of historicalConversations.reverse()) {
-      if (conversation.isEmpty || !conversation.title) {
+    const history = AiAssistanceModel9.AiHistoryStorage.AiHistoryStorage.instance().getHistory();
+    const activeId = this.#conversation?.id;
+    for (const serialized of [...history].reverse()) {
+      const isConversationEmpty = serialized.history.length === 0;
+      if (isConversationEmpty) {
         continue;
       }
-      contextMenu.defaultSection().appendCheckboxItem(conversation.title, () => {
+      const title = AiAssistanceModel9.AiConversation.AiConversation.titleForSerialized(serialized);
+      if (!title) {
+        continue;
+      }
+      contextMenu.defaultSection().appendCheckboxItem(title, () => {
+        const conversation = AiAssistanceModel9.AiConversation.AiConversation.fromSerializedConversation(serialized);
         void this.#openHistoricConversation(conversation);
-      }, { checked: this.#conversation?.id === conversation.id, jslogContext: "freestyler.history-item" });
+      }, { checked: activeId === serialized.id, jslogContext: "freestyler.history-item" });
     }
     const historyEmpty = contextMenu.defaultSection().items.length === 0;
     if (historyEmpty) {

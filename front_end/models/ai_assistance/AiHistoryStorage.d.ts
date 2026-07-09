@@ -13,7 +13,6 @@ export interface SerializedConversation {
     id: string;
     type: ConversationType;
     history: SerializedResponseData[];
-    isExternal: boolean;
 }
 export interface SerializedImage {
     id: string;
@@ -21,6 +20,7 @@ export interface SerializedImage {
     data: string;
 }
 export declare const MAX_RECENT_PROMPTS_COUNT = 20;
+export declare const MAX_CONVERSATIONS_COUNT = 50;
 export declare const RECENT_PROMPTS_SIZE_LIMIT: number;
 export declare const enum Events {
     HISTORY_DELETED = "AiHistoryDeleted"

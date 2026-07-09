@@ -2277,7 +2277,7 @@ var UIStrings6 = {
   /**
    * @description Cell title in Network Data Grid Node of the Network panel
    */
-  earlyHints: "early-hints",
+  earlyHints: "Early-hints",
   /**
    * @description Text in Network Data Grid Node of the Network panel
    */
@@ -2954,9 +2954,6 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const mimeType = this.requestInternal.mimeType || this.requestInternal.requestContentType() || "";
     const resourceType = this.requestInternal.resourceType();
     let simpleType = resourceType.name();
-    if (this.requestInternal.fromEarlyHints()) {
-      return i18nString6(UIStrings6.earlyHints);
-    }
     if (resourceType === Common5.ResourceType.resourceTypes.Other || resourceType === Common5.ResourceType.resourceTypes.Image) {
       simpleType = mimeType.replace(/^(application|image)\//, "");
     }
@@ -2981,14 +2978,17 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   isPrefetch() {
     return this.requestInternal.resourceType() === Common5.ResourceType.resourceTypes.Prefetch;
   }
+  isPreload() {
+    return this.requestInternal.isPreloadRequest();
+  }
   throttlingConditions() {
     return SDK5.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.requestInternal);
   }
   isWarning() {
-    return this.isFailed() && this.isPrefetch();
+    return this.isFailed() && (this.isPrefetch() || this.isPreload());
   }
   isError() {
-    return this.isFailed() && !this.isPrefetch();
+    return this.isFailed() && !this.isPrefetch() && !this.isPreload();
   }
   createCells(trElement) {
     this.initiatorCell = null;
@@ -3431,9 +3431,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         break;
       }
       default: {
-        UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.otherC));
+        const initiatorText = request.fromEarlyHints() ? i18nString6(UIStrings6.earlyHints) : i18nString6(UIStrings6.otherC);
+        UI6.Tooltip.Tooltip.install(cell, initiatorText);
         cell.classList.add("network-dim-cell");
-        cell.appendChild(document.createTextNode(i18nString6(UIStrings6.otherC)));
+        cell.appendChild(document.createTextNode(initiatorText));
       }
     }
   }
@@ -12399,7 +12400,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       await Common19.Revealer.reveal(requestLocation);
     } else {
       UI25.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
-        await Sources2.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
+        await Sources2.SourcesNavigator.OverridesNavigatorView.setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(request.url());
         await Common19.Revealer.reveal(requestLocation);
       });

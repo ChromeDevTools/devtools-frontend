@@ -5,9 +5,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Title for a learn more link in Heavy Ads issue description
+     * @description Title for a learn more link in heavy ads issue description.
      */
-    handlingHeavyAdInterventions: 'Handling Heavy Ad Interventions',
+    handlingHeavyAdInterventions: 'Handling heavy ad interventions',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/HeavyAdIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -44,7 +44,7 @@ export class HeavyAdIssue extends Issue {
     static fromInspectorIssue(issuesModel, inspectorIssue) {
         const heavyAdIssueDetails = inspectorIssue.details.heavyAdIssueDetails;
         if (!heavyAdIssueDetails) {
-            console.warn('Heavy Ad issue without details received.');
+            console.warn('Heavy ad issue without details received.');
             return [];
         }
         return [new HeavyAdIssue(heavyAdIssueDetails, issuesModel)];

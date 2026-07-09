@@ -104,8 +104,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkNavigatorViewInstance;
 export class NetworkNavigatorView extends NavigatorView {
-    constructor() {
-        super('navigator-network', true);
+    constructor(networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance()) {
+        super('navigator-network', networkProjectManager, true);
         this.registerRequiredCSS(sourcesNavigatorStyles);
         SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.inspectedURLChanged, this);
         // Record the sources tool load time after the file navigator has loaded.
@@ -113,9 +113,9 @@ export class NetworkNavigatorView extends NavigatorView {
         SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance() } = opts;
         if (!networkNavigatorViewInstance || forceNew) {
-            networkNavigatorViewInstance = new NetworkNavigatorView();
+            networkNavigatorViewInstance = new NetworkNavigatorView(networkProjectManager);
         }
         return networkNavigatorViewInstance;
     }
@@ -163,8 +163,8 @@ export class FilesNavigatorView extends NavigatorView {
     #automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
     #eventListeners = [];
     #automaticFileSystemNudge;
-    constructor() {
-        super('navigator-files');
+    constructor(networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance()) {
+        super('navigator-files', networkProjectManager);
         this.registerRequiredCSS(sourcesNavigatorStyles);
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noWorkspace), i18nString(UIStrings.explainWorkspace));
         this.setPlaceholder(placeholder);
@@ -224,8 +224,8 @@ export class FilesNavigatorView extends NavigatorView {
 let overridesNavigatorViewInstance;
 export class OverridesNavigatorView extends NavigatorView {
     toolbar;
-    constructor() {
-        super('navigator-overrides');
+    constructor(networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance()) {
+        super('navigator-overrides', networkProjectManager);
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noLocalOverrides), i18nString(UIStrings.explainLocalOverrides));
         this.setPlaceholder(placeholder);
         placeholder.link = 'https://developer.chrome.com/docs/devtools/overrides/';
@@ -238,9 +238,9 @@ export class OverridesNavigatorView extends NavigatorView {
         this.updateProjectAndUI();
     }
     static instance(opts = { forceNew: null }) {
-        const { forceNew } = opts;
+        const { forceNew, networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance() } = opts;
         if (!overridesNavigatorViewInstance || forceNew) {
-            overridesNavigatorViewInstance = new OverridesNavigatorView();
+            overridesNavigatorViewInstance = new OverridesNavigatorView(networkProjectManager);
         }
         return overridesNavigatorViewInstance;
     }
@@ -278,11 +278,11 @@ export class OverridesNavigatorView extends NavigatorView {
         const title = i18nString(UIStrings.selectFolderForOverrides);
         const setupButton = new UI.Toolbar.ToolbarButton(title, 'plus', title);
         setupButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, _event => {
-            void this.setupNewWorkspace();
+            void OverridesNavigatorView.setupNewWorkspace();
         }, this);
         this.toolbar.appendToolbarItem(setupButton);
     }
-    async setupNewWorkspace() {
+    static async setupNewWorkspace() {
         const fileSystem = await Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem('overrides');
         if (!fileSystem) {
             return;
@@ -298,8 +298,8 @@ export class OverridesNavigatorView extends NavigatorView {
     }
 }
 export class ContentScriptsNavigatorView extends NavigatorView {
-    constructor() {
-        super('navigator-content-scripts');
+    constructor(networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance()) {
+        super('navigator-content-scripts', networkProjectManager);
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noContentScripts), i18nString(UIStrings.explainContentScripts));
         this.setPlaceholder(placeholder);
         placeholder.link = 'https://developer.chrome.com/extensions/content_scripts';
@@ -309,8 +309,8 @@ export class ContentScriptsNavigatorView extends NavigatorView {
     }
 }
 export class SnippetsNavigatorView extends NavigatorView {
-    constructor() {
-        super('navigator-snippets');
+    constructor(networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance()) {
+        super('navigator-snippets', networkProjectManager);
         const placeholder = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noSnippets), i18nString(UIStrings.explainSnippets));
         this.setPlaceholder(placeholder);
         placeholder.link =

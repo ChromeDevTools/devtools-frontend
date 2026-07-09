@@ -55,7 +55,6 @@ export class AiConversation {
             data: history,
             id: serializedConversation.id,
             isReadOnly: true,
-            isExternal: serializedConversation.isExternal,
         });
     }
     id;
@@ -65,7 +64,6 @@ export class AiConversation {
     #agent;
     #isReadOnly;
     history;
-    #isExternal;
     #aidaClient;
     #changeManager;
     #origin;
@@ -76,7 +74,7 @@ export class AiConversation {
     #onInspectElement;
     #networkTimeCalculator;
     constructor(options) {
-        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, } = options;
+        const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, } = options;
         this.#changeManager = changeManager;
         this.#aidaClient = aidaClient;
         this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -85,7 +83,6 @@ export class AiConversation {
         this.#lighthouseRecording = lighthouseRecording;
         this.id = id;
         this.#isReadOnly = isReadOnly;
-        this.#isExternal = isExternal;
         this.history = this.#reconstructHistory(data);
         // Needs to be last
         this.#updateAgent(type);
@@ -93,15 +90,22 @@ export class AiConversation {
     get isReadOnly() {
         return this.#isReadOnly;
     }
+    static titleForSerialized(serialized) {
+        const query = serialized.history.find(item => item.type === "user-query" /* ResponseType.USER_QUERY */)?.query;
+        if (!query) {
+            return undefined;
+        }
+        return AiConversation.title(query);
+    }
+    static title(query) {
+        return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? '…' : ''}`;
+    }
     get title() {
         const query = this.history.find(response => response.type === "user-query" /* ResponseType.USER_QUERY */)?.query;
         if (!query) {
             return;
         }
-        if (this.#isExternal) {
-            return `[External] ${query.substring(0, MAX_TITLE_LENGTH - 11)}${query.length > MAX_TITLE_LENGTH - 11 ? '…' : ''}`;
-        }
-        return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? '…' : ''}`;
+        return AiConversation.title(query);
     }
     get isEmpty() {
         return this.history.length === 0;
@@ -257,7 +261,6 @@ export class AiConversation {
             })
                 .filter(history => !!history),
             type: this.#type,
-            isExternal: this.#isExternal,
         };
     }
     #filterHistoryForNewAgent() {

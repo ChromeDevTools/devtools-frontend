@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
+    #targetManager;
     #address = '';
     #filledFields = [];
     #matches = [];
@@ -12,6 +13,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
     #frameManager;
     constructor(targetManager, frameManager) {
         super();
+        this.#targetManager = targetManager;
         this.#frameManager = frameManager;
         targetManager.addModelListener(SDK.AutofillModel.AutofillModel, "AddressFormFilled" /* SDK.AutofillModel.Events.ADDRESS_FORM_FILLED */, this.#addressFormFilled, this, { scoped: true });
     }
@@ -48,7 +50,7 @@ export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
     clearHighlightedFilledFields() {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(this.#targetManager);
     }
     #processAddressFormFilledData({ addressUi, filledFields }) {
         // Transform addressUi into a single (multi-line) string.

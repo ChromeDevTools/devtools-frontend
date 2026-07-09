@@ -5,7 +5,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Title for Bounce Tracking Mitigation explainer url link.
+     * @description Title for Bounce Tracking Mitigation explainer URL link.
      */
     bounceTrackingMitigations: 'Bounce tracking mitigations',
 };

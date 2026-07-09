@@ -152,7 +152,7 @@ export class LayerViewHost {
             node.highlightForTwoSeconds();
             return;
         }
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
 }
 //# sourceMappingURL=LayerViewHost.js.map

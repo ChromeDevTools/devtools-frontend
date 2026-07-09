@@ -6,11 +6,11 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     * @description Title for HTTP Message Signatures specification url
+     * @description Title for HTTP Message Signatures specification URL.
      */
     httpMessageSignatures: 'HTTP Message Signatures (RFC9421)',
     /**
-     * @description Title for Signature-based Integrity specification url
+     * @description Title for Signature-based Integrity specification URL.
      */
     signatureBasedIntegrity: 'Signature-based Integrity',
 };

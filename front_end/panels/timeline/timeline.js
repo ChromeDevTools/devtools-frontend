@@ -16629,7 +16629,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
     ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
   }
   onEntryHovered(commonEvent) {
-    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK14.TargetManager.TargetManager.instance());
     const entryIndex = commonEvent.data;
     const event = this.mainDataProvider.eventByIndex(entryIndex);
     if (!event || !this.#parsedTrace) {

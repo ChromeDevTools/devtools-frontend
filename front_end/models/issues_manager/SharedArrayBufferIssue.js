@@ -5,10 +5,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Label for the link for SharedArrayBuffer Issues. The full text reads "Enabling `SharedArrayBuffer`"
+     * @description Label for the link for SharedArrayBuffer issues. The full text reads "Enabling SharedArrayBuffer"
      * and is the title of an article that describes how to enable a JavaScript feature called SharedArrayBuffer.
      */
-    enablingSharedArrayBuffer: 'Enabling `SharedArrayBuffer`',
+    enablingSharedArrayBuffer: 'Enabling SharedArrayBuffer',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedArrayBufferIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

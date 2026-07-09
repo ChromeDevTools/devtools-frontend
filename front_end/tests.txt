@@ -152,6 +152,8 @@ entrypoints/main/GlobalAiButton.test.js
 entrypoints/main/MainImpl.test.js
 entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
+models/ai_assistance/data_formatters/FileFormatter.test.js
+models/ai_assistance/data_formatters/UnitFormatters.test.js
 models/ai_assistance/AgentProject.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
@@ -456,6 +458,7 @@ panels/elements/EventListenersWidget.test.js
 panels/elements/ImagePreviewPopover.test.js
 panels/elements/InspectElementModeController.test.js
 panels/elements/LayoutPane.test.js
+panels/elements/MetricsSidebarPane.test.js
 panels/elements/PlatformFontsWidget.test.js
 panels/elements/PropertiesWidget.test.js
 panels/elements/PropertyRenderer.test.js

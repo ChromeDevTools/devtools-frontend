@@ -1567,7 +1567,7 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
           event.consume(true);
         }}
             @mousemove=${() => SDK3.OverlayModel.OverlayModel.highlightObjectAsDOMNode(value)}
-            @mouseleave=${() => SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
+            @mouseleave=${() => SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance())}
           >${renderNodeTitle(description)}</span>`;
       }
       if (description.length > maxRenderableStringLength) {
@@ -2759,7 +2759,7 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
   }
   dispose() {
     if (this.resultHighlightedAsDOM) {
-      SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+      SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK4.TargetManager.TargetManager.instance());
     }
     if (this.linkifier) {
       this.linkifier.dispose();

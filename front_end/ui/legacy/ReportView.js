@@ -123,6 +123,9 @@ export class Section extends VBox {
     getFieldElement() {
         return this.fieldList;
     }
+    getHeaderElement() {
+        return this.headerElement;
+    }
     appendFieldWithCustomView(customElement) {
         this.fieldList.append(customElement);
     }

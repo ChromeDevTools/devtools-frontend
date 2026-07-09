@@ -748,6 +748,11 @@ devtools-toolbar {
     }
   }
 
+  & > devtools-link,
+  & > .devtools-link {
+    cursor: pointer;
+  }
+
   .status-buttons {
     padding: 0 var(--sys-size-2);
     gap: var(--sys-size-2);

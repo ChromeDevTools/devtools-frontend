@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../core/common/common.js';
+import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
@@ -23,11 +24,14 @@ export class Universe {
     context;
     autofillManager;
     supportsEmulation;
+    fileSystemWorkspaceBinding;
     constructor(options) {
         const context = new Root.DevToolsContext.WritableDevToolsContext();
         this.context = context;
         const console = new Common.Console.Console();
         context.set(Common.Console.Console, console);
+        const hostConfigTracker = new Host.AidaClient.HostConfigTracker();
+        context.set(Host.AidaClient.HostConfigTracker, hostConfigTracker);
         // TODO(crbug.com/458180550): Store instance only on this.context instead.
         //                            For now the global is required as not everything in foundation cleanly
         //                            reads from the scoped `Settings` instance.
@@ -37,6 +41,8 @@ export class Universe {
             ...options.settingsCreationOptions,
         });
         context.set(Common.Settings.Settings, settings);
+        const emulatedDevicesList = new Emulation.EmulatedDevices.EmulatedDevicesList(settings);
+        context.set(Emulation.EmulatedDevices.EmulatedDevicesList, emulatedDevicesList);
         const isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager(settings, console);
         context.set(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager, isolatedFileSystemManager);
         const targetManager = new SDK.TargetManager.TargetManager(context, options.overrideAutoStartModels);
@@ -76,6 +82,8 @@ export class Universe {
         context.set(Workspace.FileManager.FileManager, fileManager);
         const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
         context.set(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding, automaticFileSystemWorkspaceBinding);
+        this.fileSystemWorkspaceBinding =
+            new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(isolatedFileSystemManager, workspace);
         const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
         context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
         const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
@@ -83,6 +91,8 @@ export class Universe {
         context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
         const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
         context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+        const networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
+        context.set(Bindings.NetworkProject.NetworkProjectManager, networkProjectManager);
         const breakpointManager = new Breakpoints.BreakpointManager.BreakpointManager(targetManager, workspace, debuggerWorkspaceBinding, settings);
         context.set(Breakpoints.BreakpointManager.BreakpointManager, breakpointManager);
         const persistence = new Persistence.Persistence.PersistenceImpl(workspace, breakpointManager);
@@ -126,11 +136,17 @@ export class Universe {
     get domModelUndoStack() {
         return this.context.get(SDK.DOMModel.DOMModelUndoStack);
     }
+    get emulatedDevicesList() {
+        return this.context.get(Emulation.EmulatedDevices.EmulatedDevicesList);
+    }
     get eventBreakpointsManager() {
         return this.context.get(SDK.EventBreakpointsModel.EventBreakpointsManager);
     }
     get fileManager() {
         return this.context.get(Workspace.FileManager.FileManager);
+    }
+    get hostConfigTracker() {
+        return this.context.get(Host.AidaClient.HostConfigTracker);
     }
     get isolatedFileSystemManager() {
         return this.context.get(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager);
@@ -140,6 +156,9 @@ export class Universe {
     }
     get networkPersistenceManager() {
         return this.context.get(Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
+    }
+    get networkProjectManager() {
+        return this.context.get(Bindings.NetworkProject.NetworkProjectManager);
     }
     get liveMetrics() {
         return this.context.get(LiveMetrics.LiveMetrics);

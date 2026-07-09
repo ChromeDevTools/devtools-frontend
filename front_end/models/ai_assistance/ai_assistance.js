@@ -256,7 +256,7 @@ __export(AccessibilityAgent_exports, {
   AccessibilityAgent: () => AccessibilityAgent
 });
 import * as Host11 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
 
@@ -271,48 +271,24 @@ __export(AiUtils_exports, {
 });
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
-var UIStrings = {
-  /**
-   * @description Message shown to the user if the age check isn’t successful.
-   */
-  ageRestricted: "This feature is only available to users 18 years or older.",
-  /**
-   * @description The error message when the user isn’t logged in to Chrome.
-   */
-  notLoggedIn: "This feature is only available when you sign in to Chrome with your Google account.",
-  /**
-   * @description Message shown when the user is offline.
-   */
-  offline: "This feature is only available with an active internet connection.",
-  /**
-   * @description Text informing the user that AI assistance isn’t available in Incognito mode or Guest mode.
-   */
-  notAvailableInIncognitoMode: "AI assistance isn\u2019t available in Incognito mode or Guest mode."
-};
-var str_ = i18n.i18n.registerUIStrings("models/ai_assistance/AiUtils.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
   if (Root.Runtime.hostConfig.isOffTheRecord) {
-    reasons.push(i18nString(UIStrings.notAvailableInIncognitoMode));
+    reasons.push(
+      "is-off-the-record"
+      /* FrontendAccessPrecondition.IS_OFF_THE_RECORD */
+    );
   }
-  switch (aidaAvailability) {
-    case "no-account-email":
-    case "sync-is-paused":
-      reasons.push(i18nString(UIStrings.notLoggedIn));
-      break;
-    // @ts-expect-error
-    case "no-internet":
-      reasons.push(i18nString(UIStrings.offline));
-    case "available": {
-      if (Root.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
-        reasons.push(i18nString(UIStrings.ageRestricted));
-      }
-    }
+  if (aidaAvailability !== "available") {
+    reasons.push(aidaAvailability);
   }
-  reasons.push(...Common.Settings.Settings.instance().moduleSetting("ai-assistance-enabled").disabledReasons());
+  if ((aidaAvailability === "available" || aidaAvailability === "no-internet") && Root.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
+    reasons.push(
+      "age-restricted"
+      /* FrontendAccessPrecondition.AGE_RESTRICTED */
+    );
+  }
   return reasons;
 }
 function isGeminiBranding() {
@@ -533,6 +509,7 @@ __export(LighthouseFormatter_exports, {
 var UnitFormatters_exports = {};
 __export(UnitFormatters_exports, {
   bytes: () => bytes,
+  formatBytesToKb: () => formatBytesToKb,
   micros: () => micros,
   millis: () => millis,
   seconds: () => seconds
@@ -579,6 +556,18 @@ var byteFormatters = {
   }),
   kilobytes: new Intl.NumberFormat("en-US", {
     ...defaultByteFormatterOptions,
+    unit: "kilobyte"
+  }),
+  kilobytesDecimal: new Intl.NumberFormat("en-US", {
+    ...defaultByteFormatterOptions,
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+    unit: "kilobyte"
+  }),
+  kilobytesInteger: new Intl.NumberFormat("en-US", {
+    ...defaultByteFormatterOptions,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
     unit: "kilobyte"
   }),
   megabytes: new Intl.NumberFormat("en-US", {
@@ -634,6 +623,13 @@ function bytes(x) {
   }
   const megabytes = kilobytes / 1e3;
   return formatAndEnsureSpace(byteFormatters.megabytes, megabytes);
+}
+function formatBytesToKb(x) {
+  const kilobytes = x / 1e3;
+  if (kilobytes < 100) {
+    return formatAndEnsureSpace(byteFormatters.kilobytesDecimal, kilobytes);
+  }
+  return formatAndEnsureSpace(byteFormatters.kilobytesInteger, kilobytes);
 }
 function formatAndEnsureSpace(formatter, value, separator = "\xA0") {
   const parts = formatter.formatToParts(value);
@@ -1303,7 +1299,7 @@ import * as Root3 from "./../../core/root/root.js";
 
 // gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
 import * as Host2 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as i18n from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
@@ -1469,7 +1465,7 @@ ${result.message}`;
 };
 
 // gen/front_end/models/ai_assistance/agents/ExecuteJavascript.js
-var lockedString = i18n3.i18n.lockedString;
+var lockedString = i18n.i18n.lockedString;
 async function executeJsCode(functionDeclaration, { throwOnSideEffect, contextNode }) {
   if (!contextNode) {
     throw new Error("Cannot execute JavaScript because of missing context node");
@@ -1719,7 +1715,7 @@ __export(GetElementAccessibilityDetails_exports, {
   GetElementAccessibilityDetailsTool: () => GetElementAccessibilityDetailsTool
 });
 import * as Host5 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
@@ -1727,7 +1723,7 @@ var DOMNodeContext_exports = {};
 __export(DOMNodeContext_exports, {
   DOMNodeContext: () => DOMNodeContext
 });
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n3 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/agents/AiAgent.js
 var AiAgent_exports = {};
@@ -2096,6 +2092,8 @@ var AiAgent = class {
           error = "abort";
         } else if (err instanceof Host4.AidaClient.AidaBlockError) {
           error = "block";
+        } else if (err instanceof Host4.AidaClient.AidaQuotaError || err instanceof Error && err.message.toLowerCase().includes("quota")) {
+          error = "quota";
         }
         yield this.#createErrorResponse(error);
         break;
@@ -2387,7 +2385,7 @@ var UIStringsNotTranslate = {
    */
   dataUsed: "Data used"
 };
-var lockedString2 = i18n5.i18n.lockedString;
+var lockedString2 = i18n3.i18n.lockedString;
 var DOMNodeContext = class extends ConversationContext {
   #node;
   constructor(node) {
@@ -2623,8 +2621,8 @@ var GetElementAccessibilityDetailsTool = class {
         name: "DOM_TREE",
         data: {
           root: snapshot,
-          title: i18n7.i18n.lockedString("Element details"),
-          accessibleRevealLabel: i18n7.i18n.lockedString("Reveal element")
+          title: i18n5.i18n.lockedString("Element details"),
+          accessibleRevealLabel: i18n5.i18n.lockedString("Reveal element")
         }
       }]
     };
@@ -2734,7 +2732,7 @@ __export(GetNetworkRequestDetails_exports, {
   GetNetworkRequestDetailsTool: () => GetNetworkRequestDetailsTool
 });
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Logs2 from "./../logs/logs.js";
 import * as NetworkTimeCalculator2 from "./../network_time_calculator/network_time_calculator.js";
 
@@ -2745,7 +2743,7 @@ __export(RequestContext_exports, {
   getRequestContextOrigin: () => getRequestContextOrigin
 });
 import * as Common6 from "./../../core/common/common.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n7 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/models/ai_assistance/data_formatters/NetworkRequestFormatter.js
 var NetworkRequestFormatter_exports = {};
@@ -3101,7 +3099,7 @@ var UIStringsNotTranslate2 = {
   timing: "Timing",
   requestInitiatorChain: "Request initiator chain"
 };
-var lockedString3 = i18n9.i18n.lockedString;
+var lockedString3 = i18n7.i18n.lockedString;
 function getRequestContextOrigin(request) {
   const origin = extractContextOrigin(request.documentURL);
   if (request.isImportedHar()) {
@@ -3178,7 +3176,7 @@ ${formatter.formatStatus()}${formatter.formatFailureReasons()}`
 var UIStringsNotTranslate3 = {
   gettingNetworkRequestDetails: "Getting network request details"
 };
-var lockedString4 = i18n11.i18n.lockedString;
+var lockedString4 = i18n9.i18n.lockedString;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails";
   description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
@@ -3357,12 +3355,12 @@ __export(ListNetworkRequests_exports, {
   ListNetworkRequestsTool: () => ListNetworkRequestsTool
 });
 import * as Host9 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Logs3 from "./../logs/logs.js";
 var UIStringsNotTranslate4 = {
   listingNetworkRequests: "Listing network requests"
 };
-var lockedString5 = i18n13.i18n.lockedString;
+var lockedString5 = i18n11.i18n.lockedString;
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests";
   description = "Gives a list of network requests including URL, status code, and duration.";
@@ -3403,8 +3401,8 @@ var ListNetworkRequestsTool = class {
         id: request.requestId(),
         url: request.url(),
         statusCode: request.statusCode,
-        duration: i18n13.TimeUtilities.secondsToString(request.duration),
-        transferSize: i18n13.ByteUtilities.formatBytesToKb(request.transferSize)
+        duration: seconds(request.duration),
+        transferSize: formatBytesToKb(request.transferSize)
       });
       requestsToShow.push(request);
     }
@@ -3692,7 +3690,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n15.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
+          title: i18n13.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
           action: `getLighthouseAudits('${params.categoryId}')`
         };
       },
@@ -3752,7 +3750,7 @@ var AccessibilityAgent = class extends AiAgent {
       },
       displayInfoFromArgs: (params) => {
         return {
-          title: i18n15.i18n.lockedString("Running accessibility audits"),
+          title: i18n13.i18n.lockedString("Running accessibility audits"),
           thought: params.explanation,
           action: "runAccessibilityAudits()"
         };
@@ -3926,8 +3924,8 @@ var AccessibilityAgent = class extends AiAgent {
           name: "DOM_TREE",
           data: {
             root: snapshot,
-            title: i18n15.i18n.lockedString("Element details"),
-            accessibleRevealLabel: i18n15.i18n.lockedString("Reveal element")
+            title: i18n13.i18n.lockedString("Element details"),
+            accessibleRevealLabel: i18n13.i18n.lockedString("Reveal element")
           }
         });
         return {
@@ -3958,7 +3956,7 @@ __export(ContextSelectionAgent_exports, {
 });
 import * as Common10 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as Logs4 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
@@ -6711,10 +6709,10 @@ __export(StorageAgent_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root6 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
-var lockedString6 = i18n17.i18n.lockedString;
+var lockedString6 = i18n15.i18n.lockedString;
 var preamble2 = `You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and Cookies.
 
  You have access to the site's storage using tools like \`getStorageBreakdown\`, \`listPageOrigins\`, \`listStorageKeys\`, \`getStorageValues\`, \`listCookies\`, and \`getCookieValues\`.
@@ -7145,12 +7143,12 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         }
         const usageBreakdown = response.usageBreakdown.filter((entry) => entry.usage > 0).sort((a, b) => b.usage - a.usage).map((entry) => ({
           storageType: entry.storageType,
-          usage: i18n17.ByteUtilities.bytesToString(entry.usage)
+          usage: bytes(entry.usage)
         }));
         return {
           result: {
-            totalUsage: i18n17.ByteUtilities.bytesToString(response.usage),
-            totalQuota: i18n17.ByteUtilities.bytesToString(response.quota),
+            totalUsage: bytes(response.usage),
+            totalQuota: bytes(response.quota),
             usageBreakdown
           }
         };
@@ -7266,7 +7264,7 @@ function resolveDOMStorages(context, type, origin, storageKey) {
 }
 
 // gen/front_end/models/ai_assistance/agents/ContextSelectionAgent.js
-var lockedString7 = i18n19.i18n.lockedString;
+var lockedString7 = i18n17.i18n.lockedString;
 var preamble3 = `
 You are an advanced Web Development Assistant and AI routing agent integrated into Chrome DevTools. Your tone is educational, supportive, and technically precise. You aim to help developers of all levels, prioritizing teaching web concepts as the primary entry point for any solution.
 
@@ -7369,8 +7367,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
             id: request.requestId(),
             url: request.url(),
             statusCode: request.statusCode,
-            duration: i18n19.TimeUtilities.secondsToString(request.duration),
-            transferSize: i18n19.ByteUtilities.formatBytesToKb(request.transferSize)
+            duration: seconds(request.duration),
+            transferSize: formatBytesToKb(request.transferSize)
           });
           requestsToShow.push(request);
         }
@@ -8181,7 +8179,7 @@ __export(PerformanceAgent_exports, {
 });
 import * as Common11 from "./../../core/common/common.js";
 import * as Host17 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "./../../core/i18n/i18n.js";
 import * as Root11 from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
 import * as Tracing2 from "./../../services/tracing/tracing.js";
@@ -8198,7 +8196,7 @@ var UIStringsNotTranslated = {
    */
   mainThreadActivity: "Investigating main thread activity"
 };
-var lockedString8 = i18n21.i18n.lockedString;
+var lockedString8 = i18n19.i18n.lockedString;
 var preamble7 = `You are an assistant, expert in web performance and highly skilled with Chrome DevTools.
 
 Your primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.
@@ -9801,6 +9799,7 @@ import * as SDK14 from "./../../core/sdk/sdk.js";
 var AiHistoryStorage_exports = {};
 __export(AiHistoryStorage_exports, {
   AiHistoryStorage: () => AiHistoryStorage,
+  MAX_CONVERSATIONS_COUNT: () => MAX_CONVERSATIONS_COUNT,
   MAX_RECENT_PROMPTS_COUNT: () => MAX_RECENT_PROMPTS_COUNT,
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
@@ -9808,6 +9807,7 @@ import * as Common12 from "./../../core/common/common.js";
 var instance = null;
 var DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 var MAX_RECENT_PROMPTS_COUNT = 20;
+var MAX_CONVERSATIONS_COUNT = 50;
 var RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
 var AiHistoryStorage = class _AiHistoryStorage extends Common12.ObjectWrapper.ObjectWrapper {
   #historySetting;
@@ -9855,6 +9855,14 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common12.ObjectWrapper.Ob
   getRecentPrompts() {
     return structuredClone(this.#recentPromptsSetting.get());
   }
+  #getImageIdsFromHistory(history) {
+    return history.flatMap((item) => {
+      if (item.type === "user-query" && item.imageId) {
+        return [item.imageId];
+      }
+      return [];
+    });
+  }
   async upsertHistoryEntry(agentEntry) {
     const release = await this.#mutex.acquire();
     try {
@@ -9864,6 +9872,17 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common12.ObjectWrapper.Ob
         history[historyEntryIndex] = agentEntry;
       } else {
         history.push(agentEntry);
+      }
+      const imageIdsForDeletion = [];
+      while (history.length > MAX_CONVERSATIONS_COUNT) {
+        const evicted = history.shift();
+        if (evicted) {
+          imageIdsForDeletion.push(...this.#getImageIdsFromHistory(evicted.history));
+        }
+      }
+      if (imageIdsForDeletion.length > 0) {
+        const images = structuredClone(await this.#imageHistorySettings.forceGet());
+        this.#imageHistorySettings.set(images.filter((entry) => !imageIdsForDeletion.includes(entry.id)));
       }
       this.#historySetting.set(history);
     } finally {
@@ -9898,18 +9917,16 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common12.ObjectWrapper.Ob
     const release = await this.#mutex.acquire();
     try {
       const history = structuredClone(await this.#historySetting.forceGet());
-      const imageIdsForDeletion = history.find((entry) => entry.id === id)?.history.map((item) => {
-        if (item.type === "user-query" && item.imageId) {
-          return item.imageId;
-        }
-        return void 0;
-      }).filter((item) => !!item);
+      const conversation = history.find((entry) => entry.id === id);
+      if (!conversation) {
+        return;
+      }
+      const imageIdsForDeletion = this.#getImageIdsFromHistory(conversation.history);
       this.#historySetting.set(history.filter((entry) => entry.id !== id));
-      const images = structuredClone(await this.#imageHistorySettings.forceGet());
-      this.#imageHistorySettings.set(
-        // Filter images for which ids are not present in deletion list
-        images.filter((entry) => !Boolean(imageIdsForDeletion?.find((id2) => id2 === entry.id)))
-      );
+      if (imageIdsForDeletion.length > 0) {
+        const images = structuredClone(await this.#imageHistorySettings.forceGet());
+        this.#imageHistorySettings.set(images.filter((entry) => !imageIdsForDeletion.includes(entry.id)));
+      }
     } finally {
       release();
     }
@@ -9975,8 +9992,7 @@ var AiConversation = class _AiConversation {
       type: serializedConversation.type,
       data: history,
       id: serializedConversation.id,
-      isReadOnly: true,
-      isExternal: serializedConversation.isExternal
+      isReadOnly: true
     });
   }
   id;
@@ -9986,7 +10002,6 @@ var AiConversation = class _AiConversation {
   #agent;
   #isReadOnly;
   history;
-  #isExternal;
   #aidaClient;
   #changeManager;
   #origin;
@@ -9997,7 +10012,7 @@ var AiConversation = class _AiConversation {
   #onInspectElement;
   #networkTimeCalculator;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host20.AidaClient.AidaClient(), changeManager, isExternal = false, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host20.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -10006,12 +10021,24 @@ var AiConversation = class _AiConversation {
     this.#lighthouseRecording = lighthouseRecording;
     this.id = id;
     this.#isReadOnly = isReadOnly;
-    this.#isExternal = isExternal;
     this.history = this.#reconstructHistory(data);
     this.#updateAgent(type);
   }
   get isReadOnly() {
     return this.#isReadOnly;
+  }
+  static titleForSerialized(serialized) {
+    const query = serialized.history.find(
+      (item) => item.type === "user-query"
+      /* ResponseType.USER_QUERY */
+    )?.query;
+    if (!query) {
+      return void 0;
+    }
+    return _AiConversation.title(query);
+  }
+  static title(query) {
+    return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? "\u2026" : ""}`;
   }
   get title() {
     const query = this.history.find(
@@ -10021,10 +10048,7 @@ var AiConversation = class _AiConversation {
     if (!query) {
       return;
     }
-    if (this.#isExternal) {
-      return `[External] ${query.substring(0, MAX_TITLE_LENGTH - 11)}${query.length > MAX_TITLE_LENGTH - 11 ? "\u2026" : ""}`;
-    }
-    return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? "\u2026" : ""}`;
+    return _AiConversation.title(query);
   }
   get isEmpty() {
     return this.history.length === 0;
@@ -10202,8 +10226,7 @@ ${item.text.trim()}`);
             return item;
         }
       }).filter((history) => !!history),
-      type: this.#type,
-      isExternal: this.#isExternal
+      type: this.#type
     };
   }
   #filterHistoryForNewAgent() {

@@ -6,7 +6,7 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     *@description Title for Connection-Allowlist specification url
+     * @description Title for Connection-Allowlist specification URL.
      */
     connectionAllowlistHeader: 'Connection-Allowlist specification',
 };

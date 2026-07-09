@@ -10,6 +10,7 @@ __export(AidaClient_exports, {
   AidaAbortError: () => AidaAbortError,
   AidaBlockError: () => AidaBlockError,
   AidaClient: () => AidaClient,
+  AidaQuotaError: () => AidaQuotaError,
   CLIENT_NAME: () => CLIENT_NAME,
   CitationSourceType: () => CitationSourceType,
   ClientFeature: () => ClientFeature,
@@ -1709,6 +1710,8 @@ var AidaAbortError = class extends Error {
 };
 var AidaBlockError = class extends Error {
 };
+var AidaQuotaError = class extends Error {
+};
 var AidaClient = class {
   // Delegate client
   #gcaClient = new GcaClient();
@@ -1802,12 +1805,22 @@ var AidaClient = class {
       debugLog("doConversation failed with error:", JSON.stringify(err));
       if (err instanceof DispatchHttpRequestError && err.response) {
         const result = err.response;
+        if (result.statusCode === 429) {
+          stream.fail(new AidaQuotaError("Server responded: quota exceeded"));
+          return;
+        }
         if (result.statusCode === 403) {
           stream.fail(new Error("Server responded: permission denied"));
           return;
         }
         if ("error" in result && result.error) {
-          stream.fail(new Error(`Cannot send request: ${result.error} ${result.detail || ""}`));
+          const errorStr = typeof result.error === "string" ? result.error : "";
+          const detailStr = typeof result.detail === "string" ? result.detail : "";
+          if (errorStr.toLowerCase().includes("quota") || detailStr.toLowerCase().includes("quota")) {
+            stream.fail(new AidaQuotaError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
+            return;
+          }
+          stream.fail(new Error(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
           return;
         }
         if ("netErrorName" in result && result.netErrorName === "net::ERR_TIMED_OUT") {
@@ -1862,6 +1875,9 @@ var AidaClient = class {
             thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature
           });
         } else if ("error" in result) {
+          if (typeof result.error === "string" && result.error.toLowerCase().includes("quota")) {
+            throw new AidaQuotaError(`Server responded: ${JSON.stringify(result)}`);
+          }
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
         } else {
           throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
@@ -2008,18 +2024,24 @@ function getClientFeatureName(feature) {
   }
   return name;
 }
-var hostConfigTrackerInstance;
 var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.ObjectWrapper {
   #pollTimer;
   #aidaAvailability;
-  constructor() {
-    super();
-  }
-  static instance() {
-    if (!hostConfigTrackerInstance) {
-      hostConfigTrackerInstance = new _HostConfigTracker();
+  static instance({ forceNew } = { forceNew: false }) {
+    if (!Root3.DevToolsContext.globalInstance().has(_HostConfigTracker) || forceNew) {
+      Root3.DevToolsContext.globalInstance().set(_HostConfigTracker, new _HostConfigTracker());
     }
-    return hostConfigTrackerInstance;
+    return Root3.DevToolsContext.globalInstance().get(_HostConfigTracker);
+  }
+  dispose() {
+    clearTimeout(this.#pollTimer);
+    this.listeners = void 0;
+  }
+  static removeInstance() {
+    if (Root3.DevToolsContext.globalInstance().has(_HostConfigTracker)) {
+      Root3.DevToolsContext.globalInstance().get(_HostConfigTracker).dispose();
+      Root3.DevToolsContext.globalInstance().delete(_HostConfigTracker);
+    }
   }
   addEventListener(eventType, listener) {
     const isFirst = !this.hasEventListeners(eventType);
@@ -2105,17 +2127,17 @@ async function makeHttpRequest2(request) {
   return response;
 }
 var SERVICE_NAME3 = "gdpService";
-var gdpClientInstance = null;
 var GdpClient = class _GdpClient {
   #cachedProfilePromise;
   #cachedEligibilityPromise;
-  constructor() {
-  }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!gdpClientInstance || forceNew) {
-      gdpClientInstance = new _GdpClient();
+    if (!Root4.DevToolsContext.globalInstance().has(_GdpClient) || forceNew) {
+      Root4.DevToolsContext.globalInstance().set(_GdpClient, new _GdpClient());
     }
-    return gdpClientInstance;
+    return Root4.DevToolsContext.globalInstance().get(_GdpClient);
+  }
+  static removeInstance() {
+    Root4.DevToolsContext.globalInstance().delete(_GdpClient);
   }
   /**
    * Fetches the user's GDP profile and eligibility status.

@@ -567,7 +567,7 @@ export class StylePropertiesSection {
         if (this.hoverTimer) {
             clearTimeout(this.hoverTimer);
         }
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     onMouseEnterSelector() {
         if (this.hoverTimer) {
@@ -576,7 +576,7 @@ export class StylePropertiesSection {
         this.hoverTimer = window.setTimeout(this.highlight.bind(this), 300);
     }
     highlight(mode = 'all') {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         const node = this.stylesContainer.node();
         if (!node) {
             return;

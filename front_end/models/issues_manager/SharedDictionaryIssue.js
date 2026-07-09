@@ -6,7 +6,7 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     * @description Title for Compression Dictionary Transport specification url link
+     * @description Title for Compression Dictionary Transport specification URL link.
      */
     compressionDictionaryTransport: 'Compression Dictionary Transport',
 };

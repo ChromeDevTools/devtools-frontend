@@ -14,9 +14,12 @@ export declare const MockAidaAbortError: {
 export declare const MockAidaFetchError: {
     readonly fetchError: true;
 };
+export declare const MockAidaQuotaError: {
+    readonly quotaError: true;
+};
 export type MockAidaResponse = Omit<Host.AidaClient.DoConversationResponse, 'completed' | 'metadata'> & {
     metadata?: Host.AidaClient.ResponseMetadata;
-} | typeof MockAidaAbortError | typeof MockAidaFetchError;
+} | typeof MockAidaAbortError | typeof MockAidaFetchError | typeof MockAidaQuotaError;
 /**
  * Creates a mock AIDA client that responds using `data`.
  *

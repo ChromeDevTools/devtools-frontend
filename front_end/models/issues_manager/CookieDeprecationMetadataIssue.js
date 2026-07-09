@@ -5,9 +5,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Label for a link for third-party cookie Issues.
+     * @description Label for a link for third-party cookie issues.
      */
-    thirdPartyPhaseoutExplained: 'Changes to Chrome\'s treatment of third-party cookies',
+    thirdPartyPhaseoutExplained: 'Changes to Chrome’s treatment of third-party cookies',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieDeprecationMetadataIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

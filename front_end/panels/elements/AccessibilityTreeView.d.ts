@@ -8,7 +8,11 @@ export declare class AccessibilityTreeView extends UI.Widget.VBox implements SDK
     private accessibilityTreeComponent;
     private inspectedDOMNode;
     private root;
+    private selectedAXNode;
     constructor(accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>, frameManager?: SDK.FrameManager.FrameManager);
+    private onContextMenu;
+    private onCopy;
+    private copyNode;
     wasShown(): Promise<void>;
     refreshAccessibilityTree(): Promise<void>;
     renderTree(): Promise<void>;

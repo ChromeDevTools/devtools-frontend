@@ -1548,7 +1548,13 @@ export class BaseFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         // To understand which argument was selected by the function, we evaluate the function as well as all the arguments
         // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
         // function calls and normalizes all units to px.
-        const values = match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
+        const values = match.args.map(arg => {
+            const text = context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]);
+            // We wrap each argument in calc() so it becomes a valid standalone CSS value.
+            // Standalone arithmetic expressions like `48px - 40px` are syntax errors in the CSS grammar unless wrapped in calc().
+            // Without this wrapper, the browser's resolveValues() CDP command fails to parse and evaluate them.
+            return `calc(${text})`;
+        });
         values.unshift(context.matchedResult.getComputedText(match.node));
         const evaledArgs = await resolveValues(this.#stylesContainer, this.#propertyName, match, context, ...values);
         if (context.signal?.aborted) {
@@ -1600,7 +1606,7 @@ export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMa
             anchorNode?.highlight();
         };
         const onMouseLeave = () => {
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         };
         if (identifier) {
             render(

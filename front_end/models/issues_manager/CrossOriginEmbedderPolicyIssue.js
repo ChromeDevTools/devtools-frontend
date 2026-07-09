@@ -6,11 +6,11 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     * @description Link text for a link to external documentation
+     * @description Link text for a link to external documentation.
      */
     coopAndCoep: 'COOP and COEP',
     /**
-     * @description Title for an external link to more information in the issues view
+     * @description Title for an external link to more information in the Issues view.
      */
     samesiteAndSameorigin: 'Same-Site and Same-Origin',
 };

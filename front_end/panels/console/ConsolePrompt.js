@@ -199,7 +199,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
         }
         else if (this.highlightingNode) {
             this.highlightingNode = false;
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         }
         if (result && executionContext) {
             executionContext.runtimeModel.releaseEvaluationResult(result);
@@ -209,7 +209,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
         super.willHide();
         if (this.highlightingNode) {
             this.highlightingNode = false;
-            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+            SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         }
     }
     history() {

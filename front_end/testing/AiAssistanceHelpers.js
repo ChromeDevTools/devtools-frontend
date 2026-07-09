@@ -32,6 +32,9 @@ export const MockAidaAbortError = {
 export const MockAidaFetchError = {
     fetchError: true,
 };
+export const MockAidaQuotaError = {
+    quotaError: true,
+};
 /**
  * Creates a mock AIDA client that responds using `data`.
  *
@@ -51,6 +54,9 @@ export function mockAidaClient(data = []) {
             }
             if ('fetchError' in chunk) {
                 throw new Error('Fetch error');
+            }
+            if ('quotaError' in chunk) {
+                throw new Host.AidaClient.AidaQuotaError();
             }
             const metadata = chunk.metadata ?? {};
             if (metadata?.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK) {

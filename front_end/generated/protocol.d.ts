@@ -11241,7 +11241,10 @@ export declare namespace Network {
         InvalidFederatedSessionProviderFailedToRestoreKey = "InvalidFederatedSessionProviderFailedToRestoreKey",
         FailedToUnwrapKey = "FailedToUnwrapKey",
         SessionDeletedDuringRefresh = "SessionDeletedDuringRefresh",
-        CrossOriginRegistrationSiteNotIncluded = "CrossOriginRegistrationSiteNotIncluded"
+        CrossOriginRegistrationSiteNotIncluded = "CrossOriginRegistrationSiteNotIncluded",
+        InvalidPreProvisionedKeyInitiatorMissing = "InvalidPreProvisionedKeyInitiatorMissing",
+        PreProvisionedKeyAccessNotGranted = "PreProvisionedKeyAccessNotGranted",
+        PreProvisionedKeyNotFound = "PreProvisionedKeyNotFound"
     }
     /**
      * Details about a failed device bound session network request.

@@ -53,7 +53,7 @@ export class ConsoleContextSelector {
         return this.#toolbarItem;
     }
     highlightedItemChanged(_from, to, fromElement, toElement) {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         if (to?.frameId) {
             const frame = SDK.FrameManager.FrameManager.instance().getFrame(to.frameId);
             if (frame && !frame.isOutermostFrame()) {

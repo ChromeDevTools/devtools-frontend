@@ -1122,7 +1122,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         return element;
     }
     onfocusout(_event) {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     onmousedown(event) {
         const element = this.treeElementFromEventInternal(event);
@@ -1163,7 +1163,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     }
     onmouseleave(_event) {
         this.setHoverEffect(null);
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     ondragstart(event) {
         const node = event.target;
@@ -1186,7 +1186,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         event.dataTransfer.setData('text/plain', treeElement.listItemElement.textContent.replace(/\u200b/g, ''));
         event.dataTransfer.effectAllowed = 'copyMove';
         this.treeElementBeingDragged = treeElement;
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         return true;
     }
     ondragover(event) {
@@ -1485,7 +1485,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.selectDOMNode(null, false);
         this.imagePreviewPopover.hide();
         delete this.clipboardNodeData;
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         this.updateRecords.clear();
     }
     wireToDOMModel(domModel) {

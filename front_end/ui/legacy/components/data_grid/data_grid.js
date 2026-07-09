@@ -14,7 +14,8 @@ __export(DataGrid_exports, {
   DataGridImpl: () => DataGridImpl,
   DataGridNode: () => DataGridNode,
   DataGridWidget: () => DataGridWidget,
-  Order: () => Order
+  Order: () => Order,
+  dataGridStyles: () => dataGrid_css_default
 });
 import * as Common from "./../../../../core/common/common.js";
 import * as Host from "./../../../../core/host/host.js";
@@ -3827,6 +3828,7 @@ export {
   ShowMoreDataGridNode_exports as ShowMoreDataGridNode,
   SortableDataGrid_exports as SortableDataGrid,
   ViewportDataGrid_exports as ViewportDataGrid,
+  dataGrid_css_default as dataGridStyles,
   ifExpanded
 };
 //# sourceMappingURL=data_grid.js.map

@@ -93,7 +93,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
                 this.#node?.highlight?.();
             },
             onMouseLeave: () => {
-                SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+                SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
             },
             ariaDescription: options.ariaDescription,
         };

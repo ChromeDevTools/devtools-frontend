@@ -178,7 +178,7 @@ export class NavigatorView extends UI.Widget.VBox {
     groupByAuthored;
     groupByDomain;
     groupByFolder;
-    constructor(jslogContext, enableAuthoredGrouping) {
+    constructor(jslogContext, networkProjectManager, enableAuthoredGrouping) {
         super({
             jslog: `${VisualLogging.pane(jslogContext).track({ resize: true })}`,
             useShadowDom: true,
@@ -217,8 +217,8 @@ export class NavigatorView extends UI.Widget.VBox {
         SDK.TargetManager.TargetManager.instance().observeTargets(this);
         this.resetWorkspace(Workspace.Workspace.WorkspaceImpl.instance());
         this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
-        Bindings.NetworkProject.NetworkProjectManager.instance().addEventListener("FrameAttributionAdded" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED */, this.frameAttributionAdded, this);
-        Bindings.NetworkProject.NetworkProjectManager.instance().addEventListener("FrameAttributionRemoved" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED */, this.frameAttributionRemoved, this);
+        networkProjectManager.addEventListener("FrameAttributionAdded" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED */, this.frameAttributionAdded, this);
+        networkProjectManager.addEventListener("FrameAttributionRemoved" /* Bindings.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED */, this.frameAttributionRemoved, this);
     }
     static treeElementOrder(treeElement) {
         if (boostOrderForNode.has(treeElement)) {
@@ -613,7 +613,7 @@ export class NavigatorView extends UI.Widget.VBox {
                 }
             }
             else {
-                SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+                SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
             }
         }
         return frameNode;

@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { html, nothing, render } from '../../../ui/lit/lit.js';
@@ -27,17 +28,6 @@ function truncateTextIfNeeded(text) {
     }
     return text;
 }
-function isPrintable(valueType) {
-    switch (valueType) {
-        case "boolean" /* Protocol.Accessibility.AXValueType.Boolean */:
-        case "booleanOrUndefined" /* Protocol.Accessibility.AXValueType.BooleanOrUndefined */:
-        case "string" /* Protocol.Accessibility.AXValueType.String */:
-        case "number" /* Protocol.Accessibility.AXValueType.Number */:
-            return true;
-        default:
-            return false;
-    }
-}
 export class AccessibilityTreeNode extends HTMLElement {
     #shadow = UI.UIUtils.createShadowRootWithCoreStyles(this, { cssFile: accessibilityTreeNodeStyles });
     #ignored = true;
@@ -56,7 +46,7 @@ export class AccessibilityTreeNode extends HTMLElement {
     async #render() {
         const role = html `<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
         const name = html `"<span class='attribute-value'>${this.#name}</span>"`;
-        const properties = this.#properties.map(({ name, value }) => isPrintable(value.type) ?
+        const properties = this.#properties.map(({ name, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ?
             html ` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` :
             nothing);
         const content = this.#ignored ? html `<span>${i18nString(UIStrings.ignored)}</span>` : html `${role}&nbsp;${name}${properties}`;

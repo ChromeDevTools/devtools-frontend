@@ -13,6 +13,9 @@ export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
         }
         return Root.DevToolsContext.globalInstance().get(NetworkProjectManager);
     }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(NetworkProjectManager);
+    }
 }
 export class NetworkProject {
     static resolveFrame(uiSourceCode, frameId) {

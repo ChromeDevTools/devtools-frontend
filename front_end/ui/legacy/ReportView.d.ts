@@ -35,6 +35,7 @@ export declare class Section extends VBox {
     title(): string;
     getTitleElement(): Element;
     getFieldElement(): HTMLElement;
+    getHeaderElement(): HTMLElement;
     appendFieldWithCustomView(customElement: HTMLElement): void;
     setTitle(title: string, tooltip?: string): void;
     /**

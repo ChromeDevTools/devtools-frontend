@@ -8,21 +8,21 @@ import { Issue } from './Issue.js';
 import { resolveLazyDescription, } from './MarkdownIssueDescription.js';
 const UIStrings = {
     /**
-     * @description Label for the link for SameSiteCookies Issues
+     * @description Label for the link for SameSite cookie issues.
      */
     samesiteCookiesExplained: 'SameSite cookies explained',
     /**
-     * @description Label for the link for Schemeful Same-Site Issues
+     * @description Label for the link for Schemeful Same-Site issues.
      */
-    howSchemefulSamesiteWorks: 'How Schemeful Same-Site Works',
+    howSchemefulSamesiteWorks: 'How Schemeful Same-Site works',
     /**
-     * @description Label for a link for cross-site redirect Issues.
+     * @description Label for a link for cross-site redirect issues.
      */
     fileCrosSiteRedirectBug: 'File a bug',
     /**
-     * @description text to show in Console panel when a third-party cookie is blocked in Chrome.
+     * @description Text to show in Console panel when a third-party cookie is blocked in Chrome.
      */
-    consoleTpcdErrorMessage: 'Third-party cookie is blocked in Chrome either because of Chrome flags or browser configuration.',
+    consoleTpcdErrorMessage: 'Third-party cookie blocked in Chrome due to Chrome flags or browser settings.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

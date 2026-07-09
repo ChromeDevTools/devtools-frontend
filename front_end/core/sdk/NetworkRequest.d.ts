@@ -138,6 +138,7 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     preflightInitiatorRequest(): NetworkRequest | null;
     setPreflightInitiatorRequest(preflightInitiatorRequest: NetworkRequest | null): void;
     isPreflightRequest(): boolean;
+    isPreloadRequest(): boolean;
     redirectDestination(): NetworkRequest | null;
     setRedirectDestination(redirectDestination: NetworkRequest | null): void;
     requestHeaders(): NameValue[];

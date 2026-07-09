@@ -3402,7 +3402,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     if (!registration) {
       throw new Error("Received a message from an unregistered extension");
     }
-    const endpoint = new Extensions2.LanguageExtensionEndpoint.LanguageExtensionEndpoint(registration.allowFileAccess, extensionOrigin, pluginName, { language, symbol_types: symbol_types_array }, port);
+    const endpoint = new Extensions2.LanguageExtensionEndpoint.LanguageExtensionEndpoint(registration.allowFileAccess, extensionOrigin, pluginName, { language, symbol_types: symbol_types_array }, port, pluginManager);
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
   }
@@ -4767,7 +4767,7 @@ var DOMNodeLink = class extends UI13.Widget.Widget {
         this.#node?.highlight?.();
       },
       onMouseLeave: () => {
-        SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance());
       },
       ariaDescription: options.ariaDescription
     };

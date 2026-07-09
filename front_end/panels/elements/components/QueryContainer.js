@@ -39,7 +39,7 @@ export class QueryContainer extends HTMLElement {
         this.dispatchEvent(new QueriedSizeRequestedEvent());
     }
     #onContainerLinkMouseLeave() {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         this.#isContainerLinkHovered = false;
         this.#render();
     }

@@ -8,6 +8,8 @@ export declare class AidaAbortError extends Error {
 }
 export declare class AidaBlockError extends Error {
 }
+export declare class AidaQuotaError extends Error {
+}
 export declare class AidaClient {
     #private;
     static buildConsoleInsightsRequest(input: string): DoConversationRequest;
@@ -25,8 +27,11 @@ export declare function convertToUserTierEnum(userTier: string | undefined): Use
 export declare function getClientFeatureName(feature: ClientFeature): string;
 export declare class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    private constructor();
-    static instance(): HostConfigTracker;
+    static instance({ forceNew }?: {
+        forceNew: boolean;
+    }): HostConfigTracker;
+    dispose(): void;
+    static removeInstance(): void;
     addEventListener(eventType: Events, listener: Common.EventTarget.EventListener<EventTypes, Events>): Common.EventTarget.EventDescriptor<EventTypes>;
     removeEventListener(eventType: Events, listener: Common.EventTarget.EventListener<EventTypes, Events>): void;
     pollAidaAvailability(): Promise<void>;

@@ -36,6 +36,8 @@ export class AidaAbortError extends Error {
 }
 export class AidaBlockError extends Error {
 }
+export class AidaQuotaError extends Error {
+}
 export class AidaClient {
     // Delegate client
     #gcaClient = new GcaClient.GcaClient();
@@ -134,12 +136,22 @@ export class AidaClient {
             debugLog('doConversation failed with error:', JSON.stringify(err));
             if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError && err.response) {
                 const result = err.response;
+                if (result.statusCode === 429) {
+                    stream.fail(new AidaQuotaError('Server responded: quota exceeded'));
+                    return;
+                }
                 if (result.statusCode === 403) {
                     stream.fail(new Error('Server responded: permission denied'));
                     return;
                 }
                 if ('error' in result && result.error) {
-                    stream.fail(new Error(`Cannot send request: ${result.error} ${result.detail || ''}`));
+                    const errorStr = typeof result.error === 'string' ? result.error : '';
+                    const detailStr = typeof result.detail === 'string' ? result.detail : '';
+                    if (errorStr.toLowerCase().includes('quota') || detailStr.toLowerCase().includes('quota')) {
+                        stream.fail(new AidaQuotaError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
+                        return;
+                    }
+                    stream.fail(new Error(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
                     return;
                 }
                 if ('netErrorName' in result && result.netErrorName === 'net::ERR_TIMED_OUT') {
@@ -197,6 +209,9 @@ export class AidaClient {
                     });
                 }
                 else if ('error' in result) {
+                    if (typeof result.error === 'string' && result.error.toLowerCase().includes('quota')) {
+                        throw new AidaQuotaError(`Server responded: ${JSON.stringify(result)}`);
+                    }
                     throw new Error(`Server responded: ${JSON.stringify(result)}`);
                 }
                 else {
@@ -362,18 +377,24 @@ export function getClientFeatureName(feature) {
     }
     return name;
 }
-let hostConfigTrackerInstance;
 export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
     #pollTimer;
     #aidaAvailability;
-    constructor() {
-        super();
-    }
-    static instance() {
-        if (!hostConfigTrackerInstance) {
-            hostConfigTrackerInstance = new HostConfigTracker();
+    static instance({ forceNew } = { forceNew: false }) {
+        if (!Root.DevToolsContext.globalInstance().has(HostConfigTracker) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(HostConfigTracker, new HostConfigTracker());
         }
-        return hostConfigTrackerInstance;
+        return Root.DevToolsContext.globalInstance().get(HostConfigTracker);
+    }
+    dispose() {
+        clearTimeout(this.#pollTimer);
+        this.listeners = undefined;
+    }
+    static removeInstance() {
+        if (Root.DevToolsContext.globalInstance().has(HostConfigTracker)) {
+            Root.DevToolsContext.globalInstance().get(HostConfigTracker).dispose();
+            Root.DevToolsContext.globalInstance().delete(HostConfigTracker);
+        }
     }
     addEventListener(eventType, listener) {
         const isFirst = !this.hasEventListeners(eventType);

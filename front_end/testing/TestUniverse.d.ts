@@ -57,9 +57,12 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get deviceModeModel(): Emulation.DeviceModeModel.DeviceModeModel;
     get domDebuggerManager(): SDK.DOMDebuggerModel.DOMDebuggerManager;
     get domModelUndoStack(): SDK.DOMModel.DOMModelUndoStack;
+    get emulatedDevicesList(): Emulation.EmulatedDevices.EmulatedDevicesList;
     get eventBreakpointsManager(): SDK.EventBreakpointsModel.EventBreakpointsManager;
     get fileManager(): Workspace.FileManager.FileManager;
+    get fileSystemWorkspaceBinding(): Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding;
     get frameManager(): SDK.FrameManager.FrameManager;
+    get hostConfigTracker(): Host.AidaClient.HostConfigTracker;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
     get isolateManager(): SDK.IsolateManager.IsolateManager;
     get logManager(): Logs.LogManager.LogManager;
@@ -69,6 +72,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get multitargetNetworkManager(): SDK.NetworkManager.MultitargetNetworkManager;
     get networkLog(): Logs.NetworkLog.NetworkLog;
     get networkPersistenceManager(): Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
+    get networkProjectManager(): Bindings.NetworkProject.NetworkProjectManager;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;

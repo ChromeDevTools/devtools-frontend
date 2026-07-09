@@ -72,9 +72,13 @@ var PanelUtils = class _PanelUtils {
     if (_PanelUtils.isFailedNetworkRequest(request)) {
       let iconName;
       let title;
-      if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
-        title = i18nString(UIStrings.prefetchFailed, { PH1: type.title() });
+      if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch || request.isPreloadRequest()) {
         iconName = "warning-filled";
+        if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
+          title = i18nString(UIStrings.prefetchFailed, { PH1: type.title() });
+        } else {
+          title = i18nString(UIStrings.requestFailed, { PH1: type.title() });
+        }
       } else {
         title = i18nString(UIStrings.requestFailed, { PH1: type.title() });
         iconName = "cross-circle-filled";

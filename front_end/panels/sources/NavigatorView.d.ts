@@ -1,5 +1,6 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare const Types: {
@@ -32,7 +33,7 @@ export declare class NavigatorView extends UI.Widget.VBox implements SDK.TargetM
     private groupByAuthored?;
     private groupByDomain?;
     private groupByFolder?;
-    constructor(jslogContext: string, enableAuthoredGrouping?: boolean);
+    constructor(jslogContext: string, networkProjectManager: Bindings.NetworkProject.NetworkProjectManager, enableAuthoredGrouping?: boolean);
     private static treeElementOrder;
     static appendSearchItem(contextMenu: UI.ContextMenu.ContextMenu, path: string): void;
     private static treeElementsCompare;

@@ -13,6 +13,7 @@ import * as Common from "./../../core/common/common.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK from "./../../core/sdk/sdk.js";
 var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
+  #targetManager;
   #address = "";
   #filledFields = [];
   #matches = [];
@@ -20,6 +21,7 @@ var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #frameManager;
   constructor(targetManager, frameManager) {
     super();
+    this.#targetManager = targetManager;
     this.#frameManager = frameManager;
     targetManager.addModelListener(SDK.AutofillModel.AutofillModel, "AddressFormFilled", this.#addressFormFilled, this, { scoped: true });
   }
@@ -56,7 +58,7 @@ var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
   clearHighlightedFilledFields() {
-    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(this.#targetManager);
   }
   #processAddressFormFilledData({ addressUi, filledFields }) {
     const concatAddressFields = (addressFields) => addressFields.fields.filter((field) => field.value.length).map((field) => field.value).join(" ");

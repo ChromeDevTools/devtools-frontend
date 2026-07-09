@@ -14413,6 +14413,11 @@ devtools-toolbar {
     }
   }
 
+  & > devtools-link,
+  & > .devtools-link {
+    cursor: pointer;
+  }
+
   .status-buttons {
     padding: 0 var(--sys-size-2);
     gap: var(--sys-size-2);
@@ -20215,6 +20220,9 @@ var Section2 = class extends VBox {
   }
   getFieldElement() {
     return this.fieldList;
+  }
+  getHeaderElement() {
+    return this.headerElement;
   }
   appendFieldWithCustomView(customElement) {
     this.fieldList.append(customElement);

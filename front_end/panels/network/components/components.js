@@ -2119,7 +2119,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
       await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
     } else {
       UI5.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(async () => {
-        await Sources.SourcesNavigator.OverridesNavigatorView.instance().setupNewWorkspace();
+        await Sources.SourcesNavigator.OverridesNavigatorView.setupNewWorkspace();
         await networkPersistenceManager.getOrCreateHeadersUISourceCodeFromUrl(requestUrl);
       });
     }

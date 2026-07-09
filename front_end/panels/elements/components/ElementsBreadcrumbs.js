@@ -101,13 +101,13 @@ export class ElementsBreadcrumbs extends HTMLElement {
         return () => node.highlight();
     }
     #onCrumbMouseLeave() {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     #onCrumbFocus(node) {
         return () => node.highlight();
     }
     #onCrumbBlur() {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     #engageResizeObserver() {
         if (!this.#resizeObserver || this.#isObservingResize === true) {

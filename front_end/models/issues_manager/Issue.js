@@ -6,27 +6,27 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
     /**
-     * @description The kind of an issue (plural) (Issues are categorized into kinds).
+     * @description The kind of an issue (plural, issues are categorized into kinds).
      */
     improvements: 'Improvements',
     /**
-     * @description The kind of an issue (plural) (Issues are categorized into kinds).
+     * @description The kind of an issue (plural, issues are categorized into kinds).
      */
-    pageErrors: 'Page Errors',
+    pageErrors: 'Page errors',
     /**
-     * @description The kind of an issue (plural) (Issues are categorized into kinds).
+     * @description The kind of an issue (plural, issues are categorized into kinds).
      */
-    breakingChanges: 'Breaking Changes',
+    breakingChanges: 'Breaking changes',
     /**
-     * @description A description for a kind of issue we display in the issues tab.
+     * @description A description for a kind of issue we display in the Issues tab.
      */
     pageErrorIssue: 'A page error issue: the page is not working correctly',
     /**
-     * @description A description for a kind of issue we display in the issues tab.
+     * @description A description for a kind of issue we display in the Issues tab.
      */
     breakingChangeIssue: 'A breaking change issue: the page may stop working in an upcoming version of Chrome',
     /**
-     * @description A description for a kind of issue we display in the issues tab.
+     * @description A description for a kind of issue we display in the Issues tab.
      */
     improvementIssue: 'An improvement issue: there is an opportunity to improve the page',
 };

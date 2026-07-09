@@ -1088,19 +1088,19 @@ var LanguageExtensionEndpoint_exports = {};
 __export(LanguageExtensionEndpoint_exports, {
   LanguageExtensionEndpoint: () => LanguageExtensionEndpoint
 });
-import * as Bindings from "./../bindings/bindings.js";
 var LanguageExtensionEndpointImpl = class extends ExtensionEndpoint {
   plugin;
-  constructor(plugin, port) {
+  #pluginManager;
+  constructor(plugin, port, pluginManager) {
     super(port);
     this.plugin = plugin;
+    this.#pluginManager = pluginManager;
   }
   handleEvent({ event }) {
     switch (event) {
       case "unregisteredLanguageExtensionPlugin": {
         this.disconnect();
-        const { pluginManager } = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-        pluginManager.removePlugin(this.plugin);
+        this.#pluginManager.removePlugin(this.plugin);
         break;
       }
     }
@@ -1112,11 +1112,11 @@ var LanguageExtensionEndpoint = class {
   extensionOrigin;
   allowFileAccess;
   name;
-  constructor(allowFileAccess, extensionOrigin, name, supportedScriptTypes, port) {
+  constructor(allowFileAccess, extensionOrigin, name, supportedScriptTypes, port, pluginManager) {
     this.name = name;
     this.extensionOrigin = extensionOrigin;
     this.supportedScriptTypes = supportedScriptTypes;
-    this.endpoint = new LanguageExtensionEndpointImpl(this, port);
+    this.endpoint = new LanguageExtensionEndpointImpl(this, port, pluginManager);
     this.allowFileAccess = allowFileAccess;
   }
   canAccessURL(url) {

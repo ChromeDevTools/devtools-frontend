@@ -1,4 +1,4 @@
-import * as Protocol from '../../../generated/protocol.js';
+import type * as Protocol from '../../../generated/protocol.js';
 export interface AccessibilityTreeNodeData {
     ignored: boolean;
     name: string;

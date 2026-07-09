@@ -41,7 +41,7 @@ const WALKTHROUGH_SIDEBAR_BREAKPOINT = 700;
 const WALKTHROUGH_SIDEBAR_INITIAL_WIDTH = 400;
 const UIStrings = {
     /**
-     * @description AI assistance UI text creating a new chat.
+     * @description AI assistance UI text for creating a new chat.
      */
     newChat: 'New chat',
     /**
@@ -49,11 +49,11 @@ const UIStrings = {
      */
     help: 'Help',
     /**
-     * @description AI assistant UI tooltip text for the settings button (gear icon).
+     * @description AI assistance UI tooltip text for the settings button (gear icon).
      */
     settings: 'Settings',
     /**
-     * @description AI assistant UI tooltip sending feedback.
+     * @description AI assistance UI tooltip for sending feedback.
      */
     sendFeedback: 'Send feedback',
     /**
@@ -65,33 +65,33 @@ const UIStrings = {
      */
     chatDeleted: 'Chat deleted',
     /**
-     * @description AI assistance UI text creating selecting a history entry.
+     * @description AI assistance UI text for selecting a history entry.
      */
     history: 'History',
     /**
-     * @description AI assistance UI text deleting the current chat session from local history.
+     * @description AI assistance UI text for deleting the current chat session from local history.
      */
     deleteChat: 'Delete local chat',
     /**
-     * @description AI assistance UI text that deletes all local history entries.
+     * @description AI assistance UI text for deleting all local history entries.
      */
     clearChatHistory: 'Clear local chats',
     /**
-     *@description AI assistance UI text for the export conversation button.
+     * @description AI assistance UI text for the export conversation button.
      */
     exportConversation: 'Export conversation',
     /**
-     * @description AI assistance UI text explains that he user had no pas conversations.
+     * @description AI assistance UI text explaining that the user has no past conversations.
      */
     noPastConversations: 'No past conversations',
     /**
-     * @description Placeholder text for an inactive text field. When active, it's used for the user's input to the GenAI assistance.
+     * @description Placeholder text for an inactive text field. When active, it’s used for the user’s input to AI assistance.
      */
     followTheSteps: 'Follow the steps above to ask a question',
     /**
      * @description Disclaimer text right after the chat input.
      */
-    inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
+    inputDisclaimerForEmptyState: 'This is an experimental AI feature and won’t always get it right.',
     /**
      * @description The message shown in a toast when the response is copied to the clipboard.
      */
@@ -184,7 +184,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Disclaimer text right after the chat input.
      */
-    inputDisclaimerForFile: 'Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+    inputDisclaimerForFile: 'Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
     /**
      * @description Disclaimer text right after the chat input.
      */
@@ -192,7 +192,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Disclaimer text right after the chat input.
      */
-    inputDisclaimerForPerformance: 'Chat messages and trace data from your performance trace are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+    inputDisclaimerForPerformance: 'Chat messages and trace data from your performance trace are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
     /**
      * @description Disclaimer text right after the chat input.
      */
@@ -871,7 +871,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             isReadOnly: false,
             aidaClient: this.#aidaClient,
             changeManager: this.#changeManager,
-            isExternal: false,
             performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
             onInspectElement: this.#handleInspectElement.bind(this),
             networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -896,7 +895,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         isReadOnly: false,
                         aidaClient: this.#aidaClient,
                         changeManager: this.#changeManager,
-                        isExternal: false,
                         performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
                         onInspectElement: this.#handleInspectElement.bind(this),
                         networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -1310,7 +1308,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 isReadOnly: false,
                 aidaClient: this.#aidaClient,
                 changeManager: this.#changeManager,
-                isExternal: false,
                 performanceRecordAndReload: this.#handlePerformanceRecordAndReload.bind(this),
                 onInspectElement: this.#handleInspectElement.bind(this),
                 networkTimeCalculator: NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator(),
@@ -1334,14 +1331,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
     }
     #populateHistoryMenu(contextMenu) {
-        const historicalConversations = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory().map(serializedConversation => AiAssistanceModel.AiConversation.AiConversation.fromSerializedConversation(serializedConversation));
-        for (const conversation of historicalConversations.reverse()) {
-            if (conversation.isEmpty || !conversation.title) {
+        const history = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().getHistory();
+        const activeId = this.#conversation?.id;
+        for (const serialized of [...history].reverse()) {
+            const isConversationEmpty = serialized.history.length === 0;
+            if (isConversationEmpty) {
                 continue;
             }
-            contextMenu.defaultSection().appendCheckboxItem(conversation.title, () => {
+            const title = AiAssistanceModel.AiConversation.AiConversation.titleForSerialized(serialized);
+            if (!title) {
+                continue;
+            }
+            contextMenu.defaultSection().appendCheckboxItem(title, () => {
+                const conversation = AiAssistanceModel.AiConversation.AiConversation.fromSerializedConversation(serialized);
                 void this.#openHistoricConversation(conversation);
-            }, { checked: (this.#conversation?.id === conversation.id), jslogContext: 'freestyler.history-item' });
+            }, { checked: activeId === serialized.id, jslogContext: 'freestyler.history-item' });
         }
         const historyEmpty = contextMenu.defaultSection().items.length === 0;
         if (historyEmpty) {

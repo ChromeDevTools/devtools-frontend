@@ -5,13 +5,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import { Issue } from './Issue.js';
 const UIStrings = {
     /**
-     * @description Title for Partitioning BlobURL explainer url link.
+     * @description Title for Partitioning BlobURL explainer URL link.
      */
     partitioningBlobURL: 'Partitioning BlobURL',
     /**
-     * @description Title for Chrome Status Entry url link.
+     * @description Title for Chrome Status entry URL link.
      */
-    chromeStatusEntry: 'Chrome Status Entry'
+    chromeStatusEntry: 'Chrome Status entry'
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/PartitioningBlobURLIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

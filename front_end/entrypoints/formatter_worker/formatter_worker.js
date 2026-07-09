@@ -4480,10 +4480,11 @@ var HTMLFormatter = class {
     this.#builder.addNewLine();
   }
   #formatToken(element, token) {
-    if (Platform2.StringUtilities.isWhitespace(token.value)) {
+    const isBodyToken = Boolean(element.openTag && !element.openTag.selfClosingTag && element.closeTag && element.openTag.endOffset <= token.startOffset && token.startOffset < element.closeTag.startOffset);
+    if (Platform2.StringUtilities.isWhitespace(token.value) && (!isBodyToken || element.children.length > 0 || !element.hasContent && !element.hasComments && /[\r\n]/.test(token.value))) {
       return;
     }
-    if (hasTokenInSet(token.type, "comment") || hasTokenInSet(token.type, "meta")) {
+    if ((hasTokenInSet(token.type, "comment") || hasTokenInSet(token.type, "meta")) && (!isBodyToken || element.children.length > 0)) {
       this.#builder.addNewLine();
       this.#builder.addToken(token.value.trim(), token.startOffset);
       this.#builder.addNewLine();
@@ -4492,7 +4493,6 @@ var HTMLFormatter = class {
     if (!element.openTag || !element.closeTag) {
       return;
     }
-    const isBodyToken = element.openTag.endOffset <= token.startOffset && token.startOffset < element.closeTag.startOffset;
     if (isBodyToken && element.name === "style") {
       this.#builder.addNewLine();
       this.#builder.increaseNestingLevel();
@@ -4609,6 +4609,12 @@ var HTMLModel = class {
       this.#tokens.push(token);
       this.#updateDOM(token);
       const element = this.#stack[this.#stack.length - 1];
+      if (element && (hasTokenInSet(token.type, "comment") || hasTokenInSet(token.type, "meta"))) {
+        element.hasComments = true;
+      }
+      if (element && !Platform2.StringUtilities.isWhitespace(token.value) && !hasTokenInSet(token.type, "tag") && !hasTokenInSet(token.type, "attribute") && !hasTokenInSet(token.type, "bracket") && !hasTokenInSet(token.type, "comment") && !hasTokenInSet(token.type, "meta")) {
+        element.hasContent = true;
+      }
       if (element && (element.name === "script" || element.name === "style") && element.openTag?.endOffset === lastOffset) {
         return AbortTokenization;
       }
@@ -4891,6 +4897,8 @@ var FormatterElement = class {
   parent = null;
   openTag = null;
   closeTag = null;
+  hasComments = false;
+  hasContent = false;
   constructor(name) {
     this.name = name;
   }

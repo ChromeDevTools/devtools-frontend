@@ -574,9 +574,9 @@ var _a;
 var StackTraceModel = class extends SDK.SDKModel.SDKModel {
   #trie = new Trie();
   #mutex = new Common3.Mutex.Mutex();
-  /** @returns the {@link StackTraceModel} for the target, or the model for the primaryPageTarget when passing null/undefined */
+  /** @returns the {@link StackTraceModel} for the target. Throws if the target or its model cannot be found. */
   static #modelForTarget(target) {
-    const model = (target ?? SDK.TargetManager.TargetManager.instance().primaryPageTarget())?.model(_a);
+    const model = target?.model(_a);
     if (!model) {
       throw new Error("Unable to find StackTraceModel");
     }
@@ -666,7 +666,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
         if (asyncStackTrace.callFrames.length === 0) {
           continue;
         }
-        const model = _a.#modelForTarget(target);
+        const model = _a.#modelForTarget(target ?? this.target().targetManager().primaryPageTarget());
         const targetDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const asyncFrames = asyncStackTrace.callFrames.map((frame) => {
           const isWasm = targetDebuggerModel?.isWasm(frame.scriptId) ?? false;
@@ -923,6 +923,9 @@ var NetworkProjectManager = class _NetworkProjectManager extends Common4.ObjectW
       Root.DevToolsContext.globalInstance().set(_NetworkProjectManager, new _NetworkProjectManager());
     }
     return Root.DevToolsContext.globalInstance().get(_NetworkProjectManager);
+  }
+  static removeInstance() {
+    Root.DevToolsContext.globalInstance().delete(_NetworkProjectManager);
   }
 };
 var NetworkProject = class _NetworkProject {
@@ -4736,7 +4739,7 @@ var PresentationConsoleMessageManager = class {
   #sourceFrameMessageManager = new PresentationSourceFrameMessageManager();
   constructor() {
     SDK13.TargetManager.TargetManager.instance().addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
-    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered().forEach(this.consoleMessageAdded, this);
+    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(SDK13.TargetManager.TargetManager.instance()).forEach(this.consoleMessageAdded, this);
     SDK13.TargetManager.TargetManager.instance().addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
   }
   consoleMessageAdded(consoleMessage) {

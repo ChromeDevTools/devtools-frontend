@@ -49,17 +49,17 @@ async function makeHttpRequest(request) {
     return response;
 }
 const SERVICE_NAME = 'gdpService';
-let gdpClientInstance = null;
 export class GdpClient {
     #cachedProfilePromise;
     #cachedEligibilityPromise;
-    constructor() {
-    }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!gdpClientInstance || forceNew) {
-            gdpClientInstance = new GdpClient();
+        if (!Root.DevToolsContext.globalInstance().has(GdpClient) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(GdpClient, new GdpClient());
         }
-        return gdpClientInstance;
+        return Root.DevToolsContext.globalInstance().get(GdpClient);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(GdpClient);
     }
     /**
      * Fetches the user's GDP profile and eligibility status.

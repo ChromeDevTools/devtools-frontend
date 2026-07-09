@@ -98,9 +98,9 @@ export class ScreenCaptureModel extends SDKModel {
             default:
                 throw new Error('Unexpected or unspecified screnshotMode');
         }
-        await OverlayModel.muteHighlight();
+        await OverlayModel.muteHighlight(this.target().targetManager());
         const result = await this.#agent.invoke_captureScreenshot(properties);
-        await OverlayModel.unmuteHighlight();
+        await OverlayModel.unmuteHighlight(this.target().targetManager());
         return result.data;
     }
     screencastFrame({ data, metadata, sessionId }) {

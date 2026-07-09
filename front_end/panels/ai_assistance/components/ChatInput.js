@@ -22,7 +22,7 @@ const UIStrings = {
      */
     inputTextAriaDescription: 'You can also use one of the suggested prompts above to start your conversation',
     /**
-     * @description Label added to the button that reveals the selected context item in DevTools
+     * @description Label added to the button that reveals the selected context item in DevTools.
      */
     revealContextDescription: 'Reveal the selected context item in DevTools',
     /**
@@ -65,7 +65,7 @@ const UIStringsNotTranslate = {
     /**
      * @description Text displayed when the chat input is disabled due to reading past conversation.
      */
-    pastConversation: 'You\'re viewing a past conversation.',
+    pastConversation: 'You’re viewing a past conversation.',
     /**
      * @description Message displayed in toast in case of any failures while taking a screenshot of the page.
      */

@@ -3577,7 +3577,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
   groupByAuthored;
   groupByDomain;
   groupByFolder;
-  constructor(jslogContext, enableAuthoredGrouping) {
+  constructor(jslogContext, networkProjectManager, enableAuthoredGrouping) {
     super({
       jslog: `${VisualLogging5.pane(jslogContext).track({ resize: true })}`,
       useShadowDom: true
@@ -3618,8 +3618,8 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
     SDK5.TargetManager.TargetManager.instance().observeTargets(this);
     this.resetWorkspace(Workspace6.Workspace.WorkspaceImpl.instance());
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
-    Bindings3.NetworkProject.NetworkProjectManager.instance().addEventListener("FrameAttributionAdded", this.frameAttributionAdded, this);
-    Bindings3.NetworkProject.NetworkProjectManager.instance().addEventListener("FrameAttributionRemoved", this.frameAttributionRemoved, this);
+    networkProjectManager.addEventListener("FrameAttributionAdded", this.frameAttributionAdded, this);
+    networkProjectManager.addEventListener("FrameAttributionRemoved", this.frameAttributionRemoved, this);
   }
   static treeElementOrder(treeElement) {
     if (boostOrderForNode.has(treeElement)) {
@@ -4000,7 +4000,7 @@ var NavigatorView = class _NavigatorView extends UI8.Widget.VBox {
           overlayModel.highlightFrame(frame.id);
         }
       } else {
-        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
       }
     }
     return frameNode;
@@ -13761,17 +13761,17 @@ var str_25 = i18n49.i18n.registerUIStrings("panels/sources/SourcesNavigator.ts",
 var i18nString24 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var networkNavigatorViewInstance;
 var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
-  constructor() {
-    super("navigator-network", true);
+  constructor(networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance()) {
+    super("navigator-network", networkProjectManager, true);
     this.registerRequiredCSS(sourcesNavigator_css_default);
     SDK13.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
     UI25.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
     SDK13.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
   static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
+    const { forceNew, networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance() } = opts;
     if (!networkNavigatorViewInstance || forceNew) {
-      networkNavigatorViewInstance = new _NetworkNavigatorView();
+      networkNavigatorViewInstance = new _NetworkNavigatorView(networkProjectManager);
     }
     return networkNavigatorViewInstance;
   }
@@ -13817,8 +13817,8 @@ var FilesNavigatorView = class extends NavigatorView {
   #automaticFileSystemManager = Persistence18.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
   #eventListeners = [];
   #automaticFileSystemNudge;
-  constructor() {
-    super("navigator-files");
+  constructor(networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance()) {
+    super("navigator-files", networkProjectManager);
     this.registerRequiredCSS(sourcesNavigator_css_default);
     const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noWorkspace), i18nString24(UIStrings25.explainWorkspace));
     this.setPlaceholder(placeholder2);
@@ -13875,8 +13875,8 @@ var FilesNavigatorView = class extends NavigatorView {
 var overridesNavigatorViewInstance;
 var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView {
   toolbar;
-  constructor() {
-    super("navigator-overrides");
+  constructor(networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance()) {
+    super("navigator-overrides", networkProjectManager);
     const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noLocalOverrides), i18nString24(UIStrings25.explainLocalOverrides));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/overrides/";
@@ -13889,9 +13889,9 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.updateProjectAndUI();
   }
   static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
+    const { forceNew, networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance() } = opts;
     if (!overridesNavigatorViewInstance || forceNew) {
-      overridesNavigatorViewInstance = new _OverridesNavigatorView();
+      overridesNavigatorViewInstance = new _OverridesNavigatorView(networkProjectManager);
     }
     return overridesNavigatorViewInstance;
   }
@@ -13928,11 +13928,11 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     const title = i18nString24(UIStrings25.selectFolderForOverrides);
     const setupButton = new UI25.Toolbar.ToolbarButton(title, "plus", title);
     setupButton.addEventListener("Click", (_event) => {
-      void this.setupNewWorkspace();
+      void _OverridesNavigatorView.setupNewWorkspace();
     }, this);
     this.toolbar.appendToolbarItem(setupButton);
   }
-  async setupNewWorkspace() {
+  static async setupNewWorkspace() {
     const fileSystem = await Persistence18.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem("overrides");
     if (!fileSystem) {
       return;
@@ -13948,8 +13948,8 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   }
 };
 var ContentScriptsNavigatorView = class extends NavigatorView {
-  constructor() {
-    super("navigator-content-scripts");
+  constructor(networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance()) {
+    super("navigator-content-scripts", networkProjectManager);
     const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noContentScripts), i18nString24(UIStrings25.explainContentScripts));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/extensions/content_scripts";
@@ -13959,8 +13959,8 @@ var ContentScriptsNavigatorView = class extends NavigatorView {
   }
 };
 var SnippetsNavigatorView = class extends NavigatorView {
-  constructor() {
-    super("navigator-snippets");
+  constructor(networkProjectManager = Bindings11.NetworkProject.NetworkProjectManager.instance()) {
+    super("navigator-snippets", networkProjectManager);
     const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noSnippets), i18nString24(UIStrings25.explainSnippets));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/javascript/snippets/";

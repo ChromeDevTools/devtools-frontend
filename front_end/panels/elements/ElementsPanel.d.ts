@@ -70,7 +70,7 @@ export declare class ElementsPanel extends UI.Panel.Panel implements UI.Searchab
     modelAdded(domModel: SDK.DOMModel.DOMModel): void;
     modelRemoved(domModel: SDK.DOMModel.DOMModel): void;
     private handleNodeInserted;
-    private targetNameChanged;
+    private onPrimaryPageChanged;
     private updateTreeOutlineVisibleWidth;
     focus(): void;
     searchableView(): UI.SearchableView.SearchableView;

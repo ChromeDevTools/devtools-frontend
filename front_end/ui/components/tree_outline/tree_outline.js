@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // gen/front_end/ui/components/tree_outline/TreeOutline.js
 var TreeOutline_exports = {};
 __export(TreeOutline_exports, {
+  ItemContextMenuEvent: () => ItemContextMenuEvent,
   ItemMouseOutEvent: () => ItemMouseOutEvent,
   ItemMouseOverEvent: () => ItemMouseOverEvent,
   ItemSelectedEvent: () => ItemSelectedEvent,
@@ -370,6 +371,14 @@ var ItemMouseOverEvent = class _ItemMouseOverEvent extends Event {
     this.data = { node };
   }
 };
+var ItemContextMenuEvent = class _ItemContextMenuEvent extends Event {
+  static eventName = "itemcontextmenu";
+  data;
+  constructor(node, originalEvent) {
+    super(_ItemContextMenuEvent.eventName, { bubbles: true, composed: true });
+    this.data = { node, originalEvent };
+  }
+};
 var ItemMouseOutEvent = class _ItemMouseOutEvent extends Event {
   static eventName = "itemmouseout";
   data;
@@ -582,14 +591,26 @@ var TreeOutline = class extends HTMLElement {
     }
     void this.#focusTreeNode(domNode);
   }
+  #onContextMenu(event, node) {
+    if (!node) {
+      return;
+    }
+    const innerEvent = new ItemContextMenuEvent(node, event);
+    this.dispatchEvent(innerEvent);
+    if (innerEvent.defaultPrevented) {
+      event.stopPropagation();
+      event.preventDefault();
+      void this.#focusTreeNode(event.currentTarget?.parentElement);
+    }
+  }
   async #focusTreeNode(domNode) {
     const treeNode = this.#domNodeToTreeNodeMap.get(domNode);
     if (!treeNode) {
       return;
     }
     this.#selectedTreeNode = treeNode;
-    await this.#render();
     this.dispatchEvent(new ItemSelectedEvent(treeNode));
+    await this.#render();
     void RenderCoordinator.write("DOMNode focus", () => {
       domNode.focus();
     });
@@ -707,6 +728,7 @@ var TreeOutline = class extends HTMLElement {
     })}
       >
         <span class="arrow-and-key-wrapper"
+          @contextmenu=${(event) => this.#onContextMenu(event, node)}
           @mouseover=${() => {
       this.dispatchEvent(new ItemMouseOverEvent(node));
     }}

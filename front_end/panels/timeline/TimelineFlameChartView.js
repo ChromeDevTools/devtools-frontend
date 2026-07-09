@@ -1165,7 +1165,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
         ModificationsManager.activeManager()?.updateAnnotation(this.#linkSelectionAnnotation);
     }
     onEntryHovered(commonEvent) {
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         const entryIndex = commonEvent.data;
         const event = this.mainDataProvider.eventByIndex(entryIndex);
         if (!event || !this.#parsedTrace) {

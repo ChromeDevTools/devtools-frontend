@@ -2736,7 +2736,7 @@
     "message": "(index)"
   },
   "models/workspace/UISourceCode.ts | thisFileWasChangedExternally": {
-    "message": "This file was changed externally. Would you like to reload it?"
+    "message": "This file was changed externally. Reload?"
   },
   "panels/accessibility/accessibility-meta.ts | accessibility": {
     "message": "Accessibility"
@@ -6400,6 +6400,9 @@
   },
   "panels/application/WebMCPView.ts | filter": {
     "message": "Filter"
+  },
+  "panels/application/WebMCPView.ts | flags": {
+    "message": "Flags"
   },
   "panels/application/WebMCPView.ts | frame": {
     "message": "Frame"
@@ -11156,6 +11159,9 @@
   "panels/network/NetworkLogViewColumns.ts | endTime": {
     "message": "End time"
   },
+  "panels/network/NetworkLogViewColumns.ts | executionContext": {
+    "message": "Execution context"
+  },
   "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
     "message": "Has overrides"
   },
@@ -11892,13 +11898,13 @@
     "message": "CPU usage"
   },
   "panels/performance_monitor/PerformanceMonitor.ts | documentFrames": {
-    "message": "Document Frames"
+    "message": "Document frames"
   },
   "panels/performance_monitor/PerformanceMonitor.ts | documents": {
     "message": "Documents"
   },
   "panels/performance_monitor/PerformanceMonitor.ts | domNodes": {
-    "message": "DOM Nodes"
+    "message": "DOM nodes"
   },
   "panels/performance_monitor/PerformanceMonitor.ts | graphsDisplayingARealtimeViewOf": {
     "message": "Graphs displaying a real-time view of performance metrics"
@@ -13113,10 +13119,10 @@
     "message": "The security of this page is unknown."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecure": {
-    "message": "This page is not secure."
+    "message": "This page isn’t secure."
   },
   "panels/security/SecurityModel.ts | thisPageIsNotSecureBrokenHttps": {
-    "message": "This page is not secure (broken HTTPS)."
+    "message": "This page isn’t secure (broken HTTPS)."
   },
   "panels/security/SecurityModel.ts | thisPageIsSecureValidHttps": {
     "message": "This page is secure (valid HTTPS)."
@@ -13173,10 +13179,10 @@
     "message": "Hide full details"
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownIn": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | ifYouBelieveThisIsShownInErrorSafety": {
-    "message": "If you believe this is shown in error please visit https://g.co/chrome/lookalike-warnings."
+    "message": "If you believe this is shown in error, visit https://g.co/chrome/lookalike-warnings."
   },
   "panels/security/SecurityPanel.ts | info": {
     "message": "Info"
@@ -13302,7 +13308,7 @@
     "message": "The certificate chain for this site contains a certificate signed using SHA-1."
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteDoesNot": {
-    "message": "The certificate for this site does not contain a Subject Alternative Name extension containing a domain name or IP address."
+    "message": "The certificate for this site doesn’t contain a Subject Alternative Name extension containing a domain name or IP address."
   },
   "panels/security/SecurityPanel.ts | theCertificateForThisSiteExpires": {
     "message": "The certificate for this site expires in less than 48 hours and needs to be renewed."
@@ -13329,7 +13335,7 @@
     "message": "This page has a non-HTTPS secure origin."
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "This page includes a form with a non-secure \"action\" attribute."
+    "message": "This page includes a form with a non-secure “action” attribute."
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
     "message": "This page includes HTTP resources."
@@ -13350,10 +13356,10 @@
     "message": "This page is suspicious (flagged by Chrome)."
   },
   "panels/security/SecurityPanel.ts | thisRequestCompliesWithChromes": {
-    "message": "This request complies with Chrome's Certificate Transparency policy."
+    "message": "This request complies with Chrome’s Certificate Transparency policy."
   },
   "panels/security/SecurityPanel.ts | thisRequestDoesNotComplyWith": {
-    "message": "This request does not comply with Chrome's Certificate Transparency policy."
+    "message": "This request doesn’t comply with Chrome’s Certificate Transparency policy."
   },
   "panels/security/SecurityPanel.ts | thisResponseWasLoadedFromCache": {
     "message": "This response was loaded from cache. Some security details might be missing."
@@ -13362,10 +13368,10 @@
     "message": "This site is missing a valid, trusted certificate ({PH1})."
   },
   "panels/security/SecurityPanel.ts | thisSitesHostnameLooksSimilarToP": {
-    "message": "This site's hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name."
+    "message": "This site’s hostname looks similar to {PH1}. Attackers sometimes mimic sites by making small, hard-to-see changes to the domain name."
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
-    "message": "To check this page's status, visit g.co/safebrowsingstatus."
+    "message": "To check this page’s status, visit g.co/safebrowsingstatus."
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "unknown"
@@ -13386,10 +13392,10 @@
     "message": "View certificate"
   },
   "panels/security/SecurityPanel.ts | viewDRequestsInNetworkPanel": {
-    "message": "{n, plural, =1 {View # request in Network Panel} other {View # requests in Network Panel}}"
+    "message": "{n, plural, =1 {View # request in Network panel} other {View # requests in Network panel}}"
   },
   "panels/security/SecurityPanel.ts | viewRequestsInNetworkPanel": {
-    "message": "View requests in Network Panel"
+    "message": "View requests in Network panel"
   },
   "panels/security/SecurityPanel.ts | youHaveRecentlyAllowedContent": {
     "message": "You have recently allowed content loaded with certificate errors (such as scripts or iframes) to run on this site."
@@ -13398,7 +13404,7 @@
     "message": "You have recently allowed non-secure content (such as scripts or iframes) to run on this site."
   },
   "panels/security/SecurityPanel.ts | yourConnectionToThisOriginIsNot": {
-    "message": "Your connection to this origin is not secure."
+    "message": "Your connection to this origin isn’t secure."
   },
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Your page requested non-secure resources that were blocked."
@@ -13644,7 +13650,7 @@
     "message": "Debug styling, network, performance, source code, accessibility and storage issues with DevTools AI assistance"
   },
   "panels/settings/AISettingsTab.ts | aiAssistanceWhenOnItem2V2": {
-    "message": "Follow the agent's reasoning step-by-step and quickly jump to the relevant source data"
+    "message": "Follow the agent’s reasoning step-by-step and quickly jump to the relevant source data"
   },
   "panels/settings/AISettingsTab.ts | asYouTypeCodeSuggestions": {
     "message": "As you type in the Console or Sources panel, you’ll get code suggestions. Press Tab to accept one."
@@ -13701,7 +13707,7 @@
     "message": "Understand CSS styles with AI-powered insights"
   },
   "panels/settings/AISettingsTab.ts | explainStylingAndNetworkRequest": {
-    "message": "Understand CSS styles, and network activity with AI-powered insights"
+    "message": "Understand CSS styles and network activity with AI-powered insights"
   },
   "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
     "message": "Understand CSS styles, network activity, and file origins with AI-powered insights"
@@ -13734,7 +13740,7 @@
     "message": "Get help with understanding CSS styles"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStylingAndNetworkRequest": {
-    "message": "Get help with understanding CSS styles, and network requests"
+    "message": "Get help with understanding CSS styles and network requests"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
     "message": "Get help with understanding CSS styles, network requests, and files"
@@ -13803,7 +13809,7 @@
     "message": "Unknown plan"
   },
   "panels/settings/components/SyncSection.ts | notSignedIn": {
-    "message": "You're not signed into Chrome."
+    "message": "You’re not signed into Chrome."
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "You need to first enable saving Chrome settings in your Google account."
@@ -13839,7 +13845,7 @@
     "message": "URL"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addBrand": {
-    "message": "Add Brand"
+    "message": "Add brand"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | addedBrand": {
     "message": "Added brand row"
@@ -13893,10 +13899,10 @@
     "message": "Mobile"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsGroupAriaLabel": {
-    "message": "Available Form Factors"
+    "message": "Available form factors"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorsTitle": {
-    "message": "Form Factors (Sec-CH-UA-Form-Factors)"
+    "message": "Form factors (Sec-CH-UA-Form-Factors)"
   },
   "panels/settings/emulation/components/UserAgentClientHintsForm.ts | formFactorTablet": {
     "message": "Tablet"
@@ -13968,10 +13974,10 @@
     "message": "Device {PH1} successfully added/updated."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceName": {
-    "message": "Device Name"
+    "message": "Device name"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameCannotBeEmpty": {
-    "message": "Device name cannot be empty."
+    "message": "Device name can’t be empty."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | deviceNameMustBeLessThanS": {
     "message": "Device name must be less than {PH1} characters."
@@ -13986,7 +13992,7 @@
     "message": "User agent string"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentStringCannotBeEmpty": {
-    "message": "User agent string cannot be empty."
+    "message": "User agent string can’t be empty."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentType": {
     "message": "User agent type"
@@ -14001,7 +14007,7 @@
     "message": "Show Devices"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
-    "message": "Add a regular expression rule for the script's URL"
+    "message": "Add a regular expression rule for the script’s URL"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
     "message": "Add regex rule"
@@ -14040,13 +14046,13 @@
     "message": "Learn more"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Add a regular expression rule for the script's URL"
+    "message": "Add a regular expression rule for the script’s URL"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
     "message": "Rule already exists"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "Rule can't be empty"
+    "message": "Rule can’t be empty"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Rule must be a valid regular expression"
@@ -14076,7 +14082,7 @@
     "message": "No shortcut for action"
   },
   "panels/settings/KeybindsSettingsTab.ts | recordingKeys": {
-    "message": "Recoding keys"
+    "message": "Recording keys"
   },
   "panels/settings/KeybindsSettingsTab.ts | removeShortcut": {
     "message": "Remove shortcut"
@@ -14106,7 +14112,7 @@
     "message": "Shortcuts"
   },
   "panels/settings/KeybindsSettingsTab.ts | shortcutsCannotContainOnly": {
-    "message": "Shortcuts cannot contain only modifier keys."
+    "message": "Shortcuts can’t contain only modifier keys."
   },
   "panels/settings/KeybindsSettingsTab.ts | thisShortcutIsInUseByS": {
     "message": "This shortcut is in use by {PH1}: {PH2}."
@@ -17755,6 +17761,9 @@
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
     "message": "Open in Memory inspector panel"
+  },
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAll": {
+    "message": "Show all"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Show all {PH1}"

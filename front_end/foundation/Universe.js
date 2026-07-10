@@ -32,6 +32,8 @@ export class Universe {
         context.set(Common.Console.Console, console);
         const hostConfigTracker = new Host.AidaClient.HostConfigTracker();
         context.set(Host.AidaClient.HostConfigTracker, hostConfigTracker);
+        const gdpClient = new Host.GdpClient.GdpClient();
+        context.set(Host.GdpClient.GdpClient, gdpClient);
         // TODO(crbug.com/458180550): Store instance only on this.context instead.
         //                            For now the global is required as not everything in foundation cleanly
         //                            reads from the scoped `Settings` instance.
@@ -144,6 +146,9 @@ export class Universe {
     }
     get fileManager() {
         return this.context.get(Workspace.FileManager.FileManager);
+    }
+    get gdpClient() {
+        return this.context.get(Host.GdpClient.GdpClient);
     }
     get hostConfigTracker() {
         return this.context.get(Host.AidaClient.HostConfigTracker);

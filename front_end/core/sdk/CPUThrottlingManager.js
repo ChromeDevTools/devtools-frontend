@@ -14,12 +14,16 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper {
         super();
         this.#targetManager = targetManager;
         this.#cpuThrottlingRate = 1; // No throttling
-        targetManager.observeModels(EmulationModel, this);
+    }
+    initialize() {
+        this.#targetManager.observeModels(EmulationModel, this);
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew } = opts;
         if (!Root.DevToolsContext.globalInstance().has(CPUThrottlingManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(CPUThrottlingManager, new CPUThrottlingManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance()));
+            const manager = new CPUThrottlingManager(opts.settings ?? Common.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance());
+            manager.initialize();
+            Root.DevToolsContext.globalInstance().set(CPUThrottlingManager, manager);
         }
         return Root.DevToolsContext.globalInstance().get(CPUThrottlingManager);
     }

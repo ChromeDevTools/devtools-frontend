@@ -67,6 +67,7 @@ __export(ObjectPropertiesSection_exports, {
   isWasmObject: () => isWasmObject,
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
   objectValueStyles: () => objectValue_css_default,
+  populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
   sortPropertiesAlphabeticallySetting: () => sortPropertiesAlphabeticallySetting
 });
 import * as Common from "./../../../../core/common/common.js";
@@ -665,6 +666,10 @@ var UIStrings2 = {
    * @example {50} PH1
    */
   showAllD: "Show all {PH1}",
+  /**
+   * @description Show all properties including those with null or undefined values
+   */
+  showAll: "Show all",
   /**
    * @description Value element text content in Object Properties Section. Shown when the developer is
    * viewing a variable in the Scope view, whose value is not available (i.e. because it was optimized
@@ -1653,6 +1658,27 @@ var ObjectPropertiesSectionsTreeOutline = class extends UI2.TreeOutline.TreeOutl
     this.contentElement.classList.add("object-properties-section");
   }
 };
+function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, collapseChildren, sortPropertiesAlphabetically, onShowAllToggled) {
+  contextMenu.appendApplicableItems(object.object);
+  if (object.object instanceof SDK3.RemoteObject.LocalJSONObject) {
+    const { value } = object.object;
+    const propertyValue = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
+    const copyValueHandler = () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);
+    };
+    contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copyValue), copyValueHandler, { jslogContext: "copy-value" });
+  }
+  contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), expandRecursively, { jslogContext: "expand-recursively" });
+  contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), collapseChildren, { jslogContext: "collapse-children" });
+  if (!object.isWasm) {
+    contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.sortPropertiesAlphabetically), sortPropertiesAlphabetically, {
+      checked: object.sortPropertiesAlphabetically,
+      jslogContext: "sort-properties-alphabetically"
+    });
+  }
+  contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: "show-all" });
+}
 var RootElement = class extends UI2.TreeOutline.TreeElement {
   object;
   linkifier;
@@ -1691,29 +1717,11 @@ var RootElement = class extends UI2.TreeOutline.TreeElement {
   }
   onContextMenu(event) {
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    contextMenu.appendApplicableItems(this.object.object);
-    if (this.object instanceof SDK3.RemoteObject.LocalJSONObject) {
-      const { value } = this.object;
-      const propertyValue = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
-      const copyValueHandler = () => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);
-      };
-      contextMenu.clipboardSection().appendItem(i18nString2(UIStrings2.copyValue), copyValueHandler, { jslogContext: "copy-value" });
-    }
-    contextMenu.viewSection().appendItem(i18nString2(UIStrings2.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: "expand-recursively" });
-    contextMenu.viewSection().appendItem(i18nString2(UIStrings2.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
-    if (!this.object.isWasm) {
-      contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.sortPropertiesAlphabetically), () => {
-        this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
-      }, {
-        checked: this.object.sortPropertiesAlphabetically,
-        jslogContext: "sort-properties-alphabetically"
-      });
-    }
-    contextMenu.viewSection().appendCheckboxItem(i18n3.i18n.lockedString("Show all"), () => {
+    populateObjectTreeContextMenu(contextMenu, this.object, this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), this.collapseChildren.bind(this), () => {
+      this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
+    }, () => {
       this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
-    }, { checked: this.object.includeNullOrUndefinedValues, jslogContext: "show-all" });
+    });
     void contextMenu.show();
   }
   async onpopulate() {
@@ -2174,7 +2182,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
         jslogContext: "sort-properties-alphabetically"
       });
     }
-    contextMenu.viewSection().appendCheckboxItem(i18n3.i18n.lockedString("Show all"), () => {
+    contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.showAll), () => {
       root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
     }, { checked: root.includeNullOrUndefinedValues, jslogContext: "show-all" });
     return contextMenu;

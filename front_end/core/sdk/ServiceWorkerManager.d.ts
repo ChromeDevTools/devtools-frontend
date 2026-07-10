@@ -6,6 +6,7 @@ import { type Target } from './Target.js';
 export declare class ServiceWorkerManager extends SDKModel<EventTypes> {
     #private;
     constructor(target: Target);
+    dispose(): void;
     enable(): Promise<void>;
     disable(): Promise<void>;
     registrations(): Map<string, ServiceWorkerRegistration>;

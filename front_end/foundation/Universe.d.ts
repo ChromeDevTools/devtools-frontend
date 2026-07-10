@@ -36,6 +36,7 @@ export declare class Universe {
     get emulatedDevicesList(): Emulation.EmulatedDevices.EmulatedDevicesList;
     get eventBreakpointsManager(): SDK.EventBreakpointsModel.EventBreakpointsManager;
     get fileManager(): Workspace.FileManager.FileManager;
+    get gdpClient(): Host.GdpClient.GdpClient;
     get hostConfigTracker(): Host.AidaClient.HostConfigTracker;
     get isolatedFileSystemManager(): Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager;
     get isolateManager(): SDK.IsolateManager.IsolateManager;

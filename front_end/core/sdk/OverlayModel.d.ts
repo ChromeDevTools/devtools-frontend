@@ -29,6 +29,29 @@ export interface Hinge {
     contentColor: HighlightColor;
     outlineColor: HighlightColor;
 }
+export interface BaseDisplayCutout {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    shape: Protocol.Overlay.DisplayCutoutShape;
+    contentColor?: HighlightColor;
+}
+export type DisplayCutout = BaseDisplayCutout & ({
+    shape: Protocol.Overlay.DisplayCutoutShape.Rectangle;
+} | {
+    shape: Protocol.Overlay.DisplayCutoutShape.Pill;
+    borderRadius: number;
+} | {
+    shape: Protocol.Overlay.DisplayCutoutShape.Notch;
+    upperRadius: number;
+    lowerRadius: number;
+} | {
+    shape: Protocol.Overlay.DisplayCutoutShape.Circle;
+    cx: number;
+    cy: number;
+    radius: number;
+});
 export declare const enum EmulatedOSType {
     WINDOWS = "Windows",
     MAC = "Mac",
@@ -79,6 +102,7 @@ export declare class OverlayModel extends SDKModel<EventTypes> implements Protoc
     private delayedHideHighlight;
     highlightFrame(frameId: Protocol.Page.FrameId): void;
     showHingeForDualScreen(hinge: Hinge | null): void;
+    showDisplayCutout(cutout: DisplayCutout | null): void;
     setWindowControlsPlatform(selectedPlatform: EmulatedOSType): void;
     setWindowControlsThemeColor(themeColor: string): void;
     getWindowControlsConfig(): Protocol.Overlay.WindowControlsOverlayConfig;

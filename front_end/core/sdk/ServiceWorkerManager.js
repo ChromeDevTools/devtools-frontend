@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
+import { MultitargetNetworkManager } from './NetworkManager.js';
 import { Events as RuntimeModelEvents, RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
 import { Type } from './Target.js';
@@ -76,7 +77,12 @@ export class ServiceWorkerManager extends SDKModel {
             this.forceUpdateSettingChanged();
         }
         this.#forceUpdateSetting.addChangeListener(this.forceUpdateSettingChanged, this);
+        MultitargetNetworkManager.instance().addEventListener("ConditionsChanged" /* MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, this.forceUpdateSettingChanged, this);
         new ServiceWorkerContextNamer(target, this);
+    }
+    dispose() {
+        MultitargetNetworkManager.instance().removeEventListener("ConditionsChanged" /* MultitargetNetworkManager.Events.CONDITIONS_CHANGED */, this.forceUpdateSettingChanged, this);
+        super.dispose();
     }
     async enable() {
         if (this.#enabled) {
@@ -212,7 +218,7 @@ export class ServiceWorkerManager extends SDKModel {
         this.dispatchEventToListeners("RegistrationErrorAdded" /* Events.REGISTRATION_ERROR_ADDED */, { registration, error: payload });
     }
     forceUpdateSettingChanged() {
-        const forceUpdateOnPageLoad = this.#forceUpdateSetting.get();
+        const forceUpdateOnPageLoad = this.#forceUpdateSetting.get() && !MultitargetNetworkManager.instance().isOffline();
         void this.#agent.invoke_setForceUpdateOnPageLoad({ forceUpdateOnPageLoad });
     }
 }

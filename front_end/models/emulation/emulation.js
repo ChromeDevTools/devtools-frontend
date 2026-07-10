@@ -671,7 +671,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 44, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "notch", "x": 92, "y": 0, "width": 231, "height": 33, "upper-radius": 6, "lower-radius": 25 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 44, "top": 0, "right": 44, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 14,
@@ -691,7 +706,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "notch", "x": 90, "y": 0, "width": 210, "height": 32, "upper-radius": 6, "lower-radius": 23 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 15,
@@ -711,7 +741,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "notch", "x": 114, "y": 0, "width": 162, "height": 34, "upper-radius": 5, "lower-radius": 22 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 16,
@@ -731,7 +776,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "notch", "x": 133, "y": 0, "width": 161, "height": 34, "upper-radius": 5, "lower-radius": 22 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 17,
@@ -751,7 +811,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 18,
@@ -771,7 +846,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 19,
@@ -791,7 +881,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 20,
@@ -811,7 +916,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 21,
@@ -831,7 +951,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 22,
@@ -851,7 +986,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 23,
@@ -871,7 +1021,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 47, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "notch", "x": 114, "y": 0, "width": 162, "height": 34, "upper-radius": 5, "lower-radius": 22 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 47, "top": 0, "right": 47, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 24,
@@ -891,7 +1056,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 134, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 25,
@@ -911,7 +1091,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 59, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 153, "y": 11, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 59, "top": 0, "right": 59, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 26,
@@ -931,7 +1126,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 62, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 139, "y": 14, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 62, "top": 0, "right": 62, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 27,
@@ -951,7 +1161,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "18.5", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 62, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "pill", "x": 158, "y": 14, "width": 125, "height": 37, "border-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 62, "top": 0, "right": 62, "bottom": 21 }
+      }
+    ]
   },
   {
     "order": 28,
@@ -971,7 +1196,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 11; Pixel 3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "11", "architecture": "", "model": "Pixel 3", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 45, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "rectangle", "x": 126, "y": 0, "width": 141, "height": 45 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 45, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 30,
@@ -991,7 +1231,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "13", "architecture": "", "model": "Pixel 7", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 52, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 183, "y": 0, "width": 55, "height": 52, "cx": 206, "cy": 26, "radius": 13 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 52, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 31,
@@ -1011,7 +1266,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "Pixel 8", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 50, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 182, "y": 0, "width": 46, "height": 50, "cx": 206, "cy": 25, "radius": 14 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 50, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 32,
@@ -1031,7 +1301,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "Pixel 8 Pro", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 50, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 205, "y": 0, "width": 37, "height": 50, "cx": 224, "cy": 25, "radius": 14 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 50, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 33,
@@ -1051,7 +1336,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 14; Pixel 8a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "Pixel 8a", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 46, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 185, "y": 0, "width": 42, "height": 46, "cx": 206, "cy": 26, "radius": 13 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 46, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 34,
@@ -1071,7 +1371,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 14; Pixel 9) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "Pixel 9", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 58, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 188, "y": 0, "width": 37, "height": 58, "cx": 206, "cy": 29, "radius": 14 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 58, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 35,
@@ -1091,7 +1406,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 14; Pixel 9 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "Pixel 9 Pro", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 68, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 195, "y": 0, "width": 36, "height": 68, "cx": 213, "cy": 34, "radius": 16 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 68, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 36,
@@ -1111,7 +1441,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 14; Pixel 9 Pro XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "14", "architecture": "", "model": "Pixel 9 Pro XL", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 66, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 205, "y": 0, "width": 38, "height": 66, "cx": 224, "cy": 33, "radius": 16 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 66, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 37,
@@ -1131,7 +1476,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Mobile Safari/537.36",
     "user-agent-metadata": { "platform": "Android", "platformVersion": "16", "architecture": "", "model": "Pixel 10", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 58, "right": 0, "bottom": 0 },
+        "cutout": { "shape": "circle", "x": 188, "y": 0, "width": 37, "height": 58, "cx": 206, "cy": 29, "radius": 14 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 0, "right": 58, "bottom": 0 }
+      }
+    ]
   },
   {
     "order": 38,
@@ -1568,7 +1928,22 @@ var emulatedDevices = [
     "capabilities": ["touch", "mobile"],
     "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1",
     "user-agent-metadata": { "platform": "iOS", "platformVersion": "13.2.3", "architecture": "", "model": "iPhone", "mobile": true },
-    "type": "phone"
+    "type": "phone",
+    "modes": [
+      {
+        "title": "default",
+        "orientation": "vertical",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 0, "top": 44, "right": 0, "bottom": 34 },
+        "cutout": { "shape": "notch", "x": 85, "y": 0, "width": 204, "height": 30, "upper-radius": 8, "lower-radius": 19 }
+      },
+      {
+        "title": "default",
+        "orientation": "horizontal",
+        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 },
+        "safe-area-insets": { "left": 44, "top": 0, "right": 44, "bottom": 21 }
+      }
+    ]
   },
   {
     "show-by-default": false,

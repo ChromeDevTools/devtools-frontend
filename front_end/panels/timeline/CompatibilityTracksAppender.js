@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { AnimationsTrackAppender } from './AnimationsTrackAppender.js';
 import { getDurationString, getEventLevel } from './AppenderUtils.js';
@@ -465,7 +466,9 @@ export class CompatibilityTracksAppender {
             track.setPopoverInfo(event, info);
         }
         // If there's a url associated, add into additionalElements
-        const url = URL.parse(info.url ?? SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event) ?? '');
+        const url = URL.parse(info.url ??
+            SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event, Workspace.Workspace.WorkspaceImpl.instance()) ??
+            '');
         if (url) {
             const MAX_PATH_LENGTH = 45;
             const path = Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_PATH_LENGTH);

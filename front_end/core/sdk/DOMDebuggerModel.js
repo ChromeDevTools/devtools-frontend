@@ -490,12 +490,16 @@ export class DOMDebuggerManager {
         this.createEventListenerBreakpoints("touch" /* Category.TOUCH */, ['touchstart', 'touchmove', 'touchend', 'touchcancel'], ['*']);
         this.createEventListenerBreakpoints("worker" /* Category.WORKER */, ['message', 'messageerror'], ['*']);
         this.createEventListenerBreakpoints("xhr" /* Category.XHR */, ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'], ['xmlhttprequest', 'xmlhttprequestupload']);
+    }
+    initialize() {
         this.#targetManager.observeModels(DOMDebuggerModel, this);
     }
     static instance(opts = { forceNew: null }) {
         const { forceNew, targetManager } = opts;
         if (!Root.DevToolsContext.globalInstance().has(DOMDebuggerManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(DOMDebuggerManager, new DOMDebuggerManager(targetManager ?? TargetManager.instance()));
+            const manager = new DOMDebuggerManager(targetManager ?? TargetManager.instance());
+            manager.initialize();
+            Root.DevToolsContext.globalInstance().set(DOMDebuggerManager, manager);
         }
         return Root.DevToolsContext.globalInstance().get(DOMDebuggerManager);
     }

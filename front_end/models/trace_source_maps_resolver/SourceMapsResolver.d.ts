@@ -1,8 +1,9 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../bindings/bindings.js';
 import * as Trace from '../trace/trace.js';
-import * as Workspace from '../workspace/workspace.js';
+import type * as Workspace from '../workspace/workspace.js';
 interface ResolvedCodeLocationData {
     name: string | null;
     devtoolsLocation: Workspace.UISourceCode.UILocation | null;
@@ -17,7 +18,7 @@ export declare const resolvedCodeLocationDataNames: Map<string, ResolvedCodeLoca
 export declare class SourceMapsResolver extends EventTarget {
     #private;
     private executionContextNamesByOrigin;
-    constructor(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper?: Trace.EntityMapper.EntityMapper);
+    constructor(parsedTrace: Trace.TraceModel.ParsedTrace, entityMapper?: Trace.EntityMapper.EntityMapper, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, targetManager?: SDK.TargetManager.TargetManager);
     static clearResolvedNodeNames(): void;
     static keyForCodeLocation(callFrame: Protocol.Runtime.CallFrame): string;
     /**
@@ -35,8 +36,8 @@ export declare class SourceMapsResolver extends EventTarget {
      */
     static resolvedCodeLocationForCallFrame(callFrame: Protocol.Runtime.CallFrame): ResolvedCodeLocationData | null;
     static resolvedCodeLocationForEntry(entry: Trace.Types.Events.Event): ResolvedCodeLocationData | null;
-    static resolvedURLForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event): Platform.DevToolsPath.UrlString | null;
-    static codeLocationForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event): {
+    static resolvedURLForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event, workspace: Workspace.Workspace.WorkspaceImpl): Platform.DevToolsPath.UrlString | null;
+    static codeLocationForEntry(parsedTrace: Trace.TraceModel.ParsedTrace, entry: Trace.Types.Events.Event, workspace: Workspace.Workspace.WorkspaceImpl): {
         url: Platform.DevToolsPath.UrlString;
         line?: number;
         column?: number;

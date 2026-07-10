@@ -15,12 +15,12 @@ import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Title for user agent client hints form
+     * @description Title for user agent client hints form.
      */
     title: 'User agent client hints',
     /**
      * @description Heading for user agent section.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     useragent: 'User agent (Sec-CH-UA)',
     /**
@@ -29,59 +29,59 @@ const UIStrings = {
     fullVersionList: 'Full version list (Sec-CH-UA-Full-Version-List)',
     /**
      * @description ARIA label for a form with properties for a single brand in a brand list. The form includes a brand name input field, a version
-     * input field and a delete icon. Brand refer to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * input field and a delete icon. Brands refer to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     brandProperties: 'User agent properties',
     /**
-     * @description Input field placeholder for brands browser name.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * @description Input field placeholder for brand’s browser name.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     brandName: 'Brand',
     /**
-     * @description Aria label for brands browser name input field.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * @description ARIA label for brand’s browser name input field.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      * @example {index} PH1
      */
     brandNameAriaLabel: 'Brand {PH1}',
     /**
      * @description Input field placeholder for significant brand version.
-     * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92) etc.
+     * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92), etc.
      */
     significantBrandVersionPlaceholder: 'Significant version (e.g. 87)',
     /**
      * @description Input field placeholder for brand version.
-     * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92) etc.
+     * Brands here relate to different browser brands/vendors like Google Chrome (v89), Microsoft Edge (v92), etc.
      */
     brandVersionPlaceholder: 'Version (e.g. 87.0.4280.88)',
     /**
-     * @description Aria label for brands browser version input field.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * @description ARIA label for brand’s browser version input field.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      * @example {index} PH1
      */
     brandVersionAriaLabel: 'Version {PH1}',
     /**
      * @description Button title for adding another brand in brands section to client hints.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
-    addBrand: 'Add Brand',
+    addBrand: 'Add brand',
     /**
-     * @description Tooltip and aria label for delete icon for deleting browser brand from brands user agent section.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * @description Tooltip and ARIA label for delete icon for deleting browser brand from brands user agent section.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     brandUserAgentDelete: 'Delete brand from user agent section',
     /**
-     * @description Tooltip and aria label for delete icon for deleting user agent from brands full version list.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * @description Tooltip and ARIA label for delete icon for deleting user agent from brands full version list.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     brandFullVersionListDelete: 'Delete brand from full version list',
     /**
      * @description Heading for the form factors section.
      */
-    formFactorsTitle: 'Form Factors (Sec-CH-UA-Form-Factors)',
+    formFactorsTitle: 'Form factors (Sec-CH-UA-Form-Factors)',
     /**
      * @description ARIA label for the group of form factor checkboxes.
      */
-    formFactorsGroupAriaLabel: 'Available Form Factors',
+    formFactorsGroupAriaLabel: 'Available form factors',
     /**
      * @description Form factor option: Desktop.
      */
@@ -119,7 +119,7 @@ const UIStrings = {
      */
     fullBrowserVersionPlaceholder: 'Full browser version (e.g. 87.0.4280.88)',
     /**
-     * @description Label for platform heading section, platform relates to OS like Android, Windows etc.
+     * @description Label for platform heading section. Platform relates to OS like Android, Windows, etc.
      */
     platformLabel: 'Platform (Sec-CH-UA-Platform / Sec-CH-UA-Platform-Version)',
     /**
@@ -127,31 +127,31 @@ const UIStrings = {
      */
     platformProperties: 'Platform properties',
     /**
-     * @description Version for platform input field, platform relates to OS like Android, Windows etc.
+     * @description Version for platform input field. Platform relates to OS like Android, Windows, etc.
      */
     platformVersion: 'Platform version',
     /**
-     * @description Placeholder for platform name input field, platform relates to OS like Android, Windows etc.
+     * @description Placeholder for platform name input field. Platform relates to OS like Android, Windows, etc.
      */
     platformPlaceholder: 'Platform (e.g. Android)',
     /**
-     * @description Label for architecture (Eg: x86, x64, arm) input field.
+     * @description Label for architecture (e.g., x86, x64, arm) input field.
      */
     architecture: 'Architecture (Sec-CH-UA-Arch)',
     /**
-     * @description Placeholder for architecture (Eg: x86, x64, arm) input field.
+     * @description Placeholder for architecture (e.g., x86, x64, arm) input field.
      */
     architecturePlaceholder: 'Architecture (e.g. x86)',
     /**
-     * @description Device model row, including device model input field and mobile checkbox
+     * @description Device model row, including device model input field and mobile checkbox.
      */
     deviceProperties: 'Device properties',
     /**
-     * @description Label for Device Model input field.
+     * @description Label for device model input field.
      */
     deviceModel: 'Device model (Sec-CH-UA-Model)',
     /**
-     * @description Label for Mobile phone checkbox.
+     * @description Label for mobile phone checkbox.
      */
     mobileCheckboxLabel: 'Mobile',
     /**
@@ -159,7 +159,7 @@ const UIStrings = {
      */
     update: 'Update',
     /**
-     * @description Field Error message in the Device settings pane that shows that the entered value has characters that can't be represented in the corresponding User Agent Client Hints
+     * @description Field error message in the Devices settings tab that shows that the entered value has characters that can't be represented in the corresponding user agent client hints.
      */
     notRepresentable: 'Not representable as structured headers string.',
     /**
@@ -168,16 +168,16 @@ const UIStrings = {
     userAgentClientHintsInfo: 'User agent client hints are an alternative to the user agent string that identify the browser and the device in a more structured way with better privacy accounting.',
     /**
      * @description Success message when brand row is successfully added in client hints form.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     addedBrand: 'Added brand row',
     /**
      * @description Success message when brand row is successfully deleted in client hints form.
-     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge etc.
+     * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     deletedBrand: 'Deleted brand row',
     /**
-     * @description Text that is usually a hyperlink to more documentation
+     * @description Text that is usually a hyperlink to more documentation.
      */
     learnMore: 'Learn more',
 };

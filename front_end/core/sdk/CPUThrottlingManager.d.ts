@@ -4,6 +4,7 @@ import { type SDKModelObserver, TargetManager } from './TargetManager.js';
 export declare class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDKModelObserver<EmulationModel> {
     #private;
     constructor(settings: Common.Settings.Settings, targetManager: TargetManager);
+    initialize(): void;
     static instance(opts?: {
         forceNew?: boolean | null;
         settings?: Common.Settings.Settings;

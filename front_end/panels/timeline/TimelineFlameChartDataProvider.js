@@ -283,7 +283,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         if (!this.parsedTrace || Trace.Types.Events.isLegacyTimelineFrame(entry)) {
             return contextMenu;
         }
-        const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry);
+        const url = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry, Workspace.Workspace.WorkspaceImpl.instance());
         if (!url) {
             return contextMenu;
         }

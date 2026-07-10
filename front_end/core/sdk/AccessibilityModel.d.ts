@@ -39,8 +39,8 @@ export declare class AccessibilityNode {
     getFrameId(): Protocol.Page.FrameId | null;
     isLeafNode(): boolean;
     getNodeId(): string;
-    getChildren(frameManager?: FrameManager): Promise<AccessibilityNode[]>;
-    axNodeToText(depth?: number, frameManager?: FrameManager): Promise<string>;
+    getChildren(): Promise<AccessibilityNode[]>;
+    axNodeToText(depth?: number): Promise<string>;
 }
 export declare const enum Events {
     TREE_UPDATED = "TreeUpdated"
@@ -72,5 +72,5 @@ export declare class AccessibilityModel extends SDKModel<EventTypes> implements 
     getAgent(): ProtocolProxyApi.AccessibilityApi;
 }
 export declare function getRootNode(frameId: Protocol.Page.FrameId, frameManager?: FrameManager): Promise<AccessibilityNode>;
-export declare function getNodeAndAncestorsFromDOMNode(domNode: DOMNode, frameManager?: FrameManager): Promise<AccessibilityNode[]>;
+export declare function getNodeAndAncestorsFromDOMNode(domNode: DOMNode): Promise<AccessibilityNode[]>;
 export declare function isPrintableType(valueType: Protocol.Accessibility.AXValueType): boolean;

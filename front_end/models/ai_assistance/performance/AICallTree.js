@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Trace from '../../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 /** Iterates from a node down through its descendents. If the callback returns true, the loop stops. */
 function depthFirstWalk(nodes, callback) {
     for (const node of nodes) {
@@ -283,7 +284,7 @@ export class AICallTree {
         // 5. Self Time
         const selfTimeStr = roundToTenths(node.selfTime);
         // 6. URL Index
-        const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event);
+        const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, Workspace.Workspace.WorkspaceImpl.instance());
         const url = location?.url;
         let urlIndexStr = '';
         if (url) {

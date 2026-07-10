@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './components/components.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Lit from '../../ui/lit/lit.js';
 const { html } = Lit;
-export async function sdkNodeToAXTreeNodes(sdkNode, frameManager = SDK.FrameManager.FrameManager.instance()) {
+export async function sdkNodeToAXTreeNodes(sdkNode) {
     const treeNodeData = sdkNode;
     if (sdkNode.isLeafNode()) {
         return [{
@@ -16,8 +15,8 @@ export async function sdkNodeToAXTreeNodes(sdkNode, frameManager = SDK.FrameMana
     return [{
             treeNodeData,
             children: async () => {
-                const childNodes = await sdkNode.getChildren(frameManager);
-                const childTreeNodes = await Promise.all(childNodes.map(childNode => sdkNodeToAXTreeNodes(childNode, frameManager)));
+                const childNodes = await sdkNode.getChildren();
+                const childTreeNodes = await Promise.all(childNodes.map(childNode => sdkNodeToAXTreeNodes(childNode)));
                 return childTreeNodes.flat(1);
             },
             id: sdkNode.getNodeId(),

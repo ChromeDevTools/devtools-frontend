@@ -62,6 +62,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get fileManager(): Workspace.FileManager.FileManager;
     get fileSystemWorkspaceBinding(): Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding;
     get frameManager(): SDK.FrameManager.FrameManager;
+    get gdpClient(): Host.GdpClient.GdpClient;
     get hostConfigTracker(): Host.AidaClient.HostConfigTracker;
     get ignoreListManager(): Workspace.IgnoreListManager.IgnoreListManager;
     get isolateManager(): SDK.IsolateManager.IsolateManager;

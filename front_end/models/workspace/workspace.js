@@ -113,13 +113,13 @@ import * as Platform from "./../../core/platform/platform.js";
 import * as TextUtils from "./../text_utils/text_utils.js";
 var UIStrings = {
   /**
-   * @description Text for the index of something
+   * @description Text for the index of something.
    */
   index: "(index)",
   /**
-   * @description Text in UISource Code of the DevTools local workspace
+   * @description Text in UISourceCode of the DevTools local workspace.
    */
-  thisFileWasChangedExternally: "This file was changed externally. Would you like to reload it?"
+  thisFileWasChangedExternally: "This file was changed externally. Reload?"
 };
 var str_ = i18n.i18n.registerUIStrings("models/workspace/UISourceCode.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -861,27 +861,27 @@ var Events;
 // gen/front_end/models/workspace/IgnoreListManager.js
 var UIStrings2 = {
   /**
-   * @description Text to stop preventing the debugger from stepping into library code
+   * @description Text to stop preventing the debugger from stepping into library code.
    */
   removeFromIgnoreList: "Remove from ignore list",
   /**
-   * @description Text for scripts that should not be stepped into when debugging
+   * @description Text for scripts that should not be stepped into when debugging.
    */
   addScriptToIgnoreList: "Add script to ignore list",
   /**
-   * @description Text for directories whose scripts should not be stepped into when debugging
+   * @description Text for directories whose scripts should not be stepped into when debugging.
    */
   addDirectoryToIgnoreList: "Add directory to ignore list",
   /**
-   * @description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   * @description A context menu item in the Call Stack sidebar of the Sources panel.
    */
   addAllContentScriptsToIgnoreList: "Add all extension scripts to ignore list",
   /**
-   * @description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   * @description A context menu item in the Call Stack sidebar of the Sources panel.
    */
   addAllThirdPartyScriptsToIgnoreList: "Add all third-party scripts to ignore list",
   /**
-   * @description A context menu item in the Call Stack Sidebar Pane of the Sources panel
+   * @description A context menu item in the Call Stack sidebar of the Sources panel.
    */
   addAllAnonymousScriptsToIgnoreList: "Add all anonymous scripts to ignore list"
 };

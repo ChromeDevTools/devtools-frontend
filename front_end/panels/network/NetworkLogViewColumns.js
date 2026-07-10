@@ -160,6 +160,10 @@ const UIStrings = {
      * @description Text to show whether a request is preloaded
      */
     isPreloaded: 'Preloaded',
+    /**
+     * @description Column header in the Network log view of the Network panel
+     */
+    executionContext: 'Execution context',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1064,6 +1068,11 @@ const DEFAULT_COLUMNS = [
         id: 'is-preloaded',
         title: i18nLazyString(UIStrings.isPreloaded),
         sortingFunction: NetworkRequestNode.IsPreloadedComparator,
+    },
+    {
+        id: 'execution-context',
+        title: i18nLazyString(UIStrings.executionContext),
+        sortingFunction: NetworkRequestNode.ExecutionContextComparator,
     },
     // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
     {

@@ -12,7 +12,7 @@ __export(InspectElementModeController_exports, {
 });
 import * as Common14 from "./../../core/common/common.js";
 import * as Root6 from "./../../core/root/root.js";
-import * as SDK19 from "./../../core/sdk/sdk.js";
+import * as SDK18 from "./../../core/sdk/sdk.js";
 import * as UI22 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -33,7 +33,7 @@ import * as Host6 from "./../../core/host/host.js";
 import * as i18n36 from "./../../core/i18n/i18n.js";
 import * as Platform10 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
-import * as SDK18 from "./../../core/sdk/sdk.js";
+import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
 import * as PanelCommon from "./../common/common.js";
 import * as TreeOutline13 from "./../../ui/components/tree_outline/tree_outline.js";
@@ -46,7 +46,7 @@ __export(AccessibilityTreeView_exports, {
   AccessibilityTreeView: () => AccessibilityTreeView
 });
 import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK from "./../../core/sdk/sdk.js";
 import * as TreeOutline from "./../../ui/components/tree_outline/tree_outline.js";
 import * as UI from "./../../ui/legacy/legacy.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
@@ -58,10 +58,9 @@ __export(AccessibilityTreeUtils_exports, {
   sdkNodeToAXTreeNodes: () => sdkNodeToAXTreeNodes
 });
 import "./components/components.js";
-import * as SDK from "./../../core/sdk/sdk.js";
 import * as Lit from "./../../ui/lit/lit.js";
 var { html } = Lit;
-async function sdkNodeToAXTreeNodes(sdkNode, frameManager = SDK.FrameManager.FrameManager.instance()) {
+async function sdkNodeToAXTreeNodes(sdkNode) {
   const treeNodeData = sdkNode;
   if (sdkNode.isLeafNode()) {
     return [{
@@ -72,8 +71,8 @@ async function sdkNodeToAXTreeNodes(sdkNode, frameManager = SDK.FrameManager.Fra
   return [{
     treeNodeData,
     children: async () => {
-      const childNodes = await sdkNode.getChildren(frameManager);
-      const childTreeNodes = await Promise.all(childNodes.map((childNode) => sdkNodeToAXTreeNodes(childNode, frameManager)));
+      const childNodes = await sdkNode.getChildren();
+      const childTreeNodes = await Promise.all(childNodes.map((childNode) => sdkNodeToAXTreeNodes(childNode)));
       return childTreeNodes.flat(1);
     },
     id: sdkNode.getNodeId()
@@ -124,7 +123,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   root = null;
   selectedAXNode = null;
   #frameManager;
-  constructor(accessibilityTreeComponent, frameManager = SDK2.FrameManager.FrameManager.instance()) {
+  constructor(accessibilityTreeComponent, frameManager = SDK.FrameManager.FrameManager.instance()) {
     super();
     this.registerRequiredCSS(accessibilityTreeView_css_default);
     this.accessibilityTreeComponent = accessibilityTreeComponent;
@@ -133,7 +132,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     container.classList.add("accessibility-tree-view-container");
     container.setAttribute("jslog", `${VisualLogging.tree("full-accessibility")}`);
     container.appendChild(this.accessibilityTreeComponent);
-    SDK2.TargetManager.TargetManager.instance().observeModels(SDK2.AccessibilityModel.AccessibilityModel, this, { scoped: true });
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.AccessibilityModel.AccessibilityModel, this, { scoped: true });
     this.accessibilityTreeComponent.addEventListener("itemselected", (event) => {
       const evt = event;
       const axNode = evt.data.node.treeNodeData;
@@ -156,7 +155,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
       evt.data.node.treeNodeData.highlightDOMNode();
     });
     this.accessibilityTreeComponent.addEventListener("itemmouseout", () => {
-      SDK2.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK2.TargetManager.TargetManager.instance());
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     });
     this.accessibilityTreeComponent.addEventListener("itemcontextmenu", (event) => {
       const evt = event;
@@ -197,7 +196,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
       if (!frameId) {
         throw new Error("No top frame");
       }
-      this.root = await SDK2.AccessibilityModel.getRootNode(frameId, this.#frameManager);
+      this.root = await SDK.AccessibilityModel.getRootNode(frameId);
       if (!this.root) {
         throw new Error("No root");
       }
@@ -209,13 +208,13 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     if (!this.root) {
       const frameId = this.#frameManager.getOutermostFrame()?.id;
       if (frameId) {
-        this.root = await SDK2.AccessibilityModel.getRootNode(frameId, this.#frameManager);
+        this.root = await SDK.AccessibilityModel.getRootNode(frameId);
       }
     }
     if (!this.root) {
       return;
     }
-    const treeData = await sdkNodeToAXTreeNodes(this.root, this.#frameManager);
+    const treeData = await sdkNodeToAXTreeNodes(this.root);
     this.accessibilityTreeComponent.data = {
       defaultRenderer: accessibilityNodeRenderer,
       tree: treeData,
@@ -227,7 +226,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
   // Given a selected DOM node, asks the model to load the missing subtree from the root to the
   // selected node and then re-renders the tree.
   async loadSubTreeIntoAccessibilityModel(selectedNode) {
-    const ancestors = await SDK2.AccessibilityModel.getNodeAndAncestorsFromDOMNode(selectedNode, this.#frameManager);
+    const ancestors = await SDK.AccessibilityModel.getNodeAndAncestorsFromDOMNode(selectedNode);
     const inspectedAXNode = ancestors.find((node) => node.backendDOMNodeId() === selectedNode.backendNodeId());
     if (!inspectedAXNode) {
       return;
@@ -690,7 +689,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common7 from "./../../core/common/common.js";
 import * as i18n20 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as TreeOutline6 from "./../../ui/components/tree_outline/tree_outline.js";
 import * as InlineEditor4 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
@@ -782,7 +781,7 @@ var ImagePreviewPopover = class {
 var elementToURLMap = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/elements/PropertyNameCategories.js
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as SDK2 from "./../../core/sdk/sdk.js";
 var DefaultCategoryOrder = [
   "Layout",
   "Text",
@@ -978,7 +977,7 @@ var matchCategoriesByPropertyName = (propertyName) => {
   return [];
 };
 var categorizePropertyName = (propertyName) => {
-  const cssMetadata = SDK3.CSSMetadata.cssMetadata();
+  const cssMetadata = SDK2.CSSMetadata.cssMetadata();
   const canonicalName = cssMetadata.canonicalPropertyName(propertyName);
   const categories = matchCategoriesByPropertyName(canonicalName);
   if (categories.length > 0) {
@@ -1013,7 +1012,7 @@ __export(PropertyRenderer_exports, {
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as i18n18 from "./../../core/i18n/i18n.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as SDK8 from "./../../core/sdk/sdk.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
@@ -1040,7 +1039,7 @@ import * as i18n16 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as SDK7 from "./../../core/sdk/sdk.js";
 import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
@@ -1095,7 +1094,7 @@ __export(LayersWidget_exports, {
   LayersWidget: () => LayersWidget
 });
 import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as SDK3 from "./../../core/sdk/sdk.js";
 import * as TreeOutline2 from "./../../ui/components/tree_outline/tree_outline.js";
 import * as UI5 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
@@ -1143,7 +1142,7 @@ var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_VIEW = (input, output, target) => {
   const makeTreeNode = (parentId) => (layer) => {
     const subLayers = layer.subLayers;
-    const name = SDK4.CSSModel.CSSModel.readableLayerName(layer.name);
+    const name = SDK3.CSSModel.CSSModel.readableLayerName(layer.name);
     const treeNodeData = layer.order + ": " + name;
     const id = parentId ? parentId + "." + name : name;
     if (!subLayers) {
@@ -1185,11 +1184,11 @@ var LayersWidget = class _LayersWidget extends UI5.Widget.Widget {
   }
   wasShown() {
     super.wasShown();
-    UI5.Context.Context.instance().addFlavorChangeListener(SDK4.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
-    this.#onDOMNodeChanged({ data: UI5.Context.Context.instance().flavor(SDK4.DOMModel.DOMNode) });
+    UI5.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
+    this.#onDOMNodeChanged({ data: UI5.Context.Context.instance().flavor(SDK3.DOMModel.DOMNode) });
   }
   wasHidden() {
-    UI5.Context.Context.instance().addFlavorChangeListener(SDK4.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
+    UI5.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.#onDOMNodeChanged, this);
     this.#onDOMNodeChanged({ data: null });
     super.wasHidden();
   }
@@ -1199,11 +1198,11 @@ var LayersWidget = class _LayersWidget extends UI5.Widget.Widget {
       return;
     }
     if (this.#node) {
-      this.#node.domModel().cssModel().removeEventListener(SDK4.CSSModel.Events.StyleSheetChanged, this.requestUpdate, this);
+      this.#node.domModel().cssModel().removeEventListener(SDK3.CSSModel.Events.StyleSheetChanged, this.requestUpdate, this);
     }
     this.#node = event.data;
     if (this.#node) {
-      this.#node.domModel().cssModel().addEventListener(SDK4.CSSModel.Events.StyleSheetChanged, this.requestUpdate, this);
+      this.#node.domModel().cssModel().addEventListener(SDK3.CSSModel.Events.StyleSheetChanged, this.requestUpdate, this);
     }
     if (this.isShowing()) {
       this.requestUpdate();
@@ -1314,7 +1313,7 @@ import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils from "./../../models/text_utils/text_utils.js";
@@ -1349,7 +1348,7 @@ __export(CSSRuleValidator_exports, {
   cssRuleValidatorsMap: () => cssRuleValidatorsMap
 });
 import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as SDK4 from "./../../core/sdk/sdk.js";
 import * as uiI18n from "./../../ui/i18n/i18n.js";
 import { html as html4 } from "./../../ui/lit/lit.js";
 
@@ -1932,9 +1931,9 @@ var FontVariationSettingsValidator = class extends CSSRuleValidator {
     if (!fontFamily) {
       return;
     }
-    const fontFamilies = new Set(SDK5.CSSPropertyParser.parseFontFamily(fontFamily));
+    const fontFamilies = new Set(SDK4.CSSPropertyParser.parseFontFamily(fontFamily));
     const matchingFontFaces = (fontFaces || []).filter((f) => fontFamilies.has(f.getFontFamily()));
-    const variationSettings = SDK5.CSSPropertyParser.parseFontVariationSettings(value5);
+    const variationSettings = SDK4.CSSPropertyParser.parseFontVariationSettings(value5);
     const warnings = [];
     for (const elementSetting of variationSettings) {
       for (const font of matchingFontFaces) {
@@ -2612,7 +2611,7 @@ function getCssDeclarationAsJavascriptProperty(declaration) {
 
 // gen/front_end/panels/elements/StylePropertyTreeElement.js
 var { html: html6, nothing, render: render3, Directives: { classMap: classMap2 } } = Lit4;
-var ASTUtils = SDK6.CSSPropertyParser.ASTUtils;
+var ASTUtils = SDK5.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 var GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
 var GridLanesEditor = ElementsComponents.StylePropertyEditor.GridLanesEditor;
@@ -2720,7 +2719,7 @@ var UIStrings5 = {
 var str_5 = i18n9.i18n.registerUIStrings("panels/elements/StylePropertyTreeElement.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var parentMap = /* @__PURE__ */ new WeakMap();
-var EnvFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.EnvFunctionMatch) {
+var EnvFunctionRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.EnvFunctionMatch) {
   treeElement;
   matchedStyles;
   computedStyles;
@@ -2752,7 +2751,7 @@ var EnvFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatch
     return [span];
   }
 };
-var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.FlexGridGridLanesMatch) {
+var FlexGridRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.FlexGridGridLanesMatch) {
   // clang-format on
   #treeElement;
   #stylesContainer;
@@ -2811,7 +2810,7 @@ var FlexGridRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     return [...children, button];
   }
 };
-var CSSWideKeywordRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.CSSWideKeywordMatch) {
+var CSSWideKeywordRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.CSSWideKeywordMatch) {
   // clang-format on
   #treeElement;
   #stylesContainer;
@@ -2833,7 +2832,7 @@ var CSSWideKeywordRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
       onLinkActivate: () => resolvedProperty && this.#stylesContainer.jumpToDeclaration(resolvedProperty),
       jslogContext: "css-wide-keyword-link"
     };
-    if (SDK6.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) || SDK6.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
+    if (SDK5.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) || SDK5.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
       const color = Common2.Color.parse(context.matchedResult.getComputedText(match.node));
       if (color) {
         return [new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, swatch), swatch];
@@ -2850,13 +2849,13 @@ function handleVarDefinitionActivate(variable, stylesContainer) {
   );
   if (typeof variable === "string") {
     stylesContainer.jumpToProperty(variable) || stylesContainer.jumpToProperty("initial-value", variable, REGISTERED_PROPERTY_SECTION_NAME);
-  } else if (variable.declaration instanceof SDK6.CSSProperty.CSSProperty) {
+  } else if (variable.declaration instanceof SDK5.CSSProperty.CSSProperty) {
     stylesContainer.revealProperty(variable.declaration);
-  } else if (variable.declaration instanceof SDK6.CSSMatchedStyles.CSSRegisteredProperty) {
+  } else if (variable.declaration instanceof SDK5.CSSMatchedStyles.CSSRegisteredProperty) {
     stylesContainer.jumpToProperty("initial-value", variable.name, REGISTERED_PROPERTY_SECTION_NAME);
   }
 }
-var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.VariableMatch) {
+var VariableRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.VariableMatch) {
   // clang-format on
   #stylesContainer;
   #treeElement;
@@ -2872,7 +2871,7 @@ var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
   render(match, context) {
-    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule) {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK5.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
     const { declaration, value: variableValue } = match.resolveVariable() ?? {};
@@ -2933,7 +2932,7 @@ var VariableRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     return [colorSwatch, varSwatch];
   }
 };
-var VariableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.VariableNameMatch) {
+var VariableNameRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.VariableNameMatch) {
   // clang-format on
   #stylesContainer;
   #treeElement;
@@ -2946,7 +2945,7 @@ var VariableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
   }
   render(match, _context) {
     const varSwatch = document.createElement("span");
-    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule) {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK5.CSSRule.CSSFunctionRule) {
       render3(html6`${match.text}`, varSwatch);
       return [varSwatch];
     }
@@ -2977,7 +2976,7 @@ var VariableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
     return [varSwatch];
   }
 };
-var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.AttributeMatch) {
+var AttributeRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.AttributeMatch) {
   // clang-format on
   #stylesContainer;
   #treeElement;
@@ -2993,7 +2992,7 @@ var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatcher
     this.#computedStyleExtraFields = computedStyleExtraFields;
   }
   render(match, context) {
-    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule) {
+    if (this.#treeElement?.property.ownerStyle.parentRule instanceof SDK5.CSSRule.CSSFunctionRule) {
       return Renderer.render(ASTUtils.children(match.node), context).nodes;
     }
     const rawValue = match.rawAttributeValue();
@@ -3013,7 +3012,7 @@ var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatcher
           return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
         }
       } else if (match.substitutionText !== null) {
-        const matching = SDK6.CSSPropertyParser.matchDeclaration("--property", match.substitutionText, this.#matchedStyles.propertyMatchers(match.style, this.#computedStyles));
+        const matching = SDK5.CSSPropertyParser.matchDeclaration("--property", match.substitutionText, this.#matchedStyles.propertyMatchers(match.style, this.#computedStyles));
         return Renderer.renderValueNodes({ name: "--property", value: match.substitutionText }, matching, getPropertyRenderers("--property", match.style, this.#stylesContainer, this.#matchedStyles, null, this.#computedStyles, this.#computedStyleExtraFields), substitution).nodes;
       }
     }
@@ -3060,7 +3059,7 @@ var AttributeRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatcher
     ElementsPanel.instance().highlightNodeAttribute(node, attribute);
   }
 };
-var LinearGradientRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.LinearGradientMatch) {
+var LinearGradientRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.LinearGradientMatch) {
   // clang-format on
   render(match, context) {
     const children = ASTUtils.children(match.node);
@@ -3070,7 +3069,7 @@ var LinearGradientRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     if (angle instanceof InlineEditor2.CSSAngle.CSSAngle) {
       angle.updateProperty(context.matchedResult.getComputedText(match.node));
       const args = ASTUtils.callArgs(match.node);
-      const angleNode = args[0]?.find((node) => context.matchedResult.getMatch(node) instanceof SDK6.CSSPropertyParserMatchers.AngleMatch);
+      const angleNode = args[0]?.find((node) => context.matchedResult.getMatch(node) instanceof SDK5.CSSPropertyParserMatchers.AngleMatch);
       const angleMatch = angleNode && context.matchedResult.getMatch(angleNode);
       if (angleMatch) {
         angle.addEventListener(InlineEditor2.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
@@ -3081,7 +3080,7 @@ var LinearGradientRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     return nodes;
   }
 };
-var RelativeColorChannelRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
+var RelativeColorChannelRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
   // clang-format on
   #treeElement;
   constructor(treeElement) {
@@ -3089,7 +3088,7 @@ var RelativeColorChannelRenderer = class extends rendererBase(SDK6.CSSPropertyPa
     this.#treeElement = treeElement;
   }
   render(match, context) {
-    const color = context.findParent(match.node, SDK6.CSSPropertyParserMatchers.ColorMatch);
+    const color = context.findParent(match.node, SDK5.CSSPropertyParserMatchers.ColorMatch);
     if (!color?.relativeColor) {
       return [document.createTextNode(match.text)];
     }
@@ -3118,7 +3117,7 @@ var RelativeColorChannelRenderer = class extends rendererBase(SDK6.CSSPropertyPa
     return [span, tooltip];
   }
 };
-var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyParserMatchers.ColorMatch) {
+var ColorRenderer = class _ColorRenderer extends rendererBase(SDK5.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
   #treeElement;
   #stylesContainer;
@@ -3258,7 +3257,7 @@ var ColorRenderer = class _ColorRenderer extends rendererBase(SDK6.CSSPropertyPa
     swatchIcon.setContrastInfo(contrastInfo);
   }
 };
-var LightDarkColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.LightDarkColorMatch) {
+var LightDarkColorRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.LightDarkColorMatch) {
   // clang-format on
   #treeElement;
   #stylesContainer;
@@ -3340,7 +3339,7 @@ var LightDarkColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     }
   }
 };
-var ColorMixRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.ColorMixMatch) {
+var ColorMixRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.ColorMixMatch) {
   // clang-format on
   #stylesContainer;
   #matchedStyles;
@@ -3460,7 +3459,7 @@ var ColorMixRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers
     return [swatch, contentChild, tooltip];
   }
 };
-var ContrastColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.ContrastColorMatch) {
+var ContrastColorRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.ContrastColorMatch) {
   // clang-format on
   #treeElement;
   #stylesContainer;
@@ -3492,7 +3491,7 @@ var ContrastColorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMat
     return [colorSwatch, content];
   }
 };
-var AngleRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.AngleMatch) {
+var AngleRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.AngleMatch) {
   // clang-format on
   #treeElement;
   constructor(treeElement) {
@@ -3544,7 +3543,7 @@ var AngleRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.An
     return [cssAngle];
   }
 };
-var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.LinkableNameMatch) {
+var LinkableNameRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.LinkableNameMatch) {
   // clang-format on
   #matchedStyles;
   #stylesContainer;
@@ -3614,7 +3613,7 @@ var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
       el.appendChild(swatch);
       const node = this.#stylesContainer.node();
       if (node) {
-        const animationModel = node.domModel().target().model(SDK6.AnimationModel.AnimationModel);
+        const animationModel = node.domModel().target().model(SDK5.AnimationModel.AnimationModel);
         void animationModel?.getAnimationGroupForAnimation(match.text, node.id).then((maybeAnimationGroup) => {
           if (!maybeAnimationGroup) {
             return;
@@ -3635,7 +3634,7 @@ var LinkableNameRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
     return [swatch];
   }
 };
-var BezierRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.BezierMatch) {
+var BezierRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.BezierMatch) {
   // clang-format on
   #treeElement;
   constructor(treeElement) {
@@ -3667,7 +3666,7 @@ var BezierRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.B
     return [iconAndTextContainer];
   }
 };
-var AutoBaseRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.AutoBaseMatch) {
+var AutoBaseRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.AutoBaseMatch) {
   #computedStyleExtraFields;
   // clang-format on
   constructor(computedStyle, computedStyleExtraFields) {
@@ -3839,7 +3838,7 @@ var ShadowModel = class {
     }
   }
 };
-var ShadowRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.ShadowMatch) {
+var ShadowRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.ShadowMatch) {
   #treeElement;
   // clang-format on
   constructor(treeElement) {
@@ -3873,13 +3872,13 @@ var ShadowRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.S
           return null;
         }
         properties.push({ value: value5, source, length, propertyType, expansionContext });
-      } else if (match instanceof SDK6.CSSPropertyParserMatchers.VariableMatch) {
+      } else if (match instanceof SDK5.CSSPropertyParserMatchers.VariableMatch) {
         const computedValue = context.matchedResult.getComputedText(value5);
-        const computedValueAst = SDK6.CSSPropertyParser.tokenizeDeclaration("--property", computedValue);
+        const computedValueAst = SDK5.CSSPropertyParser.tokenizeDeclaration("--property", computedValue);
         if (!computedValueAst) {
           return null;
         }
-        const matches = SDK6.CSSPropertyParser.BottomUpTreeMatching.walkExcludingSuccessors(computedValueAst, [new SDK6.CSSPropertyParserMatchers.ColorMatcher()]);
+        const matches = SDK5.CSSPropertyParser.BottomUpTreeMatching.walkExcludingSuccessors(computedValueAst, [new SDK5.CSSPropertyParserMatchers.ColorMatcher()]);
         if (matches.hasUnresolvedSubstitutions(matches.ast.tree)) {
           return null;
         }
@@ -3899,7 +3898,7 @@ var ShadowRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.S
             return null;
           }
           properties.push({ value: value5, source, propertyType: "inset", expansionContext });
-        } else if (match instanceof SDK6.CSSPropertyParserMatchers.ColorMatch || match instanceof SDK6.CSSPropertyParserMatchers.ColorMixMatch || match instanceof SDK6.CSSPropertyParserMatchers.ContrastColorMatch) {
+        } else if (match instanceof SDK5.CSSPropertyParserMatchers.ColorMatch || match instanceof SDK5.CSSPropertyParserMatchers.ColorMixMatch || match instanceof SDK5.CSSPropertyParserMatchers.ContrastColorMatch) {
           if (properties.find(
             ({ propertyType }) => propertyType === "color"
             /* ShadowPropertyType.COLOR */
@@ -3955,7 +3954,7 @@ var ShadowRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.S
     return result;
   }
 };
-var GridTemplateRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.GridTemplateMatch) {
+var GridTemplateRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.GridTemplateMatch) {
   // clang-format on
   render(match, context) {
     if (match.lines.length <= 1) {
@@ -3997,7 +3996,7 @@ async function resolveValues(stylesContainer, propertyName, match, context, ...v
   }
   return await stylesContainer.cssModel()?.resolveValues(propertyName, nodeId, ...values) ?? await stylesContainer.cssModel()?.resolveValues(void 0, nodeId, ...values);
 }
-var LengthRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.LengthMatch) {
+var LengthRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.LengthMatch) {
   // clang-format on
   #stylesContainer;
   #treeElement;
@@ -4056,7 +4055,7 @@ var LengthRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.L
     tooltip.appendChild(document.createTextNode(pixelValue[0]));
   }
 };
-var BaseFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.BaseFunctionMatch) {
+var BaseFunctionRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.BaseFunctionMatch) {
   // clang-format on
   #stylesContainer;
   #matchedStyles;
@@ -4087,15 +4086,15 @@ var BaseFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
       if (evaluation) {
         return evaluation;
       }
-    } else if (match instanceof SDK6.CSSPropertyParserMatchers.MathFunctionMatch && !match.isArithmeticFunctionCall()) {
+    } else if (match instanceof SDK5.CSSPropertyParserMatchers.MathFunctionMatch && !match.isArithmeticFunctionCall()) {
       void this.applyMathFunction(renderedArgs, match, context);
     }
     return [span];
   }
   async applyEvaluation(span, match, context) {
     const value5 = context.matchedResult.getComputedText(match.node, (match2) => {
-      if (match2 instanceof SDK6.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
-        const relativeColor = context.findParent(match2.node, SDK6.CSSPropertyParserMatchers.ColorMatch)?.relativeColor ?? null;
+      if (match2 instanceof SDK5.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
+        const relativeColor = context.findParent(match2.node, SDK5.CSSPropertyParserMatchers.ColorMatch)?.relativeColor ?? null;
         return (relativeColor && match2.getColorChannelValue(relativeColor)?.toFixed(3)) ?? null;
       }
       return null;
@@ -4135,12 +4134,12 @@ var BaseFunctionRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatc
   }
 };
 var MathFunctionRenderer = class extends BaseFunctionRenderer {
-  matchType = SDK6.CSSPropertyParserMatchers.MathFunctionMatch;
+  matchType = SDK5.CSSPropertyParserMatchers.MathFunctionMatch;
 };
 var CustomFunctionRenderer = class extends BaseFunctionRenderer {
-  matchType = SDK6.CSSPropertyParserMatchers.CustomFunctionMatch;
+  matchType = SDK5.CSSPropertyParserMatchers.CustomFunctionMatch;
 };
-var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends rendererBase(SDK6.CSSPropertyParserMatchers.AnchorFunctionMatch) {
+var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends rendererBase(SDK5.CSSPropertyParserMatchers.AnchorFunctionMatch) {
   // clang-format on
   #stylesContainer;
   static async decorateAnchorForAnchorLink(stylesContainer, container, { identifier, needsSpace }) {
@@ -4165,7 +4164,7 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends rendererBase(
       anchorNode?.highlight();
     };
     const onMouseLeave = () => {
-      SDK6.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK6.TargetManager.TargetManager.instance());
+      SDK5.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK5.TargetManager.TargetManager.instance());
     };
     if (identifier) {
       render3(
@@ -4219,7 +4218,7 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends rendererBase(
     return [content];
   }
 };
-var PositionAnchorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.PositionAnchorMatch) {
+var PositionAnchorRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.PositionAnchorMatch) {
   #stylesContainer;
   // clang-format on
   constructor(stylesContainer) {
@@ -4232,7 +4231,7 @@ var PositionAnchorRenderer = class extends rendererBase(SDK6.CSSPropertyParserMa
     return [content];
   }
 };
-var PositionTryRenderer = class extends rendererBase(SDK6.CSSPropertyParserMatchers.PositionTryMatch) {
+var PositionTryRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers.PositionTryMatch) {
   #matchedStyles;
   // clang-format on
   constructor(matchedStyles) {
@@ -4342,7 +4341,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     super.onunbind();
   }
   async gridNames() {
-    if (!SDK6.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {
+    if (!SDK5.CSSMetadata.cssMetadata().isGridNameAwareProperty(this.name)) {
       return /* @__PURE__ */ new Set();
     }
     for (let node = this.#stylesContainer.node()?.parentNode; node; node = node?.parentNode) {
@@ -4357,16 +4356,16 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         if (!propertyValue) {
           return [];
         }
-        const ast = SDK6.CSSPropertyParser.tokenizeDeclaration(propertyName, propertyValue);
+        const ast = SDK5.CSSPropertyParser.tokenizeDeclaration(propertyName, propertyValue);
         if (!ast) {
           return [];
         }
-        return SDK6.CSSPropertyParser.TreeSearch.findAll(ast, predicate).map((node2) => ast.text(node2));
+        return SDK5.CSSPropertyParser.TreeSearch.findAll(ast, predicate).map((node2) => ast.text(node2));
       };
-      if (SDK6.CSSMetadata.cssMetadata().isGridAreaNameAwareProperty(this.name)) {
+      if (SDK5.CSSMetadata.cssMetadata().isGridAreaNameAwareProperty(this.name)) {
         return new Set(getNames("grid-template-areas", (node2) => node2.name === "StringLiteral")?.flatMap((row) => row.substring(1, row.length - 1).split(/\s+/).filter((cell) => !cell.match(/^\.*$/))));
       }
-      if (SDK6.CSSMetadata.cssMetadata().isGridColumnNameAwareProperty(this.name)) {
+      if (SDK5.CSSMetadata.cssMetadata().isGridColumnNameAwareProperty(this.name)) {
         return new Set(getNames("grid-template-columns", (node2) => node2.name === "ValueName" && node2.parent?.name === "BracketedValue"));
       }
       return new Set(getNames("grid-template-rows", (node2) => node2.name === "ValueName" && node2.parent?.name === "BracketedValue"));
@@ -4527,7 +4526,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (!parsedLonghands || parsedLonghands.getError()) {
       return staticLonghandProperties;
     }
-    return parsedLonghands.longhandProperties.map((p) => SDK6.CSSProperty.CSSProperty.parsePayload(this.style, -1, p));
+    return parsedLonghands.longhandProperties.map((p) => SDK5.CSSProperty.CSSProperty.parsePayload(this.style, -1, p));
   }
   async onpopulate() {
     if (!this.#gridNames) {
@@ -4624,16 +4623,16 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
   // Resolves a CSS expression to its computed value with `var()` and `attr()` calls updated.
   // Still returns the string even when a `var()` or `attr()` call is not resolved.
   #computeCSSExpression(style, text) {
-    const ast = SDK6.CSSPropertyParser.tokenizeDeclaration("--unused", text);
+    const ast = SDK5.CSSPropertyParser.tokenizeDeclaration("--unused", text);
     if (!ast) {
       return null;
     }
-    const matching = SDK6.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [
-      new SDK6.CSSPropertyParserMatchers.VariableMatcher(this.#matchedStyles, style),
-      new SDK6.CSSPropertyParserMatchers.AttributeMatcher(this.#matchedStyles, style),
-      new SDK6.CSSPropertyParserMatchers.EnvFunctionMatcher(this.#matchedStyles)
+    const matching = SDK5.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [
+      new SDK5.CSSPropertyParserMatchers.VariableMatcher(this.#matchedStyles, style),
+      new SDK5.CSSPropertyParserMatchers.AttributeMatcher(this.#matchedStyles, style),
+      new SDK5.CSSPropertyParserMatchers.EnvFunctionMatcher(this.#matchedStyles)
     ]);
-    const decl = SDK6.CSSPropertyParser.ASTUtils.siblings(SDK6.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
+    const decl = SDK5.CSSPropertyParser.ASTUtils.siblings(SDK5.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
     return decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : "";
   }
   refreshIfComputedValueChanged() {
@@ -4667,7 +4666,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
     UI7.UIUtils.createTextChild(this.listItemElement.createChild("span", "styles-clipboard-only"), indent.repeat(this.section().nestingLevel + 1) + (this.property.disabled ? "/* " : ""));
     this.listItemElement.appendChild(this.nameElement);
-    if (this.property.name.startsWith("--") && !(this.property.ownerStyle.parentRule instanceof SDK6.CSSRule.CSSFunctionRule)) {
+    if (this.property.name.startsWith("--") && !(this.property.ownerStyle.parentRule instanceof SDK5.CSSRule.CSSFunctionRule)) {
       const contents = this.#stylesContainer.getVariablePopoverContents(this.matchedStyles(), this.property.name, this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null);
       const tooltipId = this.getTooltipId("custom-property-decl");
       this.nameElement.setAttribute("aria-details", tooltipId);
@@ -4729,7 +4728,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     } else {
       this.listItemElement.classList.add("not-parsed-ok");
       this.listItemElement.insertBefore(this.createExclamationMark(this.property, this.#stylesContainer.getVariableParserError(this.matchedStyles(), this.property.name)), this.listItemElement.firstChild);
-      const invalidPropertyValue = SDK6.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
+      const invalidPropertyValue = SDK5.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
       if (invalidPropertyValue) {
         this.listItemElement.classList.add("invalid-property-value");
       }
@@ -4778,7 +4777,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const exclamationElement = container.createChild("span");
     exclamationElement.tabIndex = -1;
     exclamationElement.classList.add("exclamation-mark");
-    const invalidMessage = SDK6.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ? i18nString5(UIStrings5.invalidPropertyValue) : i18nString5(UIStrings5.unknownPropertyName);
+    const invalidMessage = SDK5.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ? i18nString5(UIStrings5.invalidPropertyValue) : i18nString5(UIStrings5.unknownPropertyName);
     if (title === null) {
       UI7.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
     } else {
@@ -5084,8 +5083,8 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       originalProperty: this.property,
       previousContent: this.value
     };
-    if (SDK6.CSSMetadata.cssMetadata().isGridAreaDefiningProperty(this.name)) {
-      const splitResult = TextUtils.TextUtils.Utils.splitStringByRegexes(this.value, [SDK6.CSSMetadata.GridAreaRowRegex]);
+    if (SDK5.CSSMetadata.cssMetadata().isGridAreaDefiningProperty(this.name)) {
+      const splitResult = TextUtils.TextUtils.Utils.splitStringByRegexes(this.value, [SDK5.CSSMetadata.GridAreaRowRegex]);
       context.previousContent = splitResult.map((result) => result.value.trim()).join("\n");
     }
     this.#startEditing(context);
@@ -5615,7 +5614,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (this.property.parsedOk) {
       this.listItemElement.classList.remove("not-parsed-ok", "invalid-property-value");
     } else {
-      const invalidPropertyValue = SDK6.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
+      const invalidPropertyValue = SDK5.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
       if (!invalidPropertyValue) {
         this.listItemElement.classList.remove("invalid-property-value");
       }
@@ -5811,7 +5810,7 @@ import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as SDK6 from "./../../core/sdk/sdk.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
@@ -6086,7 +6085,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.selectorElement.addEventListener("mouseenter", this.onMouseEnterSelector.bind(this), false);
     this.selectorElement.addEventListener("mouseleave", this.onMouseOutSelector.bind(this), false);
     this.#specificityTooltips = selectorContainer.createChild("span");
-    if (headerText.length > 0 || !(rule instanceof SDK7.CSSRule.CSSStyleRule)) {
+    if (headerText.length > 0 || !(rule instanceof SDK6.CSSRule.CSSStyleRule)) {
       const openBrace = selectorContainer.createChild("span", "sidebar-pane-open-brace");
       openBrace.textContent = headerText.length > 0 ? " {" : "{";
       const closeBrace = this.#styleRuleElement.createChild("div", "sidebar-pane-closing-brace");
@@ -6175,7 +6174,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (!treeScope) {
       return -1;
     }
-    return SDK7.CSSMatchedStyles.distanceToTreeScope(this.matchedStyles.node(), treeScope);
+    return SDK6.CSSMatchedStyles.distanceToTreeScope(this.matchedStyles.node(), treeScope);
   }
   static createRuleOriginNode(matchedStyles, linkifier, rule) {
     if (!rule) {
@@ -6199,7 +6198,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
         </devtools-widget>`;
       }
       if (rule && rule.style.styleSheetId && rule.treeScope) {
-        const ownerNode = new SDK7.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
+        const ownerNode = new SDK6.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
         return html7`<devtools-widget ${widget2((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId))}>
           ${label}
         </devtools-widget>`;
@@ -6242,9 +6241,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   static getRuleLocationFromCSSRule(rule) {
     let ruleLocation;
-    if (rule instanceof SDK7.CSSRule.CSSStyleRule) {
+    if (rule instanceof SDK6.CSSRule.CSSStyleRule) {
       ruleLocation = rule.style.range;
-    } else if (rule instanceof SDK7.CSSRule.CSSKeyframeRule) {
+    } else if (rule instanceof SDK6.CSSRule.CSSKeyframeRule) {
       ruleLocation = rule.key().range;
     }
     return ruleLocation;
@@ -6267,7 +6266,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   static getCSSSelectorLocation(cssModel, styleSheetHeader, ruleLocation) {
     const lineNumber = styleSheetHeader.lineNumberInSource(ruleLocation.startLine);
     const columnNumber = styleSheetHeader.columnNumberInSource(ruleLocation.startLine, ruleLocation.startColumn);
-    return new SDK7.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    return new SDK6.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
   }
   getFocused() {
     return this.propertiesTreeOutline.shadowRoot.activeElement || null;
@@ -6368,22 +6367,22 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return this.#customHeaderText;
     }
     const node = this.matchedStyles.nodeForStyle(this.styleInternal);
-    if (this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Inline) {
+    if (this.styleInternal.type === SDK6.CSSStyleDeclaration.Type.Inline) {
       return this.matchedStyles.isInherited(this.styleInternal) ? i18nString7(UIStrings7.styleAttribute) : "element.style";
     }
-    if (this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Transition) {
+    if (this.styleInternal.type === SDK6.CSSStyleDeclaration.Type.Transition) {
       return "transitions style";
     }
-    if (this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Animation) {
+    if (this.styleInternal.type === SDK6.CSSStyleDeclaration.Type.Animation) {
       return this.styleInternal.animationName() ? `${this.styleInternal.animationName()} animation` : "animation style";
     }
-    if (node && this.styleInternal.type === SDK7.CSSStyleDeclaration.Type.Attributes) {
+    if (node && this.styleInternal.type === SDK6.CSSStyleDeclaration.Type.Attributes) {
       return i18nString7(UIStrings7.sattributesStyle, { PH1: node.nodeNameInCorrectCase() });
     }
-    if (this.styleInternal.parentRule instanceof SDK7.CSSRule.CSSStyleRule) {
+    if (this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSStyleRule) {
       return this.styleInternal.parentRule.selectorText();
     }
-    if (this.styleInternal.parentRule instanceof SDK7.CSSRule.CSSAtRule) {
+    if (this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSAtRule) {
       if (this.styleInternal.parentRule.subsection()) {
         return "@" + this.styleInternal.parentRule.subsection();
       }
@@ -6400,7 +6399,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (this.hoverTimer) {
       clearTimeout(this.hoverTimer);
     }
-    SDK7.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK7.TargetManager.TargetManager.instance());
+    SDK6.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK6.TargetManager.TargetManager.instance());
   }
   onMouseEnterSelector() {
     if (this.hoverTimer) {
@@ -6409,12 +6408,12 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.hoverTimer = window.setTimeout(this.highlight.bind(this), 300);
   }
   highlight(mode = "all") {
-    SDK7.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK7.TargetManager.TargetManager.instance());
+    SDK6.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK6.TargetManager.TargetManager.instance());
     const node = this.stylesContainer.node();
     if (!node) {
       return;
     }
-    const selectorList = this.styleInternal.parentRule && this.styleInternal.parentRule instanceof SDK7.CSSRule.CSSStyleRule ? this.styleInternal.parentRule.selectorText() : void 0;
+    const selectorList = this.styleInternal.parentRule && this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSStyleRule ? this.styleInternal.parentRule.selectorText() : void 0;
     node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
   }
   firstSibling() {
@@ -6529,7 +6528,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     const properties = this.#activeAiSuggestion.properties.slice(1);
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
-      const fakeProperty = new SDK7.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, property.name, property.value, false, false, true, false);
+      const fakeProperty = new SDK6.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, property.name, property.value, false, false, true, false);
       const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
       this.propertiesTreeOutline.insertChild(ghost, index + i + 1);
       this.ghostStyleTreeElements.push(ghost);
@@ -6622,9 +6621,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   maybeCreateAncestorRules(style) {
     if (style.parentRule) {
-      if (style.parentRule instanceof SDK7.CSSRule.CSSStyleRule) {
+      if (style.parentRule instanceof SDK6.CSSRule.CSSStyleRule) {
         this.createAncestorRules(style.parentRule);
-      } else if (style.parentRule instanceof SDK7.CSSRule.CSSAtRule) {
+      } else if (style.parentRule instanceof SDK6.CSSRule.CSSAtRule) {
         this.createAtRuleAncestor(style.parentRule);
       }
       let curNestingLevel = 0;
@@ -6660,12 +6659,12 @@ var StylePropertiesSection = class _StylePropertiesSection {
     let queryText = "";
     let onQueryTextClick;
     switch (media.source) {
-      case SDK7.CSSMedia.Source.LINKED_SHEET:
-      case SDK7.CSSMedia.Source.INLINE_SHEET: {
+      case SDK6.CSSMedia.Source.LINKED_SHEET:
+      case SDK6.CSSMedia.Source.INLINE_SHEET: {
         queryText = `media="${media.text}"`;
         break;
       }
-      case SDK7.CSSMedia.Source.MEDIA_RULE: {
+      case SDK6.CSSMedia.Source.MEDIA_RULE: {
         queryPrefix = "@media";
         queryText = media.text;
         if (media.styleSheetId) {
@@ -6673,7 +6672,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
         }
         break;
       }
-      case SDK7.CSSMedia.Source.IMPORT_RULE: {
+      case SDK6.CSSMedia.Source.IMPORT_RULE: {
         queryText = `@import ${media.text}`;
         break;
       }
@@ -6813,7 +6812,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   isPropertyInherited(propertyName) {
     if (this.matchedStyles.isInherited(this.styleInternal)) {
-      return !SDK7.CSSMetadata.cssMetadata().isPropertyInherited(propertyName);
+      return !SDK6.CSSMetadata.cssMetadata().isPropertyInherited(propertyName);
     }
     return false;
   }
@@ -6975,7 +6974,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     const style = this.styleInternal;
     const properties = style.leadingProperties();
-    if (style.type === SDK7.CSSStyleDeclaration.Type.Inline) {
+    if (style.type === SDK6.CSSStyleDeclaration.Type.Inline) {
       return false;
     }
     if (properties.length === 0) {
@@ -7024,7 +7023,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   markSelectorMatches() {
     const rule = this.styleInternal.parentRule;
-    if (!rule || !(rule instanceof SDK7.CSSRule.CSSStyleRule)) {
+    if (!rule || !(rule instanceof SDK6.CSSRule.CSSStyleRule)) {
       return;
     }
     const matchingSelectorIndexes = this.matchedStyles.getMatchingSelectors(rule);
@@ -7190,17 +7189,17 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (cssModel && query.styleSheetId) {
       const range = query.range;
       let success = false;
-      if (query instanceof SDK7.CSSContainerQuery.CSSContainerQuery) {
+      if (query instanceof SDK6.CSSContainerQuery.CSSContainerQuery) {
         if (query.textIsConditionText) {
           success = await cssModel.setContainerQueryConditionText(query.styleSheetId, range, newContent);
         } else {
           success = await cssModel.setContainerQueryText(query.styleSheetId, range, newContent);
         }
-      } else if (query instanceof SDK7.CSSSupports.CSSSupports) {
+      } else if (query instanceof SDK6.CSSSupports.CSSSupports) {
         success = await cssModel.setSupportsText(query.styleSheetId, range, newContent);
-      } else if (query instanceof SDK7.CSSScope.CSSScope) {
+      } else if (query instanceof SDK6.CSSScope.CSSScope) {
         success = await cssModel.setScopeText(query.styleSheetId, range, newContent);
-      } else if (query instanceof SDK7.CSSNavigation.CSSNavigation) {
+      } else if (query instanceof SDK6.CSSNavigation.CSSNavigation) {
         success = await cssModel.setNavigationText(query.styleSheetId, range, newContent);
       } else {
         success = await cssModel.setMediaText(query.styleSheetId, range, newContent);
@@ -7288,7 +7287,7 @@ ${allDeclarationText}
     if (!header) {
       return;
     }
-    const rawLocation = new SDK7.CSSModel.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
+    const rawLocation = new SDK6.CSSModel.CSSLocation(header, rule.lineNumberInSource(index), rule.columnNumberInSource(index));
     _StylePropertiesSection.revealSelectorSource(rawLocation, focus);
   }
   static revealSelectorSource(rawLocation, focus) {
@@ -7390,7 +7389,7 @@ ${allDeclarationText}
       this.matchedStyles.resetActiveProperties();
       this.stylesContainer.refreshUpdate(this);
     }
-    if (!(rule instanceof SDK7.CSSRule.CSSStyleRule)) {
+    if (!(rule instanceof SDK6.CSSRule.CSSStyleRule)) {
       return Promise.resolve();
     }
     const oldSelectorRange = rule.selectorRange();
@@ -7433,7 +7432,7 @@ var BlankStylePropertiesSection = class extends StylePropertiesSection {
   styleSheetHeader;
   constructor(stylesContainer, matchedStyles, defaultSelectorText, styleSheetHeader, ruleLocation, insertAfterStyle, sectionIdx) {
     const cssModel = stylesContainer.cssModel();
-    const rule = SDK7.CSSRule.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
+    const rule = SDK6.CSSRule.CSSStyleRule.createDummyRule(cssModel, defaultSelectorText);
     super(stylesContainer, matchedStyles, rule.style, sectionIdx, null, null, null);
     this.normal = false;
     this.ruleLocation = ruleLocation;
@@ -7518,7 +7517,7 @@ var RegisteredPropertiesSection = class extends StylePropertiesSection {
     this.selectorElement.className = "property-registration-key";
   }
   async setHeaderText(rule, newContent) {
-    if (!(rule instanceof SDK7.CSSRule.CSSPropertyRule)) {
+    if (!(rule instanceof SDK6.CSSRule.CSSPropertyRule)) {
       return;
     }
     const oldRange = rule.propertyName().range;
@@ -7614,7 +7613,7 @@ var KeyframePropertiesSection = class extends StylePropertiesSection {
     this.selectorElement.className = "keyframe-key";
   }
   headerText() {
-    if (this.styleInternal.parentRule instanceof SDK7.CSSRule.CSSKeyframeRule) {
+    if (this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSKeyframeRule) {
       return this.styleInternal.parentRule.key().text;
     }
     return "";
@@ -7626,7 +7625,7 @@ var KeyframePropertiesSection = class extends StylePropertiesSection {
       }
       this.stylesContainer.refreshUpdate(this);
     }
-    if (!(rule instanceof SDK7.CSSRule.CSSKeyframeRule)) {
+    if (!(rule instanceof SDK6.CSSRule.CSSKeyframeRule)) {
       return Promise.resolve();
     }
     const oldRange = rule.key().range;
@@ -7644,7 +7643,7 @@ var KeyframePropertiesSection = class extends StylePropertiesSection {
   markSelectorHighlights() {
   }
   markSelectorMatches() {
-    if (this.styleInternal.parentRule instanceof SDK7.CSSRule.CSSKeyframeRule) {
+    if (this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSKeyframeRule) {
       this.selectorElement.textContent = this.styleInternal.parentRule.key().text;
     }
   }
@@ -8517,7 +8516,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.#swatchPopoverHelper.addEventListener("WillShowPopover", this.hideAllPopovers, this);
     this.decorator = new StylePropertyHighlighter(this);
     this.contentElement.classList.add("styles-pane");
-    UI10.Context.Context.instance().addFlavorChangeListener(SDK8.DOMModel.DOMNode, this.forceUpdate, this);
+    UI10.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener("copy", this.clipboardCopy.bind(this));
     this.boundOnScroll = this.onScroll.bind(this);
     this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, (event) => {
@@ -8577,7 +8576,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     return this.decorator.findAndHighlightPropertyName(propertyName, sectionName, blockName);
   }
   jumpToDeclaration(valueSource) {
-    if (valueSource.declaration instanceof SDK8.CSSProperty.CSSProperty) {
+    if (valueSource.declaration instanceof SDK7.CSSProperty.CSSProperty) {
       this.revealProperty(valueSource.declaration);
     } else {
       this.jumpToProperty("initial-value", valueSource.name, REGISTERED_PROPERTY_SECTION_NAME);
@@ -8887,7 +8886,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   }
   setActiveProperty(treeElement) {
     if (this.isActivePropertyHighlighted) {
-      SDK8.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK8.TargetManager.TargetManager.instance());
+      SDK7.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK7.TargetManager.TargetManager.instance());
     }
     this.isActivePropertyHighlighted = false;
     if (!this.node()) {
@@ -8897,7 +8896,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       return;
     }
     const rule = treeElement.property.ownerStyle.parentRule;
-    const selectorList = rule instanceof SDK8.CSSRule.CSSStyleRule ? rule.selectorText() : void 0;
+    const selectorList = rule instanceof SDK7.CSSRule.CSSStyleRule ? rule.selectorText() : void 0;
     for (const { properties, mode } of HIGHLIGHTABLE_PROPERTIES) {
       if (!properties.includes(treeElement.name)) {
         continue;
@@ -9005,8 +9004,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       updateStyleSection(currentAnimationStyle ?? null, nextAnimationStyle);
     }
     const inheritedStyles = this.matchedStyles.inheritedStyles() ?? [];
-    const currentInheritedTransitionsStyles = inheritedStyles.filter((style) => style.type === SDK8.CSSStyleDeclaration.Type.Transition);
-    const newInheritedTransitionsStyles = animatedStyles.inherited?.map((inherited) => inherited.transitionsStyle).filter((style) => style?.cssProperties.some((cssProperty) => SDK8.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name))) ?? [];
+    const currentInheritedTransitionsStyles = inheritedStyles.filter((style) => style.type === SDK7.CSSStyleDeclaration.Type.Transition);
+    const newInheritedTransitionsStyles = animatedStyles.inherited?.map((inherited) => inherited.transitionsStyle).filter((style) => style?.cssProperties.some((cssProperty) => SDK7.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name))) ?? [];
     if (currentInheritedTransitionsStyles.length !== newInheritedTransitionsStyles.length) {
       this.#scheduleResetUpdateIfNotEditing();
       return;
@@ -9016,8 +9015,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       const newInheritedTransitionsStyle = newInheritedTransitionsStyles[i];
       updateStyleSection(currentInheritedTransitionsStyle, newInheritedTransitionsStyle ?? null);
     }
-    const currentInheritedAnimationsStyles = inheritedStyles.filter((style) => style.type === SDK8.CSSStyleDeclaration.Type.Animation);
-    const newInheritedAnimationsStyles = animatedStyles.inherited?.flatMap((inherited) => inherited.animationStyles).filter((animationStyle) => animationStyle?.style.cssProperties.some((cssProperty) => SDK8.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name))) ?? [];
+    const currentInheritedAnimationsStyles = inheritedStyles.filter((style) => style.type === SDK7.CSSStyleDeclaration.Type.Animation);
+    const newInheritedAnimationsStyles = animatedStyles.inherited?.flatMap((inherited) => inherited.animationStyles).filter((animationStyle) => animationStyle?.style.cssProperties.some((cssProperty) => SDK7.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name))) ?? [];
     if (currentInheritedAnimationsStyles.length !== newInheritedAnimationsStyles.length) {
       this.#scheduleResetUpdateIfNotEditing();
       return;
@@ -9160,7 +9159,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     let sawLayers = false;
     const addLayerSeparator = (style) => {
       const parentRule = style.parentRule;
-      if (parentRule instanceof SDK8.CSSRule.CSSStyleRule) {
+      if (parentRule instanceof SDK7.CSSRule.CSSStyleRule) {
         const layers = parentRule.layers;
         if ((layers.length || lastLayers) && lastLayers !== layers) {
           const block = SectionBlock.createLayerBlock(parentRule);
@@ -9180,7 +9179,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     }
     this.#shouldRenderLazily = !Host4.InspectorFrontendHost.isUnderTest() && totalProperties > LAZY_RENDER_THRESHOLD;
     for (const style of matchedStyles.nodeStyles()) {
-      const isTransitionOrAnimationStyle = style.type === SDK8.CSSStyleDeclaration.Type.Transition || style.type === SDK8.CSSStyleDeclaration.Type.Animation;
+      const isTransitionOrAnimationStyle = style.type === SDK7.CSSStyleDeclaration.Type.Transition || style.type === SDK7.CSSStyleDeclaration.Type.Animation;
       if (isTransitionOrAnimationStyle && cssAnimationsOnlyWhenAnimationsTabOpen && !animationsPanelVisible) {
         continue;
       }
@@ -9729,7 +9728,7 @@ var SectionBlock = class _SectionBlock {
     const layerLink = separatorElement.createChild("button");
     layerLink.className = "link";
     layerLink.title = i18nString8(UIStrings8.clickToRevealLayer);
-    const name = layers.map((layer) => SDK8.CSSModel.CSSModel.readableLayerName(layer.text)).join(".");
+    const name = layers.map((layer) => SDK7.CSSModel.CSSModel.readableLayerName(layer.text)).join(".");
     layerLink.textContent = name;
     layerLink.onclick = () => LayersWidget.instance().revealLayer(name);
     return new _SectionBlock(separatorElement);
@@ -9813,8 +9812,8 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   constructor(treeElement, isEditingName, completions = []) {
     super();
     this.initialize(this.buildPropertyCompletions.bind(this), UI10.UIUtils.StyleValueDelimiters);
-    const cssMetadata = SDK8.CSSMetadata.cssMetadata();
-    this.isColorAware = SDK8.CSSMetadata.cssMetadata().isColorAwareProperty(treeElement.property.name);
+    const cssMetadata = SDK7.CSSMetadata.cssMetadata();
+    this.isColorAware = SDK7.CSSMetadata.cssMetadata().isColorAwareProperty(treeElement.property.name);
     this.cssCompletions = [];
     const node = treeElement.node();
     if (isEditingName) {
@@ -9955,7 +9954,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       }
     }
     function customNumberHandler(prefix, number, suffix) {
-      if (number !== 0 && !suffix.length && SDK8.CSSMetadata.cssMetadata().isLengthProperty(this.treeElement.property.name) && !this.treeElement.property.value.toLowerCase().startsWith("calc(")) {
+      if (number !== 0 && !suffix.length && SDK7.CSSMetadata.cssMetadata().isLengthProperty(this.treeElement.property.name) && !this.treeElement.property.value.toLowerCase().startsWith("calc(")) {
         suffix = "px";
       }
       return prefix + number + suffix;
@@ -9994,19 +9993,19 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         /* variable */
       ));
       if (this.isEditingName) {
-        SDK8.CSSMetadata.cssMetadata().aliasesFor().forEach((canonicalProperty, alias) => {
+        SDK7.CSSMetadata.cssMetadata().aliasesFor().forEach((canonicalProperty, alias) => {
           const index = alias.toLowerCase().indexOf(lowerQuery);
           if (index !== 0) {
             return;
           }
           const aliasResult = {
             text: alias,
-            priority: SDK8.CSSMetadata.cssMetadata().propertyUsageWeight(alias),
+            priority: SDK7.CSSMetadata.cssMetadata().propertyUsageWeight(alias),
             isCSSVariableColor: false
           };
           const canonicalPropertyResult = {
             text: canonicalProperty,
-            priority: SDK8.CSSMetadata.cssMetadata().propertyUsageWeight(canonicalProperty),
+            priority: SDK7.CSSMetadata.cssMetadata().propertyUsageWeight(canonicalProperty),
             subtitle: `= ${alias}`,
             // This explains why this canonicalProperty is prompted.
             isCSSVariableColor: false
@@ -10017,7 +10016,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     }
     const node = this.treeElement.node();
     if (this.isEditingName && node) {
-      const nameValuePresets = SDK8.CSSMetadata.cssMetadata().nameValuePresets(node.isSVGNode());
+      const nameValuePresets = SDK7.CSSMetadata.cssMetadata().nameValuePresets(node.isSVGNode());
       nameValuePresets.forEach((preset) => filterCompletions.call(
         this,
         preset,
@@ -10054,7 +10053,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         result.text += ")";
         continue;
       }
-      const valuePreset = SDK8.CSSMetadata.cssMetadata().getValuePreset(this.treeElement.name, result.text);
+      const valuePreset = SDK7.CSSMetadata.cssMetadata().getValuePreset(this.treeElement.name, result.text);
       if (!this.isEditingName && valuePreset) {
         result.title = result.text;
         result.text = valuePreset.text;
@@ -10116,7 +10115,7 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         result.hideGhostText = true;
       }
       if (index === 0) {
-        result.priority = this.isEditingName ? SDK8.CSSMetadata.cssMetadata().propertyUsageWeight(completion) : 1;
+        result.priority = this.isEditingName ? SDK7.CSSMetadata.cssMetadata().propertyUsageWeight(completion) : 1;
         prefixResults.push(result);
       } else if (index > -1) {
         anywhereResults.push(result);
@@ -10346,10 +10345,10 @@ var ButtonProvider2 = class _ButtonProvider {
     this.button = UI10.Toolbar.Toolbar.createActionButton("elements.new-style-rule");
     this.button.setLongClickable(true);
     new UI10.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));
-    UI10.Context.Context.instance().addFlavorChangeListener(SDK8.DOMModel.DOMNode, onNodeChanged.bind(this));
+    UI10.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, onNodeChanged.bind(this));
     onNodeChanged.call(this);
     function onNodeChanged() {
-      let node = UI10.Context.Context.instance().flavor(SDK8.DOMModel.DOMNode);
+      let node = UI10.Context.Context.instance().flavor(SDK7.DOMModel.DOMNode);
       node = node ? node.enclosingElementOrSelf() : null;
       this.button.setEnabled(Boolean(node));
     }
@@ -10386,7 +10385,7 @@ var str_9 = i18n18.i18n.registerUIStrings("panels/elements/PropertyRenderer.ts",
 var i18nString9 = i18n18.i18n.getLocalizedString.bind(void 0, str_9);
 function mergeWithSpacing(nodes, merge) {
   const result = [...nodes];
-  if (SDK9.CSSPropertyParser.requiresSpace(nodes, merge)) {
+  if (SDK8.CSSPropertyParser.requiresSpace(nodes, merge)) {
     result.push(document.createTextNode(" "));
   }
   result.push(...merge);
@@ -10497,7 +10496,7 @@ var TracingContext = class _TracingContext {
   expandPercentagesInShorthands;
   constructor(highlighting, expandPercentagesInShorthands, initialLonghandOffset = 0, matchedResult) {
     this.#highlighting = highlighting;
-    this.#hasMoreSubstitutions = matchedResult?.hasMatches(SDK9.CSSPropertyParserMatchers.VariableMatch, SDK9.CSSPropertyParserMatchers.BaseVariableMatch, SDK9.CSSPropertyParserMatchers.AttributeMatch, SDK9.CSSPropertyParserMatchers.EnvFunctionMatch) ?? false;
+    this.#hasMoreSubstitutions = matchedResult?.hasMatches(SDK8.CSSPropertyParserMatchers.VariableMatch, SDK8.CSSPropertyParserMatchers.BaseVariableMatch, SDK8.CSSPropertyParserMatchers.AttributeMatch, SDK8.CSSPropertyParserMatchers.EnvFunctionMatch) ?? false;
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
     this.#longhandOffset = initialLonghandOffset;
     this.expandPercentagesInShorthands = expandPercentagesInShorthands;
@@ -10658,7 +10657,7 @@ var RenderingContext = class {
     if (!this.matchedResult.ast.propertyName) {
       return null;
     }
-    const longhands = SDK9.CSSMetadata.cssMetadata().getLonghands(this.tracing?.propertyName ?? this.matchedResult.ast.propertyName);
+    const longhands = SDK8.CSSMetadata.cssMetadata().getLonghands(this.tracing?.propertyName ?? this.matchedResult.ast.propertyName);
     if (!longhands) {
       return null;
     }
@@ -10679,7 +10678,7 @@ var RenderingContext = class {
     return null;
   }
 };
-var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
+var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
   #matchedResult;
   #output = [];
   #context;
@@ -10692,14 +10691,14 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
     if (!Array.isArray(nodeOrNodes)) {
       return this.render([nodeOrNodes], context);
     }
-    const cssControls = new SDK9.CSSPropertyParser.CSSControlMap();
+    const cssControls = new SDK8.CSSPropertyParser.CSSControlMap();
     const renderers = nodeOrNodes.map((node) => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
     const nodes = renderers.map((node) => node.#output).reduce(mergeWithSpacing, []);
     return { nodes, cssControls };
   }
   static renderInto(nodeOrNodes, context, parent) {
     const { nodes, cssControls } = this.render(nodeOrNodes, context);
-    if (parent.lastChild && SDK9.CSSPropertyParser.requiresSpace([parent.lastChild], nodes)) {
+    if (parent.lastChild && SDK8.CSSPropertyParser.requiresSpace([parent.lastChild], nodes)) {
       parent.appendChild(document.createTextNode(" "));
     }
     nodes.map((n) => parent.appendChild(n));
@@ -10710,7 +10709,7 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
   enter({ node }) {
     const match = this.#matchedResult.getMatch(node);
     const renderer = match && this.#context.renderers.get(match.constructor);
-    if (renderer || match instanceof SDK9.CSSPropertyParserMatchers.TextMatch) {
+    if (renderer || match instanceof SDK8.CSSPropertyParserMatchers.TextMatch) {
       const output = renderer ? renderer.render(match, this.#context) : match.render();
       this.#context.tracing?.highlighting.addMatch(match, output);
       this.renderedMatchForTest(output, match);
@@ -10762,11 +10761,11 @@ var Renderer = class _Renderer extends SDK9.CSSPropertyParser.TreeWalker {
     for (const renderer of renderers) {
       rendererMap.set(renderer.matchType, renderer);
     }
-    const context = new RenderingContext(matchedResult.ast, property instanceof SDK9.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, void 0, {}, tracing, signal);
+    const context = new RenderingContext(matchedResult.ast, property instanceof SDK8.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, void 0, {}, tracing, signal);
     return _Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }
 };
-var URLRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.URLMatch) {
+var URLRenderer = class extends rendererBase(SDK8.CSSPropertyParserMatchers.URLMatch) {
   rule;
   node;
   // clang-format on
@@ -10800,7 +10799,7 @@ var URLRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.URLM
     return [container];
   }
 };
-var StringRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.StringMatch) {
+var StringRenderer = class extends rendererBase(SDK8.CSSPropertyParserMatchers.StringMatch) {
   // clang-format on
   render(match) {
     const element = document.createElement("span");
@@ -10809,10 +10808,10 @@ var StringRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.S
     return [element];
   }
 };
-var BinOpRenderer = class extends rendererBase(SDK9.CSSPropertyParserMatchers.BinOpMatch) {
+var BinOpRenderer = class extends rendererBase(SDK8.CSSPropertyParserMatchers.BinOpMatch) {
   // clang-format on
   render(match, context) {
-    const [lhs, binop, rhs] = SDK9.CSSPropertyParser.ASTUtils.children(match.node).map((child) => {
+    const [lhs, binop, rhs] = SDK8.CSSPropertyParser.ASTUtils.children(match.node).map((child) => {
       const span = document.createElement("span");
       Renderer.renderInto(child, context, span);
       return span;
@@ -10862,10 +10861,10 @@ var UIStrings10 = {
 var str_10 = i18n20.i18n.registerUIStrings("panels/elements/ComputedStyleWidget.ts", UIStrings10);
 var i18nString10 = i18n20.i18n.getLocalizedString.bind(void 0, str_10);
 function matchProperty(name, value5) {
-  return SDK10.CSSPropertyParser.matchDeclaration(name, value5, [
-    new SDK10.CSSPropertyParserMatchers.ColorMatcher(),
-    new SDK10.CSSPropertyParserMatchers.URLMatcher(),
-    new SDK10.CSSPropertyParserMatchers.StringMatcher()
+  return SDK9.CSSPropertyParser.matchDeclaration(name, value5, [
+    new SDK9.CSSPropertyParserMatchers.ColorMatcher(),
+    new SDK9.CSSPropertyParserMatchers.URLMatcher(),
+    new SDK9.CSSPropertyParserMatchers.StringMatcher()
   ]);
 }
 function renderPropertyContents(node, cache, propertyName, propertyValue) {
@@ -10909,9 +10908,9 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
   let selector = "element.style";
   if (rule) {
     selector = rule.selectorText();
-  } else if (property.ownerStyle.type === SDK10.CSSStyleDeclaration.Type.Animation) {
+  } else if (property.ownerStyle.type === SDK9.CSSStyleDeclaration.Type.Animation) {
     selector = property.ownerStyle.animationName() ? `${property.ownerStyle.animationName()} animation` : "animation style";
-  } else if (property.ownerStyle.type === SDK10.CSSStyleDeclaration.Type.Transition) {
+  } else if (property.ownerStyle.type === SDK9.CSSStyleDeclaration.Type.Transition) {
     selector = "transitions style";
   }
   trace.data = {
@@ -10922,7 +10921,7 @@ var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, l
   };
   return trace;
 };
-var ColorRenderer2 = class extends rendererBase(SDK10.CSSPropertyParserMatchers.ColorMatch) {
+var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.ColorMatch) {
   // clang-format on
   render(match, context) {
     const color = Common7.Color.parse(match.text);
@@ -10942,7 +10941,7 @@ var ColorRenderer2 = class extends rendererBase(SDK10.CSSPropertyParserMatchers.
     return [swatch, valueElement];
   }
   matcher() {
-    return new SDK10.CSSPropertyParserMatchers.ColorMatcher();
+    return new SDK9.CSSPropertyParserMatchers.ColorMatcher();
   }
 };
 var navigateToSource = (cssProperty, event) => {
@@ -10959,8 +10958,8 @@ var propertySorter = (propA, propB) => {
   if (propA.startsWith("-webkit") !== propB.startsWith("-webkit")) {
     return propA.startsWith("-webkit") ? 1 : -1;
   }
-  const canonicalA = SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
-  const canonicalB = SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
+  const canonicalA = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propA);
+  const canonicalB = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propB);
   return Platform6.StringUtilities.compare(canonicalA, canonicalB);
 };
 var DEFAULT_VIEW2 = (input, _output, target) => {
@@ -11178,7 +11177,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     const tree3 = [];
     for (const propertyName of uniqueProperties) {
       const propertyValue = nodeStyle.computedStyle.get(propertyName) || "";
-      const canonicalName = SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
+      const canonicalName = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !nonInheritedProperties.has(canonicalName);
       if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
         continue;
@@ -11213,7 +11212,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     const propertiesByCategory = /* @__PURE__ */ new Map();
     const tree3 = [];
     for (const [propertyName, propertyValue] of nodeStyle.computedStyle) {
-      const canonicalName = SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
+      const canonicalName = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !nonInheritedProperties.has(canonicalName);
       if (!showInherited && isInherited && !alwaysShownComputedProperties.has(propertyName)) {
         continue;
@@ -11239,7 +11238,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
         const propertyNodes = [];
         for (const propertyName of properties) {
           const propertyValue = nodeStyle.computedStyle.get(propertyName) || "";
-          const canonicalName = SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
+          const canonicalName = SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
           const isInherited = !nonInheritedProperties.has(canonicalName);
           propertyNodes.push(this.buildTreeNode(propertyTraces, propertyName, propertyValue, isInherited));
         }
@@ -11334,7 +11333,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
         if (!matchedStyles.propertyState(property)) {
           continue;
         }
-        result.add(SDK10.CSSMetadata.cssMetadata().canonicalPropertyName(property.name));
+        result.add(SDK9.CSSMetadata.cssMetadata().canonicalPropertyName(property.name));
       }
     }
     return result;
@@ -11524,7 +11523,7 @@ __export(ElementsTreeOutline_exports, {
 });
 import * as Common10 from "./../../core/common/common.js";
 import * as i18n30 from "./../../core/i18n/i18n.js";
-import * as SDK15 from "./../../core/sdk/sdk.js";
+import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as Badges4 from "./../../models/badges/badges.js";
 import * as Elements from "./../../models/elements/elements.js";
 import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
@@ -11543,7 +11542,7 @@ __export(AdoptedStyleSheetTreeElement_exports, {
   AdoptedStyleSheetSetTreeElement: () => AdoptedStyleSheetSetTreeElement,
   AdoptedStyleSheetTreeElement: () => AdoptedStyleSheetTreeElement
 });
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
@@ -11572,13 +11571,13 @@ var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends U
     if (header) {
       _AdoptedStyleSheetTreeElement.createContents(header, this);
     } else {
-      this.eventListener = adoptedStyleSheet.cssModel.addEventListener(SDK11.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
+      this.eventListener = adoptedStyleSheet.cssModel.addEventListener(SDK10.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
     }
   }
   onStyleSheetAdded({ data: header }) {
     if (header.id === this.adoptedStyleSheet.id) {
       _AdoptedStyleSheetTreeElement.createContents(header, this);
-      this.adoptedStyleSheet.cssModel.removeEventListener(SDK11.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
+      this.adoptedStyleSheet.cssModel.removeEventListener(SDK10.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
       this.eventListener = null;
     }
   }
@@ -11608,14 +11607,14 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
     this.styleSheetHeader = styleSheetHeader;
   }
   onbind() {
-    this.styleSheetHeader.cssModel().addEventListener(SDK11.CSSModel.Events.StyleSheetChanged, this.onStyleSheetChanged, this);
+    this.styleSheetHeader.cssModel().addEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.onStyleSheetChanged, this);
     void this.onpopulate();
   }
   onunbind() {
     if (this.editing) {
       this.editing.cancel();
     }
-    this.styleSheetHeader.cssModel().removeEventListener(SDK11.CSSModel.Events.StyleSheetChanged, this.onStyleSheetChanged, this);
+    this.styleSheetHeader.cssModel().removeEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.onStyleSheetChanged, this);
   }
   async onpopulate() {
     const data = await this.styleSheetHeader.requestContentData();
@@ -11854,7 +11853,7 @@ import * as Host5 from "./../../core/host/host.js";
 import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
@@ -11883,7 +11882,7 @@ __export(DOMPath_exports, {
   jsPath: () => jsPath,
   xPath: () => xPath
 });
-import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as SDK11 from "./../../core/sdk/sdk.js";
 var fullQualifiedSelector = function(node, justSelector) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return node.localName() || node.nodeName().toLowerCase();
@@ -11914,7 +11913,7 @@ var canGetJSPath = function(node) {
   let wp = node;
   while (wp) {
     const shadowRoot = wp.ancestorShadowRoot();
-    if (shadowRoot && shadowRoot.shadowRootType() !== SDK12.DOMModel.DOMNode.ShadowRootTypes.Open) {
+    if (shadowRoot && shadowRoot.shadowRootType() !== SDK11.DOMModel.DOMNode.ShadowRootTypes.Open) {
       return false;
     }
     wp = wp.ancestorShadowHost();
@@ -13219,7 +13218,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       roots = roots.filter(filter);
     }
     function filter(root) {
-      return root.shadowRootType() !== SDK13.DOMModel.DOMNode.ShadowRootTypes.UserAgent;
+      return root.shadowRootType() !== SDK12.DOMModel.DOMNode.ShadowRootTypes.UserAgent;
     }
     return roots;
   }
@@ -13591,13 +13590,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     this.performUpdate();
     if (this.treeOutline && !this.isClosingTag()) {
       this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
-      this.nodeInternal.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
+      this.nodeInternal.addEventListener(SDK12.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
     }
   }
   clearView() {
@@ -13682,13 +13681,13 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     if (this.treeOutline && this.treeOutline.treeElementByNode.get(this.nodeInternal) === this) {
       this.treeOutline.treeElementByNode.delete(this.nodeInternal);
     }
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
-    this.nodeInternal.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
+    this.nodeInternal.removeEventListener(SDK12.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
   }
   #onScrollableFlagUpdated() {
     void this.#updateAdorners();
@@ -13860,7 +13859,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
   revealHTMLInSources() {
     const frameOwnerId = this.nodeInternal.frameOwnerFrameId();
     if (frameOwnerId) {
-      const frame = SDK13.FrameManager.FrameManager.instance().getFrame(frameOwnerId);
+      const frame = SDK12.FrameManager.FrameManager.instance().getFrame(frameOwnerId);
       if (frame) {
         const sourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(frame.url);
         void Common8.Revealer.reveal(sourceCode);
@@ -13928,7 +13927,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
           UI14.UIUtils.PromotionManager.instance().recordFeatureInteraction(openAiAssistanceId);
         }, { disabled: !action3.enabled(), jslogContext });
       };
-      UI14.Context.Context.instance().setFlavor(SDK13.DOMModel.DOMNode, this.nodeInternal);
+      UI14.Context.Context.instance().setFlavor(SDK12.DOMModel.DOMNode, this.nodeInternal);
       const action2 = UI14.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
       const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId);
       submenu.defaultSection().appendAction(openAiAssistanceId, i18nString12(UIStrings13.startAChat));
@@ -14099,7 +14098,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       contextMenu.viewSection().appendItem(i18nString12(UIStrings13.showFrameDetails), () => {
         const frameOwnerFrameId = this.nodeInternal.frameOwnerFrameId();
         if (frameOwnerFrameId) {
-          const frame = SDK13.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
+          const frame = SDK12.FrameManager.FrameManager.instance().getFrame(frameOwnerFrameId);
           void Common8.Revealer.reveal(frame);
         }
       }, { jslogContext: "show-frame-details" });
@@ -14720,7 +14719,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
         if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit) {
           continue;
         }
-        if (cascade.isInherited(style) && !SDK13.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
+        if (cascade.isInherited(style) && !SDK12.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
           continue;
         }
         if (style.parentRule?.isUserAgent()) {
@@ -14827,7 +14826,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     try {
       if (constructorObject.type === "function") {
-        const functionDetails = await SDK13.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
+        const functionDetails = await SDK12.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
         if (functionDetails?.location) {
           const uiLocation = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
           if (uiLocation) {
@@ -15428,7 +15427,7 @@ var TopLayerContainer_exports = {};
 __export(TopLayerContainer_exports, {
   TopLayerContainer: () => TopLayerContainer
 });
-import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
 var TopLayerContainer = class extends UI16.TreeOutline.TreeElement {
   tree;
@@ -15437,7 +15436,7 @@ var TopLayerContainer = class extends UI16.TreeOutline.TreeElement {
     super("#top-layer");
     this.tree = tree3;
     this.document = document2;
-    this.document.domModel().addEventListener(SDK14.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
+    this.document.domModel().addEventListener(SDK13.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
     this.topLayerElementsChanged({
       data: {
         document: document2,
@@ -15673,8 +15672,8 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     });
     this.#view = view ?? DEFAULT_VIEW5;
     if (Common10.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
-      SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
-      SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
+      SDK14.TargetManager.TargetManager.instance().addModelListener(SDK14.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
+      SDK14.TargetManager.TargetManager.instance().addModelListener(SDK14.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
     }
   }
   #highlightNode(event) {
@@ -15691,7 +15690,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
     this.performUpdate();
   }
   selectDOMNode(node, focus) {
-    if (node instanceof SDK15.DOMModel.AdoptedStyleSheet) {
+    if (node instanceof SDK14.DOMModel.AdoptedStyleSheet) {
       this.#viewOutput?.elementsTreeOutline?.highlightAdoptedStyleSheet(node);
     } else {
       this.#viewOutput?.elementsTreeOutline?.selectDOMNode(node, focus);
@@ -15862,7 +15861,7 @@ var DOMTreeWidget = class extends UI17.Widget.Widget {
   }
   show(parentElement, insertBefore, suppressOrphanWidgetError = false) {
     this.performUpdate();
-    const domModels = SDK15.TargetManager.TargetManager.instance().models(SDK15.DOMModel.DOMModel, { scoped: true });
+    const domModels = SDK14.TargetManager.TargetManager.instance().models(SDK14.DOMModel.DOMModel, { scoped: true });
     for (const domModel of domModels) {
       if (domModel.parentModel()) {
         continue;
@@ -16063,7 +16062,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     if (!this.rootDOMNode || !nodeId) {
       return;
     }
-    const deferredDOMNode = new SDK15.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
+    const deferredDOMNode = new SDK14.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
     const node = await deferredDOMNode.resolvePromise();
     if (!node) {
       return;
@@ -16086,7 +16085,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     if (!this.rootDOMNode || !nodeId) {
       return;
     }
-    const deferredDOMNode = new SDK15.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
+    const deferredDOMNode = new SDK14.DOMModel.DeferredDOMNode(this.rootDOMNode.domModel().target(), nodeId);
     const node = await deferredDOMNode.resolvePromise();
     if (!node) {
       return;
@@ -16389,7 +16388,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
         this.appendChild(treeElement);
       }
     }
-    if (this.rootDOMNode instanceof SDK15.DOMModel.DOMDocument) {
+    if (this.rootDOMNode instanceof SDK14.DOMModel.DOMDocument) {
       void this.createTopLayerContainer(this.rootElement(), this.rootDOMNode);
     }
     if (selectedNode) {
@@ -16496,7 +16495,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     return element;
   }
   onfocusout(_event) {
-    SDK15.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK15.TargetManager.TargetManager.instance());
+    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK14.TargetManager.TargetManager.instance());
   }
   onmousedown(event) {
     const element = this.treeElementFromEventInternal(event);
@@ -16537,7 +16536,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
   }
   onmouseleave(_event) {
     this.setHoverEffect(null);
-    SDK15.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK15.TargetManager.TargetManager.instance());
+    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK14.TargetManager.TargetManager.instance());
   }
   ondragstart(event) {
     const node = event.target;
@@ -16560,7 +16559,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     event.dataTransfer.setData("text/plain", treeElement.listItemElement.textContent.replace(/\u200b/g, ""));
     event.dataTransfer.effectAllowed = "copyMove";
     this.treeElementBeingDragged = treeElement;
-    SDK15.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK15.TargetManager.TargetManager.instance());
+    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK14.TargetManager.TargetManager.instance());
     return true;
   }
   ondragover(event) {
@@ -16686,8 +16685,8 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
   }
   async saveNodeToTempVariable(node) {
     const remoteObjectForConsole = await node.resolveToObject();
-    const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK15.ConsoleModel.ConsoleModel);
-    await consoleModel?.saveToTempVariable(UI17.Context.Context.instance().flavor(SDK15.RuntimeModel.ExecutionContext), remoteObjectForConsole);
+    const consoleModel = remoteObjectForConsole?.runtimeModel().target()?.model(SDK14.ConsoleModel.ConsoleModel);
+    await consoleModel?.saveToTempVariable(UI17.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext), remoteObjectForConsole);
   }
   runPendingUpdates() {
     this.updateModifiedNodes();
@@ -16843,37 +16842,37 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     this.selectDOMNode(null, false);
     this.imagePreviewPopover.hide();
     delete this.clipboardNodeData;
-    SDK15.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK15.TargetManager.TargetManager.instance());
+    SDK14.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK14.TargetManager.TargetManager.instance());
     this.updateRecords.clear();
   }
   wireToDOMModel(domModel) {
     elementsTreeOutlineByDOMModel.set(domModel, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.MarkersChanged, this.markersChanged, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.NodeInserted, this.nodeInserted, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.NodeRemoved, this.nodeRemoved, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.AttrModified, this.attributeModified, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
-    domModel.addEventListener(SDK15.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.MarkersChanged, this.markersChanged, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.NodeInserted, this.nodeInserted, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.NodeRemoved, this.nodeRemoved, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.AttrModified, this.attributeModified, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.addEventListener(SDK14.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
   }
   unwireFromDOMModel(domModel) {
-    domModel.removeEventListener(SDK15.DOMModel.Events.MarkersChanged, this.markersChanged, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.NodeInserted, this.nodeInserted, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.NodeRemoved, this.nodeRemoved, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.AttrModified, this.attributeModified, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
-    domModel.removeEventListener(SDK15.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.MarkersChanged, this.markersChanged, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.NodeInserted, this.nodeInserted, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.NodeRemoved, this.nodeRemoved, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.AttrModified, this.attributeModified, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.AttrRemoved, this.attributeRemoved, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.CharacterDataModified, this.characterDataModified, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.DocumentUpdated, this.documentUpdated, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.removeEventListener(SDK14.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
   }
   addUpdateRecord(node) {
@@ -17277,7 +17276,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common10.ObjectWrap
     if (node.nodeType() === Node.ELEMENT_NODE && !node.pseudoType() && treeElement.isExpandable()) {
       this.insertChildElement(treeElement, node, treeElement.childCount(), true);
     }
-    if (node instanceof SDK15.DOMModel.DOMDocument && !this.isXMLMimeType) {
+    if (node instanceof SDK14.DOMModel.DOMDocument && !this.isXMLMimeType) {
       let topLayerContainer = this.#topLayerContainerByDocument.get(node);
       if (!topLayerContainer) {
         topLayerContainer = new TopLayerContainer(this, node);
@@ -17340,7 +17339,7 @@ import "./../../ui/components/node_text/node_text.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as i18n32 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
-import * as SDK16 from "./../../core/sdk/sdk.js";
+import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as Lit8 from "./../../ui/lit/lit.js";
@@ -17555,7 +17554,7 @@ var nodeToLayoutElement = (node) => {
       node.highlight();
     },
     hideHighlight: () => {
-      SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
+      SDK15.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK15.TargetManager.TargetManager.instance());
     },
     toggle: (_value) => {
       throw new Error("Not implemented");
@@ -17862,8 +17861,8 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
       this.modelRemoved(domModel);
     }
     this.#domModels = [];
-    SDK16.TargetManager.TargetManager.instance().observeModels(SDK16.DOMModel.DOMModel, this, { scoped: true });
-    UI18.Context.Context.instance().addFlavorChangeListener(SDK16.DOMModel.DOMNode, this.requestUpdate, this);
+    SDK15.TargetManager.TargetManager.instance().observeModels(SDK15.DOMModel.DOMModel, this, { scoped: true });
+    UI18.Context.Context.instance().addFlavorChangeListener(SDK15.DOMModel.DOMNode, this.requestUpdate, this);
     this.#uaShadowDOMSetting.addChangeListener(this.requestUpdate, this);
     this.requestUpdate();
   }
@@ -17872,8 +17871,8 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
     for (const setting of this.#settings) {
       Common11.Settings.Settings.instance().moduleSetting(setting.name).removeChangeListener(this.requestUpdate, this);
     }
-    SDK16.TargetManager.TargetManager.instance().unobserveModels(SDK16.DOMModel.DOMModel, this);
-    UI18.Context.Context.instance().removeFlavorChangeListener(SDK16.DOMModel.DOMNode, this.requestUpdate, this);
+    SDK15.TargetManager.TargetManager.instance().unobserveModels(SDK15.DOMModel.DOMModel, this);
+    UI18.Context.Context.instance().removeFlavorChangeListener(SDK15.DOMModel.DOMNode, this.requestUpdate, this);
     this.#uaShadowDOMSetting.removeChangeListener(this.requestUpdate, this);
   }
   #onSummaryKeyDown(event) {
@@ -17955,7 +17954,7 @@ __export(MetricsSidebarPane_exports, {
 });
 import * as Common12 from "./../../core/common/common.js";
 import * as Platform9 from "./../../core/platform/platform.js";
-import * as SDK17 from "./../../core/sdk/sdk.js";
+import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html14, nothing as nothing6, render as render12 } from "./../../ui/lit/lit.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
@@ -18324,7 +18323,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
       node.highlight(mode);
     } else {
       this.highlightMode = "";
-      SDK17.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK17.TargetManager.TargetManager.instance());
+      SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
     }
     if (this.computedStyle) {
       this.updateMetrics(this.computedStyle, mode, this.boxModelInternal);
@@ -18830,7 +18829,7 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
   }
   constructor(targetManager, settings) {
     super("elements");
-    this.#targetManager = targetManager ?? SDK18.TargetManager.TargetManager.instance();
+    this.#targetManager = targetManager ?? SDK17.TargetManager.TargetManager.instance();
     this.#settings = settings ?? Common13.Settings.Settings.instance();
     this.registerRequiredCSS(elementsPanel_css_default);
     this.splitWidget = new UI21.SplitWidget.SplitWidget(true, true, "elements-panel-split-view-state", 325, 325);
@@ -18865,8 +18864,8 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
       this.crumbNodeSelected(event);
     });
     crumbsContainer.appendChild(this.breadcrumbs);
-    this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode));
-    UI21.Context.Context.instance().addFlavorChangeListener(SDK18.DOMModel.DOMNode, (event) => {
+    this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(UI21.Context.Context.instance().flavor(SDK17.DOMModel.DOMNode));
+    UI21.Context.Context.instance().addFlavorChangeListener(SDK17.DOMModel.DOMNode, (event) => {
       this.#computedStyleModel.node = event.data;
       this.evaluateTrackingComputedStyleUpdatesForNode();
     });
@@ -18890,15 +18889,15 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     this.#domTreeWidget.onElementsTreeUpdated = this.updateBreadcrumbIfNeeded.bind(this);
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
     this.#domTreeWidget.setWordWrap(this.#settings.moduleSetting("dom-word-wrap").get());
-    this.#targetManager.observeModels(SDK18.DOMModel.DOMModel, this, { scoped: true });
-    this.#targetManager.addModelListener(SDK18.ResourceTreeModel.ResourceTreeModel, SDK18.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this, { scoped: true });
+    this.#targetManager.observeModels(SDK17.DOMModel.DOMModel, this, { scoped: true });
+    this.#targetManager.addModelListener(SDK17.ResourceTreeModel.ResourceTreeModel, SDK17.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this, { scoped: true });
     this.#settings.moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
     PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
   }
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
   // For that case, we want to only run this function once.
   evaluateTrackingComputedStyleUpdatesForNode = Common13.Debouncer.debounce(() => {
-    const selectedNode = UI21.Context.Context.instance().flavor(SDK18.DOMModel.DOMNode);
+    const selectedNode = UI21.Context.Context.instance().flavor(SDK17.DOMModel.DOMNode);
     if (!selectedNode) {
       return;
     }
@@ -18974,12 +18973,12 @@ var ElementsPanel = class _ElementsPanel extends UI21.Panel.Panel {
     if (this.domTreeContainer.hasFocus()) {
       this.#domTreeWidget.focus();
     }
-    domModel.addEventListener(SDK18.DOMModel.Events.DocumentUpdated, this.documentUpdatedEvent, this);
-    domModel.addEventListener(SDK18.DOMModel.Events.NodeInserted, this.handleNodeInserted, this);
+    domModel.addEventListener(SDK17.DOMModel.Events.DocumentUpdated, this.documentUpdatedEvent, this);
+    domModel.addEventListener(SDK17.DOMModel.Events.NodeInserted, this.handleNodeInserted, this);
   }
   modelRemoved(domModel) {
-    domModel.removeEventListener(SDK18.DOMModel.Events.DocumentUpdated, this.documentUpdatedEvent, this);
-    domModel.removeEventListener(SDK18.DOMModel.Events.NodeInserted, this.handleNodeInserted, this);
+    domModel.removeEventListener(SDK17.DOMModel.Events.DocumentUpdated, this.documentUpdatedEvent, this);
+    domModel.removeEventListener(SDK17.DOMModel.Events.NodeInserted, this.handleNodeInserted, this);
     this.#domTreeWidget.modelRemoved(domModel);
     if (!domModel.parentModel()) {
       this.#domTreeWidget.detach();
@@ -19008,7 +19007,7 @@ ${node.simpleSelector()} {}`, false);
   onPrimaryPageChanged(event) {
     const { frame, type } = event.data;
     if (type === "Activation") {
-      const domModel = frame.resourceTreeModel().target().model(SDK18.DOMModel.DOMModel);
+      const domModel = frame.resourceTreeModel().target().model(SDK17.DOMModel.DOMModel);
       if (domModel && !domModel.parentModel()) {
         this.#domTreeWidget.show(this.domTreeContainer);
       }
@@ -19038,7 +19037,7 @@ ${node.simpleSelector()} {}`, false);
     this.evaluateTrackingComputedStyleUpdatesForNode();
   }
   willHide() {
-    SDK18.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK18.TargetManager.TargetManager.instance());
+    SDK17.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK17.TargetManager.TargetManager.instance());
     this.evaluateTrackingComputedStyleUpdatesForNode();
     this.#domTreeWidget.detach();
     super.willHide();
@@ -19072,7 +19071,7 @@ ${node.simpleSelector()} {}`, false);
     } else {
       this.breadcrumbs.data = { crumbs: [], selectedNode: null };
     }
-    UI21.Context.Context.instance().setFlavor(SDK18.DOMModel.DOMNode, selectedNode);
+    UI21.Context.Context.instance().setFlavor(SDK17.DOMModel.DOMNode, selectedNode);
     if (!selectedNode) {
       return;
     }
@@ -19086,7 +19085,7 @@ ${node.simpleSelector()} {}`, false);
     const nodeFrameId = selectedNode.frameId();
     for (const context of executionContexts) {
       if (context.frameId === nodeFrameId) {
-        UI21.Context.Context.instance().setFlavor(SDK18.RuntimeModel.ExecutionContext, context);
+        UI21.Context.Context.instance().setFlavor(SDK17.RuntimeModel.ExecutionContext, context);
         break;
       }
     }
@@ -19215,7 +19214,7 @@ ${node.simpleSelector()} {}`, false);
     this.#searchableView.updateSearchMatchesCount(0);
     this.currentSearchResultIndex = -1;
     delete this.searchResults;
-    SDK18.DOMModel.DOMModel.cancelSearch(this.#targetManager);
+    SDK17.DOMModel.DOMModel.cancelSearch(this.#targetManager);
   }
   performSearch(searchConfig, shouldJump, jumpBackwards) {
     const query = searchConfig.query;
@@ -19230,7 +19229,7 @@ ${node.simpleSelector()} {}`, false);
     }
     this.searchConfig = searchConfig;
     const showUAShadowDOM = this.#settings.moduleSetting("show-ua-shadow-dom").get();
-    const domModels = this.#targetManager.models(SDK18.DOMModel.DOMModel, { scoped: true });
+    const domModels = this.#targetManager.models(SDK17.DOMModel.DOMModel, { scoped: true });
     const promises = domModels.map((domModel) => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     void Promise.all(promises).then((resultCounts) => {
       this.searchResults = [];
@@ -19715,7 +19714,7 @@ var TrackedCSSProperties = [
 ];
 var ContextMenuProvider = class {
   appendApplicableItems(event, contextMenu, object) {
-    if (object instanceof SDK18.RemoteObject.RemoteObject && !object.isNode()) {
+    if (object instanceof SDK17.RemoteObject.RemoteObject && !object.isNode()) {
       return;
     }
     if (ElementsPanel.instance().element.isAncestor(event.target)) {
@@ -19746,16 +19745,16 @@ var DOMNodeRevealer = class {
       throw reason;
     });
     function revealPromise(resolve, reject) {
-      if (node instanceof SDK18.DOMModel.DOMNode || node instanceof SDK18.DOMModel.AdoptedStyleSheet) {
+      if (node instanceof SDK17.DOMModel.DOMNode || node instanceof SDK17.DOMModel.AdoptedStyleSheet) {
         onNodeResolved(node);
-      } else if (node instanceof SDK18.DOMModel.DeferredDOMNode) {
+      } else if (node instanceof SDK17.DOMModel.DeferredDOMNode) {
         node.resolve(checkDeferredDOMNodeThenReveal);
       } else if (node instanceof NodeComputedStyles) {
         const elements = ElementsPanel.instance();
         elements.revealComputedStylesPane();
         onNodeResolved(node.node);
       } else {
-        const domModel = node.runtimeModel().target().model(SDK18.DOMModel.DOMModel);
+        const domModel = node.runtimeModel().target().model(SDK17.DOMModel.DOMModel);
         if (domModel) {
           void domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
         } else {
@@ -19765,12 +19764,12 @@ var DOMNodeRevealer = class {
       }
       function onNodeResolved(resolvedNode) {
         panel.pendingNodeReveal = false;
-        let currentNode = resolvedNode instanceof SDK18.DOMModel.AdoptedStyleSheet ? resolvedNode.parent : resolvedNode;
+        let currentNode = resolvedNode instanceof SDK17.DOMModel.AdoptedStyleSheet ? resolvedNode.parent : resolvedNode;
         while (currentNode.parentNode) {
           currentNode = currentNode.parentNode;
         }
-        const isDetached = !(currentNode instanceof SDK18.DOMModel.DOMDocument);
-        const isDocument = node instanceof SDK18.DOMModel.DOMDocument;
+        const isDetached = !(currentNode instanceof SDK17.DOMModel.DOMDocument);
+        const isDocument = node instanceof SDK17.DOMModel.DOMDocument;
         if (!isDocument && isDetached) {
           const msg2 = i18nString17(UIStrings18.nodeCannotBeFoundInTheCurrent);
           reject(new Platform10.UserVisibleError.UserVisibleError(msg2));
@@ -19778,7 +19777,7 @@ var DOMNodeRevealer = class {
         }
         if (resolvedNode) {
           const opts = omitFocus ? { showPanel: false } : { showPanel: true, focusNode: true };
-          const promise = resolvedNode instanceof SDK18.DOMModel.AdoptedStyleSheet ? panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) : panel.revealAndSelectNode(resolvedNode, opts);
+          const promise = resolvedNode instanceof SDK17.DOMModel.AdoptedStyleSheet ? panel.revealAndSelectAdoptedStyleSheet(resolvedNode, opts) : panel.revealAndSelectNode(resolvedNode, opts);
           void promise.then(resolve);
           return;
         }
@@ -19812,7 +19811,7 @@ var CSSPropertyRevealer = class {
 };
 var ElementsActionDelegate = class {
   handleAction(context, actionId) {
-    const node = context.flavor(SDK18.DOMModel.DOMNode);
+    const node = context.flavor(SDK17.DOMModel.DOMNode);
     if (!node) {
       return true;
     }
@@ -19830,11 +19829,11 @@ var ElementsActionDelegate = class {
         ElementsPanel.instance().copyStyles(node);
         return true;
       case "elements.undo":
-        void SDK18.DOMModel.DOMModelUndoStack.instance().undo();
+        void SDK17.DOMModel.DOMModelUndoStack.instance().undo();
         ElementsPanel.instance().stylesWidget.forceUpdate();
         return true;
       case "elements.redo":
-        void SDK18.DOMModel.DOMModelUndoStack.instance().redo();
+        void SDK17.DOMModel.DOMModelUndoStack.instance().redo();
         ElementsPanel.instance().stylesWidget.forceUpdate();
         return true;
       case "elements.toggle-a11y-tree":
@@ -19898,13 +19897,13 @@ var InspectElementModeController = class _InspectElementModeController {
   constructor() {
     this.toggleSearchAction = UI22.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     this.mode = "none";
-    SDK19.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged", this.suspendStateChanged, this);
-    SDK19.TargetManager.TargetManager.instance().addModelListener(SDK19.OverlayModel.OverlayModel, "InspectModeExited", () => this.setMode(
+    SDK18.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged", this.suspendStateChanged, this);
+    SDK18.TargetManager.TargetManager.instance().addModelListener(SDK18.OverlayModel.OverlayModel, "InspectModeExited", () => this.setMode(
       "none"
       /* Protocol.Overlay.InspectMode.None */
     ), void 0, { scoped: true });
-    SDK19.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
-    SDK19.TargetManager.TargetManager.instance().observeModels(SDK19.OverlayModel.OverlayModel, this, { scoped: true });
+    SDK18.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
+    SDK18.TargetManager.TargetManager.instance().observeModels(SDK18.OverlayModel.OverlayModel, this, { scoped: true });
     this.showDetailedInspectTooltipSetting = Common14.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
     this.showDetailedInspectTooltipSetting.addChangeListener(this.showDetailedInspectTooltipChanged.bind(this));
     document.addEventListener("keydown", (event) => {
@@ -19955,17 +19954,17 @@ var InspectElementModeController = class _InspectElementModeController {
     );
   }
   setMode(mode) {
-    if (SDK19.TargetManager.TargetManager.instance().allTargetsSuspended()) {
+    if (SDK18.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
     this.mode = mode;
-    for (const overlayModel of SDK19.TargetManager.TargetManager.instance().models(SDK19.OverlayModel.OverlayModel, { scoped: true })) {
+    for (const overlayModel of SDK18.TargetManager.TargetManager.instance().models(SDK18.OverlayModel.OverlayModel, { scoped: true })) {
       void overlayModel.setInspectMode(mode, this.showDetailedInspectTooltipSetting.get());
     }
     this.toggleSearchAction.setToggled(this.isInInspectElementMode());
   }
   suspendStateChanged() {
-    if (!SDK19.TargetManager.TargetManager.instance().allTargetsSuspended()) {
+    if (!SDK18.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
     this.mode = "none";
@@ -20013,7 +20012,7 @@ __export(EventListenersWidget_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 import * as i18n38 from "./../../core/i18n/i18n.js";
-import * as SDK20 from "./../../core/sdk/sdk.js";
+import * as SDK19 from "./../../core/sdk/sdk.js";
 import * as UI23 from "./../../ui/legacy/legacy.js";
 import { html as html16, render as render14 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
@@ -20104,7 +20103,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
     this.showFrameworkListenersSetting = Common15.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
     this.showFrameworkListenersSetting.setTitle(i18nString18(UIStrings19.frameworkListeners));
     this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
-    UI23.Context.Context.instance().addFlavorChangeListener(SDK20.DOMModel.DOMNode, this.requestUpdate.bind(this));
+    UI23.Context.Context.instance().addFlavorChangeListener(SDK19.DOMModel.DOMNode, this.requestUpdate.bind(this));
     this.requestUpdate();
   }
   static instance(opts = { forceNew: null }) {
@@ -20140,7 +20139,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
       this.lastRequestedNode.domModel().runtimeModel().releaseObjectGroup(objectGroupName);
       delete this.lastRequestedNode;
     }
-    const node = UI23.Context.Context.instance().flavor(SDK20.DOMModel.DOMNode);
+    const node = UI23.Context.Context.instance().flavor(SDK19.DOMModel.DOMNode);
     if (node) {
       this.lastRequestedNode = node;
       const selectedNodeOnly = !this.showForAncestorsSetting.get();
@@ -20229,7 +20228,7 @@ import * as Common16 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n40 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
-import * as SDK21 from "./../../core/sdk/sdk.js";
+import * as SDK20 from "./../../core/sdk/sdk.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html17, nothing as nothing7, render as render15 } from "./../../ui/lit/lit.js";
@@ -20342,11 +20341,11 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
     this.registerRequiredCSS(propertiesWidget_css_default);
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
     this.showAllPropertiesSetting.addChangeListener(this.onFilterChanged.bind(this));
-    SDK21.TargetManager.TargetManager.instance().addModelListener(SDK21.DOMModel.DOMModel, SDK21.DOMModel.Events.AttrModified, this.onNodeChange, this, { scoped: true });
-    SDK21.TargetManager.TargetManager.instance().addModelListener(SDK21.DOMModel.DOMModel, SDK21.DOMModel.Events.AttrRemoved, this.onNodeChange, this, { scoped: true });
-    SDK21.TargetManager.TargetManager.instance().addModelListener(SDK21.DOMModel.DOMModel, SDK21.DOMModel.Events.CharacterDataModified, this.onNodeChange, this, { scoped: true });
-    SDK21.TargetManager.TargetManager.instance().addModelListener(SDK21.DOMModel.DOMModel, SDK21.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, { scoped: true });
-    UI24.Context.Context.instance().addFlavorChangeListener(SDK21.DOMModel.DOMNode, this.setNode, this);
+    SDK20.TargetManager.TargetManager.instance().addModelListener(SDK20.DOMModel.DOMModel, SDK20.DOMModel.Events.AttrModified, this.onNodeChange, this, { scoped: true });
+    SDK20.TargetManager.TargetManager.instance().addModelListener(SDK20.DOMModel.DOMModel, SDK20.DOMModel.Events.AttrRemoved, this.onNodeChange, this, { scoped: true });
+    SDK20.TargetManager.TargetManager.instance().addModelListener(SDK20.DOMModel.DOMModel, SDK20.DOMModel.Events.CharacterDataModified, this.onNodeChange, this, { scoped: true });
+    SDK20.TargetManager.TargetManager.instance().addModelListener(SDK20.DOMModel.DOMModel, SDK20.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, { scoped: true });
+    UI24.Context.Context.instance().addFlavorChangeListener(SDK20.DOMModel.DOMNode, this.setNode, this);
     this.#view = view;
     this.requestUpdate();
   }
@@ -20392,7 +20391,7 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
     }
     this.#pendingNodeUpdate = false;
     this.#lastRequestedNode?.domModel().runtimeModel().releaseObjectGroup(OBJECT_GROUP_NAME);
-    this.#lastRequestedNode = UI24.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
+    this.#lastRequestedNode = UI24.Context.Context.instance().flavor(SDK20.DOMModel.DOMNode);
     if (!this.#lastRequestedNode) {
       this.#objectTree = null;
       return;
@@ -20424,7 +20423,7 @@ var PropertiesWidget = class extends UI24.Widget.VBox {
       return;
     }
     const data = event.data;
-    const node = data instanceof SDK21.DOMModel.DOMNode ? data : data.node;
+    const node = data instanceof SDK20.DOMModel.DOMNode ? data : data.node;
     if (this.#lastRequestedNode !== node) {
       return;
     }
@@ -20443,7 +20442,7 @@ __export(ClassesPaneWidget_exports, {
 import * as Common17 from "./../../core/common/common.js";
 import * as i18n42 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
-import * as SDK22 from "./../../core/sdk/sdk.js";
+import * as SDK21 from "./../../core/sdk/sdk.js";
 import * as UI25 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -20545,12 +20544,12 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     this.prompt.setPlaceholder(i18nString20(UIStrings21.addNewClass));
     this.prompt.addEventListener("TextChanged", this.onTextChanged, this);
     proxyElement.addEventListener("keydown", this.onKeyDown.bind(this), false);
-    SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
+    SDK21.TargetManager.TargetManager.instance().addModelListener(SDK21.DOMModel.DOMModel, SDK21.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
     this.mutatingNodes = /* @__PURE__ */ new Set();
     this.pendingNodeClasses = /* @__PURE__ */ new Map();
     this.updateNodeThrottler = new Common17.Throttler.Throttler(0);
     this.previousTarget = null;
-    UI25.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
+    UI25.Context.Context.instance().addFlavorChangeListener(SDK21.DOMModel.DOMNode, this.onSelectedNodeChanged, this);
   }
   splitTextIntoClasses(text) {
     return text.split(/[,\s]/).map((className) => className.trim()).filter((className) => className.length);
@@ -20575,7 +20574,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     }
     this.prompt.clearAutocomplete();
     eventTarget.textContent = "";
-    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
+    const node = UI25.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
     if (!node) {
       return;
     }
@@ -20594,7 +20593,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     this.update();
   }
   onTextChanged() {
-    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
+    const node = UI25.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
     if (!node) {
       return;
     }
@@ -20624,7 +20623,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     if (!this.isShowing()) {
       return;
     }
-    let node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
+    let node = UI25.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
@@ -20644,7 +20643,7 @@ var ClassesPaneWidget = class extends UI25.Widget.Widget {
     }
   }
   onClick(className, event) {
-    const node = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
+    const node = UI25.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
     if (!node) {
       return;
     }
@@ -20774,7 +20773,7 @@ var ClassNamePrompt = class extends UI25.TextPrompt.TextPrompt {
     if (!prefix || force) {
       this.classNamesPromise = null;
     }
-    const selectedNode = UI25.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
+    const selectedNode = UI25.Context.Context.instance().flavor(SDK21.DOMModel.DOMNode);
     if (!selectedNode || !prefix && !force && !expression.trim()) {
       return [];
     }
@@ -20811,7 +20810,7 @@ __export(ElementStatePaneWidget_exports, {
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
 import * as i18n44 from "./../../core/i18n/i18n.js";
-import * as SDK23 from "./../../core/sdk/sdk.js";
+import * as SDK22 from "./../../core/sdk/sdk.js";
 import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "./../../ui/helpers/helpers.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
@@ -21020,10 +21019,10 @@ var ElementStatePaneWidget = class extends UI26.Widget.Widget {
     setDualStateCheckboxes(SpecificPseudoStates.IN_RANGE, SpecificPseudoStates.OUT_OF_RANGE);
     setDualStateCheckboxes(SpecificPseudoStates.ENABLED, SpecificPseudoStates.DISABLED);
     setDualStateCheckboxes(SpecificPseudoStates.VISITED, SpecificPseudoStates.LINK);
-    UI26.Context.Context.instance().addFlavorChangeListener(SDK23.DOMModel.DOMNode, this.requestUpdate, this);
+    UI26.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.requestUpdate, this);
   }
   onStateCheckboxClicked(event) {
-    const node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    const node = UI26.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (!node || !(event.target instanceof UI26.UIUtils.CheckboxLabel)) {
       return;
     }
@@ -21043,11 +21042,11 @@ var ElementStatePaneWidget = class extends UI26.Widget.Widget {
       return;
     }
     if (this.#cssModel) {
-      this.#cssModel.removeEventListener(SDK23.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
+      this.#cssModel.removeEventListener(SDK22.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
     }
     this.#cssModel = cssModel;
     if (this.#cssModel) {
-      this.#cssModel.addEventListener(SDK23.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
+      this.#cssModel.addEventListener(SDK22.CSSModel.Events.PseudoStateForced, this.requestUpdate, this);
     }
   }
   wasShown() {
@@ -21055,7 +21054,7 @@ var ElementStatePaneWidget = class extends UI26.Widget.Widget {
     this.requestUpdate();
   }
   async performUpdate() {
-    let node = UI26.Context.Context.instance().flavor(SDK23.DOMModel.DOMNode);
+    let node = UI26.Context.Context.instance().flavor(SDK22.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();
     }
@@ -21238,7 +21237,7 @@ var ElementsTreeOutlineRenderer_exports = {};
 __export(ElementsTreeOutlineRenderer_exports, {
   Renderer: () => Renderer2
 });
-import * as SDK24 from "./../../core/sdk/sdk.js";
+import * as SDK23 from "./../../core/sdk/sdk.js";
 import * as UI27 from "./../../ui/legacy/legacy.js";
 var rendererInstance;
 var Renderer2 = class _Renderer {
@@ -21251,9 +21250,9 @@ var Renderer2 = class _Renderer {
   }
   async render(object, options) {
     let node = null;
-    if (object instanceof SDK24.DOMModel.DOMNode) {
+    if (object instanceof SDK23.DOMModel.DOMNode) {
       node = object;
-    } else if (object instanceof SDK24.DOMModel.DeferredDOMNode) {
+    } else if (object instanceof SDK23.DOMModel.DeferredDOMNode) {
       node = await object.resolvePromise();
     }
     if (!node) {

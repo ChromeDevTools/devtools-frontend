@@ -5,9 +5,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { type NavigatorUISourceCodeTreeNode, NavigatorView } from './NavigatorView.js';
 export declare class NetworkNavigatorView extends NavigatorView {
     private constructor();
-    static instance(opts?: {
+    static instance(opts: {
         forceNew: boolean | null;
-        networkProjectManager?: Bindings.NetworkProject.NetworkProjectManager;
+        networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
     }): NetworkNavigatorView;
     acceptProject(project: Workspace.Workspace.Project): boolean;
     onScopeChange(): void;
@@ -16,7 +16,7 @@ export declare class NetworkNavigatorView extends NavigatorView {
 }
 export declare class FilesNavigatorView extends NavigatorView {
     #private;
-    constructor(networkProjectManager?: Bindings.NetworkProject.NetworkProjectManager);
+    constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager);
     wasShown(): void;
     willHide(): void;
     sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void;
@@ -26,9 +26,9 @@ export declare class FilesNavigatorView extends NavigatorView {
 export declare class OverridesNavigatorView extends NavigatorView {
     private readonly toolbar;
     private constructor();
-    static instance(opts?: {
+    static instance(opts: {
         forceNew: boolean | null;
-        networkProjectManager?: Bindings.NetworkProject.NetworkProjectManager;
+        networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
     }): OverridesNavigatorView;
     private onProjectAddOrRemoved;
     private updateProjectAndUI;
@@ -38,11 +38,11 @@ export declare class OverridesNavigatorView extends NavigatorView {
     acceptProject(project: Workspace.Workspace.Project): boolean;
 }
 export declare class ContentScriptsNavigatorView extends NavigatorView {
-    constructor(networkProjectManager?: Bindings.NetworkProject.NetworkProjectManager);
+    constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager);
     acceptProject(project: Workspace.Workspace.Project): boolean;
 }
 export declare class SnippetsNavigatorView extends NavigatorView {
-    constructor(networkProjectManager?: Bindings.NetworkProject.NetworkProjectManager);
+    constructor(networkProjectManager: Bindings.NetworkProject.NetworkProjectManager);
     acceptProject(project: Workspace.Workspace.Project): boolean;
     handleContextMenu(event: Event): void;
     handleFileContextMenu(event: Event, node: NavigatorUISourceCodeTreeNode): void;

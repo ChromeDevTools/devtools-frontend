@@ -87,6 +87,10 @@ const UIStrings = {
      */
     showAllD: 'Show all {PH1}',
     /**
+     * @description Show all properties including those with null or undefined values
+     */
+    showAll: 'Show all',
+    /**
      * @description Value element text content in Object Properties Section. Shown when the developer is
      * viewing a variable in the Scope view, whose value is not available (i.e. because it was optimized
      * out) by the JavaScript engine, or inspecting a JavaScript object accessor property, which has no
@@ -1073,6 +1077,27 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
         this.contentElement.classList.add('object-properties-section');
     }
 }
+export function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, collapseChildren, sortPropertiesAlphabetically, onShowAllToggled) {
+    contextMenu.appendApplicableItems(object.object);
+    if (object.object instanceof SDK.RemoteObject.LocalJSONObject) {
+        const { value } = object.object;
+        const propertyValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
+        const copyValueHandler = () => {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);
+        };
+        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler, { jslogContext: 'copy-value' });
+    }
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), expandRecursively, { jslogContext: 'expand-recursively' });
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), collapseChildren, { jslogContext: 'collapse-children' });
+    if (!object.isWasm) {
+        contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.sortPropertiesAlphabetically), sortPropertiesAlphabetically, {
+            checked: object.sortPropertiesAlphabetically,
+            jslogContext: 'sort-properties-alphabetically',
+        });
+    }
+    contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
+}
 export class RootElement extends UI.TreeOutline.TreeElement {
     object;
     linkifier;
@@ -1111,29 +1136,11 @@ export class RootElement extends UI.TreeOutline.TreeElement {
     }
     onContextMenu(event) {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        contextMenu.appendApplicableItems(this.object.object);
-        if (this.object instanceof SDK.RemoteObject.LocalJSONObject) {
-            const { value } = this.object;
-            const propertyValue = typeof value === 'object' ? JSON.stringify(value, null, 2) : value;
-            const copyValueHandler = () => {
-                Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
-                Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);
-            };
-            contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyValue), copyValueHandler, { jslogContext: 'copy-value' });
-        }
-        contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively), this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), { jslogContext: 'expand-recursively' });
-        contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), this.collapseChildren.bind(this), { jslogContext: 'collapse-children' });
-        if (!this.object.isWasm) {
-            contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.sortPropertiesAlphabetically), () => {
-                this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
-            }, {
-                checked: this.object.sortPropertiesAlphabetically,
-                jslogContext: 'sort-properties-alphabetically',
-            });
-        }
-        contextMenu.viewSection().appendCheckboxItem(i18n.i18n.lockedString('Show all'), () => {
+        populateObjectTreeContextMenu(contextMenu, this.object, this.expandRecursively.bind(this, EXPANDABLE_MAX_DEPTH), this.collapseChildren.bind(this), () => {
+            this.object.sortPropertiesAlphabetically = !this.object.sortPropertiesAlphabetically;
+        }, () => {
             this.object.includeNullOrUndefinedValues = !this.object.includeNullOrUndefinedValues;
-        }, { checked: this.object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
+        });
         void contextMenu.show();
     }
     async onpopulate() {
@@ -1613,7 +1620,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
                 jslogContext: 'sort-properties-alphabetically',
             });
         }
-        contextMenu.viewSection().appendCheckboxItem(i18n.i18n.lockedString('Show all'), () => {
+        contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), () => {
             root.includeNullOrUndefinedValues = !root.includeNullOrUndefinedValues;
         }, { checked: root.includeNullOrUndefinedValues, jslogContext: 'show-all' });
         return contextMenu;

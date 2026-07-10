@@ -530,6 +530,7 @@ panels/network/components/RequestHeaderSection.test.js
 panels/network/components/RequestTrustTokensView.test.js
 panels/network/components/ResponseHeaderSection.test.js
 panels/performance_monitor/PerformanceMonitor.test.js
+panels/profiler/HeapProfileView.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
 panels/recorder/RecorderController.test.js

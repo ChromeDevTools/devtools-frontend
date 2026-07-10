@@ -24058,6 +24058,31 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       void this.overlayAgent.invoke_setShowHinge({});
     }
   }
+  showDisplayCutout(cutout) {
+    if (cutout) {
+      const { x, y, width, height, shape, contentColor } = cutout;
+      const displayCutoutConfig = {
+        rect: { x, y, width, height },
+        shape,
+        contentColor
+      };
+      if (shape === "pill") {
+        displayCutoutConfig.borderRadius = cutout.borderRadius;
+      } else if (shape === "notch") {
+        displayCutoutConfig.upperRadius = cutout.upperRadius;
+        displayCutoutConfig.lowerRadius = cutout.lowerRadius;
+      } else if (shape === "circle") {
+        displayCutoutConfig.cx = cutout.cx;
+        displayCutoutConfig.cy = cutout.cy;
+        displayCutoutConfig.radius = cutout.radius;
+      }
+      void this.overlayAgent.invoke_setShowDisplayCutout({
+        displayCutoutConfig
+      });
+    } else {
+      void this.overlayAgent.invoke_setShowDisplayCutout({});
+    }
+  }
   setWindowControlsPlatform(selectedPlatform) {
     this.#windowControls.selectedPlatform = selectedPlatform;
   }
@@ -29763,6 +29788,7 @@ var RequestConditions = class extends Common24.ObjectWrapper.ObjectWrapper {
       promises.push(agent.invoke_setBlockedURLs({ urlPatterns }));
       promises.push(agent.invoke_emulateNetworkConditionsByRule({
         offline,
+        emulateOfflineServiceWorker: offline,
         matchedNetworkConditions: matchedNetworkConditions.map(({ urlPattern, conditions }) => ({
           urlPattern: urlPattern ?? "",
           latency: conditions.latency,
@@ -29771,7 +29797,8 @@ var RequestConditions = class extends Common24.ObjectWrapper.ObjectWrapper {
           packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
           packetQueueLength: conditions.packetQueueLength,
           packetReordering: conditions.packetReordering,
-          connectionType: NetworkManager.connectionType(conditions)
+          connectionType: NetworkManager.connectionType(conditions),
+          offline
         }))
       }).then((response) => {
         if (!response.getError()) {
@@ -32729,6 +32756,7 @@ __export(AccessibilityModel_exports, {
 });
 var AccessibilityNode = class {
   #accessibilityModel;
+  #frameManager;
   #id;
   #backendDOMNodeId;
   #deferredDOMNode;
@@ -32744,6 +32772,7 @@ var AccessibilityNode = class {
   #childIds;
   constructor(accessibilityModel, payload) {
     this.#accessibilityModel = accessibilityModel;
+    this.#frameManager = accessibilityModel.target().targetManager().getFrameManager();
     this.#id = payload.nodeId;
     accessibilityModel.setAXNodeForAXId(this.#id, this);
     if (payload.backendDOMNodeId) {
@@ -32875,7 +32904,7 @@ var AccessibilityNode = class {
   getNodeId() {
     return this.getFrameId() + "#" + this.id();
   }
-  async getChildren(frameManager = FrameManager.instance()) {
+  async getChildren() {
     if (this.role()?.value === "Iframe") {
       const domNode = await this.deferredDOMNode()?.resolvePromise();
       if (!domNode) {
@@ -32885,12 +32914,12 @@ var AccessibilityNode = class {
       if (!frameId) {
         throw new Error("No owner frameId on iframe node");
       }
-      const localRoot = await getRootNode(frameId, frameManager);
+      const localRoot = await getRootNode(frameId, this.#frameManager);
       return [localRoot];
     }
     return await this.accessibilityModel().requestAXChildren(this.id(), this.getFrameId() || void 0);
   }
-  async axNodeToText(depth = 0, frameManager = FrameManager.instance()) {
+  async axNodeToText(depth = 0) {
     const indent = "  ".repeat(depth);
     const role = this.role()?.value || "";
     const name = this.name()?.value || "";
@@ -32913,9 +32942,9 @@ var AccessibilityNode = class {
       }
       lines.push(line + "\n");
     }
-    const children = await this.getChildren(frameManager);
+    const children = await this.getChildren();
     for (const child of children) {
-      lines.push(await child.axNodeToText(childDepth, frameManager));
+      lines.push(await child.axNodeToText(childDepth));
     }
     return lines.join("");
   }
@@ -33087,7 +33116,8 @@ function getFrameIdForNodeOrDocument(node) {
   }
   return frameId;
 }
-async function getNodeAndAncestorsFromDOMNode(domNode, frameManager = FrameManager.instance()) {
+async function getNodeAndAncestorsFromDOMNode(domNode) {
+  const frameManager = domNode.domModel().target().targetManager().getFrameManager();
   let frameId = getFrameIdForNodeOrDocument(domNode);
   const model = getModel(frameId, frameManager);
   const result = await model.requestAndLoadSubTreeToNode(domNode);
@@ -36629,12 +36659,16 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common35.ObjectWr
     super();
     this.#targetManager = targetManager;
     this.#cpuThrottlingRate = 1;
-    targetManager.observeModels(EmulationModel, this);
+  }
+  initialize() {
+    this.#targetManager.observeModels(EmulationModel, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!Root12.DevToolsContext.globalInstance().has(_CPUThrottlingManager) || forceNew) {
-      Root12.DevToolsContext.globalInstance().set(_CPUThrottlingManager, new _CPUThrottlingManager(opts.settings ?? Common35.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance()));
+      const manager = new _CPUThrottlingManager(opts.settings ?? Common35.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance());
+      manager.initialize();
+      Root12.DevToolsContext.globalInstance().set(_CPUThrottlingManager, manager);
     }
     return Root12.DevToolsContext.globalInstance().get(_CPUThrottlingManager);
   }
@@ -37232,12 +37266,16 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
     this.createEventListenerBreakpoints("touch", ["touchstart", "touchmove", "touchend", "touchcancel"], ["*"]);
     this.createEventListenerBreakpoints("worker", ["message", "messageerror"], ["*"]);
     this.createEventListenerBreakpoints("xhr", ["readystatechange", "load", "loadstart", "loadend", "abort", "error", "progress", "timeout"], ["xmlhttprequest", "xmlhttprequestupload"]);
+  }
+  initialize() {
     this.#targetManager.observeModels(DOMDebuggerModel, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
     if (!Root13.DevToolsContext.globalInstance().has(_DOMDebuggerManager) || forceNew) {
-      Root13.DevToolsContext.globalInstance().set(_DOMDebuggerManager, new _DOMDebuggerManager(targetManager ?? TargetManager.instance()));
+      const manager = new _DOMDebuggerManager(targetManager ?? TargetManager.instance());
+      manager.initialize();
+      Root13.DevToolsContext.globalInstance().set(_DOMDebuggerManager, manager);
     }
     return Root13.DevToolsContext.globalInstance().get(_DOMDebuggerManager);
   }
@@ -39456,7 +39494,12 @@ var ServiceWorkerManager = class extends SDKModel {
       this.forceUpdateSettingChanged();
     }
     this.#forceUpdateSetting.addChangeListener(this.forceUpdateSettingChanged, this);
+    MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
     new ServiceWorkerContextNamer(target, this);
+  }
+  dispose() {
+    MultitargetNetworkManager.instance().removeEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
+    super.dispose();
   }
   async enable() {
     if (this.#enabled) {
@@ -39590,7 +39633,7 @@ var ServiceWorkerManager = class extends SDKModel {
     this.dispatchEventToListeners("RegistrationErrorAdded", { registration, error: payload });
   }
   forceUpdateSettingChanged() {
-    const forceUpdateOnPageLoad = this.#forceUpdateSetting.get();
+    const forceUpdateOnPageLoad = this.#forceUpdateSetting.get() && !MultitargetNetworkManager.instance().isOffline();
     void this.#agent.invoke_setForceUpdateOnPageLoad({ forceUpdateOnPageLoad });
   }
 };

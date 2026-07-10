@@ -43,6 +43,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
@@ -974,7 +975,7 @@ export class TimelineUIUtils {
             }
             case "ProfileCall" /* Trace.Types.Events.Name.PROFILE_CALL */: {
                 const profileCall = event;
-                const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall);
+                const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall, Workspace.Workspace.WorkspaceImpl.instance());
                 if (!resolvedURL) {
                     break;
                 }
@@ -1849,7 +1850,7 @@ export class TimelineUIUtils {
             frame.url.slice(0, trimAt);
     }
     static getOriginWithEntity(entityMapper, parsedTrace, event) {
-        const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+        const resolvedURL = SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event, Workspace.Workspace.WorkspaceImpl.instance());
         if (!resolvedURL) {
             return null;
         }

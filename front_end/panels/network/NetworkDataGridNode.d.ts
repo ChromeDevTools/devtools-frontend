@@ -113,6 +113,8 @@ export declare class NetworkRequestNode extends NetworkNode {
     static IsAdRelatedComparator(a: NetworkNode, b: NetworkNode): number;
     static IsPreloadedComparator(a: NetworkNode, b: NetworkNode): number;
     static RenderBlockingComparator(a: NetworkNode, b: NetworkNode): number;
+    static ExecutionContextComparator(a: NetworkNode, b: NetworkNode): number;
+    static getExecutionContextDescription(request: SDK.NetworkRequest.NetworkRequest): string;
     static RequestPropertyComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
     static RequestURLComparator(a: NetworkNode, b: NetworkNode): number;
     static HeaderStringComparator(getHeaderValue: (request: SDK.NetworkRequest.NetworkRequest, propertyName: string) => string | undefined, propertyName: string, a: NetworkNode, b: NetworkNode): number;
@@ -152,6 +154,7 @@ export declare class NetworkRequestNode extends NetworkNode {
     private renderAddressSpaceCell;
     private renderSizeCell;
     private renderTimeCell;
+    private renderExecutionContextCell;
     private appendSubtitle;
     private createAiButtonIfAvailable;
 }

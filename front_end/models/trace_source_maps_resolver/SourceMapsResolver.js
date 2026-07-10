@@ -6,7 +6,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../trace/trace.js';
-import * as Workspace from '../workspace/workspace.js';
 export class SourceMappingsUpdated extends Event {
     static eventName = 'sourcemappingsupdated';
     constructor() {
@@ -16,6 +15,8 @@ export class SourceMappingsUpdated extends Event {
 /** The code location key is created as a concatenation of its fields. **/
 export const resolvedCodeLocationDataNames = new Map();
 export class SourceMapsResolver extends EventTarget {
+    #debuggerWorkspaceBinding;
+    #targetManager;
     executionContextNamesByOrigin = new Map();
     #parsedTrace;
     #entityMapper = null;
@@ -26,10 +27,12 @@ export class SourceMapsResolver extends EventTarget {
     // workers, we would also need to gather up the DebuggerModel instances for
     // those workers too.
     #debuggerModelsToListen = new Set();
-    constructor(parsedTrace, entityMapper) {
+    constructor(parsedTrace, entityMapper, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), targetManager = SDK.TargetManager.TargetManager.instance()) {
         super();
         this.#parsedTrace = parsedTrace;
         this.#entityMapper = entityMapper ?? null;
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+        this.#targetManager = targetManager;
     }
     static clearResolvedNodeNames() {
         resolvedCodeLocationDataNames.clear();
@@ -68,7 +71,7 @@ export class SourceMapsResolver extends EventTarget {
         }
         return _a.resolvedCodeLocationForCallFrame(callFrame);
     }
-    static resolvedURLForEntry(parsedTrace, entry) {
+    static resolvedURLForEntry(parsedTrace, entry, workspace) {
         const resolvedCallFrameURL = _a.resolvedCodeLocationForEntry(entry)?.devtoolsLocation?.uiSourceCode.url();
         if (resolvedCallFrameURL) {
             return resolvedCallFrameURL;
@@ -77,11 +80,11 @@ export class SourceMapsResolver extends EventTarget {
         // to the URL value contained in the event itself, if any.
         const url = Trace.Handlers.Helpers.getNonResolvedURL(entry, parsedTrace.data);
         if (url) {
-            return Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url)?.url() ?? url;
+            return workspace.uiSourceCodeForURL(url)?.url() ?? url;
         }
         return null;
     }
-    static codeLocationForEntry(parsedTrace, entry) {
+    static codeLocationForEntry(parsedTrace, entry, workspace) {
         const uiLocation = _a.resolvedCodeLocationForEntry(entry)?.devtoolsLocation;
         if (uiLocation) {
             return { url: uiLocation.uiSourceCode.url(), line: uiLocation.lineNumber, column: uiLocation.columnNumber };
@@ -97,7 +100,7 @@ export class SourceMapsResolver extends EventTarget {
         // Lastly, look for just a url.
         let url = Trace.Handlers.Helpers.getNonResolvedURL(entry, parsedTrace.data);
         if (url) {
-            url = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url)?.url() ?? url;
+            url = workspace.uiSourceCodeForURL(url)?.url() ?? url;
         }
         if (url) {
             return { url };
@@ -170,8 +173,7 @@ export class SourceMapsResolver extends EventTarget {
                     const script = debuggerModel?.scriptForId(node.scriptId) || null;
                     const location = debuggerModel &&
                         new SDK.DebuggerModel.Location(debuggerModel, node.callFrame.scriptId, node.callFrame.lineNumber, node.callFrame.columnNumber);
-                    const uiLocation = location &&
-                        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
+                    const uiLocation = location && await this.#debuggerWorkspaceBinding.rawLocationToUILocation(location);
                     updatedMappings ||= Boolean(uiLocation);
                     if (uiLocation?.uiSourceCode.url() && this.#entityMapper) {
                         // Update mappings for the related events of the entity.
@@ -208,12 +210,12 @@ export class SourceMapsResolver extends EventTarget {
     #targetForThread(tid) {
         const maybeWorkerId = this.#parsedTrace.data.Workers.workerIdByThread.get(tid);
         if (maybeWorkerId) {
-            return SDK.TargetManager.TargetManager.instance().targetById(maybeWorkerId);
+            return this.#targetManager.targetById(maybeWorkerId);
         }
-        return SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        return this.#targetManager.primaryPageTarget();
     }
     #updateExtensionNames() {
-        for (const runtimeModel of SDK.TargetManager.TargetManager.instance().models(SDK.RuntimeModel.RuntimeModel)) {
+        for (const runtimeModel of this.#targetManager.models(SDK.RuntimeModel.RuntimeModel)) {
             for (const context of runtimeModel.executionContexts()) {
                 this.executionContextNamesByOrigin.set(context.origin, context.name);
             }

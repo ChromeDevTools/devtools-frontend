@@ -2650,7 +2650,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aRemoteAddress = aRequest.remoteAddress();
     const bRemoteAddress = bRequest.remoteAddress();
@@ -2666,7 +2666,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     if (bRequest.cached() && !aRequest.cached()) {
       return 1;
@@ -2680,7 +2680,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aRequestNumber = _NetworkRequestNode.requestNumber(aRequest);
     const bRequestNumber = _NetworkRequestNode.requestNumber(bRequest);
@@ -2690,7 +2690,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aSimpleType = a.displayType();
     const bSimpleType = b.displayType();
@@ -2706,7 +2706,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aHasInitiatorCell = a instanceof _NetworkRequestNode && a.initiatorCell;
     const bHasInitiatorCell = b instanceof _NetworkRequestNode && b.initiatorCell;
@@ -2723,7 +2723,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aClientSecurityState = aRequest.clientSecurityState();
     const bClientSecurityState = bRequest.clientSecurityState();
@@ -2736,7 +2736,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     return aRequest.remoteAddressSpace().localeCompare(bRequest.remoteAddressSpace());
   }
@@ -2744,7 +2744,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aScore = aRequest.includedRequestCookies().length;
     const bScore = bRequest.includedRequestCookies().length;
@@ -2755,7 +2755,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aScore = aRequest.responseCookies ? aRequest.responseCookies.length : 0;
     const bScore = bRequest.responseCookies ? bRequest.responseCookies.length : 0;
@@ -2765,7 +2765,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aPriority = aRequest.priority();
     let aScore = aPriority ? PerfUI.NetworkPriorities.networkPriorityWeight(aPriority) : 0;
@@ -2779,7 +2779,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aIsAdRelated = aRequest.isAdRelated();
     const bIsAdRelated = bRequest.isAdRelated();
@@ -2811,7 +2811,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const order = [
       "InBodyParserBlocking",
@@ -2825,11 +2825,51 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const bOrder = order.indexOf(bRequest.renderBlockingBehavior());
     return aOrder - bOrder;
   }
+  static ExecutionContextComparator(a, b) {
+    const aRequest = a.requestOrFirstKnownChildRequest();
+    const bRequest = b.requestOrFirstKnownChildRequest();
+    if (!aRequest || !bRequest) {
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
+    }
+    const aContext = _NetworkRequestNode.getExecutionContextDescription(aRequest);
+    const bContext = _NetworkRequestNode.getExecutionContextDescription(bRequest);
+    return aContext.localeCompare(bContext);
+  }
+  static getExecutionContextDescription(request) {
+    const requestTarget = SDK5.NetworkManager.NetworkManager.forRequest(request)?.target();
+    if (requestTarget) {
+      const targetType = requestTarget.type();
+      if (targetType === SDK5.Target.Type.ServiceWorker || targetType === SDK5.Target.Type.Worker || targetType === SDK5.Target.Type.SHARED_WORKER) {
+        const runtimeModel = requestTarget.model(SDK5.RuntimeModel.RuntimeModel);
+        if (runtimeModel) {
+          const defaultContextLabel = runtimeModel.executionContexts().find((c) => c.isDefault)?.label();
+          if (defaultContextLabel) {
+            return defaultContextLabel;
+          }
+        }
+        return requestTarget.name() || "";
+      }
+    }
+    const frame = SDK5.ResourceTreeModel.ResourceTreeModel.frameForRequest(request);
+    if (!frame) {
+      return "";
+    }
+    if (requestTarget) {
+      const runtimeModel = requestTarget.model(SDK5.RuntimeModel.RuntimeModel);
+      if (runtimeModel) {
+        const frameContextLabel = runtimeModel.executionContexts().find((context) => context.frameId === request.frameId && context.isDefault)?.label();
+        if (frameContextLabel) {
+          return frameContextLabel;
+        }
+      }
+    }
+    return frame.displayName();
+  }
   static RequestPropertyComparator(propertyName, a, b) {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aValue = aRequest[propertyName];
     const bValue = bRequest[propertyName];
@@ -2842,7 +2882,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aURL = aRequest.url();
     const bURL = bRequest.url();
@@ -2855,7 +2895,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aValue = String(getHeaderValue(aRequest, propertyName) || "");
     const bValue = String(getHeaderValue(bRequest, propertyName) || "");
@@ -2867,7 +2907,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aRawValue = aRequest.responseHeaderValue(propertyName);
     const aValue = aRawValue !== void 0 ? parseFloat(aRawValue) : -Infinity;
@@ -2882,7 +2922,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aHeader = aRequest.responseHeaderValue(propertyName);
     const bHeader = bRequest.responseHeaderValue(propertyName);
@@ -2897,10 +2937,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest) {
-      if (!aRequest && !bRequest) {
-        return 0;
-      }
-      return !aRequest ? -1 : 1;
+      return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const aValue = aRequest.overrideTypes.join(", ");
     const bValue = bRequest.overrideTypes.join(", ");
@@ -3134,6 +3171,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       }
       case "has-overrides": {
         this.setTextAndTitle(cell, this.requestInternal.overrideTypes.join(", "));
+        break;
+      }
+      case "execution-context": {
+        this.renderExecutionContextCell(cell);
         break;
       }
       default: {
@@ -3507,6 +3548,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       cell.classList.add("network-dim-cell");
       this.setTextAndTitle(cell, i18nString6(UIStrings6.pending));
     }
+  }
+  renderExecutionContextCell(cell) {
+    const contextDescription = _NetworkRequestNode.getExecutionContextDescription(this.requestInternal);
+    this.setTextAndTitle(cell, contextDescription);
   }
   appendSubtitle(cellElement, subtitleText, alwaysVisible = false, tooltipText = "") {
     const subtitleElement = document.createElement("div");
@@ -9814,7 +9859,11 @@ var UIStrings21 = {
   /**
    * @description Text to show whether a request is preloaded
    */
-  isPreloaded: "Preloaded"
+  isPreloaded: "Preloaded",
+  /**
+   * @description Column header in the Network log view of the Network panel
+   */
+  executionContext: "Execution context"
 };
 var str_21 = i18n41.i18n.registerUIStrings("panels/network/NetworkLogViewColumns.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
@@ -10709,6 +10758,11 @@ var DEFAULT_COLUMNS = [
     id: "is-preloaded",
     title: i18nLazyString3(UIStrings21.isPreloaded),
     sortingFunction: NetworkRequestNode.IsPreloadedComparator
+  },
+  {
+    id: "execution-context",
+    title: i18nLazyString3(UIStrings21.executionContext),
+    sortingFunction: NetworkRequestNode.ExecutionContextComparator
   },
   // This header is a placeholder to let datagrid know that it can be sorted by this column, but never shown.
   {

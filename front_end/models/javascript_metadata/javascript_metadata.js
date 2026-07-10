@@ -8391,6 +8391,10 @@ var NativeFunctions = [
     signatures: [["?ns"]]
   },
   {
+    name: "markConditional",
+    signatures: [["markName"]]
+  },
+  {
     name: "PerformanceMark",
     signatures: [["markName", "?markOptions"]]
   },

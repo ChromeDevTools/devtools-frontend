@@ -40,6 +40,8 @@ var Universe = class {
     context.set(Common.Console.Console, console);
     const hostConfigTracker = new Host.AidaClient.HostConfigTracker();
     context.set(Host.AidaClient.HostConfigTracker, hostConfigTracker);
+    const gdpClient = new Host.GdpClient.GdpClient();
+    context.set(Host.GdpClient.GdpClient, gdpClient);
     const settings = Common.Settings.Settings.instance({
       forceNew: true,
       console,
@@ -147,6 +149,9 @@ var Universe = class {
   }
   get fileManager() {
     return this.context.get(Workspace.FileManager.FileManager);
+  }
+  get gdpClient() {
+    return this.context.get(Host.GdpClient.GdpClient);
   }
   get hostConfigTracker() {
     return this.context.get(Host.AidaClient.HostConfigTracker);

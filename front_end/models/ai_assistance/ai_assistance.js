@@ -3960,7 +3960,7 @@ import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
 import * as Logs4 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Workspace3 from "./../workspace/workspace.js";
 
 // gen/front_end/models/ai_assistance/contexts/FileContext.js
 var FileContext_exports = {};
@@ -4119,6 +4119,7 @@ __export(AICallTree_exports, {
 });
 import * as Trace from "./../trace/trace.js";
 import * as SourceMapsResolver from "./../trace_source_maps_resolver/trace_source_maps_resolver.js";
+import * as Workspace from "./../workspace/workspace.js";
 function depthFirstWalk(nodes, callback) {
   for (const node of nodes) {
     if (callback?.(node)) {
@@ -4351,7 +4352,7 @@ ${nodesStr}`;
     };
     const durationStr = roundToTenths(node.totalTime);
     const selfTimeStr = roundToTenths(node.selfTime);
-    const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event);
+    const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, Workspace.Workspace.WorkspaceImpl.instance());
     const url = location?.url;
     let urlIndexStr = "";
     if (url) {
@@ -7719,8 +7720,8 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
    * usually is what the user authored.
    */
   static getUISourceCodes() {
-    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
-    const projects = workspace.projects().filter((project) => project.type() === Workspace.Workspace.projectTypes.Network);
+    const workspace = Workspace3.Workspace.WorkspaceImpl.instance();
+    const projects = workspace.projects().filter((project) => project.type() === Workspace3.Workspace.projectTypes.Network);
     const uiSourceCodes = /* @__PURE__ */ new Map();
     for (const project of projects) {
       for (const uiSourceCode of project.uiSourceCodes()) {

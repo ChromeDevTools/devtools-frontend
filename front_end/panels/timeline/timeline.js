@@ -387,6 +387,7 @@ import * as Host3 from "./../../core/host/host.js";
 import * as Platform16 from "./../../core/platform/platform.js";
 import * as Trace36 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver7 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
+import * as Workspace8 from "./../../models/workspace/workspace.js";
 import * as ThemeSupport27 from "./../../ui/legacy/theme_support/theme_support.js";
 import * as TimelineComponents7 from "./components/components.js";
 
@@ -2129,7 +2130,7 @@ import * as Root4 from "./../../core/root/root.js";
 import * as AIAssistance2 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Trace34 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver5 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
-import * as Workspace4 from "./../../models/workspace/workspace.js";
+import * as Workspace6 from "./../../models/workspace/workspace.js";
 import * as PerfUI17 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as ThemeSupport25 from "./../../ui/legacy/theme_support/theme_support.js";
@@ -2296,7 +2297,7 @@ import * as SDK14 from "./../../core/sdk/sdk.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as CrUXManager5 from "./../../models/crux-manager/crux-manager.js";
 import * as Trace33 from "./../../models/trace/trace.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
+import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as TraceBounds15 from "./../../services/trace_bounds/trace_bounds.js";
 import * as PerfUI16 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
@@ -2911,6 +2912,7 @@ import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Trace23 from "./../../models/trace/trace.js";
 import * as SourceMapsResolver3 from "./../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
+import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as TraceBounds11 from "./../../services/trace_bounds/trace_bounds.js";
 import * as Tracing3 from "./../../services/tracing/tracing.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
@@ -9824,7 +9826,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
       }
       case "ProfileCall": {
         const profileCall = event;
-        const resolvedURL = SourceMapsResolver3.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall);
+        const resolvedURL = SourceMapsResolver3.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall, Workspace3.Workspace.WorkspaceImpl.instance());
         if (!resolvedURL) {
           break;
         }
@@ -10643,7 +10645,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
     return Common11.ParsedURL.schemeIs(url, "about:") ? `"${Platform11.StringUtilities.trimMiddle(frame.name, trimAt)}"` : frame.url.slice(0, trimAt);
   }
   static getOriginWithEntity(entityMapper, parsedTrace, event) {
-    const resolvedURL = SourceMapsResolver3.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    const resolvedURL = SourceMapsResolver3.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event, Workspace3.Workspace.WorkspaceImpl.instance());
     if (!resolvedURL) {
       return null;
     }
@@ -16658,12 +16660,12 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
   willHide() {
     super.willHide();
     this.#networkPersistedGroupConfigSetting.removeChangeListener(this.resizeToPreferredHeights, this);
-    Workspace3.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
+    Workspace5.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#boundRefreshAfterIgnoreList);
   }
   wasShown() {
     super.wasShown();
     this.#networkPersistedGroupConfigSetting.addChangeListener(this.resizeToPreferredHeights, this);
-    Workspace3.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
+    Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
     if (this.needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }
@@ -17348,20 +17350,20 @@ var TimelineFlameChartDataProvider = class extends Common17.ObjectWrapper.Object
     if (!this.parsedTrace || Trace34.Types.Events.isLegacyTimelineFrame(entry)) {
       return contextMenu;
     }
-    const url = SourceMapsResolver5.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry);
+    const url = SourceMapsResolver5.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry, Workspace6.Workspace.WorkspaceImpl.instance());
     if (!url) {
       return contextMenu;
     }
     if (Utils7.IgnoreList.isIgnoreListedEntry(entry)) {
       contextMenu.defaultSection().appendItem(i18nString27(UIStrings27.removeScriptFromIgnoreList), () => {
-        Workspace4.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
+        Workspace6.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
         this.#onIgnoreListChanged();
       }, {
         jslogContext: "remove-from-ignore-list"
       });
     } else {
       contextMenu.defaultSection().appendItem(i18nString27(UIStrings27.addScriptToIgnoreList), () => {
-        Workspace4.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
+        Workspace6.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
         this.#onIgnoreListChanged();
       }, {
         jslogContext: "add-to-ignore-list"
@@ -18846,7 +18848,7 @@ var CompatibilityTracksAppender = class {
     if (track.setPopoverInfo) {
       track.setPopoverInfo(event, info);
     }
-    const url = URL.parse(info.url ?? SourceMapsResolver7.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event) ?? "");
+    const url = URL.parse(info.url ?? SourceMapsResolver7.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event, Workspace8.Workspace.WorkspaceImpl.instance()) ?? "");
     if (url) {
       const MAX_PATH_LENGTH = 45;
       const path = Platform16.StringUtilities.trimMiddle(url.href.replace(url.origin, ""), MAX_PATH_LENGTH);

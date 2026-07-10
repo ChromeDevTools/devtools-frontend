@@ -1655,6 +1655,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "evolved-cls",
   "exclude-folder",
   "exclude-folder-confirmation",
+  "execution-context",
   "expand",
   "expand-recursively",
   "experimental-item",

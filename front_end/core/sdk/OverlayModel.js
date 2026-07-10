@@ -377,6 +377,34 @@ export class OverlayModel extends SDKModel {
             void this.overlayAgent.invoke_setShowHinge({});
         }
     }
+    showDisplayCutout(cutout) {
+        if (cutout) {
+            const { x, y, width, height, shape, contentColor } = cutout;
+            const displayCutoutConfig = {
+                rect: { x, y, width, height },
+                shape,
+                contentColor,
+            };
+            if (shape === "pill" /* Protocol.Overlay.DisplayCutoutShape.Pill */) {
+                displayCutoutConfig.borderRadius = cutout.borderRadius;
+            }
+            else if (shape === "notch" /* Protocol.Overlay.DisplayCutoutShape.Notch */) {
+                displayCutoutConfig.upperRadius = cutout.upperRadius;
+                displayCutoutConfig.lowerRadius = cutout.lowerRadius;
+            }
+            else if (shape === "circle" /* Protocol.Overlay.DisplayCutoutShape.Circle */) {
+                displayCutoutConfig.cx = cutout.cx;
+                displayCutoutConfig.cy = cutout.cy;
+                displayCutoutConfig.radius = cutout.radius;
+            }
+            void this.overlayAgent.invoke_setShowDisplayCutout({
+                displayCutoutConfig,
+            });
+        }
+        else {
+            void this.overlayAgent.invoke_setShowDisplayCutout({});
+        }
+    }
     setWindowControlsPlatform(selectedPlatform) {
         this.#windowControls.selectedPlatform = selectedPlatform;
     }

@@ -1592,6 +1592,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
             promises.push(agent
                 .invoke_emulateNetworkConditionsByRule({
                 offline,
+                emulateOfflineServiceWorker: offline,
                 matchedNetworkConditions: matchedNetworkConditions.map(({ urlPattern, conditions }) => ({
                     urlPattern: urlPattern ?? '',
                     latency: conditions.latency,
@@ -1601,6 +1602,7 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
                     packetQueueLength: conditions.packetQueueLength,
                     packetReordering: conditions.packetReordering,
                     connectionType: NetworkManager.connectionType(conditions),
+                    offline,
                 }))
             })
                 .then(response => {

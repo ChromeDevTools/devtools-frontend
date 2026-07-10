@@ -6,14 +6,15 @@ A settings registration is represented by the `SettingRegistration` interface, d
 
 All settings have to be registered using the function `Common.Settings.registerSettingExtension` which expects an object of type `SettingRegistration` as parameter.
 
-As an example, take the registration of the `showHTMLComments` setting, which allows users to determine if HTML comments are shown in the Elements tree:
+As an example, take the registration of the `show-html-comments` setting, which allows users to determine if HTML comments are shown in the Elements tree:
 
 ```ts
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   order: 3,
-  title: ls`Show HTML comments`,
-  settingName: 'showHTMLComments',
+  title: ls`HTML comments`,
+  settingName: 'show-html-comments',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   options: [

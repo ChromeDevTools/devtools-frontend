@@ -286,8 +286,8 @@ const UIStrings = {
 
 ## How to prevent a term being localized
 
-Any text within the backticks will not be translated. For example, if the
-'robots.txt' in string 'Requesting for robots.txt …' should not be translated:
+Any text within the backticks will not be translated. For example,
+'robots.txt' in the string 'Requesting for robots.txt …' should not be translated:
 
 ```ts
 // in example.js file

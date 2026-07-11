@@ -644,11 +644,6 @@
     --source-code-font-family: ahem;
   }
 
-  &.platform-screenshot-e2e-test {
-    --default-font-family: roboto;
-    --monospace-font-family: roboto;
-    --source-code-font-family: roboto;
-  }
 
   --ref-typeface-weight-regular: 400;
   --ref-typeface-weight-medium: 500;

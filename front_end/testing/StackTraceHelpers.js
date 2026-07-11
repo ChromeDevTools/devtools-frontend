@@ -82,4 +82,23 @@ export class StubStackTrace extends Common.ObjectWrapper.ObjectWrapper {
         this.asyncFragments = asyncFragments;
     }
 }
+export class StubParsedErrorStackTrace extends Common.ObjectWrapper.ObjectWrapper {
+    syncFragment;
+    asyncFragments;
+    static create(syncFrames, asyncFragments = []) {
+        const toFrame = (frame) => {
+            return {
+                line: -1,
+                column: -1,
+                ...frame,
+            };
+        };
+        return new StubParsedErrorStackTrace({ frames: syncFrames.map(toFrame) }, asyncFragments.map(fragment => ({ description: fragment.description, frames: fragment.frames.map(toFrame) })));
+    }
+    constructor(syncFragment, asyncFragments = []) {
+        super();
+        this.syncFragment = syncFragment;
+        this.asyncFragments = asyncFragments;
+    }
+}
 //# sourceMappingURL=StackTraceHelpers.js.map

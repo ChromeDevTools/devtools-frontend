@@ -1742,7 +1742,8 @@ function renderFrameSuffix(frame) {
   if (frame.promiseIndex !== void 0) {
     return Lit2.nothing;
   }
-  if (frame.name) {
+  const name = formatName(frame);
+  if (name) {
     return html2`)`;
   }
   return Lit2.nothing;

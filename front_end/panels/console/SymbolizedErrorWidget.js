@@ -72,7 +72,8 @@ function renderFrameSuffix(frame) {
     if (frame.promiseIndex !== undefined) {
         return Lit.nothing;
     }
-    if (frame.name) {
+    const name = formatName(frame);
+    if (name) {
         return html `)`;
     }
     return Lit.nothing;

@@ -7368,16 +7368,16 @@
     "message": "Stop instrumenting coverage and show results"
   },
   "panels/coverage/CoverageListView.ts | codeCoverage": {
-    "message": "Code Coverage"
+    "message": "Code coverage"
   },
   "panels/coverage/CoverageListView.ts | css": {
     "message": "CSS"
   },
   "panels/coverage/CoverageListView.ts | jsCoverageWithPerBlock": {
-    "message": "JS coverage with per block granularity: Once a block of JavaScript was executed, that block is marked as covered."
+    "message": "JS coverage with per block granularity: once a block of JavaScript was executed, that block is marked as covered."
   },
   "panels/coverage/CoverageListView.ts | jsCoverageWithPerFunction": {
-    "message": "JS coverage with per function granularity: Once a function was executed, the whole function is marked as covered."
+    "message": "JS coverage with per function granularity: once a function was executed, the whole function is marked as covered."
   },
   "panels/coverage/CoverageListView.ts | jsPerBlock": {
     "message": "JS (per block)"
@@ -7407,19 +7407,19 @@
     "message": "{PH1} % of file unused, {PH2} % of file used"
   },
   "panels/coverage/CoverageListView.ts | totalBytes": {
-    "message": "Total Bytes"
+    "message": "Total bytes"
   },
   "panels/coverage/CoverageListView.ts | type": {
     "message": "Type"
   },
   "panels/coverage/CoverageListView.ts | unusedBytes": {
-    "message": "Unused Bytes"
+    "message": "Unused bytes"
   },
   "panels/coverage/CoverageListView.ts | url": {
     "message": "URL"
   },
   "panels/coverage/CoverageListView.ts | usageVisualization": {
-    "message": "Usage Visualization"
+    "message": "Usage visualization"
   },
   "panels/coverage/CoverageView.ts | activationNoCapture": {
     "message": "Could not capture coverage info because the page was prerendered in the background."
@@ -7431,13 +7431,13 @@
     "message": "Could not capture coverage info because the page was served from the back/forward cache."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
-    "message": "Choose coverage granularity: Per function has low overhead, per block has significant overhead."
+    "message": "Choose coverage granularity: per function has low overhead, per block has significant overhead."
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Click the \"{PH1}\" button to start capturing coverage."
+    "message": "Click the “{PH1}” button to start capturing coverage."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Click the \"{PH1}\" button to reload and start capturing coverage."
+    "message": "Click the “{PH1}” button to reload and start capturing coverage."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "Content scripts"
@@ -11951,23 +11951,53 @@
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "Allocation sampling"
   },
+  "panels/profiler/HeapProfileView.ts | chart": {
+    "message": "Chart"
+  },
+  "panels/profiler/HeapProfileView.ts | excludeSelectedFunction": {
+    "message": "Exclude selected function"
+  },
+  "panels/profiler/HeapProfileView.ts | findByCostMsNameOrFile": {
+    "message": "Find by cost (>50ms), name or file"
+  },
+  "panels/profiler/HeapProfileView.ts | focusSelectedFunction": {
+    "message": "Focus selected function"
+  },
   "panels/profiler/HeapProfileView.ts | formatPercent": {
     "message": "{PH1} %"
+  },
+  "panels/profiler/HeapProfileView.ts | function": {
+    "message": "Function"
   },
   "panels/profiler/HeapProfileView.ts | heapProfilerIsRecording": {
     "message": "Heap profiler is recording"
   },
+  "panels/profiler/HeapProfileView.ts | heavyBottomUp": {
+    "message": "Heavy (Bottom Up)"
+  },
   "panels/profiler/HeapProfileView.ts | name": {
     "message": "Name"
   },
+  "panels/profiler/HeapProfileView.ts | profile": {
+    "message": "Profile"
+  },
   "panels/profiler/HeapProfileView.ts | profileD": {
     "message": "Profile {PH1}"
+  },
+  "panels/profiler/HeapProfileView.ts | profiler": {
+    "message": "Profiler"
+  },
+  "panels/profiler/HeapProfileView.ts | profileViewMode": {
+    "message": "Profile view mode"
   },
   "panels/profiler/HeapProfileView.ts | recording": {
     "message": "Recording…"
   },
   "panels/profiler/HeapProfileView.ts | recordMemoryAllocations": {
     "message": "Approximate memory allocations by sampling long operations with minimal overhead and get a breakdown by JavaScript execution stack"
+  },
+  "panels/profiler/HeapProfileView.ts | restoreAllFunctions": {
+    "message": "Restore all functions"
   },
   "panels/profiler/HeapProfileView.ts | samplingHeapProfilerTimeline": {
     "message": "Sampling heap profiler timeline"
@@ -12004,6 +12034,9 @@
   },
   "panels/profiler/HeapProfileView.ts | totalSizeBytes": {
     "message": "Total size"
+  },
+  "panels/profiler/HeapProfileView.ts | treeTopDown": {
+    "message": "Tree (Top Down)"
   },
   "panels/profiler/HeapProfileView.ts | url": {
     "message": "URL"
@@ -12470,59 +12503,26 @@
   "panels/profiler/ProfilesPanel.ts | runD": {
     "message": "Run {PH1}"
   },
-  "panels/profiler/ProfileView.ts | chart": {
-    "message": "Chart"
-  },
-  "panels/profiler/ProfileView.ts | excludeSelectedFunction": {
-    "message": "Exclude selected function"
-  },
-  "panels/profiler/ProfileView.ts | failedToReadFile": {
+  "panels/profiler/WritableProfileHeader.ts | failedToReadFile": {
     "message": "Failed to read file"
   },
-  "panels/profiler/ProfileView.ts | fileSReadErrorS": {
+  "panels/profiler/WritableProfileHeader.ts | fileSReadErrorS": {
     "message": "File ''{PH1}'' read error: {PH2}"
   },
-  "panels/profiler/ProfileView.ts | findByCostMsNameOrFile": {
-    "message": "Find by cost (>50ms), name or file"
-  },
-  "panels/profiler/ProfileView.ts | focusSelectedFunction": {
-    "message": "Focus selected function"
-  },
-  "panels/profiler/ProfileView.ts | function": {
-    "message": "Function"
-  },
-  "panels/profiler/ProfileView.ts | heavyBottomUp": {
-    "message": "Heavy (Bottom Up)"
-  },
-  "panels/profiler/ProfileView.ts | loaded": {
+  "panels/profiler/WritableProfileHeader.ts | loaded": {
     "message": "Loaded"
   },
-  "panels/profiler/ProfileView.ts | loading": {
+  "panels/profiler/WritableProfileHeader.ts | loading": {
     "message": "Loading…"
   },
-  "panels/profiler/ProfileView.ts | loadingD": {
-    "message": "Loading… {PH1}%"
+  "panels/profiler/WritableProfileHeader.ts | loadingD": {
+    "message": "Loading… {PH1}"
   },
-  "panels/profiler/ProfileView.ts | parsing": {
+  "panels/profiler/WritableProfileHeader.ts | parsing": {
     "message": "Parsing…"
   },
-  "panels/profiler/ProfileView.ts | profile": {
-    "message": "Profile"
-  },
-  "panels/profiler/ProfileView.ts | profileD": {
+  "panels/profiler/WritableProfileHeader.ts | profileD": {
     "message": "Profile {PH1}"
-  },
-  "panels/profiler/ProfileView.ts | profiler": {
-    "message": "Profiler"
-  },
-  "panels/profiler/ProfileView.ts | profileViewMode": {
-    "message": "Profile view mode"
-  },
-  "panels/profiler/ProfileView.ts | restoreAllFunctions": {
-    "message": "Restore all functions"
-  },
-  "panels/profiler/ProfileView.ts | treeTopDown": {
-    "message": "Tree (Top Down)"
   },
   "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
     "message": "Add custom property"

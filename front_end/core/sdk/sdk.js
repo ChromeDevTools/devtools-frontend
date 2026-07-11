@@ -25433,26 +25433,31 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
     const { model } = await this.#agent.invoke_getBoxModel({ nodeId: this.id });
     return model;
   }
+  canInspectNode() {
+    if (this.ancestorUserAgentShadowRoot()) {
+      return false;
+    }
+    if (this.#pseudoType) {
+      return [
+        "before",
+        "after",
+        "marker",
+        "scroll-marker",
+        "backdrop",
+        "view-transition",
+        "view-transition-group",
+        "view-transition-image-pair",
+        "view-transition-old",
+        "view-transition-new"
+      ].includes(this.#pseudoType);
+    }
+    return true;
+  }
   async setAsInspectedNode() {
-    let node = this;
-    if (node?.pseudoType()) {
-      node = node.parentNode;
+    if (!this.canInspectNode()) {
+      return;
     }
-    while (node) {
-      let ancestor = node.ancestorUserAgentShadowRoot();
-      if (!ancestor) {
-        break;
-      }
-      ancestor = node.ancestorShadowHost();
-      if (!ancestor) {
-        break;
-      }
-      node = ancestor;
-    }
-    if (!node) {
-      throw new Error("In DOMNode.setAsInspectedNode: node is expected to not be null.");
-    }
-    await this.#agent.invoke_setInspectedNode({ nodeId: node.id });
+    await this.#agent.invoke_setInspectedNode({ nodeId: this.id });
   }
   enclosingElementOrSelf() {
     let node = this;
@@ -26439,6 +26444,9 @@ var DOMNodeSnapshot = class extends DOMNode {
   }
   moveTo(_targetNode, _anchorNode, _callback) {
   }
+  canInspectNode() {
+    return false;
+  }
   setAsInspectedNode() {
     return Promise.resolve();
   }
@@ -26465,6 +26473,9 @@ var DOMDocumentSnapshot = class extends DOMDocument {
   copyTo(_targetNode, _anchorNode, _callback) {
   }
   moveTo(_targetNode, _anchorNode, _callback) {
+  }
+  canInspectNode() {
+    return false;
   }
   setAsInspectedNode() {
     return Promise.resolve();
@@ -39484,21 +39495,23 @@ var ServiceWorkerManager = class extends SDKModel {
   #registrations = /* @__PURE__ */ new Map();
   #enabled = false;
   #forceUpdateSetting;
+  #networkManager;
   constructor(target) {
     super(target);
+    this.#networkManager = target.targetManager().getNetworkManager();
     target.registerServiceWorkerDispatcher(new ServiceWorkerDispatcher(this));
     this.#agent = target.serviceWorkerAgent();
     void this.enable();
-    this.#forceUpdateSetting = this.target().targetManager().context.get(Common39.Settings.Settings).createSetting("service-worker-update-on-reload", false);
+    this.#forceUpdateSetting = target.targetManager().settings.createSetting("service-worker-update-on-reload", false);
     if (this.#forceUpdateSetting.get()) {
       this.forceUpdateSettingChanged();
     }
     this.#forceUpdateSetting.addChangeListener(this.forceUpdateSettingChanged, this);
-    MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
+    this.#networkManager.addEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
     new ServiceWorkerContextNamer(target, this);
   }
   dispose() {
-    MultitargetNetworkManager.instance().removeEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
+    this.#networkManager.removeEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
     super.dispose();
   }
   async enable() {
@@ -39633,7 +39646,7 @@ var ServiceWorkerManager = class extends SDKModel {
     this.dispatchEventToListeners("RegistrationErrorAdded", { registration, error: payload });
   }
   forceUpdateSettingChanged() {
-    const forceUpdateOnPageLoad = this.#forceUpdateSetting.get() && !MultitargetNetworkManager.instance().isOffline();
+    const forceUpdateOnPageLoad = this.#forceUpdateSetting.get() && !this.#networkManager.isOffline();
     void this.#agent.invoke_setForceUpdateOnPageLoad({ forceUpdateOnPageLoad });
   }
 };

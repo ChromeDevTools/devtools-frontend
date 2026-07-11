@@ -13103,7 +13103,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
         </devtools-adorner>` : nothing4}
       </div>` : nothing4}
-      ${input.isSelected ? html10`
+      ${input.isSelected && input.canInspect ? html10`
         <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString12(UIStrings13.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
       ` : nothing4}
       ${input.showAiButton ? html10`
@@ -13331,6 +13331,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       },
       isHovered: this.#hovered,
       isSelected: this.selected,
+      canInspect: this.node().canInspectNode(),
       showAiButton: Boolean(this.#hovered || this.selected) && this.node().nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() && this.treeOutline?.showAIButton,
       aiButtonTitle: this.isAiButtonEnabled() ? UI14.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
       onAiButtonClick: (ev) => {
@@ -13662,6 +13663,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
       },
       isHovered: false,
       isSelected: false,
+      canInspect: false,
       showAiButton: false,
       onAiButtonClick: () => {
       },
@@ -19075,7 +19077,9 @@ ${node.simpleSelector()} {}`, false);
     if (!selectedNode) {
       return;
     }
-    void selectedNode.setAsInspectedNode();
+    if (selectedNode.canInspectNode()) {
+      void selectedNode.setAsInspectedNode();
+    }
     if (focus) {
       this.selectedNodeOnReset = selectedNode;
       this.hasNonDefaultSelectedNode = true;

@@ -441,7 +441,9 @@ export class ElementsPanel extends UI.Panel.Panel {
         if (!selectedNode) {
             return;
         }
-        void selectedNode.setAsInspectedNode();
+        if (selectedNode.canInspectNode()) {
+            void selectedNode.setAsInspectedNode();
+        }
         if (focus) {
             this.selectedNodeOnReset = selectedNode;
             this.hasNonDefaultSelectedNode = true;

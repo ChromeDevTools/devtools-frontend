@@ -931,27 +931,31 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         const { model } = await this.#agent.invoke_getBoxModel({ nodeId: this.id });
         return model;
     }
+    canInspectNode() {
+        if (this.ancestorUserAgentShadowRoot()) {
+            return false;
+        }
+        if (this.#pseudoType) {
+            return [
+                "before" /* Protocol.DOM.PseudoType.Before */,
+                "after" /* Protocol.DOM.PseudoType.After */,
+                "marker" /* Protocol.DOM.PseudoType.Marker */,
+                "scroll-marker" /* Protocol.DOM.PseudoType.ScrollMarker */,
+                "backdrop" /* Protocol.DOM.PseudoType.Backdrop */,
+                "view-transition" /* Protocol.DOM.PseudoType.ViewTransition */,
+                "view-transition-group" /* Protocol.DOM.PseudoType.ViewTransitionGroup */,
+                "view-transition-image-pair" /* Protocol.DOM.PseudoType.ViewTransitionImagePair */,
+                "view-transition-old" /* Protocol.DOM.PseudoType.ViewTransitionOld */,
+                "view-transition-new" /* Protocol.DOM.PseudoType.ViewTransitionNew */,
+            ].includes(this.#pseudoType);
+        }
+        return true;
+    }
     async setAsInspectedNode() {
-        let node = this;
-        if (node?.pseudoType()) {
-            node = node.parentNode;
+        if (!this.canInspectNode()) {
+            return;
         }
-        while (node) {
-            let ancestor = node.ancestorUserAgentShadowRoot();
-            if (!ancestor) {
-                break;
-            }
-            ancestor = node.ancestorShadowHost();
-            if (!ancestor) {
-                break;
-            }
-            // User #agent shadow root, keep climbing up.
-            node = ancestor;
-        }
-        if (!node) {
-            throw new Error('In DOMNode.setAsInspectedNode: node is expected to not be null.');
-        }
-        await this.#agent.invoke_setInspectedNode({ nodeId: node.id });
+        await this.#agent.invoke_setInspectedNode({ nodeId: this.id });
     }
     enclosingElementOrSelf() {
         let node = this;
@@ -1973,6 +1977,9 @@ export class DOMNodeSnapshot extends DOMNode {
     }
     moveTo(_targetNode, _anchorNode, _callback) {
     }
+    canInspectNode() {
+        return false;
+    }
     setAsInspectedNode() {
         return Promise.resolve();
     }
@@ -1999,6 +2006,9 @@ export class DOMDocumentSnapshot extends DOMDocument {
     copyTo(_targetNode, _anchorNode, _callback) {
     }
     moveTo(_targetNode, _anchorNode, _callback) {
+    }
+    canInspectNode() {
+        return false;
     }
     setAsInspectedNode() {
         return Promise.resolve();

@@ -25,3 +25,12 @@ export declare class StubStackTrace extends Common.ObjectWrapper.ObjectWrapper<S
     }>): StubStackTrace;
     constructor(syncFragment: StackTrace.StackTrace.Fragment, asyncFragments: StackTrace.StackTrace.AsyncFragment[]);
 }
+export declare class StubParsedErrorStackTrace extends Common.ObjectWrapper.ObjectWrapper<StackTrace.StackTrace.EventTypes> implements StackTrace.StackTrace.ParsedErrorStackTrace {
+    readonly syncFragment: StackTrace.StackTrace.ParsedErrorStackFragment;
+    readonly asyncFragments: StackTrace.StackTrace.AsyncFragment[];
+    static create(syncFrames: Array<Partial<StackTrace.StackTrace.ParsedErrorStackFrame>>, asyncFragments?: Array<{
+        description: string;
+        frames: Array<Partial<StackTrace.StackTrace.ParsedErrorStackFrame>>;
+    }>): StubParsedErrorStackTrace;
+    constructor(syncFragment: StackTrace.StackTrace.ParsedErrorStackFragment, asyncFragments?: StackTrace.StackTrace.AsyncFragment[]);
+}

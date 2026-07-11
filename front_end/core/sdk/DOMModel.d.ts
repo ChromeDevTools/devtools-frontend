@@ -174,6 +174,7 @@ export declare class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeE
     highlightForTwoSeconds(): void;
     resolveToObject(objectGroup?: string, executionContextId?: Protocol.Runtime.ExecutionContextId): Promise<RemoteObject | null>;
     boxModel(): Promise<Protocol.DOM.BoxModel | null>;
+    canInspectNode(): boolean;
     setAsInspectedNode(): Promise<void>;
     enclosingElementOrSelf(): DOMNode | null;
     callFunction<T, U extends string | number>(fn: (this: HTMLElement, ...args: U[]) => T, args?: U[]): Promise<{
@@ -359,6 +360,7 @@ export declare class DOMNodeSnapshot extends DOMNode {
     removeNode(_callback?: ((arg0: string | null, arg1?: Protocol.DOM.NodeId | undefined) => void) | undefined): Promise<void>;
     copyTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
     moveTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    canInspectNode(): boolean;
     setAsInspectedNode(): Promise<void>;
 }
 export declare class DOMDocumentSnapshot extends DOMDocument {
@@ -372,6 +374,7 @@ export declare class DOMDocumentSnapshot extends DOMDocument {
     removeNode(_callback?: ((arg0: string | null, arg1?: Protocol.DOM.NodeId | undefined) => void) | undefined): Promise<void>;
     copyTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
     moveTo(_targetNode: DOMNode, _anchorNode: DOMNode | null, _callback?: ((arg0: string | null, arg1: DOMNode | null) => void) | undefined): void;
+    canInspectNode(): boolean;
     setAsInspectedNode(): Promise<void>;
 }
 export interface Attribute {

@@ -73,6 +73,7 @@ export interface ViewInput {
     onStartingStyleAdornerClick: (e: Event) => void;
     isHovered: boolean;
     isSelected: boolean;
+    canInspect: boolean;
     showAiButton: boolean;
     aiButtonTitle?: string;
     onAiButtonClick: (e: Event) => void;

@@ -43,6 +43,7 @@ export declare class Universe {
     get networkPersistenceManager(): Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
     get networkProjectManager(): Bindings.NetworkProject.NetworkProjectManager;
     get liveMetrics(): LiveMetrics.LiveMetrics;
+    get frameManager(): SDK.FrameManager.FrameManager;
     get pageResourceLoader(): SDK.PageResourceLoader.PageResourceLoader;
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;

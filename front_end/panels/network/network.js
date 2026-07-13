@@ -3503,14 +3503,14 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       }
       UI6.Tooltip.Tooltip.install(cell, tooltipText);
       cell.classList.add("network-dim-cell");
-    } else if (this.requestInternal.serviceWorkerRouterInfo) {
-      const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
-      UI6.UIUtils.createTextChild(cell, transferSize);
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize }));
     } else if (this.requestInternal.fetchedViaServiceWorker) {
       UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.serviceWorker));
       UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromServiceWorkerResource, { PH1: resourceSize }));
       cell.classList.add("network-dim-cell");
+    } else if (this.requestInternal.serviceWorkerRouterInfo) {
+      const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
+      UI6.UIUtils.createTextChild(cell, transferSize);
+      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize }));
     } else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI6.UIUtils.createTextChild(cell, i18n11.i18n.lockedString("(signed-exchange)"));
       UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromSignedHttpExchange, { PH1: resourceSize }));
@@ -14041,7 +14041,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
       return;
     }
     if (target instanceof Workspace4.UISourceCode.UISourceCode) {
-      const resource = SDK17.ResourceTreeModel.ResourceTreeModel.resourceForURL(target.url());
+      const resource = SDK17.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK17.TargetManager.TargetManager.instance(), target.url());
       if (resource?.request) {
         appendRevealItem(resource.request);
       } else {

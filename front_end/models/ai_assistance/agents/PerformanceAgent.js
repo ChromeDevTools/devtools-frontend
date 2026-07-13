@@ -1043,7 +1043,7 @@ export class PerformanceAgent extends AiAgent {
                     content = script.content;
                 }
                 else if (isFresh || isTraceApp) {
-                    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+                    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
                     if (!resource) {
                         return { error: 'Resource not found' };
                     }

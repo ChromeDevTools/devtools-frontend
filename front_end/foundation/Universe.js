@@ -168,6 +168,9 @@ export class Universe {
     get liveMetrics() {
         return this.context.get(LiveMetrics.LiveMetrics);
     }
+    get frameManager() {
+        return this.context.get(SDK.FrameManager.FrameManager);
+    }
     get pageResourceLoader() {
         return this.context.get(SDK.PageResourceLoader.PageResourceLoader);
     }

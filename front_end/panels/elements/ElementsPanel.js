@@ -39,7 +39,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ComputedStyle from '../../models/computed_style/computed_style.js';
 import * as PanelCommon from '../../panels/common/common.js';
-import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { AccessibilityTreeView } from './AccessibilityTreeView.js';
@@ -212,7 +211,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         }
         this.#settings.moduleSetting('dom-word-wrap').addChangeListener(this.domWordWrapSettingChanged.bind(this));
         crumbsContainer.id = 'elements-crumbs';
-        this.accessibilityTreeView = new AccessibilityTreeView(new TreeOutline.TreeOutline.TreeOutline());
+        this.accessibilityTreeView = new AccessibilityTreeView();
         this.breadcrumbs = new ElementsComponents.ElementsBreadcrumbs.ElementsBreadcrumbs();
         this.breadcrumbs.addEventListener('breadcrumbsnodeselected', event => {
             this.crumbNodeSelected(event);

@@ -1,21 +1,28 @@
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
+export interface ViewInput {
+    nodes: AccessibilityTreeUtils.AXTreeNode[];
+    onNodeSelected: (node: SDK.AccessibilityModel.AccessibilityNode) => void;
+    onNodeHighlight: (node: SDK.AccessibilityModel.AccessibilityNode) => void;
+    onNodeClearHighlight: () => void;
+    onCopy: (node: SDK.AccessibilityModel.AccessibilityNode) => void;
+}
+export interface ViewOutput {
+    expandRoots?(): Promise<void>;
+    revealNode?(ancestors: string[], nodeId: string): Promise<void>;
+}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 export declare class AccessibilityTreeView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<SDK.AccessibilityModel.AccessibilityModel> {
     #private;
-    private accessibilityTreeComponent;
     private inspectedDOMNode;
     private root;
-    private selectedAXNode;
-    constructor(accessibilityTreeComponent: TreeOutline.TreeOutline.TreeOutline<AccessibilityTreeUtils.AXTreeNodeData>, frameManager?: SDK.FrameManager.FrameManager);
-    private onContextMenu;
-    private onCopy;
-    private copyNode;
+    constructor(view?: View, frameManager?: SDK.FrameManager.FrameManager);
     wasShown(): Promise<void>;
+    performUpdate(): Promise<void>;
     refreshAccessibilityTree(): Promise<void>;
-    renderTree(): Promise<void>;
     loadSubTreeIntoAccessibilityModel(selectedNode: SDK.DOMModel.DOMNode): Promise<void>;
     revealAndSelectNode(inspectedNode: SDK.DOMModel.DOMNode): Promise<void>;
     selectedNodeChanged(inspectedNode: SDK.DOMModel.DOMNode): Promise<void>;

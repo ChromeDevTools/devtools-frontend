@@ -161,7 +161,7 @@ export class StorageAgent extends AiAgent {
                     return { error: 'No origin available or not allowed.' };
                 }
                 const origins = new Set();
-                for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames()) {
+                for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(SDK.TargetManager.TargetManager.instance())) {
                     if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
                         continue;
                     }
@@ -520,7 +520,7 @@ export async function getCookiesForDomain(target, origin) {
     return allCookies.filter(cookie => !cookie.httpOnly());
 }
 export function findFrameForOrigin(context, origin) {
-    for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames()) {
+    for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(SDK.TargetManager.TargetManager.instance())) {
         if (frame.securityOrigin === origin) {
             const target = frame.resourceTreeModel().target();
             if (isSamePageOrigin(target.outermostTarget(), context)) {

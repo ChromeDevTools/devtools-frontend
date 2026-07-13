@@ -58,25 +58,38 @@ export class ResourceTreeModel extends SDKModel {
         }
         return request.frameId ? resourceTreeModel.frameForId(request.frameId) : null;
     }
-    static frames() {
+    static frames(targetManager) {
         const result = [];
-        for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
+        for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
             result.push(...resourceTreeModel.frames());
         }
         return result;
     }
-    static resourceForURL(url) {
-        for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
+    static resourceForURL(targetManagerOrUrl, url) {
+        let targetManager;
+        let actualUrl;
+        if (typeof targetManagerOrUrl === 'string') {
+            targetManager = TargetManager.instance();
+            actualUrl = targetManagerOrUrl;
+        }
+        else {
+            targetManager = targetManagerOrUrl;
+            if (url === undefined) {
+                throw new Error('URL must be provided when TargetManager is passed');
+            }
+            actualUrl = url;
+        }
+        for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
             const mainFrame = resourceTreeModel.mainFrame;
             // Workers call into this with no #frames available.
-            const result = mainFrame ? mainFrame.resourceForURL(url) : null;
+            const result = mainFrame ? mainFrame.resourceForURL(actualUrl) : null;
             if (result) {
                 return result;
             }
         }
         return null;
     }
-    static reloadAllPages(bypassCache, scriptToEvaluateOnLoad, targetManager = TargetManager.instance()) {
+    static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad) {
         for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
             if (resourceTreeModel.target().parentTarget()?.type() !== Type.FRAME) {
                 resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);

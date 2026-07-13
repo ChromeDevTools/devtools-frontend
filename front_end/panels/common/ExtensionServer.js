@@ -1007,7 +1007,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         const { uiSourceCode } = resource;
         if (!uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
-            const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+            const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
             if (!resource) {
                 return this.status.E_NOTFOUND(url);
             }
@@ -1269,7 +1269,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
                 found = (frame.url === url) ? frame : null;
                 return found;
             }
-            SDK.ResourceTreeModel.ResourceTreeModel.frames().some(hasMatchingURL);
+            SDK.ResourceTreeModel.ResourceTreeModel.frames(SDK.TargetManager.TargetManager.instance()).some(hasMatchingURL);
             return found;
         }
         options = options || {};

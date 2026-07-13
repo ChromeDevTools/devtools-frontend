@@ -1884,7 +1884,7 @@ var ImageRef = class extends UI13.Widget.Widget {
       return this.#imageDataUrl;
     }
     const originalUrl = this.#request.args.data.url;
-    const resource = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalUrl);
+    const resource = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK2.TargetManager.TargetManager.instance(), originalUrl);
     if (!resource) {
       this.#imageDataUrl = null;
       return this.#imageDataUrl;

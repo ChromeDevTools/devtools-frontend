@@ -16,9 +16,10 @@ export declare class ResourceTreeModel extends SDKModel<EventTypes> {
     mainFrame: ResourceTreeFrame | null;
     constructor(target: Target);
     static frameForRequest(request: NetworkRequest): ResourceTreeFrame | null;
-    static frames(): ResourceTreeFrame[];
+    static frames(targetManager: TargetManager): ResourceTreeFrame[];
     static resourceForURL(url: Platform.DevToolsPath.UrlString): Resource | null;
-    static reloadAllPages(bypassCache?: boolean, scriptToEvaluateOnLoad?: string, targetManager?: TargetManager): void;
+    static resourceForURL(targetManager: TargetManager, url: Platform.DevToolsPath.UrlString): Resource | null;
+    static reloadAllPages(targetManager: TargetManager, bypassCache?: boolean, scriptToEvaluateOnLoad?: string): void;
     storageKeyForFrame(frameId: Protocol.Page.FrameId): Promise<string | null>;
     domModel(): DOMModel;
     private processCachedResources;

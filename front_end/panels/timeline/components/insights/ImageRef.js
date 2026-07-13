@@ -50,7 +50,7 @@ class ImageRef extends UI.Widget.Widget {
             return this.#imageDataUrl;
         }
         const originalUrl = this.#request.args.data.url;
-        const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalUrl);
+        const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), originalUrl);
         if (!resource) {
             this.#imageDataUrl = null;
             return this.#imageDataUrl;

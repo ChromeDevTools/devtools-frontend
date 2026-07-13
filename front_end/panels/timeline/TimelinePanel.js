@@ -2343,7 +2343,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 continue;
             }
             const url = request.args.data.url;
-            const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+            const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
             if (!resource) {
                 continue;
             }

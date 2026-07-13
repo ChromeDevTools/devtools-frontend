@@ -35,7 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../workspace/workspace.js';
 export function resourceForURL(url) {
-    return SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+    return SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
 }
 export function displayNameForURL(url) {
     if (!url) {

@@ -628,7 +628,7 @@ var URLCoverageInfo = class _URLCoverageInfo extends Common.ObjectWrapper.Object
     if (!useFullText) {
       return null;
     }
-    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
     if (!resource) {
       return null;
     }

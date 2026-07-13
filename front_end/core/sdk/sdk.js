@@ -26803,24 +26803,36 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     return request.frameId ? resourceTreeModel.frameForId(request.frameId) : null;
   }
-  static frames() {
+  static frames(targetManager) {
     const result = [];
-    for (const resourceTreeModel of TargetManager.instance().models(_ResourceTreeModel)) {
+    for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
       result.push(...resourceTreeModel.frames());
     }
     return result;
   }
-  static resourceForURL(url) {
-    for (const resourceTreeModel of TargetManager.instance().models(_ResourceTreeModel)) {
+  static resourceForURL(targetManagerOrUrl, url) {
+    let targetManager;
+    let actualUrl;
+    if (typeof targetManagerOrUrl === "string") {
+      targetManager = TargetManager.instance();
+      actualUrl = targetManagerOrUrl;
+    } else {
+      targetManager = targetManagerOrUrl;
+      if (url === void 0) {
+        throw new Error("URL must be provided when TargetManager is passed");
+      }
+      actualUrl = url;
+    }
+    for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
-      const result = mainFrame ? mainFrame.resourceForURL(url) : null;
+      const result = mainFrame ? mainFrame.resourceForURL(actualUrl) : null;
       if (result) {
         return result;
       }
     }
     return null;
   }
-  static reloadAllPages(bypassCache, scriptToEvaluateOnLoad, targetManager = TargetManager.instance()) {
+  static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad) {
     for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
       if (resourceTreeModel.target().parentTarget()?.type() !== Type2.FRAME) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
@@ -34787,7 +34799,7 @@ var RevealableNetworkRequest = class _RevealableNetworkRequest {
     const syntheticNetworkRequest = event;
     const url = syntheticNetworkRequest.args.data.url;
     const urlWithoutHash = Common31.ParsedURL.ParsedURL.urlWithoutHash(url);
-    const resource = ResourceTreeModel.resourceForURL(url) ?? ResourceTreeModel.resourceForURL(urlWithoutHash);
+    const resource = ResourceTreeModel.resourceForURL(TargetManager.instance(), url) ?? ResourceTreeModel.resourceForURL(TargetManager.instance(), urlWithoutHash);
     const sdkNetworkRequest = resource?.request;
     return sdkNetworkRequest ? new _RevealableNetworkRequest(sdkNetworkRequest) : null;
   }

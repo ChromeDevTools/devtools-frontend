@@ -4114,7 +4114,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     }
     const { uiSourceCode } = resource;
     if (!uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
-      const resource2 = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+      const resource2 = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK2.TargetManager.TargetManager.instance(), url);
       if (!resource2) {
         return this.status.E_NOTFOUND(url);
       }
@@ -4363,7 +4363,7 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
         found = frame2.url === url ? frame2 : null;
         return found;
       }
-      SDK2.ResourceTreeModel.ResourceTreeModel.frames().some(hasMatchingURL);
+      SDK2.ResourceTreeModel.ResourceTreeModel.frames(SDK2.TargetManager.TargetManager.instance()).some(hasMatchingURL);
       return found;
     }
     options = options || {};

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import { ResourceTreeModel } from './ResourceTreeModel.js';
+import { TargetManager } from './TargetManager.js';
 /** A thin wrapper class, mostly to enable instanceof-based revealing of traces to open in Timeline. **/
 export class TraceObject {
     traceEvents;
@@ -48,7 +49,8 @@ export class RevealableNetworkRequest {
         // @ts-expect-error We don't have type checking here to confirm these events have .args.data.url.
         const url = syntheticNetworkRequest.args.data.url;
         const urlWithoutHash = Common.ParsedURL.ParsedURL.urlWithoutHash(url);
-        const resource = ResourceTreeModel.resourceForURL(url) ?? ResourceTreeModel.resourceForURL(urlWithoutHash);
+        const resource = ResourceTreeModel.resourceForURL(TargetManager.instance(), url) ??
+            ResourceTreeModel.resourceForURL(TargetManager.instance(), urlWithoutHash);
         const sdkNetworkRequest = resource?.request;
         return sdkNetworkRequest ? new RevealableNetworkRequest(sdkNetworkRequest) : null;
     }

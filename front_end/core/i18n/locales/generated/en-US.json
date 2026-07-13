@@ -3327,7 +3327,7 @@
     "message": "Animation previews"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
-    "message": "Animation Preview {PH1}"
+    "message": "Animation preview {PH1}"
   },
   "panels/animation/AnimationTimeline.ts | clearAll": {
     "message": "Clear all"
@@ -3369,10 +3369,10 @@
     "message": "Currently waiting for animations"
   },
   "panels/animation/AnimationUI.ts | animationEndpointSlider": {
-    "message": "Animation Endpoint slider"
+    "message": "Animation endpoint slider"
   },
   "panels/animation/AnimationUI.ts | animationKeyframeSlider": {
-    "message": "Animation Keyframe slider"
+    "message": "Animation keyframe slider"
   },
   "panels/animation/AnimationUI.ts | sSlider": {
     "message": "{PH1} slider"

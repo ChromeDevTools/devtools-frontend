@@ -1453,17 +1453,21 @@ export class NetworkRequestNode extends NetworkNode {
             UI.Tooltip.Tooltip.install(cell, tooltipText);
             cell.classList.add('network-dim-cell');
         }
-        else if (this.requestInternal.serviceWorkerRouterInfo) {
-            // ServiceWorker routers are registered, but the request fallbacks to network
-            // because no matching router rules found.
-            const transferSize = i18n.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
-            UI.UIUtils.createTextChild(cell, transferSize);
-            UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize }));
-        }
         else if (this.requestInternal.fetchedViaServiceWorker) {
+            // Checked before the no-matching-route fallback below: a request that
+            // matches no router rule falls back to the fetch handler, so it can
+            // still be fulfilled by the ServiceWorker.
             UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceWorker));
             UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromServiceWorkerResource, { PH1: resourceSize }));
             cell.classList.add('network-dim-cell');
+        }
+        else if (this.requestInternal.serviceWorkerRouterInfo) {
+            // ServiceWorker routers are registered, but the request fell back to the
+            // network because no matching router rule was found and the fetch
+            // handler did not provide the response.
+            const transferSize = i18n.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
+            UI.UIUtils.createTextChild(cell, transferSize);
+            UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize }));
         }
         else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
             UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(signed-exchange)'));

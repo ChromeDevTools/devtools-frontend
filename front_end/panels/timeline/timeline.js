@@ -8621,7 +8621,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         continue;
       }
       const url = request.args.data.url;
-      const resource = SDK7.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+      const resource = SDK7.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK7.TargetManager.TargetManager.instance(), url);
       if (!resource) {
         continue;
       }

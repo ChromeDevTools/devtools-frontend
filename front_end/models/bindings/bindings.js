@@ -1737,7 +1737,7 @@ import * as Platform3 from "./../../core/platform/platform.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as Workspace7 from "./../workspace/workspace.js";
 function resourceForURL(url) {
-  return SDK5.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+  return SDK5.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK5.TargetManager.TargetManager.instance(), url);
 }
 function displayNameForURL(url) {
   if (!url) {

@@ -6864,7 +6864,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
           return { error: "No origin available or not allowed." };
         }
         const origins = /* @__PURE__ */ new Set();
-        for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames()) {
+        for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames(SDK10.TargetManager.TargetManager.instance())) {
           if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
             continue;
           }
@@ -7220,7 +7220,7 @@ async function getCookiesForDomain(target, origin) {
   return allCookies.filter((cookie) => !cookie.httpOnly());
 }
 function findFrameForOrigin(context, origin) {
-  for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames()) {
+  for (const frame of SDK10.ResourceTreeModel.ResourceTreeModel.frames(SDK10.TargetManager.TargetManager.instance())) {
     if (frame.securityOrigin === origin) {
       const target = frame.resourceTreeModel().target();
       if (isSamePageOrigin(target.outermostTarget(), context)) {
@@ -9163,7 +9163,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK11.ResourceTreeModel.ResourceTreeModel.resourceForURL(url);
+          const resource = SDK11.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK11.TargetManager.TargetManager.instance(), url);
           if (!resource) {
             return { error: "Resource not found" };
           }

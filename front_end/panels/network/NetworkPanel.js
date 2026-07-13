@@ -660,7 +660,7 @@ export class NetworkPanel extends UI.Panel.Panel {
             return;
         }
         if (target instanceof Workspace.UISourceCode.UISourceCode) {
-            const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(target.url());
+            const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), target.url());
             if (resource?.request) {
                 appendRevealItem(resource.request);
             }

@@ -430,11 +430,11 @@ var LINES_TO_SCAN_FOR_INDENTATION_GUESSING = 1e3;
 var RECOMPUTE_INDENT_MAX_SIZE = 200;
 var UIStrings = {
   /**
-   * @description Label text for the editor
+   * @description Label text for the editor.
    */
   codeEditor: "Code editor",
   /**
-   * @description Aria alert to read the suggestion for the suggestion box when typing in text editor
+   * @description Aria alert to read the suggestion for the suggestion box when typing in text editor.
    * @example {name} PH1
    * @example {2} PH2
    * @example {5} PH3

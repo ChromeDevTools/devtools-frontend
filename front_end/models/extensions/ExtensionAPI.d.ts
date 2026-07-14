@@ -387,6 +387,9 @@ export declare namespace PrivateAPI {
         };
     }
     export type RecorderExtensionRequests = StringifyRequest | StringifyStepRequest | ReplayRequest;
+    export interface Network extends PublicAPI.Chrome.DevTools.Network {
+        addRequestHeaders(headers: Record<string, string>): void;
+    }
     export {};
 }
 declare global {
@@ -447,9 +450,6 @@ declare namespace APIImpl {
         _dispatch(request: {
             arguments: unknown[];
         }): void;
-    }
-    interface Network extends PublicAPI.Chrome.DevTools.Network {
-        addRequestHeaders(headers: Record<string, string>): void;
     }
     interface Request extends PublicAPI.Chrome.DevTools.Request, HAR.Log.EntryDTO {
         _id: number;

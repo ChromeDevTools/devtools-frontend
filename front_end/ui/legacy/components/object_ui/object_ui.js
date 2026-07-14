@@ -68,6 +68,7 @@ __export(ObjectPropertiesSection_exports, {
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
   objectValueStyles: () => objectValue_css_default,
   populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
+  renderObjectTree: () => renderObjectTree,
   sortPropertiesAlphabeticallySetting: () => sortPropertiesAlphabeticallySetting
 });
 import * as Common from "./../../../../core/common/common.js";
@@ -626,7 +627,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.js
 var { widget } = UI2.Widget;
-var { ref, repeat: repeat2, ifDefined: ifDefined2, classMap } = Directives2;
+var { ref, repeat: repeat2, ifDefined: ifDefined2, classMap, until } = Directives2;
 var UIStrings2 = {
   /**
    * @description Text in Object Properties Section
@@ -722,6 +723,7 @@ var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/object_ui/ObjectP
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var EXPANDABLE_MAX_DEPTH = 100;
 var objectPropertiesSectionMap = /* @__PURE__ */ new WeakMap();
+var topLevelNodesCache = /* @__PURE__ */ new WeakMap();
 var cachedSortAlphabeticallySetting;
 function sortPropertiesAlphabeticallySetting() {
   if (!cachedSortAlphabeticallySetting) {
@@ -1679,6 +1681,40 @@ function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, c
   }
   contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: "show-all" });
 }
+function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
+  const entry = topLevelNodesCache.get(objectTree);
+  if (entry && entry.linkifier === linkifier) {
+    return html2`
+      <ul class="source-code object-properties-section" role="group">
+        ${entry.nodes.map((node) => html2`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+      </ul>
+    `;
+  }
+  const promise = (async () => {
+    await ObjectPropertyTreeElement.populateChildrenIfNeeded(objectTree);
+    const nodes = Array.from(ObjectPropertyTreeElement.createNodes(
+      objectTree,
+      /* skipProto= */
+      false,
+      /* skipGettersAndSetters= */
+      false,
+      linkifier,
+      emptyPlaceholder
+    ));
+    topLevelNodesCache.set(objectTree, { linkifier, nodes });
+    const listener = () => {
+      topLevelNodesCache.delete(objectTree);
+      objectTree.removeEventListener("children-changed", listener);
+    };
+    objectTree.addEventListener("children-changed", listener);
+    return html2`
+      <ul class="source-code object-properties-section" role="group">
+        ${nodes.map((node) => html2`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+      </ul>
+    `;
+  })();
+  return until(promise, html2`<ul class="source-code object-properties-section" role="group"></ul>`);
+}
 var RootElement = class extends UI2.TreeOutline.TreeElement {
   object;
   linkifier;
@@ -1955,6 +1991,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   constructor(property, linkifier) {
     super();
     this.#widget = new ObjectPropertyWidget();
+    this.#widget.markAsRoot();
     this.property = property;
     this.hidden = property.isFiltered;
     this.property.addEventListener("value-changed", this.#updateValue, this);
@@ -2112,7 +2149,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
   }
   onattach() {
     this.updateExpandable();
-    this.#widget.markAsRoot();
     this.#widget.show(this.listItemElement);
     this.#widget.property = this.property;
     this.#widget.linkifier = this.linkifier;

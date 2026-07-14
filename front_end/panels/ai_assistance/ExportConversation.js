@@ -14,10 +14,8 @@ export async function saveToDisk(conversation) {
     // to 63 characters (due to a 64-byte null-terminated buffer).
     // Capping the total filename length at 63 avoids truncation of the extension.
     const maxTitleLength = 63 - prefix.length - suffix.length;
-    let finalTitle = titleFormatted || 'conversation';
-    if (finalTitle.length > maxTitleLength) {
-        finalTitle = finalTitle.substring(0, maxTitleLength);
-    }
+    const truncatedTitle = titleFormatted ? Platform.StringUtilities.truncateToCodeUnitLength(titleFormatted, maxTitleLength) : '';
+    const finalTitle = truncatedTitle || 'conversation';
     const filename = `${prefix}${finalTitle}${suffix}`;
     await Workspace.FileManager.FileManager.instance().save(filename, contentData, true);
     Workspace.FileManager.FileManager.instance().close(filename);

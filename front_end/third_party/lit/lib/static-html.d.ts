@@ -199,4 +199,5 @@ declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => Temp
  */
 declare const mathml: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult;
 
-export { type StaticValue, html, literal, mathml, svg, unsafeStatic, withStatic };
+export { html, literal, mathml, svg, unsafeStatic, withStatic };
+export type { StaticValue };

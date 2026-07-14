@@ -68,9 +68,13 @@ export class SamplesIntegrator {
     #lockedJsStackDepth = [];
     /**
      * Used to keep track when samples should be integrated even if they
-     * are not children of invocation trace events. This is useful in
-     * cases where we can be missing the start of JS invocation events if
-     * we start tracing half-way through.
+     * are not children of invocation trace events. This is used in two cases:
+     * 1. We start tracing half-way through, so we miss the start of JS
+     *    invocation events.
+     * 2. On threads (like Web Workers) without real JS invocation parent events,
+     *    but where trace events (like SchedulePostMessage) integrate stack traces.
+     *    Enabling fake JS mode allows subsequent samples to be processed and
+     *    eventually correct the stack, preventing a deadlock.
      */
     #fakeJSInvocation = false;
     /**
@@ -141,7 +145,7 @@ export class SamplesIntegrator {
                 this.#onProfileCall(event, parentEvent);
                 continue;
             }
-            this.#onTraceEventStart(event);
+            this.#onTraceEventStart(event, parentEvent);
             stack.push(event);
         }
         while (stack.length) {
@@ -153,7 +157,7 @@ export class SamplesIntegrator {
         sortTraceEventsInPlace(this.jsSampleEvents);
         return this.#constructedProfileCalls;
     }
-    #onTraceEventStart(event) {
+    #onTraceEventStart(event, parent) {
         // Top level events cannot be nested into JS frames so we reset
         // the stack when we find one.
         if (event.name === "RunMicrotasks" /* Types.Events.Name.RUN_MICROTASKS */ || event.name === "RunTask" /* Types.Events.Name.RUN_TASK */) {
@@ -166,6 +170,18 @@ export class SamplesIntegrator {
             this.#fakeJSInvocation = false;
         }
         this.#extractStackTrace(event);
+        if (extractSampleTraceId(event)) {
+            const hasJSInvocationParent = parent && Types.Events.isJSInvocationEvent(parent);
+            if (!hasJSInvocationParent) {
+                // If the event has a sampleTraceId (meaning it has a stack trace) but
+                // no JS invocation parent, we enter fake JS mode. This ensures that
+                // subsequent samples on this thread are processed, allowing the stack
+                // to be correctly updated/truncated. Without this, subsequent samples
+                // would be ignored because the stack is non-empty but we are not
+                // considered to be in JS.
+                this.#fakeJSInvocation = true;
+            }
+        }
         // Keep track of the call frames in the stack before the event
         // happened. For the duration of this event, these frames cannot
         // change (none can be terminated before this event finishes).

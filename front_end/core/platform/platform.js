@@ -581,8 +581,10 @@ __export(StringUtilities_exports, {
   toTitleCase: () => toTitleCase,
   trimEndWithMaxLength: () => trimEndWithMaxLength,
   trimMiddle: () => trimMiddle,
-  trimURL: () => trimURL
+  trimURL: () => trimURL,
+  truncateToCodeUnitLength: () => truncateToCodeUnitLength
 });
+var graphemeSegmenter = null;
 var escapeCharacters = (inputString, charsToEscape) => {
   let foundChar = false;
   for (let i = 0; i < charsToEscape.length; ++i) {
@@ -917,6 +919,25 @@ var trimEndWithMaxLength = (str, maxLength) => {
     }
   }
   return str.slice(0, lastSegmentIndex) + ellipsis;
+};
+var truncateToCodeUnitLength = (str, maxCodeUnits) => {
+  if (isNaN(maxCodeUnits) || maxCodeUnits <= 0) {
+    return "";
+  }
+  if (str.length <= maxCodeUnits) {
+    return str;
+  }
+  if (!graphemeSegmenter) {
+    graphemeSegmenter = new Intl.Segmenter(void 0, { granularity: "grapheme" });
+  }
+  let lastSafeIndex = 0;
+  for (const { index, segment } of graphemeSegmenter.segment(str)) {
+    if (index + segment.length > maxCodeUnits) {
+      break;
+    }
+    lastSafeIndex = index + segment.length;
+  }
+  return str.slice(0, lastSafeIndex);
 };
 var escapeForRegExp = (str) => {
   return escapeCharacters(str, SPECIAL_REGEX_CHARACTERS);

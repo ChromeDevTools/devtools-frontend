@@ -947,6 +947,7 @@ var generatedProperties = [
       "widows",
       "width",
       "will-change",
+      "window-drag",
       "word-break",
       "word-spacing",
       "writing-mode",
@@ -1085,11 +1086,6 @@ var generatedProperties = [
     "runtime_flag_status": "stable"
   },
   {
-    "keywords": [
-      "none",
-      "drag",
-      "no-drag"
-    ],
     "name": "app-region"
   },
   {
@@ -6126,6 +6122,17 @@ var generatedProperties = [
   {
     "inherited": true,
     "keywords": [
+      "none",
+      "move",
+      "no-drag"
+    ],
+    "name": "window-drag",
+    "runtime_flag": "CSSWindowDrag",
+    "runtime_flag_status": "stable"
+  },
+  {
+    "inherited": true,
+    "keywords": [
       "normal",
       "break-all",
       "keep-all",
@@ -6448,13 +6455,6 @@ var generatedPropertyValues = {
   "animation-trigger": {
     "values": [
       "none"
-    ]
-  },
-  "app-region": {
-    "values": [
-      "none",
-      "drag",
-      "no-drag"
     ]
   },
   "appearance": {
@@ -9234,6 +9234,13 @@ var generatedPropertyValues = {
   "will-change": {
     "values": [
       "auto"
+    ]
+  },
+  "window-drag": {
+    "values": [
+      "none",
+      "move",
+      "no-drag"
     ]
   },
   "word-break": {
@@ -26810,22 +26817,10 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     return result;
   }
-  static resourceForURL(targetManagerOrUrl, url) {
-    let targetManager;
-    let actualUrl;
-    if (typeof targetManagerOrUrl === "string") {
-      targetManager = TargetManager.instance();
-      actualUrl = targetManagerOrUrl;
-    } else {
-      targetManager = targetManagerOrUrl;
-      if (url === void 0) {
-        throw new Error("URL must be provided when TargetManager is passed");
-      }
-      actualUrl = url;
-    }
+  static resourceForURL(targetManager, url) {
     for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
-      const result = mainFrame ? mainFrame.resourceForURL(actualUrl) : null;
+      const result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result) {
         return result;
       }
@@ -27874,6 +27869,13 @@ var TargetManager = class _TargetManager extends Common23.ObjectWrapper.ObjectWr
     }
     return this.context.get(MultitargetNetworkManager);
   }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getPageResourceLoader() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(PageResourceLoader)) {
+      return PageResourceLoader.instance();
+    }
+    return this.context.get(PageResourceLoader);
+  }
   /* eslint-disable @typescript-eslint/no-explicit-any */
   #modelListeners;
   #modelObservers;
@@ -27937,7 +27939,7 @@ var TargetManager = class _TargetManager extends Common23.ObjectWrapper.ObjectWr
   async #waitForPromiseWithTimeout(promise, timeoutMessage) {
     const { promise: timeoutPromise, resolve: timeoutResolve } = Promise.withResolvers();
     const timeoutId = globalThis.setTimeout(() => {
-      Common23.Console.Console.instance().warn(timeoutMessage);
+      this.getConsole().warn(timeoutMessage);
       timeoutResolve();
     }, 2e3);
     await Promise.race([promise, timeoutPromise]);
@@ -28557,6 +28559,42 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     }
   }
   /**
+   * Returns the request post data as a ContentData suitable for binary
+   * viewers (hex, base64, utf-8) in the Payload tab.  When the backend
+   * provides base64-encoded (possibly compressed) data, the body is
+   * decompressed first so viewers show the actual payload bytes rather
+   * than gzip/deflate framing.
+   */
+  static async requestPostDataContentData(request) {
+    const manager = _NetworkManager.forRequest(request);
+    if (!manager) {
+      return { error: "No network manager for request" };
+    }
+    const requestId = request.backendRequestId();
+    if (!requestId) {
+      return { error: "No backend request id for request" };
+    }
+    try {
+      const response = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
+      const error = response.getError();
+      if (error) {
+        return { error };
+      }
+      const { postData, base64Encoded } = response;
+      if (!postData) {
+        return { error: "No post data" };
+      }
+      const requestContentType = request.requestContentType() ?? "application/octet-stream";
+      const { charset } = Platform15.MimeType.parseContentType(requestContentType);
+      if (base64Encoded && postData) {
+        return await TextUtils21.ContentData.ContentData.fromCompressedBase64(postData, requestContentType, charset ?? void 0, request.requestContentEncoding());
+      }
+      return new TextUtils21.ContentData.ContentData(postData, false, requestContentType, charset ?? void 0);
+    } catch (e) {
+      return { error: e.message };
+    }
+  }
+  /**
    * Attempts to decompress a compressed request body.
    * Returns the decompressed string, or null if decompression is not applicable.
    */
@@ -28921,7 +28959,7 @@ var NetworkDispatcher = class {
       networkRequest = this.appendRedirect(requestId, timestamp, request.url);
       this.#manager.dispatchEventToListeners(Events8.RequestRedirected, networkRequest);
     } else {
-      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture);
+      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture, this.#manager.target().targetManager().getConsole());
       if (renderBlockingBehavior) {
         networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
       }
@@ -29018,7 +29056,7 @@ var NetworkDispatcher = class {
     this.finishNetworkRequest(networkRequest, time, -1);
   }
   webSocketCreated({ requestId, url: requestURL, initiator }) {
-    const networkRequest = NetworkRequest.createForSocket(requestId, requestURL, initiator);
+    const networkRequest = NetworkRequest.createForSocket(requestId, requestURL, initiator, this.#manager.target().targetManager().getConsole());
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common24.ResourceType.resourceTypes.WebSocket);
     this.startNetworkRequest(networkRequest, null);
@@ -29167,7 +29205,7 @@ var NetworkDispatcher = class {
     }
     originalNetworkRequest.markAsRedirect(redirectCount);
     this.finishNetworkRequest(originalNetworkRequest, time, -1);
-    const newNetworkRequest = NetworkRequest.create(requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, originalNetworkRequest.initiator(), originalNetworkRequest.hasUserGesture() ?? void 0);
+    const newNetworkRequest = NetworkRequest.create(requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, originalNetworkRequest.initiator(), originalNetworkRequest.hasUserGesture() ?? void 0, this.#manager.target().targetManager().getConsole());
     requestToManagerMap.set(newNetworkRequest, this.#manager);
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
     originalNetworkRequest.setRedirectDestination(newNetworkRequest);
@@ -29263,7 +29301,7 @@ var NetworkDispatcher = class {
     }
   }
   webTransportCreated({ transportId, url: requestURL, timestamp: time, initiator }) {
-    const networkRequest = NetworkRequest.createForSocket(transportId, requestURL, initiator);
+    const networkRequest = NetworkRequest.createForSocket(transportId, requestURL, initiator, this.#manager.target().targetManager().getConsole());
     networkRequest.hasNetworkData = true;
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common24.ResourceType.resourceTypes.WebTransport);
@@ -29289,7 +29327,7 @@ var NetworkDispatcher = class {
   }
   directTCPSocketCreated(event) {
     const requestURL = this.concatHostPort(event.remoteAddr, event.remotePort);
-    const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator);
+    const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator, this.#manager.target().targetManager().getConsole());
     networkRequest.hasNetworkData = true;
     networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
     networkRequest.protocol = i18n15.i18n.lockedString("tcp");
@@ -29389,7 +29427,7 @@ var NetworkDispatcher = class {
     } else {
       return;
     }
-    const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator);
+    const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator, this.#manager.target().targetManager().getConsole());
     networkRequest.hasNetworkData = true;
     if (event.options.remoteAddr && event.options.remotePort) {
       networkRequest.setRemoteAddress(event.options.remoteAddr, event.options.remotePort);
@@ -29547,7 +29585,7 @@ var NetworkDispatcher = class {
    * This method is only kept for usage in a web test.
    */
   createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator);
+    const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator, void 0, this.#manager.target().targetManager().getConsole());
     requestToManagerMap.set(request, this.#manager);
     return request;
   }
@@ -31026,13 +31064,13 @@ var ServerTiming = class _ServerTiming {
     this.value = value;
     this.description = description;
   }
-  static parseHeaders(headers) {
+  static parseHeaders(headers, devToolsConsole) {
     const rawServerTimingHeaders = headers.filter((item) => item.name.toLowerCase() === "server-timing");
     if (!rawServerTimingHeaders.length) {
       return null;
     }
     const serverTimings = rawServerTimingHeaders.reduce((timings, header) => {
-      const timing = this.createFromHeaderValue(header.value);
+      const timing = this.createFromHeaderValue(header.value, devToolsConsole);
       timings.push(...timing.map(function(entry) {
         return new _ServerTiming(entry.name, entry.dur ?? null, entry.desc ?? "");
       }));
@@ -31040,7 +31078,7 @@ var ServerTiming = class _ServerTiming {
     }, []);
     return serverTimings;
   }
-  static createFromHeaderValue(valueString) {
+  static createFromHeaderValue(valueString, devToolsConsole = new Common26.Console.Console()) {
     function trimLeadingWhiteSpace() {
       valueString = valueString.replace(/^\s*/, "");
     }
@@ -31099,7 +31137,7 @@ var ServerTiming = class _ServerTiming {
     while ((name = consumeToken()) !== null) {
       const entry = { name };
       if (valueString.charAt(0) === "=") {
-        this.showWarning(i18nString8(UIStrings8.deprecatedSyntaxFoundPleaseUse, { PH1: name }));
+        this.#showWarning(i18nString8(UIStrings8.deprecatedSyntaxFoundPleaseUse, { PH1: name }), devToolsConsole);
       }
       while (consumeDelimiter(";")) {
         let paramName;
@@ -31107,7 +31145,7 @@ var ServerTiming = class _ServerTiming {
           continue;
         }
         paramName = paramName.toLowerCase();
-        const parseParameter = this.getParserForParameter(paramName);
+        const parseParameter = this.#getParserForParameter(paramName, devToolsConsole);
         let paramValue = null;
         if (consumeDelimiter("=")) {
           paramValue = consumeTokenOrQuotedString();
@@ -31115,15 +31153,15 @@ var ServerTiming = class _ServerTiming {
         }
         if (parseParameter) {
           if (entry.hasOwnProperty(paramName)) {
-            this.showWarning(i18nString8(UIStrings8.duplicateParameterSIgnored, { PH1: paramName }));
+            this.#showWarning(i18nString8(UIStrings8.duplicateParameterSIgnored, { PH1: paramName }), devToolsConsole);
             continue;
           }
           if (paramValue === null) {
-            this.showWarning(i18nString8(UIStrings8.noValueFoundForParameterS, { PH1: paramName }));
+            this.#showWarning(i18nString8(UIStrings8.noValueFoundForParameterS, { PH1: paramName }), devToolsConsole);
           }
           parseParameter.call(this, entry, paramValue);
         } else {
-          this.showWarning(i18nString8(UIStrings8.unrecognizedParameterS, { PH1: paramName }));
+          this.#showWarning(i18nString8(UIStrings8.unrecognizedParameterS, { PH1: paramName }), devToolsConsole);
         }
       }
       result.push(entry);
@@ -31142,11 +31180,11 @@ var ServerTiming = class _ServerTiming {
       }
     }
     if (valueString.length) {
-      this.showWarning(i18nString8(UIStrings8.extraneousTrailingCharacters));
+      this.#showWarning(i18nString8(UIStrings8.extraneousTrailingCharacters), devToolsConsole);
     }
     return result;
   }
-  static getParserForParameter(paramName) {
+  static #getParserForParameter(paramName, devToolsConsole) {
     switch (paramName) {
       case "dur": {
         let durParser = function(entry, paramValue) {
@@ -31154,7 +31192,7 @@ var ServerTiming = class _ServerTiming {
           if (paramValue !== null) {
             const duration = parseFloat(paramValue);
             if (isNaN(duration)) {
-              _ServerTiming.showWarning(i18nString8(UIStrings8.unableToParseSValueS, { PH1: paramName, PH2: paramValue }));
+              _ServerTiming.#showWarning(i18nString8(UIStrings8.unableToParseSValueS, { PH1: paramName, PH2: paramValue }), devToolsConsole);
               return;
             }
             entry.dur = duration;
@@ -31173,8 +31211,8 @@ var ServerTiming = class _ServerTiming {
       }
     }
   }
-  static showWarning(msg) {
-    Common26.Console.Console.instance().warn(`ServerTiming: ${msg}`);
+  static #showWarning(msg, devToolsConsole) {
+    devToolsConsole.warn(`ServerTiming: ${msg}`);
   }
 };
 
@@ -31450,7 +31488,8 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   #isAdRelated;
   #isLinkPreload;
   #appliedNetworkConditionsId;
-  constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture) {
+  #console;
+  constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2 = Common27.Console.Console.instance()) {
     super();
     this.#requestId = requestId;
     this.#backendRequestId = backendRequestId;
@@ -31462,15 +31501,16 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
     this.#hasUserGesture = hasUserGesture;
     this.#isAdRelated = false;
     this.#isLinkPreload = false;
+    this.#console = console2;
   }
-  static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture) {
-    return new _NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture);
+  static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2) {
+    return new _NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2);
   }
-  static createForSocket(backendRequestId, requestURL, initiator) {
-    return new _NetworkRequest(backendRequestId, backendRequestId, requestURL, Platform17.DevToolsPath.EmptyUrlString, null, null, initiator || null);
+  static createForSocket(backendRequestId, requestURL, initiator, console2) {
+    return new _NetworkRequest(backendRequestId, backendRequestId, requestURL, Platform17.DevToolsPath.EmptyUrlString, null, null, initiator || null, void 0, console2);
   }
-  static createWithoutBackendRequest(requestId, url, documentURL, initiator) {
-    return new _NetworkRequest(requestId, void 0, url, documentURL, null, null, initiator);
+  static createWithoutBackendRequest(requestId, url, documentURL, initiator, console2) {
+    return new _NetworkRequest(requestId, void 0, url, documentURL, null, null, initiator, void 0, console2);
   }
   identityCompare(other) {
     const thisId = this.requestId();
@@ -31914,6 +31954,14 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
     this.#requestFormDataPromise = hasData && data === null ? null : Promise.resolve(data);
     this.#formParametersPromise = null;
   }
+  /**
+   * Returns the raw request body as ContentData, preserving base64 encoding
+   * for binary payloads. This enables binary viewers (hex, base64, utf-8)
+   * in the Payload tab.
+   */
+  requestFormDataContentData() {
+    return NetworkManager.requestPostDataContentData(this);
+  }
   filteredProtocolName() {
     const protocol = this.protocol.toLowerCase();
     if (protocol === "h2") {
@@ -32090,7 +32138,7 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
   }
   get serverTimings() {
     if (typeof this.#serverTimings === "undefined") {
-      this.#serverTimings = ServerTiming.parseHeaders(this.responseHeaders);
+      this.#serverTimings = ServerTiming.parseHeaders(this.responseHeaders.map((x) => ({ name: x.name, value: x.value })), this.#console);
     }
     return this.#serverTimings;
   }
@@ -33111,7 +33159,7 @@ var AccessibilityModel = class extends SDKModel {
   }
 };
 SDKModel.register(AccessibilityModel, { capabilities: 2, autostart: false });
-function getModel(frameId, frameManager = FrameManager.instance()) {
+function getModel(frameId, frameManager) {
   const frame = frameManager.getFrame(frameId);
   const model = frame?.resourceTreeModel().target().model(AccessibilityModel);
   if (!model) {
@@ -33119,7 +33167,7 @@ function getModel(frameId, frameManager = FrameManager.instance()) {
   }
   return model;
 }
-async function getRootNode(frameId, frameManager = FrameManager.instance()) {
+async function getRootNode(frameId, frameManager) {
   const model = getModel(frameId, frameManager);
   const root = await model.requestRootNode(frameId);
   if (!root) {
@@ -34383,7 +34431,7 @@ var CompilerSourceMappingContentProvider = class {
   #contentType;
   #initiator;
   #pageResourceLoader;
-  constructor(sourceURL, contentType, initiator, pageResourceLoader = initiator.target ? initiator.target.targetManager().context.get(PageResourceLoader) : PageResourceLoader.instance()) {
+  constructor(sourceURL, contentType, initiator, pageResourceLoader) {
     this.#sourceURL = sourceURL;
     this.#contentType = contentType;
     this.#initiator = initiator;
@@ -34795,11 +34843,11 @@ var RevealableNetworkRequest = class _RevealableNetworkRequest {
     this.networkRequest = networkRequest;
   }
   // Only Trace.Types.Events.SyntheticNetworkRequest are passed in, but we can't depend on that type from SDK
-  static create(event) {
+  static create(targetManager, event) {
     const syntheticNetworkRequest = event;
     const url = syntheticNetworkRequest.args.data.url;
     const urlWithoutHash = Common31.ParsedURL.ParsedURL.urlWithoutHash(url);
-    const resource = ResourceTreeModel.resourceForURL(TargetManager.instance(), url) ?? ResourceTreeModel.resourceForURL(TargetManager.instance(), urlWithoutHash);
+    const resource = ResourceTreeModel.resourceForURL(targetManager, url) ?? ResourceTreeModel.resourceForURL(targetManager, urlWithoutHash);
     const sdkNetworkRequest = resource?.request;
     return sdkNetworkRequest ? new _RevealableNetworkRequest(sdkNetworkRequest) : null;
   }
@@ -39194,6 +39242,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   cacheAgent;
   #storageAgent;
   #storageBucketModel;
+  #console;
   #caches = /* @__PURE__ */ new Map();
   #storageKeysTracked = /* @__PURE__ */ new Set();
   #storageBucketsUpdated = /* @__PURE__ */ new Set();
@@ -39210,6 +39259,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     this.cacheAgent = target.cacheStorageAgent();
     this.#storageAgent = target.storageAgent();
     this.#storageBucketModel = target.model(StorageBucketsModel);
+    this.#console = target.targetManager().getConsole();
   }
   enable() {
     if (this.#enabled) {
@@ -39255,7 +39305,7 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   async deleteCacheEntry(cache, request) {
     const response = await this.cacheAgent.invoke_deleteEntry({ cacheId: cache.cacheId, request });
     if (response.getError()) {
-      Common38.Console.Console.instance().error(i18nString16(UIStrings16.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
+      this.#console.error(i18nString16(UIStrings16.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
       return;
     }
   }

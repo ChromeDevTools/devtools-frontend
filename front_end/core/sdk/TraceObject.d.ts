@@ -2,6 +2,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import type { NetworkRequest } from './NetworkRequest.js';
 import type { RehydratingResource } from './RehydratingObject.js';
 import type { SourceMapV3 } from './SourceMap.js';
+import type { TargetManager } from './TargetManager.js';
 interface TraceObjectWithNoMetadata {
     readonly traceEvents: TraceObject['traceEvents'];
     metadata?: TraceObject['metadata'];
@@ -37,6 +38,6 @@ export declare class RevealableEvent {
 export declare class RevealableNetworkRequest {
     networkRequest: NetworkRequest;
     constructor(networkRequest: NetworkRequest);
-    static create(event: unknown): RevealableNetworkRequest | null;
+    static create(targetManager: TargetManager, event: unknown): RevealableNetworkRequest | null;
 }
 export {};

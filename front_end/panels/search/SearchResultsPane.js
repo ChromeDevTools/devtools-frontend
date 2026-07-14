@@ -10,17 +10,17 @@ import { html, render } from '../../ui/lit/lit.js';
 import searchResultsPaneStyles from './searchResultsPane.css.js';
 const UIStrings = {
     /**
-     * @description Accessibility label for number of matches in each file in search results pane
+     * @description Accessibility label for the number of matches in each file in the search results view of the Search panel.
      * @example {2} PH1
      */
-    matchesCountS: 'Matches Count {PH1}',
+    matchesCountS: 'Matches count {PH1}',
     /**
-     * @description Search result label for results in the Search tool
+     * @description Label for search results in the Search panel.
      * @example {2} PH1
      */
     lineS: 'Line {PH1}',
     /**
-     * @description Text in Search Results Pane of the Search tab
+     * @description Text in the search results view of the Search panel.
      * @example {2} PH1
      */
     showDMore: 'Show {PH1} more',

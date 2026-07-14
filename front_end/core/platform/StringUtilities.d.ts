@@ -46,6 +46,20 @@ export declare const compare: (a: string, b: string) => number;
 export declare const trimMiddle: (str: string, maxLength: number) => string;
 /** Returns a string that has no more than maxLength characters. Actual graphemes are used, not bytes. */
 export declare const trimEndWithMaxLength: (str: string, maxLength: number) => string;
+/**
+ * Truncates a string to not exceed a maximum number of UTF-16 code units (as measured by JS `string.length`).
+ *
+ * Unlike simple character limiters, this helper is grapheme-aware and uses `Intl.Segmenter` to prevent
+ * slicing inside surrogate pairs (e.g. Plane 1+ characters or emojis like '𠜎' / '🥳') or combining characters
+ * (e.g. 'é' represented in NFD as 'e' + combining acute accent). If the limit falls in the middle of a
+ * grapheme cluster, the function backs off to drop the entire cluster, ensuring the result is always a valid
+ * Unicode string.
+ *
+ * @param str The string to truncate.
+ * @param maxCodeUnits The maximum allowed code unit length (must be >= 0).
+ * @returns The truncated string, guaranteed to be <= maxCodeUnits in length and grapheme-safe.
+ */
+export declare const truncateToCodeUnitLength: (str: string, maxCodeUnits: number) => string;
 export declare const escapeForRegExp: (str: string) => string;
 export declare const escapeForURLPattern: (text: string) => string;
 export declare const naturalOrderComparator: (a: string, b: string) => number;

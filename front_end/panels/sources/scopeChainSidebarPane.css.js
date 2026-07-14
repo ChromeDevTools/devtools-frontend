@@ -9,24 +9,32 @@ export default `/*
  * found in the LICENSE file.
  */
 
+.scope-chain-sidebar-pane-section .tree-element-title {
+  flex-grow: 1;
+}
+
 .scope-chain-sidebar-pane-section-header {
-  flex: auto;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .scope-chain-sidebar-pane-section-icon {
-  float: left;
+  flex: none;
   margin-right: 5px;
 }
 
 .scope-chain-sidebar-pane-section-subtitle {
-  float: right;
-  margin-left: 5px;
+  flex: 0 1 auto;
+  margin-left: auto;
   max-width: 55%;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .scope-chain-sidebar-pane-section-title {
+  flex: 0 1 auto;
   font-weight: normal;
   overflow-wrap: break-word;
   white-space: normal;

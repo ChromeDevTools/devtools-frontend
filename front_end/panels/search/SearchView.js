@@ -15,87 +15,87 @@ import { SearchResultsPane } from './SearchResultsPane.js';
 import searchViewStyles from './searchView.css.js';
 const UIStrings = {
     /**
-     * @description Placeholder text of a search bar
+     * @description Placeholder text of a search bar.
      */
     find: 'Find',
     /**
-     * @description Tooltip text on a toggle to enable search by matching case of the input
+     * @description Tooltip text on a toggle to enable search by matching case of the input.
      */
     enableCaseSensitive: 'Enable case sensitive search',
     /**
-     * @description Tooltip text on a toggle to disable search by matching case of the input
+     * @description Tooltip text on a toggle to disable search by matching case of the input.
      */
     disableCaseSensitive: 'Disable case sensitive search',
     /**
-     * @description Tooltip text on a toggle to enable searching with regular expression
+     * @description Tooltip text on a toggle to enable searching with regular expressions.
      */
     enableRegularExpression: 'Enable regular expressions',
     /**
-     * @description Tooltip text on a toggle to disable searching with regular expression
+     * @description Tooltip text on a toggle to disable searching with regular expressions.
      */
     disableRegularExpression: 'Disable regular expressions',
     /**
-     * @description Text to refresh the page
+     * @description Text to refresh the search.
      */
     refresh: 'Refresh',
     /**
-     * @description Tooltip text to clear the search input field
+     * @description Tooltip text to clear the search input field.
      */
     clearInput: 'Clear',
     /**
-     * @description Text to clear content
+     * @description Text to clear search results.
      */
     clear: 'Clear search',
     /**
-     * @description Search message element text content in Search View of the Search tab
+     * @description Message element text content during search in the search view of the Search panel.
      */
     indexing: 'Indexing…',
     /**
-     * @description Text to indicate the searching is in progress
+     * @description Text to indicate that searching is in progress.
      */
     searching: 'Searching…',
     /**
-     * @description Text in Search View of the Search tab
+     * @description Text in the search view of the Search panel when indexing is interrupted.
      */
     indexingInterrupted: 'Indexing interrupted.',
     /**
-     * @description Search results message element text content in Search View of the Search tab
+     * @description Message element text content for search results in the search view of the Search panel.
      */
     foundMatchingLineInFile: 'Found 1 matching line in 1 file.',
     /**
-     * @description Search results message element text content in Search View of the Search tab
+     * @description Message element text content for search results in the search view of the Search panel.
      * @example {2} PH1
      */
     foundDMatchingLinesInFile: 'Found {PH1} matching lines in 1 file.',
     /**
-     * @description Search results message element text content in Search View of the Search tab
+     * @description Message element text content for search results in the search view of the Search panel.
      * @example {2} PH1
      * @example {2} PH2
      */
     foundDMatchingLinesInDFiles: 'Found {PH1} matching lines in {PH2} files.',
     /**
-     * @description Search results message element text content in Search View of the Search tab
+     * @description Message element text content for search results in the search view of the Search panel.
      */
     noMatchesFound: 'No matches found',
     /**
-     * @description Search results message element text content in Search View of the Search tab
+     * @description Message element text content for search results in the search view of the Search panel.
      */
     nothingMatchedTheQuery: 'Nothing matched your search query',
     /**
-     * @description Text in Search View of the Search tab
+     * @description Text in the search view of the Search panel when search finishes.
      */
     searchFinished: 'Search finished.',
     /**
-     * @description Text in Search View of the Search tab
+     * @description Text in the search view of the Search panel when search is interrupted.
      */
     searchInterrupted: 'Search interrupted.',
     /**
-     * @description Text in Search View of the Search tab if user hasn't started the search
+     * @description Text in the search view of the Search panel if the user hasn’t started a search.
      * @example {Enter} PH1
      */
     typeAndPressSToSearch: 'Type and press {PH1} to search',
     /**
-     * @description Text in Search view of the Search tab if user hasn't started the search
+     * @description Text in the search view of the Search panel if the user hasn’t started a search.
      */
     noSearchResult: 'No search results',
 };

@@ -44,7 +44,7 @@ export declare class SimpleView<ContentTypeT extends HTMLElement | DocumentFragm
     title(): Platform.UIString.LocalizedString;
     isCloseable(): boolean;
     isTransient(): boolean;
-    toolbarItems(): Promise<ToolbarItem[]>;
+    toolbarItems(): Promise<ToolbarItem[] | TemplateResult>;
     widget(): Promise<AnyWidget>;
     revealView(): Promise<void>;
     disposeView(): void;

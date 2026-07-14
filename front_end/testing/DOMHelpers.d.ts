@@ -15,6 +15,14 @@ interface RenderOptions {
      * component-specific stylesheet strings during DOM/screenshot testing.
      */
     extraStyles?: CSSInJS[];
+    /**
+     * Sets the width of the test DOM container.
+     */
+    width?: string | number;
+    /**
+     * Sets the height of the test DOM container.
+     */
+    height?: string | number;
 }
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.

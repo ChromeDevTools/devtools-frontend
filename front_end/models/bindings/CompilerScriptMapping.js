@@ -397,7 +397,7 @@ export class CompilerScriptMapping {
             const content = sourceMap.embeddedContentByURL(url);
             const contentProvider = content !== null ?
                 TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) :
-                new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, contentType, script.createPageResourceLoadInitiator());
+                new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, contentType, script.createPageResourceLoadInitiator(), target.targetManager().getPageResourceLoader());
             let metadata = null;
             if (content !== null) {
                 const encoder = new TextEncoder();

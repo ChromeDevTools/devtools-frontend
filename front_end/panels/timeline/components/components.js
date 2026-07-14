@@ -6160,6 +6160,7 @@ __export(NetworkRequestDetails_exports, {
   NetworkRequestDetails: () => NetworkRequestDetails
 });
 import "./../../../ui/components/request_link_icon/request_link_icon.js";
+import * as Common6 from "./../../../core/common/common.js";
 import * as i18n33 from "./../../../core/i18n/i18n.js";
 import * as SDK8 from "./../../../core/sdk/sdk.js";
 import * as Helpers7 from "./../../../models/trace/helpers/helpers.js";
@@ -6588,7 +6589,7 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI12.Widget.Wid
     const styleForDownloading = {
       backgroundColor: color
     };
-    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(networkRequest);
+    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(SDK7.TargetManager.TargetManager.instance(), networkRequest);
     const wasThrottled = sdkNetworkRequest && SDK7.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     const throttledTitle = wasThrottled ? i18nString15(UIStrings16.wasThrottled, {
       PH1: typeof wasThrottled.conditions.title === "string" ? wasThrottled.conditions.title : wasThrottled.conditions.title()
@@ -6651,7 +6652,7 @@ var NetworkRequestTooltip = class _NetworkRequestTooltip extends UI12.Widget.Wid
     if (!this.#networkRequest) {
       return;
     }
-    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(this.#networkRequest);
+    const sdkNetworkRequest = SDK7.TraceObject.RevealableNetworkRequest.create(SDK7.TargetManager.TargetManager.instance(), this.#networkRequest);
     const networkConditions = sdkNetworkRequest && SDK7.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
     let throttlingTitle = void 0;
     if (networkConditions) {
@@ -6793,7 +6794,7 @@ var NetworkRequestDetails = class extends UI13.Widget.Widget {
       const headerName = header.name.toLocaleLowerCase();
       if (headerName === "server-timing" || headerName === "server-timing-test") {
         header.name = "server-timing";
-        this.#serverTimings = SDK8.ServerTiming.ServerTiming.parseHeaders([header]);
+        this.#serverTimings = SDK8.ServerTiming.ServerTiming.parseHeaders([header], Common6.Console.Console.instance());
         break;
       }
     }
@@ -6880,7 +6881,7 @@ function renderURL(request) {
     maxLength: MAX_URL_LENGTH3
   };
   const linkifiedURL = LegacyComponents3.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
-  const networkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(request);
+  const networkRequest = SDK8.TraceObject.RevealableNetworkRequest.create(SDK8.TargetManager.TargetManager.instance(), request);
   if (networkRequest) {
     linkifiedURL.addEventListener("contextmenu", (event) => {
       const contextMenu = new UI13.ContextMenu.ContextMenu(event);
@@ -7333,7 +7334,7 @@ __export(Sidebar_exports, {
   RevealAnnotation: () => RevealAnnotation,
   SidebarWidget: () => SidebarWidget
 });
-import * as Common7 from "./../../../core/common/common.js";
+import * as Common8 from "./../../../core/common/common.js";
 import * as UI18 from "./../../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/timeline/components/insights/SidebarInsight.js
@@ -7361,7 +7362,7 @@ __export(SidebarAnnotationsTab_exports, {
   SidebarAnnotationsTab: () => SidebarAnnotationsTab
 });
 import "./../../../ui/components/settings/settings.js";
-import * as Common6 from "./../../../core/common/common.js";
+import * as Common7 from "./../../../core/common/common.js";
 import * as i18n37 from "./../../../core/i18n/i18n.js";
 import * as Platform8 from "./../../../core/platform/platform.js";
 import * as Trace10 from "./../../../models/trace/trace.js";
@@ -7561,7 +7562,7 @@ var SidebarAnnotationsTab = class extends UI15.Widget.Widget {
   constructor(view = DEFAULT_VIEW11) {
     super();
     this.#view = view;
-    this.#annotationsHiddenSetting = Common6.Settings.Settings.instance().moduleSetting("annotations-hidden");
+    this.#annotationsHiddenSetting = Common7.Settings.Settings.instance().moduleSetting("annotations-hidden");
   }
   deduplicatedAnnotations() {
     return this.#annotations;
@@ -7672,13 +7673,13 @@ function detailedAriaDescriptionForAnnotation(annotation) {
   }
 }
 function findTextColorForContrast(bgColorText) {
-  const bgColor = Common6.Color.parse(bgColorText)?.asLegacyColor();
+  const bgColor = Common7.Color.parse(bgColorText)?.asLegacyColor();
   const darkColorToken = "--app-color-performance-sidebar-label-text-dark";
-  const darkColorText = Common6.Color.parse(ThemeSupport3.ThemeSupport.instance().getComputedValue(darkColorToken))?.asLegacyColor();
+  const darkColorText = Common7.Color.parse(ThemeSupport3.ThemeSupport.instance().getComputedValue(darkColorToken))?.asLegacyColor();
   if (!bgColor || !darkColorText) {
     return `var(${darkColorToken})`;
   }
-  const contrastRatio = Common6.ColorUtils.contrastRatio(bgColor.rgba(), darkColorText.rgba());
+  const contrastRatio = Common7.ColorUtils.contrastRatio(bgColor.rgba(), darkColorText.rgba());
   return contrastRatio >= 4.5 ? `var(${darkColorToken})` : "var(--app-color-performance-sidebar-label-text-light)";
 }
 function renderAnnotationIdentifier(annotation, annotationEntryToColorMap) {
@@ -8351,7 +8352,7 @@ var SidebarWidget = class extends UI18.Widget.VBox {
    * import a trace, but then persist its state (so if they close it, it stays
    * closed).
    */
-  #hasOpenedOnce = Common7.Settings.Settings.instance().createSetting("timeline-sidebar-opened-at-least-once", false);
+  #hasOpenedOnce = Common8.Settings.Settings.instance().createSetting("timeline-sidebar-opened-at-least-once", false);
   constructor() {
     super();
     this.setMinimumSize(MIN_SIDEBAR_WIDTH_PX, 0);

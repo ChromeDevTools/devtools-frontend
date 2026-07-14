@@ -33,6 +33,7 @@ var FORMATTABLE_MEDIA_TYPES = [
 
 // gen/front_end/ui/legacy/components/source_frame/ResourceSourceFrame.js
 import * as TextUtils3 from "./../../../../models/text_utils/text_utils.js";
+import { render } from "./../../../lit/lit.js";
 import * as UI2 from "./../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/resourceSourceFrame.css.js
@@ -1134,7 +1135,11 @@ var SearchableContainer = class extends UI2.Widget.VBox {
     searchableView.show(this.contentElement);
     const toolbar = this.contentElement.createChild("devtools-toolbar", "toolbar");
     void sourceFrame.toolbarItems().then((items) => {
-      items.map((item) => toolbar.appendToolbarItem(item));
+      if (Array.isArray(items)) {
+        items.map((item) => toolbar.appendToolbarItem(item));
+      } else {
+        render(items, toolbar);
+      }
     });
   }
   async revealPosition(position) {
@@ -1288,7 +1293,7 @@ __export(FontView_exports, {
 });
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as TextUtils6 from "./../../../../models/text_utils/text_utils.js";
-import { Directives, html, render } from "./../../../lit/lit.js";
+import { Directives, html, render as render2 } from "./../../../lit/lit.js";
 import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
 import * as UI4 from "./../../legacy.js";
 
@@ -1327,7 +1332,7 @@ var FONT_PREVIEW_LINES = ["ABCDEFGHIJKLM", "NOPQRSTUVWXYZ", "abcdefghijklm", "no
 var MEASURE_FONT_SIZE = 50;
 var DEFAULT_VIEW = (input, output, target) => {
   let dummyEl;
-  render(html`
+  render2(html`
     <style>${fontView_css_default}</style>
     <style>${input.fontFaceRule}</style>
     <div class="font-view"
@@ -2130,7 +2135,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { render: render2, html: html2 } = Lit;
+var { render: render3, html: html2 } = Lit;
 var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
@@ -2266,7 +2271,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
           </devtools-highlight>
         </li>` : Lit.nothing}`;
   }
-  render2(html2`
+  render3(html2`
     <style>${xmlView_css_default}</style>
     <style>${xmlTree_css_default}</style>
     <devtools-tree

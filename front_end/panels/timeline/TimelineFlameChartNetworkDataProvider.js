@@ -118,7 +118,7 @@ export class TimelineFlameChartNetworkDataProvider {
         if (!networkRequest || !Trace.Types.Events.isSyntheticNetworkRequest(networkRequest)) {
             return;
         }
-        const timelineNetworkRequest = SDK.TraceObject.RevealableNetworkRequest.create(networkRequest);
+        const timelineNetworkRequest = SDK.TraceObject.RevealableNetworkRequest.create(SDK.TargetManager.TargetManager.instance(), networkRequest);
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
         contextMenu.appendApplicableItems(timelineNetworkRequest);
         return contextMenu;

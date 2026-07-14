@@ -52,6 +52,30 @@ export class ContentData {
             this.mimeType = isBase64 ? 'application/octet-stream' : 'text/plain';
         }
     }
+    static async fromCompressedBase64(data, mimeType, charset, contentEncoding) {
+        const normalizedEncoding = contentEncoding?.toLowerCase();
+        if (!normalizedEncoding) {
+            return new ContentData(data, true, mimeType, charset);
+        }
+        let contentAsBase64 = data;
+        try {
+            const bytes = Common.Base64.decode(data);
+            let decompressed = null;
+            if (normalizedEncoding.includes('gzip') && Common.Gzip.isGzip(bytes.buffer)) {
+                decompressed = await Common.Gzip.decompressToBuffer(bytes.buffer);
+            }
+            else if (normalizedEncoding.includes('deflate')) {
+                decompressed = await Common.Gzip.decompressDeflateToBuffer(bytes.buffer);
+            }
+            if (decompressed) {
+                contentAsBase64 = await Common.Base64.encode(decompressed);
+            }
+        }
+        catch (e) {
+            console.warn('Failed to decompress base64 content data:', e);
+        }
+        return new ContentData(contentAsBase64, true, mimeType, charset);
+    }
     /**
      * Returns the data as base64.
      *

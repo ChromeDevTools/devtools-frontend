@@ -3817,7 +3817,9 @@ __export(Gzip_exports, {
   createMonitoredStream: () => createMonitoredStream,
   decompress: () => decompress,
   decompressDeflate: () => decompressDeflate,
+  decompressDeflateToBuffer: () => decompressDeflateToBuffer,
   decompressStream: () => decompressStream,
+  decompressToBuffer: () => decompressToBuffer,
   fileToString: () => fileToString,
   isGzip: () => isGzip
 });
@@ -3845,18 +3847,23 @@ async function fileToString(file) {
   return str;
 }
 async function decompress(gzippedBuffer, charset = "utf-8") {
-  const buffer = await gzipCodec(gzippedBuffer, new DecompressionStream("gzip"));
+  const buffer = await decompressToBuffer(gzippedBuffer);
   const str = new TextDecoder(charset).decode(buffer);
   return str;
 }
+async function decompressToBuffer(gzippedBuffer) {
+  return await gzipCodec(gzippedBuffer, new DecompressionStream("gzip"));
+}
 async function decompressDeflate(buffer, charset = "utf-8") {
-  let decompressedBuffer;
-  try {
-    decompressedBuffer = await gzipCodec(buffer, new DecompressionStream("deflate"));
-  } catch {
-    decompressedBuffer = await gzipCodec(buffer, new DecompressionStream("deflate-raw"));
-  }
+  const decompressedBuffer = await decompressDeflateToBuffer(buffer);
   return new TextDecoder(charset).decode(decompressedBuffer);
+}
+async function decompressDeflateToBuffer(buffer) {
+  try {
+    return await gzipCodec(buffer, new DecompressionStream("deflate"));
+  } catch {
+    return await gzipCodec(buffer, new DecompressionStream("deflate-raw"));
+  }
 }
 async function compress(str) {
   const encoded = new TextEncoder().encode(str);

@@ -801,4 +801,5 @@ declare class RefDirective extends AsyncDirective {
  */
 declare const ref: (_ref?: RefOrCallback<Element> | undefined) => DirectiveResult<typeof RefDirective>;
 
-export { type ClassInfo, ClassMapDirective, type ItemTemplate, type KeyFn, LiveDirective, Ref, RefDirective, type RefOrCallback, RepeatDirective, type RepeatDirectiveFn, type StyleInfo, StyleMapDirective, UnsafeHTMLDirective, UntilDirective, classMap, createRef, ifDefined, live, ref, repeat, styleMap, unsafeHTML, until };
+export { ClassMapDirective, LiveDirective, Ref, RefDirective, RepeatDirective, StyleMapDirective, UnsafeHTMLDirective, UntilDirective, classMap, createRef, ifDefined, live, ref, repeat, styleMap, unsafeHTML, until };
+export type { ClassInfo, ItemTemplate, KeyFn, RefOrCallback, RepeatDirectiveFn, StyleInfo };

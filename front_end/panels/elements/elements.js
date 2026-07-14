@@ -224,7 +224,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     if (!this.root) {
       const frameId = this.#frameManager.getOutermostFrame()?.id;
       if (frameId) {
-        this.root = await SDK.AccessibilityModel.getRootNode(frameId);
+        this.root = await SDK.AccessibilityModel.getRootNode(frameId, this.#frameManager);
       }
     }
     if (this.root) {
@@ -245,7 +245,7 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
       if (!frameId) {
         throw new Error("No top frame");
       }
-      this.root = await SDK.AccessibilityModel.getRootNode(frameId);
+      this.root = await SDK.AccessibilityModel.getRootNode(frameId, this.#frameManager);
       if (!this.root) {
         throw new Error("No root");
       }

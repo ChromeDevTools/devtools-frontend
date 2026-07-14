@@ -12,6 +12,16 @@ export default `/*
 .request-payload-view {
   user-select: text;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.raw-payload-section {
+  flex: 1 1 auto;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .request-payload-tree {

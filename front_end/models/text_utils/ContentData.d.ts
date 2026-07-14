@@ -21,6 +21,7 @@ export declare class ContentData {
     readonly mimeType: string;
     readonly charset: string;
     constructor(data: string, isBase64: boolean, mimeType: string, charset?: string);
+    static fromCompressedBase64(data: string, mimeType: string, charset?: string, contentEncoding?: string): Promise<ContentData>;
     /**
      * Returns the data as base64.
      *

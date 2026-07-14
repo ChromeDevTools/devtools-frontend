@@ -1383,7 +1383,7 @@ var CompilerScriptMapping = class {
         uiSourceCode.markKnownThirdParty();
       }
       const content = sourceMap.embeddedContentByURL(url);
-      const contentProvider = content !== null ? TextUtils2.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) : new SDK3.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, contentType, script.createPageResourceLoadInitiator());
+      const contentProvider = content !== null ? TextUtils2.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) : new SDK3.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, contentType, script.createPageResourceLoadInitiator(), target.targetManager().getPageResourceLoader());
       let metadata = null;
       if (content !== null) {
         const encoder = new TextEncoder();
@@ -1575,7 +1575,7 @@ var SASSSourceMapping = class {
     for (const sourceURL of sourceMap.sourceURLs()) {
       let binding = bindings.get(sourceURL);
       if (!binding) {
-        binding = new Binding(project, sourceURL, header.createPageResourceLoadInitiator());
+        binding = new Binding(project, sourceURL, header.createPageResourceLoadInitiator(), header.cssModel().target().targetManager().getPageResourceLoader());
         bindings.set(sourceURL, binding);
       }
       binding.addSourceMap(sourceMap, header.frameId);
@@ -1657,12 +1657,14 @@ var Binding = class {
   #project;
   #url;
   #initiator;
+  #pageResourceLoader;
   referringSourceMaps;
   uiSourceCode;
-  constructor(project, url, initiator) {
+  constructor(project, url, initiator, pageResourceLoader) {
     this.#project = project;
     this.#url = url;
     this.#initiator = initiator;
+    this.#pageResourceLoader = pageResourceLoader;
     this.referringSourceMaps = [];
     this.uiSourceCode = null;
   }
@@ -1670,7 +1672,7 @@ var Binding = class {
     const sourceMap = this.referringSourceMaps[this.referringSourceMaps.length - 1];
     const contentType = Common6.ResourceType.resourceTypes.SourceMapStyleSheet;
     const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
-    const contentProvider = embeddedContent !== null ? TextUtils3.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) : new SDK4.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(this.#url, contentType, this.#initiator);
+    const contentProvider = embeddedContent !== null ? TextUtils3.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) : new SDK4.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(this.#url, contentType, this.#initiator, this.#pageResourceLoader);
     const newUISourceCode = this.#project.createUISourceCode(this.#url, contentType);
     uiSourceCodeToBinding.set(newUISourceCode, this);
     const mimeType = Common6.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();
@@ -3232,7 +3234,7 @@ var ModelData = class {
         uiSourceCode = this.project.createUISourceCode(url, Common10.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
         this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
-        const contentProvider = new SDK8.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, Common10.ResourceType.resourceTypes.SourceMapScript, initiator);
+        const contentProvider = new SDK8.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, Common10.ResourceType.resourceTypes.SourceMapScript, initiator, script.target().targetManager().getPageResourceLoader());
         const mimeType = Common10.ResourceType.ResourceType.mimeFromURL(url) || "text/javascript";
         this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {

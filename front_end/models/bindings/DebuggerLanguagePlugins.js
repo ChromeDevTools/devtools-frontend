@@ -929,7 +929,7 @@ class ModelData {
                 // and at that point we already need to have the mapping in place
                 // otherwise we will not get the breakpoint right.
                 this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
-                const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, Common.ResourceType.resourceTypes.SourceMapScript, initiator);
+                const contentProvider = new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(url, Common.ResourceType.resourceTypes.SourceMapScript, initiator, script.target().targetManager().getPageResourceLoader());
                 const mimeType = Common.ResourceType.ResourceType.mimeFromURL(url) || 'text/javascript';
                 this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
             }

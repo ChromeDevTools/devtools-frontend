@@ -1234,9 +1234,13 @@ var SamplesIntegrator = class {
   #lockedJsStackDepth = [];
   /**
    * Used to keep track when samples should be integrated even if they
-   * are not children of invocation trace events. This is useful in
-   * cases where we can be missing the start of JS invocation events if
-   * we start tracing half-way through.
+   * are not children of invocation trace events. This is used in two cases:
+   * 1. We start tracing half-way through, so we miss the start of JS
+   *    invocation events.
+   * 2. On threads (like Web Workers) without real JS invocation parent events,
+   *    but where trace events (like SchedulePostMessage) integrate stack traces.
+   *    Enabling fake JS mode allows subsequent samples to be processed and
+   *    eventually correct the stack, preventing a deadlock.
    */
   #fakeJSInvocation = false;
   /**
@@ -1304,7 +1308,7 @@ var SamplesIntegrator = class {
         this.#onProfileCall(event, parentEvent);
         continue;
       }
-      this.#onTraceEventStart(event);
+      this.#onTraceEventStart(event, parentEvent);
       stack.push(event);
     }
     while (stack.length) {
@@ -1316,7 +1320,7 @@ var SamplesIntegrator = class {
     sortTraceEventsInPlace(this.jsSampleEvents);
     return this.#constructedProfileCalls;
   }
-  #onTraceEventStart(event) {
+  #onTraceEventStart(event, parent) {
     if (event.name === "RunMicrotasks" || event.name === "RunTask") {
       this.#lockedJsStackDepth = [];
       this.#truncateJSStack(0, event.ts);
@@ -1327,6 +1331,12 @@ var SamplesIntegrator = class {
       this.#fakeJSInvocation = false;
     }
     this.#extractStackTrace(event);
+    if (extractSampleTraceId(event)) {
+      const hasJSInvocationParent = parent && Types4.Events.isJSInvocationEvent(parent);
+      if (!hasJSInvocationParent) {
+        this.#fakeJSInvocation = true;
+      }
+    }
     this.#lockedJsStackDepth.push(this.#currentJSStack.length);
   }
   #onProfileCall(event, parent) {

@@ -80,10 +80,11 @@ export class JavaScriptFormatter {
             const format = this.#formatToken(node.parent, token);
             this.#push(token, format);
         }
+        if (node.parent?.type === 'TemplateLiteral' && node.type !== 'TemplateElement' && node.type !== 'TemplateLiteral') {
+            this.#builder.setEnforceSpaceBetweenWords(true);
+        }
     }
     #afterVisit(node) {
-        // ${expressions} within a template literal need space enforced.
-        const restore = this.#builder.setEnforceSpaceBetweenWords(node.type !== 'TemplateElement');
         let token;
         while ((token = this.#tokenizer.peekToken()) && token.start < node.end) {
             const token = this.#tokenizer.nextToken();
@@ -91,7 +92,12 @@ export class JavaScriptFormatter {
             this.#push(token, format);
         }
         this.#push(null, this.#finishNode(node));
-        this.#builder.setEnforceSpaceBetweenWords(restore || node.type === 'TemplateLiteral');
+        if (node.parent?.type === 'TemplateLiteral' && node.type !== 'TemplateElement' && node.type !== 'TemplateLiteral') {
+            this.#builder.setEnforceSpaceBetweenWords(false);
+        }
+        else if (node.type === 'TemplateLiteral' && node.parent?.type !== 'TemplateLiteral') {
+            this.#builder.setEnforceSpaceBetweenWords(true);
+        }
     }
     #inForLoopHeader(node) {
         const parent = node.parent;

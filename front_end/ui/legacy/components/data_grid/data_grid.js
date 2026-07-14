@@ -3352,10 +3352,15 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
       const titleDOMFragment = column.firstElementChild ? document.createDocumentFragment() : void 0;
       if (titleDOMFragment) {
         title = "";
-        for (const child of column.children) {
+        for (const child of column.childNodes) {
           titleDOMFragment.appendChild(child.cloneNode(true));
-          title += child.shadowRoot ? child.shadowRoot.textContent : child.textContent;
+          if (child instanceof Element && child.shadowRoot) {
+            title += child.shadowRoot.textContent;
+          } else if (child.nodeType !== Node.COMMENT_NODE) {
+            title += child.textContent ?? "";
+          }
         }
+        title = title.trim();
       }
       const sortable = hasBooleanAttribute(column, "sortable");
       const width = column.getAttribute("width") ?? void 0;
@@ -3393,7 +3398,7 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
     const visibleColumns = new Set(this.#columns.map(({ id }) => id).filter((id) => !this.#hiddenColumns.has(id)));
     this.#dataGrid.setColumnsVisibility(visibleColumns);
     this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : void 0, INTERNAL_TOKEN);
-    this.#dataGrid.deleteCallback = hasEditableColumn ? this.#deleteCallback.bind(this) : void 0;
+    this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
   }
   #needUpdateColumns(mutationList) {
     for (const mutation of mutationList) {

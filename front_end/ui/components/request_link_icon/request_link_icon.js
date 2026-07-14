@@ -78,16 +78,16 @@ devtools-icon {
 var { html } = Lit;
 var UIStrings = {
   /**
-   * @description Title for a link to show a request in the network panel
+   * @description Title for a link to show a request in the Network panel.
    * @example {https://example.org/index.html} url
    */
-  clickToShowRequestInTheNetwork: "Click to open the network panel and show request for URL: {url}",
+  clickToShowRequestInTheNetwork: "Click to open the Network panel and show request for URL: {url}",
   /**
-   * @description Title for an link to show a request that is unavailable because the request couldn't be resolved
+   * @description Title for a link to show a request that is unavailable because the request couldn't be resolved.
    */
-  requestUnavailableInTheNetwork: "Request unavailable in the network panel, try reloading the inspected page",
+  requestUnavailableInTheNetwork: "Request unavailable in the Network panel. Try reloading the inspected page",
   /**
-   * @description Label for the shortened URL displayed in a link to show a request in the network panel
+   * @description Label for the shortened URL displayed in a link to show a request in the Network panel.
    */
   shortenedURL: "Shortened URL"
 };

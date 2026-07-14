@@ -15,6 +15,7 @@ import { createIcon } from '../../ui/kit/kit.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Components from './components/components.js';
 import { EditingLocationHistoryManager } from './EditingLocationHistoryManager.js';
@@ -285,7 +286,16 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
                 for (const action of getRegisteredEditorActions()) {
                     this.#scriptViewToolbar.appendToolbarItem(action.getOrCreateButton(this));
                 }
-                items.map(item => this.#scriptViewToolbar.appendToolbarItem(item));
+                if (Array.isArray(items)) {
+                    items.map(item => this.#scriptViewToolbar.appendToolbarItem(item));
+                }
+                else {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.display = 'contents';
+                    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+                    render(items, wrapper);
+                    this.#scriptViewToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(wrapper));
+                }
             });
         }
     }

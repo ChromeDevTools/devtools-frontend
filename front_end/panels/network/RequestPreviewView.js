@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { RequestHTMLView } from './RequestHTMLView.js';
 import { SignedExchangeInfoView } from './SignedExchangeInfoView.js';
@@ -40,7 +41,13 @@ export class RequestPreviewView extends UI.Widget.VBox {
         }
         const toolbar = this.element.createChild('devtools-toolbar', 'network-item-preview-toolbar');
         void view.toolbarItems().then(items => {
-            items.map(item => toolbar.appendToolbarItem(item));
+            if (Array.isArray(items)) {
+                items.map(item => toolbar.appendToolbarItem(item));
+            }
+            else {
+                // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+                render(items, toolbar);
+            }
         });
         return view;
     }

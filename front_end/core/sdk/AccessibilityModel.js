@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { DeferredDOMNode, DOMDocument, DOMModel, Events as DOMModelEvents } from './DOMModel.js';
-import { FrameManager } from './FrameManager.js';
 import { SDKModel } from './SDKModel.js';
 export class AccessibilityNode {
     #accessibilityModel;
@@ -345,7 +344,7 @@ export class AccessibilityModel extends SDKModel {
     }
 }
 SDKModel.register(AccessibilityModel, { capabilities: 2 /* Capability.DOM */, autostart: false });
-function getModel(frameId, frameManager = FrameManager.instance()) {
+function getModel(frameId, frameManager) {
     const frame = frameManager.getFrame(frameId);
     const model = frame?.resourceTreeModel().target().model(AccessibilityModel);
     if (!model) {
@@ -353,7 +352,7 @@ function getModel(frameId, frameManager = FrameManager.instance()) {
     }
     return model;
 }
-export async function getRootNode(frameId, frameManager = FrameManager.instance()) {
+export async function getRootNode(frameId, frameManager) {
     const model = getModel(frameId, frameManager);
     const root = await model.requestRootNode(frameId);
     if (!root) {

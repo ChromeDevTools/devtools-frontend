@@ -46,7 +46,7 @@ import objectValueStyles from './objectValue.css.js';
 import { RemoteObjectPreviewFormatter, renderNodeTitle } from './RemoteObjectPreviewFormatter.js';
 export { objectPropertiesSectionStyles, objectValueStyles };
 const { widget } = UI.Widget;
-const { ref, repeat, ifDefined, classMap } = Directives;
+const { ref, repeat, ifDefined, classMap, until } = Directives;
 const UIStrings = {
     /**
      * @description Text in Object Properties Section
@@ -142,6 +142,10 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectP
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const EXPANDABLE_MAX_DEPTH = 100;
 const objectPropertiesSectionMap = new WeakMap();
+// TODO(crbug.com/457388389): This cache is a temporary workaround for the <devtools-tree> migration.
+// It can be removed once the entire ObjectPropertiesSection is fully migrated to Lit and
+// the legacy TreeOutline/TreeElement dependencies are removed.
+const topLevelNodesCache = new WeakMap();
 let cachedSortAlphabeticallySetting;
 export function sortPropertiesAlphabeticallySetting() {
     if (!cachedSortAlphabeticallySetting) {
@@ -1098,6 +1102,32 @@ export function populateObjectTreeContextMenu(contextMenu, object, expandRecursi
     }
     contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
 }
+export function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
+    const entry = topLevelNodesCache.get(objectTree);
+    if (entry && entry.linkifier === linkifier) {
+        return html `
+      <ul class="source-code object-properties-section" role="group">
+        ${entry.nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+      </ul>
+    `;
+    }
+    const promise = (async () => {
+        await ObjectPropertyTreeElement.populateChildrenIfNeeded(objectTree);
+        const nodes = Array.from(ObjectPropertyTreeElement.createNodes(objectTree, /* skipProto= */ false, /* skipGettersAndSetters= */ false, linkifier, emptyPlaceholder));
+        topLevelNodesCache.set(objectTree, { linkifier, nodes });
+        const listener = () => {
+            topLevelNodesCache.delete(objectTree);
+            objectTree.removeEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, listener);
+        };
+        objectTree.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, listener);
+        return html `
+      <ul class="source-code object-properties-section" role="group">
+        ${nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+      </ul>
+    `;
+    })();
+    return until(promise, html `<ul class="source-code object-properties-section" role="group"></ul>`);
+}
 export class RootElement extends UI.TreeOutline.TreeElement {
     object;
     linkifier;
@@ -1387,6 +1417,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
         // Pass an empty title, the title gets made later in onattach.
         super();
         this.#widget = new ObjectPropertyWidget();
+        this.#widget.markAsRoot();
         this.property = property;
         this.hidden = property.isFiltered;
         this.property.addEventListener("value-changed" /* ObjectTreeNodeBase.Events.VALUE_CHANGED */, this.#updateValue, this);
@@ -1549,7 +1580,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     onattach() {
         this.updateExpandable();
-        this.#widget.markAsRoot();
         this.#widget.show(this.listItemElement);
         this.#widget.property = this.property;
         this.#widget.linkifier = this.linkifier;

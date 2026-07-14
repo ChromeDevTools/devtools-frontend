@@ -11,7 +11,7 @@ import snackbarStyles from './snackbar.css.js';
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Title for close button
+     * @description Title of the close button.
      */
     dismiss: 'Dismiss',
 };

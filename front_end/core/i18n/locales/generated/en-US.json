@@ -1017,7 +1017,7 @@
     "message": "Forces vision deficiency emulation"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | frameRenderingStats": {
-    "message": "Frame Rendering Stats"
+    "message": "Frame rendering stats"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | highlightAds": {
     "message": "Highlight ads"
@@ -1110,7 +1110,7 @@
     "message": "Dock to right"
   },
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
-    "message": "Don't match Chrome color scheme"
+    "message": "Don’t match Chrome color scheme"
   },
   "entrypoints/main/main-meta.ts | earnBadges": {
     "message": "Earn badges"
@@ -1191,7 +1191,7 @@
     "message": "Disable search as you type (press Enter to search)"
   },
   "entrypoints/main/main-meta.ts | switchToBrowserPreferredTheme": {
-    "message": "Switch to browser's preferred theme"
+    "message": "Switch to browser’s preferred theme"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "Switch to dark theme"
@@ -1263,7 +1263,7 @@
     "message": "Help"
   },
   "entrypoints/main/MainImpl.ts | hideConsoleDrawer": {
-    "message": "Hide console drawer"
+    "message": "Hide Console drawer"
   },
   "entrypoints/main/MainImpl.ts | moreTools": {
     "message": "More tools"
@@ -1272,7 +1272,7 @@
     "message": "Placement of DevTools relative to the page. ({PH1} to restore last position)"
   },
   "entrypoints/main/MainImpl.ts | showConsoleDrawer": {
-    "message": "Show console drawer"
+    "message": "Show Console drawer"
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Undock into separate window"
@@ -4946,9 +4946,6 @@
   "panels/application/DeviceBoundSessionsView.ts | refreshInitiatorNotString": {
     "message": "Allowed refresh initiator is not a string"
   },
-  "panels/application/DeviceBoundSessionsView.ts | refreshQuotaExceeded": {
-    "message": "Refresh quota exceeded"
-  },
   "panels/application/DeviceBoundSessionsView.ts | refreshResult": {
     "message": "Refresh result"
   },
@@ -6272,14 +6269,14 @@
   "panels/application/StorageItemsToolbar.ts | refreshedStatus": {
     "message": "Table refreshed"
   },
-  "panels/application/StorageView.ts | application": {
-    "message": "Application"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Cache storage"
   },
   "panels/application/StorageView.ts | clearing": {
     "message": "Clearing…"
+  },
+  "panels/application/StorageView.ts | clearSelected": {
+    "message": "Clear selected"
   },
   "panels/application/StorageView.ts | clearSiteData": {
     "message": "Clear site data"
@@ -6289,9 +6286,6 @@
   },
   "panels/application/StorageView.ts | fileSystem": {
     "message": "File System"
-  },
-  "panels/application/StorageView.ts | includingThirdPartyCookies": {
-    "message": "including third-party cookies"
   },
   "panels/application/StorageView.ts | indexDB": {
     "message": "IndexedDB"
@@ -6349,6 +6343,9 @@
   },
   "panels/application/StorageView.ts | storageWithCustomMarker": {
     "message": "{PH1} (custom)"
+  },
+  "panels/application/StorageView.ts | thirdPartyCookies": {
+    "message": "Third-party cookies"
   },
   "panels/application/StorageView.ts | unregisterServiceWorker": {
     "message": "Unregister service workers"
@@ -12825,7 +12822,7 @@
     "message": "Remove a selector part"
   },
   "panels/recorder/components/StepEditor.ts | unknownActionType": {
-    "message": "Unknown action type."
+    "message": "Enter a valid action type"
   },
   "panels/recorder/components/StepView.ts | addBreakpoint": {
     "message": "Add breakpoint"
@@ -12921,7 +12918,7 @@
     "message": "Show Recorder"
   },
   "panels/recorder/recorder-meta.ts | startStopRecording": {
-    "message": "Start/Stop recording"
+    "message": "Start/stop recording"
   },
   "panels/recorder/recorder-meta.ts | toggleCode": {
     "message": "Toggle code view"
@@ -12942,7 +12939,7 @@
     "message": "Delete recording"
   },
   "panels/recorder/RecorderController.ts | doNotImport": {
-    "message": "Don't import recordings you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type “{PH1}” below to allow importing."
+    "message": "Don’t import recordings you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow importing."
   },
   "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
     "message": "Do you trust this recording?"
@@ -12993,7 +12990,7 @@
     "message": "Send feedback"
   },
   "panels/recorder/RecorderController.ts | startStopRecording": {
-    "message": "Start/Stop recording"
+    "message": "Start/stop recording"
   },
   "panels/recorder/RecorderController.ts | stepOverReplay": {
     "message": "Execute one step"
@@ -13011,10 +13008,10 @@
     "message": "Address bar"
   },
   "panels/screencast/ScreencastView.ts | back": {
-    "message": "back"
+    "message": "Back"
   },
   "panels/screencast/ScreencastView.ts | forward": {
-    "message": "forward"
+    "message": "Forward"
   },
   "panels/screencast/ScreencastView.ts | mouseInput": {
     "message": "Use mouse"
@@ -13023,7 +13020,7 @@
     "message": "Profiling in progress"
   },
   "panels/screencast/ScreencastView.ts | reload": {
-    "message": "reload"
+    "message": "Reload"
   },
   "panels/screencast/ScreencastView.ts | screencastViewOfDebugTarget": {
     "message": "Screencast view of debug target"
@@ -13038,7 +13035,7 @@
     "message": "Line {PH1}"
   },
   "panels/search/SearchResultsPane.ts | matchesCountS": {
-    "message": "Matches Count {PH1}"
+    "message": "Matches count {PH1}"
   },
   "panels/search/SearchResultsPane.ts | showDMore": {
     "message": "Show {PH1} more"
@@ -17349,10 +17346,10 @@
     "message": "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssue": {
-    "message": "Click to show issue in the issues tab"
+    "message": "Click to show issue in the Issues tab"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | clickToShowIssueWithTitle": {
-    "message": "Click to open the issue tab and show issue: {title}"
+    "message": "Click to open the Issues tab and show issue: {title}"
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Issue unavailable at this time"
@@ -17397,7 +17394,7 @@
     "message": "Video and documentation"
   },
   "ui/components/panel_feedback/PreviewToggle.ts | learnMoreLink": {
-    "message": "Learn More"
+    "message": "Learn more"
   },
   "ui/components/panel_feedback/PreviewToggle.ts | previewTextFeedbackLink": {
     "message": "Send us your feedback."
@@ -17406,10 +17403,10 @@
     "message": "Send feedback"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | clickToShowRequestInTheNetwork": {
-    "message": "Click to open the network panel and show request for URL: {url}"
+    "message": "Click to open the Network panel and show request for URL: {url}"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | requestUnavailableInTheNetwork": {
-    "message": "Request unavailable in the network panel, try reloading the inspected page"
+    "message": "Request unavailable in the Network panel. Try reloading the inspected page"
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
     "message": "Shortened URL"

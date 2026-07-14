@@ -34,24 +34,29 @@ export async function fileToString(file) {
  * Consider using `arrayBufferToString` instead, which can handle both gzipped and plain text buffers.
  */
 export async function decompress(gzippedBuffer, charset = 'utf-8') {
-    const buffer = await gzipCodec(gzippedBuffer, new DecompressionStream('gzip'));
+    const buffer = await decompressToBuffer(gzippedBuffer);
     const str = new TextDecoder(charset).decode(buffer);
     return str;
+}
+export async function decompressToBuffer(gzippedBuffer) {
+    return await gzipCodec(gzippedBuffer, new DecompressionStream('gzip'));
 }
 /**
  * Decompress a deflate-encoded ArrayBuffer to a string.
  * Tries 'deflate' (zlib wrapper) first, then falls back to 'deflate-raw'.
  */
 export async function decompressDeflate(buffer, charset = 'utf-8') {
-    let decompressedBuffer;
+    const decompressedBuffer = await decompressDeflateToBuffer(buffer);
+    return new TextDecoder(charset).decode(decompressedBuffer);
+}
+export async function decompressDeflateToBuffer(buffer) {
     try {
-        decompressedBuffer = await gzipCodec(buffer, new DecompressionStream('deflate'));
+        return await gzipCodec(buffer, new DecompressionStream('deflate'));
     }
     catch {
         // Try deflate-raw format if zlib-wrapped deflate fails.
-        decompressedBuffer = await gzipCodec(buffer, new DecompressionStream('deflate-raw'));
+        return await gzipCodec(buffer, new DecompressionStream('deflate-raw'));
     }
-    return new TextDecoder(charset).decode(decompressedBuffer);
 }
 export async function compress(str) {
     const encoded = new TextEncoder().encode(str);

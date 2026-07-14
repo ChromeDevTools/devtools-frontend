@@ -285,7 +285,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #isAdRelated;
     #isLinkPreload;
     #appliedNetworkConditionsId;
-    constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture) {
+    #console;
+    constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console = Common.Console.Console.instance()) {
         super();
         this.#requestId = requestId;
         this.#backendRequestId = backendRequestId;
@@ -297,15 +298,16 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.#hasUserGesture = hasUserGesture;
         this.#isAdRelated = false;
         this.#isLinkPreload = false;
+        this.#console = console;
     }
-    static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture) {
-        return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture);
+    static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console) {
+        return new NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console);
     }
-    static createForSocket(backendRequestId, requestURL, initiator) {
-        return new NetworkRequest(backendRequestId, backendRequestId, requestURL, Platform.DevToolsPath.EmptyUrlString, null, null, initiator || null);
+    static createForSocket(backendRequestId, requestURL, initiator, console) {
+        return new NetworkRequest(backendRequestId, backendRequestId, requestURL, Platform.DevToolsPath.EmptyUrlString, null, null, initiator || null, undefined, console);
     }
-    static createWithoutBackendRequest(requestId, url, documentURL, initiator) {
-        return new NetworkRequest(requestId, undefined, url, documentURL, null, null, initiator);
+    static createWithoutBackendRequest(requestId, url, documentURL, initiator, console) {
+        return new NetworkRequest(requestId, undefined, url, documentURL, null, null, initiator, undefined, console);
     }
     identityCompare(other) {
         const thisId = this.requestId();
@@ -765,6 +767,14 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
         this.#requestFormDataPromise = hasData && data === null ? null : Promise.resolve(data);
         this.#formParametersPromise = null;
     }
+    /**
+     * Returns the raw request body as ContentData, preserving base64 encoding
+     * for binary payloads. This enables binary viewers (hex, base64, utf-8)
+     * in the Payload tab.
+     */
+    requestFormDataContentData() {
+        return NetworkManager.requestPostDataContentData(this);
+    }
     filteredProtocolName() {
         const protocol = this.protocol.toLowerCase();
         if (protocol === 'h2') {
@@ -946,7 +956,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     }
     get serverTimings() {
         if (typeof this.#serverTimings === 'undefined') {
-            this.#serverTimings = ServerTiming.parseHeaders(this.responseHeaders);
+            this.#serverTimings = ServerTiming.parseHeaders(this.responseHeaders.map(x => ({ name: x.name, value: x.value })), this.#console);
         }
         return this.#serverTimings;
     }

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as i18n from '../i18n/i18n.js';
-import { PageResourceLoader } from './PageResourceLoader.js';
 const UIStrings = {
     /**
      * @description Error message when failing to fetch a resource referenced in a source map
@@ -19,9 +18,7 @@ export class CompilerSourceMappingContentProvider {
     #contentType;
     #initiator;
     #pageResourceLoader;
-    constructor(sourceURL, contentType, initiator, pageResourceLoader = initiator.target ?
-        initiator.target.targetManager().context.get(PageResourceLoader) :
-        PageResourceLoader.instance()) {
+    constructor(sourceURL, contentType, initiator, pageResourceLoader) {
         this.#sourceURL = sourceURL;
         this.#contentType = contentType;
         this.#initiator = initiator;

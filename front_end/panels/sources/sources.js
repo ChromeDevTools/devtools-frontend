@@ -2165,7 +2165,7 @@ import * as StackTrace5 from "./../../models/stack_trace/stack_trace.js";
 import * as Workspace24 from "./../../models/workspace/workspace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, render as render7 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html7, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
@@ -5233,6 +5233,7 @@ import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
 import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as SourceFrame12 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
+import { render as render6 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 import * as Components2 from "./components/components.js";
 
@@ -10005,7 +10006,14 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
         for (const action3 of getRegisteredEditorActions()) {
           this.#scriptViewToolbar.appendToolbarItem(action3.getOrCreateButton(this));
         }
-        items.map((item) => this.#scriptViewToolbar.appendToolbarItem(item));
+        if (Array.isArray(items)) {
+          items.map((item) => this.#scriptViewToolbar.appendToolbarItem(item));
+        } else {
+          const wrapper = document.createElement("div");
+          wrapper.style.display = "contents";
+          render6(items, wrapper);
+          this.#scriptViewToolbar.appendToolbarItem(new UI16.Toolbar.ToolbarItem(wrapper));
+        }
       });
     }
   }
@@ -10410,7 +10418,7 @@ var threadsSidebarPane_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
-var { html: html6, render: render6, nothing: nothing4 } = Lit3;
+var { html: html6, render: render7, nothing: nothing4 } = Lit3;
 var UIStrings16 = {
   /**
    * @description Text in Threads Sidebar Pane of the Sources panel
@@ -10420,7 +10428,7 @@ var UIStrings16 = {
 var str_16 = i18n31.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
 var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW5 = (input, _output, target) => {
-  render6(html6`
+  render7(html6`
     <style>${threadsSidebarPane_css_default}</style>
     <div role="listbox">
     ${input.threads.map((thread) => html6`
@@ -11728,7 +11736,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       this.maxAsyncStackChainDepth += defaultMaxAsyncStackChainDepth;
       this.requestUpdate();
     };
-    render7(html7`
+    render8(html7`
       <style>${callStackSidebarPane_css_default}</style>
       <div class='ignore-listed-message' ${ref2(ignoreListMessageRef)}>
         <label class='ignore-listed-message-label'>
@@ -13395,7 +13403,7 @@ import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI24 from "./../../ui/legacy/legacy.js";
-import { html as html12, nothing as nothing6, render as render8 } from "./../../ui/lit/lit.js";
+import { html as html12, nothing as nothing6, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
@@ -13405,24 +13413,32 @@ var scopeChainSidebarPane_css_default = `/*
  * found in the LICENSE file.
  */
 
+.scope-chain-sidebar-pane-section .tree-element-title {
+  flex-grow: 1;
+}
+
 .scope-chain-sidebar-pane-section-header {
-  flex: auto;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .scope-chain-sidebar-pane-section-icon {
-  float: left;
+  flex: none;
   margin-right: 5px;
 }
 
 .scope-chain-sidebar-pane-section-subtitle {
-  float: right;
-  margin-left: 5px;
+  flex: 0 1 auto;
+  margin-left: auto;
   max-width: 55%;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .scope-chain-sidebar-pane-section-title {
+  flex: 0 1 auto;
   font-weight: normal;
   overflow-wrap: break-word;
   white-space: normal;
@@ -13463,31 +13479,40 @@ var str_24 = i18n47.i18n.registerUIStrings("panels/sources/ScopeChainSidebarPane
 var i18nString23 = i18n47.i18n.getLocalizedString.bind(void 0, str_24);
 var scopeChainSidebarPaneInstance;
 var DEFAULT_VIEW6 = (input, output, target) => {
-  const createScopeSectionTreeElement = (scope, objectTree) => {
+  const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder = null;
     if (scope.type() === "local" || scope.type() === "closure") {
       emptyPlaceholder = i18nString23(UIStrings24.noVariables);
     }
     const icon = scope.icon();
     const { title, subtitle } = scopeTitle(scope);
-    const section6 = new ObjectUI3.ObjectPropertiesSection.RootElement(objectTree, input.linkifier, emptyPlaceholder);
-    section6.listItemElement.classList.add("scope-chain-sidebar-pane-section");
-    section6.listItemElement.setAttribute("aria-label", title);
-    const titleNode = document.createDocumentFragment();
-    render8(html12`<div class='scope-chain-sidebar-pane-section-header tree-element-title'>${icon ? html12`<img class=scope-chain-sidebar-pane-section-icon src=${icon}>` : nothing6}
-                   <div class=scope-chain-sidebar-pane-section-subtitle>${subtitle}</div>
-                   <div class=scope-chain-sidebar-pane-section-title>${title}</div>
-                 </div>`, titleNode);
-    section6.title = titleNode;
-    if (scope === input.scopeChain?.[0]?.scope) {
-      section6.select(
-        /* omitFocus */
-        true
-      );
-    }
-    return html12`<devtools-tree-wrapper .treeElement=${section6}></devtools-tree-wrapper>`;
+    return html12`
+          <li role="treeitem"
+              class="scope-chain-sidebar-pane-section"
+              aria-label=${title}
+              ?open=${objectTree.expanded}
+              @expand=${(e) => {
+      const customEvent = e;
+      input.onToggle(objectTree, customEvent.detail.expanded);
+    }}
+              @contextmenu=${(e) => {
+      const contextMenu = new UI24.ContextMenu.ContextMenu(e);
+      input.onContextMenu(objectTree, contextMenu);
+      void contextMenu.show();
+    }}>
+            <div class="scope-chain-sidebar-pane-section-header"
+                 @click=${() => {
+      input.onToggle(objectTree, !objectTree.expanded);
+    }}>
+              ${icon ? html12`<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing6}
+              <div class="scope-chain-sidebar-pane-section-title">${title}</div>
+              <div class="scope-chain-sidebar-pane-section-subtitle">${subtitle}</div>
+            </div>
+
+            ${objectTree.expanded ? ObjectUI3.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder) : html12`<ul role="group"></ul>`}
+          </li>`;
   };
-  render8(
+  render9(
     // clang-format off
     html12`
     <style>${scopeChainSidebarPane_css_default}</style>
@@ -13496,7 +13521,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
           <style>${ObjectUI3.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI3.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPane_css_default}</style>
-          ${input.scopeChain?.map(({ scope, objectTree }) => createScopeSectionTreeElement(scope, objectTree)) ?? nothing6}
+          ${input.scopeChain?.map((item) => createScopeSection(item)) ?? nothing6}
         </ul>`}>
       </devtools-tree>` : html12`
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString23(UIStrings24.loading) : i18nString23(UIStrings24.notPaused)}</div>`}
@@ -13578,7 +13603,26 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBo
     this.#view({
       linkifier: this.#linkifier,
       isPaused: Boolean(this.#scopeChainModel),
-      scopeChain: this.#scopeChain
+      scopeChain: this.#scopeChain,
+      onToggle: (objectTree, expanded) => {
+        objectTree.expanded = expanded;
+        this.requestUpdate();
+      },
+      onContextMenu: (objectTree, contextMenu) => {
+        ObjectUI3.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
+          await objectTree.expandRecursively(ObjectUI3.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+          this.requestUpdate();
+        }, () => {
+          objectTree.collapseRecursively();
+          this.requestUpdate();
+        }, () => {
+          objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+          this.requestUpdate();
+        }, () => {
+          objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+          this.requestUpdate();
+        });
+      }
     }, {}, this.contentElement);
   }
   #buildScopeChain({ scopeChain }) {
@@ -13596,6 +13640,9 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBo
         propertiesMode: 0,
         readOnly: false,
         expansionTracker
+      });
+      objectTree.addEventListener("children-changed", () => {
+        this.requestUpdate();
       });
       void expansionTracker.apply(objectTree);
       objectTree.addExtraProperties(...scope.extraProperties());
@@ -14157,7 +14204,7 @@ var objectValue_css_default = `/*
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI26 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html13, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
+import { Directives as Directives5, html as html13, nothing as nothing7, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
@@ -14466,7 +14513,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
           </ul>`}
       </li>`
   );
-  render9(
+  render10(
     // clang-format off
     html13`
       ${input.watchExpressions.length === 0 ? html13`<div class=gray-info-message tabindex=-1 >

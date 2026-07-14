@@ -14,16 +14,16 @@ import IssueLinkIconStyles from './issueLinkIcon.css.js';
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Title for a link to show an issue in the issues tab
+     * @description Title for a link to show an issue in the Issues tab.
      */
-    clickToShowIssue: 'Click to show issue in the issues tab',
+    clickToShowIssue: 'Click to show issue in the Issues tab',
     /**
-     * @description Title for a link to show an issue in the issues tab
+     * @description Title for a link to show an issue in the Issues tab.
      * @example {A title of an Issue} title
      */
-    clickToShowIssueWithTitle: 'Click to open the issue tab and show issue: {title}',
+    clickToShowIssueWithTitle: 'Click to open the Issues tab and show issue: {title}',
     /**
-     * @description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
+     * @description Title for a link to show an issue that is unavailable because the issue couldn't be resolved.
      */
     issueUnavailable: 'Issue unavailable at this time',
 };

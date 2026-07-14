@@ -33,6 +33,13 @@ export function renderElementIntoDOM(element, renderOptions = {}) {
             container.appendChild(document.createElement('style')).textContent = style;
         }
     }
+    if (renderOptions.width !== undefined) {
+        container.style.width = typeof renderOptions.width === 'number' ? `${renderOptions.width}px` : renderOptions.width;
+    }
+    if (renderOptions.height !== undefined) {
+        container.style.height =
+            typeof renderOptions.height === 'number' ? `${renderOptions.height}px` : renderOptions.height;
+    }
     if (element instanceof Node) {
         container.appendChild(element);
     }
@@ -258,7 +265,10 @@ export function querySelectorErrorOnMissing(parent, selector) {
  */
 export async function assertScreenshot(filename) {
     // To avoid a lot of empty space in the screenshot.
-    document.getElementById(TEST_CONTAINER_ID).style.width = 'fit-content';
+    const container = document.getElementById(TEST_CONTAINER_ID);
+    if (!container.style.width) {
+        container.style.width = 'fit-content';
+    }
     let frame = window;
     while (frame) {
         frame.scrollTo(0, 0);

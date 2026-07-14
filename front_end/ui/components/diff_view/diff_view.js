@@ -118,12 +118,12 @@ var UIStrings = {
    */
   changesDiffViewer: "Changes diff viewer",
   /**
-   * @description Text in Changes View of the Changes tab
+   * @description Text in the Changes view of the Changes tab.
    * @example {2} PH1
    */
   SkippingDMatchingLines: "( \u2026 Skipping {PH1} matching lines \u2026 )",
   /**
-   * @description Text in Changes View for the case where the modified file contents are the same with its unmodified state
+   * @description Text in the Changes view for when the modified file contents are identical to the unmodified state.
    * e.g. the file contents changed from A -> B then B -> A and not saved yet.
    */
   noDiff: "File is identical to its unmodified state"

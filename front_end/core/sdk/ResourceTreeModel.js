@@ -12,7 +12,6 @@ import { SDKModel } from './SDKModel.js';
 import { SecurityOriginManager } from './SecurityOriginManager.js';
 import { StorageKeyManager } from './StorageKeyManager.js';
 import { Type } from './Target.js';
-import { TargetManager } from './TargetManager.js';
 export class ResourceTreeModel extends SDKModel {
     agent;
     storageAgent;
@@ -65,24 +64,11 @@ export class ResourceTreeModel extends SDKModel {
         }
         return result;
     }
-    static resourceForURL(targetManagerOrUrl, url) {
-        let targetManager;
-        let actualUrl;
-        if (typeof targetManagerOrUrl === 'string') {
-            targetManager = TargetManager.instance();
-            actualUrl = targetManagerOrUrl;
-        }
-        else {
-            targetManager = targetManagerOrUrl;
-            if (url === undefined) {
-                throw new Error('URL must be provided when TargetManager is passed');
-            }
-            actualUrl = url;
-        }
+    static resourceForURL(targetManager, url) {
         for (const resourceTreeModel of targetManager.models(ResourceTreeModel)) {
             const mainFrame = resourceTreeModel.mainFrame;
             // Workers call into this with no #frames available.
-            const result = mainFrame ? mainFrame.resourceForURL(actualUrl) : null;
+            const result = mainFrame ? mainFrame.resourceForURL(url) : null;
             if (result) {
                 return result;
             }

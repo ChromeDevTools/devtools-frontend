@@ -15,7 +15,7 @@ import settingCheckboxStyles from './settingCheckbox.css.js';
 const { html, Directives: { ifDefined } } = Lit;
 const UIStrings = {
     /**
-     * @description Text that is usually a hyperlink to more documentation
+     * @description Text that is usually a hyperlink to more documentation.
      */
     learnMore: 'Learn more',
 };

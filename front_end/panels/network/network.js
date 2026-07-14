@@ -3623,7 +3623,7 @@ __export(NetworkItemView_exports, {
 });
 import * as Common14 from "./../../core/common/common.js";
 import * as i18n37 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
+import * as Platform10 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as NetworkForward3 from "./forward/forward.js";
 import { Icon as Icon2 } from "./../../ui/kit/kit.js";
@@ -4693,7 +4693,9 @@ __export(RequestPayloadView_exports, {
 import * as Common8 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
+import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 
@@ -4937,7 +4939,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/network/RequestPayloadView.js
 import * as UI11 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html7, render as render8 } from "./../../ui/lit/lit.js";
+import { Directives as Directives3, html as html7, nothing as nothing7, render as render8 } from "./../../ui/lit/lit.js";
 import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
@@ -5074,6 +5076,16 @@ var requestPayloadView_css_default = `/*
 .request-payload-view {
   user-select: text;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.raw-payload-section {
+  flex: 1 1 auto;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .request-payload-tree {
@@ -5259,7 +5271,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       </li>
       <li
           role=treeitem
-          ?hidden=${!input.formData || Boolean(input.formParameters)}
+          ?hidden=${!input.formData || Boolean(input.formParameters) || Boolean(input.binaryPayloadContentData)}
           jslog=${VisualLogging8.section().context("request-payload")}
           @contextmenu=${onContextMenu(
     input.viewJSONPayloadSource,
@@ -5276,7 +5288,16 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         </ul>
       </li>
      </ul>
-     `}></devtools-tree>`, target, {
+     `}></devtools-tree>
+   ${input.binaryPayloadContentData ? html7`
+     <div class="raw-payload-section"
+          jslog=${VisualLogging8.section().context("binary-request-payload")}>
+       ${widget5((element) => {
+    const streamingContent = TextUtils.StreamingContentData.StreamingContentData.from(input.binaryPayloadContentData);
+    return new BinaryResourceView(streamingContent, input.requestUrl, Common8.ResourceType.resourceTypes.XHR, element);
+  })}
+     </div>` : nothing7}
+   `, target, {
     container: {
       classes: ["request-payload-view"],
       attributes: {
@@ -5290,10 +5311,12 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
   #decodeRequestParameters = true;
   #formData;
   #formParameters;
+  #binaryPayloadContentData = null;
   #view;
   #viewJSONPayloadSource = false;
   #viewFormParamSource = false;
   #viewQueryParamSource = false;
+  #refreshFormDataPromiseForTest = Promise.resolve();
   constructor(target, view = DEFAULT_VIEW7) {
     super();
     this.#view = view;
@@ -5311,15 +5334,18 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
       this.#request?.addEventListener(SDK9.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
     }
     this.requestUpdate();
-    void this.#refreshFormData();
+    this.#refreshFormData();
   }
   get request() {
     return this.#request;
   }
+  get refreshFormDataPromiseForTest() {
+    return this.#refreshFormDataPromiseForTest;
+  }
   wasShown() {
     super.wasShown();
     this.request?.addEventListener(SDK9.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshFormData, this);
-    void this.#refreshFormData();
+    this.#refreshFormData();
   }
   willHide() {
     super.willHide();
@@ -5369,14 +5395,26 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
       copyValue: (value) => {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.NetworkPanelCopyValue);
         Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
-      }
+      },
+      binaryPayloadContentData: this.#binaryPayloadContentData,
+      requestUrl: this.request?.url() ?? Platform5.DevToolsPath.EmptyUrlString
     };
     this.#view(input, {}, this.element);
   }
-  async #refreshFormData() {
+  #refreshFormData() {
+    this.#refreshFormDataPromiseForTest = this.#doRefreshFormData();
+  }
+  async #doRefreshFormData() {
     this.#formData = await this.request?.requestFormData() ?? void 0;
     if (this.#formData) {
       this.#formParameters = await this.request?.formParameters() ?? void 0;
+    }
+    this.#binaryPayloadContentData = null;
+    if (this.request && !this.#formParameters) {
+      const contentData = await this.request.requestFormDataContentData();
+      if (!TextUtils.ContentData.ContentData.isError(contentData) && !contentData.isTextContent && contentData.createdFromBase64) {
+        this.#binaryPayloadContentData = contentData;
+      }
     }
     this.requestUpdate();
   }
@@ -5406,9 +5444,10 @@ __export(RequestPreviewView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
 import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
+import { render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/RequestHTMLView.js
@@ -5418,7 +5457,7 @@ __export(RequestHTMLView_exports, {
   RequestHTMLView: () => RequestHTMLView
 });
 import * as UI12 from "./../../ui/legacy/legacy.js";
-import { html as html8, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
+import { html as html8, nothing as nothing8, render as render9 } from "./../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -5448,7 +5487,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
         <!-- @ts-ignore -->
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
-          tabindex="-1" role="presentation"></iframe>` : nothing7}
+          tabindex="-1" role="presentation"></iframe>` : nothing8}
     </div>`, target);
 };
 var RequestHTMLView = class _RequestHTMLView extends UI12.Widget.VBox {
@@ -5887,7 +5926,11 @@ var RequestPreviewView = class extends UI14.Widget.VBox {
     }
     const toolbar4 = this.element.createChild("devtools-toolbar", "network-item-preview-toolbar");
     void view.toolbarItems().then((items) => {
-      items.map((item) => toolbar4.appendToolbarItem(item));
+      if (Array.isArray(items)) {
+        items.map((item) => toolbar4.appendToolbarItem(item));
+      } else {
+        render10(items, toolbar4);
+      }
     });
     return view;
   }
@@ -5903,7 +5946,7 @@ var RequestPreviewView = class extends UI14.Widget.VBox {
   }
   async htmlPreview() {
     const contentData = await this.request.requestContentData();
-    if (TextUtils.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils2.ContentData.ContentData.isError(contentData)) {
       return new UI14.EmptyWidget.EmptyWidget(i18nString13(UIStrings13.failedToLoadResponseData), contentData.error);
     }
     const allowlist = /* @__PURE__ */ new Set(["text/html", "text/plain", "application/xhtml+xml"]);
@@ -5941,11 +5984,11 @@ __export(RequestResponseView_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
-var { html: html9, render: render10 } = Lit4;
+var { html: html9, render: render11 } = Lit4;
 var UIStrings14 = {
   /**
    * @description Text in Request Response View of the Network panel if no preview can be shown
@@ -5965,7 +6008,7 @@ var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var { widgetRef, widget: widget6 } = UI15.Widget;
 var DEFAULT_VIEW9 = (input, output, target) => {
   let widgetTemplate;
-  if (TextUtils2.StreamingContentData.isError(input.contentData)) {
+  if (TextUtils3.StreamingContentData.isError(input.contentData)) {
     widgetTemplate = html9`${widget6((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
     widgetTemplate = html9`${widget6((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
@@ -5977,7 +6020,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
   } else {
     widgetTemplate = html9`${widget6((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
   }
-  render10(widgetTemplate, target);
+  render11(widgetTemplate, target);
 };
 var RequestResponseView = class extends UI15.Widget.VBox {
   request;
@@ -5996,10 +6039,10 @@ var RequestResponseView = class extends UI15.Widget.VBox {
     const contentData = await this.request.requestStreamingContent();
     let renderAsText = false;
     const mimeType = this.getMimeTypeForDisplay();
-    if (!TextUtils2.StreamingContentData.isError(contentData)) {
+    if (!TextUtils3.StreamingContentData.isError(contentData)) {
       const isWasm = contentData.mimeType === "application/wasm";
       renderAsText = contentData.isTextContent || isWasm;
-      const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils2.TextUtils.isMinified(contentData.content().text);
+      const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils3.TextUtils.isMinified(contentData.content().text);
       const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(mimeType, this.request.resourceType().isFromSourceMap(), isMinified, false, false);
       Host7.userMetrics.networkPanelResponsePreviewOpened(mediaType);
     }
@@ -6035,14 +6078,14 @@ import "./../../ui/kit/kit.js";
 import * as Common10 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform6 from "./../../core/platform/platform.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as Logs4 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI16 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html10, nothing as nothing8, render as render11 } from "./../../ui/lit/lit.js";
+import { Directives as Directives4, html as html10, nothing as nothing9, render as render12 } from "./../../ui/lit/lit.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
@@ -6615,10 +6658,10 @@ var DEFAULT_VIEW10 = (input, output, target) => {
         <td title=${metricDesc} class=network-timing-metric>
           ${metricDesc}
         </td>
-        ${serverTiming.value === null ? nothing8 : html10`
+        ${serverTiming.value === null ? nothing9 : html10`
           <td class=server-timing-cell--value-bar>
             <div class=network-timing-row>
-              ${left < 0 ? nothing8 : html10`<span
+              ${left < 0 ? nothing9 : html10`<span
                     class="network-timing-bar server-timing"
                     data-background=${ifDefined2(isTotal ? void 0 : colorGenerator.colorForID(serverTiming.metric))}
                     data-left=${left}
@@ -6634,7 +6677,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
       </tr>`;
   };
   const onActivate = (e) => {
-    if ("key" in e && !Platform5.KeyboardUtilities.isEnterOrSpaceKey(e)) {
+    if ("key" in e && !Platform6.KeyboardUtilities.isEnterOrSpaceKey(e)) {
       return;
     }
     const target2 = e.target;
@@ -6667,7 +6710,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
       tail.ranges.push(range);
     }
   }
-  render11(html10`
+  render12(html10`
     <style>${networkTimingTable_css_default}</style>
     <table
       class=${classes}
@@ -6742,11 +6785,11 @@ var DEFAULT_VIEW10 = (input, output, target) => {
             ${range.name === "serviceworker-respondwith" && input.fetchDetails ? html10`
               <tr class="network-fetch-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${input.fetchDetails.element}
-              </tr>` : nothing8}
+              </tr>` : nothing9}
             ${range.name === "serviceworker-routerevaluation" && input.routerDetails ? html10`
               <tr class="router-evaluation-timing-bar-details network-fetch-timing-bar-details-collapsed">
                 ${input.routerDetails.element}
-              </tr>` : nothing8}
+              </tr>` : nothing9}
           `)}
         `)}
         ${input.requestUnfinished ? html10`
@@ -6754,7 +6797,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
             <td class=caution colspan=3>
               ${i18nString15(UIStrings15.cautionRequestIsNotFinishedYet)}
             </td>
-          </tr>` : nothing8}
+          </tr>` : nothing9}
        <tr class=network-timing-footer>
          <td colspan=1>
            <devtools-link
@@ -6765,7 +6808,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
            </devtools-link>
          <td></td>
          <td class=${input.wasThrottled ? "throttled" : ""} title=${ifDefined2(throttledRequestTitle)}>
-           ${input.wasThrottled ? html10` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing8}
+           ${input.wasThrottled ? html10` <devtools-icon name=watch @click=${revealThrottled}></devtools-icon>` : nothing9}
            ${i18n29.TimeUtilities.secondsToString(input.totalDuration, true)}
          </td>
        </tr>
@@ -6786,7 +6829,7 @@ var DEFAULT_VIEW10 = (input, output, target) => {
            <td colspan=3>
 ${uiI18n3.getFormatLocalizedStringTemplate(str_15, UIStrings15.duringDevelopmentYouCanUseSToAdd, { PH1: html10`<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${"server-timing-api"}>${i18nString15(UIStrings15.theServerTimingApi)}</devtools-link>` })}
            </td>
-         </tr>` : nothing8}
+         </tr>` : nothing9}
       </table>`, target, { container: { classes: ["resource-timing-view"] } });
 };
 var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
@@ -6958,9 +7001,9 @@ __export(ResourceDirectSocketChunkView_exports, {
 });
 import * as Common12 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as DataGrid6 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
@@ -6969,8 +7012,8 @@ import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
+import * as Platform7 from "./../../core/platform/platform.js";
+import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
@@ -7199,7 +7242,7 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
       try {
         this.filterRegex = new RegExp(text, "i");
       } catch {
-        this.filterRegex = new RegExp(Platform6.StringUtilities.escapeForRegExp(text), "i");
+        this.filterRegex = new RegExp(Platform7.StringUtilities.escapeForRegExp(text), "i");
       }
     } else {
       this.filterRegex = null;
@@ -7220,7 +7263,7 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
       this.splitWidget.setSidebarWidget(jsonView);
       return;
     }
-    this.splitWidget.setSidebarWidget(new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(TextUtils4.StaticContentProvider.StaticContentProvider.fromString(this.request.url(), this.request.resourceType(), content), ""));
+    this.splitWidget.setSidebarWidget(new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.request.url(), this.request.resourceType(), content), ""));
   }
   onChunkDeselected() {
     this.currentSelectedNode = null;
@@ -7378,7 +7421,7 @@ var ResourceChunkNode = class extends DataGridItem {
     UI18.UIUtils.createTextChild(timeNode, timeText);
     UI18.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
     let description;
-    const length = i18n33.ByteUtilities.bytesToString(Platform7.StringUtilities.base64ToSize(chunk.data));
+    const length = i18n33.ByteUtilities.bytesToString(Platform8.StringUtilities.base64ToSize(chunk.data));
     const maxDisplayLen = 30;
     if (chunk.data.length > maxDisplayLen) {
       description = chunk.data.substring(0, maxDisplayLen) + "\u2026";
@@ -7406,7 +7449,7 @@ var ResourceChunkNode = class extends DataGridItem {
   binaryView() {
     if (!this.#binaryView) {
       if (this.dataText().length > 0) {
-        this.#binaryView = new BinaryResourceView(TextUtils5.StreamingContentData.StreamingContentData.from(new TextUtils5.ContentData.ContentData(this.dataText(), true, "application/octet-stream")), Platform7.DevToolsPath.EmptyUrlString, Common12.ResourceType.resourceTypes.DirectSocket);
+        this.#binaryView = new BinaryResourceView(TextUtils6.StreamingContentData.StreamingContentData.from(new TextUtils6.ContentData.ContentData(this.dataText(), true, "application/octet-stream")), Platform8.DevToolsPath.EmptyUrlString, Common12.ResourceType.resourceTypes.DirectSocket);
       }
     }
     return this.#binaryView;
@@ -7423,9 +7466,9 @@ __export(ResourceWebSocketFrameView_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
+import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings18 = {
@@ -7572,7 +7615,7 @@ var ResourceFrameNode = class extends DataGridItem {
     } else if (isTextFrame) {
       description = dataText;
     } else if (frame.opCode === 2) {
-      length = i18n35.ByteUtilities.bytesToString(Platform8.StringUtilities.base64ToSize(frame.text));
+      length = i18n35.ByteUtilities.bytesToString(Platform9.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();
     } else {
       dataText = description;
@@ -7601,7 +7644,7 @@ var ResourceFrameNode = class extends DataGridItem {
     }
     if (!this.#binaryView) {
       if (this.#dataText.length > 0) {
-        this.#binaryView = new BinaryResourceView(TextUtils6.StreamingContentData.StreamingContentData.from(new TextUtils6.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")), Platform8.DevToolsPath.EmptyUrlString, Common13.ResourceType.resourceTypes.WebSocket);
+        this.#binaryView = new BinaryResourceView(TextUtils7.StreamingContentData.StreamingContentData.from(new TextUtils7.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")), Platform9.DevToolsPath.EmptyUrlString, Common13.ResourceType.resourceTypes.WebSocket);
       }
     }
     return this.#binaryView;
@@ -7936,14 +7979,14 @@ import "./../../ui/legacy/legacy.js";
 import * as Common19 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as Platform11 from "./../../core/platform/platform.js";
+import * as Platform12 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as HAR from "./../../models/har/har.js";
 import * as Logs5 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as Persistence2 from "./../../models/persistence/persistence.js";
-import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Sources2 from "./../sources/sources.js";
@@ -11322,7 +11365,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       name: category.name,
       label: () => category.shortTitle(),
       title: category.title(),
-      jslogContext: Platform11.StringUtilities.toKebabCase(key)
+      jslogContext: Platform12.StringUtilities.toKebabCase(key)
     }));
     this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
     this.moreFiltersDropDownUI.addEventListener("FilterChanged", this.filterChanged, this);
@@ -11331,7 +11374,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     UI25.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString22(UIStrings22.requestTypesToInclude));
     this.resourceCategoryFilterUI.addEventListener("FilterChanged", this.filterChanged.bind(this), this);
     filterBar.addFilter(this.resourceCategoryFilterUI);
-    this.filterParser = new TextUtils7.TextUtils.FilterParser(searchKeys);
+    this.filterParser = new TextUtils8.TextUtils.FilterParser(searchKeys);
     this.suggestionBuilder = new UI25.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, _NetworkLogView.sortSearchValues);
     this.resetSuggestionBuilder();
     this.dataGrid = this.columnsInternal.dataGrid();
@@ -11393,7 +11436,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     return result;
   }
   static createRequestDomainFilter(value) {
-    const escapedPattern = value.split("*").map(Platform11.StringUtilities.escapeForRegExp).join(".*");
+    const escapedPattern = value.split("*").map(Platform12.StringUtilities.escapeForRegExp).join(".*");
     return _NetworkLogView.requestDomainFilter.bind(null, new RegExp("^" + escapedPattern + "$", "i"));
   }
   static requestDomainFilter(regex, request) {
@@ -11502,7 +11545,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
     return request.resourceType().name() === value;
   }
   static requestUrlFilter(value, request) {
-    const regex = new RegExp(Platform11.StringUtilities.escapeForRegExp(value), "i");
+    const regex = new RegExp(Platform12.StringUtilities.escapeForRegExp(value), "i");
     return regex.test(request.url());
   }
   static requestTimeFilter(windowStart, windowEnd, request) {
@@ -11523,7 +11566,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
   static async copyResponse(request) {
     const contentData = await request.requestContentData();
     let content;
-    if (TextUtils7.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils8.ContentData.ContentData.isError(contentData)) {
       content = "";
     } else if (!contentData.isTextContent) {
       content = contentData.asDataUrl() ?? "";
@@ -11759,7 +11802,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
           initiatorLink.focus();
         }
       }
-      if (Platform11.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      if (Platform12.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         this.dispatchEventToListeners("RequestActivated", { showPanel: "ShowPanel", takeFocus: true });
         event.consume(true);
       }
@@ -12322,19 +12365,19 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       const parsed = request.parsedURL;
       let urlPatternString = "";
       if (parsed.isValid) {
-        urlPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.host);
+        urlPatternString = "*://" + Platform12.StringUtilities.escapeForURLPattern(parsed.host);
         if (parsed.port) {
-          urlPatternString += ":" + Platform11.StringUtilities.escapeForURLPattern(parsed.port);
+          urlPatternString += ":" + Platform12.StringUtilities.escapeForURLPattern(parsed.port);
         }
-        urlPatternString += Platform11.StringUtilities.escapeForURLPattern(parsed.path);
+        urlPatternString += Platform12.StringUtilities.escapeForURLPattern(parsed.path);
         if (parsed.queryParams) {
-          urlPatternString += "?" + Platform11.StringUtilities.escapeForURLPattern(parsed.queryParams);
+          urlPatternString += "?" + Platform12.StringUtilities.escapeForURLPattern(parsed.queryParams);
         }
         if (parsed.fragment) {
-          urlPatternString += "#" + Platform11.StringUtilities.escapeForURLPattern(parsed.fragment);
+          urlPatternString += "#" + Platform12.StringUtilities.escapeForURLPattern(parsed.fragment);
         }
       } else if (parsed.urlWithoutScheme()) {
-        urlPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.urlWithoutScheme());
+        urlPatternString = "*://" + Platform12.StringUtilities.escapeForURLPattern(parsed.urlWithoutScheme());
       }
       const urlPattern = urlPatternString && SDK16.NetworkManager.RequestURLPattern.create(urlPatternString);
       if (urlPattern) {
@@ -12343,18 +12386,18 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         const existingConditions = manager.requestConditions.findCondition(urlPattern.constructorString);
         const isBlocking = existingConditions?.conditions === SDK16.NetworkManager.BlockingConditions;
         const isThrottling = existingConditions && existingConditions.conditions !== SDK16.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK16.NetworkManager.NoThrottlingConditions;
-        const croppedURL = Platform11.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
+        const croppedURL = Platform12.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
         blockingMenu.debugSection().appendItem(isBlocking ? i18nString22(UIStrings22.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings22.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
         throttlingMenu.debugSection().appendItem(isThrottling ? i18nString22(UIStrings22.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings22.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
       }
       let domainPatternString = "";
       if (parsed.isValid) {
-        domainPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.host);
+        domainPatternString = "*://" + Platform12.StringUtilities.escapeForURLPattern(parsed.host);
         if (parsed.port) {
-          domainPatternString += ":" + Platform11.StringUtilities.escapeForURLPattern(parsed.port);
+          domainPatternString += ":" + Platform12.StringUtilities.escapeForURLPattern(parsed.port);
         }
       } else if (parsed.domain()) {
-        domainPatternString = "*://" + Platform11.StringUtilities.escapeForURLPattern(parsed.domain());
+        domainPatternString = "*://" + Platform12.StringUtilities.escapeForURLPattern(parsed.domain());
       }
       const domainPattern = domainPatternString && SDK16.NetworkManager.RequestURLPattern.create(domainPatternString);
       if (domainPattern) {
@@ -12363,7 +12406,7 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         const existingConditions = manager.requestConditions.findCondition(domainPattern.constructorString);
         const isBlocking = existingConditions?.conditions === SDK16.NetworkManager.BlockingConditions;
         const isThrottling = existingConditions && existingConditions.conditions !== SDK16.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK16.NetworkManager.NoThrottlingConditions;
-        const croppedURL = Platform11.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
+        const croppedURL = Platform12.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
         blockingMenu.debugSection().appendItem(isBlocking ? i18nString22(UIStrings22.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings22.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
         throttlingMenu.debugSection().appendItem(isThrottling ? i18nString22(UIStrings22.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings22.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
       }
@@ -12523,14 +12566,14 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       const regex = descriptor.regex;
       let filter;
       if (key) {
-        const defaultText = Platform11.StringUtilities.escapeForRegExp(key + ":" + text);
+        const defaultText = Platform12.StringUtilities.escapeForRegExp(key + ":" + text);
         filter = this.createSpecialFilter(key, text) || _NetworkLogView.requestPathFilter.bind(null, new RegExp(defaultText, "i"));
       } else if (descriptor.regex) {
         filter = _NetworkLogView.requestPathFilter.bind(null, regex);
       } else if (this.isValidUrl(text)) {
         filter = _NetworkLogView.requestUrlFilter.bind(null, text);
       } else {
-        filter = _NetworkLogView.requestPathFilter.bind(null, new RegExp(Platform11.StringUtilities.escapeForRegExp(text), "i"));
+        filter = _NetworkLogView.requestPathFilter.bind(null, new RegExp(Platform12.StringUtilities.escapeForRegExp(text), "i"));
       }
       if (descriptor.negative && !invert || !descriptor.negative && invert) {
         return _NetworkLogView.negativeFilter.bind(null, filter);
@@ -13075,8 +13118,8 @@ __export(NetworkSearchScope_exports, {
   NetworkSearchScope: () => NetworkSearchScope
 });
 import * as i18n45 from "./../../core/i18n/i18n.js";
-import * as Platform12 from "./../../core/platform/platform.js";
-import * as TextUtils9 from "./../../models/text_utils/text_utils.js";
+import * as Platform13 from "./../../core/platform/platform.js";
+import * as TextUtils10 from "./../../models/text_utils/text_utils.js";
 import * as NetworkForward5 from "./forward/forward.js";
 var UIStrings23 = {
   /**
@@ -13147,7 +13190,7 @@ var NetworkSearchScope = class _NetworkSearchScope {
     }
     function stringMatchesQuery(string) {
       const flags = searchConfig.ignoreCase() ? "i" : "";
-      const regExps = searchConfig.queries().map((query) => new RegExp(Platform12.StringUtilities.escapeForRegExp(query), flags));
+      const regExps = searchConfig.queries().map((query) => new RegExp(Platform13.StringUtilities.escapeForRegExp(query), flags));
       let pos = 0;
       for (const regExp of regExps) {
         const match = string.substr(pos).match(regExp);
@@ -13169,7 +13212,7 @@ var NetworkSearchScope = class _NetworkSearchScope {
       if (tmpMatches.length === 0) {
         return [];
       }
-      matches = Platform12.ArrayUtilities.mergeOrdered(matches, tmpMatches, TextUtils9.ContentProvider.SearchMatch.comparator);
+      matches = Platform13.ArrayUtilities.mergeOrdered(matches, tmpMatches, TextUtils10.ContentProvider.SearchMatch.comparator);
     }
     return matches;
   }
@@ -13247,7 +13290,7 @@ import "./../../ui/legacy/legacy.js";
 import * as Common20 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n47 from "./../../core/i18n/i18n.js";
-import * as Platform13 from "./../../core/platform/platform.js";
+import * as Platform14 from "./../../core/platform/platform.js";
 import * as SDK17 from "./../../core/sdk/sdk.js";
 import * as Logs6 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator5 from "./../../models/network_time_calculator/network_time_calculator.js";
@@ -13660,7 +13703,7 @@ var NetworkPanel = class _NetworkPanel extends UI26.Panel.Panel {
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add("network-tabbed-pane");
     tabbedPane.element.addEventListener("keydown", (event) => {
-      if (event.key !== Platform13.KeyboardUtilities.ESCAPE_KEY) {
+      if (event.key !== Platform14.KeyboardUtilities.ESCAPE_KEY) {
         return;
       }
       splitWidget.hideSidebar();

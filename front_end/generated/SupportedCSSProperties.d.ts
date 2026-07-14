@@ -384,9 +384,6 @@ export const generatedPropertyValues: {
     "animation-trigger": {
         values: string[];
     };
-    "app-region": {
-        values: string[];
-    };
     appearance: {
         values: string[];
     };
@@ -1504,6 +1501,9 @@ export const generatedPropertyValues: {
         values: string[];
     };
     "will-change": {
+        values: string[];
+    };
+    "window-drag": {
         values: string[];
     };
     "word-break": {

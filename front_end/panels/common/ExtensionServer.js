@@ -440,6 +440,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         this.requests = new Map();
+        this.clearExtensionHeaders(event.data.inspectedURL());
         this.enableExtensions();
         const url = event.data.inspectedURL();
         this.postNotification("inspected-url-changed" /* Extensions.ExtensionAPI.PrivateAPI.Events.InspectedURLChanged */, [url]);
@@ -533,15 +534,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         for (const name in message.headers) {
             extensionHeaders.set(name, message.headers[name]);
         }
-        const allHeaders = {};
-        for (const headers of this.extraHeaders.values()) {
-            for (const [name, value] of headers) {
-                if (name !== '__proto__' && typeof value === 'string') {
-                    allHeaders[name] = value;
-                }
-            }
-        }
-        SDK.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
+        this.syncExtraHeaders();
         return undefined;
     }
     getExtensionOrigin(port) {
@@ -890,16 +883,73 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         return this.evaluate(expression, true, true, evaluateOptions, this.getExtensionOrigin(port), callback.bind(this));
     }
+    harEntryReferencesBlockedURL(entry, extension) {
+        const baseURL = entry.request.url;
+        // Helper to cleanly resolve and check permission
+        const isBlocked = (url) => {
+            if (!url) {
+                return false;
+            }
+            try {
+                const absoluteURL = new URL(url, baseURL).toString();
+                return !extension.isAllowedOnTarget(absoluteURL);
+            }
+            catch {
+                return true; // Fallback safely: treat unparsable URLs as blocked
+            }
+        };
+        if (isBlocked(entry.response.redirectURL)) {
+            return true;
+        }
+        if (entry._initiator) {
+            if (isBlocked(entry._initiator.url)) {
+                return true;
+            }
+            let stack = entry._initiator.stack;
+            while (stack) {
+                if (stack.callFrames.some(f => isBlocked(f.url))) {
+                    return true;
+                }
+                stack = stack.parent;
+            }
+        }
+        for (const header of entry.response.headers) {
+            const name = header.name.toLowerCase();
+            if (name === 'location' || name === 'content-location') {
+                if (isBlocked(header.value)) {
+                    return true;
+                }
+            }
+            else if (name === 'refresh') {
+                const match = header.value.match(/;\s*url\s*=\s*(.+)$/i);
+                if (isBlocked(match?.[1]?.trim())) {
+                    return true;
+                }
+            }
+            else if (name === 'link') {
+                const urls = [...header.value.matchAll(/<([^>]+)>/g)].map(m => m[1]);
+                if (urls.some(url => isBlocked(url))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     async onGetHAR(message, port) {
         if (message.command !== "getHAR" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR */) {
             return this.status.E_BADARG('command', `expected ${"getHAR" /* Extensions.ExtensionAPI.PrivateAPI.Commands.GetHAR */}`);
         }
         const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnContentProvider(r, port));
         const harLog = await HAR.Log.Log.build(requests, { sanitize: false });
+        const extension = this.registeredExtensions.get(this.getExtensionOrigin(port));
+        if (!extension) {
+            return this.status.E_FAILED('Extension disconnected');
+        }
         for (let i = 0; i < harLog.entries.length; ++i) {
             // @ts-expect-error
             harLog.entries[i]._requestId = this.requestId(requests[i]);
         }
+        harLog.entries = harLog.entries.filter(entry => !this.harEntryReferencesBlockedURL(entry, extension));
         return harLog;
     }
     makeResource(contentProvider) {
@@ -1100,12 +1150,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
             (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
     }
     async notifyRequestFinished(event) {
+        if (!this.extensionsEnabled) {
+            return;
+        }
+        if (!this.subscribers.has("network-request-finished" /* Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished */)) {
+            return;
+        }
         const request = event.data;
         const entry = await HAR.Log.Entry.build(request, { sanitize: false });
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
         const targetUrl = networkManager?.target()?.inspectedURL();
         this.postNotification("network-request-finished" /* Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished */, [this.requestId(request), entry], extension => extension.isAllowedOnTarget(entry.request.url) &&
-            (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
+            (!targetUrl || extension.isAllowedOnTarget(targetUrl)) &&
+            !this.harEntryReferencesBlockedURL(entry, extension));
     }
     notifyElementsSelectionChanged() {
         this.postNotification("panel-objectSelected-" /* Extensions.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected */ + 'elements', []);
@@ -1395,9 +1452,53 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
     }
     disableExtensions() {
         this.extensionsEnabled = false;
+        this.clearExtensionHeaders();
     }
     enableExtensions() {
         this.extensionsEnabled = true;
+    }
+    /**
+     * Clear extension-injected HTTP headers that should not persist after
+     * navigation to a disallowed URL. Optionally pass the new inspected URL
+     * to selectively clear only headers from extensions not allowed on that URL;
+     * when omitted, all extension headers are cleared unconditionally.
+     */
+    clearExtensionHeaders(inspectedURL) {
+        if (this.extraHeaders.size === 0) {
+            return;
+        }
+        let cleared = false;
+        if (inspectedURL) {
+            for (const id of this.extraHeaders.keys()) {
+                const extension = this.registeredExtensions.get(id);
+                if (!extension || !extension.isAllowedOnTarget(inspectedURL)) {
+                    this.extraHeaders.delete(id);
+                    cleared = true;
+                }
+            }
+        }
+        else {
+            this.extraHeaders.clear();
+            cleared = true;
+        }
+        if (cleared) {
+            this.syncExtraHeaders();
+        }
+    }
+    /**
+     * Collect all extension-injected headers into a single object and push
+     * them to the network layer.
+     */
+    syncExtraHeaders() {
+        const allHeaders = Object.create(null);
+        for (const headers of this.extraHeaders.values()) {
+            for (const [name, value] of headers) {
+                if (typeof value === 'string') {
+                    allHeaders[name] = value;
+                }
+            }
+        }
+        SDK.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
     }
 }
 class ExtensionServerPanelView extends UI.View.SimpleView {

@@ -7534,10 +7534,8 @@ async function saveToDisk(conversation) {
   const prefix = "devtools_";
   const suffix = ".md";
   const maxTitleLength = 63 - prefix.length - suffix.length;
-  let finalTitle = titleFormatted || "conversation";
-  if (finalTitle.length > maxTitleLength) {
-    finalTitle = finalTitle.substring(0, maxTitleLength);
-  }
+  const truncatedTitle = titleFormatted ? Platform7.StringUtilities.truncateToCodeUnitLength(titleFormatted, maxTitleLength) : "";
+  const finalTitle = truncatedTitle || "conversation";
   const filename = `${prefix}${finalTitle}${suffix}`;
   await Workspace7.FileManager.FileManager.instance().save(filename, contentData, true);
   Workspace7.FileManager.FileManager.instance().close(filename);

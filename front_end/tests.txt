@@ -228,6 +228,7 @@ models/javascript_metadata/JavaScriptMetadata.test.js
 models/live-metrics/LiveMetrics.test.js
 models/logs/NetworkLog.test.js
 models/logs/RequestResolver.test.js
+models/persistence/Automapping.test.js
 models/persistence/AutomaticFileSystemManager.test.js
 models/persistence/AutomaticFileSystemWorkspaceBinding.test.js
 models/persistence/NetworkPersistenceManager.test.js
@@ -408,6 +409,7 @@ panels/application/preloading/components/UsedPreloadingView.test.js
 panels/autofill/AutofillView.test.js
 panels/browser_debugger/CategorizedBreakpointsSidebarPane.test.js
 panels/browser_debugger/DOMBreakpointsSidebarPane.test.js
+panels/browser_debugger/XHRBreakpointsSidebarPane.test.js
 panels/browser_debugger/browser_debugger.test.js
 panels/changes/ChangesSidebar.test.js
 panels/changes/CombinedDiffView.test.js

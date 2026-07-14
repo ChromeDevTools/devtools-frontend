@@ -23515,6 +23515,9 @@ var ifExpanded = Lit3.Directive.directive(IfExpandedDirective);
 var TreeElementWrapper = class extends HTMLElement {
   #treeElement;
   set treeElement(treeElement) {
+    if (this.#treeElement === treeElement) {
+      return;
+    }
     if (this.#treeElement?.parent) {
       const parent = this.#treeElement.parent;
       const index = parent.indexOfChild(this.#treeElement);

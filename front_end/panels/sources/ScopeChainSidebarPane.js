@@ -37,28 +37,42 @@ const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scopeChainSidebarPaneInstance;
 export const DEFAULT_VIEW = (input, output, target) => {
-    const createScopeSectionTreeElement = (scope, objectTree) => {
+    const createScopeSection = ({ scope, objectTree }) => {
         let emptyPlaceholder = null;
-        if (scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */ ||
-            scope.type() === "closure" /* Protocol.Debugger.ScopeType.Closure */) {
+        if (scope.type() === "local" /* Protocol.Debugger.ScopeType.Local */ || scope.type() === "closure" /* Protocol.Debugger.ScopeType.Closure */) {
             emptyPlaceholder = i18nString(UIStrings.noVariables);
         }
         const icon = scope.icon();
         const { title, subtitle } = scopeTitle(scope);
-        const section = new ObjectUI.ObjectPropertiesSection.RootElement(objectTree, input.linkifier, emptyPlaceholder);
-        section.listItemElement.classList.add('scope-chain-sidebar-pane-section');
-        section.listItemElement.setAttribute('aria-label', title);
-        const titleNode = document.createDocumentFragment();
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(html `<div class='scope-chain-sidebar-pane-section-header tree-element-title'>${icon ? html `<img class=scope-chain-sidebar-pane-section-icon src=${icon}>` : nothing}
-                   <div class=scope-chain-sidebar-pane-section-subtitle>${subtitle}</div>
-                   <div class=scope-chain-sidebar-pane-section-title>${title}</div>
-                 </div>`, titleNode);
-        section.title = titleNode;
-        if (scope === input.scopeChain?.[0]?.scope) {
-            section.select(/* omitFocus */ true);
-        }
-        return html `<devtools-tree-wrapper .treeElement=${section}></devtools-tree-wrapper>`;
+        // clang-format off
+        return html `
+          <li role="treeitem"
+              class="scope-chain-sidebar-pane-section"
+              aria-label=${title}
+              ?open=${objectTree.expanded}
+              @expand=${(e) => {
+            const customEvent = e;
+            input.onToggle(objectTree, customEvent.detail.expanded);
+        }}
+              @contextmenu=${(e) => {
+            const contextMenu = new UI.ContextMenu.ContextMenu(e);
+            input.onContextMenu(objectTree, contextMenu);
+            void contextMenu.show();
+        }}>
+            <div class="scope-chain-sidebar-pane-section-header"
+                 @click=${() => {
+            input.onToggle(objectTree, !objectTree.expanded);
+        }}>
+              ${icon ? html `<img class="scope-chain-sidebar-pane-section-icon" src=${icon}>` : nothing}
+              <div class="scope-chain-sidebar-pane-section-title">${title}</div>
+              <div class="scope-chain-sidebar-pane-section-subtitle">${subtitle}</div>
+            </div>
+
+            ${objectTree.expanded
+            ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree, input.linkifier, emptyPlaceholder)
+            : html `<ul role="group"></ul>`}
+          </li>`;
+        // clang-format on
     };
     render(
     // clang-format off
@@ -69,7 +83,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>
           <style>${scopeChainSidebarPaneStyles}</style>
-          ${input.scopeChain?.map(({ scope, objectTree }) => createScopeSectionTreeElement(scope, objectTree)) ?? nothing}
+          ${input.scopeChain?.map(item => createScopeSection(item)) ?? nothing}
         </ul>`}>
       </devtools-tree>` : html `
       <div class=gray-info-message tabindex=-1>${input.isPaused ? i18nString(UIStrings.loading) : i18nString(UIStrings.notPaused)}</div>`}
@@ -153,6 +167,25 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
             linkifier: this.#linkifier,
             isPaused: Boolean(this.#scopeChainModel),
             scopeChain: this.#scopeChain,
+            onToggle: (objectTree, expanded) => {
+                objectTree.expanded = expanded;
+                this.requestUpdate();
+            },
+            onContextMenu: (objectTree, contextMenu) => {
+                ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
+                    await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+                    this.requestUpdate();
+                }, () => {
+                    objectTree.collapseRecursively();
+                    this.requestUpdate();
+                }, () => {
+                    objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+                    this.requestUpdate();
+                }, () => {
+                    objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+                    this.requestUpdate();
+                });
+            },
         }, {}, this.contentElement);
     }
     #buildScopeChain({ scopeChain }) {
@@ -171,6 +204,9 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox {
                 propertiesMode: 0 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.ALL */,
                 readOnly: false,
                 expansionTracker,
+            });
+            objectTree.addEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, () => {
+                this.requestUpdate();
             });
             void expansionTracker.apply(objectTree);
             objectTree.addExtraProperties(...scope.extraProperties());

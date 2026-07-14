@@ -277,6 +277,43 @@ export class NetworkManager extends SDKModel {
         }
     }
     /**
+     * Returns the request post data as a ContentData suitable for binary
+     * viewers (hex, base64, utf-8) in the Payload tab.  When the backend
+     * provides base64-encoded (possibly compressed) data, the body is
+     * decompressed first so viewers show the actual payload bytes rather
+     * than gzip/deflate framing.
+     */
+    static async requestPostDataContentData(request) {
+        const manager = NetworkManager.forRequest(request);
+        if (!manager) {
+            return { error: 'No network manager for request' };
+        }
+        const requestId = request.backendRequestId();
+        if (!requestId) {
+            return { error: 'No backend request id for request' };
+        }
+        try {
+            const response = await manager.#networkAgent.invoke_getRequestPostData({ requestId });
+            const error = response.getError();
+            if (error) {
+                return { error };
+            }
+            const { postData, base64Encoded } = response;
+            if (!postData) {
+                return { error: 'No post data' };
+            }
+            const requestContentType = request.requestContentType() ?? 'application/octet-stream';
+            const { charset } = Platform.MimeType.parseContentType(requestContentType);
+            if (base64Encoded && postData) {
+                return await TextUtils.ContentData.ContentData.fromCompressedBase64(postData, requestContentType, charset ?? undefined, request.requestContentEncoding());
+            }
+            return new TextUtils.ContentData.ContentData(postData, false, requestContentType, charset ?? undefined);
+        }
+        catch (e) {
+            return { error: e.message };
+        }
+    }
+    /**
      * Attempts to decompress a compressed request body.
      * Returns the decompressed string, or null if decompression is not applicable.
      */
@@ -687,7 +724,7 @@ export class NetworkDispatcher {
             this.#manager.dispatchEventToListeners(Events.RequestRedirected, networkRequest);
         }
         else {
-            networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture);
+            networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture, this.#manager.target().targetManager().getConsole());
             if (renderBlockingBehavior) {
                 networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
             }
@@ -785,7 +822,7 @@ export class NetworkDispatcher {
         this.finishNetworkRequest(networkRequest, time, -1);
     }
     webSocketCreated({ requestId, url: requestURL, initiator }) {
-        const networkRequest = NetworkRequest.createForSocket(requestId, requestURL, initiator);
+        const networkRequest = NetworkRequest.createForSocket(requestId, requestURL, initiator, this.#manager.target().targetManager().getConsole());
         requestToManagerMap.set(networkRequest, this.#manager);
         networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
         this.startNetworkRequest(networkRequest, null);
@@ -936,7 +973,7 @@ export class NetworkDispatcher {
         }
         originalNetworkRequest.markAsRedirect(redirectCount);
         this.finishNetworkRequest(originalNetworkRequest, time, -1);
-        const newNetworkRequest = NetworkRequest.create(requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, originalNetworkRequest.initiator(), originalNetworkRequest.hasUserGesture() ?? undefined);
+        const newNetworkRequest = NetworkRequest.create(requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, originalNetworkRequest.initiator(), originalNetworkRequest.hasUserGesture() ?? undefined, this.#manager.target().targetManager().getConsole());
         requestToManagerMap.set(newNetworkRequest, this.#manager);
         newNetworkRequest.setRedirectSource(originalNetworkRequest);
         originalNetworkRequest.setRedirectDestination(newNetworkRequest);
@@ -1040,7 +1077,7 @@ export class NetworkDispatcher {
         }
     }
     webTransportCreated({ transportId, url: requestURL, timestamp: time, initiator }) {
-        const networkRequest = NetworkRequest.createForSocket(transportId, requestURL, initiator);
+        const networkRequest = NetworkRequest.createForSocket(transportId, requestURL, initiator, this.#manager.target().targetManager().getConsole());
         networkRequest.hasNetworkData = true;
         requestToManagerMap.set(networkRequest, this.#manager);
         networkRequest.setResourceType(Common.ResourceType.resourceTypes.WebTransport);
@@ -1071,7 +1108,7 @@ export class NetworkDispatcher {
     }
     directTCPSocketCreated(event) {
         const requestURL = this.concatHostPort(event.remoteAddr, event.remotePort);
-        const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator);
+        const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator, this.#manager.target().targetManager().getConsole());
         networkRequest.hasNetworkData = true;
         networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
         networkRequest.protocol = i18n.i18n.lockedString('tcp');
@@ -1175,7 +1212,7 @@ export class NetworkDispatcher {
             // is not specified.
             return;
         }
-        const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator);
+        const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator, this.#manager.target().targetManager().getConsole());
         networkRequest.hasNetworkData = true;
         if (event.options.remoteAddr && event.options.remotePort) {
             networkRequest.setRemoteAddress(event.options.remoteAddr, event.options.remotePort);
@@ -1335,7 +1372,7 @@ export class NetworkDispatcher {
      * This method is only kept for usage in a web test.
      */
     createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-        const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator);
+        const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator, undefined, this.#manager.target().targetManager().getConsole());
         requestToManagerMap.set(request, this.#manager);
         return request;
     }

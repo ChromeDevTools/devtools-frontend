@@ -100,7 +100,7 @@ var snackbar_css_default = `/*
 var { html } = Lit;
 var UIStrings = {
   /**
-   * @description Title for close button
+   * @description Title of the close button.
    */
   dismiss: "Dismiss"
 };

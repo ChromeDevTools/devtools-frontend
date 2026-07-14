@@ -34,7 +34,7 @@ export class SASSSourceMapping {
         for (const sourceURL of sourceMap.sourceURLs()) {
             let binding = bindings.get(sourceURL);
             if (!binding) {
-                binding = new Binding(project, sourceURL, header.createPageResourceLoadInitiator());
+                binding = new Binding(project, sourceURL, header.createPageResourceLoadInitiator(), header.cssModel().target().targetManager().getPageResourceLoader());
                 bindings.set(sourceURL, binding);
             }
             binding.addSourceMap(sourceMap, header.frameId);
@@ -119,12 +119,14 @@ class Binding {
     #project;
     #url;
     #initiator;
+    #pageResourceLoader;
     referringSourceMaps;
     uiSourceCode;
-    constructor(project, url, initiator) {
+    constructor(project, url, initiator, pageResourceLoader) {
         this.#project = project;
         this.#url = url;
         this.#initiator = initiator;
+        this.#pageResourceLoader = pageResourceLoader;
         this.referringSourceMaps = [];
         this.uiSourceCode = null;
     }
@@ -134,7 +136,7 @@ class Binding {
         const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
         const contentProvider = embeddedContent !== null ?
             TextUtils.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) :
-            new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(this.#url, contentType, this.#initiator);
+            new SDK.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(this.#url, contentType, this.#initiator, this.#pageResourceLoader);
         const newUISourceCode = this.#project.createUISourceCode(this.#url, contentType);
         uiSourceCodeToBinding.set(newUISourceCode, this);
         const mimeType = Common.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();

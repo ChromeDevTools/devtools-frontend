@@ -35,6 +35,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as FormatterActions from '../../../../entrypoints/formatter_worker/FormatterActions.js'; // eslint-disable-line @devtools/es-modules-import
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import { render } from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 import resourceSourceFrameStyles from './resourceSourceFrame.css.js';
 import { SourceFrameImpl } from './SourceFrame.js';
@@ -99,7 +100,13 @@ export class SearchableContainer extends UI.Widget.VBox {
         searchableView.show(this.contentElement);
         const toolbar = this.contentElement.createChild('devtools-toolbar', 'toolbar');
         void sourceFrame.toolbarItems().then(items => {
-            items.map(item => toolbar.appendToolbarItem(item));
+            if (Array.isArray(items)) {
+                items.map(item => toolbar.appendToolbarItem(item));
+            }
+            else {
+                // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+                render(items, toolbar);
+            }
         });
     }
     async revealPosition(position) {

@@ -462,4 +462,5 @@ declare abstract class AsyncDirective extends Directive {
     protected reconnected(): void;
 }
 
-export { AsyncDirective, AttributePart, type AttributePartInfo, BooleanAttributePart, ChildPart, type ChildPartInfo, Directive, type DirectiveClass, type DirectiveParameters, type DirectiveResult, ElementPart, type ElementPartInfo, EventPart, type Part, type PartInfo, PartType, PropertyPart, directive };
+export { AsyncDirective, AttributePart, BooleanAttributePart, ChildPart, Directive, ElementPart, EventPart, PartType, PropertyPart, directive };
+export type { AttributePartInfo, ChildPartInfo, DirectiveClass, DirectiveParameters, DirectiveResult, ElementPartInfo, Part, PartInfo };

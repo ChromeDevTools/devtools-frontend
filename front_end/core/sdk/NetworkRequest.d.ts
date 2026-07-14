@@ -20,10 +20,10 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     responseReceivedPromise?: Promise<void>;
     responseReceivedPromiseResolve?: () => void;
     directSocketInfo?: DirectSocketInfo;
-    constructor(requestId: string, backendRequestId: Protocol.Network.RequestId | undefined, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean);
-    static create(backendRequestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean): NetworkRequest;
-    static createForSocket(backendRequestId: Protocol.Network.RequestId, requestURL: Platform.DevToolsPath.UrlString, initiator?: Protocol.Network.Initiator): NetworkRequest;
-    static createWithoutBackendRequest(requestId: string, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, initiator: Protocol.Network.Initiator | null): NetworkRequest;
+    constructor(requestId: string, backendRequestId: Protocol.Network.RequestId | undefined, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean, console?: Common.Console.Console);
+    static create(backendRequestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId | null, loaderId: Protocol.Network.LoaderId | null, initiator: Protocol.Network.Initiator | null, hasUserGesture?: boolean, console?: Common.Console.Console): NetworkRequest;
+    static createForSocket(backendRequestId: Protocol.Network.RequestId, requestURL: Platform.DevToolsPath.UrlString, initiator?: Protocol.Network.Initiator, console?: Common.Console.Console): NetworkRequest;
+    static createWithoutBackendRequest(requestId: string, url: Platform.DevToolsPath.UrlString, documentURL: Platform.DevToolsPath.UrlString, initiator: Protocol.Network.Initiator | null, console?: Common.Console.Console): NetworkRequest;
     identityCompare(other: NetworkRequest): number;
     requestId(): string;
     backendRequestId(): Protocol.Network.RequestId | undefined;
@@ -148,6 +148,12 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     requestHeaderValue(headerName: string): string | undefined;
     requestFormData(): Promise<string | null>;
     setRequestFormData(hasData: boolean, data: string | null): void;
+    /**
+     * Returns the raw request body as ContentData, preserving base64 encoding
+     * for binary payloads. This enables binary viewers (hex, base64, utf-8)
+     * in the Payload tab.
+     */
+    requestFormDataContentData(): Promise<TextUtils.ContentData.ContentDataOrError>;
     private filteredProtocolName;
     requestHttpVersion(): string;
     get responseHeaders(): NameValue[];

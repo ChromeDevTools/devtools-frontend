@@ -11293,7 +11293,6 @@ export declare namespace Network {
         InitializedService = "InitializedService",
         Unreachable = "Unreachable",
         ServerError = "ServerError",
-        RefreshQuotaExceeded = "RefreshQuotaExceeded",
         FatalError = "FatalError",
         SigningQuotaExceeded = "SigningQuotaExceeded",
         RefreshedAsWaiter = "RefreshedAsWaiter",

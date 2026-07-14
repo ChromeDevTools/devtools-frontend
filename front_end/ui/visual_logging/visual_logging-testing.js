@@ -4520,6 +4520,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "window",
   "window-controls",
   "window-controls-overlay",
+  "window-drag",
   "windows",
   "word-break",
   "word-spacing",

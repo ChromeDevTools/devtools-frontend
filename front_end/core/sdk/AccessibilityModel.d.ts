@@ -1,7 +1,7 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import { DeferredDOMNode, type DOMNode } from './DOMModel.js';
-import { FrameManager } from './FrameManager.js';
+import type { FrameManager } from './FrameManager.js';
 import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
 export declare const enum CoreAxPropertyName {
@@ -71,6 +71,6 @@ export declare class AccessibilityModel extends SDKModel<EventTypes> implements 
     setAXNodeForBackendDOMNodeId(backendDOMNodeId: Protocol.DOM.BackendNodeId, axNode: AccessibilityNode): void;
     getAgent(): ProtocolProxyApi.AccessibilityApi;
 }
-export declare function getRootNode(frameId: Protocol.Page.FrameId, frameManager?: FrameManager): Promise<AccessibilityNode>;
+export declare function getRootNode(frameId: Protocol.Page.FrameId, frameManager: FrameManager): Promise<AccessibilityNode>;
 export declare function getNodeAndAncestorsFromDOMNode(domNode: DOMNode): Promise<AccessibilityNode[]>;
 export declare function isPrintableType(valueType: Protocol.Accessibility.AXValueType): boolean;

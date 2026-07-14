@@ -1764,6 +1764,9 @@ export const ifExpanded = Lit.Directive.directive(IfExpandedDirective);
 export class TreeElementWrapper extends HTMLElement {
     #treeElement;
     set treeElement(treeElement) {
+        if (this.#treeElement === treeElement) {
+            return;
+        }
         if (this.#treeElement?.parent) {
             const parent = this.#treeElement.parent;
             const index = parent.indexOfChild(this.#treeElement);

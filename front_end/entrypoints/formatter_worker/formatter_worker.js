@@ -3634,8 +3634,9 @@ var FormattedContentBuilder = class {
   }
   addToken(token, offset) {
     if (this.#enforceSpaceBetweenWords && !this.#hardSpaces && !this.#softSpace) {
-      const lastCharOfLastToken = this.#formattedContent.at(-1)?.at(-1) ?? "";
-      if (this.#canBeIdentifierOrNumber.test(lastCharOfLastToken) && this.#canBeIdentifierOrNumber.test(token)) {
+      const lastToken = this.#formattedContent.at(-1) ?? "";
+      const lastCharOfLastToken = lastToken.at(-1) ?? "";
+      if ((this.#canBeIdentifierOrNumber.test(lastCharOfLastToken) || ["`", "}", ")", "]", "'", '"', "/"].includes(lastCharOfLastToken)) && this.#canBeIdentifierOrNumber.test(token)) {
         this.addSoftSpace();
       }
     }
@@ -3988,9 +3989,11 @@ var JavaScriptFormatter = class {
       const format2 = this.#formatToken(node.parent, token2);
       this.#push(token2, format2);
     }
+    if (node.parent?.type === "TemplateLiteral" && node.type !== "TemplateElement" && node.type !== "TemplateLiteral") {
+      this.#builder.setEnforceSpaceBetweenWords(true);
+    }
   }
   #afterVisit(node) {
-    const restore = this.#builder.setEnforceSpaceBetweenWords(node.type !== "TemplateElement");
     let token;
     while ((token = this.#tokenizer.peekToken()) && token.start < node.end) {
       const token2 = this.#tokenizer.nextToken();
@@ -3998,7 +4001,11 @@ var JavaScriptFormatter = class {
       this.#push(token2, format2);
     }
     this.#push(null, this.#finishNode(node));
-    this.#builder.setEnforceSpaceBetweenWords(restore || node.type === "TemplateLiteral");
+    if (node.parent?.type === "TemplateLiteral" && node.type !== "TemplateElement" && node.type !== "TemplateLiteral") {
+      this.#builder.setEnforceSpaceBetweenWords(false);
+    } else if (node.type === "TemplateLiteral" && node.parent?.type !== "TemplateLiteral") {
+      this.#builder.setEnforceSpaceBetweenWords(true);
+    }
   }
   #inForLoopHeader(node) {
     const parent = node.parent;
@@ -4517,7 +4524,11 @@ var HTMLFormatter = class {
     if (!isBodyToken && hasTokenInSet(token.type, "attribute")) {
       this.#builder.addSoftSpace();
     }
+    const restore = !isBodyToken && !hasTokenInSet(token.type, "attribute") ? this.#builder.setEnforceSpaceBetweenWords(false) : false;
     this.#builder.addToken(token.value, token.startOffset);
+    if (!isBodyToken && !hasTokenInSet(token.type, "attribute")) {
+      this.#builder.setEnforceSpaceBetweenWords(restore);
+    }
   }
 };
 function scriptTagIsJavaScript(element) {

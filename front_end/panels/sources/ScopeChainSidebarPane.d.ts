@@ -10,6 +10,8 @@ interface ViewInput {
         scope: SDK.DebuggerModel.ScopeChainEntry;
         objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree;
     }> | null;
+    onToggle: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, expanded: boolean) => void;
+    onContextMenu: (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree, contextMenu: UI.ContextMenu.ContextMenu) => void;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;

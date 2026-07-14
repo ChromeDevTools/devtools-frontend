@@ -19,6 +19,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
     cacheAgent;
     #storageAgent;
     #storageBucketModel;
+    #console;
     #caches = new Map();
     #storageKeysTracked = new Set();
     #storageBucketsUpdated = new Set();
@@ -35,6 +36,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
         this.cacheAgent = target.cacheStorageAgent();
         this.#storageAgent = target.storageAgent();
         this.#storageBucketModel = target.model(StorageBucketsModel);
+        this.#console = target.targetManager().getConsole();
     }
     enable() {
         if (this.#enabled) {
@@ -80,7 +82,7 @@ export class ServiceWorkerCacheModel extends SDKModel {
     async deleteCacheEntry(cache, request) {
         const response = await this.cacheAgent.invoke_deleteEntry({ cacheId: cache.cacheId, request });
         if (response.getError()) {
-            Common.Console.Console.instance().error(i18nString(UIStrings.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
+            this.#console.error(i18nString(UIStrings.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
             return;
         }
     }

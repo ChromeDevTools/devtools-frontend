@@ -34,6 +34,14 @@ export declare class NetworkManager extends SDKModel<EventTypes> {
      */
     static streamResponseBody(request: NetworkRequest): Promise<TextUtils.ContentData.ContentDataOrError>;
     static requestPostData(request: NetworkRequest): Promise<string | null>;
+    /**
+     * Returns the request post data as a ContentData suitable for binary
+     * viewers (hex, base64, utf-8) in the Payload tab.  When the backend
+     * provides base64-encoded (possibly compressed) data, the body is
+     * decompressed first so viewers show the actual payload bytes rather
+     * than gzip/deflate framing.
+     */
+    static requestPostDataContentData(request: NetworkRequest): Promise<TextUtils.ContentData.ContentDataOrError>;
     static connectionType(conditions: Conditions): Protocol.Network.ConnectionType;
     static lowercaseHeaders(headers: Protocol.Network.Headers): Protocol.Network.Headers;
     requestForURL(url: Platform.DevToolsPath.UrlString): NetworkRequest | null;

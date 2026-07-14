@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import '../../../ui/components/request_link_icon/request_link_icon.js';
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
@@ -143,7 +144,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
             // while this feature is experimental, to enable easier trials.
             if (headerName === 'server-timing' || headerName === 'server-timing-test') {
                 header.name = 'server-timing';
-                this.#serverTimings = SDK.ServerTiming.ServerTiming.parseHeaders([header]);
+                this.#serverTimings = SDK.ServerTiming.ServerTiming.parseHeaders([header], Common.Console.Console.instance());
                 break;
             }
         }
@@ -233,7 +234,7 @@ function renderURL(request) {
     };
     const linkifiedURL = LegacyComponents.Linkifier.Linkifier.linkifyURL(request.args.data.url, options);
     // Potentially link to request within Network Panel
-    const networkRequest = SDK.TraceObject.RevealableNetworkRequest.create(request);
+    const networkRequest = SDK.TraceObject.RevealableNetworkRequest.create(SDK.TargetManager.TargetManager.instance(), request);
     if (networkRequest) {
         linkifiedURL.addEventListener('contextmenu', (event) => {
             const contextMenu = new UI.ContextMenu.ContextMenu(event);

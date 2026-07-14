@@ -34,15 +34,15 @@ var issueCounter_css_default = `/*
 // gen/front_end/ui/components/issue_counter/IssueCounter.js
 var UIStrings = {
   /**
-   * @description Label for link to Issues tab, specifying how many issues there are.
+   * @description Label for link to the Issues tab, specifying how many page errors there are.
    */
   pageErrors: "{issueCount, plural, =1 {# page error} other {# page errors}}",
   /**
-   * @description Label for link to Issues tab, specifying how many issues there are.
+   * @description Label for link to the Issues tab, specifying how many breaking changes there are.
    */
   breakingChanges: "{issueCount, plural, =1 {# breaking change} other {# breaking changes}}",
   /**
-   * @description Label for link to Issues tab, specifying how many issues there are.
+   * @description Label for link to the Issues tab, specifying how many possible improvements there are.
    */
   possibleImprovements: "{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}"
 };
@@ -300,16 +300,16 @@ devtools-icon {
 var { html: html2 } = Lit;
 var UIStrings2 = {
   /**
-   * @description Title for a link to show an issue in the issues tab
+   * @description Title for a link to show an issue in the Issues tab.
    */
-  clickToShowIssue: "Click to show issue in the issues tab",
+  clickToShowIssue: "Click to show issue in the Issues tab",
   /**
-   * @description Title for a link to show an issue in the issues tab
+   * @description Title for a link to show an issue in the Issues tab.
    * @example {A title of an Issue} title
    */
-  clickToShowIssueWithTitle: "Click to open the issue tab and show issue: {title}",
+  clickToShowIssueWithTitle: "Click to open the Issues tab and show issue: {title}",
   /**
-   * @description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
+   * @description Title for a link to show an issue that is unavailable because the issue couldn't be resolved.
    */
   issueUnavailable: "Issue unavailable at this time"
 };

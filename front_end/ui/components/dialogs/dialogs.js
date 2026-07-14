@@ -235,7 +235,7 @@ dialog:focus-visible {
 var { html: html2 } = Lit;
 var UIStrings = {
   /**
-   * @description Title of close button for the shortcuts dialog.
+   * @description Title of the close button in a dialog.
    */
   close: "Close"
 };
@@ -862,7 +862,7 @@ var shortcutDialog_css_default = `/*
 // gen/front_end/ui/components/dialogs/ShortcutDialog.js
 var UIStrings2 = {
   /**
-   * @description Title of question mark button for the shortcuts dialog.
+   * @description Title of the question mark button for the shortcuts dialog.
    */
   showShortcutTitle: "Show shortcuts",
   /**

@@ -104,6 +104,7 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     private extensionAllowedOnTarget;
     private onReload;
     private onEvaluateOnInspectedPage;
+    private harEntryReferencesBlockedURL;
     private onGetHAR;
     private makeResource;
     private onGetPageResources;
@@ -139,6 +140,18 @@ export declare class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<
     static canInspectURL(url: Platform.DevToolsPath.UrlString): boolean;
     private disableExtensions;
     private enableExtensions;
+    /**
+     * Clear extension-injected HTTP headers that should not persist after
+     * navigation to a disallowed URL. Optionally pass the new inspected URL
+     * to selectively clear only headers from extensions not allowed on that URL;
+     * when omitted, all extension headers are cleared unconditionally.
+     */
+    private clearExtensionHeaders;
+    /**
+     * Collect all extension-injected headers into a single object and push
+     * them to the network layer.
+     */
+    private syncExtraHeaders;
 }
 export declare const enum Events {
     SidebarPaneAdded = "SidebarPaneAdded"

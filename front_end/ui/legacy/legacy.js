@@ -2884,7 +2884,8 @@ function enqueueIntoNextUpdateQueue(widget2) {
   nextUpdateQueue.delete(widget2);
   nextUpdateQueue.set(widget2, scheduledUpdate);
   if (pendingAnimationFrame === null) {
-    pendingAnimationFrame = requestAnimationFrame(runNextUpdate);
+    const widgetWindow = widget2.contentElement.window() || window;
+    pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
   }
   return scheduledUpdate.promise;
 }
@@ -2950,7 +2951,8 @@ function runNextUpdate() {
         if (nextUpdate) {
           void nextUpdate.promise.then(resolve);
           if (pendingAnimationFrame === null) {
-            pendingAnimationFrame = requestAnimationFrame(runNextUpdate);
+            const widgetWindow = widget2.contentElement.window() || window;
+            pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
           }
         } else {
           resolve();
@@ -23392,6 +23394,9 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
           removeNode(treeElement);
         }
         parent.treeElement.insertChild(treeElement, index);
+        if (parent.treeElement instanceof TreeViewTreeElement) {
+          parent.treeElement.updateExpansionFromAttribute();
+        }
         if (hasBooleanAttribute(node, "selected")) {
           treeElement.revealAndSelect(true);
         }

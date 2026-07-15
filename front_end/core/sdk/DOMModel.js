@@ -1784,6 +1784,7 @@ export class DOMModel extends SDKModel {
         if ('has' in context && typeof context.has === 'function' && context.has(DOMModelUndoStack)) {
             return context.get(DOMModelUndoStack);
         }
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         return DOMModelUndoStack.instance();
     }
     parentModel() {

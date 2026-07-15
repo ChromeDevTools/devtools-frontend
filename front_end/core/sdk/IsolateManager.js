@@ -14,6 +14,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
     #observers = new Set();
     #pollId = 0;
     #targetManager;
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     constructor(targetManager = TargetManager.instance()) {
         super();
         this.#targetManager = targetManager;

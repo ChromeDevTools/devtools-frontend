@@ -10,27 +10,27 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
 const UIStrings = {
     /**
-     * @description Tooltip text that appears when hovering over a valid memory address (e.g. 0x0) in the address line in the Linear memory inspector.
+     * @description Tooltip text that appears when hovering over a valid memory address (for example, 0x0) in the address line in the Memory inspector panel.
      */
     enterAddress: 'Enter address',
     /**
-     * @description Tooltip text that appears when hovering over the button to go back in history in the Linear Memory Navigator
+     * @description Tooltip text that appears when hovering over the button to go back in history in the Memory inspector panel.
      */
     goBackInAddressHistory: 'Go back in address history',
     /**
-     * @description Tooltip text that appears when hovering over the button to go forward in history in the Linear Memory Navigator
+     * @description Tooltip text that appears when hovering over the button to go forward in history in the Memory inspector panel.
      */
     goForwardInAddressHistory: 'Go forward in address history',
     /**
-     * @description Tooltip text that appears when hovering over the page back icon in the Linear Memory Navigator
+     * @description Tooltip text that appears when hovering over the page back icon in the Memory inspector panel.
      */
     previousPage: 'Previous page',
     /**
-     * @description Tooltip text that appears when hovering over the next page icon in the Linear Memory Navigator
+     * @description Tooltip text that appears when hovering over the next page icon in the Memory inspector panel.
      */
     nextPage: 'Next page',
     /**
-     * @description Text to refresh the page
+     * @description Tooltip text that appears when hovering over the refresh button in the Memory inspector panel.
      */
     refresh: 'Refresh',
 };

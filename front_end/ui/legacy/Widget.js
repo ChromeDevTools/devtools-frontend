@@ -66,7 +66,8 @@ function enqueueIntoNextUpdateQueue(widget) {
     nextUpdateQueue.delete(widget);
     nextUpdateQueue.set(widget, scheduledUpdate);
     if (pendingAnimationFrame === null) {
-        pendingAnimationFrame = requestAnimationFrame(runNextUpdate);
+        const widgetWindow = widget.contentElement.window() || window;
+        pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
     }
     return scheduledUpdate.promise;
 }
@@ -135,7 +136,8 @@ function runNextUpdate() {
                 if (nextUpdate) {
                     void nextUpdate.promise.then(resolve);
                     if (pendingAnimationFrame === null) {
-                        pendingAnimationFrame = requestAnimationFrame(runNextUpdate);
+                        const widgetWindow = widget.contentElement.window() || window;
+                        pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
                     }
                 }
                 else {

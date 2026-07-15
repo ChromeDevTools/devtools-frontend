@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-import { AttributionReportingIssue } from './AttributionReportingIssue.js';
 import { ContentSecurityPolicyIssue } from './ContentSecurityPolicyIssue.js';
 import { CookieDeprecationMetadataIssue } from './CookieDeprecationMetadataIssue.js';
 import { CookieIssue } from './CookieIssue.js';
@@ -44,7 +43,6 @@ export class AggregatedIssue extends Issue {
     #selectivePermissionsInterventionIssues = new Set();
     #sharedArrayBufferIssues = new Set();
     #quirksModeIssues = new Set();
-    #attributionReportingIssues = new Set();
     #genericIssues = new Set();
     #elementAccessibilityIssues = new Set();
     #representative;
@@ -107,9 +105,6 @@ export class AggregatedIssue extends Issue {
     }
     getQuirksModeIssues() {
         return this.#quirksModeIssues;
-    }
-    getAttributionReportingIssues() {
-        return this.#attributionReportingIssues;
     }
     getGenericIssues() {
         return this.#genericIssues;
@@ -214,9 +209,6 @@ export class AggregatedIssue extends Issue {
         }
         if (issue instanceof QuirksModeIssue) {
             this.#quirksModeIssues.add(issue);
-        }
-        if (issue instanceof AttributionReportingIssue) {
-            this.#attributionReportingIssues.add(issue);
         }
         if (issue instanceof GenericIssue) {
             this.#genericIssues.add(issue);

@@ -27,6 +27,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export class CookieIssue extends Issue {
+    #frameManager;
+    constructor(code, issueDetails, issuesModel, issueId, frameManager) {
+        super(code, issueDetails, issuesModel, issueId);
+        this.#frameManager = frameManager;
+    }
     cookieId() {
         const details = this.details();
         if (details.cookie) {
@@ -44,7 +49,7 @@ export class CookieIssue extends Issue {
     /**
      * Returns an array of issues from a given CookieIssueDetails.
      */
-    static createIssuesFromCookieIssueDetails(cookieIssueDetails, issuesModel, issueId) {
+    static createIssuesFromCookieIssueDetails(cookieIssueDetails, issuesModel, issueId, frameManager) {
         const issues = [];
         // Exclusion reasons have priority. It means a cookie was blocked. Create an issue
         // for every exclusion reason but ignore warning reasons if the cookie was blocked.
@@ -53,7 +58,7 @@ export class CookieIssue extends Issue {
             for (const exclusionReason of cookieIssueDetails.cookieExclusionReasons) {
                 const code = CookieIssue.codeForCookieIssueDetails(exclusionReason, cookieIssueDetails.cookieWarningReasons, cookieIssueDetails.operation, cookieIssueDetails.cookieUrl);
                 if (code) {
-                    issues.push(new CookieIssue(code, cookieIssueDetails, issuesModel, issueId));
+                    issues.push(new CookieIssue(code, cookieIssueDetails, issuesModel, issueId, frameManager));
                 }
             }
             return issues;
@@ -63,7 +68,7 @@ export class CookieIssue extends Issue {
                 // warningReasons should be an empty array here.
                 const code = CookieIssue.codeForCookieIssueDetails(warningReason, [], cookieIssueDetails.operation, cookieIssueDetails.cookieUrl);
                 if (code) {
-                    issues.push(new CookieIssue(code, cookieIssueDetails, issuesModel, issueId));
+                    issues.push(new CookieIssue(code, cookieIssueDetails, issuesModel, issueId, frameManager));
                 }
             }
         }
@@ -168,7 +173,7 @@ export class CookieIssue extends Issue {
         return resolveLazyDescription(description);
     }
     isCausedByThirdParty() {
-        const outermostFrame = SDK.FrameManager.FrameManager.instance().getOutermostFrame();
+        const outermostFrame = this.#frameManager.getOutermostFrame();
         return isCausedByThirdParty(outermostFrame, this.details().cookieUrl, this.details().siteForCookies);
     }
     getKind() {
@@ -192,13 +197,13 @@ export class CookieIssue extends Issue {
         }
         return;
     }
-    static fromInspectorIssue(issuesModel, inspectorIssue) {
+    static fromInspectorIssue(issuesModel, inspectorIssue, frameManager) {
         const cookieIssueDetails = inspectorIssue.details.cookieIssueDetails;
         if (!cookieIssueDetails) {
             console.warn('Cookie issue without details received.');
             return [];
         }
-        return CookieIssue.createIssuesFromCookieIssueDetails(cookieIssueDetails, issuesModel, inspectorIssue.issueId);
+        return CookieIssue.createIssuesFromCookieIssueDetails(cookieIssueDetails, issuesModel, inspectorIssue.issueId, frameManager);
     }
     static getSubCategory(code) {
         if (code.includes('SameSite') || code.includes('Downgrade')) {

@@ -11,7 +11,7 @@ import valueInterpreterSettingsStyles from './valueInterpreterSettings.css.js';
 const { render, html } = Lit;
 const UIStrings = {
     /**
-     * @description Name of a group of selectable value types that do not fall under integer and floating point value types, e.g. Pointer32. The group appears name appears under the Value Interpreter Settings.
+     * @description Name of a group of selectable value types that do not fall under integer and floating point value types (for example, Pointer32). The group name appears in the value interpreter settings in the Memory inspector panel.
      */
     otherGroup: 'Other',
 };

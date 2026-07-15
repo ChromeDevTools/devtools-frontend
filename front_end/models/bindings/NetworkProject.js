@@ -5,7 +5,6 @@ import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 const uiSourceCodeToAttributionMap = new WeakMap();
-const projectToTargetMap = new WeakMap();
 export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(NetworkProjectManager) || forceNew) {
@@ -86,13 +85,7 @@ export class NetworkProject {
         NetworkProjectManager.instance().dispatchEventToListeners("FrameAttributionRemoved" /* Events.FRAME_ATTRIBUTION_REMOVED */, data);
     }
     static targetForUISourceCode(uiSourceCode) {
-        return projectToTargetMap.get(uiSourceCode.project()) || null;
-    }
-    static setTargetForProject(project, target) {
-        projectToTargetMap.set(project, target);
-    }
-    static getTargetForProject(project) {
-        return projectToTargetMap.get(project) || null;
+        return uiSourceCode.project().target();
     }
     static framesForUISourceCode(uiSourceCode) {
         const target = NetworkProject.targetForUISourceCode(uiSourceCode);

@@ -16,8 +16,7 @@ export class SASSSourceMapping {
     constructor(target, sourceMapManager, workspace, cssWorkspaceBinding) {
         this.#sourceMapManager = sourceMapManager;
         this.#cssWorkspaceBinding = cssWorkspaceBinding;
-        this.#project = new ContentProviderBasedProject(workspace, 'cssSourceMaps:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
-        NetworkProject.setTargetForProject(this.#project, target);
+        this.#project = new ContentProviderBasedProject(workspace, 'cssSourceMaps:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */, target);
         this.#bindings = new Map();
         this.#eventListeners = [
             this.#sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this),

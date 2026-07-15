@@ -36,7 +36,6 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/issues_manager/AttributionReportingIssue.ts",
     "../../../../../../front_end/models/issues_manager/BounceTrackingIssue.ts",
     "../../../../../../front_end/models/issues_manager/CheckFormsIssuesTrigger.ts",
     "../../../../../../front_end/models/issues_manager/ClientHintIssue.ts",

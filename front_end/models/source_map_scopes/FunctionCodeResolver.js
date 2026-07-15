@@ -7,8 +7,8 @@ import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 const inputCache = new WeakMap();
-async function prepareInput(uiSourceCode, content) {
-    const formattedContent = await format(uiSourceCode, content);
+async function prepareInput(uiSourceCode, content, settings) {
+    const formattedContent = await format(uiSourceCode, content, settings);
     const text = new TextUtils.Text.Text(formattedContent ? formattedContent.formattedContent : content);
     let performanceData = uiSourceCode.getDecorationData("performance" /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */);
     // Map profile data to the formatted view of the text.
@@ -20,12 +20,12 @@ async function prepareInput(uiSourceCode, content) {
     return { text, formattedContent, performanceData };
 }
 /** Formatting and parsing line endings for Text is expensive, so cache it. */
-async function prepareInputAndCache(uiSourceCode, content) {
+async function prepareInputAndCache(uiSourceCode, content, settings) {
     let cachedPromise = inputCache.get(uiSourceCode);
     if (cachedPromise) {
         return await cachedPromise;
     }
-    cachedPromise = prepareInput(uiSourceCode, content);
+    cachedPromise = prepareInput(uiSourceCode, content, settings);
     inputCache.set(uiSourceCode, cachedPromise);
     return await cachedPromise;
 }
@@ -156,7 +156,7 @@ export async function getFunctionCodeFromLocation(target, url, line, column, opt
     const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
     for (const project of projects) {
-        if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
+        if (project.target() !== target) {
             continue;
         }
         uiSourceCode = project.uiSourceCodeForURL(url);
@@ -174,14 +174,14 @@ export async function getFunctionCodeFromLocation(target, url, line, column, opt
     }
     return await getFunctionCodeFromRawLocation(rawLocation, options);
 }
-async function format(uiSourceCode, content) {
+async function format(uiSourceCode, content, settings) {
     const contentType = uiSourceCode.contentType();
     const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) &&
         TextUtils.TextUtils.isMinified(content);
     if (!shouldFormat) {
         return null;
     }
-    return await Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, '\t');
+    return await Formatter.ScriptFormatter.formatScriptContent(settings, contentType.canonicalMimeType(), content, '\t');
 }
 /**
  * Returns a {@link FunctionCode} for the given raw location.
@@ -197,7 +197,8 @@ export async function getFunctionCodeFromRawLocation(rawLocation, options) {
     if (!content) {
         return null;
     }
-    const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content);
+    const settings = rawLocation.debuggerModel.target().targetManager().settings;
+    const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content, settings);
     return createFunctionCode(inputData, functionBounds, options);
 }
 //# sourceMappingURL=FunctionCodeResolver.js.map

@@ -112,6 +112,9 @@ export class FileSystem {
     uiSourceCodes() {
         return [];
     }
+    target() {
+        return null;
+    }
 }
 /**
  * Provides a transient workspace `Project` that doesn't contain any `UISourceCode`s,

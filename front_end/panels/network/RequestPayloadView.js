@@ -136,21 +136,24 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
             catch {
             }
-            return undefined;
         }
+        return undefined;
     })();
     const createPayload = (parsedFormData) => {
+        if (!parsedFormData) {
+            return nothing;
+        }
         const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
-        const section = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+        const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
             readOnly: true,
             propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-        }));
-        section.title = document.createTextNode(object.description);
-        section.listItemElement.classList.add('source-code', 'object-properties-section');
-        section.childrenListElement.classList.add('source-code', 'object-properties-section');
-        section.expand();
-        return html `<devtools-tree-wrapper
-          .treeElement=${section}></devtools-tree-wrapper>`;
+        });
+        return html `
+      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" open>
+        ${object.description}
+        ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
+      </li>
+    `;
     };
     const queryStringExpandedSetting = Common.Settings.Settings.instance().createSetting('request-info-query-string-category-expanded', true);
     const formDataExpandedSetting = Common.Settings.Settings.instance().createSetting('request-info-form-data-category-expanded', true);

@@ -140,9 +140,19 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     }
   }
   Panels.prototype = {
-    create: function(title, _icon, page, callback) {
+    create: function(title, _iconPath, pagePath, _callback) {
+      const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
       const id = "extension-panel-" + extensionServer.nextObjectId();
-      extensionServer.sendRequest({ command: "createPanel", id, title, page }, callback && (() => callback.call(this, new (Constructor(ExtensionPanel))(id))));
+      const callbackWrapper = (response) => {
+        if (checkErrorAndReject(response, reject)) {
+          return;
+        }
+        const panel = new (Constructor(ExtensionPanel))(id);
+        resolve?.(panel);
+        callbackArg?.call(this, panel);
+      };
+      extensionServer.sendRequest({ command: "createPanel", id, title, page: pagePath }, callbackWrapper);
+      return promise;
     },
     setOpenResourceHandler: function(callback, urlScheme) {
       const hadHandler = extensionServer.hasHandler(
@@ -193,9 +203,17 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       }
     },
     openResource: function(url, lineNumber, columnNumber, _callback) {
-      const callbackArg = extractCallbackArgument(arguments);
+      const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
       const columnNumberArg = typeof columnNumber === "number" ? columnNumber : 0;
-      extensionServer.sendRequest({ command: "openResource", url, lineNumber, columnNumber: columnNumberArg }, callbackArg);
+      const callbackWrapper = (response) => {
+        if (checkErrorAndReject(response, reject)) {
+          return;
+        }
+        resolve?.(response);
+        callbackArg?.call(this, response);
+      };
+      extensionServer.sendRequest({ command: "openResource", url, lineNumber, columnNumber: columnNumberArg }, callbackWrapper);
+      return promise;
     },
     get SearchAction() {
       return {
@@ -227,12 +245,19 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     this.onSelectionChanged = new (Constructor(EventSink))("panel-objectSelected-" + hostPanelName);
   }
   PanelWithSidebarImpl.prototype = {
-    createSidebarPane: function(title, callback) {
+    createSidebarPane: function(title, _callback) {
+      const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
       const id = "extension-sidebar-" + extensionServer.nextObjectId();
-      function callbackWrapper() {
-        callback?.(new (Constructor(ExtensionSidebarPane))(id));
-      }
-      extensionServer.sendRequest({ command: "createSidebarPane", panel: this._hostPanelName, id, title }, callback && callbackWrapper);
+      const callbackWrapper = (response) => {
+        if (checkErrorAndReject(response, reject)) {
+          return;
+        }
+        const pane = new (Constructor(ExtensionSidebarPane))(id);
+        resolve?.(pane);
+        callbackArg?.call(this, pane);
+      };
+      extensionServer.sendRequest({ command: "createSidebarPane", panel: this._hostPanelName, id, title }, callbackWrapper);
+      return promise;
     },
     __proto__: ExtensionViewImpl.prototype
   };
@@ -465,7 +490,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
   }
   function checkErrorAndReject(response, reject) {
     const res = response;
-    if (res.isError && reject) {
+    if (res?.isError && reject) {
       reject(new Error("DevTools API encountered an error"));
       return true;
     }
@@ -538,6 +563,14 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       extensionServer.sendRequest({ command: "setSidebarHeight", id: this._id, height });
     },
     setExpression: function(expression, rootTitle, evaluateOptions, _callback) {
+      const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
+      const callbackWrapper = (response) => {
+        if (checkErrorAndReject(response, reject)) {
+          return;
+        }
+        resolve?.();
+        callbackArg?.call(this);
+      };
       extensionServer.sendRequest({
         command: "setSidebarContent",
         id: this._id,
@@ -545,15 +578,25 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         rootTitle,
         evaluateOnPage: true,
         evaluateOptions: typeof evaluateOptions === "object" ? evaluateOptions : {}
-      }, extractCallbackArgument(arguments));
+      }, callbackWrapper);
+      return promise;
     },
-    setObject: function(jsonObject, rootTitle, callback) {
+    setObject: function(jsonObject, rootTitle, _callback) {
+      const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
+      const callbackWrapper = (response) => {
+        if (checkErrorAndReject(response, reject)) {
+          return;
+        }
+        resolve?.();
+        callbackArg?.call(this);
+      };
       extensionServer.sendRequest({
         command: "setSidebarContent",
         id: this._id,
         expression: jsonObject,
         rootTitle
-      }, callback);
+      }, callbackWrapper);
+      return promise;
     },
     setPage: function(page) {
       extensionServer.sendRequest({ command: "setSidebarPage", id: this._id, page });

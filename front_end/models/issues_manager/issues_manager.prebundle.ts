@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as AttributionReportingIssue from './AttributionReportingIssue.js';
 import * as CheckFormsIssuesTrigger from './CheckFormsIssuesTrigger.js';
 import * as ClientHintIssue from './ClientHintIssue.js';
 import * as ConnectionAllowlistIssue from './ConnectionAllowlistIssue.js';
@@ -37,7 +36,6 @@ import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
 
 export {
-  AttributionReportingIssue,
   CheckFormsIssuesTrigger,
   ClientHintIssue,
   ConnectionAllowlistIssue,

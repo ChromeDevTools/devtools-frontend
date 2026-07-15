@@ -556,6 +556,7 @@ __export(StringUtilities_exports, {
   escapeCharacters: () => escapeCharacters,
   escapeForRegExp: () => escapeForRegExp,
   escapeForURLPattern: () => escapeForURLPattern,
+  escapeUnicode: () => escapeUnicode,
   filterRegex: () => filterRegex,
   findIndexesOfSubString: () => findIndexesOfSubString,
   findLineEndingIndexes: () => findLineEndingIndexes,
@@ -621,22 +622,35 @@ var escapedReplacements = /* @__PURE__ */ new Map([
   ["<script", "\\x3Cscript"],
   ["<\/script", "\\x3C/script"]
 ]);
+var escapeUnicode = (content) => {
+  return content.replaceAll(/[\p{Format}\p{Surrogate}]/gu, (match) => {
+    return match.split("").map((char) => "\\u" + toHexadecimal(char.charCodeAt(0), 4)).join("");
+  });
+};
 var formatAsJSLiteral = (content) => {
-  const patternsToEscape = /(\\|<(?:!--|\/?script))|(\p{Control})|(\p{Surrogate})/gu;
-  const patternsToEscapePlusSingleQuote = /(\\|'|<(?:!--|\/?script))|(\p{Control})|(\p{Surrogate})/gu;
+  const patternsToEscape = /(\\|<(?:!--|\/?script))|(\p{Control}|\p{Format})|(\p{Surrogate})/giu;
+  const patternsToEscapePlusSingleQuote = /(\\|'|<(?:!--|\/?script))|(\p{Control}|\p{Format})|(\p{Surrogate})/giu;
   const escapePattern = (match, pattern, controlChar, loneSurrogate) => {
     if (controlChar) {
       if (escapedReplacements.has(controlChar)) {
         return escapedReplacements.get(controlChar);
       }
-      const twoDigitHex = toHexadecimal(controlChar.charCodeAt(0), 2);
-      return "\\x" + twoDigitHex;
+      return controlChar.split("").map((char) => {
+        const charCode = char.charCodeAt(0);
+        if (controlChar.length === 1 && charCode <= 255) {
+          return "\\x" + toHexadecimal(charCode, 2);
+        }
+        return "\\u" + toHexadecimal(charCode, 4);
+      }).join("");
     }
     if (loneSurrogate) {
       const fourDigitHex = toHexadecimal(loneSurrogate.charCodeAt(0), 4);
       return "\\u" + fourDigitHex;
     }
     if (pattern) {
+      if (pattern.startsWith("<")) {
+        return "\\x3C" + pattern.slice(1);
+      }
       return escapedReplacements.get(pattern) || "";
     }
     return match;

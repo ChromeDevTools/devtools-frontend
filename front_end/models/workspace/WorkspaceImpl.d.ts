@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 import type { SearchConfig } from './SearchConfig.js';
 import { UISourceCode, type UISourceCodeMetadata } from './UISourceCode.js';
@@ -38,6 +39,7 @@ export interface Project {
      * @returns an iterator for the sources provided by this project.
      */
     uiSourceCodes(): Iterable<UISourceCode>;
+    target(): SDK.Target.Target | null;
 }
 export declare enum projectTypes {
     Debugger = "debugger",
@@ -50,7 +52,7 @@ export declare enum projectTypes {
 }
 export declare abstract class ProjectStore implements Project {
     #private;
-    constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string);
+    constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string, target?: SDK.Target.Target | null);
     id(): string;
     type(): projectTypes;
     displayName(): string;
@@ -61,6 +63,7 @@ export declare abstract class ProjectStore implements Project {
     removeProject(): void;
     uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode | null;
     uiSourceCodes(): Iterable<UISourceCode>;
+    target(): SDK.Target.Target | null;
     renameUISourceCode(uiSourceCode: UISourceCode, newName: string): void;
     rename(_uiSourceCode: UISourceCode, _newName: string, _callback: (arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString, arg3?: Common.ResourceType.ResourceType) => void): void;
     excludeFolder(_path: Platform.DevToolsPath.UrlString): void;

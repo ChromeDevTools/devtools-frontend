@@ -2,14 +2,12 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 export declare class DeviceModeView extends UI.Widget.VBox {
     wrapperInstance: UI.Widget.VBox | null;
-    blockElementToWidth: WeakMap<HTMLElement, number>;
     private model;
     private readonly mediaInspector;
     private showMediaInspectorSetting;
     private showRulersSetting;
     private readonly topRuler;
     private readonly leftRuler;
-    private presetBlocks;
     private responsivePresetsContainer;
     private screenArea;
     private pageArea;
@@ -37,7 +35,7 @@ export declare class DeviceModeView extends UI.Widget.VBox {
     private handleHeight?;
     constructor();
     private createUI;
-    private populatePresetsContainer;
+    private renderPresets;
     private createResizer;
     private onResizeStart;
     private onResizeUpdate;
@@ -64,11 +62,8 @@ export declare class Ruler extends UI.Widget.VBox {
     #private;
     private readonly horizontal;
     private scale;
-    private count;
     private readonly throttler;
     private readonly applyCallback;
-    private renderedScale;
-    private renderedZoomFactor;
     constructor(horizontal: boolean, applyCallback: (arg0: number) => void);
     render(scale: number): void;
     onResize(): void;

@@ -1,7 +1,6 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import { formatterWorkerPool } from './FormatterWorkerPool.js';
 function locationToPosition(lineEndings, lineNumber, columnNumber) {
@@ -19,18 +18,19 @@ function positionToLocation(lineEndings, position) {
     }
     return [lineNumber, columnNumber];
 }
-export async function format(contentType, mimeType, content, indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get()) {
+export async function format(settings, contentType, mimeType, content, indent) {
     if (contentType.isDocumentOrScriptOrStyleSheet()) {
-        return await formatScriptContent(mimeType, content, indent);
+        return await formatScriptContent(settings, mimeType, content, indent);
     }
     return { formattedContent: content, formattedMapping: new IdentityFormatterSourceMapping() };
 }
-export async function formatScriptContent(mimeType, content, indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get()) {
+export async function formatScriptContent(settings, mimeType, content, indent) {
+    const indentString = indent ?? settings.moduleSetting('text-editor-indent').get();
     const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, '\n').replace(/^\uFEFF/, '');
     const pool = formatterWorkerPool();
     let formatResult = { content: originalContent, mapping: { original: [], formatted: [] } };
     try {
-        formatResult = await pool.format(mimeType, originalContent, indent);
+        formatResult = await pool.format(mimeType, originalContent, indentString);
     }
     catch {
     }

@@ -26,6 +26,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(FrameManager) || forceNew) {
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
             Root.DevToolsContext.globalInstance().set(FrameManager, new FrameManager(TargetManager.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(FrameManager);

@@ -16,12 +16,14 @@ export declare const enum CookieStatus {
     ALLOWED_BY_HEURISTICS = 3
 }
 export declare class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetails> {
+    #private;
+    constructor(code: string, issueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId: Protocol.Audits.IssueId | undefined, frameManager: SDK.FrameManager.FrameManager);
     cookieId(): string;
     primaryKey(): string;
     /**
      * Returns an array of issues from a given CookieIssueDetails.
      */
-    static createIssuesFromCookieIssueDetails(cookieIssueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId: Protocol.Audits.IssueId | undefined): CookieIssue[];
+    static createIssuesFromCookieIssueDetails(cookieIssueDetails: Protocol.Audits.CookieIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId: Protocol.Audits.IssueId | undefined, frameManager: SDK.FrameManager.FrameManager): CookieIssue[];
     /**
      * Calculates an issue code from a reason, an operation, and an array of warningReasons. All these together
      * can uniquely identify a specific cookie issue.
@@ -39,7 +41,7 @@ export declare class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetail
     isCausedByThirdParty(): boolean;
     getKind(): IssueKind;
     static getCookieStatus(cookieIssueDetails: Protocol.Audits.CookieIssueDetails): CookieStatus | undefined;
-    static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue): CookieIssue[];
+    static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue, frameManager: SDK.FrameManager.FrameManager): CookieIssue[];
     static getSubCategory(code: string): CookieIssueSubCategory;
     static isThirdPartyCookiePhaseoutRelatedIssue(issue: Issue): boolean;
     maybeCreateConsoleMessage(): SDK.ConsoleModel.ConsoleMessage | undefined;

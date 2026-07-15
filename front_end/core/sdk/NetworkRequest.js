@@ -286,7 +286,9 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper {
     #isLinkPreload;
     #appliedNetworkConditionsId;
     #console;
-    constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console = Common.Console.Console.instance()) {
+    constructor(requestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, 
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    console = Common.Console.Console.instance()) {
         super();
         this.#requestId = requestId;
         this.#backendRequestId = backendRequestId;

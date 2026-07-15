@@ -56,7 +56,9 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper {
         loadOverride: null,
     }) {
         if (forceNew) {
+            /* eslint-disable @devtools/no-instance-of-migrated-singletons */
             Root.DevToolsContext.globalInstance().set(PageResourceLoader, new PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
+            /* eslint-enable @devtools/no-instance-of-migrated-singletons */
         }
         return Root.DevToolsContext.globalInstance().get(PageResourceLoader);
     }

@@ -964,7 +964,7 @@ export class TimelineUIUtils {
                 }
             }
         }
-        const isFreshOrEnhanced = Boolean(parsedTrace && Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace));
+        const isFreshOrEnhanced = Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
         switch (event.name) {
             case "GCEvent" /* Trace.Types.Events.Name.GC */:
             case "MajorGC" /* Trace.Types.Events.Name.MAJOR_GC */:
@@ -1428,7 +1428,8 @@ export class TimelineUIUtils {
             // and the time since the initiator (Pending For).
             const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
             if (stackTrace) {
-                const traceElement = await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+                const isFreshOrEnhanced = Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
+                const traceElement = await contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace), isFreshOrEnhanced);
                 contentHelper.appendSectionWithBodyIfExists(initiatorStackLabel, { body: traceElement });
             }
             const link = this.createEntryLink(initiator);
@@ -1535,8 +1536,7 @@ export class TimelineUIUtils {
                     null;
             }
             const niceNodeLink = createLinkForInvalidationNode(invalidation);
-            const text = scriptLink ?
-                uiI18n.getFormatLocalizedString(str_, UIStrings.invalidationWithCallFrame, { PH1: niceNodeLink, PH2: scriptLink }) :
+            const text = scriptLink ? uiI18n.getFormatLocalizedString(str_, UIStrings.invalidationWithCallFrame, { PH1: niceNodeLink, PH2: scriptLink }) :
                 niceNodeLink;
             // Sometimes we can get different Invalidation events which cause
             // the same text for the same element for the same reason to be
@@ -1878,6 +1878,25 @@ export class EventDispatchTypeDescriptor {
         this.eventTypes = eventTypes;
     }
 }
+/**
+ * When loading a trace file (non-fresh recording), the scriptIds in the trace
+ * are from the recorded page and are guaranteed to collide with scriptIds of
+ * the currently active inspected page. We strip them from the stack trace
+ * to force the stack trace rendering machinery to fall back to URL-based resolution
+ * instead of incorrectly matching the active page's script IDs.
+ */
+export function stripScriptIds(stackTrace) {
+    const callFrames = stackTrace.callFrames.map(frame => ({
+        ...frame,
+        scriptId: '',
+    }));
+    const parent = stackTrace.parent ? stripScriptIds(stackTrace.parent) : undefined;
+    return {
+        ...stackTrace,
+        callFrames,
+        parent,
+    };
+}
 export class TimelineDetailsContentHelper {
     fragment;
     #linkifier;
@@ -1940,7 +1959,8 @@ export class TimelineDetailsContentHelper {
         if (!stackTraceForEvent) {
             return;
         }
-        const traceElement = await this.createChildStackTraceElement(stackTraceForEvent);
+        const isFreshOrEnhanced = Tracing.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
+        const traceElement = await this.createChildStackTraceElement(stackTraceForEvent, isFreshOrEnhanced);
         this.appendSectionWithBodyIfExists(i18nString(UIStrings.functionStack), { body: traceElement });
     }
     linkifier() {
@@ -2004,7 +2024,7 @@ export class TimelineDetailsContentHelper {
      * Creates a stack trace element for the given trace, but checks if it
      * contains any entries, and discards it if it's empty.
      */
-    async createChildStackTraceElement(runtimeStackTrace) {
+    async createChildStackTraceElement(runtimeStackTrace, isFreshOrEnhanced) {
         // Fallback to the main page/root target. Maybe the main page has a source map we need.
         // Worst case the stack is identity mapped.
         const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -2012,7 +2032,11 @@ export class TimelineDetailsContentHelper {
         if (!target) {
             return null;
         }
-        const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target);
+        // If the trace is non-fresh and not enhanced, this means that any active
+        // sourcemaps are not related to the trace, and therefore we do not want to
+        // use them.
+        const stackTraceToUse = isFreshOrEnhanced ? runtimeStackTrace : stripScriptIds(runtimeStackTrace);
+        const stackTrace = await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTraceToUse, target);
         const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent();
         callFrameContents.options = { tabStops: true, showColumnNumber: true };
         callFrameContents.stackTrace = stackTrace;

@@ -394,6 +394,7 @@ export class DOMDebuggerManager {
     #cspViolationsToBreakOn = [];
     #eventListenerBreakpoints = [];
     #targetManager;
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     constructor(targetManager = TargetManager.instance()) {
         this.#targetManager = targetManager;
         this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting('xhr-breakpoints', []);
@@ -497,6 +498,7 @@ export class DOMDebuggerManager {
     static instance(opts = { forceNew: null }) {
         const { forceNew, targetManager } = opts;
         if (!Root.DevToolsContext.globalInstance().has(DOMDebuggerManager) || forceNew) {
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
             const manager = new DOMDebuggerManager(targetManager ?? TargetManager.instance());
             manager.initialize();
             Root.DevToolsContext.globalInstance().set(DOMDebuggerManager, manager);

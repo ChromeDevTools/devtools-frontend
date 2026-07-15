@@ -1,7 +1,6 @@
 // Copyright 2010 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import '../../ui/kit/kit.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -286,6 +285,11 @@ function getLocalizedResponseSourceForCode(swResponseSource) {
     }
 }
 export const DEFAULT_VIEW = (input, output, target) => {
+    const serverTimings = input.request.serverTimings ?? [];
+    const requestStartTime = input.request.startTime;
+    const requestIssueTime = input.request.issueTime();
+    const requestUnfinished = !input.request.finished;
+    const routerDetails = input.request.serviceWorkerRouterInfo;
     const revealThrottled = () => {
         if (input.wasThrottled) {
             void Common.Revealer.reveal(input.wasThrottled);
@@ -331,6 +335,78 @@ export const DEFAULT_VIEW = (input, output, target) => {
           </td>
         `}
       </tr>`;
+        // clang-format on
+    };
+    const routerDetailsTree = (serviceWorkerRouterInfo) => {
+        const matchedSourceType = serviceWorkerRouterInfo.matchedSourceType;
+        const matchedSourceTypeString = String(matchedSourceType) || i18nString(UIStrings.unknown);
+        const actualSourceType = serviceWorkerRouterInfo.actualSourceType;
+        const actualSourceTypeString = String(actualSourceType) || i18nString(UIStrings.unknown);
+        // clang-format off
+        return html `<devtools-tree>
+      <ul role=tree>
+        <li role=treeitem>
+          <div class=network-fetch-details-treeitem>
+            ${i18nString(UIStrings.routerMatchedSource, { PH1: matchedSourceTypeString })}
+          </div>
+        </li>
+        <li role=treeitem>
+          <div class=network-fetch-details-treeitem>
+            ${i18nString(UIStrings.routerActualSource, { PH1: actualSourceTypeString })}
+          </div>
+        </li>
+      </ul>
+    </devtools-tree>`;
+        // clang-format on
+    };
+    const fetchDetailsTree = () => {
+        const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(input.request.url());
+        const origRequestTree = origRequest &&
+            new ObjectUI.ObjectPropertiesSection.ObjectTree(SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest), {
+                readOnly: true,
+                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+            });
+        const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(input.request.url());
+        const responseTree = response &&
+            new ObjectUI.ObjectPropertiesSection.ObjectTree(SDK.RemoteObject.RemoteObject.fromLocalObject(response), {
+                readOnly: true,
+                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+            });
+        const swResponseSource = input.request.serviceWorkerResponseSource();
+        const responseCacheStorageName = input.request.getResponseCacheStorageCacheName();
+        const retrievalTime = input.request.getResponseRetrievalTime();
+        // clang-format off
+        return html `<devtools-tree>
+      <ul role=tree>
+        ${origRequestTree ? html `<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
+            ${i18nString(UIStrings.originalRequest)}
+            ${ObjectUI.ObjectPropertiesSection.renderObjectTree(origRequestTree)}
+          </li>` : nothing}
+        ${responseTree ? html `<li role=treeitem class="object-properties-section-root-element object-properties-section" open>
+            ${i18nString(UIStrings.responseReceived)}
+            ${ObjectUI.ObjectPropertiesSection.renderObjectTree(responseTree)}
+          </li>` : nothing}
+        <li role=treeitem>
+          <div class=network-fetch-details-treeitem>
+            ${i18nString(UIStrings.sourceOfResponseS, { PH1: swResponseSource ?
+                getLocalizedResponseSourceForCode(swResponseSource) :
+                i18nString(UIStrings.unknown) })}
+          </div>
+        </li>
+        <li role=treeitem>
+          <div class=network-fetch-details-treeitem>
+            ${responseCacheStorageName ?
+            i18nString(UIStrings.cacheStorageCacheNameS, { PH1: responseCacheStorageName }) :
+            i18nString(UIStrings.cacheStorageCacheNameUnknown)}
+          </div>
+        </li>
+        ${retrievalTime ? html `<li role=treeitem>
+            <div class=network-fetch-details-treeitem>
+              ${i18nString(UIStrings.retrievalTimeS, { PH1: retrievalTime.toString() })}
+            </div>
+          </li>` : nothing}
+      </ul>
+    </devtools-tree>`;
         // clang-format on
     };
     const onActivate = (e) => {
@@ -397,12 +473,12 @@ export const DEFAULT_VIEW = (input, output, target) => {
           </tr>
           <tr>
             <td colspan = 3>
-              ${i18nString(UIStrings.queuedAtS, { PH1: input.calculator.formatValue(input.requestIssueTime, 2) })}
+              ${i18nString(UIStrings.queuedAtS, { PH1: input.calculator.formatValue(requestIssueTime, 2) })}
             </td>
           </tr>
           <tr>
             <td colspan=3>
-              ${i18nString(UIStrings.startedAtS, { PH1: input.calculator.formatValue(input.requestStartTime, 2) })}
+              ${i18nString(UIStrings.startedAtS, { PH1: input.calculator.formatValue(requestStartTime, 2) })}
             </td>
           </tr>
         </thead>
@@ -444,19 +520,19 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 </div>
               </td>
             </tr>
-            ${range.name === 'serviceworker-respondwith' && input.fetchDetails ? html `
+            ${range.name === 'serviceworker-respondwith' && input.request.fetchedViaServiceWorker ? html `
               <tr class="network-fetch-timing-bar-details network-fetch-timing-bar-details-collapsed">
-                ${input.fetchDetails.element}
+                ${fetchDetailsTree()}
               </tr>`
         : nothing}
-            ${range.name === 'serviceworker-routerevaluation' && input.routerDetails ? html `
+            ${range.name === 'serviceworker-routerevaluation' && routerDetails ? html `
               <tr class="router-evaluation-timing-bar-details network-fetch-timing-bar-details-collapsed">
-                ${input.routerDetails.element}
+                ${routerDetailsTree(routerDetails)}
               </tr>`
         : nothing}
           `)}
         `)}
-        ${input.requestUnfinished ? html `
+        ${requestUnfinished ? html `
           <tr>
             <td class=caution colspan=3>
               ${i18nString(UIStrings.cautionRequestIsNotFinishedYet)}
@@ -465,9 +541,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
        <tr class=network-timing-footer>
          <td colspan=1>
            <devtools-link
-             href="https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation"
+             href='https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation'
              class=devtools-link
-             jslogcontext="explanation">
+             jslogcontext='explanation'>
                ${i18nString(UIStrings.explanation)}
            </devtools-link>
          <td></td>
@@ -486,9 +562,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
          <td></td>
          <td>${i18nString(UIStrings.time)}</td>
        </tr>
-       ${repeat(input.serverTimings.filter(item => item.metric.toLowerCase() !== 'total'), addServerTiming)}
-       ${repeat(input.serverTimings.filter(item => item.metric.toLowerCase() === 'total'), addServerTiming)}
-       ${input.serverTimings.length === 0 ? html `
+       ${repeat(serverTimings.filter(item => item.metric.toLowerCase() !== 'total'), addServerTiming)}
+       ${repeat(serverTimings.filter(item => item.metric.toLowerCase() === 'total'), addServerTiming)}
+       ${serverTimings.length === 0 ? html `
          <tr>
            <td colspan=3>
 ${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, { PH1: html `<devtools-link href="https://web.dev/custom-metrics/#server-timing-api" .jslogContext=${'server-timing-api'}>${i18nString(UIStrings.theServerTimingApi)}</devtools-link>` })}
@@ -527,100 +603,12 @@ export class RequestTimingView extends UI.Widget.VBox {
             startTime,
             endTime,
             totalDuration,
-            serverTimings: this.#request.serverTimings ?? [],
             calculator: this.#calculator,
-            requestStartTime: this.#request.startTime,
-            requestIssueTime: this.#request.issueTime(),
-            requestUnfinished: !this.#request.finished,
-            fetchDetails: this.#fetchDetailsTree(),
-            routerDetails: this.#routerDetailsTree(),
+            request: this.#request,
             wasThrottled: conditions?.urlPattern ? conditions : undefined,
             timeRanges,
         };
         this.#view(input, {}, this.contentElement);
-    }
-    #fetchDetailsTree() {
-        if (!this.#request?.fetchedViaServiceWorker) {
-            return undefined;
-        }
-        const detailsView = new UI.TreeOutline.TreeOutlineInShadow();
-        const origRequest = Logs.NetworkLog.NetworkLog.instance().originalRequestForURL(this.#request.url());
-        if (origRequest) {
-            const requestObject = SDK.RemoteObject.RemoteObject.fromLocalObject(origRequest);
-            const requestTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(requestObject, {
-                readOnly: true,
-                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-            }));
-            requestTreeElement.title = i18nString(UIStrings.originalRequest);
-            detailsView.appendChild(requestTreeElement);
-        }
-        const response = Logs.NetworkLog.NetworkLog.instance().originalResponseForURL(this.#request.url());
-        if (response) {
-            const responseObject = SDK.RemoteObject.RemoteObject.fromLocalObject(response);
-            const responseTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(new ObjectUI.ObjectPropertiesSection.ObjectTree(responseObject, {
-                readOnly: true,
-                propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-            }));
-            responseTreeElement.title = i18nString(UIStrings.responseReceived);
-            detailsView.appendChild(responseTreeElement);
-        }
-        const serviceWorkerResponseSource = document.createElement('div');
-        serviceWorkerResponseSource.classList.add('network-fetch-details-treeitem');
-        let swResponseSourceString = i18nString(UIStrings.unknown);
-        const swResponseSource = this.#request.serviceWorkerResponseSource();
-        if (swResponseSource) {
-            swResponseSourceString = getLocalizedResponseSourceForCode(swResponseSource);
-        }
-        serviceWorkerResponseSource.textContent = i18nString(UIStrings.sourceOfResponseS, { PH1: swResponseSourceString });
-        const responseSourceTreeElement = new UI.TreeOutline.TreeElement(serviceWorkerResponseSource);
-        detailsView.appendChild(responseSourceTreeElement);
-        const cacheNameElement = document.createElement('div');
-        cacheNameElement.classList.add('network-fetch-details-treeitem');
-        const responseCacheStorageName = this.#request.getResponseCacheStorageCacheName();
-        if (responseCacheStorageName) {
-            cacheNameElement.textContent = i18nString(UIStrings.cacheStorageCacheNameS, { PH1: responseCacheStorageName });
-        }
-        else {
-            cacheNameElement.textContent = i18nString(UIStrings.cacheStorageCacheNameUnknown);
-        }
-        const cacheNameTreeElement = new UI.TreeOutline.TreeElement(cacheNameElement);
-        detailsView.appendChild(cacheNameTreeElement);
-        const retrievalTime = this.#request.getResponseRetrievalTime();
-        if (retrievalTime) {
-            const responseTimeElement = document.createElement('div');
-            responseTimeElement.classList.add('network-fetch-details-treeitem');
-            responseTimeElement.textContent = i18nString(UIStrings.retrievalTimeS, { PH1: retrievalTime.toString() });
-            const responseTimeTreeElement = new UI.TreeOutline.TreeElement(responseTimeElement);
-            detailsView.appendChild(responseTimeTreeElement);
-        }
-        return detailsView;
-    }
-    #routerDetailsTree() {
-        if (!this.#request?.serviceWorkerRouterInfo) {
-            return undefined;
-        }
-        const detailsView = new UI.TreeOutline.TreeOutlineInShadow();
-        const { serviceWorkerRouterInfo } = this.#request;
-        if (!serviceWorkerRouterInfo) {
-            return;
-        }
-        // Add matched source type element
-        const matchedSourceTypeElement = document.createElement('div');
-        matchedSourceTypeElement.classList.add('network-fetch-details-treeitem');
-        const matchedSourceType = serviceWorkerRouterInfo.matchedSourceType;
-        const matchedSourceTypeString = String(matchedSourceType) || i18nString(UIStrings.unknown);
-        matchedSourceTypeElement.textContent = i18nString(UIStrings.routerMatchedSource, { PH1: matchedSourceTypeString });
-        const matchedSourceTypeTreeElement = new UI.TreeOutline.TreeElement(matchedSourceTypeElement);
-        detailsView.appendChild(matchedSourceTypeTreeElement);
-        // Add actual source type element
-        const actualSourceTypeElement = document.createElement('div');
-        actualSourceTypeElement.classList.add('network-fetch-details-treeitem');
-        const actualSourceType = serviceWorkerRouterInfo.actualSourceType;
-        const actualSourceTypeString = String(actualSourceType) || i18nString(UIStrings.unknown);
-        actualSourceTypeElement.textContent = i18nString(UIStrings.routerActualSource, { PH1: actualSourceTypeString });
-        const actualSourceTypeTreeElement = new UI.TreeOutline.TreeElement(actualSourceTypeElement);
-        detailsView.appendChild(actualSourceTypeTreeElement);
-        return detailsView;
     }
     set request(request) {
         this.#request = request;

@@ -44,6 +44,7 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
 export class EventBreakpointsManager {
     #eventListenerBreakpoints = [];
     #targetManager;
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     constructor(targetManager = TargetManager.instance()) {
         this.#targetManager = targetManager;
         this.createInstrumentationBreakpoints("auction-worklet" /* Category.AUCTION_WORKLET */, [
@@ -102,7 +103,9 @@ export class EventBreakpointsManager {
     static instance(opts = { forceNew: null }) {
         const { forceNew, targetManager } = opts;
         if (!Root.DevToolsContext.globalInstance().has(EventBreakpointsManager) || forceNew) {
-            Root.DevToolsContext.globalInstance().set(EventBreakpointsManager, new EventBreakpointsManager(targetManager ?? TargetManager.instance()));
+            Root.DevToolsContext.globalInstance().set(EventBreakpointsManager, 
+            // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+            new EventBreakpointsManager(targetManager ?? TargetManager.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(EventBreakpointsManager);
     }

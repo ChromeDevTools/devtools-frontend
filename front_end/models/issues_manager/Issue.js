@@ -1,7 +1,6 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
@@ -65,8 +64,8 @@ export function unionIssueKind(a, b) {
     }
     return "Improvement" /* IssueKind.IMPROVEMENT */;
 }
-export function getShowThirdPartyIssuesSetting() {
-    return Common.Settings.Settings.instance().createSetting('show-third-party-issues', true);
+export function getShowThirdPartyIssuesSetting(settings) {
+    return settings.createSetting('show-third-party-issues', true);
 }
 export class Issue {
     #issueCode;

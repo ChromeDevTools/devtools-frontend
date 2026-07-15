@@ -3899,14 +3899,41 @@
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
     "message": "Bounce tracking mitigations"
   },
+  "panels/application/components/AdsView.ts | adIframes": {
+    "message": "Ad iframes"
+  },
+  "panels/application/components/AdsView.ts | adIframesTitle": {
+    "message": "Ad iframes (total {PH1})"
+  },
   "panels/application/components/AdsView.ts | average": {
     "message": "(Average: {PH1})"
+  },
+  "panels/application/components/AdsView.ts | cpu": {
+    "message": "CPU"
+  },
+  "panels/application/components/AdsView.ts | elementId": {
+    "message": "Element ID"
+  },
+  "panels/application/components/AdsView.ts | initialOrigin": {
+    "message": "Initial origin"
+  },
+  "panels/application/components/AdsView.ts | metrics": {
+    "message": "Metrics"
+  },
+  "panels/application/components/AdsView.ts | network": {
+    "message": "Network"
+  },
+  "panels/application/components/AdsView.ts | notAvailable": {
+    "message": "N/A"
   },
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Total CPU usage by ads"
   },
   "panels/application/components/AdsView.ts | totalNetworkUsage": {
     "message": "Total network usage by ads"
+  },
+  "panels/application/components/AdsView.ts | unnamed": {
+    "message": "<unnamed>"
   },
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "Viewport ad count"
@@ -9032,21 +9059,6 @@
   "panels/issues/AffectedTrackingSitesView.ts | nTrackingSites": {
     "message": "{n, plural, =1 {1 potentially tracking website} other {# potentially tracking websites}}"
   },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | element": {
-    "message": "Element"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | invalidHeaderValue": {
-    "message": "Invalid Header Value"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | nViolations": {
-    "message": "{n, plural, =1 {# violation} other {# violations}}"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | request": {
-    "message": "Request"
-  },
-  "panels/issues/AttributionReportingIssueDetailsView.ts | untrustworthyOrigin": {
-    "message": "Untrustworthy origin"
-  },
   "panels/issues/components/HideIssuesMenu.ts | tooltipTitle": {
     "message": "Hide issues"
   },
@@ -9160,9 +9172,6 @@
   },
   "panels/issues/issues-meta.ts | showIssues": {
     "message": "Show Issues"
-  },
-  "panels/issues/IssuesPane.ts | attributionReporting": {
-    "message": "Attribution Reporting API"
   },
   "panels/issues/IssuesPane.ts | contentSecurityPolicy": {
     "message": "Content Security Policy"
@@ -9753,7 +9762,7 @@
     "message": "Jump to this memory"
   },
   "panels/linear_memory_inspector/components/LinearMemoryInspector.ts | addressHasToBeANumberBetweenSAnd": {
-    "message": "Address has to be a number between {PH1} and {PH2}"
+    "message": "Address must be a number between {PH1} and {PH2}"
   },
   "panels/linear_memory_inspector/components/LinearMemoryNavigator.ts | enterAddress": {
     "message": "Enter address"
@@ -9774,7 +9783,7 @@
     "message": "Refresh"
   },
   "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | changeEndianness": {
-    "message": "Change Endianness"
+    "message": "Change endianness"
   },
   "panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts | toggleValueTypeSettings": {
     "message": "Toggle value type settings"
@@ -9807,7 +9816,7 @@
     "message": "Show Memory inspector"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
-    "message": "Could not open linear memory inspector: failed locating buffer."
+    "message": "Could not open Memory inspector: buffer not found."
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Open in Memory inspector panel"
@@ -12617,290 +12626,53 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Type"
   },
-  "panels/recorder/components/CreateRecordingView.ts | cancelRecording": {
+  "panels/recorder/CreateRecordingView.ts | cancelRecording": {
     "message": "Cancel recording"
   },
-  "panels/recorder/components/CreateRecordingView.ts | createRecording": {
+  "panels/recorder/CreateRecordingView.ts | createRecording": {
     "message": "Create a new recording"
   },
-  "panels/recorder/components/CreateRecordingView.ts | includeNecessarySelectors": {
+  "panels/recorder/CreateRecordingView.ts | includeNecessarySelectors": {
     "message": "You must choose CSS, Pierce, or XPath as one of your options. Only these selectors are guaranteed to be recorded since ARIA and text selectors may not be unique."
   },
-  "panels/recorder/components/CreateRecordingView.ts | learnMore": {
+  "panels/recorder/CreateRecordingView.ts | learnMore": {
     "message": "Learn more"
   },
-  "panels/recorder/components/CreateRecordingView.ts | recordingName": {
+  "panels/recorder/CreateRecordingView.ts | recordingName": {
     "message": "Recording name"
   },
-  "panels/recorder/components/CreateRecordingView.ts | recordingNameIsRequired": {
+  "panels/recorder/CreateRecordingView.ts | recordingNameIsRequired": {
     "message": "Recording name is required"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorAttribute": {
+  "panels/recorder/CreateRecordingView.ts | selectorAttribute": {
     "message": "Selector attribute"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorTypeARIA": {
+  "panels/recorder/CreateRecordingView.ts | selectorTypeARIA": {
     "message": "ARIA"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorTypeCSS": {
+  "panels/recorder/CreateRecordingView.ts | selectorTypeCSS": {
     "message": "CSS"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorTypePierce": {
+  "panels/recorder/CreateRecordingView.ts | selectorTypePierce": {
     "message": "Pierce"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorTypes": {
+  "panels/recorder/CreateRecordingView.ts | selectorTypes": {
     "message": "Selector types to record"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorTypeText": {
+  "panels/recorder/CreateRecordingView.ts | selectorTypeText": {
     "message": "Text"
   },
-  "panels/recorder/components/CreateRecordingView.ts | selectorTypeXPath": {
+  "panels/recorder/CreateRecordingView.ts | selectorTypeXPath": {
     "message": "XPath"
   },
-  "panels/recorder/components/CreateRecordingView.ts | startRecording": {
+  "panels/recorder/CreateRecordingView.ts | startRecording": {
     "message": "Start recording"
   },
-  "panels/recorder/components/ExtensionView.ts | closeView": {
+  "panels/recorder/ExtensionView.ts | closeView": {
     "message": "Close"
   },
-  "panels/recorder/components/ExtensionView.ts | extension": {
+  "panels/recorder/ExtensionView.ts | extension": {
     "message": "Content provided by a browser extension"
-  },
-  "panels/recorder/components/RecordingListView.ts | createRecording": {
-    "message": "Create a new recording"
-  },
-  "panels/recorder/components/RecordingListView.ts | deleteRecording": {
-    "message": "Delete recording"
-  },
-  "panels/recorder/components/RecordingListView.ts | openRecording": {
-    "message": "Open recording"
-  },
-  "panels/recorder/components/RecordingListView.ts | playRecording": {
-    "message": "Play recording"
-  },
-  "panels/recorder/components/RecordingListView.ts | savedRecordings": {
-    "message": "Saved recordings"
-  },
-  "panels/recorder/components/RecordingView.ts | addAssertion": {
-    "message": "Add assertion"
-  },
-  "panels/recorder/components/RecordingView.ts | cancelReplay": {
-    "message": "Cancel replay"
-  },
-  "panels/recorder/components/RecordingView.ts | codeSidebarClosed": {
-    "message": "Code sidebar closed"
-  },
-  "panels/recorder/components/RecordingView.ts | codeSidebarOpened": {
-    "message": "Code sidebar opened"
-  },
-  "panels/recorder/components/RecordingView.ts | default": {
-    "message": "Default"
-  },
-  "panels/recorder/components/RecordingView.ts | desktop": {
-    "message": "Desktop"
-  },
-  "panels/recorder/components/RecordingView.ts | download": {
-    "message": "Download: {value}"
-  },
-  "panels/recorder/components/RecordingView.ts | editReplaySettings": {
-    "message": "Edit replay settings"
-  },
-  "panels/recorder/components/RecordingView.ts | editTitle": {
-    "message": "Edit title"
-  },
-  "panels/recorder/components/RecordingView.ts | endRecording": {
-    "message": "End recording"
-  },
-  "panels/recorder/components/RecordingView.ts | environment": {
-    "message": "Environment"
-  },
-  "panels/recorder/components/RecordingView.ts | hideCode": {
-    "message": "Hide code"
-  },
-  "panels/recorder/components/RecordingView.ts | latency": {
-    "message": "Latency: {value} ms"
-  },
-  "panels/recorder/components/RecordingView.ts | mobile": {
-    "message": "Mobile"
-  },
-  "panels/recorder/components/RecordingView.ts | network": {
-    "message": "Network"
-  },
-  "panels/recorder/components/RecordingView.ts | performancePanel": {
-    "message": "Performance panel"
-  },
-  "panels/recorder/components/RecordingView.ts | recording": {
-    "message": "Recording…"
-  },
-  "panels/recorder/components/RecordingView.ts | recordingIsBeingStopped": {
-    "message": "Stopping recording…"
-  },
-  "panels/recorder/components/RecordingView.ts | replaySettings": {
-    "message": "Replay settings"
-  },
-  "panels/recorder/components/RecordingView.ts | requiredTitleError": {
-    "message": "Title is required"
-  },
-  "panels/recorder/components/RecordingView.ts | screenshotForSection": {
-    "message": "Screenshot for this section"
-  },
-  "panels/recorder/components/RecordingView.ts | showCode": {
-    "message": "Show code"
-  },
-  "panels/recorder/components/RecordingView.ts | timeout": {
-    "message": "Timeout: {value} ms"
-  },
-  "panels/recorder/components/RecordingView.ts | timeoutExplanation": {
-    "message": "The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector does not appear on the page within the specified timeout, the replay fails with an error."
-  },
-  "panels/recorder/components/RecordingView.ts | timeoutLabel": {
-    "message": "Timeout"
-  },
-  "panels/recorder/components/RecordingView.ts | upload": {
-    "message": "Upload: {value}"
-  },
-  "panels/recorder/components/ReplaySection.ts | extensionGroup": {
-    "message": "Extensions"
-  },
-  "panels/recorder/components/ReplaySection.ts | Replay": {
-    "message": "Replay"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
-    "message": "Extremely slow speed"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
-    "message": "Extremely slow"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplayNormalButtonLabel": {
-    "message": "Normal speed"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplayNormalItemLabel": {
-    "message": "Normal (Default)"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplaySlowButtonLabel": {
-    "message": "Slow speed"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplaySlowItemLabel": {
-    "message": "Slow"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowButtonLabel": {
-    "message": "Very slow speed"
-  },
-  "panels/recorder/components/ReplaySection.ts | ReplayVerySlowItemLabel": {
-    "message": "Very slow"
-  },
-  "panels/recorder/components/ReplaySection.ts | speedGroup": {
-    "message": "Speed"
-  },
-  "panels/recorder/components/SelectorPicker.ts | selectorPicker": {
-    "message": "Select an element in the page to update selectors"
-  },
-  "panels/recorder/components/StepEditor.ts | addAttribute": {
-    "message": "Add {attributeName}"
-  },
-  "panels/recorder/components/StepEditor.ts | addFrameIndex": {
-    "message": "Add frame index within the frame tree"
-  },
-  "panels/recorder/components/StepEditor.ts | addSelector": {
-    "message": "Add a selector"
-  },
-  "panels/recorder/components/StepEditor.ts | addSelectorPart": {
-    "message": "Add a selector part"
-  },
-  "panels/recorder/components/StepEditor.ts | deleteRow": {
-    "message": "Delete row"
-  },
-  "panels/recorder/components/StepEditor.ts | notSaved": {
-    "message": "Not saved: {error}"
-  },
-  "panels/recorder/components/StepEditor.ts | removeFrameIndex": {
-    "message": "Remove frame index"
-  },
-  "panels/recorder/components/StepEditor.ts | removeSelector": {
-    "message": "Remove a selector"
-  },
-  "panels/recorder/components/StepEditor.ts | removeSelectorPart": {
-    "message": "Remove a selector part"
-  },
-  "panels/recorder/components/StepEditor.ts | unknownActionType": {
-    "message": "Enter a valid action type"
-  },
-  "panels/recorder/components/StepView.ts | addBreakpoint": {
-    "message": "Add breakpoint"
-  },
-  "panels/recorder/components/StepView.ts | addStepAfter": {
-    "message": "Add step after"
-  },
-  "panels/recorder/components/StepView.ts | addStepBefore": {
-    "message": "Add step before"
-  },
-  "panels/recorder/components/StepView.ts | breakpoints": {
-    "message": "Breakpoints"
-  },
-  "panels/recorder/components/StepView.ts | changeStepTitle": {
-    "message": "Change"
-  },
-  "panels/recorder/components/StepView.ts | clickStepTitle": {
-    "message": "Click"
-  },
-  "panels/recorder/components/StepView.ts | closeStepTitle": {
-    "message": "Close"
-  },
-  "panels/recorder/components/StepView.ts | copyAs": {
-    "message": "Copy as"
-  },
-  "panels/recorder/components/StepView.ts | customStepTitle": {
-    "message": "Custom step"
-  },
-  "panels/recorder/components/StepView.ts | doubleClickStepTitle": {
-    "message": "Double click"
-  },
-  "panels/recorder/components/StepView.ts | elementRoleButton": {
-    "message": "Button"
-  },
-  "panels/recorder/components/StepView.ts | elementRoleFallback": {
-    "message": "Element"
-  },
-  "panels/recorder/components/StepView.ts | elementRoleInput": {
-    "message": "Input"
-  },
-  "panels/recorder/components/StepView.ts | emulateNetworkConditionsStepTitle": {
-    "message": "Emulate network conditions"
-  },
-  "panels/recorder/components/StepView.ts | hoverStepTitle": {
-    "message": "Hover"
-  },
-  "panels/recorder/components/StepView.ts | keyDownStepTitle": {
-    "message": "Key down"
-  },
-  "panels/recorder/components/StepView.ts | keyUpStepTitle": {
-    "message": "Key up"
-  },
-  "panels/recorder/components/StepView.ts | navigateStepTitle": {
-    "message": "Navigate"
-  },
-  "panels/recorder/components/StepView.ts | openStepActions": {
-    "message": "Open step actions"
-  },
-  "panels/recorder/components/StepView.ts | removeBreakpoint": {
-    "message": "Remove breakpoint"
-  },
-  "panels/recorder/components/StepView.ts | removeStep": {
-    "message": "Remove step"
-  },
-  "panels/recorder/components/StepView.ts | scrollStepTitle": {
-    "message": "Scroll"
-  },
-  "panels/recorder/components/StepView.ts | setViewportClickTitle": {
-    "message": "Set viewport"
-  },
-  "panels/recorder/components/StepView.ts | stepManagement": {
-    "message": "Manage steps"
-  },
-  "panels/recorder/components/StepView.ts | waitForElementStepTitle": {
-    "message": "Wait for element"
-  },
-  "panels/recorder/components/StepView.ts | waitForExpressionStepTitle": {
-    "message": "Wait for expression"
   },
   "panels/recorder/models/RecorderSettings.ts | defaultRecordingName": {
     "message": "Recording {DATE} at {TIME}"
@@ -13000,6 +12772,243 @@
   },
   "panels/recorder/RecorderController.ts | typeAllowImporting": {
     "message": "Type “{PH1}”"
+  },
+  "panels/recorder/RecordingListView.ts | createRecording": {
+    "message": "Create a new recording"
+  },
+  "panels/recorder/RecordingListView.ts | deleteRecording": {
+    "message": "Delete recording"
+  },
+  "panels/recorder/RecordingListView.ts | openRecording": {
+    "message": "Open recording"
+  },
+  "panels/recorder/RecordingListView.ts | playRecording": {
+    "message": "Play recording"
+  },
+  "panels/recorder/RecordingListView.ts | savedRecordings": {
+    "message": "Saved recordings"
+  },
+  "panels/recorder/RecordingView.ts | addAssertion": {
+    "message": "Add assertion"
+  },
+  "panels/recorder/RecordingView.ts | cancelReplay": {
+    "message": "Cancel replay"
+  },
+  "panels/recorder/RecordingView.ts | codeSidebarClosed": {
+    "message": "Code sidebar closed"
+  },
+  "panels/recorder/RecordingView.ts | codeSidebarOpened": {
+    "message": "Code sidebar opened"
+  },
+  "panels/recorder/RecordingView.ts | default": {
+    "message": "Default"
+  },
+  "panels/recorder/RecordingView.ts | desktop": {
+    "message": "Desktop"
+  },
+  "panels/recorder/RecordingView.ts | download": {
+    "message": "Download: {value}"
+  },
+  "panels/recorder/RecordingView.ts | editReplaySettings": {
+    "message": "Edit replay settings"
+  },
+  "panels/recorder/RecordingView.ts | editTitle": {
+    "message": "Edit title"
+  },
+  "panels/recorder/RecordingView.ts | endRecording": {
+    "message": "End recording"
+  },
+  "panels/recorder/RecordingView.ts | environment": {
+    "message": "Environment"
+  },
+  "panels/recorder/RecordingView.ts | hideCode": {
+    "message": "Hide code"
+  },
+  "panels/recorder/RecordingView.ts | latency": {
+    "message": "Latency: {value} ms"
+  },
+  "panels/recorder/RecordingView.ts | mobile": {
+    "message": "Mobile"
+  },
+  "panels/recorder/RecordingView.ts | network": {
+    "message": "Network"
+  },
+  "panels/recorder/RecordingView.ts | performancePanel": {
+    "message": "Performance panel"
+  },
+  "panels/recorder/RecordingView.ts | recording": {
+    "message": "Recording…"
+  },
+  "panels/recorder/RecordingView.ts | recordingIsBeingStopped": {
+    "message": "Stopping recording…"
+  },
+  "panels/recorder/RecordingView.ts | replaySettings": {
+    "message": "Replay settings"
+  },
+  "panels/recorder/RecordingView.ts | requiredTitleError": {
+    "message": "Title is required"
+  },
+  "panels/recorder/RecordingView.ts | screenshotForSection": {
+    "message": "Screenshot for this section"
+  },
+  "panels/recorder/RecordingView.ts | showCode": {
+    "message": "Show code"
+  },
+  "panels/recorder/RecordingView.ts | timeout": {
+    "message": "Timeout: {value} ms"
+  },
+  "panels/recorder/RecordingView.ts | timeoutExplanation": {
+    "message": "The timeout setting (in milliseconds) applies to every action when replaying the recording. For example, if a DOM element identified by a CSS selector does not appear on the page within the specified timeout, the replay fails with an error."
+  },
+  "panels/recorder/RecordingView.ts | timeoutLabel": {
+    "message": "Timeout"
+  },
+  "panels/recorder/RecordingView.ts | upload": {
+    "message": "Upload: {value}"
+  },
+  "panels/recorder/ReplaySection.ts | extensionGroup": {
+    "message": "Extensions"
+  },
+  "panels/recorder/ReplaySection.ts | Replay": {
+    "message": "Replay"
+  },
+  "panels/recorder/ReplaySection.ts | ReplayExtremelySlowButtonLabel": {
+    "message": "Extremely slow speed"
+  },
+  "panels/recorder/ReplaySection.ts | ReplayExtremelySlowItemLabel": {
+    "message": "Extremely slow"
+  },
+  "panels/recorder/ReplaySection.ts | ReplayNormalButtonLabel": {
+    "message": "Normal speed"
+  },
+  "panels/recorder/ReplaySection.ts | ReplayNormalItemLabel": {
+    "message": "Normal (Default)"
+  },
+  "panels/recorder/ReplaySection.ts | ReplaySlowButtonLabel": {
+    "message": "Slow speed"
+  },
+  "panels/recorder/ReplaySection.ts | ReplaySlowItemLabel": {
+    "message": "Slow"
+  },
+  "panels/recorder/ReplaySection.ts | ReplayVerySlowButtonLabel": {
+    "message": "Very slow speed"
+  },
+  "panels/recorder/ReplaySection.ts | ReplayVerySlowItemLabel": {
+    "message": "Very slow"
+  },
+  "panels/recorder/ReplaySection.ts | speedGroup": {
+    "message": "Speed"
+  },
+  "panels/recorder/SelectorPicker.ts | selectorPicker": {
+    "message": "Select an element in the page to update selectors"
+  },
+  "panels/recorder/StepEditor.ts | addAttribute": {
+    "message": "Add {attributeName}"
+  },
+  "panels/recorder/StepEditor.ts | addFrameIndex": {
+    "message": "Add frame index within the frame tree"
+  },
+  "panels/recorder/StepEditor.ts | addSelector": {
+    "message": "Add a selector"
+  },
+  "panels/recorder/StepEditor.ts | addSelectorPart": {
+    "message": "Add a selector part"
+  },
+  "panels/recorder/StepEditor.ts | deleteRow": {
+    "message": "Delete row"
+  },
+  "panels/recorder/StepEditor.ts | notSaved": {
+    "message": "Not saved: {error}"
+  },
+  "panels/recorder/StepEditor.ts | removeFrameIndex": {
+    "message": "Remove frame index"
+  },
+  "panels/recorder/StepEditor.ts | removeSelector": {
+    "message": "Remove a selector"
+  },
+  "panels/recorder/StepEditor.ts | removeSelectorPart": {
+    "message": "Remove a selector part"
+  },
+  "panels/recorder/StepEditor.ts | unknownActionType": {
+    "message": "Enter a valid action type"
+  },
+  "panels/recorder/StepView.ts | addBreakpoint": {
+    "message": "Add breakpoint"
+  },
+  "panels/recorder/StepView.ts | addStepAfter": {
+    "message": "Add step after"
+  },
+  "panels/recorder/StepView.ts | addStepBefore": {
+    "message": "Add step before"
+  },
+  "panels/recorder/StepView.ts | breakpoints": {
+    "message": "Breakpoints"
+  },
+  "panels/recorder/StepView.ts | changeStepTitle": {
+    "message": "Change"
+  },
+  "panels/recorder/StepView.ts | clickStepTitle": {
+    "message": "Click"
+  },
+  "panels/recorder/StepView.ts | closeStepTitle": {
+    "message": "Close"
+  },
+  "panels/recorder/StepView.ts | copyAs": {
+    "message": "Copy as"
+  },
+  "panels/recorder/StepView.ts | customStepTitle": {
+    "message": "Custom step"
+  },
+  "panels/recorder/StepView.ts | doubleClickStepTitle": {
+    "message": "Double click"
+  },
+  "panels/recorder/StepView.ts | elementRoleButton": {
+    "message": "Button"
+  },
+  "panels/recorder/StepView.ts | elementRoleFallback": {
+    "message": "Element"
+  },
+  "panels/recorder/StepView.ts | elementRoleInput": {
+    "message": "Input"
+  },
+  "panels/recorder/StepView.ts | emulateNetworkConditionsStepTitle": {
+    "message": "Emulate network conditions"
+  },
+  "panels/recorder/StepView.ts | hoverStepTitle": {
+    "message": "Hover"
+  },
+  "panels/recorder/StepView.ts | keyDownStepTitle": {
+    "message": "Key down"
+  },
+  "panels/recorder/StepView.ts | keyUpStepTitle": {
+    "message": "Key up"
+  },
+  "panels/recorder/StepView.ts | navigateStepTitle": {
+    "message": "Navigate"
+  },
+  "panels/recorder/StepView.ts | openStepActions": {
+    "message": "Open step actions"
+  },
+  "panels/recorder/StepView.ts | removeBreakpoint": {
+    "message": "Remove breakpoint"
+  },
+  "panels/recorder/StepView.ts | removeStep": {
+    "message": "Remove step"
+  },
+  "panels/recorder/StepView.ts | scrollStepTitle": {
+    "message": "Scroll"
+  },
+  "panels/recorder/StepView.ts | setViewportClickTitle": {
+    "message": "Set viewport"
+  },
+  "panels/recorder/StepView.ts | stepManagement": {
+    "message": "Manage steps"
+  },
+  "panels/recorder/StepView.ts | waitForElementStepTitle": {
+    "message": "Wait for element"
+  },
+  "panels/recorder/StepView.ts | waitForExpressionStepTitle": {
+    "message": "Wait for expression"
   },
   "panels/screencast/ScreencastApp.ts | toggleScreencast": {
     "message": "Toggle screencast"

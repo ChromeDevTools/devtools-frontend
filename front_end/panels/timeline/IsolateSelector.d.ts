@@ -11,7 +11,7 @@ export declare class IsolateSelector extends UI.Toolbar.ToolbarItem implements S
     }>;
     items?: Menus.Menu.MenuItem[];
     readonly itemByIsolate: Map<SDK.IsolateManager.Isolate, Menus.Menu.MenuItem>;
-    constructor();
+    constructor(targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager);
     isolateAdded(isolate: SDK.IsolateManager.Isolate): void;
     isolateRemoved(isolate: SDK.IsolateManager.Isolate): void;
     isolateChanged(isolate: SDK.IsolateManager.Isolate): void;

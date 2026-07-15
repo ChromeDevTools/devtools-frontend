@@ -1,4 +1,4 @@
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -12,7 +12,6 @@ export declare const enum IssueCategory {
     CONTENT_SECURITY_POLICY = "ContentSecurityPolicy",
     LOW_TEXT_CONTRAST = "LowTextContrast",
     CORS = "Cors",
-    ATTRIBUTION_REPORTING = "AttributionReporting",
     QUIRKS_MODE = "QuirksMode",
     PERMISSION_ELEMENT = "PermissionElement",
     SELECTIVE_PERMISSIONS_INTERVENTION = "SelectivePermissionsIntervention",
@@ -44,7 +43,7 @@ export declare function getIssueKindDescription(issueKind: IssueKind): Common.UI
  * important kind on aggregated issues that union issues of different kinds.
  */
 export declare function unionIssueKind(a: IssueKind, b: IssueKind): IssueKind;
-export declare function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolean>;
+export declare function getShowThirdPartyIssuesSetting(settings: Common.Settings.Settings): Common.Settings.Setting<boolean>;
 export interface AffectedElement {
     backendNodeId: Protocol.DOM.BackendNodeId;
     nodeName: string;

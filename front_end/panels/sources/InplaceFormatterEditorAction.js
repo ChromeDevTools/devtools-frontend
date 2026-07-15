@@ -105,7 +105,7 @@ export class InplaceFormatterEditorAction {
         }
     }
     async contentLoaded(uiSourceCode, sourceFrame, content) {
-        const { formattedContent, formattedMapping } = await Formatter.ScriptFormatter.format(uiSourceCode.contentType(), sourceFrame.contentType, content);
+        const { formattedContent, formattedMapping } = await Formatter.ScriptFormatter.format(Common.Settings.Settings.instance(), uiSourceCode.contentType(), sourceFrame.contentType, content);
         if (uiSourceCode.workingCopy() === formattedContent) {
             return;
         }

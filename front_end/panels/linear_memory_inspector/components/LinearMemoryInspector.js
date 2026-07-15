@@ -13,11 +13,11 @@ import { LinearMemoryValueInterpreter } from './LinearMemoryValueInterpreter.js'
 import { getDefaultValueTypeMapping, VALUE_INTEPRETER_MAX_NUM_BYTES, } from './ValueInterpreterDisplayUtils.js';
 const UIStrings = {
     /**
-     * @description Tooltip text that appears when hovering over an invalid address in the address line in the Linear memory inspector
+     * @description Tooltip text that appears when hovering over an invalid address in the address line in the Memory inspector panel.
      * @example {0x00000000} PH1
      * @example {0x00400000} PH2
      */
-    addressHasToBeANumberBetweenSAnd: 'Address has to be a number between {PH1} and {PH2}',
+    addressHasToBeANumberBetweenSAnd: 'Address must be a number between {PH1} and {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

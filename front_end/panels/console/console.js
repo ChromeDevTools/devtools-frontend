@@ -3801,7 +3801,8 @@ var PromptBuilder = class {
     const text = !content?.isEncoded && content?.content ? content.content : "";
     const firstNewline = text.indexOf("\n");
     if (text.length > MAX_CODE_SIZE && (firstNewline < 0 || firstNewline > MAX_CODE_SIZE)) {
-      const { formattedContent, formattedMapping } = await Formatter.ScriptFormatter.formatScriptContent(mappedLocation?.uiSourceCode.mimeType() ?? "text/javascript", text);
+      const settings = runtimeModel.target().targetManager().settings;
+      const { formattedContent, formattedMapping } = await Formatter.ScriptFormatter.formatScriptContent(settings, mappedLocation?.uiSourceCode.mimeType() ?? "text/javascript", text);
       const [lineNumber, columnNumber] = formattedMapping.originalToFormatted(mappedLocation?.lineNumber ?? 0, mappedLocation?.columnNumber ?? 0);
       return { text: formattedContent, columnNumber, lineNumber };
     }
@@ -6488,7 +6489,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   userHasOpenedSidebarAtLeastOnce = false;
   issueToolbarThrottle;
   requestResolver = new Logs3.RequestResolver.RequestResolver();
-  issueResolver = new IssuesManager.IssueResolver.IssueResolver();
+  issueResolver = new IssuesManager.IssueResolver.IssueResolver(IssuesManager.IssuesManager.IssuesManager.instance());
   #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
   #collapseAllButton;

@@ -2900,6 +2900,7 @@ __export(TimelineUIUtils_exports, {
   categoryBreakdownCacheSymbol: () => categoryBreakdownCacheSymbol,
   isMarkerEvent: () => isMarkerEvent,
   previewElementSymbol: () => previewElementSymbol,
+  stripScriptIds: () => stripScriptIds,
   timeStampForEventAdjustedForClosestNavigationIfPossible: () => timeStampForEventAdjustedForClosestNavigationIfPossible
 });
 import "./../../ui/kit/kit.js";
@@ -3211,23 +3212,27 @@ var IsolateSelector = class extends UI2.Toolbar.ToolbarItem {
   options;
   items;
   itemByIsolate = /* @__PURE__ */ new Map();
-  constructor() {
+  #targetManager;
+  #isolateManager;
+  constructor(targetManager, isolateManager) {
     const menu = new Menus.SelectMenu.SelectMenu();
     super(menu);
+    this.#targetManager = targetManager;
+    this.#isolateManager = isolateManager;
     this.menu = menu;
     menu.buttonTitle = i18nString10(UIStrings10.selectJavascriptVmInstance);
     menu.showArrow = true;
     menu.style.whiteSpace = "normal";
     menu.addEventListener("selectmenuselected", this.#onSelectMenuSelected.bind(this));
-    SDK3.IsolateManager.IsolateManager.instance().observeIsolates(this);
-    SDK3.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetChanged, this);
-    SDK3.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.targetChanged, this);
+    this.#isolateManager.observeIsolates(this);
+    this.#targetManager.addEventListener("NameChanged", this.targetChanged, this);
+    this.#targetManager.addEventListener("InspectedURLChanged", this.targetChanged, this);
   }
   #updateIsolateItem(isolate, itemForIsolate) {
     const modelCountByName = /* @__PURE__ */ new Map();
     for (const model of isolate.models()) {
       const target = model.target();
-      const name = SDK3.TargetManager.TargetManager.instance().rootTarget() !== target ? target.name() : "";
+      const name = this.#targetManager.rootTarget() !== target ? target.name() : "";
       const parsedURL = new Common5.ParsedURL.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : "";
       const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || i18nString10(UIStrings10.empty));
@@ -3280,7 +3285,7 @@ var IsolateSelector = class extends UI2.Toolbar.ToolbarItem {
     if (!model) {
       return;
     }
-    const isolate = SDK3.IsolateManager.IsolateManager.instance().isolateByModel(model);
+    const isolate = this.#isolateManager.isolateByModel(model);
     if (isolate) {
       this.isolateChanged(isolate);
     }
@@ -6733,9 +6738,13 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   #onMainEntryHovered;
   #hiddenTracksInfoBarByParsedTrace = /* @__PURE__ */ new WeakMap();
   #resourceLoader;
-  constructor(resourceLoader, traceModel) {
+  #targetManager;
+  #isolateManager;
+  constructor(resourceLoader, targetManager, isolateManager, traceModel) {
     super("timeline");
     this.#resourceLoader = resourceLoader;
+    this.#targetManager = targetManager;
+    this.#isolateManager = isolateManager;
     this.registerRequiredCSS(timelinePanel_css_default);
     const adornerContent = document.createElement("span");
     adornerContent.innerHTML = `<div style="
@@ -6970,7 +6979,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
   }
   static instance(opts = void 0) {
     if (opts) {
-      timelinePanelInstance = new _TimelinePanel(opts.resourceLoader, opts.traceModel);
+      timelinePanelInstance = new _TimelinePanel(opts.resourceLoader, opts.targetManager, opts.isolateManager, opts.traceModel);
     }
     if (!timelinePanelInstance) {
       throw new Error("No TimelinePanel instance");
@@ -7280,7 +7289,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       this.panelToolbar.appendToolbarItem(dimThirdPartiesCheckbox);
     }
     if (this.#isNode) {
-      const isolateSelector = new IsolateSelector();
+      const isolateSelector = new IsolateSelector(this.#targetManager, this.#isolateManager);
       this.panelToolbar.appendSeparator();
       this.panelToolbar.appendToolbarItem(isolateSelector);
     }
@@ -8573,7 +8582,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
     async function resolveSourceMap(params) {
       const { scriptId, scriptUrl, sourceUrl, sourceMapUrl, frame, cachedRawSourceMap } = params;
       if (cachedRawSourceMap) {
-        return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? "", cachedRawSourceMap);
+        return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? "", cachedRawSourceMap, Common10.Console.Console.instance());
       }
       if (isFreshRecording) {
         const map = await getExistingSourceMap(frame, scriptId, scriptUrl);
@@ -8588,7 +8597,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
       if (!isFreshRecording && metadata?.sourceMaps && !isDataUrl) {
         const cachedSourceMap = metadata.sourceMaps.find((m) => m.sourceMapUrl === sourceMapUrl);
         if (cachedSourceMap) {
-          return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap);
+          return new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap, Common10.Console.Console.instance());
         }
       }
       if (!isFreshRecording && !isDataUrl) {
@@ -8603,7 +8612,7 @@ var TimelinePanel = class _TimelinePanel extends Common10.ObjectWrapper.eventMix
         initiatorUrl: sourceUrl
       };
       const payload = await SDK7.SourceMapManager.tryLoadSourceMap(_TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
-      return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
+      return payload ? new SDK7.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload, Common10.Console.Console.instance()) : null;
     }
     const timeout = new Promise((resolve) => setTimeout(() => resolve(null), SOURCE_MAP_LOAD_TIMEOUT_MS));
     return function resolveSourceMapWithTimeout(params) {
@@ -9815,7 +9824,7 @@ var TimelineUIUtils = class _TimelineUIUtils {
         }
       }
     }
-    const isFreshOrEnhanced = Boolean(parsedTrace && Tracing3.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace));
+    const isFreshOrEnhanced = Tracing3.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
     switch (event.name) {
       case "GCEvent":
       case "MajorGC":
@@ -10256,7 +10265,8 @@ var TimelineUIUtils = class _TimelineUIUtils {
     if (initiator) {
       const stackTrace = Trace23.Helpers.Trace.getZeroIndexedStackTraceInEventPayload(initiator);
       if (stackTrace) {
-        const traceElement = await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+        const isFreshOrEnhanced = Tracing3.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
+        const traceElement = await contentHelper.createChildStackTraceElement(_TimelineUIUtils.stackTraceFromCallFrames(stackTrace), isFreshOrEnhanced);
         contentHelper.appendSectionWithBodyIfExists(initiatorStackLabel, { body: traceElement });
       }
       const link = this.createEntryLink(initiator);
@@ -10673,6 +10683,18 @@ var EventDispatchTypeDescriptor = class {
     this.eventTypes = eventTypes;
   }
 };
+function stripScriptIds(stackTrace) {
+  const callFrames = stackTrace.callFrames.map((frame) => ({
+    ...frame,
+    scriptId: ""
+  }));
+  const parent = stackTrace.parent ? stripScriptIds(stackTrace.parent) : void 0;
+  return {
+    ...stackTrace,
+    callFrames,
+    parent
+  };
+}
 var TimelineDetailsContentHelper = class {
   fragment;
   #linkifier;
@@ -10734,7 +10756,8 @@ var TimelineDetailsContentHelper = class {
     if (!stackTraceForEvent) {
       return;
     }
-    const traceElement = await this.createChildStackTraceElement(stackTraceForEvent);
+    const isFreshOrEnhanced = Tracing3.FreshRecording.Tracker.instance().recordingIsFreshOrEnhanced(parsedTrace);
+    const traceElement = await this.createChildStackTraceElement(stackTraceForEvent, isFreshOrEnhanced);
     this.appendSectionWithBodyIfExists(i18nString19(UIStrings19.functionStack), { body: traceElement });
   }
   linkifier() {
@@ -10797,13 +10820,14 @@ var TimelineDetailsContentHelper = class {
    * Creates a stack trace element for the given trace, but checks if it
    * contains any entries, and discards it if it's empty.
    */
-  async createChildStackTraceElement(runtimeStackTrace) {
+  async createChildStackTraceElement(runtimeStackTrace, isFreshOrEnhanced) {
     const targetManager = SDK8.TargetManager.TargetManager.instance();
     const target = this.target ?? targetManager.primaryPageTarget() ?? targetManager.rootTarget();
     if (!target) {
       return null;
     }
-    const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(runtimeStackTrace, target);
+    const stackTraceToUse = isFreshOrEnhanced ? runtimeStackTrace : stripScriptIds(runtimeStackTrace);
+    const stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(stackTraceToUse, target);
     const callFrameContents = new LegacyComponents.JSPresentationUtils.StackTracePreviewContent();
     callFrameContents.options = { tabStops: true, showColumnNumber: true };
     callFrameContents.stackTrace = stackTrace;

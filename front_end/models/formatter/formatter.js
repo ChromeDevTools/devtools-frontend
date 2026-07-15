@@ -160,7 +160,6 @@ __export(ScriptFormatter_exports, {
   format: () => format,
   formatScriptContent: () => formatScriptContent
 });
-import * as Common from "./../../core/common/common.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 function locationToPosition(lineEndings, lineNumber, columnNumber) {
   const position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
@@ -176,18 +175,19 @@ function positionToLocation(lineEndings, position) {
   }
   return [lineNumber, columnNumber];
 }
-async function format(contentType, mimeType, content, indent = Common.Settings.Settings.instance().moduleSetting("text-editor-indent").get()) {
+async function format(settings, contentType, mimeType, content, indent) {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
-    return await formatScriptContent(mimeType, content, indent);
+    return await formatScriptContent(settings, mimeType, content, indent);
   }
   return { formattedContent: content, formattedMapping: new IdentityFormatterSourceMapping() };
 }
-async function formatScriptContent(mimeType, content, indent = Common.Settings.Settings.instance().moduleSetting("text-editor-indent").get()) {
+async function formatScriptContent(settings, mimeType, content, indent) {
+  const indentString = indent ?? settings.moduleSetting("text-editor-indent").get();
   const originalContent = content.replace(/\r\n?|[\n\u2028\u2029]/g, "\n").replace(/^\uFEFF/, "");
   const pool = formatterWorkerPool();
   let formatResult = { content: originalContent, mapping: { original: [], formatted: [] } };
   try {
-    formatResult = await pool.format(mimeType, originalContent, indent);
+    formatResult = await pool.format(mimeType, originalContent, indentString);
   } catch {
   }
   const originalContentLineEndings = Platform2.StringUtilities.findLineEndingIndexes(originalContent);

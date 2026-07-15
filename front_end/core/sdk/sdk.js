@@ -19067,20 +19067,22 @@ var SourceMap = class {
   #scopesInfo = null;
   #debugId;
   #scopesFallbackPromise;
+  #console;
   /**
    * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
    * for format description.
    */
-  constructor(compiledURL, sourceMappingURL, payload, script) {
+  constructor(compiledURL, sourceMappingURL, payload, console2, script) {
     this.#json = payload;
     this.#script = script;
     this.#compiledURL = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
     this.#baseURL = Common8.ParsedURL.schemeIs(sourceMappingURL, "data:") ? compiledURL : sourceMappingURL;
     this.#debugId = "debugId" in payload ? payload.debugId : void 0;
+    this.#console = console2;
     if ("sections" in this.#json) {
       if (this.#json.sections.find((section) => "url" in section)) {
-        Common8.Console.Console.instance().warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
+        this.#console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
       }
     }
     this.eachSection(this.parseSources.bind(this));
@@ -19949,7 +19951,7 @@ var SourceMapManager = class _SourceMapManager extends Common10.ObjectWrapper.Ob
   constructor(target, factory) {
     super();
     this.#target = target;
-    this.#factory = factory ?? ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload));
+    this.#factory = factory ?? ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole()));
   }
   setEnabled(isEnabled) {
     if (isEnabled === this.#isEnabled) {
@@ -22218,7 +22220,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
     this.agent = target.debuggerAgent();
     this.#runtimeModel = target.model(RuntimeModel);
-    this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, script));
+    this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
     const settings = this.target().targetManager().settings;
     settings.moduleSetting("pause-on-exception-enabled").addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting("pause-on-caught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
@@ -37215,6 +37217,7 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
   #cspViolationsToBreakOn = [];
   #eventListenerBreakpoints = [];
   #targetManager;
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager = TargetManager.instance()) {
     this.#targetManager = targetManager;
     this.#xhrBreakpointsSetting = this.#targetManager.settings.createLocalSetting("xhr-breakpoints", []);
@@ -37671,6 +37674,7 @@ var EventListenerBreakpoint = class extends CategorizedBreakpoint {
 var EventBreakpointsManager = class _EventBreakpointsManager {
   #eventListenerBreakpoints = [];
   #targetManager;
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager = TargetManager.instance()) {
     this.#targetManager = targetManager;
     this.createInstrumentationBreakpoints("auction-worklet", [
@@ -37729,7 +37733,11 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
     if (!Root14.DevToolsContext.globalInstance().has(_EventBreakpointsManager) || forceNew) {
-      Root14.DevToolsContext.globalInstance().set(_EventBreakpointsManager, new _EventBreakpointsManager(targetManager ?? TargetManager.instance()));
+      Root14.DevToolsContext.globalInstance().set(
+        _EventBreakpointsManager,
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        new _EventBreakpointsManager(targetManager ?? TargetManager.instance())
+      );
     }
     return Root14.DevToolsContext.globalInstance().get(_EventBreakpointsManager);
   }
@@ -37785,6 +37793,7 @@ var IsolateManager = class _IsolateManager extends Common37.ObjectWrapper.Object
   #observers = /* @__PURE__ */ new Set();
   #pollId = 0;
   #targetManager;
+  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager = TargetManager.instance()) {
     super();
     this.#targetManager = targetManager;

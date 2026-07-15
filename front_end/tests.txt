@@ -231,6 +231,8 @@ models/logs/RequestResolver.test.js
 models/persistence/Automapping.test.js
 models/persistence/AutomaticFileSystemManager.test.js
 models/persistence/AutomaticFileSystemWorkspaceBinding.test.js
+models/persistence/FileSystemWorkspaceBinding.test.js
+models/persistence/IsolatedFileSystemManager.test.js
 models/persistence/NetworkPersistenceManager.test.js
 models/persistence/PersistenceImpl.test.js
 models/persistence/PlatformFileSystem.test.js
@@ -474,6 +476,7 @@ panels/elements/StylesSidebarPane.test.js
 panels/elements/WebCustomData.test.js
 panels/emulation/AdvancedApp.test.js
 panels/emulation/DeviceModeToolbar.test.js
+panels/emulation/DeviceModeView.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
@@ -535,14 +538,14 @@ panels/performance_monitor/PerformanceMonitor.test.js
 panels/profiler/HeapProfileView.test.js
 panels/protocol_monitor/JSONEditor.test.js
 panels/protocol_monitor/ProtocolMonitor.test.js
+panels/recorder/CreateRecordingView.test.js
 panels/recorder/RecorderController.test.js
+panels/recorder/RecordingListView.test.js
+panels/recorder/RecordingView.test.js
+panels/recorder/ReplaySection.test.js
+panels/recorder/StepEditor.test.js
+panels/recorder/StepView.test.js
 panels/recorder/injected.test.js
-panels/recorder/components/CreateRecordingView.test.js
-panels/recorder/components/RecordingListView.test.js
-panels/recorder/components/RecordingView.test.js
-panels/recorder/components/ReplaySection.test.js
-panels/recorder/components/StepEditor.test.js
-panels/recorder/components/StepView.test.js
 panels/recorder/converters/LighthouseConverter.test.js
 panels/recorder/converters/PuppeteerConverter.test.js
 panels/recorder/converters/PuppeteerReplayConverter.test.js
@@ -561,6 +564,7 @@ panels/search/SearchResultsPane.test.js
 panels/search/SearchView.test.js
 panels/security/SecurityModel.test.js
 panels/security/SecurityPanel.test.js
+panels/sensors/LocationsSettingsTab.test.js
 panels/sensors/SensorsView.test.js
 panels/settings/AISettingsTab.test.js
 panels/settings/EditFileSystemView.test.js
@@ -588,6 +592,7 @@ panels/sources/ResourceOriginPlugin.test.js
 panels/sources/ScopeChainSidebarPane.test.js
 panels/sources/SourcesNavigator.test.js
 panels/sources/SourcesPanel.test.js
+panels/sources/SourcesSearchScope.test.js
 panels/sources/SourcesView.test.js
 panels/sources/TabbedEditorContainer.test.js
 panels/sources/ThreadsSidebarPane.test.js

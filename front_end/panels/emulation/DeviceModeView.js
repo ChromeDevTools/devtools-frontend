@@ -9,10 +9,12 @@ import * as Platform from '../../core/platform/platform.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { DeviceModeToolbar } from './DeviceModeToolbar.js';
 import deviceModeViewStyles from './deviceModeView.css.js';
 import { MediaQueryInspector } from './MediaQueryInspector.js';
+const { classMap, styleMap } = Directives;
 const UIStrings = {
     /**
      * @description Bottom resizer element title in Device Mode View of the Device Toolbar
@@ -53,14 +55,12 @@ const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeView.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DeviceModeView extends UI.Widget.VBox {
     wrapperInstance;
-    blockElementToWidth;
     model;
     mediaInspector;
     showMediaInspectorSetting;
     showRulersSetting;
     topRuler;
     leftRuler;
-    presetBlocks;
     responsivePresetsContainer;
     screenArea;
     pageArea;
@@ -88,7 +88,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     handleHeight;
     constructor() {
         super({ useShadowDom: true });
-        this.blockElementToWidth = new WeakMap();
         this.setMinimumSize(150, 150);
         this.element.classList.add('device-mode-view');
         this.registerRequiredCSS(deviceModeViewStyles);
@@ -112,7 +111,7 @@ export class DeviceModeView extends UI.Widget.VBox {
         this.contentClip = this.contentElement.createChild('div', 'device-mode-content-clip vbox');
         this.responsivePresetsContainer = this.contentClip.createChild('div', 'device-mode-presets-container');
         this.responsivePresetsContainer.setAttribute('jslog', `${VisualLogging.responsivePresets()}`);
-        this.populatePresetsContainer();
+        this.renderPresets();
         this.mediaInspectorContainer = this.contentClip.createChild('div', 'device-mode-media-container');
         this.contentArea = this.contentClip.createChild('div', 'device-mode-content-area');
         this.outlineImage = this.contentArea.createChild('img', 'device-mode-outline-image hidden fill');
@@ -144,7 +143,8 @@ export class DeviceModeView extends UI.Widget.VBox {
         this.pageArea = this.screenArea.createChild('div', 'device-mode-page-area');
         this.pageArea.createChild('slot');
     }
-    populatePresetsContainer() {
+    renderPresets() {
+        const scale = this.model.scale();
         const sizes = [320, 375, 425, 768, 1024, 1440, 2560];
         const titles = [
             i18nString(UIStrings.mobileS),
@@ -155,22 +155,26 @@ export class DeviceModeView extends UI.Widget.VBox {
             i18nString(UIStrings.laptopL),
             '4K',
         ];
-        this.presetBlocks = [];
-        const inner = this.responsivePresetsContainer.createChild('div', 'device-mode-presets-container-inner');
-        for (let i = sizes.length - 1; i >= 0; --i) {
-            const outer = inner.createChild('div', 'fill device-mode-preset-bar-outer');
-            const block = outer.createChild('div', 'device-mode-preset-bar');
-            block.createChild('span').textContent = titles[i] + ' \u2013 ' + sizes[i] + 'px';
-            block.setAttribute('jslog', `${VisualLogging.action().track({ click: true }).context(`device-mode-preset-${sizes[i]}px`)}`);
-            block.addEventListener('click', applySize.bind(this, sizes[i]), false);
-            this.blockElementToWidth.set(block, sizes[i]);
-            this.presetBlocks.push(block);
-        }
-        function applySize(width, e) {
+        const applySize = (width, e) => {
             this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
             this.model.setWidthAndScaleToFit(width);
             e.consume();
-        }
+        };
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `
+      <div class="device-mode-presets-container-inner">
+        ${sizes.map((size, idx) => html `
+          <div class="fill device-mode-preset-bar-outer">
+            <div class="device-mode-preset-bar"
+                 style="width: ${size * scale}px;"
+                 jslog=${VisualLogging.action().track({ click: true }).context(`device-mode-preset-${size}px`)}
+                 @click=${(e) => applySize(size, e)}>
+              <span>${titles[idx]} – ${size}px</span>
+            </div>
+          </div>
+        `).reverse()}
+      </div>
+    `, this.responsivePresetsContainer);
     }
     createResizer(element, widthFactor, heightFactor) {
         const resizer = new UI.ResizerWidget.ResizerWidget();
@@ -308,13 +312,7 @@ export class DeviceModeView extends UI.Widget.VBox {
         if (this.model.scale() !== this.cachedScale) {
             updateRulers = true;
             callDoResize = true;
-            for (const block of this.presetBlocks) {
-                const blockWidth = this.blockElementToWidth.get(block);
-                if (!blockWidth) {
-                    throw new Error('Could not get width for block.');
-                }
-                block.style.width = blockWidth * this.model.scale() + 'px';
-            }
+            this.renderPresets();
             this.cachedScale = this.model.scale();
         }
         this.toolbar.requestUpdate();
@@ -501,11 +499,8 @@ export class Ruler extends UI.Widget.VBox {
     #contentElement;
     horizontal;
     scale;
-    count;
     throttler;
     applyCallback;
-    renderedScale;
-    renderedZoomFactor;
     constructor(horizontal, applyCallback) {
         super({ jslog: `${VisualLogging.deviceModeRuler().track({ click: true })}` });
         this.element.classList.add('device-mode-ruler');
@@ -513,7 +508,6 @@ export class Ruler extends UI.Widget.VBox {
             this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner');
         this.horizontal = horizontal;
         this.scale = 1;
-        this.count = 0;
         this.throttler = new Common.Throttler.Throttler(0);
         this.applyCallback = applyCallback;
     }
@@ -527,12 +521,6 @@ export class Ruler extends UI.Widget.VBox {
     update() {
         const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
         const size = this.horizontal ? this.#contentElement.offsetWidth : this.#contentElement.offsetHeight;
-        if (this.scale !== this.renderedScale || zoomFactor !== this.renderedZoomFactor) {
-            this.#contentElement.removeChildren();
-            this.count = 0;
-            this.renderedScale = this.scale;
-            this.renderedZoomFactor = zoomFactor;
-        }
         const dipSize = size * zoomFactor / this.scale;
         const count = Math.ceil(dipSize / 5);
         let step = 1;
@@ -551,40 +539,32 @@ export class Ruler extends UI.Widget.VBox {
         if (this.scale < 0.1) {
             step = 32;
         }
-        for (let i = count; i < this.count; i++) {
-            if (!(i % step)) {
-                const lastChild = this.#contentElement.lastChild;
-                if (lastChild) {
-                    lastChild.remove();
-                }
-            }
-        }
-        for (let i = this.count; i < count; i++) {
+        const markers = [];
+        for (let i = 0; i < count; i++) {
             if (i % step) {
                 continue;
             }
-            const marker = this.#contentElement.createChild('div', 'device-mode-ruler-marker');
-            if (i) {
-                if (this.horizontal) {
-                    marker.style.left = (5 * i) * this.scale / zoomFactor + 'px';
-                }
-                else {
-                    marker.style.top = (5 * i) * this.scale / zoomFactor + 'px';
-                }
-                if (!(i % 20)) {
-                    const text = marker.createChild('div', 'device-mode-ruler-text');
-                    text.textContent = String(i * 5);
-                    text.addEventListener('click', this.onMarkerClick.bind(this, i * 5), false);
-                }
-            }
-            if (!(i % 10)) {
-                marker.classList.add('device-mode-ruler-marker-large');
-            }
-            else if (!(i % 5)) {
-                marker.classList.add('device-mode-ruler-marker-medium');
-            }
+            const isLarge = !(i % 10);
+            const isMedium = !(i % 5);
+            const offset = i ? `${(5 * i) * this.scale / zoomFactor}px` : undefined;
+            // clang-format off
+            markers.push(html `
+        <div
+          class=${classMap({
+                'device-mode-ruler-marker': true,
+                'device-mode-ruler-marker-large': isLarge,
+                'device-mode-ruler-marker-medium': isMedium && !isLarge,
+            })}
+          style=${styleMap(this.horizontal ? { left: offset } : { top: offset })}>
+            ${i && !(i % 20) ?
+                html `<div class="device-mode-ruler-text" @click=${() => this.onMarkerClick(i * 5)}>${i * 5}</div>` :
+                nothing}
+        </div>
+      `);
+            // clang-format on
         }
-        this.count = count;
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `${markers}`, this.#contentElement);
     }
     onMarkerClick(size) {
         this.applyCallback.call(null, size);

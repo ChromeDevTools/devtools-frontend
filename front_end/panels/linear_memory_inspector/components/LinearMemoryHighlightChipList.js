@@ -9,13 +9,13 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import linearMemoryHighlightChipListStyles from './linearMemoryHighlightChipList.css.js';
 const UIStrings = {
     /**
-     * @description Tooltip text that appears when hovering over an inspected variable's button in the Linear Memory Highlight Chip List.
-     * Clicking the button changes the displayed slice of computer memory in the Linear Memory inspector to contain the inspected variable's bytes.
+     * @description Tooltip text that appears when hovering over an inspected variable's button in the highlight chip list in the Memory inspector panel.
+     * Clicking the button changes the displayed slice of computer memory in the Memory inspector panel to contain the inspected variable's bytes.
      */
     jumpToAddress: 'Jump to this memory',
     /**
-     * @description Tooltip text that appears when hovering over an inspected variable's delete button in the Linear Memory Highlight Chip List.
-     * Clicking the delete button stops highlighting the variable's memory in the Linear Memory inspector.
+     * @description Tooltip text that appears when hovering over an inspected variable's delete button in the highlight chip list in the Memory inspector panel.
+     * Clicking the delete button stops highlighting the variable's memory in the Memory inspector panel.
      * 'Memory' is a slice of bytes in the computer memory.
      */
     deleteHighlight: 'Stop highlighting this memory',

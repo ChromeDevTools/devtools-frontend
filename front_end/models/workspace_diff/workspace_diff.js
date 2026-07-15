@@ -22,14 +22,16 @@ import * as Workspace from "./../workspace/workspace.js";
 var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
   #persistence;
   #networkPersistenceManager;
+  #settings;
   #diffs = /* @__PURE__ */ new WeakMap();
   /** used in web tests */
   loadingUISourceCodes = /* @__PURE__ */ new Map();
   #modified = /* @__PURE__ */ new Set();
-  constructor(workspace, persistence = Persistence.Persistence.PersistenceImpl.instance(), networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance()) {
+  constructor(workspace, persistence = Persistence.Persistence.PersistenceImpl.instance(), networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(), settings = Common.Settings.Settings.instance()) {
     super();
     this.#persistence = persistence;
     this.#networkPersistenceManager = networkPersistenceManager;
+    this.#settings = settings;
     workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this.#uiSourceCodeChanged, this);
     workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this.#uiSourceCodeChanged, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded, this);
@@ -52,7 +54,7 @@ var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
   #uiSourceCodeDiff(uiSourceCode) {
     let diff = this.#diffs.get(uiSourceCode);
     if (!diff) {
-      diff = new UISourceCodeDiff(uiSourceCode, this.#networkPersistenceManager);
+      diff = new UISourceCodeDiff(uiSourceCode, this.#networkPersistenceManager, this.#settings);
       this.#diffs.set(uiSourceCode, diff);
     }
     return diff;
@@ -156,13 +158,15 @@ var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
 var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
   #uiSourceCode;
   #networkPersistenceManager;
+  #settings;
   #requestDiffPromise = null;
   #pendingChanges = null;
   dispose = false;
-  constructor(uiSourceCode, networkPersistenceManager) {
+  constructor(uiSourceCode, networkPersistenceManager, settings = Common.Settings.Settings.instance()) {
     super();
     this.#uiSourceCode = uiSourceCode;
     this.#networkPersistenceManager = networkPersistenceManager;
+    this.#settings = settings;
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#uiSourceCodeChanged, this);
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#uiSourceCodeChanged, this);
   }
@@ -231,8 +235,8 @@ var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
     if (this.dispose) {
       return null;
     }
-    baseline = (await FormatterModule.ScriptFormatter.format(this.#uiSourceCode.contentType(), this.#uiSourceCode.mimeType(), baseline)).formattedContent;
-    const formatCurrentResult = await FormatterModule.ScriptFormatter.format(this.#uiSourceCode.contentType(), this.#uiSourceCode.mimeType(), current);
+    baseline = (await FormatterModule.ScriptFormatter.format(this.#settings, this.#uiSourceCode.contentType(), this.#uiSourceCode.mimeType(), baseline)).formattedContent;
+    const formatCurrentResult = await FormatterModule.ScriptFormatter.format(this.#settings, this.#uiSourceCode.contentType(), this.#uiSourceCode.mimeType(), current);
     current = formatCurrentResult.formattedContent;
     const formattedCurrentMapping = formatCurrentResult.formattedMapping;
     const reNewline = /\r\n?|\n/;

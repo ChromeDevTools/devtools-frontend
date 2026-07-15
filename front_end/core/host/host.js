@@ -1491,7 +1491,8 @@ function isUnderTest(prefs) {
   if (prefs) {
     return prefs["isUnderTest"] === "true";
   }
-  return Common3.Settings.Settings.hasInstance() && Common3.Settings.Settings.instance().createSetting("isUnderTest", false).get();
+  return Common3.Settings.Settings.hasInstance() && // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+  Common3.Settings.Settings.instance().createSetting("isUnderTest", false).get();
 }
 
 // gen/front_end/core/host/DispatchHttpRequestClient.js

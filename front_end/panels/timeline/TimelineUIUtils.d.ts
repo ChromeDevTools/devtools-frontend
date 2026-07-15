@@ -76,6 +76,14 @@ export declare class EventDispatchTypeDescriptor {
     eventTypes: string[];
     constructor(priority: number, color: string, eventTypes: string[]);
 }
+/**
+ * When loading a trace file (non-fresh recording), the scriptIds in the trace
+ * are from the recorded page and are guaranteed to collide with scriptIds of
+ * the currently active inspected page. We strip them from the stack trace
+ * to force the stack trace rendering machinery to fall back to URL-based resolution
+ * instead of incorrectly matching the active page's script IDs.
+ */
+export declare function stripScriptIds(stackTrace: Protocol.Runtime.StackTrace): Protocol.Runtime.StackTrace;
 export declare class TimelineDetailsContentHelper {
     #private;
     fragment: DocumentFragment;
@@ -108,7 +116,7 @@ export declare class TimelineDetailsContentHelper {
      * Creates a stack trace element for the given trace, but checks if it
      * contains any entries, and discards it if it's empty.
      */
-    createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace): Promise<HTMLElement | null>;
+    createChildStackTraceElement(runtimeStackTrace: Protocol.Runtime.StackTrace, isFreshOrEnhanced?: boolean): Promise<HTMLElement | null>;
 }
 export declare const categoryBreakdownCacheSymbol: unique symbol;
 export interface TimelineMarkerStyle {

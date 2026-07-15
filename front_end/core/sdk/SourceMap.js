@@ -63,20 +63,22 @@ export class SourceMap {
     #scopesInfo = null;
     #debugId;
     #scopesFallbackPromise;
+    #console;
     /**
      * Implements Source Map V3 model. See https://github.com/google/closure-compiler/wiki/Source-Maps
      * for format description.
      */
-    constructor(compiledURL, sourceMappingURL, payload, script) {
+    constructor(compiledURL, sourceMappingURL, payload, console, script) {
         this.#json = payload;
         this.#script = script;
         this.#compiledURL = compiledURL;
         this.#sourceMappingURL = sourceMappingURL;
         this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
         this.#debugId = 'debugId' in payload ? payload.debugId : undefined;
+        this.#console = console;
         if ('sections' in this.#json) {
             if (this.#json.sections.find(section => 'url' in section)) {
-                Common.Console.Console.instance().warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
+                this.#console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
             }
         }
         this.eachSection(this.parseSources.bind(this));

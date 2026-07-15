@@ -16,8 +16,8 @@ import * as Formatter from "./../formatter/formatter.js";
 import * as TextUtils from "./../text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 var inputCache = /* @__PURE__ */ new WeakMap();
-async function prepareInput(uiSourceCode, content) {
-  const formattedContent = await format(uiSourceCode, content);
+async function prepareInput(uiSourceCode, content, settings) {
+  const formattedContent = await format(uiSourceCode, content, settings);
   const text = new TextUtils.Text.Text(formattedContent ? formattedContent.formattedContent : content);
   let performanceData = uiSourceCode.getDecorationData(
     "performance"
@@ -30,12 +30,12 @@ async function prepareInput(uiSourceCode, content) {
   }
   return { text, formattedContent, performanceData };
 }
-async function prepareInputAndCache(uiSourceCode, content) {
+async function prepareInputAndCache(uiSourceCode, content, settings) {
   let cachedPromise = inputCache.get(uiSourceCode);
   if (cachedPromise) {
     return await cachedPromise;
   }
-  cachedPromise = prepareInput(uiSourceCode, content);
+  cachedPromise = prepareInput(uiSourceCode, content, settings);
   inputCache.set(uiSourceCode, cachedPromise);
   return await cachedPromise;
 }
@@ -147,7 +147,7 @@ async function getFunctionCodeFromLocation(target, url, line, column, options) {
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
   for (const project of projects) {
-    if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
+    if (project.target() !== target) {
       continue;
     }
     uiSourceCode = project.uiSourceCodeForURL(url);
@@ -165,13 +165,13 @@ async function getFunctionCodeFromLocation(target, url, line, column, options) {
   }
   return await getFunctionCodeFromRawLocation(rawLocation, options);
 }
-async function format(uiSourceCode, content) {
+async function format(uiSourceCode, content, settings) {
   const contentType = uiSourceCode.contentType();
   const shouldFormat = !contentType.isFromSourceMap() && (contentType.isDocument() || contentType.isScript()) && TextUtils.TextUtils.isMinified(content);
   if (!shouldFormat) {
     return null;
   }
-  return await Formatter.ScriptFormatter.formatScriptContent(contentType.canonicalMimeType(), content, "	");
+  return await Formatter.ScriptFormatter.formatScriptContent(settings, contentType.canonicalMimeType(), content, "	");
 }
 async function getFunctionCodeFromRawLocation(rawLocation, options) {
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
@@ -184,7 +184,8 @@ async function getFunctionCodeFromRawLocation(rawLocation, options) {
   if (!content) {
     return null;
   }
-  const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content);
+  const settings = rawLocation.debuggerModel.target().targetManager().settings;
+  const inputData = await prepareInputAndCache(functionBounds.uiSourceCode, content, settings);
   return createFunctionCode(inputData, functionBounds, options);
 }
 

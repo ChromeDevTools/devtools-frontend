@@ -38,6 +38,7 @@ import * as Platform3 from "./../../core/platform/platform.js";
 import * as EmulationModel2 from "./../../models/emulation/emulation.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html3, nothing as nothing2, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/emulation/DeviceModeToolbar.js
@@ -1861,6 +1862,7 @@ var MediaQueryUIModel = class _MediaQueryUIModel {
 };
 
 // gen/front_end/panels/emulation/DeviceModeView.js
+var { classMap: classMap2, styleMap } = Directives3;
 var UIStrings3 = {
   /**
    * @description Bottom resizer element title in Device Mode View of the Device Toolbar
@@ -1901,14 +1903,12 @@ var str_3 = i18n5.i18n.registerUIStrings("panels/emulation/DeviceModeView.ts", U
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var DeviceModeView = class extends UI3.Widget.VBox {
   wrapperInstance;
-  blockElementToWidth;
   model;
   mediaInspector;
   showMediaInspectorSetting;
   showRulersSetting;
   topRuler;
   leftRuler;
-  presetBlocks;
   responsivePresetsContainer;
   screenArea;
   pageArea;
@@ -1936,7 +1936,6 @@ var DeviceModeView = class extends UI3.Widget.VBox {
   handleHeight;
   constructor() {
     super({ useShadowDom: true });
-    this.blockElementToWidth = /* @__PURE__ */ new WeakMap();
     this.setMinimumSize(150, 150);
     this.element.classList.add("device-mode-view");
     this.registerRequiredCSS(deviceModeView_css_default);
@@ -1960,7 +1959,7 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     this.contentClip = this.contentElement.createChild("div", "device-mode-content-clip vbox");
     this.responsivePresetsContainer = this.contentClip.createChild("div", "device-mode-presets-container");
     this.responsivePresetsContainer.setAttribute("jslog", `${VisualLogging3.responsivePresets()}`);
-    this.populatePresetsContainer();
+    this.renderPresets();
     this.mediaInspectorContainer = this.contentClip.createChild("div", "device-mode-media-container");
     this.contentArea = this.contentClip.createChild("div", "device-mode-content-area");
     this.outlineImage = this.contentArea.createChild("img", "device-mode-outline-image hidden fill");
@@ -1990,7 +1989,8 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     this.pageArea = this.screenArea.createChild("div", "device-mode-page-area");
     this.pageArea.createChild("slot");
   }
-  populatePresetsContainer() {
+  renderPresets() {
+    const scale = this.model.scale();
     const sizes = [320, 375, 425, 768, 1024, 1440, 2560];
     const titles = [
       i18nString3(UIStrings3.mobileS),
@@ -2001,22 +2001,25 @@ var DeviceModeView = class extends UI3.Widget.VBox {
       i18nString3(UIStrings3.laptopL),
       "4K"
     ];
-    this.presetBlocks = [];
-    const inner = this.responsivePresetsContainer.createChild("div", "device-mode-presets-container-inner");
-    for (let i = sizes.length - 1; i >= 0; --i) {
-      const outer = inner.createChild("div", "fill device-mode-preset-bar-outer");
-      const block = outer.createChild("div", "device-mode-preset-bar");
-      block.createChild("span").textContent = titles[i] + " \u2013 " + sizes[i] + "px";
-      block.setAttribute("jslog", `${VisualLogging3.action().track({ click: true }).context(`device-mode-preset-${sizes[i]}px`)}`);
-      block.addEventListener("click", applySize.bind(this, sizes[i]), false);
-      this.blockElementToWidth.set(block, sizes[i]);
-      this.presetBlocks.push(block);
-    }
-    function applySize(width, e) {
+    const applySize = (width, e) => {
       this.model.emulate(EmulationModel2.DeviceModeModel.Type.Responsive, null, null);
       this.model.setWidthAndScaleToFit(width);
       e.consume();
-    }
+    };
+    render3(html3`
+      <div class="device-mode-presets-container-inner">
+        ${sizes.map((size, idx) => html3`
+          <div class="fill device-mode-preset-bar-outer">
+            <div class="device-mode-preset-bar"
+                 style="width: ${size * scale}px;"
+                 jslog=${VisualLogging3.action().track({ click: true }).context(`device-mode-preset-${size}px`)}
+                 @click=${(e) => applySize(size, e)}>
+              <span>${titles[idx]} – ${size}px</span>
+            </div>
+          </div>
+        `).reverse()}
+      </div>
+    `, this.responsivePresetsContainer);
   }
   createResizer(element, widthFactor, heightFactor) {
     const resizer = new UI3.ResizerWidget.ResizerWidget();
@@ -2150,13 +2153,7 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     if (this.model.scale() !== this.cachedScale) {
       updateRulers = true;
       callDoResize = true;
-      for (const block of this.presetBlocks) {
-        const blockWidth = this.blockElementToWidth.get(block);
-        if (!blockWidth) {
-          throw new Error("Could not get width for block.");
-        }
-        block.style.width = blockWidth * this.model.scale() + "px";
-      }
+      this.renderPresets();
       this.cachedScale = this.model.scale();
     }
     this.toolbar.requestUpdate();
@@ -2339,18 +2336,14 @@ var Ruler = class extends UI3.Widget.VBox {
   #contentElement;
   horizontal;
   scale;
-  count;
   throttler;
   applyCallback;
-  renderedScale;
-  renderedZoomFactor;
   constructor(horizontal, applyCallback) {
     super({ jslog: `${VisualLogging3.deviceModeRuler().track({ click: true })}` });
     this.element.classList.add("device-mode-ruler");
     this.#contentElement = this.element.createChild("div", "device-mode-ruler-content").createChild("div", "device-mode-ruler-inner");
     this.horizontal = horizontal;
     this.scale = 1;
-    this.count = 0;
     this.throttler = new Common3.Throttler.Throttler(0);
     this.applyCallback = applyCallback;
   }
@@ -2364,12 +2357,6 @@ var Ruler = class extends UI3.Widget.VBox {
   update() {
     const zoomFactor = UI3.ZoomManager.ZoomManager.instance().zoomFactor();
     const size = this.horizontal ? this.#contentElement.offsetWidth : this.#contentElement.offsetHeight;
-    if (this.scale !== this.renderedScale || zoomFactor !== this.renderedZoomFactor) {
-      this.#contentElement.removeChildren();
-      this.count = 0;
-      this.renderedScale = this.scale;
-      this.renderedZoomFactor = zoomFactor;
-    }
     const dipSize = size * zoomFactor / this.scale;
     const count = Math.ceil(dipSize / 5);
     let step = 1;
@@ -2388,38 +2375,27 @@ var Ruler = class extends UI3.Widget.VBox {
     if (this.scale < 0.1) {
       step = 32;
     }
-    for (let i = count; i < this.count; i++) {
-      if (!(i % step)) {
-        const lastChild = this.#contentElement.lastChild;
-        if (lastChild) {
-          lastChild.remove();
-        }
-      }
-    }
-    for (let i = this.count; i < count; i++) {
+    const markers = [];
+    for (let i = 0; i < count; i++) {
       if (i % step) {
         continue;
       }
-      const marker = this.#contentElement.createChild("div", "device-mode-ruler-marker");
-      if (i) {
-        if (this.horizontal) {
-          marker.style.left = 5 * i * this.scale / zoomFactor + "px";
-        } else {
-          marker.style.top = 5 * i * this.scale / zoomFactor + "px";
-        }
-        if (!(i % 20)) {
-          const text = marker.createChild("div", "device-mode-ruler-text");
-          text.textContent = String(i * 5);
-          text.addEventListener("click", this.onMarkerClick.bind(this, i * 5), false);
-        }
-      }
-      if (!(i % 10)) {
-        marker.classList.add("device-mode-ruler-marker-large");
-      } else if (!(i % 5)) {
-        marker.classList.add("device-mode-ruler-marker-medium");
-      }
+      const isLarge = !(i % 10);
+      const isMedium = !(i % 5);
+      const offset = i ? `${5 * i * this.scale / zoomFactor}px` : void 0;
+      markers.push(html3`
+        <div
+          class=${classMap2({
+        "device-mode-ruler-marker": true,
+        "device-mode-ruler-marker-large": isLarge,
+        "device-mode-ruler-marker-medium": isMedium && !isLarge
+      })}
+          style=${styleMap(this.horizontal ? { left: offset } : { top: offset })}>
+            ${i && !(i % 20) ? html3`<div class="device-mode-ruler-text" @click=${() => this.onMarkerClick(i * 5)}>${i * 5}</div>` : nothing2}
+        </div>
+      `);
     }
-    this.count = count;
+    render3(html3`${markers}`, this.#contentElement);
   }
   onMarkerClick(size) {
     this.applyCallback.call(null, size);

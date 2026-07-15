@@ -22,11 +22,13 @@ export class ProjectStore {
     #type;
     #displayName;
     #uiSourceCodes = new Map();
-    constructor(workspace, id, type, displayName) {
+    #target = null;
+    constructor(workspace, id, type, displayName, target = null) {
         this.#workspace = workspace;
         this.#id = id;
         this.#type = type;
         this.#displayName = displayName;
+        this.#target = target;
     }
     id() {
         return this.#id;
@@ -69,6 +71,9 @@ export class ProjectStore {
     }
     uiSourceCodes() {
         return this.#uiSourceCodes.values();
+    }
+    target() {
+        return this.#target;
     }
     renameUISourceCode(uiSourceCode, newName) {
         const oldPath = uiSourceCode.url();

@@ -13,14 +13,14 @@ import { ValueInterpreterDisplay } from './ValueInterpreterDisplay.js';
 import { ValueInterpreterSettings } from './ValueInterpreterSettings.js';
 const UIStrings = {
     /**
-     * @description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear memory inspector. These settings
+     * @description Tooltip text that appears when hovering over the gear button to open and close settings in the Memory inspector panel. These settings
      *             allow the user to change the value type to view, such as 32-bit Integer, or 32-bit Float.
      */
     toggleValueTypeSettings: 'Toggle value type settings',
     /**
-     * @description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear memory inspector.
+     * @description Tooltip text that appears when hovering over the Little Endian or Big Endian setting in the Memory inspector panel.
      */
-    changeEndianness: 'Change `Endianness`',
+    changeEndianness: 'Change endianness',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

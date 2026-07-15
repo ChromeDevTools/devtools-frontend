@@ -18,8 +18,8 @@ export class SourceMapManager extends Common.ObjectWrapper.ObjectWrapper {
     constructor(target, factory) {
         super();
         this.#target = target;
-        this.#factory =
-            factory ?? ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload));
+        this.#factory = factory ??
+            ((compiledURL, sourceMappingURL, payload) => new SourceMap(compiledURL, sourceMappingURL, payload, this.#target.targetManager().getConsole()));
     }
     setEnabled(isEnabled) {
         if (isEnabled === this.#isEnabled) {

@@ -9,7 +9,7 @@ export declare function isIssueCodeSupported(code: Protocol.Audits.InspectorIssu
  * Each issue reported by the backend can result in multiple `Issue` instances.
  * Handlers are simple functions hard-coded into a map.
  */
-export declare function createIssuesFromProtocolIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue): Issue[];
+export declare function createIssuesFromProtocolIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue, frameManager?: SDK.FrameManager.FrameManager): Issue[];
 export interface IssuesManagerCreationOptions {
     forceNew: boolean;
     frameManager?: SDK.FrameManager.FrameManager;
@@ -24,7 +24,7 @@ export declare const enum IssueStatus {
     UNHIDDEN = "Unhidden"
 }
 export declare function defaultHideIssueByCodeSetting(): HideIssueMenuSetting;
-export declare function getHideIssueByCodeSetting(): Common.Settings.Setting<HideIssueMenuSetting>;
+export declare function getHideIssueByCodeSetting(settings?: Common.Settings.Settings): Common.Settings.Setting<HideIssueMenuSetting>;
 /**
  * The `IssuesManager` is the central storage for issues. It collects issues from all the
  * `IssuesModel` instances in the page, and deduplicates them wrt their primary key.
@@ -40,7 +40,7 @@ export declare class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     #private;
     private readonly showThirdPartyIssuesSetting?;
     private readonly hideIssueSetting?;
-    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined, frameManager?: SDK.FrameManager.FrameManager);
+    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined, frameManager?: SDK.FrameManager.FrameManager, targetManager?: SDK.TargetManager.TargetManager);
     static instance(opts?: IssuesManagerCreationOptions): IssuesManager;
     static removeInstance(): void;
     modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void;

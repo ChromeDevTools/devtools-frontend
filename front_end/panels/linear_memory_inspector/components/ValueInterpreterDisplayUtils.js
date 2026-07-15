@@ -5,8 +5,8 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 const UIStrings = {
     /**
-     * @description Text that is shown in the LinearMemoryInspector if a value could not be correctly formatted
-     *             for the requested mode (e.g. we do not floats to be represented as hexadecimal numbers).
+     * @description Text that is shown in the Memory inspector panel if a value cannot be correctly formatted
+     *             for the requested mode (for example, when a float cannot be represented as a hexadecimal number).
      *             Abbreviation stands for 'not applicable'.
      */
     notApplicable: 'N/A',

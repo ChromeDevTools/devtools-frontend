@@ -219,8 +219,15 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
         if (Root.DevToolsContext.globalInstance().has(Workspace.IgnoreListManager.IgnoreListManager)) {
             Workspace.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#updateHasNonIgnoredLinks);
         }
+        if (this.#stackTrace) {
+            this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+        }
+        this.requestUpdate();
     }
     willHide() {
+        if (this.#stackTrace) {
+            this.#stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+        }
         if (Root.DevToolsContext.globalInstance().has(Workspace.IgnoreListManager.IgnoreListManager)) {
             Workspace.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#updateHasNonIgnoredLinks);
         }
@@ -238,7 +245,9 @@ export class StackTracePreviewContent extends UI.Widget.Widget {
             this.#stackTrace.removeEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
         }
         this.#stackTrace = stackTrace;
-        this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+        if (this.#stackTrace && this.isShowing()) {
+            this.#stackTrace.addEventListener("UPDATED" /* StackTrace.StackTrace.Events.UPDATED */, this.requestUpdate, this);
+        }
         this.requestUpdate();
     }
     #onShowMoreLess(more) {

@@ -80,7 +80,7 @@ export interface EventTypes {
     [Events.EDITOR_SELECTED]: EditorSelectedEvent;
     [Events.EDITOR_CLOSED]: Workspace.UISourceCode.UISourceCode;
 }
-interface SerializedHistoryItem {
+export interface SerializedHistoryItem {
     url: string;
     resourceTypeName: string;
     selectionRange?: TextUtils.TextRange.SerializedTextRange;

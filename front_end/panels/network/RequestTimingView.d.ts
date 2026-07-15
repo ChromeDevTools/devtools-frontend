@@ -3,17 +3,12 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 interface ViewInput {
-    requestUnfinished: boolean;
-    requestStartTime: number;
-    requestIssueTime: number;
+    request: SDK.NetworkRequest.NetworkRequest;
     totalDuration: number;
     startTime: number;
     endTime: number;
     timeRanges: NetworkTimeCalculator.RequestTimeRange[];
     calculator: NetworkTimeCalculator.NetworkTimeCalculator;
-    serverTimings: SDK.ServerTiming.ServerTiming[];
-    fetchDetails?: UI.TreeOutline.TreeOutlineInShadow;
-    routerDetails?: UI.TreeOutline.TreeOutlineInShadow;
     wasThrottled?: SDK.NetworkManager.AppliedNetworkConditions;
 }
 type View = (input: ViewInput, output: object, target: HTMLElement) => void;

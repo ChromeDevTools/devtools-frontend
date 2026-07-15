@@ -1,10 +1,11 @@
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 export declare class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
     #private;
-    constructor(workspace: Workspace.Workspace.WorkspaceImpl, id: string, type: Workspace.Workspace.projectTypes, displayName: string, isServiceProject: boolean);
+    constructor(workspace: Workspace.Workspace.WorkspaceImpl, id: string, type: Workspace.Workspace.projectTypes, displayName: string, isServiceProject: boolean, target?: SDK.Target.Target | null);
     requestFileContent(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<TextUtils.ContentData.ContentDataOrError>;
     isServiceProject(): boolean;
     requestMetadata(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Workspace.UISourceCode.UISourceCodeMetadata | null>;

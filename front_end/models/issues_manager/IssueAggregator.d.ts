@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
-import { AttributionReportingIssue } from './AttributionReportingIssue.js';
 import { ContentSecurityPolicyIssue } from './ContentSecurityPolicyIssue.js';
 import { CookieDeprecationMetadataIssue } from './CookieDeprecationMetadataIssue.js';
 import { CorsIssue } from './CorsIssue.js';
@@ -63,7 +62,6 @@ export declare class AggregatedIssue extends Issue {
     getSelectivePermissionsInterventionIssues(): Iterable<SelectivePermissionsInterventionIssue>;
     getSharedArrayBufferIssues(): Iterable<SharedArrayBufferIssue>;
     getQuirksModeIssues(): Iterable<QuirksModeIssue>;
-    getAttributionReportingIssues(): ReadonlySet<AttributionReportingIssue>;
     getGenericIssues(): ReadonlySet<GenericIssue>;
     getElementAccessibilityIssues(): Iterable<ElementAccessibilityIssue>;
     getDescription(): MarkdownIssueDescription | null;

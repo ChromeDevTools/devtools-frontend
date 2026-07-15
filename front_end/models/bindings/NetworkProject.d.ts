@@ -27,7 +27,5 @@ export declare class NetworkProject {
     static addFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId): void;
     static removeFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId): void;
     static targetForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Target.Target | null;
-    static setTargetForProject(project: Workspace.Workspace.Project, target: SDK.Target.Target): void;
-    static getTargetForProject(project: Workspace.Workspace.Project): SDK.Target.Target | null;
     static framesForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.ResourceTreeModel.ResourceTreeFrame[];
 }

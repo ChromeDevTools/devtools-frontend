@@ -400,9 +400,13 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     #onMainEntryHovered;
     #hiddenTracksInfoBarByParsedTrace = new WeakMap();
     #resourceLoader;
-    constructor(resourceLoader, traceModel) {
+    #targetManager;
+    #isolateManager;
+    constructor(resourceLoader, targetManager, isolateManager, traceModel) {
         super('timeline');
         this.#resourceLoader = resourceLoader;
+        this.#targetManager = targetManager;
+        this.#isolateManager = isolateManager;
         this.registerRequiredCSS(timelinePanelStyles);
         const adornerContent = document.createElement('span');
         adornerContent.innerHTML = `<div style="
@@ -607,7 +611,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     }
     static instance(opts = undefined) {
         if (opts) {
-            timelinePanelInstance = new TimelinePanel(opts.resourceLoader, opts.traceModel);
+            timelinePanelInstance =
+                new TimelinePanel(opts.resourceLoader, opts.targetManager, opts.isolateManager, opts.traceModel);
         }
         if (!timelinePanelInstance) {
             throw new Error('No TimelinePanel instance');
@@ -969,7 +974,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         }
         // Isolate selector
         if (this.#isNode) {
-            const isolateSelector = new IsolateSelector();
+            const isolateSelector = new IsolateSelector(this.#targetManager, this.#isolateManager);
             this.panelToolbar.appendSeparator();
             this.panelToolbar.appendToolbarItem(isolateSelector);
         }
@@ -2285,7 +2290,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         async function resolveSourceMap(params) {
             const { scriptId, scriptUrl, sourceUrl, sourceMapUrl, frame, cachedRawSourceMap } = params;
             if (cachedRawSourceMap) {
-                return new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? '', cachedRawSourceMap);
+                return new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl ?? '', cachedRawSourceMap, Common.Console.Console.instance());
             }
             // For still-active frames, the source map is likely already fetched or at least in-flight.
             if (isFreshRecording) {
@@ -2303,7 +2308,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             if (!isFreshRecording && metadata?.sourceMaps && !isDataUrl) {
                 const cachedSourceMap = metadata.sourceMaps.find(m => m.sourceMapUrl === sourceMapUrl);
                 if (cachedSourceMap) {
-                    return new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap);
+                    return new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, cachedSourceMap.sourceMap, Common.Console.Console.instance());
                 }
             }
             // Never fetch source maps if the trace is not fresh - the source maps may not
@@ -2328,7 +2333,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 initiatorUrl: sourceUrl
             };
             const payload = await SDK.SourceMapManager.tryLoadSourceMap(TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
-            return payload ? new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload) : null;
+            return payload ?
+                new SDK.SourceMap.SourceMap(sourceUrl, sourceMapUrl, payload, Common.Console.Console.instance()) :
+                null;
         }
         const timeout = new Promise(resolve => setTimeout(() => resolve(null), SOURCE_MAP_LOAD_TIMEOUT_MS));
         return function resolveSourceMapWithTimeout(params) {

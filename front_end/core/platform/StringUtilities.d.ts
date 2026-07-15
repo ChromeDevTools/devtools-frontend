@@ -1,5 +1,6 @@
 import type { Brand } from './Brand.js';
 export declare const escapeCharacters: (inputString: string, charsToEscape: string) => string;
+export declare const escapeUnicode: (content: string) => string;
 export declare const formatAsJSLiteral: (content: string) => string;
 /**
  * This implements a subset of the sprintf() function described in the Single UNIX

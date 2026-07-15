@@ -23,23 +23,27 @@ export class IsolateSelector extends UI.Toolbar.ToolbarItem {
     options;
     items;
     itemByIsolate = new Map();
-    constructor() {
+    #targetManager;
+    #isolateManager;
+    constructor(targetManager, isolateManager) {
         const menu = new Menus.SelectMenu.SelectMenu();
         super(menu);
+        this.#targetManager = targetManager;
+        this.#isolateManager = isolateManager;
         this.menu = menu;
         menu.buttonTitle = i18nString(UIStrings.selectJavascriptVmInstance);
         menu.showArrow = true;
         menu.style.whiteSpace = 'normal';
         menu.addEventListener('selectmenuselected', this.#onSelectMenuSelected.bind(this));
-        SDK.IsolateManager.IsolateManager.instance().observeIsolates(this);
-        SDK.TargetManager.TargetManager.instance().addEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.targetChanged, this);
-        SDK.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.targetChanged, this);
+        this.#isolateManager.observeIsolates(this);
+        this.#targetManager.addEventListener("NameChanged" /* SDK.TargetManager.Events.NAME_CHANGED */, this.targetChanged, this);
+        this.#targetManager.addEventListener("InspectedURLChanged" /* SDK.TargetManager.Events.INSPECTED_URL_CHANGED */, this.targetChanged, this);
     }
     #updateIsolateItem(isolate, itemForIsolate) {
         const modelCountByName = new Map();
         for (const model of isolate.models()) {
             const target = model.target();
-            const name = SDK.TargetManager.TargetManager.instance().rootTarget() !== target ? target.name() : '';
+            const name = this.#targetManager.rootTarget() !== target ? target.name() : '';
             const parsedURL = new Common.ParsedURL.ParsedURL(target.inspectedURL());
             const domain = parsedURL.isValid ? parsedURL.domain() : '';
             const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || i18nString(UIStrings.empty));
@@ -95,7 +99,7 @@ export class IsolateSelector extends UI.Toolbar.ToolbarItem {
         if (!model) {
             return;
         }
-        const isolate = SDK.IsolateManager.IsolateManager.instance().isolateByModel(model);
+        const isolate = this.#isolateManager.isolateByModel(model);
         if (isolate) {
             this.isolateChanged(isolate);
         }

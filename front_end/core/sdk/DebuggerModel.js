@@ -143,7 +143,8 @@ export class DebuggerModel extends SDKModel {
         target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
         this.agent = target.debuggerAgent();
         this.#runtimeModel = target.model(RuntimeModel);
-        this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, script));
+        this.#sourceMapManager =
+            new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
         const settings = this.target().targetManager().settings;
         settings.moduleSetting('pause-on-exception-enabled').addChangeListener(this.pauseOnExceptionStateChanged, this);
         settings.moduleSetting('pause-on-caught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);

@@ -105,9 +105,11 @@ export class InspectorFrontendHostStub {
         window.open(url, '_blank');
     }
     openSearchResultsInNewTab(_query) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         Common.Console.Console.instance().error('Search is not enabled in hosted mode. Please inspect using chrome://inspect');
     }
     showItemInFolder(_fileSystemPath) {
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         Common.Console.Console.instance().error('Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
     }
     // Reminder: the methods in this class belong to InspectorFrontendHostStub and are typically not executed.

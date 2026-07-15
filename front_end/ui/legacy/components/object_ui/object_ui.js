@@ -62,7 +62,6 @@ __export(ObjectPropertiesSection_exports, {
   ObjectTreeNode: () => ObjectTreeNode,
   ObjectTreeNodeBase: () => ObjectTreeNodeBase,
   Renderer: () => Renderer,
-  RootElement: () => RootElement,
   getObjectPropertiesSectionFrom: () => getObjectPropertiesSectionFrom,
   isWasmObject: () => isWasmObject,
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
@@ -1261,7 +1260,7 @@ var ObjectTreeNode = class _ObjectTreeNode extends ObjectTreeNodeBase {
       } else if (isInteger.test(this.name)) {
         this.#path = `${parentPath}[${this.name}]`;
       } else {
-        this.#path = `${parentPath}[${JSON.stringify(this.name)}]`;
+        this.#path = `${parentPath}[${Platform2.StringUtilities.formatAsJSLiteral(this.name)}]`;
       }
     }
     return this.#path;
@@ -1555,14 +1554,14 @@ var ObjectPropertiesSection = class _ObjectPropertiesSection extends UI2.TreeOut
         return html2`<span class=value title=${description}>${"<" + i18nString2(UIStrings2.unknown) + ">"}</span>`;
       }
       if (type === "string" && typeof description === "string") {
-        const text = JSON.stringify(description);
+        const text = Platform2.StringUtilities.escapeUnicode(JSON.stringify(description));
         const tooLong = description.length > maxRenderableStringLength;
         return html2`<span class="value object-value-string" title=${ifDefined2(tooLong ? void 0 : description)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : text}</span>`;
       }
       if (type === "object" && subtype === "trustedtype") {
         const text = `${className} '${description}'`;
         const tooLong = text.length > maxRenderableStringLength;
-        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : html2`${className} <span class=object-value-string title=${description}>${JSON.stringify(description)}</span>`}</span>`;
+        return html2`<span class="value object-value-trustedtype" title=${ifDefined2(tooLong ? void 0 : text)}>${tooLong ? widget(ExpandableTextPropertyValue, { text }) : html2`${className} <span class=object-value-string title=${description}>${Platform2.StringUtilities.escapeUnicode(JSON.stringify(description))}</span>`}</span>`;
       }
       if (type === "function") {
         return _ObjectPropertiesSection.valueElementForFunctionDescription(description, void 0, void 0, "value");
@@ -1664,7 +1663,7 @@ function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, c
   contextMenu.appendApplicableItems(object.object);
   if (object.object instanceof SDK3.RemoteObject.LocalJSONObject) {
     const { value } = object.object;
-    const propertyValue = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
+    const propertyValue = typeof value === "object" ? Platform2.StringUtilities.escapeUnicode(JSON.stringify(value, null, 2)) : value;
     const copyValueHandler = () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);
@@ -2190,7 +2189,7 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
       contextMenu.appendApplicableItems(this.property.object);
       if (this.property.parent?.object instanceof SDK3.RemoteObject.LocalJSONObject) {
         const { object: { value } } = this.property;
-        const propertyValue = typeof value === "object" ? JSON.stringify(value, null, 2) : value;
+        const propertyValue = typeof value === "object" ? Platform2.StringUtilities.escapeUnicode(JSON.stringify(value, null, 2)) : value;
         const copyValueHandler = () => {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(propertyValue);

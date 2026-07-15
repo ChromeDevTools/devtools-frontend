@@ -56,7 +56,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private fileSelectorElement?;
     private selection;
     private traceLoadStart;
-    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, traceModel?: Trace.TraceModel.Model);
+    constructor(resourceLoader: SDK.PageResourceLoader.ResourceLoader, targetManager: SDK.TargetManager.TargetManager, isolateManager: SDK.IsolateManager.IsolateManager, traceModel?: Trace.TraceModel.Model);
     zoomEvent(event: Trace.Types.Events.Event): void;
     /**
      * This disables the 3P checkbox in the toolbar.
@@ -66,6 +66,8 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     static instance(opts?: {
         forceNew: true;
         resourceLoader: SDK.PageResourceLoader.ResourceLoader;
+        targetManager: SDK.TargetManager.TargetManager;
+        isolateManager: SDK.IsolateManager.IsolateManager;
         traceModel?: Trace.TraceModel.Model;
     } | undefined): TimelinePanel;
     static removeInstance(): void;

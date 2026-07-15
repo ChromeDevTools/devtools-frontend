@@ -14,10 +14,7 @@ export function createContentProviderUISourceCodes(options) {
     const workspace = options.universe?.workspace || Workspace.Workspace.WorkspaceImpl.instance();
     const projectType = options.projectType || Workspace.Workspace.projectTypes.Formatter;
     assert.notEqual(projectType, Workspace.Workspace.projectTypes.FileSystem, 'For creating file system UISourceCodes use \'createFileSystemUISourceCode\' helper.');
-    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(workspace, options.projectId || 'PROJECT_ID', projectType, 'Test project', false /* isServiceProject*/);
-    if (options.target) {
-        Bindings.NetworkProject.NetworkProject.setTargetForProject(project, options.target);
-    }
+    const project = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(workspace, options.projectId || 'PROJECT_ID', projectType, 'Test project', false /* isServiceProject*/, options.target);
     const uiSourceCodes = [];
     for (const item of options.items) {
         const resourceType = item.resourceType || Common.ResourceType.ResourceType.fromMimeType(item.mimeType);
@@ -37,10 +34,14 @@ export function createContentProviderUISourceCode(options) {
 class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFileSystem {
     #mimeType;
     #autoMapping;
+    #files = new Set();
     constructor(path, type, mimeType, autoMapping) {
         super(path, type, false);
         this.#mimeType = mimeType;
         this.#autoMapping = autoMapping;
+    }
+    addFileForSearch(url) {
+        this.#files.add(url);
     }
     tooltipForURL(_url) {
         return 'tooltip-for-url';
@@ -50,6 +51,9 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
     }
     mimeFromPath(_path) {
         return this.#mimeType;
+    }
+    searchInPath(_query, _progress) {
+        return Promise.resolve([...this.#files]);
     }
 }
 class TestFileSystem extends Persistence.FileSystemWorkspaceBinding.FileSystem {
@@ -76,6 +80,7 @@ export function createFileSystemUISourceCode(options) {
     const type = options.type || '';
     const content = options.content || '';
     const platformFileSystem = new TestPlatformFileSystem(fileSystemPath, type || Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT, options.mimeType, Boolean(options.autoMapping));
+    platformFileSystem.addFileForSearch(options.url);
     const metadata = options.metadata || new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
     const project = new TestFileSystem({ fileSystemWorkspaceBinding, platformFileSystem, workspace, content, metadata });
     const uiSourceCode = project.createUISourceCode(options.url, Common.ResourceType.ResourceType.fromMimeType(options.mimeType));

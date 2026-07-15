@@ -1,10 +1,13 @@
 // Copyright 2013 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import { ChunkedFileReader } from './FileUtils.js';
 export class TempFile {
     #lastBlob = null;
+    #console;
+    constructor(console) {
+        this.#console = console;
+    }
     write(pieces) {
         if (this.#lastBlob) {
             pieces.unshift(this.#lastBlob);
@@ -19,7 +22,7 @@ export class TempFile {
     }
     async readRange(startOffset, endOffset) {
         if (!this.#lastBlob) {
-            Common.Console.Console.instance().error('Attempt to read a temp file that was never written');
+            this.#console.error('Attempt to read a temp file that was never written');
             return '';
         }
         const blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
@@ -34,7 +37,7 @@ export class TempFile {
             });
         }
         catch (error) {
-            Common.Console.Console.instance().error('Failed to read from temp file: ' + error.message);
+            this.#console.error('Failed to read from temp file: ' + error.message);
         }
         return reader.result;
     }

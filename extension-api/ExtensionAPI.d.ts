@@ -148,12 +148,69 @@ export namespace Chrome {
 
     export interface ExtensionSidebarPane extends ExtensionView {
       setHeight(height: string): void;
+
+      /**
+       * Sets an object to be displayed in the sidebar pane.
+       *
+       * If a `callback` is provided, it is invoked when the object has been set
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param jsonObject The JSON object to display in the pane (as a string).
+       * @param rootTitle Optional title of the root node.
+       * @param callback Optional callback to be invoked when the object has been set.
+       * @returns A Promise that resolves when the object has been set if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      setObject(jsonObject: string, rootTitle?: string): Promise<void>;
       setObject(jsonObject: string, rootTitle?: string, callback?: () => unknown): void;
+
+      /**
+       * Evaluates an expression in the context of the inspected page and displays the
+       * result in the sidebar pane.
+       *
+       * If a `callback` is provided, it is invoked when the expression has been evaluated
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param expression The expression to evaluate.
+       * @param rootTitle Optional title of the root node.
+       * @param evaluateOptions Options for evaluating the expression.
+       * @param callback Optional callback to be invoked when the expression has been evaluated.
+       * @returns A Promise that resolves when the expression has been evaluated if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      setExpression(expression: string, rootTitle?: string, evaluateOptions?: {
+        frameURL?: string,
+        useContentScriptContext?: boolean,
+        scriptExecutionContext?: string,
+      }): Promise<void>;
+      setExpression(expression: string, rootTitle?: string, evaluateOptions?: {
+        frameURL?: string,
+        useContentScriptContext?: boolean,
+        scriptExecutionContext?: string,
+      },
+                    callback?: () => unknown): void;
+
       setPage(path: string): void;
     }
 
     export interface PanelWithSidebar {
+      /**
+       * Creates a sidebar pane in the Elements or Sources panel.
+       *
+       * If a `callback` is provided, it is invoked with the sidebar pane
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param title The title of the sidebar pane.
+       * @param callback Optional callback to be invoked when the sidebar pane has been created.
+       * @returns A Promise that resolves to the created ExtensionSidebarPane if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      createSidebarPane(title: string): Promise<ExtensionSidebarPane>;
       createSidebarPane(title: string, callback?: (result: ExtensionSidebarPane) => unknown): void;
+
       onSelectionChanged: EventSink<() => unknown>;
     }
 
@@ -163,7 +220,38 @@ export namespace Chrome {
       network: NetworkPanel;
       themeName: string;
 
+      /**
+       * Creates an extension panel.
+       *
+       * If a `callback` is provided, it is invoked with the panel
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param title The title of the panel.
+       * @param iconPath The path to the icon for the panel.
+       * @param pagePath The path to the page for the panel.
+       * @param callback Optional callback to be invoked when the panel has been created.
+       * @returns A Promise that resolves to the created ExtensionPanel if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      create(title: string, iconPath: string, pagePath: string): Promise<ExtensionPanel>;
       create(title: string, iconPath: string, pagePath: string, callback?: (panel: ExtensionPanel) => unknown): void;
+
+      /**
+       * Opens a resource in the Sources panel.
+       *
+       * If a `callback` is provided, it is invoked when the resource has been opened
+       * and the method returns `void`. If no `callback` is provided, the method
+       * returns a `Promise`.
+       *
+       * @param url The URL of the resource.
+       * @param lineNumber The line number to highlight.
+       * @param columnNumber Optional column number to highlight.
+       * @param callback Optional callback to be invoked when the resource has been opened.
+       * @returns A Promise that resolves when the resource has been opened if no callback is
+       * provided, otherwise void. Rejects with an error object on failure.
+       */
+      openResource(url: string, lineNumber: number, columnNumber?: number): Promise<void>;
       openResource(url: string, lineNumber: number, columnNumber?: number, callback?: () => unknown): void;
 
       setOpenResourceHandler(

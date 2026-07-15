@@ -12756,7 +12756,7 @@ var InplaceFormatterEditorAction = class _InplaceFormatterEditorAction {
     }
   }
   async contentLoaded(uiSourceCode, sourceFrame, content) {
-    const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(uiSourceCode.contentType(), sourceFrame.contentType, content);
+    const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(Common15.Settings.Settings.instance(), uiSourceCode.contentType(), sourceFrame.contentType, content);
     if (uiSourceCode.workingCopy() === formattedContent) {
       return;
     }
@@ -13685,7 +13685,6 @@ import * as Host12 from "./../../core/host/host.js";
 import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as Bindings11 from "./../../models/bindings/bindings.js";
 import * as Persistence18 from "./../../models/persistence/persistence.js";
 import * as TextUtils13 from "./../../models/text_utils/text_utils.js";
 import * as Workspace30 from "./../../models/workspace/workspace.js";
@@ -13823,7 +13822,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
+    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(project.target());
   }
   onScopeChange() {
     for (const project of Workspace30.Workspace.WorkspaceImpl.instance().projects()) {

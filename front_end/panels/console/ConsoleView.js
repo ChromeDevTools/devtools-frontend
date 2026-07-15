@@ -325,7 +325,7 @@ export class ConsoleView extends UI.Widget.VBox {
     userHasOpenedSidebarAtLeastOnce = false;
     issueToolbarThrottle;
     requestResolver = new Logs.RequestResolver.RequestResolver();
-    issueResolver = new IssuesManager.IssueResolver.IssueResolver();
+    issueResolver = new IssuesManager.IssueResolver.IssueResolver(IssuesManager.IssuesManager.IssuesManager.instance());
     #isDetached = false;
     #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
     #collapseAllButton;

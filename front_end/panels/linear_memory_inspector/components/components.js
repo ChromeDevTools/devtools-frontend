@@ -151,13 +151,13 @@ var linearMemoryHighlightChipList_css_default = `/*
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.js
 var UIStrings = {
   /**
-   * @description Tooltip text that appears when hovering over an inspected variable's button in the Linear Memory Highlight Chip List.
-   * Clicking the button changes the displayed slice of computer memory in the Linear Memory inspector to contain the inspected variable's bytes.
+   * @description Tooltip text that appears when hovering over an inspected variable's button in the highlight chip list in the Memory inspector panel.
+   * Clicking the button changes the displayed slice of computer memory in the Memory inspector panel to contain the inspected variable's bytes.
    */
   jumpToAddress: "Jump to this memory",
   /**
-   * @description Tooltip text that appears when hovering over an inspected variable's delete button in the Linear Memory Highlight Chip List.
-   * Clicking the delete button stops highlighting the variable's memory in the Linear Memory inspector.
+   * @description Tooltip text that appears when hovering over an inspected variable's delete button in the highlight chip list in the Memory inspector panel.
+   * Clicking the delete button stops highlighting the variable's memory in the Memory inspector panel.
    * 'Memory' is a slice of bytes in the computer memory.
    */
   deleteHighlight: "Stop highlighting this memory"
@@ -817,8 +817,8 @@ import * as i18n3 from "./../../../core/i18n/i18n.js";
 import * as Platform from "./../../../core/platform/platform.js";
 var UIStrings2 = {
   /**
-   * @description Text that is shown in the LinearMemoryInspector if a value could not be correctly formatted
-   *             for the requested mode (e.g. we do not floats to be represented as hexadecimal numbers).
+   * @description Text that is shown in the Memory inspector panel if a value cannot be correctly formatted
+   *             for the requested mode (for example, when a float cannot be represented as a hexadecimal number).
    *             Abbreviation stands for 'not applicable'.
    */
   notApplicable: "N/A"
@@ -1009,24 +1009,24 @@ function formatInteger(value, mode) {
 // gen/front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.js
 var UIStrings3 = {
   /**
-   * @description Tooltip text that appears when hovering over an unsigned interpretation of the memory under the Value Interpreter
+   * @description Tooltip text that appears when hovering over an unsigned interpretation of the memory in the value interpreter in the Memory inspector panel.
    */
-  unsignedValue: "`Unsigned` value",
+  unsignedValue: "Unsigned value",
   /**
-   * @description Tooltip text that appears when hovering over the element to change value type modes of under the Value Interpreter. Value type modes
-   *             are different ways of viewing a certain value, e.g.: 10 (decimal) can be 0xa in hexadecimal mode, or 12 in octal mode.
+   * @description Tooltip text that appears when hovering over the element to change value type modes in the value interpreter in the Memory inspector panel. Value type modes
+   *             are different ways of viewing a certain value, for example: 10 (decimal) can be 0xa in hexadecimal mode, or 12 in octal mode.
    */
   changeValueTypeMode: "Change mode",
   /**
-   * @description Tooltip text that appears when hovering over a signed interpretation of the memory under the Value Interpreter
+   * @description Tooltip text that appears when hovering over a signed interpretation of the memory in the value interpreter in the Memory inspector panel.
    */
-  signedValue: "`Signed` value",
+  signedValue: "Signed value",
   /**
-   * @description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) under the Value Interpreter
+   * @description Tooltip text that appears when hovering over a jump-to-address button that is next to a pointer (32-bit or 64-bit) in the value interpreter in the Memory inspector panel.
    */
   jumpToPointer: "Jump to address",
   /**
-   * @description Tooltip text that appears when hovering over a 'jump-to-address' button that is next to a pointer (32-bit or 64-bit) with an invalid address under the Value Interpreter.
+   * @description Tooltip text that appears when hovering over a jump-to-address button that is next to a pointer (32-bit or 64-bit) with an invalid address in the value interpreter in the Memory inspector panel.
    */
   addressOutOfRange: "Address out of memory range"
 };
@@ -1243,7 +1243,7 @@ var valueInterpreterSettings_css_default = `/*
 var { render: render4, html: html4 } = Lit3;
 var UIStrings4 = {
   /**
-   * @description Name of a group of selectable value types that do not fall under integer and floating point value types, e.g. Pointer32. The group appears name appears under the Value Interpreter Settings.
+   * @description Name of a group of selectable value types that do not fall under integer and floating point value types (for example, Pointer32). The group name appears in the value interpreter settings in the Memory inspector panel.
    */
   otherGroup: "Other"
 };
@@ -1336,14 +1336,14 @@ var ValueInterpreterSettings = class extends UI3.Widget.Widget {
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.js
 var UIStrings5 = {
   /**
-   * @description Tooltip text that appears when hovering over the gear button to open and close settings in the Linear memory inspector. These settings
+   * @description Tooltip text that appears when hovering over the gear button to open and close settings in the Memory inspector panel. These settings
    *             allow the user to change the value type to view, such as 32-bit Integer, or 32-bit Float.
    */
   toggleValueTypeSettings: "Toggle value type settings",
   /**
-   * @description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear memory inspector.
+   * @description Tooltip text that appears when hovering over the Little Endian or Big Endian setting in the Memory inspector panel.
    */
-  changeEndianness: "Change `Endianness`"
+  changeEndianness: "Change endianness"
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
@@ -1510,11 +1510,11 @@ var LinearMemoryValueInterpreter = class extends UI4.Widget.Widget {
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
 var UIStrings6 = {
   /**
-   * @description Tooltip text that appears when hovering over an invalid address in the address line in the Linear memory inspector
+   * @description Tooltip text that appears when hovering over an invalid address in the address line in the Memory inspector panel.
    * @example {0x00000000} PH1
    * @example {0x00400000} PH2
    */
-  addressHasToBeANumberBetweenSAnd: "Address has to be a number between {PH1} and {PH2}"
+  addressHasToBeANumberBetweenSAnd: "Address must be a number between {PH1} and {PH2}"
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryInspector.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -1896,27 +1896,27 @@ var linearMemoryNavigator_css_default = `/*
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.js
 var UIStrings7 = {
   /**
-   * @description Tooltip text that appears when hovering over a valid memory address (e.g. 0x0) in the address line in the Linear memory inspector.
+   * @description Tooltip text that appears when hovering over a valid memory address (for example, 0x0) in the address line in the Memory inspector panel.
    */
   enterAddress: "Enter address",
   /**
-   * @description Tooltip text that appears when hovering over the button to go back in history in the Linear Memory Navigator
+   * @description Tooltip text that appears when hovering over the button to go back in history in the Memory inspector panel.
    */
   goBackInAddressHistory: "Go back in address history",
   /**
-   * @description Tooltip text that appears when hovering over the button to go forward in history in the Linear Memory Navigator
+   * @description Tooltip text that appears when hovering over the button to go forward in history in the Memory inspector panel.
    */
   goForwardInAddressHistory: "Go forward in address history",
   /**
-   * @description Tooltip text that appears when hovering over the page back icon in the Linear Memory Navigator
+   * @description Tooltip text that appears when hovering over the page back icon in the Memory inspector panel.
    */
   previousPage: "Previous page",
   /**
-   * @description Tooltip text that appears when hovering over the next page icon in the Linear Memory Navigator
+   * @description Tooltip text that appears when hovering over the next page icon in the Memory inspector panel.
    */
   nextPage: "Next page",
   /**
-   * @description Text to refresh the page
+   * @description Tooltip text that appears when hovering over the refresh button in the Memory inspector panel.
    */
   refresh: "Refresh"
 };

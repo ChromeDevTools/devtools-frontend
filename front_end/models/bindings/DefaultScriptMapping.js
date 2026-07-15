@@ -14,7 +14,7 @@ export class DefaultScriptMapping {
     constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
         defaultScriptMappings.add(this);
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-        this.#project = new ContentProviderBasedProject(workspace, 'debugger:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Debugger, '', true /* isServiceProject */);
+        this.#project = new ContentProviderBasedProject(workspace, 'debugger:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Debugger, '', true /* isServiceProject */, debuggerModel.target());
         this.#eventListeners = [
             debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
             debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),

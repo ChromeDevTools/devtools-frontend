@@ -86,6 +86,7 @@ export function isUnderTest(prefs) {
         return prefs['isUnderTest'] === 'true';
     }
     return Common.Settings.Settings.hasInstance() &&
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         Common.Settings.Settings.instance().createSetting('isUnderTest', false).get();
 }
 // The stub class used to be declared here so for backwards compatibility we re-export it from here.

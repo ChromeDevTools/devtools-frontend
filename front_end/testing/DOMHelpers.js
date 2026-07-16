@@ -39,6 +39,8 @@ export function renderElementIntoDOM(element, renderOptions = {}) {
     if (renderOptions.height !== undefined) {
         container.style.height =
             typeof renderOptions.height === 'number' ? `${renderOptions.height}px` : renderOptions.height;
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
     }
     if (element instanceof Node) {
         container.appendChild(element);

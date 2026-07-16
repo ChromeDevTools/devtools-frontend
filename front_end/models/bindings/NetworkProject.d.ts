@@ -3,10 +3,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../workspace/workspace.js';
 export declare class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+    #private;
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): NetworkProjectManager;
     static removeInstance(): void;
+    setTargetForProject(project: Workspace.Workspace.Project, target: SDK.Target.Target): void;
+    getTargetForProject(project: Workspace.Workspace.Project): SDK.Target.Target | null;
+    getTargetForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Target.Target | null;
 }
 export declare const enum Events {
     FRAME_ATTRIBUTION_ADDED = "FrameAttributionAdded",
@@ -27,5 +31,7 @@ export declare class NetworkProject {
     static addFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId): void;
     static removeFrameAttribution(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId): void;
     static targetForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.Target.Target | null;
+    static setTargetForProject(project: Workspace.Workspace.Project, target: SDK.Target.Target): void;
+    static getTargetForProject(project: Workspace.Workspace.Project): SDK.Target.Target | null;
     static framesForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): SDK.ResourceTreeModel.ResourceTreeFrame[];
 }

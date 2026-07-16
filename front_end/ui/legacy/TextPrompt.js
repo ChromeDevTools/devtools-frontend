@@ -64,7 +64,7 @@ import { cloneCustomElement, ElementFocusRestorer } from './UIUtils.js';
  * @attribute value Sets the initial text value that's edited when editing starts. If not provided, the slot's inner text is used.
  */
 export class TextPromptElement extends HTMLElement {
-    static observedAttributes = ['editing', 'completions', 'placeholder', 'cancel-on-blur'];
+    static observedAttributes = ['editing', 'completions', 'placeholder', 'cancel-on-blur', 'render-as-block'];
     static formAssociated = true;
     #shadow = this.attachShadow({ mode: 'open' });
     #internals = this.attachInternals();
@@ -75,6 +75,7 @@ export class TextPromptElement extends HTMLElement {
     #completionObserver = new MutationObserver(this.#onMutate.bind(this));
     #validator;
     #cancelOnBlur = false;
+    #isEditing = false;
     constructor() {
         super();
         this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
@@ -90,6 +91,17 @@ export class TextPromptElement extends HTMLElement {
     }
     get cancelOnBlur() {
         return this.#cancelOnBlur;
+    }
+    set renderAsBlock(renderAsBlock) {
+        if (renderAsBlock) {
+            this.setAttribute('render-as-block', '');
+        }
+        else {
+            this.removeAttribute('render-as-block');
+        }
+    }
+    get renderAsBlock() {
+        return this.hasAttribute('render-as-block');
     }
     #onMutate(changes) {
         const listId = this.getAttribute('completions');
@@ -148,6 +160,18 @@ export class TextPromptElement extends HTMLElement {
                     this.#completionObserver.disconnect();
                 }
                 break;
+            case 'render-as-block':
+                if (this.#isEditing) {
+                    if (isTruthy(newValue)) {
+                        this.#textPrompt.renderAsBlock();
+                        this.#entrypoint.style.display = 'block';
+                    }
+                    else {
+                        this.#textPrompt.renderAsInlineBlock();
+                        this.#entrypoint.style.display = 'inline';
+                    }
+                }
+                break;
         }
     }
     #updateCompletions() {
@@ -171,6 +195,7 @@ export class TextPromptElement extends HTMLElement {
             .toArray();
     }
     #startEditing() {
+        this.#isEditing = true;
         const truncatedTextPlaceholder = this.getAttribute('placeholder');
         const placeholder = this.#entrypoint.createChild('span');
         const initialText = this.getAttribute('value') ?? this.#slot.deepInnerText();
@@ -181,12 +206,21 @@ export class TextPromptElement extends HTMLElement {
             placeholder.setTextContentTruncatedIfNeeded(initialText, truncatedTextPlaceholder);
         }
         this.#slot.remove();
+        if (this.renderAsBlock) {
+            this.#textPrompt.renderAsBlock();
+            this.#entrypoint.style.display = 'block';
+        }
+        else {
+            this.#textPrompt.renderAsInlineBlock();
+            this.#entrypoint.style.display = 'inline';
+        }
         const proxy = this.#textPrompt.attachAndStartEditing(placeholder, e => this.#done(e, /* commit=*/ !this.#cancelOnBlur));
         proxy.addEventListener('keydown', this.#editingValueKeyDown.bind(this));
         placeholder.getComponentSelection()?.selectAllChildren(placeholder);
         this.#textPrompt.focus();
     }
     #stopEditing() {
+        this.#isEditing = false;
         this.#entrypoint.removeChildren();
         this.#entrypoint.appendChild(this.#slot);
         this.#textPrompt.detach();
@@ -202,6 +236,9 @@ export class TextPromptElement extends HTMLElement {
         }
     }
     #done(e, commit) {
+        if (!this.#isEditing) {
+            return;
+        }
         const target = e.target;
         const text = target.textContent || '';
         if (commit) {
@@ -215,10 +252,12 @@ export class TextPromptElement extends HTMLElement {
             if (!this.#internals.reportValidity()) {
                 return;
             }
+            this.#isEditing = false;
             this.dispatchEvent(new TextPromptElement.CommitEvent(text));
         }
         else {
             this.#internals.setValidity({});
+            this.#isEditing = false;
             this.dispatchEvent(new TextPromptElement.CancelEvent());
         }
         e.consume();
@@ -324,6 +363,15 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     }
     renderAsBlock() {
         this.proxyElementDisplay = 'block';
+        if (this.proxyElement) {
+            this.proxyElement.style.display = 'block';
+        }
+    }
+    renderAsInlineBlock() {
+        this.proxyElementDisplay = 'inline-block';
+        if (this.proxyElement) {
+            this.proxyElement.style.display = 'inline-block';
+        }
     }
     /**
      * Clients should never attach any event listeners to the |element|. Instead,

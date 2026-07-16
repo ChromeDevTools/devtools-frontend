@@ -1699,43 +1699,7 @@ var UIStrings8 = {
    * @description Text in Timeline Flame Chart Data Provider of the Performance panel
    * @example {2} PH1
    */
-  threadPoolThreadS: "Thread pool worker {PH1}",
-  /**
-   * @description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
-   * @example {https://google.com} PH1
-   */
-  bidderWorkletS: "Bidder Worklet \u2014 {PH1}",
-  /**
-   * @description Title of a bidder auction worklet in the timeline flame chart of the Performance panel with an unknown URL
-   */
-  bidderWorklet: "Bidder Worklet",
-  /**
-   * @description Title of a seller auction worklet in the timeline flame chart of the Performance panel with an unknown URL
-   */
-  sellerWorklet: "Seller Worklet",
-  /**
-   * @description Title of an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
-   */
-  unknownWorklet: "Auction Worklet",
-  /**
-   * @description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
-   */
-  workletService: "Auction Worklet service",
-  /**
-   * @description Title of a seller auction worklet with known URL in the timeline flame chart of the Performance panel
-   * @example {https://google.com} PH1
-   */
-  sellerWorkletS: "Seller Worklet \u2014 {PH1}",
-  /**
-   * @description Title of an auction worklet with known URL in the timeline flame chart of the Performance panel
-   * @example {https://google.com} PH1
-   */
-  unknownWorkletS: "Auction Worklet \u2014 {PH1}",
-  /**
-   * @description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
-   * @example {https://google.com} PH1
-   */
-  workletServiceS: "Auction Worklet service \u2014 {PH1}"
+  threadPoolThreadS: "Thread pool worker {PH1}"
 };
 var str_8 = i18n15.i18n.registerUIStrings("panels/timeline/ThreadAppender.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
@@ -1771,9 +1735,6 @@ var ThreadAppender = class {
     this.#threadDefaultName = threadName || i18nString8(UIStrings8.threadS, { PH1: threadId });
     this.isOnMainFrame = Boolean(this.#parsedTrace.data.Renderer?.processes.get(processId)?.isOnMainFrame);
     this.threadType = type;
-    if (this.#parsedTrace.data.AuctionWorklets.worklets.has(processId)) {
-      this.appenderName = "Thread_AuctionWorklet";
-    }
     this.#url = this.#parsedTrace.data.Renderer?.processes.get(this.#processId)?.url || "";
   }
   processId() {
@@ -1866,8 +1827,6 @@ var ThreadAppender = class {
         return "thread.worker";
       case "RASTERIZER":
         return "thread.rasterizer";
-      case "AUCTION_WORKLET":
-        return "thread.auction-worklet";
       case "OTHER":
         return "thread.other";
       case "CPU_PROFILE":
@@ -1941,9 +1900,6 @@ var ThreadAppender = class {
         break;
       case "OTHER":
         break;
-      case "AUCTION_WORKLET":
-        threadTypeLabel = this.#buildNameForAuctionWorklet();
-        break;
       default:
         return Platform4.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
@@ -1958,32 +1914,6 @@ var ThreadAppender = class {
   }
   getEntries() {
     return this.#entries;
-  }
-  #buildNameForAuctionWorklet() {
-    const workletMetadataEvent = this.#parsedTrace.data.AuctionWorklets.worklets.get(this.#processId);
-    if (!workletMetadataEvent) {
-      return i18nString8(UIStrings8.unknownWorklet);
-    }
-    const host = workletMetadataEvent.host ? `https://${workletMetadataEvent.host}` : "";
-    const shouldAddHost = host.length > 0;
-    const isUtilityThread = workletMetadataEvent.args.data.utilityThread.tid === this.#threadId;
-    const isBidderOrSeller = workletMetadataEvent.args.data.v8HelperThread.tid === this.#threadId;
-    if (isUtilityThread) {
-      return shouldAddHost ? i18nString8(UIStrings8.workletServiceS, { PH1: host }) : i18nString8(UIStrings8.workletService);
-    }
-    if (isBidderOrSeller) {
-      switch (workletMetadataEvent.type) {
-        case "seller":
-          return shouldAddHost ? i18nString8(UIStrings8.sellerWorkletS, { PH1: host }) : i18nString8(UIStrings8.sellerWorklet);
-        case "bidder":
-          return shouldAddHost ? i18nString8(UIStrings8.bidderWorkletS, { PH1: host }) : i18nString8(UIStrings8.bidderWorklet);
-        case "unknown":
-          return shouldAddHost ? i18nString8(UIStrings8.unknownWorkletS, { PH1: host }) : i18nString8(UIStrings8.unknownWorklet);
-        default:
-          Platform4.assertNever(workletMetadataEvent.type, `Unexpected Auction Worklet Type ${workletMetadataEvent.type}`);
-      }
-    }
-    return shouldAddHost ? i18nString8(UIStrings8.unknownWorkletS, { PH1: host }) : i18nString8(UIStrings8.unknownWorklet);
   }
   #buildNameForWorker() {
     const url = this.#parsedTrace.data.Renderer?.processes.get(this.#processId)?.url || "";
@@ -18604,8 +18534,6 @@ var CompatibilityTracksAppender = class {
         }
         case "WORKER":
           return 3;
-        case "AUCTION_WORKLET":
-          return 3;
         case "RASTERIZER":
           return 4;
         case "THREAD_POOL":
@@ -18624,14 +18552,6 @@ var CompatibilityTracksAppender = class {
         continue;
       }
       if (name && HIDDEN_THREAD_NAMES.has(name) && !showAllEvents) {
-        continue;
-      }
-      const matchingWorklet = this.#parsedTrace.data.AuctionWorklets.worklets.get(pid);
-      if (matchingWorklet) {
-        const tids = [matchingWorklet.args.data.utilityThread.tid, matchingWorklet.args.data.v8HelperThread.tid];
-        if (tids.includes(tid)) {
-          this.#threadAppenders.push(new ThreadAppender(this, this.#parsedTrace, pid, tid, "", "AUCTION_WORKLET", entries, tree));
-        }
         continue;
       }
       this.#threadAppenders.push(new ThreadAppender(this, this.#parsedTrace, pid, tid, name, type, entries, tree));

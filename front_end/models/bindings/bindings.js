@@ -796,8 +796,8 @@ var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var ContentProviderBasedProject = class extends Workspace.Workspace.ProjectStore {
   #isServiceProject;
   #uiSourceCodeToData = /* @__PURE__ */ new WeakMap();
-  constructor(workspace, id, type, displayName, isServiceProject, target = null) {
-    super(workspace, id, type, displayName, target);
+  constructor(workspace, id, type, displayName, isServiceProject) {
+    super(workspace, id, type, displayName);
     this.#isServiceProject = isServiceProject;
     workspace.addProject(this);
   }
@@ -917,6 +917,7 @@ import * as Root from "./../../core/root/root.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var uiSourceCodeToAttributionMap = /* @__PURE__ */ new WeakMap();
 var NetworkProjectManager = class _NetworkProjectManager extends Common4.ObjectWrapper.ObjectWrapper {
+  #projectToTargetMap = /* @__PURE__ */ new WeakMap();
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_NetworkProjectManager) || forceNew) {
       Root.DevToolsContext.globalInstance().set(_NetworkProjectManager, new _NetworkProjectManager());
@@ -925,6 +926,15 @@ var NetworkProjectManager = class _NetworkProjectManager extends Common4.ObjectW
   }
   static removeInstance() {
     Root.DevToolsContext.globalInstance().delete(_NetworkProjectManager);
+  }
+  setTargetForProject(project, target) {
+    this.#projectToTargetMap.set(project, target);
+  }
+  getTargetForProject(project) {
+    return this.#projectToTargetMap.get(project) ?? null;
+  }
+  getTargetForUISourceCode(uiSourceCode) {
+    return this.#projectToTargetMap.get(uiSourceCode.project()) ?? null;
   }
 };
 var NetworkProject = class _NetworkProject {
@@ -996,7 +1006,13 @@ var NetworkProject = class _NetworkProject {
     NetworkProjectManager.instance().dispatchEventToListeners("FrameAttributionRemoved", data);
   }
   static targetForUISourceCode(uiSourceCode) {
-    return uiSourceCode.project().target();
+    return NetworkProjectManager.instance().getTargetForUISourceCode(uiSourceCode);
+  }
+  static setTargetForProject(project, target) {
+    NetworkProjectManager.instance().setTargetForProject(project, target);
+  }
+  static getTargetForProject(project) {
+    return NetworkProjectManager.instance().getTargetForProject(project);
   }
   static framesForUISourceCode(uiSourceCode) {
     const target = _NetworkProject.targetForUISourceCode(uiSourceCode);
@@ -1027,7 +1043,14 @@ var CompilerScriptMapping = class {
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     this.#debuggerModel = debuggerModel;
     this.#ignoreListManager = debuggerWorkspaceBinding.ignoreListManager;
-    this.#stubProject = new ContentProviderBasedProject(workspace, "jsSourceMaps:stub:" + debuggerModel.target().id(), Workspace3.Workspace.projectTypes.Service, "", true, debuggerModel.target());
+    this.#stubProject = new ContentProviderBasedProject(
+      workspace,
+      "jsSourceMaps:stub:" + debuggerModel.target().id(),
+      Workspace3.Workspace.projectTypes.Service,
+      "",
+      true
+      /* isServiceProject */
+    );
     this.#eventListeners = [
       this.#sourceMapManager.addEventListener(SDK3.SourceMapManager.Events.SourceMapWillAttach, this.sourceMapWillAttach, this),
       this.#sourceMapManager.addEventListener(SDK3.SourceMapManager.Events.SourceMapFailedToAttach, this.sourceMapFailedToAttach, this),
@@ -1356,9 +1379,9 @@ var CompilerScriptMapping = class {
         /* displayName */
         "",
         /* isServiceProject */
-        false,
-        target
+        false
       );
+      NetworkProject.setTargetForProject(project, target);
       this.#projects.set(projectId, project);
     }
     this.#sourceMapToProject.set(sourceMap, project);
@@ -1536,7 +1559,15 @@ var SASSSourceMapping = class {
   constructor(target, sourceMapManager, workspace, cssWorkspaceBinding) {
     this.#sourceMapManager = sourceMapManager;
     this.#cssWorkspaceBinding = cssWorkspaceBinding;
-    this.#project = new ContentProviderBasedProject(workspace, "cssSourceMaps:" + target.id(), Workspace5.Workspace.projectTypes.Network, "", false, target);
+    this.#project = new ContentProviderBasedProject(
+      workspace,
+      "cssSourceMaps:" + target.id(),
+      Workspace5.Workspace.projectTypes.Network,
+      "",
+      false
+      /* isServiceProject */
+    );
+    NetworkProject.setTargetForProject(this.#project, target);
     this.#bindings = /* @__PURE__ */ new Map();
     this.#eventListeners = [
       this.#sourceMapManager.addEventListener(SDK4.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this),
@@ -1778,7 +1809,15 @@ var StylesSourceMapping = class {
   constructor(cssModel, workspace) {
     this.#cssModel = cssModel;
     const target = this.#cssModel.target();
-    this.#project = new ContentProviderBasedProject(workspace, "css:" + target.id(), Workspace9.Workspace.projectTypes.Network, "", false, target);
+    this.#project = new ContentProviderBasedProject(
+      workspace,
+      "css:" + target.id(),
+      Workspace9.Workspace.projectTypes.Network,
+      "",
+      false
+      /* isServiceProject */
+    );
+    NetworkProject.setTargetForProject(this.#project, target);
     this.#eventListeners = [
       this.#cssModel.addEventListener(SDK6.CSSModel.Events.StyleSheetAdded, this.styleSheetAdded, this),
       this.#cssModel.addEventListener(SDK6.CSSModel.Events.StyleSheetRemoved, this.styleSheetRemoved, this),
@@ -3185,7 +3224,15 @@ var ModelData = class {
   project;
   uiSourceCodeToScripts;
   constructor(debuggerModel, workspace) {
-    this.project = new ContentProviderBasedProject(workspace, "language_plugins::" + debuggerModel.target().id(), Workspace11.Workspace.projectTypes.Network, "", false, debuggerModel.target());
+    this.project = new ContentProviderBasedProject(
+      workspace,
+      "language_plugins::" + debuggerModel.target().id(),
+      Workspace11.Workspace.projectTypes.Network,
+      "",
+      false
+      /* isServiceProject */
+    );
+    NetworkProject.setTargetForProject(this.project, debuggerModel.target());
     this.uiSourceCodeToScripts = /* @__PURE__ */ new Map();
   }
   addSourceFiles(script, urls) {
@@ -3254,7 +3301,14 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   constructor(debuggerModel, workspace, debuggerWorkspaceBinding) {
     defaultScriptMappings.add(this);
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    this.#project = new ContentProviderBasedProject(workspace, "debugger:" + debuggerModel.target().id(), Workspace13.Workspace.projectTypes.Debugger, "", true, debuggerModel.target());
+    this.#project = new ContentProviderBasedProject(
+      workspace,
+      "debugger:" + debuggerModel.target().id(),
+      Workspace13.Workspace.projectTypes.Debugger,
+      "",
+      true
+      /* isServiceProject */
+    );
     this.#eventListeners = [
       debuggerModel.addEventListener(SDK9.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
       debuggerModel.addEventListener(SDK9.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
@@ -3407,7 +3461,15 @@ var ResourceScriptMapping = class {
     let project = this.#projects.get(projectId);
     if (!project) {
       const projectType = script.isContentScript() ? Workspace15.Workspace.projectTypes.ContentScripts : Workspace15.Workspace.projectTypes.Network;
-      project = new ContentProviderBasedProject(this.#workspace, projectId, projectType, "", false, this.debuggerModel.target());
+      project = new ContentProviderBasedProject(
+        this.#workspace,
+        projectId,
+        projectType,
+        "",
+        false
+        /* isServiceProject */
+      );
+      NetworkProject.setTargetForProject(project, this.debuggerModel.target());
       this.#projects.set(projectId, project);
     }
     return project;
@@ -5189,7 +5251,15 @@ var ModelInfo2 = class {
   constructor(resourceMapping, resourceTreeModel) {
     const target = resourceTreeModel.target();
     this.resourceMapping = resourceMapping;
-    this.project = new ContentProviderBasedProject(resourceMapping.workspace, "resources:" + target.id(), Workspace22.Workspace.projectTypes.Network, "", false, target);
+    this.project = new ContentProviderBasedProject(
+      resourceMapping.workspace,
+      "resources:" + target.id(),
+      Workspace22.Workspace.projectTypes.Network,
+      "",
+      false
+      /* isServiceProject */
+    );
+    NetworkProject.setTargetForProject(this.project, target);
     const cssModel = target.model(SDK14.CSSModel.CSSModel);
     console.assert(Boolean(cssModel));
     this.#cssModel = cssModel;

@@ -1134,6 +1134,7 @@ __export(LighthouseProtocolService_exports, {
 });
 import * as Common2 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as ProtocolClient from "./../../core/protocol_client/protocol_client.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 var lastId = 1;
 var CancelledError = class extends Error {
@@ -1150,6 +1151,13 @@ var ProtocolService = class {
   removeDialogHandler;
   configForTesting;
   connection;
+  /**
+   * Session ids that belong to this Lighthouse run. The proxy only relays
+   * worker commands and connection events that target one of these sessions
+   * so that traffic stays scoped to the parallel session created in
+   * `attach()` and its descendants.
+   */
+  #knownSessionIds = /* @__PURE__ */ new Set();
   /**
    * Tracks pending requests to the Lighthouse worker.
    * Key: The message ID sent to the worker.
@@ -1186,6 +1194,8 @@ var ProtocolService = class {
     }
     const rootTargetId = await rootChildTargetManager.getParentTargetId();
     const { sessionId } = await rootTarget.targetAgent().invoke_attachToTarget({ targetId: rootTargetId, flatten: true });
+    this.#knownSessionIds.clear();
+    this.#knownSessionIds.add(sessionId);
     this.connection = connection;
     this.connection.observe(this);
     const dialogHandler = (event) => {
@@ -1250,6 +1260,7 @@ var ProtocolService = class {
     this.rootTarget = void 0;
     this.connection?.unobserve(this);
     this.connection = void 0;
+    this.#knownSessionIds.clear();
     if (oldLighthouseWorker) {
       (await oldLighthouseWorker).terminate();
     }
@@ -1266,9 +1277,23 @@ var ProtocolService = class {
     this.dispatchProtocolMessage(event);
   }
   dispatchProtocolMessage(message) {
-    if (message.sessionId || "method" in message && message.method?.startsWith("Target")) {
-      void this.send("dispatchProtocolMessage", { message });
+    if (!message.sessionId || !this.#knownSessionIds.has(message.sessionId)) {
+      return;
     }
+    if ("method" in message) {
+      if (message.method === "Target.attachedToTarget") {
+        const childSessionId = message.params?.sessionId;
+        if (childSessionId) {
+          this.#knownSessionIds.add(childSessionId);
+        }
+      } else if (message.method === "Target.detachedFromTarget") {
+        const childSessionId = message.params?.sessionId;
+        if (childSessionId) {
+          this.#knownSessionIds.delete(childSessionId);
+        }
+      }
+    }
+    void this.send("dispatchProtocolMessage", { message });
   }
   onDisconnect() {
   }
@@ -1313,7 +1338,23 @@ var ProtocolService = class {
   }
   sendProtocolMessage(message) {
     const { id, method, params, sessionId } = JSON.parse(message);
+    if (!sessionId || !this.#knownSessionIds.has(sessionId)) {
+      void this.send("dispatchProtocolMessage", {
+        message: {
+          id,
+          sessionId,
+          error: {
+            code: ProtocolClient.CDPConnection.CDPErrorStatus.SESSION_NOT_FOUND,
+            message: `Unknown session id: ${sessionId}`
+          }
+        }
+      });
+      return;
+    }
     void this.connection?.send(method, params, sessionId).then((response) => {
+      if ("result" in response && method === "Target.attachToTarget" && response.result?.sessionId) {
+        this.#knownSessionIds.add(response.result.sessionId);
+      }
       const message2 = "result" in response ? { id, sessionId, result: response.result } : { id, sessionId, error: response.error };
       this.dispatchProtocolMessage(message2);
     });

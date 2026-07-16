@@ -4,7 +4,6 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { data as auctionWorkletsData } from './AuctionWorkletsHandler.js';
 import * as HandlerHelpers from './helpers.js';
 import { data as metaHandlerData } from './MetaHandler.js';
 import { data as networkRequestHandlerData } from './NetworkRequestsHandler.js';
@@ -208,7 +207,6 @@ export function assignThreadName(processes, threadsInProcess) {
  *  - Deletes processes with an unknown origin.
  */
 export function sanitizeProcesses(processes) {
-    const auctionWorklets = auctionWorkletsData().worklets;
     const metaData = metaHandlerData();
     if (metaData.traceIsGeneric) {
         return;
@@ -218,20 +216,8 @@ export function sanitizeProcesses(processes) {
         // parsed for some reason, or if it's an "about:" origin, delete it.
         // This is done because we don't really care about processes for which we
         // can't provide actionable insights to the user (e.g. about:blank pages).
-        //
-        // There is one exception; AuctionWorklet processes get parsed in a
-        // separate handler, so at this point we check to see if the process has
-        // been found by the AuctionWorkletsHandler, and if so we update the URL.
-        // This ensures that we keep this process around and do not drop it due to
-        // the lack of a URL.
         if (process.url === null) {
-            const maybeWorklet = auctionWorklets.get(pid);
-            if (maybeWorklet) {
-                process.url = maybeWorklet.host;
-            }
-            else {
-                processes.delete(pid);
-            }
+            processes.delete(pid);
             continue;
         }
     }
@@ -342,6 +328,6 @@ export function makeCompleteEvent(event) {
     return syntheticComplete;
 }
 export function deps() {
-    return ['Meta', 'Samples', 'AuctionWorklets', 'NetworkRequests'];
+    return ['Meta', 'Samples', 'NetworkRequests'];
 }
 //# sourceMappingURL=RendererHandler.js.map

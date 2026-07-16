@@ -29,6 +29,16 @@ export default `/*
   min-width: var(--devtools-text-prompt-min-width, auto);
 }
 
+:host([render-as-block]) .text-prompt-root,
+:host([render-as-block]) .text-prompt {
+  flex: auto;
+  width: 100%;
+}
+
+:host([render-as-block]) .text-prompt:focus {
+  outline: none;
+}
+
 .text-prompt::-webkit-scrollbar {
   display: none;
 }

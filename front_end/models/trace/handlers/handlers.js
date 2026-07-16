@@ -165,7 +165,6 @@ __export(ModelHandlers_exports, {
   AnimationFrames: () => AnimationFramesHandler_exports,
   Animations: () => AnimationHandler_exports,
   AsyncJSCalls: () => AsyncJSCallsHandler_exports,
-  AuctionWorklets: () => AuctionWorkletsHandler_exports,
   DOMStats: () => DOMStatsHandler_exports,
   ExtensionTraceData: () => ExtensionTraceDataHandler_exports,
   Flows: () => FlowsHandler_exports,
@@ -206,8 +205,8 @@ __export(AnimationFramesHandler_exports, {
 });
 import * as Helpers from "./../helpers/helpers.js";
 import * as Types2 from "./../types/types.js";
-function threadKey(data31) {
-  return `${data31.pid}-${data31.tid}`;
+function threadKey(data30) {
+  return `${data30.pid}-${data30.tid}`;
 }
 var animationFrameStarts = /* @__PURE__ */ new Map();
 var animationFrameEnds = /* @__PURE__ */ new Map();
@@ -325,14 +324,14 @@ function data2() {
 // gen/front_end/models/trace/handlers/AsyncJSCallsHandler.js
 var AsyncJSCallsHandler_exports = {};
 __export(AsyncJSCallsHandler_exports, {
-  data: () => data9,
+  data: () => data8,
   deps: () => deps4,
-  finalize: () => finalize9,
-  handleEvent: () => handleEvent9,
-  reset: () => reset9
+  finalize: () => finalize8,
+  handleEvent: () => handleEvent8,
+  reset: () => reset8
 });
 import * as Platform6 from "./../../../core/platform/platform.js";
-import * as Types10 from "./../types/types.js";
+import * as Types9 from "./../types/types.js";
 
 // gen/front_end/models/trace/handlers/FlowsHandler.js
 var FlowsHandler_exports = {};
@@ -437,165 +436,49 @@ __export(RendererHandler_exports, {
   assignOrigin: () => assignOrigin,
   assignThreadName: () => assignThreadName,
   buildHierarchy: () => buildHierarchy,
-  data: () => data8,
+  data: () => data7,
   deps: () => deps3,
-  finalize: () => finalize8,
-  handleEvent: () => handleEvent8,
+  finalize: () => finalize7,
+  handleEvent: () => handleEvent7,
   handleUserConfig: () => handleUserConfig2,
   makeCompleteEvent: () => makeCompleteEvent,
-  reset: () => reset8,
+  reset: () => reset7,
   sanitizeProcesses: () => sanitizeProcesses,
   sanitizeThreads: () => sanitizeThreads
 });
 import * as Platform5 from "./../../../core/platform/platform.js";
-import * as Helpers7 from "./../helpers/helpers.js";
-import * as Types9 from "./../types/types.js";
+import * as Helpers6 from "./../helpers/helpers.js";
+import * as Types8 from "./../types/types.js";
 
-// gen/front_end/models/trace/handlers/AuctionWorkletsHandler.js
-var AuctionWorkletsHandler_exports = {};
-__export(AuctionWorkletsHandler_exports, {
+// gen/front_end/models/trace/handlers/MetaHandler.js
+var MetaHandler_exports = {};
+__export(MetaHandler_exports, {
   data: () => data4,
   finalize: () => finalize4,
   handleEvent: () => handleEvent4,
   reset: () => reset4
 });
+import * as Platform2 from "./../../../core/platform/platform.js";
 import * as Helpers3 from "./../helpers/helpers.js";
 import * as Types5 from "./../types/types.js";
-var runningInProcessEvents = /* @__PURE__ */ new Map();
-var doneWithProcessEvents = /* @__PURE__ */ new Map();
-var createdSyntheticEvents = /* @__PURE__ */ new Map();
-var utilityThreads = /* @__PURE__ */ new Map();
-var v8HelperThreads = /* @__PURE__ */ new Map();
-function reset4() {
-  runningInProcessEvents = /* @__PURE__ */ new Map();
-  doneWithProcessEvents = /* @__PURE__ */ new Map();
-  createdSyntheticEvents = /* @__PURE__ */ new Map();
-  utilityThreads = /* @__PURE__ */ new Map();
-  v8HelperThreads = /* @__PURE__ */ new Map();
-}
-function handleEvent4(event) {
-  if (Types5.Events.isAuctionWorkletRunningInProcess(event)) {
-    runningInProcessEvents.set(event.args.data.pid, event);
-    return;
-  }
-  if (Types5.Events.isAuctionWorkletDoneWithProcess(event)) {
-    doneWithProcessEvents.set(event.args.data.pid, event);
-    return;
-  }
-  if (Types5.Events.isThreadName(event)) {
-    if (event.args.name === "auction_worklet.CrUtilityMain") {
-      utilityThreads.set(event.pid, event);
-      return;
-    }
-    if (event.args.name === "AuctionV8HelperThread") {
-      v8HelperThreads.set(event.pid, event);
-    }
-  }
-}
-function workletType(input) {
-  switch (input) {
-    case "seller":
-      return "seller";
-    case "bidder":
-      return "bidder";
-    default:
-      return "unknown";
-  }
-}
-function makeSyntheticEventBase(event) {
-  return Helpers3.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
-    rawSourceEvent: event,
-    name: "SyntheticAuctionWorklet",
-    s: "t",
-    cat: event.cat,
-    tid: event.tid,
-    ts: event.ts,
-    ph: "I",
-    pid: event.args.data.pid,
-    host: event.args.data.host,
-    target: event.args.data.target,
-    type: workletType(event.args.data.type)
-  });
-}
-async function finalize4() {
-  for (const [pid, utilityThreadNameEvent] of utilityThreads) {
-    const v8HelperEvent = v8HelperThreads.get(pid);
-    if (!v8HelperEvent) {
-      continue;
-    }
-    const runningEvent = runningInProcessEvents.get(pid);
-    const doneWithEvent = doneWithProcessEvents.get(pid);
-    let syntheticEvent = null;
-    if (runningEvent) {
-      syntheticEvent = {
-        ...makeSyntheticEventBase(runningEvent),
-        args: {
-          data: {
-            runningInProcessEvent: runningEvent,
-            utilityThread: utilityThreadNameEvent,
-            v8HelperThread: v8HelperEvent
-          }
-        }
-      };
-      if (doneWithEvent) {
-        syntheticEvent.args.data.doneWithProcessEvent = doneWithEvent;
-      }
-    } else if (doneWithEvent) {
-      syntheticEvent = {
-        ...makeSyntheticEventBase(doneWithEvent),
-        args: {
-          data: {
-            doneWithProcessEvent: doneWithEvent,
-            utilityThread: utilityThreadNameEvent,
-            v8HelperThread: v8HelperEvent
-          }
-        }
-      };
-      if (runningEvent) {
-        syntheticEvent.args.data.runningInProcessEvent = runningEvent;
-      }
-    }
-    if (syntheticEvent === null) {
-      continue;
-    }
-    createdSyntheticEvents.set(pid, syntheticEvent);
-  }
-}
-function data4() {
-  return {
-    worklets: createdSyntheticEvents
-  };
-}
-
-// gen/front_end/models/trace/handlers/MetaHandler.js
-var MetaHandler_exports = {};
-__export(MetaHandler_exports, {
-  data: () => data5,
-  finalize: () => finalize5,
-  handleEvent: () => handleEvent5,
-  reset: () => reset5
-});
-import * as Platform2 from "./../../../core/platform/platform.js";
-import * as Helpers4 from "./../helpers/helpers.js";
-import * as Types6 from "./../types/types.js";
 var config;
 var rendererProcessesByFrameId = /* @__PURE__ */ new Map();
 var mainFrameId = "";
 var mainFrameURL = "";
 var framesByProcessId = /* @__PURE__ */ new Map();
-var browserProcessId = Types6.Events.ProcessID(-1);
-var browserThreadId = Types6.Events.ThreadID(-1);
-var gpuProcessId = Types6.Events.ProcessID(-1);
-var gpuThreadId = Types6.Events.ThreadID(-1);
+var browserProcessId = Types5.Events.ProcessID(-1);
+var browserThreadId = Types5.Events.ThreadID(-1);
+var gpuProcessId = Types5.Events.ProcessID(-1);
+var gpuThreadId = Types5.Events.ThreadID(-1);
 var viewportRect = null;
 var devicePixelRatio = null;
 var processNames = /* @__PURE__ */ new Map();
 var topLevelRendererIds = /* @__PURE__ */ new Set();
 function makeNewTraceBounds() {
   return {
-    min: Types6.Timing.Micro(Number.POSITIVE_INFINITY),
-    max: Types6.Timing.Micro(Number.NEGATIVE_INFINITY),
-    range: Types6.Timing.Micro(Number.POSITIVE_INFINITY)
+    min: Types5.Timing.Micro(Number.POSITIVE_INFINITY),
+    max: Types5.Timing.Micro(Number.NEGATIVE_INFINITY),
+    range: Types5.Timing.Micro(Number.POSITIVE_INFINITY)
   };
 }
 var traceBounds = makeNewTraceBounds();
@@ -605,7 +488,7 @@ var softNavigationsById = /* @__PURE__ */ new Map();
 var finalDisplayUrlByNavigationId = /* @__PURE__ */ new Map();
 var mainFrameNavigations = [];
 var threadsInProcess = /* @__PURE__ */ new Map();
-var traceStartedTimeFromTracingStartedEvent = Types6.Timing.Micro(-1);
+var traceStartedTimeFromTracingStartedEvent = Types5.Timing.Micro(-1);
 var eventPhasesOfInterestForTraceBounds = /* @__PURE__ */ new Set([
   "B",
   "E",
@@ -619,24 +502,24 @@ var CHROME_WEB_TRACE_EVENTS = /* @__PURE__ */ new Set([
   "TracingStartedInBrowser",
   "CpuProfile"
 ]);
-function reset5() {
+function reset4() {
   navigationsByFrameId = /* @__PURE__ */ new Map();
   navigationsByNavigationId = /* @__PURE__ */ new Map();
   softNavigationsById = /* @__PURE__ */ new Map();
   finalDisplayUrlByNavigationId = /* @__PURE__ */ new Map();
   processNames = /* @__PURE__ */ new Map();
   mainFrameNavigations = [];
-  browserProcessId = Types6.Events.ProcessID(-1);
-  browserThreadId = Types6.Events.ThreadID(-1);
-  gpuProcessId = Types6.Events.ProcessID(-1);
-  gpuThreadId = Types6.Events.ThreadID(-1);
+  browserProcessId = Types5.Events.ProcessID(-1);
+  browserThreadId = Types5.Events.ThreadID(-1);
+  gpuProcessId = Types5.Events.ProcessID(-1);
+  gpuThreadId = Types5.Events.ThreadID(-1);
   viewportRect = null;
   topLevelRendererIds = /* @__PURE__ */ new Set();
   threadsInProcess = /* @__PURE__ */ new Map();
   rendererProcessesByFrameId = /* @__PURE__ */ new Map();
   framesByProcessId = /* @__PURE__ */ new Map();
   traceBounds = makeNewTraceBounds();
-  traceStartedTimeFromTracingStartedEvent = Types6.Timing.Micro(-1);
+  traceStartedTimeFromTracingStartedEvent = Types5.Timing.Micro(-1);
   traceIsGeneric = true;
 }
 function updateRendererProcessByFrame(event, frame) {
@@ -654,39 +537,39 @@ function updateRendererProcessByFrame(event, frame) {
     frame,
     window: {
       min: event.ts,
-      max: Types6.Timing.Micro(0),
-      range: Types6.Timing.Micro(0)
+      max: Types5.Timing.Micro(0),
+      range: Types5.Timing.Micro(0)
     }
   });
 }
-function handleEvent5(event) {
+function handleEvent4(event) {
   if (traceIsGeneric && CHROME_WEB_TRACE_EVENTS.has(event.name)) {
     traceIsGeneric = false;
   }
-  if (Types6.Events.isProcessName(event)) {
+  if (Types5.Events.isProcessName(event)) {
     processNames.set(event.pid, event);
   }
   if (event.ts !== 0 && !event.name.endsWith("::UMA") && eventPhasesOfInterestForTraceBounds.has(event.ph)) {
-    traceBounds.min = Types6.Timing.Micro(Math.min(event.ts, traceBounds.min));
-    const eventDuration = event.dur ?? Types6.Timing.Micro(0);
-    traceBounds.max = Types6.Timing.Micro(Math.max(event.ts + eventDuration, traceBounds.max));
+    traceBounds.min = Types5.Timing.Micro(Math.min(event.ts, traceBounds.min));
+    const eventDuration = event.dur ?? Types5.Timing.Micro(0);
+    traceBounds.max = Types5.Timing.Micro(Math.max(event.ts + eventDuration, traceBounds.max));
   }
-  if (Types6.Events.isProcessName(event) && (event.args.name === "Browser" || event.args.name === "HeadlessBrowser")) {
+  if (Types5.Events.isProcessName(event) && (event.args.name === "Browser" || event.args.name === "HeadlessBrowser")) {
     browserProcessId = event.pid;
     return;
   }
-  if (Types6.Events.isProcessName(event) && (event.args.name === "Gpu" || event.args.name === "GPU Process")) {
+  if (Types5.Events.isProcessName(event) && (event.args.name === "Gpu" || event.args.name === "GPU Process")) {
     gpuProcessId = event.pid;
     return;
   }
-  if (Types6.Events.isThreadName(event) && event.args.name === "CrGpuMain") {
+  if (Types5.Events.isThreadName(event) && event.args.name === "CrGpuMain") {
     gpuThreadId = event.tid;
     return;
   }
-  if (Types6.Events.isThreadName(event) && event.args.name === "CrBrowserMain") {
+  if (Types5.Events.isThreadName(event) && event.args.name === "CrBrowserMain") {
     browserThreadId = event.tid;
   }
-  if (Types6.Events.isMainFrameViewport(event) && viewportRect === null) {
+  if (Types5.Events.isMainFrameViewport(event) && viewportRect === null) {
     const rectAsArray = event.args.data.viewport_rect;
     const viewportX = rectAsArray[0];
     const viewportY = rectAsArray[1];
@@ -695,7 +578,7 @@ function handleEvent5(event) {
     viewportRect = { x: viewportX, y: viewportY, width: viewportWidth, height: viewportHeight };
     devicePixelRatio = event.args.data.dpr;
   }
-  if (Types6.Events.isTracingStartedInBrowser(event)) {
+  if (Types5.Events.isTracingStartedInBrowser(event)) {
     traceStartedTimeFromTracingStartedEvent = event.ts;
     if (!event.args.data) {
       throw new Error("No frames found in trace data");
@@ -724,7 +607,7 @@ function handleEvent5(event) {
     }
     return;
   }
-  if (Types6.Events.isFrameCommittedInBrowser(event)) {
+  if (Types5.Events.isFrameCommittedInBrowser(event)) {
     const frame = event.args.data;
     if (!frame) {
       return;
@@ -736,7 +619,7 @@ function handleEvent5(event) {
     topLevelRendererIds.add(frame.processId);
     return;
   }
-  if (Types6.Events.isCommitLoad(event)) {
+  if (Types5.Events.isCommitLoad(event)) {
     const frameData = event.args.data;
     if (!frameData) {
       return;
@@ -745,12 +628,12 @@ function handleEvent5(event) {
     updateRendererProcessByFrame(event, { processId: event.pid, frame, name, url });
     return;
   }
-  if (Types6.Events.isThreadName(event)) {
+  if (Types5.Events.isThreadName(event)) {
     const threads = Platform2.MapUtilities.getWithDefault(threadsInProcess, event.pid, () => /* @__PURE__ */ new Map());
     threads.set(event.tid, event);
     return;
   }
-  if (Types6.Events.isNavigationStart(event) && event.args.data) {
+  if (Types5.Events.isNavigationStart(event) && event.args.data) {
     const navigationId = event.args.data.navigationId;
     if (navigationsByNavigationId.has(navigationId)) {
       return;
@@ -766,10 +649,10 @@ function handleEvent5(event) {
     }
     return;
   }
-  if (Types6.Events.isSoftNavigationStart(event)) {
+  if (Types5.Events.isSoftNavigationStart(event)) {
     softNavigationsById.set(event.args.context.performanceTimelineNavigationId, event);
   }
-  if (Types6.Events.isResourceSendRequest(event)) {
+  if (Types5.Events.isResourceSendRequest(event)) {
     if (event.args.data.resourceType !== "Document") {
       return;
     }
@@ -781,7 +664,7 @@ function handleEvent5(event) {
     finalDisplayUrlByNavigationId.set(maybeNavigationId, event.args.data.url);
     return;
   }
-  if (Types6.Events.isDidCommitSameDocumentNavigation(event)) {
+  if (Types5.Events.isDidCommitSameDocumentNavigation(event)) {
     if (event.args.render_frame_host.frame_type !== "PRIMARY_MAIN_FRAME") {
       return;
     }
@@ -791,12 +674,12 @@ function handleEvent5(event) {
     return;
   }
 }
-async function finalize5(options) {
+async function finalize4(options) {
   config = { showAllEvents: Boolean(options?.showAllEvents) };
   if (traceStartedTimeFromTracingStartedEvent >= 0) {
     traceBounds.min = traceStartedTimeFromTracingStartedEvent;
   }
-  traceBounds.range = Types6.Timing.Micro(traceBounds.max - traceBounds.min);
+  traceBounds.range = Types5.Timing.Micro(traceBounds.max - traceBounds.min);
   for (const [, processWindows] of rendererProcessesByFrameId) {
     const processWindowValues = [...processWindows.values()].flat().sort((a, b) => {
       return a.window.min - b.window.min;
@@ -805,11 +688,11 @@ async function finalize5(options) {
       const currentWindow = processWindowValues[i];
       const nextWindow = processWindowValues[i + 1];
       if (!nextWindow) {
-        currentWindow.window.max = Types6.Timing.Micro(traceBounds.max);
-        currentWindow.window.range = Types6.Timing.Micro(traceBounds.max - currentWindow.window.min);
+        currentWindow.window.max = Types5.Timing.Micro(traceBounds.max);
+        currentWindow.window.range = Types5.Timing.Micro(traceBounds.max - currentWindow.window.min);
       } else {
-        currentWindow.window.max = Types6.Timing.Micro(nextWindow.window.min - 1);
-        currentWindow.window.range = Types6.Timing.Micro(currentWindow.window.max - currentWindow.window.min);
+        currentWindow.window.max = Types5.Timing.Micro(nextWindow.window.min - 1);
+        currentWindow.window.range = Types5.Timing.Micro(currentWindow.window.max - currentWindow.window.min);
       }
     }
   }
@@ -826,7 +709,7 @@ async function finalize5(options) {
     }
   }
   const firstMainFrameNav = mainFrameNavigations.at(0);
-  const firstNavTimeThreshold = Helpers4.Timing.secondsToMicro(Types6.Timing.Seconds(0.5));
+  const firstNavTimeThreshold = Helpers3.Timing.secondsToMicro(Types5.Timing.Seconds(0.5));
   if (firstMainFrameNav) {
     const navigationIsWithinThreshold = firstMainFrameNav.ts - traceBounds.min < firstNavTimeThreshold;
     if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL && navigationIsWithinThreshold) {
@@ -834,7 +717,7 @@ async function finalize5(options) {
     }
   }
 }
-function data5() {
+function data4() {
   return {
     config,
     traceBounds,
@@ -842,7 +725,7 @@ function data5() {
     browserThreadId,
     processNames,
     gpuProcessId,
-    gpuThreadId: gpuThreadId === Types6.Events.ThreadID(-1) ? void 0 : gpuThreadId,
+    gpuThreadId: gpuThreadId === Types5.Events.ThreadID(-1) ? void 0 : gpuThreadId,
     viewportRect: viewportRect || void 0,
     devicePixelRatio: devicePixelRatio ?? void 0,
     mainFrameId,
@@ -863,15 +746,15 @@ function data5() {
 // gen/front_end/models/trace/handlers/NetworkRequestsHandler.js
 var NetworkRequestsHandler_exports = {};
 __export(NetworkRequestsHandler_exports, {
-  data: () => data6,
+  data: () => data5,
   deps: () => deps2,
-  finalize: () => finalize6,
-  handleEvent: () => handleEvent6,
-  reset: () => reset6
+  finalize: () => finalize5,
+  handleEvent: () => handleEvent5,
+  reset: () => reset5
 });
 import * as Platform3 from "./../../../core/platform/platform.js";
-import * as Helpers5 from "./../helpers/helpers.js";
-import * as Types7 from "./../types/types.js";
+import * as Helpers4 from "./../helpers/helpers.js";
+import * as Types6 from "./../types/types.js";
 var MILLISECONDS_TO_MICROSECONDS = 1e3;
 var SECONDS_TO_MICROSECONDS = 1e6;
 var webSocketData = /* @__PURE__ */ new Map();
@@ -912,7 +795,7 @@ function firstPositiveValueInList(entries) {
   }
   return 0;
 }
-function reset6() {
+function reset5() {
   requestsById = /* @__PURE__ */ new Map();
   requestMap = /* @__PURE__ */ new Map();
   requestsByTime = [];
@@ -928,39 +811,39 @@ function reset6() {
   };
   linkPreconnectEvents = [];
 }
-function handleEvent6(event) {
-  if (Types7.Events.isResourceChangePriority(event)) {
+function handleEvent5(event) {
+  if (Types6.Events.isResourceChangePriority(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "changePriority", event);
     return;
   }
-  if (Types7.Events.isResourceWillSendRequest(event)) {
+  if (Types6.Events.isResourceWillSendRequest(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "willSendRequests", [event]);
     return;
   }
-  if (Types7.Events.isResourceSendRequest(event)) {
+  if (Types6.Events.isResourceSendRequest(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "sendRequests", [event]);
     return;
   }
-  if (Types7.Events.isResourceReceiveResponse(event)) {
+  if (Types6.Events.isResourceReceiveResponse(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "receiveResponse", event);
     return;
   }
-  if (Types7.Events.isResourceReceivedData(event)) {
+  if (Types6.Events.isResourceReceivedData(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "receivedData", [event]);
     return;
   }
-  if (Types7.Events.isResourceFinish(event)) {
+  if (Types6.Events.isResourceFinish(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "resourceFinish", event);
     return;
   }
-  if (Types7.Events.isResourceMarkAsCached(event)) {
+  if (Types6.Events.isResourceMarkAsCached(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "resourceMarkAsCached", event);
     return;
   }
-  if (Types7.Events.isPreloadRenderBlockingStatusChangeEvent(event)) {
+  if (Types6.Events.isPreloadRenderBlockingStatusChangeEvent(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, "preloadRenderBlockingStatusChange", [event]);
   }
-  if (Types7.Events.isWebSocketCreate(event) || Types7.Events.isWebSocketInfo(event) || Types7.Events.isWebSocketTransfer(event)) {
+  if (Types6.Events.isWebSocketCreate(event) || Types6.Events.isWebSocketInfo(event) || Types6.Events.isWebSocketTransfer(event)) {
     const identifier = event.args.data.identifier;
     if (!webSocketData.has(identifier)) {
       if (event.args.data.frame) {
@@ -981,13 +864,13 @@ function handleEvent6(event) {
     }
     webSocketData.get(identifier)?.events.push(event);
   }
-  if (Types7.Events.isLinkPreconnect(event)) {
+  if (Types6.Events.isLinkPreconnect(event)) {
     linkPreconnectEvents.push(event);
     return;
   }
 }
-async function finalize6() {
-  const { rendererProcessesByFrame } = data5();
+async function finalize5() {
+  const { rendererProcessesByFrame } = data4();
   const allowedProtocols = [
     "blob:",
     "file:",
@@ -1004,12 +887,12 @@ async function finalize6() {
       const sendRequest = request.sendRequests[i];
       const nextSendRequest = request.sendRequests[i + 1];
       let ts = sendRequest.ts;
-      let dur = Types7.Timing.Micro(nextSendRequest.ts - sendRequest.ts);
+      let dur = Types6.Timing.Micro(nextSendRequest.ts - sendRequest.ts);
       if (request.willSendRequests?.[i] && request.willSendRequests[i + 1]) {
         const willSendRequest = request.willSendRequests[i];
         const nextWillSendRequest = request.willSendRequests[i + 1];
         ts = willSendRequest.ts;
-        dur = Types7.Timing.Micro(nextWillSendRequest.ts - willSendRequest.ts);
+        dur = Types6.Timing.Micro(nextWillSendRequest.ts - willSendRequest.ts);
       }
       redirects.push({
         url: allowedProtocols.some((p) => sendRequest.args.data.url.startsWith(p)) ? sendRequest.args.data.url : "",
@@ -1041,7 +924,7 @@ async function finalize6() {
     let lrServerResponseTime;
     if (isLightrider && request.receiveResponse?.args.data.headers) {
       timing = {
-        requestTime: Helpers5.Timing.microToSeconds(request.sendRequests.at(0)?.ts ?? 0),
+        requestTime: Helpers4.Timing.microToSeconds(request.sendRequests.at(0)?.ts ?? 0),
         connectEnd: 0,
         connectStart: 0,
         dnsEnd: 0,
@@ -1084,40 +967,40 @@ async function finalize6() {
     if (request.changePriority) {
       finalPriority = request.changePriority.args.data.priority;
     }
-    const startTime = request.willSendRequests?.length ? Types7.Timing.Micro(request.willSendRequests[0].ts) : Types7.Timing.Micro(firstSendRequest.ts);
-    const endRedirectTime = request.willSendRequests?.length ? Types7.Timing.Micro(request.willSendRequests[request.willSendRequests.length - 1].ts) : Types7.Timing.Micro(finalSendRequest.ts);
+    const startTime = request.willSendRequests?.length ? Types6.Timing.Micro(request.willSendRequests[0].ts) : Types6.Timing.Micro(firstSendRequest.ts);
+    const endRedirectTime = request.willSendRequests?.length ? Types6.Timing.Micro(request.willSendRequests[request.willSendRequests.length - 1].ts) : Types6.Timing.Micro(finalSendRequest.ts);
     const endTime = request.resourceFinish ? request.resourceFinish.ts : endRedirectTime;
-    const finishTime = request.resourceFinish?.args.data.finishTime ? Types7.Timing.Micro(request.resourceFinish.args.data.finishTime * SECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(endTime);
-    const networkDuration = Types7.Timing.Micro(timing ? (finishTime || endRedirectTime) - endRedirectTime : 0);
-    const processingDuration = Types7.Timing.Micro(endTime - (finishTime || endTime));
-    const redirectionDuration = Types7.Timing.Micro(endRedirectTime - startTime);
+    const finishTime = request.resourceFinish?.args.data.finishTime ? Types6.Timing.Micro(request.resourceFinish.args.data.finishTime * SECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(endTime);
+    const networkDuration = Types6.Timing.Micro(timing ? (finishTime || endRedirectTime) - endRedirectTime : 0);
+    const processingDuration = Types6.Timing.Micro(endTime - (finishTime || endTime));
+    const redirectionDuration = Types6.Timing.Micro(endRedirectTime - startTime);
     const queueingFromTraceData = timing ? timing.requestTime * SECONDS_TO_MICROSECONDS - endRedirectTime : 0;
-    const queueing = Types7.Timing.Micro(Platform3.NumberUtilities.clamp(queueingFromTraceData, 0, Number.MAX_VALUE));
-    const stalled = timing ? Types7.Timing.Micro(firstPositiveValueInList([
+    const queueing = Types6.Timing.Micro(Platform3.NumberUtilities.clamp(queueingFromTraceData, 0, Number.MAX_VALUE));
+    const stalled = timing ? Types6.Timing.Micro(firstPositiveValueInList([
       timing.dnsStart * MILLISECONDS_TO_MICROSECONDS,
       timing.connectStart * MILLISECONDS_TO_MICROSECONDS,
       timing.sendStart * MILLISECONDS_TO_MICROSECONDS,
       request.receiveResponse ? request.receiveResponse.ts - endRedirectTime : null
-    ])) : request.receiveResponse ? Types7.Timing.Micro(request.receiveResponse.ts - startTime) : Types7.Timing.Micro(0);
-    const sendStartTime = timing ? Types7.Timing.Micro(timing.requestTime * SECONDS_TO_MICROSECONDS + timing.sendStart * MILLISECONDS_TO_MICROSECONDS) : startTime;
-    const waiting = timing ? Types7.Timing.Micro((timing.receiveHeadersEnd - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
-    const serverResponseTime = timing ? Types7.Timing.Micro(((timing.receiveHeadersStart ?? timing.receiveHeadersEnd) - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
-    const downloadStart = timing ? Types7.Timing.Micro(timing.requestTime * SECONDS_TO_MICROSECONDS + timing.receiveHeadersEnd * MILLISECONDS_TO_MICROSECONDS) : startTime;
-    const download = timing ? Types7.Timing.Micro((finishTime || downloadStart) - downloadStart) : request.receiveResponse ? Types7.Timing.Micro(endTime - request.receiveResponse.ts) : Types7.Timing.Micro(0);
-    const totalTime = Types7.Timing.Micro(networkDuration + processingDuration);
-    const dnsLookup = timing ? Types7.Timing.Micro((timing.dnsEnd - timing.dnsStart) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
-    const ssl = timing ? Types7.Timing.Micro((timing.sslEnd - timing.sslStart) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
-    const proxyNegotiation = timing ? Types7.Timing.Micro((timing.proxyEnd - timing.proxyStart) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
-    const requestSent = timing ? Types7.Timing.Micro((timing.sendEnd - timing.sendStart) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
-    const initialConnection = timing ? Types7.Timing.Micro((timing.connectEnd - timing.connectStart) * MILLISECONDS_TO_MICROSECONDS) : Types7.Timing.Micro(0);
+    ])) : request.receiveResponse ? Types6.Timing.Micro(request.receiveResponse.ts - startTime) : Types6.Timing.Micro(0);
+    const sendStartTime = timing ? Types6.Timing.Micro(timing.requestTime * SECONDS_TO_MICROSECONDS + timing.sendStart * MILLISECONDS_TO_MICROSECONDS) : startTime;
+    const waiting = timing ? Types6.Timing.Micro((timing.receiveHeadersEnd - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
+    const serverResponseTime = timing ? Types6.Timing.Micro(((timing.receiveHeadersStart ?? timing.receiveHeadersEnd) - timing.sendEnd) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
+    const downloadStart = timing ? Types6.Timing.Micro(timing.requestTime * SECONDS_TO_MICROSECONDS + timing.receiveHeadersEnd * MILLISECONDS_TO_MICROSECONDS) : startTime;
+    const download = timing ? Types6.Timing.Micro((finishTime || downloadStart) - downloadStart) : request.receiveResponse ? Types6.Timing.Micro(endTime - request.receiveResponse.ts) : Types6.Timing.Micro(0);
+    const totalTime = Types6.Timing.Micro(networkDuration + processingDuration);
+    const dnsLookup = timing ? Types6.Timing.Micro((timing.dnsEnd - timing.dnsStart) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
+    const ssl = timing ? Types6.Timing.Micro((timing.sslEnd - timing.sslStart) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
+    const proxyNegotiation = timing ? Types6.Timing.Micro((timing.proxyEnd - timing.proxyStart) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
+    const requestSent = timing ? Types6.Timing.Micro((timing.sendEnd - timing.sendStart) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
+    const initialConnection = timing ? Types6.Timing.Micro((timing.connectEnd - timing.connectStart) * MILLISECONDS_TO_MICROSECONDS) : Types6.Timing.Micro(0);
     const { frame, url, renderBlocking: sendRequestIsRenderBlocking } = finalSendRequest.args.data;
     const { encodedDataLength, decodedBodyLength } = request.resourceFinish ? request.resourceFinish.args.data : { encodedDataLength: 0, decodedBodyLength: 0 };
     const parsedUrl = new URL(url);
     const isHttps = parsedUrl.protocol === "https:";
-    const requestingFrameUrl = Helpers5.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || "";
+    const requestingFrameUrl = Helpers4.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || "";
     const preloadRenderBlockingStatusChange = request.preloadRenderBlockingStatusChange?.at(-1)?.args.data.renderBlocking;
     const isRenderBlocking = preloadRenderBlockingStatusChange ?? sendRequestIsRenderBlocking ?? "non_blocking";
-    const networkEvent = Helpers5.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const networkEvent = Helpers4.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       rawSourceEvent: finalSendRequest,
       args: {
         data: {
@@ -1182,10 +1065,10 @@ async function finalize6() {
       cat: "loading",
       name: "SyntheticNetworkRequest",
       ph: "X",
-      dur: Types7.Timing.Micro(endTime - startTime),
-      tdur: Types7.Timing.Micro(endTime - startTime),
-      ts: Types7.Timing.Micro(startTime),
-      tts: Types7.Timing.Micro(startTime),
+      dur: Types6.Timing.Micro(endTime - startTime),
+      tdur: Types6.Timing.Micro(endTime - startTime),
+      ts: Types6.Timing.Micro(startTime),
+      tts: Types6.Timing.Micro(startTime),
       pid: finalSendRequest.pid,
       tid: finalSendRequest.tid
     });
@@ -1195,7 +1078,7 @@ async function finalize6() {
     requestsForUrl.push(networkEvent.args.data.requestId);
     requestIdsByURL.set(networkEvent.args.data.url, requestsForUrl);
     addNetworkRequestToEntityMapping(networkEvent, entityMappings, request);
-    const initiatorUrl = networkEvent.args.data.initiator?.url || Helpers5.Trace.getStackTraceTopCallFrameInEventPayload(networkEvent)?.url;
+    const initiatorUrl = networkEvent.args.data.initiator?.url || Helpers4.Trace.getStackTraceTopCallFrameInEventPayload(networkEvent)?.url;
     if (initiatorUrl) {
       const events = networkRequestEventByInitiatorUrl.get(initiatorUrl) ?? [];
       events.push(networkEvent);
@@ -1212,7 +1095,7 @@ async function finalize6() {
   }
   finalizeWebSocketData();
 }
-function data6() {
+function data5() {
   return {
     byId: requestsById,
     byTime: requestsByTime,
@@ -1232,22 +1115,22 @@ function deps2() {
   return ["Meta"];
 }
 function finalizeWebSocketData() {
-  webSocketData.forEach((data31) => {
+  webSocketData.forEach((data30) => {
     let startEvent = null;
     let endEvent = null;
-    for (const event of data31.events) {
-      if (Types7.Events.isWebSocketCreate(event)) {
+    for (const event of data30.events) {
+      if (Types6.Events.isWebSocketCreate(event)) {
         startEvent = event;
       }
-      if (Types7.Events.isWebSocketDestroy(event)) {
+      if (Types6.Events.isWebSocketDestroy(event)) {
         endEvent = event;
       }
     }
-    data31.syntheticConnection = createSyntheticWebSocketConnection(startEvent, endEvent, data31.events[0]);
+    data30.syntheticConnection = createSyntheticWebSocketConnection(startEvent, endEvent, data30.events[0]);
   });
 }
 function createSyntheticWebSocketConnection(startEvent, endEvent, firstRecordedEvent) {
-  const { traceBounds: traceBounds2 } = data5();
+  const { traceBounds: traceBounds2 } = data4();
   const startTs = startEvent ? startEvent.ts : traceBounds2.min;
   const endTs = endEvent ? endEvent.ts : traceBounds2.max;
   const duration = endTs - startTs;
@@ -1276,16 +1159,16 @@ function createSyntheticWebSocketConnection(startEvent, endEvent, firstRecordedE
 // gen/front_end/models/trace/handlers/SamplesHandler.js
 var SamplesHandler_exports = {};
 __export(SamplesHandler_exports, {
-  data: () => data7,
-  finalize: () => finalize7,
+  data: () => data6,
+  finalize: () => finalize6,
   getProfileCallFunctionName: () => getProfileCallFunctionName,
-  handleEvent: () => handleEvent7,
-  reset: () => reset7
+  handleEvent: () => handleEvent6,
+  reset: () => reset6
 });
 import * as Platform4 from "./../../../core/platform/platform.js";
 import * as CPUProfile from "./../../cpu_profile/cpu_profile.js";
-import * as Helpers6 from "./../helpers/helpers.js";
-import * as Types8 from "./../types/types.js";
+import * as Helpers5 from "./../helpers/helpers.js";
+import * as Types7 from "./../types/types.js";
 var profilesInProcess = /* @__PURE__ */ new Map();
 var entryToNode = /* @__PURE__ */ new Map();
 var preprocessedData = /* @__PURE__ */ new Map();
@@ -1312,12 +1195,12 @@ function parseCPUProfileData(parseOptions) {
           if (threadId === void 0) {
             return;
           }
-          const ts = Helpers6.Timing.milliToMicro(Types8.Timing.Milli(timeStampMilliseconds));
+          const ts = Helpers5.Timing.milliToMicro(Types7.Timing.Milli(timeStampMilliseconds));
           const nodeId = node.id;
-          const profileCall = Helpers6.Trace.makeProfileCall(node, selectedProfileId, sampleIndex, ts, processId, threadId);
+          const profileCall = Helpers5.Trace.makeProfileCall(node, selectedProfileId, sampleIndex, ts, processId, threadId);
           finalizedData.profileCalls.push(profileCall);
           indexStack.push(finalizedData.profileCalls.length - 1);
-          const traceEntryNode = Helpers6.TreeHelpers.makeEmptyTraceEntryNode(profileCall, nodeId);
+          const traceEntryNode = Helpers5.TreeHelpers.makeEmptyTraceEntryNode(profileCall, nodeId);
           entryToNode.set(profileCall, traceEntryNode);
           traceEntryNode.depth = depth;
           if (indexStack.length === 1) {
@@ -1335,8 +1218,8 @@ function parseCPUProfileData(parseOptions) {
           if (callFrame === void 0 || ts === void 0 || pid === void 0 || selectedProfileId === void 0 || tid === void 0 || traceEntryNode === void 0) {
             return;
           }
-          const dur = Helpers6.Timing.milliToMicro(Types8.Timing.Milli(durMs));
-          const selfTime = Helpers6.Timing.milliToMicro(Types8.Timing.Milli(selfTimeMs));
+          const dur = Helpers5.Timing.milliToMicro(Types7.Timing.Milli(durMs));
+          const selfTime = Helpers5.Timing.milliToMicro(Types7.Timing.Milli(selfTimeMs));
           profileCall.dur = dur;
           traceEntryNode.selfTime = selfTime;
           const parentIndex = indexStack.at(-1);
@@ -1366,7 +1249,7 @@ function parseCPUProfileData(parseOptions) {
       }
       const indexStack = [];
       const profileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(chosenData.rawProfile);
-      const profileTree = Helpers6.TreeHelpers.makeEmptyTraceEntryTree();
+      const profileTree = Helpers5.TreeHelpers.makeEmptyTraceEntryTree();
       profileTree.maxDepth = profileModel.maxDepth;
       const selectedProfileId = chosen.id;
       const finalizedData = {
@@ -1384,26 +1267,26 @@ function parseCPUProfileData(parseOptions) {
     }
   }
 }
-function reset7() {
+function reset6() {
   preprocessedData = /* @__PURE__ */ new Map();
   profilesInProcess = /* @__PURE__ */ new Map();
   entryToNode = /* @__PURE__ */ new Map();
 }
-function handleEvent7(event) {
-  if (Types8.Events.isSyntheticCpuProfile(event)) {
+function handleEvent6(event) {
+  if (Types7.Events.isSyntheticCpuProfile(event)) {
     const profileData = getOrCreatePreProcessedData(event.pid, event.id);
     profileData.rawProfile = event.args.data.cpuProfile;
     profileData.threadId = event.tid;
     return;
   }
-  if (Types8.Events.isProfile(event)) {
+  if (Types7.Events.isProfile(event)) {
     const profileData = getOrCreatePreProcessedData(event.pid, event.id);
     profileData.rawProfile.startTime = event.ts;
     profileData.threadId = event.tid;
     assignProfileSourceIfKnown(profileData, event.args?.data?.source);
     return;
   }
-  if (Types8.Events.isProfileChunk(event)) {
+  if (Types7.Events.isProfileChunk(event)) {
     const profileData = getOrCreatePreProcessedData(event.pid, event.id);
     const cdpProfile = profileData.rawProfile;
     const nodesAndSamples = event.args?.data?.cpuProfile || { samples: [] };
@@ -1451,15 +1334,15 @@ function handleEvent7(event) {
     return;
   }
 }
-async function finalize7(parseOptions = {}) {
+async function finalize6(parseOptions = {}) {
   parseCPUProfileData(parseOptions);
 }
 function assignProfileSourceIfKnown(profileData, source) {
-  if (Types8.Events.VALID_PROFILE_SOURCES.includes(source)) {
+  if (Types7.Events.VALID_PROFILE_SOURCES.includes(source)) {
     profileData.source = source;
   }
 }
-function data7() {
+function data6() {
   return {
     profilesInProcess,
     entryToNode
@@ -1480,8 +1363,8 @@ function getOrCreatePreProcessedData(processId, profileId) {
     profileId
   }));
 }
-function getProfileCallFunctionName(data31, entry) {
-  const profile = data31.profilesInProcess.get(entry.pid)?.get(entry.tid);
+function getProfileCallFunctionName(data30, entry) {
+  const profile = data30.profilesInProcess.get(entry.pid)?.get(entry.tid);
   const node = profile?.parsedProfile.nodeById(entry.nodeId);
   if (node?.functionName) {
     return node.functionName;
@@ -1500,7 +1383,7 @@ var entityMappings2 = {
 var compositorTileWorkers = Array();
 var entryToNode2 = /* @__PURE__ */ new Map();
 var completeEventStack = [];
-var config2 = Types9.Configuration.defaults();
+var config2 = Types8.Configuration.defaults();
 var makeRendererProcess = () => ({
   url: null,
   isOnMainFrame: false,
@@ -1522,7 +1405,7 @@ var getOrCreateRendererThread = (process, tid) => {
 function handleUserConfig2(userConfig) {
   config2 = userConfig;
 }
-function reset8() {
+function reset7() {
   processes = /* @__PURE__ */ new Map();
   entryToNode2 = /* @__PURE__ */ new Map();
   entityMappings2 = {
@@ -1534,14 +1417,14 @@ function reset8() {
   completeEventStack = [];
   compositorTileWorkers = [];
 }
-function handleEvent8(event) {
-  if (Types9.Events.isThreadName(event) && event.args.name?.startsWith("CompositorTileWorker")) {
+function handleEvent7(event) {
+  if (Types8.Events.isThreadName(event) && event.args.name?.startsWith("CompositorTileWorker")) {
     compositorTileWorkers.push({
       pid: event.pid,
       tid: event.tid
     });
   }
-  if (Types9.Events.isBegin(event) || Types9.Events.isEnd(event)) {
+  if (Types8.Events.isBegin(event) || Types8.Events.isEnd(event)) {
     const process = getOrCreateRendererProcess(processes, event.pid);
     const thread = getOrCreateRendererThread(process, event.tid);
     const completeEvent = makeCompleteEvent(event);
@@ -1551,31 +1434,31 @@ function handleEvent8(event) {
     thread.entries.push(completeEvent);
     return;
   }
-  if (Types9.Events.isInstant(event) || Types9.Events.isComplete(event)) {
+  if (Types8.Events.isInstant(event) || Types8.Events.isComplete(event)) {
     const process = getOrCreateRendererProcess(processes, event.pid);
     const thread = getOrCreateRendererThread(process, event.tid);
     thread.entries.push(event);
   }
-  if (Types9.Events.isLayout(event)) {
+  if (Types8.Events.isLayout(event)) {
     const process = getOrCreateRendererProcess(processes, event.pid);
     const thread = getOrCreateRendererThread(process, event.tid);
     thread.layoutEvents.push(event);
   }
-  if (Types9.Events.isRecalcStyle(event)) {
+  if (Types8.Events.isRecalcStyle(event)) {
     const process = getOrCreateRendererProcess(processes, event.pid);
     const thread = getOrCreateRendererThread(process, event.tid);
     thread.recalcStyleEvents.push(event);
   }
 }
-async function finalize8() {
-  const { mainFrameId: mainFrameId2, rendererProcessesByFrame, threadsInProcess: threadsInProcess2 } = data5();
-  entityMappings2 = data6().entityMappings;
+async function finalize7() {
+  const { mainFrameId: mainFrameId2, rendererProcessesByFrame, threadsInProcess: threadsInProcess2 } = data4();
+  entityMappings2 = data5().entityMappings;
   assignMeta(processes, mainFrameId2, rendererProcessesByFrame, threadsInProcess2);
   sanitizeProcesses(processes);
   buildHierarchy(processes);
   sanitizeThreads(processes);
 }
-function data8() {
+function data7() {
   return {
     processes,
     compositorTileWorkers: gatherCompositorThreads(),
@@ -1638,19 +1521,13 @@ function assignThreadName(processes2, threadsInProcess2) {
   }
 }
 function sanitizeProcesses(processes2) {
-  const auctionWorklets = data4().worklets;
-  const metaData = data5();
+  const metaData = data4();
   if (metaData.traceIsGeneric) {
     return;
   }
   for (const [pid, process] of processes2) {
     if (process.url === null) {
-      const maybeWorklet = auctionWorklets.get(pid);
-      if (maybeWorklet) {
-        process.url = maybeWorklet.host;
-      } else {
-        processes2.delete(pid);
-      }
+      processes2.delete(pid);
       continue;
     }
   }
@@ -1665,29 +1542,29 @@ function sanitizeThreads(processes2) {
   }
 }
 function buildHierarchy(processes2, options) {
-  const samplesData = data7();
+  const samplesData = data6();
   for (const [pid, process] of processes2) {
     for (const [tid, thread] of process.threads) {
       if (!thread.entries.length) {
-        thread.tree = Helpers7.TreeHelpers.makeEmptyTraceEntryTree();
+        thread.tree = Helpers6.TreeHelpers.makeEmptyTraceEntryTree();
         continue;
       }
-      Helpers7.Trace.sortTraceEventsInPlace(thread.entries);
+      Helpers6.Trace.sortTraceEventsInPlace(thread.entries);
       const samplesDataForThread = samplesData.profilesInProcess.get(pid)?.get(tid);
       if (samplesDataForThread) {
         const cpuProfile = samplesDataForThread.parsedProfile;
-        const samplesIntegrator = cpuProfile && new Helpers7.SamplesIntegrator.SamplesIntegrator(cpuProfile, samplesDataForThread.profileId, pid, tid, config2);
+        const samplesIntegrator = cpuProfile && new Helpers6.SamplesIntegrator.SamplesIntegrator(cpuProfile, samplesDataForThread.profileId, pid, tid, config2);
         const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
         if (samplesIntegrator && profileCalls) {
-          thread.entries = Helpers7.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+          thread.entries = Helpers6.Trace.mergeEventsInOrder(thread.entries, profileCalls);
           thread.profileCalls = profileCalls;
           const jsSamples = samplesIntegrator.jsSampleEvents;
           if (jsSamples.length) {
-            thread.entries = Helpers7.Trace.mergeEventsInOrder(thread.entries, jsSamples);
+            thread.entries = Helpers6.Trace.mergeEventsInOrder(thread.entries, jsSamples);
           }
         }
       }
-      const treeData = Helpers7.TreeHelpers.treify(thread.entries, options);
+      const treeData = Helpers6.TreeHelpers.treify(thread.entries, options);
       thread.tree = treeData.tree;
       for (const [entry, node] of treeData.entryToNode) {
         entryToNode2.set(entry, node);
@@ -1697,7 +1574,7 @@ function buildHierarchy(processes2, options) {
   }
 }
 function makeCompleteEvent(event) {
-  if (Types9.Events.isEnd(event)) {
+  if (Types8.Events.isEnd(event)) {
     const beginEvent = completeEventStack.pop();
     if (!beginEvent) {
       return null;
@@ -1706,19 +1583,19 @@ function makeCompleteEvent(event) {
       console.error("Begin/End events mismatch at " + beginEvent.ts + " (" + beginEvent.name + ") vs. " + event.ts + " (" + event.name + ")");
       return null;
     }
-    beginEvent.dur = Types9.Timing.Micro(event.ts - beginEvent.ts);
+    beginEvent.dur = Types8.Timing.Micro(event.ts - beginEvent.ts);
     return null;
   }
   const syntheticComplete = {
     ...event,
     ph: "X",
-    dur: Types9.Timing.Micro(0)
+    dur: Types8.Timing.Micro(0)
   };
   completeEventStack.push(syntheticComplete);
   return syntheticComplete;
 }
 function deps3() {
-  return ["Meta", "Samples", "AuctionWorklets", "NetworkRequests"];
+  return ["Meta", "Samples", "NetworkRequests"];
 }
 
 // gen/front_end/models/trace/handlers/AsyncJSCallsHandler.js
@@ -1726,31 +1603,31 @@ var schedulerToRunEntryPoints = /* @__PURE__ */ new Map();
 var taskScheduleForTaskRunEvent = /* @__PURE__ */ new Map();
 var asyncCallToScheduler = /* @__PURE__ */ new Map();
 var runEntryPointToScheduler = /* @__PURE__ */ new Map();
-function reset9() {
+function reset8() {
   schedulerToRunEntryPoints = /* @__PURE__ */ new Map();
   asyncCallToScheduler = /* @__PURE__ */ new Map();
   taskScheduleForTaskRunEvent = /* @__PURE__ */ new Map();
   runEntryPointToScheduler = /* @__PURE__ */ new Map();
 }
-function handleEvent9(_) {
+function handleEvent8(_) {
 }
-async function finalize9() {
+async function finalize8() {
   const { flows: flows2 } = data3();
-  const { entryToNode: entryToNode4 } = data8();
+  const { entryToNode: entryToNode4 } = data7();
   for (const flow of flows2) {
     let maybeAsyncTaskScheduled = flow.at(0);
     if (!maybeAsyncTaskScheduled) {
       continue;
     }
-    if (Types10.Events.isDebuggerAsyncTaskRun(maybeAsyncTaskScheduled)) {
+    if (Types9.Events.isDebuggerAsyncTaskRun(maybeAsyncTaskScheduled)) {
       maybeAsyncTaskScheduled = taskScheduleForTaskRunEvent.get(maybeAsyncTaskScheduled);
     }
-    if (!maybeAsyncTaskScheduled || !Types10.Events.isDebuggerAsyncTaskScheduled(maybeAsyncTaskScheduled)) {
+    if (!maybeAsyncTaskScheduled || !Types9.Events.isDebuggerAsyncTaskScheduled(maybeAsyncTaskScheduled)) {
       continue;
     }
     const taskName = maybeAsyncTaskScheduled.args.taskName;
     const asyncTaskRun = flow.at(1);
-    if (!asyncTaskRun || !Types10.Events.isDebuggerAsyncTaskRun(asyncTaskRun)) {
+    if (!asyncTaskRun || !Types9.Events.isDebuggerAsyncTaskRun(asyncTaskRun)) {
       continue;
     }
     taskScheduleForTaskRunEvent.set(asyncTaskRun, maybeAsyncTaskScheduled);
@@ -1771,7 +1648,7 @@ async function finalize9() {
 function findNearestJSAncestor(asyncTaskScheduled, entryToNode4) {
   let node = entryToNode4.get(asyncTaskScheduled)?.parent;
   while (node) {
-    if (Types10.Events.isProfileCall(node.entry) || acceptJSInvocationsPredicate(node.entry)) {
+    if (Types9.Events.isProfileCall(node.entry) || acceptJSInvocationsPredicate(node.entry)) {
       return node.entry;
     }
     node = node.parent;
@@ -1779,15 +1656,15 @@ function findNearestJSAncestor(asyncTaskScheduled, entryToNode4) {
   return null;
 }
 function acceptJSInvocationsPredicate(event) {
-  const eventIsConsoleRunTask = Types10.Events.isConsoleRunTask(event);
+  const eventIsConsoleRunTask = Types9.Events.isConsoleRunTask(event);
   const eventIsV8EntryPoint = event.name.startsWith("v8") || event.name.startsWith("V8");
-  return Types10.Events.isJSInvocationEvent(event) && (eventIsConsoleRunTask || !eventIsV8EntryPoint);
+  return Types9.Events.isJSInvocationEvent(event) && (eventIsConsoleRunTask || !eventIsV8EntryPoint);
 }
 function findFirstJsInvocationForAsyncTaskRun(asyncTaskRun, entryToNode4) {
-  return findFirstDescendantsOfType(asyncTaskRun, entryToNode4, acceptJSInvocationsPredicate, Types10.Events.isDebuggerAsyncTaskRun).at(0);
+  return findFirstDescendantsOfType(asyncTaskRun, entryToNode4, acceptJSInvocationsPredicate, Types9.Events.isDebuggerAsyncTaskRun).at(0);
 }
 function findFirstJSCallsForAsyncTaskRun(asyncTaskRun, entryToNode4) {
-  return findFirstDescendantsOfType(asyncTaskRun, entryToNode4, Types10.Events.isProfileCall, Types10.Events.isDebuggerAsyncTaskRun);
+  return findFirstDescendantsOfType(asyncTaskRun, entryToNode4, Types9.Events.isProfileCall, Types9.Events.isDebuggerAsyncTaskRun);
 }
 function findFirstDescendantsOfType(root, entryToNode4, predicateAccept, predicateIgnore) {
   const node = entryToNode4.get(root);
@@ -1809,7 +1686,7 @@ function findFirstDescendantsOfType(root, entryToNode4, predicateAccept, predica
   }
   return firstDescendants;
 }
-function data9() {
+function data8() {
   return {
     schedulerToRunEntryPoints,
     asyncCallToScheduler,
@@ -1823,64 +1700,64 @@ function deps4() {
 // gen/front_end/models/trace/handlers/DOMStatsHandler.js
 var DOMStatsHandler_exports = {};
 __export(DOMStatsHandler_exports, {
-  data: () => data10,
-  finalize: () => finalize10,
-  handleEvent: () => handleEvent10,
-  reset: () => reset10
+  data: () => data9,
+  finalize: () => finalize9,
+  handleEvent: () => handleEvent9,
+  reset: () => reset9
 });
 import * as Platform7 from "./../../../core/platform/platform.js";
-import * as Types11 from "./../types/types.js";
+import * as Types10 from "./../types/types.js";
 var domStatsByFrameId = /* @__PURE__ */ new Map();
-function reset10() {
+function reset9() {
   domStatsByFrameId = /* @__PURE__ */ new Map();
 }
-function handleEvent10(event) {
-  if (!Types11.Events.isDOMStats(event)) {
+function handleEvent9(event) {
+  if (!Types10.Events.isDOMStats(event)) {
     return;
   }
   const domStatEvents = Platform7.MapUtilities.getWithDefault(domStatsByFrameId, event.args.data.frame, () => []);
   domStatEvents.push(event);
 }
-async function finalize10() {
+async function finalize9() {
 }
-function data10() {
+function data9() {
   return { domStatsByFrameId };
 }
 
 // gen/front_end/models/trace/handlers/ExtensionTraceDataHandler.js
 var ExtensionTraceDataHandler_exports = {};
 __export(ExtensionTraceDataHandler_exports, {
-  data: () => data12,
+  data: () => data11,
   deps: () => deps5,
   extensionDataInConsoleTimeStamp: () => extensionDataInConsoleTimeStamp,
   extensionDataInPerformanceTiming: () => extensionDataInPerformanceTiming,
   extractConsoleAPIExtensionEntries: () => extractConsoleAPIExtensionEntries,
   extractPerformanceAPIExtensionEntries: () => extractPerformanceAPIExtensionEntries,
-  finalize: () => finalize12,
-  handleEvent: () => handleEvent12,
-  reset: () => reset12
+  finalize: () => finalize11,
+  handleEvent: () => handleEvent11,
+  reset: () => reset11
 });
-import * as Helpers9 from "./../helpers/helpers.js";
-import * as Types13 from "./../types/types.js";
+import * as Helpers8 from "./../helpers/helpers.js";
+import * as Types12 from "./../types/types.js";
 
 // gen/front_end/models/trace/handlers/UserTimingsHandler.js
 var UserTimingsHandler_exports = {};
 __export(UserTimingsHandler_exports, {
-  data: () => data11,
-  finalize: () => finalize11,
-  handleEvent: () => handleEvent11,
-  reset: () => reset11,
+  data: () => data10,
+  finalize: () => finalize10,
+  handleEvent: () => handleEvent10,
+  reset: () => reset10,
   userTimingComparator: () => userTimingComparator
 });
-import * as Helpers8 from "./../helpers/helpers.js";
-import * as Types12 from "./../types/types.js";
+import * as Helpers7 from "./../helpers/helpers.js";
+import * as Types11 from "./../types/types.js";
 var syntheticEvents = [];
 var measureTraceByTraceId = /* @__PURE__ */ new Map();
 var performanceMeasureEvents = [];
 var performanceMarkEvents = [];
 var consoleTimings = [];
 var timestampEvents = [];
-function reset11() {
+function reset10() {
   syntheticEvents = [];
   performanceMeasureEvents = [];
   performanceMarkEvents = [];
@@ -1929,12 +1806,12 @@ var navTimingNames = [
 var ignoredNames = [...resourceTimingNames, ...navTimingNames];
 function getEventTimings(event) {
   if ("dur" in event) {
-    return { start: event.ts, end: Types12.Timing.Micro(event.ts + (event.dur ?? 0)) };
+    return { start: event.ts, end: Types11.Timing.Micro(event.ts + (event.dur ?? 0)) };
   }
-  if (Types12.Events.isConsoleTimeStamp(event)) {
+  if (Types11.Events.isConsoleTimeStamp(event)) {
     const { start, end } = event.args.data || {};
     if (typeof start === "number" && typeof end === "number") {
-      return { start: Types12.Timing.Micro(start), end: Types12.Timing.Micro(end) };
+      return { start: Types11.Timing.Micro(start), end: Types11.Timing.Micro(end) };
     }
   }
   return { start: event.ts, end: event.ts };
@@ -1943,12 +1820,12 @@ function getEventTrack(event) {
   if (event.cat === "blink.user_timing") {
     const detailString = event.args.data.beginEvent.args?.detail;
     if (detailString) {
-      const details = Helpers8.Trace.parseDevtoolsDetails(detailString, "devtools");
+      const details = Helpers7.Trace.parseDevtoolsDetails(detailString, "devtools");
       if (details && "track" in details) {
         return details.track;
       }
     }
-  } else if (Types12.Events.isConsoleTimeStamp(event)) {
+  } else if (Types11.Events.isConsoleTimeStamp(event)) {
     const track = event.args.data?.track;
     return typeof track === "string" ? track : void 0;
   }
@@ -1957,7 +1834,7 @@ function getEventTrack(event) {
 function userTimingComparator(a, b, originalArray) {
   const { start: aStart, end: aEnd } = getEventTimings(a);
   const { start: bStart, end: bEnd } = getEventTimings(b);
-  const timeDifference = Helpers8.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
+  const timeDifference = Helpers7.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
   if (timeDifference) {
     return timeDifference;
   }
@@ -1970,34 +1847,34 @@ function userTimingComparator(a, b, originalArray) {
   const bIndex = originalArray.indexOf(b);
   return bIndex - aIndex;
 }
-function handleEvent11(event) {
+function handleEvent10(event) {
   if (ignoredNames.includes(event.name)) {
     return;
   }
-  if (Types12.Events.isUserTimingMeasure(event)) {
+  if (Types11.Events.isUserTimingMeasure(event)) {
     measureTraceByTraceId.set(event.args.traceId, event);
   }
-  if (Types12.Events.isPerformanceMeasure(event)) {
+  if (Types11.Events.isPerformanceMeasure(event)) {
     performanceMeasureEvents.push(event);
     return;
   }
-  if (Types12.Events.isPerformanceMark(event)) {
+  if (Types11.Events.isPerformanceMark(event)) {
     performanceMarkEvents.push(event);
   }
-  if (Types12.Events.isConsoleTime(event)) {
+  if (Types11.Events.isConsoleTime(event)) {
     consoleTimings.push(event);
   }
-  if (Types12.Events.isConsoleTimeStamp(event)) {
+  if (Types11.Events.isConsoleTimeStamp(event)) {
     timestampEvents.push(event);
   }
 }
-async function finalize11() {
+async function finalize10() {
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
-  syntheticEvents = Helpers8.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
+  syntheticEvents = Helpers7.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
   timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, [...timestampEvents]));
 }
-function data11() {
+function data10() {
   return {
     consoleTimings: syntheticEvents.filter((e) => e.cat === "blink.console"),
     performanceMeasures: syntheticEvents.filter((e) => e.cat === "blink.user_timing"),
@@ -2014,9 +1891,9 @@ var extensionMarkers = [];
 var entryToNode3 = /* @__PURE__ */ new Map();
 var timeStampByName = /* @__PURE__ */ new Map();
 var syntheticConsoleEntriesForTimingsTrack = [];
-function handleEvent12(_event) {
+function handleEvent11(_event) {
 }
-function reset12() {
+function reset11() {
   extensionTrackEntries = [];
   syntheticConsoleEntriesForTimingsTrack = [];
   extensionTrackData = [];
@@ -2024,20 +1901,20 @@ function reset12() {
   entryToNode3 = /* @__PURE__ */ new Map();
   timeStampByName = /* @__PURE__ */ new Map();
 }
-async function finalize12() {
+async function finalize11() {
   createExtensionFlameChartEntries();
 }
 function createExtensionFlameChartEntries() {
-  const pairedMeasures = data11().performanceMeasures;
-  const marks = data11().performanceMarks;
-  const mergedRawExtensionEvents = Helpers9.Trace.mergeEventsInOrder(pairedMeasures, marks);
+  const pairedMeasures = data10().performanceMeasures;
+  const marks = data10().performanceMarks;
+  const mergedRawExtensionEvents = Helpers8.Trace.mergeEventsInOrder(pairedMeasures, marks);
   extractPerformanceAPIExtensionEntries(mergedRawExtensionEvents);
   extractConsoleAPIExtensionEntries();
-  Helpers9.Trace.sortTraceEventsInPlace(extensionTrackEntries);
-  Helpers9.Extensions.buildTrackDataFromExtensionEntries(extensionTrackEntries, extensionTrackData, entryToNode3);
+  Helpers8.Trace.sortTraceEventsInPlace(extensionTrackEntries);
+  Helpers8.Extensions.buildTrackDataFromExtensionEntries(extensionTrackEntries, extensionTrackData, entryToNode3);
 }
 function extractConsoleAPIExtensionEntries() {
-  const consoleTimeStamps = data11().timestampEvents;
+  const consoleTimeStamps = data10().timestampEvents;
   for (const currentTimeStamp of consoleTimeStamps) {
     if (!currentTimeStamp.args.data) {
       continue;
@@ -2050,8 +1927,8 @@ function extractConsoleAPIExtensionEntries() {
     if (!extensionData && !start && !end) {
       continue;
     }
-    const startTimeStamp = typeof start === "number" ? Types13.Timing.Micro(start) : timeStampByName.get(String(start))?.ts;
-    const endTimeStamp = typeof end === "number" ? Types13.Timing.Micro(end) : timeStampByName.get(String(end))?.ts;
+    const startTimeStamp = typeof start === "number" ? Types12.Timing.Micro(start) : timeStampByName.get(String(start))?.ts;
+    const endTimeStamp = typeof end === "number" ? Types12.Timing.Micro(end) : timeStampByName.get(String(end))?.ts;
     if (endTimeStamp !== void 0 && startTimeStamp === void 0) {
       continue;
     }
@@ -2065,11 +1942,11 @@ function extractConsoleAPIExtensionEntries() {
         devtoolsObj: extensionData,
         userDetail,
         rawSourceEvent: currentTimeStamp,
-        dur: Types13.Timing.Micro(entryEndTime - entryStartTime),
+        dur: Types12.Timing.Micro(entryEndTime - entryStartTime),
         ts: entryStartTime,
         ph: "X"
       };
-      const extensionEntry = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredExtensionEntry);
+      const extensionEntry = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredExtensionEntry);
       extensionTrackEntries.push(extensionEntry);
       continue;
     }
@@ -2079,10 +1956,10 @@ function extractConsoleAPIExtensionEntries() {
       cat: "disabled-by-default-v8.inspector",
       ph: "X",
       ts: entryStartTime,
-      dur: Types13.Timing.Micro(entryEndTime - entryStartTime),
+      dur: Types12.Timing.Micro(entryEndTime - entryStartTime),
       rawSourceEvent: currentTimeStamp
     };
-    const syntheticTimeStamp = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredSyntheticTimeStamp);
+    const syntheticTimeStamp = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredSyntheticTimeStamp);
     syntheticConsoleEntriesForTimingsTrack.push(syntheticTimeStamp);
   }
 }
@@ -2094,7 +1971,7 @@ function extractPerformanceAPIExtensionEntries(timings) {
     }
     const extensionSyntheticEntry = {
       name: timing.name,
-      ph: Types13.Extensions.isExtensionPayloadMarker(devtoolsObj) ? "I" : "X",
+      ph: Types12.Extensions.isExtensionPayloadMarker(devtoolsObj) ? "I" : "X",
       pid: timing.pid,
       tid: timing.tid,
       ts: timing.ts,
@@ -2102,26 +1979,26 @@ function extractPerformanceAPIExtensionEntries(timings) {
       cat: "devtools.extension",
       devtoolsObj,
       userDetail,
-      rawSourceEvent: Types13.Events.isSyntheticUserTiming(timing) ? timing.rawSourceEvent : timing
+      rawSourceEvent: Types12.Events.isSyntheticUserTiming(timing) ? timing.rawSourceEvent : timing
     };
-    if (Types13.Extensions.isExtensionPayloadMarker(devtoolsObj)) {
-      const extensionMarker = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(extensionSyntheticEntry);
+    if (Types12.Extensions.isExtensionPayloadMarker(devtoolsObj)) {
+      const extensionMarker = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(extensionSyntheticEntry);
       extensionMarkers.push(extensionMarker);
       continue;
     }
-    if (Types13.Extensions.isExtensionEntryObj(extensionSyntheticEntry.devtoolsObj)) {
-      const extensionTrackEntry = Helpers9.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(extensionSyntheticEntry);
+    if (Types12.Extensions.isExtensionEntryObj(extensionSyntheticEntry.devtoolsObj)) {
+      const extensionTrackEntry = Helpers8.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(extensionSyntheticEntry);
       extensionTrackEntries.push(extensionTrackEntry);
       continue;
     }
   }
 }
 function extensionDataInPerformanceTiming(timing) {
-  const timingDetail = Types13.Events.isPerformanceMark(timing) ? timing.args.data?.detail : timing.args.data.beginEvent.args.detail;
+  const timingDetail = Types12.Events.isPerformanceMark(timing) ? timing.args.data?.detail : timing.args.data.beginEvent.args.detail;
   if (!timingDetail) {
     return { devtoolsObj: null, userDetail: null };
   }
-  const devtoolsObj = Helpers9.Trace.parseDevtoolsDetails(timingDetail, "devtools");
+  const devtoolsObj = Helpers8.Trace.parseDevtoolsDetails(timingDetail, "devtools");
   let userDetail = null;
   try {
     userDetail = JSON.parse(timingDetail);
@@ -2150,7 +2027,7 @@ function extensionDataInConsoleTimeStamp(timeStamp) {
   };
   return { devtoolsObj, userDetail };
 }
-function data12() {
+function data11() {
   return {
     entryToNode: entryToNode3,
     extensionTrackData,
@@ -2169,28 +2046,28 @@ __export(FramesHandler_exports, {
   PendingFrame: () => PendingFrame,
   TimelineFrameBeginFrameQueue: () => TimelineFrameBeginFrameQueue,
   TimelineFrameModel: () => TimelineFrameModel,
-  data: () => data14,
+  data: () => data13,
   deps: () => deps7,
-  finalize: () => finalize14,
+  finalize: () => finalize13,
   framesWithinWindow: () => framesWithinWindow,
-  handleEvent: () => handleEvent14,
-  reset: () => reset14
+  handleEvent: () => handleEvent13,
+  reset: () => reset13
 });
 import * as Platform8 from "./../../../core/platform/platform.js";
-import * as Helpers11 from "./../helpers/helpers.js";
-import * as Types15 from "./../types/types.js";
+import * as Helpers10 from "./../helpers/helpers.js";
+import * as Types14 from "./../types/types.js";
 
 // gen/front_end/models/trace/handlers/LayerTreeHandler.js
 var LayerTreeHandler_exports = {};
 __export(LayerTreeHandler_exports, {
-  data: () => data13,
+  data: () => data12,
   deps: () => deps6,
-  finalize: () => finalize13,
-  handleEvent: () => handleEvent13,
-  reset: () => reset13
+  finalize: () => finalize12,
+  handleEvent: () => handleEvent12,
+  reset: () => reset12
 });
-import * as Helpers10 from "./../helpers/helpers.js";
-import * as Types14 from "./../types/types.js";
+import * as Helpers9 from "./../helpers/helpers.js";
+import * as Types13 from "./../types/types.js";
 var paintEvents = [];
 var snapshotEvents = [];
 var paintToSnapshotMap = /* @__PURE__ */ new Map();
@@ -2198,7 +2075,7 @@ var lastPaintForLayerId = {};
 var currentMainFrameLayerTreeId = null;
 var updateLayerEvents = [];
 var relevantEvents = [];
-function reset13() {
+function reset12() {
   paintEvents = [];
   snapshotEvents = [];
   paintToSnapshotMap = /* @__PURE__ */ new Map();
@@ -2207,30 +2084,30 @@ function reset13() {
   updateLayerEvents = [];
   relevantEvents = [];
 }
-function handleEvent13(event) {
-  if (Types14.Events.isPaint(event) || Types14.Events.isDisplayListItemListSnapshot(event) || Types14.Events.isUpdateLayer(event) || Types14.Events.isSetLayerId(event)) {
+function handleEvent12(event) {
+  if (Types13.Events.isPaint(event) || Types13.Events.isDisplayListItemListSnapshot(event) || Types13.Events.isUpdateLayer(event) || Types13.Events.isSetLayerId(event)) {
     relevantEvents.push(event);
   }
 }
-async function finalize13() {
-  const metaData = data5();
-  Helpers10.Trace.sortTraceEventsInPlace(relevantEvents);
+async function finalize12() {
+  const metaData = data4();
+  Helpers9.Trace.sortTraceEventsInPlace(relevantEvents);
   for (const event of relevantEvents) {
-    if (Types14.Events.isSetLayerId(event)) {
+    if (Types13.Events.isSetLayerId(event)) {
       if (metaData.mainFrameId !== event.args.data.frame) {
         continue;
       }
       currentMainFrameLayerTreeId = event.args.data.layerTreeId;
-    } else if (Types14.Events.isUpdateLayer(event)) {
+    } else if (Types13.Events.isUpdateLayer(event)) {
       updateLayerEvents.push(event);
-    } else if (Types14.Events.isPaint(event)) {
+    } else if (Types13.Events.isPaint(event)) {
       if (!event.args.data.layerId) {
         continue;
       }
       paintEvents.push(event);
       lastPaintForLayerId[event.args.data.layerId] = event;
       continue;
-    } else if (Types14.Events.isDisplayListItemListSnapshot(event)) {
+    } else if (Types13.Events.isDisplayListItemListSnapshot(event)) {
       let lastUpdateLayerEventForThread = null;
       for (let i = updateLayerEvents.length - 1; i > -1; i--) {
         const updateEvent = updateLayerEvents[i];
@@ -2254,7 +2131,7 @@ async function finalize13() {
     }
   }
 }
-function data13() {
+function data12() {
   return {
     paints: paintEvents,
     snapshots: snapshotEvents,
@@ -2271,7 +2148,7 @@ __export(Threads_exports, {
   threadsInRenderer: () => threadsInRenderer,
   threadsInTrace: () => threadsInTrace
 });
-function getThreadTypeForRendererThread(pid, thread, auctionWorkletsData) {
+function getThreadTypeForRendererThread(pid, thread) {
   let threadType = "OTHER";
   if (thread.name === "CrRendererMain") {
     threadType = "MAIN_THREAD";
@@ -2279,14 +2156,12 @@ function getThreadTypeForRendererThread(pid, thread, auctionWorkletsData) {
     threadType = "WORKER";
   } else if (thread.name?.startsWith("CompositorTileWorker")) {
     threadType = "RASTERIZER";
-  } else if (auctionWorkletsData.worklets.has(pid)) {
-    threadType = "AUCTION_WORKLET";
   } else if (thread.name?.startsWith("ThreadPool")) {
     threadType = "THREAD_POOL";
   }
   return threadType;
 }
-function threadsInRenderer(rendererData, auctionWorkletsData) {
+function threadsInRenderer(rendererData) {
   const foundThreads = [];
   if (rendererData.processes.size) {
     for (const [pid, process] of rendererData.processes) {
@@ -2294,7 +2169,7 @@ function threadsInRenderer(rendererData, auctionWorkletsData) {
         if (!thread.tree) {
           continue;
         }
-        const threadType = getThreadTypeForRendererThread(pid, thread, auctionWorkletsData);
+        const threadType = getThreadTypeForRendererThread(pid, thread);
         foundThreads.push({
           name: thread.name,
           pid,
@@ -2316,7 +2191,7 @@ function threadsInTrace(handlerData) {
   if (cached) {
     return cached;
   }
-  const threadsFromRenderer = threadsInRenderer(handlerData.Renderer, handlerData.AuctionWorklets);
+  const threadsFromRenderer = threadsInRenderer(handlerData.Renderer);
   if (threadsFromRenderer.length) {
     threadsInHandlerDataCache.set(handlerData, threadsFromRenderer);
     return threadsFromRenderer;
@@ -2351,11 +2226,11 @@ function threadsInTrace(handlerData) {
 var model = null;
 var relevantFrameEvents = [];
 function isFrameEvent(event) {
-  return Types15.Events.isSetLayerId(event) || Types15.Events.isBeginFrame(event) || Types15.Events.isDroppedFrame(event) || Types15.Events.isRequestMainThreadFrame(event) || Types15.Events.isBeginMainThreadFrame(event) || Types15.Events.isNeedsBeginFrameChanged(event) || // Note that "Commit" is the replacement for "CompositeLayers" so in a trace
+  return Types14.Events.isSetLayerId(event) || Types14.Events.isBeginFrame(event) || Types14.Events.isDroppedFrame(event) || Types14.Events.isRequestMainThreadFrame(event) || Types14.Events.isBeginMainThreadFrame(event) || Types14.Events.isNeedsBeginFrameChanged(event) || // Note that "Commit" is the replacement for "CompositeLayers" so in a trace
   // we wouldn't expect to see a combination of these. All "new" trace
   // recordings use "Commit", but we can easily support "CompositeLayers" too
   // to not break older traces being imported.
-  Types15.Events.isCommit(event) || Types15.Events.isCompositeLayers(event) || Types15.Events.isActivateLayerTree(event) || Types15.Events.isDrawFrame(event);
+  Types14.Events.isCommit(event) || Types14.Events.isCompositeLayers(event) || Types14.Events.isActivateLayerTree(event) || Types14.Events.isDrawFrame(event);
 }
 function entryIsTopLevel(entry) {
   const devtoolsTimelineCategory = "disabled-by-default-devtools.timeline";
@@ -2367,28 +2242,28 @@ var MAIN_FRAME_MARKERS = /* @__PURE__ */ new Set([
   "BeginMainThreadFrame",
   "ScrollLayer"
 ]);
-function reset14() {
+function reset13() {
   model = null;
   relevantFrameEvents = [];
 }
-function handleEvent14(event) {
-  if (isFrameEvent(event) || Types15.Events.isLayerTreeHostImplSnapshot(event) || entryIsTopLevel(event) || MAIN_FRAME_MARKERS.has(event.name) || Types15.Events.isPaint(event)) {
+function handleEvent13(event) {
+  if (isFrameEvent(event) || Types14.Events.isLayerTreeHostImplSnapshot(event) || entryIsTopLevel(event) || MAIN_FRAME_MARKERS.has(event.name) || Types14.Events.isPaint(event)) {
     relevantFrameEvents.push(event);
   }
 }
-async function finalize14() {
-  Helpers11.Trace.sortTraceEventsInPlace(relevantFrameEvents);
-  const modelForTrace = new TimelineFrameModel(relevantFrameEvents, data8(), data4(), data5(), data13());
+async function finalize13() {
+  Helpers10.Trace.sortTraceEventsInPlace(relevantFrameEvents);
+  const modelForTrace = new TimelineFrameModel(relevantFrameEvents, data7(), data4(), data12());
   model = modelForTrace;
 }
-function data14() {
+function data13() {
   return {
     frames: model?.frames() ?? [],
     framesById: model?.framesById() ?? {}
   };
 }
 function deps7() {
-  return ["Meta", "Renderer", "AuctionWorklets", "LayerTree"];
+  return ["Meta", "Renderer", "LayerTree"];
 }
 var TimelineFrameModel = class {
   #frames = [];
@@ -2407,8 +2282,8 @@ var TimelineFrameModel = class {
   #activeProcessId = null;
   #activeThreadId = null;
   #layerTreeData;
-  constructor(allEvents, rendererData, auctionWorkletsData, metaData, layerTreeData) {
-    const mainThreads = threadsInRenderer(rendererData, auctionWorkletsData).filter((thread) => {
+  constructor(allEvents, rendererData, metaData, layerTreeData) {
+    const mainThreads = threadsInRenderer(rendererData).filter((thread) => {
       return thread.type === "MAIN_THREAD" && thread.processIsOnMainFrame;
     });
     const threadData = mainThreads.map((thread) => {
@@ -2508,7 +2383,7 @@ var TimelineFrameModel = class {
     if (this.#lastFrame) {
       this.#flushFrame(this.#lastFrame, startTime);
     }
-    this.#lastFrame = new TimelineFrame(seqId, startTime, Types15.Timing.Micro(startTime - data5().traceBounds.min));
+    this.#lastFrame = new TimelineFrame(seqId, startTime, Types14.Timing.Micro(startTime - data4().traceBounds.min));
   }
   #flushFrame(frame, endTime) {
     frame.setLayerTree(this.#lastLayerTree);
@@ -2549,9 +2424,9 @@ var TimelineFrameModel = class {
     this.#activeProcessId = null;
   }
   #addTraceEvent(event, mainFrameId2) {
-    if (Types15.Events.isSetLayerId(event) && event.args.data.frame === mainFrameId2) {
+    if (Types14.Events.isSetLayerId(event) && event.args.data.frame === mainFrameId2) {
       this.#layerTreeId = event.args.data.layerTreeId;
-    } else if (Types15.Events.isLayerTreeHostImplSnapshot(event) && Number(event.id) === this.#layerTreeId) {
+    } else if (Types14.Events.isLayerTreeHostImplSnapshot(event) && Number(event.id) === this.#layerTreeId) {
       this.#handleLayerTreeSnapshot({
         entry: event,
         paints: []
@@ -2569,17 +2444,17 @@ var TimelineFrameModel = class {
     if (entry.args["layerTreeId"] !== this.#layerTreeId) {
       return;
     }
-    if (Types15.Events.isBeginFrame(entry)) {
+    if (Types14.Events.isBeginFrame(entry)) {
       this.#handleBeginFrame(entry.ts, entry.args["frameSeqId"]);
-    } else if (Types15.Events.isDrawFrame(entry)) {
+    } else if (Types14.Events.isDrawFrame(entry)) {
       this.#handleDrawFrame(entry.ts, entry.args["frameSeqId"]);
-    } else if (Types15.Events.isActivateLayerTree(entry)) {
+    } else if (Types14.Events.isActivateLayerTree(entry)) {
       this.#handleActivateLayerTree();
-    } else if (Types15.Events.isRequestMainThreadFrame(entry)) {
+    } else if (Types14.Events.isRequestMainThreadFrame(entry)) {
       this.#handleRequestMainThreadFrame();
-    } else if (Types15.Events.isNeedsBeginFrameChanged(entry)) {
+    } else if (Types14.Events.isNeedsBeginFrameChanged(entry)) {
       this.#handleNeedFrameChanged(entry.ts, entry.args["data"] && Boolean(entry.args["data"]["needsBeginFrame"]));
-    } else if (Types15.Events.isDroppedFrame(entry)) {
+    } else if (Types14.Events.isDroppedFrame(entry)) {
       this.#handleDroppedFrame(entry.ts, entry.args["frameSeqId"], Boolean(entry.args["hasPartialUpdate"]));
     }
   }
@@ -2593,16 +2468,16 @@ var TimelineFrameModel = class {
     if (!this.#framePendingCommit) {
       return;
     }
-    if (Types15.Events.isBeginMainThreadFrame(entry) && entry.args.data.frameId) {
+    if (Types14.Events.isBeginMainThreadFrame(entry) && entry.args.data.frameId) {
       this.#framePendingCommit.mainFrameId = entry.args.data.frameId;
     }
-    if (Types15.Events.isPaint(entry)) {
+    if (Types14.Events.isPaint(entry)) {
       const snapshot = this.#layerTreeData.paintsToSnapshots.get(entry);
       if (snapshot) {
         this.#framePendingCommit.paints.push(new LayerPaintEvent(entry, snapshot));
       }
     }
-    if ((Types15.Events.isCompositeLayers(entry) || Types15.Events.isCommit(entry)) && entry.args["layerTreeId"] === this.#layerTreeId) {
+    if ((Types14.Events.isCompositeLayers(entry) || Types14.Events.isCommit(entry)) && entry.args["layerTreeId"] === this.#layerTreeId) {
       this.#handleCommit();
     }
   }
@@ -2616,8 +2491,8 @@ var TimelineFrame = class {
   name = "frame";
   ph = "X";
   ts;
-  pid = Types15.Events.ProcessID(-1);
-  tid = Types15.Events.ThreadID(-1);
+  pid = Types14.Events.ProcessID(-1);
+  tid = Types14.Events.ThreadID(-1);
   index = -1;
   startTime;
   startTimeOffset;
@@ -2636,7 +2511,7 @@ var TimelineFrame = class {
     this.ts = startTime;
     this.startTimeOffset = startTimeOffset;
     this.endTime = this.startTime;
-    this.duration = Types15.Timing.Micro(0);
+    this.duration = Types14.Timing.Micro(0);
     this.idle = false;
     this.dropped = false;
     this.isPartial = false;
@@ -2649,7 +2524,7 @@ var TimelineFrame = class {
   }
   setEndTime(endTime) {
     this.endTime = endTime;
-    this.duration = Types15.Timing.Micro(this.endTime - this.startTime);
+    this.duration = Types14.Timing.Micro(this.endTime - this.startTime);
   }
   setLayerTree(layerTree) {
     this.layerTree = layerTree;
@@ -2758,34 +2633,34 @@ function framesWithinWindow(frames2, startTime, endTime) {
 // gen/front_end/models/trace/handlers/GPUHandler.js
 var GPUHandler_exports = {};
 __export(GPUHandler_exports, {
-  data: () => data15,
+  data: () => data14,
   deps: () => deps8,
-  finalize: () => finalize15,
-  handleEvent: () => handleEvent15,
-  reset: () => reset15
+  finalize: () => finalize14,
+  handleEvent: () => handleEvent14,
+  reset: () => reset14
 });
-import * as Helpers12 from "./../helpers/helpers.js";
-import * as Types16 from "./../types/types.js";
+import * as Helpers11 from "./../helpers/helpers.js";
+import * as Types15 from "./../types/types.js";
 var eventsInProcessThread = /* @__PURE__ */ new Map();
 var mainGPUThreadTasks = [];
-function reset15() {
+function reset14() {
   eventsInProcessThread = /* @__PURE__ */ new Map();
   mainGPUThreadTasks = [];
 }
-function handleEvent15(event) {
-  if (!Types16.Events.isGPUTask(event)) {
+function handleEvent14(event) {
+  if (!Types15.Events.isGPUTask(event)) {
     return;
   }
-  Helpers12.Trace.addEventToProcessThread(event, eventsInProcessThread);
+  Helpers11.Trace.addEventToProcessThread(event, eventsInProcessThread);
 }
-async function finalize15() {
-  const { gpuProcessId: gpuProcessId2, gpuThreadId: gpuThreadId2 } = data5();
+async function finalize14() {
+  const { gpuProcessId: gpuProcessId2, gpuThreadId: gpuThreadId2 } = data4();
   const gpuThreadsForProcess = eventsInProcessThread.get(gpuProcessId2);
   if (gpuThreadsForProcess && gpuThreadId2) {
     mainGPUThreadTasks = gpuThreadsForProcess.get(gpuThreadId2) || [];
   }
 }
-function data15() {
+function data14() {
   return {
     mainGPUThreadTasks
   };
@@ -2797,13 +2672,13 @@ function deps8() {
 // gen/front_end/models/trace/handlers/ImagePaintingHandler.js
 var ImagePaintingHandler_exports = {};
 __export(ImagePaintingHandler_exports, {
-  data: () => data16,
-  finalize: () => finalize16,
-  handleEvent: () => handleEvent16,
-  reset: () => reset16
+  data: () => data15,
+  finalize: () => finalize15,
+  handleEvent: () => handleEvent15,
+  reset: () => reset15
 });
 import * as Platform9 from "./../../../core/platform/platform.js";
-import * as Types17 from "./../types/types.js";
+import * as Types16 from "./../types/types.js";
 var paintImageEvents = /* @__PURE__ */ new Map();
 var decodeLazyPixelRefEvents = /* @__PURE__ */ new Map();
 var paintImageByLazyPixelRef = /* @__PURE__ */ new Map();
@@ -2811,7 +2686,7 @@ var eventToPaintImage = /* @__PURE__ */ new Map();
 var urlToPaintImage = /* @__PURE__ */ new Map();
 var paintEventToCorrectedDisplaySize = /* @__PURE__ */ new Map();
 var didCorrectForHostDpr = false;
-function reset16() {
+function reset15() {
   paintImageEvents = /* @__PURE__ */ new Map();
   decodeLazyPixelRefEvents = /* @__PURE__ */ new Map();
   paintImageByLazyPixelRef = /* @__PURE__ */ new Map();
@@ -2820,8 +2695,8 @@ function reset16() {
   paintEventToCorrectedDisplaySize = /* @__PURE__ */ new Map();
   didCorrectForHostDpr = false;
 }
-function handleEvent16(event) {
-  if (Types17.Events.isPaintImage(event)) {
+function handleEvent15(event) {
+  if (Types16.Events.isPaintImage(event)) {
     const forProcess = paintImageEvents.get(event.pid) || /* @__PURE__ */ new Map();
     const forThread = forProcess.get(event.tid) || [];
     forThread.push(event);
@@ -2833,14 +2708,14 @@ function handleEvent16(event) {
     }
     return;
   }
-  if (Types17.Events.isDecodeLazyPixelRef(event) && typeof event.args?.LazyPixelRef !== "undefined") {
+  if (Types16.Events.isDecodeLazyPixelRef(event) && typeof event.args?.LazyPixelRef !== "undefined") {
     const forProcess = decodeLazyPixelRefEvents.get(event.pid) || /* @__PURE__ */ new Map();
     const forThread = forProcess.get(event.tid) || [];
     forThread.push(event);
     forProcess.set(event.tid, forThread);
     decodeLazyPixelRefEvents.set(event.pid, forProcess);
   }
-  if (Types17.Events.isDrawLazyPixelRef(event) && typeof event.args?.LazyPixelRef !== "undefined") {
+  if (Types16.Events.isDrawLazyPixelRef(event) && typeof event.args?.LazyPixelRef !== "undefined") {
     const lastPaintEvent = paintImageEvents.get(event.pid)?.get(event.tid)?.at(-1);
     if (!lastPaintEvent) {
       return;
@@ -2848,7 +2723,7 @@ function handleEvent16(event) {
     paintImageByLazyPixelRef.set(event.args.LazyPixelRef, lastPaintEvent);
     return;
   }
-  if (Types17.Events.isDecodeImage(event)) {
+  if (Types16.Events.isDecodeImage(event)) {
     const lastPaintImageEventOnThread = paintImageEvents.get(event.pid)?.get(event.tid)?.at(-1);
     if (lastPaintImageEventOnThread) {
       eventToPaintImage.set(event, lastPaintImageEventOnThread);
@@ -2865,11 +2740,11 @@ function handleEvent16(event) {
     eventToPaintImage.set(event, paintEvent);
   }
 }
-async function finalize16(options) {
+async function finalize15(options) {
   if (!options.metadata?.hostDPR) {
     return;
   }
-  const { devicePixelRatio: emulatedDpr } = data5();
+  const { devicePixelRatio: emulatedDpr } = data4();
   if (!emulatedDpr) {
     return;
   }
@@ -2886,7 +2761,7 @@ async function finalize16(options) {
   }
   didCorrectForHostDpr = true;
 }
-function data16() {
+function data15() {
   return {
     paintImageByDrawLazyPixelRef: paintImageByLazyPixelRef,
     paintImageForEvent: eventToPaintImage,
@@ -2899,14 +2774,14 @@ function data16() {
 // gen/front_end/models/trace/handlers/InitiatorsHandler.js
 var InitiatorsHandler_exports = {};
 __export(InitiatorsHandler_exports, {
-  data: () => data17,
+  data: () => data16,
   deps: () => deps9,
-  finalize: () => finalize17,
-  handleEvent: () => handleEvent17,
-  reset: () => reset17
+  finalize: () => finalize16,
+  handleEvent: () => handleEvent16,
+  reset: () => reset16
 });
-import * as Helpers13 from "./../helpers/helpers.js";
-import * as Types18 from "./../types/types.js";
+import * as Helpers12 from "./../helpers/helpers.js";
+import * as Types17 from "./../types/types.js";
 var lastScheduleStyleRecalcByFrame = /* @__PURE__ */ new Map();
 var lastInvalidationEventForFrame = /* @__PURE__ */ new Map();
 var lastRecalcByFrame = /* @__PURE__ */ new Map();
@@ -2916,7 +2791,7 @@ var timerInstallEventsById = /* @__PURE__ */ new Map();
 var requestIdleCallbackEventsById = /* @__PURE__ */ new Map();
 var webSocketCreateEventsById = /* @__PURE__ */ new Map();
 var schedulePostTaskCallbackEventsById = /* @__PURE__ */ new Map();
-function reset17() {
+function reset16() {
   lastScheduleStyleRecalcByFrame = /* @__PURE__ */ new Map();
   lastInvalidationEventForFrame = /* @__PURE__ */ new Map();
   lastRecalcByFrame = /* @__PURE__ */ new Map();
@@ -2927,16 +2802,16 @@ function reset17() {
   webSocketCreateEventsById = /* @__PURE__ */ new Map();
   schedulePostTaskCallbackEventsById = /* @__PURE__ */ new Map();
 }
-function storeInitiator(data31) {
-  eventToInitiatorMap2.set(data31.event, data31.initiator);
-  const eventsForInitiator = initiatorToEventsMap.get(data31.initiator) || [];
-  eventsForInitiator.push(data31.event);
-  initiatorToEventsMap.set(data31.initiator, eventsForInitiator);
+function storeInitiator(data30) {
+  eventToInitiatorMap2.set(data30.event, data30.initiator);
+  const eventsForInitiator = initiatorToEventsMap.get(data30.initiator) || [];
+  eventsForInitiator.push(data30.event);
+  initiatorToEventsMap.set(data30.initiator, eventsForInitiator);
 }
-function handleEvent17(event) {
-  if (Types18.Events.isScheduleStyleRecalculation(event)) {
+function handleEvent16(event) {
+  if (Types17.Events.isScheduleStyleRecalculation(event)) {
     lastScheduleStyleRecalcByFrame.set(event.args.data.frame, event);
-  } else if (Types18.Events.isRecalcStyle(event)) {
+  } else if (Types17.Events.isRecalcStyle(event)) {
     if (event.args.beginData) {
       lastRecalcByFrame.set(event.args.beginData.frame, event);
       const scheduledStyleForFrame = lastScheduleStyleRecalcByFrame.get(event.args.beginData.frame);
@@ -2947,12 +2822,12 @@ function handleEvent17(event) {
         });
       }
     }
-  } else if (Types18.Events.isInvalidateLayout(event)) {
+  } else if (Types17.Events.isInvalidateLayout(event)) {
     let invalidationInitiator = event;
     if (!lastInvalidationEventForFrame.has(event.args.data.frame)) {
       const lastRecalcStyleForFrame = lastRecalcByFrame.get(event.args.data.frame);
       if (lastRecalcStyleForFrame) {
-        const { endTime } = Helpers13.Timing.eventTimingsMicroSeconds(lastRecalcStyleForFrame);
+        const { endTime } = Helpers12.Timing.eventTimingsMicroSeconds(lastRecalcStyleForFrame);
         const initiatorOfRecalcStyle = eventToInitiatorMap2.get(lastRecalcStyleForFrame);
         if (initiatorOfRecalcStyle && endTime && endTime > event.ts) {
           invalidationInitiator = initiatorOfRecalcStyle;
@@ -2960,7 +2835,7 @@ function handleEvent17(event) {
       }
     }
     lastInvalidationEventForFrame.set(event.args.data.frame, invalidationInitiator);
-  } else if (Types18.Events.isLayout(event)) {
+  } else if (Types17.Events.isLayout(event)) {
     const lastInvalidation = lastInvalidationEventForFrame.get(event.args.beginData.frame);
     if (lastInvalidation) {
       storeInitiator({
@@ -2969,16 +2844,16 @@ function handleEvent17(event) {
       });
     }
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
-  } else if (Types18.Events.isTimerInstall(event)) {
+  } else if (Types17.Events.isTimerInstall(event)) {
     timerInstallEventsById.set(event.args.data.timerId, event);
-  } else if (Types18.Events.isTimerFire(event)) {
+  } else if (Types17.Events.isTimerFire(event)) {
     const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
     if (matchingInstall) {
       storeInitiator({ event, initiator: matchingInstall });
     }
-  } else if (Types18.Events.isRequestIdleCallback(event)) {
+  } else if (Types17.Events.isRequestIdleCallback(event)) {
     requestIdleCallbackEventsById.set(event.args.data.id, event);
-  } else if (Types18.Events.isFireIdleCallback(event)) {
+  } else if (Types17.Events.isFireIdleCallback(event)) {
     const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
     if (matchingRequestEvent) {
       storeInitiator({
@@ -2986,9 +2861,9 @@ function handleEvent17(event) {
         initiator: matchingRequestEvent
       });
     }
-  } else if (Types18.Events.isWebSocketCreate(event)) {
+  } else if (Types17.Events.isWebSocketCreate(event)) {
     webSocketCreateEventsById.set(event.args.data.identifier, event);
-  } else if (Types18.Events.isWebSocketInfo(event) || Types18.Events.isWebSocketTransfer(event)) {
+  } else if (Types17.Events.isWebSocketInfo(event) || Types17.Events.isWebSocketTransfer(event)) {
     const matchingCreateEvent = webSocketCreateEventsById.get(event.args.data.identifier);
     if (matchingCreateEvent) {
       storeInitiator({
@@ -2996,9 +2871,9 @@ function handleEvent17(event) {
         initiator: matchingCreateEvent
       });
     }
-  } else if (Types18.Events.isSchedulePostTaskCallback(event)) {
+  } else if (Types17.Events.isSchedulePostTaskCallback(event)) {
     schedulePostTaskCallbackEventsById.set(event.args.data.taskId, event);
-  } else if (Types18.Events.isRunPostTaskCallback(event) || Types18.Events.isAbortPostTaskCallback(event)) {
+  } else if (Types17.Events.isRunPostTaskCallback(event) || Types17.Events.isAbortPostTaskCallback(event)) {
     const matchingSchedule = schedulePostTaskCallbackEventsById.get(event.args.data.taskId);
     if (matchingSchedule) {
       storeInitiator({ event, initiator: matchingSchedule });
@@ -3015,18 +2890,18 @@ function createRelationshipsFromFlows() {
   }
 }
 function createRelationshipsFromAsyncJSCalls() {
-  const asyncCallEntries = data9().schedulerToRunEntryPoints.entries();
+  const asyncCallEntries = data8().schedulerToRunEntryPoints.entries();
   for (const [asyncCaller, asyncCallees] of asyncCallEntries) {
     for (const asyncCallee of asyncCallees) {
       storeInitiator({ event: asyncCallee, initiator: asyncCaller });
     }
   }
 }
-async function finalize17() {
+async function finalize16() {
   createRelationshipsFromFlows();
   createRelationshipsFromAsyncJSCalls();
 }
-function data17() {
+function data16() {
   return {
     eventToInitiator: eventToInitiatorMap2,
     initiatorToEvents: initiatorToEventsMap
@@ -3039,16 +2914,16 @@ function deps9() {
 // gen/front_end/models/trace/handlers/InvalidationsHandler.js
 var InvalidationsHandler_exports = {};
 __export(InvalidationsHandler_exports, {
-  data: () => data18,
-  finalize: () => finalize18,
-  handleEvent: () => handleEvent18,
+  data: () => data17,
+  finalize: () => finalize17,
+  handleEvent: () => handleEvent17,
   handleUserConfig: () => handleUserConfig3,
-  reset: () => reset18
+  reset: () => reset17
 });
-import * as Types19 from "./../types/types.js";
+import * as Types18 from "./../types/types.js";
 var frameStateByFrame = /* @__PURE__ */ new Map();
 var maxInvalidationsPerEvent = null;
-function reset18() {
+function reset17() {
   frameStateByFrame.clear();
   maxInvalidationsPerEvent = null;
 }
@@ -3070,7 +2945,7 @@ function getState(frameId) {
   return frameState;
 }
 function getFrameId(event) {
-  if (Types19.Events.isRecalcStyle(event) || Types19.Events.isLayout(event)) {
+  if (Types18.Events.isRecalcStyle(event) || Types18.Events.isLayout(event)) {
     return event.args.beginData?.frame ?? null;
   }
   return event.args?.data?.frame ?? null;
@@ -3085,7 +2960,7 @@ function addInvalidationToEvent(frameState, event, invalidation) {
   const count = frameState.invalidationCountForEvent.get(event) ?? 0;
   frameState.invalidationCountForEvent.set(event, count + 1);
 }
-function handleEvent18(event) {
+function handleEvent17(event) {
   if (maxInvalidationsPerEvent === 0) {
     return;
   }
@@ -3094,23 +2969,23 @@ function handleEvent18(event) {
     return;
   }
   const thisFrame = getState(frameId);
-  if (Types19.Events.isRecalcStyle(event)) {
+  if (Types18.Events.isRecalcStyle(event)) {
     thisFrame.lastRecalcStyleEvent = event;
     for (const invalidation of thisFrame.pendingInvalidations) {
-      if (Types19.Events.isLayoutInvalidationTracking(invalidation)) {
+      if (Types18.Events.isLayoutInvalidationTracking(invalidation)) {
         continue;
       }
       addInvalidationToEvent(thisFrame, event, invalidation);
     }
     return;
   }
-  if (Types19.Events.isInvalidationTracking(event)) {
+  if (Types18.Events.isInvalidationTracking(event)) {
     if (thisFrame.hasPainted) {
       thisFrame.pendingInvalidations.length = 0;
       thisFrame.lastRecalcStyleEvent = null;
       thisFrame.hasPainted = false;
     }
-    if (thisFrame.lastRecalcStyleEvent && (Types19.Events.isScheduleStyleInvalidationTracking(event) || Types19.Events.isStyleRecalcInvalidationTracking(event) || Types19.Events.isStyleInvalidatorInvalidationTracking(event))) {
+    if (thisFrame.lastRecalcStyleEvent && (Types18.Events.isScheduleStyleInvalidationTracking(event) || Types18.Events.isStyleRecalcInvalidationTracking(event) || Types18.Events.isStyleInvalidatorInvalidationTracking(event))) {
       const recalcLastRecalc = thisFrame.lastRecalcStyleEvent;
       const recalcEndTime = recalcLastRecalc.ts + (recalcLastRecalc.dur || 0);
       if (event.ts >= recalcLastRecalc.ts && event.ts <= recalcEndTime) {
@@ -3120,22 +2995,22 @@ function handleEvent18(event) {
     thisFrame.pendingInvalidations.push(event);
     return;
   }
-  if (Types19.Events.isPaint(event)) {
+  if (Types18.Events.isPaint(event)) {
     thisFrame.hasPainted = true;
     return;
   }
-  if (Types19.Events.isLayout(event)) {
+  if (Types18.Events.isLayout(event)) {
     for (const invalidation of thisFrame.pendingInvalidations) {
-      if (!Types19.Events.isLayoutInvalidationTracking(invalidation)) {
+      if (!Types18.Events.isLayoutInvalidationTracking(invalidation)) {
         continue;
       }
       addInvalidationToEvent(thisFrame, event, invalidation);
     }
   }
 }
-async function finalize18() {
+async function finalize17() {
 }
-function data18() {
+function data17() {
   const invalidationsForEvent = /* @__PURE__ */ new Map();
   const invalidationCountForEvent = /* @__PURE__ */ new Map();
   for (const frame of frameStateByFrame.values()) {
@@ -3155,25 +3030,25 @@ function data18() {
 // gen/front_end/models/trace/handlers/LargestImagePaintHandler.js
 var LargestImagePaintHandler_exports = {};
 __export(LargestImagePaintHandler_exports, {
-  data: () => data20,
+  data: () => data19,
   deps: () => deps11,
-  finalize: () => finalize20,
-  handleEvent: () => handleEvent20,
-  reset: () => reset20
+  finalize: () => finalize19,
+  handleEvent: () => handleEvent19,
+  reset: () => reset19
 });
 import * as Platform11 from "./../../../core/platform/platform.js";
-import * as Types21 from "./../types/types.js";
+import * as Types20 from "./../types/types.js";
 
 // gen/front_end/models/trace/handlers/PageLoadMetricsHandler.js
 var PageLoadMetricsHandler_exports = {};
 __export(PageLoadMetricsHandler_exports, {
-  data: () => data19,
+  data: () => data18,
   deps: () => deps10,
-  finalize: () => finalize19,
+  finalize: () => finalize18,
   getFrameIdForPageLoadEvent: () => getFrameIdForPageLoadEvent,
-  handleEvent: () => handleEvent19,
+  handleEvent: () => handleEvent18,
   metricIsLCP: () => metricIsLCP,
-  reset: () => reset19,
+  reset: () => reset18,
   scoreClassificationForDOMContentLoaded: () => scoreClassificationForDOMContentLoaded,
   scoreClassificationForFirstContentfulPaint: () => scoreClassificationForFirstContentfulPaint,
   scoreClassificationForLargestContentfulPaint: () => scoreClassificationForLargestContentfulPaint,
@@ -3181,13 +3056,13 @@ __export(PageLoadMetricsHandler_exports, {
   scoreClassificationForTotalBlockingTime: () => scoreClassificationForTotalBlockingTime
 });
 import * as Platform10 from "./../../../core/platform/platform.js";
-import * as Helpers14 from "./../helpers/helpers.js";
-import * as Types20 from "./../types/types.js";
+import * as Helpers13 from "./../helpers/helpers.js";
+import * as Types19 from "./../types/types.js";
 var metricScoresByFrameId = /* @__PURE__ */ new Map();
 var allMarkerEvents = [];
 var metaCharsetCheckEventsByNavigation = /* @__PURE__ */ new Map();
 var metaCharsetCheckEventsArray = [];
-function reset19() {
+function reset18() {
   metricScoresByFrameId = /* @__PURE__ */ new Map();
   pageLoadEventsArray = [];
   allMarkerEvents = [];
@@ -3197,23 +3072,23 @@ function reset19() {
 }
 var pageLoadEventsArray = [];
 var selectedLCPCandidateEvents = /* @__PURE__ */ new Set();
-function handleEvent19(event) {
-  if (Types20.Events.isMetaCharsetCheck(event)) {
+function handleEvent18(event) {
+  if (Types19.Events.isMetaCharsetCheck(event)) {
     metaCharsetCheckEventsArray.push(event);
     return;
   }
-  if (!Types20.Events.eventIsPageLoadEvent(event)) {
+  if (!Types19.Events.eventIsPageLoadEvent(event)) {
     return;
   }
   pageLoadEventsArray.push(event);
-  if (Types20.Events.isSoftNavigationStart(event) && event.args?.context?.firstContentfulPaint) {
-    const syntheticSoftFcpEvent = Helpers14.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+  if (Types19.Events.isSoftNavigationStart(event) && event.args?.context?.firstContentfulPaint) {
+    const syntheticSoftFcpEvent = Helpers13.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       name: "SyntheticSoftFirstContentfulPaint",
       ph: "R",
       rawSourceEvent: event,
       pid: event.pid,
       tid: event.tid,
-      ts: Types20.Timing.Micro(event.args.context.firstContentfulPaint),
+      ts: Types19.Timing.Micro(event.args.context.firstContentfulPaint),
       cat: event.cat,
       args: {
         frame: event.args.frame,
@@ -3227,7 +3102,7 @@ function handleEvent19(event) {
 }
 function storePageLoadMetricAgainstNavigationId(navigation, event) {
   const frameId = getFrameIdForPageLoadEvent(event);
-  const { rendererProcessesByFrame } = data5();
+  const { rendererProcessesByFrame } = data4();
   const rendererProcessesInFrame = rendererProcessesByFrame.get(frameId);
   if (!rendererProcessesInFrame) {
     return;
@@ -3236,25 +3111,25 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
   if (!processData) {
     return;
   }
-  if (Types20.Events.isNavigationStart(event)) {
+  if (Types19.Events.isNavigationStart(event)) {
     return;
   }
-  if (Types20.Events.isAnyFirstContentfulPaint(event)) {
-    const fcpTime = Types20.Timing.Micro(event.ts - navigation.ts);
+  if (Types19.Events.isAnyFirstContentfulPaint(event)) {
+    const fcpTime = Types19.Timing.Micro(event.ts - navigation.ts);
     const classification = scoreClassificationForFirstContentfulPaint(fcpTime);
     const metricScore = { event, metricName: "FCP", classification, navigation, timing: fcpTime };
     storeMetricScore(frameId, navigation, metricScore);
     return;
   }
-  if (Types20.Events.isFirstPaint(event)) {
-    const paintTime = Types20.Timing.Micro(event.ts - navigation.ts);
+  if (Types19.Events.isFirstPaint(event)) {
+    const paintTime = Types19.Timing.Micro(event.ts - navigation.ts);
     const classification = "unclassified";
     const metricScore = { event, metricName: "FP", classification, navigation, timing: paintTime };
     storeMetricScore(frameId, navigation, metricScore);
     return;
   }
-  if (Types20.Events.isMarkDOMContent(event)) {
-    const dclTime = Types20.Timing.Micro(event.ts - navigation.ts);
+  if (Types19.Events.isMarkDOMContent(event)) {
+    const dclTime = Types19.Timing.Micro(event.ts - navigation.ts);
     const metricScore = {
       event,
       metricName: "DCL",
@@ -3265,8 +3140,8 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     storeMetricScore(frameId, navigation, metricScore);
     return;
   }
-  if (Types20.Events.isInteractiveTime(event)) {
-    const ttiValue = Types20.Timing.Micro(event.ts - navigation.ts);
+  if (Types19.Events.isInteractiveTime(event)) {
+    const ttiValue = Types19.Timing.Micro(event.ts - navigation.ts);
     const tti = {
       event,
       metricName: "TTI",
@@ -3275,7 +3150,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       timing: ttiValue
     };
     storeMetricScore(frameId, navigation, tti);
-    const tbtValue = Helpers14.Timing.milliToMicro(Types20.Timing.Milli(event.args.args.total_blocking_time_ms));
+    const tbtValue = Helpers13.Timing.milliToMicro(Types19.Timing.Milli(event.args.args.total_blocking_time_ms));
     const tbt = {
       event,
       metricName: "TBT",
@@ -3286,8 +3161,8 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     storeMetricScore(frameId, navigation, tbt);
     return;
   }
-  if (Types20.Events.isMarkLoad(event)) {
-    const loadTime = Types20.Timing.Micro(event.ts - navigation.ts);
+  if (Types19.Events.isMarkLoad(event)) {
+    const loadTime = Types19.Timing.Micro(event.ts - navigation.ts);
     const metricScore = {
       event,
       metricName: "L",
@@ -3298,12 +3173,12 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     storeMetricScore(frameId, navigation, metricScore);
     return;
   }
-  if (Types20.Events.isAnyLargestContentfulPaintCandidate(event)) {
+  if (Types19.Events.isAnyLargestContentfulPaintCandidate(event)) {
     const candidateIndex = event.args.data?.candidateIndex;
     if (!candidateIndex) {
       throw new Error("Largest Contentful Paint unexpectedly had no candidateIndex.");
     }
-    const lcpTime = Types20.Timing.Micro(event.ts - navigation.ts);
+    const lcpTime = Types19.Timing.Micro(event.ts - navigation.ts);
     const lcp = {
       event,
       metricName: "LCP",
@@ -3323,7 +3198,7 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
       return;
     }
     const lastLCPCandidateEvent = lastLCPCandidate.event;
-    if (!Types20.Events.isAnyLargestContentfulPaintCandidate(lastLCPCandidateEvent)) {
+    if (!Types19.Events.isAnyLargestContentfulPaintCandidate(lastLCPCandidateEvent)) {
       return;
     }
     const lastCandidateIndex = lastLCPCandidateEvent.args.data?.candidateIndex;
@@ -3337,10 +3212,10 @@ function storePageLoadMetricAgainstNavigationId(navigation, event) {
     }
     return;
   }
-  if (Types20.Events.isLayoutShift(event)) {
+  if (Types19.Events.isLayoutShift(event)) {
     return;
   }
-  if (Types20.Events.isSoftNavigationStart(event)) {
+  if (Types19.Events.isSoftNavigationStart(event)) {
     return;
   }
   return Platform10.assertNever(event, `Unexpected event type: ${event}`);
@@ -3352,10 +3227,10 @@ function storeMetricScore(frameId, navigation, metricScore) {
   metrics.set(metricScore.metricName, metricScore);
 }
 function getFrameIdForPageLoadEvent(event) {
-  if (Types20.Events.isAnyFirstContentfulPaint(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isNavigationStart(event) || Types20.Events.isSoftNavigationStart(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isFirstPaint(event)) {
+  if (Types19.Events.isAnyFirstContentfulPaint(event) || Types19.Events.isInteractiveTime(event) || Types19.Events.isAnyLargestContentfulPaintCandidate(event) || Types19.Events.isNavigationStart(event) || Types19.Events.isSoftNavigationStart(event) || Types19.Events.isLayoutShift(event) || Types19.Events.isFirstPaint(event)) {
     return event.args.frame;
   }
-  if (Types20.Events.isMarkDOMContent(event) || Types20.Events.isMarkLoad(event)) {
+  if (Types19.Events.isMarkDOMContent(event) || Types19.Events.isMarkLoad(event)) {
     const frameId = event.args.data?.frame;
     if (!frameId) {
       throw new Error("MarkDOMContent unexpectedly had no frame ID.");
@@ -3365,15 +3240,15 @@ function getFrameIdForPageLoadEvent(event) {
   Platform10.assertNever(event, `Unexpected event type: ${event}`);
 }
 function getNavigationForPageLoadEvent(event) {
-  if (Types20.Events.isAnyFirstContentfulPaint(event) || Types20.Events.isAnyLargestContentfulPaintCandidate(event) || Types20.Events.isFirstPaint(event)) {
-    const { navigationsByNavigationId: navigationsByNavigationId2, softNavigationsById: softNavigationsById2 } = data5();
+  if (Types19.Events.isAnyFirstContentfulPaint(event) || Types19.Events.isAnyLargestContentfulPaintCandidate(event) || Types19.Events.isFirstPaint(event)) {
+    const { navigationsByNavigationId: navigationsByNavigationId2, softNavigationsById: softNavigationsById2 } = data4();
     let navigation;
     if (event.name === "largestContentfulPaint::CandidateForSoftNavigation" && event.args.data?.performanceTimelineNavigationId) {
       navigation = softNavigationsById2.get(event.args.data.performanceTimelineNavigationId);
       if (!navigation) {
         return null;
       }
-    } else if (Types20.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
+    } else if (Types19.Events.isSoftFirstContentfulPaint(event) && event.args.context?.performanceTimelineNavigationId) {
       navigation = softNavigationsById2.get(event.args.context.performanceTimelineNavigationId);
       if (!navigation) {
         return null;
@@ -3390,23 +3265,23 @@ function getNavigationForPageLoadEvent(event) {
     }
     return navigation;
   }
-  if (Types20.Events.isSoftNavigationStart(event)) {
-    const { softNavigationsById: softNavigationsById2 } = data5();
+  if (Types19.Events.isSoftNavigationStart(event)) {
+    const { softNavigationsById: softNavigationsById2 } = data4();
     return softNavigationsById2.get(event.args.context.performanceTimelineNavigationId) ?? null;
   }
-  if (Types20.Events.isMarkDOMContent(event) || Types20.Events.isInteractiveTime(event) || Types20.Events.isLayoutShift(event) || Types20.Events.isMarkLoad(event)) {
+  if (Types19.Events.isMarkDOMContent(event) || Types19.Events.isInteractiveTime(event) || Types19.Events.isLayoutShift(event) || Types19.Events.isMarkLoad(event)) {
     const frameId = getFrameIdForPageLoadEvent(event);
-    const { navigationsByFrameId: navigationsByFrameId2 } = data5();
-    return Helpers14.Trace.getNavigationForTraceEvent(event, frameId, navigationsByFrameId2);
+    const { navigationsByFrameId: navigationsByFrameId2 } = data4();
+    return Helpers13.Trace.getNavigationForTraceEvent(event, frameId, navigationsByFrameId2);
   }
-  if (Types20.Events.isNavigationStart(event)) {
+  if (Types19.Events.isNavigationStart(event)) {
     return null;
   }
   return Platform10.assertNever(event, `Unexpected event type: ${event}`);
 }
 function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds) {
-  const FCP_GOOD_TIMING = Helpers14.Timing.secondsToMicro(Types20.Timing.Seconds(1.8));
-  const FCP_MEDIUM_TIMING = Helpers14.Timing.secondsToMicro(Types20.Timing.Seconds(3));
+  const FCP_GOOD_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(1.8));
+  const FCP_MEDIUM_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(3));
   let scoreClassification = "bad";
   if (fcpScoreInMicroseconds <= FCP_MEDIUM_TIMING) {
     scoreClassification = "ok";
@@ -3417,8 +3292,8 @@ function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds) {
   return scoreClassification;
 }
 function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds) {
-  const TTI_GOOD_TIMING = Helpers14.Timing.secondsToMicro(Types20.Timing.Seconds(3.8));
-  const TTI_MEDIUM_TIMING = Helpers14.Timing.secondsToMicro(Types20.Timing.Seconds(7.3));
+  const TTI_GOOD_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(3.8));
+  const TTI_MEDIUM_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(7.3));
   let scoreClassification = "bad";
   if (ttiTimeInMicroseconds <= TTI_MEDIUM_TIMING) {
     scoreClassification = "ok";
@@ -3429,8 +3304,8 @@ function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds) {
   return scoreClassification;
 }
 function scoreClassificationForLargestContentfulPaint(lcpTimeInMicroseconds) {
-  const LCP_GOOD_TIMING = Helpers14.Timing.secondsToMicro(Types20.Timing.Seconds(2.5));
-  const LCP_MEDIUM_TIMING = Helpers14.Timing.secondsToMicro(Types20.Timing.Seconds(4));
+  const LCP_GOOD_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(2.5));
+  const LCP_MEDIUM_TIMING = Helpers13.Timing.secondsToMicro(Types19.Timing.Seconds(4));
   let scoreClassification = "bad";
   if (lcpTimeInMicroseconds <= LCP_MEDIUM_TIMING) {
     scoreClassification = "ok";
@@ -3444,8 +3319,8 @@ function scoreClassificationForDOMContentLoaded(_dclTimeInMicroseconds) {
   return "unclassified";
 }
 function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds) {
-  const TBT_GOOD_TIMING = Helpers14.Timing.milliToMicro(Types20.Timing.Milli(200));
-  const TBT_MEDIUM_TIMING = Helpers14.Timing.milliToMicro(Types20.Timing.Milli(600));
+  const TBT_GOOD_TIMING = Helpers13.Timing.milliToMicro(Types19.Timing.Milli(200));
+  const TBT_MEDIUM_TIMING = Helpers13.Timing.milliToMicro(Types19.Timing.Milli(600));
   let scoreClassification = "bad";
   if (tbtTimeInMicroseconds <= TBT_MEDIUM_TIMING) {
     scoreClassification = "ok";
@@ -3472,7 +3347,7 @@ function gatherFinalLCPEvents() {
   }
   return allFinalLCPEvents;
 }
-async function finalize19() {
+async function finalize18() {
   pageLoadEventsArray.sort((a, b) => a.ts - b.ts);
   for (const pageLoadEvent of pageLoadEventsArray) {
     const navigation = getNavigationForPageLoadEvent(pageLoadEvent);
@@ -3480,14 +3355,14 @@ async function finalize19() {
       storePageLoadMetricAgainstNavigationId(navigation, pageLoadEvent);
     }
   }
-  const { navigationsByFrameId: navigationsByFrameId2 } = data5();
+  const { navigationsByFrameId: navigationsByFrameId2 } = data4();
   metaCharsetCheckEventsArray.sort((a, b) => a.ts - b.ts);
   for (const metaCharsetCheckEvent of metaCharsetCheckEventsArray) {
     const frameId = metaCharsetCheckEvent.args.data?.frame;
     if (!frameId) {
       continue;
     }
-    const navigation = Helpers14.Trace.getNavigationForTraceEvent(metaCharsetCheckEvent, frameId, navigationsByFrameId2);
+    const navigation = Helpers13.Trace.getNavigationForTraceEvent(metaCharsetCheckEvent, frameId, navigationsByFrameId2);
     if (!navigation) {
       continue;
     }
@@ -3495,12 +3370,12 @@ async function finalize19() {
     eventsForNavigation.push(metaCharsetCheckEvent);
   }
   const allFinalLCPEvents = gatherFinalLCPEvents();
-  const mainFrame = data5().mainFrameId;
-  const allEventsButLCP = pageLoadEventsArray.filter((event) => !Types20.Events.isAnyLargestContentfulPaintCandidate(event));
-  const markerEvents = [...allEventsButLCP, ...allFinalLCPEvents].filter(Types20.Events.isMarkerEvent);
+  const mainFrame = data4().mainFrameId;
+  const allEventsButLCP = pageLoadEventsArray.filter((event) => !Types19.Events.isAnyLargestContentfulPaintCandidate(event));
+  const markerEvents = [...allEventsButLCP, ...allFinalLCPEvents].filter(Types19.Events.isMarkerEvent);
   allMarkerEvents = markerEvents.filter((event) => getFrameIdForPageLoadEvent(event) === mainFrame).sort((a, b) => a.ts - b.ts);
 }
-function data19() {
+function data18() {
   return {
     metricScoresByFrameId,
     allMarkerEvents,
@@ -3517,28 +3392,28 @@ function metricIsLCP(metric) {
 // gen/front_end/models/trace/handlers/LargestImagePaintHandler.js
 var imagePaintsByNodeIdAndProcess = /* @__PURE__ */ new Map();
 var lcpRequestByNavigationId = /* @__PURE__ */ new Map();
-function reset20() {
+function reset19() {
   imagePaintsByNodeIdAndProcess = /* @__PURE__ */ new Map();
   lcpRequestByNavigationId = /* @__PURE__ */ new Map();
 }
-function handleEvent20(event) {
-  if (!Types21.Events.isLargestImagePaintCandidate(event) || !event.args.data) {
+function handleEvent19(event) {
+  if (!Types20.Events.isLargestImagePaintCandidate(event) || !event.args.data) {
     return;
   }
   const imagePaintsByNodeId = Platform11.MapUtilities.getWithDefault(imagePaintsByNodeIdAndProcess, event.pid, () => /* @__PURE__ */ new Map());
   imagePaintsByNodeId.set(event.args.data.DOMNodeId, event);
 }
-async function finalize20() {
-  const requests = data6().byTime;
-  const { traceBounds: traceBounds2, navigationsByNavigationId: navigationsByNavigationId2 } = data5();
-  const metricScoresByFrameId2 = data19().metricScoresByFrameId;
+async function finalize19() {
+  const requests = data5().byTime;
+  const { traceBounds: traceBounds2, navigationsByNavigationId: navigationsByNavigationId2 } = data4();
+  const metricScoresByFrameId2 = data18().metricScoresByFrameId;
   for (const [navigationId, navigation] of navigationsByNavigationId2) {
     const lcpMetric = metricScoresByFrameId2.get(navigation.args.frame)?.get(navigation)?.get(
       "LCP"
       /* MetricName.LCP */
     );
     const lcpEvent = lcpMetric?.event;
-    if (!lcpEvent || !Types21.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
+    if (!lcpEvent || !Types20.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
       continue;
     }
     const nodeId = lcpEvent.args.data?.nodeId;
@@ -3570,7 +3445,7 @@ async function finalize20() {
     }
   }
 }
-function data20() {
+function data19() {
   return { lcpRequestByNavigationId };
 }
 function deps11() {
@@ -3580,18 +3455,18 @@ function deps11() {
 // gen/front_end/models/trace/handlers/LargestTextPaintHandler.js
 var LargestTextPaintHandler_exports = {};
 __export(LargestTextPaintHandler_exports, {
-  data: () => data21,
-  finalize: () => finalize21,
-  handleEvent: () => handleEvent21,
-  reset: () => reset21
+  data: () => data20,
+  finalize: () => finalize20,
+  handleEvent: () => handleEvent20,
+  reset: () => reset20
 });
-import * as Types22 from "./../types/types.js";
+import * as Types21 from "./../types/types.js";
 var textPaintByDOMNodeId = /* @__PURE__ */ new Map();
-function reset21() {
+function reset20() {
   textPaintByDOMNodeId = /* @__PURE__ */ new Map();
 }
-function handleEvent21(event) {
-  if (!Types22.Events.isLargestTextPaintCandidate(event)) {
+function handleEvent20(event) {
+  if (!Types21.Events.isLargestTextPaintCandidate(event)) {
     return;
   }
   if (!event.args.data) {
@@ -3599,9 +3474,9 @@ function handleEvent21(event) {
   }
   textPaintByDOMNodeId.set(event.args.data.DOMNodeId, event);
 }
-async function finalize21() {
+async function finalize20() {
 }
-function data21() {
+function data20() {
   return textPaintByDOMNodeId;
 }
 
@@ -3610,48 +3485,48 @@ var LayoutShiftsHandler_exports = {};
 __export(LayoutShiftsHandler_exports, {
   MAX_CLUSTER_DURATION: () => MAX_CLUSTER_DURATION,
   MAX_SHIFT_TIME_DELTA: () => MAX_SHIFT_TIME_DELTA,
-  data: () => data23,
+  data: () => data22,
   deps: () => deps13,
-  finalize: () => finalize23,
-  handleEvent: () => handleEvent23,
-  reset: () => reset23,
+  finalize: () => finalize22,
+  handleEvent: () => handleEvent22,
+  reset: () => reset22,
   scoreClassificationForLayoutShift: () => scoreClassificationForLayoutShift
 });
 import * as Platform12 from "./../../../core/platform/platform.js";
-import * as Helpers16 from "./../helpers/helpers.js";
-import * as Types24 from "./../types/types.js";
+import * as Helpers15 from "./../helpers/helpers.js";
+import * as Types23 from "./../types/types.js";
 
 // gen/front_end/models/trace/handlers/ScreenshotsHandler.js
 var ScreenshotsHandler_exports = {};
 __export(ScreenshotsHandler_exports, {
-  data: () => data22,
+  data: () => data21,
   deps: () => deps12,
-  finalize: () => finalize22,
-  handleEvent: () => handleEvent22,
-  reset: () => reset22,
+  finalize: () => finalize21,
+  handleEvent: () => handleEvent21,
+  reset: () => reset21,
   screenshotImageDataUri: () => screenshotImageDataUri
 });
-import * as Helpers15 from "./../helpers/helpers.js";
-import * as Types23 from "./../types/types.js";
+import * as Helpers14 from "./../helpers/helpers.js";
+import * as Types22 from "./../types/types.js";
 var legacyScreenshotEvents = [];
 var modernScreenshotEvents = [];
 var syntheticScreenshots = [];
-function reset22() {
+function reset21() {
   legacyScreenshotEvents = [];
   syntheticScreenshots = [];
   modernScreenshotEvents = [];
 }
-function handleEvent22(event) {
-  if (Types23.Events.isLegacyScreenshot(event)) {
+function handleEvent21(event) {
+  if (Types22.Events.isLegacyScreenshot(event)) {
     legacyScreenshotEvents.push(event);
-  } else if (Types23.Events.isScreenshot(event)) {
+  } else if (Types22.Events.isScreenshot(event)) {
     modernScreenshotEvents.push(event);
   }
 }
-async function finalize22() {
+async function finalize21() {
   for (const snapshotEvent of legacyScreenshotEvents) {
     const { cat, name, ph, pid, tid } = snapshotEvent;
-    const syntheticEvent = Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const syntheticEvent = Helpers14.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       rawSourceEvent: snapshotEvent,
       cat,
       name,
@@ -3668,12 +3543,12 @@ async function finalize22() {
   }
 }
 function screenshotImageDataUri(event) {
-  if (Types23.Events.isLegacySyntheticScreenshot(event)) {
+  if (Types22.Events.isLegacySyntheticScreenshot(event)) {
     return event.args.dataUri;
   }
   return `data:image/jpg;base64,${event.args.snapshot}`;
 }
-function data22() {
+function data21() {
   return {
     legacySyntheticScreenshots: syntheticScreenshots.length ? syntheticScreenshots : null,
     screenshots: modernScreenshotEvents.length ? modernScreenshotEvents : null
@@ -3684,8 +3559,8 @@ function deps12() {
 }
 
 // gen/front_end/models/trace/handlers/LayoutShiftsHandler.js
-var MAX_CLUSTER_DURATION = Helpers16.Timing.milliToMicro(Types24.Timing.Milli(5e3));
-var MAX_SHIFT_TIME_DELTA = Helpers16.Timing.milliToMicro(Types24.Timing.Milli(1e3));
+var MAX_CLUSTER_DURATION = Helpers15.Timing.milliToMicro(Types23.Timing.Milli(5e3));
+var MAX_SHIFT_TIME_DELTA = Helpers15.Timing.milliToMicro(Types23.Timing.Milli(1e3));
 var layoutShiftEvents = [];
 var layoutInvalidationEvents = [];
 var scheduleStyleInvalidationEvents = [];
@@ -3702,7 +3577,7 @@ var clsWindowID = -1;
 var clusters = [];
 var clustersByNavigationId = /* @__PURE__ */ new Map();
 var scoreRecords = [];
-function reset23() {
+function reset22() {
   layoutShiftEvents = [];
   layoutInvalidationEvents = [];
   scheduleStyleInvalidationEvents = [];
@@ -3720,49 +3595,49 @@ function reset23() {
   clsWindowID = -1;
   clustersByNavigationId = /* @__PURE__ */ new Map();
 }
-function handleEvent23(event) {
-  if (Types24.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
+function handleEvent22(event) {
+  if (Types23.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
     layoutShiftEvents.push(event);
     return;
   }
-  if (Types24.Events.isLayoutInvalidationTracking(event)) {
+  if (Types23.Events.isLayoutInvalidationTracking(event)) {
     layoutInvalidationEvents.push(event);
     return;
   }
-  if (Types24.Events.isScheduleStyleInvalidationTracking(event)) {
+  if (Types23.Events.isScheduleStyleInvalidationTracking(event)) {
     scheduleStyleInvalidationEvents.push(event);
   }
-  if (Types24.Events.isStyleRecalcInvalidationTracking(event)) {
+  if (Types23.Events.isStyleRecalcInvalidationTracking(event)) {
     styleRecalcInvalidationEvents.push(event);
   }
-  if (Types24.Events.isPrePaint(event)) {
+  if (Types23.Events.isPrePaint(event)) {
     prePaintEvents.push(event);
     return;
   }
-  if (Types24.Events.isRenderFrameImplCreateChildFrame(event)) {
+  if (Types23.Events.isRenderFrameImplCreateChildFrame(event)) {
     renderFrameImplCreateChildFrameEvents.push(event);
   }
-  if (Types24.Events.isDomLoading(event)) {
+  if (Types23.Events.isDomLoading(event)) {
     domLoadingEvents.push(event);
   }
-  if (Types24.Events.isLayoutImageUnsized(event)) {
+  if (Types23.Events.isLayoutImageUnsized(event)) {
     layoutImageUnsizedEvents.push(event);
   }
-  if (Types24.Events.isBeginRemoteFontLoad(event)) {
+  if (Types23.Events.isBeginRemoteFontLoad(event)) {
     remoteFonts.push({
       display: event.args.display,
       url: event.args.url,
       beginRemoteFontLoadEvent: event
     });
   }
-  if (Types24.Events.isRemoteFontLoaded(event)) {
+  if (Types23.Events.isRemoteFontLoaded(event)) {
     for (const remoteFont of remoteFonts) {
       if (remoteFont.url === event.args.url) {
         remoteFont.name = event.args.name;
       }
     }
   }
-  if (Types24.Events.isPaintImage(event)) {
+  if (Types23.Events.isPaintImage(event)) {
     paintImageEvents2.push(event);
   }
 }
@@ -3770,29 +3645,29 @@ function traceWindowFromTime(time) {
   return {
     min: time,
     max: time,
-    range: Types24.Timing.Micro(0)
+    range: Types23.Timing.Micro(0)
   };
 }
 function updateTraceWindowMax(traceWindow, newMax) {
   traceWindow.max = newMax;
-  traceWindow.range = Types24.Timing.Micro(traceWindow.max - traceWindow.min);
+  traceWindow.range = Types23.Timing.Micro(traceWindow.max - traceWindow.min);
 }
 function findScreenshots(timestamp) {
-  const data31 = data22();
-  if (data31.screenshots) {
-    const before = Helpers16.Trace.findPreviousEventBeforeTimestamp(data31.screenshots, timestamp);
-    const after = before ? data31.screenshots[data31.screenshots.indexOf(before) + 1] : null;
+  const data30 = data21();
+  if (data30.screenshots) {
+    const before = Helpers15.Trace.findPreviousEventBeforeTimestamp(data30.screenshots, timestamp);
+    const after = before ? data30.screenshots[data30.screenshots.indexOf(before) + 1] : null;
     return { before, after };
   }
-  if (data31.legacySyntheticScreenshots) {
-    const before = Helpers16.Trace.findPreviousEventBeforeTimestamp(data31.legacySyntheticScreenshots, timestamp);
-    const after = before ? data31.legacySyntheticScreenshots[data31.legacySyntheticScreenshots.indexOf(before) + 1] : null;
+  if (data30.legacySyntheticScreenshots) {
+    const before = Helpers15.Trace.findPreviousEventBeforeTimestamp(data30.legacySyntheticScreenshots, timestamp);
+    const after = before ? data30.legacySyntheticScreenshots[data30.legacySyntheticScreenshots.indexOf(before) + 1] : null;
     return { before, after };
   }
   return { before: null, after: null };
 }
 function buildScoreRecords() {
-  const { traceBounds: traceBounds2 } = data5();
+  const { traceBounds: traceBounds2 } = data4();
   scoreRecords.push({ ts: traceBounds2.min, score: 0 });
   for (const cluster of clusters) {
     let clusterScore = 0;
@@ -3833,7 +3708,7 @@ function collectNodes() {
     backendNodeIds.add(scheduleStyleInvalidation.args.data.nodeId);
   }
 }
-async function finalize23() {
+async function finalize22() {
   layoutShiftEvents.sort((a, b) => a.ts - b.ts);
   prePaintEvents.sort((a, b) => a.ts - b.ts);
   layoutInvalidationEvents.sort((a, b) => a.ts - b.ts);
@@ -3847,7 +3722,7 @@ async function finalize23() {
   collectNodes();
 }
 async function buildLayoutShiftsClusters() {
-  const { navigationsByFrameId: navigationsByFrameId2, mainFrameId: mainFrameId2, traceBounds: traceBounds2 } = data5();
+  const { navigationsByFrameId: navigationsByFrameId2, mainFrameId: mainFrameId2, traceBounds: traceBounds2 } = data4();
   const navigations = navigationsByFrameId2.get(mainFrameId2) || [];
   if (layoutShiftEvents.length === 0) {
     return;
@@ -3868,10 +3743,10 @@ async function buildLayoutShiftsClusters() {
       const previousClusterEndTime = Math.min(endTimeByMaxSessionDuration, endTimeByMaxShiftGap, endTimeByNavigation);
       if (clusters.length > 0) {
         const currentCluster2 = clusters[clusters.length - 1];
-        updateTraceWindowMax(currentCluster2.clusterWindow, Types24.Timing.Micro(previousClusterEndTime));
+        updateTraceWindowMax(currentCluster2.clusterWindow, Types23.Timing.Micro(previousClusterEndTime));
       }
-      const navigationId = currentShiftNavigation === null ? Types24.Events.NO_NAVIGATION : navigations[currentShiftNavigation].args.data?.navigationId;
-      clusters.push(Helpers16.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      const navigationId = currentShiftNavigation === null ? Types23.Events.NO_NAVIGATION : navigations[currentShiftNavigation].args.data?.navigationId;
+      clusters.push(Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
         name: "SyntheticLayoutShiftCluster",
         // Will be replaced by the worst layout shift in the next for loop.
         rawSourceEvent: event,
@@ -3888,18 +3763,18 @@ async function buildLayoutShiftsClusters() {
         tid: event.tid,
         ph: "X",
         cat: "",
-        dur: Types24.Timing.Micro(-1)
+        dur: Types23.Timing.Micro(-1)
         // This `cluster.dur` is updated below.
       }));
       firstShiftTime = clusterStartTime;
     }
     const currentCluster = clusters[clusters.length - 1];
-    const timeFromNavigation = currentShiftNavigation !== null ? Types24.Timing.Micro(event.ts - navigations[currentShiftNavigation].ts) : void 0;
+    const timeFromNavigation = currentShiftNavigation !== null ? Types23.Timing.Micro(event.ts - navigations[currentShiftNavigation].ts) : void 0;
     currentCluster.clusterCumulativeScore += event.args.data ? event.args.data.weighted_score_delta : 0;
     if (!event.args.data) {
       continue;
     }
-    const shift = Helpers16.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+    const shift = Helpers15.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
       rawSourceEvent: event,
       ...event,
       name: "SyntheticLayoutShift",
@@ -3936,7 +3811,7 @@ async function buildLayoutShiftsClusters() {
       const nextNavigationIndex = Platform12.ArrayUtilities.nearestIndexFromBeginning(navigations, (nav) => nav.ts > cluster.clusterWindow.max);
       const nextNavigationTime = nextNavigationIndex ? navigations[nextNavigationIndex].ts : Infinity;
       const clusterEnd = Math.min(clusterEndByMaxDuration, clusterEndByMaxGap, traceBounds2.max, nextNavigationTime);
-      updateTraceWindowMax(cluster.clusterWindow, Types24.Timing.Micro(clusterEnd));
+      updateTraceWindowMax(cluster.clusterWindow, Types23.Timing.Micro(clusterEnd));
     }
     let largestScore = 0;
     let worstShiftEvent = null;
@@ -3949,16 +3824,16 @@ async function buildLayoutShiftsClusters() {
         updateTraceWindowMax(cluster.scoreWindows.good, ts);
       } else if (weightedScore >= 0.1 && weightedScore < 0.25) {
         if (!cluster.scoreWindows.needsImprovement) {
-          updateTraceWindowMax(cluster.scoreWindows.good, Types24.Timing.Micro(ts - 1));
+          updateTraceWindowMax(cluster.scoreWindows.good, Types23.Timing.Micro(ts - 1));
           cluster.scoreWindows.needsImprovement = traceWindowFromTime(ts);
         }
         updateTraceWindowMax(cluster.scoreWindows.needsImprovement, ts);
       } else if (weightedScore >= 0.25) {
         if (!cluster.scoreWindows.bad) {
           if (cluster.scoreWindows.needsImprovement) {
-            updateTraceWindowMax(cluster.scoreWindows.needsImprovement, Types24.Timing.Micro(ts - 1));
+            updateTraceWindowMax(cluster.scoreWindows.needsImprovement, Types23.Timing.Micro(ts - 1));
           } else {
-            updateTraceWindowMax(cluster.scoreWindows.good, Types24.Timing.Micro(ts - 1));
+            updateTraceWindowMax(cluster.scoreWindows.good, Types23.Timing.Micro(ts - 1));
           }
           cluster.scoreWindows.bad = traceWindowFromTime(shift.ts);
         }
@@ -3982,8 +3857,8 @@ async function buildLayoutShiftsClusters() {
       cluster.rawSourceEvent = worstShiftEvent.rawSourceEvent;
     }
     cluster.ts = cluster.events[0].ts;
-    const lastShiftTimings = Helpers16.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
-    cluster.dur = Types24.Timing.Micro(lastShiftTimings.endTime - cluster.events[0].ts + MAX_SHIFT_TIME_DELTA);
+    const lastShiftTimings = Helpers15.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
+    cluster.dur = Types23.Timing.Micro(lastShiftTimings.endTime - cluster.events[0].ts + MAX_SHIFT_TIME_DELTA);
     if (weightedScore > sessionMaxScore) {
       clsWindowID = windowID;
       sessionMaxScore = weightedScore;
@@ -3996,7 +3871,7 @@ async function buildLayoutShiftsClusters() {
     }
   }
 }
-function data23() {
+function data22() {
   return {
     clusters,
     sessionMaxScore,
@@ -4032,51 +3907,51 @@ function scoreClassificationForLayoutShift(score) {
 // gen/front_end/models/trace/handlers/MemoryHandler.js
 var MemoryHandler_exports = {};
 __export(MemoryHandler_exports, {
-  data: () => data24,
-  finalize: () => finalize24,
-  handleEvent: () => handleEvent24,
-  reset: () => reset24
+  data: () => data23,
+  finalize: () => finalize23,
+  handleEvent: () => handleEvent23,
+  reset: () => reset23
 });
 import * as Platform13 from "./../../../core/platform/platform.js";
-import * as Types25 from "./../types/types.js";
+import * as Types24 from "./../types/types.js";
 var updateCountersByProcess = /* @__PURE__ */ new Map();
-function reset24() {
+function reset23() {
   updateCountersByProcess = /* @__PURE__ */ new Map();
 }
-function handleEvent24(event) {
-  if (Types25.Events.isUpdateCounters(event)) {
+function handleEvent23(event) {
+  if (Types24.Events.isUpdateCounters(event)) {
     const countersForProcess = Platform13.MapUtilities.getWithDefault(updateCountersByProcess, event.pid, () => []);
     countersForProcess.push(event);
     updateCountersByProcess.set(event.pid, countersForProcess);
   }
 }
-async function finalize24() {
+async function finalize23() {
 }
-function data24() {
+function data23() {
   return { updateCountersByProcess };
 }
 
 // gen/front_end/models/trace/handlers/PageFramesHandler.js
 var PageFramesHandler_exports = {};
 __export(PageFramesHandler_exports, {
-  data: () => data25,
-  finalize: () => finalize25,
-  handleEvent: () => handleEvent25,
-  reset: () => reset25
+  data: () => data24,
+  finalize: () => finalize24,
+  handleEvent: () => handleEvent24,
+  reset: () => reset24
 });
-import * as Types26 from "./../types/types.js";
+import * as Types25 from "./../types/types.js";
 var frames = /* @__PURE__ */ new Map();
-function reset25() {
+function reset24() {
   frames = /* @__PURE__ */ new Map();
 }
-function handleEvent25(event) {
-  if (Types26.Events.isTracingStartedInBrowser(event)) {
+function handleEvent24(event) {
+  if (Types25.Events.isTracingStartedInBrowser(event)) {
     for (const frame of event.args.data?.frames ?? []) {
       frames.set(frame.frame, frame);
     }
     return;
   }
-  if (Types26.Events.isCommitLoad(event)) {
+  if (Types25.Events.isCommitLoad(event)) {
     const frameData = event.args.data;
     if (!frameData) {
       return;
@@ -4092,9 +3967,9 @@ function handleEvent25(event) {
     });
   }
 }
-async function finalize25() {
+async function finalize24() {
 }
-function data25() {
+function data24() {
   return {
     frames
   };
@@ -4103,39 +3978,39 @@ function data25() {
 // gen/front_end/models/trace/handlers/ScriptsHandler.js
 var ScriptsHandler_exports = {};
 __export(ScriptsHandler_exports, {
-  data: () => data26,
+  data: () => data25,
   deps: () => deps14,
-  finalize: () => finalize26,
+  finalize: () => finalize25,
   getScriptGeneratedSizes: () => getScriptGeneratedSizes,
-  handleEvent: () => handleEvent26,
-  reset: () => reset26
+  handleEvent: () => handleEvent25,
+  reset: () => reset25
 });
 import * as Common from "./../../../core/common/common.js";
 import * as Platform14 from "./../../../core/platform/platform.js";
-import * as Types27 from "./../types/types.js";
+import * as Types26 from "./../types/types.js";
 var scriptById = /* @__PURE__ */ new Map();
 var frameIdByIsolate = /* @__PURE__ */ new Map();
 function deps14() {
   return ["Meta", "NetworkRequests"];
 }
-function reset26() {
+function reset25() {
   scriptById = /* @__PURE__ */ new Map();
   frameIdByIsolate = /* @__PURE__ */ new Map();
 }
-function handleEvent26(event) {
+function handleEvent25(event) {
   const getOrMakeScript = (isolate, scriptIdAsNumber) => {
     const scriptId = String(scriptIdAsNumber);
     const key = `${isolate}.${scriptId}`;
     return Platform14.MapUtilities.getWithDefault(scriptById, key, () => ({ isolate, scriptId, frame: "", ts: event.ts }));
   };
-  if (Types27.Events.isRundownScriptCompiled(event) && event.args.data) {
+  if (Types26.Events.isRundownScriptCompiled(event) && event.args.data) {
     const { isolate, scriptId, frame } = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     script.frame = frame;
     script.ts = event.ts;
     return;
   }
-  if (Types27.Events.isRundownScript(event)) {
+  if (Types26.Events.isRundownScript(event)) {
     const { isolate, scriptId, url, sourceUrl, sourceMapUrl, sourceMapUrlElided } = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     if (!script.frame) {
@@ -4153,19 +4028,19 @@ function handleEvent26(event) {
     }
     return;
   }
-  if (Types27.Events.isRundownScriptSource(event)) {
+  if (Types26.Events.isRundownScriptSource(event)) {
     const { isolate, scriptId, sourceText } = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     script.content = sourceText;
     return;
   }
-  if (Types27.Events.isRundownScriptSourceLarge(event)) {
+  if (Types26.Events.isRundownScriptSourceLarge(event)) {
     const { isolate, scriptId, sourceText } = event.args.data;
     const script = getOrMakeScript(isolate, scriptId);
     script.content = (script.content ?? "") + sourceText;
     return;
   }
-  if (Types27.Events.isFunctionCall(event) && event.args.data?.isolate && event.args.data.frame) {
+  if (Types26.Events.isFunctionCall(event) && event.args.data?.isolate && event.args.data.frame) {
     const { isolate, frame } = event.args.data;
     const existingValue = frameIdByIsolate.get(isolate);
     if (existingValue !== frame) {
@@ -4285,9 +4160,9 @@ function findCachedRawSourceMap(script, options) {
   }
   return;
 }
-async function finalize26(options) {
-  const meta = data5();
-  const networkRequests = [...data6().byId.values()];
+async function finalize25(options) {
+  const meta = data4();
+  const networkRequests = [...data5().byId.values()];
   const documentUrls = /* @__PURE__ */ new Set();
   for (const frames2 of meta.frameByProcessId.values()) {
     for (const frame of frames2.values()) {
@@ -4341,7 +4216,7 @@ async function finalize26(options) {
   }
   await Promise.all(promises);
 }
-function data26() {
+function data25() {
   return {
     scripts: [...scriptById.values()]
   };
@@ -4350,36 +4225,36 @@ function data26() {
 // gen/front_end/models/trace/handlers/SelectorStatsHandler.js
 var SelectorStatsHandler_exports = {};
 __export(SelectorStatsHandler_exports, {
-  data: () => data27,
-  finalize: () => finalize27,
-  handleEvent: () => handleEvent27,
-  reset: () => reset27
+  data: () => data26,
+  finalize: () => finalize26,
+  handleEvent: () => handleEvent26,
+  reset: () => reset26
 });
-import * as Types28 from "./../types/types.js";
+import * as Types27 from "./../types/types.js";
 var lastRecalcStyleEvent = null;
 var lastInvalidatedNode = null;
 var selectorDataForRecalcStyle = /* @__PURE__ */ new Map();
 var invalidatedNodeList = new Array();
-function reset27() {
+function reset26() {
   lastRecalcStyleEvent = null;
   lastInvalidatedNode = null;
   selectorDataForRecalcStyle = /* @__PURE__ */ new Map();
   invalidatedNodeList = [];
 }
-function handleEvent27(event) {
-  if (Types28.Events.isStyleRecalcInvalidationTracking(event)) {
+function handleEvent26(event) {
+  if (Types27.Events.isStyleRecalcInvalidationTracking(event)) {
     if (event.args.data.subtree && event.args.data.reason === "Related style rule" && lastInvalidatedNode && event.args.data.nodeId === lastInvalidatedNode.backendNodeId) {
       lastInvalidatedNode.subtree = true;
       return;
     }
   }
-  if (Types28.Events.isSelectorStats(event) && lastRecalcStyleEvent && event.args.selector_stats) {
+  if (Types27.Events.isSelectorStats(event) && lastRecalcStyleEvent && event.args.selector_stats) {
     selectorDataForRecalcStyle.set(lastRecalcStyleEvent, {
       timings: event.args.selector_stats.selector_timings
     });
     return;
   }
-  if (Types28.Events.isStyleInvalidatorInvalidationTracking(event)) {
+  if (Types27.Events.isStyleInvalidatorInvalidationTracking(event)) {
     const selectorList = new Array();
     event.args.data.selectors?.forEach((selector) => {
       selectorList.push({
@@ -4396,19 +4271,19 @@ function handleEvent27(event) {
         ts: event.ts,
         tts: event.tts,
         subtree: false,
-        lastRecalcStyleEventTs: lastRecalcStyleEvent ? lastRecalcStyleEvent.ts : Types28.Timing.Micro(0)
+        lastRecalcStyleEventTs: lastRecalcStyleEvent ? lastRecalcStyleEvent.ts : Types27.Timing.Micro(0)
       };
       invalidatedNodeList.push(lastInvalidatedNode);
     }
   }
-  if (Types28.Events.isRecalcStyle(event)) {
+  if (Types27.Events.isRecalcStyle(event)) {
     lastRecalcStyleEvent = event;
     return;
   }
 }
-async function finalize27() {
+async function finalize26() {
 }
-function data27() {
+function data26() {
   return {
     dataForRecalcStyleEvent: selectorDataForRecalcStyle,
     invalidatedNodeList
@@ -4420,28 +4295,28 @@ var UserInteractionsHandler_exports = {};
 __export(UserInteractionsHandler_exports, {
   LONG_INTERACTION_THRESHOLD: () => LONG_INTERACTION_THRESHOLD,
   categoryOfInteraction: () => categoryOfInteraction,
-  data: () => data28,
+  data: () => data27,
   deps: () => deps15,
-  finalize: () => finalize28,
-  handleEvent: () => handleEvent28,
+  finalize: () => finalize27,
+  handleEvent: () => handleEvent27,
   removeNestedInteractionsAndSetProcessingTime: () => removeNestedInteractionsAndSetProcessingTime,
-  reset: () => reset28,
+  reset: () => reset27,
   scoreClassificationForInteractionToNextPaint: () => scoreClassificationForInteractionToNextPaint
 });
 import * as Platform15 from "./../../../core/platform/platform.js";
-import * as Helpers17 from "./../helpers/helpers.js";
-import * as Types29 from "./../types/types.js";
+import * as Helpers16 from "./../helpers/helpers.js";
+import * as Types28 from "./../types/types.js";
 var beginCommitCompositorFrameEvents = [];
 var parseMetaViewportEvents = [];
-var LONG_INTERACTION_THRESHOLD = Helpers17.Timing.milliToMicro(Types29.Timing.Milli(200));
+var LONG_INTERACTION_THRESHOLD = Helpers16.Timing.milliToMicro(Types28.Timing.Milli(200));
 var INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
-var INP_MEDIUM_TIMING = Helpers17.Timing.milliToMicro(Types29.Timing.Milli(500));
+var INP_MEDIUM_TIMING = Helpers16.Timing.milliToMicro(Types28.Timing.Milli(500));
 var longestInteractionEvent = null;
 var interactionEvents = [];
 var interactionEventsWithNoNesting = [];
 var eventTimingStartEventsForInteractions = [];
 var eventTimingEndEventsForInteractions = [];
-function reset28() {
+function reset27() {
   beginCommitCompositorFrameEvents = [];
   parseMetaViewportEvents = [];
   interactionEvents = [];
@@ -4450,22 +4325,22 @@ function reset28() {
   interactionEventsWithNoNesting = [];
   longestInteractionEvent = null;
 }
-function handleEvent28(event) {
-  if (Types29.Events.isBeginCommitCompositorFrame(event)) {
+function handleEvent27(event) {
+  if (Types28.Events.isBeginCommitCompositorFrame(event)) {
     beginCommitCompositorFrameEvents.push(event);
     return;
   }
-  if (Types29.Events.isParseMetaViewport(event)) {
+  if (Types28.Events.isParseMetaViewport(event)) {
     parseMetaViewportEvents.push(event);
     return;
   }
-  if (!Types29.Events.isEventTiming(event)) {
+  if (!Types28.Events.isEventTiming(event)) {
     return;
   }
-  if (Types29.Events.isEventTimingEnd(event)) {
+  if (Types28.Events.isEventTimingEnd(event)) {
     eventTimingEndEventsForInteractions.push(event);
   }
-  if (!event.args.data || !Types29.Events.isEventTimingStart(event)) {
+  if (!event.args.data || !Types28.Events.isEventTimingStart(event)) {
     return;
   }
   const { duration, interactionId } = event.args.data;
@@ -4506,7 +4381,7 @@ function removeNestedInteractionsAndSetProcessingTime(interactions) {
   function storeEventIfEarliestForCategoryAndEndTime(interaction) {
     const category = categoryOfInteraction(interaction);
     const earliestEventForEndTime = earliestEventForEndTimePerCategory[category];
-    const endTime = Types29.Timing.Micro(interaction.ts + interaction.dur);
+    const endTime = Types28.Timing.Micro(interaction.ts + interaction.dur);
     const earliestCurrentEvent = earliestEventForEndTime.get(endTime);
     if (!earliestCurrentEvent) {
       earliestEventForEndTime.set(endTime, interaction);
@@ -4542,20 +4417,20 @@ function removeNestedInteractionsAndSetProcessingTime(interactions) {
 function writeSyntheticTimespans(event) {
   const startEvent = event.args.data.beginEvent;
   const endEvent = event.args.data.endEvent;
-  event.inputDelay = Types29.Timing.Micro(event.processingStart - startEvent.ts);
-  event.mainThreadHandling = Types29.Timing.Micro(event.processingEnd - event.processingStart);
-  event.presentationDelay = Types29.Timing.Micro(endEvent.ts - event.processingEnd);
+  event.inputDelay = Types28.Timing.Micro(event.processingStart - startEvent.ts);
+  event.mainThreadHandling = Types28.Timing.Micro(event.processingEnd - event.processingStart);
+  event.presentationDelay = Types28.Timing.Micro(endEvent.ts - event.processingEnd);
 }
-async function finalize28() {
-  const { navigationsByFrameId: navigationsByFrameId2 } = data5();
-  const beginAndEndEvents = Platform15.ArrayUtilities.mergeOrdered(eventTimingStartEventsForInteractions, eventTimingEndEventsForInteractions, Helpers17.Trace.eventTimeComparator);
+async function finalize27() {
+  const { navigationsByFrameId: navigationsByFrameId2 } = data4();
+  const beginAndEndEvents = Platform15.ArrayUtilities.mergeOrdered(eventTimingStartEventsForInteractions, eventTimingEndEventsForInteractions, Helpers16.Trace.eventTimeComparator);
   const beginEventById = /* @__PURE__ */ new Map();
   for (const event of beginAndEndEvents) {
-    if (Types29.Events.isEventTimingStart(event)) {
+    if (Types28.Events.isEventTimingStart(event)) {
       const forId = beginEventById.get(event.id) ?? [];
       forId.push(event);
       beginEventById.set(event.id, forId);
-    } else if (Types29.Events.isEventTimingEnd(event)) {
+    } else if (Types28.Events.isEventTimingEnd(event)) {
       const beginEvents = beginEventById.get(event.id) ?? [];
       const beginEvent = beginEvents.pop();
       if (!beginEvent) {
@@ -4565,12 +4440,12 @@ async function finalize28() {
       if (!type || !interactionId || !timeStamp || !processingStart || !processingEnd) {
         continue;
       }
-      const processingStartRelativeToTraceTime = Types29.Timing.Micro(Helpers17.Timing.milliToMicro(processingStart) - Helpers17.Timing.milliToMicro(timeStamp) + beginEvent.ts);
-      const processingEndRelativeToTraceTime = Types29.Timing.Micro(Helpers17.Timing.milliToMicro(processingEnd) - Helpers17.Timing.milliToMicro(timeStamp) + beginEvent.ts);
+      const processingStartRelativeToTraceTime = Types28.Timing.Micro(Helpers16.Timing.milliToMicro(processingStart) - Helpers16.Timing.milliToMicro(timeStamp) + beginEvent.ts);
+      const processingEndRelativeToTraceTime = Types28.Timing.Micro(Helpers16.Timing.milliToMicro(processingEnd) - Helpers16.Timing.milliToMicro(timeStamp) + beginEvent.ts);
       const frameId = beginEvent.args.frame ?? beginEvent.args.data.frame ?? "";
-      const navigation = Helpers17.Trace.getNavigationForTraceEvent(beginEvent, frameId, navigationsByFrameId2);
+      const navigation = Helpers16.Trace.getNavigationForTraceEvent(beginEvent, frameId, navigationsByFrameId2);
       const navigationId = navigation?.args.data?.navigationId;
-      const interactionEvent = Helpers17.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
+      const interactionEvent = Helpers16.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent({
         // Use the start event to define the common fields.
         rawSourceEvent: beginEvent,
         cat: beginEvent.cat,
@@ -4581,9 +4456,9 @@ async function finalize28() {
         processingStart: processingStartRelativeToTraceTime,
         processingEnd: processingEndRelativeToTraceTime,
         // These will be set in writeSyntheticTimespans()
-        inputDelay: Types29.Timing.Micro(-1),
-        mainThreadHandling: Types29.Timing.Micro(-1),
-        presentationDelay: Types29.Timing.Micro(-1),
+        inputDelay: Types28.Timing.Micro(-1),
+        mainThreadHandling: Types28.Timing.Micro(-1),
+        presentationDelay: Types28.Timing.Micro(-1),
         args: {
           data: {
             beginEvent,
@@ -4593,7 +4468,7 @@ async function finalize28() {
           }
         },
         ts: beginEvent.ts,
-        dur: Types29.Timing.Micro(event.ts - beginEvent.ts),
+        dur: Types28.Timing.Micro(event.ts - beginEvent.ts),
         type: beginEvent.args.data.type,
         interactionId: beginEvent.args.data.interactionId
       });
@@ -4601,7 +4476,7 @@ async function finalize28() {
       interactionEvents.push(interactionEvent);
     }
   }
-  Helpers17.Trace.sortTraceEventsInPlace(interactionEvents);
+  Helpers16.Trace.sortTraceEventsInPlace(interactionEvents);
   interactionEventsWithNoNesting.push(...removeNestedInteractionsAndSetProcessingTime(interactionEvents));
   for (const interactionEvent of interactionEventsWithNoNesting) {
     if (!longestInteractionEvent || longestInteractionEvent.dur < interactionEvent.dur) {
@@ -4609,7 +4484,7 @@ async function finalize28() {
     }
   }
 }
-function data28() {
+function data27() {
   return {
     beginCommitCompositorFrameEvents,
     parseMetaViewportEvents,
@@ -4639,39 +4514,39 @@ var WarningsHandler_exports = {};
 __export(WarningsHandler_exports, {
   FORCED_REFLOW_THRESHOLD: () => FORCED_REFLOW_THRESHOLD,
   LONG_MAIN_THREAD_TASK_THRESHOLD: () => LONG_MAIN_THREAD_TASK_THRESHOLD,
-  data: () => data30,
-  deps: () => deps16,
-  finalize: () => finalize30,
-  handleEvent: () => handleEvent30,
-  reset: () => reset30
-});
-import * as Platform16 from "./../../../core/platform/platform.js";
-import * as Helpers18 from "./../helpers/helpers.js";
-import * as Types31 from "./../types/types.js";
-
-// gen/front_end/models/trace/handlers/WorkersHandler.js
-var WorkersHandler_exports = {};
-__export(WorkersHandler_exports, {
   data: () => data29,
+  deps: () => deps16,
   finalize: () => finalize29,
   handleEvent: () => handleEvent29,
   reset: () => reset29
 });
+import * as Platform16 from "./../../../core/platform/platform.js";
+import * as Helpers17 from "./../helpers/helpers.js";
 import * as Types30 from "./../types/types.js";
+
+// gen/front_end/models/trace/handlers/WorkersHandler.js
+var WorkersHandler_exports = {};
+__export(WorkersHandler_exports, {
+  data: () => data28,
+  finalize: () => finalize28,
+  handleEvent: () => handleEvent28,
+  reset: () => reset28
+});
+import * as Types29 from "./../types/types.js";
 var sessionIdEvents = [];
 var workerIdByThread = /* @__PURE__ */ new Map();
 var workerURLById = /* @__PURE__ */ new Map();
-function reset29() {
+function reset28() {
   sessionIdEvents = [];
   workerIdByThread = /* @__PURE__ */ new Map();
   workerURLById = /* @__PURE__ */ new Map();
 }
-function handleEvent29(event) {
-  if (Types30.Events.isTracingSessionIdForWorker(event)) {
+function handleEvent28(event) {
+  if (Types29.Events.isTracingSessionIdForWorker(event)) {
     sessionIdEvents.push(event);
   }
 }
-async function finalize29() {
+async function finalize28() {
   for (const sessionIdEvent of sessionIdEvents) {
     if (!sessionIdEvent.args.data) {
       continue;
@@ -4680,7 +4555,7 @@ async function finalize29() {
     workerURLById.set(sessionIdEvent.args.data.workerId, sessionIdEvent.args.data.url);
   }
 }
-function data29() {
+function data28() {
   return {
     workerSessionIdEvents: sessionIdEvents,
     workerIdByThread,
@@ -4695,9 +4570,9 @@ var allEventsStack = [];
 var jsInvokeStack = [];
 var taskReflowEvents = [];
 var longTaskEvents = [];
-var FORCED_REFLOW_THRESHOLD = Helpers18.Timing.milliToMicro(Types31.Timing.Milli(30));
-var LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers18.Timing.milliToMicro(Types31.Timing.Milli(50));
-function reset30() {
+var FORCED_REFLOW_THRESHOLD = Helpers17.Timing.milliToMicro(Types30.Timing.Milli(30));
+var LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers17.Timing.milliToMicro(Types30.Timing.Milli(50));
+function reset29() {
   warningsPerEvent = /* @__PURE__ */ new Map();
   eventsPerWarning = /* @__PURE__ */ new Map();
   allEventsStack = [];
@@ -4713,17 +4588,17 @@ function storeWarning(event, warning) {
   existingEvents.push(event);
   eventsPerWarning.set(warning, existingEvents);
 }
-function handleEvent30(event) {
+function handleEvent29(event) {
   processForcedReflowWarning(event);
   if (event.name === "RunTask") {
-    const { duration } = Helpers18.Timing.eventTimingsMicroSeconds(event);
+    const { duration } = Helpers17.Timing.eventTimingsMicroSeconds(event);
     if (duration > LONG_MAIN_THREAD_TASK_THRESHOLD) {
       longTaskEvents.push(event);
     }
     return;
   }
-  if (Types31.Events.isFireIdleCallback(event)) {
-    const { duration } = Helpers18.Timing.eventTimingsMilliSeconds(event);
+  if (Types30.Events.isFireIdleCallback(event)) {
+    const { duration } = Helpers17.Timing.eventTimingsMilliSeconds(event);
     if (duration > event.args.data.allottedMilliseconds) {
       storeWarning(event, "IDLE_CALLBACK_OVER_TIME");
     }
@@ -4736,7 +4611,7 @@ function processForcedReflowWarning(event) {
     event,
     jsInvokeStack,
     /* pushEventToStack */
-    Types31.Events.isJSInvocationEvent(event)
+    Types30.Events.isJSInvocationEvent(event)
   );
   if (jsInvokeStack.length) {
     if (event.name === "Layout" || event.name === "UpdateLayoutTree") {
@@ -4766,19 +4641,19 @@ function accomodateEventInStack(event, stack, pushEventToStack = true) {
 function deps16() {
   return ["UserInteractions", "Workers"];
 }
-async function finalize30() {
-  const longInteractions = data28().interactionsOverThreshold;
+async function finalize29() {
+  const longInteractions = data27().interactionsOverThreshold;
   for (const interaction of longInteractions) {
     storeWarning(interaction, "LONG_INTERACTION");
   }
   for (const event of longTaskEvents) {
-    if (!(event.tid, data29().workerIdByThread.has(event.tid))) {
+    if (!(event.tid, data28().workerIdByThread.has(event.tid))) {
       storeWarning(event, "LONG_TASK");
     }
   }
   longTaskEvents.length = 0;
 }
-function data30() {
+function data29() {
   return {
     perEvent: warningsPerEvent,
     perWarning: eventsPerWarning

@@ -6,6 +6,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 const uiSourceCodeToAttributionMap = new WeakMap();
 export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
+    #projectToTargetMap = new WeakMap();
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(NetworkProjectManager) || forceNew) {
             Root.DevToolsContext.globalInstance().set(NetworkProjectManager, new NetworkProjectManager());
@@ -14,6 +15,15 @@ export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     static removeInstance() {
         Root.DevToolsContext.globalInstance().delete(NetworkProjectManager);
+    }
+    setTargetForProject(project, target) {
+        this.#projectToTargetMap.set(project, target);
+    }
+    getTargetForProject(project) {
+        return this.#projectToTargetMap.get(project) ?? null;
+    }
+    getTargetForUISourceCode(uiSourceCode) {
+        return this.#projectToTargetMap.get(uiSourceCode.project()) ?? null;
     }
 }
 export class NetworkProject {
@@ -85,7 +95,13 @@ export class NetworkProject {
         NetworkProjectManager.instance().dispatchEventToListeners("FrameAttributionRemoved" /* Events.FRAME_ATTRIBUTION_REMOVED */, data);
     }
     static targetForUISourceCode(uiSourceCode) {
-        return uiSourceCode.project().target();
+        return NetworkProjectManager.instance().getTargetForUISourceCode(uiSourceCode);
+    }
+    static setTargetForProject(project, target) {
+        NetworkProjectManager.instance().setTargetForProject(project, target);
+    }
+    static getTargetForProject(project) {
+        return NetworkProjectManager.instance().getTargetForProject(project);
     }
     static framesForUISourceCode(uiSourceCode) {
         const target = NetworkProject.targetForUISourceCode(uiSourceCode);

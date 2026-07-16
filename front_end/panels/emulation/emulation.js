@@ -28,6 +28,7 @@ import * as UI4 from "./../../ui/legacy/legacy.js";
 // gen/front_end/panels/emulation/DeviceModeView.js
 var DeviceModeView_exports = {};
 __export(DeviceModeView_exports, {
+  DEFAULT_RULER_VIEW: () => DEFAULT_RULER_VIEW,
   DeviceModeView: () => DeviceModeView,
   Ruler: () => Ruler
 });
@@ -1946,9 +1947,17 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     this.showMediaInspectorSetting.addChangeListener(this.updateUI, this);
     this.showRulersSetting = Common3.Settings.Settings.instance().moduleSetting("emulation.show-rulers");
     this.showRulersSetting.addChangeListener(this.updateUI, this);
-    this.topRuler = new Ruler(true, this.model.setWidthAndScaleToFit.bind(this.model));
+    this.topRuler = new Ruler();
+    this.topRuler.horizontal = true;
+    this.topRuler.addEventListener("MarkerSelected", (event) => {
+      this.model.setWidthAndScaleToFit(event.data);
+    });
     this.topRuler.element.classList.add("device-mode-ruler-top");
-    this.leftRuler = new Ruler(false, this.model.setHeightAndScaleToFit.bind(this.model));
+    this.leftRuler = new Ruler();
+    this.leftRuler.horizontal = false;
+    this.leftRuler.addEventListener("MarkerSelected", (event) => {
+      this.model.setHeightAndScaleToFit(event.data);
+    });
     this.leftRuler.element.classList.add("device-mode-ruler-left");
     this.createUI();
     UI3.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged", this.zoomChanged, this);
@@ -2332,73 +2341,112 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     });
   }
 };
-var Ruler = class extends UI3.Widget.VBox {
-  #contentElement;
-  horizontal;
-  scale;
-  throttler;
-  applyCallback;
-  constructor(horizontal, applyCallback) {
-    super({ jslog: `${VisualLogging3.deviceModeRuler().track({ click: true })}` });
-    this.element.classList.add("device-mode-ruler");
-    this.#contentElement = this.element.createChild("div", "device-mode-ruler-content").createChild("div", "device-mode-ruler-inner");
-    this.horizontal = horizontal;
-    this.scale = 1;
-    this.throttler = new Common3.Throttler.Throttler(0);
-    this.applyCallback = applyCallback;
+var DEFAULT_RULER_VIEW = (input, output, target) => {
+  const zoomFactor = UI3.ZoomManager.ZoomManager.instance().zoomFactor();
+  const size = input.horizontal ? target.offsetWidth : target.offsetHeight;
+  const dipSize = size * zoomFactor / input.scale;
+  const count = Math.ceil(dipSize / 5);
+  let step = 1;
+  if (input.scale < 0.8) {
+    step = 2;
+  }
+  if (input.scale < 0.6) {
+    step = 4;
+  }
+  if (input.scale < 0.4) {
+    step = 8;
+  }
+  if (input.scale < 0.2) {
+    step = 16;
+  }
+  if (input.scale < 0.1) {
+    step = 32;
+  }
+  const markers = [];
+  for (let i = 0; i < count; i++) {
+    if (i % step) {
+      continue;
+    }
+    const isLarge = !(i % 10);
+    const isMedium = !(i % 5);
+    const offset = i ? `${5 * i * input.scale / zoomFactor}px` : void 0;
+    markers.push(html3`
+      <div
+        class=${classMap2({
+      "device-mode-ruler-marker": true,
+      "device-mode-ruler-marker-large": isLarge,
+      "device-mode-ruler-marker-medium": isMedium && !isLarge
+    })}
+        style=${styleMap(input.horizontal ? { left: offset } : { top: offset })}>
+          ${i && !(i % 20) ? html3`<div class="device-mode-ruler-text" @click=${() => input.onMarkerClick(i * 5)}>${i * 5}</div>` : nothing2}
+      </div>
+    `);
+  }
+  render3(html3`
+    <div class="device-mode-ruler-content">
+      <div class="device-mode-ruler-inner">
+        ${markers}
+      </div>
+    </div>
+  `, target, {
+    container: {
+      classes: ["device-mode-ruler"],
+      attributes: { jslog: VisualLogging3.deviceModeRuler().track({ click: true }) }
+    }
+  });
+};
+var Ruler = class extends Common3.ObjectWrapper.eventMixin(UI3.Widget.Widget) {
+  #view;
+  #horizontal = true;
+  #scale = 1;
+  constructor(element, view = DEFAULT_RULER_VIEW) {
+    super(element);
+    this.#view = view;
+  }
+  get horizontal() {
+    return this.#horizontal;
+  }
+  set horizontal(horizontal) {
+    if (this.#horizontal === horizontal) {
+      return;
+    }
+    this.#horizontal = horizontal;
+    this.requestUpdate();
+  }
+  get scale() {
+    return this.#scale;
+  }
+  set scale(scale) {
+    if (this.#scale === scale) {
+      return;
+    }
+    this.#scale = scale;
+    this.requestUpdate();
   }
   render(scale) {
     this.scale = scale;
-    void this.throttler.schedule(this.update.bind(this));
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
   }
   onResize() {
-    void this.throttler.schedule(this.update.bind(this));
+    super.onResize();
+    this.requestUpdate();
   }
-  update() {
-    const zoomFactor = UI3.ZoomManager.ZoomManager.instance().zoomFactor();
-    const size = this.horizontal ? this.#contentElement.offsetWidth : this.#contentElement.offsetHeight;
-    const dipSize = size * zoomFactor / this.scale;
-    const count = Math.ceil(dipSize / 5);
-    let step = 1;
-    if (this.scale < 0.8) {
-      step = 2;
+  #onMarkerClick = (size) => {
+    this.dispatchEventToListeners("MarkerSelected", size);
+  };
+  performUpdate() {
+    if (!this.isShowing()) {
+      return;
     }
-    if (this.scale < 0.6) {
-      step = 4;
-    }
-    if (this.scale < 0.4) {
-      step = 8;
-    }
-    if (this.scale < 0.2) {
-      step = 16;
-    }
-    if (this.scale < 0.1) {
-      step = 32;
-    }
-    const markers = [];
-    for (let i = 0; i < count; i++) {
-      if (i % step) {
-        continue;
-      }
-      const isLarge = !(i % 10);
-      const isMedium = !(i % 5);
-      const offset = i ? `${5 * i * this.scale / zoomFactor}px` : void 0;
-      markers.push(html3`
-        <div
-          class=${classMap2({
-        "device-mode-ruler-marker": true,
-        "device-mode-ruler-marker-large": isLarge,
-        "device-mode-ruler-marker-medium": isMedium && !isLarge
-      })}
-          style=${styleMap(this.horizontal ? { left: offset } : { top: offset })}>
-            ${i && !(i % 20) ? html3`<div class="device-mode-ruler-text" @click=${() => this.onMarkerClick(i * 5)}>${i * 5}</div>` : nothing2}
-        </div>
-      `);
-    }
-    render3(html3`${markers}`, this.#contentElement);
-  }
-  onMarkerClick(size) {
-    this.applyCallback.call(null, size);
+    const viewInput = {
+      horizontal: this.#horizontal,
+      scale: this.#scale,
+      onMarkerClick: this.#onMarkerClick
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
 };
 

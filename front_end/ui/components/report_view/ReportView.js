@@ -26,14 +26,20 @@ export class Report extends HTMLElement {
     #render() {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
+        const hasToolbar = this.querySelector('[slot="toolbar"]') !== null;
         render(html `
       <style>${reportStyles}</style>
-      ${this.#reportTitle ? html `<h1 class="report-title">
-        ${this.#reportTitle}
-        ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
+      ${(this.#reportTitle || hasToolbar) ? html `
+        <div class="report-header-wrapper">
+          ${this.#reportTitle ? html `<h1 class="report-title">
+            ${this.#reportTitle}
+            ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
             tabStop: true, jslogContext: 'source-location', className: 'report-url'
         }) : nothing}
-      </h1>` : nothing}
+          </h1>` : nothing}
+          <slot name="toolbar"></slot>
+        </div>
+      ` : nothing}
       <div class="content">
         <slot></slot>
       </div>

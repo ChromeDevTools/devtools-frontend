@@ -10,7 +10,10 @@ export interface ViewDescriptor {
 }
 export declare class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    static instance(): RecorderPluginManager;
+    static instance(opts?: {
+        forceNew: boolean;
+    }): RecorderPluginManager;
+    static removeInstance(): void;
     addPlugin(plugin: RecorderExtensionEndpoint): void;
     removePlugin(plugin: RecorderExtensionEndpoint): void;
     plugins(): RecorderExtensionEndpoint[];

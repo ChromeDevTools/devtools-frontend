@@ -111,6 +111,15 @@ export function lowerBound(array, needle, comparator, left, right) {
     }
     return r;
 }
+/**
+ * Inserts a value into a sorted array in O(n) time (O(log n) search using the provided comparator and O(n) insertion).
+ * Returns the index at which the value was inserted.
+ */
+export function insertWithComparator(array, value, comparator) {
+    const index = lowerBound(array, value, comparator);
+    array.splice(index, 0, value);
+    return index;
+}
 export function upperBound(array, needle, comparator, left, right) {
     let l = left || 0;
     let r = right !== undefined ? right : array.length;

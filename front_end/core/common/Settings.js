@@ -34,9 +34,6 @@ export class Settings {
                 this.createRegExpSetting(settingName, evaluatedDefaultValue, undefined, storageType) :
                 this.createSetting(settingName, evaluatedDefaultValue, storageType);
             setting.setTitleFunction(registration.title);
-            if (registration.userActionCondition) {
-                setting.setRequiresUserAction(Boolean(Root.Runtime.Runtime.queryParam(registration.userActionCondition)));
-            }
             setting.setRegistration(registration);
             this.registerModuleSetting(setting);
         }

@@ -86,11 +86,6 @@ export interface EventTypes {
     [Events.EDITOR_CLOSED]: EditorClosedEvent;
     [Events.EDITOR_SELECTED]: Workspace.UISourceCode.UISourceCode;
 }
-export interface EditorAction {
-    getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;
-}
-export declare function registerEditorAction(editorAction: () => EditorAction): void;
-export declare function getRegisteredEditorActions(): EditorAction[];
 export declare class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDelegate {
     private static nextFile;
     handleAction(context: UI.Context.Context, _actionId: string): boolean;

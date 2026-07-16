@@ -2,15 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-let instance = null;
+import * as Root from '../../core/root/root.js';
 export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper {
     #plugins = new Set();
     #views = new Map();
-    static instance() {
-        if (!instance) {
-            instance = new RecorderPluginManager();
+    static instance(opts) {
+        if (!Root.DevToolsContext.globalInstance().has(RecorderPluginManager) || opts?.forceNew) {
+            Root.DevToolsContext.globalInstance().set(RecorderPluginManager, new RecorderPluginManager());
         }
-        return instance;
+        return Root.DevToolsContext.globalInstance().get(RecorderPluginManager);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(RecorderPluginManager);
     }
     addPlugin(plugin) {
         this.#plugins.add(plugin);

@@ -9,12 +9,12 @@ var CheckFormsIssuesTrigger_exports = {};
 __export(CheckFormsIssuesTrigger_exports, {
   CheckFormsIssuesTrigger: () => CheckFormsIssuesTrigger
 });
+import * as Root from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
-var checkFormsIssuesTriggerInstance = null;
 var CheckFormsIssuesTrigger = class _CheckFormsIssuesTrigger {
-  constructor() {
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#pageLoaded, this, { scoped: true });
-    for (const model of SDK.TargetManager.TargetManager.instance().models(SDK.ResourceTreeModel.ResourceTreeModel)) {
+  constructor(targetManager = SDK.TargetManager.TargetManager.instance()) {
+    targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#pageLoaded, this, { scoped: true });
+    for (const model of targetManager.models(SDK.ResourceTreeModel.ResourceTreeModel)) {
       if (model.target().outermostTarget() !== model.target()) {
         continue;
       }
@@ -22,10 +22,10 @@ var CheckFormsIssuesTrigger = class _CheckFormsIssuesTrigger {
     }
   }
   static instance({ forceNew } = { forceNew: false }) {
-    if (!checkFormsIssuesTriggerInstance || forceNew) {
-      checkFormsIssuesTriggerInstance = new _CheckFormsIssuesTrigger();
+    if (!Root.DevToolsContext.globalInstance().has(_CheckFormsIssuesTrigger) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_CheckFormsIssuesTrigger, new _CheckFormsIssuesTrigger());
     }
-    return checkFormsIssuesTriggerInstance;
+    return Root.DevToolsContext.globalInstance().get(_CheckFormsIssuesTrigger);
   }
   // TODO(crbug.com/1399414): Handle response by dropping current issues in favor of new ones.
   #checkFormsIssues(resourceTreeModel) {
@@ -4045,7 +4045,7 @@ __export(IssuesManager_exports, {
   isIssueCodeSupported: () => isIssueCodeSupported
 });
 import * as Common5 from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
+import * as Root2 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/issues_manager/BounceTrackingIssue.js
@@ -5105,16 +5105,16 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
     forceNew: false,
     ensureFirst: false
   }) {
-    if (Root.DevToolsContext.globalInstance().has(_IssuesManager) && opts.ensureFirst) {
+    if (Root2.DevToolsContext.globalInstance().has(_IssuesManager) && opts.ensureFirst) {
       throw new Error('IssuesManager was already created. Either set "ensureFirst" to false or make sure that this invocation is really the first one.');
     }
-    if (!Root.DevToolsContext.globalInstance().has(_IssuesManager) || opts.forceNew) {
-      Root.DevToolsContext.globalInstance().set(_IssuesManager, new _IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting, opts.frameManager));
+    if (!Root2.DevToolsContext.globalInstance().has(_IssuesManager) || opts.forceNew) {
+      Root2.DevToolsContext.globalInstance().set(_IssuesManager, new _IssuesManager(opts.showThirdPartyIssuesSetting, opts.hideIssueSetting, opts.frameManager));
     }
-    return Root.DevToolsContext.globalInstance().get(_IssuesManager);
+    return Root2.DevToolsContext.globalInstance().get(_IssuesManager);
   }
   static removeInstance() {
-    Root.DevToolsContext.globalInstance().delete(_IssuesManager);
+    Root2.DevToolsContext.globalInstance().delete(_IssuesManager);
   }
   #onPrimaryPageChanged(event) {
     const { frame, type } = event.data;
@@ -5341,22 +5341,22 @@ function issuesAssociatedWith(issues, obj) {
   }
   throw new Error(`issues can not be associated with ${JSON.stringify(obj)}`);
 }
-function hasIssues(obj) {
-  const issues = Array.from(IssuesManager.instance().issues());
+function hasIssues(obj, issuesManager) {
+  const issues = Array.from(issuesManager.issues());
   return issuesAssociatedWith(issues, obj).length > 0;
 }
-function hasIssueOfCategory(obj, category) {
-  const issues = Array.from(IssuesManager.instance().issues());
+function hasIssueOfCategory(obj, category, issuesManager) {
+  const issues = Array.from(issuesManager.issues());
   return issuesAssociatedWith(issues, obj).some((issue) => issue.getCategory() === category);
 }
-async function reveal(obj, category) {
+async function reveal(obj, issuesManager, category) {
   if (typeof obj === "string") {
-    const issue = IssuesManager.instance().getIssueById(obj);
+    const issue = issuesManager.getIssueById(obj);
     if (issue) {
       return await Common6.Revealer.reveal(issue);
     }
   }
-  const issues = Array.from(IssuesManager.instance().issues());
+  const issues = Array.from(issuesManager.issues());
   const candidates = issuesAssociatedWith(issues, obj).filter((issue) => !category || issue.getCategory() === category);
   if (candidates.length > 0) {
     return await Common6.Revealer.reveal(candidates[0]);

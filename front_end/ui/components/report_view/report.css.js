@@ -21,13 +21,16 @@ export default `/*
   margin: var(--sys-size-5) 0;
 }
 
+.report-header-wrapper {
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
 .report-title {
   padding: var(--sys-size-7) var(--sys-size-9);
   font: var(--sys-typescale-headline4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid var(--sys-color-divider);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
   margin: 0;

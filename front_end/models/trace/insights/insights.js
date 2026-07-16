@@ -1511,7 +1511,7 @@ function generateInsight5(data, context) {
   const mainTid = context.navigation?.tid;
   const largeLayoutUpdates = [];
   const largeStyleRecalcs = [];
-  const threads = Handlers2.Threads.threadsInRenderer(data.Renderer, data.AuctionWorklets);
+  const threads = Handlers2.Threads.threadsInRenderer(data.Renderer);
   for (const thread of threads) {
     if (thread.type !== "MAIN_THREAD") {
       continue;

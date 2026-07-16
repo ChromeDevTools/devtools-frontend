@@ -34,6 +34,8 @@ export declare class TextPromptElement extends HTMLElement {
     get validator(): undefined | ((value: string) => (null | Platform.UIString.LocalizedString));
     set cancelOnBlur(cancelOnBlur: boolean);
     get cancelOnBlur(): boolean;
+    set renderAsBlock(renderAsBlock: boolean);
+    get renderAsBlock(): boolean;
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     connectedCallback(): void;
     disconnectedCallback(): void;
@@ -94,6 +96,7 @@ export declare class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<Event
     initialize(completions: (this: null, expression: string, filter: string, force: boolean) => Promise<Suggestion[]>, stopCharacters?: string, usesSuggestionBuilder?: boolean): void;
     setAutocompletionTimeout(timeout: number): void;
     renderAsBlock(): void;
+    renderAsInlineBlock(): void;
     /**
      * Clients should never attach any event listeners to the |element|. Instead,
      * they should use the result of this method to attach listeners for bubbling events.

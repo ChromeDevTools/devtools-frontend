@@ -3485,7 +3485,8 @@ var ExtensionServer = class _ExtensionServer extends Common7.ObjectWrapper.Objec
     }
     const { pluginName, mediaType, port, capabilities } = message;
     const extensionOrigin = this.getExtensionOrigin(_shared_port);
-    Extensions2.RecorderPluginManager.RecorderPluginManager.instance().addPlugin(new Extensions2.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, mediaType));
+    const recorderPluginManager = Extensions2.RecorderPluginManager.RecorderPluginManager.instance();
+    recorderPluginManager.addPlugin(new Extensions2.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, recorderPluginManager, mediaType));
     return this.status.OK();
   }
   onReportResourceLoad(message) {

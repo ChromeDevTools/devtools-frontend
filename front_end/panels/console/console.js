@@ -6488,7 +6488,7 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
   pendingSidebarMessages = [];
   userHasOpenedSidebarAtLeastOnce = false;
   issueToolbarThrottle;
-  requestResolver = new Logs3.RequestResolver.RequestResolver();
+  requestResolver = new Logs3.RequestResolver.RequestResolver(Logs3.NetworkLog.NetworkLog.instance());
   issueResolver = new IssuesManager.IssueResolver.IssueResolver(IssuesManager.IssuesManager.IssuesManager.instance());
   #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);

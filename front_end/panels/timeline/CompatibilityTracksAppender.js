@@ -165,8 +165,6 @@ export class CompatibilityTracksAppender {
                 }
                 case "WORKER" /* Trace.Handlers.Threads.ThreadType.WORKER */:
                     return 3;
-                case "AUCTION_WORKLET" /* Trace.Handlers.Threads.ThreadType.AUCTION_WORKLET */:
-                    return 3;
                 case "RASTERIZER" /* Trace.Handlers.Threads.ThreadType.RASTERIZER */:
                     return 4;
                 case "THREAD_POOL" /* Trace.Handlers.Threads.ThreadType.THREAD_POOL */:
@@ -187,18 +185,6 @@ export class CompatibilityTracksAppender {
                 continue;
             }
             if ((name && HIDDEN_THREAD_NAMES.has(name)) && !showAllEvents) {
-                continue;
-            }
-            const matchingWorklet = this.#parsedTrace.data.AuctionWorklets.worklets.get(pid);
-            if (matchingWorklet) {
-                // Each AuctionWorklet has two key threads:
-                // 1. the Utility Thread
-                // 2. the V8 Helper Thread - either a bidder or seller. see buildNameForAuctionWorklet()
-                // There are other threads in a worklet process, but we don't render them.
-                const tids = [matchingWorklet.args.data.utilityThread.tid, matchingWorklet.args.data.v8HelperThread.tid];
-                if (tids.includes(tid)) {
-                    this.#threadAppenders.push(new ThreadAppender(this, this.#parsedTrace, pid, tid, '', "AUCTION_WORKLET" /* Trace.Handlers.Threads.ThreadType.AUCTION_WORKLET */, entries, tree));
-                }
                 continue;
             }
             // The Common case… Add the main thread, or iframe, or thread pool, etc.

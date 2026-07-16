@@ -17,8 +17,8 @@ export class StylesSourceMapping {
     constructor(cssModel, workspace) {
         this.#cssModel = cssModel;
         const target = this.#cssModel.target();
-        this.#project =
-            new ContentProviderBasedProject(workspace, 'css:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */, target);
+        this.#project = new ContentProviderBasedProject(workspace, 'css:' + target.id(), Workspace.Workspace.projectTypes.Network, '', false /* isServiceProject */);
+        NetworkProject.setTargetForProject(this.#project, target);
         this.#eventListeners = [
             this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this.styleSheetAdded, this),
             this.#cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, this.styleSheetRemoved, this),

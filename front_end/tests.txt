@@ -208,6 +208,7 @@ models/bindings/PresentationConsoleMessageHelper.test.js
 models/bindings/ResourceMapping.test.js
 models/bindings/ResourceScriptMapping.test.js
 models/bindings/ResourceUtils.test.js
+models/bindings/StylesSourceMapping.test.js
 models/bindings/SymbolizedError.test.js
 models/breakpoints/BreakpointManager.test.js
 models/computed_style/ComputedStyleModel.test.js
@@ -264,7 +265,6 @@ models/trace/extras/TraceTree.test.js
 models/trace/handlers/AnimationFramesHandler.test.js
 models/trace/handlers/AnimationHandler.test.js
 models/trace/handlers/AsyncJSCallsHandler.test.js
-models/trace/handlers/AuctionWorkletsHandler.test.js
 models/trace/handlers/DOMStatsHandler.test.js
 models/trace/handlers/ExtensionTraceDataHandler.test.js
 models/trace/handlers/FlowsHandler.test.js
@@ -369,8 +369,6 @@ panels/application/ExtensionStorageModel.test.js
 panels/application/FrameDetailsView.test.js
 panels/application/IndexedDBModel.test.js
 panels/application/IndexedDBViews.test.js
-panels/application/InterestGroupStorageView.test.js
-panels/application/InterestGroupTreeElement.test.js
 panels/application/KeyValueStorageItemsView.test.js
 panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
@@ -393,7 +391,6 @@ panels/application/components/BackForwardCacheView.test.js
 panels/application/components/BounceTrackingMitigationsView.test.js
 panels/application/components/CrashReportContextGrid.test.js
 panels/application/components/EndpointsGrid.test.js
-panels/application/components/InterestGroupAccessGrid.test.js
 panels/application/components/ProtocolHandlersView.test.js
 panels/application/components/ReportsGrid.test.js
 panels/application/components/ServiceWorkerRouterView.test.js

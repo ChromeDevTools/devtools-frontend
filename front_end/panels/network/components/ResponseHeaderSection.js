@@ -123,11 +123,11 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
         if (this.#request.wasBlocked()) {
             const headerWithIssues = BlockedReasonDetails.get(this.#request.blockedReason());
             if (headerWithIssues) {
-                if (IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, "CrossOriginEmbedderPolicy" /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */)) {
+                if (IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, "CrossOriginEmbedderPolicy" /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */, IssuesManager.IssuesManager.IssuesManager.instance())) {
                     const followLink = () => {
                         Host.userMetrics.issuesPanelOpenedFrom(1 /* Host.UserMetrics.IssueOpener.LEARN_MORE_LINK_COEP */);
                         if (this.#request) {
-                            void IssuesManager.RelatedIssue.reveal(this.#request, "CrossOriginEmbedderPolicy" /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */);
+                            void IssuesManager.RelatedIssue.reveal(this.#request, IssuesManager.IssuesManager.IssuesManager.instance(), "CrossOriginEmbedderPolicy" /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */);
                         }
                     };
                     if (headerWithIssues.blockedDetails) {

@@ -37,13 +37,16 @@ var report_css_default = `/*
   margin: var(--sys-size-5) 0;
 }
 
+.report-header-wrapper {
+  border-bottom: 1px solid var(--sys-color-divider);
+}
+
 .report-title {
   padding: var(--sys-size-7) var(--sys-size-9);
   font: var(--sys-typescale-headline4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid var(--sys-color-divider);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
   margin: 0;
@@ -200,16 +203,22 @@ var Report = class extends HTMLElement {
     this.#render();
   }
   #render() {
+    const hasToolbar = this.querySelector('[slot="toolbar"]') !== null;
     render(html`
       <style>${report_css_default}</style>
-      ${this.#reportTitle ? html`<h1 class="report-title">
-        ${this.#reportTitle}
-        ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
+      ${this.#reportTitle || hasToolbar ? html`
+        <div class="report-header-wrapper">
+          ${this.#reportTitle ? html`<h1 class="report-title">
+            ${this.#reportTitle}
+            ${this.#reportUrl ? Components.Linkifier.Linkifier.linkifyURL(this.#reportUrl, {
       tabStop: true,
       jslogContext: "source-location",
       className: "report-url"
     }) : nothing}
-      </h1>` : nothing}
+          </h1>` : nothing}
+          <slot name="toolbar"></slot>
+        </div>
+      ` : nothing}
       <div class="content">
         <slot></slot>
       </div>

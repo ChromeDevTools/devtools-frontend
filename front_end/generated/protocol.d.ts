@@ -1041,29 +1041,6 @@ export declare namespace Audits {
         resourceIPAddressSpace?: Network.IPAddressSpace;
         clientSecurityState?: Network.ClientSecurityState;
     }
-    const enum AttributionReportingIssueType {
-        PermissionPolicyDisabled = "PermissionPolicyDisabled",
-        UntrustworthyReportingOrigin = "UntrustworthyReportingOrigin",
-        InsecureContext = "InsecureContext",
-        InvalidHeader = "InvalidHeader",
-        InvalidRegisterTriggerHeader = "InvalidRegisterTriggerHeader",
-        SourceAndTriggerHeaders = "SourceAndTriggerHeaders",
-        SourceIgnored = "SourceIgnored",
-        TriggerIgnored = "TriggerIgnored",
-        OsSourceIgnored = "OsSourceIgnored",
-        OsTriggerIgnored = "OsTriggerIgnored",
-        InvalidRegisterOsSourceHeader = "InvalidRegisterOsSourceHeader",
-        InvalidRegisterOsTriggerHeader = "InvalidRegisterOsTriggerHeader",
-        WebAndOsHeaders = "WebAndOsHeaders",
-        NoWebOrOsSupport = "NoWebOrOsSupport",
-        NavigationRegistrationWithoutTransientUserActivation = "NavigationRegistrationWithoutTransientUserActivation",
-        InvalidInfoHeader = "InvalidInfoHeader",
-        NoRegisterSourceHeader = "NoRegisterSourceHeader",
-        NoRegisterTriggerHeader = "NoRegisterTriggerHeader",
-        NoRegisterOsSourceHeader = "NoRegisterOsSourceHeader",
-        NoRegisterOsTriggerHeader = "NoRegisterOsTriggerHeader",
-        NavigationRegistrationUniqueScopeAlreadySet = "NavigationRegistrationUniqueScopeAlreadySet"
-    }
     const enum SharedDictionaryError {
         UseErrorCrossOriginNoCorsRequest = "UseErrorCrossOriginNoCorsRequest",
         UseErrorDictionaryLoadFailure = "UseErrorDictionaryLoadFailure",
@@ -1132,16 +1109,6 @@ export declare namespace Audits {
         InvalidAllowlistItemType = "InvalidAllowlistItemType",
         ReportingEndpointNotToken = "ReportingEndpointNotToken",
         InvalidUrlPattern = "InvalidUrlPattern"
-    }
-    /**
-     * Details for issues around "Attribution Reporting API" usage.
-     * Explainer: https://github.com/WICG/attribution-reporting-api
-     */
-    interface AttributionReportingIssueDetails {
-        violationType: AttributionReportingIssueType;
-        request?: AffectedRequest;
-        violatingNodeId?: DOM.BackendNodeId;
-        invalidParameter?: string;
     }
     /**
      * Details for issues about documents in Quirks Mode
@@ -1590,6 +1557,23 @@ export declare namespace Audits {
         stackTrace?: Runtime.StackTrace;
     }
     /**
+     * Details for issues about lazy-loaded images without explicit dimensions.
+     */
+    interface LazyLoadImageIssueDetails {
+        /**
+         * DOM node of the problematic HTMLImageElement.
+         */
+        nodeId: DOM.BackendNodeId;
+        /**
+         * URL or src attribute of the image.
+         */
+        url: string;
+        /**
+         * Frame containing the image.
+         */
+        frameId: Page.FrameId;
+    }
+    /**
      * A unique identifier for the type of issue. Each type may use one of the
      * optional fields in InspectorIssueDetails to convey more specific
      * information about the kind of issue.
@@ -1602,7 +1586,6 @@ export declare namespace Audits {
         ContentSecurityPolicyIssue = "ContentSecurityPolicyIssue",
         SharedArrayBufferIssue = "SharedArrayBufferIssue",
         CorsIssue = "CorsIssue",
-        AttributionReportingIssue = "AttributionReportingIssue",
         QuirksModeIssue = "QuirksModeIssue",
         PartitioningBlobURLIssue = "PartitioningBlobURLIssue",
         NavigatorUserAgentIssue = "NavigatorUserAgentIssue",
@@ -1624,7 +1607,8 @@ export declare namespace Audits {
         PermissionElementIssue = "PermissionElementIssue",
         PerformanceIssue = "PerformanceIssue",
         SelectivePermissionsInterventionIssue = "SelectivePermissionsInterventionIssue",
-        EmailVerificationRequestIssue = "EmailVerificationRequestIssue"
+        EmailVerificationRequestIssue = "EmailVerificationRequestIssue",
+        LazyLoadImageIssue = "LazyLoadImageIssue"
     }
     /**
      * This struct holds a list of optional fields with additional information
@@ -1639,7 +1623,6 @@ export declare namespace Audits {
         contentSecurityPolicyIssueDetails?: ContentSecurityPolicyIssueDetails;
         sharedArrayBufferIssueDetails?: SharedArrayBufferIssueDetails;
         corsIssueDetails?: CorsIssueDetails;
-        attributionReportingIssueDetails?: AttributionReportingIssueDetails;
         quirksModeIssueDetails?: QuirksModeIssueDetails;
         partitioningBlobURLIssueDetails?: PartitioningBlobURLIssueDetails;
         /**
@@ -1665,6 +1648,7 @@ export declare namespace Audits {
         performanceIssueDetails?: PerformanceIssueDetails;
         selectivePermissionsInterventionIssueDetails?: SelectivePermissionsInterventionIssueDetails;
         emailVerificationRequestIssueDetails?: EmailVerificationRequestIssueDetails;
+        lazyLoadImageIssueDetails?: LazyLoadImageIssueDetails;
     }
     /**
      * A unique id for a DevTools inspector issue. Allows other entities (e.g.
@@ -13653,7 +13637,6 @@ export declare namespace Page {
         AllScreensCapture = "all-screens-capture",
         AmbientLightSensor = "ambient-light-sensor",
         AriaNotify = "aria-notify",
-        AttributionReporting = "attribution-reporting",
         Autofill = "autofill",
         Autoplay = "autoplay",
         Bluetooth = "bluetooth",

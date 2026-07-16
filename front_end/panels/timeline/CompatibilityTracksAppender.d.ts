@@ -95,7 +95,6 @@ export declare const enum VisualLoggingTrackName {
     THREAD_MAIN = "thread.main",
     THREAD_FRAME = "thread.frame",
     THREAD_WORKER = "thread.worker",
-    THREAD_AUCTION_WORKLET = "thread.auction-worklet",
     THREAD_RASTERIZER = "thread.rasterizer",
     THREAD_POOL = "thread.pool",
     THREAD_OTHER = "thread.other",

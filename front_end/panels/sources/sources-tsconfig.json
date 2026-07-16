@@ -52,7 +52,6 @@
     "../../../../../../front_end/panels/sources/FilePathScoreFunction.ts",
     "../../../../../../front_end/panels/sources/FilteredUISourceCodeListProvider.ts",
     "../../../../../../front_end/panels/sources/GoToLineQuickOpen.ts",
-    "../../../../../../front_end/panels/sources/InplaceFormatterEditorAction.ts",
     "../../../../../../front_end/panels/sources/NavigatorView.ts",
     "../../../../../../front_end/panels/sources/OpenFileQuickOpen.ts",
     "../../../../../../front_end/panels/sources/OutlineQuickOpen.ts",

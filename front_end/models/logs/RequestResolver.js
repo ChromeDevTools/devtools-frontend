@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-import { Events as NetworkLogEvents, NetworkLog } from './NetworkLog.js';
+import { Events as NetworkLogEvents } from './NetworkLog.js';
 /**
  * A class that facilitates resolving a requestId to a network request. If the requestId does not resolve, a listener
  * is installed on the network request to wait for the request to appear. This is useful if an attempt to resolve the
@@ -15,7 +15,7 @@ import { Events as NetworkLogEvents, NetworkLog } from './NetworkLog.js';
 export class RequestResolver extends Common.ResolverBase.ResolverBase {
     networkListener = null;
     networkLog;
-    constructor(networkLog = NetworkLog.instance()) {
+    constructor(networkLog) {
         super();
         this.networkLog = networkLog;
     }

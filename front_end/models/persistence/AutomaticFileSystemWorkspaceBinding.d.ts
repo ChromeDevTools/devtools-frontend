@@ -1,6 +1,5 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import type { ContentDataOrError } from '../text_utils/ContentData.js';
 import type { SearchMatch } from '../text_utils/ContentProvider.js';
 import * as Workspace from '../workspace/workspace.js';
@@ -44,7 +43,6 @@ export declare class FileSystem implements Workspace.Workspace.Project {
     indexContent(progress: Common.Progress.Progress): void;
     uiSourceCodeForURL(_url: Platform.DevToolsPath.UrlString): Workspace.UISourceCode.UISourceCode | null;
     uiSourceCodes(): Iterable<Workspace.UISourceCode.UISourceCode>;
-    target(): SDK.Target.Target | null;
 }
 /**
  * Provides a transient workspace `Project` that doesn't contain any `UISourceCode`s,

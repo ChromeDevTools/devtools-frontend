@@ -8290,7 +8290,7 @@ export const NativeFunctions = [
     },
     {
         name: "setAttributionReporting",
-        signatures: [["attributionReporting"]]
+        signatures: [["options"]]
     },
     {
         name: "Worker",

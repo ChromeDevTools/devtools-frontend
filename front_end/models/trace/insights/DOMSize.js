@@ -88,7 +88,7 @@ export function generateInsight(data, context) {
     const mainTid = context.navigation?.tid;
     const largeLayoutUpdates = [];
     const largeStyleRecalcs = [];
-    const threads = Handlers.Threads.threadsInRenderer(data.Renderer, data.AuctionWorklets);
+    const threads = Handlers.Threads.threadsInRenderer(data.Renderer);
     for (const thread of threads) {
         if (thread.type !== "MAIN_THREAD" /* Handlers.Threads.ThreadType.MAIN_THREAD */) {
             continue;

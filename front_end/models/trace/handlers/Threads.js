@@ -1,4 +1,4 @@
-function getThreadTypeForRendererThread(pid, thread, auctionWorkletsData) {
+function getThreadTypeForRendererThread(pid, thread) {
     let threadType = "OTHER" /* ThreadType.OTHER */;
     if (thread.name === 'CrRendererMain') {
         threadType = "MAIN_THREAD" /* ThreadType.MAIN_THREAD */;
@@ -9,16 +9,13 @@ function getThreadTypeForRendererThread(pid, thread, auctionWorkletsData) {
     else if (thread.name?.startsWith('CompositorTileWorker')) {
         threadType = "RASTERIZER" /* ThreadType.RASTERIZER */;
     }
-    else if (auctionWorkletsData.worklets.has(pid)) {
-        threadType = "AUCTION_WORKLET" /* ThreadType.AUCTION_WORKLET */;
-    }
     else if (thread.name?.startsWith('ThreadPool')) {
         // TODO(paulirish): perhaps exclude ThreadPoolServiceThread entirely
         threadType = "THREAD_POOL" /* ThreadType.THREAD_POOL */;
     }
     return threadType;
 }
-export function threadsInRenderer(rendererData, auctionWorkletsData) {
+export function threadsInRenderer(rendererData) {
     const foundThreads = [];
     // If we have Renderer threads, we prefer to use those. In the event that a
     // trace is a CPU Profile trace, we will never have Renderer threads, so we
@@ -33,7 +30,7 @@ export function threadsInRenderer(rendererData, auctionWorkletsData) {
                     // filtering we need.
                     continue;
                 }
-                const threadType = getThreadTypeForRendererThread(pid, thread, auctionWorkletsData);
+                const threadType = getThreadTypeForRendererThread(pid, thread);
                 foundThreads.push({
                     name: thread.name,
                     pid,
@@ -64,7 +61,7 @@ export function threadsInTrace(handlerData) {
         return cached;
     }
     // If we have Renderer threads, we prefer to use those.
-    const threadsFromRenderer = threadsInRenderer(handlerData.Renderer, handlerData.AuctionWorklets);
+    const threadsFromRenderer = threadsInRenderer(handlerData.Renderer);
     if (threadsFromRenderer.length) {
         threadsInHandlerDataCache.set(handlerData, threadsFromRenderer);
         return threadsFromRenderer;

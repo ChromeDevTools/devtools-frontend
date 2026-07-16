@@ -683,9 +683,9 @@ var CookiesTable = class extends UI.Widget.VBox {
       ]);
       void Common.Revealer.reveal(requestFilter);
     }, { jslogContext: "show-requests-with-this-cookie" });
-    if (IssuesManager.RelatedIssue.hasIssues(cookie)) {
+    if (IssuesManager.RelatedIssue.hasIssues(cookie, IssuesManager.IssuesManager.IssuesManager.instance())) {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.showIssueAssociatedWithThis), () => {
-        void IssuesManager.RelatedIssue.reveal(cookie);
+        void IssuesManager.RelatedIssue.reveal(cookie, IssuesManager.IssuesManager.IssuesManager.instance());
       }, { jslogContext: "show-issue-associated-with-this" });
     }
   }

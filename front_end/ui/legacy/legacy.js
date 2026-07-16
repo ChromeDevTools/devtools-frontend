@@ -11377,6 +11377,16 @@ var textPrompt_css_default = `/*
   min-width: var(--devtools-text-prompt-min-width, auto);
 }
 
+:host([render-as-block]) .text-prompt-root,
+:host([render-as-block]) .text-prompt {
+  flex: auto;
+  width: 100%;
+}
+
+:host([render-as-block]) .text-prompt:focus {
+  outline: none;
+}
+
 .text-prompt::-webkit-scrollbar {
   display: none;
 }
@@ -11440,7 +11450,7 @@ var textPrompt_css_default = `/*
 
 // gen/front_end/ui/legacy/TextPrompt.js
 var TextPromptElement = class _TextPromptElement extends HTMLElement {
-  static observedAttributes = ["editing", "completions", "placeholder", "cancel-on-blur"];
+  static observedAttributes = ["editing", "completions", "placeholder", "cancel-on-blur", "render-as-block"];
   static formAssociated = true;
   #shadow = this.attachShadow({ mode: "open" });
   #internals = this.attachInternals();
@@ -11451,6 +11461,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
   #completionObserver = new MutationObserver(this.#onMutate.bind(this));
   #validator;
   #cancelOnBlur = false;
+  #isEditing = false;
   constructor() {
     super();
     this.#textPrompt.initialize(this.#willAutoComplete.bind(this));
@@ -11466,6 +11477,16 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
   }
   get cancelOnBlur() {
     return this.#cancelOnBlur;
+  }
+  set renderAsBlock(renderAsBlock) {
+    if (renderAsBlock) {
+      this.setAttribute("render-as-block", "");
+    } else {
+      this.removeAttribute("render-as-block");
+    }
+  }
+  get renderAsBlock() {
+    return this.hasAttribute("render-as-block");
   }
   #onMutate(changes) {
     const listId = this.getAttribute("completions");
@@ -11519,6 +11540,17 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
           this.#completionObserver.disconnect();
         }
         break;
+      case "render-as-block":
+        if (this.#isEditing) {
+          if (isTruthy(newValue)) {
+            this.#textPrompt.renderAsBlock();
+            this.#entrypoint.style.display = "block";
+          } else {
+            this.#textPrompt.renderAsInlineBlock();
+            this.#entrypoint.style.display = "inline";
+          }
+        }
+        break;
     }
   }
   #updateCompletions() {
@@ -11542,6 +11574,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     return datalist.values().filter((option) => option.textContent.startsWith(filter.toLowerCase())).map((option) => ({ text: option.textContent })).toArray();
   }
   #startEditing() {
+    this.#isEditing = true;
     const truncatedTextPlaceholder = this.getAttribute("placeholder");
     const placeholder = this.#entrypoint.createChild("span");
     const initialText = this.getAttribute("value") ?? this.#slot.deepInnerText();
@@ -11551,6 +11584,13 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
       placeholder.setTextContentTruncatedIfNeeded(initialText, truncatedTextPlaceholder);
     }
     this.#slot.remove();
+    if (this.renderAsBlock) {
+      this.#textPrompt.renderAsBlock();
+      this.#entrypoint.style.display = "block";
+    } else {
+      this.#textPrompt.renderAsInlineBlock();
+      this.#entrypoint.style.display = "inline";
+    }
     const proxy = this.#textPrompt.attachAndStartEditing(placeholder, (e) => this.#done(
       e,
       /* commit=*/
@@ -11561,6 +11601,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     this.#textPrompt.focus();
   }
   #stopEditing() {
+    this.#isEditing = false;
     this.#entrypoint.removeChildren();
     this.#entrypoint.appendChild(this.#slot);
     this.#textPrompt.detach();
@@ -11576,6 +11617,9 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     }
   }
   #done(e, commit) {
+    if (!this.#isEditing) {
+      return;
+    }
     const target = e.target;
     const text = target.textContent || "";
     if (commit) {
@@ -11588,9 +11632,11 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
       if (!this.#internals.reportValidity()) {
         return;
       }
+      this.#isEditing = false;
       this.dispatchEvent(new _TextPromptElement.CommitEvent(text));
     } else {
       this.#internals.setValidity({});
+      this.#isEditing = false;
       this.dispatchEvent(new _TextPromptElement.CancelEvent());
     }
     e.consume();
@@ -11702,6 +11748,15 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   }
   renderAsBlock() {
     this.proxyElementDisplay = "block";
+    if (this.proxyElement) {
+      this.proxyElement.style.display = "block";
+    }
+  }
+  renderAsInlineBlock() {
+    this.proxyElementDisplay = "inline-block";
+    if (this.proxyElement) {
+      this.proxyElement.style.display = "inline-block";
+    }
   }
   /**
    * Clients should never attach any event listeners to the |element|. Instead,
@@ -15912,7 +15967,7 @@ function setTitle(element, title) {
   Tooltip.install(element, title);
 }
 var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
-  static observedAttributes = ["checked", "disabled", "indeterminate", "name", "title", "aria-label"];
+  static observedAttributes = ["checked", "disabled", "indeterminate", "name", "title", "aria-label", "small"];
   #shadowRoot;
   #checkboxElement;
   #textElement;
@@ -15964,6 +16019,8 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
       this.#textElement.title = newValue ?? "";
     } else if (name === "aria-label") {
       this.#checkboxElement.ariaLabel = newValue;
+    } else if (name === "small") {
+      this.#checkboxElement.classList.toggle("small", newValue !== null);
     }
   }
   getLabelText() {
@@ -15983,6 +16040,12 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
   }
   set checked(checked) {
     this.toggleAttribute("checked", checked);
+  }
+  get small() {
+    return this.hasAttribute("small");
+  }
+  set small(small) {
+    this.toggleAttribute("small", small);
   }
   set disabled(disabled) {
     this.toggleAttribute("disabled", disabled);

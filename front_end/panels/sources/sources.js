@@ -2157,7 +2157,7 @@ __export(CallStackSidebarPane_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
 import * as Bindings9 from "./../../models/bindings/bindings.js";
 import * as Persistence10 from "./../../models/persistence/persistence.js";
@@ -2325,7 +2325,7 @@ __export(SourcesPanel_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as Common12 from "./../../core/common/common.js";
 import * as Host8 from "./../../core/host/host.js";
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as Root from "./../../core/root/root.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
@@ -5216,14 +5216,12 @@ var SourcesView_exports = {};
 __export(SourcesView_exports, {
   ActionDelegate: () => ActionDelegate2,
   SourcesView: () => SourcesView,
-  SwitchFileActionDelegate: () => SwitchFileActionDelegate,
-  getRegisteredEditorActions: () => getRegisteredEditorActions,
-  registerEditorAction: () => registerEditorAction
+  SwitchFileActionDelegate: () => SwitchFileActionDelegate
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common11 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
 import * as Bindings7 from "./../../models/bindings/bindings.js";
@@ -5390,7 +5388,7 @@ __export(TabbedEditorContainer_exports, {
   TabbedEditorContainer: () => TabbedEditorContainer
 });
 import * as Common10 from "./../../core/common/common.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as i18n29 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as Persistence7 from "./../../models/persistence/persistence.js";
 import * as TextUtils10 from "./../../models/text_utils/text_utils.js";
@@ -5412,6 +5410,7 @@ __export(UISourceCodeFrame_exports, {
 });
 import * as Common9 from "./../../core/common/common.js";
 import * as Host6 from "./../../core/host/host.js";
+import * as i18n27 from "./../../core/i18n/i18n.js";
 
 // gen/front_end/entrypoints/formatter_worker/FormatterActions.js
 var FORMATTABLE_MEDIA_TYPES = [
@@ -5425,6 +5424,7 @@ var FORMATTABLE_MEDIA_TYPES = [
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
 import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
+import * as Formatter2 from "./../../models/formatter/formatter.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Persistence5 from "./../../models/persistence/persistence.js";
 import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
@@ -8394,6 +8394,14 @@ var SnippetsPlugin = class extends Plugin {
 };
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
+var UIStrings14 = {
+  /**
+   * @description Title of the format button
+   */
+  format: "Format"
+};
+var str_14 = i18n27.i18n.registerUIStrings("panels/sources/UISourceCodeFrame.ts", UIStrings14);
+var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
 var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.eventMixin(SourceFrame8.SourceFrame.SourceFrameImpl) {
   #uiSourceCode;
   #muteSourceCodeEvents = false;
@@ -8596,6 +8604,21 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     }
     this.maybeSetContent(this.#uiSourceCode.workingCopyContentData());
   }
+  async #formatSourceInPlace() {
+    const contentDataOrError = await this.workingCopy();
+    if (TextUtils8.ContentData.ContentData.isError(contentDataOrError)) {
+      return;
+    }
+    const content = TextUtils8.ContentData.ContentData.textOr(contentDataOrError, "");
+    const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(Common9.Settings.Settings.instance(), this.#uiSourceCode.contentType(), this.contentType, content);
+    if (this.#uiSourceCode.workingCopy() === formattedContent) {
+      return;
+    }
+    const selection = this.textEditor.toLineColumn(this.textEditor.state.selection.main.head);
+    const [lineNumber, columnNumber] = formattedMapping.originalToFormatted(selection.lineNumber, selection.columnNumber);
+    this.#uiSourceCode.setWorkingCopy(formattedContent);
+    this.revealPosition({ lineNumber, columnNumber });
+  }
   onWorkingCopyCommitted() {
     if (!this.#muteSourceCodeEvents) {
       this.maybeSetContent(this.uiSourceCode().workingCopyContentData());
@@ -8717,6 +8740,16 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
   }
   async toolbarItems() {
     const leftToolbarItems = await super.toolbarItems();
+    const isEditable = Persistence5.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
+    const isJavaScript = Common9.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
+    const isInplaceFormattable = isEditable && isJavaScript;
+    if (isInplaceFormattable) {
+      const formatButton = new UI14.Toolbar.ToolbarButton(i18nString13(UIStrings14.format), "brackets");
+      formatButton.addEventListener("Click", () => {
+        void this.#formatSourceInPlace();
+      });
+      leftToolbarItems.unshift(formatButton);
+    }
     const rightToolbarItems = [];
     for (const plugin of this.plugins) {
       leftToolbarItems.push(...plugin.leftToolbarItems());
@@ -9075,7 +9108,7 @@ function rowMessages(initialMessages) {
 }
 
 // gen/front_end/panels/sources/TabbedEditorContainer.js
-var UIStrings14 = {
+var UIStrings15 = {
   /**
    * @description Text in Tabbed Editor Container of the Sources panel
    * @example {example.file} PH1
@@ -9101,8 +9134,8 @@ var UIStrings14 = {
    */
   changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace: "Changes weren't saved to file system. To save, set up your {PH1}."
 };
-var str_14 = i18n27.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings14);
-var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings15);
+var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var tabId = 0;
 var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   delegate;
@@ -9326,7 +9359,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       return false;
     }
     const shouldPrompt = uiSourceCode.isDirty() && uiSourceCode.project().canSetFileContent();
-    if (!shouldPrompt || confirm(i18nString13(UIStrings14.areYouSureYouWantToCloseUnsaved, { PH1: uiSourceCode.name() }))) {
+    if (!shouldPrompt || confirm(i18nString14(UIStrings15.areYouSureYouWantToCloseUnsaved, { PH1: uiSourceCode.name() }))) {
       uiSourceCode.resetWorkingCopy();
       if (nextTabId) {
         this.tabbedPane.selectTab(nextTabId, true);
@@ -9476,7 +9509,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
   }
   addLoadErrorIcon(tabId2) {
     const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
-                                     title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
+                                     title=${i18nString14(UIStrings15.unableToLoadThisContent)}>
                       </devtools-icon>`;
     if (this.tabbedPane.tabView(tabId2)) {
       this.tabbedPane.setTrailingTabIcon(tabId2, icon);
@@ -9539,7 +9572,7 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
       this.tabbedPane.changeTabTitle(tabId2, title, tooltip);
       if (uiSourceCode.loadError()) {
         const icon = html5`<devtools-icon class="small" name="cross-circle-filled"
-                                         title=${i18nString13(UIStrings14.unableToLoadThisContent)}>
+                                         title=${i18nString14(UIStrings15.unableToLoadThisContent)}>
                           </devtools-icon>`;
         this.tabbedPane.setTrailingTabIcon(tabId2, icon);
       } else if (Persistence7.Persistence.PersistenceImpl.instance().hasUnsavedCommittedChanges(uiSourceCode)) {
@@ -9564,10 +9597,10 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.ObjectWrapper {
               true
             );
           });
-          tooltip2.append(uiI18n2.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
+          tooltip2.append(uiI18n2.getFormatLocalizedString(str_15, UIStrings15.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
         } else {
           const link = Link.create("https://developer.chrome.com/docs/devtools/workspaces/", "Workspace");
-          tooltip2.append(uiI18n2.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
+          tooltip2.append(uiI18n2.getFormatLocalizedString(str_15, UIStrings15.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
         }
         suffixElement.append(icon, tooltip2);
         this.tabbedPane.setSuffixElement(tabId2, suffixElement);
@@ -9745,7 +9778,7 @@ var EditorContainerTabDelegate = class {
 };
 
 // gen/front_end/panels/sources/SourcesView.js
-var UIStrings15 = {
+var UIStrings16 = {
   /**
    * @description Text to open a file
    */
@@ -9767,8 +9800,8 @@ var UIStrings15 = {
    */
   sourceViewActions: "Source View Actions"
 };
-var str_15 = i18n29.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings15);
-var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("panels/sources/SourcesView.ts", UIStrings16);
+var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(UI16.Widget.VBox) {
   #searchableView;
   sourceViewByUISourceCode;
@@ -9842,18 +9875,18 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     const icon = createIcon3("sync", "sync-icon");
     workspaceElement.createChild("span", "icon-container").appendChild(icon);
     const text = workspaceElement.createChild("span");
-    text.textContent = UIStrings15.workspaceDropInAFolderToSyncSources;
+    text.textContent = UIStrings16.workspaceDropInAFolderToSyncSources;
     const browseButton = text.createChild("button");
-    browseButton.textContent = i18nString14(UIStrings15.selectFolder);
+    browseButton.textContent = i18nString15(UIStrings16.selectFolder);
     browseButton.addEventListener("click", this.addFileSystemClicked.bind(this));
     const shortcuts = [
-      { actionId: "quick-open.show", description: i18nString14(UIStrings15.openFile) },
-      { actionId: "quick-open.show-command-menu", description: i18nString14(UIStrings15.runCommand) }
+      { actionId: "quick-open.show", description: i18nString15(UIStrings16.openFile) },
+      { actionId: "quick-open.show-command-menu", description: i18nString15(UIStrings16.runCommand) }
     ];
     const list = placeholder2.createChild("div", "shortcuts-list");
     list.classList.add("tabbed-pane-placeholder-row");
     UI16.ARIAUtils.markAsList(list);
-    UI16.ARIAUtils.setLabel(list, i18nString14(UIStrings15.sourceViewActions));
+    UI16.ARIAUtils.setLabel(list, i18nString15(UIStrings16.sourceViewActions));
     for (const shortcut of shortcuts) {
       const shortcutKeys = UI16.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
       const listItemElement = list.createChild("div");
@@ -10003,9 +10036,6 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     if (view instanceof UI16.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         this.#scriptViewToolbar.removeToolbarItems();
-        for (const action3 of getRegisteredEditorActions()) {
-          this.#scriptViewToolbar.appendToolbarItem(action3.getOrCreateButton(this));
-        }
         if (Array.isArray(items)) {
           items.map((item) => this.#scriptViewToolbar.appendToolbarItem(item));
         } else {
@@ -10247,13 +10277,6 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.editorContainer.view.element.classList.toggle("breakpoints-deactivated", !active);
   }
 };
-var registeredEditorActions = [];
-function registerEditorAction(editorAction) {
-  registeredEditorActions.push(editorAction);
-}
-function getRegisteredEditorActions() {
-  return registeredEditorActions.map((editorAction) => editorAction());
-}
 var SwitchFileActionDelegate = class _SwitchFileActionDelegate {
   static nextFile(currentUISourceCode) {
     function fileNamePrefix(name2) {
@@ -10343,7 +10366,7 @@ var ThreadsSidebarPane_exports = {};
 __export(ThreadsSidebarPane_exports, {
   ThreadsSidebarPane: () => ThreadsSidebarPane
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
 import * as Lit3 from "./../../ui/lit/lit.js";
@@ -10419,14 +10442,14 @@ var threadsSidebarPane_css_default = `/*
 
 // gen/front_end/panels/sources/ThreadsSidebarPane.js
 var { html: html6, render: render7, nothing: nothing4 } = Lit3;
-var UIStrings16 = {
+var UIStrings17 = {
   /**
    * @description Text in Threads Sidebar Pane of the Sources panel
    */
   paused: "paused"
 };
-var str_16 = i18n31.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings16);
-var i18nString15 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("panels/sources/ThreadsSidebarPane.ts", UIStrings17);
+var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var DEFAULT_VIEW5 = (input, _output, target) => {
   render7(html6`
     <style>${threadsSidebarPane_css_default}</style>
@@ -10440,7 +10463,7 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         role="option"
       >
         <div class="thread-item-title">${thread.name}</div>
-        <div class="thread-item-paused-state">${thread.paused ? i18nString15(UIStrings16.paused) : ""}</div>
+        <div class="thread-item-paused-state">${thread.paused ? i18nString16(UIStrings17.paused) : ""}</div>
         ${thread.selected ? html6`<devtools-icon name="large-arrow-right-filled" class="selected-thread-icon"></devtools-icon>` : nothing4}
       </button>
     `)}
@@ -10515,7 +10538,7 @@ var ThreadsSidebarPane = class extends UI17.Widget.VBox {
 };
 
 // gen/front_end/panels/sources/SourcesPanel.js
-var UIStrings17 = {
+var UIStrings18 = {
   /**
    * @description Text that appears when user drag and drop something (for example, a file) in Sources Panel of the Sources panel
    */
@@ -10644,8 +10667,8 @@ var UIStrings17 = {
    */
   explainInputHandling: "Explain input handling"
 };
-var str_17 = i18n33.i18n.registerUIStrings("panels/sources/SourcesPanel.ts", UIStrings17);
-var i18nString16 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("panels/sources/SourcesPanel.ts", UIStrings18);
+var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var primitiveRemoteObjectTypes = /* @__PURE__ */ new Set(["number", "boolean", "bigint", "undefined"]);
 var sourcesPanelInstance;
 var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
@@ -10681,7 +10704,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   constructor() {
     super("sources");
     this.registerRequiredCSS(sourcesPanel_css_default);
-    new UI18.DropTarget.DropTarget(this.element, [UI18.DropTarget.Type.Folder], i18nString16(UIStrings17.dropWorkspaceFolderHere), this.handleDrop.bind(this));
+    new UI18.DropTarget.DropTarget(this.element, [UI18.DropTarget.Type.Folder], i18nString17(UIStrings18.dropWorkspaceFolderHere), this.handleDrop.bind(this));
     this.workspace = Workspace22.Workspace.WorkspaceImpl.instance();
     this.togglePauseAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-pause");
     this.stepOverAction = UI18.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-over");
@@ -10713,7 +10736,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     navigatorMenuButton.populateMenuCall = this.populateNavigatorMenu.bind(this);
     navigatorMenuButton.jslogContext = "more-options";
     navigatorMenuButton.iconName = "dots-vertical";
-    navigatorMenuButton.title = i18nString16(UIStrings17.moreOptions);
+    navigatorMenuButton.title = i18nString17(UIStrings18.moreOptions);
     tabbedPane.rightToolbar().appendToolbarItem(new UI18.Toolbar.ToolbarItem(navigatorMenuButton));
     if (UI18.ViewManager.ViewManager.instance().hasViewsForLocation("run-view-sidebar")) {
       const navigatorSplitWidget = new UI18.SplitWidget.SplitWidget(false, true, "source-panel-navigator-sidebar-split-view-state");
@@ -10727,8 +10750,8 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     this.#sourcesView = new SourcesView();
     this.#sourcesView.addEventListener("EditorSelected", this.editorSelected.bind(this));
-    this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString16(UIStrings17.showNavigator), i18nString16(UIStrings17.hideNavigator), i18nString16(UIStrings17.navigatorShown), i18nString16(UIStrings17.navigatorHidden), "navigator");
-    this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(i18nString16(UIStrings17.showDebugger), i18nString16(UIStrings17.hideDebugger), i18nString16(UIStrings17.debuggerShown), i18nString16(UIStrings17.debuggerHidden), "debugger");
+    this.toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(i18nString17(UIStrings18.showNavigator), i18nString17(UIStrings18.hideNavigator), i18nString17(UIStrings18.navigatorShown), i18nString17(UIStrings18.navigatorHidden), "navigator");
+    this.toggleDebuggerSidebarButton = this.splitWidget.createShowHideSidebarButton(i18nString17(UIStrings18.showDebugger), i18nString17(UIStrings18.hideDebugger), i18nString17(UIStrings18.debuggerShown), i18nString17(UIStrings18.debuggerHidden), "debugger");
     this.editorView.setMainWidget(this.#sourcesView);
     this.threadsSidebarPane = null;
     this.watchSidebarPane = UI18.ViewManager.ViewManager.instance().view("sources.watch");
@@ -10991,9 +11014,9 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   }
   populateNavigatorMenu(contextMenu) {
     contextMenu.appendItemsAtLocation("navigatorMenu");
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-folder", i18nString16(UIStrings17.groupByFolder));
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-authored", i18nString16(UIStrings17.groupByAuthored));
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-just-my-code", i18nString16(UIStrings17.hideIgnoreListed));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-folder", i18nString17(UIStrings18.groupByFolder));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-authored", i18nString17(UIStrings18.groupByAuthored));
+    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-just-my-code", i18nString17(UIStrings18.hideIgnoreListed));
   }
   updateLastModificationTime() {
     this.lastModificationTime = window.performance.now();
@@ -11167,9 +11190,9 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     const debugToolbar = document.createElement("devtools-toolbar");
     debugToolbar.classList.add("scripts-debug-toolbar");
     debugToolbar.setAttribute("jslog", `${VisualLogging11.toolbar("debug").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
-    const longResumeButton = new UI18.Toolbar.ToolbarButton(i18nString16(UIStrings17.resumeWithAllPausesBlockedForMs), "play");
+    const longResumeButton = new UI18.Toolbar.ToolbarButton(i18nString17(UIStrings18.resumeWithAllPausesBlockedForMs), "play");
     longResumeButton.addEventListener("Click", this.longResume, this);
-    const terminateExecutionButton = new UI18.Toolbar.ToolbarButton(i18nString16(UIStrings17.terminateCurrentJavascriptCall), "stop");
+    const terminateExecutionButton = new UI18.Toolbar.ToolbarButton(i18nString17(UIStrings18.terminateCurrentJavascriptCall), "stop");
     terminateExecutionButton.addEventListener("Click", this.terminateExecution, this);
     const pauseActionButton = UI18.Toolbar.Toolbar.createLongPressActionButton(this.togglePauseAction, [terminateExecutionButton, longResumeButton], []);
     pauseActionButton.toggleOnClick(false);
@@ -11185,7 +11208,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
   createDebugToolbarDrawer() {
     const debugToolbarDrawer = document.createElement("div");
     debugToolbarDrawer.classList.add("scripts-debug-toolbar-drawer");
-    const label = i18nString16(UIStrings17.pauseOnCaughtExceptions);
+    const label = i18nString17(UIStrings18.pauseOnCaughtExceptions);
     const setting = Common12.Settings.Settings.instance().moduleSetting("pause-on-caught-exception");
     debugToolbarDrawer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(label, setting));
     return debugToolbarDrawer;
@@ -11215,7 +11238,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     }
     const eventTarget = event.target;
     if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common12.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace22.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
-      contextMenu.revealSection().appendItem(i18nString16(UIStrings17.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
+      contextMenu.revealSection().appendItem(i18nString17(UIStrings18.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
         jslogContext: "sources.reveal-in-navigator-sidebar"
       });
     }
@@ -11226,10 +11249,10 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
         UI18.Context.Context.instance().setFlavor(Workspace22.UISourceCode.UISourceCode, uiSourceCode);
         const action3 = UI18.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
-        submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString16(UIStrings17.startAChat));
-        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
-        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
-        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
+        submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString17(UIStrings18.startAChat));
+        appendSubmenuPromptAction(submenu, action3, i18nString17(UIStrings18.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
+        appendSubmenuPromptAction(submenu, action3, i18nString17(UIStrings18.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
+        appendSubmenuPromptAction(submenu, action3, i18nString17(UIStrings18.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
       }
     }
     if (uiSourceCode.contentType().hasScripts() && Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(uiSourceCode).every((script) => script.isJavaScript())) {
@@ -11255,7 +11278,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       const target = UI18.Context.Context.instance().flavor(SDK11.Target.Target);
       const debuggerModel = target ? target.model(SDK11.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel?.isPaused()) {
-        contextMenu.debugSection().appendItem(i18nString16(UIStrings17.continueToHere), this.continueToLocation.bind(this, uiLocation), { jslogContext: "continue-to-here" });
+        contextMenu.debugSection().appendItem(i18nString17(UIStrings18.continueToHere), this.continueToLocation.bind(this, uiLocation), { jslogContext: "continue-to-here" });
       }
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
@@ -11273,21 +11296,21 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
       return remoteObject.type;
     }
     const copyContextMenuTitle = getObjectTitle();
-    contextMenu.debugSection().appendItem(i18nString16(UIStrings17.storeAsGlobalVariable), () => executionContext?.target().model(SDK11.ConsoleModel.ConsoleModel)?.saveToTempVariable(executionContext, remoteObject), { jslogContext: "store-as-global-variable" });
+    contextMenu.debugSection().appendItem(i18nString17(UIStrings18.storeAsGlobalVariable), () => executionContext?.target().model(SDK11.ConsoleModel.ConsoleModel)?.saveToTempVariable(executionContext, remoteObject), { jslogContext: "store-as-global-variable" });
     const ctxMenuClipboardSection = contextMenu.clipboardSection();
     const inspectorFrontendHost = Host8.InspectorFrontendHost.InspectorFrontendHostInstance;
     if (remoteObject.type === "string") {
-      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyStringContents), () => {
+      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyStringContents), () => {
         inspectorFrontendHost.copyText(remoteObject.value);
       }, { jslogContext: "copy-string-contents" });
-      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyStringAsJSLiteral), () => {
+      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyStringAsJSLiteral), () => {
         inspectorFrontendHost.copyText(Platform12.StringUtilities.formatAsJSLiteral(remoteObject.value));
       }, { jslogContext: "copy-string-as-js-literal" });
-      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyStringAsJSONLiteral), () => {
+      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyStringAsJSONLiteral), () => {
         inspectorFrontendHost.copyText(JSON.stringify(remoteObject.value));
       }, { jslogContext: "copy-string-as-json-literal" });
     } else if (primitiveRemoteObjectTypes.has(remoteObject.type)) {
-      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyS, { PH1: String(copyContextMenuTitle) }), () => {
+      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyS, { PH1: String(copyContextMenuTitle) }), () => {
         inspectorFrontendHost.copyText(remoteObject.description);
       }, { jslogContext: "copy-primitive" });
     } else if (remoteObject.type === "object") {
@@ -11300,9 +11323,9 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
         }]);
         inspectorFrontendHost.copyText(result);
       };
-      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyS, { PH1: String(copyContextMenuTitle) }), copyDecodedValueHandler, { jslogContext: "copy-object" });
+      ctxMenuClipboardSection.appendItem(i18nString17(UIStrings18.copyS, { PH1: String(copyContextMenuTitle) }), copyDecodedValueHandler, { jslogContext: "copy-object" });
     } else if (remoteObject.type === "function") {
-      contextMenu.debugSection().appendItem(i18nString16(UIStrings17.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject), { jslogContext: "show-function-definition" });
+      contextMenu.debugSection().appendItem(i18nString17(UIStrings18.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject), { jslogContext: "show-function-definition" });
     }
     function toStringForClipboard(data) {
       const subtype = data.subtype;
@@ -11341,7 +11364,7 @@ var SourcesPanel = class _SourcesPanel extends UI18.Panel.Panel {
     if (!uiSourceCode) {
       return;
     }
-    const openText = i18nString16(UIStrings17.openInSourcesPanel);
+    const openText = i18nString17(UIStrings18.openInSourcesPanel);
     const callback = this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0));
     contextMenu.revealSection().appendItem(openText, callback, { jslogContext: "reveal-in-sources" });
   }
@@ -11633,7 +11656,7 @@ var QuickSourceView = class _QuickSourceView extends UI18.Widget.VBox {
 };
 
 // gen/front_end/panels/sources/CallStackSidebarPane.js
-var UIStrings18 = {
+var UIStrings19 = {
   /**
    * @description Text in Call Stack Sidebar Pane of the Sources panel
    */
@@ -11684,8 +11707,8 @@ var UIStrings18 = {
    */
   debugSymbolsIncomplete: "The debug information for function {PH1} is incomplete"
 };
-var str_18 = i18n35.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings18);
-var i18nString17 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("panels/sources/CallStackSidebarPane.ts", UIStrings19);
+var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var { createRef, ref: ref2 } = Directives2;
 var callstackSidebarPaneInstance;
 var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleView {
@@ -11705,7 +11728,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
   constructor() {
     super({
       jslog: `${VisualLogging12.section("sources.callstack")}`,
-      title: i18nString17(UIStrings18.callStack),
+      title: i18nString18(UIStrings19.callStack),
       viewId: "sources.callstack",
       useShadowDom: true
     });
@@ -11742,19 +11765,19 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
         <label class='ignore-listed-message-label'>
           <input type='checkbox' tabindex=0 class='ignore-listed-checkbox'
               @change=${ignoreListCheckboxChanged} ${ref2(ignoreListCheckboxRef)} />
-          ${i18nString17(UIStrings18.showIgnorelistedFrames)}
+          ${i18nString18(UIStrings19.showIgnorelistedFrames)}
         </label>
       </div>
       <div class='gray-info-message' tabindex=-1 ${ref2(notPausedRef)}>
-        ${i18nString17(UIStrings18.notPaused)}
+        ${i18nString18(UIStrings19.notPaused)}
       </div>
       <div class='call-frame-warnings-message' tabindex=-1 ${ref2(warningRef)}>
         <devtools-icon .name=${"warning-filled"} class='call-frame-warning-icon small'></devtools-icon>
-        ${i18nString17(UIStrings18.callFrameWarnings)}
+        ${i18nString18(UIStrings19.callFrameWarnings)}
       </div>
       ${this.list.element}
       <div class='show-more-message hidden' ${ref2(showMoreRef)}>
-        <button class='link' @click=${onShowMoreClicked}>${i18nString17(UIStrings18.showMore)}</button>
+        <button class='link' @click=${onShowMoreClicked}>${i18nString18(UIStrings19.showMore)}</button>
       </div>
     `, this.contentElement);
     this.ignoreListMessageElement = ignoreListMessageRef.value;
@@ -11884,7 +11907,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       UI19.Tooltip.Tooltip.install(linkElement, item.linkText);
       element.classList.toggle("ignore-listed-call-frame", item.isIgnoreListed);
       if (item.isIgnoreListed) {
-        UI19.ARIAUtils.setDescription(element, i18nString17(UIStrings18.onIgnoreList));
+        UI19.ARIAUtils.setDescription(element, i18nString18(UIStrings19.onIgnoreList));
       }
       if (!item.frame) {
         UI19.ARIAUtils.setDisabled(element, true);
@@ -11904,7 +11927,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
       icon2.name = "warning-filled";
       icon2.classList.add("call-frame-warning-icon", "small");
       const { resources, details } = convertMissingDebugInfo(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName);
-      const messages = resources.map((r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
+      const messages = resources.map((r) => i18nString18(UIStrings19.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
       UI19.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
       element.appendChild(icon2);
     }
@@ -11940,12 +11963,12 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI19.View.SimpleV
     const contextMenu = new UI19.ContextMenu.ContextMenu(event);
     const debuggerCallFrame = item.frame?.sdkFrame;
     if (debuggerCallFrame) {
-      contextMenu.defaultSection().appendItem(i18nString17(UIStrings18.restartFrame), () => {
+      contextMenu.defaultSection().appendItem(i18nString18(UIStrings19.restartFrame), () => {
         Host9.userMetrics.actionTaken(Host9.UserMetrics.Action.StackFrameRestarted);
         void debuggerCallFrame.restart();
       }, { disabled: !debuggerCallFrame.canBeRestarted, jslogContext: "restart-frame" });
     }
-    contextMenu.defaultSection().appendItem(i18nString17(UIStrings18.copyStackTrace), this.copyStackTrace.bind(this), { jslogContext: "copy-stack-trace" });
+    contextMenu.defaultSection().appendItem(i18nString18(UIStrings19.copyStackTrace), this.copyStackTrace.bind(this), { jslogContext: "copy-stack-trace" });
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
@@ -12081,12 +12104,12 @@ function convertMissingDebugInfo(missingDebugInfo, functionName) {
   switch (missingDebugInfo.type) {
     case "PARTIAL_INFO":
       return {
-        details: i18nString17(UIStrings18.debugSymbolsIncomplete, { PH1: functionName ?? "" }),
+        details: i18nString18(UIStrings19.debugSymbolsIncomplete, { PH1: functionName ?? "" }),
         resources: missingDebugInfo.missingDebugFiles
       };
     case "NO_INFO":
       return {
-        details: i18nString17(UIStrings18.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? "" }),
+        details: i18nString18(UIStrings19.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? "" }),
         resources: []
       };
   }
@@ -12247,7 +12270,7 @@ __export(FilteredUISourceCodeListProvider_exports, {
 });
 import "./../../ui/components/highlighting/highlighting.js";
 import * as Common14 from "./../../core/common/common.js";
-import * as i18n37 from "./../../core/i18n/i18n.js";
+import * as i18n39 from "./../../core/i18n/i18n.js";
 import * as Persistence12 from "./../../models/persistence/persistence.js";
 import * as Workspace25 from "./../../models/workspace/workspace.js";
 import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
@@ -12299,7 +12322,7 @@ var filteredUISourceCodeListProvider_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./filteredUISourceCodeListProvider.css")} */`;
 
 // gen/front_end/panels/sources/FilteredUISourceCodeListProvider.js
-var UIStrings19 = {
+var UIStrings20 = {
   /**
    * @description Text in Filtered UISource Code List Provider of the Sources panel
    */
@@ -12310,8 +12333,8 @@ var UIStrings19 = {
    */
   sIgnoreListed: "{PH1} (ignore listed)"
 };
-var str_19 = i18n37.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings19);
-var i18nString18 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("panels/sources/FilteredUISourceCodeListProvider.ts", UIStrings20);
+var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var { classMap: classMap2 } = Directives3;
 var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidget.Provider {
   queryLineNumberAndColumnNumber;
@@ -12415,7 +12438,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     const isIgnoreListed = Workspace25.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode);
     let tooltipText = fullDisplayName;
     if (isIgnoreListed) {
-      tooltipText = i18nString18(UIStrings19.sIgnoreListed, { PH1: tooltipText });
+      tooltipText = i18nString19(UIStrings20.sIgnoreListed, { PH1: tooltipText });
     }
     const titleRanges = [];
     const subtitleRanges = [];
@@ -12491,7 +12514,7 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     this.refresh();
   }
   notFoundText() {
-    return i18nString18(UIStrings19.noFilesFound);
+    return i18nString19(UIStrings20.noFilesFound);
   }
   attach() {
     Workspace25.Workspace.WorkspaceImpl.instance().addEventListener(Workspace25.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
@@ -12512,11 +12535,11 @@ __export(GoToLineQuickOpen_exports, {
   GoToLineQuickOpen: () => GoToLineQuickOpen
 });
 import "./../../ui/kit/kit.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as i18n41 from "./../../core/i18n/i18n.js";
 import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
 import * as UI20 from "./../../ui/legacy/legacy.js";
 import { html as html9 } from "./../../ui/lit/lit.js";
-var UIStrings20 = {
+var UIStrings21 = {
   /**
    * @description Text in Go To Line Quick Open of the Sources panel
    */
@@ -12557,8 +12580,8 @@ var UIStrings20 = {
    */
   goToLineS: "Go to line {PH1}"
 };
-var str_20 = i18n39.i18n.registerUIStrings("panels/sources/GoToLineQuickOpen.ts", UIStrings20);
-var i18nString19 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
+var str_21 = i18n41.i18n.registerUIStrings("panels/sources/GoToLineQuickOpen.ts", UIStrings21);
+var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
   #goToLineStrings = [];
   selectItem(_itemIndex, promptValue) {
@@ -12591,7 +12614,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
     const sourceFrame = this.currentSourceFrame();
     if (!position) {
       if (!sourceFrame) {
-        this.#goToLineStrings.push(i18nString19(UIStrings20.typeANumberToGoToThatLine));
+        this.#goToLineStrings.push(i18nString20(UIStrings21.typeANumberToGoToThatLine));
         return;
       }
       const editorState = sourceFrame.textEditor.state;
@@ -12599,34 +12622,34 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
       if (disassembly) {
         const lastBytecodeOffset = disassembly.lineNumberToBytecodeOffset(disassembly.lineNumbers - 1);
         const bytecodeOffsetDigits = lastBytecodeOffset.toString(16).length;
-        this.#goToLineStrings.push(i18nString19(UIStrings20.currentPositionXsTypeAnOffset, {
+        this.#goToLineStrings.push(i18nString20(UIStrings21.currentPositionXsTypeAnOffset, {
           PH1: "0".padStart(bytecodeOffsetDigits, "0"),
           PH2: lastBytecodeOffset.toString(16)
         }));
         return;
       }
       const linesCount = sourceFrame.editorLocationToUILocation(editorState.doc.lines - 1).lineNumber + 1;
-      this.#goToLineStrings.push(i18nString19(UIStrings20.currentLineSTypeALineNumber, { PH1: linesCount }));
+      this.#goToLineStrings.push(i18nString20(UIStrings21.currentLineSTypeALineNumber, { PH1: linesCount }));
       return;
     }
     if (sourceFrame?.wasmDisassembly) {
-      this.#goToLineStrings.push(i18nString19(UIStrings20.goToOffsetXs, { PH1: (position.column - 1).toString(16) }));
+      this.#goToLineStrings.push(i18nString20(UIStrings21.goToOffsetXs, { PH1: (position.column - 1).toString(16) }));
       return;
     }
     if (position.column && position.column > 1) {
-      this.#goToLineStrings.push(i18nString19(UIStrings20.goToLineSAndColumnS, { PH1: position.line, PH2: position.column }));
+      this.#goToLineStrings.push(i18nString20(UIStrings21.goToLineSAndColumnS, { PH1: position.line, PH2: position.column }));
       return;
     }
     if (sourceFrame && position.line > sourceFrame.textEditor.state.doc.lines) {
       return;
     }
-    this.#goToLineStrings.push(i18nString19(UIStrings20.goToLineS, { PH1: position.line }));
+    this.#goToLineStrings.push(i18nString20(UIStrings21.goToLineS, { PH1: position.line }));
   }
   notFoundText(_query) {
     if (!this.currentSourceFrame()) {
-      return i18nString19(UIStrings20.noFileSelected);
+      return i18nString20(UIStrings21.noFileSelected);
     }
-    return i18nString19(UIStrings20.noResultsFound);
+    return i18nString20(UIStrings21.noResultsFound);
   }
   parsePosition(query) {
     const sourceFrame = this.currentSourceFrame();
@@ -12658,123 +12681,13 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
   }
 };
 
-// gen/front_end/panels/sources/InplaceFormatterEditorAction.js
-var InplaceFormatterEditorAction_exports = {};
-__export(InplaceFormatterEditorAction_exports, {
-  InplaceFormatterEditorAction: () => InplaceFormatterEditorAction
-});
-import * as Common15 from "./../../core/common/common.js";
-import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as Formatter2 from "./../../models/formatter/formatter.js";
-import * as Persistence14 from "./../../models/persistence/persistence.js";
-import * as TextUtils11 from "./../../models/text_utils/text_utils.js";
-import * as Workspace27 from "./../../models/workspace/workspace.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
-var UIStrings21 = {
-  /**
-   * @description Title of the format button in the Sources panel
-   * @example {file name} PH1
-   */
-  formatS: "Format {PH1}",
-  /**
-   * @description Tooltip text that appears when hovering over the largeicon pretty print button in the Inplace Formatter Editor Action of the Sources panel
-   */
-  format: "Format"
-};
-var str_21 = i18n41.i18n.registerUIStrings("panels/sources/InplaceFormatterEditorAction.ts", UIStrings21);
-var i18nString20 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
-var inplaceFormatterEditorActionInstance;
-var InplaceFormatterEditorAction = class _InplaceFormatterEditorAction {
-  button;
-  sourcesView;
-  uiSourceCodeTitleChangedEvent = null;
-  static instance(opts = { forceNew: null }) {
-    const { forceNew } = opts;
-    if (!inplaceFormatterEditorActionInstance || forceNew) {
-      inplaceFormatterEditorActionInstance = new _InplaceFormatterEditorAction();
-    }
-    return inplaceFormatterEditorActionInstance;
-  }
-  editorSelected(event) {
-    const uiSourceCode = event.data;
-    this.updateButton(uiSourceCode);
-  }
-  editorClosed(event) {
-    const { wasSelected } = event.data;
-    if (wasSelected) {
-      this.updateButton(null);
-    }
-  }
-  updateButton(uiSourceCode) {
-    if (this.uiSourceCodeTitleChangedEvent) {
-      Common15.EventTarget.removeEventListeners([this.uiSourceCodeTitleChangedEvent]);
-    }
-    this.uiSourceCodeTitleChangedEvent = uiSourceCode ? uiSourceCode.addEventListener(Workspace27.UISourceCode.Events.TitleChanged, (event) => this.updateButton(event.data), this) : null;
-    const isFormattable = this.isFormattable(uiSourceCode);
-    this.button.element.classList.toggle("hidden", !isFormattable);
-    if (uiSourceCode && isFormattable) {
-      this.button.setTitle(i18nString20(UIStrings21.formatS, { PH1: uiSourceCode.name() }));
-    }
-  }
-  getOrCreateButton(sourcesView) {
-    if (this.button) {
-      return this.button;
-    }
-    this.sourcesView = sourcesView;
-    this.sourcesView.addEventListener("EditorSelected", this.editorSelected.bind(this));
-    this.sourcesView.addEventListener("EditorClosed", this.editorClosed.bind(this));
-    this.button = new UI21.Toolbar.ToolbarButton(i18nString20(UIStrings21.format), "brackets");
-    this.button.addEventListener("Click", this.formatSourceInPlace, this);
-    this.updateButton(sourcesView.currentUISourceCode());
-    return this.button;
-  }
-  isFormattable(uiSourceCode) {
-    if (!uiSourceCode) {
-      return false;
-    }
-    if (!Persistence14.Persistence.PersistenceImpl.instance().hasEditableContent(uiSourceCode)) {
-      return false;
-    }
-    const mimeType = Common15.ResourceType.ResourceType.simplifyContentType(uiSourceCode.mimeType());
-    return Common15.ResourceType.ResourceType.isJavaScriptMimeType(mimeType);
-  }
-  formatSourceInPlace() {
-    const sourceFrame = this.sourcesView.currentSourceFrame();
-    if (!sourceFrame) {
-      return;
-    }
-    const uiSourceCode = sourceFrame.uiSourceCode();
-    if (!this.isFormattable(uiSourceCode)) {
-      return;
-    }
-    if (uiSourceCode.isDirty()) {
-      void this.contentLoaded(uiSourceCode, sourceFrame, uiSourceCode.workingCopy());
-    } else {
-      void uiSourceCode.requestContentData().then((contentDataOrError) => TextUtils11.ContentData.ContentData.textOr(contentDataOrError, "")).then((content) => {
-        void this.contentLoaded(uiSourceCode, sourceFrame, content);
-      });
-    }
-  }
-  async contentLoaded(uiSourceCode, sourceFrame, content) {
-    const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(Common15.Settings.Settings.instance(), uiSourceCode.contentType(), sourceFrame.contentType, content);
-    if (uiSourceCode.workingCopy() === formattedContent) {
-      return;
-    }
-    const selection = sourceFrame.textEditor.toLineColumn(sourceFrame.textEditor.state.selection.main.head);
-    const [lineNumber, columnNumber] = formattedMapping.originalToFormatted(selection.lineNumber, selection.columnNumber);
-    uiSourceCode.setWorkingCopy(formattedContent);
-    this.sourcesView.showSourceLocation(uiSourceCode, { lineNumber, columnNumber });
-  }
-};
-registerEditorAction(InplaceFormatterEditorAction.instance);
-
 // gen/front_end/panels/sources/OpenFileQuickOpen.js
 var OpenFileQuickOpen_exports = {};
 __export(OpenFileQuickOpen_exports, {
   OpenFileQuickOpen: () => OpenFileQuickOpen
 });
 import "./../../ui/kit/kit.js";
-import * as Common16 from "./../../core/common/common.js";
+import * as Common15 from "./../../core/common/common.js";
 import * as Host10 from "./../../core/host/host.js";
 import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
 import { Directives as Directives4, html as html10 } from "./../../ui/lit/lit.js";
@@ -12790,9 +12703,9 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
       return;
     }
     if (typeof lineNumber === "number") {
-      void Common16.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
+      void Common15.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, columnNumber));
     } else {
-      void Common16.Revealer.reveal(uiSourceCode);
+      void Common15.Revealer.reveal(uiSourceCode);
     }
   }
   filterProject(project) {
@@ -12817,7 +12730,7 @@ import "./../../ui/components/highlighting/highlighting.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
+import * as UI21 from "./../../ui/legacy/legacy.js";
 import { html as html11, nothing as nothing5 } from "./../../ui/lit/lit.js";
 var UIStrings22 = {
   /**
@@ -13152,7 +13065,7 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
     sourceFrame.revealPosition({ lineNumber: item.lineNumber, columnNumber: item.columnNumber }, true);
   }
   currentSourceFrame() {
-    const sourcesView = UI22.Context.Context.instance().flavor(SourcesView);
+    const sourcesView = UI21.Context.Context.instance().flavor(SourcesView);
     return sourcesView?.currentSourceFrame() ?? null;
   }
   notFoundText() {
@@ -13171,15 +13084,15 @@ var PersistenceActions_exports = {};
 __export(PersistenceActions_exports, {
   ContextMenuProvider: () => ContextMenuProvider
 });
-import * as Common17 from "./../../core/common/common.js";
+import * as Common16 from "./../../core/common/common.js";
 import * as Host11 from "./../../core/host/host.js";
 import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as Bindings10 from "./../../models/bindings/bindings.js";
-import * as Persistence16 from "./../../models/persistence/persistence.js";
-import * as TextUtils12 from "./../../models/text_utils/text_utils.js";
-import * as Workspace28 from "./../../models/workspace/workspace.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
+import * as Persistence14 from "./../../models/persistence/persistence.js";
+import * as TextUtils11 from "./../../models/text_utils/text_utils.js";
+import * as Workspace27 from "./../../models/workspace/workspace.js";
+import * as UI22 from "./../../ui/legacy/legacy.js";
 var UIStrings23 = {
   /**
    * @description Text to save content as a specific file type
@@ -13227,7 +13140,7 @@ var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
 var ContextMenuProvider = class {
   appendApplicableItems(_event, contextMenu, contentProvider) {
     async function saveAs() {
-      if (contentProvider instanceof Workspace28.UISourceCode.UISourceCode) {
+      if (contentProvider instanceof Workspace27.UISourceCode.UISourceCode) {
         contentProvider.commitWorkingCopy();
       }
       const url = contentProvider.contentURL();
@@ -13235,8 +13148,8 @@ var ContextMenuProvider = class {
       const maybeScript = getScript(contentProvider);
       if (maybeScript?.isWasm()) {
         try {
-          const base64 = await maybeScript.getWasmBytecode().then(Common17.Base64.encode);
-          contentData = new TextUtils12.ContentData.ContentData(
+          const base64 = await maybeScript.getWasmBytecode().then(Common16.Base64.encode);
+          contentData = new TextUtils11.ContentData.ContentData(
             base64,
             /* isBase64=*/
             true,
@@ -13244,7 +13157,7 @@ var ContextMenuProvider = class {
           );
         } catch (e) {
           console.error(`Unable to convert WASM byte code for ${url} to base64. Not saving to disk`, e.stack);
-          Common17.Console.Console.instance().error(
+          Common16.Console.Console.instance().error(
             i18nString22(UIStrings23.saveWasmFailed),
             /* show=*/
             false
@@ -13253,9 +13166,9 @@ var ContextMenuProvider = class {
         }
       } else {
         const contentDataOrError = await contentProvider.requestContentData();
-        if (TextUtils12.ContentData.ContentData.isError(contentDataOrError)) {
+        if (TextUtils11.ContentData.ContentData.isError(contentDataOrError)) {
           console.error(`Failed to retrieve content for ${url}: ${contentDataOrError}`);
-          Common17.Console.Console.instance().error(
+          Common16.Console.Console.instance().error(
             i18nString22(UIStrings23.saveFailed),
             /* show=*/
             false
@@ -13264,18 +13177,18 @@ var ContextMenuProvider = class {
         }
         contentData = contentDataOrError;
       }
-      await Workspace28.FileManager.FileManager.instance().save(
+      await Workspace27.FileManager.FileManager.instance().save(
         url,
         contentData,
         /* forceSaveAs=*/
         true
       );
-      Workspace28.FileManager.FileManager.instance().close(url);
+      Workspace27.FileManager.FileManager.instance().close(url);
     }
     async function saveImage() {
       const targetObject = contentProvider;
       const contentDataOrError = await targetObject.requestContentData();
-      const content = TextUtils12.ContentData.ContentData.textOr(contentDataOrError, "");
+      const content = TextUtils11.ContentData.ContentData.textOr(contentDataOrError, "");
       const link = document.createElement("a");
       link.download = targetObject.displayName;
       link.href = "data:" + targetObject.mimeType + ";base64," + content;
@@ -13286,18 +13199,18 @@ var ContextMenuProvider = class {
     } else if (contentProvider instanceof SDK12.Resource.Resource && contentProvider.contentType().isImage()) {
       contextMenu.saveSection().appendItem(i18nString22(UIStrings23.saveImage), saveImage, { jslogContext: "save-image" });
     }
-    const uiSourceCode = Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
-    const networkPersistenceManager = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance();
-    const binding = uiSourceCode && Persistence16.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
-    const fileSystemUISourceCode = binding ? binding.fileSystem : contentProvider instanceof Workspace28.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace28.Workspace.projectTypes.FileSystem ? contentProvider : uiSourceCode;
-    if (fileSystemUISourceCode && fileSystemUISourceCode.project().type() === Workspace28.Workspace.projectTypes.FileSystem) {
+    const uiSourceCode = Workspace27.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
+    const networkPersistenceManager = Persistence14.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    const binding = uiSourceCode && Persistence14.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
+    const fileSystemUISourceCode = binding ? binding.fileSystem : contentProvider instanceof Workspace27.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace27.Workspace.projectTypes.FileSystem ? contentProvider : uiSourceCode;
+    if (fileSystemUISourceCode && fileSystemUISourceCode.project().type() === Workspace27.Workspace.projectTypes.FileSystem) {
       const fileURL = fileSystemUISourceCode.contentURL();
-      if (Common17.ParsedURL.schemeIs(fileURL, "file:")) {
-        const path = Common17.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
+      if (Common16.ParsedURL.schemeIs(fileURL, "file:")) {
+        const path = Common16.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
         contextMenu.revealSection().appendItem(i18nString22(UIStrings23.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
       }
     }
-    if (contentProvider instanceof Workspace28.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace28.Workspace.projectTypes.FileSystem) {
+    if (contentProvider instanceof Workspace27.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace27.Workspace.projectTypes.FileSystem) {
       return;
     }
     let disabled = true;
@@ -13318,20 +13231,20 @@ var ContextMenuProvider = class {
     contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.overrideContent), handler, { disabled, jslogContext: "override-content" });
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.showOverrides), async () => {
-        await UI23.ViewManager.ViewManager.instance().showView("navigator-overrides");
+        await UI22.ViewManager.ViewManager.instance().showView("navigator-overrides");
         Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
       }, { jslogContext: "show-overrides" });
     }
   }
   async handleOverrideContent(uiSourceCode, contentProvider) {
-    const networkPersistenceManager = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance();
+    const networkPersistenceManager = Persistence14.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
     if (isSuccess) {
-      await Common17.Revealer.reveal(uiSourceCode);
+      await Common16.Revealer.reveal(uiSourceCode);
     }
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
-    } else if (contentProvider instanceof Workspace28.UISourceCode.UISourceCode) {
+    } else if (contentProvider instanceof Workspace27.UISourceCode.UISourceCode) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentFromSourcesContextMenu);
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -13354,7 +13267,7 @@ var ContextMenuProvider = class {
     const deployedName = Bindings10.ResourceUtils.displayNameForURL(deployedUrl);
     const originalUrl = originalUiSourceCode.url();
     const originalName = Bindings10.ResourceUtils.displayNameForURL(originalUrl);
-    const shouldJumpToDeployedFile = await UI23.UIUtils.ConfirmDialog.show(i18nString22(UIStrings23.overrideSourceMappedFileExplanation, { PH1: originalName }), i18nString22(UIStrings23.overrideSourceMappedFileWarning, { PH1: deployedName }), void 0, { jslogContext: "override-source-mapped-file-warning" });
+    const shouldJumpToDeployedFile = await UI22.UIUtils.ConfirmDialog.show(i18nString22(UIStrings23.overrideSourceMappedFileExplanation, { PH1: originalName }), i18nString22(UIStrings23.overrideSourceMappedFileWarning, { PH1: deployedName }), void 0, { jslogContext: "override-source-mapped-file-warning" });
     if (shouldJumpToDeployedFile) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentContextMenuRedirectToDeployed);
       await this.handleOverrideContent(deployedUiSourceCode, deployedUiSourceCode);
@@ -13372,12 +13285,12 @@ var ContextMenuProvider = class {
     if (!deployedStylesUrl) {
       return null;
     }
-    const deployedUiSourceCode = Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace28.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common17.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
+    const deployedUiSourceCode = Workspace27.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace27.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common16.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
     return deployedUiSourceCode;
   }
 };
 function getScript(contentProvider) {
-  if (!(contentProvider instanceof Workspace28.UISourceCode.UISourceCode)) {
+  if (!(contentProvider instanceof Workspace27.UISourceCode.UISourceCode)) {
     return null;
   }
   const target = Bindings10.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider);
@@ -13402,7 +13315,7 @@ import * as SourceMapScopes2 from "./../../models/source_map_scopes/source_map_s
 import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
+import * as UI23 from "./../../ui/legacy/legacy.js";
 import { html as html12, nothing as nothing6, render as render9 } from "./../../ui/lit/lit.js";
 import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -13496,7 +13409,7 @@ var DEFAULT_VIEW6 = (input, output, target) => {
       input.onToggle(objectTree, customEvent.detail.expanded);
     }}
               @contextmenu=${(e) => {
-      const contextMenu = new UI24.ContextMenu.ContextMenu(e);
+      const contextMenu = new UI23.ContextMenu.ContextMenu(e);
       input.onContextMenu(objectTree, contextMenu);
       void contextMenu.show();
     }}>
@@ -13535,7 +13448,7 @@ function scopeTitle(scope) {
   if (scope.type() === "closure") {
     const scopeName = scope.name();
     if (scopeName) {
-      title = i18nString23(UIStrings24.closureS, { PH1: UI24.UIUtils.beautifyFunctionName(scopeName) });
+      title = i18nString23(UIStrings24.closureS, { PH1: UI23.UIUtils.beautifyFunctionName(scopeName) });
     } else {
       title = i18nString23(UIStrings24.closure);
     }
@@ -13551,7 +13464,7 @@ function scopeKey(scope) {
   if (scope.type() === "closure") {
     const scopeName = scope.name();
     if (scopeName) {
-      title = `Closure: ${UI24.UIUtils.beautifyFunctionName(scopeName)}`;
+      title = `Closure: ${UI23.UIUtils.beautifyFunctionName(scopeName)}`;
     } else {
       title = "Closure";
     }
@@ -13562,7 +13475,7 @@ function scopeKey(scope) {
   }
   return title + (subtitle ? ":" + subtitle : "");
 }
-var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBox {
+var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI23.Widget.VBox {
   #linkifier;
   #expansionTrackers = /* @__PURE__ */ new Map();
   #scopeChainModel = null;
@@ -13574,7 +13487,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI24.Widget.VBo
       useShadowDom: true
     });
     this.#linkifier = new Components3.Linkifier.Linkifier();
-    this.flavorChanged(UI24.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
+    this.flavorChanged(UI23.Context.Context.instance().flavor(StackTrace7.StackTrace.DebuggableFrameFlavor));
     this.#view = view;
   }
   static instance() {
@@ -13680,17 +13593,18 @@ __export(SourcesNavigator_exports, {
   SnippetsNavigatorView: () => SnippetsNavigatorView
 });
 import "./../../ui/legacy/legacy.js";
-import * as Common18 from "./../../core/common/common.js";
+import * as Common17 from "./../../core/common/common.js";
 import * as Host12 from "./../../core/host/host.js";
 import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as Persistence18 from "./../../models/persistence/persistence.js";
-import * as TextUtils13 from "./../../models/text_utils/text_utils.js";
-import * as Workspace30 from "./../../models/workspace/workspace.js";
+import * as Bindings11 from "./../../models/bindings/bindings.js";
+import * as Persistence16 from "./../../models/persistence/persistence.js";
+import * as TextUtils12 from "./../../models/text_utils/text_utils.js";
+import * as Workspace29 from "./../../models/workspace/workspace.js";
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
 import { Link as Link2 } from "./../../ui/kit/kit.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
+import * as UI24 from "./../../ui/legacy/legacy.js";
 import * as Snippets5 from "./../snippets/snippets.js";
 
 // gen/front_end/panels/sources/sourcesNavigator.css.js
@@ -13811,7 +13725,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     super("navigator-network", networkProjectManager, true);
     this.registerRequiredCSS(sourcesNavigator_css_default);
     SDK13.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
-    UI25.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
+    UI24.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
     SDK13.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
   static instance(opts) {
@@ -13822,10 +13736,10 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace30.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(project.target());
+    return project.type() === Workspace29.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
   }
   onScopeChange() {
-    for (const project of Workspace30.Workspace.WorkspaceImpl.instance().projects()) {
+    for (const project of Workspace29.Workspace.WorkspaceImpl.instance().projects()) {
       if (!this.acceptProject(project)) {
         this.removeProject(project);
       } else {
@@ -13860,13 +13774,13 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   }
 };
 var FilesNavigatorView = class extends NavigatorView {
-  #automaticFileSystemManager = Persistence18.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+  #automaticFileSystemManager = Persistence16.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
   #eventListeners = [];
   #automaticFileSystemNudge;
   constructor(networkProjectManager) {
     super("navigator-files", networkProjectManager);
     this.registerRequiredCSS(sourcesNavigator_css_default);
-    const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noWorkspace), i18nString24(UIStrings25.explainWorkspace));
+    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noWorkspace), i18nString24(UIStrings25.explainWorkspace));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/workspaces/";
     const link = Link2.create("https://goo.gle/devtools-automatic-workspace-folders", "com.chrome.devtools.json");
@@ -13890,7 +13804,7 @@ var FilesNavigatorView = class extends NavigatorView {
     this.#automaticFileSystemChanged({ data: this.#automaticFileSystemManager.automaticFileSystem });
   }
   willHide() {
-    Common18.EventTarget.removeEventListeners(this.#eventListeners);
+    Common17.EventTarget.removeEventListeners(this.#eventListeners);
     this.#automaticFileSystemChanged({ data: null });
     super.willHide();
   }
@@ -13899,13 +13813,13 @@ var FilesNavigatorView = class extends NavigatorView {
     super.sourceSelected(uiSourceCode, focusSource);
   }
   acceptProject(project) {
-    if (project.type() === Workspace30.Workspace.projectTypes.ConnectableFileSystem) {
+    if (project.type() === Workspace29.Workspace.projectTypes.ConnectableFileSystem) {
       return true;
     }
-    return project.type() === Workspace30.Workspace.projectTypes.FileSystem && Persistence18.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides" && !Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
+    return project.type() === Workspace29.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides" && !Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
   handleContextMenu(event) {
-    const contextMenu = new UI25.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction("sources.add-folder-to-workspace", void 0, true);
     void contextMenu.show();
   }
@@ -13923,15 +13837,15 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   toolbar;
   constructor(networkProjectManager) {
     super("navigator-overrides", networkProjectManager);
-    const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noLocalOverrides), i18nString24(UIStrings25.explainLocalOverrides));
+    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noLocalOverrides), i18nString24(UIStrings25.explainLocalOverrides));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/overrides/";
     this.toolbar = document.createElement("devtools-toolbar");
     this.toolbar.classList.add("navigator-toolbar");
     this.contentElement.insertBefore(this.toolbar, this.contentElement.firstChild);
-    Persistence18.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("ProjectChanged", this.updateProjectAndUI, this);
-    this.workspace().addEventListener(Workspace30.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
-    this.workspace().addEventListener(Workspace30.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
+    Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("ProjectChanged", this.updateProjectAndUI, this);
+    this.workspace().addEventListener(Workspace29.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
+    this.workspace().addEventListener(Workspace29.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
     this.updateProjectAndUI();
   }
   static instance(opts) {
@@ -13943,14 +13857,14 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   }
   onProjectAddOrRemoved(event) {
     const project = event.data;
-    if (project && project.type() === Workspace30.Workspace.projectTypes.FileSystem && Persistence18.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides") {
+    if (project && project.type() === Workspace29.Workspace.projectTypes.FileSystem && Persistence16.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) !== "overrides") {
       return;
     }
     this.updateUI();
   }
   updateProjectAndUI() {
     this.reset();
-    const project = Persistence18.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
+    const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
       this.tryAddProject(project);
     }
@@ -13958,61 +13872,61 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   }
   updateUI() {
     this.toolbar.removeToolbarItems();
-    const project = Persistence18.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
+    const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI25.Toolbar.ToolbarSettingCheckbox(Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled"));
+      const enableCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled"));
       this.toolbar.appendToolbarItem(enableCheckbox);
-      this.toolbar.appendToolbarItem(new UI25.Toolbar.ToolbarSeparator(true));
-      const clearButton = new UI25.Toolbar.ToolbarButton(i18nString24(UIStrings25.clearConfiguration), "clear");
+      this.toolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSeparator(true));
+      const clearButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.clearConfiguration), "clear");
       clearButton.addEventListener("Click", () => {
-        Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(false);
+        Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(false);
         project.remove();
       });
       this.toolbar.appendToolbarItem(clearButton);
       return;
     }
     const title = i18nString24(UIStrings25.selectFolderForOverrides);
-    const setupButton = new UI25.Toolbar.ToolbarButton(title, "plus", title);
+    const setupButton = new UI24.Toolbar.ToolbarButton(title, "plus", title);
     setupButton.addEventListener("Click", (_event) => {
       void _OverridesNavigatorView.setupNewWorkspace();
     }, this);
     this.toolbar.appendToolbarItem(setupButton);
   }
   static async setupNewWorkspace() {
-    const fileSystem = await Persistence18.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem("overrides");
+    const fileSystem = await Persistence16.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem("overrides");
     if (!fileSystem) {
       return;
     }
-    Common18.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
+    Common17.Settings.Settings.instance().moduleSetting("persistence-network-overrides-enabled").set(true);
   }
   sourceSelected(uiSourceCode, focusSource) {
     Host12.userMetrics.actionTaken(Host12.UserMetrics.Action.OverridesSourceSelected);
     super.sourceSelected(uiSourceCode, focusSource);
   }
   acceptProject(project) {
-    return project === Persistence18.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
+    return project === Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
   }
 };
 var ContentScriptsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-content-scripts", networkProjectManager);
-    const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noContentScripts), i18nString24(UIStrings25.explainContentScripts));
+    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noContentScripts), i18nString24(UIStrings25.explainContentScripts));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/extensions/content_scripts";
   }
   acceptProject(project) {
-    return project.type() === Workspace30.Workspace.projectTypes.ContentScripts;
+    return project.type() === Workspace29.Workspace.projectTypes.ContentScripts;
   }
 };
 var SnippetsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-snippets", networkProjectManager);
-    const placeholder2 = new UI25.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noSnippets), i18nString24(UIStrings25.explainSnippets));
+    const placeholder2 = new UI24.EmptyWidget.EmptyWidget(i18nString24(UIStrings25.noSnippets), i18nString24(UIStrings25.explainSnippets));
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/javascript/snippets/";
     const toolbar4 = document.createElement("devtools-toolbar");
     toolbar4.classList.add("navigator-toolbar");
-    const newButton = new UI25.Toolbar.ToolbarButton(i18nString24(UIStrings25.newSnippet), "plus", i18nString24(UIStrings25.newSnippet), "sources.new-snippet");
+    const newButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.newSnippet), "plus", i18nString24(UIStrings25.newSnippet), "sources.new-snippet");
     newButton.addEventListener("Click", (_event) => {
       void this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), "");
     });
@@ -14023,13 +13937,13 @@ var SnippetsNavigatorView = class extends NavigatorView {
     return Snippets5.ScriptSnippetFileSystem.isSnippetsProject(project);
   }
   handleContextMenu(event) {
-    const contextMenu = new UI25.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(i18nString24(UIStrings25.createNewSnippet), () => this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), ""), { jslogContext: "create-new-snippet" });
     void contextMenu.show();
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
-    const contextMenu = new UI25.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI24.ContextMenu.ContextMenu(event);
     contextMenu.headerSection().appendItem(i18nString24(UIStrings25.run), () => Snippets5.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode), { jslogContext: "run" });
     contextMenu.editSection().appendItem(i18nString24(UIStrings25.rename), () => this.rename(node, false), { jslogContext: "rename" });
     contextMenu.editSection().appendItem(i18nString24(UIStrings25.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), { jslogContext: "remove" });
@@ -14039,35 +13953,35 @@ var SnippetsNavigatorView = class extends NavigatorView {
   async handleSaveAs(uiSourceCode) {
     uiSourceCode.commitWorkingCopy();
     const contentData = await uiSourceCode.requestContentData();
-    if (TextUtils13.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils12.ContentData.ContentData.isError(contentData)) {
       console.error(`Failed to retrieve content for ${uiSourceCode.url()}: ${contentData}`);
-      Common18.Console.Console.instance().error(
+      Common17.Console.Console.instance().error(
         i18nString24(UIStrings25.saveAsFailed),
         /* show=*/
         false
       );
       return;
     }
-    await Workspace30.FileManager.FileManager.instance().save(
+    await Workspace29.FileManager.FileManager.instance().save(
       this.addJSExtension(uiSourceCode.url()),
       contentData,
       /* forceSaveAs=*/
       true
     );
-    Workspace30.FileManager.FileManager.instance().close(uiSourceCode.url());
+    Workspace29.FileManager.FileManager.instance().close(uiSourceCode.url());
   }
   addJSExtension(url) {
-    return Common18.ParsedURL.ParsedURL.concatenate(url, ".js");
+    return Common17.ParsedURL.ParsedURL.concatenate(url, ".js");
   }
 };
 var ActionDelegate5 = class {
   handleAction(_context, actionId) {
     switch (actionId) {
       case "sources.create-snippet":
-        void Snippets5.ScriptSnippetFileSystem.findSnippetsProject().createFile(Platform15.DevToolsPath.EmptyEncodedPathString, null, "").then((uiSourceCode) => Common18.Revealer.reveal(uiSourceCode));
+        void Snippets5.ScriptSnippetFileSystem.findSnippetsProject().createFile(Platform15.DevToolsPath.EmptyEncodedPathString, null, "").then((uiSourceCode) => Common17.Revealer.reveal(uiSourceCode));
         return true;
       case "sources.add-folder-to-workspace":
-        void Persistence18.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
+        void Persistence16.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
         return true;
     }
     return false;
@@ -14081,7 +13995,7 @@ __export(WatchExpressionsSidebarPane_exports, {
   WatchExpression: () => WatchExpression,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
 });
-import * as Common19 from "./../../core/common/common.js";
+import * as Common18 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform16 from "./../../core/platform/platform.js";
@@ -14202,7 +14116,7 @@ var objectValue_css_default = `/*
 
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI26 from "./../../ui/legacy/legacy.js";
+import * as UI25 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives5, html as html13, nothing as nothing7, render as render10 } from "./../../ui/lit/lit.js";
 import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
 
@@ -14419,7 +14333,7 @@ var watchExpressionsSidebarPaneInstance;
 var { classMap: classMap3, ifDefined: ifDefined3 } = Directives5;
 var DEFAULT_VIEW7 = (input, output, target) => {
   const onContextMenu = (watchExpression, event) => {
-    const contextMenu = new UI26.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI25.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.editing);
     if (!isEditing) {
       contextMenu.debugSection().appendItem(i18nString25(UIStrings26.addWatchExpression), input.onAddExpression, { jslogContext: "add-watch-expression" });
@@ -14450,7 +14364,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   };
   const renderNameElement = (e) => {
     const nameElement = ObjectUI4.ObjectPropertiesSection.ObjectPropertiesSection.createNameElement(e.expression);
-    UI26.Tooltip.Tooltip.install(nameElement, e.expression);
+    UI25.Tooltip.Tooltip.install(nameElement, e.expression);
     return nameElement;
   };
   const renderTreeElement = (e) => (
@@ -14539,7 +14453,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     }
   );
 };
-var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI26.Widget.VBox {
+var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI25.Widget.VBox {
   #watchExpressions;
   #watchExpressionsSetting;
   linkifier;
@@ -14549,9 +14463,9 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     super({ useShadowDom: true });
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
-    this.#watchExpressionsSetting = Common19.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
-    UI26.Context.Context.instance().addFlavorChangeListener(SDK14.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
-    UI26.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
+    this.#watchExpressionsSetting = Common18.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
+    UI25.Context.Context.instance().addFlavorChangeListener(SDK14.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
+    UI25.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
     this.linkifier = new Components4.Linkifier.Linkifier();
     this.#view = DEFAULT_VIEW7;
     void this.#refreshExpressions();
@@ -14597,7 +14511,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   }
   async addButtonClicked(event) {
     event?.consume(true);
-    await UI26.ViewManager.ViewManager.instance().showView("sources.watch");
+    await UI25.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = new WatchExpression();
     this.#watchExpressions.push(watchExpression);
     watchExpression.editing = true;
@@ -14693,7 +14607,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     void this.#refreshExpressions();
   }
   async #focusAndAddExpressionToWatch(expression) {
-    await UI26.ViewManager.ViewManager.instance().showView("sources.watch");
+    await UI25.ViewManager.ViewManager.instance().showView("sources.watch");
     const watchExpression = new WatchExpression();
     await watchExpression.setExpression(expression, this.#getExpansionTracker(expression));
     this.watchExpressions.push(watchExpression);
@@ -14701,7 +14615,7 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     await this.#refreshExpressions();
   }
   handleAction(_context, _actionId) {
-    const frame = UI26.Context.Context.instance().flavor(UISourceCodeFrame);
+    const frame = UI25.Context.Context.instance().flavor(UISourceCodeFrame);
     if (!frame) {
       return false;
     }
@@ -14740,7 +14654,7 @@ var WatchExpression = class _WatchExpression {
   async setExpression(expression, expandController) {
     this.#exceptionDetails = this.#result = void 0;
     this.#expression = expression;
-    const executionContext = UI26.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
+    const executionContext = UI25.Context.Context.instance().flavor(SDK14.RuntimeModel.ExecutionContext);
     if (!expression || !executionContext) {
       return;
     }
@@ -14799,7 +14713,6 @@ export {
   FilePathScoreFunction_exports as FilePathScoreFunction,
   FilteredUISourceCodeListProvider_exports as FilteredUISourceCodeListProvider,
   GoToLineQuickOpen_exports as GoToLineQuickOpen,
-  InplaceFormatterEditorAction_exports as InplaceFormatterEditorAction,
   NavigatorView_exports as NavigatorView,
   OpenFileQuickOpen_exports as OpenFileQuickOpen,
   OutlineQuickOpen_exports as OutlineQuickOpen,

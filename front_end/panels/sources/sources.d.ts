@@ -14,7 +14,6 @@ import * as EditingLocationHistoryManager from './EditingLocationHistoryManager.
 import * as FilePathScoreFunction from './FilePathScoreFunction.js';
 import * as FilteredUISourceCodeListProvider from './FilteredUISourceCodeListProvider.js';
 import * as GoToLineQuickOpen from './GoToLineQuickOpen.js';
-import * as InplaceFormatterEditorAction from './InplaceFormatterEditorAction.js';
 import * as NavigatorView from './NavigatorView.js';
 import * as OpenFileQuickOpen from './OpenFileQuickOpen.js';
 import * as OutlineQuickOpen from './OutlineQuickOpen.js';
@@ -32,4 +31,4 @@ import * as TabbedEditorContainer from './TabbedEditorContainer.js';
 import * as ThreadsSidebarPane from './ThreadsSidebarPane.js';
 import * as UISourceCodeFrame from './UISourceCodeFrame.js';
 import * as WatchExpressionsSidebarPane from './WatchExpressionsSidebarPane.js';
-export { AddSourceMapURLDialog, AiCodeCompletionPlugin, AiWarningInfobarPlugin, BreakpointEditDialog, BreakpointsView, BreakpointsViewUtils, CallStackSidebarPane, CategorizedBreakpointL10n, CoveragePlugin, CSSPlugin, DebuggerPausedMessage, DebuggerPlugin, EditingLocationHistoryManager, FilePathScoreFunction, FilteredUISourceCodeListProvider, GoToLineQuickOpen, InplaceFormatterEditorAction, NavigatorView, OpenFileQuickOpen, OutlineQuickOpen, PersistenceActions, Plugin, ResourceOriginPlugin, ScopeChainSidebarPane, SearchSourcesView, SnippetsPlugin, SourcesNavigator, SourcesPanel, SourcesSearchScope, SourcesView, TabbedEditorContainer, ThreadsSidebarPane, UISourceCodeFrame, WatchExpressionsSidebarPane, };
+export { AddSourceMapURLDialog, AiCodeCompletionPlugin, AiWarningInfobarPlugin, BreakpointEditDialog, BreakpointsView, BreakpointsViewUtils, CallStackSidebarPane, CategorizedBreakpointL10n, CoveragePlugin, CSSPlugin, DebuggerPausedMessage, DebuggerPlugin, EditingLocationHistoryManager, FilePathScoreFunction, FilteredUISourceCodeListProvider, GoToLineQuickOpen, NavigatorView, OpenFileQuickOpen, OutlineQuickOpen, PersistenceActions, Plugin, ResourceOriginPlugin, ScopeChainSidebarPane, SearchSourcesView, SnippetsPlugin, SourcesNavigator, SourcesPanel, SourcesSearchScope, SourcesView, TabbedEditorContainer, ThreadsSidebarPane, UISourceCodeFrame, WatchExpressionsSidebarPane, };

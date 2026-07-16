@@ -1,5 +1,5 @@
 import type * as Platform from '../../core/platform/platform.js';
-import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import type * as LighthouseModel from '../../models/lighthouse/lighthouse.js';
 export interface LighthouseRun {
     inspectedURL: Platform.DevToolsPath.UrlString;

@@ -99,16 +99,6 @@ export interface SettingRegistration {
      */
     storageType?: SettingStorageType;
     /**
-     * A condition that, when present in the queryParamsObject of Runtime, constraints the value
-     * of the setting to be changed only if the user set it.
-     */
-    userActionCondition?: string;
-    /**
-     * The name of the experiment a setting is associated with. Enabling and disabling the declared
-     * experiment will enable and disable the setting respectively.
-     */
-    experiment?: Root.ExperimentNames.ExperimentName;
-    /**
      * A condition is a function that will make the setting available if it
      * returns true, and not available, otherwise. Make sure that objects you
      * access from inside the condition function are ready at the time when the

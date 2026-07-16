@@ -4421,27 +4421,6 @@
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "No endpoints to display"
   },
-  "panels/application/components/InterestGroupAccessGrid.ts | allInterestGroupStorageEvents": {
-    "message": "All interest group storage events."
-  },
-  "panels/application/components/InterestGroupAccessGrid.ts | eventTime": {
-    "message": "Event Time"
-  },
-  "panels/application/components/InterestGroupAccessGrid.ts | eventType": {
-    "message": "Access Type"
-  },
-  "panels/application/components/InterestGroupAccessGrid.ts | groupName": {
-    "message": "Name"
-  },
-  "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
-    "message": "Owner"
-  },
-  "panels/application/components/InterestGroupAccessGrid.ts | interestGroupDescription": {
-    "message": "On this page you can inspect and analyze interest groups"
-  },
-  "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
-    "message": "No interest group events detected"
-  },
   "panels/application/components/PermissionsPolicySection.ts | allowedFeatures": {
     "message": "Allowed Features"
   },
@@ -5362,21 +5341,6 @@
   },
   "panels/application/IndexedDBViews.ts | version": {
     "message": "Version"
-  },
-  "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
-    "message": "Select any interest group event to display the group's current state"
-  },
-  "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
-    "message": "No details available"
-  },
-  "panels/application/InterestGroupStorageView.ts | noDataDescription": {
-    "message": "The browser may have left the group."
-  },
-  "panels/application/InterestGroupStorageView.ts | noValueSelected": {
-    "message": "No interest group selected"
-  },
-  "panels/application/InterestGroupTreeElement.ts | interestGroups": {
-    "message": "Interest groups"
   },
   "panels/application/KeyValueStorageItemsView.ts | key": {
     "message": "Key"
@@ -14639,12 +14603,6 @@
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
     "message": "Type a number to go to that line"
   },
-  "panels/sources/InplaceFormatterEditorAction.ts | format": {
-    "message": "Format"
-  },
-  "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
-    "message": "Format {PH1}"
-  },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "This action cannot be undone."
   },
@@ -15271,6 +15229,9 @@
   },
   "panels/sources/ThreadsSidebarPane.ts | paused": {
     "message": "paused"
+  },
+  "panels/sources/UISourceCodeFrame.ts | format": {
+    "message": "Format"
   },
   "panels/sources/WatchExpressionsSidebarPane.ts | addPropertyPathToWatch": {
     "message": "Add property path to watch"
@@ -16208,12 +16169,6 @@
   "panels/timeline/ThirdPartyTreeView.ts | unattributed": {
     "message": "[unattributed]"
   },
-  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
-    "message": "Bidder Worklet"
-  },
-  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
-    "message": "Bidder Worklet — {PH1}"
-  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Dedicated Worker"
   },
@@ -16235,12 +16190,6 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Rasterizer thread {PH1}"
   },
-  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
-    "message": "Seller Worklet"
-  },
-  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
-    "message": "Seller Worklet — {PH1}"
-  },
   "panels/timeline/ThreadAppender.ts | threadPool": {
     "message": "Thread pool"
   },
@@ -16250,23 +16199,11 @@
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
-    "message": "Auction Worklet"
-  },
-  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
-    "message": "Auction Worklet — {PH1}"
-  },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "panels/timeline/ThreadAppender.ts | workletService": {
-    "message": "Auction Worklet service"
-  },
-  "panels/timeline/ThreadAppender.ts | workletServiceS": {
-    "message": "Auction Worklet service — {PH1}"
   },
   "panels/timeline/timeline-meta.ts | chromeFrameInLayersView": {
     "message": "Chrome frame in Layers view"

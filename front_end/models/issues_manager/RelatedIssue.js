@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import { IssuesManager } from './IssuesManager.js';
 function issuesAssociatedWithNetworkRequest(issues, request) {
     return issues.filter(issue => {
         for (const affectedRequest of issue.requests()) {
@@ -36,22 +35,22 @@ export function issuesAssociatedWith(issues, obj) {
     }
     throw new Error(`issues can not be associated with ${JSON.stringify(obj)}`);
 }
-export function hasIssues(obj) {
-    const issues = Array.from(IssuesManager.instance().issues());
+export function hasIssues(obj, issuesManager) {
+    const issues = Array.from(issuesManager.issues());
     return issuesAssociatedWith(issues, obj).length > 0;
 }
-export function hasIssueOfCategory(obj, category) {
-    const issues = Array.from(IssuesManager.instance().issues());
+export function hasIssueOfCategory(obj, category, issuesManager) {
+    const issues = Array.from(issuesManager.issues());
     return issuesAssociatedWith(issues, obj).some(issue => issue.getCategory() === category);
 }
-export async function reveal(obj, category) {
+export async function reveal(obj, issuesManager, category) {
     if (typeof obj === 'string') {
-        const issue = IssuesManager.instance().getIssueById(obj);
+        const issue = issuesManager.getIssueById(obj);
         if (issue) {
             return await Common.Revealer.reveal(issue);
         }
     }
-    const issues = Array.from(IssuesManager.instance().issues());
+    const issues = Array.from(issuesManager.issues());
     const candidates = issuesAssociatedWith(issues, obj).filter(issue => !category || issue.getCategory() === category);
     if (candidates.length > 0) {
         return await Common.Revealer.reveal(candidates[0]);

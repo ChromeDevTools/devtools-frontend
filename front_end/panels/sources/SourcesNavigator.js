@@ -8,6 +8,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -120,7 +121,7 @@ export class NetworkNavigatorView extends NavigatorView {
     }
     acceptProject(project) {
         return project.type() === Workspace.Workspace.projectTypes.Network &&
-            SDK.TargetManager.TargetManager.instance().isInScope(project.target());
+            SDK.TargetManager.TargetManager.instance().isInScope(Bindings.NetworkProject.NetworkProject.getTargetForProject(project));
     }
     onScopeChange() {
         for (const project of Workspace.Workspace.WorkspaceImpl.instance().projects()) {

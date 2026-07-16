@@ -19,6 +19,7 @@ console/alert-toString-exception.test.js
 console/command-line-api.test.js
 console/console-accessors.test.js
 console/console-autocomplete.test.js
+console/console-bind-fake.test.js
 console/console-clear.test.js
 console/console-context-menu.test.js
 console/console-context-selector.test.js

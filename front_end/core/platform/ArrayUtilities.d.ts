@@ -26,6 +26,11 @@ export declare function lowerBound<T>(array: Uint32Array | Int32Array, needle: T
 export declare function lowerBound<S, T>(array: S[], needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number;
 export declare function lowerBound<S, T>(array: readonly S[], needle: T, comparator: (needle: T, b: S) => number, left?: number, right?: number): number;
 /**
+ * Inserts a value into a sorted array in O(n) time (O(log n) search using the provided comparator and O(n) insertion).
+ * Returns the index at which the value was inserted.
+ */
+export declare function insertWithComparator<T>(array: T[], value: T, comparator: (a: T, b: T) => number): number;
+/**
  * Returns the index of the element closest to the needle that is greater than
  * it. Assumes that the provided array is sorted.
  *

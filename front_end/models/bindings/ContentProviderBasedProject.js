@@ -16,8 +16,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStore {
     #isServiceProject;
     #uiSourceCodeToData = new WeakMap();
-    constructor(workspace, id, type, displayName, isServiceProject, target = null) {
-        super(workspace, id, type, displayName, target);
+    constructor(workspace, id, type, displayName, isServiceProject) {
+        super(workspace, id, type, displayName);
         this.#isServiceProject = isServiceProject;
         workspace.addProject(this);
     }

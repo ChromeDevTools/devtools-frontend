@@ -4,7 +4,6 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
-import { data as auctionWorkletsData } from './AuctionWorkletsHandler.js';
 import { data as layerTreeHandlerData } from './LayerTreeHandler.js';
 import { data as metaHandlerData } from './MetaHandler.js';
 import { data as rendererHandlerData } from './RendererHandler.js';
@@ -62,7 +61,7 @@ export async function finalize() {
     // We have to sort the events by timestamp, because the model code expects to
     // process events in order.
     Helpers.Trace.sortTraceEventsInPlace(relevantFrameEvents);
-    const modelForTrace = new TimelineFrameModel(relevantFrameEvents, rendererHandlerData(), auctionWorkletsData(), metaHandlerData(), layerTreeHandlerData());
+    const modelForTrace = new TimelineFrameModel(relevantFrameEvents, rendererHandlerData(), metaHandlerData(), layerTreeHandlerData());
     model = modelForTrace;
 }
 export function data() {
@@ -72,7 +71,7 @@ export function data() {
     };
 }
 export function deps() {
-    return ['Meta', 'Renderer', 'AuctionWorklets', 'LayerTree'];
+    return ['Meta', 'Renderer', 'LayerTree'];
 }
 export class TimelineFrameModel {
     #frames = [];
@@ -91,11 +90,11 @@ export class TimelineFrameModel {
     #activeProcessId = null;
     #activeThreadId = null;
     #layerTreeData;
-    constructor(allEvents, rendererData, auctionWorkletsData, metaData, layerTreeData) {
+    constructor(allEvents, rendererData, metaData, layerTreeData) {
         // We only care about getting threads from the Renderer, not Samples,
         // because Frames don't exist in a CPU Profile (which won't have Renderer
         // threads.)
-        const mainThreads = Threads.threadsInRenderer(rendererData, auctionWorkletsData).filter(thread => {
+        const mainThreads = Threads.threadsInRenderer(rendererData).filter(thread => {
             return thread.type === "MAIN_THREAD" /* Threads.ThreadType.MAIN_THREAD */ && thread.processIsOnMainFrame;
         });
         const threadData = mainThreads.map(thread => {

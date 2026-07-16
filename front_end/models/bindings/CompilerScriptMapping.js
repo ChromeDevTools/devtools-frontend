@@ -46,7 +46,8 @@ export class CompilerScriptMapping {
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
         this.#debuggerModel = debuggerModel;
         this.#ignoreListManager = debuggerWorkspaceBinding.ignoreListManager;
-        this.#stubProject = new ContentProviderBasedProject(workspace, 'jsSourceMaps:stub:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Service, '', true /* isServiceProject */, debuggerModel.target());
+        this.#stubProject =
+            new ContentProviderBasedProject(workspace, 'jsSourceMaps:stub:' + debuggerModel.target().id(), Workspace.Workspace.projectTypes.Service, '', true /* isServiceProject */);
         this.#eventListeners = [
             this.#sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapWillAttach, this.sourceMapWillAttach, this),
             this.#sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapFailedToAttach, this.sourceMapFailedToAttach, this),
@@ -384,7 +385,8 @@ export class CompilerScriptMapping {
             const projectType = script.isContentScript() ? Workspace.Workspace.projectTypes.ContentScripts :
                 Workspace.Workspace.projectTypes.Network;
             project = new ContentProviderBasedProject(this.#stubProject.workspace(), projectId, projectType, 
-            /* displayName */ '', /* isServiceProject */ false, target);
+            /* displayName */ '', /* isServiceProject */ false);
+            NetworkProject.setTargetForProject(project, target);
             this.#projects.set(projectId, project);
         }
         this.#sourceMapToProject.set(sourceMap, project);

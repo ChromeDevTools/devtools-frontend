@@ -1263,65 +1263,19 @@ var RecorderExtensionEndpoint_exports = {};
 __export(RecorderExtensionEndpoint_exports, {
   RecorderExtensionEndpoint: () => RecorderExtensionEndpoint
 });
-
-// gen/front_end/models/extensions/RecorderPluginManager.js
-var RecorderPluginManager_exports = {};
-__export(RecorderPluginManager_exports, {
-  RecorderPluginManager: () => RecorderPluginManager
-});
-import * as Common from "./../../core/common/common.js";
-var instance = null;
-var RecorderPluginManager = class _RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper {
-  #plugins = /* @__PURE__ */ new Set();
-  #views = /* @__PURE__ */ new Map();
-  static instance() {
-    if (!instance) {
-      instance = new _RecorderPluginManager();
-    }
-    return instance;
-  }
-  addPlugin(plugin) {
-    this.#plugins.add(plugin);
-    this.dispatchEventToListeners("pluginAdded", plugin);
-  }
-  removePlugin(plugin) {
-    this.#plugins.delete(plugin);
-    this.dispatchEventToListeners("pluginRemoved", plugin);
-  }
-  plugins() {
-    return Array.from(this.#plugins.values());
-  }
-  registerView(descriptor) {
-    this.#views.set(descriptor.id, descriptor);
-    this.dispatchEventToListeners("viewRegistered", descriptor);
-  }
-  views() {
-    return Array.from(this.#views.values());
-  }
-  getViewDescriptor(id) {
-    return this.#views.get(id);
-  }
-  showView(id) {
-    const descriptor = this.#views.get(id);
-    if (!descriptor) {
-      throw new Error(`View with id ${id} is not found.`);
-    }
-    this.dispatchEventToListeners("showViewRequested", descriptor);
-  }
-};
-
-// gen/front_end/models/extensions/RecorderExtensionEndpoint.js
 var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
   name;
   mediaType;
   capabilities;
   #extensionOrigin;
-  constructor(name, port, capabilities, extensionOrigin, mediaType) {
+  #recorderPluginManager;
+  constructor(name, port, capabilities, extensionOrigin, recorderPluginManager, mediaType) {
     super(port);
     this.name = name;
     this.mediaType = mediaType;
     this.capabilities = capabilities;
     this.#extensionOrigin = extensionOrigin;
+    this.#recorderPluginManager = recorderPluginManager;
   }
   getName() {
     return this.name;
@@ -1339,7 +1293,7 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
     switch (event) {
       case "unregisteredRecorderExtensionPlugin": {
         this.disconnect();
-        RecorderPluginManager.instance().removePlugin(this);
+        this.#recorderPluginManager.removePlugin(this);
         break;
       }
       default:
@@ -1375,6 +1329,55 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
    */
   replay(recording) {
     return this.sendRequest("replay", { recording });
+  }
+};
+
+// gen/front_end/models/extensions/RecorderPluginManager.js
+var RecorderPluginManager_exports = {};
+__export(RecorderPluginManager_exports, {
+  RecorderPluginManager: () => RecorderPluginManager
+});
+import * as Common from "./../../core/common/common.js";
+import * as Root from "./../../core/root/root.js";
+var RecorderPluginManager = class _RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper {
+  #plugins = /* @__PURE__ */ new Set();
+  #views = /* @__PURE__ */ new Map();
+  static instance(opts) {
+    if (!Root.DevToolsContext.globalInstance().has(_RecorderPluginManager) || opts?.forceNew) {
+      Root.DevToolsContext.globalInstance().set(_RecorderPluginManager, new _RecorderPluginManager());
+    }
+    return Root.DevToolsContext.globalInstance().get(_RecorderPluginManager);
+  }
+  static removeInstance() {
+    Root.DevToolsContext.globalInstance().delete(_RecorderPluginManager);
+  }
+  addPlugin(plugin) {
+    this.#plugins.add(plugin);
+    this.dispatchEventToListeners("pluginAdded", plugin);
+  }
+  removePlugin(plugin) {
+    this.#plugins.delete(plugin);
+    this.dispatchEventToListeners("pluginRemoved", plugin);
+  }
+  plugins() {
+    return Array.from(this.#plugins.values());
+  }
+  registerView(descriptor) {
+    this.#views.set(descriptor.id, descriptor);
+    this.dispatchEventToListeners("viewRegistered", descriptor);
+  }
+  views() {
+    return Array.from(this.#views.values());
+  }
+  getViewDescriptor(id) {
+    return this.#views.get(id);
+  }
+  showView(id) {
+    const descriptor = this.#views.get(id);
+    if (!descriptor) {
+      throw new Error(`View with id ${id} is not found.`);
+    }
+    this.dispatchEventToListeners("showViewRequested", descriptor);
   }
 };
 export {

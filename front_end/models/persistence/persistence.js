@@ -2275,9 +2275,6 @@ var FileSystem2 = class {
   uiSourceCodes() {
     return [];
   }
-  target() {
-    return null;
-  }
 };
 var AutomaticFileSystemWorkspaceBinding = class _AutomaticFileSystemWorkspaceBinding {
   #automaticFileSystemManager;

@@ -554,7 +554,7 @@ import * as Common3 from "./../../core/common/common.js";
 var RequestResolver = class extends Common3.ResolverBase.ResolverBase {
   networkListener = null;
   networkLog;
-  constructor(networkLog = NetworkLog.instance()) {
+  constructor(networkLog) {
     super();
     this.networkLog = networkLog;
   }

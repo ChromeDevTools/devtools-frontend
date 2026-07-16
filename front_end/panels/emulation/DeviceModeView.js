@@ -98,9 +98,17 @@ export class DeviceModeView extends UI.Widget.VBox {
         this.showMediaInspectorSetting.addChangeListener(this.updateUI, this);
         this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
         this.showRulersSetting.addChangeListener(this.updateUI, this);
-        this.topRuler = new Ruler(true, this.model.setWidthAndScaleToFit.bind(this.model));
+        this.topRuler = new Ruler();
+        this.topRuler.horizontal = true;
+        this.topRuler.addEventListener("MarkerSelected" /* RulerEvents.MARKER_SELECTED */, event => {
+            this.model.setWidthAndScaleToFit(event.data);
+        });
         this.topRuler.element.classList.add('device-mode-ruler-top');
-        this.leftRuler = new Ruler(false, this.model.setHeightAndScaleToFit.bind(this.model));
+        this.leftRuler = new Ruler();
+        this.leftRuler.horizontal = false;
+        this.leftRuler.addEventListener("MarkerSelected" /* RulerEvents.MARKER_SELECTED */, event => {
+            this.model.setHeightAndScaleToFit(event.data);
+        });
         this.leftRuler.element.classList.add('device-mode-ruler-left');
         this.createUI();
         UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.zoomChanged, this);
@@ -495,79 +503,116 @@ export class DeviceModeView extends UI.Widget.VBox {
         });
     }
 }
-export class Ruler extends UI.Widget.VBox {
-    #contentElement;
-    horizontal;
-    scale;
-    throttler;
-    applyCallback;
-    constructor(horizontal, applyCallback) {
-        super({ jslog: `${VisualLogging.deviceModeRuler().track({ click: true })}` });
-        this.element.classList.add('device-mode-ruler');
-        this.#contentElement =
-            this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner');
-        this.horizontal = horizontal;
-        this.scale = 1;
-        this.throttler = new Common.Throttler.Throttler(0);
-        this.applyCallback = applyCallback;
+export const DEFAULT_RULER_VIEW = (input, output, target) => {
+    const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
+    const size = input.horizontal ? target.offsetWidth : target.offsetHeight;
+    const dipSize = size * zoomFactor / input.scale;
+    const count = Math.ceil(dipSize / 5);
+    let step = 1;
+    if (input.scale < 0.8) {
+        step = 2;
+    }
+    if (input.scale < 0.6) {
+        step = 4;
+    }
+    if (input.scale < 0.4) {
+        step = 8;
+    }
+    if (input.scale < 0.2) {
+        step = 16;
+    }
+    if (input.scale < 0.1) {
+        step = 32;
+    }
+    const markers = [];
+    for (let i = 0; i < count; i++) {
+        if (i % step) {
+            continue;
+        }
+        const isLarge = !(i % 10);
+        const isMedium = !(i % 5);
+        const offset = i ? `${(5 * i) * input.scale / zoomFactor}px` : undefined;
+        // clang-format off
+        markers.push(html `
+      <div
+        class=${classMap({
+            'device-mode-ruler-marker': true,
+            'device-mode-ruler-marker-large': isLarge,
+            'device-mode-ruler-marker-medium': isMedium && !isLarge,
+        })}
+        style=${styleMap(input.horizontal ? { left: offset } : { top: offset })}>
+          ${i && !(i % 20) ?
+            html `<div class="device-mode-ruler-text" @click=${() => input.onMarkerClick(i * 5)}>${i * 5}</div>` :
+            nothing}
+      </div>
+    `);
+        // clang-format on
+    }
+    render(html `
+    <div class="device-mode-ruler-content">
+      <div class="device-mode-ruler-inner">
+        ${markers}
+      </div>
+    </div>
+  `, target, {
+        container: {
+            classes: ['device-mode-ruler'],
+            attributes: { jslog: VisualLogging.deviceModeRuler().track({ click: true }) },
+        },
+    });
+};
+export class Ruler extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+    #view;
+    #horizontal = true;
+    #scale = 1;
+    constructor(element, view = DEFAULT_RULER_VIEW) {
+        super(element);
+        this.#view = view;
+    }
+    get horizontal() {
+        return this.#horizontal;
+    }
+    set horizontal(horizontal) {
+        if (this.#horizontal === horizontal) {
+            return;
+        }
+        this.#horizontal = horizontal;
+        this.requestUpdate();
+    }
+    get scale() {
+        return this.#scale;
+    }
+    set scale(scale) {
+        if (this.#scale === scale) {
+            return;
+        }
+        this.#scale = scale;
+        this.requestUpdate();
     }
     render(scale) {
         this.scale = scale;
-        void this.throttler.schedule(this.update.bind(this));
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
     }
     onResize() {
-        void this.throttler.schedule(this.update.bind(this));
+        super.onResize();
+        this.requestUpdate();
     }
-    update() {
-        const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
-        const size = this.horizontal ? this.#contentElement.offsetWidth : this.#contentElement.offsetHeight;
-        const dipSize = size * zoomFactor / this.scale;
-        const count = Math.ceil(dipSize / 5);
-        let step = 1;
-        if (this.scale < 0.8) {
-            step = 2;
+    #onMarkerClick = (size) => {
+        this.dispatchEventToListeners("MarkerSelected" /* RulerEvents.MARKER_SELECTED */, size);
+    };
+    performUpdate() {
+        if (!this.isShowing()) {
+            return;
         }
-        if (this.scale < 0.6) {
-            step = 4;
-        }
-        if (this.scale < 0.4) {
-            step = 8;
-        }
-        if (this.scale < 0.2) {
-            step = 16;
-        }
-        if (this.scale < 0.1) {
-            step = 32;
-        }
-        const markers = [];
-        for (let i = 0; i < count; i++) {
-            if (i % step) {
-                continue;
-            }
-            const isLarge = !(i % 10);
-            const isMedium = !(i % 5);
-            const offset = i ? `${(5 * i) * this.scale / zoomFactor}px` : undefined;
-            // clang-format off
-            markers.push(html `
-        <div
-          class=${classMap({
-                'device-mode-ruler-marker': true,
-                'device-mode-ruler-marker-large': isLarge,
-                'device-mode-ruler-marker-medium': isMedium && !isLarge,
-            })}
-          style=${styleMap(this.horizontal ? { left: offset } : { top: offset })}>
-            ${i && !(i % 20) ?
-                html `<div class="device-mode-ruler-text" @click=${() => this.onMarkerClick(i * 5)}>${i * 5}</div>` :
-                nothing}
-        </div>
-      `);
-            // clang-format on
-        }
-        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-        render(html `${markers}`, this.#contentElement);
-    }
-    onMarkerClick(size) {
-        this.applyCallback.call(null, size);
+        const viewInput = {
+            horizontal: this.#horizontal,
+            scale: this.#scale,
+            onMarkerClick: this.#onMarkerClick,
+        };
+        this.#view(viewInput, undefined, this.contentElement);
     }
 }
 //# sourceMappingURL=DeviceModeView.js.map

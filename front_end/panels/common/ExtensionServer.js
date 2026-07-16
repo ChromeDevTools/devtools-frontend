@@ -341,7 +341,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         }
         const { pluginName, mediaType, port, capabilities } = message;
         const extensionOrigin = this.getExtensionOrigin(_shared_port);
-        Extensions.RecorderPluginManager.RecorderPluginManager.instance().addPlugin(new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, mediaType));
+        const recorderPluginManager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
+        recorderPluginManager.addPlugin(new Extensions.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, recorderPluginManager, mediaType));
         return this.status.OK();
     }
     onReportResourceLoad(message) {

@@ -1,5 +1,4 @@
 import * as Types from '../types/types.js';
-import { type AuctionWorkletsData } from './AuctionWorkletsHandler.js';
 import { type LayerTreeData } from './LayerTreeHandler.js';
 import { type MetaHandlerData } from './MetaHandler.js';
 import { type RendererHandlerData } from './RendererHandler.js';
@@ -15,7 +14,7 @@ export declare function data(): FramesData;
 export declare function deps(): HandlerName[];
 export declare class TimelineFrameModel {
     #private;
-    constructor(allEvents: readonly Types.Events.Event[], rendererData: RendererHandlerData, auctionWorkletsData: AuctionWorkletsData, metaData: MetaHandlerData, layerTreeData: LayerTreeData);
+    constructor(allEvents: readonly Types.Events.Event[], rendererData: RendererHandlerData, metaData: MetaHandlerData, layerTreeData: LayerTreeData);
     framesById(): Readonly<Record<number, TimelineFrame | undefined>>;
     frames(): TimelineFrame[];
 }

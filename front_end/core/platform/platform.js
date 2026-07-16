@@ -11,6 +11,7 @@ __export(ArrayUtilities_exports, {
   arrayDoesNotContainNullOrUndefined: () => arrayDoesNotContainNullOrUndefined,
   assertArrayIsSorted: () => assertArrayIsSorted,
   binaryIndexOf: () => binaryIndexOf,
+  insertWithComparator: () => insertWithComparator,
   intersectOrdered: () => intersectOrdered,
   lowerBound: () => lowerBound,
   mergeOrdered: () => mergeOrdered,
@@ -128,6 +129,11 @@ function lowerBound(array, needle, comparator, left, right) {
     }
   }
   return r;
+}
+function insertWithComparator(array, value, comparator) {
+  const index = lowerBound(array, value, comparator);
+  array.splice(index, 0, value);
+  return index;
 }
 function upperBound(array, needle, comparator, left, right) {
   let l = left || 0;

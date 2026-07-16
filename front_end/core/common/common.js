@@ -6198,9 +6198,6 @@ var Settings = class _Settings {
       const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root4.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(settingName, evaluatedDefaultValue, void 0, storageType) : this.createSetting(settingName, evaluatedDefaultValue, storageType);
       setting.setTitleFunction(registration.title);
-      if (registration.userActionCondition) {
-        setting.setRequiresUserAction(Boolean(Root4.Runtime.Runtime.queryParam(registration.userActionCondition)));
-      }
       setting.setRegistration(registration);
       this.registerModuleSetting(setting);
     }

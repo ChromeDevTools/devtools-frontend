@@ -1,6 +1,5 @@
 import type * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
-import type { AuctionWorkletsData } from './AuctionWorkletsHandler.js';
 import type * as Renderer from './RendererHandler.js';
 import type { HandlerData } from './types.js';
 export interface ThreadData {
@@ -17,12 +16,11 @@ export declare const enum ThreadType {
     MAIN_THREAD = "MAIN_THREAD",
     WORKER = "WORKER",
     RASTERIZER = "RASTERIZER",
-    AUCTION_WORKLET = "AUCTION_WORKLET",
     OTHER = "OTHER",
     CPU_PROFILE = "CPU_PROFILE",
     THREAD_POOL = "THREAD_POOL"
 }
-export declare function threadsInRenderer(rendererData: Renderer.RendererHandlerData, auctionWorkletsData: AuctionWorkletsData): readonly ThreadData[];
+export declare function threadsInRenderer(rendererData: Renderer.RendererHandlerData): readonly ThreadData[];
 /**
  * Given trace parsed data, this helper will return a high level array of
  * ThreadData. This is useful because it allows you to get a list of threads

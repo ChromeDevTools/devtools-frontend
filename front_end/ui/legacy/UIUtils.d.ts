@@ -157,6 +157,8 @@ export declare class CheckboxLabel extends HTMLElement {
     set ariaLabel(ariaLabel: string);
     get checked(): boolean;
     set checked(checked: boolean);
+    get small(): boolean;
+    set small(small: boolean);
     set disabled(disabled: boolean);
     get disabled(): boolean;
     set indeterminate(indeterminate: boolean);

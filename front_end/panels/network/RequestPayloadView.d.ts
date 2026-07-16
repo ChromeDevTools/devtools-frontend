@@ -4,8 +4,10 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 interface ViewInput {
-    decodeRequestParameters: boolean;
-    setURLDecoding(value: boolean): void;
+    decodeQueryParameters: boolean;
+    setDecodeQueryParameters(value: boolean): void;
+    decodeFormParameters: boolean;
+    setDecodeFormParameters(value: boolean): void;
     viewQueryParamSource: boolean;
     setViewQueryParamSource(value: boolean): void;
     viewFormParamSource: boolean;

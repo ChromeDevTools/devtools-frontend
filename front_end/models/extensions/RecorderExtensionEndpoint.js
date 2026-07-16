@@ -2,18 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { ExtensionEndpoint } from './ExtensionEndpoint.js';
-import { RecorderPluginManager } from './RecorderPluginManager.js';
 export class RecorderExtensionEndpoint extends ExtensionEndpoint {
     name;
     mediaType;
     capabilities;
     #extensionOrigin;
-    constructor(name, port, capabilities, extensionOrigin, mediaType) {
+    #recorderPluginManager;
+    constructor(name, port, capabilities, extensionOrigin, recorderPluginManager, mediaType) {
         super(port);
         this.name = name;
         this.mediaType = mediaType;
         this.capabilities = capabilities;
         this.#extensionOrigin = extensionOrigin;
+        this.#recorderPluginManager = recorderPluginManager;
     }
     getName() {
         return this.name;
@@ -31,7 +32,7 @@ export class RecorderExtensionEndpoint extends ExtensionEndpoint {
         switch (event) {
             case "unregisteredRecorderExtensionPlugin" /* PrivateAPI.RecorderExtensionPluginEvents.UnregisteredRecorderExtensionPlugin */: {
                 this.disconnect();
-                RecorderPluginManager.instance().removePlugin(this);
+                this.#recorderPluginManager.removePlugin(this);
                 break;
             }
             default:

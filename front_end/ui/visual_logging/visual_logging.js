@@ -1346,6 +1346,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "device-bound-sessions-request",
   "device-bound-sessions-root",
   "device-fold",
+  "device-frame-disable",
   "device-frame-enable",
   "device-mode",
   "device-mode-preset-1024px",

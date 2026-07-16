@@ -1794,11 +1794,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
     if (this.#request.wasBlocked()) {
       const headerWithIssues = BlockedReasonDetails.get(this.#request.blockedReason());
       if (headerWithIssues) {
-        if (IssuesManager.RelatedIssue.hasIssueOfCategory(
-          this.#request,
-          "CrossOriginEmbedderPolicy"
-          /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */
-        )) {
+        if (IssuesManager.RelatedIssue.hasIssueOfCategory(this.#request, "CrossOriginEmbedderPolicy", IssuesManager.IssuesManager.IssuesManager.instance())) {
           const followLink = () => {
             Host3.userMetrics.issuesPanelOpenedFrom(
               1
@@ -1807,6 +1803,7 @@ var ResponseHeaderSection = class extends ResponseHeaderSectionBase {
             if (this.#request) {
               void IssuesManager.RelatedIssue.reveal(
                 this.#request,
+                IssuesManager.IssuesManager.IssuesManager.instance(),
                 "CrossOriginEmbedderPolicy"
                 /* IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY */
               );

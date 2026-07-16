@@ -1,13 +1,13 @@
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 /**
  * Responsible for asking autofill for current form issues. This currently happens when devtools is first open.
  */
 // TODO(crbug.com/1399414): Trigger check form issues when an element with an associated issue is editted in the issues panel.
-let checkFormsIssuesTriggerInstance = null;
 export class CheckFormsIssuesTrigger {
-    constructor() {
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#pageLoaded, this, { scoped: true });
-        for (const model of SDK.TargetManager.TargetManager.instance().models(SDK.ResourceTreeModel.ResourceTreeModel)) {
+    constructor(targetManager = SDK.TargetManager.TargetManager.instance()) {
+        targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.#pageLoaded, this, { scoped: true });
+        for (const model of targetManager.models(SDK.ResourceTreeModel.ResourceTreeModel)) {
             if (model.target().outermostTarget() !== model.target()) {
                 continue;
             }
@@ -15,10 +15,10 @@ export class CheckFormsIssuesTrigger {
         }
     }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!checkFormsIssuesTriggerInstance || forceNew) {
-            checkFormsIssuesTriggerInstance = new CheckFormsIssuesTrigger();
+        if (!Root.DevToolsContext.globalInstance().has(CheckFormsIssuesTrigger) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(CheckFormsIssuesTrigger, new CheckFormsIssuesTrigger());
         }
-        return checkFormsIssuesTriggerInstance;
+        return Root.DevToolsContext.globalInstance().get(CheckFormsIssuesTrigger);
     }
     // TODO(crbug.com/1399414): Handle response by dropping current issues in favor of new ones.
     #checkFormsIssues(resourceTreeModel) {

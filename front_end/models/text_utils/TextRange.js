@@ -228,5 +228,8 @@ export class SourceRange {
         this.offset = offset;
         this.length = length;
     }
+    cssValue() {
+        return `${this.offset},${this.length}`;
+    }
 }
 //# sourceMappingURL=TextRange.js.map

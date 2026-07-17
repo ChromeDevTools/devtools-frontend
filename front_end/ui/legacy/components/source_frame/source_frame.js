@@ -2320,6 +2320,9 @@ var XMLTreeViewNode = class _XMLTreeViewNode {
     }
     return this.#children;
   }
+  treeNodeChildren() {
+    return this.children();
+  }
   match(regex, closeTag) {
     return textView(this, closeTag).matchAll(regex);
   }

@@ -6,6 +6,7 @@
 // FIXME: Some fields are not yet supported due to back-end limitations.
 // See https://bugs.webkit.org/show_bug.cgi?id=58127 for details.
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 export class Log {
     static pseudoWallTime(request, monotonicTime) {
@@ -21,7 +22,8 @@ export class Log {
         return { version: '1.2', creator: log.creator(), pages: log.buildPages(requests), entries };
     }
     creator() {
-        const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
+        const userAgent = Platform.HostRuntime.HOST_RUNTIME.getUserAgent();
+        const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(userAgent);
         return { name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a' };
     }
     buildPages(requests) {

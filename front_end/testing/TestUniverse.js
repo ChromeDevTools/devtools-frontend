@@ -6,7 +6,9 @@ import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
+import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
@@ -42,6 +44,12 @@ export class TestUniverse {
      */
     createTarget(options = {}) {
         return createTarget({ ...options, targetManager: this.targetManager });
+    }
+    get aiHistoryStorage() {
+        if (!this.#context.has(AiAssistance.AiHistoryStorage.AiHistoryStorage)) {
+            this.#context.set(AiAssistance.AiHistoryStorage.AiHistoryStorage, new AiAssistance.AiHistoryStorage.AiHistoryStorage(this.settings));
+        }
+        return this.#context.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
     }
     get autofillManager() {
         if (!this.#context.has(AutofillManager.AutofillManager.AutofillManager)) {
@@ -286,6 +294,12 @@ export class TestUniverse {
             this.#context.set(SDK.TargetManager.TargetManager, targetManager);
         }
         return this.#context.get(SDK.TargetManager.TargetManager);
+    }
+    get userBadges() {
+        if (!this.#context.has(Badges.UserBadges)) {
+            this.#context.set(Badges.UserBadges, new Badges.UserBadges(this.settings, this.gdpClient));
+        }
+        return this.#context.get(Badges.UserBadges);
     }
     get settings() {
         if (!this.#context.has(Common.Settings.Settings)) {

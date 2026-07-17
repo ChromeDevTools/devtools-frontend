@@ -1226,7 +1226,7 @@ devtools-toolbar {
 
 .webkit-html-text-node {
   color: var(--text-primary);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
 }
 
 .webkit-html-entity-value {
@@ -1234,7 +1234,7 @@ devtools-toolbar {
   /* See: crbug.com/1152736 for color variable migration. */
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-color: rgb(0 0 0 / 15%);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
 }
 
 .webkit-html-doctype {
@@ -1247,13 +1247,13 @@ devtools-toolbar {
 .webkit-html-attribute-name {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
   color: var(--sys-color-token-attribute);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
 }
 
 .webkit-html-attribute-value {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-value) */
   color: var(--sys-color-token-attribute-value);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
   word-break: break-all;
 }
 

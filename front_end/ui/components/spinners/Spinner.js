@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
-import { html, render } from '../../lit/lit.js';
+import { Directives, html, render } from '../../lit/lit.js';
 import spinnerStyles from './spinner.css.js';
+const { classMap } = Directives;
 export class Spinner extends HTMLElement {
     static observedAttributes = ['active'];
     #shadow = this.attachShadow({ mode: 'open' });
@@ -35,39 +36,29 @@ export class Spinner extends HTMLElement {
         this.#render();
     }
     #render() {
-        // The radius of the circles are set to 2.75rem as per implementation
-        // of indeterminate progress indicator in
-        // https://github.com/material-components/material-components-web/tree/master/packages/mdc-circular-progress.
-        // Changing the value of the radius will cause errors in animation.
+        // The radius is set to 40 to allow for stroke width padding, and
+        // pathLength=100 is used for scalable, unitless animation length.
         // clang-format off
-        const content = this.active ? html `
-      <div class="indeterminate-spinner">
-        <div class="left-circle">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50%" cy="50%" r="2.75rem"></circle></svg>
-        </div>
-        <div class="center-circle">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50%" cy="50%" r="2.75rem"></circle></svg>
-        </div>
-        <div class="right-circle">
-          <svg viewBox="0 0 100 100">
-            <circle cx="50%" cy="50%" r="2.75rem"></circle></svg>
-        </div>
-      </div>
-    ` : html `
-      <div class="inactive-spinner">
-        <svg viewBox="0 0 100 100">
-          <circle cx="50%" cy="50%" r="2.75rem"></circle>
-        </svg>
-      </div>
-    `;
+        const spinnerClasses = {
+            indeterminate: this.active,
+            spinner: true,
+        };
         render(html `
-      <style>
-        ${spinnerStyles}
-      </style>
-      ${content}
-    `, this.#shadow, { host: this });
+        <style>
+          ${spinnerStyles}
+        </style>
+        <svg
+          class=${classMap(spinnerClasses)}
+          viewBox="0 0 100 100"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="44"
+            pathLength="100"
+          ></circle>
+        </svg>
+      `, this.#shadow, { host: this });
         // clang-format on
     }
 }

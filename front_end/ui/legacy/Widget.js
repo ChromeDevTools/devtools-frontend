@@ -59,15 +59,19 @@ export function widgetConfig(widgetClass, widgetParams) {
 let currentUpdateQueue = null;
 const currentlyProcessed = new Set();
 let nextUpdateQueue = new Map();
-let pendingAnimationFrame = null;
+const pendingAnimationFrames = new WeakMap();
 let overallUpdatePromise = null;
 function enqueueIntoNextUpdateQueue(widget) {
     const scheduledUpdate = nextUpdateQueue.get(widget) ?? Promise.withResolvers();
     nextUpdateQueue.delete(widget);
     nextUpdateQueue.set(widget, scheduledUpdate);
-    if (pendingAnimationFrame === null) {
-        const widgetWindow = widget.contentElement.window() || window;
-        pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
+    const widgetWindow = widget.contentElement.window() || window;
+    if (!pendingAnimationFrames.has(widgetWindow)) {
+        const frameId = widgetWindow.requestAnimationFrame(() => {
+            pendingAnimationFrames.delete(widgetWindow);
+            runNextUpdate();
+        });
+        pendingAnimationFrames.set(widgetWindow, frameId);
     }
     return scheduledUpdate.promise;
 }
@@ -100,13 +104,12 @@ function cancelUpdate(widget) {
 }
 function resolveOverallUpdatePromise() {
     if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) &&
-        nextUpdateQueue.size === 0 && !pendingAnimationFrame && overallUpdatePromise) {
+        nextUpdateQueue.size === 0 && overallUpdatePromise) {
         overallUpdatePromise.resolve();
         overallUpdatePromise = null;
     }
 }
 function runNextUpdate() {
-    pendingAnimationFrame = null;
     if (!currentUpdateQueue) {
         currentUpdateQueue = nextUpdateQueue;
         nextUpdateQueue = new Map();
@@ -135,9 +138,13 @@ function runNextUpdate() {
                 const nextUpdate = nextUpdateQueue.get(widget);
                 if (nextUpdate) {
                     void nextUpdate.promise.then(resolve);
-                    if (pendingAnimationFrame === null) {
-                        const widgetWindow = widget.contentElement.window() || window;
-                        pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
+                    const widgetWindow = widget.contentElement.window() || window;
+                    if (!pendingAnimationFrames.has(widgetWindow)) {
+                        const frameId = widgetWindow.requestAnimationFrame(() => {
+                            pendingAnimationFrames.delete(widgetWindow);
+                            runNextUpdate();
+                        });
+                        pendingAnimationFrames.set(widgetWindow, frameId);
                     }
                 }
                 else {
@@ -452,7 +459,7 @@ export class Widget {
         return widgetMap.get(node);
     }
     static get allUpdatesComplete() {
-        if (!pendingAnimationFrame && !currentUpdateQueue && currentlyProcessed.size === 0) {
+        if (nextUpdateQueue.size === 0 && !currentUpdateQueue && currentlyProcessed.size === 0) {
             return Promise.resolve();
         }
         if (!overallUpdatePromise) {

@@ -2877,15 +2877,19 @@ function widgetConfig(widgetClass, widgetParams) {
 var currentUpdateQueue = null;
 var currentlyProcessed = /* @__PURE__ */ new Set();
 var nextUpdateQueue = /* @__PURE__ */ new Map();
-var pendingAnimationFrame = null;
+var pendingAnimationFrames = /* @__PURE__ */ new WeakMap();
 var overallUpdatePromise = null;
 function enqueueIntoNextUpdateQueue(widget2) {
   const scheduledUpdate = nextUpdateQueue.get(widget2) ?? Promise.withResolvers();
   nextUpdateQueue.delete(widget2);
   nextUpdateQueue.set(widget2, scheduledUpdate);
-  if (pendingAnimationFrame === null) {
-    const widgetWindow = widget2.contentElement.window() || window;
-    pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
+  const widgetWindow = widget2.contentElement.window() || window;
+  if (!pendingAnimationFrames.has(widgetWindow)) {
+    const frameId = widgetWindow.requestAnimationFrame(() => {
+      pendingAnimationFrames.delete(widgetWindow);
+      runNextUpdate();
+    });
+    pendingAnimationFrames.set(widgetWindow, frameId);
   }
   return scheduledUpdate.promise;
 }
@@ -2917,13 +2921,12 @@ function cancelUpdate(widget2) {
   }
 }
 function resolveOverallUpdatePromise() {
-  if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) && nextUpdateQueue.size === 0 && !pendingAnimationFrame && overallUpdatePromise) {
+  if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) && nextUpdateQueue.size === 0 && overallUpdatePromise) {
     overallUpdatePromise.resolve();
     overallUpdatePromise = null;
   }
 }
 function runNextUpdate() {
-  pendingAnimationFrame = null;
   if (!currentUpdateQueue) {
     currentUpdateQueue = nextUpdateQueue;
     nextUpdateQueue = /* @__PURE__ */ new Map();
@@ -2950,9 +2953,13 @@ function runNextUpdate() {
         const nextUpdate = nextUpdateQueue.get(widget2);
         if (nextUpdate) {
           void nextUpdate.promise.then(resolve);
-          if (pendingAnimationFrame === null) {
-            const widgetWindow = widget2.contentElement.window() || window;
-            pendingAnimationFrame = widgetWindow.requestAnimationFrame(runNextUpdate);
+          const widgetWindow = widget2.contentElement.window() || window;
+          if (!pendingAnimationFrames.has(widgetWindow)) {
+            const frameId = widgetWindow.requestAnimationFrame(() => {
+              pendingAnimationFrames.delete(widgetWindow);
+              runNextUpdate();
+            });
+            pendingAnimationFrames.set(widgetWindow, frameId);
           }
         } else {
           resolve();
@@ -3268,7 +3275,7 @@ var Widget = class _Widget {
     return widgetMap.get(node);
   }
   static get allUpdatesComplete() {
-    if (!pendingAnimationFrame && !currentUpdateQueue && currentlyProcessed.size === 0) {
+    if (nextUpdateQueue.size === 0 && !currentUpdateQueue && currentlyProcessed.size === 0) {
       return Promise.resolve();
     }
     if (!overallUpdatePromise) {
@@ -14948,7 +14955,7 @@ devtools-toolbar {
 
 .webkit-html-text-node {
   color: var(--text-primary);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
 }
 
 .webkit-html-entity-value {
@@ -14956,7 +14963,7 @@ devtools-toolbar {
   /* See: crbug.com/1152736 for color variable migration. */
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-color: rgb(0 0 0 / 15%);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
 }
 
 .webkit-html-doctype {
@@ -14969,13 +14976,13 @@ devtools-toolbar {
 .webkit-html-attribute-name {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
   color: var(--sys-color-token-attribute);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
 }
 
 .webkit-html-attribute-value {
   /* Keep this in sync with view-source.css (.webkit-html-attribute-value) */
   color: var(--sys-color-token-attribute-value);
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
   word-break: break-all;
 }
 
@@ -16715,9 +16722,6 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     function isLitTemplate(value) {
       return Boolean(typeof value === "object" && value && "_$litType$" in value && "strings" in value && "values" in value && value["_$litType$"] === 1);
     }
-    function isLitDirective(value) {
-      return Boolean(typeof value === "object" && value && "_$litDirective$" in value && "values" in value);
-    }
     function isCallable(value) {
       return typeof value === "function" && Object.getOwnPropertyDescriptor(value, "prototype")?.writable !== false;
     }
@@ -16733,7 +16737,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
         _HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
         return value;
       }
-      if (isLitDirective(value)) {
+      if (Lit2.isLitDirective(value)) {
         for (let i = 0; i < value.values.length; i++) {
           const subvalue = value.values[i];
           if (isCallable(subvalue)) {
@@ -16765,9 +16769,26 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
-    for (const mutation of mutationList) {
-      this.removeNodes(mutation.removedNodes);
-      this.addNodes(mutation.addedNodes, mutation.nextSibling);
+    const addedNodes = /* @__PURE__ */ new Set();
+    const removedNodes = /* @__PURE__ */ new Set();
+    for (let i = 0; i < mutationList.length; i++) {
+      const mutation = mutationList[i];
+      for (const node of mutation.addedNodes) {
+        addedNodes.add(node);
+      }
+      for (const node of mutation.removedNodes) {
+        removedNodes.add(node);
+      }
+    }
+    if (removedNodes.size > 0) {
+      this.removeNodes([...removedNodes]);
+    }
+    const finalAddedNodes = [...addedNodes].filter((n) => this.templateRoot.contains(n));
+    if (finalAddedNodes.length > 0) {
+      this.addNodes(finalAddedNodes);
+    }
+    for (let i = 0; i < mutationList.length; i++) {
+      const mutation = mutationList[i];
       this.updateNode(mutation.target, mutation.attributeName);
     }
   }
@@ -16775,7 +16796,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
   }
   updateNode(_node, _attributeName) {
   }
-  addNodes(_nodes, _nextSibling) {
+  addNodes(_nodes) {
   }
   removeNodes(_nodes) {
   }
@@ -23105,14 +23126,21 @@ var TreeElement = class {
 function hasBooleanAttribute(element, name) {
   return element.hasAttribute(name) && element.getAttribute(name) !== "false";
 }
-var TreeSearch = class {
+var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
   #matches = [];
   #currentMatchIndex = 0;
   #nodeMatchMap;
-  reset() {
+  #reset() {
     this.#matches = [];
     this.#nodeMatchMap = void 0;
     this.#currentMatchIndex = 0;
+  }
+  reset() {
+    this.#reset();
+    this.dispatchEventToListeners(
+      "SearchChanged"
+      /* TreeSearch.Events.SEARCH_CHANGED */
+    );
   }
   currentMatch() {
     return this.#matches.at(this.#currentMatchIndex);
@@ -23155,10 +23183,18 @@ var TreeSearch = class {
   }
   next() {
     this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+    this.dispatchEventToListeners(
+      "SearchChanged"
+      /* TreeSearch.Events.SEARCH_CHANGED */
+    );
     return this.currentMatch();
   }
   prev() {
     this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+    this.dispatchEventToListeners(
+      "SearchChanged"
+      /* TreeSearch.Events.SEARCH_CHANGED */
+    );
     return this.currentMatch();
   }
   // This is a generator to sidestep stack overflow risks
@@ -23183,7 +23219,7 @@ var TreeSearch = class {
       false
     );
     yield* preOrderMatches.values();
-    for (const child of node.children()) {
+    for (const child of node.treeNodeChildren()) {
       yield* this.#innerSearch(child, currentMatch, jumpBackwards, match);
     }
     const postOrderMatches = match(
@@ -23200,10 +23236,14 @@ var TreeSearch = class {
   }
   search(node, jumpBackwards, match) {
     const currentMatch = this.currentMatch();
-    this.reset();
+    this.#reset();
     for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
     }
     this.#currentMatchIndex = Platform23.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+    this.dispatchEventToListeners(
+      "SearchChanged"
+      /* TreeSearch.Events.SEARCH_CHANGED */
+    );
     return this.#matches.length;
   }
 };
@@ -23426,7 +23466,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       treeElement.updateExpansionFromAttribute();
     }
   }
-  addNodes(nodes, nextSibling) {
+  addNodes(nodes) {
     for (const node of getTreeNodes(nodes)) {
       if (TreeViewTreeElement.get(node)) {
         continue;
@@ -23438,10 +23478,18 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       if (parent.treeElement.childCount() === 0) {
         parent.treeElement.childrenListElement.classList.add(...parent.classes.values());
       }
-      while (nextSibling && nextSibling.nodeType !== Node.ELEMENT_NODE) {
-        nextSibling = nextSibling.nextSibling;
+      let nextElement = null;
+      for (let e = node.nextElementSibling; e; e = e.nextElementSibling) {
+        const nextTreeEl = TreeViewTreeElement.get(e);
+        if (nextTreeEl) {
+          nextElement = nextTreeEl;
+          break;
+        }
+        if (e instanceof TreeElementWrapper && e.treeElement && e.treeElement.parent === parent.treeElement) {
+          nextElement = e.treeElement;
+          break;
+        }
       }
-      const nextElement = nextSibling ? TreeViewTreeElement.get(nextSibling) : null;
       const index = nextElement ? parent.treeElement.indexOfChild(nextElement) : parent.treeElement.children().length;
       let treeElement;
       if (node instanceof HTMLLIElement) {
@@ -23468,7 +23516,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
         }
       }
     }
-    for (const element of getStyleElements(nodes)) {
+    for (const element of new Set(getStyleElements(nodes))) {
       this.#treeOutline.shadowRoot.appendChild(element.cloneNode(true));
     }
   }

@@ -1,6 +1,19 @@
 import type { Brand } from './Brand.js';
 export declare const escapeCharacters: (inputString: string, charsToEscape: string) => string;
-export declare const escapeUnicode: (content: string) => string;
+/**
+ * Escapes formatting and surrogate characters in the string into literal Unicode escape sequences (e.g. \u200B).
+ * Use this when displaying strings to developers for inspection (e.g. in the Console or Object properties)
+ * where you want hidden or invisible characters to be explicitly visible as literal text.
+ */
+export declare const escapeUnicodeAsText: (content: string) => string;
+/**
+ * Escapes dangerous formatting and surrogate characters (like bidi override characters) to prevent
+ * security and layout issues, but leaves safe, layout-critical zero-width formatting characters
+ * (Zero Width Space \u200B, Zero Width Non-Joiner \u200C, and Zero Width Joiner \u200D) untouched.
+ * Use this when rendering user-controlled content inside templates or HTML markup where you want formatting
+ * characters to function normally for word wrapping or rendering layout, rather than showing as literal text.
+ */
+export declare const safeEscapeUnicode: (content: string) => string;
 export declare const formatAsJSLiteral: (content: string) => string;
 /**
  * This implements a subset of the sprintf() function described in the Single UNIX

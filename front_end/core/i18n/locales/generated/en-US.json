@@ -3914,6 +3914,12 @@
   "panels/application/components/AdsView.ts | elementId": {
     "message": "Element ID"
   },
+  "panels/application/components/AdsView.ts | highlightAds": {
+    "message": "Highlight ads"
+  },
+  "panels/application/components/AdsView.ts | highlightsElementsRedDetectedToBe": {
+    "message": "Highlights elements (red) detected to be ads."
+  },
   "panels/application/components/AdsView.ts | initialOrigin": {
     "message": "Initial origin"
   },
@@ -3925,6 +3931,9 @@
   },
   "panels/application/components/AdsView.ts | notAvailable": {
     "message": "N/A"
+  },
+  "panels/application/components/AdsView.ts | settings": {
+    "message": "Settings"
   },
   "panels/application/components/AdsView.ts | totalCpuUsage": {
     "message": "Total CPU usage by ads"
@@ -10616,6 +10625,9 @@
   "panels/network/NetworkDataGridNode.ts | coepFrameResourceNeedsCoepHeader": {
     "message": "COEP-framed resource needs COEP header"
   },
+  "panels/network/NetworkDataGridNode.ts | console": {
+    "message": "Console"
+  },
   "panels/network/NetworkDataGridNode.ts | coopSandboxedIframeCannotNavigateToCoopPage": {
     "message": "Sandboxed iframe's popup cannot navigate to COOP page"
   },
@@ -10729,6 +10741,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Redirect"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestOriginatedFromConsole": {
+    "message": "Request originated from Console"
   },
   "panels/network/NetworkDataGridNode.ts | script": {
     "message": "Script"
@@ -11486,6 +11501,9 @@
   "panels/network/RequestHeadersView.ts | statusCode": {
     "message": "Status Code"
   },
+  "panels/network/RequestInitiatorView.ts | console": {
+    "message": "Console"
+  },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
     "message": "No initiator data"
   },
@@ -11947,6 +11965,9 @@
   },
   "panels/profiler/HeapProfileView.ts | name": {
     "message": "Name"
+  },
+  "panels/profiler/HeapProfileView.ts | notOptimizedS": {
+    "message": "Not optimized: {PH1}"
   },
   "panels/profiler/HeapProfileView.ts | profile": {
     "message": "Profile"
@@ -12659,82 +12680,82 @@
   "panels/recorder/recorder-meta.ts | toggleCode": {
     "message": "Toggle code view"
   },
-  "panels/recorder/RecorderController.ts | allowImporting": {
+  "panels/recorder/RecorderPanel.ts | allowImporting": {
     "message": "allow importing"
   },
-  "panels/recorder/RecorderController.ts | continueReplay": {
+  "panels/recorder/RecorderPanel.ts | continueReplay": {
     "message": "Continue"
   },
-  "panels/recorder/RecorderController.ts | copyShortcut": {
+  "panels/recorder/RecorderPanel.ts | copyShortcut": {
     "message": "Copy recording or selected step"
   },
-  "panels/recorder/RecorderController.ts | createRecording": {
+  "panels/recorder/RecorderPanel.ts | createRecording": {
     "message": "Create recording"
   },
-  "panels/recorder/RecorderController.ts | deleteRecording": {
+  "panels/recorder/RecorderPanel.ts | deleteRecording": {
     "message": "Delete recording"
   },
-  "panels/recorder/RecorderController.ts | doNotImport": {
+  "panels/recorder/RecorderPanel.ts | doNotImport": {
     "message": "Don’t import recordings you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow importing."
   },
-  "panels/recorder/RecorderController.ts | doYouTrustThisCode": {
+  "panels/recorder/RecorderPanel.ts | doYouTrustThisCode": {
     "message": "Do you trust this recording?"
   },
-  "panels/recorder/RecorderController.ts | export": {
+  "panels/recorder/RecorderPanel.ts | export": {
     "message": "Export"
   },
-  "panels/recorder/RecorderController.ts | exportRecording": {
+  "panels/recorder/RecorderPanel.ts | exportRecording": {
     "message": "Export recording"
   },
-  "panels/recorder/RecorderController.ts | exportViaExtensions": {
+  "panels/recorder/RecorderPanel.ts | exportViaExtensions": {
     "message": "Export via extensions"
   },
-  "panels/recorder/RecorderController.ts | getExtensions": {
+  "panels/recorder/RecorderPanel.ts | getExtensions": {
     "message": "Get extensions…"
   },
-  "panels/recorder/RecorderController.ts | header": {
+  "panels/recorder/RecorderPanel.ts | header": {
     "message": "Nothing recorded yet"
   },
-  "panels/recorder/RecorderController.ts | importRecording": {
+  "panels/recorder/RecorderPanel.ts | importRecording": {
     "message": "Import recording"
   },
-  "panels/recorder/RecorderController.ts | learnMore": {
+  "panels/recorder/RecorderPanel.ts | learnMore": {
     "message": "Learn more"
   },
-  "panels/recorder/RecorderController.ts | noRecordings": {
+  "panels/recorder/RecorderPanel.ts | noRecordings": {
     "message": "No recordings"
   },
-  "panels/recorder/RecorderController.ts | numberOfRecordings": {
+  "panels/recorder/RecorderPanel.ts | numberOfRecordings": {
     "message": "recording(s)"
   },
-  "panels/recorder/RecorderController.ts | recordingDeleted": {
+  "panels/recorder/RecorderPanel.ts | recordingDeleted": {
     "message": "Recording deleted"
   },
-  "panels/recorder/RecorderController.ts | recordingDescription": {
+  "panels/recorder/RecorderPanel.ts | recordingDescription": {
     "message": "Use recordings to create automated end-to-end tests or performance traces."
   },
-  "panels/recorder/RecorderController.ts | recordingExported": {
+  "panels/recorder/RecorderPanel.ts | recordingExported": {
     "message": "Recording exported"
   },
-  "panels/recorder/RecorderController.ts | recordingImported": {
+  "panels/recorder/RecorderPanel.ts | recordingImported": {
     "message": "Recording imported"
   },
-  "panels/recorder/RecorderController.ts | replayRecording": {
+  "panels/recorder/RecorderPanel.ts | replayRecording": {
     "message": "Replay recording"
   },
-  "panels/recorder/RecorderController.ts | sendFeedback": {
+  "panels/recorder/RecorderPanel.ts | sendFeedback": {
     "message": "Send feedback"
   },
-  "panels/recorder/RecorderController.ts | startStopRecording": {
+  "panels/recorder/RecorderPanel.ts | startStopRecording": {
     "message": "Start/stop recording"
   },
-  "panels/recorder/RecorderController.ts | stepOverReplay": {
+  "panels/recorder/RecorderPanel.ts | stepOverReplay": {
     "message": "Execute one step"
   },
-  "panels/recorder/RecorderController.ts | toggleCode": {
+  "panels/recorder/RecorderPanel.ts | toggleCode": {
     "message": "Toggle code view"
   },
-  "panels/recorder/RecorderController.ts | typeAllowImporting": {
+  "panels/recorder/RecorderPanel.ts | typeAllowImporting": {
     "message": "Type “{PH1}”"
   },
   "panels/recorder/RecordingListView.ts | createRecording": {
@@ -13748,8 +13769,14 @@
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "Show less"
   },
+  "panels/settings/AISettingsTab.ts | showLessOfSetting": {
+    "message": "Show less of {PH1}"
+  },
   "panels/settings/AISettingsTab.ts | showMore": {
     "message": "Show more"
+  },
+  "panels/settings/AISettingsTab.ts | showMoreOfSetting": {
+    "message": "Show more of {PH1}"
   },
   "panels/settings/AISettingsTab.ts | termsOfService": {
     "message": "Google Terms of Service"

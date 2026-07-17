@@ -267,10 +267,15 @@ td.time-column {
 }
 
 .data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],
+.data-grid-data-grid-node devtools-icon.network-console-icon,
 .network-log-grid.data-grid.small .icon {
   width: 16px;
   height: 16px;
   vertical-align: sub;
+}
+
+.data-grid-data-grid-node devtools-icon.network-console-icon {
+  margin-right: 3px;
 }
 
 .image-network-icon-preview {

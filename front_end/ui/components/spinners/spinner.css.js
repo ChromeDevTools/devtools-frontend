@@ -23,87 +23,43 @@ export default `/*
   animation: spinner-container-animation 1.5s linear infinite;
 }
 
-.indeterminate-spinner {
+.spinner {
+  height: 100%;
+  width: 100%;
+}
+
+.spinner.indeterminate {
   /*
   * The value for animation duration has been obtained by plugging in values defined
   * in packages/mdc-circular-progress/_circular-progress-theme.scss to
   * functions defined in packages/mdc-circular-progress/_circular-progress.scss.
   * https://github.com/material-components/material-components-web
   */
-  animation: indeterminate-spinner-animation 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  height: 100%;
-  width: 100%;
+  animation: indeterminate-spinner-animation 5332ms cubic-bezier(0.4, 0, 0.2, 1)
+    infinite both;
 
-  .left-circle {
-    height: 100%;
-    width: 50%;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-
-    & > svg {
-      position: absolute;
-      width: 200%;
-      /*
-      * The value for animation duration has been obtained from values defined
-      * in packages/mdc-circular-progress/_circular-progress-theme.scss
-      * https://github.com/material-components/material-components-web
-      */
-      animation: indeterminate-left-circle-spinner-animation 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-    }
-  }
-
-  .center-circle {
-    height: 100%;
-    width: 5%;
-    display: inline-block;
-    position: absolute;
-    overflow: hidden;
-    top: 0;
-    left: 47.5%;
-    box-sizing: border-box;
-
-    & > svg {
-      position: absolute;
-      width: 2000%;
-      left: -900%;
-      transform: rotate(180deg);
-    }
-  }
-
-  .right-circle {
-    height: 100%;
-    width: 50%;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-
-    & > svg {
-      position: absolute;
-      width: 200%;
-      left: -100%;
-      /*
-      * The value for animation duration has been obtained from values defined
-      * in packages/mdc-circular-progress/_circular-progress-theme.scss
-      * https://github.com/material-components/material-components-web
-      */
-      animation: indeterminate-right-circle-spinner-animation 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-    }
-  }
 }
 
-.inactive-spinner circle {
+.spinner circle {
   stroke: var(--sys-color-state-disabled);
   stroke-width: var(--sys-size-6);
   fill: transparent;
+  transform-origin: 50% 50%;
+  transform: rotate(-90deg);
 }
 
-.indeterminate-spinner circle {
+
+.spinner.indeterminate circle {
   stroke: var(--sys-color-primary);
-  stroke-width: var(--sys-size-6);
-  fill: transparent;
-  stroke-dasharray: 290px;
-  stroke-dashoffset: 150px;
+  stroke-dasharray: 100, 100;
+  stroke-dashoffset: 0;
+  /*
+  * The value for animation duration has been obtained from values defined
+  * in packages/mdc-circular-progress/_circular-progress-theme.scss
+  * https://github.com/material-components/material-components-web
+  */
+  animation: indeterminate-spinner-circle-animation 1333ms
+    cubic-bezier(0.4, 0, 0.2, 1) infinite both;
 }
 
 @keyframes spinner-container-animation {
@@ -146,31 +102,23 @@ export default `/*
   }
 }
 
-@keyframes indeterminate-left-circle-spinner-animation {
+@keyframes indeterminate-spinner-circle-animation {
   0% {
-    transform: rotate(265deg);
+    stroke-dasharray: 5, 100;
+    stroke-dashoffset: 0;
+    transform: rotate(-90deg);
   }
 
   50% {
-    transform: rotate(130deg);
+    stroke-dasharray: 75, 100;
+    stroke-dashoffset: 0;
+    transform: rotate(-225deg);
   }
 
   100% {
-    transform: rotate(265deg);
-  }
-}
-
-@keyframes indeterminate-right-circle-spinner-animation {
-  0% {
-    transform: rotate(-265deg);
-  }
-
-  50% {
-    transform: rotate(-130deg);
-  }
-
-  100% {
-    transform: rotate(-265deg);
+    stroke-dasharray: 5, 100;
+    stroke-dashoffset: 0;
+    transform: rotate(-90deg);
   }
 }
 

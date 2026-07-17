@@ -214,12 +214,6 @@ export class ServiceWorkerCacheModel extends SDKModel {
     }
     indexedDBContentUpdated(_event) {
     }
-    interestGroupAuctionEventOccurred(_event) {
-    }
-    interestGroupAccessed(_event) {
-    }
-    interestGroupAuctionNetworkRequestCreated(_event) {
-    }
     sharedStorageAccessed(_event) {
     }
     sharedStorageWorkletOperationExecutionFinished(_event) {

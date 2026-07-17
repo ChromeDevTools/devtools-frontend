@@ -92,7 +92,9 @@ export declare class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<
     exitHingeMode(): void;
     captureScreenshot(fullSize: boolean, clip?: Protocol.Page.Viewport): Promise<string | null>;
     private applyTouch;
-    private showHingeIfApplicable;
+    private showDeviceOverlaysIfApplicable;
+    private currentDisplayCutout;
+    private toDisplayCutout;
     private getDisplayFeatureOrientation;
     private getDisplayFeature;
     /**

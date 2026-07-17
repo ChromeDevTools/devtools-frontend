@@ -749,6 +749,7 @@ __export(Log_exports, {
   Log: () => Log
 });
 import * as Common2 from "./../../core/common/common.js";
+import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 var Log = class _Log {
   static pseudoWallTime(request, monotonicTime) {
@@ -764,7 +765,8 @@ var Log = class _Log {
     return { version: "1.2", creator: log.creator(), pages: log.buildPages(requests), entries };
   }
   creator() {
-    const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
+    const userAgent = Platform2.HostRuntime.HOST_RUNTIME.getUserAgent();
+    const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(userAgent);
     return { name: "WebInspector", version: webKitVersion ? webKitVersion[1] : "n/a" };
   }
   buildPages(requests) {
@@ -1108,7 +1110,7 @@ __export(Writer_exports, {
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
+import * as Platform3 from "./../../core/platform/platform.js";
 import * as TextUtils2 from "./../text_utils/text_utils.js";
 var UIStrings = {
   /**
@@ -1166,7 +1168,7 @@ var Writer = class _Writer {
       if (contentData.content !== null) {
         let content = contentData.content;
         if (content && !encoded && needsEncoding(content)) {
-          content = Platform2.StringUtilities.toBase64(content);
+          content = Platform3.StringUtilities.toBase64(content);
           encoded = true;
         }
         entry.response.content.text = content;

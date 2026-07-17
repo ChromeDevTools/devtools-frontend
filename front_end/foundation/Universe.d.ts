@@ -2,7 +2,9 @@ import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
+import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
@@ -27,6 +29,7 @@ export declare class Universe {
     constructor(options: CreationOptions);
     get automaticFileSystemManager(): Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager;
     get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;
+    get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage;
     get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager;
     get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
     get cruxManager(): CrUXManager.CrUXManager;
@@ -49,6 +52,7 @@ export declare class Universe {
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;
     get settings(): Common.Settings.Settings;
     get targetManager(): SDK.TargetManager.TargetManager;
+    get userBadges(): Badges.UserBadges;
     get workspace(): Workspace.Workspace.WorkspaceImpl;
     get workspaceDiff(): WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
 }

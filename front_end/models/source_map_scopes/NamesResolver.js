@@ -1,7 +1,6 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
@@ -140,7 +139,11 @@ export const scopeIdentifiers = async function (script, scope, ancestorScopes) {
 };
 const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
 const resolveDebuggerScope = async (scope) => {
-    if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
+    if (!scope.callFrame()
+        .debuggerModel.target()
+        .targetManager()
+        .settings.moduleSetting('js-source-maps-enabled')
+        .get()) {
         return { variableMapping: new Map(), thisMapping: null };
     }
     const script = scope.callFrame().script;
@@ -218,14 +221,14 @@ const resolveScope = async (script, scopeChain) => {
         scopeToCachedIdentifiersMap.set(parsedScope, { sourceMap, mappingPromise: identifiersPromise });
     }
     return await cachedScopeMap.mappingPromise;
-    async function resolveSourceName(script, sourceMap, name, position) {
+    async function resolveSourceName(script, sourceMap, name, position, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         const ranges = sourceMap.findEntryRanges(position.lineNumber, position.columnNumber);
         if (!ranges) {
             return null;
         }
         // Extract the underlying text from the compiled code's range and make sure that
         // it starts with the identifier |name|.
-        const uiSourceCode = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForSourceMapSourceURL(script.debuggerModel, ranges.sourceURL, script.isContentScript());
+        const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURL(script.debuggerModel, ranges.sourceURL, script.isContentScript());
         if (!uiSourceCode) {
             return null;
         }
@@ -294,8 +297,8 @@ const resolveScope = async (script, scopeChain) => {
         }
     }
 };
-export const resolveScopeChain = async function (callFrame) {
-    const { pluginManager } = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    const { pluginManager } = debuggerWorkspaceBinding;
     const scopeChain = await pluginManager.resolveScopeChain(callFrame);
     if (scopeChain) {
         return scopeChain;
@@ -314,7 +317,7 @@ export const resolveScopeChain = async function (callFrame) {
  * shadowed) we set it to `null`.
  */
 export const allVariablesInCallFrame = async (callFrame) => {
-    if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
+    if (!callFrame.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
         return new Map();
     }
     const cachedMap = cachedMapByCallFrame.get(callFrame);
@@ -347,11 +350,11 @@ export const allVariablesInCallFrame = async (callFrame) => {
  */
 export const allVariablesAtPosition = async (location) => {
     const reverseMapping = new Map();
-    if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
-        return reverseMapping;
-    }
     const script = location.script();
     if (!script) {
+        return reverseMapping;
+    }
+    if (!script.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
         return reverseMapping;
     }
     const scopeTreeAndText = await computeScopeTree(script);
@@ -589,7 +592,7 @@ export async function resolveDebuggerFrameFunctionName(frame) {
     }
     return await getFunctionNameFromScopeStart(frame.script, startLocation.lineNumber, startLocation.columnNumber);
 }
-export async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target) {
+export async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
     if (!target || lineNumber === undefined || columnNumber === undefined || scriptId === undefined) {
         return null;
     }
@@ -598,7 +601,6 @@ export async function resolveProfileFrameFunctionName({ scriptId, lineNumber, co
     if (!debuggerModel || !script) {
         return null;
     }
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const location = new SDK.DebuggerModel.Location(debuggerModel, scriptId, lineNumber, columnNumber);
     const functionInfoFromPlugin = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(script, location);
     if (functionInfoFromPlugin && 'frames' in functionInfoFromPlugin) {

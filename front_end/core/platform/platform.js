@@ -562,7 +562,7 @@ __export(StringUtilities_exports, {
   escapeCharacters: () => escapeCharacters,
   escapeForRegExp: () => escapeForRegExp,
   escapeForURLPattern: () => escapeForURLPattern,
-  escapeUnicode: () => escapeUnicode,
+  escapeUnicodeAsText: () => escapeUnicodeAsText,
   filterRegex: () => filterRegex,
   findIndexesOfSubString: () => findIndexesOfSubString,
   findLineEndingIndexes: () => findLineEndingIndexes,
@@ -577,6 +577,7 @@ __export(StringUtilities_exports, {
   replaceControlCharacters: () => replaceControlCharacters,
   replaceLast: () => replaceLast,
   reverse: () => reverse,
+  safeEscapeUnicode: () => safeEscapeUnicode,
   sprintf: () => sprintf,
   stringifyWithPrecision: () => stringifyWithPrecision,
   stripLineBreaks: () => stripLineBreaks,
@@ -628,8 +629,25 @@ var escapedReplacements = /* @__PURE__ */ new Map([
   ["<script", "\\x3Cscript"],
   ["<\/script", "\\x3C/script"]
 ]);
-var escapeUnicode = (content) => {
-  return content.replaceAll(/[\p{Format}\p{Surrogate}]/gu, (match) => {
+var UNICODE_ESCAPE_SOURCE = "[\\p{Format}\\p{Surrogate}]";
+var UNICODE_ESCAPE_REGEX = new RegExp(UNICODE_ESCAPE_SOURCE, "u");
+var UNICODE_ESCAPE_GLOBAL_REGEX = new RegExp(UNICODE_ESCAPE_SOURCE, "gu");
+var UNICODE_ESCAPE_EXCEPT_ZWSP_SOURCE = "(?![\\u200B\\u200C\\u200D])[\\p{Format}]|\\p{Surrogate}";
+var UNICODE_ESCAPE_EXCEPT_ZWSP_REGEX = new RegExp(UNICODE_ESCAPE_EXCEPT_ZWSP_SOURCE, "u");
+var UNICODE_ESCAPE_EXCEPT_ZWSP_GLOBAL_REGEX = new RegExp(UNICODE_ESCAPE_EXCEPT_ZWSP_SOURCE, "gu");
+var escapeUnicodeAsText = (content) => {
+  if (!UNICODE_ESCAPE_REGEX.test(content)) {
+    return content;
+  }
+  return content.replaceAll(UNICODE_ESCAPE_GLOBAL_REGEX, (match) => {
+    return match.split("").map((char) => "\\u" + toHexadecimal(char.charCodeAt(0), 4)).join("");
+  });
+};
+var safeEscapeUnicode = (content) => {
+  if (!UNICODE_ESCAPE_EXCEPT_ZWSP_REGEX.test(content)) {
+    return content;
+  }
+  return content.replaceAll(UNICODE_ESCAPE_EXCEPT_ZWSP_GLOBAL_REGEX, (match) => {
     return match.split("").map((char) => "\\u" + toHexadecimal(char.charCodeAt(0), 4)).join("");
   });
 };

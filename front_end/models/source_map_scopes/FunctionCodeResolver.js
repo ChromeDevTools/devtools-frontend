@@ -147,13 +147,12 @@ function createFunctionCode(inputData, functionBounds, options) {
  *
  * We filter projects by `target` to prevent cross-origin leaks.
  */
-export async function getFunctionCodeFromLocation(target, url, line, column, options) {
+export async function getFunctionCodeFromLocation(target, url, line, column, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
         throw new Error('missing debugger model');
     }
     let uiSourceCode = null;
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
     for (const project of projects) {
         if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
@@ -172,7 +171,7 @@ export async function getFunctionCodeFromLocation(target, url, line, column, opt
     if (!rawLocation) {
         return null;
     }
-    return await getFunctionCodeFromRawLocation(rawLocation, options);
+    return await getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding);
 }
 async function format(uiSourceCode, content, settings) {
     const contentType = uiSourceCode.contentType();
@@ -186,8 +185,7 @@ async function format(uiSourceCode, content, settings) {
 /**
  * Returns a {@link FunctionCode} for the given raw location.
  */
-export async function getFunctionCodeFromRawLocation(rawLocation, options) {
-    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+export async function getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
     const functionBounds = await debuggerWorkspaceBinding.functionBoundsAtRawLocation(rawLocation);
     if (!functionBounds) {
         return null;

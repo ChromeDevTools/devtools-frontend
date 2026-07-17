@@ -7,6 +7,7 @@ export interface ViewInput {
     initiatorGraph: Logs.NetworkLog.InitiatorGraph;
     stackTrace: StackTrace.StackTrace.StackTrace | null;
     request: SDK.NetworkRequest.NetworkRequest;
+    isConsoleOriginated: boolean;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 type View = typeof DEFAULT_VIEW;

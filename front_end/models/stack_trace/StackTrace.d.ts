@@ -1,5 +1,6 @@
 import type * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as Workspace from '../workspace/workspace.js';
 export type StackTrace = BaseStackTrace<Fragment>;
 export type DebuggableStackTrace = BaseStackTrace<DebuggableFragment>;
@@ -92,3 +93,11 @@ export declare class DebuggableFrameFlavor {
     /** @returns the same instance of DebuggableFrameFlavor for repeated calls with the same (i.e. deep equal) DebuggableFrame */
     static for(frame: DebuggableFrame): DebuggableFrameFlavor;
 }
+/**
+ * Returns whether the given stack trace originated from a direct console
+ * invocation. A console-originated stack trace has exactly one frame with
+ * no url and no function name.
+ *
+ * TODO(crbug.com/40726969): Accept a translated `StackTrace` instead of a raw `Protocol.Runtime.StackTrace`.
+ */
+export declare function isConsoleOriginated(stackTrace: Protocol.Runtime.StackTrace): boolean;

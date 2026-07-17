@@ -73,6 +73,12 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const CUTOUT_SHAPE_TO_PROTOCOL = {
+    ["pill" /* CutoutShape.PILL */]: "pill" /* Protocol.Overlay.DisplayCutoutShape.Pill */,
+    ["notch" /* CutoutShape.NOTCH */]: "notch" /* Protocol.Overlay.DisplayCutoutShape.Notch */,
+    ["circle" /* CutoutShape.CIRCLE */]: "circle" /* Protocol.Overlay.DisplayCutoutShape.Circle */,
+    ["rectangle" /* CutoutShape.RECTANGLE */]: "rectangle" /* Protocol.Overlay.DisplayCutoutShape.Rectangle */,
+};
 export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
     #screenRect;
     #visiblePageRect;
@@ -423,7 +429,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         if (!overlayModel) {
             return;
         }
-        this.showHingeIfApplicable(overlayModel);
+        this.showDeviceOverlaysIfApplicable(overlayModel);
     }
     onScreenOrientationLockChanged(event) {
         this.#screenOrientationLocked = event.data.locked;
@@ -536,7 +542,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
         const mobile = this.isMobile();
         const overlayModel = this.#emulationModel ? this.#emulationModel.overlayModel() : null;
         if (overlayModel) {
-            this.showHingeIfApplicable(overlayModel);
+            this.showDeviceOverlaysIfApplicable(overlayModel);
         }
         if (this.#type === Type.Device && this.#device && this.#mode) {
             const orientation = this.#device.orientationByName(this.#mode.orientation);
@@ -738,13 +744,61 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper {
             void emulationModel.emulateTouch(touchEnabled, mobile);
         }
     }
-    showHingeIfApplicable(overlayModel) {
+    showDeviceOverlaysIfApplicable(overlayModel) {
         const orientation = (this.#device && this.#mode) ? this.#device.orientationByName(this.#mode.orientation) : null;
         if (orientation?.hinge) {
             overlayModel.showHingeForDualScreen(orientation.hinge);
-            return;
         }
-        overlayModel.showHingeForDualScreen(null);
+        else {
+            overlayModel.showHingeForDualScreen(null);
+        }
+        overlayModel.showDisplayCutout(this.currentDisplayCutout());
+    }
+    currentDisplayCutout() {
+        const device = this.#device;
+        const mode = this.#mode;
+        if (!device || !mode || !device.modes.includes(mode)) {
+            return null;
+        }
+        const cutout = mode.cutout;
+        if (cutout) {
+            return this.toDisplayCutout(cutout);
+        }
+        if (mode.orientation !== Horizontal) {
+            return null;
+        }
+        const rotationPartner = device.getRotationPartner(mode);
+        const rotatedCutout = rotationPartner?.cutout;
+        if (rotationPartner?.orientation !== Vertical || !rotatedCutout) {
+            return null;
+        }
+        const orientation = device.orientationByName(mode.orientation);
+        if (rotatedCutout.shape === "circle" /* CutoutShape.CIRCLE */) {
+            return this.toDisplayCutout({
+                ...rotatedCutout,
+                x: orientation.width - rotatedCutout.y - rotatedCutout.height,
+                y: rotatedCutout.x,
+                width: rotatedCutout.height,
+                height: rotatedCutout.width,
+                cx: orientation.width - rotatedCutout.cy,
+                cy: rotatedCutout.cx,
+            });
+        }
+        return this.toDisplayCutout({
+            ...rotatedCutout,
+            x: orientation.width - rotatedCutout.y - rotatedCutout.height,
+            y: rotatedCutout.x,
+            width: rotatedCutout.height,
+            height: rotatedCutout.width,
+        });
+    }
+    toDisplayCutout(cutout) {
+        const { shape, ...rest } = cutout;
+        return {
+            ...rest,
+            shape: CUTOUT_SHAPE_TO_PROTOCOL[shape],
+            contentColor: { r: 0, g: 0, b: 0, a: 1 },
+        };
     }
     getDisplayFeatureOrientation() {
         if (!this.#mode) {

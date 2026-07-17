@@ -5,7 +5,7 @@ import type * as LHModel from '../../models/lighthouse/lighthouse.js';
 import type * as Trace from '../../models/trace/trace.js';
 import type * as NetworkTimeCalculator from '../network_time_calculator/network_time_calculator.js';
 import { type AllowedOriginResult, type ContextDetail, type ConversationContext, type MultimodalInput, type ResponseData } from './agents/AiAgent.js';
-import { ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
+import { AiHistoryStorage, ConversationType, type SerializedConversation } from './AiHistoryStorage.js';
 import type { ChangeManager } from './ChangeManager.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare const CONTEXT_TITLE = "Analyzing data";
@@ -29,6 +29,8 @@ export interface AiConversationOptions {
     onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
     networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
     lighthouseRecording?: (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON | null>;
+    aiHistoryStorage?: AiHistoryStorage;
+    targetManager?: SDK.TargetManager.TargetManager;
 }
 export declare class AiConversation {
     #private;

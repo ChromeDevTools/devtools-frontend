@@ -113,12 +113,6 @@ export class StorageBucketsModel extends SDKModel {
             throw new Error(`Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
         }
     }
-    interestGroupAccessed(_event) {
-    }
-    interestGroupAuctionEventOccurred(_event) {
-    }
-    interestGroupAuctionNetworkRequestCreated(_event) {
-    }
     indexedDBListUpdated(_event) {
     }
     indexedDBContentUpdated(_event) {

@@ -347,6 +347,9 @@ var SourceRange = class {
     this.offset = offset;
     this.length = length;
   }
+  cssValue() {
+    return `${this.offset},${this.length}`;
+  }
 };
 
 // gen/front_end/models/text_utils/Text.js

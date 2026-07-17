@@ -95,6 +95,9 @@
   ],
   "references": [
     {
+      "path": "./test_id_generation-tsconfig.json"
+    },
+    {
       "path": "../../extension-api/extension-api-tsconfig.json"
     },
     {

@@ -77,4 +77,5 @@ export declare class SourceRange {
     offset: number;
     length: number;
     constructor(offset: number, length: number);
+    cssValue(): string;
 }

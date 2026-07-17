@@ -1,5 +1,6 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 export declare function getTextFor(contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<TextUtils.Text.Text | null>;
@@ -20,7 +21,7 @@ export declare const scopeIdentifiers: (script: SDK.Script.Script, scope: Format
     freeVariables: IdentifierPositions[];
     boundVariables: IdentifierPositions[];
 } | null>;
-export declare const resolveScopeChain: (callFrame: SDK.DebuggerModel.CallFrame) => Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
+export declare const resolveScopeChain: (callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding) => Promise<SDK.DebuggerModel.ScopeChainEntry[]>;
 /**
  * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
  * shadowed) we set it to `null`.
@@ -58,6 +59,6 @@ export declare class RemoteObject extends SDK.RemoteObject.RemoteObject {
     isNode(): boolean;
 }
 export declare function resolveDebuggerFrameFunctionName(frame: SDK.DebuggerModel.CallFrame): Promise<string | null>;
-export declare function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }: Partial<Protocol.Runtime.CallFrame>, target: SDK.Target.Target | null): Promise<string | null>;
+export declare function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }: Partial<Protocol.Runtime.CallFrame>, target: SDK.Target.Target | null, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<string | null>;
 export declare const getScopeResolvedForTest: () => (...arg0: unknown[]) => void;
 export declare const setScopeResolvedForTest: (scope: (...arg0: unknown[]) => void) => void;

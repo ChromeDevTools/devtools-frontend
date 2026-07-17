@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import { areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin } from '../AiOrigins.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 const MAX_SUGGESTION_LENGTH = 200;
@@ -81,6 +82,7 @@ export class AiAgent {
     confirmSideEffect;
     #functionDeclarations = new Map();
     #allowedOrigin;
+    #targetManager;
     /**
      * Used in the debug mode and evals.
      */
@@ -106,6 +108,7 @@ export class AiAgent {
         this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
         this.#history = opts.history ?? [];
         this.#allowedOrigin = opts.allowedOrigin;
+        this.#targetManager = opts.targetManager ?? SDK.TargetManager.TargetManager.instance();
     }
     async enhanceQuery(query) {
         return query;
@@ -115,6 +118,9 @@ export class AiAgent {
     }
     get history() {
         return [...this.#history];
+    }
+    get targetManager() {
+        return this.#targetManager;
     }
     /**
      * Add a fact which will be sent for any subsequent requests.

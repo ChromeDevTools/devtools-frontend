@@ -5,7 +5,9 @@ import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
+import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
+import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
@@ -111,6 +113,10 @@ export class Universe {
         context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
         const liveMetrics = new LiveMetrics.LiveMetrics(targetManager, deviceModeModel);
         context.set(LiveMetrics.LiveMetrics, liveMetrics);
+        const userBadges = new Badges.UserBadges(settings, gdpClient);
+        context.set(Badges.UserBadges, userBadges);
+        const aiHistoryStorage = new AiAssistance.AiHistoryStorage.AiHistoryStorage(settings);
+        context.set(AiAssistance.AiHistoryStorage.AiHistoryStorage, aiHistoryStorage);
         this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
     }
     get automaticFileSystemManager() {
@@ -118,6 +124,9 @@ export class Universe {
     }
     get automaticFileSystemWorkspaceBinding() {
         return this.context.get(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding);
+    }
+    get aiHistoryStorage() {
+        return this.context.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
     }
     get breakpointManager() {
         return this.context.get(Breakpoints.BreakpointManager.BreakpointManager);
@@ -185,6 +194,9 @@ export class Universe {
     }
     get targetManager() {
         return this.context.get(SDK.TargetManager.TargetManager);
+    }
+    get userBadges() {
+        return this.context.get(Badges.UserBadges);
     }
     get workspace() {
         return this.context.get(Workspace.Workspace.WorkspaceImpl);

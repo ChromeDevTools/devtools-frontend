@@ -22,6 +22,11 @@ export default `/*
   padding: 4px;
 }
 
+.console-origin-label {
+  color: var(--sys-color-token-subtle);
+  padding: 2px 4px 2px 20px;
+}
+
 .request-initiator-view-section-title:focus-visible {
   background-color: var(--sys-color-state-focus-highlight);
 }

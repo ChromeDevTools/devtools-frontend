@@ -1220,14 +1220,18 @@ export class TreeElement {
 function hasBooleanAttribute(element, name) {
     return element.hasAttribute(name) && element.getAttribute(name) !== 'false';
 }
-export class TreeSearch {
+export class TreeSearch extends Common.ObjectWrapper.ObjectWrapper {
     #matches = [];
     #currentMatchIndex = 0;
     #nodeMatchMap;
-    reset() {
+    #reset() {
         this.#matches = [];
         this.#nodeMatchMap = undefined;
         this.#currentMatchIndex = 0;
+    }
+    reset() {
+        this.#reset();
+        this.dispatchEventToListeners("SearchChanged" /* TreeSearch.Events.SEARCH_CHANGED */);
     }
     currentMatch() {
         return this.#matches.at(this.#currentMatchIndex);
@@ -1270,10 +1274,12 @@ export class TreeSearch {
     }
     next() {
         this.#currentMatchIndex = Platform.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
+        this.dispatchEventToListeners("SearchChanged" /* TreeSearch.Events.SEARCH_CHANGED */);
         return this.currentMatch();
     }
     prev() {
         this.#currentMatchIndex = Platform.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
+        this.dispatchEventToListeners("SearchChanged" /* TreeSearch.Events.SEARCH_CHANGED */);
         return this.currentMatch();
     }
     // This is a generator to sidestep stack overflow risks
@@ -1297,7 +1303,7 @@ export class TreeSearch {
         this.#matches.push(...preOrderMatches);
         updateCurrentMatchIndex(/* isPostOrder=*/ false);
         yield* preOrderMatches.values();
-        for (const child of node.children()) {
+        for (const child of node.treeNodeChildren()) {
             yield* this.#innerSearch(child, currentMatch, jumpBackwards, match);
         }
         const postOrderMatches = match(node, /* isPostOrder=*/ true);
@@ -1307,12 +1313,13 @@ export class TreeSearch {
     }
     search(node, jumpBackwards, match) {
         const currentMatch = this.currentMatch();
-        this.reset();
+        this.#reset();
         // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars
         for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
             // run the generator
         }
         this.#currentMatchIndex = Platform.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
+        this.dispatchEventToListeners("SearchChanged" /* TreeSearch.Events.SEARCH_CHANGED */);
         return this.#matches.length;
     }
 }
@@ -1607,7 +1614,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
             treeElement.updateExpansionFromAttribute();
         }
     }
-    addNodes(nodes, nextSibling) {
+    addNodes(nodes) {
         for (const node of getTreeNodes(nodes)) {
             if (TreeViewTreeElement.get(node)) {
                 continue; // Not sure this can happen
@@ -1619,10 +1626,18 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
             if (parent.treeElement.childCount() === 0) {
                 parent.treeElement.childrenListElement.classList.add(...parent.classes.values());
             }
-            while (nextSibling && nextSibling.nodeType !== Node.ELEMENT_NODE) {
-                nextSibling = nextSibling.nextSibling;
+            let nextElement = null;
+            for (let e = node.nextElementSibling; e; e = e.nextElementSibling) {
+                const nextTreeEl = TreeViewTreeElement.get(e);
+                if (nextTreeEl) {
+                    nextElement = nextTreeEl;
+                    break;
+                }
+                if (e instanceof TreeElementWrapper && e.treeElement && e.treeElement.parent === parent.treeElement) {
+                    nextElement = e.treeElement;
+                    break;
+                }
             }
-            const nextElement = nextSibling ? TreeViewTreeElement.get(nextSibling) : null;
             const index = nextElement ? parent.treeElement.indexOfChild(nextElement) : parent.treeElement.children().length;
             let treeElement;
             if (node instanceof HTMLLIElement) {
@@ -1650,7 +1665,7 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
                 }
             }
         }
-        for (const element of getStyleElements(nodes)) {
+        for (const element of new Set(getStyleElements(nodes))) {
             this.#treeOutline.shadowRoot.appendChild(element.cloneNode(true));
         }
     }

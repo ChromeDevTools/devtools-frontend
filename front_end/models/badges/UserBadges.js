@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import { AiExplorerBadge } from './AiExplorerBadge.js';
 import { CodeWhispererBadge } from './CodeWhispererBadge.js';
 import { DOMDetectiveBadge } from './DOMDetectiveBadge.js';
@@ -11,7 +12,6 @@ import { StarterBadge } from './StarterBadge.js';
 const SNOOZE_TIME_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MAX_SNOOZE_COUNT = 3;
 const DELAY_BEFORE_TRIGGER = 1500;
-let userBadgesInstance = undefined;
 export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
     #badgeActionEventTarget = new Common.ObjectWrapper.ObjectWrapper();
     #receiveBadgesSetting;
@@ -19,6 +19,8 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
     #starterBadgeSnoozeCount;
     #starterBadgeLastSnoozedTimestamp;
     #starterBadgeDismissed;
+    #settings;
+    #gdpClient;
     static BADGE_REGISTRY = [
         StarterBadge,
         SpeedsterBadge,
@@ -26,26 +28,30 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         CodeWhispererBadge,
         AiExplorerBadge,
     ];
-    constructor() {
+    constructor(settings, gdpClient) {
         super();
-        this.#receiveBadgesSetting = Common.Settings.Settings.instance().moduleSetting('receive-gdp-badges');
+        this.#settings = settings;
+        this.#gdpClient = gdpClient;
+        this.#receiveBadgesSetting = this.#settings.moduleSetting('receive-gdp-badges');
         if (!Host.GdpClient.isBadgesEnabled()) {
             this.#receiveBadgesSetting.set(false);
         }
         this.#receiveBadgesSetting.addChangeListener(this.#reconcileBadges, this);
-        this.#starterBadgeSnoozeCount = Common.Settings.Settings.instance().createSetting('starter-badge-snooze-count', 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
-        this.#starterBadgeLastSnoozedTimestamp = Common.Settings.Settings.instance().createSetting('starter-badge-last-snoozed-timestamp', 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
-        this.#starterBadgeDismissed = Common.Settings.Settings.instance().createSetting('starter-badge-dismissed', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
+        this.#starterBadgeSnoozeCount =
+            this.#settings.createSetting('starter-badge-snooze-count', 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
+        this.#starterBadgeLastSnoozedTimestamp = this.#settings.createSetting('starter-badge-last-snoozed-timestamp', 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
+        this.#starterBadgeDismissed =
+            this.#settings.createSetting('starter-badge-dismissed', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
         this.#allBadges = UserBadges.BADGE_REGISTRY.map(badgeCtor => new badgeCtor({
             onTriggerBadge: this.#onTriggerBadge.bind(this),
             badgeActionEventTarget: this.#badgeActionEventTarget,
         }));
     }
     static instance({ forceNew } = { forceNew: false }) {
-        if (!userBadgesInstance || forceNew) {
-            userBadgesInstance = new UserBadges();
+        if (!Root.DevToolsContext.globalInstance().has(UserBadges) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(UserBadges, new UserBadges(Common.Settings.Settings.instance(), Host.GdpClient.GdpClient.instance()));
         }
-        return userBadgesInstance;
+        return Root.DevToolsContext.globalInstance().get(UserBadges);
     }
     async initialize() {
         return await this.#reconcileBadges();
@@ -70,7 +76,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         if (!badge.isStarterBadge) {
             return "Award" /* BadgeTriggerReason.AWARD */;
         }
-        const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
+        const getProfileResponse = await this.#gdpClient.getProfile();
         // The `getProfile` call failed and returned a `null`.
         // For that case, we don't show anything.
         if (!getProfileResponse) {
@@ -101,7 +107,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
             return;
         }
         if (reason === "Award" /* BadgeTriggerReason.AWARD */) {
-            const result = await Host.GdpClient.GdpClient.instance().createAward({ name: badge.name });
+            const result = await this.#gdpClient.createAward({ name: badge.name });
             if (!result) {
                 return;
             }
@@ -138,7 +144,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
             this.#deactivateAllBadges();
             return;
         }
-        const getProfileResponse = await Host.GdpClient.GdpClient.instance().getProfile();
+        const getProfileResponse = await this.#gdpClient.getProfile();
         if (!getProfileResponse) {
             this.#deactivateAllBadges();
             return;
@@ -153,7 +159,7 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         }
         let awardedBadgeNames = null;
         if (hasGdpProfile) {
-            awardedBadgeNames = await Host.GdpClient.GdpClient.instance().getAwardedBadgeNames({ names: this.#allBadges.map(badge => badge.name) });
+            awardedBadgeNames = await this.#gdpClient.getAwardedBadgeNames({ names: this.#allBadges.map(badge => badge.name) });
             // This is a conservative approach. We bail out if `awardedBadgeNames` is null
             // when there is a profile to prevent a negative user experience.
             //

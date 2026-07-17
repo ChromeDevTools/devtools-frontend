@@ -187,15 +187,15 @@ export declare class TreeElement {
     isEventWithinDisclosureTriangle(event: MouseEvent): boolean;
     setDisableSelectFocus(toggle: boolean): void;
 }
-interface TreeNode<NodeT> {
-    children(): NodeT[];
+export interface TreeNode<NodeT> {
+    treeNodeChildren(): Iterable<NodeT>;
 }
 export interface TreeSearchResult<NodeT> {
     node: NodeT;
     isPostOrderMatch: boolean;
     matchIndexInNode: number;
 }
-export declare class TreeSearch<NodeT extends TreeNode<NodeT>, SearchResultT extends TreeSearchResult<NodeT> = TreeSearchResult<NodeT>> {
+export declare class TreeSearch<NodeT extends TreeNode<NodeT>, SearchResultT extends TreeSearchResult<NodeT> = TreeSearchResult<NodeT>> extends Common.ObjectWrapper.ObjectWrapper<TreeSearch.EventTypes> {
     #private;
     reset(): void;
     currentMatch(): SearchResultT | undefined;
@@ -205,6 +205,14 @@ export declare class TreeSearch<NodeT extends TreeNode<NodeT>, SearchResultT ext
     next(): SearchResultT | undefined;
     prev(): SearchResultT | undefined;
     search(node: NodeT, jumpBackwards: boolean, match: (node: NodeT, isPostOrder: boolean) => SearchResultT[]): number;
+}
+export declare namespace TreeSearch {
+    const enum Events {
+        SEARCH_CHANGED = "SearchChanged"
+    }
+    interface EventTypes {
+        [Events.SEARCH_CHANGED]: void;
+    }
 }
 /**
  * A tree element that can be used as progressive enhancement over a <ul> element. A `template` IDL attribute allows
@@ -285,8 +293,8 @@ export declare class TreeViewElement extends HTMLElementWithLightDOMTemplate {
     getInternalTreeOutlineForTest(): TreeOutlineInShadow;
     focus(): void;
     protected updateNode(node: Node, attributeName: string | null): void;
-    protected addNodes(nodes: NodeList | Node[], nextSibling?: Node | null): void;
-    protected removeNodes(nodes: NodeList): void;
+    protected addNodes(nodes: NodeList | Node[]): void;
+    protected removeNodes(nodes: NodeList | Node[]): void;
     set hideOverflow(hide: boolean);
     get hideOverflow(): boolean;
     set navgiationVariant(navigationVariant: boolean);

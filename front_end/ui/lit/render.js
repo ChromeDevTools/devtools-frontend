@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Lit from '../../third_party/lit/lit.js';
 const renderOptions = new WeakMap();
+const containerListeners = new WeakMap();
 export function render(template, container, options) {
     const host = container instanceof ShadowRoot ? container.host : container;
     if (host instanceof Element) {
@@ -49,20 +50,46 @@ export function render(template, container, options) {
             }
         }
     }
-    const oldListeners = renderOptions.get(container)?.container?.listeners;
+    let listenersMap = containerListeners.get(container);
+    if (!listenersMap) {
+        listenersMap = new Map();
+        containerListeners.set(container, listenersMap);
+    }
     const newListeners = options?.container?.listeners;
-    if (oldListeners) {
-        for (const [name, listener] of Object.entries(oldListeners)) {
-            if (newListeners?.[name] !== listener) {
-                host.removeEventListener(name, listener);
+    if (newListeners) {
+        for (const [name, listener] of Object.entries(newListeners)) {
+            const entry = listenersMap.get(name);
+            if (entry) {
+                entry.listener = listener;
+            }
+            else {
+                let currentListener = listener;
+                const newEntry = {
+                    get listener() {
+                        return currentListener;
+                    },
+                    set listener(val) {
+                        currentListener = val;
+                    },
+                    wrapper: (event) => {
+                        if (typeof currentListener === 'function') {
+                            return currentListener.call(host, event);
+                        }
+                        if (currentListener && 'handleEvent' in currentListener) {
+                            return currentListener.handleEvent(event);
+                        }
+                    }
+                };
+                listenersMap.set(name, newEntry);
+                host.addEventListener(name, newEntry.wrapper);
             }
         }
     }
-    if (newListeners) {
-        for (const [name, listener] of Object.entries(newListeners)) {
-            if (oldListeners?.[name] !== listener) {
-                host.addEventListener(name, listener);
-            }
+    // Remove old listeners that are no longer present
+    for (const [name, entry] of listenersMap.entries()) {
+        if (!newListeners || !(name in newListeners)) {
+            host.removeEventListener(name, entry.wrapper);
+            listenersMap.delete(name);
         }
     }
     renderOptions.set(container, options);

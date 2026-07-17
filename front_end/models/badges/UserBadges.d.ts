@@ -1,4 +1,5 @@
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import type { Badge, BadgeAction, BadgeContext } from './Badge.js';
 type BadgeClass = new (badgeContext: BadgeContext) => Badge;
 export declare const enum BadgeTriggerReason {
@@ -18,7 +19,7 @@ export interface EventTypes {
 export declare class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     static readonly BADGE_REGISTRY: BadgeClass[];
-    private constructor();
+    constructor(settings: Common.Settings.Settings, gdpClient: Host.GdpClient.GdpClient);
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): UserBadges;

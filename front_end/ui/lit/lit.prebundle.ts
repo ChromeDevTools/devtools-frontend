@@ -27,6 +27,7 @@ export {
 } from './render.js';
 export {
   html,
+  isLitDirective,
 } from './strip-whitespace.js';
 
 export type LitTemplate = Lit.TemplateResult|typeof Lit.nothing;

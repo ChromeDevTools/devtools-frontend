@@ -4,6 +4,66 @@ import type { Console } from './Console.js';
 import type { EventDescriptor, EventTargetEvent, GenericEvents } from './EventTarget.js';
 import { ObjectWrapper } from './Object.js';
 import { getLocalizedSettingsCategory, type LearnMore, maybeRemoveSettingExtension, type RegExpSettingItem, registerSettingExtension, registerSettingsForTest, resetSettings, SettingCategory, type SettingExtensionOption, type SettingRegistration, SettingType } from './SettingRegistration.js';
+/**
+ * Describes and configures a Setting.
+ *
+ * Use `Settings#resolve` to get the concrete `Setting` instance for a descriptor.
+ */
+export interface SettingDescriptor<ValueT> {
+    /** The unique identifier of a setting */
+    readonly name: string;
+    /**
+     * Determines how the possible values of the setting are expressed.
+     *
+     * - If the setting can only be enabled and disabled use BOOLEAN
+     * - If the setting has a list of possible values use ENUM
+     * - If each setting value is a set of objects use ARRAY
+     * - If the setting value is a regular expression use REGEX
+     */
+    readonly type: SettingType;
+    /**
+     * The default value for this setting.
+     *
+     * Can be computed based on the `hostConfig` (but NOTHING ELSE).
+     */
+    readonly defaultValue: ValueT | ((hostConfig: Root.Runtime.HostConfig) => ValueT);
+    /**
+     * Determines if the setting value is stored in the global, local or session storage.
+     */
+    readonly storageType?: SettingStorageType;
+}
+/**
+ * Describes and configures a Setting that might be unavailable or disabled depending on the HostConfig.
+ *
+ * See {@link SettingAvailability} for details.
+ *
+ * Use `Settings#maybeResolve` to get the concrete `Setting` instance (or a reason why it's not available).
+ */
+export interface ConditionalSettingDescriptor<ValueT, ReasonT> extends SettingDescriptor<ValueT> {
+    /** The function used as `isAvailable` must only read the host config, NOTHING ELSE. */
+    isAvailable: (hostConfig: Root.Runtime.HostConfig) => SettingAvailabilityStatus<ReasonT>;
+}
+export type SettingAvailabilityStatus<ReasonT> = {
+    status: SettingAvailability.AVAILABLE;
+} | {
+    status: SettingAvailability.UNAVAILABLE | SettingAvailability.DISABLED;
+    reason: ReasonT;
+};
+export declare const enum SettingAvailability {
+    /**
+     * Setting is available and can be changed by the user or programmatically.
+     */
+    AVAILABLE = 1,
+    /**
+     * Setting is not available at all. Any `maybeResolve` or `resolve` call will fail.
+     * The setting should be hidden from the user.
+     */
+    UNAVAILABLE = 2,
+    /**
+     * Setting is available, but its value can't be read or written.
+     */
+    DISABLED = 3
+}
 export interface SettingsCreationOptions {
     syncedStorage: SettingsStorage;
     globalStorage: SettingsStorage;

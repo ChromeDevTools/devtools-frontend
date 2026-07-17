@@ -123,6 +123,8 @@ export declare class NetworkRequestNode extends NetworkNode {
     static ResponseHeaderNumberComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
     static ResponseHeaderDateComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number;
     static OverrideTypesComparator(a: NetworkNode, b: NetworkNode): number;
+    static isConsoleOriginated(request: SDK.NetworkRequest.NetworkRequest): boolean;
+    private isConsoleOriginated;
     showingInitiatorChainChanged(): void;
     private setIsOnInitiatorPath;
     isOnInitiatorPath(): boolean;

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import { AiAgent } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
@@ -47,7 +46,7 @@ export class AiAgent2 extends AiAgent {
     preamble = preamble;
     clientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
     userTier = 'TESTERS';
-    #changes = new ChangeManager();
+    #changes;
     #execJs;
     #allowedOrigin;
     #lighthouseRecording;
@@ -58,6 +57,7 @@ export class AiAgent2 extends AiAgent {
     #declaredTools = new Set();
     constructor(opts) {
         super(opts);
+        this.#changes = new ChangeManager(opts.targetManager);
         this.#lighthouseRecording = opts.lighthouseRecording;
         this.#execJs = opts.execJs ?? executeJsCode;
         this.#allowedOrigin = opts.allowedOrigin;
@@ -192,7 +192,7 @@ User query: ${enhancedQuery}`;
                     createExtensionScope: this.#createExtensionScope.bind(this),
                     execJs: this.#execJs,
                     getExecutionContextNode: () => this.context instanceof DOMNodeContext ? this.context.getItem() : null,
-                    getTarget: () => SDK.TargetManager.TargetManager.instance().primaryPageTarget(),
+                    getTarget: () => this.targetManager.primaryPageTarget(),
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
                     lighthouseRecording: this.#lighthouseRecording,
                 };

@@ -80,6 +80,9 @@ models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js
 models/formatter/ScriptFormatter.test.js
+models/har/Importer.test.js
+models/har/Log.test.js
+models/har/Writer.test.js
 models/heap_snapshot/heap_snapshot.test.js
 models/issues_manager/ConnectionAllowlistIssue.test.js
 models/issues_manager/DeprecationIssue.test.js
@@ -102,7 +105,16 @@ models/stack_trace/StackTrace.test.js
 models/stack_trace/StackTraceImpl.test.js
 models/stack_trace/StackTraceModel.test.js
 models/stack_trace/Trie.test.js
+models/text_utils/ContentData.test.js
+models/text_utils/StaticContentProvider.test.js
+models/text_utils/StreamingContentData.test.js
+models/text_utils/Text.test.js
+models/text_utils/TextCursor.test.js
+models/text_utils/TextRange.test.js
+models/text_utils/TextUtils.test.js
+models/text_utils/WasmDisassembly.test.js
 models/workspace/IgnoreListManager.test.js
 models/workspace/SearchConfig.test.js
 models/workspace/UISourceCode.test.js
 models/workspace/WorkspaceImpl.test.js
+testing/TestIdGeneration.test.js

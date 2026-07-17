@@ -3,7 +3,9 @@ import * as Host from '../core/host/host.js';
 import * as Root from '../core/root/root.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Foundation from '../foundation/foundation.js';
+import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as AutofillManager from '../models/autofill_manager/autofill_manager.js';
+import * as Badges from '../models/badges/badges.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
@@ -44,6 +46,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
      * Convenience shortcut for `createTarget({targetManager: testUniverse.targetManager})`
      */
     createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
+    get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage;
     get autofillManager(): AutofillManager.AutofillManager.AutofillManager;
     get automaticFileSystemManager(): Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager;
     get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;
@@ -78,6 +81,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     get persistence(): Persistence.Persistence.PersistenceImpl;
     get projectSettingsModel(): ProjectSettings.ProjectSettingsModel.ProjectSettingsModel;
     get targetManager(): SDK.TargetManager.TargetManager;
+    get userBadges(): Badges.UserBadges;
     get settings(): Common.Settings.Settings;
     get workspace(): Workspace.Workspace.WorkspaceImpl;
     get workspaceDiff(): WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;

@@ -877,7 +877,6 @@ export declare namespace Audits {
         MixedContentWarning = "MixedContentWarning"
     }
     const enum MixedContentResourceType {
-        AttributionSrc = "AttributionSrc",
         Audio = "Audio",
         Beacon = "Beacon",
         CSPReport = "CSPReport",
@@ -2319,10 +2318,6 @@ export declare namespace Browser {
          */
         buckets: Bucket[];
     }
-    const enum PrivacySandboxAPI {
-        BiddingAndAuctionServices = "BiddingAndAuctionServices",
-        TrustedKeyValue = "TrustedKeyValue"
-    }
     interface SetPermissionRequest {
         /**
          * Descriptor of permission to override.
@@ -2532,16 +2527,6 @@ export declare namespace Browser {
     }
     interface AddPrivacySandboxEnrollmentOverrideRequest {
         url: string;
-    }
-    interface AddPrivacySandboxCoordinatorKeyConfigRequest {
-        api: PrivacySandboxAPI;
-        coordinatorOrigin: string;
-        keyConfig: string;
-        /**
-         * BrowserContext to perform the action in. When omitted, default browser
-         * context is used.
-         */
-        browserContextId?: BrowserContextID;
     }
     /**
      * Fired when page is about to start a download.
@@ -16991,49 +16976,11 @@ export declare namespace Storage {
         count: number;
     }
     /**
-     * Protected audience interest group auction identifier.
-     */
-    type InterestGroupAuctionId = OpaqueIdentifier<string, 'Protocol.Storage.InterestGroupAuctionId'>;
-    /**
-     * Enum of interest group access types.
-     */
-    const enum InterestGroupAccessType {
-        Join = "join",
-        Leave = "leave",
-        Update = "update",
-        Loaded = "loaded",
-        Bid = "bid",
-        Win = "win",
-        AdditionalBid = "additionalBid",
-        AdditionalBidWin = "additionalBidWin",
-        TopLevelBid = "topLevelBid",
-        TopLevelAdditionalBid = "topLevelAdditionalBid",
-        Clear = "clear"
-    }
-    /**
-     * Enum of auction events.
-     */
-    const enum InterestGroupAuctionEventType {
-        Started = "started",
-        ConfigResolved = "configResolved"
-    }
-    /**
-     * Enum of network fetches auctions can do.
-     */
-    const enum InterestGroupAuctionFetchType {
-        BidderJs = "bidderJs",
-        BidderWasm = "bidderWasm",
-        SellerJs = "sellerJs",
-        BidderTrustedSignals = "bidderTrustedSignals",
-        SellerTrustedSignals = "sellerTrustedSignals"
-    }
-    /**
      * Enum of shared storage access scopes.
      */
     const enum SharedStorageAccessScope {
         Window = "window",
         SharedStorageWorklet = "sharedStorageWorklet",
-        ProtectedAudienceWorklet = "protectedAudienceWorklet",
         Header = "header"
     }
     /**
@@ -17430,25 +17377,6 @@ export declare namespace Storage {
          */
         didDeleteTokens: boolean;
     }
-    interface GetInterestGroupDetailsRequest {
-        ownerOrigin: string;
-        name: string;
-    }
-    interface GetInterestGroupDetailsResponse extends ProtocolResponseWithError {
-        /**
-         * This largely corresponds to:
-         * https://wicg.github.io/turtledove/#dictdef-generatebidinterestgroup
-         * but has absolute expirationTime instead of relative lifetimeMs and
-         * also adds joiningOrigin.
-         */
-        details: any;
-    }
-    interface SetInterestGroupTrackingRequest {
-        enable: boolean;
-    }
-    interface SetInterestGroupAuctionTrackingRequest {
-        enable: boolean;
-    }
     interface GetSharedStorageMetadataRequest {
         ownerOrigin: string;
     }
@@ -17496,11 +17424,6 @@ export declare namespace Storage {
     }
     interface GetRelatedWebsiteSetsResponse extends ProtocolResponseWithError {
         sets: RelatedWebsiteSet[];
-    }
-    interface SetProtectedAudienceKAnonymityRequest {
-        owner: string;
-        name: string;
-        hashes: binary[];
     }
     /**
      * A cache's contents have been modified.
@@ -17581,63 +17504,6 @@ export declare namespace Storage {
          * Storage bucket to update.
          */
         bucketId: string;
-    }
-    /**
-     * One of the interest groups was accessed. Note that these events are global
-     * to all targets sharing an interest group store.
-     */
-    interface InterestGroupAccessedEvent {
-        accessTime: Network.TimeSinceEpoch;
-        type: InterestGroupAccessType;
-        ownerOrigin: string;
-        name: string;
-        /**
-         * For topLevelBid/topLevelAdditionalBid, and when appropriate,
-         * win and additionalBidWin
-         */
-        componentSellerOrigin?: string;
-        /**
-         * For bid or somethingBid event, if done locally and not on a server.
-         */
-        bid?: number;
-        bidCurrency?: string;
-        /**
-         * For non-global events --- links to interestGroupAuctionEvent
-         */
-        uniqueAuctionId?: InterestGroupAuctionId;
-    }
-    /**
-     * An auction involving interest groups is taking place. These events are
-     * target-specific.
-     */
-    interface InterestGroupAuctionEventOccurredEvent {
-        eventTime: Network.TimeSinceEpoch;
-        type: InterestGroupAuctionEventType;
-        uniqueAuctionId: InterestGroupAuctionId;
-        /**
-         * Set for child auctions.
-         */
-        parentAuctionId?: InterestGroupAuctionId;
-        /**
-         * Set for started and configResolved
-         */
-        auctionConfig?: any;
-    }
-    /**
-     * Specifies which auctions a particular network fetch may be related to, and
-     * in what role. Note that it is not ordered with respect to
-     * Network.requestWillBeSent (but will happen before loadingFinished
-     * loadingFailed).
-     */
-    interface InterestGroupAuctionNetworkRequestCreatedEvent {
-        type: InterestGroupAuctionFetchType;
-        requestId: Network.RequestId;
-        /**
-         * This is the set of the auctions using the worklet that issued this
-         * request.  In the case of trusted signals, it's possible that only some of
-         * them actually care about the keys being queried.
-         */
-        auctions: InterestGroupAuctionId[];
     }
     /**
      * Shared storage was accessed by the associated page.

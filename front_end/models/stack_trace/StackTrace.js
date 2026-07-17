@@ -31,4 +31,19 @@ export class DebuggableFrameFlavor {
         return DebuggableFrameFlavor.#last;
     }
 }
+/**
+ * Returns whether the given stack trace originated from a direct console
+ * invocation. A console-originated stack trace has exactly one frame with
+ * no url and no function name.
+ *
+ * TODO(crbug.com/40726969): Accept a translated `StackTrace` instead of a raw `Protocol.Runtime.StackTrace`.
+ */
+export function isConsoleOriginated(stackTrace) {
+    const callFrames = stackTrace.callFrames;
+    if (callFrames.length !== 1) {
+        return false;
+    }
+    const frame = callFrames[0];
+    return frame.url === '' && frame.functionName === '';
+}
 //# sourceMappingURL=StackTrace.js.map

@@ -138,13 +138,12 @@ function createFunctionCode(inputData, functionBounds, options) {
     rangeWithContext
   };
 }
-async function getFunctionCodeFromLocation(target, url, line, column, options) {
+async function getFunctionCodeFromLocation(target, url, line, column, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
   const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
   if (!debuggerModel) {
     throw new Error("missing debugger model");
   }
   let uiSourceCode = null;
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   const projects = debuggerWorkspaceBinding.workspace.projectsForType(Workspace.Workspace.projectTypes.Network);
   for (const project of projects) {
     if (Bindings.NetworkProject.NetworkProject.getTargetForProject(project) !== target) {
@@ -163,7 +162,7 @@ async function getFunctionCodeFromLocation(target, url, line, column, options) {
   if (!rawLocation) {
     return null;
   }
-  return await getFunctionCodeFromRawLocation(rawLocation, options);
+  return await getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding);
 }
 async function format(uiSourceCode, content, settings) {
   const contentType = uiSourceCode.contentType();
@@ -173,8 +172,7 @@ async function format(uiSourceCode, content, settings) {
   }
   return await Formatter.ScriptFormatter.formatScriptContent(settings, contentType.canonicalMimeType(), content, "	");
 }
-async function getFunctionCodeFromRawLocation(rawLocation, options) {
-  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+async function getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
   const functionBounds = await debuggerWorkspaceBinding.functionBoundsAtRawLocation(rawLocation);
   if (!functionBounds) {
     return null;
@@ -207,7 +205,6 @@ __export(NamesResolver_exports, {
   scopeIdentifiers: () => scopeIdentifiers,
   setScopeResolvedForTest: () => setScopeResolvedForTest
 });
-import * as Common from "./../../core/common/common.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
 import * as Bindings2 from "./../bindings/bindings.js";
 import * as Formatter2 from "./../formatter/formatter.js";
@@ -331,7 +328,7 @@ var scopeIdentifiers = async function(script, scope, ancestorScopes) {
 };
 var identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
 var resolveDebuggerScope = async (scope) => {
-  if (!Common.Settings.Settings.instance().moduleSetting("js-source-maps-enabled").get()) {
+  if (!scope.callFrame().debuggerModel.target().targetManager().settings.moduleSetting("js-source-maps-enabled").get()) {
     return { variableMapping: /* @__PURE__ */ new Map(), thisMapping: null };
   }
   const script = scope.callFrame().script;
@@ -400,12 +397,12 @@ var resolveScope = async (script, scopeChain) => {
     scopeToCachedIdentifiersMap.set(parsedScope, { sourceMap, mappingPromise: identifiersPromise });
   }
   return await cachedScopeMap.mappingPromise;
-  async function resolveSourceName(script2, sourceMap2, name, position) {
+  async function resolveSourceName(script2, sourceMap2, name, position, debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
     const ranges = sourceMap2.findEntryRanges(position.lineNumber, position.columnNumber);
     if (!ranges) {
       return null;
     }
-    const uiSourceCode = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiSourceCodeForSourceMapSourceURL(script2.debuggerModel, ranges.sourceURL, script2.isContentScript());
+    const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURL(script2.debuggerModel, ranges.sourceURL, script2.isContentScript());
     if (!uiSourceCode) {
       return null;
     }
@@ -470,8 +467,8 @@ var resolveScope = async (script, scopeChain) => {
     }
   }
 };
-var resolveScopeChain = async function(callFrame) {
-  const { pluginManager } = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+  const { pluginManager } = debuggerWorkspaceBinding;
   const scopeChain = await pluginManager.resolveScopeChain(callFrame);
   if (scopeChain) {
     return scopeChain;
@@ -483,7 +480,7 @@ var resolveScopeChain = async function(callFrame) {
   return callFrame.scopeChain().map((scope) => new ScopeWithSourceMappedVariables(scope, thisObject));
 };
 var allVariablesInCallFrame = async (callFrame) => {
-  if (!Common.Settings.Settings.instance().moduleSetting("js-source-maps-enabled").get()) {
+  if (!callFrame.debuggerModel.target().targetManager().settings.moduleSetting("js-source-maps-enabled").get()) {
     return /* @__PURE__ */ new Map();
   }
   const cachedMap = cachedMapByCallFrame.get(callFrame);
@@ -511,11 +508,11 @@ var allVariablesInCallFrame = async (callFrame) => {
 };
 var allVariablesAtPosition = async (location) => {
   const reverseMapping = /* @__PURE__ */ new Map();
-  if (!Common.Settings.Settings.instance().moduleSetting("js-source-maps-enabled").get()) {
-    return reverseMapping;
-  }
   const script = location.script();
   if (!script) {
+    return reverseMapping;
+  }
+  if (!script.debuggerModel.target().targetManager().settings.moduleSetting("js-source-maps-enabled").get()) {
     return reverseMapping;
   }
   const scopeTreeAndText = await computeScopeTree(script);
@@ -744,7 +741,7 @@ async function resolveDebuggerFrameFunctionName(frame) {
   }
   return await getFunctionNameFromScopeStart(frame.script, startLocation.lineNumber, startLocation.columnNumber);
 }
-async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target) {
+async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target, debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
   if (!target || lineNumber === void 0 || columnNumber === void 0 || scriptId === void 0) {
     return null;
   }
@@ -753,7 +750,6 @@ async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNum
   if (!debuggerModel || !script) {
     return null;
   }
-  const debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
   const location = new SDK2.DebuggerModel.Location(debuggerModel, scriptId, lineNumber, columnNumber);
   const functionInfoFromPlugin = await debuggerWorkspaceBinding.pluginManager.getFunctionInfo(script, location);
   if (functionInfoFromPlugin && "frames" in functionInfoFromPlugin) {
@@ -779,12 +775,12 @@ __export(ScopeChainModel_exports, {
   ScopeChain: () => ScopeChain,
   ScopeChainModel: () => ScopeChainModel
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common from "./../../core/common/common.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-var ScopeChainModel = class extends Common2.ObjectWrapper.ObjectWrapper {
+var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #callFrame;
   /** We use the `Throttler` here to make sure that `#boundUpdate` is not run multiple times simultanously */
-  #throttler = new Common2.Throttler.Throttler(5);
+  #throttler = new Common.Throttler.Throttler(5);
   #boundUpdate = this.#update.bind(this);
   constructor(callFrame) {
     super();

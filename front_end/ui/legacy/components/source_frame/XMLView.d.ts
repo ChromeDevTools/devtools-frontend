@@ -14,6 +14,7 @@ export declare class XMLTreeViewNode {
     expanded: boolean;
     constructor(node: Node | ParentNode);
     children(): XMLTreeViewNode[];
+    treeNodeChildren(): Iterable<XMLTreeViewNode>;
     match(regex: RegExp, closeTag: boolean): RegExpStringIterator<RegExpExecArray>;
 }
 export declare class XMLTreeViewModel {

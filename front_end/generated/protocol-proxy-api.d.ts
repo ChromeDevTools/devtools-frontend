@@ -713,14 +713,6 @@ declare namespace ProtocolProxyApi {
      */
     invoke_addPrivacySandboxEnrollmentOverride(params: Protocol.Browser.AddPrivacySandboxEnrollmentOverrideRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    /**
-     * Configures encryption keys used with a given privacy sandbox API to talk
-     * to a trusted coordinator.  Since this is intended for test automation only,
-     * coordinatorOrigin must be a .test domain. No existing coordinator
-     * configuration for the origin may exist.
-     */
-    invoke_addPrivacySandboxCoordinatorKeyConfig(params: Protocol.Browser.AddPrivacySandboxCoordinatorKeyConfigRequest): Promise<Protocol.ProtocolResponseWithError>;
-
   }
   export interface BrowserDispatcher {
     /**
@@ -4295,22 +4287,6 @@ declare namespace ProtocolProxyApi {
     invoke_clearTrustTokens(params: Protocol.Storage.ClearTrustTokensRequest): Promise<Protocol.Storage.ClearTrustTokensResponse>;
 
     /**
-     * Gets details for a named interest group.
-     */
-    invoke_getInterestGroupDetails(params: Protocol.Storage.GetInterestGroupDetailsRequest): Promise<Protocol.Storage.GetInterestGroupDetailsResponse>;
-
-    /**
-     * Enables/Disables issuing of interestGroupAccessed events.
-     */
-    invoke_setInterestGroupTracking(params: Protocol.Storage.SetInterestGroupTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
-     * Enables/Disables issuing of interestGroupAuctionEventOccurred and
-     * interestGroupAuctionNetworkRequestCreated.
-     */
-    invoke_setInterestGroupAuctionTracking(params: Protocol.Storage.SetInterestGroupAuctionTrackingRequest): Promise<Protocol.ProtocolResponseWithError>;
-
-    /**
      * Gets metadata for an origin's shared storage.
      */
     invoke_getSharedStorageMetadata(params: Protocol.Storage.GetSharedStorageMetadataRequest): Promise<Protocol.Storage.GetSharedStorageMetadataResponse>;
@@ -4366,8 +4342,6 @@ declare namespace ProtocolProxyApi {
      */
     invoke_getRelatedWebsiteSets(): Promise<Protocol.Storage.GetRelatedWebsiteSetsResponse>;
 
-    invoke_setProtectedAudienceKAnonymity(params: Protocol.Storage.SetProtectedAudienceKAnonymityRequest): Promise<Protocol.ProtocolResponseWithError>;
-
   }
   export interface StorageDispatcher {
     /**
@@ -4389,26 +4363,6 @@ declare namespace ProtocolProxyApi {
      * The origin's IndexedDB database list has been modified.
      */
     indexedDBListUpdated(params: Protocol.Storage.IndexedDBListUpdatedEvent): void;
-
-    /**
-     * One of the interest groups was accessed. Note that these events are global
-     * to all targets sharing an interest group store.
-     */
-    interestGroupAccessed(params: Protocol.Storage.InterestGroupAccessedEvent): void;
-
-    /**
-     * An auction involving interest groups is taking place. These events are
-     * target-specific.
-     */
-    interestGroupAuctionEventOccurred(params: Protocol.Storage.InterestGroupAuctionEventOccurredEvent): void;
-
-    /**
-     * Specifies which auctions a particular network fetch may be related to, and
-     * in what role. Note that it is not ordered with respect to
-     * Network.requestWillBeSent (but will happen before loadingFinished
-     * loadingFailed).
-     */
-    interestGroupAuctionNetworkRequestCreated(params: Protocol.Storage.InterestGroupAuctionNetworkRequestCreatedEvent): void;
 
     /**
      * Shared storage was accessed by the associated page.

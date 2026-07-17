@@ -41,6 +41,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as StackTrace from '../../models/stack_trace/stack_trace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../../ui/kit/kit.js';
@@ -327,6 +328,16 @@ const UIStrings = {
      * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a potentially blocking resource.
      */
     potentiallyBlocking: 'Potentially blocking',
+    /**
+     * @description Text indicating a request originated from the DevTools console. Used as a subtitle in the
+     * Initiator column.
+     */
+    console: 'Console',
+    /**
+     * @description Tooltip for the console icon in the Network panel, indicating a request was initiated
+     * from the Console.
+     */
+    requestOriginatedFromConsole: 'Request originated from Console',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -860,6 +871,27 @@ export class NetworkRequestNode extends NetworkNode {
         const bValue = bRequest.overrideTypes.join(', ');
         return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
     }
+    static isConsoleOriginated(request) {
+        const resourceType = request.resourceType();
+        if (resourceType !== Common.ResourceType.resourceTypes.Fetch &&
+            resourceType !== Common.ResourceType.resourceTypes.XHR) {
+            return false;
+        }
+        const initiator = request.initiator();
+        if (!initiator || initiator.type !== "script" /* Protocol.Network.InitiatorType.Script */) {
+            return false;
+        }
+        if (initiator.url) {
+            return false;
+        }
+        if (!initiator.stack) {
+            return false;
+        }
+        return StackTrace.StackTrace.isConsoleOriginated(initiator.stack);
+    }
+    isConsoleOriginated() {
+        return NetworkRequestNode.isConsoleOriginated(this.requestInternal);
+    }
     showingInitiatorChainChanged() {
         const showInitiatorChain = this.showingInitiatorChain();
         const initiatorGraph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.requestInternal);
@@ -1150,6 +1182,12 @@ export class NetworkRequestNode extends NetworkNode {
             const iconElement = PanelUtils.getIconForNetworkRequest(this.requestInternal);
             // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
             render(iconElement, cell);
+            // render Console icon if this request originated from Console
+            if (this.isConsoleOriginated()) {
+                const consoleIcon = createIcon('terminal', 'network-console-icon');
+                UI.Tooltip.Tooltip.install(consoleIcon, i18nString(UIStrings.requestOriginatedFromConsole));
+                cell.appendChild(consoleIcon);
+            }
             // render Ask AI button
             const aiButtonContainer = this.createAiButtonIfAvailable();
             if (aiButtonContainer) {
@@ -1388,7 +1426,7 @@ export class NetworkRequestNode extends NetworkNode {
                 }
                 UI.Tooltip.Tooltip.install((this.linkifiedInitiatorAnchor), '');
                 cell.appendChild(this.linkifiedInitiatorAnchor);
-                this.appendSubtitle(cell, i18nString(UIStrings.script));
+                this.appendSubtitle(cell, this.isConsoleOriginated() ? i18nString(UIStrings.console) : i18nString(UIStrings.script));
                 cell.classList.add('network-script-initiated');
                 break;
             }

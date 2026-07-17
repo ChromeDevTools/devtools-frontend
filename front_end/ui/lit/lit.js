@@ -25,6 +25,7 @@ function i18nTemplate(registeredStrings, stringId, placeholders) {
 // gen/front_end/ui/lit/render.js
 import * as Lit2 from "./../../third_party/lit/lit.js";
 var renderOptions = /* @__PURE__ */ new WeakMap();
+var containerListeners = /* @__PURE__ */ new WeakMap();
 function render2(template, container, options) {
   const host = container instanceof ShadowRoot ? container.host : container;
   if (host instanceof Element) {
@@ -68,20 +69,44 @@ function render2(template, container, options) {
       }
     }
   }
-  const oldListeners = renderOptions.get(container)?.container?.listeners;
+  let listenersMap = containerListeners.get(container);
+  if (!listenersMap) {
+    listenersMap = /* @__PURE__ */ new Map();
+    containerListeners.set(container, listenersMap);
+  }
   const newListeners = options?.container?.listeners;
-  if (oldListeners) {
-    for (const [name, listener] of Object.entries(oldListeners)) {
-      if (newListeners?.[name] !== listener) {
-        host.removeEventListener(name, listener);
+  if (newListeners) {
+    for (const [name, listener] of Object.entries(newListeners)) {
+      const entry = listenersMap.get(name);
+      if (entry) {
+        entry.listener = listener;
+      } else {
+        let currentListener = listener;
+        const newEntry = {
+          get listener() {
+            return currentListener;
+          },
+          set listener(val) {
+            currentListener = val;
+          },
+          wrapper: (event) => {
+            if (typeof currentListener === "function") {
+              return currentListener.call(host, event);
+            }
+            if (currentListener && "handleEvent" in currentListener) {
+              return currentListener.handleEvent(event);
+            }
+          }
+        };
+        listenersMap.set(name, newEntry);
+        host.addEventListener(name, newEntry.wrapper);
       }
     }
   }
-  if (newListeners) {
-    for (const [name, listener] of Object.entries(newListeners)) {
-      if (oldListeners?.[name] !== listener) {
-        host.addEventListener(name, listener);
-      }
+  for (const [name, entry] of listenersMap.entries()) {
+    if (!newListeners || !(name in newListeners)) {
+      host.removeEventListener(name, entry.wrapper);
+      listenersMap.delete(name);
     }
   }
   renderOptions.set(container, options);
@@ -89,8 +114,12 @@ function render2(template, container, options) {
 }
 
 // gen/front_end/ui/lit/strip-whitespace.js
+import * as Platform from "./../../core/platform/platform.js";
 import * as Lit3 from "./../../third_party/lit/lit.js";
 var templates = /* @__PURE__ */ new WeakMap();
+function isLitDirective(value) {
+  return Boolean(typeof value === "object" && value && "_$litDirective$" in value && "values" in value);
+}
 function html3(strings, ...values) {
   let stripped = templates.get(strings);
   if (!stripped) {
@@ -101,7 +130,21 @@ function html3(strings, ...values) {
     }
   }
   templates.set(strings, stripped);
-  return Lit3.html(stripped, ...values);
+  const escapeValue = (val) => {
+    if (typeof val === "string") {
+      return Platform.StringUtilities.safeEscapeUnicode(val);
+    }
+    if (Array.isArray(val)) {
+      return val.map(escapeValue);
+    }
+    if (isLitDirective(val)) {
+      val.values = val.values.map(escapeValue);
+      return val;
+    }
+    return val;
+  };
+  const escapedValues = values.map(escapeValue);
+  return Lit3.html(stripped, ...escapedValues);
 }
 function strip(strings) {
   let inTag = false;
@@ -127,6 +170,7 @@ export {
   StaticHtml2 as StaticHtml,
   html3 as html,
   i18nTemplate,
+  isLitDirective,
   noChange,
   nothing2 as nothing,
   render2 as render,

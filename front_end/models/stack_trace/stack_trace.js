@@ -7,7 +7,8 @@ var __export = (target, all) => {
 // gen/front_end/models/stack_trace/StackTrace.js
 var StackTrace_exports = {};
 __export(StackTrace_exports, {
-  DebuggableFrameFlavor: () => DebuggableFrameFlavor
+  DebuggableFrameFlavor: () => DebuggableFrameFlavor,
+  isConsoleOriginated: () => isConsoleOriginated
 });
 var DebuggableFrameFlavor = class _DebuggableFrameFlavor {
   static #last;
@@ -30,6 +31,14 @@ var DebuggableFrameFlavor = class _DebuggableFrameFlavor {
     return _DebuggableFrameFlavor.#last;
   }
 };
+function isConsoleOriginated(stackTrace) {
+  const callFrames = stackTrace.callFrames;
+  if (callFrames.length !== 1) {
+    return false;
+  }
+  const frame = callFrames[0];
+  return frame.url === "" && frame.functionName === "";
+}
 export {
   StackTrace_exports as StackTrace
 };

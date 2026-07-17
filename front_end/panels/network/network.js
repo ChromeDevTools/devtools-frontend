@@ -2142,6 +2142,7 @@ import * as SDK5 from "./../../core/sdk/sdk.js";
 import * as AiAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings from "./../../models/bindings/bindings.js";
 import * as Logs2 from "./../../models/logs/logs.js";
+import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
 import * as NetworkForward from "./forward/forward.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import { createIcon } from "./../../ui/kit/kit.js";
@@ -2427,7 +2428,17 @@ var UIStrings6 = {
   /**
    * @description Text in Network Data Grid Node of the Network panel. Noun. Refers to a potentially blocking resource.
    */
-  potentiallyBlocking: "Potentially blocking"
+  potentiallyBlocking: "Potentially blocking",
+  /**
+   * @description Text indicating a request originated from the DevTools console. Used as a subtitle in the
+   * Initiator column.
+   */
+  console: "Console",
+  /**
+   * @description Tooltip for the console icon in the Network panel, indicating a request was initiated
+   * from the Console.
+   */
+  requestOriginatedFromConsole: "Request originated from Console"
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/network/NetworkDataGridNode.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
@@ -2943,6 +2954,26 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const bValue = bRequest.overrideTypes.join(", ");
     return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
   }
+  static isConsoleOriginated(request) {
+    const resourceType = request.resourceType();
+    if (resourceType !== Common5.ResourceType.resourceTypes.Fetch && resourceType !== Common5.ResourceType.resourceTypes.XHR) {
+      return false;
+    }
+    const initiator = request.initiator();
+    if (!initiator || initiator.type !== "script") {
+      return false;
+    }
+    if (initiator.url) {
+      return false;
+    }
+    if (!initiator.stack) {
+      return false;
+    }
+    return StackTrace.StackTrace.isConsoleOriginated(initiator.stack);
+  }
+  isConsoleOriginated() {
+    return _NetworkRequestNode.isConsoleOriginated(this.requestInternal);
+  }
   showingInitiatorChainChanged() {
     const showInitiatorChain = this.showingInitiatorChain();
     const initiatorGraph = Logs2.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.requestInternal);
@@ -3226,6 +3257,11 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       cell.addEventListener("focus", () => this.parentView().resetFocus());
       const iconElement = PanelUtils3.getIconForNetworkRequest(this.requestInternal);
       render3(iconElement, cell);
+      if (this.isConsoleOriginated()) {
+        const consoleIcon = createIcon("terminal", "network-console-icon");
+        UI6.Tooltip.Tooltip.install(consoleIcon, i18nString6(UIStrings6.requestOriginatedFromConsole));
+        cell.appendChild(consoleIcon);
+      }
       const aiButtonContainer = this.createAiButtonIfAvailable();
       if (aiButtonContainer) {
         cell.appendChild(aiButtonContainer);
@@ -3446,7 +3482,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         }
         UI6.Tooltip.Tooltip.install(this.linkifiedInitiatorAnchor, "");
         cell.appendChild(this.linkifiedInitiatorAnchor);
-        this.appendSubtitle(cell, i18nString6(UIStrings6.script));
+        this.appendSubtitle(cell, this.isConsoleOriginated() ? i18nString6(UIStrings6.console) : i18nString6(UIStrings6.script));
         cell.classList.add("network-script-initiated");
         break;
       }
@@ -4486,6 +4522,11 @@ var requestInitiatorViewTree_css_default = `/*
   padding: 4px;
 }
 
+.console-origin-label {
+  color: var(--sys-color-token-subtle);
+  padding: 2px 4px 2px 20px;
+}
+
 .request-initiator-view-section-title:focus-visible {
   background-color: var(--sys-color-state-focus-highlight);
 }
@@ -4514,7 +4555,11 @@ var UIStrings10 = {
   /**
    * @description Title of a section in Request Initiator view of the Network Panel
    */
-  requestInitiatorChain: "Request initiator chain"
+  requestInitiatorChain: "Request initiator chain",
+  /**
+   * @description Label shown in the initiator chain when a request was initiated from the Console.
+   */
+  console: "Console"
 };
 var str_10 = i18n19.i18n.registerUIStrings("panels/network/RequestInitiatorView.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
@@ -4550,6 +4595,11 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       stackTrace: input.stackTrace
     })}
           </li>
+          ${input.isConsoleOriginated ? html6`
+            <li role="treeitem" class="console-origin-label">
+              ${i18nString10(UIStrings10.console)}
+            </li>
+          ` : nothing6}
         </ul>
       </li>
     `;
@@ -4616,11 +4666,17 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
         ${i18nString10(UIStrings10.requestInitiatorChain)}
         ${hasInitiatorChain2 ? html6`
           <ul role="group">
-            ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
+            ${input.isConsoleOriginated ? html6`
+              <li role="treeitem" aria-expanded="true" open>
+                <span>${i18nString10(UIStrings10.console)}</span>
+                <ul role="group">
+                  ${renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
+                </ul>
+              </li>` : renderInitiatorNodes(initiators, 0, initiatorGraph.initiated, visited)}
           </ul>` : nothing6}
       </li>`;
   };
-  const hasInitiatorChain = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1;
+  const hasInitiatorChain = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.isConsoleOriginated;
   render7(html6`
     <div class="request-initiator-view-tree" jslog=${VisualLogging7.tree("initiator-tree")}>
       <devtools-tree .template=${html6`
@@ -4670,10 +4726,12 @@ var RequestInitiatorView = class extends UI10.Widget.VBox {
     if (rawStack && target) {
       stackTrace = await Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromProtocolRuntime(rawStack, target);
     }
+    const isConsoleOriginated = NetworkRequestNode.isConsoleOriginated(this.request);
     const viewInput = {
       initiatorGraph,
       stackTrace,
-      request: this.request
+      request: this.request,
+      isConsoleOriginated
     };
     this.#view(viewInput, void 0, this.contentElement);
   }
@@ -4873,7 +4931,7 @@ var objectValue_css_default = `/*
 .object-value-regexp,
 .object-value-symbol {
   white-space: pre;
-  unicode-bidi: -webkit-isolate;
+  unicode-bidi: isolate;
   color: var(--sys-color-token-property-special);
 }
 
@@ -4922,6 +4980,7 @@ var objectValue_css_default = `/*
 .name {
   color: var(--sys-color-token-tag);
   flex-shrink: 0;
+  unicode-bidi: isolate;
 }
 
 .object-properties-preview .name {
@@ -8418,10 +8477,15 @@ td.time-column {
 }
 
 .data-grid-data-grid-node devtools-icon[name="arrow-up-down-circle"],
+.data-grid-data-grid-node devtools-icon.network-console-icon,
 .network-log-grid.data-grid.small .icon {
   width: 16px;
   height: 16px;
   vertical-align: sub;
+}
+
+.data-grid-data-grid-node devtools-icon.network-console-icon {
+  margin-right: 3px;
 }
 
 .image-network-icon-preview {
@@ -8630,7 +8694,7 @@ __export(NetworkLogViewColumns_exports, {
 });
 import * as Common18 from "./../../core/common/common.js";
 import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
+import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
 import { Icon as Icon3 } from "./../../ui/kit/kit.js";
 import * as DataGrid7 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components4 from "./../../ui/legacy/components/utils/utils.js";

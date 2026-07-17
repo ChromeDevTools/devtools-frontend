@@ -17,8 +17,8 @@ export declare class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMT
     get resizeMethod(): ResizeMethod;
     set filters(filters: TextUtils.TextUtils.ParsedFilter[]);
     get columns(): ColumnDescriptor[];
-    addNodes(nodes: NodeList): void;
-    removeNodes(nodes: NodeList): void;
+    addNodes(nodes: NodeList | Node[]): void;
+    removeNodes(nodes: NodeList | Node[]): void;
     updateNode(node: Node, attributeName: string | null): void;
     deselectRow(): void;
     onChange(mutationList: MutationRecord[]): void;

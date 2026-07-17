@@ -1794,9 +1794,6 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
             return Boolean(typeof value === 'object' && value && '_$litType$' in value && 'strings' in value && 'values' in value &&
                 value['_$litType$'] === 1);
         }
-        function isLitDirective(value) {
-            return Boolean(typeof value === 'object' && value && '_$litDirective$' in value && 'values' in value);
-        }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         function isCallable(value) {
             // Native class constructors cannot be invoked without 'new', and we shouldn't attempt to wrap them.
@@ -1817,7 +1814,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
                 HTMLElementWithLightDOMTemplate.patchLitTemplate(value);
                 return value;
             }
-            if (isLitDirective(value)) {
+            if (Lit.isLitDirective(value)) {
                 for (let i = 0; i < value.values.length; i++) {
                     const subvalue = value.values[i];
                     if (isCallable(subvalue)) {
@@ -1851,9 +1848,26 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     }
     #onChange(mutationList) {
         this.onChange(mutationList);
-        for (const mutation of mutationList) {
-            this.removeNodes(mutation.removedNodes);
-            this.addNodes(mutation.addedNodes, mutation.nextSibling);
+        const addedNodes = new Set();
+        const removedNodes = new Set();
+        for (let i = 0; i < mutationList.length; i++) {
+            const mutation = mutationList[i];
+            for (const node of mutation.addedNodes) {
+                addedNodes.add(node);
+            }
+            for (const node of mutation.removedNodes) {
+                removedNodes.add(node);
+            }
+        }
+        if (removedNodes.size > 0) {
+            this.removeNodes([...removedNodes]);
+        }
+        const finalAddedNodes = [...addedNodes].filter(n => this.templateRoot.contains(n));
+        if (finalAddedNodes.length > 0) {
+            this.addNodes(finalAddedNodes);
+        }
+        for (let i = 0; i < mutationList.length; i++) {
+            const mutation = mutationList[i];
             this.updateNode(mutation.target, mutation.attributeName);
         }
     }
@@ -1861,7 +1875,7 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     }
     updateNode(_node, _attributeName) {
     }
-    addNodes(_nodes, _nextSibling) {
+    addNodes(_nodes) {
     }
     removeNodes(_nodes) {
     }

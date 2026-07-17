@@ -2639,6 +2639,24 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("models/emulation/DeviceModeModel.ts", UIStrings2);
 var i18nString = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var CUTOUT_SHAPE_TO_PROTOCOL = {
+  [
+    "pill"
+    /* CutoutShape.PILL */
+  ]: "pill",
+  [
+    "notch"
+    /* CutoutShape.NOTCH */
+  ]: "notch",
+  [
+    "circle"
+    /* CutoutShape.CIRCLE */
+  ]: "circle",
+  [
+    "rectangle"
+    /* CutoutShape.RECTANGLE */
+  ]: "rectangle"
+};
 var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.ObjectWrapper {
   #screenRect;
   #visiblePageRect;
@@ -2985,7 +3003,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     if (!overlayModel) {
       return;
     }
-    this.showHingeIfApplicable(overlayModel);
+    this.showDeviceOverlaysIfApplicable(overlayModel);
   }
   onScreenOrientationLockChanged(event) {
     this.#screenOrientationLocked = event.data.locked;
@@ -3096,7 +3114,7 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
     const mobile = this.isMobile();
     const overlayModel = this.#emulationModel ? this.#emulationModel.overlayModel() : null;
     if (overlayModel) {
-      this.showHingeIfApplicable(overlayModel);
+      this.showDeviceOverlaysIfApplicable(overlayModel);
     }
     if (this.#type === Type2.Device && this.#device && this.#mode) {
       const orientation = this.#device.orientationByName(this.#mode.orientation);
@@ -3294,13 +3312,60 @@ var DeviceModeModel = class _DeviceModeModel extends Common2.ObjectWrapper.Objec
       void emulationModel.emulateTouch(touchEnabled, mobile);
     }
   }
-  showHingeIfApplicable(overlayModel) {
+  showDeviceOverlaysIfApplicable(overlayModel) {
     const orientation = this.#device && this.#mode ? this.#device.orientationByName(this.#mode.orientation) : null;
     if (orientation?.hinge) {
       overlayModel.showHingeForDualScreen(orientation.hinge);
-      return;
+    } else {
+      overlayModel.showHingeForDualScreen(null);
     }
-    overlayModel.showHingeForDualScreen(null);
+    overlayModel.showDisplayCutout(this.currentDisplayCutout());
+  }
+  currentDisplayCutout() {
+    const device = this.#device;
+    const mode = this.#mode;
+    if (!device || !mode || !device.modes.includes(mode)) {
+      return null;
+    }
+    const cutout = mode.cutout;
+    if (cutout) {
+      return this.toDisplayCutout(cutout);
+    }
+    if (mode.orientation !== Horizontal) {
+      return null;
+    }
+    const rotationPartner = device.getRotationPartner(mode);
+    const rotatedCutout = rotationPartner?.cutout;
+    if (rotationPartner?.orientation !== Vertical || !rotatedCutout) {
+      return null;
+    }
+    const orientation = device.orientationByName(mode.orientation);
+    if (rotatedCutout.shape === "circle") {
+      return this.toDisplayCutout({
+        ...rotatedCutout,
+        x: orientation.width - rotatedCutout.y - rotatedCutout.height,
+        y: rotatedCutout.x,
+        width: rotatedCutout.height,
+        height: rotatedCutout.width,
+        cx: orientation.width - rotatedCutout.cy,
+        cy: rotatedCutout.cx
+      });
+    }
+    return this.toDisplayCutout({
+      ...rotatedCutout,
+      x: orientation.width - rotatedCutout.y - rotatedCutout.height,
+      y: rotatedCutout.x,
+      width: rotatedCutout.height,
+      height: rotatedCutout.width
+    });
+  }
+  toDisplayCutout(cutout) {
+    const { shape, ...rest } = cutout;
+    return {
+      ...rest,
+      shape: CUTOUT_SHAPE_TO_PROTOCOL[shape],
+      contentColor: { r: 0, g: 0, b: 0, a: 1 }
+    };
   }
   getDisplayFeatureOrientation() {
     if (!this.#mode) {

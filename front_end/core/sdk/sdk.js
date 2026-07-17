@@ -39215,12 +39215,6 @@ var StorageBucketsModel = class extends SDKModel {
       throw new Error(`Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
     }
   }
-  interestGroupAccessed(_event) {
-  }
-  interestGroupAuctionEventOccurred(_event) {
-  }
-  interestGroupAuctionNetworkRequestCreated(_event) {
-  }
   indexedDBListUpdated(_event) {
   }
   indexedDBContentUpdated(_event) {
@@ -39447,12 +39441,6 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   indexedDBListUpdated(_event) {
   }
   indexedDBContentUpdated(_event) {
-  }
-  interestGroupAuctionEventOccurred(_event) {
-  }
-  interestGroupAccessed(_event) {
-  }
-  interestGroupAuctionNetworkRequestCreated(_event) {
   }
   sharedStorageAccessed(_event) {
   }

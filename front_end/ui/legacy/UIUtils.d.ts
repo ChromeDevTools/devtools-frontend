@@ -307,8 +307,8 @@ export declare class HTMLElementWithLightDOMTemplate extends HTMLElement {
     set template(template: Lit.LitTemplate);
     protected onChange(_mutationList: MutationRecord[]): void;
     protected updateNode(_node: Node, _attributeName: string | null): void;
-    protected addNodes(_nodes: NodeList | Node[], _nextSibling?: Node | null): void;
-    protected removeNodes(_nodes: NodeList): void;
+    protected addNodes(_nodes: NodeList | Node[]): void;
+    protected removeNodes(_nodes: NodeList | Node[]): void;
     static findCorrespondingElement(sourceElement: HTMLElement, sourceRootElement: HTMLElement, targetRootElement: Element): Element | null;
 }
 /**

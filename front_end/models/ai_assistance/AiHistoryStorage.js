@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
-let instance = null;
+import * as Root from '../../core/root/root.js';
 const DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 export const MAX_RECENT_PROMPTS_COUNT = 20;
 export const MAX_CONVERSATIONS_COUNT = 50;
@@ -13,11 +13,11 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper {
     #recentPromptsSetting;
     #mutex = new Common.Mutex.Mutex();
     #maxStorageSize;
-    constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+    constructor(settings = Common.Settings.Settings.instance(), maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
         super();
-        this.#historySetting = Common.Settings.Settings.instance().createSetting('ai-assistance-history-entries', []);
-        this.#imageHistorySettings = Common.Settings.Settings.instance().createSetting('ai-assistance-history-images', []);
-        this.#recentPromptsSetting = Common.Settings.Settings.instance().createSetting('ai-assistance-recent-prompts', []);
+        this.#historySetting = settings.createSetting('ai-assistance-history-entries', []);
+        this.#imageHistorySettings = settings.createSetting('ai-assistance-history-images', []);
+        this.#recentPromptsSetting = settings.createSetting('ai-assistance-recent-prompts', []);
         this.#maxStorageSize = maxStorageSize;
     }
     clearForTest() {
@@ -160,11 +160,14 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper {
         return structuredClone(this.#imageHistorySettings.get());
     }
     static instance(opts = { forceNew: false, maxStorageSize: DEFAULT_MAX_STORAGE_SIZE }) {
-        const { forceNew, maxStorageSize } = opts;
-        if (!instance || forceNew) {
-            instance = new AiHistoryStorage(maxStorageSize);
+        const { forceNew, maxStorageSize, settings } = opts;
+        if (!Root.DevToolsContext.globalInstance().has(AiHistoryStorage) || forceNew) {
+            Root.DevToolsContext.globalInstance().set(AiHistoryStorage, new AiHistoryStorage(settings ?? Common.Settings.Settings.instance(), maxStorageSize));
         }
-        return instance;
+        return Root.DevToolsContext.globalInstance().get(AiHistoryStorage);
+    }
+    static removeInstance() {
+        Root.DevToolsContext.globalInstance().delete(AiHistoryStorage);
     }
 }
 //# sourceMappingURL=AiHistoryStorage.js.map

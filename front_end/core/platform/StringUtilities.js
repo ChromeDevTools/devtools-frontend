@@ -40,8 +40,37 @@ const escapedReplacements = new Map([
     ['<script', '\\x3Cscript'],
     ['</script', '\\x3C/script'],
 ]);
-export const escapeUnicode = (content) => {
-    return content.replaceAll(/[\p{Format}\p{Surrogate}]/gu, match => {
+const UNICODE_ESCAPE_SOURCE = '[\\p{Format}\\p{Surrogate}]';
+const UNICODE_ESCAPE_REGEX = new RegExp(UNICODE_ESCAPE_SOURCE, 'u');
+const UNICODE_ESCAPE_GLOBAL_REGEX = new RegExp(UNICODE_ESCAPE_SOURCE, 'gu');
+const UNICODE_ESCAPE_EXCEPT_ZWSP_SOURCE = '(?![\\u200B\\u200C\\u200D])[\\p{Format}]|\\p{Surrogate}';
+const UNICODE_ESCAPE_EXCEPT_ZWSP_REGEX = new RegExp(UNICODE_ESCAPE_EXCEPT_ZWSP_SOURCE, 'u');
+const UNICODE_ESCAPE_EXCEPT_ZWSP_GLOBAL_REGEX = new RegExp(UNICODE_ESCAPE_EXCEPT_ZWSP_SOURCE, 'gu');
+/**
+ * Escapes formatting and surrogate characters in the string into literal Unicode escape sequences (e.g. \u200B).
+ * Use this when displaying strings to developers for inspection (e.g. in the Console or Object properties)
+ * where you want hidden or invisible characters to be explicitly visible as literal text.
+ */
+export const escapeUnicodeAsText = (content) => {
+    if (!UNICODE_ESCAPE_REGEX.test(content)) {
+        return content;
+    }
+    return content.replaceAll(UNICODE_ESCAPE_GLOBAL_REGEX, match => {
+        return match.split('').map(char => '\\u' + toHexadecimal(char.charCodeAt(0), 4)).join('');
+    });
+};
+/**
+ * Escapes dangerous formatting and surrogate characters (like bidi override characters) to prevent
+ * security and layout issues, but leaves safe, layout-critical zero-width formatting characters
+ * (Zero Width Space \u200B, Zero Width Non-Joiner \u200C, and Zero Width Joiner \u200D) untouched.
+ * Use this when rendering user-controlled content inside templates or HTML markup where you want formatting
+ * characters to function normally for word wrapping or rendering layout, rather than showing as literal text.
+ */
+export const safeEscapeUnicode = (content) => {
+    if (!UNICODE_ESCAPE_EXCEPT_ZWSP_REGEX.test(content)) {
+        return content;
+    }
+    return content.replaceAll(UNICODE_ESCAPE_EXCEPT_ZWSP_GLOBAL_REGEX, match => {
         return match.split('').map(char => '\\u' + toHexadecimal(char.charCodeAt(0), 4)).join('');
     });
 };

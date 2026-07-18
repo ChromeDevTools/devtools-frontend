@@ -1187,7 +1187,7 @@ var UIStrings5 = {
   /**
    * @description Text in DView of the Layers panel
    */
-  cantDisplayLayers: "Can't display layers",
+  cantDisplayLayers: "Can\u2019t display layers",
   /**
    * @description Text in DView of the Layers panel
    */

@@ -17,7 +17,7 @@ const UIStrings = {
     /**
      * @description Text for a checkbox to turn off the CSS property documentation.
      */
-    dontShow: 'Don\'t show',
+    dontShow: 'Don’t show',
     /**
      * @description Text indicating that the CSS property has limited availability across major browsers.
      */

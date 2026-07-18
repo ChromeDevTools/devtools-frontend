@@ -2,7 +2,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
-import { type LitTemplate } from '../../../lit/lit.js';
+import { type DirectiveResult, type LitTemplate } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import type * as Components from '../utils/utils.js';
 import objectPropertiesSectionStyles from './objectPropertiesSection.css.js';
@@ -158,7 +158,8 @@ export declare const enum ObjectPropertiesMode {
     OWN_AND_INTERNAL_AND_INHERITED = 1
 }
 export declare function populateObjectTreeContextMenu(contextMenu: UI.ContextMenu.ContextMenu, object: ObjectTree, expandRecursively: () => void, collapseChildren: () => void, sortPropertiesAlphabetically: () => void, onShowAllToggled: () => void): void;
-export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): unknown;
+export declare function renderObjectTree(objectTree: ObjectTree, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): LitTemplate | DirectiveResult;
+export declare function renderObjectPropertiesSection(objectTree: ObjectTree, title: LitTemplate, linkifier?: Components.Linkifier.Linkifier): LitTemplate;
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.

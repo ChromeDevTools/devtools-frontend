@@ -528,9 +528,9 @@ var UIStrings = {
    */
   learnMore: "Learn more",
   /**
-   * @description The error message when the user is not logged in into Chrome.
+   * @description The error message when the user is not logged in to Chrome.
    */
-  notLoggedIn: "This feature is only available when you sign into Chrome with your Google account.",
+  notLoggedIn: "This feature is only available when you sign in to Chrome with your Google account.",
   /**
    * @description The title of a button which opens the Chrome SignIn page.
    */

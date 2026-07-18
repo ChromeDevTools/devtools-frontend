@@ -880,7 +880,7 @@ var UIStrings4 = {
    * @description Text shown in a warning dialog when field metrics (collected from real users) is worse than the locally observed metrics.
    * Asks user to use features such as throttling and device emulation.
    */
-  fieldMismatchNotice: "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+  fieldMismatchNotice: "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user\u2019s environment."
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/timeline/components/CWVMetrics.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -2487,7 +2487,7 @@ var UIStrings9 = {
    * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
    * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
    */
-  addNewRegex: "Add a regular expression rule for the script's URL",
+  addNewRegex: "Add a regular expression rule for the script\u2019s URL",
   /**
    * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the checkbox of
    * the input field used to enable the new regular expressions that match file names to ignore in the debugger.

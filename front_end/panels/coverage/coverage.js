@@ -1299,7 +1299,11 @@ var CoverageDecorationManager = class _CoverageDecorationManager {
   update(updatedEntries) {
     for (const entry of updatedEntries) {
       for (const uiSourceCode of this.uiSourceCodeByContentProvider.get(entry.getContentProvider())) {
+        const alreadyDecorated = uiSourceCode.getDecorationData(decoratorType) === this;
         uiSourceCode.setDecorationData(decoratorType, this);
+        if (alreadyDecorated) {
+          uiSourceCode.dispatchEventToListeners(Workspace5.UISourceCode.Events.DecorationChanged, decoratorType);
+        }
       }
     }
   }

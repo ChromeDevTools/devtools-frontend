@@ -140,7 +140,17 @@ var CSSLinearEasingModel = class _CSSLinearEasingModel {
   removePoint(index) {
     this.#points.splice(index, 1);
   }
+  /**
+   * Sets the timing point at the specified index, clamping its input value (percentage)
+   * to ensure it remains non-decreasing and within the bounds of neighboring points.
+   *
+   * @param index The index of the point to update.
+   * @param point The new timing point coordinates.
+   */
   setPoint(index, point) {
+    const minInput = index > 0 ? this.#points[index - 1].input : 0;
+    const maxInput = index < this.#points.length - 1 ? this.#points[index + 1].input : 100;
+    point.input = Math.max(minInput, Math.min(point.input, maxInput));
     this.#points[index] = point;
   }
   points() {
@@ -176,6 +186,7 @@ __export(AnimationTimingUI_exports, {
   AnimationTimingUI: () => AnimationTimingUI,
   PresetUI: () => PresetUI
 });
+import * as i18n from "./../../../../core/i18n/i18n.js";
 import * as Platform from "./../../../../core/platform/platform.js";
 import * as Geometry3 from "./../../../../models/geometry/geometry.js";
 import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
@@ -267,6 +278,14 @@ var BezierUI = class {
 var Height = 26;
 
 // gen/front_end/ui/legacy/components/inline_editor/AnimationTimingUI.js
+var UIStrings = {
+  /**
+   * @description Tooltip text for control points in the linear easing editor.
+   */
+  doubleClickToDelete: "Double-click to delete"
+};
+var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/inline_editor/AnimationTimingUI.ts", UIStrings);
+var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var DOUBLE_CLICK_DELAY = 500;
 var BezierCurveUI = class {
   #curveUI;
@@ -344,6 +363,8 @@ var LinearEasingPresentation = class {
     circle.setAttribute("cx", String(controlX));
     circle.setAttribute("cy", String(controlY));
     circle.setAttribute("r", String(this.params.pointRadius));
+    const title = UI2.UIUtils.createSVGChild(circle, "title");
+    title.textContent = i18nString(UIStrings.doubleClickToDelete);
   }
   timingPointToPosition(point) {
     return {
@@ -386,6 +407,10 @@ var LinearEasingUI = class {
   #doubleClickTimer;
   #pointIndexForDoubleClick;
   #mouseDownPosition;
+  /**
+   * The rendered SVG coordinate position of the dragged control point at the start of the drag gesture.
+   */
+  #dragStartPointPosition;
   #svg;
   constructor({ model, container, onChange }) {
     this.#model = model;
@@ -408,6 +433,8 @@ var LinearEasingUI = class {
   #handleControlPointClick(event, pointIndex) {
     this.#selectedPointIndex = pointIndex;
     this.#mouseDownPosition = { x: event.x, y: event.y };
+    const controlPosition = this.#presentation.renderedPositions?.[pointIndex];
+    this.#dragStartPointPosition = controlPosition ? { ...controlPosition } : void 0;
     clearTimeout(this.#doubleClickTimer);
     if (this.#pointIndexForDoubleClick === this.#selectedPointIndex) {
       this.#model.removePoint(this.#selectedPointIndex);
@@ -438,22 +465,14 @@ var LinearEasingUI = class {
     return false;
   }
   #updatePointPosition(mouseX, mouseY) {
-    if (this.#selectedPointIndex === void 0 || this.#mouseDownPosition === void 0) {
-      return;
-    }
-    const controlPosition = this.#presentation.renderedPositions?.[this.#selectedPointIndex];
-    if (!controlPosition) {
+    if (this.#selectedPointIndex === void 0 || this.#mouseDownPosition === void 0 || this.#dragStartPointPosition === void 0) {
       return;
     }
     const deltaX = mouseX - this.#mouseDownPosition.x;
     const deltaY = mouseY - this.#mouseDownPosition.y;
-    this.#mouseDownPosition = {
-      x: mouseX,
-      y: mouseY
-    };
     const newPoint = {
-      x: controlPosition.x + deltaX,
-      y: controlPosition.y + deltaY
+      x: this.#dragStartPointPosition.x + deltaX,
+      y: this.#dragStartPointPosition.y + deltaY
     };
     this.#model.setPoint(this.#selectedPointIndex, this.#presentation.positionToTimingPoint(newPoint));
   }
@@ -569,6 +588,7 @@ __export(BezierEditor_exports, {
   Presets: () => Presets
 });
 import * as Common from "./../../../../core/common/common.js";
+import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as VisualLogging3 from "./../../../visual_logging/visual_logging.js";
 import * as UI3 from "./../../legacy.js";
 
@@ -888,9 +908,10 @@ var BezierEditor = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox
     if (!pivot) {
       return null;
     }
+    const logContext = VisualLogging3.bezierPresetCategory().track({ click: true }).context(Platform2.StringUtilities.toKebabCase(presetGroup[0].name));
     const presetElement = document.createElement("div");
     presetElement.classList.add("bezier-preset-category");
-    presetElement.setAttribute("jslog", `${VisualLogging3.bezierPresetCategory().track({ click: true }).context(presetGroup[0].name)}`);
+    presetElement.setAttribute("jslog", `${logContext}`);
     const iconElement = UI3.UIUtils.createSVGChild(presetElement, "svg", "bezier-preset monospace");
     const category = { presets: presetGroup, presetIndex: 0, icon: presetElement };
     this.presetUI.draw(pivot, iconElement);
@@ -1017,7 +1038,7 @@ __export(ColorMixSwatch_exports, {
   ColorMixSwatch: () => ColorMixSwatch
 });
 import * as Common2 from "./../../../../core/common/common.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
+import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as Lit from "./../../../lit/lit.js";
 import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
 
@@ -1099,7 +1120,7 @@ var ColorMixSwatch = class extends HTMLElement {
   }
   setSecondColor(text) {
     if (this.secondColorText) {
-      this.colorMixText = Platform2.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
+      this.colorMixText = Platform3.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
     }
     this.secondColorText = text;
     this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
@@ -1139,7 +1160,7 @@ __export(ColorSwatch_exports, {
   ColorFormatChangedEvent: () => ColorFormatChangedEvent,
   ColorSwatch: () => ColorSwatch
 });
-import * as i18n from "./../../../../core/i18n/i18n.js";
+import * as i18n3 from "./../../../../core/i18n/i18n.js";
 import * as ColorPicker from "./../color_picker/color_picker.js";
 import * as Lit2 from "./../../../lit/lit.js";
 import * as VisualLogging5 from "./../../../visual_logging/visual_logging.js";
@@ -1196,14 +1217,14 @@ var colorSwatch_css_default = `/*
 
 // gen/front_end/ui/legacy/components/inline_editor/ColorSwatch.js
 var { html: html2 } = Lit2;
-var UIStrings = {
+var UIStrings2 = {
   /**
    * @description Icon element title in Color Swatch of the inline editor in the Styles tab
    */
   shiftclickToChangeColorFormat: "Shift-click to change color format"
 };
-var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/inline_editor/ColorSwatch.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/inline_editor/ColorSwatch.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var ColorFormatChangedEvent = class _ColorFormatChangedEvent extends Event {
   static eventName = "colorformatchanged";
   data;
@@ -1228,7 +1249,7 @@ var ClickEvent = class _ClickEvent extends Event {
 };
 var ColorSwatch = class extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
-  tooltip = i18nString(UIStrings.shiftclickToChangeColorFormat);
+  tooltip = i18nString2(UIStrings2.shiftclickToChangeColorFormat);
   #color = null;
   readonly = false;
   constructor(tooltip) {
@@ -1456,7 +1477,7 @@ __export(CSSAngleUtils_exports, {
   parseText: () => parseText,
   roundAngleByUnit: () => roundAngleByUnit
 });
-import * as Platform3 from "./../../../../core/platform/platform.js";
+import * as Platform4 from "./../../../../core/platform/platform.js";
 import * as Geometry4 from "./../../../../models/geometry/geometry.js";
 import * as UI4 from "./../../legacy.js";
 var CSSAngleRegex = /(?<value>[+-]?\d*\.?\d+)(?<unit>deg|grad|rad|turn)/;
@@ -1520,7 +1541,7 @@ var roundAngleByUnit = (angle) => {
       roundedValue = Math.round(angle.value * 100) / 100;
       break;
     default:
-      Platform3.assertNever(angle.unit, `Unknown angle unit: ${angle.unit}`);
+      Platform4.assertNever(angle.unit, `Unknown angle unit: ${angle.unit}`);
   }
   return {
     value: roundedValue,
@@ -1756,7 +1777,7 @@ var CSSAngleSwatch = class extends HTMLElement {
 customElements.define("devtools-css-angle-swatch", CSSAngleSwatch);
 
 // gen/front_end/ui/legacy/components/inline_editor/CSSAngle.js
-import * as Platform4 from "./../../../../core/platform/platform.js";
+import * as Platform5 from "./../../../../core/platform/platform.js";
 import * as Lit5 from "./../../../lit/lit.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/cssAngle.css.js
@@ -1934,7 +1955,7 @@ var CSSAngle = class extends HTMLElement {
   }
   onKeydown(event) {
     if (!this.popoverOpen) {
-      if (Platform4.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      if (Platform5.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         this.onMiniIconClick(event);
         event.preventDefault();
       }
@@ -2006,8 +2027,8 @@ __export(CSSShadowEditor_exports, {
   CSSShadowEditor: () => CSSShadowEditor
 });
 import * as Common4 from "./../../../../core/common/common.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as Platform5 from "./../../../../core/platform/platform.js";
+import * as i18n5 from "./../../../../core/i18n/i18n.js";
+import * as Platform6 from "./../../../../core/platform/platform.js";
 import * as Geometry5 from "./../../../../models/geometry/geometry.js";
 import * as VisualLogging7 from "./../../../visual_logging/visual_logging.js";
 import * as UI5 from "./../../legacy.js";
@@ -2129,7 +2150,7 @@ var cssShadowEditor_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./cssShadowEditor.css")} */`;
 
 // gen/front_end/ui/legacy/components/inline_editor/CSSShadowEditor.js
-var UIStrings2 = {
+var UIStrings3 = {
   /**
    * @description Text that refers to some types
    */
@@ -2152,8 +2173,8 @@ var UIStrings2 = {
    */
   spread: "Spread"
 };
-var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/inline_editor/CSSShadowEditor.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/inline_editor/CSSShadowEditor.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var maxRange = 20;
 var defaultUnit = "px";
 var sliderThumbRadius = 6;
@@ -2213,17 +2234,17 @@ var CSSShadowEditor = class extends Common4.ObjectWrapper.eventMixin(UI5.Widget.
     this.contentElement.setAttribute("jslog", `${VisualLogging7.dialog("cssShadowEditor").parent("mapped").track({ keydown: "Enter|Escape" })}`);
     this.setDefaultFocusedElement(this.contentElement);
     this.typeField = this.contentElement.createChild("div", "shadow-editor-field shadow-editor-flex-field");
-    this.typeField.createChild("label", "shadow-editor-label").textContent = i18nString2(UIStrings2.type);
+    this.typeField.createChild("label", "shadow-editor-label").textContent = i18nString3(UIStrings3.type);
     this.outsetButton = this.typeField.createChild("button", "shadow-editor-button-left");
-    this.outsetButton.textContent = i18n3.i18n.lockedString("Outset");
+    this.outsetButton.textContent = i18n5.i18n.lockedString("Outset");
     this.outsetButton.addEventListener("click", this.onButtonClick.bind(this), false);
     this.insetButton = this.typeField.createChild("button", "shadow-editor-button-right");
-    this.insetButton.textContent = i18n3.i18n.lockedString("Inset");
+    this.insetButton.textContent = i18n5.i18n.lockedString("Inset");
     this.insetButton.addEventListener("click", this.onButtonClick.bind(this), false);
     const xField = this.contentElement.createChild("div", "shadow-editor-field");
-    this.xInput = this.createTextInput(xField, i18nString2(UIStrings2.xOffset), "x-offset");
+    this.xInput = this.createTextInput(xField, i18nString3(UIStrings3.xOffset), "x-offset");
     const yField = this.contentElement.createChild("div", "shadow-editor-field");
-    this.yInput = this.createTextInput(yField, i18nString2(UIStrings2.yOffset), "y-offset");
+    this.yInput = this.createTextInput(yField, i18nString3(UIStrings3.yOffset), "y-offset");
     this.xySlider = xField.createChild("canvas", "shadow-editor-2D-slider");
     this.xySlider.setAttribute("jslog", `${VisualLogging7.slider("xy").track({
       click: true,
@@ -2239,10 +2260,10 @@ var CSSShadowEditor = class extends Common4.ObjectWrapper.eventMixin(UI5.Widget.
     this.xySlider.addEventListener("keydown", this.onCanvasArrowKey.bind(this), false);
     this.xySlider.addEventListener("blur", this.onCanvasBlur.bind(this), false);
     const blurField = this.contentElement.createChild("div", "shadow-editor-field shadow-editor-flex-field shadow-editor-blur-field");
-    this.blurInput = this.createTextInput(blurField, i18nString2(UIStrings2.blur), "blur");
+    this.blurInput = this.createTextInput(blurField, i18nString3(UIStrings3.blur), "blur");
     this.blurSlider = this.createSlider(blurField, "blur");
     this.spreadField = this.contentElement.createChild("div", "shadow-editor-field shadow-editor-flex-field");
-    this.spreadInput = this.createTextInput(this.spreadField, i18nString2(UIStrings2.spread), "spread");
+    this.spreadInput = this.createTextInput(this.spreadField, i18nString3(UIStrings3.spread), "spread");
     this.spreadSlider = this.createSlider(this.spreadField, "spread");
   }
   createTextInput(field, propertyName, jslogContext) {
@@ -2491,7 +2512,7 @@ var CSSShadowEditor = class extends Common4.ObjectWrapper.eventMixin(UI5.Widget.
     event.consume(true);
     if (shiftX) {
       const offsetX = this.model.offsetX();
-      const newAmount = Platform5.NumberUtilities.clamp(offsetX.amount + shiftX, -maxRange, maxRange);
+      const newAmount = Platform6.NumberUtilities.clamp(offsetX.amount + shiftX, -maxRange, maxRange);
       if (newAmount === offsetX.amount) {
         return;
       }
@@ -2501,7 +2522,7 @@ var CSSShadowEditor = class extends Common4.ObjectWrapper.eventMixin(UI5.Widget.
     }
     if (shiftY) {
       const offsetY = this.model.offsetY();
-      const newAmount = Platform5.NumberUtilities.clamp(offsetY.amount + shiftY, -maxRange, maxRange);
+      const newAmount = Platform6.NumberUtilities.clamp(offsetY.amount + shiftY, -maxRange, maxRange);
       if (newAmount === offsetY.amount) {
         return;
       }
@@ -2550,7 +2571,7 @@ var LinkSwatch_exports = {};
 __export(LinkSwatch_exports, {
   LinkSwatch: () => LinkSwatch
 });
-import * as Platform6 from "./../../../../core/platform/platform.js";
+import * as Platform7 from "./../../../../core/platform/platform.js";
 import * as Buttons from "./../../../components/buttons/buttons.js";
 import * as Lit6 from "./../../../lit/lit.js";
 import * as VisualLogging8 from "./../../../visual_logging/visual_logging.js";
@@ -2599,7 +2620,7 @@ var LinkSwatch = class extends HTMLElement {
       if (event instanceof MouseEvent && event.button !== 0) {
         return;
       }
-      if (event instanceof KeyboardEvent && event.key !== Platform6.KeyboardUtilities.ENTER_KEY && event.key !== " ") {
+      if (event instanceof KeyboardEvent && event.key !== Platform7.KeyboardUtilities.ENTER_KEY && event.key !== " ") {
         return;
       }
       data.onLinkActivate(linkText);
@@ -2696,7 +2717,7 @@ __export(SwatchPopoverHelper_exports, {
   SwatchPopoverHelper: () => SwatchPopoverHelper
 });
 import * as Common5 from "./../../../../core/common/common.js";
-import * as Platform7 from "./../../../../core/platform/platform.js";
+import * as Platform8 from "./../../../../core/platform/platform.js";
 import * as VisualLogging9 from "./../../../visual_logging/visual_logging.js";
 import * as UI6 from "./../../legacy.js";
 
@@ -2847,7 +2868,7 @@ var SwatchPopoverHelper = class extends Common5.ObjectWrapper.ObjectWrapper {
       event.consume(true);
       return;
     }
-    if (event.key === Platform7.KeyboardUtilities.ESCAPE_KEY) {
+    if (event.key === Platform8.KeyboardUtilities.ESCAPE_KEY) {
       this.hide(false);
       event.consume(true);
     }

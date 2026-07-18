@@ -14,7 +14,7 @@ export const UIStrings = {
      * This is displayed after a user expands the section to see more. No character length limits.
      */
     description: '3rd party code can significantly impact load performance. ' +
-        '[Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page\'s content.',
+        '[Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.',
     /** Label for a table column that displays the name of a third-party provider. */
     columnThirdParty: '3rd party',
     /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */

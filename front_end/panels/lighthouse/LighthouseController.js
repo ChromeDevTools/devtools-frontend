@@ -756,4 +756,8 @@ export var Events;
     Events["AuditProgressChanged"] = "AuditProgressChanged";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Events || (Events = {}));
+export function clearSettingsCacheForTest() {
+    runtimeSettings = null;
+    presets = null;
+}
 //# sourceMappingURL=LighthouseController.js.map

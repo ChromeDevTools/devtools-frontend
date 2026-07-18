@@ -19,6 +19,7 @@ import * as Issue from './Issue.js';
 import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueResolver from './IssueResolver.js';
 import * as IssuesManager from './IssuesManager.js';
+import * as LazyLoadImageIssue from './LazyLoadImageIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
 import * as MixedContentIssue from './MixedContentIssue.js';
 import * as PartitioningBlobURLIssue from './PartitioningBlobURLIssue.js';
@@ -33,5 +34,5 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
-export { CheckFormsIssuesTrigger, ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, EmailVerificationRequestIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
+export { CheckFormsIssuesTrigger, ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, EmailVerificationRequestIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, LazyLoadImageIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
 //# sourceMappingURL=issues_manager.prebundle.js.map

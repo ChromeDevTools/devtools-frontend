@@ -132,7 +132,7 @@ var UIStrings = {
    * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  doNotPaste: "Don't paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below to allow pasting.",
+  doNotPaste: "Don\u2019t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below to allow pasting.",
   /**
    * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
@@ -146,7 +146,7 @@ var UIStrings = {
    * @description Error message shown when the user tries to open a file that contains non-readable data. "Editor" refers to
    * a text editor.
    */
-  binaryContentError: `Editor can't show binary data. Use the "Response" tab in the "Network" panel to inspect this resource.`
+  binaryContentError: 'Editor can\u2019t show binary data. Use the "Response" tab in the "Network" panel to inspect this resource.'
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/source_frame/SourceFrame.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -1744,9 +1744,8 @@ __export(JSONView_exports, {
   SearchableJsonView: () => SearchableJsonView
 });
 import * as i18n9 from "./../../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as Highlighting from "./../../../components/highlighting/highlighting.js";
+import { html as html2, render as render3 } from "./../../../lit/lit.js";
 import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
 import * as UI6 from "./../../legacy.js";
 import * as ObjectUI from "./../object_ui/object_ui.js";
@@ -1763,6 +1762,10 @@ var jsonView_css_default = `/*
   overflow: auto;
 }
 
+devtools-tree {
+  display: block;
+}
+
 /*# sourceURL=${import.meta.resolve("./jsonView.css")} */`;
 
 // gen/front_end/ui/legacy/components/source_frame/JSONView.js
@@ -1774,26 +1777,35 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/source_frame/JSONView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(input.parsedJSON.data);
+  const titleText = input.parsedJSON.prefix + obj.description + input.parsedJSON.suffix;
+  const title = html2`<span>${titleText}</span>`;
+  render3(html2`
+    <style>${jsonView_css_default}</style>
+    ${ObjectUI.ObjectPropertiesSection.renderObjectPropertiesSection(input.objectTree, title)}
+  `, target, {
+    container: {
+      classes: ["json-view"],
+      attributes: {
+        jslog: VisualLogging4.section("json-view")
+      }
+    }
+  });
+};
 var JSONView = class _JSONView extends UI6.Widget.VBox {
-  initialized;
-  parsedJSON;
+  #parsedJSON;
   startCollapsed;
-  searchableView;
-  treeOutline;
-  currentSearchFocusIndex;
-  currentSearchTreeElements;
-  searchRegex;
-  constructor(parsedJSON, startCollapsed) {
-    super();
-    this.initialized = false;
-    this.registerRequiredCSS(jsonView_css_default);
-    this.parsedJSON = parsedJSON;
+  searchableView = null;
+  objectTree = null;
+  search;
+  view;
+  constructor(parsedJSON, startCollapsed, element, view = DEFAULT_VIEW2) {
+    super(element);
+    this.#parsedJSON = parsedJSON;
     this.startCollapsed = Boolean(startCollapsed);
-    this.element.classList.add("json-view");
-    this.element.setAttribute("jslog", `${VisualLogging4.section("json-view")}`);
-    this.currentSearchFocusIndex = 0;
-    this.currentSearchTreeElements = [];
-    this.searchRegex = null;
+    this.search = new UI6.TreeOutline.TreeSearch();
+    this.view = view;
   }
   static async createView(content) {
     const parsedJSON = await _JSONView.parseJSON(content);
@@ -1815,6 +1827,15 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
     jsonView.show(searchableView.element);
     jsonView.element.tabIndex = 0;
     return searchableView;
+  }
+  set parsedJSON(parsedJSON) {
+    if (this.objectTree) {
+      this.objectTree.removeEventListener("children-changed", this.#onChildrenChanged, this);
+    }
+    this.#parsedJSON = parsedJSON;
+    this.objectTree = null;
+    this.onSearchCanceled();
+    this.requestUpdate();
   }
   setSearchableView(searchableView) {
     this.searchableView = searchableView;
@@ -1868,123 +1889,78 @@ var JSONView = class _JSONView extends UI6.Widget.VBox {
   wasShown() {
     super.wasShown();
     this.initialize();
+    this.requestUpdate();
   }
   initialize() {
-    if (this.initialized) {
+    if (this.objectTree) {
       return;
     }
-    this.initialized = true;
-    const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(this.parsedJSON.data);
-    const title = this.parsedJSON.prefix + obj.description + this.parsedJSON.suffix;
-    this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection(
-      obj,
-      title,
-      void 0,
-      true,
-      false
-      /* editable */
-    );
-    this.treeOutline.enableContextMenu();
+    const obj = SDK2.RemoteObject.RemoteObject.fromLocalObject(this.#parsedJSON.data);
+    this.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(obj, {
+      readOnly: true,
+      propertiesMode: 1,
+      search: this.search
+    });
     if (!this.startCollapsed) {
-      this.treeOutline.expand();
+      this.objectTree.expanded = true;
     }
-    this.element.appendChild(this.treeOutline.element);
-    const firstChild = this.treeOutline.firstChild();
-    if (firstChild) {
-      firstChild.select(
-        true,
-        false
-        /* selectedByUser */
-      );
-    }
+    this.objectTree.addEventListener("children-changed", this.#onChildrenChanged, this);
   }
-  jumpToMatch(index) {
-    if (!this.searchRegex) {
+  #onChildrenChanged() {
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.initialize();
+    if (!this.objectTree) {
       return;
     }
-    const previousFocusElement = this.currentSearchTreeElements[this.currentSearchFocusIndex];
-    if (previousFocusElement) {
-      previousFocusElement.setSearchRegex(this.searchRegex);
-    }
-    const newFocusElement = this.currentSearchTreeElements[index];
-    if (newFocusElement) {
-      this.updateSearchIndex(index);
-      newFocusElement.setSearchRegex(this.searchRegex, Highlighting.highlightedCurrentSearchResultClassName);
-      newFocusElement.reveal();
-    } else {
-      this.updateSearchIndex(0);
-    }
+    this.view({ objectTree: this.objectTree, parsedJSON: this.#parsedJSON }, void 0, this.contentElement);
   }
-  updateSearchCount(count) {
-    if (!this.searchableView) {
-      return;
+  jumpToMatch() {
+    if (this.searchableView) {
+      this.search.updateSearchableView(this.searchableView);
     }
-    this.searchableView.updateSearchMatchesCount(count);
-  }
-  updateSearchIndex(index) {
-    this.currentSearchFocusIndex = index;
-    if (!this.searchableView) {
-      return;
+    const currentMatch = this.search.currentMatch();
+    if (currentMatch) {
+      let current = currentMatch.node.parent;
+      while (current) {
+        current.expanded = true;
+        current = current.parent;
+      }
     }
-    this.searchableView.updateCurrentMatchIndex(index);
   }
   onSearchCanceled() {
-    this.searchRegex = null;
-    this.currentSearchTreeElements = [];
-    let element;
-    for (element = this.treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
-        continue;
-      }
-      element.revertHighlightChanges();
+    this.search.reset();
+    if (this.searchableView) {
+      this.search.updateSearchableView(this.searchableView);
     }
-    this.updateSearchCount(0);
-    this.updateSearchIndex(0);
   }
-  performSearch(searchConfig, _shouldJump, jumpBackwards) {
-    let newIndex = this.currentSearchFocusIndex;
-    const previousSearchFocusElement = this.currentSearchTreeElements[newIndex];
+  performSearch(searchConfig, shouldJump, jumpBackwards) {
+    this.initialize();
     this.onSearchCanceled();
-    this.searchRegex = searchConfig.toSearchRegex(true).regex;
-    let element;
-    for (element = this.treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
-      if (!(element instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement)) {
-        continue;
-      }
-      const hasMatch = element.setSearchRegex(this.searchRegex);
-      if (hasMatch) {
-        this.currentSearchTreeElements.push(element);
-      }
-      if (previousSearchFocusElement === element) {
-        const currentIndex = this.currentSearchTreeElements.length - 1;
-        if (hasMatch || jumpBackwards) {
-          newIndex = currentIndex;
-        } else {
-          newIndex = currentIndex + 1;
-        }
-      }
-    }
-    this.updateSearchCount(this.currentSearchTreeElements.length);
-    if (!this.currentSearchTreeElements.length) {
-      this.updateSearchIndex(-1);
+    const searchRegex = searchConfig.toSearchRegex(true).regex;
+    if (!this.objectTree) {
       return;
     }
-    newIndex = Platform3.NumberUtilities.mod(newIndex, this.currentSearchTreeElements.length);
-    this.jumpToMatch(newIndex);
+    this.search.search(this.objectTree, jumpBackwards ?? false, (node, closeTag) => {
+      if (closeTag || !searchRegex) {
+        return [];
+      }
+      return node.match(searchRegex);
+    });
+    if (shouldJump) {
+      this.jumpToMatch();
+    } else if (this.searchableView) {
+      this.search.updateSearchableView(this.searchableView);
+    }
   }
   jumpToNextSearchResult() {
-    if (!this.currentSearchTreeElements.length) {
-      return;
-    }
-    const newIndex = Platform3.NumberUtilities.mod(this.currentSearchFocusIndex + 1, this.currentSearchTreeElements.length);
-    this.jumpToMatch(newIndex);
+    this.search.next();
+    this.jumpToMatch();
   }
   jumpToPreviousSearchResult() {
-    if (!this.currentSearchTreeElements.length) {
-      return;
-    }
-    const newIndex = Platform3.NumberUtilities.mod(this.currentSearchFocusIndex - 1, this.currentSearchTreeElements.length);
-    this.jumpToMatch(newIndex);
+    this.search.prev();
+    this.jumpToMatch();
   }
   supportsCaseSensitiveSearch() {
     return true;
@@ -2018,11 +1994,9 @@ var SearchableJsonView = class extends UI6.SearchableView.SearchableView {
     jsonView.element.tabIndex = 0;
   }
   set jsonObject(obj) {
-    const jsonView = new JSONView(new ParsedJSON(obj, "", ""));
-    this.#jsonView.detach();
-    this.#jsonView = jsonView;
-    this.searchProvider = jsonView;
-    jsonView.show(this.element);
+    this.#jsonView.parsedJSON = new ParsedJSON(obj, "", "");
+    this.searchProvider = this.#jsonView;
+    this.#jsonView.show(this.element);
     this.requestUpdate();
   }
 };
@@ -2040,7 +2014,7 @@ import * as UI8 from "./../../legacy.js";
 // gen/front_end/ui/legacy/components/source_frame/XMLView.js
 var XMLView_exports = {};
 __export(XMLView_exports, {
-  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  DEFAULT_VIEW: () => DEFAULT_VIEW3,
   XMLTreeViewModel: () => XMLTreeViewModel,
   XMLTreeViewNode: () => XMLTreeViewNode,
   XMLView: () => XMLView
@@ -2135,7 +2109,7 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/source_frame/XMLView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var { render: render3, html: html2 } = Lit;
+var { render: render4, html: html3 } = Lit;
 var { ifExpanded } = UI7.TreeOutline;
 function* attributes(element) {
   for (let i = 0; i < element.attributes.length; ++i) {
@@ -2174,33 +2148,33 @@ function htmlView(treeNode) {
     case Node.ELEMENT_NODE:
       if (node instanceof Element) {
         const tag = node.tagName;
-        return html2`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html2`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
+        return html3`<span part='shadow-xml-view-tag'>${"<" + tag}</span>${attributes(node).map((attributeNode) => html3`<span part='shadow-xml-view-tag'>${"\xA0"}</span>
                 <span part='shadow-xml-view-attribute-name'>${attributeNode.name}</span>
                 <span part='shadow-xml-view-tag'>${'="'}</span>
                 <span part='shadow-xml-view-attribute-value'>${attributeNode.value}</span>
                 <span part='shadow-xml-view-tag'>${'"'}</span>`)}
-                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html2`<span part='shadow-xml-view-tag'>${">"}</span>
+                <span ?hidden=${treeNode.expanded}>${hasNonTextChildren(node) ? html3`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-comment'>${"\u2026"}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html2`<span part='shadow-xml-view-tag'>${">"}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : node.textContent ? html3`<span part='shadow-xml-view-tag'>${">"}</span>
                   <span part='shadow-xml-view-text'>${node.textContent}</span>
-                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html2`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
+                  <span part='shadow-xml-view-tag'>${"</" + tag}</span>` : html3`<span part='shadow-xml-view-tag'>${" /"}</span>`}</span>
                 <span part='shadow-xml-view-tag'>${">"}</span>`;
       }
       return Lit.nothing;
     case Node.TEXT_NODE:
-      return node.nodeValue ? html2`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
+      return node.nodeValue ? html3`<span part='shadow-xml-view-text'>${node.nodeValue}</span>` : Lit.nothing;
     case Node.CDATA_SECTION_NODE:
-      return node.nodeValue ? html2`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
+      return node.nodeValue ? html3`<span part='shadow-xml-view-cdata'>${"<![CDATA["}</span>
           <span part='shadow-xml-view-text'>${node.nodeValue}</span>
           <span part='shadow-xml-view-cdata'>${"]]>"}</span>` : Lit.nothing;
     case Node.PROCESSING_INSTRUCTION_NODE:
-      return node.nodeValue ? html2`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
+      return node.nodeValue ? html3`<span part='shadow-xml-view-processing-instruction'>${"<?" + node.nodeName + " " + node.nodeValue + "?>"}</span>` : Lit.nothing;
     case Node.COMMENT_NODE:
-      return html2`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
+      return html3`<span part='shadow-xml-view-comment'>${"<!--" + node.nodeValue + "-->"}</span>`;
   }
   return Lit.nothing;
 }
-var DEFAULT_VIEW2 = (input, output, target) => {
+var DEFAULT_VIEW3 = (input, output, target) => {
   function highlight(node, closeTag) {
     let highlights = "";
     let selected = "";
@@ -2238,7 +2212,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       }
       return false;
     };
-    return html2`
+    return html3`
       <li role="treeitem"
           ?selected=${input.jumpToNextSearchResult?.node === node}
           @expand=${onExpand}
@@ -2246,7 +2220,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <devtools-highlight ranges=${highlights} current-range=${selected}>
           ${htmlView(node)}
         </devtools-highlight>
-        ${node.children().length ? html2`
+        ${node.children().length ? html3`
           <ul role="group">
             ${ifExpanded(subtree(node))}
           </ul>` : Lit.nothing}
@@ -2262,21 +2236,21 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       /* closeTag=*/
       true
     );
-    return html2`
+    return html3`
       ${children2.map((child) => layOutNode(child))}
-      ${treeNode.node instanceof Element ? html2`
+      ${treeNode.node instanceof Element ? html3`
         <li role="treeitem">
           <devtools-highlight ranges=${highlights} current-range=${selected}>
             <span part='shadow-xml-view-close-tag'>${"</" + treeNode.node.tagName + ">"}</span>
           </devtools-highlight>
         </li>` : Lit.nothing}`;
   }
-  render3(html2`
+  render4(html3`
     <style>${xmlView_css_default}</style>
     <style>${xmlTree_css_default}</style>
     <devtools-tree
       class="shadow-xml-view source-code"
-      .template=${html2`
+      .template=${html3`
         <ul role="tree">
             ${input.xml.children().map((node) => layOutNode(node))}
         </ul>`}
@@ -2342,7 +2316,7 @@ var XMLView = class _XMLView extends UI7.Widget.Widget {
   #treeViewModel;
   #view;
   #nextJump;
-  constructor(target, view = DEFAULT_VIEW2) {
+  constructor(target, view = DEFAULT_VIEW3) {
     super(target);
     this.#view = view;
   }

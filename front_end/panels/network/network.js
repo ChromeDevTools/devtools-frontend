@@ -366,7 +366,7 @@ var UIStrings2 = {
    * @description Text that shows in the network request blocking panel if no pattern has yet been added.
    * @example {Learn more} PH1
    */
-  noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel's context menu. {PH1}`,
+  noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel\u2019s context menu. {PH1}`,
   /**
    * @description Text in Blocked URLs Pane of the Network panel
    * @example {4} PH1
@@ -2202,7 +2202,7 @@ var UIStrings6 = {
   /**
    * @description Reason why a request was blocked shown in the Network panel
    */
-  coopSandboxedIframeCannotNavigateToCoopPage: "Sandboxed iframe's popup cannot navigate to COOP page",
+  coopSandboxedIframeCannotNavigateToCoopPage: "Sandboxed iframe\u2019s popup cannot navigate to COOP page",
   /**
    * @description Reason why a request was blocked shown in the Network panel
    */

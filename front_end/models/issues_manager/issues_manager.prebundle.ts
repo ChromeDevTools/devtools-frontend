@@ -20,6 +20,7 @@ import * as Issue from './Issue.js';
 import * as IssueAggregator from './IssueAggregator.js';
 import * as IssueResolver from './IssueResolver.js';
 import * as IssuesManager from './IssuesManager.js';
+import * as LazyLoadImageIssue from './LazyLoadImageIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
 import * as MixedContentIssue from './MixedContentIssue.js';
 import * as PartitioningBlobURLIssue from './PartitioningBlobURLIssue.js';
@@ -54,6 +55,7 @@ export {
   IssueAggregator,
   IssueResolver,
   IssuesManager,
+  LazyLoadImageIssue,
   MarkdownIssueDescription,
   MixedContentIssue,
   PartitioningBlobURLIssue,

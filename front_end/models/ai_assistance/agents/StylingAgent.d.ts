@@ -1,6 +1,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import { AiAgent, type ContextResponse, type ConversationContext, MultimodalInputType, type RequestOptions } from './AiAgent.js';
 import { type ExecuteJsAgentOptions } from './ExecuteJavascript.js';
 export declare const AI_ASSISTANCE_FILTER_REGEX = "\\.ai-style-change-.*&";

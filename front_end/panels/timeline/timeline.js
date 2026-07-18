@@ -13649,7 +13649,7 @@ var UIStrings23 = {
   /**
    * @description Tooltip description '% of slow-path non-matches'
    */
-  slowPathNonMatchesExplanation: "The percentage of non-matching nodes (Match Attempts - Match Count) that couldn't be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.",
+  slowPathNonMatchesExplanation: "The percentage of non-matching nodes (Match Attempts - Match Count) that couldn\u2019t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.",
   /**
    * @description Column name for count of elements that the engine attempted to match against a style rule
    */
@@ -13681,7 +13681,7 @@ var UIStrings23 = {
   /**
    * @description Tooltip description 'Style Sheet'
    */
-  styleSheetIdExplanation: "Links to the selector rule definition in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don't have a link.",
+  styleSheetIdExplanation: "Links to the selector rule definition in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don\u2019t have a link.",
   /**
    * @description A context menu item in data grids to copy entire table to clipboard
    */

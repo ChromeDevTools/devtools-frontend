@@ -136,6 +136,7 @@
   "emailVerificationRequestTokenVerificationKbMissingCnf.md",
   "emailVerificationRequestTokenVerificationKbSignatureFailed.md",
   "heavyAd.md",
+  "lazyLoadImageZeroSize.md",
   "LowTextContrast.md",
   "mixedContent.md",
   "permissionElementActivationDisabled.md",

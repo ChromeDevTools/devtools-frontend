@@ -174,6 +174,56 @@ export class Settings {
     getRegistry() {
         return this.#registry;
     }
+    /**
+     * Resolves a setting descriptor to a concrete {@link Setting} instance.
+     *
+     * If a setting with the same name already exists (either pre-registered or
+     * previously resolved), that instance is returned. Otherwise, a new setting
+     * is created and registered.
+     *
+     * @param descriptor The descriptor defining the setting. Must not be conditional.
+     * @throws If the descriptor is conditional (contains `isAvailable`). Use `maybeResolve` instead.
+     */
+    resolve(descriptor) {
+        if ('isAvailable' in descriptor) {
+            // TS can only do so much if developers downcast explicitly.
+            throw new Error('Use Settings#maybeResolve for conditional descriptors.');
+        }
+        return this.#resolve(descriptor);
+    }
+    #resolve(descriptor) {
+        let setting = this.moduleSettings.get(descriptor.name);
+        if (setting) {
+            return setting;
+        }
+        const { name, type, defaultValue, storageType } = descriptor;
+        const isRegex = type === "regex" /* SettingType.REGEX */;
+        const isGetter = (value) => typeof value === 'function';
+        const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root.Runtime.hostConfig) : defaultValue;
+        setting = isRegex && typeof evaluatedDefaultValue === 'string' ?
+            this.createRegExpSetting(name, evaluatedDefaultValue, undefined, storageType) :
+            this.createSetting(name, evaluatedDefaultValue, storageType);
+        this.registerModuleSetting(setting);
+        return setting;
+    }
+    /**
+     * Resolves a conditional setting descriptor to a concrete {@link Setting} instance if it is available.
+     *
+     * This method checks the availability of the setting using the descriptor's `isAvailable` function
+     * and the current `hostConfig`. If available, it resolves and returns the setting (caching it if
+     * necessary). If not available (either unavailable or disabled), it returns the availability status
+     * and the reason.
+     *
+     * @param descriptor The conditional descriptor defining the setting.
+     * @returns An object with either the resolved `setting` or the availability `status` and `reason`.
+     */
+    maybeResolve(descriptor) {
+        const available = descriptor.isAvailable(Root.Runtime.hostConfig);
+        if (available.status === 1 /* SettingAvailability.AVAILABLE */) {
+            return { setting: this.#resolve(descriptor) };
+        }
+        return available;
+    }
 }
 export class InMemoryStorage {
     #store = new Map();

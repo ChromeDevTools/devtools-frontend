@@ -11748,11 +11748,11 @@ var UIStrings11 = {
   /**
    * @description Tooltip text shown in the Elements panel when an element has an error.
    */
-  formAriaLabelledByToNonExistingId: "An aria-labelledby attribute doesn't match any element id",
+  formAriaLabelledByToNonExistingId: "An aria-labelledby attribute doesn\u2019t match any element id",
   /**
    * @description Tooltip text shown in the Elements panel when an element has an error.
    */
-  formInputAssignedAutocompleteValueToIdOrNameAttributeError: "An element doesn't have an autocomplete attribute",
+  formInputAssignedAutocompleteValueToIdOrNameAttributeError: "An element doesn\u2019t have an autocomplete attribute",
   /**
    * @description Tooltip text shown in the Elements panel when an element has an error.
    */

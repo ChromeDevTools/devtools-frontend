@@ -95,6 +95,9 @@
   ],
   "references": [
     {
+      "path": "./mocha_helpers-tsconfig.json"
+    },
+    {
       "path": "./test_id_generation-tsconfig.json"
     },
     {

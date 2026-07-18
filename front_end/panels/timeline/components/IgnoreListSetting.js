@@ -40,7 +40,7 @@ const UIStrings = {
      * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
      * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
      */
-    addNewRegex: 'Add a regular expression rule for the script\'s URL',
+    addNewRegex: 'Add a regular expression rule for the script’s URL',
     /**
      * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the checkbox of
      * the input field used to enable the new regular expressions that match file names to ignore in the debugger.

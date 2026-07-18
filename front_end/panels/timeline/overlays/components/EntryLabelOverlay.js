@@ -58,11 +58,11 @@ const UIStringsNotTranslate = {
     /**
      * @description Security disclaimer text displayed when the information icon on a button that generates an AI label is hovered.
      */
-    generateLabelSecurityDisclaimer: 'The selected call stack is sent to Google. This data may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+    generateLabelSecurityDisclaimer: 'The selected call stack is sent to Google. This data may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
     /**
      * @description Enterprise users with logging off - Security disclaimer text displayed when the information icon on a button that generates an AI label is hovered.
      */
-    generateLabelSecurityDisclaimerLoggingOff: 'The selected call stack is sent to Google. This data will not be used to improve Google\'s AI models. Your organization may change these settings at any time. This is an experimental AI feature and won\'t always get it right.',
+    generateLabelSecurityDisclaimerLoggingOff: 'The selected call stack is sent to Google. This data will not be used to improve Google’s AI models. Your organization may change these settings at any time. This is an experimental AI feature and won’t always get it right.',
     /**
      * @description The `Generate AI label button` tooltip disclaimer for when the feature is not available and the reason can be checked in settings.
      */

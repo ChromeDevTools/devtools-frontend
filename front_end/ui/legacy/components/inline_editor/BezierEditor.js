@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../../core/common/common.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import { AnimationTimingModel } from './AnimationTimingModel.js';
@@ -111,9 +112,12 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
         if (!pivot) {
             return null;
         }
+        const logContext = VisualLogging.bezierPresetCategory()
+            .track({ click: true })
+            .context(Platform.StringUtilities.toKebabCase(presetGroup[0].name));
         const presetElement = document.createElement('div');
         presetElement.classList.add('bezier-preset-category');
-        presetElement.setAttribute('jslog', `${VisualLogging.bezierPresetCategory().track({ click: true }).context(presetGroup[0].name)}`);
+        presetElement.setAttribute('jslog', `${logContext}`);
         const iconElement = UI.UIUtils.createSVGChild(presetElement, 'svg', 'bezier-preset monospace');
         const category = { presets: presetGroup, presetIndex: 0, icon: presetElement };
         this.presetUI.draw(pivot, iconElement);

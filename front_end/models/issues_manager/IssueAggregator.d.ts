@@ -9,6 +9,7 @@ import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
 import type { EventTypes as IssuesManagerEventsTypes } from './IssuesManager.js';
+import { LazyLoadImageIssue } from './LazyLoadImageIssue.js';
 import type { MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
@@ -69,6 +70,7 @@ export declare class AggregatedIssue extends Issue {
     getAggregatedIssuesCount(): number;
     getPartitioningBlobURLIssues(): Iterable<PartitioningBlobURLIssue>;
     getPermissionElementIssues(): Iterable<PermissionElementIssue>;
+    getLazyLoadImageIssues(): Iterable<LazyLoadImageIssue>;
     addInstance(issue: Issue): void;
     getKind(): IssueKind;
     getAllIssues(): Issue[];

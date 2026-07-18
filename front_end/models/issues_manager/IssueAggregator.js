@@ -11,6 +11,7 @@ import { ElementAccessibilityIssue } from './ElementAccessibilityIssue.js';
 import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
 import { Issue, unionIssueKind } from './Issue.js';
+import { LazyLoadImageIssue } from './LazyLoadImageIssue.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
@@ -40,6 +41,7 @@ export class AggregatedIssue extends Issue {
     #mixedContentIssues = new Set();
     #partitioningBlobURLIssues = new Set();
     #permissionElementIssues = new Set();
+    #lazyLoadImageIssues = new Set();
     #selectivePermissionsInterventionIssues = new Set();
     #sharedArrayBufferIssues = new Set();
     #quirksModeIssues = new Set();
@@ -133,6 +135,9 @@ export class AggregatedIssue extends Issue {
     getPermissionElementIssues() {
         return this.#permissionElementIssues;
     }
+    getLazyLoadImageIssues() {
+        return this.#lazyLoadImageIssues;
+    }
     /**
      * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
      * case new fields are added to `AffectedCookie`.
@@ -221,6 +226,9 @@ export class AggregatedIssue extends Issue {
         }
         if (issue instanceof PermissionElementIssue) {
             this.#permissionElementIssues.add(issue);
+        }
+        if (issue instanceof LazyLoadImageIssue) {
+            this.#lazyLoadImageIssues.add(issue);
         }
         if (issue instanceof SelectivePermissionsInterventionIssue) {
             this.#selectivePermissionsInterventionIssues.add(issue);

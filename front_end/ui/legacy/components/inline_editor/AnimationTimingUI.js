@@ -2,12 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
+import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Geometry from '../../../../models/geometry/geometry.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import { BezierUI } from './BezierUI.js';
 import { CSSLinearEasingModel } from './CSSLinearEasingModel.js';
+const UIStrings = {
+    /**
+     * @description Tooltip text for control points in the linear easing editor.
+     */
+    doubleClickToDelete: 'Double-click to delete',
+};
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/AnimationTimingUI.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const DOUBLE_CLICK_DELAY = 500;
 class BezierCurveUI {
     #curveUI;
@@ -87,6 +96,10 @@ class LinearEasingPresentation {
         circle.setAttribute('cx', String(controlX));
         circle.setAttribute('cy', String(controlY));
         circle.setAttribute('r', String(this.params.pointRadius));
+        // SVG sub-elements do not support tooltips via the 'title' attribute.
+        // Instead, a child <title> element must be appended to the shape.
+        const title = UI.UIUtils.createSVGChild(circle, 'title');
+        title.textContent = i18nString(UIStrings.doubleClickToDelete);
     }
     timingPointToPosition(point) {
         return {
@@ -129,6 +142,10 @@ class LinearEasingUI {
     #doubleClickTimer;
     #pointIndexForDoubleClick;
     #mouseDownPosition;
+    /**
+     * The rendered SVG coordinate position of the dragged control point at the start of the drag gesture.
+     */
+    #dragStartPointPosition;
     #svg;
     constructor({ model, container, onChange, }) {
         this.#model = model;
@@ -151,6 +168,8 @@ class LinearEasingUI {
     #handleControlPointClick(event, pointIndex) {
         this.#selectedPointIndex = pointIndex;
         this.#mouseDownPosition = { x: event.x, y: event.y };
+        const controlPosition = this.#presentation.renderedPositions?.[pointIndex];
+        this.#dragStartPointPosition = controlPosition ? { ...controlPosition } : undefined;
         // This is a workaround to understand whether the user double clicked
         // a point or not. The reason is, we also want to handle drag interactions
         // for the point and the way we install drag handlers (starting with mousedown event)
@@ -189,22 +208,18 @@ class LinearEasingUI {
         return false;
     }
     #updatePointPosition(mouseX, mouseY) {
-        if (this.#selectedPointIndex === undefined || this.#mouseDownPosition === undefined) {
+        if (this.#selectedPointIndex === undefined || this.#mouseDownPosition === undefined ||
+            this.#dragStartPointPosition === undefined) {
             return;
         }
-        const controlPosition = this.#presentation.renderedPositions?.[this.#selectedPointIndex];
-        if (!controlPosition) {
-            return;
-        }
+        // By calculating the position relative to the initial drag start position (#dragStartPointPosition)
+        // and the total drag distance (deltaX/deltaY), we avoid incremental coordinate drift and rounding
+        // errors that would accumulate if we updated the mouse starting point relative to the previous frame's position.
         const deltaX = mouseX - this.#mouseDownPosition.x;
         const deltaY = mouseY - this.#mouseDownPosition.y;
-        this.#mouseDownPosition = {
-            x: mouseX,
-            y: mouseY,
-        };
         const newPoint = {
-            x: controlPosition.x + deltaX,
-            y: controlPosition.y + deltaY,
+            x: this.#dragStartPointPosition.x + deltaX,
+            y: this.#dragStartPointPosition.y + deltaY,
         };
         this.#model.setPoint(this.#selectedPointIndex, this.#presentation.positionToTimingPoint(newPoint));
     }

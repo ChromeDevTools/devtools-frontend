@@ -92,6 +92,7 @@ models/issues_manager/GenericIssue.test.js
 models/issues_manager/Issue.test.js
 models/issues_manager/IssueAggregator.test.js
 models/issues_manager/IssueResolver.test.js
+models/issues_manager/LazyLoadImageIssue.test.js
 models/issues_manager/MarkdownIssueDescription.test.js
 models/issues_manager/PermissionElementIssue.test.js
 models/issues_manager/PropertyRuleIssue.test.js
@@ -479,6 +480,7 @@ panels/emulation/DeviceModeView.test.js
 panels/emulation/MediaQueryInspector.test.js
 panels/event_listeners/EventListenersView.test.js
 panels/explain/components/ConsoleInsight.test.js
+panels/issues/AffectedLazyLoadImagesView.test.js
 panels/issues/AffectedSelectivePermissionsInterventionView.test.js
 panels/issues/IssueView.test.js
 panels/issues/IssuesPane.test.js

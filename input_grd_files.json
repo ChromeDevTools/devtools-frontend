@@ -573,6 +573,7 @@
   "front_end/models/issues_manager/descriptions/emailVerificationRequestTokenVerificationKbMissingCnf.md",
   "front_end/models/issues_manager/descriptions/emailVerificationRequestTokenVerificationKbSignatureFailed.md",
   "front_end/models/issues_manager/descriptions/heavyAd.md",
+  "front_end/models/issues_manager/descriptions/lazyLoadImageZeroSize.md",
   "front_end/models/issues_manager/descriptions/LowTextContrast.md",
   "front_end/models/issues_manager/descriptions/mixedContent.md",
   "front_end/models/issues_manager/descriptions/permissionElementActivationDisabled.md",

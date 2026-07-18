@@ -85,7 +85,7 @@ const UIStrings = {
      */
     noPastConversations: 'No past conversations',
     /**
-     * @description Placeholder text for an inactive text field. When active, it’s used for the user’s input to AI assistance.
+     * @description Placeholder text for an inactive text field. When active, it's used for the user's input to AI assistance.
      */
     followTheSteps: 'Follow the steps above to ask a question',
     /**

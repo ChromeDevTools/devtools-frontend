@@ -31231,11 +31231,11 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
-  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url's path.",
+  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url\u2019s path.",
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
-  domainMismatch: "This cookie was blocked because neither did the request URL's domain exactly match the cookie's domain, nor was the request URL's domain a subdomain of the cookie's Domain attribute value.",
+  domainMismatch: "This cookie was blocked because neither did the request URL\u2019s domain exactly match the cookie\u2019s domain, nor was the request URL\u2019s domain a subdomain of the cookie\u2019s Domain attribute value.",
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
@@ -31247,7 +31247,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
-  sameSiteUnspecifiedTreatedAsLax: 'This cookie didn\'t specify a "`SameSite`" attribute when it was stored and was defaulted to "SameSite=Lax," and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
+  sameSiteUnspecifiedTreatedAsLax: 'This cookie didn\u2019t specify a "`SameSite`" attribute when it was stored and was defaulted to "SameSite=Lax," and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
@@ -31275,7 +31275,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
-  schemefulSameSiteUnspecifiedTreatedAsLax: 'This cookie didn\'t specify a "`SameSite`" attribute when it was stored, was defaulted to "`SameSite=Lax"`, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
+  schemefulSameSiteUnspecifiedTreatedAsLax: 'This cookie didn\u2019t specify a "`SameSite`" attribute when it was stored, was defaulted to "`SameSite=Lax"`, and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
   /**
    * @description Tooltip to explain why a cookie was blocked due to exceeding the maximum size
    */
@@ -31312,7 +31312,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
    */
-  thisSetcookieDidntSpecifyASamesite: 'This `Set-Cookie` header didn\'t specify a "`SameSite`" attribute, was defaulted to "`SameSite=Lax"`, and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
+  thisSetcookieDidntSpecifyASamesite: 'This `Set-Cookie` header didn\u2019t specify a "`SameSite`" attribute, was defaulted to "`SameSite=Lax"`, and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -31325,7 +31325,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This `Set-Cookie` header didn\'t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax,`" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The `Set-Cookie` had to have been set with "`SameSite=None`" to enable cross-site usage.',
+  blockedReasonSameSiteUnspecifiedTreatedAsLax: 'This `Set-Cookie` header didn\u2019t specify a "`SameSite`" attribute and was defaulted to "`SameSite=Lax,`" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The `Set-Cookie` had to have been set with "`SameSite=None`" to enable cross-site usage.',
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */

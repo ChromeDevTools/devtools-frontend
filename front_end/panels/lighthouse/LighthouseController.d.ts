@@ -60,3 +60,4 @@ export interface EventTypes {
     [Events.PageWarningsChanged]: PageWarningsChangedEvent;
     [Events.AuditProgressChanged]: AuditProgressChangedEvent;
 }
+export declare function clearSettingsCacheForTest(): void;

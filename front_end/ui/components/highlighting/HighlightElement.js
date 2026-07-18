@@ -21,6 +21,9 @@ export class HighlightElement extends HTMLElement {
                 break;
             case 'current-range':
                 this.#currentRange = parseRanges(newValue)[0];
+                if (this.#currentRange && oldValue !== newValue) {
+                    queueMicrotask(() => this.scrollIntoView({ block: 'nearest' }));
+                }
                 break;
             case 'type':
                 this.#type = newValue || 'css';

@@ -182,7 +182,7 @@ var UIStrings2 = {
    * @example {c:\dir\file.js} PH1
    * @example {Underlying error} PH2
    */
-  cantReadFileSS: "Can't read file: {PH1}: {PH2}",
+  cantReadFileSS: "Can\u2019t read file: {PH1}: {PH2}",
   /**
    * @description Text to show something is linked to another
    * @example {example.url} PH1

@@ -2364,7 +2364,7 @@ var UIStrings2 = {
    * @example {C/C++ DevTools Support (DWARF)} PH1
    * @example {http://web.dev/file.wasm} PH2
    */
-  loadedDebugSymbolsForButDidnt: "[{PH1}] Loaded debug symbols for {PH2}, but didn't find any source files",
+  loadedDebugSymbolsForButDidnt: "[{PH1}] Loaded debug symbols for {PH2}, but didn\u2019t find any source files",
   /**
    * @description Status message that is shown in the Console when debugging information is successfully loaded
    * @example {C/C++ DevTools Support (DWARF)} PH1

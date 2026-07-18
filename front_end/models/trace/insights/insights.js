@@ -1977,11 +1977,11 @@ var UIStrings9 = {
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
    */
-  useCompression: "Increasing the image compression factor could improve this image's download size.",
+  useCompression: "Increasing the image compression factor could improve this image\u2019s download size.",
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
    */
-  useModernFormat: "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size.",
+  useModernFormat: "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image\u2019s download size.",
   /**
    * @description Message displayed in a chip advising the user to use video formats instead of GIFs because videos generally have smaller file sizes.
    */
@@ -2687,7 +2687,7 @@ var UIStrings13 = {
   /**
    * @description Description of an insight that identifies polyfills for modern JavaScript features, and recommends their removal.
    */
-  description: "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)",
+  description: "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren\u2019t necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)",
   /** Label for a column in a data table; entries will be the individual JavaScript scripts. */
   columnScript: "Script",
   /** Label for a column in a data table; entries will be the number of wasted bytes (aka the estimated savings in terms of bytes). */
@@ -3450,7 +3450,7 @@ var UIStrings16 = {
   /**
    * @description Text to describe that there are requests blocking rendering, which may affect LCP.
    */
-  description: "Requests are blocking the page's initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.",
+  description: "Requests are blocking the page\u2019s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.",
   /**
    * @description Label to describe a network request (that happens to be render-blocking).
    */
@@ -3816,7 +3816,7 @@ var UIStrings18 = {
    * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
    * This is displayed after a user expands the section to see more. No character length limits.
    */
-  description: "3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page's content.",
+  description: "3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page\u2019s content.",
   /** Label for a table column that displays the name of a third-party provider. */
   columnThirdParty: "3rd party",
   /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */

@@ -18,6 +18,7 @@ import { EmailVerificationRequestIssue } from './EmailVerificationRequestIssue.j
 import { FederatedAuthRequestIssue } from './FederatedAuthRequestIssue.js';
 import { GenericIssue } from './GenericIssue.js';
 import { HeavyAdIssue } from './HeavyAdIssue.js';
+import { LazyLoadImageIssue } from './LazyLoadImageIssue.js';
 import { MixedContentIssue } from './MixedContentIssue.js';
 import { PartitioningBlobURLIssue } from './PartitioningBlobURLIssue.js';
 import { PermissionElementIssue } from './PermissionElementIssue.js';
@@ -138,6 +139,10 @@ const issueCodeHandlers = new Map([
     [
         "SelectivePermissionsInterventionIssue" /* Protocol.Audits.InspectorIssueCode.SelectivePermissionsInterventionIssue */,
         SelectivePermissionsInterventionIssue.fromInspectorIssue,
+    ],
+    [
+        "LazyLoadImageIssue" /* Protocol.Audits.InspectorIssueCode.LazyLoadImageIssue */,
+        LazyLoadImageIssue.fromInspectorIssue,
     ],
 ]);
 export function isIssueCodeSupported(code) {

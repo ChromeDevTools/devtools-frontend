@@ -226,6 +226,7 @@ var LighthouseController_exports = {};
 __export(LighthouseController_exports, {
   Events: () => Events,
   LighthouseController: () => LighthouseController,
+  clearSettingsCacheForTest: () => clearSettingsCacheForTest,
   getPresets: () => getPresets,
   getRuntimeSettings: () => getRuntimeSettings
 });
@@ -1000,6 +1001,10 @@ var Events;
   Events2["PageWarningsChanged"] = "PageWarningsChanged";
   Events2["AuditProgressChanged"] = "AuditProgressChanged";
 })(Events || (Events = {}));
+function clearSettingsCacheForTest() {
+  runtimeSettings = null;
+  presets = null;
+}
 
 // gen/front_end/panels/lighthouse/LighthousePanel.js
 var LighthousePanel_exports = {};

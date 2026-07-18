@@ -101,7 +101,7 @@ const UIStrings = {
     /**
      * @description Reason why a request was blocked shown in the Network panel
      */
-    coopSandboxedIframeCannotNavigateToCoopPage: 'Sandboxed iframe\'s popup cannot navigate to COOP page',
+    coopSandboxedIframeCannotNavigateToCoopPage: 'Sandboxed iframe’s popup cannot navigate to COOP page',
     /**
      * @description Reason why a request was blocked shown in the Network panel
      */

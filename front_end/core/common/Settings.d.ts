@@ -73,6 +73,7 @@ export interface SettingsCreationOptions {
     runSettingsMigration?: boolean;
     console: Console;
 }
+type NoFunction<T> = T extends (...args: never[]) => unknown ? never : T;
 export declare class Settings {
     #private;
     readonly syncedStorage: SettingsStorage;
@@ -119,6 +120,36 @@ export declare class Settings {
     clearAll(): void;
     private storageFromType;
     getRegistry(): Map<string, Setting<unknown>>;
+    /**
+     * Resolves a setting descriptor to a concrete {@link Setting} instance.
+     *
+     * If a setting with the same name already exists (either pre-registered or
+     * previously resolved), that instance is returned. Otherwise, a new setting
+     * is created and registered.
+     *
+     * @param descriptor The descriptor defining the setting. Must not be conditional.
+     * @throws If the descriptor is conditional (contains `isAvailable`). Use `maybeResolve` instead.
+     */
+    resolve<T>(descriptor: SettingDescriptor<NoFunction<T>> & {
+        isAvailable?: never;
+    }): Setting<T>;
+    /**
+     * Resolves a conditional setting descriptor to a concrete {@link Setting} instance if it is available.
+     *
+     * This method checks the availability of the setting using the descriptor's `isAvailable` function
+     * and the current `hostConfig`. If available, it resolves and returns the setting (caching it if
+     * necessary). If not available (either unavailable or disabled), it returns the availability status
+     * and the reason.
+     *
+     * @param descriptor The conditional descriptor defining the setting.
+     * @returns An object with either the resolved `setting` or the availability `status` and `reason`.
+     */
+    maybeResolve<T, R>(descriptor: ConditionalSettingDescriptor<NoFunction<T>, R>): {
+        setting: Setting<T>;
+    } | {
+        status: SettingAvailability.UNAVAILABLE | SettingAvailability.DISABLED;
+        reason: R;
+    };
 }
 export interface SettingsBackingStore {
     register(setting: string): void;

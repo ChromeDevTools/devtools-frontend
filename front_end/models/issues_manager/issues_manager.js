@@ -3195,20 +3195,83 @@ __export(IssueAggregator_exports, {
 });
 import * as Common2 from "./../../core/common/common.js";
 
+// gen/front_end/models/issues_manager/LazyLoadImageIssue.js
+var LazyLoadImageIssue_exports = {};
+__export(LazyLoadImageIssue_exports, {
+  LazyLoadImageIssue: () => LazyLoadImageIssue
+});
+import * as i18n27 from "./../../core/i18n/i18n.js";
+var UIStrings15 = {
+  /**
+   * @description Link title for the lazy-loaded image with zero size issue in the Issues panel.
+   */
+  lazyLoadImageZeroSize: "Lazy-loaded images should have explicit dimensions"
+};
+var str_14 = i18n27.i18n.registerUIStrings("models/issues_manager/LazyLoadImageIssue.ts", UIStrings15);
+var i18nString5 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var LazyLoadImageIssue = class _LazyLoadImageIssue extends Issue {
+  constructor(issueDetails, issuesModel) {
+    const umaCode = ["LazyLoadImageIssue", "ZeroSize"].join("::");
+    super({ code: "LazyLoadImageIssue", umaCode }, issueDetails, issuesModel);
+  }
+  primaryKey() {
+    return `${this.code()}-(${this.details().nodeId})-(${this.details().url})`;
+  }
+  getCategory() {
+    return "Other";
+  }
+  getDescription() {
+    return {
+      file: "lazyLoadImageZeroSize.md",
+      links: [
+        {
+          link: "https://web.dev/articles/browser-level-image-lazy-loading/#dimension-attributes",
+          linkTitle: i18nString5(UIStrings15.lazyLoadImageZeroSize)
+        }
+      ]
+    };
+  }
+  elementCount() {
+    return this.details().nodeId ? 1 : 0;
+  }
+  elements() {
+    if (this.details().nodeId) {
+      const target = this.model()?.target();
+      return [{
+        backendNodeId: this.details().nodeId,
+        nodeName: "img",
+        target: target || null
+      }];
+    }
+    return [];
+  }
+  getKind() {
+    return "Improvement";
+  }
+  static fromInspectorIssue(issuesModel, inspectorIssue) {
+    const details = inspectorIssue.details.lazyLoadImageIssueDetails;
+    if (!details) {
+      console.warn("Lazy-loaded image issue without details received.");
+      return [];
+    }
+    return [new _LazyLoadImageIssue(details, issuesModel)];
+  }
+};
+
 // gen/front_end/models/issues_manager/MixedContentIssue.js
 var MixedContentIssue_exports = {};
 __export(MixedContentIssue_exports, {
   MixedContentIssue: () => MixedContentIssue
 });
-import * as i18n27 from "./../../core/i18n/i18n.js";
-var UIStrings15 = {
+import * as i18n29 from "./../../core/i18n/i18n.js";
+var UIStrings16 = {
   /**
    * @description Label for the link for mixed content issues.
    */
   preventingMixedContent: "Preventing mixed content"
 };
-var str_14 = i18n27.i18n.registerUIStrings("models/issues_manager/MixedContentIssue.ts", UIStrings15);
-var i18nString5 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var str_15 = i18n29.i18n.registerUIStrings("models/issues_manager/MixedContentIssue.ts", UIStrings16);
+var i18nString6 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var MixedContentIssue = class _MixedContentIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("MixedContentIssue", issueDetails, issuesModel);
@@ -3226,7 +3289,7 @@ var MixedContentIssue = class _MixedContentIssue extends Issue {
   getDescription() {
     return {
       file: "mixedContent.md",
-      links: [{ link: "https://web.dev/what-is-mixed-content/", linkTitle: i18nString5(UIStrings15.preventingMixedContent) }]
+      links: [{ link: "https://web.dev/what-is-mixed-content/", linkTitle: i18nString6(UIStrings16.preventingMixedContent) }]
     };
   }
   primaryKey() {
@@ -3257,8 +3320,8 @@ var PartitioningBlobURLIssue_exports = {};
 __export(PartitioningBlobURLIssue_exports, {
   PartitioningBlobURLIssue: () => PartitioningBlobURLIssue
 });
-import * as i18n29 from "./../../core/i18n/i18n.js";
-var UIStrings16 = {
+import * as i18n31 from "./../../core/i18n/i18n.js";
+var UIStrings17 = {
   /**
    * @description Title for Partitioning BlobURL explainer URL link.
    */
@@ -3268,8 +3331,8 @@ var UIStrings16 = {
    */
   chromeStatusEntry: "Chrome Status entry"
 };
-var str_15 = i18n29.i18n.registerUIStrings("models/issues_manager/PartitioningBlobURLIssue.ts", UIStrings16);
-var i18nString6 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
+var str_16 = i18n31.i18n.registerUIStrings("models/issues_manager/PartitioningBlobURLIssue.ts", UIStrings17);
+var i18nString7 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
 var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("PartitioningBlobURLIssue", issueDetails, issuesModel);
@@ -3284,11 +3347,11 @@ var PartitioningBlobURLIssue = class _PartitioningBlobURLIssue extends Issue {
       links: [
         {
           link: "https://developers.google.com/privacy-sandbox/cookies/storage-partitioning",
-          linkTitle: i18nString6(UIStrings16.partitioningBlobURL)
+          linkTitle: i18nString7(UIStrings17.partitioningBlobURL)
         },
         {
           link: "https://chromestatus.com/feature/5130361898795008",
-          linkTitle: i18nString6(UIStrings16.chromeStatusEntry)
+          linkTitle: i18nString7(UIStrings17.chromeStatusEntry)
         }
       ]
     };
@@ -3559,15 +3622,15 @@ var QuirksModeIssue_exports = {};
 __export(QuirksModeIssue_exports, {
   QuirksModeIssue: () => QuirksModeIssue
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
-var UIStrings17 = {
+import * as i18n33 from "./../../core/i18n/i18n.js";
+var UIStrings18 = {
   /**
    * @description Link title for the Quirks Mode issue in the Issues panel.
    */
   documentCompatibilityMode: "Document compatibility mode"
 };
-var str_16 = i18n31.i18n.registerUIStrings("models/issues_manager/QuirksModeIssue.ts", UIStrings17);
-var i18nString7 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
+var str_17 = i18n33.i18n.registerUIStrings("models/issues_manager/QuirksModeIssue.ts", UIStrings18);
+var i18nString8 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var QuirksModeIssue = class _QuirksModeIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     const mode = issueDetails.isLimitedQuirksMode ? "LimitedQuirksMode" : "QuirksMode";
@@ -3586,7 +3649,7 @@ var QuirksModeIssue = class _QuirksModeIssue extends Issue {
       links: [
         {
           link: "https://web.dev/doctype/",
-          linkTitle: i18nString7(UIStrings17.documentCompatibilityMode)
+          linkTitle: i18nString8(UIStrings18.documentCompatibilityMode)
         }
       ]
     };
@@ -3609,15 +3672,15 @@ var SelectivePermissionsInterventionIssue_exports = {};
 __export(SelectivePermissionsInterventionIssue_exports, {
   SelectivePermissionsInterventionIssue: () => SelectivePermissionsInterventionIssue
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
-var UIStrings18 = {
+import * as i18n35 from "./../../core/i18n/i18n.js";
+var UIStrings19 = {
   /**
    * @description Title for a learn more link in selective permissions intervention issue description.
    */
   selectivePermissionsIntervention: "Selective permissions intervention"
 };
-var str_17 = i18n33.i18n.registerUIStrings("models/issues_manager/SelectivePermissionsInterventionIssue.ts", UIStrings18);
-var i18nString8 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
+var str_18 = i18n35.i18n.registerUIStrings("models/issues_manager/SelectivePermissionsInterventionIssue.ts", UIStrings19);
+var i18nString9 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var SelectivePermissionsInterventionIssue = class _SelectivePermissionsInterventionIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("SelectivePermissionsInterventionIssue", issueDetails, issuesModel);
@@ -3631,7 +3694,7 @@ var SelectivePermissionsInterventionIssue = class _SelectivePermissionsIntervent
       links: [
         {
           link: "https://crbug.com/435223477",
-          linkTitle: i18nString8(UIStrings18.selectivePermissionsIntervention)
+          linkTitle: i18nString9(UIStrings19.selectivePermissionsIntervention)
         }
       ]
     };
@@ -3657,16 +3720,16 @@ var SharedArrayBufferIssue_exports = {};
 __export(SharedArrayBufferIssue_exports, {
   SharedArrayBufferIssue: () => SharedArrayBufferIssue
 });
-import * as i18n35 from "./../../core/i18n/i18n.js";
-var UIStrings19 = {
+import * as i18n37 from "./../../core/i18n/i18n.js";
+var UIStrings20 = {
   /**
    * @description Label for the link for SharedArrayBuffer issues. The full text reads "Enabling SharedArrayBuffer"
    * and is the title of an article that describes how to enable a JavaScript feature called SharedArrayBuffer.
    */
   enablingSharedArrayBuffer: "Enabling SharedArrayBuffer"
 };
-var str_18 = i18n35.i18n.registerUIStrings("models/issues_manager/SharedArrayBufferIssue.ts", UIStrings19);
-var i18nString9 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
+var str_19 = i18n37.i18n.registerUIStrings("models/issues_manager/SharedArrayBufferIssue.ts", UIStrings20);
+var i18nString10 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     const umaCode = ["SharedArrayBufferIssue", issueDetails.type].join("::");
@@ -3680,7 +3743,7 @@ var SharedArrayBufferIssue = class _SharedArrayBufferIssue extends Issue {
       file: "sharedArrayBuffer.md",
       links: [{
         link: "https://developer.chrome.com/blog/enabling-shared-array-buffer/",
-        linkTitle: i18nString9(UIStrings19.enablingSharedArrayBuffer)
+        linkTitle: i18nString10(UIStrings20.enablingSharedArrayBuffer)
       }]
     };
   }
@@ -3722,6 +3785,7 @@ var AggregatedIssue = class extends Issue {
   #mixedContentIssues = /* @__PURE__ */ new Set();
   #partitioningBlobURLIssues = /* @__PURE__ */ new Set();
   #permissionElementIssues = /* @__PURE__ */ new Set();
+  #lazyLoadImageIssues = /* @__PURE__ */ new Set();
   #selectivePermissionsInterventionIssues = /* @__PURE__ */ new Set();
   #sharedArrayBufferIssues = /* @__PURE__ */ new Set();
   #quirksModeIssues = /* @__PURE__ */ new Set();
@@ -3815,6 +3879,9 @@ var AggregatedIssue = class extends Issue {
   getPermissionElementIssues() {
     return this.#permissionElementIssues;
   }
+  getLazyLoadImageIssues() {
+    return this.#lazyLoadImageIssues;
+  }
   /**
    * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
    * case new fields are added to `AffectedCookie`.
@@ -3902,6 +3969,9 @@ var AggregatedIssue = class extends Issue {
     }
     if (issue instanceof PermissionElementIssue) {
       this.#permissionElementIssues.add(issue);
+    }
+    if (issue instanceof LazyLoadImageIssue) {
+      this.#lazyLoadImageIssues.add(issue);
     }
     if (issue instanceof SelectivePermissionsInterventionIssue) {
       this.#selectivePermissionsInterventionIssues.add(issue);
@@ -4049,15 +4119,15 @@ import * as Root2 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/issues_manager/BounceTrackingIssue.js
-import * as i18n37 from "./../../core/i18n/i18n.js";
-var UIStrings20 = {
+import * as i18n39 from "./../../core/i18n/i18n.js";
+var UIStrings21 = {
   /**
    * @description Title for Bounce Tracking Mitigation explainer URL link.
    */
   bounceTrackingMitigations: "Bounce tracking mitigations"
 };
-var str_19 = i18n37.i18n.registerUIStrings("models/issues_manager/BounceTrackingIssue.ts", UIStrings20);
-var i18nString10 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
+var str_20 = i18n39.i18n.registerUIStrings("models/issues_manager/BounceTrackingIssue.ts", UIStrings21);
+var i18nString11 = i18n39.i18n.getLocalizedString.bind(void 0, str_20);
 var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super("BounceTrackingIssue", issueDetails, issuesModel);
@@ -4071,7 +4141,7 @@ var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
       links: [
         {
           link: "https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations",
-          linkTitle: i18nString10(UIStrings20.bounceTrackingMitigations)
+          linkTitle: i18nString11(UIStrings21.bounceTrackingMitigations)
         }
       ]
     };
@@ -4096,15 +4166,15 @@ var BounceTrackingIssue = class _BounceTrackingIssue extends Issue {
 };
 
 // gen/front_end/models/issues_manager/FederatedAuthRequestIssue.js
-import * as i18n39 from "./../../core/i18n/i18n.js";
-var UIStrings21 = {
+import * as i18n41 from "./../../core/i18n/i18n.js";
+var UIStrings22 = {
   /**
    * @description Title for Federated Credential Management API specification URL link.
    */
   fedCm: "Federated Credential Management API"
 };
-var str_20 = i18n39.i18n.registerUIStrings("models/issues_manager/FederatedAuthRequestIssue.ts", UIStrings21);
-var i18nLazyString10 = i18n39.i18n.getLazilyComputedLocalizedString.bind(void 0, str_20);
+var str_21 = i18n41.i18n.registerUIStrings("models/issues_manager/FederatedAuthRequestIssue.ts", UIStrings22);
+var i18nLazyString10 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
 var FederatedAuthRequestIssue = class _FederatedAuthRequestIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super({
@@ -4147,7 +4217,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestTooManyRequests.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4157,7 +4227,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestManifestHttpNotFound.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4167,7 +4237,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestManifestNoResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4177,7 +4247,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestManifestInvalidResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4187,7 +4257,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestErrorFetchingSignin.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4197,7 +4267,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestInvalidSigninResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4207,7 +4277,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestAccountsHttpNotFound.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4217,7 +4287,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestAccountsNoResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4227,7 +4297,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestAccountsInvalidResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4237,7 +4307,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenHttpNotFound.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4247,7 +4317,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenNoResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4257,7 +4327,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenInvalidResponse.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4267,7 +4337,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestIdTokenInvalidRequest.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4277,7 +4347,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestErrorIdToken.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ],
@@ -4287,7 +4357,7 @@ var issueDescriptions9 = /* @__PURE__ */ new Map([
       file: "federatedAuthRequestCanceled.md",
       links: [{
         link: "https://fedidcg.github.io/FedCM/",
-        linkTitle: i18nLazyString10(UIStrings21.fedCm)
+        linkTitle: i18nLazyString10(UIStrings22.fedCm)
       }]
     }
   ]
@@ -4358,15 +4428,15 @@ var SharedDictionaryIssue_exports = {};
 __export(SharedDictionaryIssue_exports, {
   SharedDictionaryIssue: () => SharedDictionaryIssue
 });
-import * as i18n41 from "./../../core/i18n/i18n.js";
-var UIStrings22 = {
+import * as i18n43 from "./../../core/i18n/i18n.js";
+var UIStrings23 = {
   /**
    * @description Title for Compression Dictionary Transport specification URL link.
    */
   compressionDictionaryTransport: "Compression Dictionary Transport"
 };
-var str_21 = i18n41.i18n.registerUIStrings("models/issues_manager/SharedDictionaryIssue.ts", UIStrings22);
-var i18nLazyString11 = i18n41.i18n.getLazilyComputedLocalizedString.bind(void 0, str_21);
+var str_22 = i18n43.i18n.registerUIStrings("models/issues_manager/SharedDictionaryIssue.ts", UIStrings23);
+var i18nLazyString11 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
 function getIssueCode2(details) {
   switch (details.sharedDictionaryError) {
     case "UseErrorCrossOriginNoCorsRequest":
@@ -4466,7 +4536,7 @@ var SharedDictionaryIssue = class _SharedDictionaryIssue extends Issue {
 };
 var specLinks = [{
   link: "https://datatracker.ietf.org/doc/draft-ietf-httpbis-compression-dictionary/",
-  linkTitle: i18nLazyString11(UIStrings22.compressionDictionaryTransport)
+  linkTitle: i18nLazyString11(UIStrings23.compressionDictionaryTransport)
 }];
 var issueDescriptions10 = /* @__PURE__ */ new Map([
   [
@@ -4794,8 +4864,8 @@ var SRIMessageSignatureIssue_exports = {};
 __export(SRIMessageSignatureIssue_exports, {
   SRIMessageSignatureIssue: () => SRIMessageSignatureIssue
 });
-import * as i18n43 from "./../../core/i18n/i18n.js";
-var UIStrings23 = {
+import * as i18n45 from "./../../core/i18n/i18n.js";
+var UIStrings24 = {
   /**
    * @description Title for HTTP Message Signatures specification URL.
    */
@@ -4805,8 +4875,8 @@ var UIStrings23 = {
    */
   signatureBasedIntegrity: "Signature-based Integrity"
 };
-var str_22 = i18n43.i18n.registerUIStrings("models/issues_manager/SRIMessageSignatureIssue.ts", UIStrings23);
-var i18nLazyString12 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
+var str_23 = i18n45.i18n.registerUIStrings("models/issues_manager/SRIMessageSignatureIssue.ts", UIStrings24);
+var i18nLazyString12 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
 function generateGroupingIssueCode(details) {
   const issueCode = `${"SRIMessageSignatureIssue"}::${details.error}`;
   if (details.error === "ValidationFailedSignatureMismatch") {
@@ -4835,11 +4905,11 @@ var SRIMessageSignatureIssue = class _SRIMessageSignatureIssue extends Issue {
       links: [
         {
           link: "https://www.rfc-editor.org/rfc/rfc9421.html",
-          linkTitle: i18nLazyString12(UIStrings23.httpMessageSignatures)
+          linkTitle: i18nLazyString12(UIStrings24.httpMessageSignatures)
         },
         {
           link: "https://wicg.github.io/signature-based-sri/",
-          linkTitle: i18nLazyString12(UIStrings23.signatureBasedIntegrity)
+          linkTitle: i18nLazyString12(UIStrings24.signatureBasedIntegrity)
         }
       ],
       substitutions: /* @__PURE__ */ new Map()
@@ -4879,8 +4949,8 @@ var UnencodedDigestIssue_exports = {};
 __export(UnencodedDigestIssue_exports, {
   UnencodedDigestIssue: () => UnencodedDigestIssue
 });
-import * as i18n45 from "./../../core/i18n/i18n.js";
-var UIStrings24 = {
+import * as i18n47 from "./../../core/i18n/i18n.js";
+var UIStrings25 = {
   /**
    * @description Title for HTTP Unencoded Digest specification URL.
    */
@@ -4890,8 +4960,8 @@ var UIStrings24 = {
    */
   integrityIntegration: "Server-initiated integrity checks"
 };
-var str_23 = i18n45.i18n.registerUIStrings("models/issues_manager/UnencodedDigestIssue.ts", UIStrings24);
-var i18nLazyString13 = i18n45.i18n.getLazilyComputedLocalizedString.bind(void 0, str_23);
+var str_24 = i18n47.i18n.registerUIStrings("models/issues_manager/UnencodedDigestIssue.ts", UIStrings25);
+var i18nLazyString13 = i18n47.i18n.getLazilyComputedLocalizedString.bind(void 0, str_24);
 var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
   constructor(issueDetails, issuesModel) {
     super({
@@ -4908,11 +4978,11 @@ var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
       links: [
         {
           link: "https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html",
-          linkTitle: i18nLazyString13(UIStrings24.unencodedDigestHeader)
+          linkTitle: i18nLazyString13(UIStrings25.unencodedDigestHeader)
         },
         {
           link: "https://wicg.github.io/signature-based-sri/#unencoded-digest-validation",
-          linkTitle: i18nLazyString13(UIStrings24.integrityIntegration)
+          linkTitle: i18nLazyString13(UIStrings25.integrityIntegration)
         }
       ]
     };
@@ -5046,6 +5116,10 @@ var issueCodeHandlers = /* @__PURE__ */ new Map([
   [
     "SelectivePermissionsInterventionIssue",
     SelectivePermissionsInterventionIssue.fromInspectorIssue
+  ],
+  [
+    "LazyLoadImageIssue",
+    LazyLoadImageIssue.fromInspectorIssue
   ]
 ]);
 function isIssueCodeSupported(code) {
@@ -5381,6 +5455,7 @@ export {
   IssueAggregator_exports as IssueAggregator,
   IssueResolver_exports as IssueResolver,
   IssuesManager_exports as IssuesManager,
+  LazyLoadImageIssue_exports as LazyLoadImageIssue,
   MarkdownIssueDescription_exports as MarkdownIssueDescription,
   MixedContentIssue_exports as MixedContentIssue,
   PartitioningBlobURLIssue_exports as PartitioningBlobURLIssue,

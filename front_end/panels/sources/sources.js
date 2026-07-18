@@ -6097,7 +6097,7 @@ var UIStrings10 = {
   /**
    * @description Text in Debugger Plugin of the Sources panel
    */
-  thisScriptIsOnTheDebuggersIgnore: "This script is on the debugger's ignore list",
+  thisScriptIsOnTheDebuggersIgnore: "This script is on the debugger\u2019s ignore list",
   /**
    * @description Text to stop preventing the debugger from stepping into library code
    */
@@ -6178,11 +6178,11 @@ var UIStrings10 = {
   /**
    * @description Text in Debugger Plugin of the Sources panel
    */
-  debuggingPowerReduced: "DevTools can't show authored sources, but you can debug the deployed code.",
+  debuggingPowerReduced: "DevTools can\u2019t show authored sources, but you can debug the deployed code.",
   /**
    * @description Text in Debugger Plugin of the Sources panel
    */
-  reloadForSourceMap: "To enable again, make sure the file isn't on the ignore list and reload.",
+  reloadForSourceMap: "To enable again, make sure the file isn\u2019t on the ignore list and reload.",
   /**
    * @description Text in Debugger Plugin of the Sources panel
    * @example {http://site.com/lib.js.map} PH1
@@ -9124,7 +9124,7 @@ var UIStrings15 = {
    *              automatic workspace detected, but not connected.
    * @example {FolderName} PH1
    */
-  changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace: "Changes weren't saved to file system. To save, add {PH1} to your Workspace.",
+  changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace: "Changes weren\u2019t saved to file system. To save, add {PH1} to your Workspace.",
   /**
    * @description Tooltip shown for the warning icon on an editor tab in the Sources panel
    *              when the developer saved changes via Ctrl+S/Cmd+S, but didn't have a Workspace
@@ -9132,7 +9132,7 @@ var UIStrings15 = {
    *              changes couldn't be persisted.
    * @example {Workspace} PH1
    */
-  changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace: "Changes weren't saved to file system. To save, set up your {PH1}."
+  changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace: "Changes weren\u2019t saved to file system. To save, set up your {PH1}."
 };
 var str_15 = i18n29.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings15);
 var i18nString14 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);

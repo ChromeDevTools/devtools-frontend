@@ -36,7 +36,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
 import * as Highlighting from '../../../components/highlighting/highlighting.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
-import { Directives, html, nothing, render } from '../../../lit/lit.js';
+import { Directives, html, nothing, render, } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import { CustomPreviewComponent } from './CustomPreviewComponent.js';
@@ -1147,11 +1147,11 @@ export function populateObjectTreeContextMenu(contextMenu, object, expandRecursi
     }
     contextMenu.viewSection().appendCheckboxItem(i18nString(UIStrings.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all' });
 }
-export function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
+function renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, classes = {}) {
     const entry = topLevelNodesCache.get(objectTree);
     if (entry && entry.linkifier === linkifier) {
         return html `
-      <ul class="source-code object-properties-section" role="group">
+      <ul class=${classMap(classes)} role="group">
         ${entry.nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
       </ul>
     `;
@@ -1166,12 +1166,31 @@ export function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
         };
         objectTree.addEventListener("children-changed" /* ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, listener);
         return html `
-      <ul class="source-code object-properties-section" role="group">
+      <ul class=${classMap(classes)} role="group">
         ${nodes.map(node => html `<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
       </ul>
     `;
     })();
-    return until(promise, html `<ul class="source-code object-properties-section" role="group"></ul>`);
+    return until(promise, html `<ul class=${classMap(classes)} role="group"></ul>`);
+}
+export function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
+    return renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, {
+        'source-code': true,
+        'object-properties-section': true,
+    });
+}
+export function renderObjectPropertiesSection(objectTree, title, linkifier) {
+    const treeContent = renderObjectTreeInternal(objectTree, linkifier, undefined, {});
+    return html `<devtools-tree class="object-properties-section" show-selection-on-keyboard-focus .template=${html `
+    <ul role="tree" class="source-code object-properties-section">
+      <style>${objectValueStyles}</style>
+      <style>${objectPropertiesSectionStyles}</style>
+      <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
+        ${title}
+        ${treeContent}
+      </li>
+    </ul>
+  `}></devtools-tree>`;
 }
 class RootElement extends UI.TreeOutline.TreeElement {
     object;
@@ -1994,7 +2013,7 @@ export const EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
                  data-text=${i18nString(UIStrings.copy)}
                  jslog=${VisualLogging.action('copy').track({ click: true })}
                  ></button>
-             </span>`, 
+              </span>`, 
     // clang-format on
     target);
 };

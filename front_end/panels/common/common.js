@@ -357,7 +357,7 @@ var UIStringsNotTranslate = {
   /**
    * @description Text for dismissing teaser.
    */
-  dontShowAgain: "Don't show again",
+  dontShowAgain: "Don\u2019t show again",
   /**
    * @description Text for teaser to turn on code suggestions.
    */

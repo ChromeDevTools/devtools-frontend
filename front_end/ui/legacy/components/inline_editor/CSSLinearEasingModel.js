@@ -76,6 +76,10 @@ function consumeLinearFunction(text) {
 const KeywordToValue = {
     linear: 'linear(0 0%, 1 100%)',
 };
+/**
+ * Model representing a CSS `linear()` easing function, conforming to the CSS Easing Level 1 specification.
+ * It parses CSS linear easing text into a list of control points and manages point mutations.
+ */
 export class CSSLinearEasingModel {
     #points;
     constructor(points) {
@@ -167,7 +171,17 @@ export class CSSLinearEasingModel {
     removePoint(index) {
         this.#points.splice(index, 1);
     }
+    /**
+     * Sets the timing point at the specified index, clamping its input value (percentage)
+     * to ensure it remains non-decreasing and within the bounds of neighboring points.
+     *
+     * @param index The index of the point to update.
+     * @param point The new timing point coordinates.
+     */
     setPoint(index, point) {
+        const minInput = index > 0 ? this.#points[index - 1].input : 0;
+        const maxInput = index < this.#points.length - 1 ? this.#points[index + 1].input : 100;
+        point.input = Math.max(minInput, Math.min(point.input, maxInput));
         this.#points[index] = point;
     }
     points() {

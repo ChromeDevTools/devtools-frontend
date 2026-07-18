@@ -33,12 +33,12 @@ const UIStrings = {
      */
     brandProperties: 'User agent properties',
     /**
-     * @description Input field placeholder for brand’s browser name.
+     * @description Input field placeholder for brand's browser name.
      * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      */
     brandName: 'Brand',
     /**
-     * @description ARIA label for brand’s browser name input field.
+     * @description ARIA label for brand's browser name input field.
      * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      * @example {index} PH1
      */
@@ -54,7 +54,7 @@ const UIStrings = {
      */
     brandVersionPlaceholder: 'Version (e.g. 87.0.4280.88)',
     /**
-     * @description ARIA label for brand’s browser version input field.
+     * @description ARIA label for brand's browser version input field.
      * Brands here relate to different browser brands/vendors like Google Chrome, Microsoft Edge, etc.
      * @example {index} PH1
      */

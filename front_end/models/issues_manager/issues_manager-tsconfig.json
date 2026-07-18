@@ -57,6 +57,7 @@
     "../../../../../../front_end/models/issues_manager/IssueResolver.ts",
     "../../../../../../front_end/models/issues_manager/IssuesManager.ts",
     "../../../../../../front_end/models/issues_manager/IssuesManagerEvents.ts",
+    "../../../../../../front_end/models/issues_manager/LazyLoadImageIssue.ts",
     "../../../../../../front_end/models/issues_manager/MarkdownIssueDescription.ts",
     "../../../../../../front_end/models/issues_manager/MixedContentIssue.ts",
     "../../../../../../front_end/models/issues_manager/PartitioningBlobURLIssue.ts",

@@ -40,7 +40,7 @@ const UIStrings = {
      * @description Text that shows in the network request blocking panel if no pattern has yet been added.
      * @example {Learn more} PH1
      */
-    noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel's context menu. {PH1}`,
+    noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the network panel’s context menu. {PH1}`,
     /**
      * @description Text in Blocked URLs Pane of the Network panel
      * @example {4} PH1

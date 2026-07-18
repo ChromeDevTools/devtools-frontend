@@ -571,6 +571,7 @@
   "front_end/models/issues_manager/descriptions/genericNavigationEntryMarkedSkippable.md",
   "front_end/models/issues_manager/descriptions/genericResponseWasBlockedByORB.md",
   "front_end/models/issues_manager/descriptions/heavyAd.md",
+  "front_end/models/issues_manager/descriptions/lazyLoadImageZeroSize.md",
   "front_end/models/issues_manager/descriptions/mixedContent.md",
   "front_end/models/issues_manager/descriptions/navigatingPartitionedBlobURL.md",
   "front_end/models/issues_manager/descriptions/permissionElementActivationDisabled.md",

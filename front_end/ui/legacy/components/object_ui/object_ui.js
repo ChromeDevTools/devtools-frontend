@@ -67,6 +67,7 @@ __export(ObjectPropertiesSection_exports, {
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
   objectValueStyles: () => objectValue_css_default,
   populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
+  renderObjectPropertiesSection: () => renderObjectPropertiesSection,
   renderObjectTree: () => renderObjectTree
 });
 import * as Common from "./../../../../core/common/common.js";
@@ -1719,11 +1720,11 @@ function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, c
   }
   contextMenu.viewSection().appendCheckboxItem(i18nString2(UIStrings2.showAll), onShowAllToggled, { checked: object.includeNullOrUndefinedValues, jslogContext: "show-all" });
 }
-function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
+function renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, classes = {}) {
   const entry = topLevelNodesCache.get(objectTree);
   if (entry && entry.linkifier === linkifier) {
     return html2`
-      <ul class="source-code object-properties-section" role="group">
+      <ul class=${classMap(classes)} role="group">
         ${entry.nodes.map((node) => html2`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
       </ul>
     `;
@@ -1746,12 +1747,31 @@ function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
     };
     objectTree.addEventListener("children-changed", listener);
     return html2`
-      <ul class="source-code object-properties-section" role="group">
+      <ul class=${classMap(classes)} role="group">
         ${nodes.map((node) => html2`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
       </ul>
     `;
   })();
-  return until(promise, html2`<ul class="source-code object-properties-section" role="group"></ul>`);
+  return until(promise, html2`<ul class=${classMap(classes)} role="group"></ul>`);
+}
+function renderObjectTree(objectTree, linkifier, emptyPlaceholder) {
+  return renderObjectTreeInternal(objectTree, linkifier, emptyPlaceholder, {
+    "source-code": true,
+    "object-properties-section": true
+  });
+}
+function renderObjectPropertiesSection(objectTree, title, linkifier) {
+  const treeContent = renderObjectTreeInternal(objectTree, linkifier, void 0, {});
+  return html2`<devtools-tree class="object-properties-section" show-selection-on-keyboard-focus .template=${html2`
+    <ul role="tree" class="source-code object-properties-section">
+      <style>${objectValue_css_default}</style>
+      <style>${objectPropertiesSection_css_default}</style>
+      <li role="treeitem" class="object-properties-section-root-element" ?open=${objectTree.expanded}>
+        ${title}
+        ${treeContent}
+      </li>
+    </ul>
+  `}></devtools-tree>`;
 }
 var RootElement = class extends UI2.TreeOutline.TreeElement {
   object;
@@ -2531,7 +2551,7 @@ var EXPANDABLE_TEXT_DEFAULT_VIEW = (input, output, target) => {
                  data-text=${i18nString2(UIStrings2.copy)}
                  jslog=${VisualLogging.action("copy").track({ click: true })}
                  ></button>
-             </span>`,
+              </span>`,
     // clang-format on
     target
   );

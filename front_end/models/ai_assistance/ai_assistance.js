@@ -3618,7 +3618,7 @@ var AccessibilityAgent = class extends AiAgent {
     };
   }
   async preRun() {
-    const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = this.targetManager.primaryPageTarget();
     const domModel = target?.model(SDK9.DOMModel.DOMModel);
     if (domModel && !domModel.existingDocument()) {
       try {
@@ -3634,7 +3634,7 @@ var AccessibilityAgent = class extends AiAgent {
    * so that the AI has a valid $0 to start with.
    */
   #getDocumentBodyNode() {
-    const document2 = SDK9.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK9.DOMModel.DOMModel)?.existingDocument();
+    const document2 = this.targetManager.primaryPageTarget()?.model(SDK9.DOMModel.DOMModel)?.existingDocument();
     return document2?.body ?? document2 ?? null;
   }
   async *handleContextDetails(lhr) {
@@ -3650,7 +3650,7 @@ var AccessibilityAgent = class extends AiAgent {
     }
   }
   async #resolvePathToNode(path) {
-    const target = SDK9.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = this.targetManager.primaryPageTarget();
     if (!target) {
       return null;
     }
@@ -6757,8 +6757,8 @@ var preamble2 = `You are a Senior Software Engineer specializing in state audit 
  -   **CRITICAL**: Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don't add repeated information, and keep the whole answer short.
  -   **CRITICAL**: You are a storage debugging assistant. NEVER answer unrelated topics (legal, financial, race, sexuality, medical, religion, politics). If asked, respond: "Sorry, I can't answer that. I'm best at questions about debugging web pages."
  `;
-function isSamePrimaryPageOrigin(context) {
-  const primaryPageTarget = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+function isSamePrimaryPageOrigin(targetManager, context) {
+  const primaryPageTarget = targetManager.primaryPageTarget();
   return isSamePageOrigin(primaryPageTarget, context);
 }
 function isSamePageOrigin(target, context) {
@@ -6866,11 +6866,11 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         };
       },
       handler: async () => {
-        if (!isSamePrimaryPageOrigin(this.context)) {
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
         const origins = /* @__PURE__ */ new Set();
-        for (const frame of SDK11.ResourceTreeModel.ResourceTreeModel.frames(SDK11.TargetManager.TargetManager.instance())) {
+        for (const frame of SDK11.ResourceTreeModel.ResourceTreeModel.frames(this.targetManager)) {
           if (!isSamePageOrigin(frame.resourceTreeModel().target().outermostTarget(), this.context)) {
             continue;
           }
@@ -6916,10 +6916,10 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       handler: async (args) => {
         this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.context)) {
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
-        const storages = resolveDOMStorages(this.context, args.type, args.origin, args.storageKey);
+        const storages = resolveDOMStorages(this.context, args.type, args.origin, args.storageKey, this.targetManager);
         const keyAndItems = await Promise.all(storages.map(async (storage) => {
           const items = await storage.getItems();
           return { storageKey: storage.storageKey, items };
@@ -6976,10 +6976,10 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       handler: async (args, options) => {
         this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.context)) {
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
-        const storages = resolveDOMStorages(this.context, args.type, args.origin, args.storageKey);
+        const storages = resolveDOMStorages(this.context, args.type, args.origin, args.storageKey, this.targetManager);
         if (storages.length === 0) {
           return { error: "No matching storage partitions found." };
         }
@@ -7042,10 +7042,10 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       handler: async (args) => {
         this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.context)) {
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
-        const frame = findFrameForOrigin(this.context, args.origin);
+        const frame = findFrameForOrigin(this.context, args.origin, this.targetManager);
         if (!frame) {
           return { result: { cookies: [] } };
         }
@@ -7084,10 +7084,10 @@ var StorageAgent = class _StorageAgent extends AiAgent {
       },
       handler: async (args, options) => {
         this.disableServerSideLogging();
-        if (!isSamePrimaryPageOrigin(this.context)) {
+        if (!isSamePrimaryPageOrigin(this.targetManager, this.context)) {
           return { error: "No origin available or not allowed." };
         }
-        const frame = findFrameForOrigin(this.context, args.origin);
+        const frame = findFrameForOrigin(this.context, args.origin, this.targetManager);
         if (!frame) {
           return { result: { cookies: [] } };
         }
@@ -7139,7 +7139,7 @@ var StorageAgent = class _StorageAgent extends AiAgent {
         };
       },
       handler: async () => {
-        const target = SDK11.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = this.targetManager.primaryPageTarget();
         if (!target || !this.context || !isSamePageOrigin(target, this.context)) {
           return { error: "No origin available or not allowed." };
         }
@@ -7225,8 +7225,8 @@ async function getCookiesForDomain(target, origin) {
   }
   return allCookies.filter((cookie) => !cookie.httpOnly());
 }
-function findFrameForOrigin(context, origin) {
-  for (const frame of SDK11.ResourceTreeModel.ResourceTreeModel.frames(SDK11.TargetManager.TargetManager.instance())) {
+function findFrameForOrigin(context, origin, targetManager = SDK11.TargetManager.TargetManager.instance()) {
+  for (const frame of SDK11.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
     if (frame.securityOrigin === origin) {
       const target = frame.resourceTreeModel().target();
       if (isSamePageOrigin(target.outermostTarget(), context)) {
@@ -7236,10 +7236,10 @@ function findFrameForOrigin(context, origin) {
   }
   return null;
 }
-function resolveDOMStorages(context, type, origin, storageKey) {
+function resolveDOMStorages(context, type, origin, storageKey, targetManager = SDK11.TargetManager.TargetManager.instance()) {
   const resolvedStorages = [];
   const isLocalStorage = type === "localStorage";
-  const domStorageModels = SDK11.TargetManager.TargetManager.instance().models(SDK11.DOMStorageModel.DOMStorageModel);
+  const domStorageModels = targetManager.models(SDK11.DOMStorageModel.DOMStorageModel);
   for (const domStorageModel of domStorageModels) {
     if (!isSamePageOrigin(domStorageModel.target().outermostTarget(), context)) {
       continue;
@@ -8352,6 +8352,13 @@ function getLabelName(label, focus) {
 }
 var PerformanceAgent = class extends AiAgent {
   preamble = preamble7;
+  #tracker;
+  #networkLog;
+  constructor(opts) {
+    super(opts);
+    this.#tracker = opts.tracker ?? Tracing2.FreshRecording.Tracker.instance();
+    this.#networkLog = opts.networkLog ?? Logs5.NetworkLog.NetworkLog.instance();
+  }
   #formatter = null;
   #lastEventForEnhancedQuery;
   #lastInsightForEnhancedQuery;
@@ -8697,14 +8704,14 @@ ${text}`, metadata: { source: "devtools", score: ScorePriority.REQUIRED } });
   async #addFacts(context) {
     const focus = context.getItem();
     this.addFact(this.#notExternalExtraPreambleFact);
-    const isFresh = Tracing2.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
+    const isFresh = this.#tracker.recordingIsFresh(focus.parsedTrace);
     if (isFresh) {
       this.addFact(this.#freshTraceExtraPreambleFact);
     }
     this.addFact(this.#callFrameDataDescriptionFact);
     this.addFact(this.#networkDataDescriptionFact);
     if (!this.#traceFacts.length) {
-      const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+      const target = this.targetManager.primaryPageTarget();
       if (!target) {
         throw new Error("missing target");
       }
@@ -8771,7 +8778,7 @@ ${result}`,
   #declareFunctions(context) {
     const focus = context.getItem();
     const { parsedTrace } = focus;
-    const isFresh = Tracing2.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+    const isFresh = this.#tracker.recordingIsFresh(parsedTrace);
     this.declareFunction("getInsightDetails", {
       description: "Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.",
       parameters: {
@@ -8818,7 +8825,7 @@ ${result}`,
           if (lcpEvent && Trace7.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
             const nodeId = lcpEvent.args.data?.nodeId;
             if (nodeId) {
-              const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+              const target = this.targetManager.primaryPageTarget();
               const domModel = target?.model(SDK12.DOMModel.DOMModel);
               if (domModel) {
                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(/* @__PURE__ */ new Set([nodeId]));
@@ -9109,7 +9116,7 @@ ${result}`,
         if (!this.#formatter) {
           throw new Error("missing formatter");
         }
-        const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = this.targetManager.primaryPageTarget();
         if (!target) {
           throw new Error("missing target");
         }
@@ -9169,7 +9176,7 @@ ${result}`,
         if (script?.content !== void 0) {
           content = script.content;
         } else if (isFresh || isTraceApp) {
-          const resource = SDK12.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK12.TargetManager.TargetManager.instance(), url);
+          const resource = SDK12.ResourceTreeModel.ResourceTreeModel.resourceForURL(this.targetManager, url);
           if (!resource) {
             return { error: "Resource not found" };
           }
@@ -9289,12 +9296,12 @@ ${result}`,
     return null;
   }
   async #getNetworkRequestImageData(lcpRequest) {
-    const target = SDK12.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = this.targetManager.primaryPageTarget();
     const networkManager = target?.model(SDK12.NetworkManager.NetworkManager);
     if (!target || !networkManager) {
       return void 0;
     }
-    const networkLog = Logs5.NetworkLog.NetworkLog.instance();
+    const networkLog = this.#networkLog;
     const requestId = lcpRequest.args.data.requestId;
     const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
     if (sdkRequest?.contentType().isImage()) {
@@ -9371,7 +9378,6 @@ __export(StylingAgent_exports, {
 });
 import * as Host18 from "./../../core/host/host.js";
 import * as Root12 from "./../../core/root/root.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
 var preamble8 = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.
 The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
@@ -9486,7 +9492,7 @@ var StylingAgent = class extends AiAgent {
         }
         return await getStylesTool.handler(args, {
           conversationContext: context,
-          getTarget: () => SDK13.TargetManager.TargetManager.instance().primaryPageTarget() ?? context.getItem().domModel().target(),
+          getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
           getEstablishedOrigin: () => context.getOrigin()
         });
       }
@@ -9800,7 +9806,7 @@ import * as Common13 from "./../../core/common/common.js";
 import * as Host20 from "./../../core/host/host.js";
 import * as Platform4 from "./../../core/platform/platform.js";
 import * as Root14 from "./../../core/root/root.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as SDK13 from "./../../core/sdk/sdk.js";
 
 // gen/front_end/models/ai_assistance/AiHistoryStorage.js
 var AiHistoryStorage_exports = {};
@@ -10024,7 +10030,7 @@ var AiConversation = class _AiConversation {
   #aiHistoryStorage;
   #targetManager;
   constructor(options) {
-    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host20.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiHistoryStorage.instance(), targetManager = SDK14.TargetManager.TargetManager.instance() } = options;
+    const { type, data = [], id = crypto.randomUUID(), isReadOnly = true, aidaClient = new Host20.AidaClient.AidaClient(), changeManager, performanceRecordAndReload, onInspectElement, networkTimeCalculator, lighthouseRecording, aiHistoryStorage = AiHistoryStorage.instance(), targetManager = SDK13.TargetManager.TargetManager.instance() } = options;
     this.#changeManager = changeManager;
     this.#aidaClient = aidaClient;
     this.#performanceRecordAndReload = performanceRecordAndReload;
@@ -10303,14 +10309,14 @@ ${item.text.trim()}`);
       }
     };
     const targetManager = this.#targetManager;
-    targetManager.addModelListener(SDK14.ResourceTreeModel.ResourceTreeModel, SDK14.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+    targetManager.addModelListener(SDK13.ResourceTreeModel.ResourceTreeModel, SDK13.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     try {
       if (this.isBlockedByOrigin) {
         throw new Error("cross-origin context data should not be included");
       }
       yield* this.#runAgent(initialQuery, options, { isInitialCall: true });
     } finally {
-      targetManager.removeModelListener(SDK14.ResourceTreeModel.ResourceTreeModel, SDK14.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
+      targetManager.removeModelListener(SDK13.ResourceTreeModel.ResourceTreeModel, SDK13.ResourceTreeModel.Events.PrimaryPageChanged, listener, this);
     }
   }
   #getQueryAfterSelection(initialQuery, selection) {

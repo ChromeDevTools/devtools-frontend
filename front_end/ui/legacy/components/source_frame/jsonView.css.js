@@ -14,4 +14,8 @@ export default `/*
   overflow: auto;
 }
 
+devtools-tree {
+  display: block;
+}
+
 /*# sourceURL=${import.meta.resolve('./jsonView.css')} */`;

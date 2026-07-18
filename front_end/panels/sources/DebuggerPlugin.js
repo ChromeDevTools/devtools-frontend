@@ -35,7 +35,7 @@ const UIStrings = {
     /**
      * @description Text in Debugger Plugin of the Sources panel
      */
-    thisScriptIsOnTheDebuggersIgnore: 'This script is on the debugger\'s ignore list',
+    thisScriptIsOnTheDebuggersIgnore: 'This script is on the debugger’s ignore list',
     /**
      * @description Text to stop preventing the debugger from stepping into library code
      */
@@ -116,11 +116,11 @@ const UIStrings = {
     /**
      * @description Text in Debugger Plugin of the Sources panel
      */
-    debuggingPowerReduced: 'DevTools can\'t show authored sources, but you can debug the deployed code.',
+    debuggingPowerReduced: 'DevTools can’t show authored sources, but you can debug the deployed code.',
     /**
      * @description Text in Debugger Plugin of the Sources panel
      */
-    reloadForSourceMap: 'To enable again, make sure the file isn\'t on the ignore list and reload.',
+    reloadForSourceMap: 'To enable again, make sure the file isn’t on the ignore list and reload.',
     /**
      * @description Text in Debugger Plugin of the Sources panel
      * @example {http://site.com/lib.js.map} PH1

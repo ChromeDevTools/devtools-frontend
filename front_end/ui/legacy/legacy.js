@@ -1912,7 +1912,7 @@ var UIStrings3 = {
   /**
    * @description Text on a button to close the infobar and never show the infobar in the future
    */
-  dontShowAgain: "Don't show again",
+  dontShowAgain: "Don\u2019t show again",
   /**
    * @description Text to close something
    */
@@ -8031,7 +8031,7 @@ var UIStrings9 = {
    * is configured with a different locale than Chrome. This option means DevTools will
    * always try and display the DevTools UI in the same language as Chrome.
    */
-  setToBrowserLanguage: "Always match Chrome's language",
+  setToBrowserLanguage: "Always match Chrome\u2019s language",
   /**
    * @description An option the user can select when DevTools notices that DevTools
    * is configured with a different locale than Chrome. This option means DevTools UI

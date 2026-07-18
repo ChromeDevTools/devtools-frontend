@@ -53,7 +53,7 @@ const UIStrings = {
      * Asks user to use features such as throttling and device emulation.
      */
     fieldMismatchNotice: 'There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). ' +
-        'Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user\'s environment.',
+        'Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user’s environment.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/CWVMetrics.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

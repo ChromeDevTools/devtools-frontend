@@ -199,6 +199,13 @@ export function getLabelName(label, focus) {
  */
 export class PerformanceAgent extends AiAgent {
     preamble = preamble;
+    #tracker;
+    #networkLog;
+    constructor(opts) {
+        super(opts);
+        this.#tracker = opts.tracker ?? Tracing.FreshRecording.Tracker.instance();
+        this.#networkLog = opts.networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+    }
     #formatter = null;
     #lastEventForEnhancedQuery;
     #lastInsightForEnhancedQuery;
@@ -561,14 +568,14 @@ export class PerformanceAgent extends AiAgent {
     async #addFacts(context) {
         const focus = context.getItem();
         this.addFact(this.#notExternalExtraPreambleFact);
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
+        const isFresh = this.#tracker.recordingIsFresh(focus.parsedTrace);
         if (isFresh) {
             this.addFact(this.#freshTraceExtraPreambleFact);
         }
         this.addFact(this.#callFrameDataDescriptionFact);
         this.addFact(this.#networkDataDescriptionFact);
         if (!this.#traceFacts.length) {
-            const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+            const target = this.targetManager.primaryPageTarget();
             if (!target) {
                 throw new Error('missing target');
             }
@@ -634,7 +641,7 @@ export class PerformanceAgent extends AiAgent {
     #declareFunctions(context) {
         const focus = context.getItem();
         const { parsedTrace } = focus;
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+        const isFresh = this.#tracker.recordingIsFresh(parsedTrace);
         this.declareFunction('getInsightDetails', {
             description: 'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.',
             parameters: {
@@ -684,7 +691,7 @@ export class PerformanceAgent extends AiAgent {
                     if (lcpEvent && Trace.Types.Events.isAnyLargestContentfulPaintCandidate(lcpEvent)) {
                         const nodeId = lcpEvent.args.data?.nodeId;
                         if (nodeId) {
-                            const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                            const target = this.targetManager.primaryPageTarget();
                             const domModel = target?.model(SDK.DOMModel.DOMModel);
                             if (domModel) {
                                 const nodeMap = await domModel.pushNodesByBackendIdsToFrontend(new Set([nodeId]));
@@ -978,7 +985,7 @@ export class PerformanceAgent extends AiAgent {
                 if (!this.#formatter) {
                     throw new Error('missing formatter');
                 }
-                const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+                const target = this.targetManager.primaryPageTarget();
                 if (!target) {
                     throw new Error('missing target');
                 }
@@ -1043,7 +1050,7 @@ export class PerformanceAgent extends AiAgent {
                     content = script.content;
                 }
                 else if (isFresh || isTraceApp) {
-                    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), url);
+                    const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(this.targetManager, url);
                     if (!resource) {
                         return { error: 'Resource not found' };
                     }
@@ -1164,12 +1171,12 @@ export class PerformanceAgent extends AiAgent {
         return null;
     }
     async #getNetworkRequestImageData(lcpRequest) {
-        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = this.targetManager.primaryPageTarget();
         const networkManager = target?.model(SDK.NetworkManager.NetworkManager);
         if (!target || !networkManager) {
             return undefined;
         }
-        const networkLog = Logs.NetworkLog.NetworkLog.instance();
+        const networkLog = this.#networkLog;
         const requestId = lcpRequest.args.data.requestId;
         const sdkRequest = networkLog.requestByManagerAndId(networkManager, requestId);
         if (sdkRequest?.contentType().isImage()) {

@@ -297,7 +297,7 @@ export class TestUniverse {
     }
     get userBadges() {
         if (!this.#context.has(Badges.UserBadges)) {
-            this.#context.set(Badges.UserBadges, new Badges.UserBadges(this.settings, this.gdpClient));
+            this.#context.set(Badges.UserBadges, new Badges.UserBadges(this.settings, this.gdpClient, this.#creationOptions?.inspectorFrontendHost ?? Host.InspectorFrontendHost.InspectorFrontendHostInstance));
         }
         return this.#context.get(Badges.UserBadges);
     }

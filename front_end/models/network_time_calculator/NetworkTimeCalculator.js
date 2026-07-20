@@ -34,14 +34,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 const UIStrings = {
     /**
-     * @description Latency download total format in Network Time Calculator of the Network panel
+     * @description Latency download total format in Network Time Calculator of the Network panel.
      * @example {20ms} PH1
      * @example {20ms} PH2
      * @example {40ms} PH3
      */
     sLatencySDownloadSTotal: '{PH1} latency, {PH2} download ({PH3} total)',
     /**
-     * @description Latency format in Network Time Calculator of the Network panel
+     * @description Latency format in Network Time Calculator of the Network panel.
      * @example {20ms} PH1
      */
     sLatency: '{PH1} latency',
@@ -51,12 +51,12 @@ const UIStrings = {
      */
     sDownload: '{PH1} download',
     /**
-     * @description From service worker format in Network Time Calculator of the Network panel
+     * @description From service worker format in Network Time Calculator of the Network panel.
      * @example {20ms latency} PH1
      */
     sFromServiceworker: '{PH1} (from `ServiceWorker`)',
     /**
-     * @description From cache format in Network Time Calculator of the Network panel
+     * @description From cache format in Network Time Calculator of the Network panel.
      * @example {20ms latency} PH1
      */
     sFromCache: '{PH1} (from cache)',

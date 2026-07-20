@@ -1572,7 +1572,7 @@
     "message": "LiveEdit failed: {PH1}"
   },
   "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
-    "message": "Field metrics are configured for a different URL than the current page."
+    "message": "Field metrics are for a different URL than the current page."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Device pixel ratio must be a number or blank."
@@ -1770,10 +1770,10 @@
     "message": "HTTP Unencoded Digest specification"
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
-    "message": "Simulating a new device after the page loads can affect LCP. Reload the page after simulating a new device for accurate LCP data."
+    "message": "Simulating a device after the page loads can affect LCP. Reload the page for accurate LCP."
   },
   "models/live-metrics/LiveMetrics.ts | lcpVisibilityWarning": {
-    "message": "LCP value may be inflated because the page started loading in the background."
+    "message": "LCP may be inflated because the page started loading in the background."
   },
   "models/logs/logs-meta.ts | clear": {
     "message": "clear"

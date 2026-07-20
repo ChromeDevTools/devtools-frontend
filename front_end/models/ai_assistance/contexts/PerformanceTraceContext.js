@@ -17,19 +17,23 @@ import { AgentFocus } from '../performance/AIContext.js';
  * the context data for the LLM prompt and user-facing accordion disclosures.
  */
 export class PerformanceTraceContext extends ConversationContext {
-    static fromParsedTrace(parsedTrace) {
-        return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace));
+    static fromParsedTrace(parsedTrace, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
+        return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace), targetManager, freshRecordingTracker);
     }
-    static fromInsight(parsedTrace, insight) {
-        return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight));
+    static fromInsight(parsedTrace, insight, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
+        return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight), targetManager, freshRecordingTracker);
     }
-    static fromCallTree(callTree) {
-        return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree));
+    static fromCallTree(callTree, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
+        return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree), targetManager, freshRecordingTracker);
     }
     #focus;
-    constructor(focus) {
+    #targetManager;
+    #freshRecordingTracker;
+    constructor(focus, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
         super();
         this.#focus = focus;
+        this.#targetManager = targetManager;
+        this.#freshRecordingTracker = freshRecordingTracker;
     }
     /**
      * Returns a PerformanceTraceFormatter configured to resolve function
@@ -41,9 +45,9 @@ export class PerformanceTraceContext extends ConversationContext {
      */
     createFormatter() {
         const focus = this.#focus;
-        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const target = this.#targetManager.primaryPageTarget();
         const formatter = new PerformanceTraceFormatter(focus);
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(focus.parsedTrace);
+        const isFresh = this.#freshRecordingTracker.recordingIsFresh(focus.parsedTrace);
         formatter.resolveFunctionCode = async (url, line, column) => {
             if (!target || !isFresh) {
                 return null;
@@ -76,7 +80,7 @@ export class PerformanceTraceContext extends ConversationContext {
         const parsedTrace = this.#focus.parsedTrace;
         const url = this.getURL();
         const origin = extractContextOrigin(url);
-        const isFresh = Tracing.FreshRecording.Tracker.instance().recordingIsFresh(parsedTrace);
+        const isFresh = this.#freshRecordingTracker.recordingIsFresh(parsedTrace);
         if (!isFresh) {
             const parsed = Common.ParsedURL.ParsedURL.fromString(origin);
             return `imported-trace://${parsed ? parsed.domain() : origin}`;

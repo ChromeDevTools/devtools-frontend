@@ -18,6 +18,13 @@ const lockedString = i18n.i18n.lockedString;
 export class ListNetworkRequestsTool {
     name = "listNetworkRequests" /* ToolName.LIST_NETWORK_REQUESTS */;
     description = 'Gives a list of network requests including URL, status code, and duration.';
+    #networkLog;
+    constructor(networkLog) {
+        this.#networkLog = networkLog;
+    }
+    #getNetworkLog() {
+        return this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+    }
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: '',
@@ -48,7 +55,7 @@ export class ListNetworkRequestsTool {
         }
         let hasCrossOriginRequest = false;
         const requestsToShow = [];
-        for (const request of Logs.NetworkLog.NetworkLog.instance().requests()) {
+        for (const request of this.#getNetworkLog().requests()) {
             // To prevent cross-origin prompt injection attacks, HAR-imported requests
             // are assigned a virtual origin (e.g., `imported-har://${domain}`) rather than
             // sharing the origin of live pages.

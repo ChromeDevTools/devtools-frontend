@@ -6,6 +6,6 @@ import type * as Workspace from '../../workspace/workspace.js';
 export declare class FileFormatter {
     #private;
     static formatSourceMapDetails(selectedFile: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): string;
-    constructor(file: Workspace.UISourceCode.UISourceCode);
+    constructor(file: Workspace.UISourceCode.UISourceCode, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     formatFile(): string;
 }

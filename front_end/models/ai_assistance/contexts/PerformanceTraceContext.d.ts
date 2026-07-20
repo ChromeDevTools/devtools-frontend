@@ -1,3 +1,5 @@
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Trace from '../../trace/trace.js';
 import { type ContextDetail, ConversationContext, type ConversationSuggestions } from '../agents/AiAgent.js';
 import { PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
@@ -10,10 +12,10 @@ import { AgentFocus } from '../performance/AIContext.js';
  */
 export declare class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     #private;
-    static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace): PerformanceTraceContext;
-    static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel): PerformanceTraceContext;
-    static fromCallTree(callTree: AICallTree): PerformanceTraceContext;
-    constructor(focus: AgentFocus);
+    static fromParsedTrace(parsedTrace: Trace.TraceModel.ParsedTrace, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker): PerformanceTraceContext;
+    static fromInsight(parsedTrace: Trace.TraceModel.ParsedTrace, insight: Trace.Insights.Types.InsightModel, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker): PerformanceTraceContext;
+    static fromCallTree(callTree: AICallTree, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker): PerformanceTraceContext;
+    constructor(focus: AgentFocus, targetManager?: SDK.TargetManager.TargetManager, freshRecordingTracker?: Tracing.FreshRecording.Tracker);
     /**
      * Returns a PerformanceTraceFormatter configured to resolve function
      * code from source maps using the active page target.

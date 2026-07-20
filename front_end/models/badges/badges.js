@@ -171,6 +171,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
   #starterBadgeDismissed;
   #settings;
   #gdpClient;
+  #inspectorFrontendHost;
   static BADGE_REGISTRY = [
     StarterBadge,
     SpeedsterBadge,
@@ -178,10 +179,11 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     CodeWhispererBadge,
     AiExplorerBadge
   ];
-  constructor(settings, gdpClient) {
+  constructor(settings, gdpClient, inspectorFrontendHost) {
     super();
     this.#settings = settings;
     this.#gdpClient = gdpClient;
+    this.#inspectorFrontendHost = inspectorFrontendHost;
     this.#receiveBadgesSetting = this.#settings.moduleSetting("receive-gdp-badges");
     if (!Host.GdpClient.isBadgesEnabled()) {
       this.#receiveBadgesSetting.set(false);
@@ -212,7 +214,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_UserBadges) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_UserBadges, new _UserBadges(Common3.Settings.Settings.instance(), Host.GdpClient.GdpClient.instance()));
+      Root.DevToolsContext.globalInstance().set(_UserBadges, new _UserBadges(Common3.Settings.Settings.instance(), Host.GdpClient.GdpClient.instance(), Host.InspectorFrontendHost.InspectorFrontendHostInstance));
     }
     return Root.DevToolsContext.globalInstance().get(_UserBadges);
   }
@@ -283,7 +285,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     return snoozeCount >= MAX_SNOOZE_COUNT || snoozedRecently;
   }
   async #reconcileBadges() {
-    const syncInfo = await new Promise((resolve) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
+    const syncInfo = await new Promise((resolve) => this.#inspectorFrontendHost.getSyncInformation(resolve));
     if (!syncInfo.accountEmail) {
       this.#deactivateAllBadges();
       return;

@@ -31,5 +31,5 @@ export declare class StorageAgent extends AiAgent<StorageItem> {
  * @param storageKey Optional. If specified, resolves only the partition exactly matching this unique key, bypassing origin comparison.
  */
 export declare function getCookiesForDomain(target: SDK.Target.Target, origin: string): Promise<SDK.Cookie.Cookie[] | null>;
-export declare function findFrameForOrigin(context: ConversationContext<StorageItem> | undefined, origin: string, targetManager?: SDK.TargetManager.TargetManager): SDK.ResourceTreeModel.ResourceTreeFrame | null;
-export declare function resolveDOMStorages(context: ConversationContext<StorageItem> | undefined, type: 'localStorage' | 'sessionStorage', origin: string, storageKey?: string, targetManager?: SDK.TargetManager.TargetManager): SDK.DOMStorageModel.DOMStorage[];
+export declare function findFrameForOrigin(context: ConversationContext<StorageItem> | undefined, origin: string, targetManager: SDK.TargetManager.TargetManager): SDK.ResourceTreeModel.ResourceTreeFrame | null;
+export declare function resolveDOMStorages(context: ConversationContext<StorageItem> | undefined, type: 'localStorage' | 'sessionStorage', origin: string, targetManager: SDK.TargetManager.TargetManager, storageKey?: string): SDK.DOMStorageModel.DOMStorage[];

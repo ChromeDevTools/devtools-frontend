@@ -1,9 +1,17 @@
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../../trace/trace.js';
 import * as Workspace from '../../workspace/workspace.js';
 import { type AgentOptions, AiAgent, type ContextResponse, type RequestOptions } from './AiAgent.js';
+export interface ContextSelectionAgentOptions extends AgentOptions {
+    performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
+    onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
+    networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
+    networkLog?: Logs.NetworkLog.NetworkLog;
+    workspace?: Workspace.Workspace.WorkspaceImpl;
+}
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -14,11 +22,7 @@ export declare class ContextSelectionAgent extends AiAgent<never> {
     readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
     get userTier(): string | undefined;
     get options(): RequestOptions;
-    constructor(opts: AgentOptions & {
-        performanceRecordAndReload?: () => Promise<Trace.TraceModel.ParsedTrace>;
-        onInspectElement?: () => Promise<SDK.DOMModel.DOMNode | null>;
-        networkTimeCalculator?: NetworkTimeCalculator.NetworkTransferTimeCalculator;
-    });
+    constructor(opts: ContextSelectionAgentOptions);
     handleContextDetails(): AsyncGenerator<ContextResponse, void, void>;
     enhanceQuery(query: string): Promise<string>;
     static lastSourceId: number;
@@ -37,5 +41,5 @@ export declare class ContextSelectionAgent extends AiAgent<never> {
      * coming from SourceMaps (usually only one) as that has simple code and
      * usually is what the user authored.
      */
-    static getUISourceCodes(): Workspace.UISourceCode.UISourceCode[];
+    static getUISourceCodes(workspace?: Workspace.Workspace.WorkspaceImpl): Workspace.UISourceCode.UISourceCode[];
 }

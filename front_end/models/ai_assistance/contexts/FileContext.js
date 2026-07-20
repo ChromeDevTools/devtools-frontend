@@ -5,9 +5,11 @@ import { ConversationContext } from '../agents/AiAgent.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
 export class FileContext extends ConversationContext {
     #file;
-    constructor(file) {
+    #debuggerWorkspaceBinding;
+    constructor(file, debuggerWorkspaceBinding) {
         super();
         this.#file = file;
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     getURL() {
         return this.#file.url();
@@ -19,13 +21,13 @@ export class FileContext extends ConversationContext {
         return this.#file.displayName();
     }
     async getPromptDetails() {
-        return `# Selected file\n${new FileFormatter(this.#file).formatFile()}`;
+        return `# Selected file\n${new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile()}`;
     }
     async getUserFacingDetails() {
         return [
             {
                 title: 'Selected file',
-                text: new FileFormatter(this.#file).formatFile(),
+                text: new FileFormatter(this.#file, this.#debuggerWorkspaceBinding).formatFile(),
             },
         ];
     }

@@ -893,6 +893,7 @@
   "front_end/ui/legacy/legacy.js",
   "front_end/ui/legacy/theme_support/theme_support.js",
   "front_end/ui/lit/lit.js",
+  "front_end/ui/settings/settings.js",
   "front_end/ui/visual_logging/visual_logging.js",
   "front_end/worker_app.html"
 ]

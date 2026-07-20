@@ -43,12 +43,13 @@ export class FileFormatter {
         return sourceMapDetails;
     }
     #file;
-    constructor(file) {
+    #debuggerWorkspaceBinding;
+    constructor(file, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         this.#file = file;
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     formatFile() {
-        const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-        const sourceMapDetails = FileFormatter.formatSourceMapDetails(this.#file, debuggerWorkspaceBinding);
+        const sourceMapDetails = FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
         const lines = [
             `File name: ${this.#file.displayName()}`,
             `URL: ${this.#file.url()}`,

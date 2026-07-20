@@ -8,7 +8,7 @@ var UIStrings = {
   /**
    * @description Warning message indicating that the user will see real user data for a URL which is different from the URL they are currently looking at.
    */
-  fieldOverrideWarning: "Field metrics are configured for a different URL than the current page."
+  fieldOverrideWarning: "Field metrics are for a different URL than the current page."
 };
 var str_ = i18n.i18n.registerUIStrings("models/crux-manager/CrUXManager.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);

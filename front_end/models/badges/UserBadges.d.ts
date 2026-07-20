@@ -19,7 +19,7 @@ export interface EventTypes {
 export declare class UserBadges extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
     static readonly BADGE_REGISTRY: BadgeClass[];
-    constructor(settings: Common.Settings.Settings, gdpClient: Host.GdpClient.GdpClient);
+    constructor(settings: Common.Settings.Settings, gdpClient: Host.GdpClient.GdpClient, inspectorFrontendHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI);
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): UserBadges;

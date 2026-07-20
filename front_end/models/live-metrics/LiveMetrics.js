@@ -13,11 +13,11 @@ const UIStrings = {
     /**
      * @description Warning text indicating that the Largest Contentful Paint (LCP) performance metric was affected by the user changing the simulated device.
      */
-    lcpEmulationWarning: 'Simulating a new device after the page loads can affect LCP. Reload the page after simulating a new device for accurate LCP data.',
+    lcpEmulationWarning: 'Simulating a device after the page loads can affect LCP. Reload the page for accurate LCP.',
     /**
      * @description Warning text indicating that the Largest Contentful Paint (LCP) performance metric was affected by the page loading in the background.
      */
-    lcpVisibilityWarning: 'LCP value may be inflated because the page started loading in the background.',
+    lcpVisibilityWarning: 'LCP may be inflated because the page started loading in the background.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/live-metrics/LiveMetrics.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

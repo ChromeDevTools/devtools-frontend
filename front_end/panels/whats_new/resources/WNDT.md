@@ -1,15 +1,14 @@
 ### [DevTools for agents](devtools-for-agents)
 
-DevTools for agents 1.4 and later bring new experimental memory debugging tools,
-experimental TOON support for structured content output, and improved skill discovery.
+DevTools for agents 1.6 and later brings various improvements to the memory debugging tools,
+experimental GCF support as an alternative to JSON for token savings, and improved multi-page support.
 
 ### [AI assistance](ai-assistance)
 
-The agent walkthrough in the updated AI assistance panel now renders rich widgets
-for performance network tracks, timeline event summaries, network requests,
-syntax-highlighted source code, and inspected file lists.
+AI assistance continues to evolve with additional Network track and Network requests list
+widgets for the agent walkthrough, as well as support for table rendering in responses.
 
-### [`@container` and `@function`](css-container-function)
+### [CSS specificity breakdowns](css-specificity)
 
-You can now directly edit `@container` and `@function`
-rules within the Styles tab, allowing for seamless experimentation.
+Hovering over selector names in the Styles tab now shows a tooltip breaking down
+how each part contributes to the (a, b, c) specificity calculation.

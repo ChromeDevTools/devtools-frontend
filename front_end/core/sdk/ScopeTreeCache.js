@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Formatter from '../../models/formatter/formatter.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 /** If a script failed to parse, we stash null in order to prevent unnecessary re-parsing */
 const scopeTrees = new WeakMap();
 /**

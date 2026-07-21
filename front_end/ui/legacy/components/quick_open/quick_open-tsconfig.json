@@ -58,10 +58,10 @@
       "path": "../../../../core/platform/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../models/geometry/bundle-tsconfig.json"
+      "path": "../../../../core/text_utils/bundle-tsconfig.json"
     },
     {
-      "path": "../../../../models/text_utils/bundle-tsconfig.json"
+      "path": "../../../../models/geometry/bundle-tsconfig.json"
     },
     {
       "path": "../../../../third_party/diff/bundle-tsconfig.json"

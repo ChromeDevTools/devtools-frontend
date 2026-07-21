@@ -1,3 +1,4 @@
+import * as UI from '../../legacy/legacy.js';
 import * as Lit from '../../lit/lit.js';
 import { type TreeNode, type TreeNodeId } from './TreeOutlineUtils.js';
 export interface TreeOutlineData<TreeNodeDataType> {
@@ -36,6 +37,7 @@ export declare class ItemContextMenuEvent<TreeNodeDataType> extends Event {
         originalEvent: MouseEvent;
     };
     constructor(node: TreeNode<TreeNodeDataType>, originalEvent: MouseEvent);
+    createContextMenu(): UI.ContextMenu.ContextMenu;
 }
 export declare class ItemMouseOutEvent<TreeNodeDataType> extends Event {
     static readonly eventName = "itemmouseout";

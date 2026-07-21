@@ -28,7 +28,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     #isRecording = true;
     #targetManager;
     #settings;
-    constructor(targetManager = SDK.TargetManager.TargetManager.instance(), settings = Common.Settings.Settings.instance()) {
+    constructor(targetManager, settings) {
         super();
         this.#targetManager = targetManager;
         this.#settings = settings;
@@ -44,7 +44,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance() {
         if (!Root.DevToolsContext.globalInstance().has(NetworkLog)) {
-            Root.DevToolsContext.globalInstance().set(NetworkLog, new NetworkLog());
+            Root.DevToolsContext.globalInstance().set(NetworkLog, new NetworkLog(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(NetworkLog);
     }

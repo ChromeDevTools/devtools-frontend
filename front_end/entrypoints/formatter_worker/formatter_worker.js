@@ -3738,7 +3738,7 @@ import * as Acorn2 from "./../../third_party/acorn/acorn.js";
 
 // gen/front_end/entrypoints/formatter_worker/AcornTokenizer.js
 import * as Platform from "./../../core/platform/platform.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Acorn from "./../../third_party/acorn/acorn.js";
 var AcornTokenizer = class {
   #textCursor;

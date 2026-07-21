@@ -8,6 +8,8 @@ export interface ViewInput {
     onNodeHighlight: (node: SDK.AccessibilityModel.AccessibilityNode) => void;
     onNodeClearHighlight: () => void;
     onCopy: (node: SDK.AccessibilityModel.AccessibilityNode) => void;
+    onScrollIntoView: (node: SDK.AccessibilityModel.AccessibilityNode) => void;
+    onSwitchToDomTree: () => void;
 }
 export interface ViewOutput {
     expandRoots?(): Promise<void>;

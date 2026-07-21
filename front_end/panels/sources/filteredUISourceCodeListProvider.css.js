@@ -12,6 +12,7 @@ export default `/*
 .filtered-list-widget-item > .filtered-ui-source-code-list-item {
   align-content: center;
   display: grid;
+  grid-template-columns: 1fr auto;
   gap: var(--sys-size-2);
   line-height: initial;
 }
@@ -21,6 +22,8 @@ export default `/*
 }
 
 .filtered-ui-source-code-title {
+  grid-column: 1;
+  grid-row: 1;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -30,11 +33,12 @@ export default `/*
 }
 
 .filtered-ui-source-code-subtitle {
+  grid-column: 1;
+  grid-row: 2;
   flex: none;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--sys-color-on-surface-subtle);
-  padding-left: var(--sys-size-3);
   display: flex;
   white-space: pre;
 }
@@ -43,6 +47,13 @@ export default `/*
   flex-shrink: 1000;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.filtered-ui-source-code-list-item > .tag {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  align-self: center;
+  white-space: nowrap;
 }
 
 /*# sourceURL=${import.meta.resolve('./filteredUISourceCodeListProvider.css')} */`;

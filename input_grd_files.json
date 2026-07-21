@@ -337,7 +337,6 @@
   "front_end/core/common/common.js",
   "front_end/core/host/host.js",
   "front_end/core/protocol_client/protocol_client.js",
-  "front_end/entrypoints/formatter_worker/FormatterActions.js",
   "front_end/third_party/codemirror.next/chunk/angular.js",
   "front_end/third_party/codemirror.next/chunk/codemirror.js",
   "front_end/third_party/codemirror.next/chunk/cpp.js",
@@ -353,7 +352,8 @@
   "front_end/third_party/codemirror.next/chunk/wast.js",
   "front_end/third_party/codemirror.next/chunk/xml.js",
   "front_end/third_party/codemirror.next/codemirror.next.js",
-  "front_end/models/text_utils/text_utils.js",
+  "front_end/core/text_utils/text_utils.js",
+  "front_end/entrypoints/formatter_worker/FormatterActions.js",
   "front_end/third_party/acorn/acorn.js",
   "front_end/entrypoints/formatter_worker/formatter_worker.js",
   "front_end/entrypoints/formatter_worker/formatter_worker-entrypoint.js",
@@ -895,5 +895,6 @@
   "front_end/third_party/wasmparser/wasmparser.js",
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker.js",
   "front_end/entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js",
-  "front_end/entrypoints/worker_app/worker_app.js"
+  "front_end/entrypoints/worker_app/worker_app.js",
+  "front_end/models/text_utils/text_utils.js"
 ]

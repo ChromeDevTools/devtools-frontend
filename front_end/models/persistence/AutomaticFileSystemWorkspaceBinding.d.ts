@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type { ContentDataOrError } from '../text_utils/ContentData.js';
-import type { SearchMatch } from '../text_utils/ContentProvider.js';
+import type { ContentDataOrError } from '../../core/text_utils/ContentData.js';
+import type { SearchMatch } from '../../core/text_utils/ContentProvider.js';
 import * as Workspace from '../workspace/workspace.js';
 import { type AutomaticFileSystem, type AutomaticFileSystemManager } from './AutomaticFileSystemManager.js';
 import { type IsolatedFileSystemManager } from './IsolatedFileSystemManager.js';

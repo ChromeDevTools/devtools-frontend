@@ -1,7 +1,7 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import { cssMetadata } from './CSSMetadata.js';
 import { CSSProperty } from './CSSProperty.js';
 export class CSSStyleDeclaration {

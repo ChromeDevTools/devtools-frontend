@@ -1,6 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import type * as TextUtils from '../../core/text_utils/text_utils.js';
 export interface SaveCallbackParam {
     fileSystemPath?: Platform.DevToolsPath.RawPathString | Platform.DevToolsPath.UrlString;
 }

@@ -227,8 +227,15 @@ export class TimelineController {
         if (options.capturePictures) {
             categoriesArray.push(disabledByDefault('devtools.timeline.layers'), disabledByDefault('devtools.timeline.picture'), disabledByDefault('blink.graphics_context_annotations'));
         }
+        const screenshotOptions = {};
         if (options.captureFilmStrip) {
             categoriesArray.push(disabledByDefault('devtools.screenshot'));
+            if (options.screenshotMaxSize !== undefined) {
+                screenshotOptions.screenshotMaxSize = options.screenshotMaxSize;
+            }
+            if (options.screenshotMaxCount !== undefined) {
+                screenshotOptions.screenshotMaxCount = options.screenshotMaxCount;
+            }
         }
         if (options.captureSelectorStats) {
             categoriesArray.push(disabledByDefault('blink.debug'));
@@ -240,7 +247,7 @@ export class TimelineController {
         this.#navigationUrls = [];
         this.#fieldData = null;
         this.#recordingStartTime = Date.now();
-        const response = await this.startRecordingWithCategories(categoriesArray.join(','));
+        const response = await this.startRecordingWithCategories(categoriesArray.join(','), screenshotOptions);
         if (response.getError()) {
             await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
             throw new Error(response.getError());
@@ -332,7 +339,7 @@ export class TimelineController {
             await this.tracingCompletePromise?.promise;
         }
     }
-    async startRecordingWithCategories(categories) {
+    async startRecordingWithCategories(categories, tracingStartOptions = {}) {
         if (!this.tracingManager) {
             throw new Error(i18nString(UIStrings.tracingNotSupported));
         }
@@ -341,7 +348,7 @@ export class TimelineController {
         // all the functions data.
         await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
         this.tracingCompletePromise = Promise.withResolvers();
-        const response = await this.tracingManager.start(this, categories);
+        const response = await this.tracingManager.start(this, categories, tracingStartOptions);
         await this.warmupJsProfiler();
         PanelCommon.ExtensionServer.ExtensionServer.instance().profilingStarted();
         return response;

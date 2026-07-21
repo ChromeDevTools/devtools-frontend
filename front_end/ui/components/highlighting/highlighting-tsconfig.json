@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "../../../models/text_utils/bundle-tsconfig.json"
+      "path": "../../../core/text_utils/bundle-tsconfig.json"
     }
   ]
 }

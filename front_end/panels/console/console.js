@@ -347,7 +347,7 @@ __export(ConsoleFilter_exports, {
   FilterType: () => FilterType
 });
 import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 var ConsoleFilter = class _ConsoleFilter {
   name;
   parsedFilters;
@@ -852,10 +852,10 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
 import * as Logs from "./../../models/logs/logs.js";
-import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting from "./../../ui/components/highlighting/highlighting.js";
@@ -3755,11 +3755,11 @@ __export(PromptBuilder_exports, {
   lineWhitespace: () => lineWhitespace
 });
 import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as Formatter from "./../../models/formatter/formatter.js";
 import * as Logs2 from "./../../models/logs/logs.js";
-import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 var MAX_MESSAGE_SIZE = 1e3;
@@ -6159,12 +6159,12 @@ import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
 import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
 import * as Logs3 from "./../../models/logs/logs.js";
-import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
 import * as Workspace2 from "./../../models/workspace/workspace.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";

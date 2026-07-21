@@ -1,5 +1,5 @@
 import '../../legacy.js';
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 import { type RevealPosition, SourceFrameImpl, type SourceFrameOptions } from './SourceFrame.js';
 export declare class ResourceSourceFrame extends SourceFrameImpl {

@@ -11537,10 +11537,10 @@ __export(NetworkRequest_exports, {
   setCookieBlockedReasonToAttribute: () => setCookieBlockedReasonToAttribute,
   setCookieBlockedReasonToUiString: () => setCookieBlockedReasonToUiString
 });
-import * as TextUtils24 from "./../../models/text_utils/text_utils.js";
 import * as Common27 from "./../common/common.js";
 import * as i18n21 from "./../i18n/i18n.js";
 import * as Platform17 from "./../platform/platform.js";
+import * as TextUtils24 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/CookieModel.js
 var CookieModel_exports = {};
@@ -11841,11 +11841,11 @@ __export(NetworkManager_exports, {
   keyIsCustomUser: () => keyIsCustomUser,
   networkConditionsEqual: () => networkConditionsEqual
 });
-import * as TextUtils21 from "./../../models/text_utils/text_utils.js";
 import * as Common24 from "./../common/common.js";
 import * as i18n15 from "./../i18n/i18n.js";
 import * as Platform15 from "./../platform/platform.js";
 import * as Root8 from "./../root/root.js";
+import * as TextUtils21 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/TargetManager.js
 var TargetManager_exports = {};
@@ -11910,11 +11910,11 @@ __export(CSSModel_exports, {
   Events: () => Events3,
   InlineStyleResult: () => InlineStyleResult
 });
-import * as TextUtils16 from "./../../models/text_utils/text_utils.js";
 import * as Common11 from "./../common/common.js";
 import * as Host2 from "./../host/host.js";
 import * as Platform8 from "./../platform/platform.js";
 import * as Root3 from "./../root/root.js";
+import * as TextUtils16 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/CSSFontFace.js
 var CSSFontFace_exports = {};
@@ -11965,10 +11965,10 @@ var CSSProperty_exports = {};
 __export(CSSProperty_exports, {
   CSSProperty: () => CSSProperty
 });
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Common4 from "./../common/common.js";
 import * as HostModule from "./../host/host.js";
 import * as Platform from "./../platform/platform.js";
+import * as TextUtils from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/CSSPropertyParser.js
 var CSSPropertyParser_exports = {};
@@ -14254,8 +14254,8 @@ __export(CSSRule_exports, {
   CSSRule: () => CSSRule,
   CSSStyleRule: () => CSSStyleRule
 });
-import * as TextUtils11 from "./../../models/text_utils/text_utils.js";
 import * as Platform2 from "./../platform/platform.js";
+import * as TextUtils11 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/CSSContainerQuery.js
 var CSSContainerQuery_exports = {};
@@ -14265,7 +14265,7 @@ __export(CSSContainerQuery_exports, {
   getPhysicalAxisFromQueryAxis: () => getPhysicalAxisFromQueryAxis,
   getQueryAxisFromContainerType: () => getQueryAxisFromContainerType
 });
-import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils3 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/CSSQuery.js
 var CSSQuery_exports = {};
@@ -14423,7 +14423,7 @@ var CSSLayer_exports = {};
 __export(CSSLayer_exports, {
   CSSLayer: () => CSSLayer
 });
-import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils4 from "./../text_utils/text_utils.js";
 var CSSLayer = class _CSSLayer extends CSSQuery {
   static parseLayerPayload(cssModel, payload) {
     return payload.map((supports) => new _CSSLayer(cssModel, supports));
@@ -14450,7 +14450,7 @@ __export(CSSMedia_exports, {
   CSSMediaQueryExpression: () => CSSMediaQueryExpression,
   Source: () => Source
 });
-import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils5 from "./../text_utils/text_utils.js";
 var CSSMediaQuery = class _CSSMediaQuery {
   #active;
   #expressions;
@@ -14552,7 +14552,7 @@ var CSSNavigation_exports = {};
 __export(CSSNavigation_exports, {
   CSSNavigation: () => CSSNavigation
 });
-import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils6 from "./../text_utils/text_utils.js";
 var CSSNavigation = class _CSSNavigation extends CSSQuery {
   static parseNavigationPayload(cssModel, payload) {
     return payload.map((navigation) => new _CSSNavigation(cssModel, navigation));
@@ -14578,7 +14578,7 @@ var CSSScope_exports = {};
 __export(CSSScope_exports, {
   CSSScope: () => CSSScope
 });
-import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils7 from "./../text_utils/text_utils.js";
 var CSSScope = class _CSSScope extends CSSQuery {
   static parseScopesPayload(cssModel, payload) {
     return payload.map((scope) => new _CSSScope(cssModel, scope));
@@ -14602,7 +14602,7 @@ var CSSStartingStyle_exports = {};
 __export(CSSStartingStyle_exports, {
   CSSStartingStyle: () => CSSStartingStyle
 });
-import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils8 from "./../text_utils/text_utils.js";
 var CSSStartingStyle = class _CSSStartingStyle extends CSSQuery {
   static parseStartingStylePayload(cssModel, payload) {
     return payload.map((p) => new _CSSStartingStyle(cssModel, p));
@@ -14626,7 +14626,7 @@ __export(CSSStyleDeclaration_exports, {
   CSSStyleDeclaration: () => CSSStyleDeclaration,
   Type: () => Type
 });
-import * as TextUtils9 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils9 from "./../text_utils/text_utils.js";
 var CSSStyleDeclaration = class {
   #cssModel;
   parentRule;
@@ -14885,7 +14885,7 @@ var CSSSupports_exports = {};
 __export(CSSSupports_exports, {
   CSSSupports: () => CSSSupports
 });
-import * as TextUtils10 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils10 from "./../text_utils/text_utils.js";
 var CSSSupports = class _CSSSupports extends CSSQuery {
   static parseSupportsPayload(cssModel, payload) {
     return payload.map((supports) => new _CSSSupports(cssModel, supports));
@@ -16738,10 +16738,10 @@ var CSSStyleSheetHeader_exports = {};
 __export(CSSStyleSheetHeader_exports, {
   CSSStyleSheetHeader: () => CSSStyleSheetHeader
 });
-import * as TextUtils12 from "./../../models/text_utils/text_utils.js";
 import * as Common5 from "./../common/common.js";
 import * as i18n from "./../i18n/i18n.js";
 import * as Platform4 from "./../platform/platform.js";
+import * as TextUtils12 from "./../text_utils/text_utils.js";
 var UIStrings = {
   /**
    * @description Error message for when a CSS file can't be loaded
@@ -18241,10 +18241,10 @@ __export(SourceMap_exports, {
   TokenIterator: () => TokenIterator,
   parseSourceMap: () => parseSourceMap
 });
-import * as TextUtils15 from "./../../models/text_utils/text_utils.js";
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
 import * as Common8 from "./../common/common.js";
 import * as Platform5 from "./../platform/platform.js";
+import * as TextUtils15 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/ScopeTreeCache.js
 var ScopeTreeCache_exports = {};
@@ -18252,7 +18252,7 @@ __export(ScopeTreeCache_exports, {
   scopeTreeForScript: () => scopeTreeForScript
 });
 import * as Formatter from "./../../models/formatter/formatter.js";
-import * as TextUtils14 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils14 from "./../text_utils/text_utils.js";
 var scopeTrees = /* @__PURE__ */ new WeakMap();
 function scopeTreeForScript(script) {
   if (script.isWasm()) {
@@ -21705,9 +21705,9 @@ __export(Script_exports, {
   sourceURLRegex: () => sourceURLRegex
 });
 import * as Platform9 from "./../platform/platform.js";
-import * as TextUtils17 from "./../../models/text_utils/text_utils.js";
 import * as Common13 from "./../common/common.js";
 import * as i18n7 from "./../i18n/i18n.js";
+import * as TextUtils17 from "./../text_utils/text_utils.js";
 var UIStrings4 = {
   /**
    * @description Error message for when a script can't be loaded which had been previously
@@ -26496,9 +26496,9 @@ var Resource_exports = {};
 __export(Resource_exports, {
   Resource: () => Resource
 });
-import * as TextUtils19 from "./../../models/text_utils/text_utils.js";
 import * as Common19 from "./../common/common.js";
 import * as Platform12 from "./../platform/platform.js";
+import * as TextUtils19 from "./../text_utils/text_utils.js";
 var Resource = class {
   #resourceTreeModel;
   #request;
@@ -30866,7 +30866,7 @@ function getStatusText(statusCode) {
 }
 
 // gen/front_end/core/sdk/ServerSentEvents.js
-import * as TextUtils23 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils23 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/ServerSentEventsProtocol.js
 var ServerSentEventsProtocol_exports = {};
@@ -31231,7 +31231,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
-  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url\u2019s path.",
+  notOnPath: "This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL\u2019s path.",
   /**
    * @description Tooltip to explain why a cookie was blocked
    */
@@ -31337,7 +31337,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
-  blockedReasonInvalidDomain: "This attempt to set a cookie via a `Set-Cookie` header was blocked because its Domain attribute was invalid with regards to the current host url.",
+  blockedReasonInvalidDomain: "This attempt to set a cookie via a `Set-Cookie` header was blocked because its Domain attribute was invalid with regards to the current host URL.",
   /**
    * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -31350,7 +31350,7 @@ var UIStrings9 = {
    * @description Text in Network Manager
    * @example {https://example.com} PH1
    */
-  setcookieHeaderIsIgnoredIn: "Set-Cookie header is ignored in response from url: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters.",
+  setcookieHeaderIsIgnoredIn: "Set-Cookie header is ignored in response from URL: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters.",
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
@@ -31370,7 +31370,7 @@ var UIStrings9 = {
   /**
    * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
    */
-  exemptionReasonScheme: "This cookie is allowed by the top-level url scheme"
+  exemptionReasonScheme: "This cookie is allowed by the top-level URL scheme"
 };
 var str_9 = i18n21.i18n.registerUIStrings("core/sdk/NetworkRequest.ts", UIStrings9);
 var i18nString9 = i18n21.i18n.getLocalizedString.bind(void 0, str_9);
@@ -34416,8 +34416,8 @@ var CompilerSourceMappingContentProvider_exports = {};
 __export(CompilerSourceMappingContentProvider_exports, {
   CompilerSourceMappingContentProvider: () => CompilerSourceMappingContentProvider
 });
-import * as TextUtils26 from "./../../models/text_utils/text_utils.js";
 import * as i18n25 from "./../i18n/i18n.js";
+import * as TextUtils26 from "./../text_utils/text_utils.js";
 var UIStrings11 = {
   /**
    * @description Error message when failing to fetch a resource referenced in a source map
@@ -35466,7 +35466,8 @@ var FrontendMessageType;
 // gen/front_end/core/sdk/CPUProfilerModel.js
 var CPUProfilerModel_exports = {};
 __export(CPUProfilerModel_exports, {
-  CPUProfilerModel: () => CPUProfilerModel
+  CPUProfilerModel: () => CPUProfilerModel,
+  ProfileFinishedData: () => ProfileFinishedData
 });
 import * as i18n31 from "./../i18n/i18n.js";
 var UIStrings14 = {
@@ -35484,7 +35485,6 @@ var CPUProfilerModel = class extends SDKModel {
   #profilerAgent;
   #preciseCoverageDeltaUpdateCallback;
   #debuggerModel;
-  registeredConsoleProfileMessages = [];
   constructor(target) {
     super(target);
     this.#nextAnonymousConsoleProfileNumber = 1;
@@ -35514,11 +35514,7 @@ var CPUProfilerModel = class extends SDKModel {
       title = this.#anonymousConsoleProfileIdToTitle.get(id);
       this.#anonymousConsoleProfileIdToTitle.delete(id);
     }
-    const eventData = {
-      ...this.createEventDataFrom(id, location, title),
-      cpuProfile: profile
-    };
-    this.registeredConsoleProfileMessages.push(eventData);
+    const eventData = new ProfileFinishedData(this.createEventDataFrom(id, location, title), profile);
     this.dispatchEventToListeners("ConsoleProfileFinished", eventData);
   }
   createEventDataFrom(id, scriptLocation, title) {
@@ -35562,6 +35558,20 @@ var CPUProfilerModel = class extends SDKModel {
   }
 };
 SDKModel.register(CPUProfilerModel, { capabilities: 4, autostart: true });
+var ProfileFinishedData = class {
+  id;
+  scriptLocation;
+  title;
+  cpuProfilerModel;
+  cpuProfile;
+  constructor(eventData, cpuProfile) {
+    this.id = eventData.id;
+    this.scriptLocation = eventData.scriptLocation;
+    this.title = eventData.title;
+    this.cpuProfilerModel = eventData.cpuProfilerModel;
+    this.cpuProfile = cpuProfile;
+  }
+};
 
 // gen/front_end/core/sdk/LogModel.js
 var LogModel_exports = {};

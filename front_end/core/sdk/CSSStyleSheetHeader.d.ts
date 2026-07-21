@@ -1,7 +1,7 @@
 import type * as Protocol from '../../generated/protocol.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import type { CSSModel } from './CSSModel.js';
 import { DeferredDOMNode } from './DOMModel.js';
 import type { FrameAssociated } from './FrameAssociated.js';

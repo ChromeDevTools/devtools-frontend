@@ -5,12 +5,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js'; // eslint-disable-line @devtools/es-modules-import
 import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';

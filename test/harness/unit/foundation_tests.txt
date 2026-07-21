@@ -1,3 +1,7 @@
+after_each_hook_fail.test.js
+before_each_hook_fail.test.js
 duplicate.test.js
+global_after_hook_fail.test.js
+global_before_hook_fail.test.js
 hooks.test.js
 unit.test.js

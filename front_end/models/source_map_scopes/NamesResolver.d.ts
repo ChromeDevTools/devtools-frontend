@@ -1,8 +1,8 @@
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 export declare function getTextFor(contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<TextUtils.Text.Text | null>;
 export declare class IdentifierPositions {
     name: string;

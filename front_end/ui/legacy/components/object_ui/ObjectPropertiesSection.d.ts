@@ -1,7 +1,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
+import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../../generated/protocol.js';
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import { type DirectiveResult, type LitTemplate } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import type * as Components from '../utils/utils.js';

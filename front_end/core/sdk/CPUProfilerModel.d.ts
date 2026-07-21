@@ -6,7 +6,6 @@ import { SDKModel } from './SDKModel.js';
 import { type Target } from './Target.js';
 export declare class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolProxyApi.ProfilerDispatcher {
     #private;
-    readonly registeredConsoleProfileMessages: ProfileFinishedData[];
     constructor(target: Target);
     runtimeModel(): RuntimeModel;
     debuggerModel(): DebuggerModel;
@@ -37,6 +36,11 @@ export interface EventData {
     title: string;
     cpuProfilerModel: CPUProfilerModel;
 }
-export interface ProfileFinishedData extends EventData {
-    cpuProfile: Protocol.Profiler.Profile;
+export declare class ProfileFinishedData implements EventData {
+    readonly id: string;
+    readonly scriptLocation: Location;
+    readonly title: string;
+    readonly cpuProfilerModel: CPUProfilerModel;
+    readonly cpuProfile: Protocol.Profiler.Profile;
+    constructor(eventData: EventData, cpuProfile: Protocol.Profiler.Profile);
 }

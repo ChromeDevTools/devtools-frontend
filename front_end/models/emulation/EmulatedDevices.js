@@ -506,7 +506,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     #standard;
     #customSetting;
     #custom;
-    constructor(settings = Common.Settings.Settings.instance()) {
+    constructor(settings) {
         super();
         this.#standardSetting = settings.createSetting('standard-emulated-device-list', []);
         this.#standard = new Set();
@@ -520,7 +520,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper {
     }
     static instance() {
         if (!Root.DevToolsContext.globalInstance().has(EmulatedDevicesList)) {
-            Root.DevToolsContext.globalInstance().set(EmulatedDevicesList, new EmulatedDevicesList());
+            Root.DevToolsContext.globalInstance().set(EmulatedDevicesList, new EmulatedDevicesList(Common.Settings.Settings.instance()));
         }
         return Root.DevToolsContext.globalInstance().get(EmulatedDevicesList);
     }

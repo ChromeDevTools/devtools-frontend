@@ -325,6 +325,7 @@
   "front_end/core/root/root.js",
   "front_end/core/sdk/sdk-meta.js",
   "front_end/core/sdk/sdk.js",
+  "front_end/core/text_utils/text_utils.js",
   "front_end/design_system_tokens.css",
   "front_end/device_mode_emulation_frame.html",
   "front_end/devtools_app.html",

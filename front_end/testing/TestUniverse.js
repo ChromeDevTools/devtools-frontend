@@ -325,7 +325,7 @@ export class TestUniverse {
     }
     get workspaceDiff() {
         if (!this.#context.has(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl)) {
-            this.#context.set(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl, new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(this.workspace, this.persistence, this.networkPersistenceManager));
+            this.#context.set(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl, new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(this.workspace, this.persistence, this.networkPersistenceManager, this.settings));
         }
         return this.#context.get(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl);
     }

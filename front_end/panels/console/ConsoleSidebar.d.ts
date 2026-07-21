@@ -1,5 +1,5 @@
 import * as Common from '../../core/common/common.js';
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ConsoleFilter, type LevelsMask } from './ConsoleFilter.js';
 import type { ConsoleViewMessage } from './ConsoleViewMessage.js';

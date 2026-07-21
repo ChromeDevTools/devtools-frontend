@@ -1,4 +1,4 @@
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 export declare class ImageView extends UI.View.SimpleView {
     private url;

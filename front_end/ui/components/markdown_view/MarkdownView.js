@@ -93,6 +93,21 @@ export class MarkdownView extends HTMLElement {
     }
 }
 customElements.define('devtools-markdown-view', MarkdownView);
+const BLOCK_TOKEN_TYPES = new Set([
+    'list',
+    'code',
+    'table',
+    'heading',
+    'paragraph',
+    'blockquote',
+]);
+/**
+ * Identifies block-level tokens (such as nested lists, headings, or tables)
+ * that should be rendered outside of the inline typing animation spans.
+ */
+function isBlockToken(token) {
+    return BLOCK_TOKEN_TYPES.has(token.type);
+}
 /**
  * Default renderer is used for the IssuesPanel and allows only well-known images and links to be embedded.
  */
@@ -184,8 +199,33 @@ export class MarkdownLitRenderer {
                 return html `<ul class=${this.customClassMapForToken('list')}>${token.items.map(token => {
                     return this.renderToken(token);
                 })}</ul>`;
-            case 'list_item':
-                return html `<li class=${this.customClassMapForToken('list_item')}>${this.renderChildTokens(token)}</li>`;
+            case 'list_item': {
+                // Group consecutive inline tokens into a `.markdown-list-item-content` span
+                // so that the typing animation (requiring `overflow: hidden`) applies to the text
+                // instead of the parent `<li>` element. This keeps the list marker (bullet point)
+                // visible immediately. Block-level children (like nested lists) are kept outside
+                // of this span to prevent nesting layout issues.
+                const childTokens = token.tokens || [];
+                const renderedParts = [];
+                let currentInline = [];
+                const flushInline = () => {
+                    if (currentInline.length > 0) {
+                        renderedParts.push(html `<span class="markdown-list-item-content">${currentInline.map(t => this.renderToken(t))}</span>`);
+                        currentInline = [];
+                    }
+                };
+                for (const child of childTokens) {
+                    if (isBlockToken(child)) {
+                        flushInline();
+                        renderedParts.push(html `${this.renderToken(child)}`);
+                    }
+                    else {
+                        currentInline.push(child);
+                    }
+                }
+                flushInline();
+                return html `<li class=${this.customClassMapForToken('list_item')}>${renderedParts}</li>`;
+            }
             case 'text':
                 return this.renderText(token);
             case 'codespan':

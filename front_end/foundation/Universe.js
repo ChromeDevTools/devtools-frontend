@@ -103,7 +103,7 @@ export class Universe {
         context.set(Persistence.Persistence.PersistenceImpl, persistence);
         const networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(workspace, persistence, breakpointManager, targetManager, settings, isolatedFileSystemManager, multitargetNetworkManager);
         context.set(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, networkPersistenceManager);
-        const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(workspace, persistence, networkPersistenceManager);
+        const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(workspace, persistence, networkPersistenceManager, settings);
         context.set(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl, workspaceDiff);
         const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
         context.set(Logs.NetworkLog.NetworkLog, networkLog);

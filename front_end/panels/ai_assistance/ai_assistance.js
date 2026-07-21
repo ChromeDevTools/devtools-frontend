@@ -2609,10 +2609,10 @@ import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform6 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as AiAssistanceModel7 from "./../../models/ai_assistance/ai_assistance.js";
 import * as ComputedStyle from "./../../models/computed_style/computed_style.js";
 import * as Formatter from "./../../models/formatter/formatter.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Trace2 from "./../../models/trace/trace.js";
 import * as Workspace5 from "./../../models/workspace/workspace.js";
 import * as PanelsCommon4 from "./../common/common.js";
@@ -7525,7 +7525,7 @@ __export(ExportConversation_exports, {
   saveToDisk: () => saveToDisk
 });
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as Workspace7 from "./../../models/workspace/workspace.js";
 async function saveToDisk(conversation) {
   const markdownContent = conversation.getConversationMarkdown();

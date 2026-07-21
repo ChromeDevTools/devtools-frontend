@@ -77,6 +77,29 @@ devtools-code-block.animating {
   list-style-type: disc;
 }
 
+.message li.animating {
+  /*
+   * The JS animation controller applies the \\'pending\\' and \\'animating\\' classes to the <li>.
+   * We need \\'pending\\' (which is \\'display: none\\') on the <li> to hide the bullet point
+   * before it starts animating.
+   *
+   * Once animating, we must override the default \\'.animating\\' styles on the <li> itself
+   * to prevent the bullet point from being clipped by \\'overflow: hidden\\'.
+   * Instead, we apply the typing animation to the inner \\'.markdown-list-item-content\\' span.
+   */
+  overflow: visible;
+  white-space: normal;
+  animation: none;
+}
+
+.message li.animating > .markdown-list-item-content {
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.4s steps(40, end);
+}
+
 .message code {
   color: var(--sys-color-on-surface);
   font-family: var(--monospace-font-family);

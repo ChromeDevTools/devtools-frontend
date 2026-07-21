@@ -1,9 +1,9 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as Persistence from '../persistence/persistence.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import { debugLog } from './debug.js';
 const LINE_END_RE = /\r\n?|\n/;
 const MAX_RESULTS_PER_FILE = 10;

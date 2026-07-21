@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 var _a;
 import * as Common from '../../../core/common/common.js';
+import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
-import * as TextUtils from '../../text_utils/text_utils.js';
 import { seconds } from './UnitFormatters.js';
 const MAX_HEADERS_SIZE = 1000;
 const MAX_BODY_SIZE = 10000;

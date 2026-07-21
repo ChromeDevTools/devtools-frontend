@@ -63,7 +63,7 @@
       "path": "../../core/root/bundle-tsconfig.json"
     },
     {
-      "path": "../../models/text_utils/bundle-tsconfig.json"
+      "path": "../../core/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../third_party/acorn/acorn-tsconfig.json"

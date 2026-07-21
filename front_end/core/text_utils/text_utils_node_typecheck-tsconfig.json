@@ -24,7 +24,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
-    "rootDir": "../../../../../../front_end/models/text_utils",
+    "rootDir": "../../../../../../front_end/core/text_utils",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -41,26 +41,26 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/text_utils/CodeMirrorUtils.ts",
-    "../../../../../../front_end/models/text_utils/ContentData.ts",
-    "../../../../../../front_end/models/text_utils/ContentProvider.ts",
-    "../../../../../../front_end/models/text_utils/StaticContentProvider.ts",
-    "../../../../../../front_end/models/text_utils/StreamingContentData.ts",
-    "../../../../../../front_end/models/text_utils/Text.ts",
-    "../../../../../../front_end/models/text_utils/TextCursor.ts",
-    "../../../../../../front_end/models/text_utils/TextRange.ts",
-    "../../../../../../front_end/models/text_utils/TextUtils.ts",
-    "../../../../../../front_end/models/text_utils/WasmDisassembly.ts",
+    "../../../../../../front_end/core/text_utils/CodeMirrorUtils.ts",
+    "../../../../../../front_end/core/text_utils/ContentData.ts",
+    "../../../../../../front_end/core/text_utils/ContentProvider.ts",
+    "../../../../../../front_end/core/text_utils/StaticContentProvider.ts",
+    "../../../../../../front_end/core/text_utils/StreamingContentData.ts",
+    "../../../../../../front_end/core/text_utils/Text.ts",
+    "../../../../../../front_end/core/text_utils/TextCursor.ts",
+    "../../../../../../front_end/core/text_utils/TextRange.ts",
+    "../../../../../../front_end/core/text_utils/TextUtils.ts",
+    "../../../../../../front_end/core/text_utils/WasmDisassembly.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "../../core/common/bundle-tsconfig.json"
+      "path": "../common/bundle-tsconfig.json"
     },
     {
-      "path": "../../core/platform/bundle-tsconfig.json"
+      "path": "../platform/bundle-tsconfig.json"
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"

@@ -115,7 +115,15 @@ var UIStrings = {
   /**
    * @description Text for copying, copy should be used as a verb
    */
-  copy: "Copy"
+  copy: "Copy",
+  /**
+   * @description Text to scroll the displayed content into view
+   */
+  scrollIntoView: "Scroll into view",
+  /**
+   * @description A context menu item in the Accessibility Tree View to switch to DOM tree
+   */
+  switchToDomTree: "Switch to DOM tree"
 };
 var str_ = i18n.i18n.registerUIStrings("panels/elements/AccessibilityTreeView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -149,11 +157,13 @@ var DEFAULT_VIEW = (input, output, target) => {
     input.onNodeClearHighlight();
   };
   const onItemContextMenu = (event) => {
-    event.data.originalEvent.preventDefault();
-    event.data.originalEvent.stopPropagation();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event.data.originalEvent);
+    const contextMenu = event.createContextMenu();
     const axNode = event.data.node.treeNodeData;
     contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), () => input.onCopy(axNode), { jslogContext: "copy" });
+    if (axNode.isDOMNode()) {
+      contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => input.onScrollIntoView(axNode), { jslogContext: "scroll-into-view" });
+    }
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToDomTree), () => input.onSwitchToDomTree(), { jslogContext: "switch-to-dom-tree" });
     void contextMenu.show();
   };
   const onCopy = (event) => {
@@ -211,6 +221,19 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     const text = await axNode.axNodeToText();
     UI.UIUtils.copyTextToClipboard(text);
   };
+  #onScrollIntoView = (axNode) => {
+    const deferredNode = axNode.deferredDOMNode();
+    if (deferredNode) {
+      deferredNode.resolve((domNode) => {
+        if (domNode) {
+          void domNode.scrollIntoView();
+        }
+      });
+    }
+  };
+  #onSwitchToDomTree = async () => {
+    ElementsPanel.instance().toggleAccessibilityTree();
+  };
   async wasShown() {
     super.wasShown();
     this.requestUpdate();
@@ -235,7 +258,9 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
       onNodeSelected: this.#onNodeSelected,
       onNodeHighlight: this.#onNodeHighlight,
       onNodeClearHighlight: this.#onNodeClearHighlight,
-      onCopy: this.#onCopy
+      onCopy: this.#onCopy,
+      onScrollIntoView: this.#onScrollIntoView,
+      onSwitchToDomTree: this.#onSwitchToDomTree
     };
     this.#view(input, this.#treeOperations, this.contentElement);
   }
@@ -1071,9 +1096,9 @@ import * as Platform5 from "./../../core/platform/platform.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK7 from "./../../core/sdk/sdk.js";
+import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
 import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
 import * as Bindings4 from "./../../models/bindings/bindings.js";
-import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
 import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
 import { createIcon as createIcon4, Icon as Icon2 } from "./../../ui/kit/kit.js";
@@ -1345,9 +1370,9 @@ import * as Host from "./../../core/host/host.js";
 import * as i18n9 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Badges from "./../../models/badges/badges.js";
 import * as Bindings2 from "./../../models/bindings/bindings.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
 import * as Tooltips from "./../../ui/components/tooltips/tooltips.js";
 import { createIcon, Icon } from "./../../ui/kit/kit.js";
 import * as ColorPicker2 from "./../../ui/legacy/components/color_picker/color_picker.js";
@@ -5842,9 +5867,9 @@ import * as Host2 from "./../../core/host/host.js";
 import * as i18n13 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as Badges2 from "./../../models/badges/badges.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
-import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
 import * as Buttons from "./../../ui/components/buttons/buttons.js";
 import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
 import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
@@ -7792,8 +7817,8 @@ import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as i18n15 from "./../../core/i18n/i18n.js";
 import * as Root from "./../../core/root/root.js";
+import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
 import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as TextUtils4 from "./../../models/text_utils/text_utils.js";
 import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
 var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
   #aidaClient = new Host3.AidaClient.AidaClient();
@@ -11574,7 +11599,7 @@ __export(AdoptedStyleSheetTreeElement_exports, {
   AdoptedStyleSheetTreeElement: () => AdoptedStyleSheetTreeElement
 });
 import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
 import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "./../../ui/legacy/legacy.js";
@@ -11885,10 +11910,10 @@ import * as i18n26 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root4 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
+import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
 import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
 import * as Badges3 from "./../../models/badges/badges.js";
 import * as Bindings5 from "./../../models/bindings/bindings.js";
-import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
 import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
@@ -12280,6 +12305,10 @@ var UIStrings13 = {
    * @description Text to scroll the displayed content into view
    */
   scrollIntoView: "Scroll into view",
+  /**
+   * @description A context menu item in the Elements panel to switch to Accessibility tree
+   */
+  switchToAccessibilityTree: "Switch to accessibility tree",
   /**
    * @description A context menu item in the Elements Tree Element of the Elements panel
    */
@@ -14125,6 +14154,7 @@ var ElementsTreeElement = class _ElementsTreeElement extends UI14.TreeOutline.Tr
     }
     this.populateExpandRecursively(contextMenu);
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.collapseChildren), this.collapseChildren.bind(this), { jslogContext: "collapse-children" });
+    contextMenu.viewSection().appendItem(i18nString12(UIStrings13.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: "switch-to-accessibility-tree" });
     const deviceModeWrapperAction = new Emulation.DeviceModeWrapper.ActionDelegate();
     contextMenu.viewSection().appendItem(i18nString12(UIStrings13.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI14.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
     if (this.nodeInternal.frameOwnerFrameId()) {

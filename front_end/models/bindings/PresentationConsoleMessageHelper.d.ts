@@ -20,7 +20,7 @@ export declare class PresentationSourceFrameMessageManager implements SDK.Target
 }
 export declare class PresentationConsoleMessageManager {
     #private;
-    constructor();
+    constructor(targetManager: SDK.TargetManager.TargetManager);
     private consoleMessageAdded;
 }
 export declare class PresentationSourceFrameMessageHelper {

@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as TextUtils from '../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../core/text_utils/text_utils.js';
 export const highlightedSearchResultClassName = 'highlighted-search-result';
 export const highlightedCurrentSearchResultClassName = 'current-search-result';
 export function highlightRangesWithStyleClass(element, resultRanges, styleClass, changes) {

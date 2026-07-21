@@ -54,7 +54,7 @@ export function setupDevtoolsExtensionHooks(extension = {}) {
         context.backend = backend;
         sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
         sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
-        const networkLog = new Logs.NetworkLog.NetworkLog();
+        const networkLog = new Logs.NetworkLog.NetworkLog(backend.universe.targetManager, backend.universe.settings);
         sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(networkLog);
         setupExtensionHelper();
     });

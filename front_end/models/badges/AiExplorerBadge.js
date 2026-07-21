@@ -11,10 +11,14 @@ export class AiExplorerBadge extends Badge {
     title = 'AI Explorer';
     jslogContext = 'ai-explorer';
     imageUri = AI_EXPLORER_BADGE_URI;
-    #aiConversationCountSetting = Common.Settings.Settings.instance().createSetting(AI_CONVERSATION_COUNT_SETTING_NAME, 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
+    #aiConversationCountSetting;
     interestedActions = [
         BadgeAction.STARTED_AI_CONVERSATION,
     ];
+    constructor(badgeContext) {
+        super(badgeContext);
+        this.#aiConversationCountSetting = badgeContext.settings.createSetting(AI_CONVERSATION_COUNT_SETTING_NAME, 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
+    }
     handleAction(_action) {
         const currentCount = this.#aiConversationCountSetting.get();
         if (currentCount >= AI_CONVERSATION_COUNT_LIMIT) {

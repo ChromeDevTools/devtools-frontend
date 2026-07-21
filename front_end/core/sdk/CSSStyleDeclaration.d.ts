@@ -1,5 +1,5 @@
 import type * as Protocol from '../../generated/protocol.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import type { CSSModel, Edit } from './CSSModel.js';
 import { CSSProperty } from './CSSProperty.js';
 import type { CSSRule } from './CSSRule.js';

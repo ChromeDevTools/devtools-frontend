@@ -19,7 +19,6 @@ export class CPUProfilerModel extends SDKModel {
     #profilerAgent;
     #preciseCoverageDeltaUpdateCallback;
     #debuggerModel;
-    registeredConsoleProfileMessages = [];
     constructor(target) {
         super(target);
         this.#nextAnonymousConsoleProfileNumber = 1;
@@ -49,11 +48,7 @@ export class CPUProfilerModel extends SDKModel {
             title = this.#anonymousConsoleProfileIdToTitle.get(id);
             this.#anonymousConsoleProfileIdToTitle.delete(id);
         }
-        const eventData = {
-            ...this.createEventDataFrom(id, location, title),
-            cpuProfile: profile,
-        };
-        this.registeredConsoleProfileMessages.push(eventData);
+        const eventData = new ProfileFinishedData(this.createEventDataFrom(id, location, title), profile);
         this.dispatchEventToListeners("ConsoleProfileFinished" /* Events.CONSOLE_PROFILE_FINISHED */, eventData);
     }
     createEventDataFrom(id, scriptLocation, title) {
@@ -97,4 +92,19 @@ export class CPUProfilerModel extends SDKModel {
     }
 }
 SDKModel.register(CPUProfilerModel, { capabilities: 4 /* Capability.JS */, autostart: true });
+// This class is used used as a Revealer in timeline-meta.ts
+export class ProfileFinishedData {
+    id;
+    scriptLocation;
+    title;
+    cpuProfilerModel;
+    cpuProfile;
+    constructor(eventData, cpuProfile) {
+        this.id = eventData.id;
+        this.scriptLocation = eventData.scriptLocation;
+        this.title = eventData.title;
+        this.cpuProfilerModel = eventData.cpuProfilerModel;
+        this.cpuProfile = cpuProfile;
+    }
+}
 //# sourceMappingURL=CPUProfilerModel.js.map

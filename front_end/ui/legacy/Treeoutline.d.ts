@@ -1,5 +1,5 @@
 import * as Common from '../../core/common/common.js';
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Buttons from '../components/buttons/buttons.js';
 import type { Icon } from '../kit/kit.js';
 import * as Lit from '../lit/lit.js';

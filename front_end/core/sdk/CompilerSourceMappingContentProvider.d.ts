@@ -1,6 +1,6 @@
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import type { PageResourceLoader, PageResourceLoadInitiator } from './PageResourceLoader.js';
 export declare class CompilerSourceMappingContentProvider implements TextUtils.ContentProvider.ContentProvider {
     #private;

@@ -507,6 +507,23 @@ export const _backgroundColors = {
     FocusSelectedHasWarning: '--network-grid-focus-selected-color-has-warning',
     FromFrame: '--network-grid-from-frame-color',
 };
+// name/path/url are the primary cells that own the request icon, the Ask AI
+// button and the row click handlers. The first visible one is decorated, which
+// is not necessarily visible index 0 (the pinned request-number column can come
+// first).
+const PRIMARY_COLUMNS = new Set(['name', 'path', 'url']);
+function firstPrimaryColumn(dataGrid) {
+    return dataGrid?.visibleColumnsArray.find(column => PRIMARY_COLUMNS.has(column.id));
+}
+function isFirstPrimaryColumn(dataGrid, columnId) {
+    const firstPrimary = firstPrimaryColumn(dataGrid);
+    // When the node is not attached to a grid yet there are no visible columns to
+    // inspect, so fall back to treating any primary column as the first one.
+    if (!firstPrimary) {
+        return PRIMARY_COLUMNS.has(columnId);
+    }
+    return firstPrimary.id === columnId;
+}
 export class NetworkRequestNode extends NetworkNode {
     initiatorCell;
     requestInternal;
@@ -1162,9 +1179,8 @@ export class NetworkRequestNode extends NetworkNode {
         return PanelUtils.isFailedNetworkRequest(this.requestInternal);
     }
     renderPrimaryCell(cell, columnId, text) {
-        const columnIndex = this.dataGrid?.indexOfVisibleColumn(columnId) | 0;
-        const isFirstCell = (columnIndex === 0);
-        if (isFirstCell) {
+        const dataGrid = this.dataGrid;
+        if (isFirstPrimaryColumn(dataGrid, columnId)) {
             const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
             cell.style.setProperty('padding-left', leftPadding);
             cell.tabIndex = -1;
@@ -1595,15 +1611,17 @@ export class NetworkRequestNode extends NetworkNode {
 export class NetworkGroupNode extends NetworkNode {
     createCells(element) {
         super.createCells(element);
-        const primaryColumn = this.dataGrid.visibleColumnsArray[0];
+        const dataGrid = this.dataGrid;
+        const primaryColumn = firstPrimaryColumn(dataGrid) ?? dataGrid.visibleColumnsArray[0];
         const localizedTitle = `${primaryColumn.title}`;
         const localizedLevel = i18nString(UIStrings.level);
         this.nodeAccessibleText =
             `${localizedLevel} ${localizedTitle}: ${this.cellAccessibleTextMap.get(primaryColumn.id)}`;
     }
     renderCell(c, columnId) {
-        const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
-        if (columnIndex === 0) {
+        const dataGrid = this.dataGrid;
+        const primaryColumn = firstPrimaryColumn(dataGrid) ?? dataGrid.visibleColumnsArray[0];
+        if (primaryColumn.id === columnId) {
             const cell = c;
             const leftPadding = this.leftPadding ? this.leftPadding + 'px' : '';
             cell.style.setProperty('padding-left', leftPadding);

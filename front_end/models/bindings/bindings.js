@@ -12,6 +12,7 @@ __export(CompilerScriptMapping_exports, {
 import * as Common5 from "./../../core/common/common.js";
 import * as Platform2 from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 
 // gen/front_end/models/stack_trace/stack_trace_impl.js
 import * as Common from "./../../core/common/common.js";
@@ -773,7 +774,6 @@ function parseOrScriptMatch(debuggerModel, url) {
 SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0, autostart: false });
 
 // gen/front_end/models/bindings/CompilerScriptMapping.js
-import * as TextUtils2 from "./../text_utils/text_utils.js";
 import * as Workspace3 from "./../workspace/workspace.js";
 
 // gen/front_end/models/bindings/ContentProviderBasedProject.js
@@ -783,7 +783,7 @@ __export(ContentProviderBasedProject_exports, {
 });
 import * as i18n from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
-import * as TextUtils from "./../text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 var UIStrings = {
   /**
@@ -1548,7 +1548,7 @@ __export(SASSSourceMapping_exports, {
 });
 import * as Common6 from "./../../core/common/common.js";
 import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as TextUtils3 from "./../text_utils/text_utils.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as Workspace5 from "./../workspace/workspace.js";
 var SASSSourceMapping = class {
   #sourceMapManager;
@@ -1732,7 +1732,7 @@ __export(StylesSourceMapping_exports, {
 });
 import * as Common8 from "./../../core/common/common.js";
 import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as TextUtils4 from "./../text_utils/text_utils.js";
+import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
 import * as Workspace9 from "./../workspace/workspace.js";
 
 // gen/front_end/models/bindings/ResourceUtils.js
@@ -2336,8 +2336,8 @@ import * as Common10 from "./../../core/common/common.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
 import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
 import * as StackTrace2 from "./../stack_trace/stack_trace.js";
-import * as TextUtils5 from "./../text_utils/text_utils.js";
 import * as Workspace11 from "./../workspace/workspace.js";
 var UIStrings2 = {
   /**
@@ -3413,8 +3413,8 @@ import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as Root3 from "./../../core/root/root.js";
 import * as SDK10 from "./../../core/sdk/sdk.js";
+import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as Formatter from "./../formatter/formatter.js";
-import * as TextUtils6 from "./../text_utils/text_utils.js";
 import * as Workspace15 from "./../workspace/workspace.js";
 var UIStrings3 = {
   /**
@@ -4515,7 +4515,7 @@ __export(FileUtils_exports, {
   FileOutputStream: () => FileOutputStream
 });
 import * as Common14 from "./../../core/common/common.js";
-import * as TextUtils7 from "./../text_utils/text_utils.js";
+import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
 import * as Workspace19 from "./../workspace/workspace.js";
 var ChunkedFileReader = class {
   #file;
@@ -4712,7 +4712,7 @@ __export(PresentationConsoleMessageHelper_exports, {
   PresentationSourceFrameMessageManager: () => PresentationSourceFrameMessageManager
 });
 import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as TextUtils8 from "./../text_utils/text_utils.js";
+import * as TextUtils8 from "./../../core/text_utils/text_utils.js";
 import * as Workspace20 from "./../workspace/workspace.js";
 var PresentationSourceFrameMessageManager = class {
   #targetToMessageHelperMap = /* @__PURE__ */ new WeakMap();
@@ -4748,10 +4748,10 @@ var PresentationSourceFrameMessageManager = class {
 };
 var PresentationConsoleMessageManager = class {
   #sourceFrameMessageManager = new PresentationSourceFrameMessageManager();
-  constructor() {
-    SDK13.TargetManager.TargetManager.instance().addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
-    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(SDK13.TargetManager.TargetManager.instance()).forEach(this.consoleMessageAdded, this);
-    SDK13.TargetManager.TargetManager.instance().addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
+  constructor(targetManager) {
+    targetManager.addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
+    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
+    targetManager.addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
   }
   consoleMessageAdded(consoleMessage) {
     const runtimeModel = consoleMessage.runtimeModel();
@@ -4949,8 +4949,8 @@ __export(ResourceMapping_exports, {
 });
 import * as Common15 from "./../../core/common/common.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as TextUtils9 from "./../../core/text_utils/text_utils.js";
 import * as Formatter2 from "./../formatter/formatter.js";
-import * as TextUtils9 from "./../text_utils/text_utils.js";
 import * as Workspace22 from "./../workspace/workspace.js";
 var styleSheetRangeMap = /* @__PURE__ */ new WeakMap();
 var scriptRangeMap = /* @__PURE__ */ new WeakMap();

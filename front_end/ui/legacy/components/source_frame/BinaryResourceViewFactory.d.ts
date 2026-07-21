@@ -1,6 +1,6 @@
 import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import { ResourceSourceFrame } from './ResourceSourceFrame.js';
 import { StreamingContentHexView } from './StreamingContentHexView.js';
 export declare class BinaryResourceViewFactory {

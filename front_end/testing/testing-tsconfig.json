@@ -82,6 +82,7 @@
     "../../../../../front_end/testing/TargetHelpers.ts",
     "../../../../../front_end/testing/TestUniverse.ts",
     "../../../../../front_end/testing/TraceHelpers.ts",
+    "../../../../../front_end/testing/TraceHelpersCore.ts",
     "../../../../../front_end/testing/TraceLoader.ts",
     "../../../../../front_end/testing/TrackAsyncOperations.ts",
     "../../../../../front_end/testing/UISourceCodeHelpers.ts",
@@ -123,6 +124,9 @@
     },
     {
       "path": "../core/sdk/bundle-tsconfig.json"
+    },
+    {
+      "path": "../core/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../foundation/bundle-tsconfig.json"
@@ -171,9 +175,6 @@
     },
     {
       "path": "../models/stack_trace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../models/trace/bundle-tsconfig.json"

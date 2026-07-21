@@ -64,4 +64,16 @@ export interface RecordingOptions {
     captureFilmStrip?: boolean;
     captureSelectorStats?: boolean;
     navigateToUrl?: Platform.DevToolsPath.UrlString;
+    /**
+     * Maximum width/height (in pixels) of each captured screenshot.
+     * Only meaningful when `captureFilmStrip` is true. When omitted the
+     * backend default is used (see CDP `Tracing.start`).
+     */
+    screenshotMaxSize?: number;
+    /**
+     * Maximum number of screenshots captured during a single recording.
+     * Only meaningful when `captureFilmStrip` is true. When omitted the
+     * backend default is used (see CDP `Tracing.start`).
+     */
+    screenshotMaxCount?: number;
 }

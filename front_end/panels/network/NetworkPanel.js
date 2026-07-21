@@ -64,13 +64,13 @@ const UIStrings = {
      */
     search: 'Search',
     /**
-     * @description Tooltip text that appears on the setting to preserve log when hovering over the item
+     * @description Tooltip text that appears on the setting to keep log when hovering over the item.
      */
-    doNotClearLogOnPageReload: 'Do not clear log on page reload / navigation',
+    doNotClearLogOnPageReload: 'Don’t clear log on page reload / navigation',
     /**
-     * @description Text to preserve the log after refreshing
+     * @description Text to keep the log after refreshing.
      */
-    preserveLog: 'Preserve log',
+    preserveLog: 'Keep log',
     /**
      * @description Text to disable cache while DevTools is open
      */

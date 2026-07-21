@@ -147,6 +147,9 @@
       "path": "../root/bundle-tsconfig.json"
     },
     {
+      "path": "../text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../generated/generated-tsconfig.json"
     },
     {
@@ -154,9 +157,6 @@
     },
     {
       "path": "../../models/formatter/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../third_party/codemirror.next/bundle-tsconfig.json"

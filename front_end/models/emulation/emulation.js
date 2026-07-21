@@ -528,7 +528,7 @@ var EmulatedDevicesList = class _EmulatedDevicesList extends Common.ObjectWrappe
   #standard;
   #customSetting;
   #custom;
-  constructor(settings = Common.Settings.Settings.instance()) {
+  constructor(settings) {
     super();
     this.#standardSetting = settings.createSetting("standard-emulated-device-list", []);
     this.#standard = /* @__PURE__ */ new Set();
@@ -542,7 +542,7 @@ var EmulatedDevicesList = class _EmulatedDevicesList extends Common.ObjectWrappe
   }
   static instance() {
     if (!Root.DevToolsContext.globalInstance().has(_EmulatedDevicesList)) {
-      Root.DevToolsContext.globalInstance().set(_EmulatedDevicesList, new _EmulatedDevicesList());
+      Root.DevToolsContext.globalInstance().set(_EmulatedDevicesList, new _EmulatedDevicesList(Common.Settings.Settings.instance()));
     }
     return Root.DevToolsContext.globalInstance().get(_EmulatedDevicesList);
   }

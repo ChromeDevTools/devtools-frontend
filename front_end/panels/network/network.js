@@ -2614,6 +2614,17 @@ var _backgroundColors = {
   FocusSelectedHasWarning: "--network-grid-focus-selected-color-has-warning",
   FromFrame: "--network-grid-from-frame-color"
 };
+var PRIMARY_COLUMNS = /* @__PURE__ */ new Set(["name", "path", "url"]);
+function firstPrimaryColumn(dataGrid) {
+  return dataGrid?.visibleColumnsArray.find((column) => PRIMARY_COLUMNS.has(column.id));
+}
+function isFirstPrimaryColumn(dataGrid, columnId) {
+  const firstPrimary = firstPrimaryColumn(dataGrid);
+  if (!firstPrimary) {
+    return PRIMARY_COLUMNS.has(columnId);
+  }
+  return firstPrimary.id === columnId;
+}
 var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   initiatorCell;
   requestInternal;
@@ -3242,9 +3253,8 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     return PanelUtils3.isFailedNetworkRequest(this.requestInternal);
   }
   renderPrimaryCell(cell, columnId, text) {
-    const columnIndex = this.dataGrid?.indexOfVisibleColumn(columnId) | 0;
-    const isFirstCell = columnIndex === 0;
-    if (isFirstCell) {
+    const dataGrid = this.dataGrid;
+    if (isFirstPrimaryColumn(dataGrid, columnId)) {
       const leftPadding = this.leftPadding ? this.leftPadding + "px" : "";
       cell.style.setProperty("padding-left", leftPadding);
       cell.tabIndex = -1;
@@ -3627,14 +3637,16 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
 var NetworkGroupNode = class extends NetworkNode {
   createCells(element) {
     super.createCells(element);
-    const primaryColumn = this.dataGrid.visibleColumnsArray[0];
+    const dataGrid = this.dataGrid;
+    const primaryColumn = firstPrimaryColumn(dataGrid) ?? dataGrid.visibleColumnsArray[0];
     const localizedTitle = `${primaryColumn.title}`;
     const localizedLevel = i18nString6(UIStrings6.level);
     this.nodeAccessibleText = `${localizedLevel} ${localizedTitle}: ${this.cellAccessibleTextMap.get(primaryColumn.id)}`;
   }
   renderCell(c, columnId) {
-    const columnIndex = this.dataGrid.indexOfVisibleColumn(columnId);
-    if (columnIndex === 0) {
+    const dataGrid = this.dataGrid;
+    const primaryColumn = firstPrimaryColumn(dataGrid) ?? dataGrid.visibleColumnsArray[0];
+    if (primaryColumn.id === columnId) {
       const cell = c;
       const leftPadding = this.leftPadding ? this.leftPadding + "px" : "";
       cell.style.setProperty("padding-left", leftPadding);
@@ -4753,7 +4765,7 @@ import * as Host5 from "./../../core/host/host.js";
 import * as i18n21 from "./../../core/i18n/i18n.js";
 import * as Platform5 from "./../../core/platform/platform.js";
 import * as SDK9 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
 import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
 
@@ -5527,7 +5539,7 @@ __export(RequestPreviewView_exports, {
 });
 import "./../../ui/legacy/legacy.js";
 import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as TextUtils2 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "./../../ui/legacy/legacy.js";
 import { render as render10 } from "./../../ui/lit/lit.js";
@@ -6067,7 +6079,7 @@ __export(RequestResponseView_exports, {
 import * as Common9 from "./../../core/common/common.js";
 import * as Host7 from "./../../core/host/host.js";
 import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as TextUtils3 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI15 from "./../../ui/legacy/legacy.js";
 import * as Lit4 from "./../../ui/lit/lit.js";
@@ -7068,7 +7080,7 @@ import * as Common12 from "./../../core/common/common.js";
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform8 from "./../../core/platform/platform.js";
 import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as DataGrid6 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
@@ -7078,7 +7090,7 @@ import * as Common11 from "./../../core/common/common.js";
 import * as Host9 from "./../../core/host/host.js";
 import * as i18n31 from "./../../core/i18n/i18n.js";
 import * as Platform7 from "./../../core/platform/platform.js";
-import * as TextUtils5 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
 import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI17 from "./../../ui/legacy/legacy.js";
@@ -7533,7 +7545,7 @@ import * as Common13 from "./../../core/common/common.js";
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Platform9 from "./../../core/platform/platform.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as TextUtils7 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
 import * as UI19 from "./../../ui/legacy/legacy.js";
 import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings18 = {
@@ -8046,12 +8058,12 @@ import * as Host10 from "./../../core/host/host.js";
 import * as i18n43 from "./../../core/i18n/i18n.js";
 import * as Platform12 from "./../../core/platform/platform.js";
 import * as SDK16 from "./../../core/sdk/sdk.js";
+import * as TextUtils8 from "./../../core/text_utils/text_utils.js";
 import * as Bindings3 from "./../../models/bindings/bindings.js";
 import * as HAR from "./../../models/har/har.js";
 import * as Logs5 from "./../../models/logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../../models/network_time_calculator/network_time_calculator.js";
 import * as Persistence2 from "./../../models/persistence/persistence.js";
-import * as TextUtils8 from "./../../models/text_utils/text_utils.js";
 import * as Workspace3 from "./../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
 import * as Sources2 from "./../sources/sources.js";
@@ -9880,7 +9892,7 @@ var UIStrings21 = {
   /**
    * @description Text in Timeline UIUtils of the Performance panel
    */
-  url: "Url",
+  url: "URL",
   /**
    * @description Column header in the Network log view of the Network panel
    */
@@ -10619,6 +10631,12 @@ var DEFAULT_COLUMN_CONFIG = {
 };
 var DEFAULT_COLUMNS = [
   {
+    id: "request-number",
+    title: i18nLazyString3(UIStrings21.requestNumber),
+    align: "right",
+    sortingFunction: NetworkRequestNode.RequestNumberComparator
+  },
+  {
     id: "name",
     title: i18nLazyString3(UIStrings21.name),
     subtitle: i18nLazyString3(UIStrings21.path),
@@ -10641,12 +10659,6 @@ var DEFAULT_COLUMNS = [
     hideable: true,
     hideableGroup: "path",
     sortingFunction: NetworkRequestNode.RequestURLComparator
-  },
-  {
-    id: "request-number",
-    title: i18nLazyString3(UIStrings21.requestNumber),
-    align: "right",
-    sortingFunction: NetworkRequestNode.RequestNumberComparator
   },
   {
     id: "method",
@@ -13189,7 +13201,7 @@ __export(NetworkSearchScope_exports, {
 });
 import * as i18n45 from "./../../core/i18n/i18n.js";
 import * as Platform13 from "./../../core/platform/platform.js";
-import * as TextUtils10 from "./../../models/text_utils/text_utils.js";
+import * as TextUtils10 from "./../../core/text_utils/text_utils.js";
 import * as NetworkForward5 from "./forward/forward.js";
 var UIStrings23 = {
   /**
@@ -13569,13 +13581,13 @@ var UIStrings24 = {
    */
   search: "Search",
   /**
-   * @description Tooltip text that appears on the setting to preserve log when hovering over the item
+   * @description Tooltip text that appears on the setting to keep log when hovering over the item.
    */
-  doNotClearLogOnPageReload: "Do not clear log on page reload / navigation",
+  doNotClearLogOnPageReload: "Don\u2019t clear log on page reload / navigation",
   /**
-   * @description Text to preserve the log after refreshing
+   * @description Text to keep the log after refreshing.
    */
-  preserveLog: "Preserve log",
+  preserveLog: "Keep log",
   /**
    * @description Text to disable cache while DevTools is open
    */

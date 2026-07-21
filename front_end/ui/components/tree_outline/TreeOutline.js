@@ -35,8 +35,13 @@ export class ItemContextMenuEvent extends Event {
     static eventName = 'itemcontextmenu';
     data;
     constructor(node, originalEvent) {
-        super(ItemContextMenuEvent.eventName, { bubbles: true, composed: true });
+        super(ItemContextMenuEvent.eventName, { bubbles: true, composed: true, cancelable: true });
         this.data = { node, originalEvent };
+    }
+    createContextMenu() {
+        this.preventDefault();
+        this.stopPropagation();
+        return new UI.ContextMenu.ContextMenu(this.data.originalEvent);
     }
 }
 export class ItemMouseOutEvent extends Event {

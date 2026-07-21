@@ -35,7 +35,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as SrgbOverlay from '../../../components/srgb_overlay/srgb_overlay.js';
 import { createIcon, Icon } from '../../../kit/kit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';

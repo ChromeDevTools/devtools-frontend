@@ -6515,6 +6515,14 @@ var Setting = class {
   setSerializer(serializer) {
     this.#serializer = serializer;
   }
+  descriptor() {
+    return {
+      name: this.name,
+      type: this.type() ?? "boolean",
+      defaultValue: this.defaultValue,
+      storageType: this.#registration?.storageType
+    };
+  }
   addChangeListener(listener, thisObject) {
     return this.eventSupport.addEventListener(this.name, listener, thisObject);
   }

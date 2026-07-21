@@ -1,7 +1,7 @@
 // Copyright 2019 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import { ResourceSourceFrame } from './ResourceSourceFrame.js';
 import { StreamingContentHexView } from './StreamingContentHexView.js';
 export class BinaryResourceViewFactory {

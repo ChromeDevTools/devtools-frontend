@@ -9,6 +9,7 @@ import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { createIcon } from '../kit/kit.js';
+import { nothing, render } from '../lit/lit.js';
 import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { ContextMenu } from './ContextMenu.js';
@@ -366,9 +367,13 @@ export class Toolbar extends HTMLElement {
             if (widget) {
                 widget.detach();
             }
+            else {
+                item.element.remove();
+            }
         }
         this.items = [];
-        this.removeChildren();
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(nothing, this);
     }
     hideSeparatorDupes() {
         if (!this.items.length) {

@@ -62,6 +62,14 @@ core/sdk/RuntimeModel.test.js
 core/sdk/ServerSentEventsProtocol.test.js
 core/sdk/Target.test.js
 core/sdk/TargetManager.test.js
+core/text_utils/ContentData.test.js
+core/text_utils/StaticContentProvider.test.js
+core/text_utils/StreamingContentData.test.js
+core/text_utils/Text.test.js
+core/text_utils/TextCursor.test.js
+core/text_utils/TextRange.test.js
+core/text_utils/TextUtils.test.js
+core/text_utils/WasmDisassembly.test.js
 entrypoints/formatter_worker/CSSFormatter.test.js
 entrypoints/formatter_worker/FormattedContentBuilder.test.js
 entrypoints/formatter_worker/FormatterWorker.test.js
@@ -106,14 +114,6 @@ models/stack_trace/StackTrace.test.js
 models/stack_trace/StackTraceImpl.test.js
 models/stack_trace/StackTraceModel.test.js
 models/stack_trace/Trie.test.js
-models/text_utils/ContentData.test.js
-models/text_utils/StaticContentProvider.test.js
-models/text_utils/StreamingContentData.test.js
-models/text_utils/Text.test.js
-models/text_utils/TextCursor.test.js
-models/text_utils/TextRange.test.js
-models/text_utils/TextUtils.test.js
-models/text_utils/WasmDisassembly.test.js
 models/workspace/IgnoreListManager.test.js
 models/workspace/SearchConfig.test.js
 models/workspace/UISourceCode.test.js
@@ -142,6 +142,7 @@ core/sdk/OverlayModel.test.js
 core/sdk/PreloadingModel.test.js
 core/sdk/RehydratingConnection.test.js
 core/sdk/RemoteObject.test.js
+core/sdk/Resource.test.js
 core/sdk/ResourceTreeModel.test.js
 core/sdk/ScopeTreeCache.test.js
 core/sdk/ScreenCaptureModel.test.js
@@ -377,6 +378,7 @@ panels/application/OriginTrialTreeView.test.js
 panels/application/PreloadingTreeElement.test.js
 panels/application/ReportingApiTreeElement.test.js
 panels/application/ReportingApiView.test.js
+panels/application/ServiceWorkerCacheTreeElement.test.js
 panels/application/ServiceWorkerCacheViews.test.js
 panels/application/ServiceWorkerUpdateCycleView.test.js
 panels/application/ServiceWorkersView.test.js
@@ -790,6 +792,7 @@ ui/legacy/components/object_ui/CustomPreviewComponent.test.js
 ui/legacy/components/object_ui/JavaScriptREPL.test.js
 ui/legacy/components/object_ui/ObjectPopoverHelper.test.js
 ui/legacy/components/object_ui/ObjectPropertiesSection.test.js
+ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.test.js
 ui/legacy/components/perf_ui/ChartViewport.test.js
 ui/legacy/components/perf_ui/FilmStripView.test.js
 ui/legacy/components/perf_ui/FlameChart.test.js

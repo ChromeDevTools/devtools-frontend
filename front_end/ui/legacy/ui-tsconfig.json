@@ -114,6 +114,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../foundation/bundle-tsconfig.json"
     },
     {
@@ -121,9 +124,6 @@
     },
     {
       "path": "../../models/stack_trace/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../components/buttons/bundle-tsconfig.json"

@@ -11,9 +11,9 @@ __export(FunctionCodeResolver_exports, {
   getFunctionCodeFromRawLocation: () => getFunctionCodeFromRawLocation
 });
 import * as SDK from "./../../core/sdk/sdk.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as Formatter from "./../formatter/formatter.js";
-import * as TextUtils from "./../text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 var inputCache = /* @__PURE__ */ new WeakMap();
 async function prepareInput(uiSourceCode, content, settings) {
@@ -206,9 +206,9 @@ __export(NamesResolver_exports, {
   setScopeResolvedForTest: () => setScopeResolvedForTest
 });
 import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
 import * as Bindings2 from "./../bindings/bindings.js";
 import * as Formatter2 from "./../formatter/formatter.js";
-import * as TextUtils3 from "./../text_utils/text_utils.js";
 var scopeToCachedIdentifiersMap = /* @__PURE__ */ new WeakMap();
 var cachedMapByCallFrame = /* @__PURE__ */ new WeakMap();
 async function getTextFor(contentProvider) {

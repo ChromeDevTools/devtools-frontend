@@ -1,4 +1,4 @@
-import * as TextUtils from '../../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../../core/text_utils/text_utils.js';
 export declare const highlightedSearchResultClassName = "highlighted-search-result";
 export declare const highlightedCurrentSearchResultClassName = "current-search-result";
 export interface HighlightChange {

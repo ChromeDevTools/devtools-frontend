@@ -305,12 +305,17 @@ export class InspectorView extends VBox {
     }
     #observedResize() {
         const rect = this.element.getBoundingClientRect();
-        this.element.style.setProperty('--devtools-window-left', `${rect.left}px`);
-        this.element.style.setProperty('--devtools-window-right', `${window.innerWidth - rect.right}px`);
-        this.element.style.setProperty('--devtools-window-width', `${rect.width}px`);
-        this.element.style.setProperty('--devtools-window-top', `${rect.top}px`);
-        this.element.style.setProperty('--devtools-window-bottom', `${window.innerHeight - rect.bottom}px`);
-        this.element.style.setProperty('--devtools-window-height', `${rect.height}px`);
+        // Set custom properties on the root element so top-layer elements
+        // (such as native popovers inside Shadow DOM) can inherit them.
+        // Top-layer popovers inside Shadow DOM roots inherit CSS custom properties
+        // from documentElement rather than local parent elements or shadow hosts.
+        const root = this.element.ownerDocument.documentElement;
+        root.style.setProperty('--devtools-window-left', `${rect.left}px`);
+        root.style.setProperty('--devtools-window-right', `${window.innerWidth - rect.right}px`);
+        root.style.setProperty('--devtools-window-width', `${rect.width}px`);
+        root.style.setProperty('--devtools-window-top', `${rect.top}px`);
+        root.style.setProperty('--devtools-window-bottom', `${window.innerHeight - rect.bottom}px`);
+        root.style.setProperty('--devtools-window-height', `${rect.height}px`);
     }
     wasShown() {
         super.wasShown();

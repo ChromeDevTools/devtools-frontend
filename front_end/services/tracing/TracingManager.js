@@ -54,7 +54,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel {
         this.#activeClient = null;
         this.#finishing = false;
     }
-    async start(client, categoryFilter) {
+    async start(client, categoryFilter, options = {}) {
         if (this.#activeClient) {
             throw new Error('Tracing is already started');
         }
@@ -69,6 +69,12 @@ export class TracingManager extends SDK.SDKModel.SDKModel {
                 includedCategories: categoryFilter.split(','),
             },
         };
+        if (options.screenshotMaxSize !== undefined) {
+            args.screenshotMaxSize = options.screenshotMaxSize;
+        }
+        if (options.screenshotMaxCount !== undefined) {
+            args.screenshotMaxCount = options.screenshotMaxCount;
+        }
         const response = await this.#tracingAgent.invoke_start(args);
         if (response.getError()) {
             this.#activeClient = null;

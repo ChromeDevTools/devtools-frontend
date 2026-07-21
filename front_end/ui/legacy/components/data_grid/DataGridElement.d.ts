@@ -1,4 +1,4 @@
-import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import type * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as Lit from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { type ColumnDescriptor, type ResizeMethod } from './DataGrid.js';

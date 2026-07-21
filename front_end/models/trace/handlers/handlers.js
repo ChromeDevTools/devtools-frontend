@@ -1831,7 +1831,7 @@ function getEventTrack(event) {
   }
   return void 0;
 }
-function userTimingComparator(a, b, originalArray) {
+function userTimingComparator(a, b, originalIndex) {
   const { start: aStart, end: aEnd } = getEventTimings(a);
   const { start: bStart, end: bEnd } = getEventTimings(b);
   const timeDifference = Helpers7.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
@@ -1843,8 +1843,8 @@ function userTimingComparator(a, b, originalArray) {
   if (aTrack !== bTrack) {
     return 0;
   }
-  const aIndex = originalArray.indexOf(a);
-  const bIndex = originalArray.indexOf(b);
+  const aIndex = originalIndex.get(a) ?? -1;
+  const bIndex = originalIndex.get(b) ?? -1;
   return bIndex - aIndex;
 }
 function handleEvent10(event) {
@@ -1871,8 +1871,10 @@ function handleEvent10(event) {
 async function finalize10() {
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
   syntheticEvents = Helpers7.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
-  syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
-  timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, [...timestampEvents]));
+  const syntheticIndex = new Map(syntheticEvents.map((e, i) => [e, i]));
+  syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, syntheticIndex));
+  const timestampIndex = new Map(timestampEvents.map((e, i) => [e, i]));
+  timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, timestampIndex));
 }
 function data10() {
   return {

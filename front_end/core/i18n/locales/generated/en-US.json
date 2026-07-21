@@ -342,7 +342,7 @@
     "message": "(binary)"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because its Domain attribute was invalid with regards to the current host url."
+    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because its Domain attribute was invalid with regards to the current host URL."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
     "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
@@ -369,7 +369,7 @@
     "message": "This cookie is allowed by Chrome Enterprise policy. Learn more: goo.gle/ce-3pc"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonScheme": {
-    "message": "This cookie is allowed by the top-level url scheme"
+    "message": "This cookie is allowed by the top-level URL scheme"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
     "message": "This cookie is allowed by the Storage Access API. Learn more: goo.gle/saa"
@@ -384,7 +384,7 @@
     "message": "This cookie was blocked because it was too large. The combined size of the name and value must be less than or equal to 4096 characters."
   },
   "core/sdk/NetworkRequest.ts | notOnPath": {
-    "message": "This cookie was blocked because its path was not an exact match for or a superdirectory of the request url’s path."
+    "message": "This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL’s path."
   },
   "core/sdk/NetworkRequest.ts | sameSiteLax": {
     "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute and the request was made from a different site and was not initiated by a top-level navigation."
@@ -411,7 +411,7 @@
     "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection was not secure."
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie header is ignored in response from url: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters."
+    "message": "Set-Cookie header is ignored in response from URL: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "The scheme of this connection is not allowed to store cookies."
@@ -558,7 +558,7 @@
     "message": "Do not pause on exceptions"
   },
   "core/sdk/sdk-meta.ts | doNotPreserveLogUponNavigation": {
-    "message": "Do not preserve log upon navigation"
+    "message": "Don’t keep log on navigation"
   },
   "core/sdk/sdk-meta.ts | doNotShowGridNamedAreas": {
     "message": "Do not show grid named areas"
@@ -738,7 +738,7 @@
     "message": "Pause on exceptions"
   },
   "core/sdk/sdk-meta.ts | preserveLogUponNavigation": {
-    "message": "Preserve log upon navigation"
+    "message": "Keep log on navigation"
   },
   "core/sdk/sdk-meta.ts | print": {
     "message": "print"
@@ -1779,16 +1779,16 @@
     "message": "clear"
   },
   "models/logs/logs-meta.ts | doNotPreserveLogOnPageReload": {
-    "message": "Do not preserve log on page reload / navigation"
+    "message": "Don’t keep log on page reload / navigation"
   },
   "models/logs/logs-meta.ts | preserve": {
     "message": "preserve"
   },
   "models/logs/logs-meta.ts | preserveLog": {
-    "message": "Preserve log"
+    "message": "Keep log"
   },
   "models/logs/logs-meta.ts | preserveLogOnPageReload": {
-    "message": "Preserve log on page reload / navigation"
+    "message": "Keep log on page reload / navigation"
   },
   "models/logs/logs-meta.ts | recordNetworkLog": {
     "message": "Record network log"
@@ -4749,7 +4749,7 @@
     "message": "Deletion reason"
   },
   "panels/application/DeviceBoundSessionsView.ts | doNotClearLogOnPageReload": {
-    "message": "Do not clear log on page reload/navigation."
+    "message": "Don’t clear log on page reload/navigation"
   },
   "panels/application/DeviceBoundSessionsView.ts | emptyScopeSpecificationDomain": {
     "message": "Empty scope specification domain"
@@ -4944,7 +4944,7 @@
     "message": "Persistent HTTP error"
   },
   "panels/application/DeviceBoundSessionsView.ts | preserveLog": {
-    "message": "Preserve log"
+    "message": "Keep log"
   },
   "panels/application/DeviceBoundSessionsView.ts | proxyError": {
     "message": "Proxy error"
@@ -7715,6 +7715,12 @@
   "panels/elements/AccessibilityTreeView.ts | copy": {
     "message": "Copy"
   },
+  "panels/elements/AccessibilityTreeView.ts | scrollIntoView": {
+    "message": "Scroll into view"
+  },
+  "panels/elements/AccessibilityTreeView.ts | switchToDomTree": {
+    "message": "Switch to DOM tree"
+  },
   "panels/elements/ClassesPaneWidget.ts | addNewClass": {
     "message": "Add new class"
   },
@@ -8284,6 +8290,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | styleScrollbars": {
     "message": "Style scrollbars"
+  },
+  "panels/elements/ElementsTreeElement.ts | switchToAccessibilityTree": {
+    "message": "Switch to accessibility tree"
   },
   "panels/elements/ElementsTreeElement.ts | thisElementWasIdentifiedAsAnAd": {
     "message": "This element was identified as an ad"
@@ -11241,7 +11250,7 @@
     "message": "Type"
   },
   "panels/network/NetworkLogViewColumns.ts | url": {
-    "message": "Url"
+    "message": "URL"
   },
   "panels/network/NetworkLogViewColumns.ts | waterfall": {
     "message": "Waterfall"
@@ -11274,7 +11283,7 @@
     "message": "Disable cache while DevTools is open"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
-    "message": "Do not clear log on page reload / navigation"
+    "message": "Don’t clear log on page reload / navigation"
   },
   "panels/network/NetworkPanel.ts | exportHar": {
     "message": "Export HAR (either sanitized or with sensitive data)"
@@ -11313,7 +11322,7 @@
     "message": "Open in Network panel (missing request)"
   },
   "panels/network/NetworkPanel.ts | preserveLog": {
-    "message": "Preserve log"
+    "message": "Keep log"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
     "message": "Recording frames…"
@@ -14571,7 +14580,7 @@
     "message": "{n, plural, =1 {Enable breakpoint} other {Enable all breakpoints in line}}"
   },
   "panels/sources/DebuggerPlugin.ts | errorLoading": {
-    "message": "Error loading url {PH1}: {PH2}"
+    "message": "Error loading URL {PH1}: {PH2}"
   },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Never pause here"
@@ -14611,6 +14620,9 @@
   },
   "panels/sources/FilteredUISourceCodeListProvider.ts | sIgnoreListed": {
     "message": "{PH1} (ignore listed)"
+  },
+  "panels/sources/FilteredUISourceCodeListProvider.ts | workspace": {
+    "message": "Workspace"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
     "message": "Type a line number between 1 and {PH1} to navigate to"
@@ -16523,6 +16535,21 @@
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Recording failed"
   },
+  "panels/timeline/TimelinePanel.ts | screenshotCapture": {
+    "message": "Screenshot capture"
+  },
+  "panels/timeline/TimelinePanel.ts | screenshotPresetDefault": {
+    "message": "500 x 500 px, up to 450 frames"
+  },
+  "panels/timeline/TimelinePanel.ts | screenshotPresetLarge": {
+    "message": "1000 x 1000 px, up to 100 frames"
+  },
+  "panels/timeline/TimelinePanel.ts | screenshotPresetMedium": {
+    "message": "250 x 250 px, up to 1800 frames"
+  },
+  "panels/timeline/TimelinePanel.ts | screenshotPresetTiny": {
+    "message": "100 x 100 px, up to 11250 frames"
+  },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "Screenshots"
   },
@@ -17028,7 +17055,7 @@
     "message": "[ unknown node ]"
   },
   "panels/timeline/TimelineUIUtils.ts | url": {
-    "message": "Url"
+    "message": "URL"
   },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "Warning"

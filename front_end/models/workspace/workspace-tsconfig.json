@@ -65,7 +65,7 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
-      "path": "../text_utils/bundle-tsconfig.json"
+      "path": "../../core/text_utils/bundle-tsconfig.json"
     }
   ]
 }

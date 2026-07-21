@@ -1,5 +1,5 @@
 import * as Formatter from '../../models/formatter/formatter.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import type { Script } from './Script.js';
 type ScopeTreeNode = Formatter.FormatterWorkerPool.ScopeTreeNode;
 type Text = TextUtils.Text.Text;

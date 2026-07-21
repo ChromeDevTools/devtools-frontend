@@ -692,6 +692,29 @@ devtools-code-block.animating {
   list-style-type: disc;
 }
 
+.message li.animating {
+  /*
+   * The JS animation controller applies the \\'pending\\' and \\'animating\\' classes to the <li>.
+   * We need \\'pending\\' (which is \\'display: none\\') on the <li> to hide the bullet point
+   * before it starts animating.
+   *
+   * Once animating, we must override the default \\'.animating\\' styles on the <li> itself
+   * to prevent the bullet point from being clipped by \\'overflow: hidden\\'.
+   * Instead, we apply the typing animation to the inner \\'.markdown-list-item-content\\' span.
+   */
+  overflow: visible;
+  white-space: normal;
+  animation: none;
+}
+
+.message li.animating > .markdown-list-item-content {
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.4s steps(40, end);
+}
+
 .message code {
   color: var(--sys-color-on-surface);
   font-family: var(--monospace-font-family);
@@ -826,6 +849,17 @@ var MarkdownView = class extends HTMLElement {
   }
 };
 customElements.define("devtools-markdown-view", MarkdownView);
+var BLOCK_TOKEN_TYPES = /* @__PURE__ */ new Set([
+  "list",
+  "code",
+  "table",
+  "heading",
+  "paragraph",
+  "blockquote"
+]);
+function isBlockToken(token) {
+  return BLOCK_TOKEN_TYPES.has(token.type);
+}
 var MarkdownLitRenderer = class {
   #customClasses = {};
   addCustomClasses(customClasses) {
@@ -909,8 +943,27 @@ var MarkdownLitRenderer = class {
         return html5`<ul class=${this.customClassMapForToken("list")}>${token.items.map((token2) => {
           return this.renderToken(token2);
         })}</ul>`;
-      case "list_item":
-        return html5`<li class=${this.customClassMapForToken("list_item")}>${this.renderChildTokens(token)}</li>`;
+      case "list_item": {
+        const childTokens = token.tokens || [];
+        const renderedParts = [];
+        let currentInline = [];
+        const flushInline = () => {
+          if (currentInline.length > 0) {
+            renderedParts.push(html5`<span class="markdown-list-item-content">${currentInline.map((t) => this.renderToken(t))}</span>`);
+            currentInline = [];
+          }
+        };
+        for (const child of childTokens) {
+          if (isBlockToken(child)) {
+            flushInline();
+            renderedParts.push(html5`${this.renderToken(child)}`);
+          } else {
+            currentInline.push(child);
+          }
+        }
+        flushInline();
+        return html5`<li class=${this.customClassMapForToken("list_item")}>${renderedParts}</li>`;
+      }
       case "text":
         return this.renderText(token);
       case "codespan":

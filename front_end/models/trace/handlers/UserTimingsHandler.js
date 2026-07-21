@@ -127,7 +127,7 @@ function getEventTrack(event) {
  * the second event is the parent of the first. Hence the switch.
  *
  */
-export function userTimingComparator(a, b, originalArray) {
+export function userTimingComparator(a, b, originalIndex) {
     const { start: aStart, end: aEnd } = getEventTimings(a);
     const { start: bStart, end: bEnd } = getEventTimings(b);
     const timeDifference = Helpers.Trace.compareBeginAndEnd(aStart, bStart, aEnd, bEnd);
@@ -140,9 +140,13 @@ export function userTimingComparator(a, b, originalArray) {
     if (aTrack !== bTrack) {
         return 0; // Preserve current positions.
     }
-    // Prefer the event located in a further position in the original array.
-    const aIndex = originalArray.indexOf(a);
-    const bIndex = originalArray.indexOf(b);
+    // When events share the same timestamp, use their original array position
+    // to determine stacking order: children are appended after their parents,
+    // so reversing by index ensures children render on top.
+    // Uses a pre-computed index map for O(1) lookups instead of indexOf
+    // to keep the overall sort at O(N log N).
+    const aIndex = originalIndex.get(a) ?? -1;
+    const bIndex = originalIndex.get(b) ?? -1;
     return bIndex - aIndex;
 }
 export function handleEvent(event) {
@@ -169,8 +173,14 @@ export function handleEvent(event) {
 export async function finalize() {
     const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
     syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
-    syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
-    timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, [...timestampEvents]));
+    // Pre-compute event→index maps before sorting so the comparator can
+    // resolve original positions in O(1). This keeps the sort O(N log N)
+    // rather than O(N² log N) which would occur if the index were looked
+    // up via indexOf or if the array were re-spread per comparison.
+    const syntheticIndex = new Map(syntheticEvents.map((e, i) => [e, i]));
+    syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, syntheticIndex));
+    const timestampIndex = new Map(timestampEvents.map((e, i) => [e, i]));
+    timestampEvents = timestampEvents.sort((a, b) => userTimingComparator(a, b, timestampIndex));
 }
 export function data() {
     return {

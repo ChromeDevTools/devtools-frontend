@@ -1,5 +1,5 @@
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type { CoverageInfo, CoverageModel } from './CoverageModel.js';
 export declare const decoratorType = "coverage";

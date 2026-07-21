@@ -1,10 +1,10 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import { CookieModel } from './CookieModel.js';
 import { CookieParser } from './CookieParser.js';
 import * as HttpReasonPhraseStrings from './HttpReasonPhraseStrings.js';
@@ -25,7 +25,7 @@ const UIStrings = {
     /**
      * @description Tooltip to explain why a cookie was blocked
      */
-    notOnPath: 'This cookie was blocked because its path was not an exact match for or a superdirectory of the request url’s path.',
+    notOnPath: 'This cookie was blocked because its path was not an exact match for or a superdirectory of the request URL’s path.',
     /**
      * @description Tooltip to explain why a cookie was blocked
      */
@@ -131,7 +131,7 @@ const UIStrings = {
     /**
      * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
      */
-    blockedReasonInvalidDomain: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because its Domain attribute was invalid with regards to the current host url.',
+    blockedReasonInvalidDomain: 'This attempt to set a cookie via a `Set-Cookie` header was blocked because its Domain attribute was invalid with regards to the current host URL.',
     /**
      * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
      */
@@ -144,7 +144,7 @@ const UIStrings = {
      * @description Text in Network Manager
      * @example {https://example.com} PH1
      */
-    setcookieHeaderIsIgnoredIn: 'Set-Cookie header is ignored in response from url: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters.',
+    setcookieHeaderIsIgnoredIn: 'Set-Cookie header is ignored in response from URL: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters.',
     /**
      * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
      */
@@ -164,7 +164,7 @@ const UIStrings = {
     /**
      * @description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
      */
-    exemptionReasonScheme: 'This cookie is allowed by the top-level url scheme',
+    exemptionReasonScheme: 'This cookie is allowed by the top-level URL scheme',
 };
 // clang-format on
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkRequest.ts', UIStrings);

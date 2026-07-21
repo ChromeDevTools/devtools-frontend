@@ -39,10 +39,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Badges from '../../models/badges/badges.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -101,6 +101,32 @@ const UIStrings = {
      * @description Title of show screenshots setting in timeline panel of the performance panel
      */
     screenshots: 'Screenshots',
+    /**
+     * @description Label for the screenshot capture preset dropdown in the performance panel settings pane. The dropdown
+     * picks the per-frame resolution and maximum frame count used when capturing screenshots. Every preset is sized to
+     * stay within the same per-session memory budget.
+     */
+    screenshotCapture: 'Screenshot capture',
+    /**
+     * @description Dropdown option in the performance panel for the default screenshot capture preset (500 x 500 pixels,
+     * up to 450 frames).
+     */
+    screenshotPresetDefault: '500 x 500 px, up to 450 frames',
+    /**
+     * @description Dropdown option in the performance panel for a screenshot capture preset that uses smaller frames so
+     * more of them fit in the per-session memory budget (250 x 250 pixels, up to 1800 frames).
+     */
+    screenshotPresetMedium: '250 x 250 px, up to 1800 frames',
+    /**
+     * @description Dropdown option in the performance panel for a screenshot capture preset that uses higher-resolution
+     * frames at the cost of capturing fewer of them (1000 x 1000 pixels, up to 100 frames).
+     */
+    screenshotPresetLarge: '1000 x 1000 px, up to 100 frames',
+    /**
+     * @description Dropdown option in the performance panel for a screenshot capture preset that uses very small frames
+     * so many of them fit in the per-session memory budget (100 x 100 pixels, up to 11250 frames).
+     */
+    screenshotPresetTiny: '100 x 100 px, up to 11250 frames',
     /**
      * @description Text for the memory of the page
      */
@@ -298,6 +324,39 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/**
+ * Screenshot capture presets exposed in the performance panel settings pane.
+ * Each entry pairs a maximum per-frame edge length (square frames) with a
+ * maximum frame count. All presets are sized to stay within the backend's
+ * per-session memory budget (~450 MB at 4 bytes per pixel).
+ */
+const SCREENSHOT_CAPTURE_PRESETS = [
+    {
+        key: '500-450',
+        maxSize: 500,
+        maxCount: 450,
+        label: () => i18nString(UIStrings.screenshotPresetDefault),
+    },
+    {
+        key: '250-1800',
+        maxSize: 250,
+        maxCount: 1800,
+        label: () => i18nString(UIStrings.screenshotPresetMedium),
+    },
+    {
+        key: '1000-100',
+        maxSize: 1000,
+        maxCount: 100,
+        label: () => i18nString(UIStrings.screenshotPresetLarge),
+    },
+    {
+        key: '100-11250',
+        maxSize: 100,
+        maxCount: 11250,
+        label: () => i18nString(UIStrings.screenshotPresetTiny),
+    },
+];
+const DEFAULT_SCREENSHOT_CAPTURE_PRESET_KEY = SCREENSHOT_CAPTURE_PRESETS[0].key;
 let timelinePanelInstance;
 // Total time to wait for source maps to load before giving up so trace processing can proceed.
 const SOURCE_MAP_LOAD_TIMEOUT_MS = 5000;
@@ -312,6 +371,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     disableCaptureJSProfileSetting;
     captureLayersAndPicturesSetting;
     captureSelectorStatsSetting;
+    screenshotCaptureModeSetting;
     #thirdPartyTracksSetting;
     showScreenshotsSetting;
     showMemorySetting;
@@ -436,6 +496,8 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
         this.captureSelectorStatsSetting = Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false, "Session" /* Common.Settings.SettingStorageType.SESSION */);
         this.captureSelectorStatsSetting.setTitle(i18nString(UIStrings.enableSelectorStats));
+        this.screenshotCaptureModeSetting = Common.Settings.Settings.instance().createSetting('timeline-screenshot-capture-mode', DEFAULT_SCREENSHOT_CAPTURE_PRESET_KEY, "Session" /* Common.Settings.SettingStorageType.SESSION */);
+        this.screenshotCaptureModeSetting.setTitle(i18nString(UIStrings.screenshotCapture));
         this.showScreenshotsSetting =
             Common.Settings.Settings.instance().createSetting('timeline-show-screenshots', !this.#isNode);
         this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
@@ -564,19 +626,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         this.#showLandingPage();
         this.updateTimelineControls();
         SDK.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged" /* SDK.TargetManager.Events.SUSPEND_STATE_CHANGED */, this.onSuspendStateChanged, this);
-        const profilerModels = SDK.TargetManager.TargetManager.instance().models(SDK.CPUProfilerModel.CPUProfilerModel);
-        for (const model of profilerModels) {
-            for (const message of model.registeredConsoleProfileMessages) {
-                this.consoleProfileFinished(message);
-            }
-        }
-        SDK.TargetManager.TargetManager.instance().observeModels(SDK.CPUProfilerModel.CPUProfilerModel, {
-            modelAdded: (model) => {
-                model.addEventListener("ConsoleProfileFinished" /* SDK.CPUProfilerModel.Events.CONSOLE_PROFILE_FINISHED */, event => this.consoleProfileFinished(event.data));
-            },
-            modelRemoved: (_model) => {
-            },
-        });
     }
     zoomEvent(event) {
         this.flameChart.zoomEvent(event);
@@ -1101,6 +1150,26 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         networkThrottlingPane.append(this.createNetworkConditionsSelectToolbarItem().element);
         this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting, i18nString(UIStrings.capturesAdvancedPaint)));
         this.settingsPane.append(SettingsUI.SettingsUI.createSettingCheckbox(this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
+        const screenshotPresetSelect = new UI.Toolbar.ToolbarComboBox(() => this.screenshotCaptureModeSetting.set(screenshotPresetSelect.selectedOption().value), this.screenshotCaptureModeSetting.title(), '', 'screenshot-capture-mode');
+        let selectedScreenshotPresetIndex = 0;
+        for (let i = 0; i < SCREENSHOT_CAPTURE_PRESETS.length; ++i) {
+            const preset = SCREENSHOT_CAPTURE_PRESETS[i];
+            screenshotPresetSelect.addOption(screenshotPresetSelect.createOption(preset.label(), preset.key, `tracing.screenshot-size.${preset.key}`));
+            if (preset.key === this.screenshotCaptureModeSetting.get()) {
+                selectedScreenshotPresetIndex = i;
+            }
+        }
+        screenshotPresetSelect.setSelectedIndex(selectedScreenshotPresetIndex);
+        const screenshotPresetPane = this.settingsPane.createChild('div');
+        screenshotPresetPane.append(this.screenshotCaptureModeSetting.title());
+        screenshotPresetPane.append(screenshotPresetSelect.element);
+        // Surface the dropdown only when the "Screenshots" checkbox is on, since the
+        // preset only affects the screenshots captured during the recording.
+        const updateScreenshotPresetVisibility = () => {
+            screenshotPresetPane.hidden = !this.showScreenshotsSetting.get();
+        };
+        this.showScreenshotsSetting.addChangeListener(updateScreenshotPresetVisibility);
+        updateScreenshotPresetVisibility();
         const thirdPartyCheckbox = this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));
         const localLink = Link.create('https://developer.chrome.com/docs/devtools/performance/extension', i18nString(UIStrings.learnMore));
         // Has to be done in JS because the element is inserted into the
@@ -1609,6 +1678,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 throw new Error('Could not create Timeline controller');
             }
             const urlToTrace = await this.#evaluateInspectedURL();
+            // Resolve the user's screenshot capture preset (resolution x frame count).
+            // All presets are sized to fit within the backend's per-session memory
+            // budget, which the backend additionally enforces. Forward the values
+            // only when screenshots are actually being captured.
+            const screenshotPreset = SCREENSHOT_CAPTURE_PRESETS.find(p => p.key === this.screenshotCaptureModeSetting.get()) ??
+                SCREENSHOT_CAPTURE_PRESETS[0];
             // Order is important here: we tell the controller to start recording, which enables tracing.
             await this.controller.startRecording({
                 enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
@@ -1616,6 +1691,9 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 captureFilmStrip: this.showScreenshotsSetting.get(),
                 captureSelectorStats: this.captureSelectorStatsSetting.get(),
                 navigateToUrl: this.recordingPageReload ? urlToTrace : undefined,
+                ...(this.showScreenshotsSetting.get() ?
+                    { screenshotMaxSize: screenshotPreset.maxSize, screenshotMaxCount: screenshotPreset.maxCount } :
+                    {}),
             });
             // Once we get here, we know tracing is active.
             this.recordingStarted();
@@ -1693,10 +1771,6 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     }
     onSuspendStateChanged() {
         this.updateTimelineControls();
-    }
-    consoleProfileFinished(data) {
-        this.loadFromCpuProfile(data.cpuProfile);
-        void UI.InspectorView.InspectorView.instance().showPanel('timeline');
     }
     updateTimelineControls() {
         if (this.#viewMode.mode === 'VIEWING_TRACE') {
@@ -2667,6 +2741,12 @@ export class BottomUpProfileRevealer {
         TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(revealable.bounds, { ignoreMiniMapBounds: true, shouldAnimate: true });
         panel.select(null);
         panel.getFlameChart().selectDetailsViewTab(Tab.BottomUp, revealable.node ?? null);
+    }
+}
+export class ProfileFinishedRevealer {
+    async reveal(data) {
+        await UI.ViewManager.ViewManager.instance().showView('timeline');
+        TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile);
     }
 }
 export class ActionDelegate {

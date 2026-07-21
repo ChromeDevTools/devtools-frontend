@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../text_utils/text_utils.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { CSSWorkspaceBinding } from './CSSWorkspaceBinding.js';
 import { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
@@ -42,11 +42,10 @@ export class PresentationSourceFrameMessageManager {
 }
 export class PresentationConsoleMessageManager {
     #sourceFrameMessageManager = new PresentationSourceFrameMessageManager();
-    constructor() {
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, event => this.consoleMessageAdded(event.data));
-        SDK.ConsoleModel.ConsoleModel.allMessagesUnordered(SDK.TargetManager.TargetManager.instance())
-            .forEach(this.consoleMessageAdded, this);
-        SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
+    constructor(targetManager) {
+        targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.MessageAdded, event => this.consoleMessageAdded(event.data));
+        SDK.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
+        targetManager.addModelListener(SDK.ConsoleModel.ConsoleModel, SDK.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
     }
     consoleMessageAdded(consoleMessage) {
         const runtimeModel = consoleMessage.runtimeModel();

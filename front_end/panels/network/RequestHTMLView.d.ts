@@ -1,4 +1,4 @@
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 interface ViewInput {
     dataURL: string | null;

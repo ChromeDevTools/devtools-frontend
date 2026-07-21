@@ -11,7 +11,7 @@ export interface NetworkRequestFormatOptions {
 export declare class PerformanceTraceFormatter {
     #private;
     resolveFunctionCode?: (url: Platform.DevToolsPath.UrlString, line: number, column: number) => Promise<SourceMapScopes.FunctionCodeResolver.FunctionCode | null>;
-    constructor(focus: AgentFocus, deviceScope?: CrUXManager.DeviceScope | null);
+    constructor(focus: AgentFocus, deviceScope?: CrUXManager.DeviceScope | null, cruxManager?: CrUXManager.CrUXManager);
     serializeEvent(event: Trace.Types.Events.Event): string;
     serializeBounds(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatTraceSummary(): string;
@@ -21,6 +21,7 @@ export declare class PerformanceTraceFormatter {
     formatLongestTasks(): Promise<string>;
     formatMainThreadTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): Promise<string>;
     formatNetworkTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string;
+    formatExtensionTrackSummary(bounds: Trace.Types.Timing.TraceWindowMicro): string;
     formatCallTree(tree: AICallTree, headerLevel?: number): Promise<string>;
     formatNetworkRequests(requests: readonly Trace.Types.Events.SyntheticNetworkRequest[], options?: NetworkRequestFormatOptions): string;
     static callFrameDataFormatDescription: string;

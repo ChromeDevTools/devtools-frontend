@@ -353,6 +353,14 @@ export class Setting {
     setSerializer(serializer) {
         this.#serializer = serializer;
     }
+    descriptor() {
+        return {
+            name: this.name,
+            type: this.type() ?? "boolean" /* SettingType.BOOLEAN */,
+            defaultValue: this.defaultValue,
+            storageType: this.#registration?.storageType,
+        };
+    }
     addChangeListener(listener, thisObject) {
         return this.eventSupport.addEventListener(this.name, listener, thisObject);
     }

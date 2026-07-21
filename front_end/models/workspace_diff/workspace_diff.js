@@ -14,10 +14,10 @@ __export(WorkspaceDiff_exports, {
 import * as Common from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as Root from "./../../core/root/root.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Diff from "./../../third_party/diff/diff.js";
 import * as FormatterModule from "./../formatter/formatter.js";
 import * as Persistence from "./../persistence/persistence.js";
-import * as TextUtils from "./../text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
   #persistence;
@@ -27,7 +27,7 @@ var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
   /** used in web tests */
   loadingUISourceCodes = /* @__PURE__ */ new Map();
   #modified = /* @__PURE__ */ new Set();
-  constructor(workspace, persistence = Persistence.Persistence.PersistenceImpl.instance(), networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(), settings = Common.Settings.Settings.instance()) {
+  constructor(workspace, persistence, networkPersistenceManager, settings) {
     super();
     this.#persistence = persistence;
     this.#networkPersistenceManager = networkPersistenceManager;
@@ -162,7 +162,7 @@ var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
   #requestDiffPromise = null;
   #pendingChanges = null;
   dispose = false;
-  constructor(uiSourceCode, networkPersistenceManager, settings = Common.Settings.Settings.instance()) {
+  constructor(uiSourceCode, networkPersistenceManager, settings) {
     super();
     this.#uiSourceCode = uiSourceCode;
     this.#networkPersistenceManager = networkPersistenceManager;
@@ -249,7 +249,7 @@ var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
 };
 function workspaceDiff({ forceNew } = {}) {
   if (!Root.DevToolsContext.globalInstance().has(WorkspaceDiffImpl) || forceNew) {
-    Root.DevToolsContext.globalInstance().set(WorkspaceDiffImpl, new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance()));
+    Root.DevToolsContext.globalInstance().set(WorkspaceDiffImpl, new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance(), Persistence.Persistence.PersistenceImpl.instance(), Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(), Common.Settings.Settings.instance()));
   }
   return Root.DevToolsContext.globalInstance().get(WorkspaceDiffImpl);
 }

@@ -2,6 +2,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineComponents from './components/components.js';
@@ -29,6 +30,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private disableCaptureJSProfileSetting;
     private readonly captureLayersAndPicturesSetting;
     private readonly captureSelectorStatsSetting;
+    private readonly screenshotCaptureModeSetting;
     private showScreenshotsSetting;
     private showMemorySetting;
     private readonly panelToolbar;
@@ -97,7 +99,7 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
      * @deprecated
      **/
     getTraceEngineRawTraceEventsForLayoutTests(): readonly Trace.Types.Events.Event[];
-    private loadFromCpuProfile;
+    loadFromCpuProfile(profile: Protocol.Profiler.Profile | null): void;
     private setState;
     private createSettingCheckbox;
     /**
@@ -147,7 +149,6 @@ export declare class TimelinePanel extends TimelinePanel_base implements Client,
     private stopRecording;
     private recordingFailed;
     private onSuspendStateChanged;
-    private consoleProfileFinished;
     private updateTimelineControls;
     toggleRecording(): Promise<void>;
     recordReload(): void;
@@ -239,6 +240,9 @@ export declare class TimeRangeRevealer implements Common.Revealer.Revealer<Utils
 }
 export declare class BottomUpProfileRevealer implements Common.Revealer.Revealer<Utils.Helpers.RevealableBottomUpProfile> {
     reveal(revealable: Utils.Helpers.RevealableBottomUpProfile): Promise<void>;
+}
+export declare class ProfileFinishedRevealer implements Common.Revealer.Revealer<SDK.CPUProfilerModel.ProfileFinishedData> {
+    reveal(data: SDK.CPUProfilerModel.ProfileFinishedData): Promise<void>;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(context: UI.Context.Context, actionId: string): boolean;

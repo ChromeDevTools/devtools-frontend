@@ -1073,7 +1073,7 @@ import * as Host2 from "./../../../../core/host/host.js";
 import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform3 from "./../../../../core/platform/platform.js";
 import * as SDK from "./../../../../core/sdk/sdk.js";
-import * as TextUtils from "./../../../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
 import * as SrgbOverlay from "./../../../components/srgb_overlay/srgb_overlay.js";
 import { createIcon as createIcon2, Icon as Icon2 } from "./../../../kit/kit.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";

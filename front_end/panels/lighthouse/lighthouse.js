@@ -1402,7 +1402,7 @@ import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Workspace from "./../../models/workspace/workspace.js";
 import * as LighthouseReport from "./../../third_party/lighthouse/report/report.js";
 import * as Components from "./../../ui/legacy/components/utils/utils.js";

@@ -2,7 +2,7 @@ import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import type { TemplateResult } from '../lit/lit.js';
+import { type TemplateResult } from '../lit/lit.js';
 import { type Action } from './ActionRegistration.js';
 import { ContextMenu } from './ContextMenu.js';
 import type { Suggestion } from './SuggestBox.js';

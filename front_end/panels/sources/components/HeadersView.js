@@ -5,8 +5,8 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view */
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
-import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';

@@ -1,4 +1,4 @@
-import { Badge, BadgeAction } from './Badge.js';
+import { Badge, BadgeAction, type BadgeContext } from './Badge.js';
 export declare class AiExplorerBadge extends Badge {
     #private;
     readonly name = "profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fai-explorer";
@@ -6,5 +6,6 @@ export declare class AiExplorerBadge extends Badge {
     readonly jslogContext = "ai-explorer";
     readonly imageUri: string;
     readonly interestedActions: readonly [BadgeAction.STARTED_AI_CONVERSATION];
+    constructor(badgeContext: BadgeContext);
     handleAction(_action: BadgeAction): void;
 }

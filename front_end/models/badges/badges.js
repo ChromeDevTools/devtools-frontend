@@ -64,15 +64,19 @@ var AiExplorerBadge = class extends Badge {
   title = "AI Explorer";
   jslogContext = "ai-explorer";
   imageUri = AI_EXPLORER_BADGE_URI;
-  #aiConversationCountSetting = Common2.Settings.Settings.instance().createSetting(
-    AI_CONVERSATION_COUNT_SETTING_NAME,
-    0,
-    "Synced"
-    /* Common.Settings.SettingStorageType.SYNCED */
-  );
+  #aiConversationCountSetting;
   interestedActions = [
     BadgeAction.STARTED_AI_CONVERSATION
   ];
+  constructor(badgeContext) {
+    super(badgeContext);
+    this.#aiConversationCountSetting = badgeContext.settings.createSetting(
+      AI_CONVERSATION_COUNT_SETTING_NAME,
+      0,
+      "Synced"
+      /* Common.Settings.SettingStorageType.SYNCED */
+    );
+  }
   handleAction(_action) {
     const currentCount = this.#aiConversationCountSetting.get();
     if (currentCount >= AI_CONVERSATION_COUNT_LIMIT) {
@@ -207,10 +211,12 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
       "Synced"
       /* Common.Settings.SettingStorageType.SYNCED */
     );
-    this.#allBadges = _UserBadges.BADGE_REGISTRY.map((badgeCtor) => new badgeCtor({
+    const badgeContext = {
       onTriggerBadge: this.#onTriggerBadge.bind(this),
-      badgeActionEventTarget: this.#badgeActionEventTarget
-    }));
+      badgeActionEventTarget: this.#badgeActionEventTarget,
+      settings: this.#settings
+    };
+    this.#allBadges = _UserBadges.BADGE_REGISTRY.map((badgeCtor) => new badgeCtor(badgeContext));
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_UserBadges) || forceNew) {

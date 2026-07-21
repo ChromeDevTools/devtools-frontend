@@ -77,6 +77,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../generated/generated-tsconfig.json"
     },
     {
@@ -84,9 +87,6 @@
     },
     {
       "path": "../stack_trace/impl-tsconfig.json"
-    },
-    {
-      "path": "../text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../workspace/bundle-tsconfig.json"

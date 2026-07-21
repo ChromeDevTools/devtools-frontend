@@ -44,10 +44,12 @@ export class UserBadges extends Common.ObjectWrapper.ObjectWrapper {
         this.#starterBadgeLastSnoozedTimestamp = this.#settings.createSetting('starter-badge-last-snoozed-timestamp', 0, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
         this.#starterBadgeDismissed =
             this.#settings.createSetting('starter-badge-dismissed', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */);
-        this.#allBadges = UserBadges.BADGE_REGISTRY.map(badgeCtor => new badgeCtor({
+        const badgeContext = {
             onTriggerBadge: this.#onTriggerBadge.bind(this),
             badgeActionEventTarget: this.#badgeActionEventTarget,
-        }));
+            settings: this.#settings,
+        };
+        this.#allBadges = UserBadges.BADGE_REGISTRY.map(badgeCtor => new badgeCtor(badgeContext));
     }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(UserBadges) || forceNew) {

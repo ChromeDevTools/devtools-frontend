@@ -195,6 +195,7 @@ export declare class Setting<V> {
     readonly storage: SettingsStorage;
     constructor(name: string, defaultValue: V, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage, console: Console, logSettingAccess?: (name: string, value: number | string | boolean) => Promise<void>);
     setSerializer(serializer: Serializer<unknown, V>): void;
+    descriptor(): SettingDescriptor<V>;
     addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor;
     removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void;
     title(): Platform.UIString.LocalizedString;

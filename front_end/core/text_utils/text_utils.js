@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/text_utils/CodeMirrorUtils.js
+// gen/front_end/core/text_utils/CodeMirrorUtils.js
 var CodeMirrorUtils_exports = {};
 __export(CodeMirrorUtils_exports, {
   createCssTokenizer: () => createCssTokenizer
@@ -30,16 +30,16 @@ function createCssTokenizer() {
   return tokenize;
 }
 
-// gen/front_end/models/text_utils/ContentData.js
+// gen/front_end/core/text_utils/ContentData.js
 var ContentData_exports = {};
 __export(ContentData_exports, {
   ContentData: () => ContentData,
   EMPTY_TEXT_CONTENT_DATA: () => EMPTY_TEXT_CONTENT_DATA
 });
-import * as Common from "./../../core/common/common.js";
-import * as Platform4 from "./../../core/platform/platform.js";
+import * as Common from "./../common/common.js";
+import * as Platform4 from "./../platform/platform.js";
 
-// gen/front_end/models/text_utils/ContentProvider.js
+// gen/front_end/core/text_utils/ContentProvider.js
 var ContentProvider_exports = {};
 __export(ContentProvider_exports, {
   SearchMatch: () => SearchMatch,
@@ -73,19 +73,19 @@ var isStreamingContentProvider = function(provider) {
   return "requestStreamingContent" in provider;
 };
 
-// gen/front_end/models/text_utils/Text.js
+// gen/front_end/core/text_utils/Text.js
 var Text_exports = {};
 __export(Text_exports, {
   Text: () => Text
 });
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform3 from "./../platform/platform.js";
 
-// gen/front_end/models/text_utils/TextCursor.js
+// gen/front_end/core/text_utils/TextCursor.js
 var TextCursor_exports = {};
 __export(TextCursor_exports, {
   TextCursor: () => TextCursor
 });
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform from "./../platform/platform.js";
 var TextCursor = class {
   #lineEndings;
   #offset = 0;
@@ -117,13 +117,13 @@ var TextCursor = class {
   }
 };
 
-// gen/front_end/models/text_utils/TextRange.js
+// gen/front_end/core/text_utils/TextRange.js
 var TextRange_exports = {};
 __export(TextRange_exports, {
   SourceRange: () => SourceRange,
   TextRange: () => TextRange
 });
-import * as Platform2 from "./../../core/platform/platform.js";
+import * as Platform2 from "./../platform/platform.js";
 var MAX_SAFE_INT32 = 2 ** 31 - 1;
 var TextRange = class _TextRange {
   startLine;
@@ -352,7 +352,7 @@ var SourceRange = class {
   }
 };
 
-// gen/front_end/models/text_utils/Text.js
+// gen/front_end/core/text_utils/Text.js
 var Text = class {
   #value;
   #lineEndings;
@@ -416,7 +416,7 @@ var Text = class {
   }
 };
 
-// gen/front_end/models/text_utils/ContentData.js
+// gen/front_end/core/text_utils/ContentData.js
 var objectUrlRegistry = new FinalizationRegistry((url) => {
   URL.revokeObjectURL(url);
 });
@@ -636,13 +636,13 @@ var EMPTY_TEXT_CONTENT_DATA = new ContentData(
   "text/plain"
 );
 
-// gen/front_end/models/text_utils/StaticContentProvider.js
+// gen/front_end/core/text_utils/StaticContentProvider.js
 var StaticContentProvider_exports = {};
 __export(StaticContentProvider_exports, {
   StaticContentProvider: () => StaticContentProvider
 });
 
-// gen/front_end/models/text_utils/TextUtils.js
+// gen/front_end/core/text_utils/TextUtils.js
 var TextUtils_exports = {};
 __export(TextUtils_exports, {
   BalancedJSONTokenizer: () => BalancedJSONTokenizer,
@@ -655,7 +655,7 @@ __export(TextUtils_exports, {
   performSearchInContentData: () => performSearchInContentData,
   performSearchInSearchMatches: () => performSearchInSearchMatches
 });
-import * as Platform5 from "./../../core/platform/platform.js";
+import * as Platform5 from "./../platform/platform.js";
 var KEY_VALUE_FILTER_REGEXP = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
 var REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
 var TEXT_FILTER_REGEXP = /(?:^|\s)(\-)?([^\s]+)/;
@@ -929,7 +929,7 @@ var getOverlap = function(s1, s2) {
   return null;
 };
 
-// gen/front_end/models/text_utils/StaticContentProvider.js
+// gen/front_end/core/text_utils/StaticContentProvider.js
 var StaticContentProvider = class _StaticContentProvider {
   #contentURL;
   #contentType;
@@ -963,15 +963,15 @@ var StaticContentProvider = class _StaticContentProvider {
   }
 };
 
-// gen/front_end/models/text_utils/StreamingContentData.js
+// gen/front_end/core/text_utils/StreamingContentData.js
 var StreamingContentData_exports = {};
 __export(StreamingContentData_exports, {
   StreamingContentData: () => StreamingContentData,
   asContentDataOrError: () => asContentDataOrError,
   isError: () => isError
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Platform6 from "./../../core/platform/platform.js";
+import * as Common2 from "./../common/common.js";
+import * as Platform6 from "./../platform/platform.js";
 var StreamingContentData = class _StreamingContentData extends Common2.ObjectWrapper.ObjectWrapper {
   mimeType;
   #charset;
@@ -1044,12 +1044,12 @@ var asContentDataOrError = function(contentDataOrError) {
   return contentDataOrError.content();
 };
 
-// gen/front_end/models/text_utils/WasmDisassembly.js
+// gen/front_end/core/text_utils/WasmDisassembly.js
 var WasmDisassembly_exports = {};
 __export(WasmDisassembly_exports, {
   WasmDisassembly: () => WasmDisassembly
 });
-import * as Platform7 from "./../../core/platform/platform.js";
+import * as Platform7 from "./../platform/platform.js";
 var WasmDisassembly = class extends ContentData {
   lines;
   #offsets;

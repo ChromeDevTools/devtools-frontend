@@ -81,6 +81,9 @@
       "path": "../../core/sdk/bundle-tsconfig.json"
     },
     {
+      "path": "../../core/text_utils/bundle-tsconfig.json"
+    },
+    {
       "path": "../../generated/generated-tsconfig.json"
     },
     {
@@ -106,9 +109,6 @@
     },
     {
       "path": "../../models/persistence/bundle-tsconfig.json"
-    },
-    {
-      "path": "../../models/text_utils/bundle-tsconfig.json"
     },
     {
       "path": "../../models/trace/bundle-tsconfig.json"

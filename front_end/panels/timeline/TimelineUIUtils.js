@@ -39,8 +39,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/trace_source_maps_resolver.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -71,7 +71,7 @@ const UIStrings = {
      * @description Text that only contain a placeholder
      * @example {100ms (at 200ms)} PH1
      */
-    emptyPlaceholder: '{PH1}', // eslint-disable-line @devtools/l10n-no-locked-or-placeholder-only-phrase
+    emptyPlaceholder: '{PH1}', // eslint-disable-line @devtools/l10n-uistrings-text-style
     /**
      * @description Text for timestamps of items
      */
@@ -187,7 +187,7 @@ const UIStrings = {
     /**
      * @description Text to refer to the URL associated with a given event.
      */
-    url: 'Url',
+    url: 'URL',
     /**
      * @description Text to indicate to the user the size of the cache (as a filesize - e.g. 5mb).
      */

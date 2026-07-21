@@ -141,9 +141,11 @@ iframe.widget {
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.highlighted-search-result,:host::highlight(highlighted-search-result) {
+.highlighted-search-result,
+:host::highlight(highlighted-search-result) {
   border-radius: 1px;
   background-color: var(--sys-color-yellow-container);
+  color: var(--sys-color-on-yellow-container);
   outline: 1px solid var(--sys-color-yellow-container);
 }
 
@@ -320,7 +322,8 @@ input[type='range']:disabled::-webkit-slider-thumb {
   }
 }
 
-.highlighted-search-result.current-search-result,:host::highlight(current-search-result) {
+.highlighted-search-result.current-search-result,
+:host::highlight(current-search-result) {
   /* Note: this value is used in light & dark mode */
   --override-current-search-result-background-color: rgb(255 127 0 / 80%);
 
@@ -329,6 +332,7 @@ input[type='range']:disabled::-webkit-slider-thumb {
   padding: 1px;
   margin: -1px;
   background-color: var(--override-current-search-result-background-color);
+  color: var(--sys-color-on-surface);
 }
 
 .dimmed {

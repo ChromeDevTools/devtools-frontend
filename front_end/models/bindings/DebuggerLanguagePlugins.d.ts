@@ -2,9 +2,9 @@ import type { Chrome } from '../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as StackTraceImpl from '../stack_trace/stack_trace_impl.js';
-import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import type { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
 declare class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {

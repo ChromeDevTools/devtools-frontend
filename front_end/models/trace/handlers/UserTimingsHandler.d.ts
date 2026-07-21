@@ -48,7 +48,7 @@ export declare function reset(): void;
  * the second event is the parent of the first. Hence the switch.
  *
  */
-export declare function userTimingComparator<T extends Types.Events.SyntheticEventPair | Types.Events.ConsoleTimeStamp>(a: T, b: T, originalArray: readonly T[]): number;
+export declare function userTimingComparator<T extends Types.Events.SyntheticEventPair | Types.Events.ConsoleTimeStamp>(a: T, b: T, originalIndex: ReadonlyMap<T, number>): number;
 export declare function handleEvent(event: Types.Events.Event): void;
 export declare function finalize(): Promise<void>;
 export declare function data(): UserTimingsData;

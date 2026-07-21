@@ -63,7 +63,7 @@ var dataGrid_css_default = `/*
   position: sticky;
   top: 0;
   height: 21px;
-  z-index: 1;
+  z-index: 2;
 }
 
 .data-grid .aria-live-label {
@@ -3220,7 +3220,7 @@ import * as UI3 from "./../../legacy.js";
 var DUMMY_COLUMN_ID = "dummy";
 var elementToNode = /* @__PURE__ */ new WeakMap();
 var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate {
-  static observedAttributes = ["striped", "name", "inline", "resize"];
+  static observedAttributes = ["striped", "name", "inline", "resize", "highlight"];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #dataGrid;
   #resizeObserver = new ResizeObserver(() => {
@@ -3296,6 +3296,11 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
       case "resize":
         this.#dataGrid.setResizeMethod(newValue);
         break;
+      case "highlight":
+        queueMicrotask(() => {
+          this.#revealHighlightedNode(Number(newValue));
+        });
+        break;
     }
   }
   set striped(striped) {
@@ -3339,6 +3344,23 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
       hasChildren = Boolean(dataRow.querySelector("td table"));
     }
     dataGridNode.setHasChildren(hasChildren);
+  }
+  #revealHighlightedNode(index) {
+    if (isNaN(index) || index < 1) {
+      return;
+    }
+    let count = 0;
+    let node = this.#dataGrid.rootNode().traverseNextNode(true);
+    while (node) {
+      if (node.configElement.hasAttribute("highlighted")) {
+        count++;
+        if (count === index) {
+          node.revealAndSelect();
+          return;
+        }
+      }
+      node = node.traverseNextNode(true);
+    }
   }
   #updateColumns() {
     for (const column of Object.keys(this.#dataGrid.columns)) {

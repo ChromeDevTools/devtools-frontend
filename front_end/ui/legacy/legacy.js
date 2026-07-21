@@ -751,6 +751,7 @@ import * as Root8 from "./../../core/root/root.js";
 import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
+import { nothing as nothing2, render as render5 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/ContextMenu.js
 var ContextMenu_exports = {};
@@ -8252,12 +8253,13 @@ var InspectorView = class _InspectorView extends VBox {
   }
   #observedResize() {
     const rect = this.element.getBoundingClientRect();
-    this.element.style.setProperty("--devtools-window-left", `${rect.left}px`);
-    this.element.style.setProperty("--devtools-window-right", `${window.innerWidth - rect.right}px`);
-    this.element.style.setProperty("--devtools-window-width", `${rect.width}px`);
-    this.element.style.setProperty("--devtools-window-top", `${rect.top}px`);
-    this.element.style.setProperty("--devtools-window-bottom", `${window.innerHeight - rect.bottom}px`);
-    this.element.style.setProperty("--devtools-window-height", `${rect.height}px`);
+    const root = this.element.ownerDocument.documentElement;
+    root.style.setProperty("--devtools-window-left", `${rect.left}px`);
+    root.style.setProperty("--devtools-window-right", `${window.innerWidth - rect.right}px`);
+    root.style.setProperty("--devtools-window-width", `${rect.width}px`);
+    root.style.setProperty("--devtools-window-top", `${rect.top}px`);
+    root.style.setProperty("--devtools-window-bottom", `${window.innerHeight - rect.bottom}px`);
+    root.style.setProperty("--devtools-window-height", `${rect.height}px`);
   }
   wasShown() {
     super.wasShown();
@@ -10347,7 +10349,7 @@ __export(TextPrompt_exports, {
 });
 import * as Common13 from "./../../core/common/common.js";
 import * as Platform12 from "./../../core/platform/platform.js";
-import * as TextUtils from "./../../models/text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/SuggestBox.js
@@ -12738,10 +12740,12 @@ var Toolbar = class _Toolbar extends HTMLElement {
       const widget2 = Widget.get(item8.element);
       if (widget2) {
         widget2.detach();
+      } else {
+        item8.element.remove();
       }
     }
     this.items = [];
-    this.removeChildren();
+    render5(nothing2, this);
   }
   hideSeparatorDupes() {
     if (!this.items.length) {
@@ -13875,9 +13879,11 @@ iframe.widget {
   display: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.highlighted-search-result,:host::highlight(highlighted-search-result) {
+.highlighted-search-result,
+:host::highlight(highlighted-search-result) {
   border-radius: 1px;
   background-color: var(--sys-color-yellow-container);
+  color: var(--sys-color-on-yellow-container);
   outline: 1px solid var(--sys-color-yellow-container);
 }
 
@@ -14054,7 +14060,8 @@ input[type='range']:disabled::-webkit-slider-thumb {
   }
 }
 
-.highlighted-search-result.current-search-result,:host::highlight(current-search-result) {
+.highlighted-search-result.current-search-result,
+:host::highlight(current-search-result) {
   /* Note: this value is used in light & dark mode */
   --override-current-search-result-background-color: rgb(255 127 0 / 80%);
 
@@ -14063,6 +14070,7 @@ input[type='range']:disabled::-webkit-slider-thumb {
   padding: 1px;
   margin: -1px;
   background-color: var(--override-current-search-result-background-color);
+  color: var(--sys-color-on-surface);
 }
 
 .dimmed {
@@ -15092,7 +15100,7 @@ div.error {
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
 // gen/front_end/ui/legacy/UIUtils.js
-var { Directives: Directives3, render: render5 } = Lit2;
+var { Directives: Directives3, render: render6 } = Lit2;
 var UIStrings13 = {
   /**
    * @description label to open link externally
@@ -16765,7 +16773,7 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       this.#mutationObserver.observe(this.#contentTemplate.content, { childList: true, attributes: true, subtree: true, characterData: true });
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render5(template, this.#contentTemplate.content);
+    render6(template, this.#contentTemplate.content);
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
@@ -17892,7 +17900,7 @@ __export(EmptyWidget_exports, {
 });
 import "./../kit/kit.js";
 import * as i18n29 from "./../../core/i18n/i18n.js";
-import { Directives as Directives4, html as html4, render as render6 } from "./../lit/lit.js";
+import { Directives as Directives4, html as html4, render as render7 } from "./../lit/lit.js";
 import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -17919,7 +17927,7 @@ var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var { ref } = Directives4;
 var DEFAULT_VIEW = (input, output, target) => {
-  render6(html4`
+  render7(html4`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}
@@ -18899,7 +18907,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "./../../core/i18n/i18n.js";
 import * as Platform21 from "./../../core/platform/platform.js";
 import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html5, nothing as nothing3, render as render7 } from "./../lit/lit.js";
+import { html as html5, nothing as nothing4, render as render8 } from "./../lit/lit.js";
 import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -19246,11 +19254,11 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render7(html5`
+    render8(html5`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
-          ${controlLabels?.hideEdit ? nothing3 : html5`<devtools-button class=toolbar-button
+          ${controlLabels?.hideEdit ? nothing4 : html5`<devtools-button class=toolbar-button
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
@@ -19947,7 +19955,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n35 from "./../../core/i18n/i18n.js";
 import * as Buttons9 from "./../components/buttons/buttons.js";
-import { html as html6, render as render8 } from "./../lit/lit.js";
+import { html as html6, render as render9 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -20012,7 +20020,7 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render8(html6`
+  render9(html6`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -21599,7 +21607,7 @@ __export(TargetCrashedScreen_exports, {
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n41 from "./../../core/i18n/i18n.js";
-import { html as html7, render as render9 } from "./../lit/lit.js";
+import { html as html7, render as render10 } from "./../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -21635,7 +21643,7 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render9(html7`
+  render10(html7`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
     <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`, target);
@@ -21998,7 +22006,7 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 
 // gen/front_end/ui/legacy/Treeoutline.js
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render10 } = Lit3;
+var { render: render11 } = Lit3;
 var Events2;
 (function(Events3) {
   Events3["ElementAttached"] = "ElementAttached";
@@ -22634,7 +22642,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render10(icons, this.leadingIconsElement);
+    render11(icons, this.leadingIconsElement);
   }
   setTrailingIcons(icons) {
     if (!this.trailingIconsElement && !icons.length) {
@@ -22647,7 +22655,7 @@ var TreeElement = class {
       this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
-    render10(icons, this.trailingIconsElement);
+    render11(icons, this.trailingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;

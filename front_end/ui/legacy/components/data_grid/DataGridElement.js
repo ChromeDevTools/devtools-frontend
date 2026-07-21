@@ -10,7 +10,7 @@ import { SortableDataGrid, SortableDataGridNode } from './SortableDataGrid.js';
 const DUMMY_COLUMN_ID = 'dummy'; // SortableDataGrid.create requires at least one column.
 const elementToNode = new WeakMap();
 export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
-    static observedAttributes = ['striped', 'name', 'inline', 'resize'];
+    static observedAttributes = ['striped', 'name', 'inline', 'resize', 'highlight'];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     #dataGrid;
     #resizeObserver = new ResizeObserver(() => {
@@ -89,6 +89,11 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
             case 'resize':
                 this.#dataGrid.setResizeMethod(newValue);
                 break;
+            case 'highlight':
+                queueMicrotask(() => {
+                    this.#revealHighlightedNode(Number(newValue));
+                });
+                break;
         }
     }
     set striped(striped) {
@@ -133,6 +138,23 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
             hasChildren = Boolean(dataRow.querySelector('td table'));
         }
         dataGridNode.setHasChildren(hasChildren);
+    }
+    #revealHighlightedNode(index) {
+        if (isNaN(index) || index < 1) {
+            return;
+        }
+        let count = 0;
+        let node = this.#dataGrid.rootNode().traverseNextNode(true);
+        while (node) {
+            if (node.configElement.hasAttribute('highlighted')) {
+                count++;
+                if (count === index) {
+                    node.revealAndSelect();
+                    return;
+                }
+            }
+            node = node.traverseNextNode(true);
+        }
     }
     #updateColumns() {
         for (const column of Object.keys(this.#dataGrid.columns)) {

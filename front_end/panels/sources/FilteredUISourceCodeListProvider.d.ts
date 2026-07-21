@@ -11,6 +11,13 @@ export declare class FilteredUISourceCodeListProvider extends QuickOpen.Filtered
     private readonly uiSourceCodeIds;
     private query;
     constructor();
+    /**
+     * Checks if the given UISourceCode belongs to a file system project.
+     * This includes:
+     * - Workspace.Workspace.projectTypes.FileSystem: Standard workspace folders added by the user.
+     * - Workspace.Workspace.projectTypes.ConnectableFileSystem: Workspace folders connected via custom protocols.
+     */
+    private isFileSystemFile;
     private projectRemoved;
     private populate;
     private filterUISourceCode;

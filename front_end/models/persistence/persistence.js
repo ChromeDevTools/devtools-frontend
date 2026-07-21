@@ -13,8 +13,8 @@ __export(Automapping_exports, {
 import * as Common6 from "./../../core/common/common.js";
 import * as Host5 from "./../../core/host/host.js";
 import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
 import * as Bindings2 from "./../bindings/bindings.js";
-import * as TextUtils5 from "./../text_utils/text_utils.js";
 import * as Workspace5 from "./../workspace/workspace.js";
 
 // gen/front_end/models/persistence/FileSystemWorkspaceBinding.js
@@ -26,7 +26,7 @@ __export(FileSystemWorkspaceBinding_exports, {
 import * as Common4 from "./../../core/common/common.js";
 import * as Host3 from "./../../core/host/host.js";
 import * as Platform5 from "./../../core/platform/platform.js";
-import * as TextUtils2 from "./../text_utils/text_utils.js";
+import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 
 // gen/front_end/models/persistence/IsolatedFileSystemManager.js
@@ -51,7 +51,7 @@ import * as Common2 from "./../../core/common/common.js";
 import * as Host from "./../../core/host/host.js";
 import * as i18n3 from "./../../core/i18n/i18n.js";
 import * as Platform2 from "./../../core/platform/platform.js";
-import * as TextUtils from "./../text_utils/text_utils.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 
 // gen/front_end/models/persistence/PlatformFileSystem.js
 var PlatformFileSystem_exports = {};
@@ -1324,9 +1324,9 @@ import * as Host4 from "./../../core/host/host.js";
 import * as Platform7 from "./../../core/platform/platform.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK from "./../../core/sdk/sdk.js";
+import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
 import * as Bindings from "./../bindings/bindings.js";
 import * as BreakpointManager from "./../breakpoints/breakpoints.js";
-import * as TextUtils4 from "./../text_utils/text_utils.js";
 import * as Workspace3 from "./../workspace/workspace.js";
 var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.ObjectWrapper {
   #workspace;
@@ -2364,8 +2364,8 @@ import * as Host8 from "./../../core/host/host.js";
 import * as Platform11 from "./../../core/platform/platform.js";
 import * as Root5 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
 import * as Breakpoints from "./../breakpoints/breakpoints.js";
-import * as TextUtils6 from "./../text_utils/text_utils.js";
 import * as Workspace9 from "./../workspace/workspace.js";
 var forbiddenUrls = ["chromewebstore.google.com", "chrome.google.com"];
 var NetworkPersistenceManager = class _NetworkPersistenceManager extends Common9.ObjectWrapper.ObjectWrapper {

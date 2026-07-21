@@ -1,5 +1,5 @@
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type { ConsoleGroupViewMessage, ConsoleViewMessage } from './ConsoleViewMessage.js';
 export type LevelsMask = Record<string, boolean>;
 export declare class ConsoleFilter {

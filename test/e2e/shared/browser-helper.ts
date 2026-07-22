@@ -194,14 +194,6 @@ export class Launcher {
     }
     launchArgs.push(`--enable-features=${enabledFeatures.join(',')}`);
 
-    if (settings.extensions && settings.extensions.length > 0) {
-      if (Array.isArray(opts.ignoreDefaultArgs)) {
-        opts.ignoreDefaultArgs.push('--disable-extensions');
-      } else {
-        opts.ignoreDefaultArgs = ['--disable-extensions'];
-      }
-    }
-
     opts.args = launchArgs;
     return puppeteer.launch(opts);
   }

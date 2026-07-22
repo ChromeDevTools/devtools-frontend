@@ -2094,7 +2094,7 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
   #liveLocationPromises;
   constructor(resourceMapping, targetManager) {
     this.#resourceMapping = resourceMapping;
-    this.#resourceMapping.cssWorkspaceBinding = this;
+    this.#resourceMapping.cssLocationUpdater = this;
     this.#modelToInfo = /* @__PURE__ */ new Map();
     targetManager.observeModels(SDK7.CSSModel.CSSModel, this);
     this.#liveLocationPromises = /* @__PURE__ */ new Set();
@@ -3952,7 +3952,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
   #settings;
   constructor(resourceMapping, targetManager, ignoreListManager, workspace) {
     this.resourceMapping = resourceMapping;
-    this.resourceMapping.debuggerWorkspaceBinding = this;
+    this.resourceMapping.debuggerLocationUpdater = this;
     this.ignoreListManager = ignoreListManager;
     this.workspace = workspace;
     this.#settings = targetManager.settings;
@@ -4716,13 +4716,17 @@ import * as TextUtils8 from "./../../core/text_utils/text_utils.js";
 import * as Workspace20 from "./../workspace/workspace.js";
 var PresentationSourceFrameMessageManager = class {
   #targetToMessageHelperMap = /* @__PURE__ */ new WeakMap();
-  constructor() {
-    SDK13.TargetManager.TargetManager.instance().observeModels(SDK13.DebuggerModel.DebuggerModel, this);
-    SDK13.TargetManager.TargetManager.instance().observeModels(SDK13.CSSModel.CSSModel, this);
+  #targetManager;
+  #workspace;
+  constructor(targetManager, workspace) {
+    this.#workspace = workspace;
+    this.#targetManager = targetManager;
+    targetManager.observeModels(SDK13.DebuggerModel.DebuggerModel, this);
+    targetManager.observeModels(SDK13.CSSModel.CSSModel, this);
   }
   modelAdded(model) {
     const target = model.target();
-    const helper = this.#targetToMessageHelperMap.get(target) ?? new PresentationSourceFrameMessageHelper();
+    const helper = this.#targetToMessageHelperMap.get(target) ?? new PresentationSourceFrameMessageHelper(this.#workspace);
     if (model instanceof SDK13.DebuggerModel.DebuggerModel) {
       helper.setDebuggerModel(model);
     } else {
@@ -4740,15 +4744,16 @@ var PresentationSourceFrameMessageManager = class {
     void helper?.addMessage(message, source);
   }
   clear() {
-    for (const target of SDK13.TargetManager.TargetManager.instance().targets()) {
+    for (const target of this.#targetManager.targets()) {
       const helper = this.#targetToMessageHelperMap.get(target);
       helper?.clear();
     }
   }
 };
 var PresentationConsoleMessageManager = class {
-  #sourceFrameMessageManager = new PresentationSourceFrameMessageManager();
-  constructor(targetManager) {
+  #sourceFrameMessageManager;
+  constructor(targetManager, workspace) {
+    this.#sourceFrameMessageManager = new PresentationSourceFrameMessageManager(targetManager, workspace);
     targetManager.addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
     SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
     targetManager.addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
@@ -4767,9 +4772,11 @@ var PresentationSourceFrameMessageHelper = class {
   #cssModel;
   #presentationMessages = /* @__PURE__ */ new Map();
   #locationPool;
-  constructor() {
+  #workspace;
+  constructor(workspace) {
+    this.#workspace = workspace;
     this.#locationPool = new LiveLocationPool();
-    Workspace20.Workspace.WorkspaceImpl.instance().addEventListener(Workspace20.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded.bind(this));
+    this.#workspace.addEventListener(Workspace20.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded.bind(this));
   }
   setDebuggerModel(debuggerModel) {
     if (this.#debuggerModel) {
@@ -4809,7 +4816,7 @@ var PresentationSourceFrameMessageHelper = class {
     if (!source.url) {
       return null;
     }
-    const uiSourceCode = Workspace20.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(source.url);
+    const uiSourceCode = this.#workspace.uiSourceCodeForURL(source.url);
     if (!uiSourceCode) {
       return null;
     }
@@ -4964,31 +4971,31 @@ function computeStyleSheetRange(header) {
 var ResourceMapping = class {
   workspace;
   #modelToInfo = /* @__PURE__ */ new Map();
-  #debuggerWorkspaceBinding = null;
-  #cssWorkspaceBinding = null;
+  #debuggerLocationUpdater = null;
+  #cssLocationUpdater = null;
   constructor(targetManager, workspace) {
     this.workspace = workspace;
     targetManager.observeModels(SDK14.ResourceTreeModel.ResourceTreeModel, this);
   }
-  get debuggerWorkspaceBinding() {
-    return this.#debuggerWorkspaceBinding;
+  get debuggerLocationUpdater() {
+    return this.#debuggerLocationUpdater;
   }
-  /* {@link DebuggerWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
-  set debuggerWorkspaceBinding(debuggerWorkspaceBinding) {
-    if (this.#debuggerWorkspaceBinding) {
-      throw new Error("DebuggerWorkspaceBinding already set");
+  /* The concrete DebuggerWorkspaceBinding requires ResourceMapping during construction, so we must wire up this updater afterward. */
+  set debuggerLocationUpdater(debuggerLocationUpdater) {
+    if (this.#debuggerLocationUpdater) {
+      throw new Error("DebuggerLocationUpdater already set");
     }
-    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#debuggerLocationUpdater = debuggerLocationUpdater;
   }
-  get cssWorkspaceBinding() {
-    return this.#cssWorkspaceBinding;
+  get cssLocationUpdater() {
+    return this.#cssLocationUpdater;
   }
-  /* {@link CSSWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
-  set cssWorkspaceBinding(cssWorkspaceBinding) {
-    if (this.#cssWorkspaceBinding) {
-      throw new Error("CSSWorkspaceBinding already set");
+  /* The concrete CSSWorkspaceBinding requires ResourceMapping during construction, so we must wire up this updater afterward. */
+  set cssLocationUpdater(cssLocationUpdater) {
+    if (this.#cssLocationUpdater) {
+      throw new Error("CSSLocationUpdater already set");
     }
-    this.#cssWorkspaceBinding = cssWorkspaceBinding;
+    this.#cssLocationUpdater = cssLocationUpdater;
   }
   modelAdded(resourceTreeModel) {
     const info = new ModelInfo2(this, resourceTreeModel);
@@ -5365,13 +5372,13 @@ var Binding2 = class {
   #project;
   #uiSourceCode;
   #edits = [];
-  #debuggerWorkspaceBinding;
-  #cssWorkspaceBinding;
+  #debuggerLocationUpdater;
+  #cssLocationUpdater;
   constructor(modelInfo, resource) {
     this.resources = /* @__PURE__ */ new Set([resource]);
     this.#project = modelInfo.project;
-    this.#debuggerWorkspaceBinding = modelInfo.resourceMapping.debuggerWorkspaceBinding;
-    this.#cssWorkspaceBinding = modelInfo.resourceMapping.cssWorkspaceBinding;
+    this.#debuggerLocationUpdater = modelInfo.resourceMapping.debuggerLocationUpdater;
+    this.#cssLocationUpdater = modelInfo.resourceMapping.cssLocationUpdater;
     this.#uiSourceCode = this.#project.createUISourceCode(resource.url, resource.contentType());
     boundUISourceCodes.add(this.#uiSourceCode);
     if (resource.frameId) {
@@ -5379,8 +5386,8 @@ var Binding2 = class {
     }
     this.#project.addUISourceCodeWithProvider(this.#uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
     void Promise.all([
-      ...this.inlineScripts().map((script) => this.#debuggerWorkspaceBinding?.updateLocations(script)),
-      ...this.inlineStyles().map((style) => this.#cssWorkspaceBinding?.updateLocations(style))
+      ...this.inlineScripts().map((script) => this.#debuggerLocationUpdater?.updateLocations(script)),
+      ...this.inlineStyles().map((style) => this.#cssLocationUpdater?.updateLocations(style))
     ]);
   }
   inlineStyles() {
@@ -5443,7 +5450,7 @@ var Binding2 = class {
           continue;
         }
         scriptRangeMap.set(script, range.rebaseAfterTextEdit(oldRange, newRange));
-        updatePromises.push(this.#debuggerWorkspaceBinding?.updateLocations(script));
+        updatePromises.push(this.#debuggerLocationUpdater?.updateLocations(script));
       }
       for (const style of styles) {
         const range = styleSheetRangeMap.get(style) ?? computeStyleSheetRange(style);
@@ -5451,7 +5458,7 @@ var Binding2 = class {
           continue;
         }
         styleSheetRangeMap.set(style, range.rebaseAfterTextEdit(oldRange, newRange));
-        updatePromises.push(this.#cssWorkspaceBinding?.updateLocations(style));
+        updatePromises.push(this.#cssLocationUpdater?.updateLocations(style));
       }
       await Promise.all(updatePromises);
     }
@@ -5472,8 +5479,8 @@ var Binding2 = class {
   dispose() {
     this.#project.removeUISourceCode(this.#uiSourceCode.url());
     void Promise.all([
-      ...this.inlineScripts().map((script) => this.#debuggerWorkspaceBinding?.updateLocations(script)),
-      ...this.inlineStyles().map((style) => this.#cssWorkspaceBinding?.updateLocations(style))
+      ...this.inlineScripts().map((script) => this.#debuggerLocationUpdater?.updateLocations(script)),
+      ...this.inlineStyles().map((style) => this.#cssLocationUpdater?.updateLocations(style))
     ]);
   }
   firstResource() {

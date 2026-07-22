@@ -1488,7 +1488,8 @@ window.aiAssistanceTestPatchPrompt = async (projectName, changeSummary, expected
 var ChatInput_exports = {};
 __export(ChatInput_exports, {
   ChatInput: () => ChatInput,
-  DEFAULT_VIEW: () => DEFAULT_VIEW2
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  MAX_IMAGE_FILE_SIZE_BYTES: () => MAX_IMAGE_FILE_SIZE_BYTES
 });
 import "./../../ui/components/tooltips/tooltips.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
@@ -1915,6 +1916,63 @@ button.link {
 
 /*# sourceURL=${import.meta.resolve("././components/chatInput.css")} */`;
 
+// gen/front_end/panels/ai_assistance/components/ImageResize.js
+var ImageResize_exports = {};
+__export(ImageResize_exports, {
+  compress: () => compress,
+  setCompressImplementationForTest: () => setCompressImplementationForTest
+});
+var MAX_DIMENSION_PX = 1024;
+var compressImplementation = realCompress;
+function setCompressImplementationForTest(impl) {
+  compressImplementation = impl ?? realCompress;
+}
+async function compress(file) {
+  return await compressImplementation(file);
+}
+async function realCompress(file) {
+  const bitmap = await createImageBitmap(file);
+  try {
+    let width = bitmap.width;
+    let height = bitmap.height;
+    if (width > MAX_DIMENSION_PX || height > MAX_DIMENSION_PX) {
+      if (width > height) {
+        height = Math.round(height * MAX_DIMENSION_PX / width);
+        width = MAX_DIMENSION_PX;
+      } else {
+        width = Math.round(width * MAX_DIMENSION_PX / height);
+        height = MAX_DIMENSION_PX;
+      }
+    }
+    const canvas = new OffscreenCanvas(width, height);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Failed to get 2d context");
+    }
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    const blob = await canvas.convertToBlob({
+      type: "image/jpeg",
+      quality: 0.8
+    });
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result;
+        const base64Data = result.split(",")[1];
+        resolve(base64Data);
+      };
+      reader.onerror = () => reject(new Error("Failed to read compressed blob"));
+      reader.readAsDataURL(blob);
+    });
+    return {
+      data: base64,
+      mimeType: "image/jpeg"
+    };
+  } finally {
+    bitmap.close();
+  }
+}
+
 // gen/front_end/panels/ai_assistance/components/ChatInput.js
 var { html: html6, Directives: { createRef, ref } } = Lit4;
 var { widget: widget2 } = UI3.Widget;
@@ -1974,6 +2032,10 @@ var UIStringsNotTranslate3 = {
    */
   uploadImageFailureMessage: "Failed to upload image. Please try again.",
   /**
+   * @description Message displayed in toast in case of uploaded image being too large.
+   */
+  fileTooLargeMessage: "File is too large. Please select an image under 10MB.",
+  /**
    * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
    */
   addContext: "Add item for context",
@@ -2008,6 +2070,7 @@ var lockedString3 = i18n5.i18n.lockedString;
 var SCREENSHOT_QUALITY = 80;
 var JPEG_MIME_TYPE = "image/jpeg";
 var SHOW_LOADING_STATE_TIMEOUT = 100;
+var MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 var RELEVANT_DATA_LINK_CHAT_ID = "relevant-data-link-chat";
 var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
 function getContextRemoveLabel(context) {
@@ -2441,32 +2504,24 @@ var ChatInput = class extends UI3.Widget.Widget {
     this.#handleImageDataTransferEvent(event.dataTransfer, event);
   };
   async #handleLoadImage(file) {
+    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      Snackbars.Snackbar.Snackbar.show({ message: lockedString3(UIStringsNotTranslate3.fileTooLargeMessage) });
+      return;
+    }
     const showLoadingTimeout = setTimeout(() => {
       this.#imageInput = { isLoading: true };
       this.performUpdate();
     }, SHOW_LOADING_STATE_TIMEOUT);
     try {
-      const reader = new FileReader();
-      const dataUrl = await new Promise((resolve, reject) => {
-        reader.onload = () => {
-          if (typeof reader.result === "string") {
-            resolve(reader.result);
-          } else {
-            reject(new Error("FileReader result was not a string."));
-          }
-        };
-        reader.readAsDataURL(file);
-      });
-      const commaIndex = dataUrl.indexOf(",");
-      const bytes = dataUrl.substring(commaIndex + 1);
+      const compressed = await compress(file);
       this.#imageInput = {
         isLoading: false,
-        data: bytes,
-        mimeType: file.type,
+        data: compressed.data,
+        mimeType: compressed.mimeType,
         inputType: "uploaded-image"
-        /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */
       };
-    } catch {
+    } catch (err) {
+      console.error("Failed to compress image:", err);
       this.#imageInput = void 0;
       Snackbars.Snackbar.Snackbar.show({ message: lockedString3(UIStringsNotTranslate3.uploadImageFailureMessage) });
     }
@@ -3939,6 +3994,10 @@ var UIStringsNotTranslate4 = {
    */
   crossOriginError: "I have selected the new context but you will have to start a new chat.",
   /**
+   * @description The error message when the request payload is too large.
+   */
+  payloadTooLargeError: "The request payload is too large. Please try a smaller image or a screenshot.",
+  /**
    * @description Displayed when the user stop the response
    */
   stoppedResponse: "You stopped this response",
@@ -5260,6 +5319,9 @@ function renderError(message) {
         break;
       case "cross-origin":
         errorMessage = UIStringsNotTranslate4.crossOriginError;
+        break;
+      case "payload-too-large":
+        errorMessage = UIStringsNotTranslate4.payloadTooLargeError;
         break;
       case "abort":
         return html8`<p class="aborted" jslog=${VisualLogging4.section("aborted")}>${lockedString5(UIStringsNotTranslate4.stoppedResponse)}</p>`;
@@ -9220,6 +9282,7 @@ export {
   ExploreWidget_exports as ExploreWidget,
   ExportConversation_exports as ExportConversation,
   ExportForAgentsDialog_exports as ExportForAgentsDialog,
+  ImageResize_exports as ImageResize,
   MarkdownRendererWithCodeBlock,
   OptInChangeDialog_exports as OptInChangeDialog,
   PatchWidget_exports as PatchWidget,

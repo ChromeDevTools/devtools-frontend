@@ -123,9 +123,7 @@ export class EventListenersWidget extends UI.Widget.VBox {
         this.dispatchFilterBySetting =
             Common.Settings.Settings.instance().createSetting('event-listener-dispatch-filter-type', DispatchFilterBy.All);
         this.dispatchFilterBySetting.addChangeListener(this.requestUpdate.bind(this));
-        this.showFrameworkListenersSetting =
-            Common.Settings.Settings.instance().createSetting('show-frameowkr-listeners', true);
-        this.showFrameworkListenersSetting.setTitle(i18nString(UIStrings.frameworkListeners));
+        this.showFrameworkListenersSetting = Common.Settings.Settings.instance().moduleSetting('show-frameowkr-listeners');
         this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
         UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.requestUpdate.bind(this));
         this.requestUpdate();

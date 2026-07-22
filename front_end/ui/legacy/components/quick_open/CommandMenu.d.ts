@@ -3,6 +3,7 @@ import '../../../components/highlighting/highlighting.js';
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import { type TemplateResult } from '../../../lit/lit.js';
+import * as SettingsUI from '../../../settings/settings.js';
 import * as UI from '../../legacy.js';
 import { Provider } from './FilteredListWidget.js';
 export declare class CommandMenu {
@@ -12,7 +13,7 @@ export declare class CommandMenu {
         forceNew: boolean | null;
     }): CommandMenu;
     static createCommand(options: CreateCommandOptions): Command;
-    static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V): Command;
+    static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V, settingUIDescriptor?: SettingsUI.SettingUIRegistration.SettingUIDescriptor): Command;
     static createActionCommand(options: ActionCommandOptions): Command;
     static createRevealViewCommand(options: RevealViewCommandOptions): Command;
     private loadCommands;

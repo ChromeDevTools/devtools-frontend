@@ -93,7 +93,9 @@ export class DeviceModeView extends UI.Widget.VBox {
         this.registerRequiredCSS(deviceModeViewStyles);
         this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
         this.model.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.updateUI, this);
-        this.mediaInspector = new MediaQueryInspector(() => this.model.appliedDeviceSize().width, this.model.setWidth.bind(this.model), new Common.Throttler.Throttler(0));
+        this.mediaInspector = new MediaQueryInspector();
+        this.mediaInspector.getWidthCallback = () => this.model.appliedDeviceSize().width;
+        this.mediaInspector.setWidthCallback = this.model.setWidth.bind(this.model);
         this.showMediaInspectorSetting = Common.Settings.Settings.instance().moduleSetting('show-media-query-inspector');
         this.showMediaInspectorSetting.addChangeListener(this.updateUI, this);
         this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
@@ -114,7 +116,8 @@ export class DeviceModeView extends UI.Widget.VBox {
         UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.zoomChanged, this);
     }
     createUI() {
-        this.toolbar = new DeviceModeToolbar(this.model, this.showMediaInspectorSetting, this.showRulersSetting);
+        this.toolbar = new DeviceModeToolbar();
+        this.toolbar.model = this.model;
         this.toolbar.show(this.contentElement);
         this.contentClip = this.contentElement.createChild('div', 'device-mode-content-clip vbox');
         this.responsivePresetsContainer = this.contentClip.createChild('div', 'device-mode-presets-container');

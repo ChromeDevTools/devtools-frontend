@@ -83,7 +83,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 .network-timing-bar {
   position: absolute;
   min-width: 1px;
-  inset: 0 attr(data-right %) 0 attr(data-left %); /* stylelint-disable-line declaration-property-value-no-unknown */
+  inset: 0 attr(data-right %) 0 attr(data-left %);
 }
 
 .network-timing-bar-title {
@@ -223,7 +223,7 @@ td.throttled {
 }
 
 .network-timing-bar.server-timing {
-  background-color: attr(data-background type(<color>), var(--sys-color-neutral-container)); /* stylelint-disable-line declaration-property-value-no-unknown */
+  background-color: attr(data-background type(<color>), var(--sys-color-neutral-container));
 }
 
 tr.synthetic {

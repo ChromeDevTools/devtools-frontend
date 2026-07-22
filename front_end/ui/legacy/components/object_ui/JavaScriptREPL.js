@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../../../core/sdk/sdk.js';
+import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../../../models/source_map_scopes/source_map_scopes.js';
 import * as Acorn from '../../../../third_party/acorn/acorn.js';
@@ -45,7 +46,7 @@ export class JavaScriptREPL {
         let expression = text;
         const callFrame = executionContext.debuggerModel.selectedCallFrame();
         if (callFrame?.script.isJavaScript()) {
-            const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
+            const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
             try {
                 expression =
                     await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);

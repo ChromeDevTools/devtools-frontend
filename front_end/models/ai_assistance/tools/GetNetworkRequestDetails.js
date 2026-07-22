@@ -19,6 +19,10 @@ const lockedString = i18n.i18n.lockedString;
 export class GetNetworkRequestDetailsTool {
     name = "getNetworkRequestDetails" /* ToolName.GET_NETWORK_REQUEST_DETAILS */;
     description = 'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
+    #networkLog;
+    constructor(networkLog) {
+        this.#networkLog = networkLog;
+    }
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for retrieving detailed information about a specific network request.',
@@ -52,7 +56,8 @@ export class GetNetworkRequestDetailsTool {
                 error: 'Opaque origin not allowed',
             };
         }
-        const request = Logs.NetworkLog.NetworkLog.instance().requests().find(req => {
+        const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+        const request = networkLog.requests().find(req => {
             if (req.requestId() !== args.id) {
                 return false;
             }
@@ -69,7 +74,7 @@ export class GetNetworkRequestDetailsTool {
             };
         }
         const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
-        const formatter = new NetworkRequestFormatter(request, calculator);
+        const formatter = new NetworkRequestFormatter(request, calculator, networkLog);
         const formattedDetails = await formatter.formatNetworkRequest();
         return {
             result: formattedDetails,

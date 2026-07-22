@@ -339,8 +339,7 @@ export class CounterUI {
         this.countersPane = countersPane;
         this.counter = counter;
         this.formatter = formatter;
-        this.setting = Common.Settings.Settings.instance().createSetting('timeline-counters-graph-' + settingsKey, true);
-        this.setting.setTitle(title);
+        this.setting = Common.Settings.Settings.instance().moduleSetting('timeline-counters-graph-' + settingsKey);
         this.filter = new UI.Toolbar.ToolbarSettingCheckbox(this.setting, title);
         const parsedColor = Common.Color.parse(graphColor);
         if (parsedColor) {

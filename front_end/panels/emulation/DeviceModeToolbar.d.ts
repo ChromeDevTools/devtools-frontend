@@ -81,10 +81,9 @@ export interface ViewInput {
 export type View = (input: ViewInput, output: object, target: HTMLElement | DocumentFragment) => void;
 export declare const DEFAULT_VIEW: View;
 export declare class DeviceModeToolbar extends UI.Widget.Widget {
-    private model;
+    #private;
     private readonly showMediaInspectorSetting;
     private readonly showRulersSetting;
-    private readonly deviceOutlineSetting;
     private readonly showDeviceScaleFactorSetting;
     private readonly showUserAgentTypeSetting;
     private autoAdjustScaleSetting;
@@ -92,7 +91,10 @@ export declare class DeviceModeToolbar extends UI.Widget.Widget {
     private readonly emulatedDevicesList;
     private readonly persistenceSetting;
     private readonly view;
-    constructor(model: EmulationModel.DeviceModeModel.DeviceModeModel, showMediaInspectorSetting: Common.Settings.Setting<boolean>, showRulersSetting: Common.Settings.Setting<boolean>, view?: View);
+    constructor(element?: HTMLElement, view?: View);
+    get model(): EmulationModel.DeviceModeModel.DeviceModeModel | undefined;
+    set model(model: EmulationModel.DeviceModeModel.DeviceModeModel);
+    wasShown(): void;
     performUpdate(): void;
     private getDevicePostureOptions;
     private onPostureChange;

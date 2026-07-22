@@ -26,7 +26,8 @@ export declare const enum ErrorType {
     MAX_STEPS = "max-steps",
     BLOCK = "block",
     CROSS_ORIGIN = "cross-origin",
-    QUOTA = "quota"
+    QUOTA = "quota",
+    PAYLOAD_TOO_LARGE = "payload-too-large"
 }
 export declare const enum MultimodalInputType {
     SCREENSHOT = "screenshot",

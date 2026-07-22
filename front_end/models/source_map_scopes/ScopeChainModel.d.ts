@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Bindings from '../bindings/bindings.js';
 /**
  * This class is responsible for resolving / updating the scope chain for a specific {@link SDK.DebuggerModel.CallFrame}
  * instance.
@@ -14,7 +15,7 @@ import * as SDK from '../../core/sdk/sdk.js';
  */
 export declare class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
-    constructor(callFrame: SDK.DebuggerModel.CallFrame);
+    constructor(callFrame: SDK.DebuggerModel.CallFrame, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     dispose(): void;
 }
 export declare const enum Events {

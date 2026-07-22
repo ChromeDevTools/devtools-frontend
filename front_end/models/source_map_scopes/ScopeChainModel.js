@@ -18,12 +18,14 @@ import { resolveScopeChain } from './NamesResolver.js';
  */
 export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
     #callFrame;
+    #debuggerWorkspaceBinding;
     /** We use the `Throttler` here to make sure that `#boundUpdate` is not run multiple times simultanously */
     #throttler = new Common.Throttler.Throttler(5);
     #boundUpdate = this.#update.bind(this);
-    constructor(callFrame) {
+    constructor(callFrame, debuggerWorkspaceBinding) {
         super();
         this.#callFrame = callFrame;
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
         this.#callFrame.debuggerModel.addEventListener(SDK.DebuggerModel.Events.DebugInfoAttached, this.#debugInfoAttached, this);
         this.#callFrame.debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#sourceMapAttached, this);
         void this.#throttler.schedule(this.#boundUpdate);
@@ -34,7 +36,7 @@ export class ScopeChainModel extends Common.ObjectWrapper.ObjectWrapper {
         this.listeners?.clear();
     }
     async #update() {
-        const scopeChain = await resolveScopeChain(this.#callFrame);
+        const scopeChain = await resolveScopeChain(this.#callFrame, this.#debuggerWorkspaceBinding);
         this.dispatchEventToListeners("ScopeChainUpdated" /* Events.SCOPE_CHAIN_UPDATED */, new ScopeChain(scopeChain));
     }
     #debugInfoAttached(event) {

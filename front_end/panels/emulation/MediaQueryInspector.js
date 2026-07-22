@@ -130,21 +130,32 @@ function renderLabel(expression, atLeft, leftAlign) {
 }
 export class MediaQueryInspector extends UI.Widget.Widget {
     view;
-    mediaThrottler;
-    getWidthCallback;
-    setWidthCallback;
+    mediaThrottler = new Common.Throttler.Throttler(0);
+    #getWidthCallback;
+    #setWidthCallback;
     scale;
     cssModel;
     cachedQueryModels;
-    constructor(getWidthCallback, setWidthCallback, mediaThrottler, view = DEFAULT_VIEW) {
-        super({ useShadowDom: 'pure' });
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element, { useShadowDom: 'pure' });
         this.view = view;
-        this.mediaThrottler = mediaThrottler;
-        this.getWidthCallback = getWidthCallback;
-        this.setWidthCallback = setWidthCallback;
         this.scale = 1;
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
         UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate.bind(this), this);
+    }
+    get getWidthCallback() {
+        return this.#getWidthCallback;
+    }
+    set getWidthCallback(callback) {
+        this.#getWidthCallback = callback;
+        this.requestUpdate();
+    }
+    get setWidthCallback() {
+        return this.#setWidthCallback;
+    }
+    set setWidthCallback(callback) {
+        this.#setWidthCallback = callback;
+        this.requestUpdate();
     }
     modelAdded(cssModel) {
         // FIXME: adapt this to multiple targets.
@@ -172,25 +183,25 @@ export class MediaQueryInspector extends UI.Widget.Widget {
             return;
         }
         this.scale = scale;
-        this.performUpdate();
+        this.requestUpdate();
     }
     onMediaQueryClicked(model) {
         const modelMaxWidth = model.maxWidthExpression();
         const modelMinWidth = model.minWidthExpression();
         if (model.section() === 0 /* Section.MAX */) {
-            this.setWidthCallback(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
+            this.setWidthCallback?.(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
             return;
         }
         if (model.section() === 2 /* Section.MIN */) {
-            this.setWidthCallback(modelMinWidth ? modelMinWidth.computedLength() || 0 : 0);
+            this.setWidthCallback?.(modelMinWidth ? modelMinWidth.computedLength() || 0 : 0);
             return;
         }
-        const currentWidth = this.getWidthCallback();
+        const currentWidth = this.getWidthCallback?.() ?? 0;
         if (modelMinWidth && currentWidth !== modelMinWidth.computedLength()) {
-            this.setWidthCallback(modelMinWidth.computedLength() || 0);
+            this.setWidthCallback?.(modelMinWidth.computedLength() || 0);
         }
         else {
-            this.setWidthCallback(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
+            this.setWidthCallback?.(modelMaxWidth ? modelMaxWidth.computedLength() || 0 : 0);
         }
     }
     onContextMenu(event, locations) {
@@ -303,9 +314,13 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         this.scheduleMediaQueriesUpdate();
+        // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
         this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
     }
     performUpdate() {
+        if (!this.isShowing() || !this.getWidthCallback || !this.setWidthCallback) {
+            return;
+        }
         const markers = Map.groupBy(this.buildMediaQueryMarkers(), marker => marker.model.section());
         this.view({
             zoomFactor: this.zoomFactor(),

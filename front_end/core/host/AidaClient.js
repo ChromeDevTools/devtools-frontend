@@ -38,6 +38,8 @@ export class AidaBlockError extends Error {
 }
 export class AidaQuotaError extends Error {
 }
+export class AidaPayloadTooLargeError extends Error {
+}
 export class AidaClient {
     // Delegate client
     #gcaClient = new GcaClient.GcaClient();
@@ -145,10 +147,12 @@ export class AidaClient {
                     return;
                 }
                 if ('error' in result && result.error) {
-                    const errorStr = typeof result.error === 'string' ? result.error : '';
-                    const detailStr = typeof result.detail === 'string' ? result.detail : '';
-                    if (errorStr.toLowerCase().includes('quota') || detailStr.toLowerCase().includes('quota')) {
+                    if (isQuotaError(result.error, result.detail)) {
                         stream.fail(new AidaQuotaError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
+                        return;
+                    }
+                    if (isPayloadTooLargeError(result.error, result.detail)) {
+                        stream.fail(new AidaPayloadTooLargeError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
                         return;
                     }
                     stream.fail(new Error(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
@@ -209,8 +213,11 @@ export class AidaClient {
                     });
                 }
                 else if ('error' in result) {
-                    if (typeof result.error === 'string' && result.error.toLowerCase().includes('quota')) {
+                    if (isQuotaError(result.error)) {
                         throw new AidaQuotaError(`Server responded: ${JSON.stringify(result)}`);
+                    }
+                    if (isPayloadTooLargeError(result.error)) {
+                        throw new AidaPayloadTooLargeError(`Server responded: ${JSON.stringify(result)}`);
                     }
                     throw new Error(`Server responded: ${JSON.stringify(result)}`);
                 }
@@ -423,5 +430,11 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
             this.dispatchEventToListeners("aidaAvailabilityChanged" /* Events.AIDA_AVAILABILITY_CHANGED */);
         }
     }
+}
+function isQuotaError(...inputs) {
+    return inputs.some(input => input?.toLowerCase().includes('quota'));
+}
+function isPayloadTooLargeError(...inputs) {
+    return inputs.some(input => input?.toLowerCase().includes('payload size exceeds the limit'));
 }
 //# sourceMappingURL=AidaClient.js.map

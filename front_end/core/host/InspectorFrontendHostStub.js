@@ -8,7 +8,7 @@ import { Events, } from './InspectorFrontendHostAPI.js';
 import { streamWrite as resourceLoaderStreamWrite } from './ResourceLoader.js';
 const UIStrings = {
     /**
-     * @description Document title in Inspector Frontend Host of the DevTools window
+     * @description Document title in Inspector Frontend Host of the DevTools window.
      * @example {example.com} PH1
      */
     devtoolsS: 'DevTools - {PH1}',

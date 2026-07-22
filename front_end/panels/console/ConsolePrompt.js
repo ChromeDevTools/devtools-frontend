@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Badges from '../../models/badges/badges.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -368,7 +369,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
     async evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI) {
         const callFrame = executionContext.debuggerModel.selectedCallFrame();
         if (callFrame?.script.isJavaScript()) {
-            const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
+            const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
             expression = await this.substituteNames(expression, nameMap);
         }
         await executionContext.target()

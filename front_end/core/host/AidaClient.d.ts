@@ -10,6 +10,8 @@ export declare class AidaBlockError extends Error {
 }
 export declare class AidaQuotaError extends Error {
 }
+export declare class AidaPayloadTooLargeError extends Error {
+}
 export declare class AidaClient {
     #private;
     static buildConsoleInsightsRequest(input: string): DoConversationRequest;

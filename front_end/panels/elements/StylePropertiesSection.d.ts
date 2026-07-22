@@ -96,7 +96,7 @@ export declare class StylePropertiesSection {
     protected createStartingStyleElement(): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createSupportsElement(supports: SDK.CSSSupports.CSSSupports): ElementsComponents.CSSQuery.CSSQuery | undefined;
     protected createNavigationElement(navigation: SDK.CSSNavigation.CSSNavigation): ElementsComponents.CSSQuery.CSSQuery | undefined;
-    protected createNestingElement(nestingSelector?: string): HTMLElement | undefined;
+    protected createNestingElement(rule: SDK.CSSRule.CSSStyleRule, nestingIndex: number): HTMLElement | undefined;
     private addContainerForContainerQuery;
     private updateAncestorRuleList;
     isPropertyInherited(propertyName: string): boolean;
@@ -124,6 +124,7 @@ export declare class StylePropertiesSection {
         text: string;
         specificity?: Protocol.CSS.Specificity;
     }>, matchingSelectors: boolean[], elementToSelectorIndex: WeakMap<Element, number>): void;
+    private renderSelectorsToElement;
     markSelectorHighlights(): void;
     addNewBlankProperty(index?: number | undefined): StylePropertyTreeElement;
     private handleEmptySpaceMouseDown;

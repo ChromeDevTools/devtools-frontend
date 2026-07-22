@@ -762,7 +762,7 @@ export class StylePropertiesSection {
                     ancestorRuleElement = this.createSupportsElement(rule.supports[supportsIndex++]);
                     break;
                 case "StyleRule" /* Protocol.CSS.CSSRuleType.StyleRule */:
-                    ancestorRuleElement = this.createNestingElement(rule.nestingSelectors?.[nestingIndex++]);
+                    ancestorRuleElement = this.createNestingElement(rule, nestingIndex++);
                     break;
                 case "StartingStyleRule" /* Protocol.CSS.CSSRuleType.StartingStyleRule */:
                     ancestorRuleElement = this.createStartingStyleElement();
@@ -951,9 +951,25 @@ export class StylePropertiesSection {
         };
         return navigationElement;
     }
-    createNestingElement(nestingSelector) {
+    createNestingElement(rule, nestingIndex) {
+        const nestingSelector = rule.nestingSelectors?.[nestingIndex];
         if (!nestingSelector) {
             return;
+        }
+        const parentRule = this.matchedStyles.findParentRule(rule, nestingIndex);
+        if (parentRule) {
+            const container = document.createElement('div');
+            const matchingSelectorIndexes = this.matchedStyles.getMatchingSelectors(parentRule);
+            const matchingSelectors = new Array(parentRule.selectors.length).fill(false);
+            for (const matchingIndex of matchingSelectorIndexes) {
+                matchingSelectors[matchingIndex] = true;
+            }
+            const selectorElement = container.createChild('span', 'selector');
+            const specificityContainer = container.createChild('span');
+            this.renderSelectorsToElement(parentRule.selectors, matchingSelectors, this.elementToSelectorIndex, selectorElement, specificityContainer);
+            const openBrace = container.createChild('span', 'sidebar-pane-open-brace');
+            openBrace.textContent = ' {';
+            return container;
         }
         const nestingElement = document.createElement('div');
         nestingElement.textContent = `${nestingSelector} {`;
@@ -1220,18 +1236,21 @@ export class StylePropertiesSection {
     renderSelectors(selectors, matchingSelectors, elementToSelectorIndex) {
         this.selectorElement.removeChildren();
         this.#specificityTooltips.removeChildren();
+        this.renderSelectorsToElement(selectors, matchingSelectors, elementToSelectorIndex, this.selectorElement, this.#specificityTooltips);
+    }
+    renderSelectorsToElement(selectors, matchingSelectors, elementToSelectorIndex, targetElement, tooltipContainer) {
         for (const [i, selector] of selectors.entries()) {
             if (i > 0) {
-                this.selectorElement.append(', ');
+                targetElement.append(', ');
             }
             const specificityTooltipId = selector.specificity ? StylePropertiesSection.getNextSpecificityTooltipId() : null;
-            const span = this.selectorElement.createChild('span', 'simple-selector');
+            const span = targetElement.createChild('span', 'simple-selector');
             span.classList.toggle('selector-matches', matchingSelectors[i]);
             elementToSelectorIndex.set(span, i);
             span.textContent = selectors[i].text;
             if (specificityTooltipId && selector.specificity) {
                 span.setAttribute('aria-details', specificityTooltipId);
-                const tooltip = this.#specificityTooltips.appendChild(new Tooltips.Tooltip.Tooltip({
+                const tooltip = tooltipContainer.appendChild(new Tooltips.Tooltip.Tooltip({
                     id: specificityTooltipId,
                     anchor: span,
                     variant: 'rich',

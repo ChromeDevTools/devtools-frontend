@@ -96,7 +96,7 @@ devtools-icon {
 // gen/front_end/panels/changes/ChangesSidebar.js
 var UIStrings = {
   /**
-   * @description Name of an item from source map
+   * @description Tooltip title for a file item in the Changes sidebar when the file is generated from a source map.
    * @example {compile.html} PH1
    */
   sFromSourceMap: "{PH1} (from source map)"
@@ -400,11 +400,11 @@ var COPIED_TO_CLIPBOARD_TEXT_TIMEOUT_MS = 1e3;
 var { html: html2, Directives: { classMap } } = Lit2;
 var UIStrings2 = {
   /**
-   * @description The title of the button after it was pressed and the text was copied to clipboard.
+   * @description Text shown after copying code changes to the clipboard.
    */
   copied: "Copied to clipboard",
   /**
-   * @description The title of the copy file to clipboard button
+   * @description Title of the button to copy file content to the clipboard.
    * @example {index.css} PH1
    */
   copyFile: "Copy file {PH1} to clipboard"
@@ -571,13 +571,13 @@ var CombinedDiffView = class extends UI2.Widget.Widget {
 var CHANGES_VIEW_URL = "https://developer.chrome.com/docs/devtools/changes";
 var UIStrings3 = {
   /**
-   * @description Text in Changes View of the Changes tab if no change has been made so far.
+   * @description Title shown in the Changes panel when no code changes have been made.
    */
   noChanges: "No changes yet",
   /**
-   * @description Text in Changes View of the Changes tab to explain the Changes panel.
+   * @description Description text shown in the Changes panel explaining how to track code changes.
    */
-  changesViewDescription: "On this page you can track code changes made within DevTools."
+  changesViewDescription: "Track code changes made within DevTools."
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/changes/ChangesView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);

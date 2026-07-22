@@ -199,8 +199,6 @@ export declare class Setting<V> {
     addChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): EventDescriptor;
     removeChangeListener(listener: (arg0: EventTargetEvent<V>) => void, thisObject?: Object): void;
     title(): Platform.UIString.LocalizedString;
-    setTitleFunction(titleFunction?: (() => Platform.UIString.LocalizedString)): void;
-    setTitle(title: Platform.UIString.LocalizedString): void;
     setRequiresUserAction(requiresUserAction: boolean): void;
     disabled(): boolean;
     disabledReasons(): Platform.UIString.LocalizedString[];

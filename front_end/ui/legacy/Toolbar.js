@@ -10,6 +10,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { createIcon } from '../kit/kit.js';
 import { nothing, render } from '../lit/lit.js';
+import * as SettingUIRegistration from '../settings/settings.js';
 import { ActionRegistry } from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import { ContextMenu } from './ContextMenu.js';
@@ -1188,7 +1189,9 @@ export class ToolbarCheckbox extends ToolbarItem {
 }
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
     constructor(setting, tooltip, alternateTitle) {
-        super(alternateTitle || setting.title(), tooltip, undefined, setting.name);
+        const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
+        const title = alternateTitle || uiDescriptor?.title?.() || setting.title();
+        super(title, tooltip, undefined, setting.name);
         bindCheckbox(this.element, setting);
     }
 }

@@ -4117,6 +4117,7 @@ __export(IssuesManager_exports, {
 import * as Common5 from "./../../core/common/common.js";
 import * as Root2 from "./../../core/root/root.js";
 import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as Workspace2 from "./../workspace/workspace.js";
 
 // gen/front_end/models/issues_manager/BounceTrackingIssue.js
 import * as i18n39 from "./../../core/i18n/i18n.js";
@@ -4791,9 +4792,10 @@ var StylesheetLoadingIssue = class _StylesheetLoadingIssue extends Issue {
 // gen/front_end/models/issues_manager/SourceFrameIssuesManager.js
 var SourceFrameIssuesManager = class {
   issuesManager;
-  #sourceFrameMessageManager = new Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageManager();
-  constructor(issuesManager) {
+  #sourceFrameMessageManager;
+  constructor(issuesManager, targetManager, workspace) {
     this.issuesManager = issuesManager;
+    this.#sourceFrameMessageManager = new Bindings.PresentationConsoleMessageHelper.PresentationSourceFrameMessageManager(targetManager, workspace);
     this.issuesManager.addEventListener("IssueAdded", this.#onIssueAdded, this);
     this.issuesManager.addEventListener("FullUpdateRequired", this.#onFullUpdateRequired, this);
   }
@@ -5153,13 +5155,13 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
   #issuesByOutermostTarget = /* @__PURE__ */ new Map();
   #frameManager;
   #targetManager;
-  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK3.FrameManager.FrameManager.instance(), targetManager = SDK3.TargetManager.TargetManager.instance()) {
+  constructor(showThirdPartyIssuesSetting, hideIssueSetting, frameManager = SDK3.FrameManager.FrameManager.instance(), targetManager = SDK3.TargetManager.TargetManager.instance(), workspace = Workspace2.Workspace.WorkspaceImpl.instance()) {
     super();
     this.showThirdPartyIssuesSetting = showThirdPartyIssuesSetting;
     this.hideIssueSetting = hideIssueSetting;
     this.#frameManager = frameManager;
     this.#targetManager = targetManager;
-    new SourceFrameIssuesManager(this);
+    new SourceFrameIssuesManager(this, targetManager, workspace);
     this.#targetManager.observeModels(SDK3.IssuesModel.IssuesModel, this);
     this.#targetManager.addModelListener(SDK3.ResourceTreeModel.ResourceTreeModel, SDK3.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
     this.#frameManager.addEventListener("FrameAddedToTarget", this.#onFrameAddedToTarget, this);

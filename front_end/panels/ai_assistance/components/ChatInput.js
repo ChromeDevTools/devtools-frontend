@@ -14,6 +14,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatInputStyles from './chatInput.css.js';
+import * as ImageResize from './ImageResize.js';
 const { html, Directives: { createRef, ref } } = Lit;
 const { widget } = UI.Widget;
 const UIStrings = {
@@ -75,6 +76,10 @@ const UIStringsNotTranslate = {
      */
     uploadImageFailureMessage: 'Failed to upload image. Please try again.',
     /**
+     * @description Message displayed in toast in case of uploaded image being too large.
+     */
+    fileTooLargeMessage: 'File is too large. Please select an image under 10MB.',
+    /**
      * @description Label added to the button that add selected context from the current panel in AI Assistance panel.
      */
     addContext: 'Add item for context',
@@ -109,6 +114,10 @@ const lockedString = i18n.i18n.lockedString;
 const SCREENSHOT_QUALITY = 80;
 const JPEG_MIME_TYPE = 'image/jpeg';
 const SHOW_LOADING_STATE_TIMEOUT = 100;
+/**
+ * Maximum allowed size for raw images uploaded by the user to prevent browser tab out-of-memory crashes.
+ */
+export const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
 function getContextRemoveLabel(context) {
@@ -578,33 +587,25 @@ export class ChatInput extends UI.Widget.Widget {
         this.#handleImageDataTransferEvent(event.dataTransfer, event);
     };
     async #handleLoadImage(file) {
+        if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+            Snackbars.Snackbar.Snackbar.show({ message: lockedString(UIStringsNotTranslate.fileTooLargeMessage) });
+            return;
+        }
         const showLoadingTimeout = setTimeout(() => {
             this.#imageInput = { isLoading: true };
             this.performUpdate();
         }, SHOW_LOADING_STATE_TIMEOUT);
         try {
-            const reader = new FileReader();
-            const dataUrl = await new Promise((resolve, reject) => {
-                reader.onload = () => {
-                    if (typeof reader.result === 'string') {
-                        resolve(reader.result);
-                    }
-                    else {
-                        reject(new Error('FileReader result was not a string.'));
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-            const commaIndex = dataUrl.indexOf(',');
-            const bytes = dataUrl.substring(commaIndex + 1);
+            const compressed = await ImageResize.compress(file);
             this.#imageInput = {
                 isLoading: false,
-                data: bytes,
-                mimeType: file.type,
-                inputType: "uploaded-image" /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */
+                data: compressed.data,
+                mimeType: compressed.mimeType,
+                inputType: "uploaded-image" /* AiAssistanceModel.AiAgent.MultimodalInputType.UPLOADED_IMAGE */,
             };
         }
-        catch {
+        catch (err) {
+            console.error('Failed to compress image:', err);
             this.#imageInput = undefined;
             Snackbars.Snackbar.Snackbar.show({ message: lockedString(UIStringsNotTranslate.uploadImageFailureMessage) });
         }

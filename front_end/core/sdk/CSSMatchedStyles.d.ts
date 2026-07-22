@@ -95,6 +95,17 @@ export declare class CSSMatchedStyles {
     pseudoTypes(): Set<Protocol.DOM.PseudoType>;
     customHighlightPseudoStyles(highlightName: string): CSSStyleDeclaration[];
     customHighlightPseudoNames(): Set<string>;
+    /**
+     * Looks for a rule with the same selector chain as a specific parent rule of the current one.
+     * This finds a rule with the same guaranteed specificity, not necessarily THE parent rule,
+     * as the same selector string can be used on multiple rules in the same scope, in the same
+     * or different stylesheet.
+     *
+     * @param rule The (nested) rule whose parent rule selector should be matched
+     * @param nestingIndex Nesting depth of the parent selector to be matched, with 0 meaning direct parent, 1 grandparent rule and so on
+     * @returns A rule with the same selector chain and specificity as selected parent rule, if found. `null` otherwise
+     */
+    findParentRule(rule: CSSStyleRule, nestingIndex: number): CSSStyleRule | null;
     nodeForStyle(style: CSSStyleDeclaration): DOMNode | null;
     availableCSSVariables(style: CSSStyleDeclaration): string[];
     computeCSSVariable(style: CSSStyleDeclaration, variableName: string, containerNode?: DOMNode): CSSVariableValue | null;

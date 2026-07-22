@@ -20,6 +20,7 @@ import * as i18n5 from "./../../../../core/i18n/i18n.js";
 import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Diff3 from "./../../../../third_party/diff/diff.js";
 import { html, nothing as nothing2 } from "./../../../lit/lit.js";
+import * as SettingsUI from "./../../../settings/settings.js";
 import * as UI2 from "./../../legacy.js";
 
 // gen/front_end/ui/legacy/components/quick_open/FilteredListWidget.js
@@ -884,13 +885,14 @@ var CommandMenu = class _CommandMenu {
     }
     return new Command(category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer, featurePromotionId);
   }
-  static createSettingCommand(setting, title, value) {
-    const category = setting.category();
+  static createSettingCommand(setting, title, value, settingUIDescriptor) {
+    const uiDescriptor = settingUIDescriptor ?? SettingsUI.SettingUIRegistration.maybeResolve(setting.descriptor());
+    const category = uiDescriptor?.category ?? setting.category();
     if (!category) {
       throw new Error(`Creating '${title}' setting command failed. Setting has no category.`);
     }
-    const tags = setting.tags() || "";
-    const reloadRequired = Boolean(setting.reloadRequired());
+    const tags = uiDescriptor?.tags?.map((tag) => tag()).join("\0") ?? setting.tags() ?? "";
+    const reloadRequired = Boolean(uiDescriptor?.reloadRequired ?? setting.reloadRequired());
     return _CommandMenu.createCommand({
       category: Common2.Settings.getLocalizedSettingsCategory(category),
       keys: tags,
@@ -1001,15 +1003,15 @@ var CommandMenu = class _CommandMenu {
       };
       this.#commands.push(_CommandMenu.createRevealViewCommand(options));
     }
-    const settingsRegistrations = Common2.Settings.Settings.instance().getRegisteredSettings();
-    for (const settingRegistration of settingsRegistrations) {
-      const options = settingRegistration.options;
-      if (!options || !settingRegistration.category) {
+    const settingsRegistrations = SettingsUI.SettingUIRegistration.getRegisteredSettings();
+    for (const registeredSettingUI of settingsRegistrations) {
+      const options = registeredSettingUI.uiDescriptor.options;
+      if (!options || !registeredSettingUI.uiDescriptor.category) {
         continue;
       }
+      const setting = Common2.Settings.Settings.instance().resolve(registeredSettingUI.descriptor);
       for (const pair of options) {
-        const setting = Common2.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
-        this.#commands.push(_CommandMenu.createSettingCommand(setting, pair.title(), pair.value));
+        this.#commands.push(_CommandMenu.createSettingCommand(setting, pair.title(), pair.value, registeredSettingUI.uiDescriptor));
       }
     }
   }

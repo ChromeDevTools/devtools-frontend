@@ -66,6 +66,7 @@ import "./../../kit/kit.js";
 import * as Host from "./../../../core/host/host.js";
 import * as i18n from "./../../../core/i18n/i18n.js";
 import * as Lit2 from "./../../lit/lit.js";
+import * as SettingUIRegistration from "./../../settings/settings.js";
 import * as VisualLogging from "./../../visual_logging/visual_logging.js";
 import * as Buttons from "./../buttons/buttons.js";
 import * as Input from "./../input/input.js";
@@ -157,7 +158,8 @@ var SettingCheckbox = class extends HTMLElement {
     if (this.#setting.deprecation) {
       return html2`<devtools-setting-deprecation-warning .data=${this.#setting.deprecation}></devtools-setting-deprecation-warning>`;
     }
-    const learnMore = this.#setting.learnMore();
+    const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());
+    const learnMore = uiDescriptor?.learnMore ?? this.#setting.learnMore();
     if (learnMore) {
       const jsLogContext = `${this.#setting.name}-documentation`;
       const data = {
@@ -214,8 +216,11 @@ var SettingCheckbox = class extends HTMLElement {
     if (!this.#setting) {
       throw new Error('No "Setting" object provided for rendering');
     }
+    const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());
+    const learnMore = uiDescriptor?.learnMore ?? this.#setting.learnMore();
+    const titleText = uiDescriptor?.title?.() ?? this.#setting.title();
     const icon = this.icon();
-    const title = `${this.#setting.learnMore() ? this.#setting.learnMore()?.tooltip?.() : ""}`;
+    const title = learnMore?.tooltip?.() ?? "";
     const disabledReasons = this.#setting.disabledReasons();
     const reason = disabledReasons.length ? html2`
       <devtools-button class="disabled-reason" .iconName=${"info"} .variant=${"icon"} .size=${"SMALL"} title=${ifDefined(disabledReasons.join("\n"))} @click=${onclick}></devtools-button>
@@ -231,9 +236,9 @@ var SettingCheckbox = class extends HTMLElement {
             ?disabled=${this.#setting.disabled()}
             @change=${this.#checkboxChanged}
             jslog=${VisualLogging.toggle().track({ change: true }).context(this.#setting.name)}
-            aria-label=${this.#setting.title()}
+            aria-label=${titleText}
           />
-          ${this.#textOverride || this.#setting.title()}${reason}
+          ${this.#textOverride || titleText}${reason}
         </label>
         ${icon}
       </p>`, this.#shadow, { host: this });

@@ -5,6 +5,10 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
+/**
+ * Maximum allowed size for raw images uploaded by the user to prevent browser tab out-of-memory crashes.
+ */
+export declare const MAX_IMAGE_FILE_SIZE_BYTES: number;
 export type ImageInputData = {
     isLoading: true;
 } | {

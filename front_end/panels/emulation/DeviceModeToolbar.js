@@ -372,10 +372,9 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
 };
 export class DeviceModeToolbar extends UI.Widget.Widget {
-    model;
+    #model;
     showMediaInspectorSetting;
     showRulersSetting;
-    deviceOutlineSetting;
     showDeviceScaleFactorSetting;
     showUserAgentTypeSetting;
     autoAdjustScaleSetting;
@@ -383,13 +382,13 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     emulatedDevicesList;
     persistenceSetting;
     view;
-    constructor(model, showMediaInspectorSetting, showRulersSetting, view = DEFAULT_VIEW) {
-        super();
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
         this.view = view;
-        this.model = model;
-        this.showMediaInspectorSetting = showMediaInspectorSetting;
-        this.showRulersSetting = showRulersSetting;
-        this.deviceOutlineSetting = this.model.deviceOutlineSetting();
+        this.showMediaInspectorSetting = Common.Settings.Settings.instance().moduleSetting('show-media-query-inspector');
+        this.showMediaInspectorSetting.addChangeListener(this.requestUpdate, this);
+        this.showRulersSetting = Common.Settings.Settings.instance().moduleSetting('emulation.show-rulers');
+        this.showRulersSetting.addChangeListener(this.requestUpdate, this);
         this.showDeviceScaleFactorSetting =
             Common.Settings.Settings.instance().createSetting('emulation.show-device-scale-factor', false);
         this.showDeviceScaleFactorSetting.addChangeListener(this.requestUpdate, this);
@@ -404,14 +403,38 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         this.emulatedDevicesList.addEventListener("CustomDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.CUSTOM_DEVICES_UPDATED */, this.deviceListChanged, this);
         this.emulatedDevicesList.addEventListener("StandardDevicesUpdated" /* EmulationModel.EmulatedDevices.Events.STANDARD_DEVICES_UPDATED */, this.deviceListChanged, this);
         this.persistenceSetting = Common.Settings.Settings.instance().createSetting('emulation.device-mode-value', { device: '', orientation: '', mode: '' });
-        this.model.toolbarControlsEnabledSetting().addChangeListener(this.requestUpdate, this);
-        this.model.scaleSetting().addChangeListener(this.requestUpdate, this);
-        this.model.uaSetting().addChangeListener(this.requestUpdate, this);
-        this.model.deviceScaleFactorSetting().addChangeListener(this.requestUpdate, this);
-        this.model.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.requestUpdate, this);
-        this.performUpdate();
+    }
+    get model() {
+        return this.#model;
+    }
+    set model(model) {
+        if (this.#model === model) {
+            return;
+        }
+        if (this.#model) {
+            this.#model.toolbarControlsEnabledSetting().removeChangeListener(this.requestUpdate, this);
+            this.#model.scaleSetting().removeChangeListener(this.requestUpdate, this);
+            this.#model.uaSetting().removeChangeListener(this.requestUpdate, this);
+            this.#model.deviceScaleFactorSetting().removeChangeListener(this.requestUpdate, this);
+            this.#model.removeEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.requestUpdate, this);
+        }
+        this.#model = model;
+        this.#model.toolbarControlsEnabledSetting().addChangeListener(this.requestUpdate, this);
+        this.#model.scaleSetting().addChangeListener(this.requestUpdate, this);
+        this.#model.uaSetting().addChangeListener(this.requestUpdate, this);
+        this.#model.deviceScaleFactorSetting().addChangeListener(this.requestUpdate, this);
+        this.#model.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.requestUpdate, this);
+        this.requestUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
+        this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
     }
     performUpdate() {
+        if (!this.model) {
+            return;
+        }
         const isResponsive = this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive;
         const isFullHeight = isResponsive && this.model.isFullHeight();
         const size = this.model.appliedDeviceSize();
@@ -505,19 +528,19 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
             onWidthChange: (event) => {
                 const width = Number(event.target.value);
                 if (this.autoAdjustScaleSetting.get()) {
-                    this.model.setWidthAndScaleToFit(width);
+                    this.model?.setWidthAndScaleToFit(width);
                 }
                 else {
-                    this.model.setWidth(width);
+                    this.model?.setWidth(width);
                 }
             },
             onHeightChange: (event) => {
                 const height = Number(event.target.value);
                 if (this.autoAdjustScaleSetting.get()) {
-                    this.model.setHeightAndScaleToFit(height);
+                    this.model?.setHeightAndScaleToFit(height);
                 }
                 else {
-                    this.model.setHeight(height);
+                    this.model?.setHeight(height);
                 }
             },
             onScaleChange: this.onScaleChange.bind(this),
@@ -548,7 +571,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         }
     }
     currentDevicePosture() {
-        const mode = this.model.mode();
+        const mode = this.model?.mode();
         if (mode &&
             (mode.orientation === EmulationModel.EmulatedDevices.VerticalSpanned ||
                 mode.orientation === EmulationModel.EmulatedDevices.HorizontalSpanned)) {
@@ -557,6 +580,9 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         return 'Continuous';
     }
     getScaleOptions() {
+        if (!this.model) {
+            return [];
+        }
         const values = [0.5, 0.75, 1, 1.25, 1.5, 2];
         const isAutoAdjusting = this.autoAdjustScaleSetting.get();
         const currentScale = this.model.scaleSetting().get();
@@ -584,6 +610,9 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         return options;
     }
     onScaleChange(event) {
+        if (!this.model) {
+            return;
+        }
         const value = Number(event.target.value);
         if (value === 0) {
             this.autoAdjustScaleSetting.set(true);
@@ -605,6 +634,9 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         }
     }
     getDeviceScaleFactorOptions() {
+        if (!this.model) {
+            return [];
+        }
         const deviceScaleFactorSetting = this.model.deviceScaleFactorSetting();
         const defaultValue = this.model.uaSetting().get() === "Mobile" /* EmulationModel.DeviceModeModel.UA.MOBILE */ ||
             this.model.uaSetting().get() === "Mobile (no touch)" /* EmulationModel.DeviceModeModel.UA.MOBILE_NO_TOUCH */ ?
@@ -633,9 +665,12 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     }
     onDeviceScaleChange(event) {
         const value = Number(event.target.value);
-        this.model.deviceScaleFactorSetting().set(value);
+        this.model?.deviceScaleFactorSetting().set(value);
     }
     getUserAgentOptions() {
+        if (!this.model) {
+            return [];
+        }
         const uaSetting = this.model.uaSetting();
         const currentUserAgent = uaSetting.get();
         return [
@@ -652,11 +687,14 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     }
     onUAChange(event) {
         const value = event.target.value;
-        this.model.uaSetting().set(value);
+        this.model?.uaSetting().set(value);
     }
     appendOptionsMenuItems(contextMenu) {
+        if (!this.model) {
+            return;
+        }
         const model = this.model;
-        appendToggleItem(contextMenu.headerSection(), this.deviceOutlineSetting, i18nString(UIStrings.hideDeviceFrame), i18nString(UIStrings.showDeviceFrame), !model.canShowDeviceFrame(), 'device-frame');
+        appendToggleItem(contextMenu.headerSection(), model.deviceOutlineSetting(), i18nString(UIStrings.hideDeviceFrame), i18nString(UIStrings.showDeviceFrame), !model.canShowDeviceFrame(), 'device-frame');
         appendToggleItem(contextMenu.headerSection(), this.showMediaInspectorSetting, i18nString(UIStrings.hideMediaQueries), i18nString(UIStrings.showMediaQueries), undefined, 'media-queries');
         appendToggleItem(contextMenu.headerSection(), this.showRulersSetting, i18nString(UIStrings.hideRulers), i18nString(UIStrings.showRulers), undefined, 'rulers');
         appendToggleItem(contextMenu.defaultSection(), this.showDeviceScaleFactorSetting, i18nString(UIStrings.removeDevicePixelRatio), i18nString(UIStrings.addDevicePixelRatio), undefined, 'device-pixel-ratio');
@@ -674,19 +712,22 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         }
     }
     reset() {
-        this.deviceOutlineSetting.set(false);
+        this.model?.deviceOutlineSetting().set(false);
         this.showDeviceScaleFactorSetting.set(false);
         this.showUserAgentTypeSetting.set(false);
         this.showMediaInspectorSetting.set(false);
         this.showRulersSetting.set(false);
-        this.model.reset();
+        this.model?.reset();
     }
     emulateDevice(device) {
+        if (!this.model) {
+            return;
+        }
         const scale = this.autoAdjustScaleSetting.get() ? undefined : this.model.scaleSetting().get();
         this.model.emulate(EmulationModel.DeviceModeModel.Type.Device, device, this.lastMode.get(device) || device.modes[0], scale);
     }
     switchToResponsive() {
-        this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+        this.model?.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
     }
     filterDevices(devices) {
         devices = devices.filter(function (d) {
@@ -705,6 +746,14 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         return this.standardDevices().concat(this.customDevices());
     }
     getDeviceModeOptions() {
+        if (!this.model) {
+            return {
+                responsive: { title: i18nString(UIStrings.responsive), selected: false, jslogContext: 'responsive' },
+                standard: [],
+                custom: [],
+                edit: { title: i18nString(UIStrings.edit), jslogContext: 'edit' },
+            };
+        }
         return {
             responsive: {
                 title: i18nString(UIStrings.responsive),
@@ -714,13 +763,13 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
             standard: this.standardDevices().map(device => ({
                 device,
                 title: device.title,
-                selected: this.model.device() === device,
+                selected: this.model?.device() === device,
                 jslogContext: Platform.StringUtilities.toKebabCase(device.title)
             })),
             custom: this.customDevices().map(device => ({
                 device,
                 title: device.title,
-                selected: this.model.device() === device,
+                selected: this.model?.device() === device,
                 jslogContext: Platform.StringUtilities.toKebabCase(device.title)
             })),
             edit: {
@@ -749,6 +798,9 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     }
     deviceListChanged() {
         this.requestUpdate();
+        if (!this.model) {
+            return;
+        }
         const device = this.model.device();
         if (!device) {
             return;
@@ -767,6 +819,9 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         }
     }
     spanClicked() {
+        if (!this.model) {
+            return;
+        }
         const device = this.model.device();
         if (!device || (!device.isDualScreen && !device.isFoldableScreen)) {
             return;
@@ -784,6 +839,9 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         return;
     }
     modeMenuClicked(event) {
+        if (!this.model) {
+            return;
+        }
         if (this.model.isScreenOrientationLocked()) {
             return;
         }
@@ -852,12 +910,15 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         }
     }
     getPrettyFitZoomPercentage() {
-        return `${(this.model.fitScale() * 100).toFixed(0)}`;
+        return !this.model ? '' : `${(this.model.fitScale() * 100).toFixed(0)}`;
     }
     getPrettyZoomPercentage() {
-        return `${(this.model.scale() * 100).toFixed(0)}`;
+        return !this.model ? '' : `${(this.model.scale() * 100).toFixed(0)}`;
     }
     restore() {
+        if (!this.model) {
+            return;
+        }
         for (const device of this.allDevices()) {
             if (device.title === this.persistenceSetting.get().device) {
                 for (const mode of device.modes) {

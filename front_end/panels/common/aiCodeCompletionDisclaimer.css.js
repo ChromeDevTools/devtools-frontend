@@ -10,7 +10,6 @@ export default `/*
  */
 
 @scope to (devtools-widget > *) {
-    /* stylelint-disable-next-line no-invalid-position-declaration */
     display: flex;
 
     .ai-code-completion-disclaimer {

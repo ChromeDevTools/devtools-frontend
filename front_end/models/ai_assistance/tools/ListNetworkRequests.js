@@ -22,9 +22,6 @@ export class ListNetworkRequestsTool {
     constructor(networkLog) {
         this.#networkLog = networkLog;
     }
-    #getNetworkLog() {
-        return this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
-    }
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: '',
@@ -53,9 +50,10 @@ export class ListNetworkRequestsTool {
                 error: 'Opaque origin not allowed',
             };
         }
+        const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
         let hasCrossOriginRequest = false;
         const requestsToShow = [];
-        for (const request of this.#getNetworkLog().requests()) {
+        for (const request of networkLog.requests()) {
             // To prevent cross-origin prompt injection attacks, HAR-imported requests
             // are assigned a virtual origin (e.g., `imported-har://${domain}`) rather than
             // sharing the origin of live pages.

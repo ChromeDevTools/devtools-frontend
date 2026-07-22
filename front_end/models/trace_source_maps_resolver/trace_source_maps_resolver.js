@@ -151,7 +151,7 @@ var SourceMapsResolver = class extends EventTarget {
           continue;
         }
         for (const node of nodes) {
-          const resolvedFunctionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target);
+          const resolvedFunctionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target, this.#debuggerWorkspaceBinding);
           updatedMappings ||= Boolean(resolvedFunctionName);
           node.setOriginalFunctionName(resolvedFunctionName);
           const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

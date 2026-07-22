@@ -87,6 +87,9 @@ export class HighlightManager {
         }
         return highlightManagerInstance;
     }
+    static removeInstance() {
+        highlightManagerInstance = null;
+    }
     addHighlights(ranges) {
         ranges.forEach(this.addHighlight.bind(this));
     }

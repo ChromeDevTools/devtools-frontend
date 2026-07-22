@@ -10,6 +10,7 @@ __export(AidaClient_exports, {
   AidaAbortError: () => AidaAbortError,
   AidaBlockError: () => AidaBlockError,
   AidaClient: () => AidaClient,
+  AidaPayloadTooLargeError: () => AidaPayloadTooLargeError,
   AidaQuotaError: () => AidaQuotaError,
   CLIENT_NAME: () => CLIENT_NAME,
   CitationSourceType: () => CitationSourceType,
@@ -834,59 +835,59 @@ import * as Common from "./../common/common.js";
 import * as i18n from "./../i18n/i18n.js";
 var UIStrings = {
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   systemError: "System error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   connectionError: "Connection error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   certificateError: "Certificate error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   httpError: "HTTP error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   cacheError: "Cache error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
-  signedExchangeError: "Signed Exchange error",
+  signedExchangeError: "`Signed Exchange` error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   ftpError: "FTP error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   certificateManagerError: "Certificate manager error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   dnsResolverError: "DNS resolver error",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   unknownError: "Unknown error",
   /**
-   * @description Phrase used in error messages that carry a network error name
+   * @description Phrase used in error messages that carry a network error name.
    * @example {404} PH1
    * @example {net::ERR_INSUFFICIENT_RESOURCES} PH2
    */
   httpErrorStatusCodeSS: "HTTP error: status code {PH1}, {PH2}",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
   invalidUrl: "Invalid URL",
   /**
-   * @description Name of an error category used in error messages
+   * @description Name of an error category used in error messages.
    */
-  decodingDataUrlFailed: "Decoding Data URL failed"
+  decodingDataUrlFailed: "Decoding data URL failed"
 };
 var str_ = i18n.i18n.registerUIStrings("core/host/ResourceLoader.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -1049,7 +1050,7 @@ var loadAsStream = function(url, headers, stream, callback, allowRemoteFilePaths
 // gen/front_end/core/host/InspectorFrontendHostStub.js
 var UIStrings2 = {
   /**
-   * @description Document title in Inspector Frontend Host of the DevTools window
+   * @description Document title in Inspector Frontend Host of the DevTools window.
    * @example {example.com} PH1
    */
   devtoolsS: "DevTools - {PH1}"
@@ -1713,6 +1714,8 @@ var AidaBlockError = class extends Error {
 };
 var AidaQuotaError = class extends Error {
 };
+var AidaPayloadTooLargeError = class extends Error {
+};
 var AidaClient = class {
   // Delegate client
   #gcaClient = new GcaClient();
@@ -1815,10 +1818,12 @@ var AidaClient = class {
           return;
         }
         if ("error" in result && result.error) {
-          const errorStr = typeof result.error === "string" ? result.error : "";
-          const detailStr = typeof result.detail === "string" ? result.detail : "";
-          if (errorStr.toLowerCase().includes("quota") || detailStr.toLowerCase().includes("quota")) {
+          if (isQuotaError(result.error, result.detail)) {
             stream.fail(new AidaQuotaError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
+            return;
+          }
+          if (isPayloadTooLargeError(result.error, result.detail)) {
+            stream.fail(new AidaPayloadTooLargeError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
             return;
           }
           stream.fail(new Error(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
@@ -1876,8 +1881,11 @@ var AidaClient = class {
             thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature
           });
         } else if ("error" in result) {
-          if (typeof result.error === "string" && result.error.toLowerCase().includes("quota")) {
+          if (isQuotaError(result.error)) {
             throw new AidaQuotaError(`Server responded: ${JSON.stringify(result)}`);
+          }
+          if (isPayloadTooLargeError(result.error)) {
+            throw new AidaPayloadTooLargeError(`Server responded: ${JSON.stringify(result)}`);
           }
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
         } else {
@@ -2073,6 +2081,12 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
     }
   }
 };
+function isQuotaError(...inputs) {
+  return inputs.some((input) => input?.toLowerCase().includes("quota"));
+}
+function isPayloadTooLargeError(...inputs) {
+  return inputs.some((input) => input?.toLowerCase().includes("payload size exceeds the limit"));
+}
 
 // gen/front_end/core/host/GdpClient.js
 var GdpClient_exports = {};

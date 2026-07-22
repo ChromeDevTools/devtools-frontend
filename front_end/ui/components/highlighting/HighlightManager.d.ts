@@ -15,6 +15,7 @@ export declare class HighlightManager {
     static instance(opts?: {
         forceNew: boolean | null;
     } | undefined): HighlightManager;
+    static removeInstance(): void;
     addHighlights(ranges: Range[]): void;
     removeHighlights(ranges: Range[]): void;
     addCurrentHighlight(range: Range): void;

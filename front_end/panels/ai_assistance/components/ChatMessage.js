@@ -112,6 +112,10 @@ const UIStringsNotTranslate = {
      */
     crossOriginError: 'I have selected the new context but you will have to start a new chat.',
     /**
+     * @description The error message when the request payload is too large.
+     */
+    payloadTooLargeError: 'The request payload is too large. Please try a smaller image or a screenshot.',
+    /**
      * @description Displayed when the user stop the response
      */
     stoppedResponse: 'You stopped this response',
@@ -1549,6 +1553,9 @@ function renderError(message) {
                 break;
             case "cross-origin" /* AiAssistanceModel.AiAgent.ErrorType.CROSS_ORIGIN */:
                 errorMessage = UIStringsNotTranslate.crossOriginError;
+                break;
+            case "payload-too-large" /* AiAssistanceModel.AiAgent.ErrorType.PAYLOAD_TOO_LARGE */:
+                errorMessage = UIStringsNotTranslate.payloadTooLargeError;
                 break;
             case "abort" /* AiAssistanceModel.AiAgent.ErrorType.ABORT */:
                 return html `<p class="aborted" jslog=${VisualLogging.section('aborted')}>${lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;

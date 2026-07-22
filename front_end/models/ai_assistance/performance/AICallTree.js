@@ -17,13 +17,15 @@ export class AICallTree {
     selectedNode;
     rootNode;
     parsedTrace;
+    workspace;
     // Note: ideally this is passed in (or lived on ParsedTrace), but this class is
     // stateless (mostly, there's a cache for some stuff) so it doesn't match much.
     #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-    constructor(selectedNode, rootNode, parsedTrace) {
+    constructor(selectedNode, rootNode, parsedTrace, workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
         this.selectedNode = selectedNode;
         this.rootNode = rootNode;
         this.parsedTrace = parsedTrace;
+        this.workspace = workspace;
     }
     static findEventsForThread({ thread, parsedTrace, bounds }) {
         const threadEvents = parsedTrace.data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
@@ -284,7 +286,7 @@ export class AICallTree {
         // 5. Self Time
         const selfTimeStr = roundToTenths(node.selfTime);
         // 6. URL Index
-        const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, Workspace.Workspace.WorkspaceImpl.instance());
+        const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, this.workspace);
         const url = location?.url;
         let urlIndexStr = '';
         if (url) {

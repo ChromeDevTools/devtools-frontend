@@ -13,13 +13,13 @@ import * as CombinedDiffView from './CombinedDiffView.js';
 const CHANGES_VIEW_URL = 'https://developer.chrome.com/docs/devtools/changes';
 const UIStrings = {
     /**
-     * @description Text in Changes View of the Changes tab if no change has been made so far.
+     * @description Title shown in the Changes panel when no code changes have been made.
      */
     noChanges: 'No changes yet',
     /**
-     * @description Text in Changes View of the Changes tab to explain the Changes panel.
+     * @description Description text shown in the Changes panel explaining how to track code changes.
      */
-    changesViewDescription: 'On this page you can track code changes made within DevTools.',
+    changesViewDescription: 'Track code changes made within DevTools.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

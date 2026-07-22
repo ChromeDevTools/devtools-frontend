@@ -752,6 +752,7 @@ import * as Buttons5 from "./../components/buttons/buttons.js";
 import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
 import { createIcon as createIcon7 } from "./../kit/kit.js";
 import { nothing as nothing2, render as render5 } from "./../lit/lit.js";
+import * as SettingUIRegistration from "./../settings/settings.js";
 
 // gen/front_end/ui/legacy/ContextMenu.js
 var ContextMenu_exports = {};
@@ -13564,7 +13565,9 @@ var ToolbarCheckbox = class extends ToolbarItem {
 };
 var ToolbarSettingCheckbox = class extends ToolbarCheckbox {
   constructor(setting, tooltip, alternateTitle) {
-    super(alternateTitle || setting.title(), tooltip, void 0, setting.name);
+    const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
+    const title = alternateTitle || uiDescriptor?.title?.() || setting.title();
+    super(title, tooltip, void 0, setting.name);
     bindCheckbox(this.element, setting);
   }
 };

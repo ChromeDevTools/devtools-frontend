@@ -12,7 +12,7 @@ export interface MessageSource {
 }
 export declare class PresentationSourceFrameMessageManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel>, SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
     #private;
-    constructor();
+    constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl);
     modelAdded(model: SDK.DebuggerModel.DebuggerModel | SDK.CSSModel.CSSModel): void;
     modelRemoved(model: SDK.DebuggerModel.DebuggerModel | SDK.CSSModel.CSSModel): void;
     addMessage(message: Workspace.UISourceCode.Message, source: MessageSource, target: SDK.Target.Target): void;
@@ -20,12 +20,12 @@ export declare class PresentationSourceFrameMessageManager implements SDK.Target
 }
 export declare class PresentationConsoleMessageManager {
     #private;
-    constructor(targetManager: SDK.TargetManager.TargetManager);
+    constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl);
     private consoleMessageAdded;
 }
 export declare class PresentationSourceFrameMessageHelper {
     #private;
-    constructor();
+    constructor(workspace: Workspace.Workspace.WorkspaceImpl);
     setDebuggerModel(debuggerModel: SDK.DebuggerModel.DebuggerModel): void;
     setCSSModel(cssModel: SDK.CSSModel.CSSModel): void;
     addMessage(message: Workspace.UISourceCode.Message, source: MessageSource): Promise<void>;

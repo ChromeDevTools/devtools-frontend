@@ -1,0 +1,1 @@
+{"compilerOptions":{"composite":true,"outDir":".","baseUrl":".","rootDir":"../../../../../../front_end/ui/settings"},"files":["../../../../../../front_end/ui/settings/settings.ts"],"references":[{"path":"./settings-tsconfig.json"}]}

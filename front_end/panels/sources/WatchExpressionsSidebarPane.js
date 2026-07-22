@@ -35,6 +35,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as StackTrace from '../../models/stack_trace/stack_trace.js';
@@ -415,7 +416,7 @@ export class WatchExpression {
         }
         const callFrame = executionContext.debuggerModel.selectedCallFrame();
         if (callFrame?.script.isJavaScript()) {
-            const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
+            const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame, Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
             try {
                 expression =
                     await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);

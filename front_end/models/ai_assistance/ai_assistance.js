@@ -2100,6 +2100,8 @@ var AiAgent = class {
           error = "block";
         } else if (err instanceof Host4.AidaClient.AidaQuotaError || err instanceof Error && err.message.toLowerCase().includes("quota")) {
           error = "quota";
+        } else if (err instanceof Host4.AidaClient.AidaPayloadTooLargeError || err instanceof Error && /payload size exceeds the limit/i.test(err.message)) {
+          error = "payload-too-large";
         }
         yield this.#createErrorResponse(error);
         break;
@@ -2342,7 +2344,11 @@ var AiAgent = class {
         request: structuredClone(request),
         aidaResponse
       });
-      localStorage.setItem("aiAssistanceStructuredLog", JSON.stringify(this.#structuredLog));
+      try {
+        localStorage.setItem("aiAssistanceStructuredLog", JSON.stringify(this.#structuredLog));
+      } catch (err) {
+        console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);
+      }
     }
   }
   #removeLastRunParts() {
@@ -2852,9 +2858,11 @@ ${dataAsText}`;
     return lines.length > 0 ? `${lines.join("\n")}
 ` : "";
   }
-  constructor(request, calculator) {
+  #networkLog;
+  constructor(request, calculator, networkLog = Logs.NetworkLog.NetworkLog.instance()) {
     this.#request = request;
     this.#calculator = calculator;
+    this.#networkLog = networkLog;
   }
   formatRequestHeaders() {
     return _a2.formatHeaders("Request headers:", this.#request.requestHeaders());
@@ -2913,7 +2921,7 @@ ${this.formatRequestInitiatorChain()}`;
     const allowedOrigin = Common5.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
     let initiatorChain = "";
     let lineStart = "- URL: ";
-    const graph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
+    const graph = this.#networkLog.initiatorGraphForRequest(this.#request);
     for (const initiator of Array.from(graph.initiators).reverse()) {
       initiatorChain = initiatorChain + lineStart + _a2.formatInitiatorUrl(initiator.url(), allowedOrigin) + "\n";
       lineStart = "	" + lineStart;
@@ -3186,6 +3194,10 @@ var lockedString4 = i18n9.i18n.lockedString;
 var GetNetworkRequestDetailsTool = class {
   name = "getNetworkRequestDetails";
   description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
+  #networkLog;
+  constructor(networkLog) {
+    this.#networkLog = networkLog;
+  }
   parameters = {
     type: 6,
     description: "Arguments for retrieving detailed information about a specific network request.",
@@ -3216,7 +3228,8 @@ var GetNetworkRequestDetailsTool = class {
         error: "Opaque origin not allowed"
       };
     }
-    const request = Logs2.NetworkLog.NetworkLog.instance().requests().find((req) => {
+    const networkLog = this.#networkLog ?? Logs2.NetworkLog.NetworkLog.instance();
+    const request = networkLog.requests().find((req) => {
       if (req.requestId() !== args.id) {
         return false;
       }
@@ -3229,7 +3242,7 @@ var GetNetworkRequestDetailsTool = class {
       };
     }
     const calculator = new NetworkTimeCalculator2.NetworkTransferTimeCalculator();
-    const formatter = new NetworkRequestFormatter(request, calculator);
+    const formatter = new NetworkRequestFormatter(request, calculator, networkLog);
     const formattedDetails = await formatter.formatNetworkRequest();
     return {
       result: formattedDetails,
@@ -3374,9 +3387,6 @@ var ListNetworkRequestsTool = class {
   constructor(networkLog) {
     this.#networkLog = networkLog;
   }
-  #getNetworkLog() {
-    return this.#networkLog ?? Logs3.NetworkLog.NetworkLog.instance();
-  }
   parameters = {
     type: 6,
     description: "",
@@ -3402,9 +3412,10 @@ var ListNetworkRequestsTool = class {
         error: "Opaque origin not allowed"
       };
     }
+    const networkLog = this.#networkLog ?? Logs3.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
     const requestsToShow = [];
-    for (const request of this.#getNetworkLog().requests()) {
+    for (const request of networkLog.requests()) {
       const requestOrigin = getRequestContextOrigin(request);
       if (origin && requestOrigin !== origin) {
         hasCrossOriginRequest = true;
@@ -3971,7 +3982,7 @@ import * as Common10 from "./../../core/common/common.js";
 import * as Host13 from "./../../core/host/host.js";
 import * as i18n17 from "./../../core/i18n/i18n.js";
 import * as Root7 from "./../../core/root/root.js";
-import * as Logs4 from "./../logs/logs.js";
+import * as Logs5 from "./../logs/logs.js";
 import * as NetworkTimeCalculator4 from "./../network_time_calculator/network_time_calculator.js";
 import * as Workspace3 from "./../workspace/workspace.js";
 
@@ -3987,6 +3998,7 @@ __export(FileFormatter_exports, {
   FileFormatter: () => FileFormatter
 });
 import * as Bindings2 from "./../bindings/bindings.js";
+import * as Logs4 from "./../logs/logs.js";
 import * as NetworkTimeCalculator3 from "./../network_time_calculator/network_time_calculator.js";
 var MAX_FILE_SIZE = 1e4;
 var FileFormatter = class _FileFormatter {
@@ -4024,9 +4036,11 @@ var FileFormatter = class _FileFormatter {
   }
   #file;
   #debuggerWorkspaceBinding;
-  constructor(file, debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+  #networkLog;
+  constructor(file, debuggerWorkspaceBinding = Bindings2.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), networkLog = Logs4.NetworkLog.NetworkLog.instance()) {
     this.#file = file;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#networkLog = networkLog;
   }
   formatFile() {
     const sourceMapDetails = _FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
@@ -4040,7 +4054,7 @@ var FileFormatter = class _FileFormatter {
       const calculator = new NetworkTimeCalculator3.NetworkTransferTimeCalculator();
       calculator.updateBoundaries(resource.request);
       lines.push(`Request initiator chain:
-${new NetworkRequestFormatter(resource.request, calculator).formatRequestInitiatorChain()}`);
+${new NetworkRequestFormatter(resource.request, calculator, this.#networkLog).formatRequestInitiatorChain()}`);
     }
     lines.push(`File content:
 ${this.#formatFileContent()}`);
@@ -4148,13 +4162,15 @@ var AICallTree = class _AICallTree {
   selectedNode;
   rootNode;
   parsedTrace;
+  workspace;
   // Note: ideally this is passed in (or lived on ParsedTrace), but this class is
   // stateless (mostly, there's a cache for some stuff) so it doesn't match much.
   #eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
-  constructor(selectedNode, rootNode, parsedTrace) {
+  constructor(selectedNode, rootNode, parsedTrace, workspace = Workspace.Workspace.WorkspaceImpl.instance()) {
     this.selectedNode = selectedNode;
     this.rootNode = rootNode;
     this.parsedTrace = parsedTrace;
+    this.workspace = workspace;
   }
   static findEventsForThread({ thread, parsedTrace, bounds }) {
     const threadEvents = parsedTrace.data.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
@@ -4368,7 +4384,7 @@ ${nodesStr}`;
     };
     const durationStr = roundToTenths(node.totalTime);
     const selfTimeStr = roundToTenths(node.selfTime);
-    const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, Workspace.Workspace.WorkspaceImpl.instance());
+    const location = SourceMapsResolver.SourceMapsResolver.codeLocationForEntry(parsedTrace, event, this.workspace);
     const url = location?.url;
     let urlIndexStr = "";
     if (url) {
@@ -7409,7 +7425,7 @@ var ContextSelectionAgent = class _ContextSelectionAgent extends AiAgent {
   #workspace;
   constructor(opts) {
     super(opts);
-    this.#networkLog = opts.networkLog ?? Logs4.NetworkLog.NetworkLog.instance();
+    this.#networkLog = opts.networkLog ?? Logs5.NetworkLog.NetworkLog.instance();
     this.#workspace = opts.workspace ?? Workspace3.Workspace.WorkspaceImpl.instance();
     this.#performanceRecordAndReload = opts.performanceRecordAndReload;
     this.#lighthouseRecording = opts.lighthouseRecording;
@@ -8273,7 +8289,7 @@ import * as Root11 from "./../../core/root/root.js";
 import * as SDK12 from "./../../core/sdk/sdk.js";
 import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
 import * as Tracing2 from "./../../services/tracing/tracing.js";
-import * as Logs5 from "./../logs/logs.js";
+import * as Logs6 from "./../logs/logs.js";
 import * as Trace7 from "./../trace/trace.js";
 var UIStringsNotTranslated = {
   /**
@@ -8439,7 +8455,7 @@ var PerformanceAgent = class extends AiAgent {
   constructor(opts) {
     super(opts);
     this.#tracker = opts.tracker ?? Tracing2.FreshRecording.Tracker.instance();
-    this.#networkLog = opts.networkLog ?? Logs5.NetworkLog.NetworkLog.instance();
+    this.#networkLog = opts.networkLog ?? Logs6.NetworkLog.NetworkLog.instance();
   }
   #formatter = null;
   #lastEventForEnhancedQuery;

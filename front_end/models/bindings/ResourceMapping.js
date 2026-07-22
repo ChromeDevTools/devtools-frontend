@@ -21,37 +21,37 @@ function computeStyleSheetRange(header) {
 export class ResourceMapping {
     workspace;
     #modelToInfo = new Map();
-    #debuggerWorkspaceBinding = null;
-    #cssWorkspaceBinding = null;
+    #debuggerLocationUpdater = null;
+    #cssLocationUpdater = null;
     constructor(targetManager, workspace) {
         this.workspace = workspace;
         targetManager.observeModels(SDK.ResourceTreeModel.ResourceTreeModel, this);
     }
-    get debuggerWorkspaceBinding() {
-        // TODO(crbug.com/458180550): Throw when this.#debuggerWorkspaceBinding is null and never return null.
+    get debuggerLocationUpdater() {
+        // TODO(crbug.com/458180550): Throw when this.#debuggerLocationUpdater is null and never return null.
         //                            The only reason we don't throw and return an instance unconditionally
-        //                            is that unit tests often don't set-up both the *WorkspaceBindings.
-        return this.#debuggerWorkspaceBinding;
+        //                            is that unit tests often don't set-up both updaters.
+        return this.#debuggerLocationUpdater;
     }
-    /* {@link DebuggerWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
-    set debuggerWorkspaceBinding(debuggerWorkspaceBinding) {
-        if (this.#debuggerWorkspaceBinding) {
-            throw new Error('DebuggerWorkspaceBinding already set');
+    /* The concrete DebuggerWorkspaceBinding requires ResourceMapping during construction, so we must wire up this updater afterward. */
+    set debuggerLocationUpdater(debuggerLocationUpdater) {
+        if (this.#debuggerLocationUpdater) {
+            throw new Error('DebuggerLocationUpdater already set');
         }
-        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+        this.#debuggerLocationUpdater = debuggerLocationUpdater;
     }
-    get cssWorkspaceBinding() {
-        // TODO(crbug.com/458180550): Throw when this.#cssWorkspaceBinding is null and never return null.
+    get cssLocationUpdater() {
+        // TODO(crbug.com/458180550): Throw when this.#cssLocationUpdater is null and never return null.
         //                            The only reason we don't throw and return an instance unconditionally
-        //                            is that unit tests often don't set-up both the *WorkspaceBindings.
-        return this.#cssWorkspaceBinding;
+        //                            is that unit tests often don't set-up both updaters.
+        return this.#cssLocationUpdater;
     }
-    /* {@link CSSWorkspaceBinding} and ResourceMapping form a cycle so we can't wire it up at ctor time. */
-    set cssWorkspaceBinding(cssWorkspaceBinding) {
-        if (this.#cssWorkspaceBinding) {
-            throw new Error('CSSWorkspaceBinding already set');
+    /* The concrete CSSWorkspaceBinding requires ResourceMapping during construction, so we must wire up this updater afterward. */
+    set cssLocationUpdater(cssLocationUpdater) {
+        if (this.#cssLocationUpdater) {
+            throw new Error('CSSLocationUpdater already set');
         }
-        this.#cssWorkspaceBinding = cssWorkspaceBinding;
+        this.#cssLocationUpdater = cssLocationUpdater;
     }
     modelAdded(resourceTreeModel) {
         const info = new ModelInfo(this, resourceTreeModel);
@@ -435,13 +435,13 @@ class Binding {
     #project;
     #uiSourceCode;
     #edits = [];
-    #debuggerWorkspaceBinding;
-    #cssWorkspaceBinding;
+    #debuggerLocationUpdater;
+    #cssLocationUpdater;
     constructor(modelInfo, resource) {
         this.resources = new Set([resource]);
         this.#project = modelInfo.project;
-        this.#debuggerWorkspaceBinding = modelInfo.resourceMapping.debuggerWorkspaceBinding;
-        this.#cssWorkspaceBinding = modelInfo.resourceMapping.cssWorkspaceBinding;
+        this.#debuggerLocationUpdater = modelInfo.resourceMapping.debuggerLocationUpdater;
+        this.#cssLocationUpdater = modelInfo.resourceMapping.cssLocationUpdater;
         this.#uiSourceCode = this.#project.createUISourceCode(resource.url, resource.contentType());
         boundUISourceCodes.add(this.#uiSourceCode);
         if (resource.frameId) {
@@ -449,8 +449,8 @@ class Binding {
         }
         this.#project.addUISourceCodeWithProvider(this.#uiSourceCode, this, resourceMetadata(resource), resource.mimeType);
         void Promise.all([
-            ...this.inlineScripts().map(script => this.#debuggerWorkspaceBinding?.updateLocations(script)),
-            ...this.inlineStyles().map(style => this.#cssWorkspaceBinding?.updateLocations(style)),
+            ...this.inlineScripts().map(script => this.#debuggerLocationUpdater?.updateLocations(script)),
+            ...this.inlineStyles().map(style => this.#cssLocationUpdater?.updateLocations(style)),
         ]);
     }
     inlineStyles() {
@@ -513,7 +513,7 @@ class Binding {
                     continue;
                 }
                 scriptRangeMap.set(script, range.rebaseAfterTextEdit(oldRange, newRange));
-                updatePromises.push(this.#debuggerWorkspaceBinding?.updateLocations(script));
+                updatePromises.push(this.#debuggerLocationUpdater?.updateLocations(script));
             }
             for (const style of styles) {
                 const range = styleSheetRangeMap.get(style) ?? computeStyleSheetRange(style);
@@ -521,7 +521,7 @@ class Binding {
                     continue;
                 }
                 styleSheetRangeMap.set(style, range.rebaseAfterTextEdit(oldRange, newRange));
-                updatePromises.push(this.#cssWorkspaceBinding?.updateLocations(style));
+                updatePromises.push(this.#cssLocationUpdater?.updateLocations(style));
             }
             await Promise.all(updatePromises);
         }
@@ -542,8 +542,8 @@ class Binding {
     dispose() {
         this.#project.removeUISourceCode(this.#uiSourceCode.url());
         void Promise.all([
-            ...this.inlineScripts().map(script => this.#debuggerWorkspaceBinding?.updateLocations(script)),
-            ...this.inlineStyles().map(style => this.#cssWorkspaceBinding?.updateLocations(style)),
+            ...this.inlineScripts().map(script => this.#debuggerLocationUpdater?.updateLocations(script)),
+            ...this.inlineStyles().map(style => this.#cssLocationUpdater?.updateLocations(style)),
         ]);
     }
     firstResource() {

@@ -95,9 +95,11 @@ export class NetworkRequestFormatter {
         }
         return lines.length > 0 ? `${lines.join('\n')}\n` : '';
     }
-    constructor(request, calculator) {
+    #networkLog;
+    constructor(request, calculator, networkLog = Logs.NetworkLog.NetworkLog.instance()) {
         this.#request = request;
         this.#calculator = calculator;
+        this.#networkLog = networkLog;
     }
     formatRequestHeaders() {
         return _a.formatHeaders('Request headers:', this.#request.requestHeaders());
@@ -153,7 +155,7 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
         const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
         let initiatorChain = '';
         let lineStart = '- URL: ';
-        const graph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
+        const graph = this.#networkLog.initiatorGraphForRequest(this.#request);
         for (const initiator of Array.from(graph.initiators).reverse()) {
             initiatorChain = initiatorChain + lineStart +
                 _a.formatInitiatorUrl(initiator.url(), allowedOrigin) + '\n';

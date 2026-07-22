@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import layoutPaneStyles from './layoutPane.css.js';
 const UIStrings = {
@@ -359,16 +360,24 @@ export class LayoutPane extends UI.Widget.Widget {
             if (settingType !== "boolean" /* Common.Settings.SettingType.BOOLEAN */ && settingType !== "enum" /* Common.Settings.SettingType.ENUM */) {
                 throw new Error('A setting provided to LayoutSidebarPane does not have a supported setting type');
             }
+            const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
             const mappedSetting = {
                 type: settingType,
                 name: setting.name,
-                title: setting.title(),
+                title: uiDescriptor?.title?.() ?? setting.title(),
             };
+            const options = uiDescriptor?.options?.map(opt => ({
+                value: opt.value,
+                title: opt.title(),
+                text: typeof opt.text === 'function' ? opt.text() : opt.text,
+                raw: opt.raw,
+            })) ??
+                setting.options();
             if (typeof settingValue === 'boolean') {
                 settings.push({
                     ...mappedSetting,
                     value: settingValue,
-                    options: setting.options().map(opt => ({
+                    options: options.map(opt => ({
                         ...opt,
                         value: opt.value,
                     })),
@@ -378,7 +387,7 @@ export class LayoutPane extends UI.Widget.Widget {
                 settings.push({
                     ...mappedSetting,
                     value: settingValue,
-                    options: setting.options().map(opt => ({
+                    options: options.map(opt => ({
                         ...opt,
                         value: opt.value,
                     })),

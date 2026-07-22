@@ -86,28 +86,6 @@ const UIStrings = {
      */
     dropTimelineFileOrUrlHere: 'Drop trace file or URL here',
     /**
-     * @description Title of disable capture jsprofile setting in timeline panel of the performance panel
-     */
-    disableJavascriptSamples: 'Disable JavaScript samples',
-    /**
-     *@description Title of capture layers and pictures setting in timeline panel of the performance panel
-     */
-    enableAdvancedPaint: 'Enable advanced paint instrumentation (slow)',
-    /**
-     * @description Title of CSS selector stats setting in timeline panel of the performance panel
-     */
-    enableSelectorStats: 'Enable CSS selector stats (slow)',
-    /**
-     * @description Title of show screenshots setting in timeline panel of the performance panel
-     */
-    screenshots: 'Screenshots',
-    /**
-     * @description Label for the screenshot capture preset dropdown in the performance panel settings pane. The dropdown
-     * picks the per-frame resolution and maximum frame count used when capturing screenshots. Every preset is sized to
-     * stay within the same per-session memory budget.
-     */
-    screenshotCapture: 'Screenshot capture',
-    /**
      * @description Dropdown option in the performance panel for the default screenshot capture preset (500 x 500 pixels,
      * up to 450 frames).
      */
@@ -127,10 +105,6 @@ const UIStrings = {
      * so many of them fit in the per-session memory budget (100 x 100 pixels, up to 11250 frames).
      */
     screenshotPresetTiny: '100 x 100 px, up to 11250 frames',
-    /**
-     * @description Text for the memory of the page
-     */
-    memory: 'Memory',
     /**
      * @description Text to clear content
      */
@@ -261,10 +235,6 @@ const UIStrings = {
      */
     showDataAddedByExtensions: 'Show data added by extensions of the Performance panel',
     /**
-     * Label for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
-     */
-    showCustomtracks: 'Show custom tracks',
-    /**
      * @description Tooltip for the the sidebar toggle in the Performance panel. Command to open/show the sidebar.
      */
     showSidebar: 'Show sidebar',
@@ -310,10 +280,6 @@ const UIStrings = {
      */
     timelineScrollPan: 'Scroll & Pan',
     /**
-     * @description Title for the Dim 3rd Parties checkbox.
-     */
-    dimThirdParties: 'Dim 3rd parties',
-    /**
      * @description Description for the Dim 3rd Parties checkbox tooltip describing how 3rd parties are classified.
      */
     thirdPartiesByThirdPartyWeb: '3rd parties classified by third-party-web',
@@ -356,7 +322,6 @@ const SCREENSHOT_CAPTURE_PRESETS = [
         label: () => i18nString(UIStrings.screenshotPresetTiny),
     },
 ];
-const DEFAULT_SCREENSHOT_CAPTURE_PRESET_KEY = SCREENSHOT_CAPTURE_PRESETS[0].key;
 let timelinePanelInstance;
 // Total time to wait for source maps to load before giving up so trace processing can proceed.
 const SOURCE_MAP_LOAD_TIMEOUT_MS = 5000;
@@ -490,27 +455,22 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
         this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, this.#isNode);
         this.traceLoadStart = null;
-        this.disableCaptureJSProfileSetting = Common.Settings.Settings.instance().createSetting('timeline-disable-js-sampling', false, "Session" /* Common.Settings.SettingStorageType.SESSION */);
-        this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
-        this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().createSetting('timeline-capture-layers-and-pictures', false, "Session" /* Common.Settings.SettingStorageType.SESSION */);
-        this.captureLayersAndPicturesSetting.setTitle(i18nString(UIStrings.enableAdvancedPaint));
-        this.captureSelectorStatsSetting = Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false, "Session" /* Common.Settings.SettingStorageType.SESSION */);
-        this.captureSelectorStatsSetting.setTitle(i18nString(UIStrings.enableSelectorStats));
-        this.screenshotCaptureModeSetting = Common.Settings.Settings.instance().createSetting('timeline-screenshot-capture-mode', DEFAULT_SCREENSHOT_CAPTURE_PRESET_KEY, "Session" /* Common.Settings.SettingStorageType.SESSION */);
-        this.screenshotCaptureModeSetting.setTitle(i18nString(UIStrings.screenshotCapture));
-        this.showScreenshotsSetting =
-            Common.Settings.Settings.instance().createSetting('timeline-show-screenshots', !this.#isNode);
-        this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
+        this.disableCaptureJSProfileSetting =
+            Common.Settings.Settings.instance().moduleSetting('timeline-disable-js-sampling');
+        this.captureLayersAndPicturesSetting =
+            Common.Settings.Settings.instance().moduleSetting('timeline-capture-layers-and-pictures');
+        this.captureSelectorStatsSetting =
+            Common.Settings.Settings.instance().moduleSetting('timeline-capture-selector-stats');
+        this.screenshotCaptureModeSetting =
+            Common.Settings.Settings.instance().moduleSetting('timeline-screenshot-capture-mode');
+        this.showScreenshotsSetting = Common.Settings.Settings.instance().moduleSetting('timeline-show-screenshots');
         this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
-        this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false, "Session" /* Common.Settings.SettingStorageType.SESSION */);
-        this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
+        this.showMemorySetting = Common.Settings.Settings.instance().moduleSetting('timeline-show-memory');
         this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
-        this.#dimThirdPartiesSetting = Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false, "Session" /* Common.Settings.SettingStorageType.SESSION */);
-        this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
+        this.#dimThirdPartiesSetting = Common.Settings.Settings.instance().moduleSetting('timeline-dim-third-parties');
         this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
         this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
         this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
-        this.#thirdPartyTracksSetting.setTitle(i18nString(UIStrings.showCustomtracks));
         const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
         timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
         timelineToolbarContainer.role = 'toolbar';
@@ -702,7 +662,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
     static extensionDataVisibilitySetting() {
         // Calling this multiple times doesn't recreate the setting.
         // Instead, after the second call, the cached setting is returned.
-        return Common.Settings.Settings.instance().createSetting('timeline-show-extension-data', true);
+        return Common.Settings.Settings.instance().moduleSetting('timeline-show-extension-data');
     }
     searchableView() {
         return this.#searchableView;

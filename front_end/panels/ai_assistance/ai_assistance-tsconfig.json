@@ -48,6 +48,7 @@
     "../../../../../../front_end/panels/ai_assistance/components/DisabledWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ExploreWidget.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ExportForAgentsDialog.ts",
+    "../../../../../../front_end/panels/ai_assistance/components/ImageResize.ts",
     "../../../../../../front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.ts",
     "../../../../../../front_end/panels/ai_assistance/components/OptInChangeDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.ts",

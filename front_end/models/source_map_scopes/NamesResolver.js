@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import * as Bindings from '../bindings/bindings.js';
 import * as Formatter from '../formatter/formatter.js';
 const scopeToCachedIdentifiersMap = new WeakMap();
 const cachedMapByCallFrame = new WeakMap();
@@ -138,7 +137,7 @@ export const scopeIdentifiers = async function (script, scope, ancestorScopes) {
     return { boundVariables, freeVariables };
 };
 const identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
-const resolveDebuggerScope = async (scope) => {
+const resolveDebuggerScope = async (scope, debuggerWorkspaceBinding) => {
     if (!scope.callFrame()
         .debuggerModel.target()
         .targetManager()
@@ -148,9 +147,9 @@ const resolveDebuggerScope = async (scope) => {
     }
     const script = scope.callFrame().script;
     const scopeChain = await findScopeChainForDebuggerScope(scope);
-    return await resolveScope(script, scopeChain);
+    return await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
 };
-const resolveScope = async (script, scopeChain) => {
+const resolveScope = async (script, scopeChain, debuggerWorkspaceBinding) => {
     const parsedScope = scopeChain[scopeChain.length - 1];
     if (!parsedScope) {
         return { variableMapping: new Map(), thisMapping: null };
@@ -186,7 +185,7 @@ const resolveScope = async (script, scopeChain) => {
                     // mappings agree. However, that can be expensive for identifiers with many uses,
                     // so we iterate sequentially, stopping at the first non-empty mapping.
                     for (const position of id.positions) {
-                        const sourceName = await resolveSourceName(script, sourceMap, id.name, position);
+                        const sourceName = await resolveSourceName(script, sourceMap, id.name, position, debuggerWorkspaceBinding);
                         if (sourceName) {
                             handler(sourceName);
                             return;
@@ -221,7 +220,7 @@ const resolveScope = async (script, scopeChain) => {
         scopeToCachedIdentifiersMap.set(parsedScope, { sourceMap, mappingPromise: identifiersPromise });
     }
     return await cachedScopeMap.mappingPromise;
-    async function resolveSourceName(script, sourceMap, name, position, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    async function resolveSourceName(script, sourceMap, name, position, debuggerWorkspaceBinding) {
         const ranges = sourceMap.findEntryRanges(position.lineNumber, position.columnNumber);
         if (!ranges) {
             return null;
@@ -297,7 +296,7 @@ const resolveScope = async (script, scopeChain) => {
         }
     }
 };
-export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBinding) {
     const { pluginManager } = debuggerWorkspaceBinding;
     const scopeChain = await pluginManager.resolveScopeChain(callFrame);
     if (scopeChain) {
@@ -309,14 +308,14 @@ export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBin
     if (callFrame.script.isWasm()) {
         return callFrame.scopeChain();
     }
-    const thisObject = await resolveThisObject(callFrame);
-    return callFrame.scopeChain().map(scope => new ScopeWithSourceMappedVariables(scope, thisObject));
+    const thisObject = await resolveThisObject(callFrame, debuggerWorkspaceBinding);
+    return callFrame.scopeChain().map(scope => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
 };
 /**
  * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
  * shadowed) we set it to `null`.
  */
-export const allVariablesInCallFrame = async (callFrame) => {
+export const allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
     if (!callFrame.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
         return new Map();
     }
@@ -325,7 +324,7 @@ export const allVariablesInCallFrame = async (callFrame) => {
         return cachedMap;
     }
     const scopeChain = callFrame.scopeChain();
-    const nameMappings = await Promise.all(scopeChain.map(resolveDebuggerScope));
+    const nameMappings = await Promise.all(scopeChain.map(scope => resolveDebuggerScope(scope, debuggerWorkspaceBinding)));
     const reverseMapping = new Map();
     const compiledNames = new Set();
     for (const { variableMapping } of nameMappings) {
@@ -348,7 +347,7 @@ export const allVariablesInCallFrame = async (callFrame) => {
  * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
  * shadowed) we set it to `null`.
  */
-export const allVariablesAtPosition = async (location) => {
+export const allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
     const reverseMapping = new Map();
     const script = location.script();
     if (!script) {
@@ -366,7 +365,7 @@ export const allVariablesAtPosition = async (location) => {
     const scopeChain = findScopeChain(scopeTree, { start: locationOffset, end: locationOffset });
     const compiledNames = new Set();
     while (scopeChain.length > 0) {
-        const { variableMapping } = await resolveScope(script, scopeChain);
+        const { variableMapping } = await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
         for (const [compiledName, originalName] of variableMapping) {
             if (!originalName) {
                 continue;
@@ -382,12 +381,12 @@ export const allVariablesAtPosition = async (location) => {
     }
     return reverseMapping;
 };
-export const resolveThisObject = async (callFrame) => {
+export const resolveThisObject = async (callFrame, debuggerWorkspaceBinding) => {
     const scopeChain = callFrame.scopeChain();
     if (scopeChain.length === 0) {
         return callFrame.thisObject();
     }
-    const { thisMapping } = await resolveDebuggerScope(scopeChain[0]);
+    const { thisMapping } = await resolveDebuggerScope(scopeChain[0], debuggerWorkspaceBinding);
     if (!thisMapping) {
         return callFrame.thisObject();
     }
@@ -404,14 +403,14 @@ export const resolveThisObject = async (callFrame) => {
     }
     return null;
 };
-export const resolveScopeInObject = function (scope) {
+export const resolveScopeInObject = function (scope, debuggerWorkspaceBinding) {
     const endLocation = scope.range()?.end;
     const startLocationScript = scope.range()?.start.script() ?? null;
     if (scope.type() === "global" /* Protocol.Debugger.ScopeType.Global */ || !startLocationScript || !endLocation ||
         !startLocationScript.sourceMapURL) {
         return scope.object();
     }
-    return new RemoteObject(scope);
+    return new RemoteObject(scope, debuggerWorkspaceBinding);
 };
 /**
  * Wraps a debugger `Scope` but returns a scope object where variable names are
@@ -424,9 +423,11 @@ class ScopeWithSourceMappedVariables {
     #debuggerScope;
     /** The resolved `this` of the current call frame */
     #thisObject;
-    constructor(scope, thisObject) {
+    #debuggerWorkspaceBinding;
+    constructor(scope, thisObject, debuggerWorkspaceBinding) {
         this.#debuggerScope = scope;
         this.#thisObject = thisObject;
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     callFrame() {
         return this.#debuggerScope.callFrame();
@@ -444,7 +445,7 @@ class ScopeWithSourceMappedVariables {
         return this.#debuggerScope.range();
     }
     object() {
-        return resolveScopeInObject(this.#debuggerScope);
+        return resolveScopeInObject(this.#debuggerScope, this.#debuggerWorkspaceBinding);
     }
     description() {
         return this.#debuggerScope.description();
@@ -463,10 +464,12 @@ class ScopeWithSourceMappedVariables {
 export class RemoteObject extends SDK.RemoteObject.RemoteObject {
     scope;
     object;
-    constructor(scope) {
+    #debuggerWorkspaceBinding;
+    constructor(scope, debuggerWorkspaceBinding) {
         super();
         this.scope = scope;
         this.object = scope.object();
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     customPreview() {
         return this.object.customPreview();
@@ -500,7 +503,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
     }
     async getAllProperties(accessorPropertiesOnly, generatePreview) {
         const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
-        const { variableMapping } = await resolveDebuggerScope(this.scope);
+        const { variableMapping } = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
         const properties = allProperties.properties;
         const internalProperties = allProperties.internalProperties;
         const newProperties = properties?.map(property => {
@@ -510,7 +513,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         return { properties: newProperties ?? [], internalProperties };
     }
     async setPropertyValue(argumentName, value) {
-        const { variableMapping } = await resolveDebuggerScope(this.scope);
+        const { variableMapping } = await resolveDebuggerScope(this.scope, this.#debuggerWorkspaceBinding);
         let name;
         if (typeof argumentName === 'string') {
             name = argumentName;
@@ -592,7 +595,7 @@ export async function resolveDebuggerFrameFunctionName(frame) {
     }
     return await getFunctionNameFromScopeStart(frame.script, startLocation.lineNumber, startLocation.columnNumber);
 }
-export async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+export async function resolveProfileFrameFunctionName({ scriptId, lineNumber, columnNumber }, target, debuggerWorkspaceBinding) {
     if (!target || lineNumber === undefined || columnNumber === undefined || scriptId === undefined) {
         return null;
     }

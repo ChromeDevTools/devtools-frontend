@@ -466,9 +466,9 @@ var UIStrings = {
    */
   consoleMessage: "Console message",
   /**
-   * @description The title of the insight source "Stacktrace".
+   * @description Title of the insight source 'Stack trace'.
    */
-  stackTrace: "Stacktrace",
+  stackTrace: "Stack trace",
   /**
    * @description The title of the insight source "Network request".
    */
@@ -487,7 +487,7 @@ var UIStrings = {
    */
   insight: "Explanation",
   /**
-   * @description The title of the a button that closes the insight pane.
+   * @description Title of a button that closes the explanation.
    */
   closeInsight: "Close explanation",
   /**
@@ -510,9 +510,9 @@ var UIStrings = {
    */
   report: "Report legal issue",
   /**
-   * @description The text of the header inside the console insight pane when there was an error generating an insight.
+   * @description Header text shown when there was an error generating an insight.
    */
-  error: "DevTools has encountered an error",
+  error: "DevTools encountered an error",
   /**
    * @description The message shown when an error has been encountered.
    */
@@ -532,7 +532,7 @@ var UIStrings = {
    */
   notLoggedIn: "This feature is only available when you sign in to Chrome with your Google account.",
   /**
-   * @description The title of a button which opens the Chrome SignIn page.
+   * @description Title of a button which opens the Chrome sign-in page.
    */
   signIn: "Sign in",
   /**
@@ -557,12 +557,12 @@ var UIStrings = {
    * @description Shown to the user when the network request data is not
    * available and a page reload might populate it.
    */
-  reloadRecommendation: "Reload the page to capture related network request data for this message in order to create a better insight.",
+  reloadRecommendation: "Reload the page to capture related network request data for this message to get a better insight.",
   /**
    * @description Shown to the user when they need to enable the console insights feature in settings in order to use it.
    * @example {Console insights in Settings} PH1
    */
-  turnOnInSettings: "Turn on {PH1} to receive AI assistance for understanding and addressing console warnings and errors.",
+  turnOnInSettings: "Turn on {PH1} to use AI assistance for understanding and addressing console warnings and errors.",
   /**
    * @description Text for a link to Chrome DevTools Settings.
    */

@@ -192,7 +192,7 @@
     "message": "Connection error"
   },
   "core/host/ResourceLoader.ts | decodingDataUrlFailed": {
-    "message": "Decoding Data URL failed"
+    "message": "Decoding data URL failed"
   },
   "core/host/ResourceLoader.ts | dnsResolverError": {
     "message": "DNS resolver error"
@@ -1112,9 +1112,6 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Don’t match Chrome color scheme"
   },
-  "entrypoints/main/main-meta.ts | earnBadges": {
-    "message": "Earn badges"
-  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Use Ctrl + 1-9 to switch panels"
   },
@@ -1544,6 +1541,9 @@
   "generated/Deprecation.ts | XSLT": {
     "message": "XSLTProcessor and XSLT Processing Instructions have been deprecated by all browsers. These features will be removed from this browser soon."
   },
+  "models/badges/badges-meta.ts | earnBadges": {
+    "message": "Earn badges"
+  },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Unknown error loading file"
   },
@@ -1778,17 +1778,20 @@
   "models/logs/logs-meta.ts | clear": {
     "message": "clear"
   },
-  "models/logs/logs-meta.ts | doNotPreserveLogOnPageReload": {
+  "models/logs/logs-meta.ts | doNotKeepLogOnPageReload": {
     "message": "Don’t keep log on page reload / navigation"
+  },
+  "models/logs/logs-meta.ts | keep": {
+    "message": "keep"
+  },
+  "models/logs/logs-meta.ts | keepLog": {
+    "message": "Keep log"
+  },
+  "models/logs/logs-meta.ts | keepLogOnPageReload": {
+    "message": "Keep log on page reload / navigation"
   },
   "models/logs/logs-meta.ts | preserve": {
     "message": "preserve"
-  },
-  "models/logs/logs-meta.ts | preserveLog": {
-    "message": "Keep log"
-  },
-  "models/logs/logs-meta.ts | preserveLogOnPageReload": {
-    "message": "Keep log on page reload / navigation"
   },
   "models/logs/logs-meta.ts | recordNetworkLog": {
     "message": "Record network log"
@@ -6756,7 +6759,7 @@
     "message": "{PH1} (from source map)"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Track code changes made within DevTools."
   },
   "panels/changes/ChangesView.ts | noChanges": {
     "message": "No changes yet"
@@ -7949,6 +7952,9 @@
   "panels/elements/elements-meta.ts | eventListeners": {
     "message": "Event Listeners"
   },
+  "panels/elements/elements-meta.ts | frameworkListeners": {
+    "message": "Framework listeners"
+  },
   "panels/elements/elements-meta.ts | hideElement": {
     "message": "Hide element"
   },
@@ -8763,7 +8769,7 @@
     "message": "Console message"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
-    "message": "DevTools has encountered an error"
+    "message": "DevTools encountered an error"
   },
   "panels/explain/components/ConsoleInsight.ts | errorBody": {
     "message": "Something went wrong. Try again."
@@ -8811,7 +8817,7 @@
     "message": "Related content"
   },
   "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
-    "message": "Reload the page to capture related network request data for this message in order to create a better insight."
+    "message": "Reload the page to capture related network request data for this message to get a better insight."
   },
   "panels/explain/components/ConsoleInsight.ts | report": {
     "message": "Report legal issue"
@@ -8829,13 +8835,13 @@
     "message": "Sign in to use this feature"
   },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
-    "message": "Stacktrace"
+    "message": "Stack trace"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
     "message": "Generating a response took too long. Please try again."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
-    "message": "Turn on {PH1} to receive AI assistance for understanding and addressing console warnings and errors."
+    "message": "Turn on {PH1} to use AI assistance for understanding and addressing console warnings and errors."
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Understand console messages with AI"
@@ -9281,6 +9287,9 @@
   "panels/js_timeline/js_timeline-meta.ts | timelineShowAllEvents": {
     "message": "Show all events"
   },
+  "panels/layer_viewer/layer_viewer-meta.ts | paints": {
+    "message": "Paints"
+  },
   "panels/layer_viewer/layer_viewer-meta.ts | panOrRotateDown": {
     "message": "Pan or rotate down"
   },
@@ -9295,6 +9304,9 @@
   },
   "panels/layer_viewer/layer_viewer-meta.ts | resetView": {
     "message": "Reset view"
+  },
+  "panels/layer_viewer/layer_viewer-meta.ts | slowScrollRects": {
+    "message": "Slow scroll rects"
   },
   "panels/layer_viewer/layer_viewer-meta.ts | switchToPanMode": {
     "message": "Switch to pan mode"
@@ -9389,17 +9401,11 @@
   "panels/layer_viewer/Layers3DView.ts | noLayerInformation": {
     "message": "No layers detected yet"
   },
-  "panels/layer_viewer/Layers3DView.ts | paints": {
-    "message": "Paints"
-  },
   "panels/layer_viewer/Layers3DView.ts | resetView": {
     "message": "Reset View"
   },
   "panels/layer_viewer/Layers3DView.ts | showPaintProfiler": {
     "message": "Show Paint Profiler"
-  },
-  "panels/layer_viewer/Layers3DView.ts | slowScrollRects": {
-    "message": "Slow scroll rects"
   },
   "panels/layer_viewer/Layers3DView.ts | webglSupportIsDisabledInYour": {
     "message": "WebGL support is disabled in your browser."
@@ -9461,8 +9467,38 @@
   "panels/layers/LayersPanel.ts | profiler": {
     "message": "Profiler"
   },
+  "panels/lighthouse/lighthouse-meta.ts | accessibility": {
+    "message": "Accessibility"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | agenticBrowsing": {
+    "message": "Agentic browsing"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | bestPractices": {
+    "message": "Best practices"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | clearStorage": {
+    "message": "Clear storage"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | device": {
+    "message": "Apply mobile emulation"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | enableSampling": {
+    "message": "Enable JS sampling"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | mode": {
+    "message": "Lighthouse mode"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | performance": {
+    "message": "Performance"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | seo": {
+    "message": "SEO"
+  },
   "panels/lighthouse/lighthouse-meta.ts | showLighthouse": {
     "message": "Show Lighthouse"
+  },
+  "panels/lighthouse/lighthouse-meta.ts | throttling": {
+    "message": "Throttling method"
   },
   "panels/lighthouse/LighthouseController.ts | accessibility": {
     "message": "Accessibility"
@@ -16253,14 +16289,44 @@
   "panels/timeline/timeline-meta.ts | chromeFrameInLayersView": {
     "message": "Chrome frame in Layers view"
   },
+  "panels/timeline/timeline-meta.ts | dimThirdParties": {
+    "message": "Dim 3rd parties"
+  },
+  "panels/timeline/timeline-meta.ts | disableJavascriptSamples": {
+    "message": "Disable JavaScript samples"
+  },
+  "panels/timeline/timeline-meta.ts | documents": {
+    "message": "Documents"
+  },
+  "panels/timeline/timeline-meta.ts | enableAdvancedPaint": {
+    "message": "Enable advanced paint instrumentation (slow)"
+  },
+  "panels/timeline/timeline-meta.ts | enableSelectorStats": {
+    "message": "Enable CSS selector stats (slow)"
+  },
+  "panels/timeline/timeline-meta.ts | gpuMemory": {
+    "message": "GPU memory"
+  },
+  "panels/timeline/timeline-meta.ts | jsHeap": {
+    "message": "JS heap"
+  },
+  "panels/timeline/timeline-meta.ts | listeners": {
+    "message": "Listeners"
+  },
   "panels/timeline/timeline-meta.ts | loadProfile": {
     "message": "Load profile…"
+  },
+  "panels/timeline/timeline-meta.ts | memory": {
+    "message": "Memory"
   },
   "panels/timeline/timeline-meta.ts | nextFrame": {
     "message": "Next frame"
   },
   "panels/timeline/timeline-meta.ts | nextRecording": {
     "message": "Next recording"
+  },
+  "panels/timeline/timeline-meta.ts | nodes": {
+    "message": "Nodes"
   },
   "panels/timeline/timeline-meta.ts | performance": {
     "message": "Performance"
@@ -16279,6 +16345,15 @@
   },
   "panels/timeline/timeline-meta.ts | saveProfile": {
     "message": "Save profile…"
+  },
+  "panels/timeline/timeline-meta.ts | screenshotCapture": {
+    "message": "Screenshot capture"
+  },
+  "panels/timeline/timeline-meta.ts | screenshots": {
+    "message": "Screenshots"
+  },
+  "panels/timeline/timeline-meta.ts | showCustomtracks": {
+    "message": "Show custom tracks"
   },
   "panels/timeline/timeline-meta.ts | showPerformance": {
     "message": "Show Performance"
@@ -16457,23 +16532,11 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU throttling is enabled"
   },
-  "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
-  },
-  "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
-    "message": "Disable JavaScript samples"
-  },
   "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "Disables JavaScript sampling, reduces overhead when running against mobile devices"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "Drop trace file or URL here"
-  },
-  "panels/timeline/TimelinePanel.ts | enableAdvancedPaint": {
-    "message": "Enable advanced paint instrumentation (slow)"
-  },
-  "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
-    "message": "Enable CSS selector stats (slow)"
   },
   "panels/timeline/TimelinePanel.ts | encodingTraceForDownload": {
     "message": "Encoding…"
@@ -16508,9 +16571,6 @@
   "panels/timeline/TimelinePanel.ts | loadTrace": {
     "message": "Load trace…"
   },
-  "panels/timeline/TimelinePanel.ts | memory": {
-    "message": "Memory"
-  },
   "panels/timeline/TimelinePanel.ts | network": {
     "message": "Network:"
   },
@@ -16535,9 +16595,6 @@
   "panels/timeline/TimelinePanel.ts | recordingFailed": {
     "message": "Recording failed"
   },
-  "panels/timeline/TimelinePanel.ts | screenshotCapture": {
-    "message": "Screenshot capture"
-  },
   "panels/timeline/TimelinePanel.ts | screenshotPresetDefault": {
     "message": "500 x 500 px, up to 450 frames"
   },
@@ -16550,9 +16607,6 @@
   "panels/timeline/TimelinePanel.ts | screenshotPresetTiny": {
     "message": "100 x 100 px, up to 11250 frames"
   },
-  "panels/timeline/TimelinePanel.ts | screenshots": {
-    "message": "Screenshots"
-  },
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Selection cleared"
   },
@@ -16561,9 +16615,6 @@
   },
   "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
     "message": "Keyboard shortcuts for flamechart"
-  },
-  "panels/timeline/TimelinePanel.ts | showCustomtracks": {
-    "message": "Show custom tracks"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Show data added by extensions of the Performance panel"

@@ -664,7 +664,8 @@ export class Breakpoint {
             return `${condition}\n\n//# sourceURL=${sourceUrl}`;
         };
         if (location) {
-            return SourceMapScopes.NamesResolver.allVariablesAtPosition(location)
+            return SourceMapScopes.NamesResolver
+                .allVariablesAtPosition(location, this.breakpointManager.debuggerWorkspaceBinding)
                 .then(nameMap => Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(condition, nameMap))
                 .catch(() => condition)
                 .then(subsitutedCondition => addSourceUrl(subsitutedCondition), () => addSourceUrl(condition));

@@ -17,9 +17,12 @@ export declare const MockAidaFetchError: {
 export declare const MockAidaQuotaError: {
     readonly quotaError: true;
 };
+export declare const MockAidaPayloadLimitError: {
+    readonly payloadLimitError: true;
+};
 export type MockAidaResponse = Omit<Host.AidaClient.DoConversationResponse, 'completed' | 'metadata'> & {
     metadata?: Host.AidaClient.ResponseMetadata;
-} | typeof MockAidaAbortError | typeof MockAidaFetchError | typeof MockAidaQuotaError;
+} | typeof MockAidaAbortError | typeof MockAidaFetchError | typeof MockAidaQuotaError | typeof MockAidaPayloadLimitError;
 /**
  * Creates a mock AIDA client that responds using `data`.
  *
@@ -111,3 +114,10 @@ export declare function assertRequiresApproval<T>(response: AiAssistance.AiAgent
     requiresApproval: true;
     description: string | null;
 };
+/**
+ * Creates a dummy File object containing a solid red image with the given dimensions.
+ *
+ * @param width Width of the dummy image in pixels (px).
+ * @param height Height of the dummy image in pixels (px).
+ */
+export declare function createDummyImageFile(width: number, height: number): Promise<File>;

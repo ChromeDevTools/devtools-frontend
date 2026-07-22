@@ -1,16 +1,20 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
-import type { CSSWorkspaceBinding } from './CSSWorkspaceBinding.js';
-import type { DebuggerWorkspaceBinding } from './DebuggerWorkspaceBinding.js';
+export interface DebuggerLocationUpdater {
+    updateLocations(script: SDK.Script.Script): Promise<void>;
+}
+export interface CSSLocationUpdater {
+    updateLocations(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader): Promise<void>;
+}
 export declare class ResourceMapping implements SDK.TargetManager.SDKModelObserver<SDK.ResourceTreeModel.ResourceTreeModel> {
     #private;
     readonly workspace: Workspace.Workspace.WorkspaceImpl;
     constructor(targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl);
-    get debuggerWorkspaceBinding(): DebuggerWorkspaceBinding | null;
-    set debuggerWorkspaceBinding(debuggerWorkspaceBinding: DebuggerWorkspaceBinding);
-    get cssWorkspaceBinding(): CSSWorkspaceBinding | null;
-    set cssWorkspaceBinding(cssWorkspaceBinding: CSSWorkspaceBinding);
+    get debuggerLocationUpdater(): DebuggerLocationUpdater | null;
+    set debuggerLocationUpdater(debuggerLocationUpdater: DebuggerLocationUpdater);
+    get cssLocationUpdater(): CSSLocationUpdater | null;
+    set cssLocationUpdater(cssLocationUpdater: CSSLocationUpdater);
     modelAdded(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void;
     modelRemoved(resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel): void;
     private infoForTarget;

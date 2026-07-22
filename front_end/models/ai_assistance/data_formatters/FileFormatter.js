@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Bindings from '../../bindings/bindings.js';
+import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import { NetworkRequestFormatter } from './NetworkRequestFormatter.js';
 const MAX_FILE_SIZE = 10000;
@@ -44,9 +45,11 @@ export class FileFormatter {
     }
     #file;
     #debuggerWorkspaceBinding;
-    constructor(file, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+    #networkLog;
+    constructor(file, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), networkLog = Logs.NetworkLog.NetworkLog.instance()) {
         this.#file = file;
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+        this.#networkLog = networkLog;
     }
     formatFile() {
         const sourceMapDetails = FileFormatter.formatSourceMapDetails(this.#file, this.#debuggerWorkspaceBinding);
@@ -60,7 +63,7 @@ export class FileFormatter {
             const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
             calculator.updateBoundaries(resource.request);
             lines.push(`Request initiator chain:
-${new NetworkRequestFormatter(resource.request, calculator).formatRequestInitiatorChain()}`);
+${new NetworkRequestFormatter(resource.request, calculator, this.#networkLog).formatRequestInitiatorChain()}`);
         }
         lines.push(`File content:
 ${this.#formatFileContent()}`);

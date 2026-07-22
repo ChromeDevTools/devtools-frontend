@@ -6643,7 +6643,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
           ancestorRuleElement = this.createSupportsElement(rule.supports[supportsIndex++]);
           break;
         case "StyleRule":
-          ancestorRuleElement = this.createNestingElement(rule.nestingSelectors?.[nestingIndex++]);
+          ancestorRuleElement = this.createNestingElement(rule, nestingIndex++);
           break;
         case "StartingStyleRule":
           ancestorRuleElement = this.createStartingStyleElement();
@@ -6829,9 +6829,25 @@ var StylePropertiesSection = class _StylePropertiesSection {
     };
     return navigationElement;
   }
-  createNestingElement(nestingSelector) {
+  createNestingElement(rule, nestingIndex) {
+    const nestingSelector = rule.nestingSelectors?.[nestingIndex];
     if (!nestingSelector) {
       return;
+    }
+    const parentRule = this.matchedStyles.findParentRule(rule, nestingIndex);
+    if (parentRule) {
+      const container = document.createElement("div");
+      const matchingSelectorIndexes = this.matchedStyles.getMatchingSelectors(parentRule);
+      const matchingSelectors = new Array(parentRule.selectors.length).fill(false);
+      for (const matchingIndex of matchingSelectorIndexes) {
+        matchingSelectors[matchingIndex] = true;
+      }
+      const selectorElement = container.createChild("span", "selector");
+      const specificityContainer = container.createChild("span");
+      this.renderSelectorsToElement(parentRule.selectors, matchingSelectors, this.elementToSelectorIndex, selectorElement, specificityContainer);
+      const openBrace = container.createChild("span", "sidebar-pane-open-brace");
+      openBrace.textContent = " {";
+      return container;
     }
     const nestingElement = document.createElement("div");
     nestingElement.textContent = `${nestingSelector} {`;
@@ -7099,18 +7115,21 @@ var StylePropertiesSection = class _StylePropertiesSection {
   renderSelectors(selectors, matchingSelectors, elementToSelectorIndex) {
     this.selectorElement.removeChildren();
     this.#specificityTooltips.removeChildren();
+    this.renderSelectorsToElement(selectors, matchingSelectors, elementToSelectorIndex, this.selectorElement, this.#specificityTooltips);
+  }
+  renderSelectorsToElement(selectors, matchingSelectors, elementToSelectorIndex, targetElement, tooltipContainer) {
     for (const [i, selector] of selectors.entries()) {
       if (i > 0) {
-        this.selectorElement.append(", ");
+        targetElement.append(", ");
       }
       const specificityTooltipId = selector.specificity ? _StylePropertiesSection.getNextSpecificityTooltipId() : null;
-      const span = this.selectorElement.createChild("span", "simple-selector");
+      const span = targetElement.createChild("span", "simple-selector");
       span.classList.toggle("selector-matches", matchingSelectors[i]);
       elementToSelectorIndex.set(span, i);
       span.textContent = selectors[i].text;
       if (specificityTooltipId && selector.specificity) {
         span.setAttribute("aria-details", specificityTooltipId);
-        const tooltip = this.#specificityTooltips.appendChild(new Tooltips2.Tooltip.Tooltip({
+        const tooltip = tooltipContainer.appendChild(new Tooltips2.Tooltip.Tooltip({
           id: specificityTooltipId,
           anchor: span,
           variant: "rich",
@@ -17406,6 +17425,7 @@ import * as SDK15 from "./../../core/sdk/sdk.js";
 import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
 import * as UI18 from "./../../ui/legacy/legacy.js";
 import * as Lit9 from "./../../ui/lit/lit.js";
+import * as SettingUIRegistration from "./../../ui/settings/settings.js";
 import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layoutPane.css.js
@@ -17885,16 +17905,23 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
       if (settingType !== "boolean" && settingType !== "enum") {
         throw new Error("A setting provided to LayoutSidebarPane does not have a supported setting type");
       }
+      const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
       const mappedSetting = {
         type: settingType,
         name: setting.name,
-        title: setting.title()
+        title: uiDescriptor?.title?.() ?? setting.title()
       };
+      const options = uiDescriptor?.options?.map((opt) => ({
+        value: opt.value,
+        title: opt.title(),
+        text: typeof opt.text === "function" ? opt.text() : opt.text,
+        raw: opt.raw
+      })) ?? setting.options();
       if (typeof settingValue === "boolean") {
         settings.push({
           ...mappedSetting,
           value: settingValue,
-          options: setting.options().map((opt) => ({
+          options: options.map((opt) => ({
             ...opt,
             value: opt.value
           }))
@@ -17903,7 +17930,7 @@ var LayoutPane = class _LayoutPane extends UI18.Widget.Widget {
         settings.push({
           ...mappedSetting,
           value: settingValue,
-          options: setting.options().map((opt) => ({
+          options: options.map((opt) => ({
             ...opt,
             value: opt.value
           }))
@@ -20165,8 +20192,7 @@ var EventListenersWidget = class _EventListenersWidget extends UI23.Widget.VBox 
     this.showForAncestorsSetting.addChangeListener(this.requestUpdate.bind(this));
     this.dispatchFilterBySetting = Common15.Settings.Settings.instance().createSetting("event-listener-dispatch-filter-type", DispatchFilterBy.All);
     this.dispatchFilterBySetting.addChangeListener(this.requestUpdate.bind(this));
-    this.showFrameworkListenersSetting = Common15.Settings.Settings.instance().createSetting("show-frameowkr-listeners", true);
-    this.showFrameworkListenersSetting.setTitle(i18nString18(UIStrings19.frameworkListeners));
+    this.showFrameworkListenersSetting = Common15.Settings.Settings.instance().moduleSetting("show-frameowkr-listeners");
     this.showFrameworkListenersSetting.addChangeListener(this.requestUpdate.bind(this));
     UI23.Context.Context.instance().addFlavorChangeListener(SDK19.DOMModel.DOMNode, this.requestUpdate.bind(this));
     this.requestUpdate();

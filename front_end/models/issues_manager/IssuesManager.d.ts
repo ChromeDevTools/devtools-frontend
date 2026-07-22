@@ -1,6 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Workspace from '../workspace/workspace.js';
 import type { Issue, IssueKind } from './Issue.js';
 import { Events } from './IssuesManagerEvents.js';
 export { Events } from './IssuesManagerEvents.js';
@@ -40,7 +41,7 @@ export declare class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     #private;
     private readonly showThirdPartyIssuesSetting?;
     private readonly hideIssueSetting?;
-    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined, frameManager?: SDK.FrameManager.FrameManager, targetManager?: SDK.TargetManager.TargetManager);
+    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined, frameManager?: SDK.FrameManager.FrameManager, targetManager?: SDK.TargetManager.TargetManager, workspace?: Workspace.Workspace.WorkspaceImpl);
     static instance(opts?: IssuesManagerCreationOptions): IssuesManager;
     static removeInstance(): void;
     modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void;

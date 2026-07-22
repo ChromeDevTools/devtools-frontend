@@ -609,7 +609,7 @@ export function getPresets() {
         presets = [
             // configID maps to Lighthouse's Object.keys(config.categories)[0] value
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat-perf', true, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-perf'),
                 configID: 'performance',
                 title: i18nLazyString(UIStrings.performance),
                 description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
@@ -617,7 +617,7 @@ export function getPresets() {
                 userMetric: 0 /* Host.UserMetrics.LighthouseCategoryUsed.PERFORMANCE */,
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat-a11y', true, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-a11y'),
                 configID: 'accessibility',
                 title: i18nLazyString(UIStrings.accessibility),
                 description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
@@ -625,7 +625,7 @@ export function getPresets() {
                 userMetric: 1 /* Host.UserMetrics.LighthouseCategoryUsed.ACCESSIBILITY */,
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat-best-practices', true, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-best-practices'),
                 configID: 'best-practices',
                 title: i18nLazyString(UIStrings.bestPractices),
                 description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
@@ -633,7 +633,7 @@ export function getPresets() {
                 userMetric: 2 /* Host.UserMetrics.LighthouseCategoryUsed.BEST_PRACTICES */,
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat-seo', true, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-seo'),
                 configID: 'seo',
                 title: i18nLazyString(UIStrings.seo),
                 description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
@@ -641,7 +641,7 @@ export function getPresets() {
                 userMetric: 3 /* Host.UserMetrics.LighthouseCategoryUsed.SEO */,
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.cat-agentic-browsing', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.cat-agentic-browsing'),
                 configID: 'agentic-browsing',
                 title: i18nLazyString(UIStrings.agenticBrowsing),
                 description: i18nLazyString(UIStrings.agenticBrowsingDescription),
@@ -657,7 +657,7 @@ export function getRuntimeSettings() {
     if (!runtimeSettings) {
         runtimeSettings = [
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.device-type', 'mobile', "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.device-type'),
                 title: i18nLazyString(UIStrings.applyMobileEmulation),
                 description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
                 setFlags: (flags, value) => {
@@ -678,7 +678,7 @@ export function getRuntimeSettings() {
                 ],
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.mode', 'navigation', "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.mode'),
                 title: i18nLazyString(UIStrings.lighthouseMode),
                 description: i18nLazyString(UIStrings.runLighthouseInMode),
                 setFlags: (flags, value) => {
@@ -705,7 +705,7 @@ export function getRuntimeSettings() {
             },
             {
                 // This setting is disabled, but we keep it around to show in the UI.
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.throttling', 'simulate', "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.throttling'),
                 title: i18nLazyString(UIStrings.throttlingMethod),
                 // We will disable this when we have a Lantern trace viewer within DevTools.
                 learnMore: 'https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling',
@@ -724,7 +724,7 @@ export function getRuntimeSettings() {
                 ],
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.clear-storage', true, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.clear-storage'),
                 title: i18nLazyString(UIStrings.clearStorage),
                 description: i18nLazyString(UIStrings.resetStorageLocalstorage),
                 setFlags: (flags, value) => {
@@ -732,7 +732,7 @@ export function getRuntimeSettings() {
                 },
             },
             {
-                setting: Common.Settings.Settings.instance().createSetting('lighthouse.enable-sampling', false, "Synced" /* Common.Settings.SettingStorageType.SYNCED */),
+                setting: Common.Settings.Settings.instance().moduleSetting('lighthouse.enable-sampling'),
                 title: i18nLazyString(UIStrings.enableSampling),
                 description: i18nLazyString(UIStrings.enableJavaScriptSampling),
                 setFlags: (flags, value) => {

@@ -809,12 +809,7 @@ function getPresets() {
     presets = [
       // configID maps to Lighthouse's Object.keys(config.categories)[0] value
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.cat-perf",
-          true,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-perf"),
         configID: "performance",
         title: i18nLazyString(UIStrings.performance),
         description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
@@ -822,12 +817,7 @@ function getPresets() {
         userMetric: 0
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.cat-a11y",
-          true,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-a11y"),
         configID: "accessibility",
         title: i18nLazyString(UIStrings.accessibility),
         description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
@@ -835,12 +825,7 @@ function getPresets() {
         userMetric: 1
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.cat-best-practices",
-          true,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-best-practices"),
         configID: "best-practices",
         title: i18nLazyString(UIStrings.bestPractices),
         description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
@@ -848,12 +833,7 @@ function getPresets() {
         userMetric: 2
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.cat-seo",
-          true,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-seo"),
         configID: "seo",
         title: i18nLazyString(UIStrings.seo),
         description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
@@ -861,12 +841,7 @@ function getPresets() {
         userMetric: 3
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.cat-agentic-browsing",
-          false,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.cat-agentic-browsing"),
         configID: "agentic-browsing",
         title: i18nLazyString(UIStrings.agenticBrowsing),
         description: i18nLazyString(UIStrings.agenticBrowsingDescription),
@@ -882,12 +857,7 @@ function getRuntimeSettings() {
   if (!runtimeSettings) {
     runtimeSettings = [
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.device-type",
-          "mobile",
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.device-type"),
         title: i18nLazyString(UIStrings.applyMobileEmulation),
         description: i18nLazyString(UIStrings.applyMobileEmulationDuring),
         setFlags: (flags, value) => {
@@ -907,12 +877,7 @@ function getRuntimeSettings() {
         ]
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.mode",
-          "navigation",
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.mode"),
         title: i18nLazyString(UIStrings.lighthouseMode),
         description: i18nLazyString(UIStrings.runLighthouseInMode),
         setFlags: (flags, value) => {
@@ -939,12 +904,7 @@ function getRuntimeSettings() {
       },
       {
         // This setting is disabled, but we keep it around to show in the UI.
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.throttling",
-          "simulate",
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.throttling"),
         title: i18nLazyString(UIStrings.throttlingMethod),
         // We will disable this when we have a Lantern trace viewer within DevTools.
         learnMore: "https://github.com/GoogleChrome/lighthouse/blob/master/docs/throttling.md#devtools-lighthouse-panel-throttling",
@@ -962,12 +922,7 @@ function getRuntimeSettings() {
         ]
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.clear-storage",
-          true,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.clear-storage"),
         title: i18nLazyString(UIStrings.clearStorage),
         description: i18nLazyString(UIStrings.resetStorageLocalstorage),
         setFlags: (flags, value) => {
@@ -975,12 +930,7 @@ function getRuntimeSettings() {
         }
       },
       {
-        setting: Common.Settings.Settings.instance().createSetting(
-          "lighthouse.enable-sampling",
-          false,
-          "Synced"
-          /* Common.Settings.SettingStorageType.SYNCED */
-        ),
+        setting: Common.Settings.Settings.instance().moduleSetting("lighthouse.enable-sampling"),
         title: i18nLazyString(UIStrings.enableSampling),
         description: i18nLazyString(UIStrings.enableJavaScriptSampling),
         setFlags: (flags, value) => {
@@ -2102,8 +2052,7 @@ var StartView = class extends UI4.Widget.Widget {
     if (!runtimeSetting?.title) {
       throw new Error(`${settingName} is not a setting with a title`);
     }
-    runtimeSetting.setting.setTitle(runtimeSetting.title());
-    const control = new UI4.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description());
+    const control = new UI4.Toolbar.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description(), runtimeSetting.title());
     toolbar2.appendToolbarItem(control);
     if (runtimeSetting.learnMore) {
       const link = Link.create(runtimeSetting.learnMore, i18nString3(UIStrings3.learnMore), "lighthouse-learn-more", "learn-more");
@@ -2117,7 +2066,6 @@ var StartView = class extends UI4.Widget.Widget {
       throw new Error(`${settingName} is not a setting with a title`);
     }
     const options = runtimeSetting.options?.map((option) => ({ label: option.label(), value: option.value })) || [];
-    runtimeSetting.setting.setTitle(runtimeSetting.title());
     const control = new UI4.Toolbar.ToolbarSettingComboBox(options, runtimeSetting.setting, runtimeSetting.title());
     control.setTitle(runtimeSetting.description());
     toolbar2.appendToolbarItem(control);
@@ -2133,8 +2081,7 @@ var StartView = class extends UI4.Widget.Widget {
     this.populateRuntimeSettingAsRadio("lighthouse.device-type", i18nString3(UIStrings3.device), deviceTypeFormElements);
     this.checkboxes = [];
     for (const preset of getPresets()) {
-      preset.setting.setTitle(preset.title());
-      const checkbox = new UI4.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description());
+      const checkbox = new UI4.Toolbar.ToolbarSettingCheckbox(preset.setting, preset.description(), preset.title());
       const row = categoryFormElements.createChild("div", "vbox lighthouse-launcher-row");
       row.appendChild(checkbox.element);
       checkbox.element.setAttribute("data-lh-category", preset.configID);

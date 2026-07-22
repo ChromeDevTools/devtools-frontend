@@ -14,14 +14,17 @@ export interface MediaQueryMarker {
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: object, target: DocumentFragment) => void;
 export declare class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements SDK.TargetManager.SDKModelObserver<SDK.CSSModel.CSSModel> {
+    #private;
     private readonly view;
-    private readonly mediaThrottler;
-    private readonly getWidthCallback;
-    private readonly setWidthCallback;
+    readonly mediaThrottler: Common.Throttler.Throttler;
     private scale;
     private cssModel?;
     private cachedQueryModels?;
-    constructor(getWidthCallback: () => number, setWidthCallback: (arg0: number) => void, mediaThrottler: Common.Throttler.Throttler, view?: (input: ViewInput, _output: object, target: DocumentFragment) => void);
+    constructor(element?: HTMLElement, view?: (input: ViewInput, _output: object, target: DocumentFragment) => void);
+    get getWidthCallback(): (() => number) | undefined;
+    set getWidthCallback(callback: (() => number) | undefined);
+    get setWidthCallback(): ((arg0: number) => void) | undefined;
+    set setWidthCallback(callback: ((arg0: number) => void) | undefined);
     modelAdded(cssModel: SDK.CSSModel.CSSModel): void;
     modelRemoved(cssModel: SDK.CSSModel.CSSModel): void;
     setAxisTransform(scale: number): void;

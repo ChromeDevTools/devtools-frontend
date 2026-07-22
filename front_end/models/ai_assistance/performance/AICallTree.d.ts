@@ -1,5 +1,6 @@
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as Workspace from '../../../models/workspace/workspace.js';
 export interface FromTimeOnThreadOptions {
     thread: {
         pid: Trace.Types.Events.ProcessID;
@@ -13,7 +14,8 @@ export declare class AICallTree {
     selectedNode: Trace.Extras.TraceTree.Node | null;
     rootNode: Trace.Extras.TraceTree.TopDownRootNode;
     parsedTrace: Trace.TraceModel.ParsedTrace;
-    constructor(selectedNode: Trace.Extras.TraceTree.Node | null, rootNode: Trace.Extras.TraceTree.TopDownRootNode, parsedTrace: Trace.TraceModel.ParsedTrace);
+    workspace: Workspace.Workspace.WorkspaceImpl;
+    constructor(selectedNode: Trace.Extras.TraceTree.Node | null, rootNode: Trace.Extras.TraceTree.TopDownRootNode, parsedTrace: Trace.TraceModel.ParsedTrace, workspace?: Workspace.Workspace.WorkspaceImpl);
     static findEventsForThread({ thread, parsedTrace, bounds }: FromTimeOnThreadOptions): Trace.Types.Events.Event[] | null;
     static findMainThreadTasks({ thread, parsedTrace, bounds }: FromTimeOnThreadOptions): Trace.Types.Events.RunTask[] | null;
     /**

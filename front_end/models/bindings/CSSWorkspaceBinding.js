@@ -14,7 +14,7 @@ export class CSSWorkspaceBinding {
     #liveLocationPromises;
     constructor(resourceMapping, targetManager) {
         this.#resourceMapping = resourceMapping;
-        this.#resourceMapping.cssWorkspaceBinding = this;
+        this.#resourceMapping.cssLocationUpdater = this;
         this.#modelToInfo = new Map();
         targetManager.observeModels(SDK.CSSModel.CSSModel, this);
         this.#liveLocationPromises = new Set();

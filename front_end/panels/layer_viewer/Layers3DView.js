@@ -42,16 +42,6 @@ const UIStrings = {
      */
     checkSForPossibleReasons: 'Check {PH1} for possible reasons.',
     /**
-     * @description Text for a checkbox in the toolbar of the Layers panel to show the area of slow scroll rect
-     */
-    slowScrollRects: 'Slow scroll rects',
-    /**
-     * @description Text for a checkbox in the toolbar of the Layers panel. This is a noun, for a
-     * setting meaning 'display paints in the layers viewer'. 'Paints' here means 'paint events' i.e.
-     * when the browser draws pixels to the screen.
-     */
-    paints: 'Paints',
-    /**
      * @description A context menu item in the DView of the Layers panel
      */
     resetView: 'Reset View',
@@ -149,8 +139,9 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
             new TransformController(this.contentElement, false, false /* preventDefaultOnMouseDown */);
         this.transformController.addEventListener("TransformChanged" /* TransformControllerEvents.TRANSFORM_CHANGED */, this.updateData, this);
         this.panelToolbar = this.transformController.toolbar();
-        this.showPaintsSetting = this.createVisibilitySetting(i18nString(UIStrings.paints), 'frame-viewer-show-paints', false, this.panelToolbar);
-        this.showSlowScrollRectsSetting = this.createVisibilitySetting(i18nString(UIStrings.slowScrollRects), 'frame-viewer-show-slow-scroll-rects', true, this.panelToolbar);
+        this.showPaintsSetting = this.createVisibilitySetting('frame-viewer-show-paints', this.panelToolbar);
+        this.showSlowScrollRectsSetting =
+            this.createVisibilitySetting('frame-viewer-show-slow-scroll-rects', this.panelToolbar);
         this.showPaintsSetting.addChangeListener(this.updatePaints, this);
         Common.Settings.Settings.instance()
             .moduleSetting('frame-viewer-chrome-window')
@@ -736,9 +727,8 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
         this.rects.forEach(checkIntersection);
         return closestObject;
     }
-    createVisibilitySetting(caption, name, value, toolbar) {
-        const setting = Common.Settings.Settings.instance().createSetting(name, value);
-        setting.setTitle(caption);
+    createVisibilitySetting(name, toolbar) {
+        const setting = Common.Settings.Settings.instance().moduleSetting(name);
         setting.addChangeListener(this.updateData, this);
         toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(setting));
         return setting;

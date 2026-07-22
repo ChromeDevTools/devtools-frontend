@@ -348,6 +348,10 @@ export class AiAgent {
                     (err instanceof Error && err.message.toLowerCase().includes('quota'))) {
                     error = "quota" /* ErrorType.QUOTA */;
                 }
+                else if (err instanceof Host.AidaClient.AidaPayloadTooLargeError ||
+                    (err instanceof Error && /payload size exceeds the limit/i.test(err.message))) {
+                    error = "payload-too-large" /* ErrorType.PAYLOAD_TOO_LARGE */;
+                }
                 yield this.#createErrorResponse(error);
                 break;
             }
@@ -587,7 +591,12 @@ export class AiAgent {
                 request: structuredClone(request),
                 aidaResponse,
             });
-            localStorage.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));
+            try {
+                localStorage.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));
+            }
+            catch (err) {
+                console.warn('Failed to write to local storage "aiAssistanceStructuredLog":', err);
+            }
         }
     }
     #removeLastRunParts() {

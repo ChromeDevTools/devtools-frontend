@@ -6635,7 +6635,7 @@ var DebuggerPlugin = class extends Plugin {
       show: async (popover) => {
         let resolvedText = "";
         if (selectedCallFrame.script.isJavaScript()) {
-          const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame);
+          const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame, Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
           try {
             resolvedText = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(evaluationText, nameMap);
           } catch {
@@ -7848,7 +7848,8 @@ async function computeScopeMappings(callFrame, rawLocationToEditorOffset) {
     if (!scopeEnd) {
       break;
     }
-    const { properties } = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope).getAllProperties(false, false);
+    const debuggerWorkspaceBinding = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const { properties } = await SourceMapScopes.NamesResolver.resolveScopeInObject(scope, debuggerWorkspaceBinding).getAllProperties(false, false);
     if (!properties || properties.length > MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS) {
       break;
     }
@@ -13340,6 +13341,7 @@ __export(ScopeChainSidebarPane_exports, {
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
 import * as i18n47 from "./../../core/i18n/i18n.js";
+import * as Bindings11 from "./../../models/bindings/bindings.js";
 import * as SourceMapScopes2 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
 import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
@@ -13531,7 +13533,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI23.Widget.VBo
     this.#scopeChain = null;
     this.#linkifier.reset();
     if (callFrame) {
-      const scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame);
+      const scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame, Bindings11.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
       this.#scopeChainModel = scopeChainModel;
       this.#scopeChainModel.addEventListener("ScopeChainUpdated", (event) => {
         if (this.#scopeChainModel === scopeChainModel) {
@@ -13628,7 +13630,7 @@ import * as i18n49 from "./../../core/i18n/i18n.js";
 import * as Platform15 from "./../../core/platform/platform.js";
 import * as SDK13 from "./../../core/sdk/sdk.js";
 import * as TextUtils12 from "./../../core/text_utils/text_utils.js";
-import * as Bindings11 from "./../../models/bindings/bindings.js";
+import * as Bindings12 from "./../../models/bindings/bindings.js";
 import * as Persistence16 from "./../../models/persistence/persistence.js";
 import * as Workspace29 from "./../../models/workspace/workspace.js";
 import * as uiI18n3 from "./../../ui/i18n/i18n.js";
@@ -13765,7 +13767,7 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace29.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings11.NetworkProject.NetworkProject.getTargetForProject(project));
+    return project.type() === Workspace29.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings12.NetworkProject.NetworkProject.getTargetForProject(project));
   }
   onScopeChange() {
     for (const project of Workspace29.Workspace.WorkspaceImpl.instance().projects()) {
@@ -14029,6 +14031,7 @@ import * as Host13 from "./../../core/host/host.js";
 import * as i18n51 from "./../../core/i18n/i18n.js";
 import * as Platform16 from "./../../core/platform/platform.js";
 import * as SDK14 from "./../../core/sdk/sdk.js";
+import * as Bindings13 from "./../../models/bindings/bindings.js";
 import * as Formatter3 from "./../../models/formatter/formatter.js";
 import * as SourceMapScopes3 from "./../../models/source_map_scopes/source_map_scopes.js";
 import * as StackTrace9 from "./../../models/stack_trace/stack_trace.js";
@@ -14690,7 +14693,7 @@ var WatchExpression = class _WatchExpression {
     }
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
     if (callFrame?.script.isJavaScript()) {
-      const nameMap = await SourceMapScopes3.NamesResolver.allVariablesInCallFrame(callFrame);
+      const nameMap = await SourceMapScopes3.NamesResolver.allVariablesInCallFrame(callFrame, Bindings13.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
       try {
         expression = await Formatter3.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
       } catch {

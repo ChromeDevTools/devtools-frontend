@@ -77,12 +77,11 @@ export default `/*
 
 .spectrum-hue {
   top: 16px;
-  /* stylelint-disable-next-line plugin/use_theme_colors, declaration-property-value-no-unknown */
+  /* stylelint-disable-next-line plugin/use_theme_colors */
   background: linear-gradient(to left in hsl longer hue, #f00 0 100%);
 }
 
 .spectrum-hue.display-p3 {
-  /* stylelint-disable-next-line declaration-property-value-no-unknown */
   background: linear-gradient(
     to left in hsl longer hue,
     color(display-p3 1 0 0) 0 100%

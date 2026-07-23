@@ -6,6 +6,8 @@ export declare class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMT
     #private;
     static readonly observedAttributes: string[];
     constructor();
+    connectedCallback(): void;
+    disconnectedCallback(): void;
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     set striped(striped: boolean);
     get striped(): boolean;

@@ -196,8 +196,12 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         menu.defaultSection().appendItem(i18nString(UIStrings.copyTable), () => {
             const tableData = [];
             const columnName = [
-                i18nString(UIStrings.elapsed), i18nString(UIStrings.matchAttempts), i18nString(UIStrings.matchCount),
-                i18nString(UIStrings.slowPathNonMatches), i18nString(UIStrings.selector), i18nString(UIStrings.styleSheetId)
+                i18nString(UIStrings.elapsed),
+                i18nString(UIStrings.matchAttempts),
+                i18nString(UIStrings.matchCount),
+                i18nString(UIStrings.slowPathNonMatches),
+                i18nString(UIStrings.selector),
+                i18nString(UIStrings.styleSheetId),
             ];
             tableData.push(columnName.join('\t'));
             for (const timing of this.#timings) {
@@ -276,7 +280,10 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             // aggregate invalidated nodes per (Selector + Recalc timestamp + Frame)
             for (const selector of invalidatedNode.selectorList) {
                 const key = [
-                    selector.selector, selector.styleSheetId, invalidatedNode.frame, invalidatedNode.lastRecalcStyleEventTs
+                    selector.selector,
+                    selector.styleSheetId,
+                    invalidatedNode.frame,
+                    invalidatedNode.lastRecalcStyleEventTs,
                 ].join('-');
                 if (invalidatedNodeMap.has(key)) {
                     const nodes = invalidatedNodeMap.get(key);

@@ -9,9 +9,18 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.event-source-messages-view .data-grid {
-  flex: auto;
-  border: none;
+@scope to (devtools-widget > *) {
+  .event-source-messages-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .event-source-messages-view devtools-data-grid {
+    flex: auto;
+    border: none;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./eventSourceMessagesView.css')} */`;

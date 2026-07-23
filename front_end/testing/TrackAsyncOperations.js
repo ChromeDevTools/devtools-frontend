@@ -15,7 +15,7 @@ const originals = {
     cancelAnimationFrame: cancelAnimationFrame.bind(window),
     clearInterval: clearInterval.bind(window),
     clearTimeout: clearTimeout.bind(window),
-    cancelIdleCallback: cancelIdleCallback.bind(window)
+    cancelIdleCallback: cancelIdleCallback.bind(window),
 };
 const asyncActivity = [];
 export async function checkForPendingActivity(testName = '') {

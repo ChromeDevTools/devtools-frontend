@@ -796,8 +796,18 @@ export class ContextMenu extends SubMenu {
     static pendingMenu = null;
     static useSoftMenu = false;
     static groupWeights = [
-        'header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'override', 'save', 'annotation',
-        'footer'
+        'header',
+        'new',
+        'reveal',
+        'edit',
+        'clipboard',
+        'debug',
+        'view',
+        'default',
+        'override',
+        'save',
+        'annotation',
+        'footer',
     ];
 }
 /* eslint-disable @devtools/no-lit-render-outside-of-view */

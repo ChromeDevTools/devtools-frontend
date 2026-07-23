@@ -191,7 +191,7 @@ function inFileEditRequestToSourceFile(request) {
             {
                 content: '',
                 isSelected: true, // Cursor position
-            }
+            },
         ],
     };
     if (request.suffix) {
@@ -431,7 +431,7 @@ export function gcaChunkResponseToAidaChunkResponse(response) {
         const parts = candidate?.content?.parts || [];
         const metadata = {
             rpcGlobalId: response.responseId,
-            inferenceOptionMetadata: { modelId: response.modelVersion }
+            inferenceOptionMetadata: { modelId: response.modelVersion },
         };
         if (candidate?.citationMetadata?.citations) {
             metadata.attributionMetadata = {

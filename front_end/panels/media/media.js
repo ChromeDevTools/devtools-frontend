@@ -7,13 +7,14 @@ var __export = (target, all) => {
 // gen/front_end/panels/media/EventDisplayTable.js
 var EventDisplayTable_exports = {};
 __export(EventDisplayTable_exports, {
-  EventNode: () => EventNode,
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
   PlayerEventsView: () => PlayerEventsView
 });
+import "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n from "./../../core/i18n/i18n.js";
-import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
 import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI from "./../../ui/legacy/legacy.js";
+import { Directives, html, render } from "./../../ui/lit/lit.js";
 import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/eventDisplayTable.css.js
@@ -23,26 +24,33 @@ var eventDisplayTable_css_default = `/*
  * found in the LICENSE file.
  */
 
-.no-border-top-datagrid > .data-grid {
+devtools-data-grid.no-border-top-datagrid {
   /* make sure there is no top border, it ruins the menu view */
   border-top: 0;
 }
 
-.event-display-table-contents-table-container > .widget > .data-grid {
+devtools-data-grid.event-display-table-contents-table-container {
   height: 100%;
 }
 
-.data-grid .event-display-table-basic-text-table-entry {
+.event-display-table-basic-text-table-entry {
   line-height: 26px;
 }
 
-.event-display-table-contents-json-wrapper > .json-view {
+.event-display-table-contents-json-wrapper > devtools-widget.json-view {
   overflow: visible;
+}
+
+.data-grid > .data-container > table.data {
+  height: auto;
+  table-layout: auto;
 }
 
 /*# sourceURL=${import.meta.resolve("./eventDisplayTable.css")} */`;
 
 // gen/front_end/panels/media/EventDisplayTable.js
+var { widget } = UI.Widget;
+var { repeat } = Directives;
 var UIStrings = {
   /**
    * @description Text for timestamps of items.
@@ -64,64 +72,60 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("panels/media/EventDisplayTable.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var EventNode = class extends DataGrid.DataGrid.DataGridNode {
-  expandableElement;
-  constructor(event) {
-    super(event, false);
-    this.expandableElement = null;
-  }
-  createCell(columnId) {
-    const cell = this.createTD(columnId);
-    const cellData = this.data[columnId];
-    if (columnId === "value") {
-      const enclosed = cell.createChild("div", "event-display-table-contents-json-wrapper");
-      this.expandableElement = new SourceFrame.JSONView.JSONView(new SourceFrame.JSONView.ParsedJSON(cellData, "", ""), true);
-      this.expandableElement.markAsRoot();
-      this.expandableElement.show(enclosed);
-    } else {
-      cell.classList.add("event-display-table-basic-text-table-entry");
-      UI.UIUtils.createTextChild(cell, cellData);
-    }
-    return cell;
-  }
+var DEFAULT_VIEW = (input, _output, target) => {
+  render(
+    html`
+      <style>${eventDisplayTable_css_default}</style>
+      <devtools-data-grid row-height='auto' autoscroll striped name=${i18nString(UIStrings.eventDisplay)}
+        class="event-display-table-contents-table-container no-border-top-datagrid"
+        .template=${html`
+          <style>${eventDisplayTable_css_default}</style>
+          <table>
+            <thead>
+              <tr>
+                <th id="display-timestamp" weight="1">${i18nString(UIStrings.timestamp)}</th>
+                <th id="event" weight="2">${i18nString(UIStrings.eventName)}</th>
+                <th id="value" weight="7">${i18nString(UIStrings.value)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${repeat(input.parsedEvents, (event) => event, (event) => html`
+                <tr>
+                  <td class="event-display-table-basic-text-table-entry">${event.displayTimestamp}</td>
+                  <td class="event-display-table-basic-text-table-entry">${event.event}</td>
+                  <td class="event-display-table-contents-json-wrapper">
+                    ${widget((el) => new SourceFrame.JSONView.JSONView(new SourceFrame.JSONView.ParsedJSON(event.value, "", ""), true, el))}
+                  </td>
+                </tr>
+              `)}
+            </tbody>
+          </table>
+        `}>
+      </devtools-data-grid>
+    `,
+    // clang-format on
+    target
+  );
 };
-var PlayerEventsView = class _PlayerEventsView extends UI.Widget.VBox {
-  dataGrid;
+var PlayerEventsView = class extends UI.Widget.VBox {
   firstEventTime;
-  constructor() {
+  #view;
+  #parsedEvents = [];
+  constructor(view = DEFAULT_VIEW) {
     super({ jslog: `${VisualLogging.pane("events")}` });
-    this.registerRequiredCSS(eventDisplayTable_css_default);
-    this.contentElement.classList.add("event-display-table-contents-table-container");
-    this.dataGrid = this.createDataGrid([
-      {
-        id: "displayTimestamp",
-        title: i18nString(UIStrings.timestamp),
-        weight: 1,
-        sortable: false
-      },
-      { id: "event", title: i18nString(UIStrings.eventName), weight: 2, sortable: false },
-      {
-        id: "value",
-        title: i18nString(UIStrings.value),
-        weight: 7,
-        sortable: false
-      }
-    ]);
+    this.#view = view;
     this.firstEventTime = 0;
-    this.dataGrid.setStriped(true);
-    this.dataGrid.asWidget().show(this.contentElement);
+    this.requestUpdate();
   }
-  createDataGrid(headers) {
-    const gridColumnDescs = [];
-    for (const headerDesc of headers) {
-      gridColumnDescs.push(_PlayerEventsView.convertToGridDescriptor(headerDesc));
-    }
-    const datagrid = new DataGrid.DataGrid.DataGridImpl({
-      displayName: i18nString(UIStrings.eventDisplay),
-      columns: gridColumnDescs
-    });
-    datagrid.asWidget().contentElement.classList.add("no-border-top-datagrid");
-    return datagrid;
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    const viewInput = {
+      parsedEvents: this.#parsedEvents
+    };
+    this.#view(viewInput, void 0, this.contentElement);
   }
   onEvent(event) {
     if (this.firstEventTime === 0 && typeof event.timestamp === "number") {
@@ -133,14 +137,12 @@ var PlayerEventsView = class _PlayerEventsView extends UI.Widget.VBox {
       const json = JSON.parse(stringified);
       event.event = json.event;
       delete json["event"];
-      event.value = json;
-      const node = new EventNode(event);
-      const scroll = this.dataGrid.scrollContainer;
-      const isAtBottom = scroll.scrollTop === scroll.scrollHeight - scroll.offsetHeight;
-      this.dataGrid.rootNode().appendChild(node);
-      if (isAtBottom) {
-        scroll.scrollTop = scroll.scrollHeight;
-      }
+      this.#parsedEvents.push({
+        displayTimestamp: event.displayTimestamp,
+        event: event.event,
+        value: json
+      });
+      this.requestUpdate();
     } catch {
     }
   }
@@ -149,15 +151,6 @@ var PlayerEventsView = class _PlayerEventsView extends UI.Widget.VBox {
       event.displayTimestamp = (event.timestamp - this.firstEventTime).toFixed(3);
     }
     return event;
-  }
-  static convertToGridDescriptor(columnConfig) {
-    return {
-      id: columnConfig.id,
-      title: columnConfig.title,
-      sortable: columnConfig.sortable,
-      weight: columnConfig.weight || 0,
-      sort: DataGrid.DataGrid.Order.Ascending
-    };
   }
 };
 
@@ -885,7 +878,7 @@ __export(PlayerMessagesView_exports, {
 import "./../../ui/legacy/legacy.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import { html, nothing, render } from "./../../ui/lit/lit.js";
+import { html as html2, nothing, render as render2 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerMessagesView.css.js
@@ -1233,7 +1226,7 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     UI3.UIUtils.createTextChild(container, message.message);
   }
   renderError(error) {
-    return html`
+    return html2`
       <div class="status-error-box">
         <div class="status-error-field-labeled">
           <span class="status-error-field-label"
@@ -1248,23 +1241,23 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
           <span>${error.code}</span>
         </div>
         <div class="status-error-field-labeled">
-        ${Object.keys(error.data).length !== 0 ? html`<span class="status-error-field-label"
+        ${Object.keys(error.data).length !== 0 ? html2`<span class="status-error-field-label"
                   >${i18nString3(UIStrings3.errorDataLabel)}</span
                 >
                 <div>
-                  ${Object.entries(error.data).map(([key, value]) => html`<div>${key}: ${value}</div>`)}
+                  ${Object.entries(error.data).map(([key, value]) => html2`<div>${key}: ${value}</div>`)}
                 </div>` : nothing}
         </div>
         <div class="status-error-field-labeled">
-          ${error.stack.length !== 0 ? html`<span class="status-error-field-label"
+          ${error.stack.length !== 0 ? html2`<span class="status-error-field-label"
                     >${i18nString3(UIStrings3.errorStackLabel)}</span
                   >
                   <div>
-                    ${error.stack.map((stackEntry) => html`<div>${stackEntry.file}:${stackEntry.line}</div>`)}
+                    ${error.stack.map((stackEntry) => html2`<div>${stackEntry.file}:${stackEntry.line}</div>`)}
                   </div>` : nothing}
         </div>
         <div class="status-error-field-labeled">
-          ${error.cause.length !== 0 ? html`
+          ${error.cause.length !== 0 ? html2`
                   <span class="status-error-field-label"
                     >${i18nString3(UIStrings3.errorCauseLabel)}</span
                   >
@@ -1276,7 +1269,7 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
   }
   addError(error) {
     const container = this.bodyPanel.createChild("div", "media-messages-message-container media-message-error");
-    render(this.renderError(error), container);
+    render2(this.renderError(error), container);
   }
 };
 
@@ -1966,7 +1959,7 @@ import "./../../ui/kit/kit.js";
 import * as i18n11 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
 import * as UI6 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import { Directives as Directives2, html as html3, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/media/playerListView.css.js
@@ -2062,7 +2055,7 @@ li.storage-group-list-item::before {
 /*# sourceURL=${import.meta.resolve("./playerListView.css")} */`;
 
 // gen/front_end/panels/media/PlayerListView.js
-var { classMap } = Directives;
+var { classMap } = Directives2;
 var UIStrings6 = {
   /**
    * @description A right-click context menu entry which when clicked causes the menu entry for that player to be removed.
@@ -2083,14 +2076,14 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/media/PlayerListView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var DEFAULT_VIEW = (input, _output, target) => {
-  render2(html2`
+var DEFAULT_VIEW2 = (input, _output, target) => {
+  render3(html3`
       <style>${playerListView_css_default}</style>
       <div class="player-entry-header" id="players-header">${i18nString6(UIStrings6.players)}</div>
       <div role="listbox" aria-labelledby="players-header">
       ${input.players.map((player) => {
     const isSelected = player.playerID === input.selectedPlayerID;
-    return html2`
+    return html3`
           <div class=${classMap({
       "player-entry-row": true,
       hbox: true,
@@ -2128,7 +2121,7 @@ var PlayerListView = class extends UI6.Widget.VBox {
   playerEntriesWithHostnameFrameTitle;
   mainContainer;
   currentlySelectedPlayerID;
-  constructor(mainContainer, view = DEFAULT_VIEW) {
+  constructor(mainContainer, view = DEFAULT_VIEW2) {
     super({ useShadowDom: true });
     this.#view = view;
     this.playerStatuses = /* @__PURE__ */ new Map();

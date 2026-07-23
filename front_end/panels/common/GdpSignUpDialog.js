@@ -83,7 +83,7 @@ const UIStrings = {
     /**
      * @description Error message shown in a snackbar when GDP sign up fails.
      */
-    signUpFailed: 'Your Google Developer Program profile couldn’t be created. Please try again later.'
+    signUpFailed: 'Your Google Developer Program profile couldn’t be created. Please try again later.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/common/GdpSignUpDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

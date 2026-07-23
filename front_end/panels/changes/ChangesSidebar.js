@@ -76,7 +76,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin(UI.Widget.Wi
         const input = {
             onSelect: uiSourceCode => this.#selectionChanged(uiSourceCode),
             sourceCodes: this.#sourceCodes,
-            selectedSourceCode: this.#selectedUISourceCode
+            selectedSourceCode: this.#selectedUISourceCode,
         };
         this.#view(input, {}, this.contentElement);
     }

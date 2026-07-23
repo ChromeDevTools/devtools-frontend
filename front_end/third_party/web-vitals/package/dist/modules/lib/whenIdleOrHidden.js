@@ -19,6 +19,10 @@ import { runOnce } from './runOnce.js';
  * if the browser's visibility state is (or becomes) hidden.
  */
 export const whenIdleOrHidden = (cb) => {
+    // Cap the requestIdleCallback to 1 sec for very busy apps
+    // https://github.com/GoogleChrome/web-vitals/issues/754
+    // If not using rIC, then the setTimeout timeout should be 0
+    const timeout = 'requestIdleCallback' in globalThis ? 1000 : 0;
     const rIC = globalThis.requestIdleCallback || setTimeout;
     const cIC = globalThis.cancelIdleCallback || clearTimeout;
     // If the document is hidden, run the callback immediately, otherwise
@@ -37,6 +41,6 @@ export const whenIdleOrHidden = (cb) => {
         idleHandle = rIC(() => {
             removeEventListener('visibilitychange', onHidden, { capture: true });
             wrappedCb();
-        });
+        }, { timeout: timeout });
     }
 };

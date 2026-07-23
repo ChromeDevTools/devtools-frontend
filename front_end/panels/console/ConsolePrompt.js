@@ -29,7 +29,7 @@ const UIStrings = {
      * @description Warning shown to users when pasting text into the DevTools Console. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
      * @example {allow pasting} PH1
      */
-    selfXssWarning: 'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below and press Enter to allow pasting.',
+    selfXssWarning: 'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type "{PH1}" below and press Enter to allow pasting.',
     /**
      * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
      */
@@ -144,7 +144,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
         if (this.aiCodeCompletionProvider) {
             this.aiCodeCompletionProvider.editorInitialized(this.editor);
             this.editor.editor.dispatch({
-                effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ONLY_SHOW_ON_EMPTY)
+                effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ONLY_SHOW_ON_EMPTY),
             });
         }
         this.editor.addEventListener('keydown', event => {
@@ -333,7 +333,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
                 const teaserMode = this.editor.editor.state.field(TextEditor.AiCodeCompletionProvider.aiCodeCompletionTeaserModeState);
                 if (teaserMode !== TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.OFF) {
                     this.editor.editor.dispatch({
-                        effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.OFF)
+                        effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.OFF),
                     });
                 }
             }

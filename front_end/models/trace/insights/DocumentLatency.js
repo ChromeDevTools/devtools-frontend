@@ -195,18 +195,18 @@ export function generateInsight(data, context) {
                         PH1: documentRequest.args.data.redirects.length,
                         PH2: millisToString(redirectDuration),
                     }),
-                    value: noRedirects
+                    value: noRedirects,
                 },
                 serverResponseIsFast: {
                     label: serverResponseIsFast ?
                         i18nString(UIStrings.passingServerResponseTime, { PH1: millisToString(serverResponseTime) }) :
                         i18nString(UIStrings.failedServerResponseTime, { PH1: millisToString(serverResponseTime) }),
-                    value: serverResponseIsFast
+                    value: serverResponseIsFast,
                 },
                 usesCompression: {
                     label: usesCompression ? i18nString(UIStrings.passingTextCompression) :
                         i18nString(UIStrings.failedTextCompression),
-                    value: usesCompression
+                    value: usesCompression,
                 },
             },
         },

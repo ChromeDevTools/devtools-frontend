@@ -1541,6 +1541,7 @@ var timespanBreakdownOverlay_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .timespan-breakdown-overlay-section {
+    pointer-events: auto;
     border: solid;
     border-color: var(--sys-color-on-surface);
     border-width: 4px 1px 0;
@@ -1677,20 +1678,23 @@ var timespanBreakdownOverlay_css_default = `/*
 // gen/front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.js
 var renderSection = (section, position) => {
   const style = Directives3.styleMap({ left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 });
+  const durationText = section.showDuration ? i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : "";
+  const labelText = section.label instanceof HTMLElement ? section.label.textContent || "" : section.label;
+  const tooltip = durationText ? `${durationText} ${labelText}` : labelText;
   return html4`
-      <div class="timespan-breakdown-overlay-section" style=${style}>
+      <div class="timespan-breakdown-overlay-section" style=${style} title=${tooltip}>
         <div class="timespan-breakdown-overlay-label">
-          ${section.showDuration ? html4`<span class="duration-text">${i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span> ` : nothing2}
+          ${section.showDuration ? html4`<span class="duration-text">${durationText}</span> ` : nothing2}
           <span class="section-label-text">${section.label}</span>
         </div>
       </div>`;
 };
 var DEFAULT_VIEW = (input, _output, target) => {
   const style = Directives3.styleMap({
-    left: input.left ? `${input.left}px` : void 0,
-    width: input.width ? `${input.width}px` : void 0,
-    top: input.top ? `${input.top}px` : void 0,
-    maxHeight: input.maxHeight ? `${input.maxHeight}px` : void 0,
+    left: input.left !== null ? `${input.left}px` : void 0,
+    width: input.width !== null ? `${input.width}px` : void 0,
+    top: input.top !== null ? `${input.top}px` : void 0,
+    maxHeight: input.maxHeight !== null ? `${input.maxHeight}px` : void 0,
     position: "relative"
   });
   render4(html4`

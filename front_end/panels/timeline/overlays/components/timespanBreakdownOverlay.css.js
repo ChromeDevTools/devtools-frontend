@@ -11,6 +11,7 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .timespan-breakdown-overlay-section {
+    pointer-events: auto;
     border: solid;
     border-color: var(--sys-color-on-surface);
     border-width: 4px 1px 0;

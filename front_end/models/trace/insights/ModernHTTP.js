@@ -26,7 +26,7 @@ export const UIStrings = {
     /**
      * @description Text explaining that there were not requests that were slowed down by using HTTP/1.1. "HTTP/1.1" should not be translated.
      */
-    noOldProtocolRequests: 'No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source.'
+    noOldProtocolRequests: 'No requests used HTTP/1.1, or its current use of HTTP/1.1 does not present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they are not served from a local development environment or a third-party source.',
 };
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ModernHTTP.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

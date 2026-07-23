@@ -137,7 +137,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             useFirstLineForOverview: true,
             nestingLevel: 1,
             collapsible: 1 /* PerfUI.FlameChart.GroupCollapsibleState.NEVER */,
-            itemsHeight: 150
+            itemsHeight: 150,
         });
         ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
             const headers = [

@@ -168,7 +168,6 @@ entrypoints/node_app/app/NodeMain.test.js
 entrypoints/wasmparser_worker/wasmparser_worker.test.js
 models/ai_assistance/data_formatters/FileFormatter.test.js
 models/ai_assistance/data_formatters/UnitFormatters.test.js
-models/ai_assistance/AgentProject.test.js
 models/ai_assistance/AiAgent2.test.js
 models/ai_assistance/AiConversation.test.js
 models/ai_assistance/AiHistoryStorage.test.js
@@ -185,7 +184,6 @@ models/ai_assistance/agents/AiAgent.test.js
 models/ai_assistance/agents/ContextSelectionAgent.test.js
 models/ai_assistance/agents/FileAgent.test.js
 models/ai_assistance/agents/NetworkAgent.test.js
-models/ai_assistance/agents/PatchAgent.test.js
 models/ai_assistance/agents/PerformanceAgent.test.js
 models/ai_assistance/agents/StorageAgent.test.js
 models/ai_assistance/agents/StylingAgent.test.js
@@ -234,7 +232,6 @@ models/extensions/HostUrlPattern.test.js
 models/extensions/LanguageExtensionEndpoint.test.js
 models/extensions/RecorderPluginManager.test.js
 models/geometry/Geometry.test.js
-models/issues_manager/CheckFormsIssuesTrigger.test.js
 models/issues_manager/IssuesManager.test.js
 models/issues_manager/SelectivePermissionsInterventionIssue.test.js
 models/javascript_metadata/JavaScriptMetadata.test.js
@@ -344,8 +341,6 @@ panels/accessibility/ARIAAttributesView.test.js
 panels/accessibility/AccessibilitySidebarView.test.js
 panels/ai_assistance/AiAssistancePanel.test.js
 panels/ai_assistance/ExportConversation.test.js
-panels/ai_assistance/PatchWidget.test.js
-panels/ai_assistance/SelectWorkspaceDialog.test.js
 panels/ai_assistance/components/AIv2MarkdownRenderer.test.js
 panels/ai_assistance/components/AccessibilityAgentMarkdownRenderer.test.js
 panels/ai_assistance/components/ChatInput.test.js
@@ -506,6 +501,7 @@ panels/linear_memory_inspector/components/LinearMemoryNavigator.test.js
 panels/linear_memory_inspector/components/LinearMemoryViewer.test.js
 panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.js
 panels/linear_memory_inspector/components/ValueInterpreterSettings.test.js
+panels/media/EventDisplayTable.test.js
 panels/media/MainView.test.js
 panels/media/PlayerListView.test.js
 panels/media/PlayerMessagesView.test.js

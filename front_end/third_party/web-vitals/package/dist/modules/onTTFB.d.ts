@@ -1,4 +1,4 @@
-import { MetricRatingThresholds, ReportOpts, TTFBMetric } from './types.js';
+import type { MetricRatingThresholds, ReportOpts, TTFBMetric } from './types.js';
 /** Thresholds for TTFB. See https://web.dev/articles/ttfb#what_is_a_good_ttfb_score */
 export declare const TTFBThresholds: MetricRatingThresholds;
 /**

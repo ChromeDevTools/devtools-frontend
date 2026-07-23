@@ -113,12 +113,12 @@ function renderLabel(expression, atLeft, leftAlign) {
     const containerClassMap = {
         'media-inspector-marker-label-container': true,
         'media-inspector-marker-label-container-left': atLeft,
-        'media-inspector-marker-label-container-right': !atLeft
+        'media-inspector-marker-label-container-right': !atLeft,
     };
     const labelClassMap = {
         'media-inspector-marker-label': true,
         'media-inspector-label-left': leftAlign,
-        'media-inspector-label-right': !leftAlign
+        'media-inspector-label-right': !leftAlign,
     };
     // clang-format off
     return html `

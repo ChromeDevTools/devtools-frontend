@@ -11,6 +11,6 @@ export {
   highlightedCurrentSearchResultClassName,
   highlightedSearchResultClassName,
   highlightRangesWithStyleClass,
-  revertDomChanges
+  revertDomChanges,
 } from './MarkupHighlight.js';
 export {HighlightManager};

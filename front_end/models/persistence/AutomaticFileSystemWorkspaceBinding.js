@@ -5,7 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 import * as Workspace from '../workspace/workspace.js';
-import { Events as IsolatedFileSystemManagerEvents } from './IsolatedFileSystemManager.js';
+import { Events as IsolatedFileSystemManagerEvents, } from './IsolatedFileSystemManager.js';
 /**
  * Placeholder project that acts as an empty file system within the workspace,
  * and automatically disappears when the user connects the automatic workspace

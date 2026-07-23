@@ -1,4 +1,4 @@
-import { INPAttributionReportOpts, INPMetricWithAttribution } from '../types.js';
+import type { INPAttributionReportOpts, INPMetricWithAttribution } from '../types.js';
 /**
  * Calculates the [INP](https://web.dev/articles/inp) value for the current
  * page and calls the `callback` function once the value is ready, along with
@@ -16,7 +16,7 @@ import { INPAttributionReportOpts, INPMetricWithAttribution } from '../types.js'
  *
  * A custom `includeProcessedEventEntries` configuration option can optionally
  * be passed to control whether the `processedEventEntries` array in the
- * attribution object is populated. The default value is `true`.
+ * attribution object is populated. The default value is `false`.
  *
  * If the `reportAllChanges` configuration option is set to `true`, the
  * `callback` function will be called as soon as the value is initially

@@ -122,7 +122,7 @@ export function generateInsight(data, context) {
         checklist: {
             priorityHinted: {
                 label: priorityHintFound ? i18nString(UIStrings.fetchPriorityApplied) : missingPriorityHintLabel,
-                value: priorityHintFound
+                value: priorityHintFound,
             },
             requestDiscoverable: { label: i18nString(UIStrings.requestDiscoverable), value: imgPreloadedOrFoundInHTML },
             eagerlyLoaded: { label: i18nString(UIStrings.lazyLoadNotApplied), value: lcpNotLazyLoaded },

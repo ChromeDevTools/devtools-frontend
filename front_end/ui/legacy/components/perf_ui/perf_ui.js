@@ -595,6 +595,7 @@ import * as Platform2 from "./../../../../core/platform/platform.js";
 import * as Trace from "./../../../../models/trace/trace.js";
 import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
 import * as Buttons from "./../../../components/buttons/buttons.js";
+import { html, render } from "./../../../lit/lit.js";
 import * as UI3 from "./../../legacy.js";
 import * as ThemeSupport7 from "./../../theme_support/theme_support.js";
 
@@ -997,7 +998,7 @@ var UIStrings2 = {
    * @example {Main thread} PH2
    *
    */
-  eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press "enter" to focus this event.',
+  eventSelectedFromGroup: "Selected a {PH1} event within {PH2}. Press enter to focus this event.",
   /**
    * @description Aria accessible name in Flame Chart of the Performance panel
    */
@@ -1625,8 +1626,7 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
     };
   }
   updatePopoverContents(popoverElement) {
-    this.popoverElement.removeChildren();
-    this.popoverElement.appendChild(popoverElement);
+    render(html`${popoverElement}`, this.popoverElement);
     this.updatePopoverOffset();
     this.lastPopoverState.entryIndex = -1;
   }
@@ -6142,7 +6142,7 @@ __export(PieChart_exports, {
   PieChart: () => PieChart
 });
 import * as i18n13 from "./../../../../core/i18n/i18n.js";
-import { html, render, svg } from "./../../../lit/lit.js";
+import { html as html2, render as render2, svg } from "./../../../lit/lit.js";
 import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/pieChart.css.js
@@ -6279,7 +6279,7 @@ var PieChart = class extends HTMLElement {
   }
   render() {
     this.lastAngle = -Math.PI / 2;
-    const output = html`
+    const output = html2`
       <style>${pieChart_css_default}</style>
       <div class="root" role="group" @keydown=${this.onKeyDown} aria-label=${this.chartName}
           jslog=${VisualLogging4.pieChart().track({ keydown: "ArrowUp|ArrowDown" })}>
@@ -6312,11 +6312,11 @@ var PieChart = class extends HTMLElement {
             </div>
           </div>
         </div>
-        ${this.showLegend ? html`
+        ${this.showLegend ? html2`
         <div class="pie-chart-legend" jslog=${VisualLogging4.section("legend")}>
           ${this.slices.map((slice, index) => {
       const selected = this.sliceSelected === index;
-      return html`
+      return html2`
               <div class="pie-chart-legend-row ${selected ? "selected" : ""}"
                   jslog=${VisualLogging4.pieChartSlice().track({ click: true })}
                   @click=${this.onSliceClicked(index)} tabIndex=${selected ? "0" : "-1"}>
@@ -6336,7 +6336,7 @@ var PieChart = class extends HTMLElement {
         ` : ""}
       </div>
     `;
-    render(output, this.shadow, { host: this });
+    render2(output, this.shadow, { host: this });
   }
   onSliceClicked(index) {
     return () => {

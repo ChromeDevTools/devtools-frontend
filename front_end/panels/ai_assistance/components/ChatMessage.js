@@ -42,7 +42,6 @@ const lockedString = i18n.i18n.lockedString;
 const { widget } = UI.Widget;
 const REPORT_URL = 'https://crbug.com/508304827';
 const SCROLL_ROUNDING_OFFSET = 1;
-const MAX_NUM_LINES_IN_CODEBLOCK = 11;
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -437,7 +436,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         const userQueryWrapperClasses = Lit.Directives.classMap({
             // Don't need to style at all unless we are on the V2 flag.
             // Once we ship this can be removed entirely.
-            'user-query-wrapper': hasAiV2
+            'user-query-wrapper': hasAiV2,
         });
         // clang-format off
         Lit.render(html `
@@ -495,15 +494,6 @@ export const DEFAULT_VIEW = (input, output, target) => {
         return Lit.nothing;
     })}
         ${renderError(message)}
-        ${input.shouldShowCSSChangeSummary && hasAiV2 && input.changeSummary ? html `
-          <devtools-code-block
-            .code=${input.changeSummary}
-            .codeLang=${'css'}
-            .displayLimit=${MAX_NUM_LINES_IN_CODEBLOCK}
-            .displayNotice=${true}
-            class="ai-css-change"
-          ></devtools-code-block>
-        ` : Lit.nothing}
         ${input.showActions ? renderActions(input, output) : Lit.nothing}
       </div>
       ${hasAiV2 ? renderSideEffectStepsUI(input, steps) : Lit.nothing}
@@ -717,7 +707,7 @@ function renderSideEffectStepsUI(input, steps) {
         step,
         isLoading: input.isLoading,
         markdownRenderer: input.markdownRenderer,
-        isLast: true
+        isLast: true,
     })}
       </div> `)}
   `;
@@ -1747,13 +1737,11 @@ export class ChatMessage extends UI.Widget.Widget {
     canShowFeedbackForm = false;
     isLastMessage = false;
     isFirstMessage = false;
-    shouldShowCSSChangeSummary = false;
     markdownRenderer;
     onSuggestionClick = () => { };
     onFeedbackSubmit = () => { };
     onCopyResponseClick = () => { };
     onExportClick = () => { };
-    changeSummary;
     walkthrough = {
         onOpen: () => { },
         onToggle: () => { },
@@ -1791,7 +1779,6 @@ export class ChatMessage extends UI.Widget.Widget {
             isLastMessage: this.isLastMessage,
             isFirstMessage: this.isFirstMessage,
             prompt: this.prompt,
-            shouldShowCSSChangeSummary: this.shouldShowCSSChangeSummary,
             onSuggestionClick: this.onSuggestionClick,
             onRatingClick: this.#handleRateClick.bind(this),
             onReportClick: () => UIHelpers.openInNewTab(REPORT_URL),
@@ -1817,7 +1804,6 @@ export class ChatMessage extends UI.Widget.Widget {
             currentRating: this.#currentRating,
             isShowingFeedbackForm: this.#isShowingFeedbackForm,
             onFeedbackSubmit: this.onFeedbackSubmit,
-            changeSummary: this.changeSummary,
             walkthrough: this.walkthrough,
         }, this.#viewOutput, this.contentElement);
         if (this.#viewOutput.suggestionsScrollContainer && !this.#isObservingSuggestions) {

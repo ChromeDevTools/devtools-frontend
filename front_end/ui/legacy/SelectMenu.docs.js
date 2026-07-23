@@ -28,15 +28,15 @@ export function render(container) {
                 @change=${onChange}>
         <option hidden>Select an option</option>
         <option id="option-1" jslog=${VisualLogging.item('option-1').track({
-            click: true
+            click: true,
         })}
                 value="Option1">Option 1</option>
         <option jslog=${VisualLogging.item('option-2').track({
-            click: true
+            click: true,
         })}
                 value="Option2">Option 2</option>
         <option disabled jslog=${VisualLogging.item('option-3').track({
-            click: true
+            click: true,
         })}
                 value="Option3">Option 3</option>
       </select>`, simpleMenuHTML);
@@ -47,7 +47,7 @@ export function render(container) {
         Lit.render(html `<select disabled aria-label="Select an option" @change=${onChange}>
                 <option hidden>Select an option</option>
                 <option jslog=${VisualLogging.item('option-1').track({
-            click: true
+            click: true,
         })} value="Option1">Option 1</option>
               </select>`, disabledMenuHTML);
         // clang-format on
@@ -58,17 +58,17 @@ export function render(container) {
                   @change=${onChange}>
         <optgroup label="Group 1">
           <option jslog=${VisualLogging.item('option-1').track({
-            click: true
+            click: true,
         })}
           value="Option1">Option 1</option>
         </optgroup>
         <optgroup label="Group 2">
           <option jslog=${VisualLogging.item('option-2').track({
-            click: true
+            click: true,
         })}
           value="Option2">Option 2</option>
           <option jslog=${VisualLogging.item('option-3').track({
-            click: true
+            click: true,
         })}
           value="Option3">Option 3</option>
         </optgroup>

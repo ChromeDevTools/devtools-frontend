@@ -8,47 +8,47 @@ import { SDKModel } from './SDKModel.js';
 import { Type } from './Target.js';
 const UIStrings = {
     /**
-     * @description Service worker running status displayed in the Service Workers view in the Application panel
+     * @description Service worker running status displayed in the Service Workers view in the Application panel.
      */
     running: 'running',
     /**
-     * @description Service worker running status displayed in the Service Workers view in the Application panel
+     * @description Service worker running status displayed in the Service Workers view in the Application panel.
      */
     starting: 'starting',
     /**
-     * @description Service worker running status displayed in the Service Workers view in the Application panel
+     * @description Service worker running status displayed in the Service Workers view in the Application panel.
      */
     stopped: 'stopped',
     /**
-     * @description Service worker running status displayed in the Service Workers view in the Application panel
+     * @description Service worker running status displayed in the Service Workers view in the Application panel.
      */
     stopping: 'stopping',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      */
     activated: 'activated',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      */
     activating: 'activating',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      */
     installed: 'installed',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      */
     installing: 'installing',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      */
     new: 'new',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      */
     redundant: 'redundant',
     /**
-     * @description Service worker version status displayed in the Threads view of the Debugging side pane in the Sources panel
+     * @description Service worker version status displayed in the Threads view of the Debugging sidebar in the Sources panel.
      * @example {sw.js} PH1
      * @example {117} PH2
      * @example {activated} PH3

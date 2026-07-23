@@ -226,7 +226,7 @@ export class AiCodeCompletion {
                             seconds,
                             nanos,
                         },
-                    }
+                    },
                 },
             },
         });
@@ -241,7 +241,7 @@ export class AiCodeCompletion {
                 user_acceptance: {
                     sample: {
                         sample_id: sampleId,
-                    }
+                    },
                 },
             },
         });

@@ -98,7 +98,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
         styleMap.set("receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */, { fillStyle: RequestTimeRangeNameToColor["receiving-push" /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */] });
         styleMap.set("serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */, { fillStyle: RequestTimeRangeNameToColor["serviceworker" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */] });
         styleMap.set("serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */, {
-            fillStyle: RequestTimeRangeNameToColor["serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */]
+            fillStyle: RequestTimeRangeNameToColor["serviceworker-preparation" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */],
         });
         styleMap.set("serviceworker-respondwith" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */, {
             fillStyle: RequestTimeRangeNameToColor["serviceworker-respondwith" /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */],

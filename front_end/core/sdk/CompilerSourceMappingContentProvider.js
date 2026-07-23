@@ -5,7 +5,7 @@ import * as i18n from '../i18n/i18n.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 const UIStrings = {
     /**
-     * @description Error message when failing to fetch a resource referenced in a source map
+     * @description Error message when failing to fetch a resource referenced in a source map.
      * @example {https://example.com/sourcemap.map} PH1
      * @example {An error occurred} PH2
      */

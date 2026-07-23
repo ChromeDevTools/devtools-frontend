@@ -76,6 +76,9 @@
       "path": "../models/emulation/bundle-tsconfig.json"
     },
     {
+      "path": "../models/issues_manager/bundle-tsconfig.json"
+    },
+    {
       "path": "../models/javascript_metadata/bundle-tsconfig.json"
     },
     {

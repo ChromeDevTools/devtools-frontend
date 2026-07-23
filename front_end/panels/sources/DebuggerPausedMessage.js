@@ -150,8 +150,8 @@ const DEFAULT_VIEW = (input, _output, target) => {
     </div>`, target, {
         container: {
             attributes: { jslog: `${VisualLogging.dialog('debugger-paused')}` },
-            classes: ['paused-message', 'flex-none']
-        }
+            classes: ['paused-message', 'flex-none'],
+        },
     });
     // clang-format on
 };

@@ -6,7 +6,7 @@ import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import { cssMetadata, GridAreaRowRegex } from './CSSMetadata.js';
-import { matchDeclaration, stripComments } from './CSSPropertyParser.js';
+import { matchDeclaration, stripComments, } from './CSSPropertyParser.js';
 import { CSSWideKeywordMatcher } from './CSSPropertyParserMatchers.js';
 export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
     ownerStyle;

@@ -1,4 +1,4 @@
-import { CLSMetricWithAttribution, AttributionReportOpts } from '../types.js';
+import type { CLSMetricWithAttribution, AttributionReportOpts } from '../types.js';
 /**
  * Calculates the [CLS](https://web.dev/articles/cls) value for the current page and
  * calls the `callback` function once the value is ready to be reported, along

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
-import { CDPErrorStatus } from './CDPConnection.js';
+import { CDPErrorStatus, } from './CDPConnection.js';
 import { ConnectionTransport } from './ConnectionTransport.js';
 import { DevToolsCDPConnection } from './DevToolsCDPConnection.js';
 export const splitQualifiedName = (string) => {

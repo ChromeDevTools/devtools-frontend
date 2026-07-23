@@ -737,11 +737,11 @@ var UIStringsNotTranslate2 = {
   /**
    * @description Aria label for teaser to generate code.
    */
-  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (\u201Cperiod\u201D) to learn how your data is being used.",
+  pressCtrlPeriodToLearnHowYourDataIsBeingUsed: "Press ctrl . (period) to learn how your data is being used.",
   /**
    * @description Aria label for teaser to generate code in Mac.
    */
-  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (\u201Cperiod\u201D) to learn how your data is being used.",
+  pressCmdPeriodToLearnHowYourDataIsBeingUsed: "Press cmd . (period) to learn how your data is being used.",
   /**
    * @description Text for teaser when generating suggestion.
    */

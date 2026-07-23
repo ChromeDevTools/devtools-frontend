@@ -787,7 +787,7 @@ import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as Workspace from "./../workspace/workspace.js";
 var UIStrings = {
   /**
-   * @description Error message that is displayed in the Sources panel when can't be loaded.
+   * @description Error message displayed in the Sources panel when a file can't be loaded.
    */
   unknownErrorLoadingFile: "Unknown error loading file"
 };
@@ -2341,39 +2341,38 @@ import * as StackTrace2 from "./../stack_trace/stack_trace.js";
 import * as Workspace11 from "./../workspace/workspace.js";
 var UIStrings2 = {
   /**
-   * @description Error message that is displayed in the Console when language #plugins report errors
+   * @description Error message displayed in the Console panel when language plugins report errors.
    * @example {File not found} PH1
    */
   errorInDebuggerLanguagePlugin: "Error in debugger language plugin: {PH1}",
   /**
-   * @description Status message that is shown in the Console when debugging information is being
-   *loaded. The 2nd and 3rd placeholders are URLs.
+   * @description Status message shown in the Console panel when debugging information is being loaded. PH2 and PH3 are URLs.
    * @example {C/C++ DevTools Support (DWARF)} PH1
    * @example {http://web.dev/file.wasm} PH2
    * @example {http://web.dev/file.wasm.debug.wasm} PH3
    */
   loadingDebugSymbolsForVia: "[{PH1}] Loading debug symbols for {PH2} (via {PH3})\u2026",
   /**
-   * @description Status message that is shown in the Console when debugging information is being loaded
+   * @description Status message shown in the Console panel when debugging information is being loaded.
    * @example {C/C++ DevTools Support (DWARF)} PH1
    * @example {http://web.dev/file.wasm} PH2
    */
   loadingDebugSymbolsFor: "[{PH1}] Loading debug symbols for {PH2}\u2026",
   /**
-   * @description Warning message that is displayed in the Console when debugging information was loaded, but no source files were found
+   * @description Warning message displayed in the Console panel when debugging information was loaded, but no source files were found.
    * @example {C/C++ DevTools Support (DWARF)} PH1
    * @example {http://web.dev/file.wasm} PH2
    */
   loadedDebugSymbolsForButDidnt: "[{PH1}] Loaded debug symbols for {PH2}, but didn\u2019t find any source files",
   /**
-   * @description Status message that is shown in the Console when debugging information is successfully loaded
+   * @description Status message shown in the Console panel when debugging information is successfully loaded.
    * @example {C/C++ DevTools Support (DWARF)} PH1
    * @example {http://web.dev/file.wasm} PH2
    * @example {42} PH3
    */
   loadedDebugSymbolsForFound: "[{PH1}] Loaded debug symbols for {PH2}, found {PH3} source file(s)",
   /**
-   * @description Error message that is displayed in the Console when debugging information cannot be loaded
+   * @description Error message displayed in the Console panel when debugging information cannot be loaded.
    * @example {C/C++ DevTools Support (DWARF)} PH1
    * @example {http://web.dev/file.wasm} PH2
    * @example {File not found} PH3
@@ -3418,14 +3417,12 @@ import * as Formatter from "./../formatter/formatter.js";
 import * as Workspace15 from "./../workspace/workspace.js";
 var UIStrings3 = {
   /**
-   * @description Error text displayed in the console when editing a live script fails. LiveEdit is
-   *the name of the feature for editing code that is already running.
+   * @description Error text displayed in the Console panel when editing a live script fails. LiveEdit is the name of the feature for editing code that is already running.
    * @example {warning} PH1
    */
   liveEditFailed: "`LiveEdit` failed: {PH1}",
   /**
-   * @description Error text displayed in the console when compiling a live-edited script fails. LiveEdit is
-   *the name of the feature for editing code that is already running.
+   * @description Error text displayed in the Console panel when compiling a live-edited script fails. LiveEdit is the name of the feature for editing code that is already running.
    * @example {connection lost} PH1
    */
   liveEditCompileFailed: "`LiveEdit` compile failed: {PH1}"
@@ -3739,11 +3736,11 @@ var ResourceScriptFile = class extends Common12.ObjectWrapper.ObjectWrapper {
     function getErrorText(status2) {
       switch (status2) {
         case "BlockedByActiveFunction":
-          return "Functions that are on the stack (currently being executed) can not be edited";
+          return "Functions that are on the stack (currently being executed) can\u2019t be edited";
         case "BlockedByActiveGenerator":
-          return "Async functions/generators that are active can not be edited";
+          return "Async functions/generators that are active can\u2019t be edited";
         case "BlockedByTopLevelEsModuleChange":
-          return "The top-level of ES modules can not be edited";
+          return "The top level of JavaScript modules can\u2019t be edited";
         case "CompileError":
         case "Ok":
           throw new Error("Compile errors and Ok status must not be reported on the console");
@@ -4718,15 +4715,21 @@ var PresentationSourceFrameMessageManager = class {
   #targetToMessageHelperMap = /* @__PURE__ */ new WeakMap();
   #targetManager;
   #workspace;
-  constructor(targetManager, workspace) {
+  #debuggerWorkspaceBinding;
+  #cssWorkspaceBinding;
+  constructor(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding) {
     this.#workspace = workspace;
     this.#targetManager = targetManager;
-    targetManager.observeModels(SDK13.DebuggerModel.DebuggerModel, this);
-    targetManager.observeModels(SDK13.CSSModel.CSSModel, this);
+    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#cssWorkspaceBinding = cssWorkspaceBinding;
+  }
+  enable() {
+    this.#targetManager.observeModels(SDK13.DebuggerModel.DebuggerModel, this);
+    this.#targetManager.observeModels(SDK13.CSSModel.CSSModel, this);
   }
   modelAdded(model) {
     const target = model.target();
-    const helper = this.#targetToMessageHelperMap.get(target) ?? new PresentationSourceFrameMessageHelper(this.#workspace);
+    const helper = this.#targetToMessageHelperMap.get(target) ?? new PresentationSourceFrameMessageHelper(this.#workspace, this.#debuggerWorkspaceBinding, this.#cssWorkspaceBinding);
     if (model instanceof SDK13.DebuggerModel.DebuggerModel) {
       helper.setDebuggerModel(model);
     } else {
@@ -4752,11 +4755,14 @@ var PresentationSourceFrameMessageManager = class {
 };
 var PresentationConsoleMessageManager = class {
   #sourceFrameMessageManager;
-  constructor(targetManager, workspace) {
-    this.#sourceFrameMessageManager = new PresentationSourceFrameMessageManager(targetManager, workspace);
+  constructor(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding) {
+    this.#sourceFrameMessageManager = new PresentationSourceFrameMessageManager(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
     targetManager.addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.MessageAdded, (event) => this.consoleMessageAdded(event.data));
     SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
     targetManager.addModelListener(SDK13.ConsoleModel.ConsoleModel, SDK13.ConsoleModel.Events.ConsoleCleared, () => this.#sourceFrameMessageManager.clear());
+  }
+  enable() {
+    this.#sourceFrameMessageManager.enable();
   }
   consoleMessageAdded(consoleMessage) {
     const runtimeModel = consoleMessage.runtimeModel();
@@ -4773,8 +4779,12 @@ var PresentationSourceFrameMessageHelper = class {
   #presentationMessages = /* @__PURE__ */ new Map();
   #locationPool;
   #workspace;
-  constructor(workspace) {
+  #debuggerWorkspaceBinding;
+  #cssWorkspaceBinding;
+  constructor(workspace, debuggerWorkspaceBinding, cssWorkspaceBinding) {
     this.#workspace = workspace;
+    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#cssWorkspaceBinding = cssWorkspaceBinding;
     this.#locationPool = new LiveLocationPool();
     this.#workspace.addEventListener(Workspace20.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAdded.bind(this));
   }
@@ -4798,7 +4808,7 @@ var PresentationSourceFrameMessageHelper = class {
     cssModel.addEventListener(SDK13.CSSModel.Events.StyleSheetAdded, (event) => queueMicrotask(() => this.#styleSheetAdded(event)));
   }
   async addMessage(message, source) {
-    const presentation = new PresentationSourceFrameMessage(message, this.#locationPool);
+    const presentation = new PresentationSourceFrameMessage(message, this.#locationPool, this.#debuggerWorkspaceBinding, this.#cssWorkspaceBinding);
     const location = this.#rawLocation(source) ?? this.#cssLocation(source) ?? this.#uiLocation(source);
     if (location) {
       await presentation.updateLocationSource(location);
@@ -4910,15 +4920,19 @@ var PresentationSourceFrameMessage = class {
   #liveLocation;
   #locationPool;
   #message;
-  constructor(message, locationPool) {
+  #debuggerWorkspaceBinding;
+  #cssWorkspaceBinding;
+  constructor(message, locationPool, debuggerWorkspaceBinding, cssWorkspaceBinding) {
+    this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+    this.#cssWorkspaceBinding = cssWorkspaceBinding;
     this.#message = message;
     this.#locationPool = locationPool;
   }
   async updateLocationSource(source) {
     if (source instanceof SDK13.DebuggerModel.Location) {
-      await DebuggerWorkspaceBinding.instance().createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
+      await this.#debuggerWorkspaceBinding.createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
     } else if (source instanceof SDK13.CSSModel.CSSLocation) {
-      await CSSWorkspaceBinding.instance().createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
+      await this.#cssWorkspaceBinding.createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
     } else if (source instanceof Workspace20.UISourceCode.UILocation) {
       if (!this.#liveLocation) {
         this.#liveLocation = new FrozenLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);

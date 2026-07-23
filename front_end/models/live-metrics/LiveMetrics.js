@@ -272,6 +272,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                 const inpEvent = {
                     value: webVitalsEvent.value,
                     subparts: webVitalsEvent.subparts,
+                    // Use our own "interactionId" rather than the Chrome/web-vitals
+                    // provided one, so we can group events with same start time
+                    // (e.g. `pointerup` and `click` are one interaction log entry)
                     interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
                 };
                 this.#inpValue = inpEvent;
@@ -280,11 +283,15 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             case 'InteractionEntry': {
                 const groupInteractions = Platform.MapUtilities.getWithDefault(this.#interactionsByGroupId, webVitalsEvent.entryGroupId, () => []);
                 // `nextPaintTime` uses the event duration which is rounded to the nearest 8ms. The best we can do
-                // is check if the `nextPaintTime`s are within 8ms.
+                // is check if the `nextPaintTime`s are within 8ms. Exclude undefined/null/0 nextPaintTimes.
                 // https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration#event
-                let interaction = groupInteractions.find(interaction => Math.abs(interaction.nextPaintTime - webVitalsEvent.nextPaintTime) < 8);
+                let interaction = groupInteractions.find(interaction => interaction.nextPaintTime && webVitalsEvent.nextPaintTime &&
+                    Math.abs(interaction.nextPaintTime - webVitalsEvent.nextPaintTime) < 8);
                 if (!interaction) {
                     interaction = {
+                        // Use our own "interactionId" rather than the Chrome/web-vitals
+                        // provided one, so we can group events with same start time
+                        // (e.g. `pointerup` and `click` are one interaction log entry)
                         interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
                         interactionType: webVitalsEvent.interactionType,
                         duration: webVitalsEvent.duration,

@@ -87,8 +87,9 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function matchProperty(name, value) {
     return SDK.CSSPropertyParser.matchDeclaration(name, value, [
-        new SDK.CSSPropertyParserMatchers.ColorMatcher(), new SDK.CSSPropertyParserMatchers.URLMatcher(),
-        new SDK.CSSPropertyParserMatchers.StringMatcher()
+        new SDK.CSSPropertyParserMatchers.ColorMatcher(),
+        new SDK.CSSPropertyParserMatchers.URLMatcher(),
+        new SDK.CSSPropertyParserMatchers.StringMatcher(),
     ]);
 }
 function renderPropertyContents(node, cache, propertyName, propertyValue) {

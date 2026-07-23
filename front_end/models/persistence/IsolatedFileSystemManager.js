@@ -7,7 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import { IsolatedFileSystem } from './IsolatedFileSystem.js';
-import { PlatformFileSystemType } from './PlatformFileSystem.js';
+import { PlatformFileSystemType, } from './PlatformFileSystem.js';
 const UIStrings = {
     /**
      * @description Text in Isolated File System Manager of the Workspace settings in Settings

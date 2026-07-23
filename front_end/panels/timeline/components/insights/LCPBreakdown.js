@@ -95,7 +95,7 @@ export class LCPBreakdown extends BaseInsightComponent {
                     rows,
                 }
             })}
-      </div>`
+      </div>`,
         ];
         // clang-format on
         const fieldDataSection = this.#renderFieldSubparts();

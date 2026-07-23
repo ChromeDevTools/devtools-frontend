@@ -26,7 +26,7 @@ export function setUpEnvironment() {
         targetManager,
         workspace,
         debuggerWorkspaceBinding,
-        settings: Common.Settings.Settings.instance()
+        settings: Common.Settings.Settings.instance(),
     });
     Persistence.Persistence.PersistenceImpl.instance({ forceNew: true, workspace, breakpointManager });
     const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({ forceNew: true, workspace });

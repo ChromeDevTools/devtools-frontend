@@ -3228,6 +3228,13 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
       this.#dataGrid.onResize();
     }
   });
+  #scrollResizeObserver = new ResizeObserver(() => {
+    if (this.hasAttribute("autoscroll") && this.#stickToBottom) {
+      const scroll = this.#dataGrid.scrollContainer;
+      scroll.scrollTop = scroll.scrollHeight;
+    }
+  });
+  #stickToBottom = true;
   #shadowRoot;
   #columns = [];
   #hideableColumns = /* @__PURE__ */ new Set();
@@ -3279,6 +3286,19 @@ var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate 
     this.#updateColumns();
     this.addNodes(this.templateRoot.querySelectorAll("tr"));
   }
+  connectedCallback() {
+    const scroll = this.#dataGrid.scrollContainer;
+    scroll.addEventListener("scroll", this.#onScroll);
+    this.#scrollResizeObserver.observe(scroll.firstElementChild || scroll);
+  }
+  disconnectedCallback() {
+    const scroll = this.#dataGrid.scrollContainer;
+    scroll.removeEventListener("scroll", this.#onScroll);
+    this.#scrollResizeObserver.disconnect();
+  }
+  #onScroll = () => {
+    this.#stickToBottom = UI3.UIUtils.isScrolledToBottom(this.#dataGrid.scrollContainer);
+  };
   attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue === newValue) {
       return;

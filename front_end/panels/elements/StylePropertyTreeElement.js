@@ -23,7 +23,7 @@ import * as ElementsComponents from './components/components.js';
 import { cssRuleValidatorsMap } from './CSSRuleValidator.js';
 import { CSSValueTraceView } from './CSSValueTraceView.js';
 import { ElementsPanel } from './ElementsPanel.js';
-import { BinOpRenderer, Renderer, rendererBase, RenderingContext, StringRenderer, URLRenderer } from './PropertyRenderer.js';
+import { BinOpRenderer, Renderer, rendererBase, RenderingContext, StringRenderer, URLRenderer, } from './PropertyRenderer.js';
 import { StyleEditorWidget } from './StyleEditorWidget.js';
 import { getCssDeclarationAsJavascriptProperty } from './StylePropertyUtils.js';
 import { CSSPropertyPrompt, REGISTERED_PROPERTY_SECTION_NAME } from './StylesSidebarPane.js';
@@ -1447,7 +1447,7 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
         const evaluation = context.tracing?.applyEvaluation([], () => {
             return {
                 placeholder: [valueElement],
-                asyncEvalCallback: () => this.#applyEvaluation(valueElement, match, context)
+                asyncEvalCallback: () => this.#applyEvaluation(valueElement, match, context),
             };
         });
         if (evaluation) {
@@ -2266,7 +2266,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
                 anchor: exclamationElement,
                 variant: 'simple',
                 id: tooltipId,
-                jslogContext: 'elements.invalid-property-decl-popover'
+                jslogContext: 'elements.invalid-property-decl-popover',
             });
             tooltip.appendChild(title);
             container.appendChild(tooltip);
@@ -2417,7 +2417,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             variant: 'rich',
             padding: 'large',
             id: tooltipId,
-            jslogContext: 'elements.css-animation-hint'
+            jslogContext: 'elements.css-animation-hint',
         });
         const message = i18nString(UIStrings.overriddenByAnimation);
         const content = document.createElement('div');
@@ -2863,7 +2863,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
             hasChildren: this.isExpandable(),
             isEditingName,
             originalProperty: this.property,
-            previousContent: isEditingName ? this.name : this.value
+            previousContent: isEditingName ? this.name : this.value,
         };
         this.removePrompt();
         this.editingEnded(context);

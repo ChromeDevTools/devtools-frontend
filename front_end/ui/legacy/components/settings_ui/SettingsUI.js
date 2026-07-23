@@ -108,7 +108,7 @@ export const renderControlForSetting = function (setting, subtitle) {
                 }
             };
             return html `<setting-checkbox .data=${{
-                setting: setting
+                setting: setting,
             }} @change=${onchange}></setting-checkbox>`;
         }
         case "enum" /* Common.Settings.SettingType.ENUM */: {

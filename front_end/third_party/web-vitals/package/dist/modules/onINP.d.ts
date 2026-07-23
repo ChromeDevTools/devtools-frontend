@@ -1,4 +1,4 @@
-import { INPMetric, MetricRatingThresholds, INPReportOpts } from './types.js';
+import type { INPMetric, MetricRatingThresholds, INPReportOpts } from './types.js';
 /** Thresholds for INP. See https://web.dev/articles/inp#what_is_a_good_inp_score */
 export declare const INPThresholds: MetricRatingThresholds;
 /**

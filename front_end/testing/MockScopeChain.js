@@ -296,7 +296,7 @@ function serverError(message) {
         error: {
             code: ProtocolClient.CDPConnection.CDPErrorStatus.SERVER_ERROR,
             message,
-        }
+        },
     };
 }
 //# sourceMappingURL=MockScopeChain.js.map

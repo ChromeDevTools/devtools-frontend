@@ -16,34 +16,8 @@ export class ChangeManager {
     #stylesheetMutex = new Common.Mutex.Mutex();
     #cssModelToStylesheetId = new Map();
     #stylesheetChanges = new Map();
-    #backupStylesheetChanges = new Map();
     constructor(targetManager = SDK.TargetManager.TargetManager.instance()) {
         targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
-    }
-    async stashChanges() {
-        for (const [cssModel, stylesheetMap] of this.#cssModelToStylesheetId.entries()) {
-            const stylesheetIds = Array.from(stylesheetMap.values());
-            await Promise.allSettled(stylesheetIds.map(async (id) => {
-                this.#backupStylesheetChanges.set(id, this.#stylesheetChanges.get(id) ?? []);
-                this.#stylesheetChanges.delete(id);
-                await cssModel.setStyleSheetText(id, '', true);
-            }));
-        }
-    }
-    dropStashedChanges() {
-        this.#backupStylesheetChanges.clear();
-    }
-    async popStashedChanges() {
-        const cssModelAndStyleSheets = Array.from(this.#cssModelToStylesheetId.entries());
-        await Promise.allSettled(cssModelAndStyleSheets.map(async ([cssModel, stylesheetMap]) => {
-            const frameAndStylesheet = Array.from(stylesheetMap.entries());
-            return await Promise.allSettled(frameAndStylesheet.map(async ([frameId, stylesheetId]) => {
-                const changes = this.#backupStylesheetChanges.get(stylesheetId) ?? [];
-                return await Promise.allSettled(changes.map(async (change) => {
-                    return await this.addChange(cssModel, frameId, change);
-                }));
-            }));
-        }));
     }
     async clear() {
         const models = Array.from(this.#cssModelToStylesheetId.keys());
@@ -52,7 +26,6 @@ export class ChangeManager {
         }));
         this.#cssModelToStylesheetId.clear();
         this.#stylesheetChanges.clear();
-        this.#backupStylesheetChanges.clear();
         const firstFailed = results.find(result => result.status === 'rejected');
         if (firstFailed) {
             console.error(firstFailed.reason);
@@ -84,24 +57,6 @@ export class ChangeManager {
         this.#stylesheetChanges.set(stylesheetId, changes);
         return content;
     }
-    formatChangesForPatching(groupId, includeMetadata = false) {
-        return Array.from(this.#stylesheetChanges.values())
-            .flatMap(changesPerStylesheet => changesPerStylesheet.filter(change => change.groupId === groupId)
-            .map(change => this.#formatChange(change, includeMetadata)))
-            .filter(change => change !== '')
-            .join('\n\n');
-    }
-    getChangedNodesForGroupId(groupId) {
-        const nodes = new Set();
-        for (const changes of this.#stylesheetChanges.values()) {
-            for (const change of changes) {
-                if (change.groupId === groupId && change.backendNodeId) {
-                    nodes.add(change.backendNodeId);
-                }
-            }
-        }
-        return Array.from(nodes);
-    }
     #formatChangesForInspectorStylesheet(changes) {
         return changes
             .map(change => {
@@ -112,15 +67,6 @@ ${formatStyles(change.styles, 4)}
 }`;
         })
             .join('\n');
-    }
-    #formatChange(change, includeMetadata = false) {
-        const sourceLocation = includeMetadata && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */\n` : '';
-        // TODO: includeMetadata indicates whether we are using Patch
-        // agent. If needed we can have an separate knob.
-        const simpleSelector = includeMetadata && change.simpleSelector ? ` /* the element was ${change.simpleSelector} */` : '';
-        return `${sourceLocation}${change.selector} {${simpleSelector}
-${formatStyles(change.styles)}
-}`;
     }
     async #getStylesheet(cssModel, frameId) {
         return await this.#stylesheetMutex.run(async () => {
@@ -150,7 +96,6 @@ ${formatStyles(change.styles)}
             // Empty stylesheets.
             const results = await Promise.allSettled(stylesheetIds.map(async (id) => {
                 this.#stylesheetChanges.delete(id);
-                this.#backupStylesheetChanges.delete(id);
                 await cssModel.setStyleSheetText(id, '', true);
             }));
             this.#cssModelToStylesheetId.delete(cssModel);

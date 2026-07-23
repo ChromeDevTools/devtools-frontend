@@ -60,24 +60,6 @@ export declare function createAiAssistancePanel(options?: {
 export declare const setupAutomaticFileSystem: (options?: {
     hasFileSystem: boolean;
 }) => void;
-/**
- * Creates and shows an AiAssistancePanel instance returning the view
- * stubs and the initial view input caused by Widget.show().
- */
-export declare function createPatchWidget(options?: {
-    aidaClient?: Host.AidaClient.AidaClient;
-}): Promise<{
-    widget: AiAssistancePanel.PatchWidget.PatchWidget;
-    view: import("./ViewFunctionHelpers.js").ViewFunctionStub<typeof AiAssistancePanel.PatchWidget.PatchWidget>;
-    aidaClient: Host.AidaClient.AidaClient;
-}>;
-export declare function createPatchWidgetWithDiffView(options?: {
-    aidaClient?: Host.AidaClient.AidaClient;
-}): Promise<{
-    widget: AiAssistancePanel.PatchWidget.PatchWidget;
-    view: import("./ViewFunctionHelpers.js").ViewFunctionStub<typeof AiAssistancePanel.PatchWidget.PatchWidget>;
-    aidaClient: Host.AidaClient.AidaClient;
-}>;
 export declare function initializePersistenceImplForTests(): void;
 export declare function cleanup(): void;
 /**

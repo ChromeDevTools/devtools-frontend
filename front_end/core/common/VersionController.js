@@ -662,7 +662,7 @@ export class VersionController {
             'Slow 4G': 'SPEED_SLOW_4G',
             '3G': 'SPEED_3G',
             'No throttling': 'NO_THROTTLING',
-            Offline: 'OFFLINE'
+            Offline: 'OFFLINE',
         };
         try {
             const networkSetting = JSON.parse(setting);

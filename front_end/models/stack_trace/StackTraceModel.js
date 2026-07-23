@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import { augmentRawFramesWithScriptIds, parseRawFramesFromErrorStack } from './DetailedErrorStackParser.js';
 // eslint-disable-next-line @devtools/es-modules-import
 import * as StackTrace from './stack_trace.js';
-import { AsyncFragmentImpl, DebuggableFragmentImpl, FragmentImpl, FrameImpl, ParsedErrorStackFragmentImpl, StackTraceImpl } from './StackTraceImpl.js';
+import { AsyncFragmentImpl, DebuggableFragmentImpl, FragmentImpl, FrameImpl, ParsedErrorStackFragmentImpl, StackTraceImpl, } from './StackTraceImpl.js';
 import { EvalOrigin, Trie } from './Trie.js';
 /**
  * The {@link StackTraceModel} is a thin wrapper around a fragment trie.

@@ -304,7 +304,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
                     jslog=${VisualLogging.dropDown().track({ change: true }).context('device-pixel-ratio')}
                     ?disabled=${!input.isResponsive}>
                 ${input.dprOptions.map(o => html `<option value=${o.value} ?selected=${o.selected} jslog=${VisualLogging.item(o.jslogContext).track({ click: true })}>${o.title}</option>`)}
-              </select>`
+              </select>`,
     })}
         </div>` : ''}
 
@@ -367,7 +367,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
   `, target, { container: {
             classes: ['device-mode-toolbar'],
             attributes: { jslog: `${VisualLogging.toolbar('device-mode').track({ resize: true })}`,
-            }
+            },
         } });
     // clang-format on
 };
@@ -659,7 +659,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
                 title,
                 value: value === defaultValue ? 0 : value,
                 selected: currentDPR === value || (value === defaultValue && currentDPR === 0),
-                jslogContext
+                jslogContext,
             };
         });
     }
@@ -682,7 +682,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
             title: value,
             value,
             selected: currentUserAgent === value,
-            jslogContext: Platform.StringUtilities.toKebabCase(value)
+            jslogContext: Platform.StringUtilities.toKebabCase(value),
         }));
     }
     onUAChange(event) {
@@ -758,24 +758,24 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
             responsive: {
                 title: i18nString(UIStrings.responsive),
                 selected: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
-                jslogContext: 'responsive'
+                jslogContext: 'responsive',
             },
             standard: this.standardDevices().map(device => ({
                 device,
                 title: device.title,
                 selected: this.model?.device() === device,
-                jslogContext: Platform.StringUtilities.toKebabCase(device.title)
+                jslogContext: Platform.StringUtilities.toKebabCase(device.title),
             })),
             custom: this.customDevices().map(device => ({
                 device,
                 title: device.title,
                 selected: this.model?.device() === device,
-                jslogContext: Platform.StringUtilities.toKebabCase(device.title)
+                jslogContext: Platform.StringUtilities.toKebabCase(device.title),
             })),
             edit: {
                 title: i18nString(UIStrings.edit),
                 jslogContext: 'edit',
-            }
+            },
         };
     }
     onDeviceChange(event) {

@@ -9,7 +9,7 @@ import { OverlayPersistentHighlighter } from './OverlayPersistentHighlighter.js'
 import { SDKModel } from './SDKModel.js';
 const UIStrings = {
     /**
-     * @description Text in Overlay Model
+     * @description Overlay message indicating that execution is paused in the debugger.
      */
     pausedInDebugger: 'Paused in debugger',
 };

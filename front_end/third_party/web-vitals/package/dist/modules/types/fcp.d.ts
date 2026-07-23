@@ -36,7 +36,7 @@ export interface FCPAttribution {
      * general page load issues. This can be used to access `serverTiming` for example:
      * navigationEntry?.serverTiming
      */
-    navigationEntry?: PerformanceNavigationTiming;
+    navigationEntry?: PerformanceNavigationTiming | PerformanceSoftNavigation;
 }
 /**
  * An FCP-specific version of the Metric object with attribution.

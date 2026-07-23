@@ -15,6 +15,7 @@
  */
 export class LCPEntryManager {
     _onBeforeProcessingEntry;
+    _softNavigationEntryMap;
     _processEntry(entry) {
         this._onBeforeProcessingEntry?.(entry);
     }

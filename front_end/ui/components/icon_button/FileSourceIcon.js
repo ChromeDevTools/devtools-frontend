@@ -35,7 +35,7 @@ export class FileSourceIcon extends HTMLElement {
             dot: Boolean(this.#hasDotBadge),
             purple: Boolean(this.#hasDotBadge && this.#isDotPurple),
             green: Boolean(this.#hasDotBadge && !this.#isDotPurple),
-            ...(this.#contentType ? { [this.#contentType]: this.#contentType } : null)
+            ...(this.#contentType ? { [this.#contentType]: this.#contentType } : null),
         });
         // clang-format off
         render(html `

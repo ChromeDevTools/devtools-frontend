@@ -162,6 +162,11 @@ export default `/*
   top: unset;
   bottom: 0;
   height: 100px;
+
+  &.positioned-by-event {
+    top: 0;
+    bottom: unset;
+  }
 }
 
 .overlay-type-TIMINGS_MARKER {

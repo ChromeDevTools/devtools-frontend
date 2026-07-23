@@ -70,7 +70,7 @@ export function createHiddenTracksOverlay(parsedTrace, callbacks) {
             delegate: callbacks.onShowTrackConfigurationMode,
             dismiss: true,
             buttonVariant: "primary" /* Buttons.Button.Variant.PRIMARY */,
-        }
+        },
     ]);
     infobarForTrace.setCloseCallback(() => {
         callbacks.onClose();

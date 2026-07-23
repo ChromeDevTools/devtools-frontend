@@ -1,4 +1,4 @@
-import { TTFBMetricWithAttribution, AttributionReportOpts } from '../types.js';
+import type { TTFBMetricWithAttribution, AttributionReportOpts } from '../types.js';
 /**
  * Calculates the [TTFB](https://web.dev/articles/ttfb) value for the
  * current page and calls the `callback` function once the page has loaded,

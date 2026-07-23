@@ -51,7 +51,7 @@ const UIStrings = {
      * @example {20} PH4
      * @example {Arial} PH5
      */
-    fontVariationSettingsWarning: 'Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”.',
+    fontVariationSettingsWarning: 'Value for setting "{PH1}" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family "{PH5}".',
     /**
      * @description The message shown in the Style pane when the user hovers over a property declaration that has no effect on flex or grid child items.
      * @example {flex} CONTAINER_DISPLAY_NAME

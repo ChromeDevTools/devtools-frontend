@@ -36,7 +36,6 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/models/ai_assistance/AgentProject.ts",
     "../../../../../../front_end/models/ai_assistance/AiAgent2.ts",
     "../../../../../../front_end/models/ai_assistance/AiConversation.ts",
     "../../../../../../front_end/models/ai_assistance/AiHistoryStorage.ts",
@@ -55,7 +54,6 @@
     "../../../../../../front_end/models/ai_assistance/agents/ExecuteJavascript.ts",
     "../../../../../../front_end/models/ai_assistance/agents/FileAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/NetworkAgent.ts",
-    "../../../../../../front_end/models/ai_assistance/agents/PatchAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/PerformanceAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/StorageAgent.ts",
     "../../../../../../front_end/models/ai_assistance/agents/StylingAgent.ts",

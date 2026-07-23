@@ -36,6 +36,10 @@ export declare class TimelineUIUtils {
     }, contentHelper: TimelineDetailsContentHelper): void;
     static maybeCreateLinkElement(url: string): Element | null;
     /**
+     * Don't linkify URLs to privileged schemes. See https://crbug.com/530450502.
+     */
+    static isLinkifiableScheme(scheme: string): boolean;
+    /**
      * Takes an input string and parses it to look for links. It does this by
      * looking for URLs in the input string. The returned fragment will contain
      * the same string but with any links wrapped in clickable links. The text

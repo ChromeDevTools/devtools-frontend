@@ -2306,6 +2306,7 @@ export const knownContextValues = new Set([
     'layers-3d-view',
     'layers-details',
     'layers-show-internal-layers',
+    'layers-tree',
     'layers.3d-center',
     'layers.3d-pan',
     'layers.3d-rotate',

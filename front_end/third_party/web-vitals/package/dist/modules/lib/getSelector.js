@@ -27,7 +27,7 @@ export const getSelector = (node) => {
             const el = node;
             const part = el.id
                 ? '#' + el.id
-                : [getName(el), ...Array.from(el.classList).sort()].join('.');
+                : [getName(el), ...Array.from(el.classList ?? []).sort()].join('.');
             if (sel.length + part.length > MAX_LEN - 1) {
                 return sel || part;
             }

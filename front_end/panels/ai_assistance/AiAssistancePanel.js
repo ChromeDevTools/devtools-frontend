@@ -32,7 +32,6 @@ import { OptInChangeDialog } from './components/OptInChangeDialog.js';
 import { PerformanceAgentMarkdownRenderer } from './components/PerformanceAgentMarkdownRenderer.js';
 import { WalkthroughView, } from './components/WalkthroughView.js';
 import { saveToDisk } from './ExportConversation.js';
-import { isAiAssistancePatchingEnabled } from './PatchWidget.js';
 const { html } = Lit;
 const { widget } = UI.Widget;
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393';
@@ -620,7 +619,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     isContextSelected: Boolean(this.#conversation.selectedContext),
                     conversationType: this.#conversation.type,
                     isReadOnly: this.#conversation.isReadOnly ?? false,
-                    changeSummary: this.#getChangeSummary(),
                     inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
                     canShowFeedbackForm: this.#serverSideLoggingEnabled,
                     multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() &&
@@ -630,7 +628,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     inputPlaceholder: this.#getChatInputPlaceholder(),
                     disclaimerText: this.#getDisclaimerText(),
                     onExportConversation: this.#onExportConversationClick.bind(this),
-                    changeManager: this.#changeManager,
                     uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
                         this.#conversation.type === "freestyler" /* AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING */,
                     markdownRenderer,
@@ -683,7 +680,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                         activeSidebarMessage: this.#walkthrough.activeSidebarMessage,
                         inlineExpandedMessages: this.#walkthrough.inlineExpandedMessages,
                     },
-                }
+                },
             };
         }
         return {
@@ -1042,13 +1039,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#selectedAccessibility = createAccessibilityContext(newReport);
         this.#updateConversationState(this.#conversation);
     };
-    #getChangeSummary() {
-        if (!isAiAssistancePatchingEnabled() || !this.#conversation || this.#conversation?.isReadOnly) {
-            return;
-        }
-        const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-        return this.#changeManager.formatChangesForPatching(this.#conversation.id, /* includeMetadata= */ !hasAiV2);
-    }
     async performUpdate() {
         const viewInput = {
             ...this.#getToolbarInput(),

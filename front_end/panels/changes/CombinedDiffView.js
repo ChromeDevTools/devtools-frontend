@@ -175,7 +175,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
             if (fileSystemUiSourceCode) {
                 displayText = [
                     fileSystemUiSourceCode.project().displayName(),
-                    ...Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(fileSystemUiSourceCode)
+                    ...Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(fileSystemUiSourceCode),
                 ].join('/');
             }
             return {

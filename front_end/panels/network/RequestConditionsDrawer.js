@@ -167,7 +167,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         onCancel: input.onCancel,
         onBeginEdit: input.onBeginEdit,
         validator: val => input.validator(condition, val),
-        lookUpRequestCount: input.lookUpRequestCount
+        lookUpRequestCount: input.lookUpRequestCount,
     })}
         </div>
       `)}
@@ -177,7 +177,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     // clang-format on
     target, { container: { classes: (!input.enabled && input.conditions.length > 0) ? ['blocking-disabled'] : [] } });
 };
-function renderItem({ condition, editing, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, onCommit, onCancel, onBeginEdit, validator, lookUpRequestCount }) {
+function renderItem({ condition, editing, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, onCommit, onCancel, onBeginEdit, validator, lookUpRequestCount, }) {
     const { enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL } = condition;
     const toggle = (e) => {
         e.consume(true);

@@ -29,6 +29,7 @@ class BaseSnapshotTester {
     snapshotPath;
     #expected = new Map();
     #actual = new Map();
+    #seenTestObjects = new WeakSet();
     #anyFailures = false;
     #newTests = false;
     constructor(context, meta) {
@@ -46,8 +47,8 @@ class BaseSnapshotTester {
         // out/Default/gen/third_party/devtools-frontend/src/front_end/testing/SnapshotTester.test.js?8ee4f2b123e221040a4aa075a28d0e5b41d3d3ed
         // ->
         // front_end/testing/SnapshotTester.snapshot.txt
-        this.snapshotPath =
-            meta.url.substring(meta.url.lastIndexOf('front_end')).replace('.test.js', '.snapshot.txt').split('?')[0];
+        const relativePathStart = meta.url.includes('/front_end/') ? meta.url.indexOf('front_end') : meta.url.indexOf('/test/') + 1;
+        this.snapshotPath = meta.url.substring(relativePathStart).replace('.test.js', '.snapshot.txt').split('?')[0];
     }
     async load() {
         if (BaseSnapshotTester.#updateMode === null) {
@@ -60,8 +61,11 @@ class BaseSnapshotTester {
     }
     assert(context, actual) {
         const title = context.test?.fullTitle() ?? '';
-        if (this.#actual.has(title)) {
+        if (context.test && this.#seenTestObjects.has(context.test)) {
             throw new Error('sorry, currently only support 1 snapshot assertion per test');
+        }
+        if (context.test) {
+            this.#seenTestObjects.add(context.test);
         }
         if (actual.includes('=== end content')) {
             throw new Error('invalid content');

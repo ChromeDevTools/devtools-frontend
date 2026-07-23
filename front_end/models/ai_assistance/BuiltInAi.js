@@ -143,7 +143,7 @@ Your instructions are as follows:
     headings or code blocks. Only write a single paragraph of text.
   - Your response should be concise and to the point. Avoid lengthy explanations
     or unnecessary details.
-          `
+          `,
                     }],
                 expectedInputs: [{
                         type: 'text',

@@ -4752,7 +4752,7 @@ var UIStrings3 = {
    * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  doNotPaste: "Don\u2019t paste code you don\u2019t understand or haven\u2019t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type \u201C{PH1}\u201D below to allow pasting.",
+  doNotPaste: 'Don\u2019t paste code you don\u2019t understand or haven\u2019t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type "{PH1}" below to allow pasting.',
   /**
    * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
    */
@@ -4761,7 +4761,7 @@ var UIStrings3 = {
    * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  typeAllowPasting: "Type \u201C{PH1}\u201D"
+  typeAllowPasting: 'Type "{PH1}"'
 };
 var str_3 = i18n7.i18n.registerUIStrings("panels/console/ConsolePinPane.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
@@ -8022,7 +8022,7 @@ var UIStrings6 = {
    * @description Warning shown to users when pasting text into the DevTools Console. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  selfXssWarning: "Warning: Don\u2019t paste code into the DevTools Console that you don\u2019t understand or haven\u2019t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type \u201C{PH1}\u201D below and press Enter to allow pasting.",
+  selfXssWarning: 'Warning: Don\u2019t paste code into the DevTools Console that you don\u2019t understand or haven\u2019t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type "{PH1}" below and press Enter to allow pasting.',
   /**
    * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
    */

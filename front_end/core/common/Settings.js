@@ -19,7 +19,7 @@ export class Settings {
     moduleSettings = new Map();
     #logSettingAccess;
     #console;
-    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console }) {
+    constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, }) {
         this.#console = console;
         this.syncedStorage = syncedStorage;
         this.globalStorage = globalStorage;
@@ -52,7 +52,7 @@ export class Settings {
         globalStorage: null,
         localStorage: null,
         settingRegistrations: null,
-        console: null
+        console: null,
     }) {
         const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console, } = opts;
         if (!Root.DevToolsContext.globalInstance().has(Settings) || forceNew) {

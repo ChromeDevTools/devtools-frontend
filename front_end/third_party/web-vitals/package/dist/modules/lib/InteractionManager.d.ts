@@ -1,3 +1,4 @@
+import type { Metric } from '../types.js';
 export interface Interaction {
     _latency: number;
     id: number;
@@ -22,7 +23,7 @@ export declare class InteractionManager {
      * Returns the estimated p98 longest interaction based on the stored
      * interaction candidates and the interaction count for the current page.
      */
-    _estimateP98LongestInteraction(): Interaction;
+    _estimateP98LongestInteraction(navigationType: Metric['navigationType']): Interaction;
     /**
      * Takes a performance entry and adds it to the list of worst interactions
      * if its duration is long enough to make it among the worst. If the

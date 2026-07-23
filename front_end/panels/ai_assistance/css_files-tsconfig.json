@@ -12,7 +12,6 @@
         "./components/exploreWidget.css.js",
         "./components/exportForAgentsDialog.css.js",
         "./components/optInChangeDialog.css.js",
-        "./components/walkthroughView.css.js",
-        "./selectWorkspaceDialog.css.js"
+        "./components/walkthroughView.css.js"
     ]
 }

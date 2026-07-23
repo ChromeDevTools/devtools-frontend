@@ -15,7 +15,7 @@ export function createViewFunctionStub(_constructor, outputValues) {
             return new Promise(resolve => {
                 result.invoked = resolve;
             });
-        }
+        },
     });
     return result;
 }

@@ -719,6 +719,8 @@ export class Overlays extends EventTarget {
         if (overlay.sections.length === 0) {
             return;
         }
+        const isPositionedByEvent = overlay.entry && (overlay.renderLocation === 'BELOW_EVENT' || overlay.renderLocation === 'ABOVE_EVENT');
+        element.classList.toggle('positioned-by-event', Boolean(isPositionedByEvent));
         const component = element.querySelector('.devtools-timespan-breakdown-overlay');
         if (!component) {
             return;
@@ -772,6 +774,7 @@ export class Overlays extends EventTarget {
                 const height = Math.min(MAX_BOX_HEIGHT, minSpace);
                 const top = bottom - height;
                 widget.top = top;
+                widget.maxHeight = height;
             }
         }
     }

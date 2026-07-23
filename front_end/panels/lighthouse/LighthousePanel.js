@@ -7,7 +7,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import { Events, LighthouseController } from './LighthouseController.js';
+import { Events, LighthouseController, } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 import { CancelledError, ProtocolService } from './LighthouseProtocolService.js';
 import { LighthouseReportRenderer } from './LighthouseReportRenderer.js';
@@ -17,31 +17,31 @@ import { StatusView } from './LighthouseStatusView.js';
 import { TimespanView } from './LighthouseTimespanView.js';
 const UIStrings = {
     /**
-     * @description Text that appears when user drag and drop something (for example, a file) in Lighthouse Panel
+     * @description Text that appears when a user drags and drops a file in the Lighthouse panel.
      */
     dropLighthouseJsonHere: 'Drop `Lighthouse` JSON here',
     /**
-     * @description Tooltip text that appears when hovering over the largeicon add button in the Lighthouse Panel
+     * @description Tooltip text that appears when hovering over the add button in the Lighthouse panel.
      */
     performAnAudit: 'Perform an audit…',
     /**
-     * @description Text to clear everything
+     * @description Button text to clear all audit reports.
      */
     clearAll: 'Clear all',
     /**
-     * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in start view of the audits panel
+     * @description Tooltip text that appears when hovering over the settings gear in the Lighthouse panel.
      */
     lighthouseSettings: '`Lighthouse` settings',
     /**
-     * @description Status header in the Lighthouse panel
+     * @description Status header in the Lighthouse panel.
      */
     printing: 'Printing',
     /**
-     * @description Status text in the Lighthouse panel
+     * @description Status text in the Lighthouse panel.
      */
-    thePrintPopupWindowIsOpenPlease: 'The print popup window is open. Please close it to continue.',
+    thePrintPopupWindowIsOpenPlease: 'The print popup window is open. Close it to continue.',
     /**
-     * @description Text in Lighthouse Panel
+     * @description Status text in the Lighthouse panel when an audit is cancelling.
      */
     cancelling: 'Cancelling',
 };

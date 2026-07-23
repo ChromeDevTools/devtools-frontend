@@ -119,7 +119,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper {
         }
         const contentsPromise = Promise.all([
             this.requestOriginalContentForUISourceCode(uiSourceCode),
-            uiSourceCode.requestContentData().then(contentDataOrError => TextUtils.ContentData.ContentData.textOr(contentDataOrError, null))
+            uiSourceCode.requestContentData().then(contentDataOrError => TextUtils.ContentData.ContentData.textOr(contentDataOrError, null)),
         ]);
         this.loadingUISourceCodes.set(uiSourceCode, contentsPromise);
         const contents = await contentsPromise;

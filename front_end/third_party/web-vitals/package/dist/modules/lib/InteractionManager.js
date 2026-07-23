@@ -50,8 +50,24 @@ export class InteractionManager {
      * Returns the estimated p98 longest interaction based on the stored
      * interaction candidates and the interaction count for the current page.
      */
-    _estimateP98LongestInteraction() {
-        const candidateInteractionIndex = Math.min(this._longestInteractionList.length - 1, Math.floor(getInteractionCountForNavigation() / 50));
+    _estimateP98LongestInteraction(navigationType) {
+        const interactionCountForNavigation = getInteractionCountForNavigation();
+        const candidateInteractionIndex = Math.min(this._longestInteractionList.length - 1, Math.floor(interactionCountForNavigation / 50));
+        // If we have a non-zero interactionCountForNavigation but no
+        // candidateInteractionIndex, then it's below the 16ms limit
+        // so report a dummy 8ms interaction. This is only needed for
+        // soft-navs and bfcache restores as `first-input` handles the
+        // rest.
+        if (interactionCountForNavigation &&
+            candidateInteractionIndex === -1 &&
+            (navigationType === 'soft-navigation' ||
+                navigationType === 'back-forward-cache')) {
+            return {
+                _latency: 8,
+                id: -1,
+                entries: [],
+            };
+        }
         return this._longestInteractionList[candidateInteractionIndex];
     }
     /**

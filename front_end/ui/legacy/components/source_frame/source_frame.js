@@ -132,7 +132,7 @@ var UIStrings = {
    * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  doNotPaste: "Don\u2019t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \u201C{PH1}\u201D below to allow pasting.",
+  doNotPaste: 'Don\u2019t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type "{PH1}" below to allow pasting.',
   /**
    * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
@@ -141,12 +141,12 @@ var UIStrings = {
    * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
    * @example {allow pasting} PH1
    */
-  typeAllowPasting: "Type \u201C{PH1}\u201D",
+  typeAllowPasting: 'Type "{PH1}"',
   /**
    * @description Error message shown when the user tries to open a file that contains non-readable data. "Editor" refers to
    * a text editor.
    */
-  binaryContentError: 'Editor can\u2019t show binary data. Use the "Response" tab in the "Network" panel to inspect this resource.'
+  binaryContentError: "Editor can\u2019t show binary data. Use the Response tab in the Network panel to inspect this resource."
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/source_frame/SourceFrame.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);

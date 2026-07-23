@@ -118,16 +118,16 @@ export class PerformanceInsightFormatter {
             case 'DuplicatedJavaScript':
                 return [
                     { title: 'How do I deduplicate the identified scripts in my bundle?' },
-                    { title: 'Which duplicated JavaScript modules are the most problematic?' }
+                    { title: 'Which duplicated JavaScript modules are the most problematic?' },
                 ];
             case 'FontDisplay':
                 return [
-                    { title: 'How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?' }
+                    { title: 'How can I update my CSS to avoid layout shifts caused by incorrect `font-display` properties?' },
                 ];
             case 'ForcedReflow':
                 return [
                     { title: 'How can I avoid forced reflows and layout thrashing?' },
-                    { title: 'What is forced reflow and why is it problematic?' }
+                    { title: 'What is forced reflow and why is it problematic?' },
                 ];
             case 'ImageDelivery':
                 return [
@@ -136,25 +136,28 @@ export class PerformanceInsightFormatter {
                 ];
             case 'INPBreakdown':
                 return [
-                    { title: 'Suggest fixes for my longest interaction' }, { title: 'Why is a large INP score problematic?' },
-                    { title: 'What\'s the biggest contributor to my longest interaction?' }
+                    { title: 'Suggest fixes for my longest interaction' },
+                    { title: 'Why is a large INP score problematic?' },
+                    { title: 'What\'s the biggest contributor to my longest interaction?' },
                 ];
             case 'LCPDiscovery':
                 return [
-                    { title: 'Suggest fixes to reduce my LCP' }, { title: 'What can I do to reduce my LCP discovery time?' },
-                    { title: 'Why is LCP discovery time important?' }
+                    { title: 'Suggest fixes to reduce my LCP' },
+                    { title: 'What can I do to reduce my LCP discovery time?' },
+                    { title: 'Why is LCP discovery time important?' },
                 ];
             case 'LCPBreakdown':
                 return [
-                    { title: 'Help me optimize my LCP score' }, { title: 'Which LCP subpart was most problematic?' },
-                    { title: 'What can I do to reduce the LCP time for this page load?' }
+                    { title: 'Help me optimize my LCP score' },
+                    { title: 'Which LCP subpart was most problematic?' },
+                    { title: 'What can I do to reduce the LCP time for this page load?' },
                 ];
             case 'NetworkDependencyTree':
                 return [{ title: 'How do I optimize my network dependency tree?' }];
             case 'RenderBlocking':
                 return [
                     { title: 'Show me the most impactful render-blocking requests that I should focus on' },
-                    { title: 'How can I reduce the number of render-blocking requests?' }
+                    { title: 'How can I reduce the number of render-blocking requests?' },
                 ];
             case 'SlowCSSSelector':
                 return [{ title: 'How can I optimize my CSS to increase the performance of CSS selectors?' }];
@@ -298,7 +301,7 @@ ${shiftsFormatted.join('\n')}`;
 
 ${this.#traceFormatter.formatNetworkRequests([documentRequest], {
             verbose: true,
-            customTitle: 'Document network request'
+            customTitle: 'Document network request',
         })}
 
 The result of the checks for this insight are:

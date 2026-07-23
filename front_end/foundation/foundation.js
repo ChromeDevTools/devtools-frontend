@@ -20,6 +20,7 @@ import * as Bindings from "./../models/bindings/bindings.js";
 import * as Breakpoints from "./../models/breakpoints/breakpoints.js";
 import * as CrUXManager from "./../models/crux-manager/crux-manager.js";
 import * as Emulation from "./../models/emulation/emulation.js";
+import * as IssuesManager from "./../models/issues_manager/issues_manager.js";
 import * as JavaScriptMetadata from "./../models/javascript_metadata/javascript_metadata.js";
 import * as LiveMetrics from "./../models/live-metrics/live-metrics.js";
 import * as Logs from "./../models/logs/logs.js";
@@ -98,6 +99,8 @@ var Universe = class {
     context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
     const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
+    const presentationConsoleMessageManager = new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
+    context.set(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager, presentationConsoleMessageManager);
     const networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
     context.set(Bindings.NetworkProject.NetworkProjectManager, networkProjectManager);
     const breakpointManager = new Breakpoints.BreakpointManager.BreakpointManager(targetManager, workspace, debuggerWorkspaceBinding, settings);
@@ -112,6 +115,8 @@ var Universe = class {
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
     const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
     context.set(Logs.LogManager.LogManager, logManager);
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager(IssuesManager.Issue.getShowThirdPartyIssuesSetting(settings), IssuesManager.IssuesManager.getHideIssueByCodeSetting(settings), frameManager, targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
+    context.set(IssuesManager.IssuesManager.IssuesManager, issuesManager);
     const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
     const liveMetrics = new LiveMetrics.LiveMetrics(targetManager, deviceModeModel);
@@ -139,6 +144,12 @@ var Universe = class {
   }
   get cruxManager() {
     return this.context.get(CrUXManager.CrUXManager);
+  }
+  get cssWorkspaceBinding() {
+    return this.context.get(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding);
+  }
+  get debuggerWorkspaceBinding() {
+    return this.context.get(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
   }
   // The DeviceModeModel may not be present, as emulation is only present for the `devtools_app` entrypoint, but not for the others.
   get deviceModeModel() {
@@ -171,6 +182,9 @@ var Universe = class {
   get isolateManager() {
     return this.context.get(SDK.IsolateManager.IsolateManager);
   }
+  get issuesManager() {
+    return this.context.get(IssuesManager.IssuesManager.IssuesManager);
+  }
   get networkPersistenceManager() {
     return this.context.get(Persistence.NetworkPersistenceManager.NetworkPersistenceManager);
   }
@@ -188,6 +202,9 @@ var Universe = class {
   }
   get persistence() {
     return this.context.get(Persistence.Persistence.PersistenceImpl);
+  }
+  get presentationConsoleMessageManager() {
+    return this.context.get(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager);
   }
   get projectSettingsModel() {
     return this.context.get(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel);

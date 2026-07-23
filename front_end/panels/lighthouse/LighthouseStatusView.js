@@ -12,66 +12,66 @@ import lighthouseDialogStyles from './lighthouseDialog.css.js';
 const { html } = Lit;
 const UIStrings = {
     /**
-     * @description Text to cancel something
+     * @description Button text to cancel an operation.
      */
     cancel: 'Cancel',
     /**
-     * @description Text when something is loading
+     * @description Status text when an operation is loading.
      */
     loading: 'Loading…',
     /**
-     * @description Status text in Lighthouse splash screen while an audit is being performed
+     * @description Status text in Lighthouse splash screen while an audit is being performed.
      * @example {github.com} PH1
      */
     auditingS: 'Auditing {PH1}',
     /**
-     * @description Status text in Lighthouse splash screen while an audit is being performed
+     * @description Status text in Lighthouse splash screen while an audit is being performed.
      */
     auditingYourWebPage: 'Auditing your web page',
     /**
-     * @description Status text in Lighthouse splash screen while an AI assistant is performing an audit
+     * @description Status text in Lighthouse splash screen while an AI assistant is performing an audit.
      * @example {github.com} PH1
      */
     aiAuditingS: 'AI assistance is auditing {PH1}',
     /**
-     * @description Status text in Lighthouse splash screen while an AI assistant is performing an audit
+     * @description Status text in Lighthouse splash screen while an AI assistant is performing an audit.
      */
     aiAuditingYourWebPage: 'AI assistance is auditing your web page',
     /**
-     * @description Status text in Lighthouse splash screen while an audit is being performed, and cancellation to take effect
+     * @description Status text in Lighthouse splash screen while an audit is being performed, and cancellation to take effect.
      */
     cancelling: 'Cancelling…',
     /**
-     * @description Status text in Lighthouse splash screen while preparing for an audit
+     * @description Status text in Lighthouse splash screen while preparing for an audit.
      */
     lighthouseIsWarmingUp: '`Lighthouse` is warming up…',
     /**
-     * @description Status text in Lighthouse splash screen while an audit is being performed
+     * @description Status text in Lighthouse splash screen while an audit is being performed.
      */
     lighthouseIsLoadingYourPage: '`Lighthouse` is loading your page',
     /**
-     * @description Text in Lighthouse Status View
+     * @description Status message showing a fast fact with an icon.
      * @example {75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]} PH1
      */
     fastFactMessageWithPlaceholder: '💡 {PH1}',
     /**
-     * @description Text of a DOM element in Lighthouse Status View
+     * @description Error header shown when an audit encounters an error.
      */
-    ahSorryWeRanIntoAnError: 'Ah, sorry! We ran into an error.',
+    ahSorryWeRanIntoAnError: 'We ran into an error.',
     /**
-     * @description Text in Lighthouse Status View
+     * @description Suggestion for recovering from an audit error.
      */
     tryToNavigateToTheUrlInAFresh: 'Try to navigate to the URL in a fresh `Chrome` profile without any other tabs or extensions open and try again.',
     /**
-     * @description Text of a DOM element in Lighthouse Status View
+     * @description Instruction to report a bug if the issue is reproducible.
      */
-    ifThisIssueIsReproduciblePlease: 'If this issue is reproducible, please report it at the `Lighthouse` `GitHub` repo.',
+    ifThisIssueIsReproduciblePlease: 'If this issue is reproducible, report it at the `Lighthouse` `GitHub` repo.',
     /**
-     * @description Text in Lighthouse splash screen when loading the page for auditing
+     * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
-    lighthouseIsLoadingThePage: 'Lighthouse is loading the page.',
+    lighthouseIsLoadingThePage: '`Lighthouse` is loading the page.',
     /**
-     * @description Text in Lighthouse splash screen when Lighthouse is gathering information for display
+     * @description Text in Lighthouse splash screen when Lighthouse is gathering information for display.
      */
     lighthouseIsGatheringInformation: '`Lighthouse` is gathering information about the page to compute your score.',
     /**
@@ -79,63 +79,63 @@ const UIStrings = {
      */
     almostThereLighthouseIsNow: 'Almost there! `Lighthouse` is now generating your report.',
     /**
-     * @description Text in Lighthouse splash screen when loading the page for auditing
+     * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
     lighthouseIsLoadingYourPageWith: '`Lighthouse` is loading your page with throttling to measure performance on a mobile device on 3G.',
     /**
-     * @description Text in Lighthouse splash screen when loading the page for auditing
+     * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
     lighthouseIsLoadingYourPageWithThrottling: '`Lighthouse` is loading your page with throttling to measure performance on a slow desktop on 3G.',
     /**
-     * @description Text in Lighthouse splash screen when loading the page for auditing
+     * @description Text in Lighthouse splash screen when loading the page for auditing.
      */
     lighthouseIsLoadingYourPageWithMobile: '`Lighthouse` is loading your page with mobile emulation.',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     mbTakesAMinimumOfSecondsTo: '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: `WebPageTest` and `DevTools` 3G definition].',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     rebuildingPinterestPagesFor: 'Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: `WPO Stats`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     byReducingTheResponseSizeOfJson: 'By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: `WPO Stats`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     walmartSawAIncreaseInRevenueFor: 'Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: `WPO Stats`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     ifASiteTakesSecondToBecome: 'If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: `Google Developers Blog`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     OfGlobalMobileUsersInWereOnGOrG: '75% of global mobile users in 2016 were on 2G or 3G [Source: `GSMA Mobile`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     theAverageUserDeviceCostsLess: 'The average user device costs less than 200 USD. [Source: `International Data Corporation`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     SecondsIsTheAverageTimeAMobile: '19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: `Google DoubleClick blog`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     OfMobilePagesTakeNearlySeconds: '70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: `Think with Google`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     asPageLoadTimeIncreasesFromOne: 'As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: `Think with Google`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     asTheNumberOfElementsOnAPage: 'As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: `Think with Google`]',
     /**
-     * @description Fast fact in the splash screen while Lighthouse is performing an audit
+     * @description Fast fact in the splash screen while Lighthouse is performing an audit.
      */
     lighthouseOnlySimulatesMobile: '`Lighthouse` only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: `Lighthouse` team]',
 };

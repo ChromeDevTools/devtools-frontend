@@ -27,7 +27,7 @@ const DEFAULT_VIEW = (input, _output, target) => {
     <span class="monospace">
       <button class="node-link text-button link-style ${classMap({
         'dynamic-link': Boolean(input.dynamic),
-        disabled: Boolean(input.disabled)
+        disabled: Boolean(input.disabled),
     })}"
           aria-description=${ifDefined(input.ariaDescription)}
           jslog=${VisualLogging.link('node').track({ click: true, keydown: 'Enter' })}

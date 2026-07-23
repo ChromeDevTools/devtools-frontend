@@ -9,21 +9,26 @@ export default `/*
  * found in the LICENSE file.
  */
 
-.no-border-top-datagrid > .data-grid {
+devtools-data-grid.no-border-top-datagrid {
   /* make sure there is no top border, it ruins the menu view */
   border-top: 0;
 }
 
-.event-display-table-contents-table-container > .widget > .data-grid {
+devtools-data-grid.event-display-table-contents-table-container {
   height: 100%;
 }
 
-.data-grid .event-display-table-basic-text-table-entry {
+.event-display-table-basic-text-table-entry {
   line-height: 26px;
 }
 
-.event-display-table-contents-json-wrapper > .json-view {
+.event-display-table-contents-json-wrapper > devtools-widget.json-view {
   overflow: visible;
+}
+
+.data-grid > .data-container > table.data {
+  height: auto;
+  table-layout: auto;
 }
 
 /*# sourceURL=${import.meta.resolve('./eventDisplayTable.css')} */`;

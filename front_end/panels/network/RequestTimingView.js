@@ -425,7 +425,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     };
     const throttledRequestTitle = input.wasThrottled ? i18nString(UIStrings.wasThrottled, {
         PH1: typeof input.wasThrottled.conditions.title === 'string' ? input.wasThrottled.conditions.title :
-            input.wasThrottled.conditions.title()
+            input.wasThrottled.conditions.title(),
     }) :
         undefined;
     const classes = classMap({
@@ -452,7 +452,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     <table
       class=${classes}
       jslog=${VisualLogging.pane('timing').track({
-        resize: true
+        resize: true,
     })}>
         <colgroup>
           <col class=labels>

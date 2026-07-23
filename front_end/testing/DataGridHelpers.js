@@ -31,7 +31,7 @@ export const getHeaderCells = (node, options = {
     });
 };
 export const getAllRows = (node, options = {
-    withJslog: true
+    withJslog: true,
 }) => {
     const querySelector = options.withJslog ? 'tbody tr[jslog]' : 'tbody tr';
     const rows = node.querySelectorAll(querySelector);

@@ -359,7 +359,7 @@ export class DebuggerPlugin extends Plugin {
                 buttonVariant: "tonal" /* Buttons.Button.Variant.TONAL */,
                 dismiss: true,
                 jslogContext: 'remove-from-ignore-list',
-            }
+            },
         ], undefined, 'script-on-ignore-list');
         this.ignoreListInfobar = infobar;
         infobar.setCloseCallback(() => this.removeInfobar(this.ignoreListInfobar));

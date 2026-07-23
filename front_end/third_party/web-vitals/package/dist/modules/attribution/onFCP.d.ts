@@ -1,8 +1,2 @@
-import { FCPMetricWithAttribution, AttributionReportOpts } from '../types.js';
-/**
- * Calculates the [FCP](https://web.dev/articles/fcp) value for the current page and
- * calls the `callback` function once the value is ready, along with the
- * relevant `paint` performance entry used to determine the value. The reported
- * value is a `DOMHighResTimeStamp`.
- */
+import type { FCPMetricWithAttribution, AttributionReportOpts } from '../types.js';
 export declare const onFCP: (onReport: (metric: FCPMetricWithAttribution) => void, opts?: AttributionReportOpts) => void;

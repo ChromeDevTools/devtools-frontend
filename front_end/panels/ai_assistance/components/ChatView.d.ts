@@ -14,7 +14,6 @@ export { ChatInput, type ImageInputData } from './ChatInput.js';
  * last completed model response. Otherwise, it's anchored to the latest model
  * message.
  */
-export declare function getCSSChangeSummaryMessage(messages: Message[], isLoading: boolean): Message | undefined;
 interface ViewOutput {
     mainElement?: HTMLElement;
     input?: UI.Widget.WidgetElement<ChatInput>;
@@ -32,7 +31,6 @@ export interface Props {
     onContextAdd: (() => void) | null;
     conversationMarkdown: string;
     onExportConversation: (() => void) | null;
-    changeManager: AiAssistanceModel.ChangeManager.ChangeManager;
     inspectElementToggled: boolean;
     messages: Message[];
     context: AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
@@ -42,7 +40,6 @@ export interface Props {
     conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType;
     isReadOnly: boolean;
     blockedByCrossOrigin: boolean;
-    changeSummary?: string;
     multimodalInputEnabled?: boolean;
     isTextInputDisabled: boolean;
     emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];

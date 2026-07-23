@@ -17,21 +17,26 @@ import { getBFCacheRestoreTime } from './bfcache.js';
 import { generateUniqueID } from './generateUniqueID.js';
 import { getActivationStart } from './getActivationStart.js';
 import { getNavigationEntry } from './getNavigationEntry.js';
-export const initMetric = (name, value = -1) => {
-    const navEntry = getNavigationEntry();
-    let navigationType = 'navigate';
-    if (getBFCacheRestoreTime() >= 0) {
-        navigationType = 'back-forward-cache';
+export const initMetric = (name, value = -1, navigationType, navigationId = 0, navigationInteractionId, navigationURL, navigationStartTime) => {
+    const hardNavEntry = getNavigationEntry();
+    const hardNavId = hardNavEntry?.navigationId || 0;
+    let _navigationType = 'navigate';
+    if (navigationType) {
+        // If it was passed in, then use that
+        _navigationType = navigationType;
     }
-    else if (navEntry) {
+    else if (getBFCacheRestoreTime() >= 0) {
+        _navigationType = 'back-forward-cache';
+    }
+    else if (hardNavEntry) {
         if (document.prerendering || getActivationStart() > 0) {
-            navigationType = 'prerender';
+            _navigationType = 'prerender';
         }
         else if (document.wasDiscarded) {
-            navigationType = 'restore';
+            _navigationType = 'restore';
         }
-        else if (navEntry.type) {
-            navigationType = navEntry.type.replace(/_/g, '-');
+        else if (hardNavEntry.type) {
+            _navigationType = hardNavEntry.type.replace(/_/g, '-');
         }
     }
     // Use `entries` type specific for the metric.
@@ -43,6 +48,10 @@ export const initMetric = (name, value = -1) => {
         delta: 0,
         entries,
         id: generateUniqueID(),
-        navigationType,
+        navigationType: _navigationType,
+        navigationId: navigationId || hardNavId,
+        navigationInteractionId: navigationInteractionId,
+        navigationURL: navigationURL || hardNavEntry?.name,
+        navigationStartTime: navigationStartTime || 0,
     };
 };

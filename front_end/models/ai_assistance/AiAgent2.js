@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
-import { AiAgent } from './agents/AiAgent.js';
+import { AiAgent, } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
 import { DOMNodeContext } from './contexts/DOMNodeContext.js';

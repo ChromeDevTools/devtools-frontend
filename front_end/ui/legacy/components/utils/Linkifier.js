@@ -72,7 +72,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this.#onWorkingCopyChangedOrCommitted, this);
         Workspace.Workspace.WorkspaceImpl.instance().addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this.#onWorkingCopyChangedOrCommitted, this);
     }
-    #onWorkingCopyChangedOrCommitted({ data: { uiSourceCode } }) {
+    #onWorkingCopyChangedOrCommitted({ data: { uiSourceCode }, }) {
         const anchors = anchorsByUISourceCode.get(uiSourceCode);
         if (!anchors) {
             return;
@@ -752,6 +752,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper {
         const { origin } = registration;
         linkHandlers.delete(origin);
         LinkHandlerSettingUI.instance().update();
+    }
+    static isRegisteredLinkHandlerScheme(scheme) {
+        return linkHandlers.values().some(r => r.scheme === scheme);
     }
     // The primary filter implementation for the openResourceHandlers. Returns false
     // if the handler is NOT supposed to handle the `url`. Usually, this happens if

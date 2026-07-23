@@ -95,7 +95,7 @@ export class CSSStyleRule extends CSSRule {
             origin: payload.origin,
             style: payload.style,
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: payload.originTreeScopeNodeId
+            originTreeScopeNodeId: payload.originTreeScopeNodeId,
         });
         this.reinitializeSelectors(payload.selectorList);
         this.nestingSelectors = payload.nestingSelectors;
@@ -347,10 +347,10 @@ export class CSSFunctionRule extends CSSRule {
                 cssProperties: [],
                 shorthandEntries: [],
                 range: CSSFunctionRule.mergeRanges(payload.children),
-                styleSheetId: payload.styleSheetId
+                styleSheetId: payload.styleSheetId,
             },
             header: styleSheetHeaderForRule(cssModel, payload),
-            originTreeScopeNodeId: payload.originTreeScopeNodeId
+            originTreeScopeNodeId: payload.originTreeScopeNodeId,
         });
         this.#name = new CSSValue(payload.name);
         this.#parameters = payload.parameters.map(({ name }) => name);

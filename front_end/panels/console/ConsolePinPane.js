@@ -62,7 +62,7 @@ const UIStrings = {
      * @description Warning shown to users when pasting text/code into DevTools. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
      * @example {allow pasting} PH1
      */
-    doNotPaste: 'Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow pasting.',
+    doNotPaste: 'Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type "{PH1}" below to allow pasting.',
     /**
      * @description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools Console.
      */
@@ -71,7 +71,7 @@ const UIStrings = {
      * @description Input box placeholder which instructs the user to type 'allow pasting' into the input box. IMPORTANT: keep double quotes around PH1 and do not use single quotes.
      * @example {allow pasting} PH1
      */
-    typeAllowPasting: 'Type “{PH1}”',
+    typeAllowPasting: 'Type "{PH1}"',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

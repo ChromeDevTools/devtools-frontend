@@ -678,7 +678,6 @@
   "front_end/models/source_map_scopes/source_map_scopes.js",
   "front_end/models/stack_trace/stack_trace.js",
   "front_end/models/stack_trace/stack_trace_impl.js",
-  "front_end/models/text_utils/text_utils.js",
   "front_end/models/trace/extras/extras.js",
   "front_end/models/trace/handlers/handlers.js",
   "front_end/models/trace/helpers/helpers.js",

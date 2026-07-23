@@ -5,9 +5,13 @@ export * from './types/inp.js';
 export * from './types/lcp.js';
 export * from './types/ttfb.js';
 interface PerformanceEntryMap {
-    navigation: PerformanceNavigationTiming;
-    resource: PerformanceResourceTiming;
-    paint: PerformancePaintTiming;
+    'event': PerformanceEventTiming;
+    'interaction-contentful-paint': InteractionContentfulPaint;
+    'layout-shift': LayoutShift;
+    'navigation': PerformanceNavigationTiming;
+    'paint': PerformancePaintTiming;
+    'resource': PerformanceResourceTiming;
+    'soft-navigation': PerformanceSoftNavigation;
 }
 declare global {
     interface Document {
@@ -17,15 +21,19 @@ declare global {
     interface Performance {
         getEntriesByType<K extends keyof PerformanceEntryMap>(type: K): PerformanceEntryMap[K][];
     }
+    interface PerformanceEntry {
+        navigationId?: number;
+    }
     interface PerformanceObserverInit {
         durationThreshold?: number;
     }
-    interface PerformanceNavigationTiming {
+    interface PerformanceNavigationTiming extends PerformanceEntry {
         activationStart?: number;
     }
     interface PerformanceEventTiming extends PerformanceEntry {
         duration: DOMHighResTimeStamp;
         readonly interactionId: number;
+        readonly targetSelector: string;
     }
     interface LayoutShiftAttribution {
         node: Node | null;
@@ -45,6 +53,20 @@ declare global {
         readonly url: string;
         readonly element: Element | null;
     }
+    interface InteractionContentfulPaint extends PerformanceEntry {
+        readonly interactionId: number;
+        readonly largestContentfulPaint?: LargestContentfulPaint;
+    }
+    interface PerformanceSoftNavigation extends PerformanceEntry {
+        readonly interactionId: number;
+        readonly navigationType?: NavigationType;
+        readonly paintTime?: number;
+        readonly presentationTime?: number;
+        readonly getLargestInteractionContentfulPaint?: () => InteractionContentfulPaint | null;
+    }
+    var PerformanceSoftNavigation: {
+        prototype: PerformanceSoftNavigation;
+    };
     export type ScriptInvokerType = 'classic-script' | 'module-script' | 'event-listener' | 'user-callback' | 'resolve-promise' | 'reject-promise';
     export type ScriptWindowAttribution = 'self' | 'descendant' | 'ancestor' | 'same-page' | 'other';
     interface PerformanceScriptTiming extends PerformanceEntry {

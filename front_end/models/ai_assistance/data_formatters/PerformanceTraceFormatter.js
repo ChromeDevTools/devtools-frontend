@@ -528,7 +528,7 @@ export class PerformanceTraceFormatter {
      * talk to jacktfranklin@.
      */
     #networkRequestVerbosely(request, options) {
-        const { url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol } = request.args.data;
+        const { url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData, protocol, } = request.args.data;
         const parsedTrace = this.#parsedTrace;
         const titlePrefix = `## ${options?.customTitle ?? 'Network request'}`;
         // Note: unlike other agents, we do have the ability to include
@@ -752,7 +752,7 @@ The order of headers corresponds to an internal fixed list. If a header is not p
     #formatFunctionCode(code) {
         this.#formattedFunctionCodes.add(this.#functionCodeToKey(code));
         const { startLine, startColumn } = code.range;
-        const { startLine: contextStartLine, startColumn: contextStartColumn, endLine: contextEndLine, endColumn: contextEndColumn } = code.rangeWithContext;
+        const { startLine: contextStartLine, startColumn: contextStartColumn, endLine: contextEndLine, endColumn: contextEndColumn, } = code.rangeWithContext;
         const name = code.functionBounds.name || '(anonymous)';
         const url = code.functionBounds.uiSourceCode.url();
         const parts = [];

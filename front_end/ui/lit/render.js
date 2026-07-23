@@ -78,7 +78,7 @@ export function render(template, container, options) {
                         if (currentListener && 'handleEvent' in currentListener) {
                             return currentListener.handleEvent(event);
                         }
-                    }
+                    },
                 };
                 listenersMap.set(name, newEntry);
                 host.addEventListener(name, newEntry.wrapper);

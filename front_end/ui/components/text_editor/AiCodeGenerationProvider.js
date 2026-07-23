@@ -167,8 +167,8 @@ export class AiCodeGenerationProvider {
                         }
                     }
                     return false;
-                }
-            }
+                },
+            },
         ];
     }
     async #triggerAiCodeGenerationFlow(event) {
@@ -204,7 +204,7 @@ export class AiCodeGenerationProvider {
             effects: [
                 setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.DISMISSED),
                 setAiAutoCompleteSuggestion.of(null),
-            ]
+            ],
         });
     }
     #acceptAiSuggestion() {
@@ -313,8 +313,8 @@ export class AiCodeGenerationProvider {
                         onImpression: this.#aiCodeGeneration?.registerUserImpression.bind(this.#aiCodeGeneration),
                         source: "generation" /* AiSuggestionSource.GENERATION */,
                     }),
-                    setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE)
-                ]
+                    setAiCodeGenerationTeaserMode.of(AiCodeGenerationTeaserMode.ACTIVE),
+                ],
             });
             this.#generationTeaser.displayState =
                 PanelCommon.AiCodeGenerationTeaser.AiCodeGenerationTeaserDisplayState.GENERATED;
@@ -426,7 +426,7 @@ function aiCodeGenerationTeaserExtension(teaser) {
                     return true;
                 }
                 return false;
-            }
+            },
         },
     });
 }

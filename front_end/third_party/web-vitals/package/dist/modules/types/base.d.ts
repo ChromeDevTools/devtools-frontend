@@ -49,8 +49,29 @@ export interface Metric {
      * - 'prerender': for pages that were prerendered.
      * - 'restore': for pages that were discarded by the browser and then
      * restored by the user.
+     * - 'soft-navigation': for soft navigations.
      */
-    navigationType: 'navigate' | 'reload' | 'back-forward' | 'back-forward-cache' | 'prerender' | 'restore';
+    navigationType: 'navigate' | 'reload' | 'back-forward' | 'back-forward-cache' | 'prerender' | 'restore' | 'soft-navigation';
+    /**
+     * The navigationId the metric happened for. This is particularly relevant for soft navigations where
+     * the metric may be reported for a previous URL.
+     */
+    navigationId: number;
+    /**
+     * For metrics specific to a soft navigation, the interactionId of the
+     * interaction that triggered that soft navigation.
+     */
+    navigationInteractionId?: number;
+    /**
+     * The navigation startTime the metric is based from. This is particularly
+     * relevant for soft navigations where time origin is not 0.
+     */
+    navigationStartTime?: number;
+    /**
+     * The navigation URL the metric happened for. This is particularly relevant for soft navigations where
+     * the metric may be reported for a previous URL.
+     */
+    navigationURL?: string;
 }
 /** The union of supported metric types. */
 export type MetricType = CLSMetric | FCPMetric | INPMetric | LCPMetric | TTFBMetric;
@@ -80,6 +101,8 @@ export interface ReportCallback {
 }
 export interface ReportOpts {
     reportAllChanges?: boolean;
+    durationThreshold?: number;
+    reportSoftNavs?: boolean;
 }
 export interface AttributionReportOpts extends ReportOpts {
     generateTarget?: (el: Node | null) => string | undefined;

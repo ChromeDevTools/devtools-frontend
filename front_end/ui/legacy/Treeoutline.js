@@ -1433,7 +1433,7 @@ function getTreeNodes(nodeList) {
         if (node instanceof HTMLLIElement && node.role === 'treeitem') {
             return [
                 node,
-                ...node.querySelectorAll('ul[role="group"] li[role="treeitem"],ul[role="group"] devtools-tree-wrapper')
+                ...node.querySelectorAll('ul[role="group"] li[role="treeitem"],ul[role="group"] devtools-tree-wrapper'),
             ];
         }
         if (node instanceof HTMLElement) {

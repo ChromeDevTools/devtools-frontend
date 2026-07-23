@@ -69,6 +69,7 @@ export declare class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventT
     static linkHandlerSetting(): Common.Settings.Setting<string>;
     static registerLinkHandler(registration: LinkHandlerRegistration): void;
     static unregisterLinkHandler(registration: LinkHandlerRegistration): void;
+    static isRegisteredLinkHandlerScheme(scheme: string): boolean;
     static shouldHandleOpenResource(openResourceScheme: string | null, url: Platform.DevToolsPath.UrlString, otherSchemeRegistrations: Set<string>): boolean;
     static uiLocation(link: Element): Workspace.UISourceCode.UILocation | null;
     static linkActions(info: LinkInfo): Array<{

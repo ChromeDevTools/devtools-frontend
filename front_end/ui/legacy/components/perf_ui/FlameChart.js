@@ -9,6 +9,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
+import { html, render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import { drawExpansionArrow, drawIcon, horizontalLine } from './CanvasHelper.js';
@@ -33,7 +34,7 @@ const UIStrings = {
      * @example {Main thread} PH2
      *
      */
-    eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press "enter" to focus this event.',
+    eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press enter to focus this event.',
     /**
      * @description Aria accessible name in Flame Chart of the Performance panel
      */
@@ -714,8 +715,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
         };
     }
     updatePopoverContents(popoverElement) {
-        this.popoverElement.removeChildren();
-        this.popoverElement.appendChild(popoverElement);
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `${popoverElement}`, this.popoverElement);
         // Must update the offset AFTER the new content has been added.
         this.updatePopoverOffset();
         this.lastPopoverState.entryIndex = -1;

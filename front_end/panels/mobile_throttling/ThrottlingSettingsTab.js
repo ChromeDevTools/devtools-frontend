@@ -496,7 +496,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox {
             upload: -1,
             latency: 0,
             packetLoss: 0,
-            packetReordering: false
+            packetReordering: false,
         });
     }
     renderItem(conditions, _editable) {

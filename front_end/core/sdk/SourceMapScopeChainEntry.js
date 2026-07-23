@@ -10,7 +10,7 @@ const UIStrings = {
      */
     local: 'Local',
     /**
-     * @description Text that refers to closure as a programming term
+     * @description Text that refers to closure as a programming term.
      */
     closure: 'Closure',
     /**
@@ -22,7 +22,7 @@ const UIStrings = {
      */
     global: 'Global',
     /**
-     * @description Text in Scope Chain Sidebar Pane of the Sources panel
+     * @description Text in Scope Chain section of the Sources panel.
      */
     returnValue: 'Return value',
 };

@@ -105,7 +105,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                     headers: [`${i18nString(UIStrings.topSelectorElapsedTime)}: ${time(Trace.Types.Timing.Micro(selector['elapsed (us)']))}`],
                     rows: [{
                             values: [html `${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`]
-                        }]
+                        }],
                 }
             })}
         </div>
@@ -123,7 +123,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                     headers: [`${i18nString(UIStrings.topSelectorMatchAttempt)}: ${selector['match_attempts']}`],
                     rows: [{
                             values: [html `${selector.selector} ${Lit.Directives.until(this.getSelectorLinks(cssModel, selector))}`],
-                        }]
+                        }],
                 }
             })}
         </div>

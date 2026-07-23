@@ -5,31 +5,31 @@ import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 const UIStrings = {
     /**
-     * @description Text in Server Timing
+     * @description Warning message when deprecated Server-Timing header syntax is found.
      * @example {sql-lookup} PH1
      */
-    deprecatedSyntaxFoundPleaseUse: 'Deprecated syntax found for metric "{PH1}". Please use: <name>;dur=<duration>;desc=<description>',
+    deprecatedSyntaxFoundPleaseUse: 'Deprecated syntax found for metric "{PH1}". Use: <name>;dur=<duration>;desc=<description>',
     /**
-     * @description Text in Server Timing
+     * @description Warning message when a duplicate parameter is found in Server-Timing header.
      * @example {https} PH1
      */
     duplicateParameterSIgnored: 'Duplicate parameter "{PH1}" ignored.',
     /**
-     * @description Text in Server Timing
+     * @description Warning message when no value is found for a parameter in Server-Timing header.
      * @example {https} PH1
      */
     noValueFoundForParameterS: 'No value found for parameter "{PH1}".',
     /**
-     * @description Text in Server Timing
+     * @description Warning message when an unrecognized parameter is found in Server-Timing header.
      * @example {https} PH1
      */
     unrecognizedParameterS: 'Unrecognized parameter "{PH1}".',
     /**
-     * @description Text in Server Timing
+     * @description Warning message when extraneous trailing characters are found in Server-Timing header.
      */
     extraneousTrailingCharacters: 'Extraneous trailing characters.',
     /**
-     * @description Text in Server Timing
+     * @description Warning message when a parameter value cannot be parsed in Server-Timing header.
      * @example {https} PH1
      * @example {2.0} PH2
      */

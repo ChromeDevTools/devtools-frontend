@@ -114,7 +114,7 @@ export function extractConsoleAPIExtensionEntries() {
             ph: "X" /* Types.Events.Phase.COMPLETE */,
             ts: entryStartTime,
             dur: Types.Timing.Micro(entryEndTime - entryStartTime),
-            rawSourceEvent: currentTimeStamp
+            rawSourceEvent: currentTimeStamp,
         };
         const syntheticTimeStamp = Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent(unregisteredSyntheticTimeStamp);
         syntheticConsoleEntriesForTimingsTrack.push(syntheticTimeStamp);

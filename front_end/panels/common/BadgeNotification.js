@@ -160,7 +160,7 @@ export class BadgeNotification extends UI.Widget.Widget {
         this.#show({
             message: i18nFormatStringTemplate(UIStrings.starterBadgeAwardMessageSettingDisabled, {
                 PH1: badge.title,
-                PH2: html `<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString('Google Developer Program')}</devtools-link>`
+                PH2: html `<devtools-link class="badge-link" href="https://developers.google.com/program" jslogcontext="program-link">${lockedString('Google Developer Program')}</devtools-link>`,
             }),
             jslogContext: badge.jslogContext,
             actions: [
@@ -177,8 +177,8 @@ export class BadgeNotification extends UI.Widget.Widget {
                     onClick: () => {
                         this.detach();
                         revealBadgeSettings();
-                    }
-                }
+                    },
+                },
             ],
             imageUri: badge.imageUri,
             isStarterBadge: true,
@@ -188,7 +188,7 @@ export class BadgeNotification extends UI.Widget.Widget {
         this.#show({
             message: i18nFormatStringTemplate(UIStrings.starterBadgeAwardMessageNoGdpProfile, {
                 PH1: badge.title,
-                PH2: html `<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${'program-link'}>${lockedString('Google Developer Program')}</devtools-link>`
+                PH2: html `<devtools-link class="badge-link" href="https://developers.google.com/program" .jslogContext=${'program-link'}>${lockedString('Google Developer Program')}</devtools-link>`,
             }),
             jslogContext: badge.jslogContext,
             actions: [
@@ -208,8 +208,8 @@ export class BadgeNotification extends UI.Widget.Widget {
                             // We want to consider cancelling from the starter badge as a "snooze" for starter badge.
                             onCancel: () => Badges.UserBadges.instance().snoozeStarterBadge(),
                         });
-                    }
-                }
+                    },
+                },
             ],
             imageUri: badge.imageUri,
             isStarterBadge: true,
@@ -233,8 +233,8 @@ export class BadgeNotification extends UI.Widget.Widget {
                     jslogContext: 'view-profile',
                     onClick: () => {
                         UIHelpers.openInNewTab(Host.GdpClient.GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK);
-                    }
-                }
+                    },
+                },
             ],
             imageUri: badge.imageUri,
             isStarterBadge: badge.isStarterBadge,

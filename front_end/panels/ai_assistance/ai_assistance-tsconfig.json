@@ -38,8 +38,6 @@
   "files": [
     "../../../../../../front_end/panels/ai_assistance/AiAssistancePanel.ts",
     "../../../../../../front_end/panels/ai_assistance/ExportConversation.ts",
-    "../../../../../../front_end/panels/ai_assistance/PatchWidget.ts",
-    "../../../../../../front_end/panels/ai_assistance/SelectWorkspaceDialog.ts",
     "../../../../../../front_end/panels/ai_assistance/components/AIv2MarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/AccessibilityAgentMarkdownRenderer.ts",
     "../../../../../../front_end/panels/ai_assistance/components/ChatInput.ts",

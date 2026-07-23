@@ -17,7 +17,7 @@ export interface Config {
 }
 export declare class ChartViewport extends UI.Widget.VBox {
     #private;
-    private readonly delegate;
+    readonly delegate: ChartViewportDelegate;
     viewportElement: HTMLElement;
     private rangeSelectionEnabled;
     private vScrollElement;
@@ -25,7 +25,7 @@ export declare class ChartViewport extends UI.Widget.VBox {
     private readonly selectionOverlay;
     private cursorElement;
     private totalHeight;
-    private offsetHeight;
+    offsetHeight: number;
     private scrollTop;
     private rangeSelectionStart;
     private rangeSelectionEnd;
@@ -34,7 +34,7 @@ export declare class ChartViewport extends UI.Widget.VBox {
     private dragStartScrollTop;
     private visibleLeftTime;
     private visibleRightTime;
-    private offsetWidth;
+    offsetWidth: number;
     private targetLeftTime;
     private targetRightTime;
     private selectionOffsetShiftX;
@@ -53,7 +53,7 @@ export declare class ChartViewport extends UI.Widget.VBox {
     private updateScrollBar;
     onResize(): void;
     reset(): void;
-    private updateContentElementSize;
+    updateContentElementSize(): void;
     setContentHeight(totalHeight: number): void;
     /**
      * @param centered If true, scrolls offset to where it is centered on the chart,

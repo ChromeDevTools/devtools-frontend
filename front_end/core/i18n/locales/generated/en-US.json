@@ -248,8 +248,8 @@
   "core/sdk/CSSStyleSheetHeader.ts | couldNotFindTheOriginalStyle": {
     "message": "Could not find the original style sheet."
   },
-  "core/sdk/CSSStyleSheetHeader.ts | thereWasAnErrorRetrievingThe": {
-    "message": "There was an error retrieving the source styles."
+  "core/sdk/CSSStyleSheetHeader.ts | couldNotRetrieveSourceStyles": {
+    "message": "Could not retrieve source styles."
   },
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Block"
@@ -342,25 +342,25 @@
     "message": "(binary)"
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidDomain": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because its Domain attribute was invalid with regards to the current host URL."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because its \"Domain\" attribute was invalid with regards to the current host URL."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonInvalidPrefix": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it used the \"__Secure-\" or \"__Host-\" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the Secure attribute."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it was not sent over a secure connection and would have overwritten a cookie with the \"Secure\" attribute."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"SameSite=None\" attribute but did not have the \"Secure\" attribute, which is required in order to use \"SameSite=None\"."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteStrictLax": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteUnspecifiedTreatedAsLax": {
-    "message": "This Set-Cookie header didn’t specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax,\" and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The Set-Cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
+    "message": "This \"Set-Cookie\" header didn’t specify a \"SameSite\" attribute and was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. The \"Set-Cookie\" header had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSecureOnly": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"Secure\" attribute but was not received over a secure connection."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"Secure\" attribute but was not received over a secure connection."
   },
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "This cookie was blocked because neither did the request URL’s domain exactly match the cookie’s domain, nor was the request URL’s domain a subdomain of the cookie’s Domain attribute value."
@@ -369,7 +369,7 @@
     "message": "This cookie is allowed by Chrome Enterprise policy. Learn more: goo.gle/ce-3pc"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonScheme": {
-    "message": "This cookie is allowed by the top-level URL scheme"
+    "message": "This cookie is allowed by the top-level URL scheme."
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonStorageAccessAPI": {
     "message": "This cookie is allowed by the Storage Access API. Learn more: goo.gle/saa"
@@ -396,7 +396,7 @@
     "message": "This cookie was blocked because it had the \"SameSite=Strict\" attribute and the request was made from a different site. This includes top-level navigation requests initiated by other sites."
   },
   "core/sdk/NetworkRequest.ts | sameSiteUnspecifiedTreatedAsLax": {
-    "message": "This cookie didn’t specify a \"SameSite\" attribute when it was stored and was defaulted to \"SameSite=Lax,\" and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
+    "message": "This cookie didn’t specify a \"SameSite\" attribute when it was stored and was defaulted to \"SameSite=Lax\", and was blocked because the request was made from a different site and was not initiated by a top-level navigation. The cookie had to have been set with \"SameSite=None\" to enable cross-site usage."
   },
   "core/sdk/NetworkRequest.ts | schemefulSameSiteLax": {
     "message": "This cookie was blocked because it had the \"SameSite=Lax\" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site."
@@ -411,7 +411,7 @@
     "message": "This cookie was blocked because it had the \"Secure\" attribute and the connection was not secure."
   },
   "core/sdk/NetworkRequest.ts | setcookieHeaderIsIgnoredIn": {
-    "message": "Set-Cookie header is ignored in response from URL: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters."
+    "message": "\"Set-Cookie\" header is ignored in response from URL: {PH1}. The combined size of the name and value must be less than or equal to 4096 characters."
   },
   "core/sdk/NetworkRequest.ts | theSchemeOfThisConnectionIsNot": {
     "message": "The scheme of this connection is not allowed to store cookies."
@@ -420,25 +420,25 @@
     "message": "This cookie was blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
-    "message": "This Set-Cookie header didn’t specify a \"SameSite\" attribute, was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+    "message": "This \"Set-Cookie\" header didn’t specify a \"SameSite\" attribute, was defaulted to \"SameSite=Lax\", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadADisallowedCharacter": {
-    "message": "This Set-Cookie header contained a disallowed character (a forbidden ASCII control character, or the tab character if it appears in the middle of the cookie name, value, an attribute name, or an attribute value)."
+    "message": "This \"Set-Cookie\" header contained a disallowed character (a forbidden ASCII control character, or the tab character if it appears in the middle of the cookie name, value, an attribute name, or an attribute value)."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
-    "message": "This Set-Cookie header had invalid syntax."
+    "message": "This \"Set-Cookie\" header had invalid syntax."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because it had the \"{PH1}\" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked because the cookie was too large. The combined size of the name and value must be less than or equal to 4096 characters."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked because the cookie was too large. The combined size of the name and value must be less than or equal to 4096 characters."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueThirdPartyPhaseout": {
     "message": "Setting this cookie was blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
-    "message": "This attempt to set a cookie via a Set-Cookie header was blocked due to user preferences."
+    "message": "This attempt to set a cookie via a \"Set-Cookie\" header was blocked due to user preferences."
   },
   "core/sdk/NetworkRequest.ts | unknownError": {
     "message": "An unknown error was encountered when trying to send this cookie."
@@ -456,7 +456,7 @@
     "message": "Error loading log"
   },
   "core/sdk/RehydratingConnection.ts | noHostWindow": {
-    "message": "Can not find host window"
+    "message": "Can’t find host window"
   },
   "core/sdk/RehydratingConnection.ts | noSourceText": {
     "message": "No source text available"
@@ -753,7 +753,7 @@
     "message": "Reduced contrast"
   },
   "core/sdk/sdk-meta.ts | remoteFileLoadingInfo": {
-    "message": "Example resource are source maps. Disabled by default for security reasons."
+    "message": "Example resources are source maps. Disabled by default for security reasons."
   },
   "core/sdk/sdk-meta.ts | rulersOnHover": {
     "message": "Rulers on hover"
@@ -822,7 +822,7 @@
     "message": "User idle, screen unlocked"
   },
   "core/sdk/ServerTiming.ts | deprecatedSyntaxFoundPleaseUse": {
-    "message": "Deprecated syntax found for metric \"{PH1}\". Please use: <name>;dur=<duration>;desc=<description>"
+    "message": "Deprecated syntax found for metric \"{PH1}\". Use: <name>;dur=<duration>;desc=<description>"
   },
   "core/sdk/ServerTiming.ts | duplicateParameterSIgnored": {
     "message": "Duplicate parameter \"{PH1}\" ignored."
@@ -7032,7 +7032,7 @@
     "message": "allow pasting"
   },
   "panels/console/ConsolePinPane.ts | doNotPaste": {
-    "message": "Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow pasting."
+    "message": "Don’t paste code you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type \"{PH1}\" below to allow pasting."
   },
   "panels/console/ConsolePinPane.ts | doYouTrustThisCode": {
     "message": "Do you trust this code?"
@@ -7062,7 +7062,7 @@
     "message": "Remove expression: {PH1}"
   },
   "panels/console/ConsolePinPane.ts | typeAllowPasting": {
-    "message": "Type “{PH1}”"
+    "message": "Type \"{PH1}\""
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
     "message": "allow pasting"
@@ -7071,7 +7071,7 @@
     "message": "Console prompt"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below and press Enter to allow pasting."
+    "message": "Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Type \"{PH1}\" below and press Enter to allow pasting."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n, plural, =0 {No errors} =1 {# error} other {# errors}}"
@@ -7437,10 +7437,10 @@
     "message": "Choose coverage granularity: per function has low overhead, per block has significant overhead."
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Click the “{PH1}” button to start capturing coverage."
+    "message": "Click the \"{PH1}\" button to start capturing coverage."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Click the “{PH1}” button to reload and start capturing coverage."
+    "message": "Click the \"{PH1}\" button to reload and start capturing coverage."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "Content scripts"
@@ -7830,7 +7830,7 @@
     "message": "This element is a {CONTAINER_DISPLAY_NAME} item, i.e. a child of a {CONTAINER_DISPLAY_NAME} container, but {PROPERTY_NAME} only applies to containers."
   },
   "panels/elements/CSSRuleValidator.ts | fontVariationSettingsWarning": {
-    "message": "Value for setting “{PH1}” {PH2} is outside the supported range [{PH3}, {PH4}] for font-family “{PH5}”."
+    "message": "Value for setting \"{PH1}\" {PH2} is outside the supported range [{PH3}, {PH4}] for font-family \"{PH5}\"."
   },
   "panels/elements/CSSRuleValidator.ts | invalidAnchorPositioning": {
     "message": "An anchor was defined but the element was not anchor-positioned but positioned \"{POSITION}\"."
@@ -9540,7 +9540,7 @@
     "message": "Does this page follow best practices for modern web development"
   },
   "panels/lighthouse/LighthouseController.ts | enableJavaScriptSampling": {
-    "message": "Enable JavaScript sampling during the Lighthouse run. This will provide more execution details in the performance panel when you view the trace, but has higher CPU overhead and may impact the performance of the page."
+    "message": "Enable JavaScript sampling during the Lighthouse run. This will provide more execution details in the Performance panel when you view the trace, but has higher CPU overhead and may impact the performance of the page."
   },
   "panels/lighthouse/LighthouseController.ts | enableSampling": {
     "message": "Enable JS sampling"
@@ -9558,7 +9558,7 @@
     "message": "Is this page usable by people with disabilities or impairments"
   },
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
-    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command Menu and run the Enable JavaScript command to enable JavaScript."
+    "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the command menu and run the Enable JavaScript command to enable JavaScript."
   },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse mode"
@@ -9573,7 +9573,7 @@
     "message": "Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page."
   },
   "panels/lighthouse/LighthouseController.ts | navigation": {
-    "message": "Navigation (Default)"
+    "message": "Navigation (default)"
   },
   "panels/lighthouse/LighthouseController.ts | navigationTooltip": {
     "message": "Navigation mode analyzes a page load, exactly like the original Lighthouse reports."
@@ -9603,10 +9603,10 @@
     "message": "Snapshot mode analyzes the page in a particular state, typically after user interactions."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingLoadingPlural": {
-    "message": "There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
+    "message": "There may be stored data affecting loading performance in these locations: {PH1}. Audit this page in an incognito window to stop those resources from affecting your scores."
   },
   "panels/lighthouse/LighthouseController.ts | thereMayBeStoredDataAffectingSingular": {
-    "message": "There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to prevent those resources from affecting your scores."
+    "message": "There may be stored data affecting loading performance in this location: {PH1}. Audit this page in an incognito window to stop those resources from affecting your scores."
   },
   "panels/lighthouse/LighthouseController.ts | throttlingMethod": {
     "message": "Throttling method"
@@ -9616,9 +9616,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Timespan mode analyzes an arbitrary period of time, typically containing user interactions."
-  },
-  "panels/lighthouse/LighthouseController.ts | webSql": {
-    "message": "Web SQL"
   },
   "panels/lighthouse/LighthousePanel.ts | cancelling": {
     "message": "Cancelling"
@@ -9639,7 +9636,7 @@
     "message": "Printing"
   },
   "panels/lighthouse/LighthousePanel.ts | thePrintPopupWindowIsOpenPlease": {
-    "message": "The print popup window is open. Please close it to continue."
+    "message": "The print popup window is open. Close it to continue."
   },
   "panels/lighthouse/LighthouseReportSelector.ts | newReport": {
     "message": "(new report)"
@@ -9672,7 +9669,7 @@
     "message": "Start timespan"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ahSorryWeRanIntoAnError": {
-    "message": "Ah, sorry! We ran into an error."
+    "message": "We ran into an error."
   },
   "panels/lighthouse/LighthouseStatusView.ts | aiAuditingS": {
     "message": "AI assistance is auditing {PH1}"
@@ -9711,7 +9708,7 @@
     "message": "If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]"
   },
   "panels/lighthouse/LighthouseStatusView.ts | ifThisIssueIsReproduciblePlease": {
-    "message": "If this issue is reproducible, please report it at the Lighthouse GitHub repo."
+    "message": "If this issue is reproducible, report it at the Lighthouse GitHub repo."
   },
   "panels/lighthouse/LighthouseStatusView.ts | lighthouseIsGatheringInformation": {
     "message": "Lighthouse is gathering information about the page to compute your score."
@@ -12260,6 +12257,9 @@
   "panels/profiler/HeapSnapshotView.ts | filterByClass": {
     "message": "Filter by class"
   },
+  "panels/profiler/HeapSnapshotView.ts | filterSummarySObjectsS": {
+    "message": "{PH1} objects ({PH2})"
+  },
   "panels/profiler/HeapSnapshotView.ts | find": {
     "message": "Find"
   },
@@ -12337,9 +12337,6 @@
   },
   "panels/profiler/HeapSnapshotView.ts | savingD": {
     "message": "Saving… {PH1}%"
-  },
-  "panels/profiler/HeapSnapshotView.ts | selectedSizeS": {
-    "message": "Selected size: {PH1}"
   },
   "panels/profiler/HeapSnapshotView.ts | snapshotD": {
     "message": "Snapshot {PH1}"
@@ -12478,12 +12475,6 @@
   },
   "panels/profiler/ModuleUIStrings.ts | propagatingDomState": {
     "message": "Propagating DOM state…"
-  },
-  "panels/profiler/ProfileDataGrid.ts | genericTextTwoPlaceholders": {
-    "message": "{PH1}, {PH2}"
-  },
-  "panels/profiler/ProfileDataGrid.ts | notOptimizedS": {
-    "message": "Not optimized: {PH1}"
   },
   "panels/profiler/ProfileLauncherView.ts | load": {
     "message": "Load profile"
@@ -12747,7 +12738,7 @@
     "message": "Delete recording"
   },
   "panels/recorder/RecorderPanel.ts | doNotImport": {
-    "message": "Don’t import recordings you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type “{PH1}” below to allow importing."
+    "message": "Don’t import recordings you don’t understand or haven’t reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Type \"{PH1}\" below to allow importing."
   },
   "panels/recorder/RecorderPanel.ts | doYouTrustThisCode": {
     "message": "Do you trust this recording?"
@@ -12807,7 +12798,7 @@
     "message": "Toggle code view"
   },
   "panels/recorder/RecorderPanel.ts | typeAllowImporting": {
-    "message": "Type “{PH1}”"
+    "message": "Type \"{PH1}\""
   },
   "panels/recorder/RecordingListView.ts | createRecording": {
     "message": "Create a new recording"
@@ -13377,7 +13368,7 @@
     "message": "This page has a non-HTTPS secure origin."
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesAFormWithA": {
-    "message": "This page includes a form with a non-secure “action” attribute."
+    "message": "This page includes a form with a non-secure action attribute."
   },
   "panels/security/SecurityPanel.ts | thisPageIncludesHttpResources": {
     "message": "This page includes HTTP resources."
@@ -17883,7 +17874,7 @@
     "message": "Configure tracks"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
-    "message": "Selected a {PH1} event within {PH2}. Press \"enter\" to focus this event."
+    "message": "Selected a {PH1} event within {PH2}. Press enter to focus this event."
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
     "message": "Finish configuring tracks"
@@ -18078,7 +18069,7 @@
     "message": "allow pasting"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | binaryContentError": {
-    "message": "Editor can’t show binary data. Use the \"Response\" tab in the \"Network\" panel to inspect this resource."
+    "message": "Editor can’t show binary data. Use the Response tab in the Network panel to inspect this resource."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Bytecode position 0x{PH1}"
@@ -18090,7 +18081,7 @@
     "message": "{PH1} lines, {PH2} characters selected"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "Don’t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type “{PH1}” below to allow pasting."
+    "message": "Don’t paste code you do not understand or have not reviewed yourself into DevTools. This could allow attackers to steal your identity or take control of your computer. Please type \"{PH1}\" below to allow pasting."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "Do you trust this code?"
@@ -18114,7 +18105,7 @@
     "message": "Source"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
-    "message": "Type “{PH1}”"
+    "message": "Type \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Find"

@@ -1047,9 +1047,10 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 {
                     title: i18nString(UIStrings.timelineZoom),
                     rows: [
-                        [{ key: 'Scroll ↕' }], [{ key: 'W' }, { key: 'S' }, { joinText: 'or' }, { key: '+' }, { key: '-' }],
-                        { footnote: 'hold shift for fast zoom' }
-                    ]
+                        [{ key: 'Scroll ↕' }],
+                        [{ key: 'W' }, { key: 'S' }, { joinText: 'or' }, { key: '+' }, { key: '-' }],
+                        { footnote: 'hold shift for fast zoom' },
+                    ],
                 },
                 {
                     title: i18nString(UIStrings.timelineScrollPan),
@@ -1057,11 +1058,17 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                         [{ key: 'Shift' }, { joinText: '+' }, { key: 'Scroll ↕' }],
                         [{ key: 'Scroll ↔' }, { joinText: 'or' }, { key: 'A' }, { key: 'D' }],
                         [
-                            { key: 'Drag' }, { joinText: 'or' }, { key: 'Shift' }, { joinText: '+' }, { key: '↑' }, { key: '↓' }, { key: '←' },
-                            { key: '→' }
+                            { key: 'Drag' },
+                            { joinText: 'or' },
+                            { key: 'Shift' },
+                            { joinText: '+' },
+                            { key: '↑' },
+                            { key: '↓' },
+                            { key: '←' },
+                            { key: '→' },
                         ],
-                    ]
-                }
+                    ],
+                },
             ];
         }
         // New navigation where scroll = scroll.
@@ -1070,23 +1077,36 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 title: i18nString(UIStrings.timelineZoom),
                 rows: [
                     [{ key: metaKey }, { joinText: '+' }, { key: 'Scroll ↕' }],
-                    [{ key: 'W' }, { key: 'S' }, { joinText: 'or' }, { key: '+' }, { key: '-' }], { footnote: '' }
-                ]
+                    [{ key: 'W' }, { key: 'S' }, { joinText: 'or' }, { key: '+' }, { key: '-' }],
+                    { footnote: '' },
+                ],
             },
             {
                 title: i18nString(UIStrings.timelineScrollPan),
                 rows: [
                     [{ key: 'Scroll ↕' }],
                     [
-                        { key: 'Shift' }, { joinText: '+' }, { key: 'Scroll ↕' }, { joinText: 'or' }, { key: 'Scroll ↔' }, { joinText: 'or' },
-                        { key: 'A' }, { key: 'D' }
+                        { key: 'Shift' },
+                        { joinText: '+' },
+                        { key: 'Scroll ↕' },
+                        { joinText: 'or' },
+                        { key: 'Scroll ↔' },
+                        { joinText: 'or' },
+                        { key: 'A' },
+                        { key: 'D' },
                     ],
                     [
-                        { key: 'Drag' }, { joinText: 'or' }, { key: 'Shift' }, { joinText: '+' }, { key: '↑' }, { key: '↓' }, { key: '←' },
-                        { key: '→' }
+                        { key: 'Drag' },
+                        { joinText: 'or' },
+                        { key: 'Shift' },
+                        { joinText: '+' },
+                        { key: '↑' },
+                        { key: '↓' },
+                        { key: '←' },
+                        { key: '→' },
                     ],
-                ]
-            }
+                ],
+            },
         ];
     }
     createSettingsPane() {
@@ -1846,7 +1866,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
         this.#applyActiveFilters(parsedTrace.data.Meta.traceIsGeneric, exclusiveFilter);
         this.saveButton.element.updateContentVisibility({
-            annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false
+            annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false,
         });
         // Add ModificationsManager listeners for annotations change to update the
         // Annotation Overlays.
@@ -1967,7 +1987,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
         this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
         this.saveButton.element.updateContentVisibility({
-            annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false
+            annotationsExist: currentManager ? currentManager.getAnnotations()?.length > 0 : false,
         });
     }
     /**
@@ -2031,7 +2051,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             },
             onShowTrackConfigurationMode: () => {
                 this.flameChart.enterMainChartTrackConfigurationMode();
-            }
+            },
         });
         if (maybeOverlay) {
             this.flameChart.addOverlay(maybeOverlay);
@@ -2278,7 +2298,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
                 const initiator = {
                     target: null,
                     frameId: script.frame,
-                    initiatorUrl: script.url
+                    initiatorUrl: script.url,
                 };
                 rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(this.#resourceLoader, script.sourceMapUrl, initiator);
             }
@@ -2364,7 +2384,7 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
             const initiator = {
                 target: debuggerModelForFrameId.get(frame)?.target() ?? null,
                 frameId: frame,
-                initiatorUrl: sourceUrl
+                initiatorUrl: sourceUrl,
             };
             const payload = await SDK.SourceMapManager.tryLoadSourceMap(TimelinePanel.instance().#resourceLoader, sourceMapUrl, initiator);
             return payload ?

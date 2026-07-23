@@ -11,7 +11,7 @@ const UIStrings = {
     /**
      * @description Title for Chrome Status entry URL link.
      */
-    chromeStatusEntry: 'Chrome Status entry'
+    chromeStatusEntry: 'Chrome Status entry',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/PartitioningBlobURLIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

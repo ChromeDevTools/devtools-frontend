@@ -5,7 +5,7 @@ import * as Platform from '../platform/platform.js';
 import { CSSMetadata, cssMetadata } from './CSSMetadata.js';
 import { CSSProperty } from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
-import { AnchorFunctionMatcher, AngleMatcher, AttributeMatcher, AutoBaseMatcher, BaseVariableMatcher, BezierMatcher, BinOpMatcher, ColorMatcher, ColorMixMatcher, ContrastColorMatcher, CustomFunctionMatcher, defaultValueForCSSType, EnvFunctionMatcher, FlexGridGridLanesMatcher, GridTemplateMatcher, LengthMatcher, LightDarkColorMatcher, LinearGradientMatcher, LinkableNameMatcher, localEvalCSS, MathFunctionMatcher, PositionAnchorMatcher, PositionTryMatcher, RelativeColorChannelMatcher, ShadowMatcher, StringMatcher, URLMatcher, VariableMatcher, VariableNameMatcher } from './CSSPropertyParserMatchers.js';
+import { AnchorFunctionMatcher, AngleMatcher, AttributeMatcher, AutoBaseMatcher, BaseVariableMatcher, BezierMatcher, BinOpMatcher, ColorMatcher, ColorMixMatcher, ContrastColorMatcher, CustomFunctionMatcher, defaultValueForCSSType, EnvFunctionMatcher, FlexGridGridLanesMatcher, GridTemplateMatcher, LengthMatcher, LightDarkColorMatcher, LinearGradientMatcher, LinkableNameMatcher, localEvalCSS, MathFunctionMatcher, PositionAnchorMatcher, PositionTryMatcher, RelativeColorChannelMatcher, ShadowMatcher, StringMatcher, URLMatcher, VariableMatcher, VariableNameMatcher, } from './CSSPropertyParserMatchers.js';
 import { CSSAtRule, CSSFunctionRule, CSSKeyframeRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule, } from './CSSRule.js';
 import { CSSStyleDeclaration, Type } from './CSSStyleDeclaration.js';
 function containsStyle(styles, query) {
@@ -1307,7 +1307,7 @@ class DOMInheritanceCascade {
                     return defaultValueForCSSType(match.type);
                 }
                 return evaluateFallback(match.fallback, match.matching);
-            })
+            }),
         ]);
         const decl = PropertyParser.ASTUtils.siblings(PropertyParser.ASTUtils.declValue(matching.ast.tree));
         const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : '';
@@ -1350,7 +1350,7 @@ class DOMInheritanceCascade {
                 // We've seen the variable before, so we can look up the text directly.
                 return {
                     value: computedCSSVariablesMap.get(innerNodeCascade)?.get(recordName)?.value ?? null,
-                    mayFallback: false
+                    mayFallback: false,
                 };
             }
             const value = func(innerNodeCascade);

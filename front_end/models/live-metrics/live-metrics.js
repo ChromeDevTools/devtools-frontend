@@ -261,6 +261,9 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
         const inpEvent = {
           value: webVitalsEvent.value,
           subparts: webVitalsEvent.subparts,
+          // Use our own "interactionId" rather than the Chrome/web-vitals
+          // provided one, so we can group events with same start time
+          // (e.g. `pointerup` and `click` are one interaction log entry)
           interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`
         };
         this.#inpValue = inpEvent;
@@ -268,9 +271,12 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
       }
       case "InteractionEntry": {
         const groupInteractions = Platform.MapUtilities.getWithDefault(this.#interactionsByGroupId, webVitalsEvent.entryGroupId, () => []);
-        let interaction = groupInteractions.find((interaction2) => Math.abs(interaction2.nextPaintTime - webVitalsEvent.nextPaintTime) < 8);
+        let interaction = groupInteractions.find((interaction2) => interaction2.nextPaintTime && webVitalsEvent.nextPaintTime && Math.abs(interaction2.nextPaintTime - webVitalsEvent.nextPaintTime) < 8);
         if (!interaction) {
           interaction = {
+            // Use our own "interactionId" rather than the Chrome/web-vitals
+            // provided one, so we can group events with same start time
+            // (e.g. `pointerup` and `click` are one interaction log entry)
             interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
             interactionType: webVitalsEvent.interactionType,
             duration: webVitalsEvent.duration,

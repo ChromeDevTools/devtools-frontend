@@ -4,7 +4,7 @@ import type { Metric } from './base.js';
  */
 export interface TTFBMetric extends Metric {
     name: 'TTFB';
-    entries: PerformanceNavigationTiming[];
+    entries: PerformanceNavigationTiming[] | PerformanceSoftNavigation[];
 }
 /**
  * An object containing potentially-helpful debugging information that
@@ -49,7 +49,7 @@ export interface TTFBAttribution {
      * general page load issues. This can be used to access `serverTiming` for
      * example: navigationEntry?.serverTiming
      */
-    navigationEntry?: PerformanceNavigationTiming;
+    navigationEntry?: PerformanceNavigationTiming | PerformanceSoftNavigation;
 }
 /**
  * A TTFB-specific version of the Metric object with attribution.

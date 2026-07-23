@@ -1,14 +1,11 @@
 // Copyright 2023 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import * as AgentProject from './AgentProject.js';
 import * as AccessibilityAgent from './agents/AccessibilityAgent.js';
 import * as AiAgent from './agents/AiAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
-import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
 import * as StorageAgent from './agents/StorageAgent.js';
 import * as StylingAgent from './agents/StylingAgent.js';
@@ -53,7 +50,6 @@ import * as ToolRegistry from './tools/ToolRegistry.js';
 export {
   AccessibilityAgent,
   AccessibilityContext,
-  AgentProject,
   AiAgent,
   AiAgent2,
   AICallTree,
@@ -84,7 +80,6 @@ export {
   ListNetworkRequests,
   NetworkAgent,
   NetworkRequestFormatter,
-  PatchAgent,
   PerformanceAgent,
   PerformanceAnnotations,
   PerformanceInsightFormatter,

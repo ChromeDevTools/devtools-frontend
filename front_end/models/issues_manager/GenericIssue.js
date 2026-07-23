@@ -195,7 +195,7 @@ const issueDescriptions = new Map([
     ["FormDuplicateIdForInputError" /* Protocol.Audits.GenericIssueErrorType.FormDuplicateIdForInputError */, genericFormDuplicateIdForInputError],
     [
         "FormAriaLabelledByToNonExistingIdError" /* Protocol.Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingIdError */,
-        genericFormAriaLabelledByToNonExistingIdError
+        genericFormAriaLabelledByToNonExistingIdError,
     ],
     [
         "FormEmptyIdAndNameAttributesForInputError" /* Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError */,

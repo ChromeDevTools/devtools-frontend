@@ -337,7 +337,7 @@ export class ListControl {
                 element.setAttribute('jslog', `${VisualLogging.item().track({
                     click: true,
                     resize: true,
-                    keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End'
+                    keydown: 'ArrowUp|ArrowDown|PageUp|PageDown|Home|End',
                 })}`);
             }
             this.itemToElement.set(item, element);

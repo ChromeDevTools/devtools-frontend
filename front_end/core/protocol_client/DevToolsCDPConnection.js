@@ -1,7 +1,7 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { CDPErrorStatus } from './CDPConnection.js';
+import { CDPErrorStatus, } from './CDPConnection.js';
 import { InspectorBackend, test } from './InspectorBackend.js';
 const LongPollingMethods = new Set(['CSS.takeComputedStyleUpdates']);
 export class DevToolsCDPConnection {
@@ -65,7 +65,7 @@ export class DevToolsCDPConnection {
                 error: {
                     message: `Session is unregistering, can\'t dispatch pending call to ${method}`,
                     code: CDPErrorStatus.SESSION_NOT_FOUND,
-                }
+                },
             });
         }
     }

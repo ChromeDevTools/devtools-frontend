@@ -2,6 +2,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as NetworkTimeCalculator from '../../../../models/network_time_calculator/network_time_calculator.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import { type TemplateResult } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { type ChartViewportDelegate } from './ChartViewport.js';
 export declare const ARROW_SIDE = 8;
@@ -133,7 +134,7 @@ export declare class FlameChart extends FlameChart_base implements NetworkTimeCa
     private lastMouseOffsetX;
     private selectedGroupIndex;
     private keyboardFocusedGroup;
-    private offsetWidth;
+    offsetWidth: number;
     private offsetHeight;
     private dragStartX;
     private dragStartY;
@@ -202,7 +203,7 @@ export declare class FlameChart extends FlameChart_base implements NetworkTimeCa
     private updateHighlight;
     private onMouseOut;
     showPopoverForSearchResult(selectedSearchResult: number | null): void;
-    updatePopoverContents(popoverElement: Element): void;
+    updatePopoverContents(popoverElement: Element | TemplateResult): void;
     updateMouseOffset(mouseX: number, mouseY: number): void;
     private updatePopoverOffset;
     /**
@@ -582,7 +583,7 @@ export interface FlameChartDataProvider {
      * aggressively and only rebuild if the flag is passed.
      */
     timelineData(rebuild?: boolean): FlameChartTimelineData | null;
-    preparePopoverElement(entryIndex: number): Element | null;
+    preparePopoverElement(entryIndex: number): Element | TemplateResult | null;
     preparePopoverForCollapsedArrow?(entryIndex: number): Element | null;
     canJumpToEntry(entryIndex: number): boolean;
     entryTitle(entryIndex: number): string | null;

@@ -1,4 +1,4 @@
-import { LCPMetricWithAttribution, AttributionReportOpts } from '../types.js';
+import type { LCPMetricWithAttribution, AttributionReportOpts } from '../types.js';
 /**
  * Calculates the [LCP](https://web.dev/articles/lcp) value for the current page and
  * calls the `callback` function once the value is ready (along with the

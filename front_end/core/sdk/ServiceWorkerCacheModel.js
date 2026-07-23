@@ -7,7 +7,7 @@ import { SDKModel } from './SDKModel.js';
 import { StorageBucketsModel } from './StorageBucketsModel.js';
 const UIStrings = {
     /**
-     * @description Text in Service Worker Cache Model
+     * @description Error message when failing to delete a cache entry in ServiceWorkerCacheAgent.
      * @example {https://cache} PH1
      * @example {error message} PH2
      */

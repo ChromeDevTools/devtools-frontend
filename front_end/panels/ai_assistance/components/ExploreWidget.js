@@ -100,7 +100,7 @@ export class ExploreWidget extends UI.Widget.Widget {
                     void UI.ViewManager.ViewManager.instance().showView('elements');
                 },
                 panelName: 'Elements',
-                text: 'to ask about CSS styles'
+                text: 'to ask about CSS styles',
             });
         }
         if (config.devToolsAiAssistanceNetworkAgent?.enabled && UI.ViewManager.ViewManager.instance().hasView('network')) {
@@ -112,7 +112,7 @@ export class ExploreWidget extends UI.Widget.Widget {
                     void UI.ViewManager.ViewManager.instance().showView('network');
                 },
                 panelName: 'Network',
-                text: 'to ask about a request\'s details'
+                text: 'to ask about a request\'s details',
             });
         }
         if (config.devToolsAiAssistanceFileAgent?.enabled && UI.ViewManager.ViewManager.instance().hasView('sources')) {
@@ -124,7 +124,7 @@ export class ExploreWidget extends UI.Widget.Widget {
                     void UI.ViewManager.ViewManager.instance().showView('sources');
                 },
                 panelName: 'Sources',
-                text: 'to ask about a file\'s content'
+                text: 'to ask about a file\'s content',
             });
         }
         if (config.devToolsAiAssistancePerformanceAgent?.enabled &&
@@ -137,7 +137,7 @@ export class ExploreWidget extends UI.Widget.Widget {
                     void UI.ViewManager.ViewManager.instance().showView('timeline');
                 },
                 panelName: 'Performance',
-                text: 'to ask about a trace item'
+                text: 'to ask about a trace item',
             });
         }
         this.#view({

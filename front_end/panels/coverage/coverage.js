@@ -1566,12 +1566,12 @@ var UIStrings2 = {
    * @description Message in Coverage View of the Coverage tab.
    * @example {Reload page} PH1
    */
-  clickTheReloadButtonSToReloadAnd: "Click the \u201C{PH1}\u201D button to reload and start capturing coverage.",
+  clickTheReloadButtonSToReloadAnd: 'Click the "{PH1}" button to reload and start capturing coverage.',
   /**
    * @description Message in Coverage View of the Coverage tab.
    * @example {Start recording} PH1
    */
-  clickTheRecordButtonSToStart: "Click the \u201C{PH1}\u201D button to start capturing coverage.",
+  clickTheRecordButtonSToStart: 'Click the "{PH1}" button to start capturing coverage.',
   /**
    * @description Message in the Coverage View explaining that DevTools could not capture coverage.
    */

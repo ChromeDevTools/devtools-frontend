@@ -22,7 +22,7 @@ import { TimelineLayersView } from './TimelineLayersView.js';
 import { TimelinePaintProfilerView } from './TimelinePaintProfilerView.js';
 import { selectionFromRangeMilliSeconds, selectionIsEvent, selectionIsRange, } from './TimelineSelection.js';
 import { TimelineSelectorStatsView } from './TimelineSelectorStatsView.js';
-import { AggregatedTimelineTreeView, BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView } from './TimelineTreeView.js';
+import { AggregatedTimelineTreeView, BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView, } from './TimelineTreeView.js';
 import { TimelineUIUtils } from './TimelineUIUtils.js';
 import { TracingFrameLayerTree } from './TracingLayerTree.js';
 const UIStrings = {
@@ -264,7 +264,7 @@ export class TimelineDetailsPane extends Common.ObjectWrapper.eventMixin(UI.Widg
             view.model = {
                 selectedEvents: data.selectedEvents,
                 parsedTrace: data.parsedTrace,
-                entityMapper: data.entityMapper
+                entityMapper: data.entityMapper,
             };
         }
         this.#summaryContent.requestUpdate();

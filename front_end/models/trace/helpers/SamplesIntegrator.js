@@ -489,7 +489,7 @@ export class SamplesIntegrator {
             traceEvents: [cpuProfileEvent],
             metadata: {
                 dataOrigin: "CPUProfile" /* Types.File.DataOrigin.CPU_PROFILE */,
-            }
+            },
         };
     }
     static extractCpuProfileFromFakeTrace(traceEvents) {

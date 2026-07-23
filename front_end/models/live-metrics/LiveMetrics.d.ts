@@ -53,11 +53,11 @@ export interface LayoutShift {
 }
 export interface Interaction {
     interactionId: InteractionId;
-    interactionType: Spec.InteractionEntryEvent['interactionType'];
+    interactionType?: Spec.InteractionEntryEvent['interactionType'];
     eventNames: string[];
     duration: number;
     startTime: number;
-    nextPaintTime: number;
+    nextPaintTime?: number;
     subparts: Spec.InpSubparts;
     longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
     nodeRef?: SDK.DOMModel.DOMNode;

@@ -1,16 +1,17 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
-import '../../ui/legacy/legacy.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import { Directives, html, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
+const { repeat } = Directives;
 const UIStrings = {
     /**
      * @description Text in Event Source Messages View of the Network panel
@@ -47,56 +48,74 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const DEFAULT_VIEW = (input, _output, target) => {
+    // clang-format off
+    render(html `
+    <style>
+      ${eventSourceMessagesViewStyles}
+    </style>
+    <div class="event-source-messages-view">
+      <devtools-toolbar>
+        <devtools-button title=${i18nString(UIStrings.clearAll)} .iconName=${'clear'}
+            @click=${input.onClear}
+            .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+            .jslogContext=${'clear'}></devtools-button>
+        <devtools-toolbar-input
+            type="filter"
+            placeholder=${i18nString(UIStrings.filterByRegex)}
+            @change=${input.onFilterChanged}
+            .value=${input.filterSetting.get()}
+            style="flex-grow: 0.4"></devtools-toolbar-input>
+      </devtools-toolbar>
+      <devtools-data-grid name=${i18nString(UIStrings.eventSource)} autoscroll striped
+        .template=${html `
+          <table>
+            <thead>
+              <tr>
+                <th id="id" weight="8" sortable>${i18nString(UIStrings.id)}</th>
+                <th id="type" weight="8" sortable>${i18nString(UIStrings.type)}</th>
+                <th id="data" weight="88">${i18nString(UIStrings.data)}</th>
+                <th id="time" weight="8" sortable sort="ascending">${i18nString(UIStrings.time)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${repeat(input.messages, message => message, message => {
+        const date = new Date(message.time * 1000);
+        return html `<tr @contextmenu=${(e) => {
+            e.preventDefault();
+            input.onRowContextMenu(message, e);
+        }}>
+                                <td>${message.eventId}</td>
+                                <td>${message.eventName}</td>
+                                <td>${message.data}</td>
+                                <td title=${date.toLocaleString()} data-value=${message.time}>${formatTime(date)}</td></tr>`;
+    })}
+            </tbody>
+          </table>
+        `}>
+      </devtools-data-grid>
+    </div>
+  `, target);
+    // clang-format on
+};
 export class EventSourceMessagesView extends UI.Widget.VBox {
     request;
-    dataGrid;
-    mainToolbar;
-    clearAllButton;
-    filterTextInput;
-    filterRegex;
-    messageFilterSetting = Common.Settings.Settings.instance().createSetting('network-event-source-message-filter', '');
-    constructor(request) {
+    messageFilterSetting;
+    filterRegex = null;
+    #view;
+    constructor(request, view = DEFAULT_VIEW) {
         super({ jslog: `${VisualLogging.pane('event-stream').track({ resize: true })}` });
-        this.registerRequiredCSS(eventSourceMessagesViewStyles);
-        this.element.classList.add('event-source-messages-view');
+        this.#view = view;
         this.request = request;
-        this.mainToolbar = this.element.createChild('devtools-toolbar');
-        this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
-        this.clearAllButton.addEventListener("Click" /* UI.Toolbar.ToolbarButton.Events.CLICK */, this.clearMessages, this);
-        this.mainToolbar.appendToolbarItem(this.clearAllButton);
-        const placeholder = i18nString(UIStrings.filterByRegex);
-        this.filterTextInput = new UI.Toolbar.ToolbarFilter(placeholder, 0.4);
-        this.filterTextInput.addEventListener("TextChanged" /* UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED */, this.updateFilterSetting, this);
+        this.messageFilterSetting =
+            Common.Settings.Settings.instance().createSetting('network-event-source-message-filter', '');
         const filter = this.messageFilterSetting.get();
-        this.filterRegex = null;
         this.setFilter(filter);
-        if (filter) {
-            this.filterTextInput.setValue(filter);
-        }
-        this.mainToolbar.appendToolbarItem(this.filterTextInput);
-        const columns = [
-            { id: 'id', title: i18nString(UIStrings.id), sortable: true, weight: 8 },
-            { id: 'type', title: i18nString(UIStrings.type), sortable: true, weight: 8 },
-            { id: 'data', title: i18nString(UIStrings.data), sortable: false, weight: 88 },
-            { id: 'time', title: i18nString(UIStrings.time), sortable: true, weight: 8 },
-        ];
-        this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
-            displayName: i18nString(UIStrings.eventSource),
-            columns,
-        });
-        this.dataGrid.setStriped(true);
-        this.dataGrid.setEnableAutoScrollToBottom(true);
-        this.dataGrid.setRowContextMenuCallback(this.onRowContextMenu.bind(this));
-        this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
-        this.sortItems();
-        this.dataGrid.addEventListener("SortingChanged" /* DataGrid.DataGrid.Events.SORTING_CHANGED */, this.sortItems, this);
-        this.dataGrid.setName('event-source-messages-view');
-        this.dataGrid.asWidget().show(this.element);
     }
     wasShown() {
         super.wasShown();
-        this.refresh();
         this.request.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
+        this.requestUpdate();
     }
     willHide() {
         super.willHide();
@@ -107,7 +126,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
         if (!this.messageFilter(message)) {
             return;
         }
-        this.dataGrid.insertChild(new EventSourceMessageNode(message));
+        this.requestUpdate();
     }
     messageFilter(message) {
         return !this.filterRegex || this.filterRegex.test(message.eventName) || this.filterRegex.test(message.eventId) ||
@@ -115,13 +134,14 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     }
     clearMessages() {
         clearMessageOffsets.set(this.request, this.request.eventSourceMessages().length);
-        this.refresh();
+        this.requestUpdate();
     }
-    updateFilterSetting() {
-        const text = this.filterTextInput.value();
+    onFilterChanged(event) {
+        const inputElement = event.target;
+        const text = inputElement.value;
         this.messageFilterSetting.set(text);
         this.setFilter(text);
-        this.refresh();
+        this.requestUpdate();
     }
     setFilter(text) {
         this.filterRegex = null;
@@ -135,51 +155,29 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
             }
         }
     }
-    sortItems() {
-        const sortColumnId = this.dataGrid.sortColumnId();
-        if (!sortColumnId) {
-            return;
-        }
-        const comparator = Comparators[sortColumnId];
-        if (!comparator) {
-            return;
-        }
-        this.dataGrid.sortNodes(comparator, !this.dataGrid.isSortOrderAscending());
+    onRowContextMenu(message, event) {
+        const contextMenu = new UI.ContextMenu.ContextMenu(event);
+        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyMessage), Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance, message.data), { jslogContext: 'copy' });
+        void contextMenu.show();
     }
-    onRowContextMenu(contextMenu, node) {
-        contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copyMessage), Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data), { jslogContext: 'copy' });
-    }
-    refresh() {
-        this.dataGrid.rootNode().removeChildren();
+    performUpdate() {
         let messages = this.request.eventSourceMessages();
         const offset = clearMessageOffsets.get(this.request) || 0;
         messages = messages.slice(offset);
         messages = messages.filter(this.messageFilter.bind(this));
-        messages.forEach(message => this.dataGrid.insertChild(new EventSourceMessageNode(message)));
+        const input = {
+            messages,
+            filterSetting: this.messageFilterSetting,
+            onClear: this.clearMessages.bind(this),
+            onFilterChanged: this.onFilterChanged.bind(this),
+            onRowContextMenu: this.onRowContextMenu.bind(this),
+        };
+        this.#view(input, {}, this.contentElement);
     }
 }
-export class EventSourceMessageNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
-    message;
-    constructor(message) {
-        const time = new Date(message.time * 1000);
-        const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
-            ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
-        const timeNode = document.createElement('div');
-        UI.UIUtils.createTextChild(timeNode, timeText);
-        UI.Tooltip.Tooltip.install(timeNode, time.toLocaleString());
-        super({ id: message.eventId, type: message.eventName, data: message.data, time: timeNode });
-        this.message = message;
-    }
+function formatTime(d) {
+    return ('0' + d.getHours()).substr(-2) + ':' + ('0' + d.getMinutes()).substr(-2) + ':' +
+        ('0' + d.getSeconds()).substr(-2) + '.' + ('00' + d.getMilliseconds()).substr(-3);
 }
-function eventSourceMessageNodeComparator(fieldGetter, a, b) {
-    const aValue = fieldGetter(a.message);
-    const bValue = fieldGetter(b.message);
-    return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-}
-export const Comparators = {
-    id: eventSourceMessageNodeComparator.bind(null, message => message.eventId),
-    type: eventSourceMessageNodeComparator.bind(null, message => message.eventName),
-    time: eventSourceMessageNodeComparator.bind(null, message => message.time),
-};
 const clearMessageOffsets = new WeakMap();
 //# sourceMappingURL=EventSourceMessagesView.js.map

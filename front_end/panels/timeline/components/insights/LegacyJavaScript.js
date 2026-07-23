@@ -61,7 +61,7 @@ export class LegacyJavaScript extends BaseInsightComponent {
                     return {
                         values: [html `<span @click=${() => this.#revealLocation(script, match)} title=${`${script.url}:${match.line}:${match.column}`}>${match.name}</span>`],
                     };
-                })
+                }),
             };
         });
         // clang-format off

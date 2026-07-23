@@ -1,4 +1,4 @@
-import { FCPMetric, MetricRatingThresholds, ReportOpts } from './types.js';
+import type { FCPMetric, MetricRatingThresholds, ReportOpts } from './types.js';
 /** Thresholds for FCP. See https://web.dev/articles/fcp#what_is_a_good_fcp_score */
 export declare const FCPThresholds: MetricRatingThresholds;
 /**

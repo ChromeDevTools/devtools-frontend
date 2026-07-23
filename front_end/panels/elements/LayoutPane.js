@@ -174,7 +174,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             <devtools-node-text .data=${{
         nodeId: element.domId,
         nodeTitle: element.name,
-        nodeClasses: element.domClasses
+        nodeClasses: element.domClasses,
     }}>
             </devtools-node-text>
           </span>
@@ -186,7 +186,7 @@ const DEFAULT_VIEW = (input, output, target) => {
             style="background: ${element.color};"
             jslog=${VisualLogging.showStyleEditor('color')
         .track({
-        click: true
+        click: true,
     })}>
           <input
               @change=${(e) => input.onColorChange(element, e)}

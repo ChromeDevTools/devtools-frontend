@@ -195,7 +195,7 @@ export class StorageAgent extends AiAgent {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                         description: 'Optional. Specific storageKey to to list keys for.',
                         nullable: true,
-                    }
+                    },
                 },
                 required: ['type', 'origin'],
             },
@@ -255,7 +255,7 @@ export class StorageAgent extends AiAgent {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                         description: 'Optional. Specific storageKey partition to get values for.',
                         nullable: true,
-                    }
+                    },
                 },
                 required: ['type', 'keys', 'origin'],
             },
@@ -323,7 +323,7 @@ export class StorageAgent extends AiAgent {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                         description: 'Origin to list cookies for.',
                         nullable: false,
-                    }
+                    },
                 },
                 required: ['origin'],
             },
@@ -365,7 +365,7 @@ export class StorageAgent extends AiAgent {
                         type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                         description: 'The specific origin the cookies belong to.',
                         nullable: false,
-                    }
+                    },
                 },
                 required: ['cookieNames', 'origin'],
             },

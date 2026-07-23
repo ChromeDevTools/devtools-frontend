@@ -17,6 +17,7 @@ import { getNavigationEntry } from '../lib/getNavigationEntry.js';
 import { getSelector } from '../lib/getSelector.js';
 import { initUnique } from '../lib/initUnique.js';
 import { LCPEntryManager } from '../lib/LCPEntryManager.js';
+import { checkSoftNavsEnabled } from '../lib/softNavs.js';
 import { onLCP as unattributedOnLCP } from '../onLCP.js';
 /**
  * Calculates the [LCP](https://web.dev/articles/lcp) value for the current page and
@@ -37,6 +38,9 @@ export const onLCP = (onReport, opts = {}) => {
     opts = Object.assign({}, opts);
     const lcpEntryManager = initUnique(opts, LCPEntryManager);
     const lcpTargetMap = new WeakMap();
+    if (checkSoftNavsEnabled(opts)) {
+        lcpEntryManager._softNavigationEntryMap = new Map();
+    }
     lcpEntryManager._onBeforeProcessingEntry = (entry) => {
         const node = entry.element;
         if (node) {
@@ -75,10 +79,24 @@ export const onLCP = (onReport, opts = {}) => {
             }
             // Get subparts from navigation entry. Do this last as occasionally
             // Safari seems to fail to find a navigation entry.
-            const navigationEntry = getNavigationEntry();
+            let navigationEntry;
+            let activationStart = 0;
+            let responseStart = 0;
+            if (metric.navigationType !== 'soft-navigation') {
+                navigationEntry = getNavigationEntry();
+                activationStart = navigationEntry?.activationStart ?? 0;
+                responseStart = navigationEntry?.responseStart ?? 0;
+            }
+            else {
+                // Set activationStart to the navigation start time
+                activationStart = metric.navigationStartTime || 0;
+                // Lookup the soft navigation entry. Do not use getEntriesByType since
+                // that is limited to the first 50 navigation entries due to buffer
+                // size.
+                navigationEntry = lcpEntryManager._softNavigationEntryMap?.get(metric.navigationId);
+            }
             if (navigationEntry) {
-                const activationStart = navigationEntry.activationStart || 0;
-                const ttfb = Math.max(0, navigationEntry.responseStart - activationStart);
+                const ttfb = Math.max(0, responseStart - activationStart);
                 const lcpRequestStart = Math.max(ttfb, 
                 // Prefer `requestStart` (if TOA is set), otherwise use `startTime`.
                 lcpResourceEntry

@@ -247,7 +247,7 @@ export class SourceMapScopesInfo {
                 // Record the name and call-site if the range corresponds to an inlined function.
                 result.inlinedFunctions.push({
                     name: range.originalScope?.name ?? '',
-                    callsite: { ...range.callSite, sourceURL: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex) }
+                    callsite: { ...range.callSite, sourceURL: this.#sourceMap.sourceURLForSourceIndex(range.callSite.sourceIndex) },
                 });
             }
             if (range.isStackFrame) {

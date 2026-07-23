@@ -48,7 +48,7 @@ export class Linkifier extends HTMLElement {
             lineNumber: this.#lineNumber,
             columnNumber: this.#columnNumber,
             linkText: this.#linkText,
-            title: this.#title
+            title: this.#title,
         };
         return node;
     }

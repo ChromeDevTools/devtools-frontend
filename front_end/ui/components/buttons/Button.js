@@ -63,6 +63,7 @@ export class Button extends HTMLElement {
         if (data.accessibleLabel) {
             this.accessibleLabel = data.accessibleLabel;
         }
+        this.#props.accessibleExpanded = data.accessibleExpanded;
         this.#props.jslogContext = data.jslogContext;
         this.#props.longClickable = data.longClickable;
         this.#props.inverseColorTheme = data.inverseColorTheme;
@@ -99,6 +100,13 @@ export class Button extends HTMLElement {
     }
     get accessibleLabel() {
         return this.getAttribute('accessibleLabel') || undefined;
+    }
+    set accessibleExpanded(expanded) {
+        this.#props.accessibleExpanded = expanded;
+        this.#render();
+    }
+    get accessibleExpanded() {
+        return this.#props.accessibleExpanded;
     }
     set reducedFocusRing(reducedFocusRing) {
         this.#props.reducedFocusRing = reducedFocusRing;
@@ -251,6 +259,7 @@ export class Button extends HTMLElement {
                 ?disabled=${this.#props.disabled}
                 class=${classMap(classes)}
                 aria-pressed=${ifDefined(this.#props.toggled)}
+                aria-expanded=${ifDefined(this.#props.accessibleExpanded)}
                 aria-label=${ifDefined(this.accessibleLabel || this.title || undefined)}
                 jslog=${ifDefined(jslog)}>
           ${hasIcon ? html `

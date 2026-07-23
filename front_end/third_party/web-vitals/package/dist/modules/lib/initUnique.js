@@ -20,8 +20,13 @@ const instanceMap = new WeakMap();
  * identity object was previously used.
  */
 export function initUnique(identityObj, ClassObj) {
-    if (!instanceMap.get(identityObj)) {
-        instanceMap.set(identityObj, new ClassObj());
+    let classInstances = instanceMap.get(ClassObj);
+    if (!classInstances) {
+        classInstances = new WeakMap();
+        instanceMap.set(ClassObj, classInstances);
     }
-    return instanceMap.get(identityObj);
+    if (!classInstances.get(identityObj)) {
+        classInstances.set(identityObj, new ClassObj());
+    }
+    return classInstances.get(identityObj);
 }

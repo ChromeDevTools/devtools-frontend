@@ -39,7 +39,7 @@ const UIStrings = {
      * @description Error message shown when devtools failed to create a file system directory.
      * @example {path/} PH1
      */
-    createDirFailed: 'Overrides: Failed to create directory {PH1}. Are the workspace or overrides configured correctly?'
+    createDirFailed: 'Overrides: Failed to create directory {PH1}. Are the workspace or overrides configured correctly?',
 };
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

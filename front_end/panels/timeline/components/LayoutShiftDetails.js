@@ -121,7 +121,7 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
             parsedTrace: this.#parsedTrace,
             isFreshRecording: this.#isFreshRecording,
             togglePopover: e => this.#togglePopover(e),
-            onEventClick: e => this.#handleTraceEventClick(e)
+            onEventClick: e => this.#handleTraceEventClick(e),
         }, {}, this.contentElement);
     }
 }

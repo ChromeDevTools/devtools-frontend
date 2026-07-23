@@ -588,7 +588,7 @@ export function makeTimingEventWithConsoleExtensionData({ name, ts, start, end, 
                 track,
                 trackGroup,
                 color,
-            }
+            },
         },
         ts: Trace.Types.Timing.Micro(ts),
         ph: "I" /* Trace.Types.Events.Phase.INSTANT */,

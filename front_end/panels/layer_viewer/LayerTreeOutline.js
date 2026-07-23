@@ -4,7 +4,8 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { Directives, html, nothing, render } from '../../ui/lit/lit.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import layerTreeOutlineStyles from './layerTreeOutline.css.js';
 import { LayerSelection, } from './LayerViewHost.js';
 const UIStrings = {
@@ -30,43 +31,89 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const DEFAULT_VIEW = (input, _output, target) => {
+const { ref, repeat } = Directives;
+export const DEFAULT_VIEW = (input, output, target) => {
+    const renderNode = (node) => {
+        const layer = node.layer;
+        const domNode = layer.nodeForSelfOrAncestor();
+        const titleText = domNode ? domNode.simpleSelector() : '#' + layer.id();
+        const detailsText = i18nString(UIStrings.updateChildDimension, { PH1: layer.width(), PH2: layer.height() });
+        const isSelected = layer === input.selectedLayer;
+        const isHovered = layer === input.hoveredLayer;
+        // clang-format off
+        return html `
+      <li role="treeitem"
+          data-layer-id=${layer.id()}
+          class=${isHovered ? 'hovered' : ''}
+          ?selected=${isSelected}
+          aria-expanded=${node.isExpanded ? 'true' : 'false'}
+          @select=${() => input.onSelect(layer)}
+          @mouseenter=${() => input.onHover(layer)}
+          @mouseleave=${() => input.onHover(null)}>
+        <span class="tree-node-title" @contextmenu=${(event) => {
+            input.onContextMenu(event, layer);
+            event.stopPropagation();
+        }}>
+          ${titleText} <span class="dimmed">${detailsText}</span>
+        </span>
+        ${node.children.length > 0 ? html `<ul role="group">${repeat(node.children, n => n.layer.id(), renderNode)}</ul>` : nothing}
+      </li>
+    `;
+        // clang-format on
+    };
+    // clang-format off
     render(html `
     <style>${layerTreeOutlineStyles}</style>
-    <div class="vbox layer-tree-wrapper">
-      <div style="flex-grow: 1; overflow: auto; display: flex;">
-        ${input.treeOutlineElement}
-      </div>
+    <div class="vbox layer-tree-wrapper" jslog=${VisualLogging.pane('layers-tree')}>
+      <devtools-tree class="layer-tree overflow-auto"
+        @contextmenu=${(event) => input.onContextMenu(event, null)}
+        ${ref((el) => {
+        if (el) {
+            output.focusTree = () => {
+                el.focus();
+            };
+            output.revealLayer = (layer) => {
+                const li = el.querySelector(`li[data-layer-id="${layer.id()}"]`);
+                if (li) {
+                    // Toggling the selected attribute forces TreeViewElement to scroll the node into view.
+                    li.removeAttribute('selected');
+                    li.setAttribute('selected', '');
+                }
+            };
+        }
+    })}
+        .template=${html `
+          <style>${layerTreeOutlineStyles}</style>
+          <ul role="tree" aria-label=${i18nString(UIStrings.layersTreePane)}>
+            ${input.treeData.map(renderNode)}
+          </ul>
+        `}>
+      </devtools-tree>
       <div class="hbox layer-summary">
         <span class="layer-count">${i18nString(UIStrings.layerCount, {
-        PH1: input.layerCount
+        PH1: input.layerCount,
     })}</span>
         <span>${i18n.ByteUtilities.bytesToString(input.totalLayerMemory)}</span>
       </div>
     </div>
   `, target);
+    // clang-format on
 };
 export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     layerViewHost;
-    treeOutline;
-    lastHoveredNode;
     layerTree;
     layerSnapshotMap;
-    #view;
     #layerCount = 0;
     #totalLayerMemory = 0;
+    #treeData = [];
+    #viewOutput = {};
+    #view;
+    #hoveredLayer = null;
     constructor(layerViewHost, view = DEFAULT_VIEW) {
         super();
+        this.#view = view;
         this.layerViewHost = layerViewHost;
         this.layerViewHost.registerView(this);
-        this.#view = view;
-        this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-        this.treeOutline.element.classList.add('layer-tree', 'overflow-auto');
-        this.treeOutline.element.addEventListener('mousemove', this.onMouseMove.bind(this), false);
-        this.treeOutline.element.addEventListener('mouseout', this.onMouseMove.bind(this), false);
-        this.treeOutline.element.addEventListener('contextmenu', this.onContextMenu.bind(this), true);
-        UI.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString(UIStrings.layersTreePane));
-        this.lastHoveredNode = null;
         this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
     }
     wasShown() {
@@ -75,46 +122,41 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.
     }
     performUpdate() {
         this.#view({
-            treeOutlineElement: this.treeOutline.element,
+            treeData: this.#treeData,
+            selectedLayer: this.layerViewHost.selection()?.layer() || null,
+            hoveredLayer: this.#hoveredLayer,
             layerCount: this.#layerCount,
             totalLayerMemory: this.#totalLayerMemory,
-        }, {}, this.contentElement);
+            onSelect: this.onSelect.bind(this),
+            onHover: this.onHover.bind(this),
+            onContextMenu: this.onContextMenu.bind(this),
+        }, this.#viewOutput, this.contentElement);
     }
     focus() {
-        this.treeOutline.focus();
+        this.#viewOutput.focusTree?.();
     }
     selectObject(selection) {
         this.hoverObject(null);
-        const layer = selection?.layer();
-        const node = layer && layerToTreeElement.get(layer);
-        if (node) {
-            node.revealAndSelect(true);
-        }
-        else if (this.treeOutline.selectedTreeElement) {
-            this.treeOutline.selectedTreeElement.deselect();
+        this.requestUpdate();
+        if (selection) {
+            // Defer revealLayer to ensure Lit has finished rendering DOM updates
+            queueMicrotask(() => {
+                this.#viewOutput.revealLayer?.(selection.layer());
+            });
         }
     }
     hoverObject(selection) {
-        const layer = selection?.layer();
-        const node = layer && layerToTreeElement.get(layer);
-        if (node === this.lastHoveredNode) {
-            return;
-        }
-        if (this.lastHoveredNode) {
-            this.lastHoveredNode.setHovered(false);
-        }
-        if (node) {
-            node.setHovered(true);
-        }
-        this.lastHoveredNode = node;
+        this.#hoveredLayer = selection?.layer() || null;
+        this.requestUpdate();
     }
     setLayerTree(layerTree) {
         this.layerTree = layerTree;
         this.update();
     }
     update() {
+        let layerCount = 0;
+        let totalLayerMemory = 0;
         const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
-        const seenLayers = new Set();
         let root = null;
         if (this.layerTree) {
             if (!showInternalLayers) {
@@ -124,8 +166,6 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.
                 root = this.layerTree.root();
             }
         }
-        let layerCount = 0;
-        let totalLayerMemory = 0;
         const childrenMap = new Map();
         if (this.layerTree && root) {
             const buildTree = (layer) => {
@@ -156,122 +196,42 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.
             };
             this.layerTree.forEachLayer(buildTree, root);
         }
-        const syncNode = (layer, parent) => {
-            seenLayers.add(layer);
-            let node = layerToTreeElement.get(layer) || null;
-            if (!node) {
-                node = new LayerTreeElement(this, layer);
-                parent.appendChild(node);
-                // Expand all new non-content layers to expose content layers better.
-                if (!layer.drawsContent()) {
-                    node.expand();
-                }
-            }
-            else {
-                if (node.parent !== parent) {
-                    const oldSelection = this.treeOutline.selectedTreeElement;
-                    if (node.parent) {
-                        node.parent.removeChild(node);
-                    }
-                    parent.appendChild(node);
-                    if (oldSelection && oldSelection !== this.treeOutline.selectedTreeElement) {
-                        oldSelection.select();
-                    }
-                }
-                node.update();
-            }
+        const makeTreeNode = (layer) => {
             const children = childrenMap.get(layer) || [];
-            for (const child of children) {
-                syncNode(child, node);
-            }
+            return {
+                layer,
+                isExpanded: !layer.drawsContent(),
+                children: children.map(makeTreeNode),
+            };
         };
-        if (root && (root.drawsContent() || showInternalLayers)) {
-            syncNode(root, this.treeOutline.rootElement());
-        }
-        // Clean up layers that don't exist anymore from tree.
-        const rootElement = this.treeOutline.rootElement();
-        for (let node = rootElement.firstChild(); node instanceof LayerTreeElement && !node.root;) {
-            if (seenLayers.has(node.layer)) {
-                node = node.traverseNextTreeElement(false);
-            }
-            else {
-                const nextNode = node.nextSibling || node.parent;
-                if (node.parent) {
-                    node.parent.removeChild(node);
-                }
-                if (node === this.lastHoveredNode) {
-                    this.lastHoveredNode = null;
-                }
-                node = nextNode;
-            }
-        }
-        if (!this.treeOutline.selectedTreeElement && this.layerTree) {
-            const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
-            if (elementToSelect) {
-                const layer = layerToTreeElement.get(elementToSelect);
-                if (layer) {
-                    layer.revealAndSelect(true);
-                }
-            }
-        }
+        this.#treeData = root && (root.drawsContent() || showInternalLayers) ? [makeTreeNode(root)] : [];
         this.#layerCount = layerCount;
         this.#totalLayerMemory = totalLayerMemory;
         this.requestUpdate();
+        if (!this.layerViewHost.selection() && this.layerTree && this.#treeData.length > 0) {
+            const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
+            if (elementToSelect) {
+                this.layerViewHost.selectObject(new LayerSelection(elementToSelect));
+            }
+        }
     }
-    onMouseMove(event) {
-        const node = this.treeOutline.treeElementFromEvent(event);
-        if (node === this.lastHoveredNode) {
+    onHover(layer) {
+        this.layerViewHost.hoverObject(layer ? new LayerSelection(layer) : null);
+    }
+    onSelect(layer) {
+        if (this.layerViewHost.selection()?.layer() === layer) {
             return;
         }
-        this.layerViewHost.hoverObject(this.selectionForNode(node));
+        this.layerViewHost.selectObject(new LayerSelection(layer));
     }
-    selectedNodeChanged(node) {
-        this.layerViewHost.selectObject(this.selectionForNode(node));
-    }
-    onContextMenu(event) {
-        const selection = this.selectionForNode(this.treeOutline.treeElementFromEvent(event));
+    onContextMenu(event, layer) {
+        const selection = layer ? new LayerSelection(layer) : null;
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        const layer = selection?.layer();
-        if (selection && layer) {
-            this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
-            if (this.layerSnapshotMap.has(layer)) {
-                contextMenu.defaultSection().appendItem(i18nString(UIStrings.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested" /* Events.PAINT_PROFILER_REQUESTED */, selection), { jslogContext: 'layers.paint-profiler' });
-            }
+        this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
+        if (layer && this.layerSnapshotMap.has(layer) && selection) {
+            contextMenu.defaultSection().appendItem(i18nString(UIStrings.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested" /* Events.PAINT_PROFILER_REQUESTED */, selection), { jslogContext: 'layers.paint-profiler' });
         }
         this.layerViewHost.showContextMenu(contextMenu, selection);
     }
-    selectionForNode(node) {
-        return node?.layer ? new LayerSelection(node.layer) : null;
-    }
 }
-export class LayerTreeElement extends UI.TreeOutline.TreeElement {
-    // Watch out: This is different from treeOutline that
-    // LayerTreeElement inherits from UI.TreeOutline.TreeElement.
-    #treeOutline;
-    layer;
-    constructor(tree, layer) {
-        super();
-        this.#treeOutline = tree;
-        this.layer = layer;
-        layerToTreeElement.set(layer, this);
-        this.update();
-    }
-    update() {
-        const node = this.layer.nodeForSelfOrAncestor();
-        const title = document.createDocumentFragment();
-        UI.UIUtils.createTextChild(title, node ? node.simpleSelector() : '#' + this.layer.id());
-        const details = title.createChild('span', 'dimmed');
-        details.textContent =
-            i18nString(UIStrings.updateChildDimension, { PH1: this.layer.width(), PH2: this.layer.height() });
-        this.title = title;
-    }
-    onselect() {
-        this.#treeOutline.selectedNodeChanged(this);
-        return false;
-    }
-    setHovered(hovered) {
-        this.listItemElement.classList.toggle('hovered', hovered);
-    }
-}
-export const layerToTreeElement = new WeakMap();
 //# sourceMappingURL=LayerTreeOutline.js.map

@@ -59,7 +59,7 @@ export class ExtensionTrackAppender {
             shareHeaderLine: false,
             padding: 2,
             nestingLevel: 1,
-            collapsible: 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */
+            collapsible: 0 /* PerfUI.FlameChart.GroupCollapsibleState.ALWAYS */,
         });
         const group = buildTrackHeader("extension" /* VisualLoggingTrackName.EXTENSION */, trackStartLevel, headerTitle, style, 
         /* selectable= */ true);

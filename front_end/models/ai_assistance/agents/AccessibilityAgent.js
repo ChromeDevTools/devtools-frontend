@@ -181,7 +181,7 @@ export class AccessibilityAgent extends AiAgent {
             displayInfoFromArgs: params => {
                 return {
                     title: i18n.i18n.lockedString(`Getting Lighthouse audits for ${params.categoryId}`),
-                    action: `getLighthouseAudits('${params.categoryId}')`
+                    action: `getLighthouseAudits('${params.categoryId}')`,
                 };
             },
             handler: async (params) => {
@@ -195,7 +195,7 @@ export class AccessibilityAgent extends AiAgent {
                     result: { audits },
                     widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report } }],
                 };
-            }
+            },
         });
         const executeJsTool = ToolRegistry.get("executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */);
         if (!executeJsTool) {
@@ -239,7 +239,7 @@ export class AccessibilityAgent extends AiAgent {
                 return {
                     title: i18n.i18n.lockedString('Running accessibility audits'),
                     thought: params.explanation,
-                    action: 'runAccessibilityAudits()'
+                    action: 'runAccessibilityAudits()',
                 };
             },
             handler: async (params) => {
@@ -265,7 +265,7 @@ export class AccessibilityAgent extends AiAgent {
                     result: { audits },
                     widgets: [{ name: 'LIGHTHOUSE_REPORT', data: { report, snapshotReport: true } }],
                 };
-            }
+            },
         });
         this.declareFunction('getStyles', {
             description: 'Get computed styles for an element on the inspected page by its Lighthouse path. **CRITICAL** You MUST provide a specific list of CSS property names. Do not use generic values like "all" or "*".',
@@ -290,11 +290,11 @@ export class AccessibilityAgent extends AiAgent {
                         nullable: false,
                         items: {
                             type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                            description: 'A CSS style property name to retrieve. For example, \'background-color\'.'
-                        }
+                            description: 'A CSS style property name to retrieve. For example, \'background-color\'.',
+                        },
                     },
                 },
-                required: ['explanation', 'path', 'styleProperties']
+                required: ['explanation', 'path', 'styleProperties'],
             },
             displayInfoFromArgs: params => {
                 return {
@@ -333,7 +333,7 @@ export class AccessibilityAgent extends AiAgent {
                             backendNodeId: node.backendNodeId(),
                             matchedCascade: matchedStyles,
                             properties: params.styleProperties,
-                        }
+                        },
                     });
                 }
                 return {
@@ -360,7 +360,7 @@ export class AccessibilityAgent extends AiAgent {
                         nullable: false,
                     },
                 },
-                required: ['explanation', 'path']
+                required: ['explanation', 'path'],
             },
             displayInfoFromArgs: params => {
                 return {

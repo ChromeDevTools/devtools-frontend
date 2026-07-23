@@ -7,7 +7,7 @@ import { ChangeManager } from '../ChangeManager.js';
 import { ExtensionScope } from '../ExtensionScope.js';
 import { AI_ASSISTANCE_CSS_CLASS_NAME } from '../injected.js';
 import { ToolRegistry } from '../tools/ToolRegistry.js';
-import { AiAgent } from './AiAgent.js';
+import { AiAgent, } from './AiAgent.js';
 import { executeJsCode, } from './ExecuteJavascript.js';
 const preamble = `You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.
 You always suggest considering the best web development practices and the newest platform features such as view transitions.

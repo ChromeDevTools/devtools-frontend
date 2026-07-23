@@ -43,7 +43,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           <div class=diff-container role=tabpanel ?hidden=${input.workspaceDiff.modifiedUISourceCodes().length === 0}>
             ${widget(CombinedDiffView.CombinedDiffView, {
         selectedFileUrl: input.selectedSourceCode?.url(),
-        workspaceDiff: input.workspaceDiff
+        workspaceDiff: input.workspaceDiff,
     })}
           </div>
         </div>

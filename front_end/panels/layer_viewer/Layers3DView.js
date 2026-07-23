@@ -66,22 +66,22 @@ export const DEFAULT_VIEW = (input, output, target) => {
     ${input.panelToolbar}
     ${input.error === 'missing-root' ? html `<div>${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.noLayerInformation),
-        text: i18nString(UIStrings.layerExplanation)
+        text: i18nString(UIStrings.layerExplanation),
     })}</div>` : Lit.nothing}
     ${input.error === 'webgl-disabled' ? html `<div>${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.cantDisplayLayers),
         text: i18nString(UIStrings.webglSupportIsDisabledInYour),
         extraElements: [
             uiI18n.getFormatLocalizedString(str_, UIStrings.checkSForPossibleReasons, {
-                PH1: Link.create('chrome://gpu', undefined, undefined, 'about-gpu', 0, true)
-            })
+                PH1: Link.create('chrome://gpu', undefined, undefined, 'about-gpu', 0, true),
+            }),
         ],
     })}</div>` : Lit.nothing}
     <canvas
       tabindex="0"
       jslog=${VisualLogging.canvas('layers').track({
         click: true,
-        drag: true
+        drag: true,
     })}
       aria-label=${i18nString(UIStrings.dLayersView)}
       @dblclick=${input.onDoubleClick}

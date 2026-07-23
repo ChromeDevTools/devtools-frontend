@@ -265,7 +265,6 @@ var AiCodeCompletionPlugin = class extends Plugin {
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       hasTopBorder: true,
       panel: "sources"
-      /* AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES */
     });
     this.#aiCodeCompletionCitationsToolbar.show(this.#aiCodeCompletionCitationsToolbarContainer, void 0, true);
   }

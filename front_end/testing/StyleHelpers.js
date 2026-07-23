@@ -120,7 +120,7 @@ export function getMatchedStyles(payload, getEnvironmentVariablesCallback = () =
  * to find the actual models.
  */
 export function createStubbedDomNodeWithModels(opts = {
-    nodeId: 1
+    nodeId: 1,
 }) {
     const target = sinon.createStubInstance(SDK.Target.Target);
     const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {

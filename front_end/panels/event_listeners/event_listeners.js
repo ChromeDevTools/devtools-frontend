@@ -850,23 +850,19 @@ var ObjectEventListenerBar = class extends UI.TreeOutline.TreeElement {
     properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(runtimeModel.createRemotePropertyFromPrimitiveValue("useCapture", eventListener.useCapture()), void 0, {
       readOnly: false,
       propertiesMode: 1
-      /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */
     }));
     properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(runtimeModel.createRemotePropertyFromPrimitiveValue("passive", eventListener.passive()), void 0, {
       readOnly: false,
       propertiesMode: 1
-      /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */
     }));
     properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(runtimeModel.createRemotePropertyFromPrimitiveValue("once", eventListener.once()), void 0, {
       readOnly: false,
       propertiesMode: 1
-      /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */
     }));
     if (typeof eventListener.handler() !== "undefined") {
       properties.push(new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(new SDK2.RemoteObject.RemoteObjectProperty("handler", eventListener.handler()), void 0, {
         readOnly: false,
         propertiesMode: 1
-        /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */
       }));
     }
     ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(this, { properties }, true, true, void 0);

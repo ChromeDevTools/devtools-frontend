@@ -69,7 +69,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                   ${
     /* eslint-disable-next-line @devtools/l10n-i18nString-call-only-with-uistrings */
     i18nString(GROUP_ICONS[group.name].label, {
-        n: group.messageCount
+        n: group.messageCount,
     })}
                   ${group.messageCount === 0 ? nothing : html `
                   <ul role="group">

@@ -93,13 +93,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
       ${input.requestCookies.cookies.length > 0 ? html `
         <devtools-widget ${widget(CookieTable.CookiesTable.CookiesTable, {
         cookiesData: input.requestCookies,
-        inline: true
+        inline: true,
     })} class="cookie-table cookies-panel-item"></devtools-widget>
       ` : Lit.nothing}
 
       <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? '' : 'hidden'}">
         ${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.siteHasCookieInOtherPartition, {
-        PH1: html `<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>`
+        PH1: html `<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${'learn-more'}>${i18nString(UIStrings.learnMore)}</devtools-link>`,
     })}
       </div>
 

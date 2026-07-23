@@ -1,4 +1,3 @@
-import * as CheckFormsIssuesTrigger from './CheckFormsIssuesTrigger.js';
 import * as ClientHintIssue from './ClientHintIssue.js';
 import * as ConnectionAllowlistIssue from './ConnectionAllowlistIssue.js';
 import * as ContentSecurityPolicyIssue from './ContentSecurityPolicyIssue.js';
@@ -31,4 +30,4 @@ import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
 import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 import * as UnencodedDigestIssue from './UnencodedDigestIssue.js';
-export { CheckFormsIssuesTrigger, ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, EmailVerificationRequestIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, LazyLoadImageIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };
+export { ClientHintIssue, ConnectionAllowlistIssue, ContentSecurityPolicyIssue, CookieDeprecationMetadataIssue, CookieIssue, CorsIssue, CrossOriginEmbedderPolicyIssue, DeprecationIssue, ElementAccessibilityIssue, EmailVerificationRequestIssue, FederatedAuthUserInfoRequestIssue, GenericIssue, HeavyAdIssue, Issue, IssueAggregator, IssueResolver, IssuesManager, LazyLoadImageIssue, MarkdownIssueDescription, MixedContentIssue, PartitioningBlobURLIssue, PermissionElementIssue, PropertyRuleIssue, QuirksModeIssue, RelatedIssue, SelectivePermissionsInterventionIssue, SharedArrayBufferIssue, SharedDictionaryIssue, SourceFrameIssuesManager, SRIMessageSignatureIssue, StylesheetLoadingIssue, UnencodedDigestIssue, };

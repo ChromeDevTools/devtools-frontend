@@ -16,7 +16,7 @@ export function mockResourceTree(connection) {
         frameTree: {
             frame: MAIN_FRAME,
             resources: [],
-        }
+        },
     }));
 }
 export async function getInitializedResourceTreeModel(target) {

@@ -35,11 +35,11 @@ export class GetStylesTool {
                 nullable: false,
                 items: {
                     type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                    description: 'A CSS style property name to retrieve. For example, \'background-color\'.'
-                }
+                    description: 'A CSS style property name to retrieve. For example, \'background-color\'.',
+                },
             },
         },
-        required: ['explanation', 'elements', 'styleProperties']
+        required: ['explanation', 'elements', 'styleProperties'],
     };
     displayInfoFromArgs(params) {
         return {
@@ -86,7 +86,7 @@ export class GetStylesTool {
                     backendNodeId: node.backendNodeId(),
                     matchedCascade: matchedStyles,
                     properties: params.styleProperties,
-                }
+                },
             });
             for (const prop of params.styleProperties) {
                 result[uid].computed[prop] = styles.get(prop);

@@ -1,4 +1,4 @@
-import { CLSMetric, MetricRatingThresholds, ReportOpts } from './types.js';
+import type { CLSMetric, MetricRatingThresholds, ReportOpts } from './types.js';
 /** Thresholds for CLS. See https://web.dev/articles/cls#what_is_a_good_cls_score */
 export declare const CLSThresholds: MetricRatingThresholds;
 /**

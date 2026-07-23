@@ -530,14 +530,14 @@ var slowScrollRectNames = /* @__PURE__ */ new Map([
 // gen/front_end/panels/layer_viewer/LayerTreeOutline.js
 var LayerTreeOutline_exports = {};
 __export(LayerTreeOutline_exports, {
-  LayerTreeElement: () => LayerTreeElement,
-  LayerTreeOutline: () => LayerTreeOutline,
-  layerToTreeElement: () => layerToTreeElement
+  DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  LayerTreeOutline: () => LayerTreeOutline
 });
 import * as Common3 from "./../../core/common/common.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as UI2 from "./../../ui/legacy/legacy.js";
-import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
+import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/layer_viewer/layerTreeOutline.css.js
 var layerTreeOutline_css_default = `/*
@@ -596,13 +596,60 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/layer_viewer/LayerTreeOutline.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var DEFAULT_VIEW2 = (input, _output, target) => {
+var { ref, repeat } = Directives;
+var DEFAULT_VIEW2 = (input, output, target) => {
+  const renderNode = (node) => {
+    const layer = node.layer;
+    const domNode = layer.nodeForSelfOrAncestor();
+    const titleText = domNode ? domNode.simpleSelector() : "#" + layer.id();
+    const detailsText = i18nString3(UIStrings3.updateChildDimension, { PH1: layer.width(), PH2: layer.height() });
+    const isSelected = layer === input.selectedLayer;
+    const isHovered = layer === input.hoveredLayer;
+    return html2`
+      <li role="treeitem"
+          data-layer-id=${layer.id()}
+          class=${isHovered ? "hovered" : ""}
+          ?selected=${isSelected}
+          aria-expanded=${node.isExpanded ? "true" : "false"}
+          @select=${() => input.onSelect(layer)}
+          @mouseenter=${() => input.onHover(layer)}
+          @mouseleave=${() => input.onHover(null)}>
+        <span class="tree-node-title" @contextmenu=${(event) => {
+      input.onContextMenu(event, layer);
+      event.stopPropagation();
+    }}>
+          ${titleText} <span class="dimmed">${detailsText}</span>
+        </span>
+        ${node.children.length > 0 ? html2`<ul role="group">${repeat(node.children, (n) => n.layer.id(), renderNode)}</ul>` : nothing2}
+      </li>
+    `;
+  };
   render2(html2`
     <style>${layerTreeOutline_css_default}</style>
-    <div class="vbox layer-tree-wrapper">
-      <div style="flex-grow: 1; overflow: auto; display: flex;">
-        ${input.treeOutlineElement}
-      </div>
+    <div class="vbox layer-tree-wrapper" jslog=${VisualLogging2.pane("layers-tree")}>
+      <devtools-tree class="layer-tree overflow-auto"
+        @contextmenu=${(event) => input.onContextMenu(event, null)}
+        ${ref((el) => {
+    if (el) {
+      output.focusTree = () => {
+        el.focus();
+      };
+      output.revealLayer = (layer) => {
+        const li = el.querySelector(`li[data-layer-id="${layer.id()}"]`);
+        if (li) {
+          li.removeAttribute("selected");
+          li.setAttribute("selected", "");
+        }
+      };
+    }
+  })}
+        .template=${html2`
+          <style>${layerTreeOutline_css_default}</style>
+          <ul role="tree" aria-label=${i18nString3(UIStrings3.layersTreePane)}>
+            ${input.treeData.map(renderNode)}
+          </ul>
+        `}>
+      </devtools-tree>
       <div class="hbox layer-summary">
         <span class="layer-count">${i18nString3(UIStrings3.layerCount, {
     PH1: input.layerCount
@@ -614,25 +661,19 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
 };
 var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget.Widget) {
   layerViewHost;
-  treeOutline;
-  lastHoveredNode;
   layerTree;
   layerSnapshotMap;
-  #view;
   #layerCount = 0;
   #totalLayerMemory = 0;
+  #treeData = [];
+  #viewOutput = {};
+  #view;
+  #hoveredLayer = null;
   constructor(layerViewHost, view = DEFAULT_VIEW2) {
     super();
+    this.#view = view;
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
-    this.#view = view;
-    this.treeOutline = new UI2.TreeOutline.TreeOutlineInShadow();
-    this.treeOutline.element.classList.add("layer-tree", "overflow-auto");
-    this.treeOutline.element.addEventListener("mousemove", this.onMouseMove.bind(this), false);
-    this.treeOutline.element.addEventListener("mouseout", this.onMouseMove.bind(this), false);
-    this.treeOutline.element.addEventListener("contextmenu", this.onContextMenu.bind(this), true);
-    UI2.ARIAUtils.setLabel(this.treeOutline.contentElement, i18nString3(UIStrings3.layersTreePane));
-    this.lastHoveredNode = null;
     this.layerViewHost.showInternalLayersSetting().addChangeListener(this.update, this);
   }
   wasShown() {
@@ -641,45 +682,40 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget
   }
   performUpdate() {
     this.#view({
-      treeOutlineElement: this.treeOutline.element,
+      treeData: this.#treeData,
+      selectedLayer: this.layerViewHost.selection()?.layer() || null,
+      hoveredLayer: this.#hoveredLayer,
       layerCount: this.#layerCount,
-      totalLayerMemory: this.#totalLayerMemory
-    }, {}, this.contentElement);
+      totalLayerMemory: this.#totalLayerMemory,
+      onSelect: this.onSelect.bind(this),
+      onHover: this.onHover.bind(this),
+      onContextMenu: this.onContextMenu.bind(this)
+    }, this.#viewOutput, this.contentElement);
   }
   focus() {
-    this.treeOutline.focus();
+    this.#viewOutput.focusTree?.();
   }
   selectObject(selection) {
     this.hoverObject(null);
-    const layer = selection?.layer();
-    const node = layer && layerToTreeElement.get(layer);
-    if (node) {
-      node.revealAndSelect(true);
-    } else if (this.treeOutline.selectedTreeElement) {
-      this.treeOutline.selectedTreeElement.deselect();
+    this.requestUpdate();
+    if (selection) {
+      queueMicrotask(() => {
+        this.#viewOutput.revealLayer?.(selection.layer());
+      });
     }
   }
   hoverObject(selection) {
-    const layer = selection?.layer();
-    const node = layer && layerToTreeElement.get(layer);
-    if (node === this.lastHoveredNode) {
-      return;
-    }
-    if (this.lastHoveredNode) {
-      this.lastHoveredNode.setHovered(false);
-    }
-    if (node) {
-      node.setHovered(true);
-    }
-    this.lastHoveredNode = node;
+    this.#hoveredLayer = selection?.layer() || null;
+    this.requestUpdate();
   }
   setLayerTree(layerTree) {
     this.layerTree = layerTree;
     this.update();
   }
   update() {
+    let layerCount = 0;
+    let totalLayerMemory = 0;
     const showInternalLayers = this.layerViewHost.showInternalLayersSetting().get();
-    const seenLayers = /* @__PURE__ */ new Set();
     let root = null;
     if (this.layerTree) {
       if (!showInternalLayers) {
@@ -689,8 +725,6 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget
         root = this.layerTree.root();
       }
     }
-    let layerCount = 0;
-    let totalLayerMemory = 0;
     const childrenMap = /* @__PURE__ */ new Map();
     if (this.layerTree && root) {
       const buildTree = (layer) => {
@@ -719,119 +753,44 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget
       };
       this.layerTree.forEachLayer(buildTree, root);
     }
-    const syncNode = (layer, parent) => {
-      seenLayers.add(layer);
-      let node = layerToTreeElement.get(layer) || null;
-      if (!node) {
-        node = new LayerTreeElement(this, layer);
-        parent.appendChild(node);
-        if (!layer.drawsContent()) {
-          node.expand();
-        }
-      } else {
-        if (node.parent !== parent) {
-          const oldSelection = this.treeOutline.selectedTreeElement;
-          if (node.parent) {
-            node.parent.removeChild(node);
-          }
-          parent.appendChild(node);
-          if (oldSelection && oldSelection !== this.treeOutline.selectedTreeElement) {
-            oldSelection.select();
-          }
-        }
-        node.update();
-      }
+    const makeTreeNode = (layer) => {
       const children = childrenMap.get(layer) || [];
-      for (const child of children) {
-        syncNode(child, node);
-      }
+      return {
+        layer,
+        isExpanded: !layer.drawsContent(),
+        children: children.map(makeTreeNode)
+      };
     };
-    if (root && (root.drawsContent() || showInternalLayers)) {
-      syncNode(root, this.treeOutline.rootElement());
-    }
-    const rootElement = this.treeOutline.rootElement();
-    for (let node = rootElement.firstChild(); node instanceof LayerTreeElement && !node.root; ) {
-      if (seenLayers.has(node.layer)) {
-        node = node.traverseNextTreeElement(false);
-      } else {
-        const nextNode = node.nextSibling || node.parent;
-        if (node.parent) {
-          node.parent.removeChild(node);
-        }
-        if (node === this.lastHoveredNode) {
-          this.lastHoveredNode = null;
-        }
-        node = nextNode;
-      }
-    }
-    if (!this.treeOutline.selectedTreeElement && this.layerTree) {
-      const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
-      if (elementToSelect) {
-        const layer = layerToTreeElement.get(elementToSelect);
-        if (layer) {
-          layer.revealAndSelect(true);
-        }
-      }
-    }
+    this.#treeData = root && (root.drawsContent() || showInternalLayers) ? [makeTreeNode(root)] : [];
     this.#layerCount = layerCount;
     this.#totalLayerMemory = totalLayerMemory;
     this.requestUpdate();
+    if (!this.layerViewHost.selection() && this.layerTree && this.#treeData.length > 0) {
+      const elementToSelect = this.layerTree.contentRoot() || this.layerTree.root();
+      if (elementToSelect) {
+        this.layerViewHost.selectObject(new LayerSelection(elementToSelect));
+      }
+    }
   }
-  onMouseMove(event) {
-    const node = this.treeOutline.treeElementFromEvent(event);
-    if (node === this.lastHoveredNode) {
+  onHover(layer) {
+    this.layerViewHost.hoverObject(layer ? new LayerSelection(layer) : null);
+  }
+  onSelect(layer) {
+    if (this.layerViewHost.selection()?.layer() === layer) {
       return;
     }
-    this.layerViewHost.hoverObject(this.selectionForNode(node));
+    this.layerViewHost.selectObject(new LayerSelection(layer));
   }
-  selectedNodeChanged(node) {
-    this.layerViewHost.selectObject(this.selectionForNode(node));
-  }
-  onContextMenu(event) {
-    const selection = this.selectionForNode(this.treeOutline.treeElementFromEvent(event));
+  onContextMenu(event, layer) {
+    const selection = layer ? new LayerSelection(layer) : null;
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);
-    const layer = selection?.layer();
-    if (selection && layer) {
-      this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
-      if (this.layerSnapshotMap.has(layer)) {
-        contextMenu.defaultSection().appendItem(i18nString3(UIStrings3.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested", selection), { jslogContext: "layers.paint-profiler" });
-      }
+    this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
+    if (layer && this.layerSnapshotMap.has(layer) && selection) {
+      contextMenu.defaultSection().appendItem(i18nString3(UIStrings3.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested", selection), { jslogContext: "layers.paint-profiler" });
     }
     this.layerViewHost.showContextMenu(contextMenu, selection);
   }
-  selectionForNode(node) {
-    return node?.layer ? new LayerSelection(node.layer) : null;
-  }
 };
-var LayerTreeElement = class extends UI2.TreeOutline.TreeElement {
-  // Watch out: This is different from treeOutline that
-  // LayerTreeElement inherits from UI.TreeOutline.TreeElement.
-  #treeOutline;
-  layer;
-  constructor(tree, layer) {
-    super();
-    this.#treeOutline = tree;
-    this.layer = layer;
-    layerToTreeElement.set(layer, this);
-    this.update();
-  }
-  update() {
-    const node = this.layer.nodeForSelfOrAncestor();
-    const title = document.createDocumentFragment();
-    UI2.UIUtils.createTextChild(title, node ? node.simpleSelector() : "#" + this.layer.id());
-    const details = title.createChild("span", "dimmed");
-    details.textContent = i18nString3(UIStrings3.updateChildDimension, { PH1: this.layer.width(), PH2: this.layer.height() });
-    this.title = title;
-  }
-  onselect() {
-    this.#treeOutline.selectedNodeChanged(this);
-    return false;
-  }
-  setHovered(hovered) {
-    this.listItemElement.classList.toggle("hovered", hovered);
-  }
-};
-var layerToTreeElement = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/layer_viewer/Layers3DView.js
 var Layers3DView_exports = {};
@@ -864,7 +823,7 @@ import * as uiI18n from "./../../ui/i18n/i18n.js";
 import { Link } from "./../../ui/kit/kit.js";
 import * as UI4 from "./../../ui/legacy/legacy.js";
 import * as Lit2 from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/layer_viewer/layers3DView.css.js
 var layers3DView_css_default = `/*
@@ -909,7 +868,7 @@ import * as Common4 from "./../../core/common/common.js";
 import * as i18n7 from "./../../core/i18n/i18n.js";
 import * as Platform from "./../../core/platform/platform.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
 var UIStrings4 = {
   /**
    * @description Tooltip text that appears when hovering over largeicon pan button in Transform Controller of the Layers panel
@@ -966,7 +925,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     this.maxScale = Infinity;
     this.controlPanelToolbar = document.createElement("devtools-toolbar");
     this.controlPanelToolbar.classList.add("transform-control-panel");
-    this.controlPanelToolbar.setAttribute("jslog", `${VisualLogging2.toolbar()}`);
+    this.controlPanelToolbar.setAttribute("jslog", `${VisualLogging3.toolbar()}`);
     this.modeButtons = {};
     if (!disableRotate) {
       const panModeButton = new UI3.Toolbar.ToolbarToggle(
@@ -1169,7 +1128,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
 };
 
 // gen/front_end/panels/layer_viewer/Layers3DView.js
-var { html: html3, render: render3, Directives: { ref } } = Lit2;
+var { html: html3, render: render3, Directives: { ref: ref2 } } = Lit2;
 var { widget: widget2 } = UI4.Widget;
 var UIStrings5 = {
   /**
@@ -1234,7 +1193,7 @@ var DEFAULT_VIEW3 = (input, output, target) => {
   })}</div>` : Lit2.nothing}
     <canvas
       tabindex="0"
-      jslog=${VisualLogging3.canvas("layers").track({
+      jslog=${VisualLogging4.canvas("layers").track({
     click: true,
     drag: true
   })}
@@ -1245,12 +1204,12 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       @mouseleave=${input.onMouseMove}
       @mousemove=${input.onMouseMove}
       @contextmenu=${input.onContextMenu}
-      ${ref((el) => {
+      ${ref2((el) => {
     if (!el) {
       return;
     }
     output.canvasElement = el;
-  })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging3.pane("layers-3d-view")}` } } });
+  })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging4.pane("layers-3d-view")}` } } });
 };
 var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBox) {
   layerViewHost;
@@ -2260,8 +2219,8 @@ var paintProfiler_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./paintProfiler.css")} */`;
 
 // gen/front_end/panels/layer_viewer/PaintProfilerView.js
-var { html: html4, render: render4, nothing: nothing3 } = Lit3;
-var { ref: ref2 } = Lit3.Directives;
+var { html: html4, render: render4, nothing: nothing4 } = Lit3;
+var { ref: ref3 } = Lit3.Directives;
 var UIStrings6 = {
   /**
    * @description Text to indicate the progress of a profile
@@ -2398,7 +2357,7 @@ function calculatePieChartData(input, canvasWidth, samplesPerBar, emptyPieChartD
 var DEFAULT_VIEW4 = (input, output, target) => {
   const getTemplate = (pieChartData2) => html4`
     <style>${paintProfiler_css_default}</style>
-    <div class="paint-profiler-canvas-container" ${ref2(output.onCanvasContainerCreated)}>
+    <div class="paint-profiler-canvas-container" ${ref3(output.onCanvasContainerCreated)}>
       <canvas class="fill"></canvas>
     </div>
     <div class="empty-state ${input.isProfiling ? "" : "hidden"}">
@@ -2711,7 +2670,7 @@ function renderLogItem(logItem) {
       ${hasParams ? html4`
         <ul role="group">
           ${Object.entries(logItem.params || {}).map(([key, val]) => renderProperty(key, val))}
-        </ul>` : nothing3}
+        </ul>` : nothing4}
     </li>
   `;
 }

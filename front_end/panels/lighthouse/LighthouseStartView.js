@@ -17,19 +17,19 @@ const UIStrings = {
      */
     generateLighthouseReport: 'Generate a Lighthouse report',
     /**
-     * @description Text that refers to the Lighthouse mode
+     * @description Section header for the Lighthouse mode options.
      */
     mode: 'Mode',
     /**
-     * @description Title in the Lighthouse Start View for list of categories to run during audit
+     * @description Section header for the list of categories to run during an audit.
      */
     categories: 'Categories',
     /**
-     * @description Label for a button to start analyzing a page navigation with Lighthouse
+     * @description Label for a button to start analyzing a page navigation with Lighthouse.
      */
     analyzeNavigation: 'Analyze page load',
     /**
-     * @description Label for a button to start analyzing the current page state with Lighthouse
+     * @description Label for a button to start analyzing the current page state with Lighthouse.
      */
     analyzeSnapshot: 'Analyze page state',
     /**
@@ -37,11 +37,11 @@ const UIStrings = {
      */
     startTimespan: 'Start timespan',
     /**
-     * @description Text that is usually a hyperlink to more documentation
+     * @description Text that is usually a hyperlink to more documentation.
      */
     learnMore: 'Learn more',
     /**
-     * @description Text that refers to device such as a phone
+     * @description Section header for selecting the device type for auditing.
      */
     device: 'Device',
 };

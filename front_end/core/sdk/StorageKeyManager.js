@@ -47,7 +47,7 @@ export function parseStorageKey(storageKeyString) {
         // For file:// URLs, extracting the origin collapses it to "file://".
         // Node.js uses the full file URL as the StorageKey, so keep the original URL here.
         origin: origin === 'file://' ? components[0] : origin,
-        components: new Map()
+        components: new Map(),
     };
     for (let i = 1; i < components.length; ++i) {
         storageKey.components.set(components[i].charAt(0), components[i].substring(1));

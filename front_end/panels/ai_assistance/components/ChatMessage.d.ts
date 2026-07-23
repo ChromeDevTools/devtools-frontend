@@ -97,14 +97,12 @@ export interface MessageInput {
     isLastMessage: boolean;
     isFirstMessage: boolean;
     prompt: string;
-    shouldShowCSSChangeSummary: boolean;
     canShowFeedbackForm: boolean;
     markdownRenderer: MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
     onExportClick?: () => void;
-    changeSummary?: string;
     walkthrough: {
         onOpen: (message: ModelChatMessage) => void;
         isExpanded: boolean;
@@ -160,13 +158,11 @@ export declare class ChatMessage extends UI.Widget.Widget {
     canShowFeedbackForm: boolean;
     isLastMessage: boolean;
     isFirstMessage: boolean;
-    shouldShowCSSChangeSummary: boolean;
     markdownRenderer: MarkdownLitRenderer;
     onSuggestionClick: (suggestion: string) => void;
     onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
     onCopyResponseClick: (message: ModelChatMessage) => void;
     onExportClick: () => void;
-    changeSummary?: string;
     walkthrough: MessageInput['walkthrough'];
     constructor(element?: HTMLElement, view?: View);
     wasShown(): void;

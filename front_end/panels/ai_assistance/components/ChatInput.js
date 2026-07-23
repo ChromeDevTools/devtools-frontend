@@ -535,7 +535,7 @@ export class ChatInput extends UI.Widget.Widget {
                 isLoading: false,
                 data: bytes,
                 mimeType: JPEG_MIME_TYPE,
-                inputType: "screenshot" /* AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT */
+                inputType: "screenshot" /* AiAssistanceModel.AiAgent.MultimodalInputType.SCREENSHOT */,
             };
             this.performUpdate();
             void this.updateComplete.then(() => {

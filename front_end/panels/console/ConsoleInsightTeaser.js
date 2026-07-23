@@ -451,7 +451,7 @@ export class ConsoleInsightTeaser extends UI.Widget.Widget {
             jslogcontext="explain.teaser.code-snippets-explainer"
           >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</devtools-link>`,
                     // clang-format on
-                }
+                },
             ],
             onLearnMoreClick: () => {
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');

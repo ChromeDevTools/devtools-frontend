@@ -130,7 +130,7 @@ export class GdpClient {
                 queryParams: {
                     allowMissing: 'true',
                     names,
-                }
+                },
             });
             return new Set(response.awards?.map(award => normalizeBadgeName(award.name)) ?? []);
         }
@@ -149,7 +149,7 @@ export class GdpClient {
                     newsletter_email: emailPreference,
                     creation_origin: {
                         origin_application: ORIGIN_APPLICATION_NAME,
-                    }
+                    },
                 }),
             });
             this.#clearCache();
@@ -172,7 +172,7 @@ export class GdpClient {
                 body: JSON.stringify({
                     awardingUri: 'devtools://devtools',
                     name,
-                })
+                }),
             });
             return response;
         }

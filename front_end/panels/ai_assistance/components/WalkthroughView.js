@@ -9,7 +9,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import chatMessageStyles from './chatMessage.css.js';
-import { getDeduplicatedWidgetsMessage, renderStep, titleForStep } from './ChatMessage.js';
+import { getDeduplicatedWidgetsMessage, renderStep, titleForStep, } from './ChatMessage.js';
 import { getButtonLabel } from './WalkthroughUtils.js';
 import walkthroughViewStyles from './walkthroughView.css.js';
 const lockedString = i18n.i18n.lockedString;
@@ -173,7 +173,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         step,
         isLoading: input.isLoading,
         markdownRenderer: input.markdownRenderer,
-        isLast: index === renderableSteps.length - 1
+        isLast: index === renderableSteps.length - 1,
     })}
             </div>
           </div>

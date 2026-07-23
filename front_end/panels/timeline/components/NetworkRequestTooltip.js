@@ -141,7 +141,7 @@ export class NetworkRequestTooltip extends UI.Widget.Widget {
             SDK.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(sdkNetworkRequest.networkRequest);
         const throttledTitle = wasThrottled ? i18nString(UIStrings.wasThrottled, {
             PH1: typeof wasThrottled.conditions.title === 'string' ? wasThrottled.conditions.title :
-                wasThrottled.conditions.title()
+                wasThrottled.conditions.title(),
         }) :
             undefined;
         // The outside spans are transparent with a border on the outside edge.

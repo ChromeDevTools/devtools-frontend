@@ -5,8 +5,7 @@ var _a;
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Bindings from '../bindings/bindings.js';
-import { AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_BINDING_NAME, FREESTYLER_WORLD_NAME, freestylerBinding, injectedFunctions } from './injected.js';
+import { AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_BINDING_NAME, FREESTYLER_WORLD_NAME, freestylerBinding, injectedFunctions, } from './injected.js';
 /**
  * Injects Freestyler extension functions in to the isolated world.
  */
@@ -177,21 +176,6 @@ export class ExtensionScope {
         // Fallback to the HTML tag
         return node.localName() || node.nodeName().toLowerCase();
     }
-    static getSourceLocation(styleRule, cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()) {
-        const styleSheetHeader = styleRule.header;
-        if (!styleSheetHeader) {
-            return;
-        }
-        const range = styleRule.selectorRange();
-        if (!range) {
-            return;
-        }
-        const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
-        const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
-        const location = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
-        const uiLocation = cssWorkspaceBinding.rawLocationToUILocation(location);
-        return uiLocation?.linkText(/* skipTrim= */ true, /* showColumnNumber= */ true);
-    }
     async #computeContextFromElement(remoteObject) {
         if (!remoteObject.objectId) {
             throw new Error('DOMModel is not found');
@@ -208,7 +192,6 @@ export class ExtensionScope {
         if (!node) {
             throw new Error('Node is not found');
         }
-        const backendNodeId = node.backendNodeId();
         try {
             const matchedStyles = await cssModel.getMatchedStyles(node.id);
             if (!matchedStyles) {
@@ -224,9 +207,6 @@ export class ExtensionScope {
             }
             return {
                 selector,
-                simpleSelector: _a.getSelectorForNode(node),
-                sourceLocation: _a.getSourceLocation(styleRule),
-                backendNodeId,
             };
         }
         catch {
@@ -235,7 +215,6 @@ export class ExtensionScope {
         // Fallback
         return {
             selector: _a.getSelectorForNode(node),
-            backendNodeId,
         };
     }
     async #bindingCalled(executionContext, event) {
@@ -252,7 +231,7 @@ export class ExtensionScope {
             const id = data.payload;
             const [args, element] = await Promise.all([
                 this.#simpleEval(executionContext, `freestyler.getArgs(${id})`),
-                this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false)
+                this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false),
             ]);
             const arg = JSON.parse(args.object.value);
             // @ts-expect-error RegExp.escape exist on Chrome 136 and after
@@ -262,7 +241,6 @@ export class ExtensionScope {
             let context = {
                 // TODO: Should this a be a *?
                 selector: '',
-                backendNodeId: undefined,
             };
             try {
                 context = await this.#computeContextFromElement(element.object);
@@ -277,12 +255,9 @@ export class ExtensionScope {
                 const sanitizedStyles = await this.sanitizedStyleChanges(context.selector, arg.styles);
                 const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
                     groupId: this.#agentId,
-                    sourceLocation: context.sourceLocation,
                     selector: context.selector,
-                    simpleSelector: context.simpleSelector,
                     className: arg.className,
                     styles: sanitizedStyles,
-                    backendNodeId: context.backendNodeId,
                 });
                 await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
             }

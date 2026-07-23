@@ -73,7 +73,7 @@ export class MockCDPConnection {
                 error: {
                     message: `Method ${method} is not stubbed in MockCDPConnection`,
                     code: ProtocolClient.CDPConnection.CDPErrorStatus.DEVTOOLS_STUB_ERROR,
-                }
+                },
             });
         }
         return Promise.resolve(handler(params, sessionId));

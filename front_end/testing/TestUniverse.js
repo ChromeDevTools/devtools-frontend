@@ -13,6 +13,7 @@ import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as CrUXManager from '../models/crux-manager/crux-manager.js';
 import * as Emulation from '../models/emulation/emulation.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as JavaScriptMetadata from '../models/javascript_metadata/javascript_metadata.js';
 import * as LiveMetrics from '../models/live-metrics/live-metrics.js';
 import * as Logs from '../models/logs/logs.js';
@@ -181,6 +182,12 @@ export class TestUniverse {
         }
         return this.#context.get(SDK.IsolateManager.IsolateManager);
     }
+    get issuesManager() {
+        if (!this.#context.has(IssuesManager.IssuesManager.IssuesManager)) {
+            this.#context.set(IssuesManager.IssuesManager.IssuesManager, new IssuesManager.IssuesManager.IssuesManager(IssuesManager.Issue.getShowThirdPartyIssuesSetting(this.settings), IssuesManager.IssuesManager.getHideIssueByCodeSetting(this.settings), this.frameManager, this.targetManager, this.workspace, this.debuggerWorkspaceBinding, this.cssWorkspaceBinding));
+        }
+        return this.#context.get(IssuesManager.IssuesManager.IssuesManager);
+    }
     get logManager() {
         if (!this.#context.has(Logs.LogManager.LogManager)) {
             this.#context.set(Logs.LogManager.LogManager, new Logs.LogManager.LogManager(this.targetManager, this.networkLog));
@@ -245,6 +252,14 @@ export class TestUniverse {
             this.#context.set(Persistence.Persistence.PersistenceImpl, new Persistence.Persistence.PersistenceImpl(this.workspace, this.breakpointManager));
         }
         return this.#context.get(Persistence.Persistence.PersistenceImpl);
+    }
+    get presentationConsoleMessageManager() {
+        if (!this.#context.has(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager)) {
+            const manager = new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager(this.targetManager, this.workspace, this.debuggerWorkspaceBinding, this.cssWorkspaceBinding);
+            manager.enable();
+            this.#context.set(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager, manager);
+        }
+        return this.#context.get(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager);
     }
     get projectSettingsModel() {
         if (!this.#context.has(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel)) {

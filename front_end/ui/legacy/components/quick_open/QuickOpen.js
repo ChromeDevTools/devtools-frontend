@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
-import { FilteredListWidget, getRegisteredProviders } from './FilteredListWidget.js';
+import { FilteredListWidget, getRegisteredProviders, } from './FilteredListWidget.js';
 const UIStrings = {
     /**
      * @description Text of the hint shows under Quick Open input box

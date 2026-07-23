@@ -1,10 +1,8 @@
-import * as AgentProject from './AgentProject.js';
 import * as AccessibilityAgent from './agents/AccessibilityAgent.js';
 import * as AiAgent from './agents/AiAgent.js';
 import * as ContextSelectionAgent from './agents/ContextSelectionAgent.js';
 import * as FileAgent from './agents/FileAgent.js';
 import * as NetworkAgent from './agents/NetworkAgent.js';
-import * as PatchAgent from './agents/PatchAgent.js';
 import * as PerformanceAgent from './agents/PerformanceAgent.js';
 import * as StorageAgent from './agents/StorageAgent.js';
 import * as StylingAgent from './agents/StylingAgent.js';
@@ -45,4 +43,4 @@ import * as ListNetworkRequests from './tools/ListNetworkRequests.js';
 import * as ResolveDevtoolsNodePath from './tools/ResolveDevtoolsNodePath.js';
 import * as Tool from './tools/Tool.js';
 import * as ToolRegistry from './tools/ToolRegistry.js';
-export { AccessibilityAgent, AccessibilityContext, AgentProject, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetElementAccessibilityDetails, GetLighthouseAudits, GetNetworkRequestDetails, GetStyles, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PatchAgent, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceContext, PerformanceTraceFormatter, RequestContext, ResolveDevtoolsNodePath, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };
+export { AccessibilityAgent, AccessibilityContext, AiAgent, AiAgent2, AICallTree, AIContext, AiConversation, AiHistoryStorage, AiOrigins, AIQueries, AiUtils, BuiltInAi, ChangeManager, ContextSelectionAgent, ConversationSummary, Debug, DOMNodeContext, EvaluateAction, ExecuteJavaScript, ExtensionScope, FileAgent, FileContext, FileFormatter, GetElementAccessibilityDetails, GetLighthouseAudits, GetNetworkRequestDetails, GetStyles, Injected, LighthouseFormatter, ListNetworkRequests, NetworkAgent, NetworkRequestFormatter, PerformanceAgent, PerformanceAnnotations, PerformanceInsightFormatter, PerformanceTraceContext, PerformanceTraceFormatter, RequestContext, ResolveDevtoolsNodePath, StorageAgent, StorageItem, StylingAgent, Tool, ToolRegistry, UnitFormatters, };

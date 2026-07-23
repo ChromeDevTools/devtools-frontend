@@ -1,4 +1,4 @@
-import { LCPMetric, MetricRatingThresholds, ReportOpts } from './types.js';
+import type { LCPMetric, MetricRatingThresholds, ReportOpts } from './types.js';
 /** Thresholds for LCP. See https://web.dev/articles/lcp#what_is_a_good_lcp_score */
 export declare const LCPThresholds: MetricRatingThresholds;
 /**

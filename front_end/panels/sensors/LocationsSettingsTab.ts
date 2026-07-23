@@ -8,11 +8,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import locationsSettingsTabStyles from './locationsSettingsTab.css.js';
+const {createRef, ref} = Directives;
+export {locationsSettingsTabStyles};
 
 const UIStrings = {
   /**
@@ -110,6 +113,18 @@ const UIStrings = {
    * @description Text of add locations button in the Locations settings tab of the Device toolbar.
    */
   addLocation: 'Add location',
+  /**
+   * @description Title for the dialog when editing an existing location in the Locations settings tab.
+   */
+  editLocation: 'Edit location',
+  /**
+   * @description Label for button to save location changes.
+   */
+  save: 'Save',
+  /**
+   * @description Label for button to cancel location edits.
+   */
+  cancel: 'Cancel',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/LocationsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -136,44 +151,220 @@ function renderItemView(location: LocationDescription): LitTemplate {
   // clang-format on
 }
 
-interface EditorInputControls {
-  titleInput: Element;
-  latInput: Element;
-  longInput: Element;
-  timezoneIdInput: Element;
-  localeInput: Element;
-  accuracyInput: Element;
+export interface EditorInputControls {
+  titleInput: LitTemplate|Element;
+  latInput: LitTemplate|Element;
+  longInput: LitTemplate|Element;
+  timezoneIdInput: LitTemplate|Element;
+  localeInput: LitTemplate|Element;
+  accuracyInput: LitTemplate|Element;
 }
 
-function renderEditorView(controls: EditorInputControls): LitTemplate {
+export interface LocationDialogInput {
+  location: LocationDescription;
+  isNew: boolean;
+  errors?: {
+    title?: string|null,
+    lat?: string|null,
+    long?: string|null,
+    timezoneId?: string|null,
+    locale?: string|null,
+    accuracy?: string|null,
+  };
+  onSave: (location: LocationDescription) => void;
+  onCancel: () => void;
+  onValidateErrors: (errors: {
+    title?: string|null,
+    lat?: string|null,
+    long?: string|null,
+    timezoneId?: string|null,
+    locale?: string|null,
+    accuracy?: string|null,
+  }) => void;
+}
+
+export function renderEditorView(controls: EditorInputControls, errors?: LocationDialogInput['errors'],
+                                 isDialog = false): LitTemplate {
+  if (!isDialog) {
+    // clang-format off
+    return html`
+      <div class="locations-edit-row">
+        <div class="locations-list-text locations-list-title">${i18nString(UIStrings.locationName)}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text">${i18nString(UIStrings.lat)}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text">${i18nString(UIStrings.long)}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text">${i18nString(UIStrings.timezoneId)}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text">${i18nString(UIStrings.locale)}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text">${i18nString(UIStrings.accuracy)}</div>
+      </div>
+      <div class="locations-edit-row">
+        <div class="locations-list-text locations-list-title locations-input-container">${controls.titleInput}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text locations-input-container">${controls.latInput}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text locations-list-text-longitude locations-input-container">${controls.longInput}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text locations-input-container">${controls.timezoneIdInput}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text locations-input-container">${controls.localeInput}</div>
+        <div class="locations-list-separator locations-list-separator-invisible"></div>
+        <div class="locations-list-text locations-input-container">${controls.accuracyInput}</div>
+      </div>
+      ${errors ? html`
+        <div class="locations-edit-row locations-error-row" role="alert">
+          <div class="locations-list-text locations-list-title locations-error-cell">${errors.title ?? nothing}</div>
+          <div class="locations-list-separator locations-list-separator-invisible"></div>
+          <div class="locations-list-text locations-error-cell">${errors.lat ?? nothing}</div>
+          <div class="locations-list-separator locations-list-separator-invisible"></div>
+          <div class="locations-list-text locations-list-text-longitude locations-error-cell">${errors.long ?? nothing}</div>
+          <div class="locations-list-separator locations-list-separator-invisible"></div>
+          <div class="locations-list-text locations-error-cell">${errors.timezoneId ?? nothing}</div>
+          <div class="locations-list-separator locations-list-separator-invisible"></div>
+          <div class="locations-list-text locations-error-cell">${errors.locale ?? nothing}</div>
+          <div class="locations-list-separator locations-list-separator-invisible"></div>
+          <div class="locations-list-text locations-error-cell">${errors.accuracy ?? nothing}</div>
+        </div>
+      ` : nothing}`;
+    // clang-format on
+  }
+
   // clang-format off
   return html`
-    <div class="locations-edit-row">
-      <div class="locations-list-text locations-list-title">${i18nString(UIStrings.locationName)}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text">${i18nString(UIStrings.lat)}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text">${i18nString(UIStrings.long)}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text">${i18nString(UIStrings.timezoneId)}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text">${i18nString(UIStrings.locale)}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text">${i18nString(UIStrings.accuracy)}</div>
+    <div class="editor-grid">
+      <div class="editor-field editor-field-full-width ${errors?.title ? 'has-error' : ''}">
+        <label class="editor-field-label">${i18nString(UIStrings.locationName)}</label>
+        ${controls.titleInput}
+        ${errors?.title ? html`<div class="editor-field-error" role="alert">${errors.title}</div>` : nothing}
+      </div>
+      <div class="editor-field ${errors?.lat ? 'has-error' : ''}">
+        <label class="editor-field-label">${i18nString(UIStrings.lat)}</label>
+        ${controls.latInput}
+        ${errors?.lat ? html`<div class="editor-field-error" role="alert">${errors.lat}</div>` : nothing}
+      </div>
+      <div class="editor-field ${errors?.long ? 'has-error' : ''}">
+        <label class="editor-field-label">${i18nString(UIStrings.long)}</label>
+        ${controls.longInput}
+        ${errors?.long ? html`<div class="editor-field-error" role="alert">${errors.long}</div>` : nothing}
+      </div>
+      <div class="editor-field ${errors?.timezoneId ? 'has-error' : ''}">
+        <label class="editor-field-label">${i18nString(UIStrings.timezoneId)}</label>
+        ${controls.timezoneIdInput}
+        ${errors?.timezoneId ? html`<div class="editor-field-error" role="alert">${errors.timezoneId}</div>` : nothing}
+      </div>
+      <div class="editor-field ${errors?.locale ? 'has-error' : ''}">
+        <label class="editor-field-label">${i18nString(UIStrings.locale)}</label>
+        ${controls.localeInput}
+        ${errors?.locale ? html`<div class="editor-field-error" role="alert">${errors.locale}</div>` : nothing}
+      </div>
+      <div class="editor-field editor-field-full-width ${errors?.accuracy ? 'has-error' : ''}">
+        <label class="editor-field-label">${i18nString(UIStrings.accuracy)}</label>
+        ${controls.accuracyInput}
+        ${errors?.accuracy ? html`<div class="editor-field-error" role="alert">${errors.accuracy}</div>` : nothing}
+      </div>
     </div>
-    <div class="locations-edit-row">
-      <div class="locations-list-text locations-list-title locations-input-container">${controls.titleInput}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text locations-input-container">${controls.latInput}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text locations-list-text-longitude locations-input-container">${controls.longInput}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text locations-input-container">${controls.timezoneIdInput}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text locations-input-container">${controls.localeInput}</div>
-      <div class="locations-list-separator locations-list-separator-invisible"></div>
-      <div class="locations-list-text locations-input-container">${controls.accuracyInput}</div>
-    </div>`;
+  `;
+  // clang-format on
+}
+
+export function renderLocationDialog(input: LocationDialogInput, target: HTMLElement): void {
+  const titleInputRef = createRef<HTMLInputElement>();
+  const latInputRef = createRef<HTMLInputElement>();
+  const longInputRef = createRef<HTMLInputElement>();
+  const timezoneIdInputRef = createRef<HTMLInputElement>();
+  const localeInputRef = createRef<HTMLInputElement>();
+  const accuracyInputRef = createRef<HTMLInputElement>();
+
+  const handleSave = (): void => {
+    const title = titleInputRef.value?.value.trim() ?? '';
+    const latStr = latInputRef.value?.value.trim() ?? '';
+    const longStr = longInputRef.value?.value.trim() ?? '';
+    const timezoneId = timezoneIdInputRef.value?.value.trim() ?? '';
+    const locale = localeInputRef.value?.value.trim() ?? '';
+    const accuracyStr = accuracyInputRef.value?.value.trim() ?? '';
+
+    const titleError = validateTitle(title);
+    const latError = validateLatitude(latStr);
+    const longError = validateLongitude(longStr);
+    const tzError = validateTimezoneId(timezoneId);
+    const localeError = validateLocale(locale);
+    const accuracyError = validateAccuracy(accuracyStr);
+
+    if (titleError || latError || longError || tzError || localeError || accuracyError) {
+      input.onValidateErrors({
+        title: titleError,
+        lat: latError,
+        long: longError,
+        timezoneId: tzError,
+        locale: localeError,
+        accuracy: accuracyError,
+      });
+      return;
+    }
+
+    input.onSave({
+      title,
+      lat: latStr ? parseFloat(latStr) : 0,
+      long: longStr ? parseFloat(longStr) : 0,
+      timezoneId,
+      locale,
+      accuracy: accuracyStr ? parseFloat(accuracyStr) : SDK.EmulationModel.Location.DEFAULT_ACCURACY,
+    });
+  };
+
+  const editorControls: EditorInputControls = {
+    titleInput: html`<input type="text" placeholder=${i18nString(UIStrings.locationName)} .value=${
+        input.location.title} ${ref(titleInputRef)}>`,
+    latInput: html`<input type="text" placeholder=${i18nString(UIStrings.latitude)} .value=${
+        String(input.location.lat)} ${ref(latInputRef)}>`,
+    longInput: html`<input type="text" placeholder=${i18nString(UIStrings.longitude)} .value=${
+        String(input.location.long)} ${ref(longInputRef)}>`,
+    timezoneIdInput: html`<input type="text" placeholder=${i18nString(UIStrings.timezoneId)} .value=${
+        input.location.timezoneId} ${ref(timezoneIdInputRef)}>`,
+    localeInput: html`<input type="text" placeholder=${i18nString(UIStrings.locale)} .value=${input.location.locale} ${
+        ref(localeInputRef)}>`,
+    accuracyInput: html`<input type="text" placeholder=${i18nString(UIStrings.accuracy)} .value=${
+        String(input.location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)} ${ref(accuracyInputRef)}>`,
+  };
+
+  // clang-format off
+  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+  render(html`
+    <style>${locationsSettingsTabStyles}</style>
+    <devtools-dialog
+      @clickoutsidedialog=${input.onCancel}
+      @forceddialogclose=${input.onCancel}
+      .dialogTitle=${input.isNew ? i18nString(UIStrings.addLocation) : i18nString(UIStrings.editLocation)}
+      .jslogContext=${'location-dialog'}
+      .origin=${Dialogs.Dialog.MODAL}
+      .position=${Dialogs.Dialog.DialogVerticalPosition.AUTO}
+      .horizontalAlignment=${Dialogs.Dialog.DialogHorizontalAlignment.CENTER}
+      .state=${Dialogs.Dialog.DialogState.EXPANDED}
+      .closeButton=${true}
+      .closeOnESC=${true}
+      .closeOnScroll=${false}>
+      <div class="location-dialog-content">
+        ${renderEditorView(editorControls, input.errors, true)}
+        <div class="dialog-buttons">
+          <devtools-button
+            class="save-button"
+            .variant=${Buttons.Button.Variant.PRIMARY}
+            @click=${handleSave}>
+            ${i18nString(UIStrings.save)}
+          </devtools-button>
+          <devtools-button
+            class="cancel-button"
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            @click=${input.onCancel}>
+            ${i18nString(UIStrings.cancel)}
+          </devtools-button>
+        </div>
+      </div>
+    </devtools-dialog>
+  `, target);
   // clang-format on
 }
 

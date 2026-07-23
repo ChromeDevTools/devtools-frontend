@@ -29,6 +29,7 @@ devtools_ui_module("sensors") {
     "../../models/geometry:bundle",
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/buttons:bundle",
+    "../../ui/components/dialogs:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",
@@ -83,5 +84,7 @@ ts_library("unittests") {
     ":bundle",
     "../../core/common:bundle",
     "../../testing",
+    "../../ui/components/dialogs:bundle",
+    "../../ui/components/render_coordinator:bundle",
   ]
 }

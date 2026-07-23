@@ -3,10 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import * as sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
-import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Sensors from './sensors.js';
 
@@ -99,5 +102,244 @@ describeWithEnvironment('LocationsSettingsTab', () => {
     await tab.updateComplete;
 
     await assertScreenshot('sensors/LocationsSettingsTab/edit-editor-invalid.png');
+  });
+});
+
+describeWithEnvironment('renderLocationDialog', () => {
+  let target: HTMLElement;
+
+  beforeEach(() => {
+    target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+  });
+
+  it('renders in add mode with empty location inputs', async () => {
+    Sensors.LocationsSettingsTab.renderLocationDialog({
+      location: {
+        title: '',
+        lat: 0,
+        long: 0,
+        timezoneId: '',
+        locale: '',
+        accuracy: 0,
+      },
+      isNew: true,
+      onSave: () => {},
+      onCancel: () => {},
+      onValidateErrors: () => {},
+    },
+                                                      target);
+    await RenderCoordinator.done();
+
+    const dialog = target.querySelector<Dialogs.Dialog.Dialog>('devtools-dialog');
+    assert.exists(dialog);
+    assert.strictEqual(dialog.shadowRoot?.querySelector('.dialog-header-text')?.textContent?.trim(), 'Add location');
+
+    const titleInput = target.querySelector<HTMLInputElement>('input[placeholder="Location name"]');
+    assert.exists(titleInput);
+    assert.strictEqual(titleInput.value, '');
+  });
+
+  it('renders in edit mode with existing location data', async () => {
+    Sensors.LocationsSettingsTab.renderLocationDialog({
+      location: {
+        title: 'London',
+        lat: 51.5074,
+        long: -0.1278,
+        timezoneId: 'Europe/London',
+        locale: 'en-GB',
+        accuracy: 100,
+      },
+      isNew: false,
+      onSave: () => {},
+      onCancel: () => {},
+      onValidateErrors: () => {},
+    },
+                                                      target);
+    await RenderCoordinator.done();
+
+    const dialog = target.querySelector<Dialogs.Dialog.Dialog>('devtools-dialog');
+    assert.exists(dialog);
+    assert.strictEqual(dialog.shadowRoot?.querySelector('.dialog-header-text')?.textContent?.trim(), 'Edit location');
+
+    const titleInput = target.querySelector<HTMLInputElement>('input[placeholder="Location name"]');
+    assert.exists(titleInput);
+    assert.strictEqual(titleInput.value, 'London');
+
+    const latInput = target.querySelector<HTMLInputElement>('input[placeholder="Latitude"]');
+    assert.exists(latInput);
+    assert.strictEqual(latInput.value, '51.5074');
+  });
+
+  it('calls onValidateErrors when saving invalid input without calling onSave', async () => {
+    const onSave = sinon.spy();
+    const onValidateErrors = sinon.spy();
+
+    Sensors.LocationsSettingsTab.renderLocationDialog({
+      location: {
+        title: '',
+        lat: 0,
+        long: 0,
+        timezoneId: '',
+        locale: '',
+        accuracy: 0,
+      },
+      isNew: true,
+      onSave,
+      onCancel: () => {},
+      onValidateErrors,
+    },
+                                                      target);
+    await RenderCoordinator.done();
+
+    const saveButton = target.querySelector<HTMLElement>('.save-button');
+    assert.exists(saveButton);
+    saveButton.click();
+
+    sinon.assert.calledOnce(onValidateErrors);
+    sinon.assert.notCalled(onSave);
+    assert.strictEqual(onValidateErrors.firstCall.args[0].title, 'Location name can’t be empty');
+  });
+
+  it('renders validation errors when passed in input', async () => {
+    Sensors.LocationsSettingsTab.renderLocationDialog({
+      location: {
+        title: '',
+        lat: 0,
+        long: 0,
+        timezoneId: '',
+        locale: '',
+        accuracy: 0,
+      },
+      isNew: true,
+      errors: {
+        title: 'Location name can’t be empty',
+      },
+      onSave: () => {},
+      onCancel: () => {},
+      onValidateErrors: () => {},
+    },
+                                                      target);
+    await RenderCoordinator.done();
+
+    const error = target.querySelector('.editor-field-error');
+    assert.exists(error);
+    assert.strictEqual(error.textContent?.trim(), 'Location name can’t be empty');
+  });
+
+  it('calls onSave with updated location when inputs are valid', async () => {
+    const onSave = sinon.spy();
+    const onValidateErrors = sinon.spy();
+
+    Sensors.LocationsSettingsTab.renderLocationDialog({
+      location: {
+        title: 'Berlin',
+        lat: 52.52,
+        long: 13.405,
+        timezoneId: 'Europe/Berlin',
+        locale: 'de-DE',
+        accuracy: 50,
+      },
+      isNew: true,
+      onSave,
+      onCancel: () => {},
+      onValidateErrors,
+    },
+                                                      target);
+    await RenderCoordinator.done();
+
+    const saveButton = target.querySelector<HTMLElement>('.save-button');
+    assert.exists(saveButton);
+    saveButton.click();
+
+    sinon.assert.notCalled(onValidateErrors);
+    sinon.assert.calledOnce(onSave);
+    assert.deepEqual(onSave.firstCall.args[0], {
+      title: 'Berlin',
+      lat: 52.52,
+      long: 13.405,
+      timezoneId: 'Europe/Berlin',
+      locale: 'de-DE',
+      accuracy: 50,
+    });
+  });
+});
+
+describeWithEnvironment('renderLocationDialog screenshots', () => {
+  let target: HTMLElement;
+
+  beforeEach(() => {
+    target = document.createElement('div');
+    target.style.width = '580px';
+    target.style.height = '530px';
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+  });
+
+  async function setupAndRenderDialog(input: Sensors.LocationsSettingsTab.LocationDialogInput) {
+    Sensors.LocationsSettingsTab.renderLocationDialog(input, target);
+    await RenderCoordinator.done();
+    const dialog = target.querySelector('devtools-dialog') as Dialogs.Dialog.Dialog;
+    assert.exists(dialog);
+    dialog.setBoundingElementForTesting(target);
+    await dialog.setDialogVisible(true);
+    await raf();
+    await RenderCoordinator.done();
+  }
+
+  it('renders add location view', async () => {
+    await setupAndRenderDialog({
+      location: {
+        title: '',
+        lat: 0,
+        long: 0,
+        timezoneId: '',
+        locale: '',
+        accuracy: 0,
+      },
+      isNew: true,
+      onSave: () => {},
+      onCancel: () => {},
+      onValidateErrors: () => {},
+    });
+    await assertScreenshot('sensors/LocationsSettingsTab/location-dialog-add.png');
+  });
+
+  it('renders edit location view', async () => {
+    await setupAndRenderDialog({
+      location: {
+        title: 'London',
+        lat: 51.5074,
+        long: -0.1278,
+        timezoneId: 'Europe/London',
+        locale: 'en-GB',
+        accuracy: 100,
+      },
+      isNew: false,
+      onSave: () => {},
+      onCancel: () => {},
+      onValidateErrors: () => {},
+    });
+    await assertScreenshot('sensors/LocationsSettingsTab/location-dialog-edit.png');
+  });
+
+  it('renders edit location view with errors', async () => {
+    await setupAndRenderDialog({
+      location: {
+        title: '',
+        lat: 0,
+        long: 0,
+        timezoneId: '',
+        locale: '',
+        accuracy: 0,
+      },
+      isNew: true,
+      errors: {
+        title: 'Location name can’t be empty',
+      },
+      onSave: () => {},
+      onCancel: () => {},
+      onValidateErrors: () => {},
+    });
+    await assertScreenshot('sensors/LocationsSettingsTab/location-dialog-errors.png');
   });
 });

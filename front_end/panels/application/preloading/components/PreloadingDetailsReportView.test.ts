@@ -10,6 +10,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as Logs from '../../../../models/logs/logs.js';
 import {
+  assertScreenshot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
   renderElementIntoDOM,
@@ -28,10 +29,11 @@ const zip2 = <T, S>(xs: T[], ys: S[]) => {
 };
 
 const renderPreloadingDetailsReportView =
-    async (data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData) => {
+    async (data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData,
+           renderOptions?: Parameters<typeof renderElementIntoDOM>[1]) => {
   const component = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   component.data = data;
-  renderElementIntoDOM(component);
+  renderElementIntoDOM(component, renderOptions);
   assert.isNotNull(component.shadowRoot);
   await RenderCoordinator.done();
 
@@ -743,5 +745,48 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     ]);
   });
 
-  // TODO: Add test for pipeline
+  it('renders a screenshot of prerendering details', async () => {
+    const url = urlString`https://example.com/prerendered.html`;
+    const data: PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportViewData = {
+      pipeline: SDK.PreloadingModel.PreloadPipeline.newFromAttemptsForTesting([
+        {
+          action: Protocol.Preload.SpeculationAction.Prerender,
+          key: {
+            loaderId: 'loaderId' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prerender,
+            url,
+            targetHint: undefined,
+          },
+          pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
+          status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
+          prerenderStatus: null,
+          disallowedMojoInterface: null,
+          mismatchedHeaders: null,
+          ruleSetIds: ['ruleSetId'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+        },
+      ]),
+      ruleSets: [
+        {
+          id: 'ruleSetId' as Protocol.Preload.RuleSetId,
+          loaderId: 'loaderId' as Protocol.Network.LoaderId,
+          sourceText: `
+{
+  "prerender": [
+    {
+      "source": "list",
+      "urls": ["prerendered.html"]
+    }
+  ]
+}
+`,
+        },
+      ],
+      pageURL: urlString`https://example.com/`,
+    };
+
+    await renderPreloadingDetailsReportView(data, {includeCommonStyles: true});
+
+    await assertScreenshot('preloading/details_report.png');
+  });
 });

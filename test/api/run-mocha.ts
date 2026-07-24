@@ -5,23 +5,18 @@
 import * as path from 'node:path';
 
 import {GEN_DIR, SOURCE_ROOT} from '../conductor/paths.js';
-import {loadTests, TestConfig} from '../conductor/test_config.js';
+import {loadTests} from '../conductor/test_config.js';
 import {run} from '../shared/run-mocha.js';
 
 import {devtoolsApiTestInterface} from './mocha-interface.js';
 
 void run({
-  allowUncaught: false,
   require: [
     path.join(SOURCE_ROOT, 'node_modules', 'source-map-support', 'register.js'),
     path.join(GEN_DIR, 'test', 'api', 'mocha_hooks.js'),
   ],
   spec: loadTests(path.join(GEN_DIR, 'front_end'), 'api_tests.txt'),
-  timeout: TestConfig.debug ? 0 : 10_000,
-  reporter: path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter.js'),
-  retries: TestConfig.retries,
+  timeout: 10_000,
   suiteName: 'api',
   ui: devtoolsApiTestInterface as unknown as 'bdd',
-  slow: 1000,
-  ...TestConfig.mochaGrep,
 });

@@ -8,23 +8,20 @@ import {SOURCE_ROOT} from '../conductor/paths.js';
 import {loadTests, TestConfig} from '../conductor/test_config.js';
 import devtoolsTestInterface from '../e2e/conductor/mocha-interface.js';
 import {run} from '../shared/run-mocha.js';
+
 TestConfig.isPerfTest = true;
 
-const spec = loadTests(__dirname);
-spec.unshift(path.join(__dirname, 'setup', 'test_setup.js'));
-
 void run({
-  spec,
+  spec: [
+    path.join(__dirname, 'setup', 'test_setup.js'),
+    ...loadTests(__dirname),
+  ],
   require: [
     path.join(path.dirname(__dirname), 'perf', 'setup', 'test_setup.js'),
     path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
     path.join(SOURCE_ROOT, 'node_modules', 'source-map-support', 'register.js'),
   ],
-  timeout: TestConfig.debug ? 0 : 30_000,
-  retries: TestConfig.retries,
-  reporter: path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter.js'),
+  timeout: 30_000,
   suiteName: 'perf',
   ui: devtoolsTestInterface as unknown as 'bdd',
-  slow: 1000,
-  ...TestConfig.mochaGrep,
 });

@@ -4,21 +4,17 @@
 
 import * as path from 'node:path';
 
-import {loadTests, TestConfig} from '../conductor/test_config.js';
+import {loadTests} from '../conductor/test_config.js';
 import devtoolsTestInterface from '../e2e/conductor/mocha-interface.js';
 import {run} from '../shared/run-mocha.js';
 
 void run({
-  // This should make mocha crash on uncaught errors.
-  // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
-  allowUncaught: true,
-  require: [path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'), 'source-map-support/register.js'],
+  require: [
+    path.join(path.dirname(__dirname), 'e2e', 'conductor', 'mocha_hooks.js'),
+    'source-map-support/register.js',
+  ],
   spec: loadTests(__dirname, path.join('e2e', 'tests.txt')),
-  timeout: TestConfig.debug ? 0 : 10_000,
-  retries: TestConfig.retries,
-  reporter: path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter.js'),
+  timeout: 10_000,
   suiteName: 'e2e',
   ui: devtoolsTestInterface as unknown as 'bdd',
-  slow: 1000,
-  ...TestConfig.mochaGrep,
 });

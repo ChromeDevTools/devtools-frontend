@@ -3,17 +3,43 @@
 // found in the LICENSE file.
 
 import Mocha from 'mocha';
-import {isAbsolute} from 'node:path';
+import * as path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-import {duplicateTests, pruneSuite} from '../../front_end/testing/MochaHelpers.js';
+import {
+  duplicateTests,
+  pruneSuite,
+} from '../../front_end/testing/MochaHelpers.js';
 import {computeBuildTestId} from '../../front_end/testing/TestIdGeneration.js';
 import {TEST_ID_REGEX} from '../conductor/paths.js';
 import {TestConfig} from '../conductor/test_config.js';
 import {getSkippedTests} from '../conductor/test_expectations.js';
 
-export async function run(options: Mocha.MochaOptions&{spec?: string[], suiteName?: string}) {
-  const mocha = new Mocha(options);
+type Options = Mocha.MochaOptions&{spec?: string[], suiteName?: string};
+type OmitOptions = 'reporter'|'allowUncaught'|'retries'|'failZero';
+
+function optionsWithDefalts(options: Options): Options {
+  const withDefaults = {
+    // This should make mocha crash on uncaught errors.
+    // See https://github.com/mochajs/mocha/blob/master/docs/index.md#--allow-uncaught.
+    allowUncaught: true,
+    retries: TestConfig.retries,
+    reporter: path.join(__dirname, 'mocha-resultsdb-reporter.js'),
+    slow: 1000,
+    failZero: true,
+    ...options,
+    ...TestConfig.mochaGrep,
+  };
+
+  if (TestConfig.debug) {
+    withDefaults.timeout = 0;
+  }
+
+  return withDefaults;
+}
+
+export async function run(options: Omit<Options, OmitOptions>) {
+  const mocha = new Mocha(optionsWithDefalts(options));
 
   // Load files
   const files = options.spec;
@@ -33,7 +59,7 @@ export async function run(options: Mocha.MochaOptions&{spec?: string[], suiteNam
   if (options.require) {
     const requires = Array.isArray(options.require) ? options.require : [options.require];
     for (const req of requires) {
-      const importTarget = isAbsolute(req) ? pathToFileURL(req).href : req;
+      const importTarget = path.isAbsolute(req) ? pathToFileURL(req).href : req;
 
       const mod = await import(importTarget);
       const exportsObj = mod.default || mod;
@@ -60,7 +86,9 @@ export async function run(options: Mocha.MochaOptions&{spec?: string[], suiteNam
 
   await mocha.loadFilesAsync();
 
-  const testIds = new Set(TestConfig.tests.filter(testId => TEST_ID_REGEX.test(testId)));
+  const testIds = new Set(
+      TestConfig.tests.filter(testId => TEST_ID_REGEX.test(testId)),
+  );
   const seenTestIds = new Set<string>();
   const skippedTests = getSkippedTests();
 

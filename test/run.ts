@@ -311,6 +311,7 @@ class ScriptsMochaTests extends Tests {
           // the first test. We set 2 x Default(2000)
           '--timeout=4000',
           '--extension=ts,js',
+          '--fail-zero',
         ],
     );
   }

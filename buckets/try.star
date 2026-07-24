@@ -271,6 +271,7 @@ def custom_locationsfilters(builder):
             cq.location_filter(path_regexp = "DEPS", exclude = False),
         ]
     return [
+        cq.location_filter(path_regexp = "test/TestExpectations", exclude = True),
         cq.location_filter(path_regexp = "docs/.+", exclude = True),
         cq.location_filter(path_regexp = "front_end/.+\\.md", exclude = False),
         cq.location_filter(path_regexp = ".+\\.md", exclude = True),

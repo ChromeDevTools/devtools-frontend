@@ -336,6 +336,10 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callFactoryMethod('createNodesProviderForClass', HeapSnapshotProviderProxy, classKey, nodeFilter);
   }
 
+  queryObjects(queryOptions: HeapSnapshotModel.HeapQueryOptions): HeapSnapshotProviderProxy {
+    return this.callFactoryMethod('queryObjects', HeapSnapshotProviderProxy, queryOptions);
+  }
+
   allocationTracesTops(): Promise<HeapSnapshotModel.SerializedAllocationNode[]> {
     return this.callMethodPromise('allocationTracesTops');
   }

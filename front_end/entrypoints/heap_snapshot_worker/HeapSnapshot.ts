@@ -3512,6 +3512,97 @@ export abstract class HeapSnapshot {
     return new HeapSnapshotNodesProvider(this, this.aggregatesWithFilter(nodeFilter)[classKey].idxs);
   }
 
+  queryObjects(queryOptions: HeapSnapshotModel.HeapSnapshotModel.HeapQueryOptions): HeapSnapshotNodesProvider {
+    const {nodes, nodeFieldCount, retainedSizes} = this;
+    const nodesLength = nodes.length;
+
+    const matchingIndexes: number[] = [];
+
+    const classNamePattern = queryOptions.className ? new RegExp(queryOptions.className, 'i') : null;
+    const propertyNamePattern = queryOptions.propertyName ? new RegExp(queryOptions.propertyName, 'i') : null;
+    const targetNodeType = queryOptions.nodeType ? queryOptions.nodeType.toLowerCase() : null;
+
+    const node = this.rootNode();
+
+    for (let nodeIndex = 0, ordinal = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount, ordinal++) {
+      node.nodeIndex = nodeIndex;
+
+      if (queryOptions.minSelfSize !== undefined && node.selfSize() < queryOptions.minSelfSize) {
+        continue;
+      }
+      if (queryOptions.maxSelfSize !== undefined && node.selfSize() > queryOptions.maxSelfSize) {
+        continue;
+      }
+
+      const retainedSize = retainedSizes[ordinal];
+      if (queryOptions.minRetainedSize !== undefined && retainedSize < queryOptions.minRetainedSize) {
+        continue;
+      }
+      if (queryOptions.maxRetainedSize !== undefined && retainedSize > queryOptions.maxRetainedSize) {
+        continue;
+      }
+
+      if (queryOptions.isDetached !== undefined) {
+        const isDetached = node.detachedness() === HeapSnapshotModel.HeapSnapshotModel.DOMLinkState.DETACHED;
+        if (isDetached !== queryOptions.isDetached) {
+          continue;
+        }
+      }
+
+      if (classNamePattern) {
+        const name = node.name();
+        if (!classNamePattern.test(name)) {
+          continue;
+        }
+      }
+
+      if (targetNodeType) {
+        const typeStr = node.type();
+        if (typeStr.toLowerCase() !== targetNodeType) {
+          continue;
+        }
+      }
+
+      if (propertyNamePattern) {
+        let propMatch = false;
+        for (const iter = node.edges(); iter.hasNext(); iter.next()) {
+          if (propertyNamePattern.test(iter.edge.name())) {
+            propMatch = true;
+            break;
+          }
+        }
+        if (!propMatch) {
+          continue;
+        }
+      }
+
+      matchingIndexes.push(nodeIndex);
+    }
+
+    const sortBy = queryOptions.sortBy ?? 'retainedSize';
+    if (sortBy === 'retainedSize') {
+      matchingIndexes.sort((a, b) => retainedSizes[b / nodeFieldCount] - retainedSizes[a / nodeFieldCount]);
+    } else if (sortBy === 'selfSize') {
+      matchingIndexes.sort((a, b) => {
+        node.nodeIndex = b;
+        const sizeB = node.selfSize();
+        node.nodeIndex = a;
+        const sizeA = node.selfSize();
+        return sizeB - sizeA;
+      });
+    } else if (sortBy === 'id') {
+      matchingIndexes.sort((a, b) => {
+        node.nodeIndex = b;
+        const idB = node.id();
+        node.nodeIndex = a;
+        const idA = node.id();
+        return idA - idB;
+      });
+    }
+
+    return new HeapSnapshotNodesProvider(this, matchingIndexes);
+  }
+
   private maxJsNodeId(): number {
     const nodeFieldCount = this.nodeFieldCount;
     const nodes = this.nodes;

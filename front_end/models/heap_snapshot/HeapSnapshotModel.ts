@@ -353,3 +353,15 @@ export interface ObjectInfo {
   edgeCount: number;
   retainerCount: number;
 }
+
+export interface HeapQueryOptions {
+  className?: string;
+  propertyName?: string;
+  nodeType?: string;
+  minRetainedSize?: number;
+  maxRetainedSize?: number;
+  minSelfSize?: number;
+  maxSelfSize?: number;
+  isDetached?: boolean;
+  sortBy?: 'retainedSize'|'selfSize'|'id';
+}

@@ -10,21 +10,21 @@
 
 devtools-report {
   flex-grow: 1;
-}
 
-button.link {
-  color: var(--sys-color-primary);
-  text-decoration: underline;
-  padding: 0;
-  border: none;
-  background: none;
-  font-family: inherit;
-  font-size: inherit;
-  height: 16px;
-}
+  button.link {
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: inherit;
+    height: 16px;
+  }
 
-button.link devtools-icon {
-  vertical-align: sub;
+  button.link devtools-icon {
+    vertical-align: sub;
+  }
 }
 
 .link {

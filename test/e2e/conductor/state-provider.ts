@@ -6,6 +6,7 @@ import type * as Mocha from 'mocha';
 import * as puppeteer from 'puppeteer-core';
 
 import {querySelectorShadowTextAll, querySelectorShadowTextOne} from '../../conductor/custom-query-handlers.js';
+import type {TestStateProvider} from '../../conductor/mocha-interface-helpers.js';
 import {ScreenshotError} from '../../conductor/screenshot-error.js';
 import {TestConfig} from '../../conductor/test_config.js';
 import {startServer} from '../../conductor/test_server.js';
@@ -17,8 +18,6 @@ import {
 } from '../shared/browser-helper.js';
 import {DEFAULT_DEVTOOLS_SETTINGS, setupDevToolsPage} from '../shared/frontend-helper.js';
 import {setupInspectedPage} from '../shared/target-helper.js';
-
-import type {TestStateProvider} from './mocha-interface-helpers.js';
 
 const DEFAULT_SETTINGS = {
   ...DEFAULT_BROWSER_SETTINGS,

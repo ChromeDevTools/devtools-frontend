@@ -23,6 +23,7 @@ node_ts_library("harness") {
 ts_e2e_library("e2e_fixtures") {
   deps = [
     "../../test/conductor:implementation",
+    "../../test/e2e/conductor:implementation",
     "../../test/shared",
   ]
   sources = [

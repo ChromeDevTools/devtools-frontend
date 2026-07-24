@@ -138,6 +138,38 @@ class DevToolsTestHarness(unittest.TestCase):
         self.assertEqual(results[0].get('status'), 'PASS')
         self.assertTrue(results[0].get('expected'))
 
+    def test_unit_artifacts(self):
+        import os
+        results, exit_code = self.run_unit_test(
+            "test/harness/unit/multi_logs.test.ts")
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(
+            len(results), 2,
+            f"Expected exactly 2 test results, got {len(results)}")
+        results.sort(key=lambda r: r.get('testId'))
+
+        test_id_1 = results[0].get('testId')
+        safe_id_1 = re.sub(r'[^a-zA-Z0-9_.-]', '_', test_id_1)
+        log_path_1 = os.path.join('out', 'Default', 'artifacts', 'test-logs',
+                                  f"{safe_id_1}.log")
+        self.assertTrue(os.path.exists(log_path_1),
+                        f"Artifact file {log_path_1} does not exist")
+        with open(log_path_1, 'r') as f:
+            content_1 = f.read()
+        self.assertIn('HARNESS_UNIT_TEST_LOG_1', content_1)
+        self.assertNotIn('HARNESS_UNIT_TEST_LOG_2', content_1)
+
+        test_id_2 = results[1].get('testId')
+        safe_id_2 = re.sub(r'[^a-zA-Z0-9_.-]', '_', test_id_2)
+        log_path_2 = os.path.join('out', 'Default', 'artifacts', 'test-logs',
+                                  f"{safe_id_2}.log")
+        self.assertTrue(os.path.exists(log_path_2),
+                        f"Artifact file {log_path_2} does not exist")
+        with open(log_path_2, 'r') as f:
+            content_2 = f.read()
+        self.assertIn('HARNESS_UNIT_TEST_LOG_2', content_2)
+        self.assertNotIn('HARNESS_UNIT_TEST_LOG_1', content_2)
+
     def test_unit_response_file(self):
         import tempfile
         import os

@@ -29,6 +29,7 @@ const tests = [
 
 function* reporters() {
   yield 'test-expectations';
+  yield 'browser-artifact';
   if (ResultsDb.available()) {
     yield 'resultsdb';
     yield 'exact-test-id';
@@ -38,6 +39,57 @@ function* reporters() {
   }
   if (TestConfig.coverage) {
     yield 'coverage';
+  }
+}
+
+interface LogEntry {
+  timestamp: number;
+  type: 'stdout'|'stderr'|'console';
+  text: string;
+}
+
+class TestLogAggregator {
+  private static instance: TestLogAggregator;
+  private entries: LogEntry[] = [];
+  private testArtifactsDir: string;
+  private lastTestEntryIndex = 0;
+
+  private constructor() {
+    this.testArtifactsDir = path.join(TestConfig.artifactsDir, 'test-logs');
+    fs.mkdirSync(this.testArtifactsDir, {recursive: true});
+  }
+
+  static getInstance(): TestLogAggregator {
+    if (!TestLogAggregator.instance) {
+      TestLogAggregator.instance = new TestLogAggregator();
+    }
+    return TestLogAggregator.instance;
+  }
+
+  addLog(type: 'stdout'|'stderr'|'console', text: string, timestamp = Date.now()): void {
+    this.entries.push({timestamp, type, text});
+  }
+
+  private formatEntry(entry: LogEntry): string {
+    const prefix = entry.type === 'stdout' ? '[STDOUT]' : entry.type === 'stderr' ? '[STDERR]' : '[PAGE CONSOLE]';
+    return `${prefix} ${entry.text}\n`;
+  }
+
+  recordTestResult(exactTestId: string, _status: string): {filePath: string, content: string}|undefined {
+    const testLogs = this.entries.slice(this.lastTestEntryIndex);
+    this.lastTestEntryIndex = this.entries.length;
+
+    if (testLogs.length === 0) {
+      return undefined;
+    }
+
+    const safeTestId = exactTestId.replace(/[^a-zA-Z0-9_.-]/g, '_');
+    const artifactPath = path.join(this.testArtifactsDir, `${safeTestId}.log`);
+    const artifactContent = testLogs.map(e => this.formatEntry(e)).join('');
+
+    fs.writeFileSync(artifactPath, artifactContent);
+
+    return {filePath: artifactPath, content: artifactContent};
   }
 }
 
@@ -54,13 +106,34 @@ const CustomChrome = function(this: any, _baseBrowserDecorator: unknown, args: B
       headless: TestConfig.headless,
       executablePath: TestConfig.chromeBinary,
       defaultViewport: null,
-      dumpio: true,
+      dumpio: false,
       // We do not need to process network in unit tests.
       networkEnabled: false,
       args,
       ignoreDefaultArgs: ['--hide-scrollbars'],
     });
     this._process = browser.process();
+
+    const logAggregator = TestLogAggregator.getInstance();
+
+    const createStreamLineBuffer = (type: 'stdout'|'stderr') => {
+      let buffer = '';
+      return (data: Buffer|string) => {
+        buffer += data.toString();
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) {
+          logAggregator.addLog(type, line);
+        }
+      };
+    };
+
+    if (this._process.stdout) {
+      this._process.stdout.on('data', createStreamLineBuffer('stdout'));
+    }
+    if (this._process.stderr) {
+      this._process.stderr.on('data', createStreamLineBuffer('stderr'));
+    }
 
     this._process.on('exit', (code: unknown, signal: unknown) => {
       this._onProcessExit(code, signal, '');
@@ -310,6 +383,51 @@ const ExactTestIdReporter = function(this: any, baseReporterDecorator: any) {
 };
 ExactTestIdReporter.$inject = ['baseReporterDecorator'];
 
+const BrowserArtifactReporter = function(this: any, baseReporterDecorator: any) {
+  baseReporterDecorator(this);
+
+  const appendResult = (result: any) => {
+    const file = result.mocha?.file;
+    if (!file) {
+      return;
+    }
+    try {
+      const suite = result.suite || [];
+      const description = result.description;
+      const {exactTestId} = generateExactTestId(GEN_DIR, file, [...suite, description]);
+      const status = result.skipped ? 'SKIP' : result.success ? 'PASS' : 'FAIL';
+
+      const artifact = TestLogAggregator.getInstance().recordTestResult(exactTestId, status);
+      if (artifact) {
+        result.artifacts = {
+          ...(result.artifacts || {}),
+          test_log: {filePath: artifact.filePath},
+        };
+        if (TestConfig.verbose && artifact.content) {
+          this.write(`\n=== [${status}] ${exactTestId} ===\n${artifact.content}\n`);
+        }
+      }
+    } catch {
+      // Ignore if generating exactTestId fails.
+    }
+  };
+
+  this.onBrowserLog = function(_browser: any, log: string, _type: string) {
+    TestLogAggregator.getInstance().addLog('console', log);
+  };
+
+  this.specSuccess = function(_browser: any, result: any) {
+    appendResult(result);
+  };
+  this.specFailure = function(_browser: any, result: any) {
+    appendResult(result);
+  };
+  this.specSkipped = function(_browser: any, result: any) {
+    appendResult(result);
+  };
+};
+BrowserArtifactReporter.$inject = ['baseReporterDecorator'];
+
 const coveragePreprocessors = TestConfig.coverage ? {
   [path.join(GEN_DIR, 'front_end/!(third_party)/**/!(*.test).{js,mjs}')]: ['coverage'],
   [path.join(GEN_DIR, 'inspector_overlay/**/*.{js,mjs}')]: ['coverage'],
@@ -394,6 +512,7 @@ module.exports = function(config: any) {
     },
 
     client: {
+      captureConsole: true,
       mocha: {
         ...TestConfig.mochaGrep,
         retries: TestConfig.retries,
@@ -407,11 +526,16 @@ module.exports = function(config: any) {
       skippedTests: getSkippedTests(),
     },
 
+    browserConsoleLogOptions: {
+      terminal: false,
+    },
+
     plugins: [
       {'middleware:esm-entry': ['factory', testsEntrypointMiddleware]},
       {[`launcher:${CustomChrome.prototype.name}`]: ['type', CustomChrome]},
       require('karma-sourcemap-loader'),
       require('karma-coverage'),
+      {'reporter:browser-artifact': ['type', BrowserArtifactReporter]},
       {'reporter:exact-test-id': ['type', ExactTestIdReporter]},
       {'reporter:resultsdb': ['type', ResultsDBReporter]},
       {'reporter:screenshots': ['type', ScreenshotErrorReporter]},

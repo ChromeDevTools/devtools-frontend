@@ -125,6 +125,13 @@ export const ResultsDBReporter = function(
       }
     }
 
+    if (result.artifacts) {
+      testResult.artifacts = {
+        ...testResult.artifacts,
+        ...result.artifacts,
+      };
+    }
+
     // Clear any leftover screenshot errors from retries of this test.
     // Mocha retries cause multiple ScreenshotErrors to be pushed, but specComplete
     // only shifts the first one. We must clear the rest so they don't bleed into the next test.

@@ -1,6 +1,6 @@
-# Missing a required parameter on the list of components in a `signature-input` header.
+# Missing a required parameter on the list of components in a `signature-input` header
 
-The [`signature-input`][signatureInputHeader] header's [Inner Lists](sfInnerList)
+The [`signature-input`][signatureInputHeader] header’s [Inner Lists](sfInnerList)
 must be specified with both the [`keyid` and `type` parameters](signatureParameters).
 
 ```

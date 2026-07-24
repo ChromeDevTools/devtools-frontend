@@ -1,4 +1,4 @@
-# Cookie was not sent due to scheme mismatch
+# Cookie wasn’t sent due to scheme mismatch
 
 The cookie can only be accessed by origins that share the same scheme as
 the origin that initially set it.

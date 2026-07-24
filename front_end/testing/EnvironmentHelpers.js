@@ -129,14 +129,6 @@ describeWithEnvironment.only = function (title, fn, opts = {
         afterEach(async () => await deinitializeGlobalVars());
     });
 };
-describeWithEnvironment.skip = function (title, fn, _opts = {
-    reset: true,
-}) {
-    // eslint-disable-next-line @devtools/check-test-definitions
-    return describe.skip(title, function () {
-        fn.call(this);
-    });
-};
 export function createFakeSetting(name, defaultValue) {
     const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
     return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage, Common.Console.Console.instance());

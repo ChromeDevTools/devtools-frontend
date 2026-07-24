@@ -1,10 +1,10 @@
-# Invalid `keyid` value in a `signature-input` header.
+# Invalid `keyid` value in a `signature-input` header
 
-The key specified in a [`signature-input`](signatureInputHeader) header's
-[`keyid` parameter](signatureParameters) is not a base64-encoded
-256 bit sequence, and therefore cannot be decoded as an Ed25519 public key.
+The key specified in a [`signature-input`](signatureInputHeader) header’s
+[`keyid` parameter](signatureParameters) isn’t a base64-encoded
+256 bit sequence, and therefore can’t be decoded as an Ed25519 public key.
 
-Note that the `keyid` parameter's value is a string, not a
+Note that the `keyid` parameter’s value is a string, not a
 [Byte Sequence](sfByteSequence). For example:
 
 ```

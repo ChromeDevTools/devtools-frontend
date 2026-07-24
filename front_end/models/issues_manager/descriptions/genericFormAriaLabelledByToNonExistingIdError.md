@@ -1,6 +1,6 @@
-# An aria-labelledby attribute doesn't match any element id
+# An aria-labelledby attribute doesn’t match any element id
 
-An `aria-labelledby` attribute doesn't match any element `id`. This might prevent
+An `aria-labelledby` attribute doesn’t match any element `id`. This might stop
 the browser from correctly autofilling the form and accessibility tools from
 working correctly.
 

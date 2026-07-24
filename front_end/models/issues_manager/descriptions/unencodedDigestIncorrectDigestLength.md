@@ -1,7 +1,7 @@
-# An `unencoded-digest` header contains a digest with an incorrect length.
+# An `unencoded-digest` header contains a digest with an incorrect length
 
 [`unencoded-digest`](unencodedDigestHeader) headers contain SHA2 digests of a
-response's body. The digest delivered with this response is not the correct
+response’s body. The digest delivered with this response isn’t the correct
 length for the algorithm specified. SHA-256 digests should be 256 bits long,
 SHA-512 digests 512 bits long. For example, if the body was "Hello, world.", the
 following might be an appropriate header:

@@ -202,6 +202,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
     #shouldRenderLazily = false;
     #lazyRenderObserver;
     #lazyRenderCallbacks = new WeakMap();
+    #elementsForSyncViewportCheck = [];
     #updateId = 0;
     constructor(computedStyleModel) {
         super(computedStyleModel, { delegatesFocus: true, useShadowDom: true, classes: ['flex-none'] });
@@ -811,6 +812,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             return;
         }
         const focusedIndex = this.focusedSectionIndex();
+        this.#elementsForSyncViewportCheck = [];
         this.linkifier.reset();
         const prevSections = this.sectionBlocks.map(block => block.sections).flat();
         const node = this.node();
@@ -858,6 +860,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             }
         }
         this.sectionsContainer.contentElement.appendChild(fragment);
+        this.#performSyncViewportCheck();
         if (elementToFocus) {
             elementToFocus.focus();
         }
@@ -1355,7 +1358,49 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             }, { rootMargin: '100px' });
         }
         this.#lazyRenderCallbacks.set(element, callback);
+        this.#elementsForSyncViewportCheck.push(element);
         this.#lazyRenderObserver.observe(element);
+    }
+    #performSyncViewportCheck() {
+        if (!this.#shouldRenderLazily || this.#elementsForSyncViewportCheck.length === 0) {
+            this.#elementsForSyncViewportCheck = [];
+            return;
+        }
+        const scrollContainer = this.contentElement.parentElement;
+        if (!scrollContainer) {
+            this.#elementsForSyncViewportCheck = [];
+            return;
+        }
+        const { top, bottom } = scrollContainer.getBoundingClientRect();
+        if (bottom === top) {
+            this.#elementsForSyncViewportCheck = [];
+            return;
+        }
+        // Expand the bounding calculation by ±100px to accurately match the {rootMargin: '100px'}
+        // option configured on the IntersectionObserver in trackForLazyRendering.
+        const viewportTop = top - 100;
+        const viewportBottom = bottom + 100;
+        const visibleElements = [];
+        for (const element of this.#elementsForSyncViewportCheck) {
+            if (!element.isConnected || !this.#lazyRenderCallbacks.has(element)) {
+                continue;
+            }
+            const rect = element.getBoundingClientRect();
+            if (rect.top > viewportBottom) {
+                break;
+            }
+            if (rect.bottom >= viewportTop) {
+                visibleElements.push(element);
+            }
+        }
+        this.#elementsForSyncViewportCheck = [];
+        for (const element of visibleElements) {
+            const callback = this.#lazyRenderCallbacks.get(element);
+            if (callback) {
+                callback();
+                this.untrackForLazyRendering(element);
+            }
+        }
     }
     shouldRenderLazily() {
         return this.#shouldRenderLazily;

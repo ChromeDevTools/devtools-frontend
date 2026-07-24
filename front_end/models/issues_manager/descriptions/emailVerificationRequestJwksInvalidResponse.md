@@ -1,1 +1,1 @@
-# Email verification request failed because the JWKS endpoint returned an invalid response.
+# Email verification request failed because the JWKS endpoint returned an invalid response

@@ -16,13 +16,25 @@ export class PerformanceTraceFormatter {
     #deviceScope;
     resolveFunctionCode;
     #cruxManager;
-    constructor(focus, deviceScope = null, cruxManager = CrUXManager.CrUXManager.instance()) {
+    constructor(focus, deviceScope = null, cruxManager) {
         this.#focus = focus;
         this.#parsedTrace = focus.parsedTrace;
         this.#insightSet = focus.primaryInsightSet;
         this.#eventsSerializer = focus.eventsSerializer;
         this.#deviceScope = deviceScope;
-        this.#cruxManager = cruxManager;
+        if (cruxManager) {
+            this.#cruxManager = cruxManager;
+        }
+        else {
+            // In environments outside DevTools (like the MCP server or some tests),
+            // CrUXManager.instance() can fail due to uninitialized global settings/storage.
+            try {
+                this.#cruxManager = CrUXManager.CrUXManager.instance();
+            }
+            catch {
+                this.#cruxManager = null;
+            }
+        }
     }
     serializeEvent(event) {
         const key = this.#eventsSerializer.keyForEvent(event);
@@ -40,7 +52,16 @@ export class PerformanceTraceFormatter {
             return [];
         }
         try {
-            const cruxScope = this.#deviceScope ? { pageScope: 'url', deviceScope: this.#deviceScope } : this.#cruxManager.getSelectedScope();
+            let cruxScope;
+            if (this.#deviceScope) {
+                cruxScope = { pageScope: 'url', deviceScope: this.#deviceScope };
+            }
+            else if (this.#cruxManager) {
+                cruxScope = this.#cruxManager.getSelectedScope();
+            }
+            else {
+                return [];
+            }
             const parts = [];
             const fieldMetrics = Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#parsedTrace.metadata, cruxScope);
             const fieldLcp = fieldMetrics?.lcp;

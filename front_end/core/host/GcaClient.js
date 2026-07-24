@@ -72,7 +72,7 @@ export class GcaClient {
         }
         catch (err) {
             debugLog('GCA request failed:', JSON.stringify(request), err);
-            return null;
+            throw err;
         }
     }
 }

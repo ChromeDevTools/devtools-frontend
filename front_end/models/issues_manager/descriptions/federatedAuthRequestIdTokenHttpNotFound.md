@@ -1,1 +1,1 @@
-# The provider's id token endpoint cannot be found.
+# The provider’s id token endpoint can’t be found

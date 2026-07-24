@@ -1,1 +1,1 @@
-# The provider's accounts list endpoint cannot be found.
+# The provider’s accounts list endpoint can’t be found

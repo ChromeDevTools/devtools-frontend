@@ -1,1 +1,1 @@
-# getUserInfo() caller is not an iframe.
+# getUserInfo() caller isn’t an iframe

@@ -1,1 +1,1 @@
-# getUserInfo() failed because of an invalid accounts response.
+# getUserInfo() failed because of an invalid accounts response

@@ -1,1 +1,1 @@
-# getUserInfo() is disabled because FedCM is disabled.
+# getUserInfo() is disabled because FedCM is disabled

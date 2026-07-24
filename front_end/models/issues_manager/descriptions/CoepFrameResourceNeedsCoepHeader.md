@@ -1,4 +1,4 @@
-# Specify a Cross-Origin Embedder Policy to prevent this frame from being blocked
+# Specify a Cross-Origin Embedder Policy to stop this frame from being blocked
 
 Because your site has the Cross-Origin Embedder Policy (COEP) enabled, each
 embedded iframe must also specify this policy. This behavior protects private

@@ -32,13 +32,32 @@ const AidaLanguageToMarkdown = {
     ["XML" /* AidaInferenceLanguage.XML */]: 'xml',
     ["UNKNOWN" /* AidaInferenceLanguage.UNKNOWN */]: 'unknown',
 };
-export class AidaAbortError extends Error {
+export class AidaClientError extends Error {
+    name = 'AidaClientError';
 }
-export class AidaBlockError extends Error {
+export class AidaUnknownError extends AidaClientError {
+    name = 'AidaUnknownError';
 }
-export class AidaQuotaError extends Error {
+export class AidaAbortError extends AidaClientError {
+    name = 'AidaAbortError';
 }
-export class AidaPayloadTooLargeError extends Error {
+export class AidaBlockError extends AidaClientError {
+    name = 'AidaBlockError';
+}
+export class AidaQuotaError extends AidaClientError {
+    name = 'AidaQuotaError';
+}
+export class AidaPayloadTooLargeError extends AidaClientError {
+    name = 'AidaPayloadTooLargeError';
+}
+export class AidaPermissionDeniedError extends AidaClientError {
+    name = 'AidaPermissionDeniedError';
+}
+export class AidaTimeoutError extends AidaClientError {
+    name = 'AidaTimeoutError';
+}
+export class AidaInvalidJsonResponseError extends AidaClientError {
+    name = 'AidaInvalidJsonResponseError';
 }
 export class AidaClient {
     // Delegate client
@@ -136,38 +155,7 @@ export class AidaClient {
             void stream.close();
         }, err => {
             debugLog('doConversation failed with error:', JSON.stringify(err));
-            if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError && err.response) {
-                const result = err.response;
-                if (result.statusCode === 429) {
-                    stream.fail(new AidaQuotaError('Server responded: quota exceeded'));
-                    return;
-                }
-                if (result.statusCode === 403) {
-                    stream.fail(new Error('Server responded: permission denied'));
-                    return;
-                }
-                if ('error' in result && result.error) {
-                    if (isQuotaError(result.error, result.detail)) {
-                        stream.fail(new AidaQuotaError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
-                        return;
-                    }
-                    if (isPayloadTooLargeError(result.error, result.detail)) {
-                        stream.fail(new AidaPayloadTooLargeError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
-                        return;
-                    }
-                    stream.fail(new Error(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ''}`));
-                    return;
-                }
-                if ('netErrorName' in result && result.netErrorName === 'net::ERR_TIMED_OUT') {
-                    stream.fail(new Error('doAidaConversation timed out'));
-                    return;
-                }
-                if (result.statusCode !== 200) {
-                    stream.fail(new Error(`Request failed: ${JSON.stringify(result)}`));
-                    return;
-                }
-            }
-            stream.fail(err);
+            stream.fail(mapError(err));
         });
         await (yield* this.#handleResponseStream(stream));
     }
@@ -213,13 +201,7 @@ export class AidaClient {
                     });
                 }
                 else if ('error' in result) {
-                    if (isQuotaError(result.error)) {
-                        throw new AidaQuotaError(`Server responded: ${JSON.stringify(result)}`);
-                    }
-                    if (isPayloadTooLargeError(result.error)) {
-                        throw new AidaPayloadTooLargeError(`Server responded: ${JSON.stringify(result)}`);
-                    }
-                    throw new Error(`Server responded: ${JSON.stringify(result)}`);
+                    throw mapError(result.error);
                 }
                 else {
                     throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
@@ -302,13 +284,18 @@ export class AidaClient {
             request.metadata.disable_user_content_logging = true;
         }
         if (this.#gcaClient.enabled()) {
-            return await this.#gcaClient.completeCode(request);
+            try {
+                return await this.#gcaClient.completeCode(request);
+            }
+            catch (err) {
+                throw mapError(err);
+            }
         }
         const { promise, resolve } = Promise.withResolvers();
         InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
         const completeCodeResult = await promise;
         if (completeCodeResult.error) {
-            throw new Error(`Cannot send request: ${completeCodeResult.error} ${completeCodeResult.detail || ''}`);
+            throw mapError(completeCodeResult.error, completeCodeResult.detail);
         }
         const response = completeCodeResult.response;
         if (!response?.length) {
@@ -353,15 +340,25 @@ export class AidaClient {
         }
         if (this.#gcaClient.enabled()) {
             // Inline and remove the else clause after migration
-            return await this.#gcaClient.generateCode(request, options);
+            try {
+                return await this.#gcaClient.generateCode(request, options);
+            }
+            catch (err) {
+                throw mapError(err);
+            }
         }
-        const response = await DispatchHttpRequestClient.makeHttpRequest({
-            service: SERVICE_NAME,
-            path: '/v1/aida:generateCode',
-            method: 'POST',
-            body: JSON.stringify(request),
-        }, options);
-        return response;
+        try {
+            const response = await DispatchHttpRequestClient.makeHttpRequest({
+                service: SERVICE_NAME,
+                path: '/v1/aida:generateCode',
+                method: 'POST',
+                body: JSON.stringify(request),
+            }, options);
+            return response;
+        }
+        catch (err) {
+            throw mapError(err);
+        }
     }
 }
 export function convertToUserTierEnum(userTier) {
@@ -431,10 +428,60 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
 }
-function isQuotaError(...inputs) {
+export function isQuotaError(...inputs) {
     return inputs.some(input => input?.toLowerCase().includes('quota'));
 }
-function isPayloadTooLargeError(...inputs) {
+export function isPayloadTooLargeError(...inputs) {
     return inputs.some(input => input?.toLowerCase().includes('payload size exceeds the limit'));
+}
+/**
+ * Maps AIDA-specific errors, DispatchHttpRequestErrors, strings, and generic
+ * Errors to dedicated AidaClientError subclasses.
+ */
+export function mapError(err, detail) {
+    if (err instanceof AidaClientError) {
+        return err;
+    }
+    if (err instanceof DispatchHttpRequestClient.DispatchHttpRequestError) {
+        if (err.type === DispatchHttpRequestClient.ErrorType.ABORT) {
+            return new AidaAbortError();
+        }
+        const response = err.response;
+        if (response) {
+            if (response.statusCode === 429) {
+                return new AidaQuotaError('Server responded: quota exceeded');
+            }
+            if (response.statusCode === 403) {
+                return new AidaPermissionDeniedError('Server responded: permission denied');
+            }
+            if ('netErrorName' in response && response.netErrorName === 'net::ERR_TIMED_OUT') {
+                return new AidaTimeoutError('AIDA request timed out');
+            }
+            if ('error' in response && response.error) {
+                return mapError(response.error, response.detail);
+            }
+            // The dispatcher throws HTTP_RESPONSE_UNAVAILABLE with status code 200
+            // when it successfully receives the HTTP response but fails to parse its JSON body.
+            if (response.statusCode === 200 && err.type === DispatchHttpRequestClient.ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
+                return new AidaInvalidJsonResponseError('Server responded with invalid JSON', { cause: err });
+            }
+            if (response.statusCode !== 200) {
+                return new AidaUnknownError(`Request failed: ${JSON.stringify(response)}`);
+            }
+        }
+    }
+    if (typeof err === 'string') {
+        if (isQuotaError(err, detail)) {
+            return new AidaQuotaError(`Cannot send request: ${err}${detail ? ` ${detail}` : ''}`);
+        }
+        if (isPayloadTooLargeError(err, detail)) {
+            return new AidaPayloadTooLargeError(`Cannot send request: ${err}${detail ? ` ${detail}` : ''}`);
+        }
+        return new AidaUnknownError(`Cannot send request: ${err}${detail ? ` ${detail}` : ''}`);
+    }
+    if (err instanceof Error) {
+        return new AidaUnknownError(err.message, { cause: err });
+    }
+    return new AidaUnknownError(String(err));
 }
 //# sourceMappingURL=AidaClient.js.map

@@ -1,1 +1,1 @@
-# Provider's accounts list is invalid.
+# Provider’s accounts list is invalid

@@ -593,10 +593,6 @@ var UIStrings6 = {
    */
   samesiteCookiesExplained: "SameSite cookies explained",
   /**
-   * @description Label for the link for Schemeful Same-Site issues.
-   */
-  howSchemefulSamesiteWorks: "How Schemeful Same-Site works",
-  /**
    * @description Label for a link for cross-site redirect issues.
    */
   fileCrosSiteRedirectBug: "File a bug",
@@ -634,7 +630,7 @@ var CookieIssue = class _CookieIssue extends Issue {
     const issues = [];
     if (cookieIssueDetails.cookieExclusionReasons && cookieIssueDetails.cookieExclusionReasons.length > 0) {
       for (const exclusionReason of cookieIssueDetails.cookieExclusionReasons) {
-        const code = _CookieIssue.codeForCookieIssueDetails(exclusionReason, cookieIssueDetails.cookieWarningReasons, cookieIssueDetails.operation, cookieIssueDetails.cookieUrl);
+        const code = _CookieIssue.codeForCookieIssueDetails(exclusionReason, cookieIssueDetails.cookieWarningReasons, cookieIssueDetails.operation);
         if (code) {
           issues.push(new _CookieIssue(code, cookieIssueDetails, issuesModel, issueId, frameManager));
         }
@@ -643,7 +639,7 @@ var CookieIssue = class _CookieIssue extends Issue {
     }
     if (cookieIssueDetails.cookieWarningReasons) {
       for (const warningReason of cookieIssueDetails.cookieWarningReasons) {
-        const code = _CookieIssue.codeForCookieIssueDetails(warningReason, [], cookieIssueDetails.operation, cookieIssueDetails.cookieUrl);
+        const code = _CookieIssue.codeForCookieIssueDetails(warningReason, [], cookieIssueDetails.operation);
         if (code) {
           issues.push(new _CookieIssue(code, cookieIssueDetails, issuesModel, issueId, frameManager));
         }
@@ -659,42 +655,8 @@ var CookieIssue = class _CookieIssue extends Issue {
    *
    * The issue code will be mapped to a CookieIssueSubCategory enum for metric purpose.
    */
-  static codeForCookieIssueDetails(reason, warningReasons, operation, cookieUrl) {
-    const isURLSecure = cookieUrl && (Common.ParsedURL.schemeIs(cookieUrl, "https:") || Common.ParsedURL.schemeIs(cookieUrl, "wss:"));
-    const secure = isURLSecure ? "Secure" : "Insecure";
+  static codeForCookieIssueDetails(reason, warningReasons, operation) {
     if (reason === "ExcludeSameSiteStrict" || reason === "ExcludeSameSiteLax" || reason === "ExcludeSameSiteUnspecifiedTreatedAsLax") {
-      if (warningReasons && warningReasons.length > 0) {
-        if (warningReasons.includes(
-          "WarnSameSiteStrictLaxDowngradeStrict"
-          /* Protocol.Audits.CookieWarningReason.WarnSameSiteStrictLaxDowngradeStrict */
-        )) {
-          return [
-            "CookieIssue",
-            "ExcludeNavigationContextDowngrade",
-            secure
-          ].join("::");
-        }
-        if (warningReasons.includes(
-          "WarnSameSiteStrictCrossDowngradeStrict"
-          /* Protocol.Audits.CookieWarningReason.WarnSameSiteStrictCrossDowngradeStrict */
-        ) || warningReasons.includes(
-          "WarnSameSiteStrictCrossDowngradeLax"
-          /* Protocol.Audits.CookieWarningReason.WarnSameSiteStrictCrossDowngradeLax */
-        ) || warningReasons.includes(
-          "WarnSameSiteLaxCrossDowngradeStrict"
-          /* Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeStrict */
-        ) || warningReasons.includes(
-          "WarnSameSiteLaxCrossDowngradeLax"
-          /* Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeLax */
-        )) {
-          return [
-            "CookieIssue",
-            "ExcludeContextDowngrade",
-            operation,
-            secure
-          ].join("::");
-        }
-      }
       if (warningReasons.includes(
         "WarnCrossSiteRedirectDowngradeChangesInclusion"
         /* Protocol.Audits.CookieWarningReason.WarnCrossSiteRedirectDowngradeChangesInclusion */
@@ -708,12 +670,6 @@ var CookieIssue = class _CookieIssue extends Issue {
         return ["CookieIssue", reason, operation].join("::");
       }
       return null;
-    }
-    if (reason === "WarnSameSiteStrictLaxDowngradeStrict") {
-      return ["CookieIssue", reason, secure].join("::");
-    }
-    if (reason === "WarnSameSiteStrictCrossDowngradeStrict" || reason === "WarnSameSiteStrictCrossDowngradeLax" || reason === "WarnSameSiteLaxCrossDowngradeLax" || reason === "WarnSameSiteLaxCrossDowngradeStrict") {
-      return ["CookieIssue", "WarnCrossDowngrade", operation, secure].join("::");
     }
     if (reason === "ExcludePortMismatch") {
       return ["CookieIssue", "ExcludePortMismatch"].join("::");
@@ -908,56 +864,6 @@ var sameSiteNoneInsecureWarnSet = {
     }
   ]
 };
-var schemefulSameSiteArticles = [{ link: "https://web.dev/schemeful-samesite/", linkTitle: i18nLazyString4(UIStrings6.howSchemefulSamesiteWorks) }];
-function schemefulSameSiteSubstitutions({ isDestinationSecure, isOriginSecure }) {
-  return /* @__PURE__ */ new Map([
-    // TODO(crbug.com/1168438): Use translated phrases once the issue description is localized.
-    ["PLACEHOLDER_destination", () => isDestinationSecure ? "a secure" : "an insecure"],
-    ["PLACEHOLDER_origin", () => isOriginSecure ? "a secure" : "an insecure"]
-  ]);
-}
-function sameSiteWarnStrictLaxDowngradeStrict(isSecure) {
-  return {
-    file: "SameSiteWarnStrictLaxDowngradeStrict.md",
-    substitutions: schemefulSameSiteSubstitutions({ isDestinationSecure: isSecure, isOriginSecure: !isSecure }),
-    links: schemefulSameSiteArticles
-  };
-}
-function sameSiteExcludeNavigationContextDowngrade(isSecure) {
-  return {
-    file: "SameSiteExcludeNavigationContextDowngrade.md",
-    substitutions: schemefulSameSiteSubstitutions({ isDestinationSecure: isSecure, isOriginSecure: !isSecure }),
-    links: schemefulSameSiteArticles
-  };
-}
-function sameSiteWarnCrossDowngradeRead(isSecure) {
-  return {
-    file: "SameSiteWarnCrossDowngradeRead.md",
-    substitutions: schemefulSameSiteSubstitutions({ isDestinationSecure: isSecure, isOriginSecure: !isSecure }),
-    links: schemefulSameSiteArticles
-  };
-}
-function sameSiteExcludeContextDowngradeRead(isSecure) {
-  return {
-    file: "SameSiteExcludeContextDowngradeRead.md",
-    substitutions: schemefulSameSiteSubstitutions({ isDestinationSecure: isSecure, isOriginSecure: !isSecure }),
-    links: schemefulSameSiteArticles
-  };
-}
-function sameSiteWarnCrossDowngradeSet(isSecure) {
-  return {
-    file: "SameSiteWarnCrossDowngradeSet.md",
-    substitutions: schemefulSameSiteSubstitutions({ isDestinationSecure: !isSecure, isOriginSecure: isSecure }),
-    links: schemefulSameSiteArticles
-  };
-}
-function sameSiteExcludeContextDowngradeSet(isSecure) {
-  return {
-    file: "SameSiteExcludeContextDowngradeSet.md",
-    substitutions: schemefulSameSiteSubstitutions({ isDestinationSecure: isSecure, isOriginSecure: !isSecure }),
-    links: schemefulSameSiteArticles
-  };
-}
 var attributeValueExceedsMaxSize = {
   file: "CookieAttributeValueExceedsMaxSize.md",
   links: []
@@ -1003,21 +909,6 @@ var issueDescriptions3 = /* @__PURE__ */ new Map([
   ["CookieIssue::ExcludeSameSiteNoneInsecure::SetCookie", sameSiteNoneInsecureErrorSet],
   ["CookieIssue::WarnSameSiteNoneInsecure::ReadCookie", sameSiteNoneInsecureWarnRead],
   ["CookieIssue::WarnSameSiteNoneInsecure::SetCookie", sameSiteNoneInsecureWarnSet],
-  ["CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure", sameSiteWarnStrictLaxDowngradeStrict(true)],
-  ["CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure", sameSiteWarnStrictLaxDowngradeStrict(false)],
-  ["CookieIssue::WarnCrossDowngrade::ReadCookie::Secure", sameSiteWarnCrossDowngradeRead(true)],
-  ["CookieIssue::WarnCrossDowngrade::ReadCookie::Insecure", sameSiteWarnCrossDowngradeRead(false)],
-  ["CookieIssue::WarnCrossDowngrade::SetCookie::Secure", sameSiteWarnCrossDowngradeSet(true)],
-  ["CookieIssue::WarnCrossDowngrade::SetCookie::Insecure", sameSiteWarnCrossDowngradeSet(false)],
-  ["CookieIssue::ExcludeNavigationContextDowngrade::Secure", sameSiteExcludeNavigationContextDowngrade(true)],
-  [
-    "CookieIssue::ExcludeNavigationContextDowngrade::Insecure",
-    sameSiteExcludeNavigationContextDowngrade(false)
-  ],
-  ["CookieIssue::ExcludeContextDowngrade::ReadCookie::Secure", sameSiteExcludeContextDowngradeRead(true)],
-  ["CookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure", sameSiteExcludeContextDowngradeRead(false)],
-  ["CookieIssue::ExcludeContextDowngrade::SetCookie::Secure", sameSiteExcludeContextDowngradeSet(true)],
-  ["CookieIssue::ExcludeContextDowngrade::SetCookie::Insecure", sameSiteExcludeContextDowngradeSet(false)],
   ["CookieIssue::WarnAttributeValueExceedsMaxSize::ReadCookie", attributeValueExceedsMaxSize],
   ["CookieIssue::WarnAttributeValueExceedsMaxSize::SetCookie", attributeValueExceedsMaxSize],
   ["CookieIssue::WarnDomainNonASCII::ReadCookie", warnDomainNonAscii],

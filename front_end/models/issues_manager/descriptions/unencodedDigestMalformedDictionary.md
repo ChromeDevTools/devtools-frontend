@@ -1,7 +1,7 @@
-# An `unencoded-digest` header cannot be parsed.
+# An `unencoded-digest` header can’t be parsed
 
 [`unencoded-digest`](unencodedDigestHeader) headers must be formatted as a
-[Dictionary](sfDictionary), wherein each member's label specifies the hashing
+[Dictionary](sfDictionary), wherein each member’s label specifies the hashing
 algorithm, and the value is a [Byte Sequence](sfByteSequence) containing the
 digest. The digest delivered with this response did not format the response
 correctly.

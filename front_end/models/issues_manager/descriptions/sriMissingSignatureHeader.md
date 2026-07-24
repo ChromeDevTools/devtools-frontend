@@ -1,4 +1,4 @@
-# A `signature-input` header was specified without an accompanying `signature` header.
+# A `signature-input` header was specified without an accompanying `signature` header
 
 [`signature-input`](signatureInputHeader) headers specify metadata that allows
 verification of signatures delivered with a response. If no

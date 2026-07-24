@@ -453,4 +453,10 @@ export declare abstract class AiAgent<T> {
         signal?: AbortSignal;
     }, multimodalInput?: MultimodalInput): AsyncGenerator<ResponseData, void, void>;
 }
+/**
+ * Maps AIDA-specific client error instances to user-facing ErrorType enums.
+ * This handles AIDA API failure modes such as quota exhaustion or blockages.
+ * Other application-level errors (like CROSS_ORIGIN or MAX_STEPS) are handled separately.
+ */
+export declare function aidaErrorToErrorType(err: unknown): ErrorType;
 export {};

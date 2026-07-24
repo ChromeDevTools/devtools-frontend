@@ -1,1 +1,1 @@
-# getUserInfo() failed because the config URL is not potentially trustworthy.
+# getUserInfo() failed because the config URL isn’t potentially trustworthy

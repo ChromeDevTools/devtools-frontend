@@ -226,7 +226,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         if (payload.adProvenance) {
             this.#adProvenance = payload.adProvenance;
         }
-        if (this.#nodeType === Node.ELEMENT_NODE) {
+        if (this.#nodeType === 1 /* NodeType.ELEMENT_NODE */) {
             // HTML and BODY from internal iframes should not overwrite top-level ones.
             if (this.ownerDocument && !this.ownerDocument.documentElement && this.#nodeName === 'HTML') {
                 this.ownerDocument.documentElement = this;
@@ -235,12 +235,12 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
                 this.ownerDocument.body = this;
             }
         }
-        else if (this.#nodeType === Node.DOCUMENT_TYPE_NODE) {
+        else if (this.#nodeType === 10 /* NodeType.DOCUMENT_TYPE_NODE */) {
             this.publicId = payload.publicId;
             this.systemId = payload.systemId;
             this.internalSubset = payload.internalSubset;
         }
-        else if (this.#nodeType === Node.ATTRIBUTE_NODE) {
+        else if (this.#nodeType === 2 /* NodeType.ATTRIBUTE_NODE */) {
             this.name = payload.name;
             this.value = payload.value;
         }
@@ -277,7 +277,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         return undefined;
     }
     isRootNode() {
-        if (this.nodeType() === Node.ELEMENT_NODE && this.nodeName() === 'HTML') {
+        if (this.nodeType() === 1 /* NodeType.ELEMENT_NODE */ && this.nodeName() === 'HTML') {
             return true;
         }
         return false;
@@ -612,7 +612,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             if (node.isShadowRoot()) {
                 return node.shadowRootType() === DOMNode.ShadowRootTypes.UserAgent ? 'u' : 'a';
             }
-            if (node.nodeType() === Node.DOCUMENT_NODE) {
+            if (node.nodeType() === 9 /* NodeType.DOCUMENT_NODE */) {
                 return 'd';
             }
             return null;
@@ -836,7 +836,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
         return Boolean(this.#xmlVersion);
     }
     isCustomElement() {
-        if (this.nodeType() !== Node.ELEMENT_NODE || this.isXMLNode()) {
+        if (this.nodeType() !== 1 /* NodeType.ELEMENT_NODE */ || this.isXMLNode()) {
             return false;
         }
         const localName = this.localName() || this.nodeName().toLowerCase();
@@ -959,10 +959,10 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     }
     enclosingElementOrSelf() {
         let node = this;
-        if (node && node.nodeType() === Node.TEXT_NODE && node.parentNode) {
+        if (node && node.nodeType() === 3 /* NodeType.TEXT_NODE */ && node.parentNode) {
             node = node.parentNode;
         }
-        if (node && node.nodeType() !== Node.ELEMENT_NODE) {
+        if (node && node.nodeType() !== 1 /* NodeType.ELEMENT_NODE */) {
             node = null;
         }
         return node;
@@ -1012,7 +1012,7 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     }
     simpleSelector() {
         const lowerCaseName = this.localName() || this.nodeName().toLowerCase();
-        if (this.nodeType() !== Node.ELEMENT_NODE) {
+        if (this.nodeType() !== 1 /* NodeType.ELEMENT_NODE */) {
             return lowerCaseName;
         }
         const type = this.getAttribute('type');
@@ -1393,7 +1393,7 @@ export class DOMModel extends SDKModel {
     inlineStyleInvalidated(nodeIds) {
         nodeIds.forEach(nodeId => this.#attributeLoadNodeIds.add(nodeId));
         if (!this.#loadNodeAttributesTimeout) {
-            this.#loadNodeAttributesTimeout = window.setTimeout(this.loadNodeAttributes.bind(this), 20);
+            this.#loadNodeAttributesTimeout = globalThis.setTimeout(this.loadNodeAttributes.bind(this), 20);
         }
     }
     loadNodeAttributes() {

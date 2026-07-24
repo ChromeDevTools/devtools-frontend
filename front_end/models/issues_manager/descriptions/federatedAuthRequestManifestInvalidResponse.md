@@ -1,1 +1,1 @@
-# Provider's FedCM manifest configuration is invalid.
+# Provider’s FedCM manifest configuration is invalid

@@ -6,7 +6,7 @@ import * as PropertyParser from './CSSPropertyParser.js';
 import type { Match, Matcher } from './CSSPropertyParser.js';
 import { CSSAtRule, CSSFunctionRule, CSSKeyframesRule, CSSPositionTryRule, CSSPropertyRule, CSSStyleRule } from './CSSRule.js';
 import { CSSStyleDeclaration } from './CSSStyleDeclaration.js';
-import type { DOMNode } from './DOMModel.js';
+import { type DOMNode } from './DOMModel.js';
 /**
  * Distance from node to parent that is the tree scope. Returns -1 if tree scope is not found.
  *

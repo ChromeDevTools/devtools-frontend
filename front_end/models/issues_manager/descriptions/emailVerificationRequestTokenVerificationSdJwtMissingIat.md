@@ -1,1 +1,1 @@
-# Email verification request failed because the SD-JWT issued at claim is missing.
+# Email verification request failed because the SD-JWT issued at claim is missing

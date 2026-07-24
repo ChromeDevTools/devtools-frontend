@@ -133,13 +133,13 @@ export class MediaQueryInspector extends UI.Widget.Widget {
     mediaThrottler = new Common.Throttler.Throttler(0);
     #getWidthCallback;
     #setWidthCallback;
-    scale;
+    #scale;
     cssModel;
     cachedQueryModels;
     constructor(element, view = DEFAULT_VIEW) {
         super(element, { useShadowDom: 'pure' });
         this.view = view;
-        this.scale = 1;
+        this.#scale = 1;
         SDK.TargetManager.TargetManager.instance().observeModels(SDK.CSSModel.CSSModel, this);
         UI.ZoomManager.ZoomManager.instance().addEventListener("ZoomChanged" /* UI.ZoomManager.Events.ZOOM_CHANGED */, this.requestUpdate.bind(this), this);
     }
@@ -178,11 +178,14 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         this.cssModel.removeEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.scheduleMediaQueriesUpdate, this);
         delete this.cssModel;
     }
-    setAxisTransform(scale) {
-        if (Math.abs(this.scale - scale) < 1e-8) {
+    get scale() {
+        return this.#scale;
+    }
+    set scale(scale) {
+        if (Math.abs(this.#scale - scale) < 1e-8) {
             return;
         }
-        this.scale = scale;
+        this.#scale = scale;
         this.requestUpdate();
     }
     onMediaQueryClicked(model) {
@@ -309,7 +312,7 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         return markers;
     }
     zoomFactor() {
-        return UI.ZoomManager.ZoomManager.instance().zoomFactor() / this.scale;
+        return UI.ZoomManager.ZoomManager.instance().zoomFactor() / this.#scale;
     }
     wasShown() {
         super.wasShown();

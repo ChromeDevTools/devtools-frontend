@@ -1,1 +1,1 @@
-# Provider's token is invalid.
+# Provider’s token is invalid

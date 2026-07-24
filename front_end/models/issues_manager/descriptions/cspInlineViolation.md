@@ -1,6 +1,6 @@
 # Content Security Policy blocks inline execution of scripts and stylesheets
 
-The Content Security Policy (CSP) prevents cross-site scripting attacks by blocking inline execution of scripts and style sheets.
+The Content Security Policy (CSP) stops cross-site scripting attacks by blocking inline execution of scripts and style sheets.
 
 To solve this, move all inline scripts (e.g. `onclick=[JS code]`) and styles into external files.
 

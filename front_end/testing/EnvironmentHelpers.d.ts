@@ -16,9 +16,6 @@ export declare namespace describeWithEnvironment {
     var only: (title: string, fn: (this: Mocha.Suite) => void, opts?: {
         reset: boolean;
     }) => Mocha.Suite;
-    var skip: (title: string, fn: (this: Mocha.Suite) => void, _opts?: {
-        reset: boolean;
-    }) => void | Mocha.Suite;
 }
 export declare function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T>;
 export declare function createFakeRegExpSetting(name: string, defaultValue: string): Common.Settings.RegExpSetting;

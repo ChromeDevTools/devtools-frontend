@@ -337,21 +337,7 @@ export class AiAgent {
             }
             catch (err) {
                 debugLog('Error calling the AIDA API', err);
-                let error = "unknown" /* ErrorType.UNKNOWN */;
-                if (err instanceof Host.AidaClient.AidaAbortError) {
-                    error = "abort" /* ErrorType.ABORT */;
-                }
-                else if (err instanceof Host.AidaClient.AidaBlockError) {
-                    error = "block" /* ErrorType.BLOCK */;
-                }
-                else if (err instanceof Host.AidaClient.AidaQuotaError ||
-                    (err instanceof Error && err.message.toLowerCase().includes('quota'))) {
-                    error = "quota" /* ErrorType.QUOTA */;
-                }
-                else if (err instanceof Host.AidaClient.AidaPayloadTooLargeError ||
-                    (err instanceof Error && /payload size exceeds the limit/i.test(err.message))) {
-                    error = "payload-too-large" /* ErrorType.PAYLOAD_TOO_LARGE */;
-                }
+                const error = aidaErrorToErrorType(err);
                 yield this.#createErrorResponse(error);
                 break;
             }
@@ -637,5 +623,25 @@ function sanitizeSuggestions(suggestions) {
         return undefined;
     }
     return sanitized;
+}
+/**
+ * Maps AIDA-specific client error instances to user-facing ErrorType enums.
+ * This handles AIDA API failure modes such as quota exhaustion or blockages.
+ * Other application-level errors (like CROSS_ORIGIN or MAX_STEPS) are handled separately.
+ */
+export function aidaErrorToErrorType(err) {
+    if (err instanceof Host.AidaClient.AidaAbortError) {
+        return "abort" /* ErrorType.ABORT */;
+    }
+    if (err instanceof Host.AidaClient.AidaBlockError) {
+        return "block" /* ErrorType.BLOCK */;
+    }
+    if (err instanceof Host.AidaClient.AidaQuotaError) {
+        return "quota" /* ErrorType.QUOTA */;
+    }
+    if (err instanceof Host.AidaClient.AidaPayloadTooLargeError) {
+        return "payload-too-large" /* ErrorType.PAYLOAD_TOO_LARGE */;
+    }
+    return "unknown" /* ErrorType.UNKNOWN */;
 }
 //# sourceMappingURL=AiAgent.js.map

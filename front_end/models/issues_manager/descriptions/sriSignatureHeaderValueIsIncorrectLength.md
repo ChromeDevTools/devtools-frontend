@@ -1,7 +1,7 @@
-# A `signature` header contains a signature which cannot be verified.
+# A `signature` header contains a signature which can’t be verified
 
 This browser can only verify Ed25519 signatures, which are 512 bits long. The
-signature delivered with this response does not match that length.
+signature delivered with this response doesn’t match that length.
 
 For example, the following header contains a valid Ed25519 signature labeled
 "label":

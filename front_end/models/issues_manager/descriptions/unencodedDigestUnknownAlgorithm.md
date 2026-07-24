@@ -1,4 +1,4 @@
-# An `unencoded-digest` header contains a digest with an invalid algorithm.
+# An `unencoded-digest` header contains a digest with an invalid algorithm
 
 [`unencoded-digest`](unencodedDigestHeader) headers support only two hashing
 algorithms, SHA-256, and SHA-512. The digests delivered with this response

@@ -1,6 +1,6 @@
-# The `Connection-Allowlist` header is not formatted as a Structured Field List.
+# The `Connection-Allowlist` header isn’t formatted as a Structured Field List
 
-Responses' `Connection-Allowlist` header should be formatted as a [List](sfList)
+Responses’ `Connection-Allowlist` header should be formatted as a [List](sfList)
 containing a single [Inner List](sfInnerList) that declares the allowed set of
 [URL Patterns](urlPatternSpec) for a given context.
 

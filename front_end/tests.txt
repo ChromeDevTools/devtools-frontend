@@ -120,6 +120,7 @@ models/workspace/UISourceCode.test.js
 models/workspace/WorkspaceImpl.test.js
 testing/TestIdGeneration.test.js
 core/sdk/CSSMatchedStyles.test.js
+core/sdk/CSSMetadata.test.js
 core/sdk/CSSModel.test.js
 core/sdk/CSSProperty.test.js
 core/sdk/CSSPropertyParser.test.js
@@ -451,6 +452,7 @@ panels/elements/CSSValueTraceView.test.js
 panels/elements/ClassesPaneWidget.test.js
 panels/elements/ColorSwatchPopoverIcon.test.js
 panels/elements/ComputedStyleWidget.test.js
+panels/elements/DOMPath.test.js
 panels/elements/DOMTreeWidget.test.js
 panels/elements/ElementStatePaneWidget.test.js
 panels/elements/ElementsPanel.test.js

@@ -1,1 +1,1 @@
-# Provider's sign-in response is invalid.
+# Provider’s sign-in response is invalid

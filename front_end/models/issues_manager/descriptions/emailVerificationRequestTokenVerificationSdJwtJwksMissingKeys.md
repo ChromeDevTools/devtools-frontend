@@ -1,1 +1,1 @@
-# Email verification request failed because the SD-JWT JWKS is missing keys.
+# Email verification request failed because the SD-JWT JWKS is missing keys

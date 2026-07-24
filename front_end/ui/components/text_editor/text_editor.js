@@ -1228,7 +1228,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       this.#aiCodeGenerationConfig.onResponseReceived();
       return;
     } catch (e) {
-      if (e instanceof Host.DispatchHttpRequestClient.DispatchHttpRequestError && e.type === Host.DispatchHttpRequestClient.ErrorType.ABORT) {
+      if (e instanceof Host.AidaClient.AidaAbortError) {
         return;
       }
       AiCodeGeneration.debugLog("Error while fetching code generation suggestions from AIDA", e);

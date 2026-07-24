@@ -1,1 +1,1 @@
-# `Use-As-Dictionary` HTTP response header is not a valid Structured Field value
+# `Use-As-Dictionary` HTTP response header isn’t a valid Structured Field Value

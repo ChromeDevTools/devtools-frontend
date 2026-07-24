@@ -1,4 +1,3 @@
-import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import { Issue, IssueCategory, IssueKind } from './Issue.js';
@@ -32,7 +31,7 @@ export declare class CookieIssue extends Issue<Protocol.Audits.CookieIssueDetail
      *
      * The issue code will be mapped to a CookieIssueSubCategory enum for metric purpose.
      */
-    static codeForCookieIssueDetails(reason: Protocol.Audits.CookieExclusionReason | Protocol.Audits.CookieWarningReason, warningReasons: Protocol.Audits.CookieWarningReason[], operation: Protocol.Audits.CookieOperation, cookieUrl?: Platform.DevToolsPath.UrlString): string | null;
+    static codeForCookieIssueDetails(reason: Protocol.Audits.CookieExclusionReason | Protocol.Audits.CookieWarningReason, warningReasons: Protocol.Audits.CookieWarningReason[], operation: Protocol.Audits.CookieOperation): string | null;
     cookies(): Iterable<Protocol.Audits.AffectedCookie>;
     rawCookieLines(): Iterable<string>;
     requests(): Iterable<Protocol.Audits.AffectedRequest>;

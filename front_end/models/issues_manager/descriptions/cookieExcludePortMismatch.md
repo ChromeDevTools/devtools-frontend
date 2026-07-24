@@ -1,4 +1,4 @@
-# Cookie was not sent due to port mismatch
+# Cookie wasn’t sent due to port mismatch
 
 Cookies can only be accessed by origins that share the same port as the origin
 that initially set the cookie.

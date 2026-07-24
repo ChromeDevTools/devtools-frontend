@@ -1,4 +1,4 @@
-# The `report-to` parameter in the `Connection-Allowlist` header is not a token.
+# The `report-to` parameter in the `Connection-Allowlist` header isn’t a token
 
 If provided, the `report-to` parameter must be a [Token](sfToken)
 naming a reporting endpoint.

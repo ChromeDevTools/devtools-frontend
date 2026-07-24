@@ -1,1 +1,1 @@
-# Email verification request failed because the email verification well-known file was not found (HTTP 404).
+# Email verification request failed because the email verification well-known file wasn’t found (HTTP 404)

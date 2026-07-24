@@ -1,1 +1,1 @@
-# getUserInfo() is disabled because the IDP Sign-In Status is signed-out.
+# getUserInfo() is disabled because the IDP Sign-In Status is signed-out

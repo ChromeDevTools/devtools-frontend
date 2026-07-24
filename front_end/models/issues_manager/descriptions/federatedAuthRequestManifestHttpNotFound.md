@@ -1,1 +1,1 @@
-# The provider's FedCM manifest configuration cannot be found.
+# The provider’s FedCM manifest configuration can’t be found

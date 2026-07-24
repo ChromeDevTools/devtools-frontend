@@ -1443,7 +1443,8 @@ var AiAgent_exports = {};
 __export(AiAgent_exports, {
   AiAgent: () => AiAgent,
   ConversationContext: () => ConversationContext,
-  MAX_STEPS: () => MAX_STEPS
+  MAX_STEPS: () => MAX_STEPS,
+  aidaErrorToErrorType: () => aidaErrorToErrorType
 });
 import * as Host4 from "./../../core/host/host.js";
 import * as Root4 from "./../../core/root/root.js";
@@ -1806,16 +1807,7 @@ var AiAgent = class {
         }
       } catch (err) {
         debugLog("Error calling the AIDA API", err);
-        let error = "unknown";
-        if (err instanceof Host4.AidaClient.AidaAbortError) {
-          error = "abort";
-        } else if (err instanceof Host4.AidaClient.AidaBlockError) {
-          error = "block";
-        } else if (err instanceof Host4.AidaClient.AidaQuotaError || err instanceof Error && err.message.toLowerCase().includes("quota")) {
-          error = "quota";
-        } else if (err instanceof Host4.AidaClient.AidaPayloadTooLargeError || err instanceof Error && /payload size exceeds the limit/i.test(err.message)) {
-          error = "payload-too-large";
-        }
+        const error = aidaErrorToErrorType(err);
         yield this.#createErrorResponse(error);
         break;
       }
@@ -2101,6 +2093,21 @@ function sanitizeSuggestions(suggestions) {
     return void 0;
   }
   return sanitized;
+}
+function aidaErrorToErrorType(err) {
+  if (err instanceof Host4.AidaClient.AidaAbortError) {
+    return "abort";
+  }
+  if (err instanceof Host4.AidaClient.AidaBlockError) {
+    return "block";
+  }
+  if (err instanceof Host4.AidaClient.AidaQuotaError) {
+    return "quota";
+  }
+  if (err instanceof Host4.AidaClient.AidaPayloadTooLargeError) {
+    return "payload-too-large";
+  }
+  return "unknown";
 }
 
 // gen/front_end/models/ai_assistance/contexts/DOMNodeContext.js
@@ -4349,13 +4356,21 @@ var PerformanceTraceFormatter = class {
   #deviceScope;
   resolveFunctionCode;
   #cruxManager;
-  constructor(focus, deviceScope = null, cruxManager = CrUXManager.CrUXManager.instance()) {
+  constructor(focus, deviceScope = null, cruxManager) {
     this.#focus = focus;
     this.#parsedTrace = focus.parsedTrace;
     this.#insightSet = focus.primaryInsightSet;
     this.#eventsSerializer = focus.eventsSerializer;
     this.#deviceScope = deviceScope;
-    this.#cruxManager = cruxManager;
+    if (cruxManager) {
+      this.#cruxManager = cruxManager;
+    } else {
+      try {
+        this.#cruxManager = CrUXManager.CrUXManager.instance();
+      } catch {
+        this.#cruxManager = null;
+      }
+    }
   }
   serializeEvent(event) {
     const key = this.#eventsSerializer.keyForEvent(event);
@@ -4373,7 +4388,14 @@ var PerformanceTraceFormatter = class {
       return [];
     }
     try {
-      const cruxScope = this.#deviceScope ? { pageScope: "url", deviceScope: this.#deviceScope } : this.#cruxManager.getSelectedScope();
+      let cruxScope;
+      if (this.#deviceScope) {
+        cruxScope = { pageScope: "url", deviceScope: this.#deviceScope };
+      } else if (this.#cruxManager) {
+        cruxScope = this.#cruxManager.getSelectedScope();
+      } else {
+        return [];
+      }
       const parts = [];
       const fieldMetrics = Trace3.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#parsedTrace.metadata, cruxScope);
       const fieldLcp = fieldMetrics?.lcp;

@@ -1,1 +1,1 @@
-# Email verification request failed because the key binding audience claim is missing.
+# Email verification request failed because the key binding audience claim is missing

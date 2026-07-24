@@ -1,6 +1,6 @@
 # Invalid element or text node within <optgroup>
 
-An element which is not allowed in the content model of the `<optgroup>` element was found within an `<optgroup>` element. These elements will not consistently be accessible to people navigating by keyboard or using assistive technology.
+An element which isn’t allowed in the content model of the `<optgroup>` element was found within an `<optgroup>` element. These elements won’t consistently be accessible to people navigating by keyboard or using assistive technology.
 
 If using disallowed elements for layout structure and styling, consider using the allowed `<div>` element instead.
 

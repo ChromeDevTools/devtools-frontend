@@ -10,8 +10,13 @@ __export(AidaClient_exports, {
   AidaAbortError: () => AidaAbortError,
   AidaBlockError: () => AidaBlockError,
   AidaClient: () => AidaClient,
+  AidaClientError: () => AidaClientError,
+  AidaInvalidJsonResponseError: () => AidaInvalidJsonResponseError,
   AidaPayloadTooLargeError: () => AidaPayloadTooLargeError,
+  AidaPermissionDeniedError: () => AidaPermissionDeniedError,
   AidaQuotaError: () => AidaQuotaError,
+  AidaTimeoutError: () => AidaTimeoutError,
+  AidaUnknownError: () => AidaUnknownError,
   CLIENT_NAME: () => CLIENT_NAME,
   CitationSourceType: () => CitationSourceType,
   ClientFeature: () => ClientFeature,
@@ -26,7 +31,10 @@ __export(AidaClient_exports, {
   UserTier: () => UserTier,
   convertToUserTierEnum: () => convertToUserTierEnum,
   debugLog: () => debugLog,
-  getClientFeatureName: () => getClientFeatureName
+  getClientFeatureName: () => getClientFeatureName,
+  isPayloadTooLargeError: () => isPayloadTooLargeError,
+  isQuotaError: () => isQuotaError,
+  mapError: () => mapError
 });
 import * as Common4 from "./../common/common.js";
 import * as Platform4 from "./../platform/platform.js";
@@ -1633,7 +1641,7 @@ var GcaClient = class {
       return response;
     } catch (err) {
       debugLog("GCA request failed:", JSON.stringify(request), err);
-      return null;
+      throw err;
     }
   }
 };
@@ -1708,13 +1716,32 @@ var AidaLanguageToMarkdown = {
     /* AidaInferenceLanguage.UNKNOWN */
   ]: "unknown"
 };
-var AidaAbortError = class extends Error {
+var AidaClientError = class extends Error {
+  name = "AidaClientError";
 };
-var AidaBlockError = class extends Error {
+var AidaUnknownError = class extends AidaClientError {
+  name = "AidaUnknownError";
 };
-var AidaQuotaError = class extends Error {
+var AidaAbortError = class extends AidaClientError {
+  name = "AidaAbortError";
 };
-var AidaPayloadTooLargeError = class extends Error {
+var AidaBlockError = class extends AidaClientError {
+  name = "AidaBlockError";
+};
+var AidaQuotaError = class extends AidaClientError {
+  name = "AidaQuotaError";
+};
+var AidaPayloadTooLargeError = class extends AidaClientError {
+  name = "AidaPayloadTooLargeError";
+};
+var AidaPermissionDeniedError = class extends AidaClientError {
+  name = "AidaPermissionDeniedError";
+};
+var AidaTimeoutError = class extends AidaClientError {
+  name = "AidaTimeoutError";
+};
+var AidaInvalidJsonResponseError = class extends AidaClientError {
+  name = "AidaInvalidJsonResponseError";
 };
 var AidaClient = class {
   // Delegate client
@@ -1807,38 +1834,7 @@ var AidaClient = class {
       void stream.close();
     }, (err) => {
       debugLog("doConversation failed with error:", JSON.stringify(err));
-      if (err instanceof DispatchHttpRequestError && err.response) {
-        const result = err.response;
-        if (result.statusCode === 429) {
-          stream.fail(new AidaQuotaError("Server responded: quota exceeded"));
-          return;
-        }
-        if (result.statusCode === 403) {
-          stream.fail(new Error("Server responded: permission denied"));
-          return;
-        }
-        if ("error" in result && result.error) {
-          if (isQuotaError(result.error, result.detail)) {
-            stream.fail(new AidaQuotaError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
-            return;
-          }
-          if (isPayloadTooLargeError(result.error, result.detail)) {
-            stream.fail(new AidaPayloadTooLargeError(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
-            return;
-          }
-          stream.fail(new Error(`Cannot send request: ${result.error}${result.detail ? ` ${result.detail}` : ""}`));
-          return;
-        }
-        if ("netErrorName" in result && result.netErrorName === "net::ERR_TIMED_OUT") {
-          stream.fail(new Error("doAidaConversation timed out"));
-          return;
-        }
-        if (result.statusCode !== 200) {
-          stream.fail(new Error(`Request failed: ${JSON.stringify(result)}`));
-          return;
-        }
-      }
-      stream.fail(err);
+      stream.fail(mapError(err));
     });
     await (yield* this.#handleResponseStream(stream));
   }
@@ -1881,13 +1877,7 @@ var AidaClient = class {
             thoughtSignature: result.functionCallChunk.functionCall.thoughtSignature
           });
         } else if ("error" in result) {
-          if (isQuotaError(result.error)) {
-            throw new AidaQuotaError(`Server responded: ${JSON.stringify(result)}`);
-          }
-          if (isPayloadTooLargeError(result.error)) {
-            throw new AidaPayloadTooLargeError(`Server responded: ${JSON.stringify(result)}`);
-          }
-          throw new Error(`Server responded: ${JSON.stringify(result)}`);
+          throw mapError(result.error);
         } else {
           throw new Error(`Unknown chunk result ${JSON.stringify(result)}`);
         }
@@ -1957,13 +1947,17 @@ var AidaClient = class {
       request.metadata.disable_user_content_logging = true;
     }
     if (this.#gcaClient.enabled()) {
-      return await this.#gcaClient.completeCode(request);
+      try {
+        return await this.#gcaClient.completeCode(request);
+      } catch (err) {
+        throw mapError(err);
+      }
     }
     const { promise, resolve } = Promise.withResolvers();
     InspectorFrontendHostInstance.aidaCodeComplete(JSON.stringify(request), resolve);
     const completeCodeResult = await promise;
     if (completeCodeResult.error) {
-      throw new Error(`Cannot send request: ${completeCodeResult.error} ${completeCodeResult.detail || ""}`);
+      throw mapError(completeCodeResult.error, completeCodeResult.detail);
     }
     const response = completeCodeResult.response;
     if (!response?.length) {
@@ -2002,15 +1996,23 @@ var AidaClient = class {
       request.metadata.disable_user_content_logging = true;
     }
     if (this.#gcaClient.enabled()) {
-      return await this.#gcaClient.generateCode(request, options);
+      try {
+        return await this.#gcaClient.generateCode(request, options);
+      } catch (err) {
+        throw mapError(err);
+      }
     }
-    const response = await makeHttpRequest({
-      service: SERVICE_NAME2,
-      path: "/v1/aida:generateCode",
-      method: "POST",
-      body: JSON.stringify(request)
-    }, options);
-    return response;
+    try {
+      const response = await makeHttpRequest({
+        service: SERVICE_NAME2,
+        path: "/v1/aida:generateCode",
+        method: "POST",
+        body: JSON.stringify(request)
+      }, options);
+      return response;
+    } catch (err) {
+      throw mapError(err);
+    }
   }
 };
 function convertToUserTierEnum(userTier) {
@@ -2086,6 +2088,50 @@ function isQuotaError(...inputs) {
 }
 function isPayloadTooLargeError(...inputs) {
   return inputs.some((input) => input?.toLowerCase().includes("payload size exceeds the limit"));
+}
+function mapError(err, detail) {
+  if (err instanceof AidaClientError) {
+    return err;
+  }
+  if (err instanceof DispatchHttpRequestError) {
+    if (err.type === ErrorType.ABORT) {
+      return new AidaAbortError();
+    }
+    const response = err.response;
+    if (response) {
+      if (response.statusCode === 429) {
+        return new AidaQuotaError("Server responded: quota exceeded");
+      }
+      if (response.statusCode === 403) {
+        return new AidaPermissionDeniedError("Server responded: permission denied");
+      }
+      if ("netErrorName" in response && response.netErrorName === "net::ERR_TIMED_OUT") {
+        return new AidaTimeoutError("AIDA request timed out");
+      }
+      if ("error" in response && response.error) {
+        return mapError(response.error, response.detail);
+      }
+      if (response.statusCode === 200 && err.type === ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
+        return new AidaInvalidJsonResponseError("Server responded with invalid JSON", { cause: err });
+      }
+      if (response.statusCode !== 200) {
+        return new AidaUnknownError(`Request failed: ${JSON.stringify(response)}`);
+      }
+    }
+  }
+  if (typeof err === "string") {
+    if (isQuotaError(err, detail)) {
+      return new AidaQuotaError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
+    }
+    if (isPayloadTooLargeError(err, detail)) {
+      return new AidaPayloadTooLargeError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
+    }
+    return new AidaUnknownError(`Cannot send request: ${err}${detail ? ` ${detail}` : ""}`);
+  }
+  if (err instanceof Error) {
+    return new AidaUnknownError(err.message, { cause: err });
+  }
+  return new AidaUnknownError(String(err));
 }
 
 // gen/front_end/core/host/GdpClient.js
@@ -3088,18 +3134,6 @@ var IssueCreated;
   IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteNoneInsecure::SetCookie"] = 15] = "CookieIssue::ExcludeSameSiteNoneInsecure::SetCookie";
   IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteNoneInsecure::ReadCookie"] = 16] = "CookieIssue::WarnSameSiteNoneInsecure::ReadCookie";
   IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteNoneInsecure::SetCookie"] = 17] = "CookieIssue::WarnSameSiteNoneInsecure::SetCookie";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure"] = 18] = "CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Secure";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure"] = 19] = "CookieIssue::WarnSameSiteStrictLaxDowngradeStrict::Insecure";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnCrossDowngrade::ReadCookie::Secure"] = 20] = "CookieIssue::WarnCrossDowngrade::ReadCookie::Secure";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnCrossDowngrade::ReadCookie::Insecure"] = 21] = "CookieIssue::WarnCrossDowngrade::ReadCookie::Insecure";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnCrossDowngrade::SetCookie::Secure"] = 22] = "CookieIssue::WarnCrossDowngrade::SetCookie::Secure";
-  IssueCreated2[IssueCreated2["CookieIssue::WarnCrossDowngrade::SetCookie::Insecure"] = 23] = "CookieIssue::WarnCrossDowngrade::SetCookie::Insecure";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeNavigationContextDowngrade::Secure"] = 24] = "CookieIssue::ExcludeNavigationContextDowngrade::Secure";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeNavigationContextDowngrade::Insecure"] = 25] = "CookieIssue::ExcludeNavigationContextDowngrade::Insecure";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeContextDowngrade::ReadCookie::Secure"] = 26] = "CookieIssue::ExcludeContextDowngrade::ReadCookie::Secure";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure"] = 27] = "CookieIssue::ExcludeContextDowngrade::ReadCookie::Insecure";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeContextDowngrade::SetCookie::Secure"] = 28] = "CookieIssue::ExcludeContextDowngrade::SetCookie::Secure";
-  IssueCreated2[IssueCreated2["CookieIssue::ExcludeContextDowngrade::SetCookie::Insecure"] = 29] = "CookieIssue::ExcludeContextDowngrade::SetCookie::Insecure";
   IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie"] = 30] = "CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::ReadCookie";
   IssueCreated2[IssueCreated2["CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie"] = 31] = "CookieIssue::ExcludeSameSiteUnspecifiedTreatedAsLax::SetCookie";
   IssueCreated2[IssueCreated2["CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie"] = 32] = "CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie";

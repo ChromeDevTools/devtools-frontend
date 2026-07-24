@@ -1,1 +1,1 @@
-# Email verification request failed because the Relying Party origin is opaque.
+# Email verification request failed because the Relying Party origin is opaque

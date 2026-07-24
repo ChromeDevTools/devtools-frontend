@@ -1,6 +1,6 @@
-# An item in the `Connection-Allowlist` header is invalid.
+# An item in the `Connection-Allowlist` header is invalid
 
-Each item in the `Connection-Allowlist`'s header's [Inner List](sfInnerList)
+Each item in the `Connection-Allowlist`’s header’s [Inner List](sfInnerList)
 must be a [String](sfString) representing a [URL Pattern](urlPatternSpec), or
 the [Token](sfToken) `response-origin`.
 

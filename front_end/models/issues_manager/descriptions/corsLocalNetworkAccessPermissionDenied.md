@@ -1,7 +1,7 @@
 # Ensure that local network requests are compatible with restrictions
 
 A site requested a resource from a network that it could only access because of
-its users' privileged network position.
+its users’ privileged network position.
 
 These requests expose devices and servers to the internet, increasing the risk
 of a cross-site request forgery (CSRF) attack and/or information leakage.

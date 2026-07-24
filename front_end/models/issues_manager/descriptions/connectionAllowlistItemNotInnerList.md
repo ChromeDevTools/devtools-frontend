@@ -1,6 +1,6 @@
-# An item in the `Connection-Allowlist` header is not an Inner List.
+# An item in the `Connection-Allowlist` header isn’t an Inner List
 
-Responses' `Connection-Allowlist` header should be formatted as a [List](sfList)
+Responses’ `Connection-Allowlist` header should be formatted as a [List](sfList)
 containing a single [Inner List](sfInnerList) that declares the allowed set of
 [URL Patterns](urlPatternSpec) for a given context.
 

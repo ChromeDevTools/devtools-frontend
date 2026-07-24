@@ -36,13 +36,13 @@ export default `/*
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-toolbar {
-  font-family: sans-serif;
+  font-family: var(--default-font-family);
   font-size: 12px;
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .link,
 .devtools-link {
-  font-family: sans-serif;
+  font-family: var(--default-font-family);
   font-size: 12px;
   margin: 0 3px;
 }

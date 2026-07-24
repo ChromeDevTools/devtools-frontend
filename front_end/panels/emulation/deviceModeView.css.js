@@ -285,6 +285,7 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler {
+  display: block;
   position: absolute;
   overflow: visible;
 }

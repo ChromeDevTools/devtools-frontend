@@ -74,7 +74,15 @@ export declare class StylePropertiesSection {
     headerText(): string;
     private onMouseOutSelector;
     private onMouseEnterSelector;
-    highlight(mode?: string | undefined): void;
+    /**
+     * Highlights the DOM node associated with this style section in the page overlay.
+     * Use `ruleOrSelector` to highlight elements matching a specific parent/ancestor
+     * rule or selector, or omit it to use the selector of the rule displayed in this section.
+     *
+     * @param mode Highlight mode (defaults to `'all'`).
+     * @param ruleOrSelector Parent selector string, parent rule, or `undefined`.
+     */
+    highlight(mode?: string | undefined, ruleOrSelector?: SDK.CSSRule.CSSStyleRule | string): void;
     firstSibling(): StylePropertiesSection | null;
     findCurrentOrNextVisible(willIterateForward: boolean, originalSection?: StylePropertiesSection): StylePropertiesSection | null;
     lastSibling(): StylePropertiesSection | null;

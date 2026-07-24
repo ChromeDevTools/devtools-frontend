@@ -229,7 +229,7 @@ export class StylePropertiesSection {
         this.selectorElement.classList.add('selector');
         this.selectorElement.textContent = headerText;
         selectorContainer.appendChild(this.selectorElement);
-        this.selectorElement.addEventListener('mouseenter', this.onMouseEnterSelector.bind(this), false);
+        this.selectorElement.addEventListener('mouseenter', () => this.onMouseEnterSelector(), false);
         this.selectorElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
         this.#specificityTooltips = selectorContainer.createChild('span');
         // We only add braces for style rules with selectors and non-style rules, which create their own sections.
@@ -569,21 +569,36 @@ export class StylePropertiesSection {
         }
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
-    onMouseEnterSelector() {
+    onMouseEnterSelector(ruleOrSelector) {
         if (this.hoverTimer) {
             clearTimeout(this.hoverTimer);
         }
-        this.hoverTimer = window.setTimeout(this.highlight.bind(this), 300);
+        this.hoverTimer = window.setTimeout(this.highlight.bind(this, undefined, ruleOrSelector), 300);
     }
-    highlight(mode = 'all') {
+    /**
+     * Highlights the DOM node associated with this style section in the page overlay.
+     * Use `ruleOrSelector` to highlight elements matching a specific parent/ancestor
+     * rule or selector, or omit it to use the selector of the rule displayed in this section.
+     *
+     * @param mode Highlight mode (defaults to `'all'`).
+     * @param ruleOrSelector Parent selector string, parent rule, or `undefined`.
+     */
+    highlight(mode = 'all', ruleOrSelector) {
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
         const node = this.stylesContainer.node();
         if (!node) {
             return;
         }
-        const selectorList = this.styleInternal.parentRule && this.styleInternal.parentRule instanceof SDK.CSSRule.CSSStyleRule ?
-            this.styleInternal.parentRule.selectorText() :
-            undefined;
+        let selectorList;
+        if (typeof ruleOrSelector === 'string') {
+            selectorList = ruleOrSelector;
+        }
+        else if (ruleOrSelector instanceof SDK.CSSRule.CSSStyleRule) {
+            selectorList = ruleOrSelector.selectorText();
+        }
+        else if (this.styleInternal.parentRule instanceof SDK.CSSRule.CSSStyleRule) {
+            selectorList = this.styleInternal.parentRule.selectorText();
+        }
         node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
     }
     firstSibling() {
@@ -965,6 +980,8 @@ export class StylePropertiesSection {
                 matchingSelectors[matchingIndex] = true;
             }
             const selectorElement = container.createChild('span', 'selector');
+            selectorElement.addEventListener('mouseenter', () => this.onMouseEnterSelector(parentRule), false);
+            selectorElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
             const specificityContainer = container.createChild('span');
             this.renderSelectorsToElement(parentRule.selectors, matchingSelectors, this.elementToSelectorIndex, selectorElement, specificityContainer);
             const openBrace = container.createChild('span', 'sidebar-pane-open-brace');
@@ -972,6 +989,8 @@ export class StylePropertiesSection {
             return container;
         }
         const nestingElement = document.createElement('div');
+        nestingElement.addEventListener('mouseenter', () => this.onMouseEnterSelector(nestingSelector), false);
+        nestingElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
         nestingElement.textContent = `${nestingSelector} {`;
         return nestingElement;
     }
@@ -1273,7 +1292,7 @@ export class StylePropertiesSection {
         }
     }
     markSelectorHighlights() {
-        const selectors = this.selectorElement.getElementsByClassName('simple-selector');
+        const selectors = this.element.getElementsByClassName('simple-selector');
         const regex = this.stylesContainer.filterRegex();
         for (let i = 0; i < selectors.length; ++i) {
             const selectorMatchesFilter = regex?.test(selectors[i].textContent || '');

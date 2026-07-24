@@ -1,3 +1,3 @@
-# Can't register the response of the navigation request as a dictionary
+# Can’t register the response of the navigation request as a dictionary
 
-Navigation responses are not usable as compression dictionaries.
+Navigation responses aren’t usable as compression dictionaries.

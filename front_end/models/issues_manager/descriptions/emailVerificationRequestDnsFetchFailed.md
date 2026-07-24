@@ -1,1 +1,1 @@
-# Email verification request failed because the DNS fetch failed.
+# Email verification request failed because the DNS fetch failed

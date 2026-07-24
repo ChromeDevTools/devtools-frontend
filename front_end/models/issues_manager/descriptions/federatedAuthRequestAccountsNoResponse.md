@@ -1,1 +1,1 @@
-# The response body is empty when fetching the provider's accounts list.
+# The response body is empty when fetching the provider’s accounts list

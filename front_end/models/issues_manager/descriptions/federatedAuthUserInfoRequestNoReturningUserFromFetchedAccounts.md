@@ -1,1 +1,1 @@
-# getUserInfo() failed because no account received was a returning account.
+# getUserInfo() failed because no account got was a returning account

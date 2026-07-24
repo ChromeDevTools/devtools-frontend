@@ -1,6 +1,6 @@
 # Activation disabled
 
-The "{PLACEHOLDER_Type}" element could not be activated for the following reason: {PLACEHOLDER_DisableReason}.
+The "{PLACEHOLDER_Type}" element couldn’t be activated for the following reason: {PLACEHOLDER_DisableReason}.
 
 The element is occluded by: "{PLACEHOLDER_OccluderInfo}"
 

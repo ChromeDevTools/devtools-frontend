@@ -59,18 +59,6 @@ const UIStrings = {
      */
     unknownError: 'An unknown error was encountered when trying to send this cookie.',
     /**
-     * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site.
-     */
-    schemefulSameSiteStrict: 'This cookie was blocked because it had the "`SameSite=Strict`" attribute but the request was cross-site. This includes top-level navigation requests initiated by other sites. This request is considered cross-site because the URL has a different scheme than the current site.',
-    /**
-     * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site.
-     */
-    schemefulSameSiteLax: 'This cookie was blocked because it had the "`SameSite=Lax`" attribute but the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
-    /**
-     * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site.
-     */
-    schemefulSameSiteUnspecifiedTreatedAsLax: 'This cookie didn’t specify a "`SameSite`" attribute when it was stored, was defaulted to "`SameSite=Lax`", and was blocked because the request was cross-site and was not initiated by a top-level navigation. This request is considered cross-site because the URL has a different scheme than the current site.',
-    /**
      * @description Tooltip to explain why a cookie was blocked due to exceeding the maximum size.
      */
     nameValuePairExceedsMaxSize: 'This cookie was blocked because it was too large. The combined size of the name and value must be less than or equal to 4096 characters.',
@@ -98,15 +86,6 @@ const UIStrings = {
      * @description Tooltip to explain why a cookie was blocked.
      */
     anUnknownErrorWasEncounteredWhenTrying: 'An unknown error was encountered when trying to store this cookie.',
-    /**
-     * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site.
-     * @example {SameSite=Strict} PH1
-     */
-    thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax: 'This attempt to set a cookie via a "`Set-Cookie`" header was blocked because it had the "{PH1}" attribute but came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
-    /**
-     * @description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site.
-     */
-    thisSetcookieDidntSpecifyASamesite: 'This "`Set-Cookie`" header didn’t specify a "`SameSite`" attribute, was defaulted to "`SameSite=Lax`", and was blocked because it came from a cross-site response which was not the response to a top-level navigation. This response is considered cross-site because the URL has a different scheme than the current site.',
     /**
      * @description Tooltip to explain why an attempt to set a cookie via a `Set-Cookie` HTTP header on a request's response was blocked.
      */
@@ -1508,12 +1487,6 @@ export const cookieBlockedReasonToUiString = function (blockedReason) {
             return i18nString(UIStrings.notOnPath);
         case "DomainMismatch" /* Protocol.Network.CookieBlockedReason.DomainMismatch */:
             return i18nString(UIStrings.domainMismatch);
-        case "SameSiteStrict" /* Protocol.Network.CookieBlockedReason.SameSiteStrict */:
-            return i18nString(UIStrings.sameSiteStrict);
-        case "SameSiteLax" /* Protocol.Network.CookieBlockedReason.SameSiteLax */:
-            return i18nString(UIStrings.sameSiteLax);
-        case "SameSiteUnspecifiedTreatedAsLax" /* Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax */:
-            return i18nString(UIStrings.sameSiteUnspecifiedTreatedAsLax);
         case "SameSiteNoneInsecure" /* Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure */:
             return i18nString(UIStrings.sameSiteNoneInsecure);
         case "UserPreferences" /* Protocol.Network.CookieBlockedReason.UserPreferences */:
@@ -1521,11 +1494,11 @@ export const cookieBlockedReasonToUiString = function (blockedReason) {
         case "UnknownError" /* Protocol.Network.CookieBlockedReason.UnknownError */:
             return i18nString(UIStrings.unknownError);
         case "SchemefulSameSiteStrict" /* Protocol.Network.CookieBlockedReason.SchemefulSameSiteStrict */:
-            return i18nString(UIStrings.schemefulSameSiteStrict);
+            return i18nString(UIStrings.sameSiteStrict);
         case "SchemefulSameSiteLax" /* Protocol.Network.CookieBlockedReason.SchemefulSameSiteLax */:
-            return i18nString(UIStrings.schemefulSameSiteLax);
+            return i18nString(UIStrings.sameSiteLax);
         case "SchemefulSameSiteUnspecifiedTreatedAsLax" /* Protocol.Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax */:
-            return i18nString(UIStrings.schemefulSameSiteUnspecifiedTreatedAsLax);
+            return i18nString(UIStrings.sameSiteUnspecifiedTreatedAsLax);
         case "NameValuePairExceedsMaxSize" /* Protocol.Network.CookieBlockedReason.NameValuePairExceedsMaxSize */:
             return i18nString(UIStrings.nameValuePairExceedsMaxSize);
         case "ThirdPartyPhaseout" /* Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout */:
@@ -1537,16 +1510,6 @@ export const setCookieBlockedReasonToUiString = function (blockedReason) {
     switch (blockedReason) {
         case "SecureOnly" /* Protocol.Network.SetCookieBlockedReason.SecureOnly */:
             return i18nString(UIStrings.blockedReasonSecureOnly);
-        case "SameSiteStrict" /* Protocol.Network.SetCookieBlockedReason.SameSiteStrict */:
-            return i18nString(UIStrings.blockedReasonSameSiteStrictLax, {
-                PH1: 'SameSite=Strict',
-            });
-        case "SameSiteLax" /* Protocol.Network.SetCookieBlockedReason.SameSiteLax */:
-            return i18nString(UIStrings.blockedReasonSameSiteStrictLax, {
-                PH1: 'SameSite=Lax',
-            });
-        case "SameSiteUnspecifiedTreatedAsLax" /* Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax */:
-            return i18nString(UIStrings.blockedReasonSameSiteUnspecifiedTreatedAsLax);
         case "SameSiteNoneInsecure" /* Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure */:
             return i18nString(UIStrings.blockedReasonSameSiteNoneInsecure);
         case "UserPreferences" /* Protocol.Network.SetCookieBlockedReason.UserPreferences */:
@@ -1564,11 +1527,15 @@ export const setCookieBlockedReasonToUiString = function (blockedReason) {
         case "UnknownError" /* Protocol.Network.SetCookieBlockedReason.UnknownError */:
             return i18nString(UIStrings.anUnknownErrorWasEncounteredWhenTrying);
         case "SchemefulSameSiteStrict" /* Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteStrict */:
-            return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax, { PH1: 'SameSite=Strict' });
+            return i18nString(UIStrings.blockedReasonSameSiteStrictLax, {
+                PH1: 'SameSite=Strict',
+            });
         case "SchemefulSameSiteLax" /* Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteLax */:
-            return i18nString(UIStrings.thisSetcookieWasBlockedBecauseItHadTheSamesiteStrictLax, { PH1: 'SameSite=Lax' });
+            return i18nString(UIStrings.blockedReasonSameSiteStrictLax, {
+                PH1: 'SameSite=Lax',
+            });
         case "SchemefulSameSiteUnspecifiedTreatedAsLax" /* Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax */:
-            return i18nString(UIStrings.thisSetcookieDidntSpecifyASamesite);
+            return i18nString(UIStrings.blockedReasonSameSiteUnspecifiedTreatedAsLax);
         case "NameValuePairExceedsMaxSize" /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */:
             return i18nString(UIStrings.thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize);
         case "DisallowedCharacter" /* Protocol.Network.SetCookieBlockedReason.DisallowedCharacter */:
@@ -1586,9 +1553,6 @@ export const cookieBlockedReasonToAttribute = function (blockedReason) {
             return "path" /* Attribute.PATH */;
         case "DomainMismatch" /* Protocol.Network.CookieBlockedReason.DomainMismatch */:
             return "domain" /* Attribute.DOMAIN */;
-        case "SameSiteStrict" /* Protocol.Network.CookieBlockedReason.SameSiteStrict */:
-        case "SameSiteLax" /* Protocol.Network.CookieBlockedReason.SameSiteLax */:
-        case "SameSiteUnspecifiedTreatedAsLax" /* Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax */:
         case "SameSiteNoneInsecure" /* Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure */:
         case "SchemefulSameSiteStrict" /* Protocol.Network.CookieBlockedReason.SchemefulSameSiteStrict */:
         case "SchemefulSameSiteLax" /* Protocol.Network.CookieBlockedReason.SchemefulSameSiteLax */:
@@ -1607,9 +1571,6 @@ export const setCookieBlockedReasonToAttribute = function (blockedReason) {
         case "SecureOnly" /* Protocol.Network.SetCookieBlockedReason.SecureOnly */:
         case "OverwriteSecure" /* Protocol.Network.SetCookieBlockedReason.OverwriteSecure */:
             return "secure" /* Attribute.SECURE */;
-        case "SameSiteStrict" /* Protocol.Network.SetCookieBlockedReason.SameSiteStrict */:
-        case "SameSiteLax" /* Protocol.Network.SetCookieBlockedReason.SameSiteLax */:
-        case "SameSiteUnspecifiedTreatedAsLax" /* Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax */:
         case "SameSiteNoneInsecure" /* Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure */:
         case "SchemefulSameSiteStrict" /* Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteStrict */:
         case "SchemefulSameSiteLax" /* Protocol.Network.SetCookieBlockedReason.SchemefulSameSiteLax */:

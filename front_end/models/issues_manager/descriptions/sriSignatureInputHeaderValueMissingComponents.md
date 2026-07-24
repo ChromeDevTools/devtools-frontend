@@ -1,6 +1,6 @@
-# Missing a required component in a `signature-input` header.
+# Missing a required component in a `signature-input` header
 
-The [`signature-input`](signatureInputHeader) header's
+The [`signature-input`](signatureInputHeader) header’s
 [Inner Lists](sfInnerList) must contain the string "`unencoded-digest`" with an
 `sf` parameter:
 

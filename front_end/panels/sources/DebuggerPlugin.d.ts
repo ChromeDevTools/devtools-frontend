@@ -116,3 +116,4 @@ export declare function computePopoverHighlightRange(state: CodeMirror.EditorSta
     to: number;
     containsSideEffects: boolean;
 } | null;
+export declare function containsSideEffects(doc: CodeMirror.Text, root: CodeMirror.SyntaxNode): boolean;

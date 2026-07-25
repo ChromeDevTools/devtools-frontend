@@ -4344,12 +4344,14 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   #getOnboardingCompletedSetting() {
     return Common4.Settings.Settings.instance().createLocalSetting("console-insights-onboarding-finished", true);
   }
-  async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host2.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
       this.requestUpdate();
     }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
   }
   #executeConsoleInsightAction() {
     UI5.Context.Context.instance().setFlavor(ConsoleViewMessage, this.#consoleViewMessage);
@@ -4596,7 +4598,10 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   wasShown() {
     super.wasShown();
     Host2.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    void this.#onAidaAvailabilityChange();
+    const initialAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
   }
   willHide() {
     super.willHide();
@@ -6347,9 +6352,9 @@ var UIStrings5 = {
    */
   copyVisibleStyledSelection: "Copy visible styled selection",
   /**
-   * @description Text to replay an XHR request.
+   * @description Text to resend a network request.
    */
-  replayXhr: "Replay XHR",
+  resend: "Resend",
   /**
    * @description Text to indicate DevTools is writing to a file.
    */
@@ -7261,8 +7266,8 @@ var ConsoleView = class _ConsoleView extends UI9.Widget.VBox {
     }
     if (consoleMessage) {
       const request = Logs3.NetworkLog.NetworkLog.requestForConsoleMessage(consoleMessage);
-      if (request && SDK7.NetworkManager.NetworkManager.canReplayRequest(request)) {
-        contextMenu.debugSection().appendItem(i18nString5(UIStrings5.replayXhr), SDK7.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "replay-xhr" });
+      if (request && SDK7.NetworkManager.NetworkManager.canResendRequest(request)) {
+        contextMenu.debugSection().appendItem(i18nString5(UIStrings5.resend), SDK7.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "resend" });
       }
     }
     void contextMenu.show();

@@ -48,6 +48,7 @@ export declare function convertToUserTierEnum(userTier: string | undefined): Use
 export declare function getClientFeatureName(feature: ClientFeature): string;
 export declare class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     #private;
+    get aidaAvailability(): AidaAccessPreconditions | undefined;
     static instance({ forceNew }?: {
         forceNew: boolean;
     }): HostConfigTracker;
@@ -61,7 +62,7 @@ export declare const enum Events {
     AIDA_AVAILABILITY_CHANGED = "aidaAvailabilityChanged"
 }
 export interface EventTypes {
-    [Events.AIDA_AVAILABILITY_CHANGED]: void;
+    [Events.AIDA_AVAILABILITY_CHANGED]: AidaAccessPreconditions;
 }
 export declare function isQuotaError(...inputs: Array<string | undefined>): boolean;
 export declare function isPayloadTooLargeError(...inputs: Array<string | undefined>): boolean;

@@ -170,6 +170,9 @@ var CrUXManager = class _CrUXManager extends Common.ObjectWrapper.ObjectWrapper 
     this.#pageResult = await this.#getFieldDataForCurrentPage();
     this.dispatchEventToListeners("field-data-changed", this.#pageResult);
   }
+  setMainDocumentURL(url) {
+    this.#mainDocumentUrl = url;
+  }
   #normalizeUrl(inputUrl) {
     const normalizedUrl = new URL(inputUrl);
     normalizedUrl.hash = "";

@@ -7,7 +7,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { DeviceModeWrapper } from './DeviceModeWrapper.js';
 import { InspectedPagePlaceholder } from './InspectedPagePlaceholder.js';
-let appInstance;
+let appInstance = null;
 export class AdvancedApp {
     rootSplitWidget;
     deviceModeView;
@@ -15,20 +15,28 @@ export class AdvancedApp {
     toolboxWindow;
     toolboxRootView;
     changingDockSide;
-    constructor() {
+    #universe;
+    constructor(universe) {
+        this.#universe = universe;
         UI.DockController.DockController.instance().addEventListener("BeforeDockSideChanged" /* UI.DockController.Events.BEFORE_DOCK_SIDE_CHANGED */, this.openToolboxWindow, this);
     }
     /**
      * Note: it's used by toolbox.ts without real type checks.
      */
-    static instance() {
+    static instance(universe) {
         if (!appInstance) {
-            appInstance = new AdvancedApp();
+            if (!universe) {
+                throw new Error('AdvancedApp.instance() requires a Universe on initial instantiation');
+            }
+            appInstance = new AdvancedApp(universe);
         }
         return appInstance;
     }
+    static removeInstance() {
+        appInstance = null;
+    }
     presentUI(document) {
-        const rootView = new UI.RootView.RootView();
+        const rootView = new UI.RootView.RootView(this.#universe);
         this.rootSplitWidget =
             new UI.SplitWidget.SplitWidget(false, true, 'inspector-view.split-view-state', 555, 300, true);
         this.rootSplitWidget.show(rootView.element);
@@ -64,7 +72,7 @@ export class AdvancedApp {
         UI.UIUtils.addPlatformClass(toolboxDocument.documentElement);
         UI.UIUtils.installComponentRootStyles(toolboxDocument.body);
         UI.ContextMenu.ContextMenu.installHandler(toolboxDocument);
-        this.toolboxRootView = new UI.RootView.RootView();
+        this.toolboxRootView = new UI.RootView.RootView(this.#universe);
         this.toolboxRootView.attachToDocument(toolboxDocument);
         this.updateDeviceModeView();
     }
@@ -161,8 +169,8 @@ export class AdvancedAppProvider {
         }
         return advancedAppProviderInstance;
     }
-    createApp() {
-        return AdvancedApp.instance();
+    createApp(universe) {
+        return AdvancedApp.instance(universe);
     }
 }
 //# sourceMappingURL=AdvancedApp.js.map

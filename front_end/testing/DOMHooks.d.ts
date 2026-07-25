@@ -1,3 +1,5 @@
+import type * as Foundation from '../foundation/foundation.js';
+export declare function setTestUniverseForWidgets(universe: Foundation.Universe.Universe): void;
 /**
  * Completely cleans out the test DOM to ensure it's empty for the next test run.
  * This is run automatically between tests - you should not be manually calling this yourself.

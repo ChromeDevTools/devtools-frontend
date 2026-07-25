@@ -6,6 +6,7 @@ import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
+import type * as Spec from '../../../models/live-metrics/web-vitals-injected/spec/spec.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 export interface ViewInput {
@@ -25,6 +26,7 @@ export interface ViewInput {
     logExtraInteractionDetails: (interaction: LiveMetrics.Interaction) => void;
     highlightedInteractionId?: string;
     highlightedLayoutShiftClusterIds?: Set<string>;
+    navigationType?: Spec.NavigationType;
 }
 export interface ViewOutput {
     shouldKeepInteractionsScrolledToBottom?: () => boolean;

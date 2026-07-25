@@ -103,7 +103,7 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper {
         const pollId = this.#pollId;
         while (pollId === this.#pollId) {
             await Promise.all(Array.from(this.isolates(), isolate => isolate.update()));
-            await new Promise(r => window.setTimeout(r, PollIntervalMs));
+            await new Promise(r => globalThis.setTimeout(r, PollIntervalMs));
         }
     }
 }

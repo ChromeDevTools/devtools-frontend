@@ -491,12 +491,14 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
       closable: true
     });
   }
-  async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
       this.requestUpdate();
     }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
   }
   #onAiCodeCompletionSettingChanged() {
     if (this.#aiCodeCompletionFreCompletedSetting.get() || this.#aiCodeCompletionTeaserDismissedSetting.get()) {
@@ -576,7 +578,10 @@ var AiCodeCompletionTeaser = class extends UI2.Widget.Widget {
     Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     this.#aiCodeCompletionFreCompletedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
     this.#aiCodeCompletionTeaserDismissedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
-    void this.#onAidaAvailabilityChange();
+    const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
   }
   willHide() {
     super.willHide();
@@ -1789,7 +1794,7 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI6.Widge
     if (!Root3.Runtime.hostConfig.aidaAvailability?.enabled) {
       return;
     }
-    const currentAidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
+    const currentAidaAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (currentAidaAvailability !== "available") {
       return;
     }
@@ -2066,12 +2071,14 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
     this.#panel = panel;
     this.requestUpdate();
   }
-  async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host6.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
       this.requestUpdate();
     }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
   }
   #onManageInSettingsTooltipClick() {
     this.#viewOutput.hideTooltip?.();
@@ -2090,7 +2097,10 @@ var AiCodeCompletionDisclaimer = class extends UI7.Widget.Widget {
   wasShown() {
     super.wasShown();
     Host6.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    void this.#onAidaAvailabilityChange();
+    const initialAvailability = Host6.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
   }
   willHide() {
     super.willHide();
@@ -2297,12 +2307,14 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
     this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW2;
     this.requestUpdate();
   }
-  async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host7.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
       this.requestUpdate();
     }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
   }
   setLoading(loading) {
     this.#loading = loading;
@@ -2331,7 +2343,10 @@ var AiCodeCompletionSummaryToolbar = class extends UI8.Widget.Widget {
   wasShown() {
     super.wasShown();
     Host7.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    void this.#onAidaAvailabilityChange();
+    const initialAvailability = Host7.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
   }
   willHide() {
     super.willHide();

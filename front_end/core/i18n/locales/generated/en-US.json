@@ -6516,16 +6516,16 @@
     "message": "Content scripts"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | cspViolationBreakpoints": {
-    "message": "CSP Violation Breakpoints"
+    "message": "CSP violation breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | domBreakpoints": {
-    "message": "DOM Breakpoints"
+    "message": "DOM breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | eventListenerBreakpoints": {
-    "message": "Event Listener Breakpoints"
+    "message": "Event listener breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | globalListeners": {
-    "message": "Global Listeners"
+    "message": "Global listeners"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | overrides": {
     "message": "Overrides"
@@ -6540,16 +6540,16 @@
     "message": "Show Content scripts"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showCspViolationBreakpoints": {
-    "message": "Show CSP Violation Breakpoints"
+    "message": "Show CSP violation breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showDomBreakpoints": {
-    "message": "Show DOM Breakpoints"
+    "message": "Show DOM breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showEventListenerBreakpoints": {
-    "message": "Show Event Listener Breakpoints"
+    "message": "Show Event listener breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showGlobalListeners": {
-    "message": "Show Global Listeners"
+    "message": "Show Global listeners"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showOverrides": {
     "message": "Show Overrides"
@@ -6558,16 +6558,16 @@
     "message": "Show Page"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | showXhrfetchBreakpoints": {
-    "message": "Show XHR/fetch Breakpoints"
+    "message": "Show XHR/fetch breakpoints"
   },
   "panels/browser_debugger/browser_debugger-meta.ts | xhrfetchBreakpoints": {
-    "message": "XHR/fetch Breakpoints"
+    "message": "XHR/fetch breakpoints"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
     "message": "Animation"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
-    "message": "Ad Auction Worklet"
+    "message": "Ad auction worklet"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint hit"
@@ -6585,7 +6585,7 @@
     "message": "Device"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
-    "message": "DOM Mutation"
+    "message": "DOM mutation"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
     "message": "Drag / drop"
@@ -6612,7 +6612,7 @@
     "message": "Parse"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
-    "message": "Picture-in-Picture"
+    "message": "Picture-in-picture"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
     "message": "Pointer"
@@ -6621,7 +6621,7 @@
     "message": "Script"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
-    "message": "Shared Storage Worklet"
+    "message": "Shared storage worklet"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
     "message": "Timer"
@@ -6630,7 +6630,7 @@
     "message": "Touch"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
-    "message": "Trusted Type Violations"
+    "message": "Trusted Type violations"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
     "message": "WebAudio"
@@ -6666,7 +6666,7 @@
     "message": "DOM breakpoints pause on the code that changes a DOM node or its children."
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
-    "message": "DOM Breakpoints list"
+    "message": "DOM breakpoints list"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
     "message": "No DOM breakpoints"
@@ -6723,13 +6723,13 @@
     "message": "Remove breakpoint"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlBreakpoint": {
-    "message": "URL Breakpoint"
+    "message": "URL breakpoint"
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | urlContainsS": {
     "message": "URL contains \"{PH1}\""
   },
   "panels/browser_debugger/XHRBreakpointsSidebarPane.ts | xhrfetchBreakpoints": {
-    "message": "XHR/fetch Breakpoints"
+    "message": "XHR/fetch breakpoints"
   },
   "panels/changes/changes-meta.ts | changes": {
     "message": "Changes"
@@ -7178,8 +7178,8 @@
   "panels/console/ConsoleView.ts | preserveLog": {
     "message": "Keep log"
   },
-  "panels/console/ConsoleView.ts | replayXhr": {
-    "message": "Replay XHR"
+  "panels/console/ConsoleView.ts | resend": {
+    "message": "Resend"
   },
   "panels/console/ConsoleView.ts | saveAs": {
     "message": "Save as…"
@@ -8736,7 +8736,7 @@
     "message": "Passive"
   },
   "panels/event_listeners/EventListenersView.ts | togglePassive": {
-    "message": "Toggle Passive"
+    "message": "Toggle passive"
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Toggle whether event listener is passive or blocking"
@@ -11093,11 +11093,11 @@
   "panels/network/NetworkLogView.ts | reloadPage": {
     "message": "Reload page"
   },
-  "panels/network/NetworkLogView.ts | replayXhr": {
-    "message": "Replay XHR"
-  },
   "panels/network/NetworkLogView.ts | requestTypesToInclude": {
     "message": "Request types to include"
+  },
+  "panels/network/NetworkLogView.ts | resend": {
+    "message": "Resend"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "{PH1} B resources loaded by the page"
@@ -15746,6 +15746,9 @@
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Go to the INP interaction."
   },
+  "panels/timeline/components/LiveMetricsView.ts | softNavigationPillText": {
+    "message": "SOFT NAV"
+  },
   "panels/timeline/components/LiveMetricsView.ts | subpart": {
     "message": "Subpart"
   },
@@ -16276,6 +16279,9 @@
   },
   "panels/timeline/timeline-meta.ts | enableSelectorStats": {
     "message": "Enable CSS selector stats (slow)"
+  },
+  "panels/timeline/timeline-meta.ts | enableSoftNavigations": {
+    "message": "Enable soft navigation performance monitoring"
   },
   "panels/timeline/timeline-meta.ts | gpuMemory": {
     "message": "GPU memory"

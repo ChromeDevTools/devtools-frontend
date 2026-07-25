@@ -33,6 +33,7 @@ export declare const themeSelection: CM.Compartment;
 export declare function theme(): CM.Extension;
 export declare function baseConfiguration(text: string | CM.Text): CM.Extension;
 export declare const closeBrackets: DynamicSetting<boolean>;
+export declare function removeTooltipHost(): void;
 export declare const showCompletionHint: CM.ViewPlugin<{
     decorations: CM.DecorationSet;
     currentHint: string | null;

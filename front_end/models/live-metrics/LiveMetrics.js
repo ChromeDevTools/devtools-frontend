@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
+import * as CrUXManager from '../crux-manager/crux-manager.js';
 import * as Spec from './web-vitals-injected/spec/spec.js';
 const UIStrings = {
     /**
@@ -45,6 +46,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
     #interactions = new Map();
     #interactionsByGroupId = new Map();
     #layoutShifts = [];
+    #navigationType;
     #lastEmulationChangeTime;
     #mutex = new Common.Mutex.Mutex();
     #targetManager;
@@ -55,6 +57,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         this.#deviceModeModel = deviceModeModel;
         this.#targetManager.observeTargets(this, { scoped: true });
         this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+        Common.Settings.Settings.instance()
+            .moduleSetting('timeline-enable-soft-navigations')
+            .addChangeListener(this.#onSettingChanged, this);
     }
     #onPrimaryPageChanged(event) {
         const primaryTarget = this.#targetManager.primaryPageTarget();
@@ -81,6 +86,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             Root.DevToolsContext.globalInstance().set(LiveMetrics, new LiveMetrics(SDK.TargetManager.TargetManager.instance(), EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()));
         }
         return Root.DevToolsContext.globalInstance().get(LiveMetrics);
+    }
+    get navigationType() {
+        return this.#navigationType;
     }
     get lcpValue() {
         return this.#lcpValue;
@@ -199,6 +207,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             inp: this.#inpValue,
             interactions: this.#interactions,
             layoutShifts: this.#layoutShifts,
+            navigationType: this.#navigationType,
         });
     }
     setStatusForTesting(status) {
@@ -207,6 +216,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         this.#inpValue = status.inp;
         this.#interactions = status.interactions;
         this.#layoutShifts = status.layoutShifts;
+        this.#navigationType = status.navigationType;
         this.#sendStatusUpdate();
     }
     /**
@@ -333,6 +343,11 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             }
             case 'reset': {
                 this.#clearMetrics();
+                this.#navigationType = webVitalsEvent.navigationType;
+                if (webVitalsEvent.url) {
+                    CrUXManager.CrUXManager.instance().setMainDocumentURL(webVitalsEvent.url);
+                    void CrUXManager.CrUXManager.instance().refresh();
+                }
                 break;
             }
         }
@@ -345,6 +360,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         this.#interactions.clear();
         this.#interactionsByGroupId.clear();
         this.#layoutShifts = [];
+        this.#navigationType = undefined;
     }
     #isPrimaryFrameExecutionContext(executionContextId) {
         if (!this.#target) {
@@ -424,6 +440,39 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         await this.#stopCollectingMetrics();
         this.#target = undefined;
     }
+    async #injectScript() {
+        // Extra check in case the target was removed while we were initializing.
+        // It's possible to be halfway-through enabling when the target is removed
+        // eg try loading 'devtools://devtools/bundled/devtools_app.html?ws=127.0.0.1:99/blah'
+        if (!this.#target) {
+            return;
+        }
+        // If DevTools is closed and reopened, the live metrics context from the previous
+        // session will persist. We should ensure any old live metrics contexts are killed
+        // before starting a new one.
+        await this.#killAllLiveMetricContexts();
+        // Remove any old instances of the script
+        if (this.#scriptIdentifier) {
+            await this.#target.pageAgent().invoke_removeScriptToEvaluateOnNewDocument({
+                identifier: this.#scriptIdentifier,
+            });
+        }
+        const softNavsSettingValue = Common.Settings.Settings.instance().moduleSetting('timeline-enable-soft-navigations').get();
+        const source = `window.devToolsReportSoftNavs = ${softNavsSettingValue};\n` + await InjectedScript.get();
+        // Inject the script
+        const { identifier } = await this.#target.pageAgent().invoke_addScriptToEvaluateOnNewDocument({
+            source,
+            worldName: LIVE_METRICS_WORLD_NAME,
+            runImmediately: true,
+        });
+        this.#scriptIdentifier = identifier;
+    }
+    async #onSettingChanged() {
+        if (!this.#target || !this.#enabled) {
+            return;
+        }
+        await this.#injectScript();
+    }
     async enable() {
         if (this.#enabled) {
             return;
@@ -468,23 +517,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
             name: Spec.EVENT_BINDING_NAME,
             executionContextName: LIVE_METRICS_WORLD_NAME,
         });
-        // If DevTools is closed and reopened, the live metrics context from the previous
-        // session will persist. We should ensure any old live metrics contexts are killed
-        // before starting a new one.
-        await this.#killAllLiveMetricContexts();
-        const source = await InjectedScript.get();
-        // Extra check in case the target was removed while we were initializing.
-        // It's possible to be halfway-through enabling when the target is removed
-        // eg try loading 'devtools://devtools/bundled/devtools_app.html?ws=127.0.0.1:99/blah'
-        if (!this.#target) {
-            return;
-        }
-        const { identifier } = await this.#target?.pageAgent().invoke_addScriptToEvaluateOnNewDocument({
-            source,
-            worldName: LIVE_METRICS_WORLD_NAME,
-            runImmediately: true,
-        });
-        this.#scriptIdentifier = identifier;
+        await this.#injectScript();
         this.#deviceModeModel?.addEventListener("Updated" /* EmulationModel.DeviceModeModel.Events.UPDATED */, this.#onEmulationChanged, this);
         this.#isCollectingMetrics = true;
     }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {INPAttribution} from '../../../../third_party/web-vitals/web-vitals.js';
+import type {INPAttribution, Metric} from '../../../../third_party/web-vitals/web-vitals.js';
 import type * as Trace from '../../../trace/trace.js';
 
 export const EVENT_BINDING_NAME = '__chromium_devtools_metrics_reporter';
@@ -99,12 +99,15 @@ export interface InteractionEntryEvent {
   eventName: string;
   entryGroupId: InteractionEntryGroupId;
   startTime: number;
+  navigationId: number;
   nextPaintTime?: number;
   duration: Trace.Types.Timing.Milli;
   subparts: InpSubparts;
   nodeIndex?: number;
   longAnimationFrameEntries: PerformanceLongAnimationFrameTimingJSON[];
 }
+
+export type NavigationType = Metric['navigationType'];
 
 export interface LayoutShiftEvent {
   name: 'LayoutShift';
@@ -115,6 +118,8 @@ export interface LayoutShiftEvent {
 
 export interface ResetEvent {
   name: 'reset';
+  url?: string;
+  navigationType?: NavigationType;
 }
 
 export type WebVitalsEvent =

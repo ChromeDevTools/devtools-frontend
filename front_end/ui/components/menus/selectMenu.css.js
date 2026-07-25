@@ -25,6 +25,10 @@ export default `/*
     linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
 }
 
+* {
+  font-family: inherit;
+}
+
 button {
   background: none;
 }

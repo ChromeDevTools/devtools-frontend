@@ -205,6 +205,17 @@ function getCssEvaluationElement() {
     return cssEvaluationElement;
 }
 /**
+ * If a test calls localEvalCSS, an element is created on demand for this
+ * purpose. This element is not removed from the DOM and will leak between tests
+ * if not removed.
+ */
+export function removeCSSEvaluationElement() {
+    if (cssEvaluationElement) {
+        document.body.removeChild(cssEvaluationElement);
+        cssEvaluationElement = null;
+    }
+}
+/**
  * These functions use an element in the frontend to evaluate CSS. The advantage
  * of this is that it is synchronous and doesn't require a CDP method. The
  * disadvantage is it lacks context that would allow substitutions such as

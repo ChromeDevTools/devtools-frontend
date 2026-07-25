@@ -60,4 +60,5 @@ export declare class Universe {
     get userBadges(): Badges.UserBadges;
     get workspace(): Workspace.Workspace.WorkspaceImpl;
     get workspaceDiff(): WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
+    get<T>(ctor: Root.DevToolsContext.ConstructorT<T>): T;
 }

@@ -44,6 +44,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
   sourceMapManager;
   willResolveSourceMaps;
   processSourceMapBacklog;
+  isPolling;
   constructor(target) {
     super(target);
     this.cpuProfilerModel = target.model(SDK.CPUProfilerModel.CPUProfilerModel);
@@ -63,6 +64,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.performanceTraceRecording = false;
     this.willResolveSourceMaps = false;
     this.processSourceMapBacklog = [];
+    this.isPolling = false;
   }
   async start(jsCoveragePerBlock) {
     if (this.suspensionState !== "Active") {
@@ -137,20 +139,28 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.dispatchEventToListeners(Events.CoverageReset);
   }
   async startPolling() {
-    if (this.currentPollPromise || this.suspensionState !== "Active") {
+    if (this.isPolling || this.suspensionState !== "Active") {
       return;
     }
+    this.isPolling = true;
     await this.pollLoop();
   }
   async pollLoop() {
     this.clearTimer();
+    if (!this.isPolling) {
+      return;
+    }
     this.currentPollPromise = this.pollAndCallback();
     await this.currentPollPromise;
+    if (!this.isPolling) {
+      return;
+    }
     if (this.suspensionState === "Active" || this.performanceTraceRecording) {
       this.pollTimer = window.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
     }
   }
   async stopPolling() {
+    this.isPolling = false;
     this.clearTimer();
     await this.currentPollPromise;
     this.currentPollPromise = null;

@@ -605,31 +605,31 @@ var eventListenersView_css_default = `/*
 // gen/front_end/panels/event_listeners/EventListenersView.js
 var UIStrings = {
   /**
-   * @description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Empty holder text content in Event Listeners view of the Event Listeners sidebar in the Sources panel.
    */
   noEventListeners: "No event listeners",
   /**
-   * @description Empty holder text content in Event Listeners View of the Event Listener Debugging pane in the Elements panel
+   * @description Empty holder text content in Event Listeners view of the Event Listeners sidebar in the Elements panel.
    */
   eventListenersExplanation: "On this page you will find registered event listeners",
   /**
-   * @description Delete button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Delete button title in Event Listeners view of the Event Listeners sidebar in the Sources panel.
    */
   deleteEventListener: "Delete event listener",
   /**
-   * @description Passive button text content in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Passive button text content in Event Listeners view of the Event Listeners sidebar in the Sources panel.
    */
-  togglePassive: "Toggle Passive",
+  togglePassive: "Toggle passive",
   /**
-   * @description Passive button title in Event Listeners View of the Event Listener Debugging pane in the Sources panel
+   * @description Passive button title in Event Listeners view of the Event Listeners sidebar in the Sources panel.
    */
   toggleWhetherEventListenerIs: "Toggle whether event listener is passive or blocking",
   /**
-   * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
+   * @description A context menu item to reveal a node in the DOM tree of the Elements panel.
    */
   openInElementsPanel: "Open in Elements panel",
   /**
-   * @description Text in Event Listeners Widget of the Elements panel
+   * @description Text in Event Listeners widget of the Elements panel.
    */
   passive: "Passive"
 };

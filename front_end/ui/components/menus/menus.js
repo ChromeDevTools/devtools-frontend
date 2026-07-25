@@ -39,6 +39,10 @@ var menu_css_default = `/*
   background-color: var(--override-menu-active-background-color, var(--sys-color-neutral-container));
 }
 
+* {
+  font-family: inherit;
+}
+
 #container {
   list-style-type: none;
   margin-top: var(--sys-size-4);
@@ -112,6 +116,10 @@ var menuItem_css_default = `/*
 
 :host-context(devtools-menu-group) .menu-item {
   padding: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-9);
+}
+
+* {
+  font-family: inherit;
 }
 
 .is-selected-item::before {
@@ -593,6 +601,10 @@ var selectMenu_css_default = `/*
     linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
 }
 
+* {
+  font-family: inherit;
+}
+
 button {
   background: none;
 }
@@ -635,6 +647,10 @@ var selectMenuButton_css_default = `/*
   height: var(--sys-size-9);
   width: 100%;
   display: block;
+}
+
+* {
+  font-family: inherit;
 }
 
 .show {

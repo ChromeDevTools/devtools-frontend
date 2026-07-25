@@ -1957,15 +1957,26 @@ export function computePopoverHighlightRange(state, mimeType, cursorPos) {
         }
     }
 }
-function containsSideEffects(doc, root) {
+export function containsSideEffects(doc, root) {
     let containsSideEffects = false;
     root.toTree().iterate({
         enter(node) {
             switch (node.name) {
                 case 'AssignmentExpression':
-                case 'CallExpression': {
+                case 'CallExpression':
+                case 'NewExpression':
+                case 'TaggedTemplateExpression':
+                case 'DynamicImport': {
                     containsSideEffects = true;
                     return false;
+                }
+                case 'UnaryExpression': {
+                    const text = doc.sliceString(root.from + node.from, root.from + node.to).trim();
+                    if (text.startsWith('delete')) {
+                        containsSideEffects = true;
+                        return false;
+                    }
+                    break;
                 }
                 case 'ArithOp': {
                     const op = doc.sliceString(root.from + node.from, root.from + node.to);

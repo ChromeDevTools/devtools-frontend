@@ -350,6 +350,12 @@ function getTooltipHost() {
     }
     return tooltipHost;
 }
+export function removeTooltipHost() {
+    if (tooltipHost) {
+        tooltipHost.host.remove();
+        tooltipHost = null;
+    }
+}
 class CompletionHint extends CM.WidgetType {
     text;
     constructor(text) {

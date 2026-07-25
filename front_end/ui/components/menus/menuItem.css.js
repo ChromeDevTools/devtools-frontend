@@ -34,6 +34,10 @@ export default `/*
   padding: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-9);
 }
 
+* {
+  font-family: inherit;
+}
+
 .is-selected-item::before {
   content: "";
   position: absolute;

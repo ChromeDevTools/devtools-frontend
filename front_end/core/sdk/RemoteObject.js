@@ -686,7 +686,7 @@ export class LocalJSONObject extends RemoteObject {
     async getOwnProperties(_generatePreview, nonIndexedPropertiesOnly = false) {
         function isArrayIndex(name) {
             const index = Number(name) >>> 0;
-            return String(index) === name;
+            return String(index) === name && index < 4294967295;
         }
         let properties = this.children();
         if (nonIndexedPropertiesOnly) {

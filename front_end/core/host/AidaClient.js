@@ -384,6 +384,9 @@ export function getClientFeatureName(feature) {
 export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
     #pollTimer;
     #aidaAvailability;
+    get aidaAvailability() {
+        return this.#aidaAvailability;
+    }
     static instance({ forceNew } = { forceNew: false }) {
         if (!Root.DevToolsContext.globalInstance().has(HostConfigTracker) || forceNew) {
             Root.DevToolsContext.globalInstance().set(HostConfigTracker, new HostConfigTracker());
@@ -422,9 +425,7 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper {
             this.#aidaAvailability = currentAidaAvailability;
             const config = await new Promise(resolve => InspectorFrontendHostInstance.getHostConfig(resolve));
             Object.assign(Root.Runtime.hostConfig, config);
-            // TODO(crbug.com/442545623): Send `currentAidaAvailability` to the listeners as part of the event so that
-            // `await AidaClient.checkAccessPreconditions()` does not need to be called again in the event handlers.
-            this.dispatchEventToListeners("aidaAvailabilityChanged" /* Events.AIDA_AVAILABILITY_CHANGED */);
+            this.dispatchEventToListeners("aidaAvailabilityChanged" /* Events.AIDA_AVAILABILITY_CHANGED */, currentAidaAvailability);
         }
     }
 }

@@ -33,7 +33,13 @@ import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
 import { appendStyle, deepActiveElement } from './DOMUtilities.js';
 import { cloneCustomElement, createShadowRootWithCoreStyles } from './UIUtils.js';
+import { UniverseRequestEvent } from './UniverseRequestEvent.js';
 const { html } = Lit;
+export function lookupUniverseForElement(element) {
+    const event = new UniverseRequestEvent();
+    element.dispatchEvent(event);
+    return event.universe;
+}
 // Remember the original DOM mutation methods here, since we
 // will override them below to sanity check the Widget system.
 const originalAppendChild = Node.prototype.appendChild;
@@ -177,18 +183,30 @@ export function registerWidgetConfig(element, config) {
     }
     widgetConfigs.set(element, config);
 }
-function instantiateWidget(element, widgetConfig) {
+export function instantiateWidget(element, widgetConfig) {
     if (!widgetConfig.widgetClass) {
         throw new Error('No widgetClass defined');
     }
     let newWidget;
     if (Widget.isPrototypeOf(widgetConfig.widgetClass)) {
         const ctor = widgetConfig.widgetClass;
-        newWidget = new ctor(element);
+        const depsCtors = ctor.INJECT;
+        if (depsCtors && depsCtors.length > 0) {
+            const universe = lookupUniverseForElement(element);
+            if (!universe) {
+                throw new Error(`No Universe found for widget ${ctor.name} requesting dependencies via INJECT.`);
+            }
+            const deps = depsCtors.map(depCtor => universe.get(depCtor));
+            newWidget = new ctor(element, deps);
+        }
+        else {
+            newWidget = new ctor(element);
+        }
     }
     else {
         const factory = widgetConfig.widgetClass;
-        newWidget = factory(element);
+        const universe = lookupUniverseForElement(element);
+        newWidget = factory(element, universe);
     }
     if (widgetConfig.widgetParams) {
         Object.assign(newWidget, widgetConfig.widgetParams);
@@ -448,6 +466,14 @@ export class Widget {
         }
         widgetMap.set(this.element, this);
     }
+    /**
+     * An array of dependency constructors that this widget class expects to receive as an array
+     * in the second positional argument to its constructor during `instantiateWidget`:
+     * `constructor(element: HTMLElement, deps: WidgetDependencies<typeof MyWidget>)`
+     *
+     * Override this static field in sub-classes to specify dependency constructors to be retrieved from `Universe`.
+     */
+    static INJECT = [];
     /**
      * Returns the {@link Widget} whose element is the given `node`, or `undefined`
      * if the `node` is not an element for a widget.

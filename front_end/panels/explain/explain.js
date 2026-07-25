@@ -1014,7 +1014,7 @@ var DEFAULT_VIEW = (input, output, target) => {
 };
 var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   static async create(promptBuilder, aidaClient) {
-    const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    const aidaPreconditions = Host.AidaClient.HostConfigTracker.instance().aidaAvailability ?? await Host.AidaClient.AidaClient.checkAccessPreconditions();
     return html`<devtools-widget class="devtools-console-insight" ${widget((element) => new _ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element))}>
     </devtools-widget>`;
   }
@@ -1121,7 +1121,10 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.GeneratingInsightWithoutDisclaimer);
     }
     Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
-    void this.#onAidaAvailabilityChange();
+    const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
     if (this.#state.type !== "insight" && this.#state.type !== "error") {
       this.#state = this.#getStateFromAidaAvailability();
     }
@@ -1132,13 +1135,15 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
-  async #onAidaAvailabilityChange() {
-    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaPreconditions) {
-      this.#aidaPreconditions = currentAidaAvailability;
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaPreconditions) {
+      this.#aidaPreconditions = aidaAvailability;
       this.#state = this.#getStateFromAidaAvailability();
       void this.#generateInsightIfNeeded();
     }
+  }
+  #onAidaAvailabilityChange(ev) {
+    this.#updateAidaAvailability(ev.data);
   }
   #onConsoleInsightsSettingChanged() {
     if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {

@@ -534,7 +534,7 @@ var LogManager = class _LogManager {
       if (this.#targetManager.targetById(workerId)) {
         return;
       }
-      window.setTimeout(() => {
+      globalThis.setTimeout(() => {
         if (!this.#targetManager.targetById(workerId)) {
           consoleModel?.addMessage(consoleMessage);
         }

@@ -3,16 +3,21 @@
 // found in the LICENSE file.
 /* eslint-disable @devtools/no-imperative-dom-api */
 import rootViewStyles from './rootView.css.js';
+import { UniverseRequestEvent } from './UniverseRequestEvent.js';
 import { VBox } from './Widget.js';
 import { ZoomManager } from './ZoomManager.js';
 export class RootView extends VBox {
     window;
-    constructor() {
+    constructor(universe) {
         super();
         this.markAsRoot();
         this.element.classList.add('root-view');
         this.registerRequiredCSS(rootViewStyles);
         this.element.setAttribute('spellcheck', 'false');
+        this.element.addEventListener(UniverseRequestEvent.eventName, (event) => {
+            event.universe = universe;
+            event.stopPropagation();
+        });
     }
     attachToDocument(document) {
         if (document.defaultView) {

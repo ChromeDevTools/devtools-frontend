@@ -32,6 +32,10 @@ const DEVICE_OPTION_LIST = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 const RTT_MINIMUM = 60;
 const UIStrings = {
     /**
+     * @description Label of a badge/pill indicating that the metrics are for a soft navigation.
+     */
+    softNavigationPillText: 'SOFT NAV',
+    /**
      * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users. "field metrics" should be interpreted as "real user metrics".
      */
     localAndFieldMetrics: 'Local and field metrics',
@@ -864,7 +868,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
     <div class="container">
       <div class="live-metrics-view">
         <main class="live-metrics">
-          <h2 class="section-title">${liveMetricsTitle}</h2>
+          <div class="section-header">
+            <h2 class="section-title">${liveMetricsTitle}</h2>
+            ${input.navigationType === 'soft-navigation' ? html `<span class="badge">${i18nString(UIStrings.softNavigationPillText)}</span>` : nothing}
+          </div>
           <div class="metric-cards">
             <div id="lcp">
               ${renderLcpCard(input)}
@@ -947,6 +954,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
     #lcpValue;
     #clsValue;
     #inpValue;
+    #navigationType;
     #interactions = new Map();
     #layoutShifts = [];
     #highlightedInteractionId = '';
@@ -967,6 +975,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
         this.#lcpValue = event.data.lcp;
         this.#clsValue = event.data.cls;
         this.#inpValue = event.data.inp;
+        this.#navigationType = event.data.navigationType;
         const hasNewLS = this.#layoutShifts.length < event.data.layoutShifts.length;
         this.#layoutShifts = [...event.data.layoutShifts];
         const hasNewInteraction = this.#interactions.size < event.data.interactions.size;
@@ -1009,6 +1018,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
         this.#inpValue = liveMetrics.inpValue;
         this.#interactions = liveMetrics.interactions;
         this.#layoutShifts = liveMetrics.layoutShifts;
+        this.#navigationType = liveMetrics.navigationType;
         this.requestUpdate();
     }
     willHide() {
@@ -1067,6 +1077,7 @@ export class LiveMetricsView extends UI.Widget.Widget {
             logExtraInteractionDetails: this.#logExtraInteractionDetails.bind(this),
             highlightedInteractionId: this.#highlightedInteractionId,
             highlightedLayoutShiftClusterIds: this.#highlightedLayoutShiftClusterIds,
+            navigationType: this.#navigationType,
         };
         this.#view(viewInput, this.#viewOutput, this.contentElement);
     }

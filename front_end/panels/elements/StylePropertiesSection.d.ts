@@ -76,13 +76,13 @@ export declare class StylePropertiesSection {
     private onMouseEnterSelector;
     /**
      * Highlights the DOM node associated with this style section in the page overlay.
-     * Use `ruleOrSelector` to highlight elements matching a specific parent/ancestor
-     * rule or selector, or omit it to use the selector of the rule displayed in this section.
+     * Use `selectorList` to highlight elements matching a specific parent/ancestor
+     * rule or selector.
      *
      * @param mode Highlight mode (defaults to `'all'`).
-     * @param ruleOrSelector Parent selector string, parent rule, or `undefined`.
+     * @param selectorList Parent selector string to highlight.
      */
-    highlight(mode?: string | undefined, ruleOrSelector?: SDK.CSSRule.CSSStyleRule | string): void;
+    highlight(mode: string | undefined, selectorList: string): void;
     firstSibling(): StylePropertiesSection | null;
     findCurrentOrNextVisible(willIterateForward: boolean, originalSection?: StylePropertiesSection): StylePropertiesSection | null;
     lastSibling(): StylePropertiesSection | null;
@@ -213,4 +213,5 @@ export declare class HighlightPseudoStylePropertiesSection extends StyleProperti
 interface TreeElementParent {
     appendChild(child: UI.TreeOutline.TreeElement): void;
 }
+export declare function constructResolvedSelector(rule: SDK.CSSRule.CSSRule | null, nestingIndex?: number): string | undefined;
 export {};

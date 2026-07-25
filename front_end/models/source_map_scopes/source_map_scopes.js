@@ -138,7 +138,7 @@ function createFunctionCode(inputData, functionBounds, options) {
     rangeWithContext
   };
 }
-async function getFunctionCodeFromLocation(target, url, line, column, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+async function getFunctionCodeFromLocation(target, url, line, column, debuggerWorkspaceBinding, options) {
   const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
   if (!debuggerModel) {
     throw new Error("missing debugger model");
@@ -162,7 +162,7 @@ async function getFunctionCodeFromLocation(target, url, line, column, options, d
   if (!rawLocation) {
     return null;
   }
-  return await getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding);
+  return await getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options);
 }
 async function format(uiSourceCode, content, settings) {
   const contentType = uiSourceCode.contentType();
@@ -172,7 +172,7 @@ async function format(uiSourceCode, content, settings) {
   }
   return await Formatter.ScriptFormatter.formatScriptContent(settings, contentType.canonicalMimeType(), content, "	");
 }
-async function getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+async function getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options) {
   const functionBounds = await debuggerWorkspaceBinding.functionBoundsAtRawLocation(rawLocation);
   if (!functionBounds) {
     return null;

@@ -92,6 +92,7 @@ var Universe = class {
     const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
     context.set(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding, automaticFileSystemWorkspaceBinding);
     this.fileSystemWorkspaceBinding = new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(isolatedFileSystemManager, workspace);
+    context.set(Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding, this.fileSystemWorkspaceBinding);
     const ignoreListManager = new Workspace.IgnoreListManager.IgnoreListManager(settings, targetManager);
     context.set(Workspace.IgnoreListManager.IgnoreListManager, ignoreListManager);
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
@@ -126,6 +127,7 @@ var Universe = class {
     const aiHistoryStorage = new AiAssistance.AiHistoryStorage.AiHistoryStorage(settings);
     context.set(AiAssistance.AiHistoryStorage.AiHistoryStorage, aiHistoryStorage);
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
+    context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
   }
   get automaticFileSystemManager() {
     return this.context.get(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager);
@@ -223,6 +225,9 @@ var Universe = class {
   }
   get workspaceDiff() {
     return this.context.get(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl);
+  }
+  get(ctor) {
+    return this.context.get(ctor);
   }
 };
 export {

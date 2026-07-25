@@ -11301,9 +11301,9 @@ var UIStrings22 = {
    */
   blockRequestDomain: "Block request domain",
   /**
-   * @description Text to replay an XHR request
+   * @description Text to resend a network request
    */
-  replayXhr: "Replay XHR",
+  resend: "Resend",
   /**
    * @description Text in Network Log View of the Network panel
    */
@@ -11506,11 +11506,11 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
   static negativeFilter(filter, request) {
     return !filter(request);
   }
-  static requestPathFilter(regex, request) {
+  static requestHostAndPathFilter(regex, request) {
     if (!regex) {
       return false;
     }
-    return regex.test(request.path() + "/" + request.name());
+    return regex.test(request.parsedURL.urlWithoutScheme());
   }
   static subdomains(domain) {
     const result = [domain];
@@ -11899,9 +11899,9 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         if (!request) {
           return;
         }
-        if (SDK16.NetworkManager.NetworkManager.canReplayRequest(request)) {
+        if (SDK16.NetworkManager.NetworkManager.canResendRequest(request)) {
           SDK16.NetworkManager.NetworkManager.replayRequest(request);
-          void VisualLogging15.logKeyDown(this.dataGrid.selectedNode.element(), event, "replay-xhr");
+          void VisualLogging15.logKeyDown(this.dataGrid.selectedNode.element(), event, "resend");
         }
       }
     });
@@ -12496,8 +12496,8 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
         blockingMenu.debugSection().appendItem(isBlocking ? i18nString22(UIStrings22.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings22.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
         throttlingMenu.debugSection().appendItem(isThrottling ? i18nString22(UIStrings22.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings22.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
       }
-      if (SDK16.NetworkManager.NetworkManager.canReplayRequest(request)) {
-        contextMenu.debugSection().appendItem(i18nString22(UIStrings22.replayXhr), SDK16.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "replay-xhr" });
+      if (SDK16.NetworkManager.NetworkManager.canResendRequest(request)) {
+        contextMenu.debugSection().appendItem(i18nString22(UIStrings22.resend), SDK16.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "resend" });
       }
     }
   }
@@ -12653,13 +12653,13 @@ var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventM
       let filter;
       if (key) {
         const defaultText = Platform12.StringUtilities.escapeForRegExp(key + ":" + text);
-        filter = this.createSpecialFilter(key, text) || _NetworkLogView.requestPathFilter.bind(null, new RegExp(defaultText, "i"));
+        filter = this.createSpecialFilter(key, text) || _NetworkLogView.requestHostAndPathFilter.bind(null, new RegExp(defaultText, "i"));
       } else if (descriptor.regex) {
-        filter = _NetworkLogView.requestPathFilter.bind(null, regex);
+        filter = _NetworkLogView.requestHostAndPathFilter.bind(null, regex);
       } else if (this.isValidUrl(text)) {
         filter = _NetworkLogView.requestUrlFilter.bind(null, text);
       } else {
-        filter = _NetworkLogView.requestPathFilter.bind(null, new RegExp(Platform12.StringUtilities.escapeForRegExp(text), "i"));
+        filter = _NetworkLogView.requestHostAndPathFilter.bind(null, new RegExp(Platform12.StringUtilities.escapeForRegExp(text), "i"));
       }
       if (descriptor.negative && !invert || !descriptor.negative && invert) {
         return _NetworkLogView.negativeFilter.bind(null, filter);

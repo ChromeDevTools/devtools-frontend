@@ -1,8 +1,10 @@
+import * as Common from '../common/common.js';
 export declare class UserMetrics {
     sourcesPanelFileDebugged(mediaType?: string): void;
     sourcesPanelFileOpened(mediaType?: string): void;
     networkPanelResponsePreviewOpened(mediaType: string): void;
     actionTaken(action: Action): void;
+    resendRequest(resourceType: ResendRequestType): void;
     keybindSetSettingChanged(keybindSet: string): void;
     keyboardShortcutFired(actionId: string): void;
     issuesPanelOpenedFrom(issueOpener: IssueOpener): void;
@@ -903,3 +905,23 @@ export declare const enum BuiltInAiAvailability {
     DISABLED_NO_GPU = 9,
     MAX_VALUE = 10
 }
+export declare const enum ResendRequestType {
+    XHR = 0,
+    FETCH = 1,
+    SCRIPT = 2,
+    STYLESHEET = 3,
+    IMAGE = 4,
+    MEDIA = 5,
+    FONT = 6,
+    WASM = 7,
+    MANIFEST = 8,
+    TEXT_TRACK = 9,
+    SOURCE_MAP_SCRIPT = 10,
+    SOURCE_MAP_STYLE_SHEET = 11,
+    DOCUMENT = 12,
+    PREFETCH = 13,
+    PING = 14,
+    OTHER = 15,
+    MAX_VALUE = 16
+}
+export declare function resendRequestType(resourceType: Common.ResourceType.ResourceType): ResendRequestType;

@@ -153,7 +153,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
     #networkPersistenceManager;
     #settings;
     #requestDiffPromise = null;
-    #pendingChanges = null;
+    #pendingChanges;
     dispose = false;
     constructor(uiSourceCode, networkPersistenceManager, settings) {
         super();
@@ -164,20 +164,18 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper {
         uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#uiSourceCodeChanged, this);
     }
     #uiSourceCodeChanged() {
-        if (this.#pendingChanges) {
-            clearTimeout(this.#pendingChanges);
-            this.#pendingChanges = null;
-        }
+        clearTimeout(this.#pendingChanges);
+        this.#pendingChanges = undefined;
         this.#requestDiffPromise = null;
         const content = this.#uiSourceCode.content();
         const delay = (!content || content.length < 65536) ? 0 : 200;
-        this.#pendingChanges = window.setTimeout(emitDiffChanged.bind(this), delay);
+        this.#pendingChanges = globalThis.setTimeout(emitDiffChanged.bind(this), delay);
         function emitDiffChanged() {
             if (this.dispose) {
                 return;
             }
             this.dispatchEventToListeners("DiffChanged" /* UISourceCodeDiffEvents.DIFF_CHANGED */);
-            this.#pendingChanges = null;
+            this.#pendingChanges = undefined;
         }
     }
     requestDiff() {

@@ -749,7 +749,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     return inspectedTabId;
   }
   let keyboardEventRequestQueue = [];
-  let forwardTimer = null;
+  let forwardTimer;
   function forwardKeyboardEvent(event) {
     const focused = document.activeElement;
     if (focused) {
@@ -791,11 +791,11 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     };
     keyboardEventRequestQueue.push(requestPayload);
     if (!forwardTimer) {
-      forwardTimer = window.setTimeout(forwardEventQueue, 0);
+      forwardTimer = globalThis.setTimeout(forwardEventQueue, 0);
     }
   }
   function forwardEventQueue() {
-    forwardTimer = null;
+    forwardTimer = void 0;
     extensionServer.sendRequest({ command: "_forwardKeyboardEvent", entries: keyboardEventRequestQueue });
     keyboardEventRequestQueue = [];
   }

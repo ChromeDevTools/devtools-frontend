@@ -558,7 +558,7 @@ dt-icon-label {
   padding: 1px 3px;
   margin: 0 2px;
   font-size: 11px;
-  font-family: sans-serif;
+  font-family: inherit;
   white-space: nowrap;
   display: inline-block;
 }

@@ -1104,13 +1104,13 @@ var InspectorFrontendHostStub = class {
   closeWindow() {
   }
   setIsDocked(_isDocked, callback) {
-    window.setTimeout(callback, 0);
+    globalThis.setTimeout(callback, 0);
   }
   showSurvey(_trigger, callback) {
-    window.setTimeout(() => callback({ surveyShown: false }), 0);
+    globalThis.setTimeout(() => callback({ surveyShown: false }), 0);
   }
   canShowSurvey(_trigger, callback) {
-    window.setTimeout(() => callback({ canShowSurvey: false }), 0);
+    globalThis.setTimeout(() => callback({ canShowSurvey: false }), 0);
   }
   /**
    * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
@@ -2038,6 +2038,9 @@ function getClientFeatureName(feature) {
 var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.ObjectWrapper {
   #pollTimer;
   #aidaAvailability;
+  get aidaAvailability() {
+    return this.#aidaAvailability;
+  }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root3.DevToolsContext.globalInstance().has(_HostConfigTracker) || forceNew) {
       Root3.DevToolsContext.globalInstance().set(_HostConfigTracker, new _HostConfigTracker());
@@ -2076,10 +2079,7 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
       this.#aidaAvailability = currentAidaAvailability;
       const config = await new Promise((resolve) => InspectorFrontendHostInstance.getHostConfig(resolve));
       Object.assign(Root3.Runtime.hostConfig, config);
-      this.dispatchEventToListeners(
-        "aidaAvailabilityChanged"
-        /* Events.AIDA_AVAILABILITY_CHANGED */
-      );
+      this.dispatchEventToListeners("aidaAvailabilityChanged", currentAidaAvailability);
     }
   }
 };
@@ -2404,8 +2404,10 @@ __export(UserMetrics_exports, {
   ManifestSectionCodes: () => ManifestSectionCodes,
   MediaTypes: () => MediaTypes,
   PanelCodes: () => PanelCodes,
-  UserMetrics: () => UserMetrics
+  UserMetrics: () => UserMetrics,
+  resendRequestType: () => resendRequestType
 });
+import * as Common5 from "./../common/common.js";
 var UserMetrics = class {
   sourcesPanelFileDebugged(mediaType) {
     const code = mediaType && MediaTypes[mediaType] || MediaTypes.Unknown;
@@ -2421,6 +2423,14 @@ var UserMetrics = class {
   }
   actionTaken(action) {
     InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken", action, Action.MAX_VALUE);
+  }
+  resendRequest(resourceType) {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.ResendRequest",
+      resourceType,
+      16
+      /* ResendRequestType.MAX_VALUE */
+    );
   }
   keybindSetSettingChanged(keybindSet) {
     const value = KeybindSetSettings[keybindSet] || 0;
@@ -3306,6 +3316,86 @@ var ManifestSectionCodes;
   ManifestSectionCodes2[ManifestSectionCodes2["Window Controls Overlay"] = 5] = "Window Controls Overlay";
   ManifestSectionCodes2[ManifestSectionCodes2["MAX_VALUE"] = 6] = "MAX_VALUE";
 })(ManifestSectionCodes || (ManifestSectionCodes = {}));
+var resendRequestTypeMap = /* @__PURE__ */ new Map([
+  [
+    Common5.ResourceType.resourceTypes.XHR,
+    0
+    /* ResendRequestType.XHR */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Fetch,
+    1
+    /* ResendRequestType.FETCH */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Script,
+    2
+    /* ResendRequestType.SCRIPT */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Stylesheet,
+    3
+    /* ResendRequestType.STYLESHEET */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Image,
+    4
+    /* ResendRequestType.IMAGE */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Media,
+    5
+    /* ResendRequestType.MEDIA */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Font,
+    6
+    /* ResendRequestType.FONT */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Wasm,
+    7
+    /* ResendRequestType.WASM */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Manifest,
+    8
+    /* ResendRequestType.MANIFEST */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.TextTrack,
+    9
+    /* ResendRequestType.TEXT_TRACK */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.SourceMapScript,
+    10
+    /* ResendRequestType.SOURCE_MAP_SCRIPT */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.SourceMapStyleSheet,
+    11
+    /* ResendRequestType.SOURCE_MAP_STYLE_SHEET */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Document,
+    12
+    /* ResendRequestType.DOCUMENT */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Prefetch,
+    13
+    /* ResendRequestType.PREFETCH */
+  ],
+  [
+    Common5.ResourceType.resourceTypes.Ping,
+    14
+    /* ResendRequestType.PING */
+  ]
+]);
+function resendRequestType(resourceType) {
+  return resendRequestTypeMap.get(resourceType) ?? 15;
+}
 
 // gen/front_end/core/host/host.prebundle.js
 var userMetrics = new UserMetrics();

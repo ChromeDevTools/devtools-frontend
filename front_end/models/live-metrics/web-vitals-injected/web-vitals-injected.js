@@ -135,9 +135,14 @@ function initialize() {
     // callback before any others.
     WebVitals.onBFCacheRestore(() => {
         startedHidden = false;
-        sendEventToDevTools({ name: 'reset' });
+        sendEventToDevTools({ name: 'reset', navigationType: 'back-forward-cache' });
     });
+    let lastLcpNavigationId;
     onLCP(metric => {
+        if (lastLcpNavigationId && metric.navigationId && metric.navigationId !== lastLcpNavigationId) {
+            sendEventToDevTools({ name: 'reset', url: window.location.href, navigationType: metric.navigationType });
+        }
+        lastLcpNavigationId = metric.navigationId;
         const event = {
             name: 'LCP',
             value: metric.value,
@@ -154,7 +159,7 @@ function initialize() {
             event.nodeIndex = establishNodeIndex(element);
         }
         sendEventToDevTools(event);
-    }, { reportAllChanges: true });
+    }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
     onCLS(metric => {
         const event = {
             name: 'CLS',
@@ -162,7 +167,7 @@ function initialize() {
             clusterShiftIds: metric.entries.map(Spec.getUniqueLayoutShiftId),
         };
         sendEventToDevTools(event);
-    }, { reportAllChanges: true });
+    }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
     function onEachInteraction(interaction) {
         // Multiple `InteractionEntry` events can be emitted for the same `uniqueInteractionId`
         // However, it is easier to combine these entries in the DevTools client rather than in
@@ -176,6 +181,7 @@ function initialize() {
                 presentationDelay: interaction.attribution.presentationDelay,
             },
             startTime: interaction.entries[0].startTime,
+            navigationId: interaction.navigationId,
             entryGroupId: interaction.entries[0].interactionId,
             nextPaintTime: interaction.attribution.nextPaintTime,
             interactionType: interaction.attribution.interactionType,
@@ -207,6 +213,7 @@ function initialize() {
         reportAllChanges: true,
         durationThreshold: 0,
         includeProcessedEventEntries: false,
+        reportSoftNavs: window.devToolsReportSoftNavs,
         onEachInteraction,
         generateTarget(el) {
             if (el) {

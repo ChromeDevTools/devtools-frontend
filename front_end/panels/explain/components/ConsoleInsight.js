@@ -611,7 +611,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
 };
 export class ConsoleInsight extends UI.Widget.Widget {
     static async create(promptBuilder, aidaClient) {
-        const aidaPreconditions = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+        const aidaPreconditions = Host.AidaClient.HostConfigTracker.instance().aidaAvailability ??
+            await Host.AidaClient.AidaClient.checkAccessPreconditions();
         return html `<devtools-widget class="devtools-console-insight" ${widget(element => new ConsoleInsight(promptBuilder, aidaClient, aidaPreconditions, element))}>
     </devtools-widget>`;
     }
@@ -720,7 +721,10 @@ export class ConsoleInsight extends UI.Widget.Widget {
         }
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChange);
         // If AIDA availability has changed while the component was disconnected, we need to update.
-        void this.#onAidaAvailabilityChange();
+        const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+        if (initialAvailability !== undefined) {
+            this.#updateAidaAvailability(initialAvailability);
+        }
         // The setting might have been turned on/off while the component was disconnected.
         // Update the state, unless the current state is already terminal (`INSIGHT` or `ERROR`).
         if (this.#state.type !== "insight" /* State.INSIGHT */ && this.#state.type !== "error" /* State.ERROR */) {
@@ -733,13 +737,15 @@ export class ConsoleInsight extends UI.Widget.Widget {
         this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
         Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChange);
     }
-    async #onAidaAvailabilityChange() {
-        const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-        if (currentAidaAvailability !== this.#aidaPreconditions) {
-            this.#aidaPreconditions = currentAidaAvailability;
+    #updateAidaAvailability(aidaAvailability) {
+        if (aidaAvailability !== this.#aidaPreconditions) {
+            this.#aidaPreconditions = aidaAvailability;
             this.#state = this.#getStateFromAidaAvailability();
             void this.#generateInsightIfNeeded();
         }
+    }
+    #onAidaAvailabilityChange(ev) {
+        this.#updateAidaAvailability(ev.data);
     }
     #onConsoleInsightsSettingChanged() {
         if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {

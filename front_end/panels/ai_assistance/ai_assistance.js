@@ -7204,7 +7204,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     const { forceNew } = opts;
     if (!panelInstance || forceNew) {
       const aidaClient = new Host5.AidaClient.AidaClient();
-      const aidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
+      const aidaAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability ?? await Host5.AidaClient.AidaClient.checkAccessPreconditions();
       panelInstance = new _AiAssistancePanel(defaultView, { aidaClient, aidaAvailability });
     }
     return panelInstance;
@@ -7334,7 +7334,6 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     super.wasShown();
     this.#viewOutput.chatView?.restoreScrollPosition();
     this.#viewOutput.chatView?.focusTextInput();
-    void this.#handleAidaAvailabilityChange();
     this.#selectedElement = createDOMNodeContext(selectedElementFilter(UI9.Context.Context.instance().flavor(SDK6.DOMModel.DOMNode)));
     this.#selectedRequest = createRequestContext(UI9.Context.Context.instance().flavor(SDK6.NetworkRequest.NetworkRequest));
     this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel8.AIContext.AgentFocus));
@@ -7344,6 +7343,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#updateConversationState(this.#conversation);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host5.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#handleAidaAvailabilityChange);
+    const initialAvailability = Host5.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAidaAvailability(initialAvailability);
+    }
     this.#toggleSearchElementAction?.addEventListener("Toggled", this.requestUpdate, this);
     UI9.Context.Context.instance().addFlavorChangeListener(SDK6.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI9.Context.Context.instance().addFlavorChangeListener(SDK6.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -7379,12 +7382,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#timelinePanelInstance = null;
     }
   }
-  #handleAidaAvailabilityChange = async () => {
-    const currentAidaAvailability = await Host5.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#aidaAvailability) {
-      this.#aidaAvailability = currentAidaAvailability;
+  #updateAidaAvailability(aidaAvailability) {
+    if (aidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = aidaAvailability;
       this.requestUpdate();
     }
+  }
+  #handleAidaAvailabilityChange = (ev) => {
+    this.#updateAidaAvailability(ev.data);
   };
   #handleDOMNodeFlavorChange = (ev) => {
     if (this.#selectedElement?.getItem() === ev.data) {

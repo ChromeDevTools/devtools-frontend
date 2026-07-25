@@ -11818,7 +11818,7 @@ var NetworkManager_exports = {};
 __export(NetworkManager_exports, {
   AppliedNetworkConditions: () => AppliedNetworkConditions,
   BlockingConditions: () => BlockingConditions,
-  Events: () => Events8,
+  Events: () => Events7,
   Fast4GConditions: () => Fast4GConditions,
   FetchDispatcher: () => FetchDispatcher,
   InterceptedRequest: () => InterceptedRequest,
@@ -11842,31 +11842,936 @@ __export(NetworkManager_exports, {
   networkConditionsEqual: () => networkConditionsEqual
 });
 import * as Common24 from "./../common/common.js";
+import * as Host5 from "./../host/host.js";
 import * as i18n15 from "./../i18n/i18n.js";
 import * as Platform15 from "./../platform/platform.js";
 import * as Root8 from "./../root/root.js";
 import * as TextUtils21 from "./../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/TargetManager.js
-var TargetManager_exports = {};
-__export(TargetManager_exports, {
-  Observer: () => Observer,
-  SDKModelObserver: () => SDKModelObserver,
-  TargetManager: () => TargetManager
+// gen/front_end/core/sdk/RuntimeModel.js
+var RuntimeModel_exports = {};
+__export(RuntimeModel_exports, {
+  Events: () => Events8,
+  ExecutionContext: () => ExecutionContext,
+  RuntimeModel: () => RuntimeModel
 });
 import * as Common23 from "./../common/common.js";
 import * as Host4 from "./../host/host.js";
-import * as Platform14 from "./../platform/platform.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../platform/platform.js";
-import * as Root7 from "./../root/root.js";
 
-// gen/front_end/core/sdk/FrameManager.js
-var FrameManager_exports = {};
-__export(FrameManager_exports, {
-  FrameManager: () => FrameManager
+// gen/front_end/core/sdk/DebuggerModel.js
+var DebuggerModel_exports = {};
+__export(DebuggerModel_exports, {
+  BreakLocation: () => BreakLocation,
+  COND_BREAKPOINT_SOURCE_URL: () => COND_BREAKPOINT_SOURCE_URL,
+  CallFrame: () => CallFrame,
+  DebuggerModel: () => DebuggerModel,
+  DebuggerPausedDetails: () => DebuggerPausedDetails,
+  Events: () => Events4,
+  LOGPOINT_SOURCE_URL: () => LOGPOINT_SOURCE_URL,
+  Location: () => Location,
+  PauseOnExceptionsState: () => PauseOnExceptionsState,
+  Scope: () => Scope,
+  WASM_SYMBOLS_PRIORITY: () => WASM_SYMBOLS_PRIORITY,
+  sortAndMergeRanges: () => sortAndMergeRanges
 });
 import * as Common22 from "./../common/common.js";
-import * as Root6 from "./../root/root.js";
+import * as i18n13 from "./../i18n/i18n.js";
+import * as Root7 from "./../root/root.js";
+
+// gen/front_end/core/sdk/RemoteObject.js
+var RemoteObject_exports = {};
+__export(RemoteObject_exports, {
+  LinearMemoryInspectable: () => LinearMemoryInspectable,
+  LocalJSONObject: () => LocalJSONObject,
+  RemoteArray: () => RemoteArray,
+  RemoteArrayBuffer: () => RemoteArrayBuffer,
+  RemoteError: () => RemoteError,
+  RemoteFunction: () => RemoteFunction,
+  RemoteObject: () => RemoteObject,
+  RemoteObjectImpl: () => RemoteObjectImpl,
+  RemoteObjectProperty: () => RemoteObjectProperty,
+  ScopeRef: () => ScopeRef,
+  ScopeRemoteObject: () => ScopeRemoteObject
+});
+var RemoteObject = class _RemoteObject {
+  static fromLocalObject(value) {
+    return new LocalJSONObject(value);
+  }
+  static type(remoteObject) {
+    if (remoteObject === null) {
+      return "null";
+    }
+    const type = typeof remoteObject;
+    if (type !== "object" && type !== "function") {
+      return type;
+    }
+    return remoteObject.type;
+  }
+  static isNullOrUndefined(remoteObject) {
+    if (remoteObject === void 0) {
+      return true;
+    }
+    switch (remoteObject.type) {
+      case "object":
+        return remoteObject.subtype === "null";
+      case "undefined":
+        return true;
+      default:
+        return false;
+    }
+  }
+  static arrayNameFromDescription(description) {
+    return description.replace(descriptionLengthParenRegex, "").replace(descriptionLengthSquareRegex, "");
+  }
+  static arrayLength(object) {
+    if (object.subtype !== "array" && object.subtype !== "typedarray") {
+      return 0;
+    }
+    const parenMatches = object.description?.match(descriptionLengthParenRegex);
+    const squareMatches = object.description?.match(descriptionLengthSquareRegex);
+    return parenMatches ? parseInt(parenMatches[1], 10) : squareMatches ? parseInt(squareMatches[1], 10) : 0;
+  }
+  static arrayBufferByteLength(object) {
+    if (object.subtype !== "arraybuffer") {
+      return 0;
+    }
+    const matches = object.description?.match(descriptionLengthParenRegex);
+    return matches ? parseInt(matches[1], 10) : 0;
+  }
+  static isEmptyArray(object) {
+    const matches = object.description?.match(descriptionLengthParenRegex);
+    return Boolean(matches?.[1] === "0");
+  }
+  static unserializableDescription(object) {
+    if (typeof object === "number") {
+      const description = String(object);
+      if (object === 0 && 1 / object < 0) {
+        return "-0";
+      }
+      if (description === "NaN" || description === "Infinity" || description === "-Infinity") {
+        return description;
+      }
+    }
+    if (typeof object === "bigint") {
+      return object + "n";
+    }
+    return null;
+  }
+  static toCallArgument(object) {
+    const type = typeof object;
+    if (type === "undefined") {
+      return {};
+    }
+    const unserializableDescription = _RemoteObject.unserializableDescription(object);
+    if (type === "number") {
+      if (unserializableDescription !== null) {
+        return { unserializableValue: unserializableDescription };
+      }
+      return { value: object };
+    }
+    if (type === "bigint") {
+      return { unserializableValue: unserializableDescription ?? void 0 };
+    }
+    if (type === "string" || type === "boolean") {
+      return { value: object };
+    }
+    if (!object) {
+      return { value: null };
+    }
+    const objectAsProtocolRemoteObject = object;
+    if (object instanceof _RemoteObject) {
+      const unserializableValue = object.unserializableValue();
+      if (unserializableValue !== void 0) {
+        return { unserializableValue };
+      }
+    } else if (objectAsProtocolRemoteObject.unserializableValue !== void 0) {
+      return { unserializableValue: objectAsProtocolRemoteObject.unserializableValue };
+    }
+    if (typeof objectAsProtocolRemoteObject.objectId !== "undefined") {
+      return { objectId: objectAsProtocolRemoteObject.objectId };
+    }
+    return { value: objectAsProtocolRemoteObject.value };
+  }
+  static async loadFromObjectPerProto(object, generatePreview, nonIndexedPropertiesOnly = false) {
+    const result = await Promise.all([
+      object.getAllProperties(true, generatePreview, nonIndexedPropertiesOnly),
+      object.getOwnProperties(generatePreview, nonIndexedPropertiesOnly)
+    ]);
+    const accessorProperties = result[0].properties;
+    const ownProperties = result[1].properties;
+    const internalProperties = result[1].internalProperties;
+    if (!ownProperties || !accessorProperties) {
+      return { properties: null, internalProperties: null };
+    }
+    const propertiesMap = /* @__PURE__ */ new Map();
+    const propertySymbols = [];
+    for (let i = 0; i < accessorProperties.length; i++) {
+      const property = accessorProperties[i];
+      if (property.symbol) {
+        propertySymbols.push(property);
+      } else if (property.isOwn || property.name !== "__proto__") {
+        propertiesMap.set(property.name, property);
+      }
+    }
+    for (let i = 0; i < ownProperties.length; i++) {
+      const property = ownProperties[i];
+      if (property.isAccessorProperty()) {
+        continue;
+      }
+      if (property.private || property.symbol) {
+        propertySymbols.push(property);
+      } else {
+        propertiesMap.set(property.name, property);
+      }
+    }
+    return {
+      properties: [...propertiesMap.values()].concat(propertySymbols),
+      internalProperties: internalProperties ? internalProperties : null
+    };
+  }
+  customPreview() {
+    return null;
+  }
+  unserializableValue() {
+    throw new Error("Not implemented");
+  }
+  get preview() {
+    return void 0;
+  }
+  get className() {
+    return null;
+  }
+  callFunction(_functionDeclaration, _args, _params) {
+    throw new Error("Not implemented");
+  }
+  callFunctionJSON(_functionDeclaration, _args, _params) {
+    throw new Error("Not implemented");
+  }
+  arrayBufferByteLength() {
+    throw new Error("Not implemented");
+  }
+  deleteProperty(_name) {
+    throw new Error("Not implemented");
+  }
+  setPropertyValue(_name, _value) {
+    throw new Error("Not implemented");
+  }
+  release() {
+  }
+  debuggerModel() {
+    throw new Error("DebuggerModel-less object");
+  }
+  runtimeModel() {
+    throw new Error("RuntimeModel-less object");
+  }
+  isNode() {
+    return false;
+  }
+  /**
+   * Checks whether this object can be inspected with the Linear memory inspector.
+   * @returns `true` if this object can be inspected with the Linear memory inspector.
+   */
+  isLinearMemoryInspectable() {
+    return false;
+  }
+  webIdl;
+};
+var RemoteObjectImpl = class extends RemoteObject {
+  #runtimeModel;
+  #runtimeAgent;
+  #type;
+  #subtype;
+  #objectId;
+  #description;
+  #hasChildren;
+  #preview;
+  #unserializableValue;
+  #value;
+  #customPreview;
+  #className;
+  constructor(runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview, customPreview, className) {
+    super();
+    this.#runtimeModel = runtimeModel;
+    this.#runtimeAgent = runtimeModel.target().runtimeAgent();
+    this.#type = type;
+    this.#subtype = subtype;
+    if (objectId) {
+      this.#objectId = objectId;
+      this.#description = description;
+      this.#hasChildren = type !== "symbol";
+      this.#preview = preview;
+    } else {
+      this.#description = description;
+      if (!this.description && unserializableValue) {
+        this.#description = unserializableValue;
+      }
+      if (!this.#description && (typeof value !== "object" || value === null)) {
+        this.#description = String(value);
+      }
+      this.#hasChildren = false;
+      if (typeof unserializableValue === "string") {
+        this.#unserializableValue = unserializableValue;
+        if (unserializableValue === "Infinity" || unserializableValue === "-Infinity" || unserializableValue === "-0" || unserializableValue === "NaN") {
+          this.#value = Number(unserializableValue);
+        } else if (type === "bigint" && unserializableValue.endsWith("n")) {
+          this.#value = BigInt(unserializableValue.substring(0, unserializableValue.length - 1));
+        } else {
+          this.#value = unserializableValue;
+        }
+      } else {
+        this.#value = value;
+      }
+    }
+    this.#customPreview = customPreview || null;
+    this.#className = typeof className === "string" ? className : null;
+  }
+  customPreview() {
+    return this.#customPreview;
+  }
+  get objectId() {
+    return this.#objectId;
+  }
+  get type() {
+    return this.#type;
+  }
+  get subtype() {
+    return this.#subtype;
+  }
+  get value() {
+    return this.#value;
+  }
+  unserializableValue() {
+    return this.#unserializableValue;
+  }
+  get description() {
+    return this.#description;
+  }
+  set description(description) {
+    this.#description = description;
+  }
+  get hasChildren() {
+    return this.#hasChildren;
+  }
+  get preview() {
+    return this.#preview;
+  }
+  get className() {
+    return this.#className;
+  }
+  getOwnProperties(generatePreview, nonIndexedPropertiesOnly = false) {
+    return this.doGetProperties(true, false, nonIndexedPropertiesOnly, generatePreview);
+  }
+  getAllProperties(accessorPropertiesOnly, generatePreview, nonIndexedPropertiesOnly = false) {
+    return this.doGetProperties(false, accessorPropertiesOnly, nonIndexedPropertiesOnly, generatePreview);
+  }
+  async createRemoteObject(object) {
+    return this.#runtimeModel.createRemoteObject(object);
+  }
+  async doGetProperties(ownProperties, accessorPropertiesOnly, nonIndexedPropertiesOnly, generatePreview) {
+    if (!this.#objectId) {
+      return { properties: null, internalProperties: null };
+    }
+    const response = await this.#runtimeAgent.invoke_getProperties({
+      objectId: this.#objectId,
+      ownProperties,
+      accessorPropertiesOnly,
+      nonIndexedPropertiesOnly,
+      generatePreview
+    });
+    if (response.getError()) {
+      return { properties: null, internalProperties: null };
+    }
+    if (response.exceptionDetails) {
+      this.#runtimeModel.exceptionThrown(Date.now(), response.exceptionDetails);
+      return { properties: null, internalProperties: null };
+    }
+    const { result: properties = [], internalProperties = [], privateProperties = [] } = response;
+    const result = [];
+    for (const property of properties) {
+      const propertyValue = property.value ? await this.createRemoteObject(property.value) : null;
+      const propertySymbol = property.symbol ? this.#runtimeModel.createRemoteObject(property.symbol) : null;
+      const remoteProperty = new RemoteObjectProperty(property.name, propertyValue, Boolean(property.enumerable), Boolean(property.writable), Boolean(property.isOwn), Boolean(property.wasThrown), propertySymbol);
+      if (typeof property.value === "undefined") {
+        if (property.get && property.get.type !== "undefined") {
+          remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
+        }
+        if (property.set && property.set.type !== "undefined") {
+          remoteProperty.setter = this.#runtimeModel.createRemoteObject(property.set);
+        }
+      }
+      result.push(remoteProperty);
+    }
+    for (const property of privateProperties) {
+      const propertyValue = property.value ? this.#runtimeModel.createRemoteObject(property.value) : null;
+      const remoteProperty = new RemoteObjectProperty(property.name, propertyValue, true, true, true, false, void 0, false, void 0, true);
+      if (typeof property.value === "undefined") {
+        if (property.get && property.get.type !== "undefined") {
+          remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
+        }
+        if (property.set && property.set.type !== "undefined") {
+          remoteProperty.setter = this.#runtimeModel.createRemoteObject(property.set);
+        }
+      }
+      result.push(remoteProperty);
+    }
+    const internalPropertiesResult = [];
+    for (const property of internalProperties) {
+      if (!property.value) {
+        continue;
+      }
+      const propertyValue = this.#runtimeModel.createRemoteObject(property.value);
+      internalPropertiesResult.push(new RemoteObjectProperty(property.name, propertyValue, true, false, void 0, void 0, void 0, true));
+    }
+    return { properties: result, internalProperties: internalPropertiesResult };
+  }
+  async setPropertyValue(name, value) {
+    if (!this.#objectId) {
+      return "Can\u2019t set a property of non-object.";
+    }
+    const response = await this.#runtimeAgent.invoke_evaluate({ expression: value, silent: true });
+    if (response.getError() || response.exceptionDetails) {
+      return response.getError() || (response.result.type !== "string" ? response.result.description : response.result.value);
+    }
+    if (typeof name === "string") {
+      name = RemoteObject.toCallArgument(name);
+    }
+    const resultPromise = this.doSetObjectPropertyValue(response.result, name);
+    if (response.result.objectId) {
+      void this.#runtimeAgent.invoke_releaseObject({ objectId: response.result.objectId });
+    }
+    return await resultPromise;
+  }
+  async doSetObjectPropertyValue(result, name) {
+    const setPropertyValueFunction = "function(a, b) { this[a] = b; }";
+    const argv = [name, RemoteObject.toCallArgument(result)];
+    const response = await this.#runtimeAgent.invoke_callFunctionOn({
+      objectId: this.#objectId,
+      functionDeclaration: setPropertyValueFunction,
+      arguments: argv,
+      silent: true
+    });
+    const error = response.getError();
+    return error || response.exceptionDetails ? error || response.result.description : void 0;
+  }
+  async deleteProperty(name) {
+    if (!this.#objectId) {
+      return "Can\u2019t delete a property of non-object.";
+    }
+    const deletePropertyFunction = "function(a) { delete this[a]; return !(a in this); }";
+    const response = await this.#runtimeAgent.invoke_callFunctionOn({
+      objectId: this.#objectId,
+      functionDeclaration: deletePropertyFunction,
+      arguments: [name],
+      silent: true
+    });
+    if (response.getError() || response.exceptionDetails) {
+      return response.getError() || response.result.description;
+    }
+    if (!response.result.value) {
+      return "Failed to delete property.";
+    }
+    return void 0;
+  }
+  async callFunction(functionDeclaration, args, params) {
+    const response = await this.#runtimeAgent.invoke_callFunctionOn({
+      objectId: this.#objectId,
+      functionDeclaration: functionDeclaration.toString(),
+      arguments: args,
+      silent: true,
+      throwOnSideEffect: params?.throwOnSideEffect
+    });
+    if (response.getError()) {
+      return { object: null, wasThrown: false };
+    }
+    return {
+      object: this.#runtimeModel.createRemoteObject(response.result),
+      wasThrown: Boolean(response.exceptionDetails)
+    };
+  }
+  async callFunctionJSON(functionDeclaration, args, params) {
+    const response = await this.#runtimeAgent.invoke_callFunctionOn({
+      objectId: this.#objectId,
+      functionDeclaration: functionDeclaration.toString(),
+      arguments: args,
+      silent: true,
+      returnByValue: true,
+      throwOnSideEffect: params?.throwOnSideEffect
+    });
+    if (response.getError() || response.exceptionDetails) {
+      return null;
+    }
+    return response.result.value;
+  }
+  release() {
+    if (!this.#objectId) {
+      return;
+    }
+    void this.#runtimeAgent.invoke_releaseObject({ objectId: this.#objectId });
+  }
+  arrayLength() {
+    return RemoteObject.arrayLength(this);
+  }
+  arrayBufferByteLength() {
+    return RemoteObject.arrayBufferByteLength(this);
+  }
+  debuggerModel() {
+    return this.#runtimeModel.debuggerModel();
+  }
+  runtimeModel() {
+    return this.#runtimeModel;
+  }
+  isNode() {
+    return Boolean(this.#objectId) && this.type === "object" && this.subtype === "node";
+  }
+  isLinearMemoryInspectable() {
+    return this.type === "object" && this.subtype !== void 0 && ["webassemblymemory", "typedarray", "dataview", "arraybuffer"].includes(this.subtype) && !RemoteObject.isEmptyArray(this);
+  }
+};
+var ScopeRemoteObject = class extends RemoteObjectImpl {
+  #scopeRef;
+  #savedScopeProperties;
+  constructor(runtimeModel, objectId, scopeRef, type, subtype, value, unserializableValue, description, preview) {
+    super(runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview);
+    this.#scopeRef = scopeRef;
+    this.#savedScopeProperties = void 0;
+  }
+  async doGetProperties(ownProperties, accessorPropertiesOnly, _generatePreview) {
+    if (accessorPropertiesOnly) {
+      return { properties: [], internalProperties: [] };
+    }
+    if (this.#savedScopeProperties) {
+      return { properties: this.#savedScopeProperties.slice(), internalProperties: null };
+    }
+    const allProperties = await super.doGetProperties(
+      ownProperties,
+      accessorPropertiesOnly,
+      false,
+      true
+      /* generatePreview */
+    );
+    if (Array.isArray(allProperties.properties)) {
+      this.#savedScopeProperties = allProperties.properties.slice();
+    }
+    return allProperties;
+  }
+  async doSetObjectPropertyValue(result, argumentName) {
+    const name = argumentName.value;
+    const error = await this.debuggerModel().setVariableValue(this.#scopeRef.number, name, RemoteObject.toCallArgument(result), this.#scopeRef.callFrameId);
+    if (error) {
+      return error;
+    }
+    if (this.#savedScopeProperties) {
+      for (const property of this.#savedScopeProperties) {
+        if (property.name === name) {
+          property.value = this.runtimeModel().createRemoteObject(result);
+        }
+      }
+    }
+    return;
+  }
+};
+var ScopeRef = class {
+  number;
+  callFrameId;
+  constructor(number, callFrameId) {
+    this.number = number;
+    this.callFrameId = callFrameId;
+  }
+};
+var RemoteObjectProperty = class _RemoteObjectProperty {
+  name;
+  value;
+  enumerable;
+  writable;
+  isOwn;
+  wasThrown;
+  symbol;
+  synthetic;
+  syntheticSetter;
+  private;
+  getter;
+  setter;
+  webIdl;
+  constructor(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic, syntheticSetter, isPrivate) {
+    this.name = name;
+    this.value = value !== null ? value : void 0;
+    this.enumerable = typeof enumerable !== "undefined" ? enumerable : true;
+    const isNonSyntheticOrSyntheticWritable = !synthetic || Boolean(syntheticSetter);
+    this.writable = typeof writable !== "undefined" ? writable : isNonSyntheticOrSyntheticWritable;
+    this.isOwn = Boolean(isOwn);
+    this.wasThrown = Boolean(wasThrown);
+    if (symbol) {
+      this.symbol = symbol;
+    }
+    this.synthetic = Boolean(synthetic);
+    if (syntheticSetter) {
+      this.syntheticSetter = syntheticSetter;
+    }
+    this.private = Boolean(isPrivate);
+  }
+  async setSyntheticValue(expression) {
+    if (!this.syntheticSetter) {
+      return false;
+    }
+    const result = await this.syntheticSetter(expression);
+    if (result) {
+      this.value = result;
+    }
+    return Boolean(result);
+  }
+  isAccessorProperty() {
+    return Boolean(this.getter || this.setter);
+  }
+  match({ includeNullOrUndefinedValues, regex }) {
+    if (regex !== null) {
+      if (!regex.test(this.name) && !regex.test(this.value?.description ?? "")) {
+        return false;
+      }
+    }
+    if (!includeNullOrUndefinedValues) {
+      if (!this.isAccessorProperty() && RemoteObject.isNullOrUndefined(this.value)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  cloneWithNewName(newName) {
+    const property = new _RemoteObjectProperty(newName, this.value ?? null, this.enumerable, this.writable, this.isOwn, this.wasThrown, this.symbol, this.synthetic, this.syntheticSetter, this.private);
+    property.getter = this.getter;
+    property.setter = this.setter;
+    return property;
+  }
+};
+var LocalJSONObject = class extends RemoteObject {
+  #value;
+  #cachedDescription;
+  #cachedChildren;
+  constructor(value) {
+    super();
+    this.#value = value;
+  }
+  get objectId() {
+    return void 0;
+  }
+  get value() {
+    return this.#value;
+  }
+  unserializableValue() {
+    const unserializableDescription = RemoteObject.unserializableDescription(this.#value);
+    return unserializableDescription || void 0;
+  }
+  get description() {
+    if (this.#cachedDescription) {
+      return this.#cachedDescription;
+    }
+    function formatArrayItem(property) {
+      return this.formatValue(property.value || null);
+    }
+    function formatObjectItem(property) {
+      let name = property.name;
+      if (/^\s|\s$|^$|\n/.test(name)) {
+        name = '"' + name.replace(/\n/g, "\u21B5") + '"';
+      }
+      return name + ": " + this.formatValue(property.value || null);
+    }
+    if (this.type === "object") {
+      switch (this.subtype) {
+        case "array":
+          this.#cachedDescription = this.concatenate("[", "]", formatArrayItem.bind(this));
+          break;
+        case "date":
+          this.#cachedDescription = String(this.#value);
+          break;
+        case "null":
+          this.#cachedDescription = "null";
+          break;
+        default:
+          this.#cachedDescription = this.concatenate("{", "}", formatObjectItem.bind(this));
+      }
+    } else {
+      this.#cachedDescription = String(this.#value);
+    }
+    return this.#cachedDescription;
+  }
+  formatValue(value) {
+    if (!value) {
+      return "undefined";
+    }
+    const description = value.description || "";
+    if (value.type === "string") {
+      return '"' + description.replace(/\n/g, "\u21B5") + '"';
+    }
+    return description;
+  }
+  concatenate(prefix, suffix, formatProperty) {
+    const previewChars = 100;
+    let buffer = prefix;
+    const children = this.children();
+    for (let i = 0; i < children.length; ++i) {
+      const itemDescription = formatProperty(children[i]);
+      if (buffer.length + itemDescription.length > previewChars) {
+        buffer += ",\u2026";
+        break;
+      }
+      if (i) {
+        buffer += ", ";
+      }
+      buffer += itemDescription;
+    }
+    buffer += suffix;
+    return buffer;
+  }
+  get type() {
+    return typeof this.#value;
+  }
+  get subtype() {
+    if (this.#value === null) {
+      return "null";
+    }
+    if (Array.isArray(this.#value)) {
+      return "array";
+    }
+    if (this.#value instanceof Date) {
+      return "date";
+    }
+    if (this.#value instanceof Error) {
+      return "error";
+    }
+    return void 0;
+  }
+  get hasChildren() {
+    if (typeof this.#value !== "object" || this.#value === null) {
+      return false;
+    }
+    return Boolean(Object.keys(this.#value).length);
+  }
+  async getOwnProperties(_generatePreview, nonIndexedPropertiesOnly = false) {
+    function isArrayIndex(name) {
+      const index = Number(name) >>> 0;
+      return String(index) === name && index < 4294967295;
+    }
+    let properties = this.children();
+    if (nonIndexedPropertiesOnly) {
+      properties = properties.filter((property) => !isArrayIndex(property.name));
+    }
+    return { properties, internalProperties: null };
+  }
+  async getAllProperties(accessorPropertiesOnly, generatePreview, nonIndexedPropertiesOnly = false) {
+    if (accessorPropertiesOnly) {
+      return { properties: [], internalProperties: null };
+    }
+    return await this.getOwnProperties(generatePreview, nonIndexedPropertiesOnly);
+  }
+  children() {
+    if (!this.hasChildren) {
+      return [];
+    }
+    if (!this.#cachedChildren) {
+      this.#cachedChildren = Object.entries(this.#value).map(([name, value]) => {
+        return new RemoteObjectProperty(name, value instanceof RemoteObject ? value : RemoteObject.fromLocalObject(value));
+      });
+    }
+    return this.#cachedChildren;
+  }
+  arrayLength() {
+    return Array.isArray(this.#value) ? this.#value.length : 0;
+  }
+  async callFunction(functionDeclaration, args) {
+    const target = this.#value;
+    const rawArgs = args ? args.map((arg) => arg.value) : [];
+    let result;
+    let wasThrown = false;
+    try {
+      result = functionDeclaration.apply(target, rawArgs);
+    } catch {
+      wasThrown = true;
+    }
+    const object = RemoteObject.fromLocalObject(result);
+    return { object, wasThrown };
+  }
+  async callFunctionJSON(functionDeclaration, args) {
+    const target = this.#value;
+    const rawArgs = args ? args.map((arg) => arg.value) : [];
+    let result;
+    try {
+      result = functionDeclaration.apply(target, rawArgs);
+    } catch {
+      result = null;
+    }
+    return result;
+  }
+};
+var RemoteArrayBuffer = class {
+  #object;
+  constructor(object) {
+    if (object.type !== "object" || object.subtype !== "arraybuffer") {
+      throw new Error("Object is not an arraybuffer");
+    }
+    this.#object = object;
+  }
+  byteLength() {
+    return this.#object.arrayBufferByteLength();
+  }
+  async bytes(start = 0, end = this.byteLength()) {
+    if (start < 0 || start >= this.byteLength()) {
+      throw new RangeError("start is out of range");
+    }
+    if (end < start || end > this.byteLength()) {
+      throw new RangeError("end is out of range");
+    }
+    return await this.#object.callFunctionJSON(bytes, [{ value: start }, { value: end - start }]);
+    function bytes(offset, length) {
+      return [...new Uint8Array(this, offset, length)];
+    }
+  }
+  object() {
+    return this.#object;
+  }
+};
+var RemoteArray = class _RemoteArray {
+  #object;
+  constructor(object) {
+    this.#object = object;
+  }
+  static objectAsArray(object) {
+    if (object?.type !== "object" || object.subtype !== "array" && object.subtype !== "typedarray") {
+      throw new Error("Object is empty or not an array");
+    }
+    return new _RemoteArray(object);
+  }
+  static async createFromRemoteObjects(objects) {
+    if (!objects.length) {
+      throw new Error("Input array is empty");
+    }
+    const result = await objects[0].callFunction(createArray, objects.map(RemoteObject.toCallArgument));
+    if (result.wasThrown || !result.object) {
+      throw new Error("Call function throws exceptions or returns empty value");
+    }
+    return _RemoteArray.objectAsArray(result.object);
+    function createArray(...args) {
+      return args;
+    }
+  }
+  async at(index) {
+    if (index < 0 || index > this.#object.arrayLength()) {
+      throw new Error("Out of range");
+    }
+    const result = await this.#object.callFunction(at, [RemoteObject.toCallArgument(index)]);
+    if (result.wasThrown || !result.object) {
+      throw new Error("Exception in callFunction or result value is empty");
+    }
+    return result.object;
+    function at(index2) {
+      return this[index2];
+    }
+  }
+  length() {
+    return this.#object.arrayLength();
+  }
+  map(func) {
+    const promises = [];
+    for (let i = 0; i < this.length(); ++i) {
+      promises.push(this.at(i).then(func));
+    }
+    return Promise.all(promises);
+  }
+  object() {
+    return this.#object;
+  }
+};
+var RemoteFunction = class _RemoteFunction {
+  #object;
+  constructor(object) {
+    this.#object = object;
+  }
+  static objectAsFunction(object) {
+    if (object.type !== "function") {
+      throw new Error("Object is empty or not a function");
+    }
+    return new _RemoteFunction(object);
+  }
+  async targetFunction() {
+    const ownProperties = await this.#object.getOwnProperties(
+      false
+      /* generatePreview */
+    );
+    const targetFunction = ownProperties.internalProperties?.find(({ name }) => name === "[[TargetFunction]]");
+    return targetFunction?.value ?? this.#object;
+  }
+  async targetFunctionDetails() {
+    const targetFunction = await this.targetFunction();
+    const functionDetails = await targetFunction.debuggerModel().functionDetailsPromise(targetFunction);
+    if (this.#object !== targetFunction) {
+      targetFunction.release();
+    }
+    return functionDetails;
+  }
+};
+var RemoteError = class _RemoteError {
+  #object;
+  #exceptionDetails;
+  #cause;
+  constructor(object) {
+    this.#object = object;
+  }
+  static objectAsError(object) {
+    if (object.subtype !== "error") {
+      throw new Error(`Object of type ${object.subtype} is not an error`);
+    }
+    return new _RemoteError(object);
+  }
+  get errorStack() {
+    return this.#object.description ?? "";
+  }
+  exceptionDetails() {
+    if (!this.#exceptionDetails) {
+      this.#exceptionDetails = this.#lookupExceptionDetails();
+    }
+    return this.#exceptionDetails;
+  }
+  #lookupExceptionDetails() {
+    if (this.#object.objectId) {
+      return this.#object.runtimeModel().getExceptionDetails(this.#object.objectId);
+    }
+    return Promise.resolve(void 0);
+  }
+  cause() {
+    if (!this.#cause) {
+      this.#cause = this.#lookupCause();
+    }
+    return this.#cause;
+  }
+  async #lookupCause() {
+    const allProperties = await this.#object.getAllProperties(
+      false,
+      false
+      /* generatePreview */
+    );
+    const cause = allProperties.properties?.find((prop) => prop.name === "cause");
+    return cause?.value;
+  }
+};
+var descriptionLengthParenRegex = /\(([0-9]+)\)/;
+var descriptionLengthSquareRegex = /\[([0-9]+)\]/;
+var LinearMemoryInspectable = class {
+  /** The linear memory inspectable {@link RemoteObject}. */
+  object;
+  /** The name of the variable or the field holding the `object`. */
+  expression;
+  /**
+   * Wrap `object` and `expression` into a reveable structure.
+   *
+   * @param object A linear memory inspectable {@link RemoteObject}.
+   * @param expression An optional name of the field or variable holding the `object`.
+   */
+  constructor(object, expression) {
+    if (!object.isLinearMemoryInspectable()) {
+      throw new Error("object must be linear memory inspectable");
+    }
+    this.object = object;
+    this.expression = expression;
+  }
+};
 
 // gen/front_end/core/sdk/ResourceTreeModel.js
 var ResourceTreeModel_exports = {};
@@ -11876,8 +12781,8 @@ __export(ResourceTreeModel_exports, {
   ResourceTreeFrame: () => ResourceTreeFrame,
   ResourceTreeModel: () => ResourceTreeModel
 });
-import * as Common21 from "./../common/common.js";
-import * as i18n13 from "./../i18n/i18n.js";
+import * as Common20 from "./../common/common.js";
+import * as i18n9 from "./../i18n/i18n.js";
 import * as Platform13 from "./../platform/platform.js";
 
 // gen/front_end/core/sdk/DOMModel.js
@@ -11894,11 +12799,11 @@ __export(DOMModel_exports, {
   DOMNodeShortcut: () => DOMNodeShortcut,
   DOMNodeSnapshot: () => DOMNodeSnapshot,
   DeferredDOMNode: () => DeferredDOMNode,
-  Events: () => Events6
+  Events: () => Events5
 });
-import * as Common18 from "./../common/common.js";
+import * as Common17 from "./../common/common.js";
 import * as Platform11 from "./../platform/platform.js";
-import * as Root5 from "./../root/root.js";
+import * as Root6 from "./../root/root.js";
 
 // gen/front_end/core/sdk/CSSModel.js
 var CSSModel_exports = {};
@@ -11910,10 +12815,10 @@ __export(CSSModel_exports, {
   Events: () => Events3,
   InlineStyleResult: () => InlineStyleResult
 });
-import * as Common11 from "./../common/common.js";
-import * as Host2 from "./../host/host.js";
-import * as Platform8 from "./../platform/platform.js";
-import * as Root3 from "./../root/root.js";
+import * as Common13 from "./../common/common.js";
+import * as Host3 from "./../host/host.js";
+import * as Platform9 from "./../platform/platform.js";
+import * as Root5 from "./../root/root.js";
 import * as TextUtils16 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/CSSFontFace.js
@@ -12057,7 +12962,8 @@ __export(CSSPropertyParserMatchers_exports, {
   VariableNameMatcher: () => VariableNameMatcher,
   defaultValueForCSSType: () => defaultValueForCSSType,
   isValidCSSType: () => isValidCSSType,
-  localEvalCSS: () => localEvalCSS
+  localEvalCSS: () => localEvalCSS,
+  removeCSSEvaluationElement: () => removeCSSEvaluationElement
 });
 import * as Common3 from "./../common/common.js";
 var BaseVariableMatch = class {
@@ -12244,6 +13150,12 @@ function getCssEvaluationElement() {
     }
   }
   return cssEvaluationElement;
+}
+function removeCSSEvaluationElement() {
+  if (cssEvaluationElement) {
+    document.body.removeChild(cssEvaluationElement);
+    cssEvaluationElement = null;
+  }
 }
 function localEvalCSS(value, type) {
   const element = getCssEvaluationElement();
@@ -16006,9 +16918,6 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     const nestingSelectors = rule.nestingSelectors?.slice(nestingIndex + 1) ?? [];
     const matchCascade = (cascade) => {
       for (const style of cascade.styles()) {
-        if (this.isInherited(style)) {
-          continue;
-        }
         const parentRule = style.parentRule;
         if (!(parentRule instanceof CSSStyleRule)) {
           continue;
@@ -16985,8 +17894,8 @@ __export(SourceMapManager_exports, {
   SourceMapManager: () => SourceMapManager,
   tryLoadSourceMap: () => tryLoadSourceMap
 });
-import * as Common10 from "./../common/common.js";
-import * as Platform7 from "./../platform/platform.js";
+import * as Common12 from "./../common/common.js";
+import * as Platform8 from "./../platform/platform.js";
 
 // gen/front_end/core/sdk/PageResourceLoader.js
 var PageResourceLoader_exports = {};
@@ -16994,10 +17903,10 @@ __export(PageResourceLoader_exports, {
   PageResourceLoader: () => PageResourceLoader,
   ResourceKey: () => ResourceKey
 });
-import * as Common7 from "./../common/common.js";
-import * as Host from "./../host/host.js";
+import * as Common10 from "./../common/common.js";
+import * as Host2 from "./../host/host.js";
 import * as i18n3 from "./../i18n/i18n.js";
-import * as Root from "./../root/root.js";
+import * as Root4 from "./../root/root.js";
 
 // gen/front_end/core/sdk/IOModel.js
 var IOModel_exports = {};
@@ -17005,903 +17914,6 @@ __export(IOModel_exports, {
   IOModel: () => IOModel
 });
 import * as Common6 from "./../common/common.js";
-
-// gen/front_end/core/sdk/RemoteObject.js
-var RemoteObject_exports = {};
-__export(RemoteObject_exports, {
-  LinearMemoryInspectable: () => LinearMemoryInspectable,
-  LocalJSONObject: () => LocalJSONObject,
-  RemoteArray: () => RemoteArray,
-  RemoteArrayBuffer: () => RemoteArrayBuffer,
-  RemoteError: () => RemoteError,
-  RemoteFunction: () => RemoteFunction,
-  RemoteObject: () => RemoteObject,
-  RemoteObjectImpl: () => RemoteObjectImpl,
-  RemoteObjectProperty: () => RemoteObjectProperty,
-  ScopeRef: () => ScopeRef,
-  ScopeRemoteObject: () => ScopeRemoteObject
-});
-var RemoteObject = class _RemoteObject {
-  static fromLocalObject(value) {
-    return new LocalJSONObject(value);
-  }
-  static type(remoteObject) {
-    if (remoteObject === null) {
-      return "null";
-    }
-    const type = typeof remoteObject;
-    if (type !== "object" && type !== "function") {
-      return type;
-    }
-    return remoteObject.type;
-  }
-  static isNullOrUndefined(remoteObject) {
-    if (remoteObject === void 0) {
-      return true;
-    }
-    switch (remoteObject.type) {
-      case "object":
-        return remoteObject.subtype === "null";
-      case "undefined":
-        return true;
-      default:
-        return false;
-    }
-  }
-  static arrayNameFromDescription(description) {
-    return description.replace(descriptionLengthParenRegex, "").replace(descriptionLengthSquareRegex, "");
-  }
-  static arrayLength(object) {
-    if (object.subtype !== "array" && object.subtype !== "typedarray") {
-      return 0;
-    }
-    const parenMatches = object.description?.match(descriptionLengthParenRegex);
-    const squareMatches = object.description?.match(descriptionLengthSquareRegex);
-    return parenMatches ? parseInt(parenMatches[1], 10) : squareMatches ? parseInt(squareMatches[1], 10) : 0;
-  }
-  static arrayBufferByteLength(object) {
-    if (object.subtype !== "arraybuffer") {
-      return 0;
-    }
-    const matches = object.description?.match(descriptionLengthParenRegex);
-    return matches ? parseInt(matches[1], 10) : 0;
-  }
-  static isEmptyArray(object) {
-    const matches = object.description?.match(descriptionLengthParenRegex);
-    return Boolean(matches?.[1] === "0");
-  }
-  static unserializableDescription(object) {
-    if (typeof object === "number") {
-      const description = String(object);
-      if (object === 0 && 1 / object < 0) {
-        return "-0";
-      }
-      if (description === "NaN" || description === "Infinity" || description === "-Infinity") {
-        return description;
-      }
-    }
-    if (typeof object === "bigint") {
-      return object + "n";
-    }
-    return null;
-  }
-  static toCallArgument(object) {
-    const type = typeof object;
-    if (type === "undefined") {
-      return {};
-    }
-    const unserializableDescription = _RemoteObject.unserializableDescription(object);
-    if (type === "number") {
-      if (unserializableDescription !== null) {
-        return { unserializableValue: unserializableDescription };
-      }
-      return { value: object };
-    }
-    if (type === "bigint") {
-      return { unserializableValue: unserializableDescription ?? void 0 };
-    }
-    if (type === "string" || type === "boolean") {
-      return { value: object };
-    }
-    if (!object) {
-      return { value: null };
-    }
-    const objectAsProtocolRemoteObject = object;
-    if (object instanceof _RemoteObject) {
-      const unserializableValue = object.unserializableValue();
-      if (unserializableValue !== void 0) {
-        return { unserializableValue };
-      }
-    } else if (objectAsProtocolRemoteObject.unserializableValue !== void 0) {
-      return { unserializableValue: objectAsProtocolRemoteObject.unserializableValue };
-    }
-    if (typeof objectAsProtocolRemoteObject.objectId !== "undefined") {
-      return { objectId: objectAsProtocolRemoteObject.objectId };
-    }
-    return { value: objectAsProtocolRemoteObject.value };
-  }
-  static async loadFromObjectPerProto(object, generatePreview, nonIndexedPropertiesOnly = false) {
-    const result = await Promise.all([
-      object.getAllProperties(true, generatePreview, nonIndexedPropertiesOnly),
-      object.getOwnProperties(generatePreview, nonIndexedPropertiesOnly)
-    ]);
-    const accessorProperties = result[0].properties;
-    const ownProperties = result[1].properties;
-    const internalProperties = result[1].internalProperties;
-    if (!ownProperties || !accessorProperties) {
-      return { properties: null, internalProperties: null };
-    }
-    const propertiesMap = /* @__PURE__ */ new Map();
-    const propertySymbols = [];
-    for (let i = 0; i < accessorProperties.length; i++) {
-      const property = accessorProperties[i];
-      if (property.symbol) {
-        propertySymbols.push(property);
-      } else if (property.isOwn || property.name !== "__proto__") {
-        propertiesMap.set(property.name, property);
-      }
-    }
-    for (let i = 0; i < ownProperties.length; i++) {
-      const property = ownProperties[i];
-      if (property.isAccessorProperty()) {
-        continue;
-      }
-      if (property.private || property.symbol) {
-        propertySymbols.push(property);
-      } else {
-        propertiesMap.set(property.name, property);
-      }
-    }
-    return {
-      properties: [...propertiesMap.values()].concat(propertySymbols),
-      internalProperties: internalProperties ? internalProperties : null
-    };
-  }
-  customPreview() {
-    return null;
-  }
-  unserializableValue() {
-    throw new Error("Not implemented");
-  }
-  get preview() {
-    return void 0;
-  }
-  get className() {
-    return null;
-  }
-  callFunction(_functionDeclaration, _args, _params) {
-    throw new Error("Not implemented");
-  }
-  callFunctionJSON(_functionDeclaration, _args, _params) {
-    throw new Error("Not implemented");
-  }
-  arrayBufferByteLength() {
-    throw new Error("Not implemented");
-  }
-  deleteProperty(_name) {
-    throw new Error("Not implemented");
-  }
-  setPropertyValue(_name, _value) {
-    throw new Error("Not implemented");
-  }
-  release() {
-  }
-  debuggerModel() {
-    throw new Error("DebuggerModel-less object");
-  }
-  runtimeModel() {
-    throw new Error("RuntimeModel-less object");
-  }
-  isNode() {
-    return false;
-  }
-  /**
-   * Checks whether this object can be inspected with the Linear memory inspector.
-   * @returns `true` if this object can be inspected with the Linear memory inspector.
-   */
-  isLinearMemoryInspectable() {
-    return false;
-  }
-  webIdl;
-};
-var RemoteObjectImpl = class extends RemoteObject {
-  #runtimeModel;
-  #runtimeAgent;
-  #type;
-  #subtype;
-  #objectId;
-  #description;
-  #hasChildren;
-  #preview;
-  #unserializableValue;
-  #value;
-  #customPreview;
-  #className;
-  constructor(runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview, customPreview, className) {
-    super();
-    this.#runtimeModel = runtimeModel;
-    this.#runtimeAgent = runtimeModel.target().runtimeAgent();
-    this.#type = type;
-    this.#subtype = subtype;
-    if (objectId) {
-      this.#objectId = objectId;
-      this.#description = description;
-      this.#hasChildren = type !== "symbol";
-      this.#preview = preview;
-    } else {
-      this.#description = description;
-      if (!this.description && unserializableValue) {
-        this.#description = unserializableValue;
-      }
-      if (!this.#description && (typeof value !== "object" || value === null)) {
-        this.#description = String(value);
-      }
-      this.#hasChildren = false;
-      if (typeof unserializableValue === "string") {
-        this.#unserializableValue = unserializableValue;
-        if (unserializableValue === "Infinity" || unserializableValue === "-Infinity" || unserializableValue === "-0" || unserializableValue === "NaN") {
-          this.#value = Number(unserializableValue);
-        } else if (type === "bigint" && unserializableValue.endsWith("n")) {
-          this.#value = BigInt(unserializableValue.substring(0, unserializableValue.length - 1));
-        } else {
-          this.#value = unserializableValue;
-        }
-      } else {
-        this.#value = value;
-      }
-    }
-    this.#customPreview = customPreview || null;
-    this.#className = typeof className === "string" ? className : null;
-  }
-  customPreview() {
-    return this.#customPreview;
-  }
-  get objectId() {
-    return this.#objectId;
-  }
-  get type() {
-    return this.#type;
-  }
-  get subtype() {
-    return this.#subtype;
-  }
-  get value() {
-    return this.#value;
-  }
-  unserializableValue() {
-    return this.#unserializableValue;
-  }
-  get description() {
-    return this.#description;
-  }
-  set description(description) {
-    this.#description = description;
-  }
-  get hasChildren() {
-    return this.#hasChildren;
-  }
-  get preview() {
-    return this.#preview;
-  }
-  get className() {
-    return this.#className;
-  }
-  getOwnProperties(generatePreview, nonIndexedPropertiesOnly = false) {
-    return this.doGetProperties(true, false, nonIndexedPropertiesOnly, generatePreview);
-  }
-  getAllProperties(accessorPropertiesOnly, generatePreview, nonIndexedPropertiesOnly = false) {
-    return this.doGetProperties(false, accessorPropertiesOnly, nonIndexedPropertiesOnly, generatePreview);
-  }
-  async createRemoteObject(object) {
-    return this.#runtimeModel.createRemoteObject(object);
-  }
-  async doGetProperties(ownProperties, accessorPropertiesOnly, nonIndexedPropertiesOnly, generatePreview) {
-    if (!this.#objectId) {
-      return { properties: null, internalProperties: null };
-    }
-    const response = await this.#runtimeAgent.invoke_getProperties({
-      objectId: this.#objectId,
-      ownProperties,
-      accessorPropertiesOnly,
-      nonIndexedPropertiesOnly,
-      generatePreview
-    });
-    if (response.getError()) {
-      return { properties: null, internalProperties: null };
-    }
-    if (response.exceptionDetails) {
-      this.#runtimeModel.exceptionThrown(Date.now(), response.exceptionDetails);
-      return { properties: null, internalProperties: null };
-    }
-    const { result: properties = [], internalProperties = [], privateProperties = [] } = response;
-    const result = [];
-    for (const property of properties) {
-      const propertyValue = property.value ? await this.createRemoteObject(property.value) : null;
-      const propertySymbol = property.symbol ? this.#runtimeModel.createRemoteObject(property.symbol) : null;
-      const remoteProperty = new RemoteObjectProperty(property.name, propertyValue, Boolean(property.enumerable), Boolean(property.writable), Boolean(property.isOwn), Boolean(property.wasThrown), propertySymbol);
-      if (typeof property.value === "undefined") {
-        if (property.get && property.get.type !== "undefined") {
-          remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
-        }
-        if (property.set && property.set.type !== "undefined") {
-          remoteProperty.setter = this.#runtimeModel.createRemoteObject(property.set);
-        }
-      }
-      result.push(remoteProperty);
-    }
-    for (const property of privateProperties) {
-      const propertyValue = property.value ? this.#runtimeModel.createRemoteObject(property.value) : null;
-      const remoteProperty = new RemoteObjectProperty(property.name, propertyValue, true, true, true, false, void 0, false, void 0, true);
-      if (typeof property.value === "undefined") {
-        if (property.get && property.get.type !== "undefined") {
-          remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
-        }
-        if (property.set && property.set.type !== "undefined") {
-          remoteProperty.setter = this.#runtimeModel.createRemoteObject(property.set);
-        }
-      }
-      result.push(remoteProperty);
-    }
-    const internalPropertiesResult = [];
-    for (const property of internalProperties) {
-      if (!property.value) {
-        continue;
-      }
-      const propertyValue = this.#runtimeModel.createRemoteObject(property.value);
-      internalPropertiesResult.push(new RemoteObjectProperty(property.name, propertyValue, true, false, void 0, void 0, void 0, true));
-    }
-    return { properties: result, internalProperties: internalPropertiesResult };
-  }
-  async setPropertyValue(name, value) {
-    if (!this.#objectId) {
-      return "Can\u2019t set a property of non-object.";
-    }
-    const response = await this.#runtimeAgent.invoke_evaluate({ expression: value, silent: true });
-    if (response.getError() || response.exceptionDetails) {
-      return response.getError() || (response.result.type !== "string" ? response.result.description : response.result.value);
-    }
-    if (typeof name === "string") {
-      name = RemoteObject.toCallArgument(name);
-    }
-    const resultPromise = this.doSetObjectPropertyValue(response.result, name);
-    if (response.result.objectId) {
-      void this.#runtimeAgent.invoke_releaseObject({ objectId: response.result.objectId });
-    }
-    return await resultPromise;
-  }
-  async doSetObjectPropertyValue(result, name) {
-    const setPropertyValueFunction = "function(a, b) { this[a] = b; }";
-    const argv = [name, RemoteObject.toCallArgument(result)];
-    const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectId,
-      functionDeclaration: setPropertyValueFunction,
-      arguments: argv,
-      silent: true
-    });
-    const error = response.getError();
-    return error || response.exceptionDetails ? error || response.result.description : void 0;
-  }
-  async deleteProperty(name) {
-    if (!this.#objectId) {
-      return "Can\u2019t delete a property of non-object.";
-    }
-    const deletePropertyFunction = "function(a) { delete this[a]; return !(a in this); }";
-    const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectId,
-      functionDeclaration: deletePropertyFunction,
-      arguments: [name],
-      silent: true
-    });
-    if (response.getError() || response.exceptionDetails) {
-      return response.getError() || response.result.description;
-    }
-    if (!response.result.value) {
-      return "Failed to delete property.";
-    }
-    return void 0;
-  }
-  async callFunction(functionDeclaration, args, params) {
-    const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectId,
-      functionDeclaration: functionDeclaration.toString(),
-      arguments: args,
-      silent: true,
-      throwOnSideEffect: params?.throwOnSideEffect
-    });
-    if (response.getError()) {
-      return { object: null, wasThrown: false };
-    }
-    return {
-      object: this.#runtimeModel.createRemoteObject(response.result),
-      wasThrown: Boolean(response.exceptionDetails)
-    };
-  }
-  async callFunctionJSON(functionDeclaration, args, params) {
-    const response = await this.#runtimeAgent.invoke_callFunctionOn({
-      objectId: this.#objectId,
-      functionDeclaration: functionDeclaration.toString(),
-      arguments: args,
-      silent: true,
-      returnByValue: true,
-      throwOnSideEffect: params?.throwOnSideEffect
-    });
-    if (response.getError() || response.exceptionDetails) {
-      return null;
-    }
-    return response.result.value;
-  }
-  release() {
-    if (!this.#objectId) {
-      return;
-    }
-    void this.#runtimeAgent.invoke_releaseObject({ objectId: this.#objectId });
-  }
-  arrayLength() {
-    return RemoteObject.arrayLength(this);
-  }
-  arrayBufferByteLength() {
-    return RemoteObject.arrayBufferByteLength(this);
-  }
-  debuggerModel() {
-    return this.#runtimeModel.debuggerModel();
-  }
-  runtimeModel() {
-    return this.#runtimeModel;
-  }
-  isNode() {
-    return Boolean(this.#objectId) && this.type === "object" && this.subtype === "node";
-  }
-  isLinearMemoryInspectable() {
-    return this.type === "object" && this.subtype !== void 0 && ["webassemblymemory", "typedarray", "dataview", "arraybuffer"].includes(this.subtype) && !RemoteObject.isEmptyArray(this);
-  }
-};
-var ScopeRemoteObject = class extends RemoteObjectImpl {
-  #scopeRef;
-  #savedScopeProperties;
-  constructor(runtimeModel, objectId, scopeRef, type, subtype, value, unserializableValue, description, preview) {
-    super(runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview);
-    this.#scopeRef = scopeRef;
-    this.#savedScopeProperties = void 0;
-  }
-  async doGetProperties(ownProperties, accessorPropertiesOnly, _generatePreview) {
-    if (accessorPropertiesOnly) {
-      return { properties: [], internalProperties: [] };
-    }
-    if (this.#savedScopeProperties) {
-      return { properties: this.#savedScopeProperties.slice(), internalProperties: null };
-    }
-    const allProperties = await super.doGetProperties(
-      ownProperties,
-      accessorPropertiesOnly,
-      false,
-      true
-      /* generatePreview */
-    );
-    if (Array.isArray(allProperties.properties)) {
-      this.#savedScopeProperties = allProperties.properties.slice();
-    }
-    return allProperties;
-  }
-  async doSetObjectPropertyValue(result, argumentName) {
-    const name = argumentName.value;
-    const error = await this.debuggerModel().setVariableValue(this.#scopeRef.number, name, RemoteObject.toCallArgument(result), this.#scopeRef.callFrameId);
-    if (error) {
-      return error;
-    }
-    if (this.#savedScopeProperties) {
-      for (const property of this.#savedScopeProperties) {
-        if (property.name === name) {
-          property.value = this.runtimeModel().createRemoteObject(result);
-        }
-      }
-    }
-    return;
-  }
-};
-var ScopeRef = class {
-  number;
-  callFrameId;
-  constructor(number, callFrameId) {
-    this.number = number;
-    this.callFrameId = callFrameId;
-  }
-};
-var RemoteObjectProperty = class _RemoteObjectProperty {
-  name;
-  value;
-  enumerable;
-  writable;
-  isOwn;
-  wasThrown;
-  symbol;
-  synthetic;
-  syntheticSetter;
-  private;
-  getter;
-  setter;
-  webIdl;
-  constructor(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic, syntheticSetter, isPrivate) {
-    this.name = name;
-    this.value = value !== null ? value : void 0;
-    this.enumerable = typeof enumerable !== "undefined" ? enumerable : true;
-    const isNonSyntheticOrSyntheticWritable = !synthetic || Boolean(syntheticSetter);
-    this.writable = typeof writable !== "undefined" ? writable : isNonSyntheticOrSyntheticWritable;
-    this.isOwn = Boolean(isOwn);
-    this.wasThrown = Boolean(wasThrown);
-    if (symbol) {
-      this.symbol = symbol;
-    }
-    this.synthetic = Boolean(synthetic);
-    if (syntheticSetter) {
-      this.syntheticSetter = syntheticSetter;
-    }
-    this.private = Boolean(isPrivate);
-  }
-  async setSyntheticValue(expression) {
-    if (!this.syntheticSetter) {
-      return false;
-    }
-    const result = await this.syntheticSetter(expression);
-    if (result) {
-      this.value = result;
-    }
-    return Boolean(result);
-  }
-  isAccessorProperty() {
-    return Boolean(this.getter || this.setter);
-  }
-  match({ includeNullOrUndefinedValues, regex }) {
-    if (regex !== null) {
-      if (!regex.test(this.name) && !regex.test(this.value?.description ?? "")) {
-        return false;
-      }
-    }
-    if (!includeNullOrUndefinedValues) {
-      if (!this.isAccessorProperty() && RemoteObject.isNullOrUndefined(this.value)) {
-        return false;
-      }
-    }
-    return true;
-  }
-  cloneWithNewName(newName) {
-    const property = new _RemoteObjectProperty(newName, this.value ?? null, this.enumerable, this.writable, this.isOwn, this.wasThrown, this.symbol, this.synthetic, this.syntheticSetter, this.private);
-    property.getter = this.getter;
-    property.setter = this.setter;
-    return property;
-  }
-};
-var LocalJSONObject = class extends RemoteObject {
-  #value;
-  #cachedDescription;
-  #cachedChildren;
-  constructor(value) {
-    super();
-    this.#value = value;
-  }
-  get objectId() {
-    return void 0;
-  }
-  get value() {
-    return this.#value;
-  }
-  unserializableValue() {
-    const unserializableDescription = RemoteObject.unserializableDescription(this.#value);
-    return unserializableDescription || void 0;
-  }
-  get description() {
-    if (this.#cachedDescription) {
-      return this.#cachedDescription;
-    }
-    function formatArrayItem(property) {
-      return this.formatValue(property.value || null);
-    }
-    function formatObjectItem(property) {
-      let name = property.name;
-      if (/^\s|\s$|^$|\n/.test(name)) {
-        name = '"' + name.replace(/\n/g, "\u21B5") + '"';
-      }
-      return name + ": " + this.formatValue(property.value || null);
-    }
-    if (this.type === "object") {
-      switch (this.subtype) {
-        case "array":
-          this.#cachedDescription = this.concatenate("[", "]", formatArrayItem.bind(this));
-          break;
-        case "date":
-          this.#cachedDescription = String(this.#value);
-          break;
-        case "null":
-          this.#cachedDescription = "null";
-          break;
-        default:
-          this.#cachedDescription = this.concatenate("{", "}", formatObjectItem.bind(this));
-      }
-    } else {
-      this.#cachedDescription = String(this.#value);
-    }
-    return this.#cachedDescription;
-  }
-  formatValue(value) {
-    if (!value) {
-      return "undefined";
-    }
-    const description = value.description || "";
-    if (value.type === "string") {
-      return '"' + description.replace(/\n/g, "\u21B5") + '"';
-    }
-    return description;
-  }
-  concatenate(prefix, suffix, formatProperty) {
-    const previewChars = 100;
-    let buffer = prefix;
-    const children = this.children();
-    for (let i = 0; i < children.length; ++i) {
-      const itemDescription = formatProperty(children[i]);
-      if (buffer.length + itemDescription.length > previewChars) {
-        buffer += ",\u2026";
-        break;
-      }
-      if (i) {
-        buffer += ", ";
-      }
-      buffer += itemDescription;
-    }
-    buffer += suffix;
-    return buffer;
-  }
-  get type() {
-    return typeof this.#value;
-  }
-  get subtype() {
-    if (this.#value === null) {
-      return "null";
-    }
-    if (Array.isArray(this.#value)) {
-      return "array";
-    }
-    if (this.#value instanceof Date) {
-      return "date";
-    }
-    if (this.#value instanceof Error) {
-      return "error";
-    }
-    return void 0;
-  }
-  get hasChildren() {
-    if (typeof this.#value !== "object" || this.#value === null) {
-      return false;
-    }
-    return Boolean(Object.keys(this.#value).length);
-  }
-  async getOwnProperties(_generatePreview, nonIndexedPropertiesOnly = false) {
-    function isArrayIndex(name) {
-      const index = Number(name) >>> 0;
-      return String(index) === name;
-    }
-    let properties = this.children();
-    if (nonIndexedPropertiesOnly) {
-      properties = properties.filter((property) => !isArrayIndex(property.name));
-    }
-    return { properties, internalProperties: null };
-  }
-  async getAllProperties(accessorPropertiesOnly, generatePreview, nonIndexedPropertiesOnly = false) {
-    if (accessorPropertiesOnly) {
-      return { properties: [], internalProperties: null };
-    }
-    return await this.getOwnProperties(generatePreview, nonIndexedPropertiesOnly);
-  }
-  children() {
-    if (!this.hasChildren) {
-      return [];
-    }
-    if (!this.#cachedChildren) {
-      this.#cachedChildren = Object.entries(this.#value).map(([name, value]) => {
-        return new RemoteObjectProperty(name, value instanceof RemoteObject ? value : RemoteObject.fromLocalObject(value));
-      });
-    }
-    return this.#cachedChildren;
-  }
-  arrayLength() {
-    return Array.isArray(this.#value) ? this.#value.length : 0;
-  }
-  async callFunction(functionDeclaration, args) {
-    const target = this.#value;
-    const rawArgs = args ? args.map((arg) => arg.value) : [];
-    let result;
-    let wasThrown = false;
-    try {
-      result = functionDeclaration.apply(target, rawArgs);
-    } catch {
-      wasThrown = true;
-    }
-    const object = RemoteObject.fromLocalObject(result);
-    return { object, wasThrown };
-  }
-  async callFunctionJSON(functionDeclaration, args) {
-    const target = this.#value;
-    const rawArgs = args ? args.map((arg) => arg.value) : [];
-    let result;
-    try {
-      result = functionDeclaration.apply(target, rawArgs);
-    } catch {
-      result = null;
-    }
-    return result;
-  }
-};
-var RemoteArrayBuffer = class {
-  #object;
-  constructor(object) {
-    if (object.type !== "object" || object.subtype !== "arraybuffer") {
-      throw new Error("Object is not an arraybuffer");
-    }
-    this.#object = object;
-  }
-  byteLength() {
-    return this.#object.arrayBufferByteLength();
-  }
-  async bytes(start = 0, end = this.byteLength()) {
-    if (start < 0 || start >= this.byteLength()) {
-      throw new RangeError("start is out of range");
-    }
-    if (end < start || end > this.byteLength()) {
-      throw new RangeError("end is out of range");
-    }
-    return await this.#object.callFunctionJSON(bytes, [{ value: start }, { value: end - start }]);
-    function bytes(offset, length) {
-      return [...new Uint8Array(this, offset, length)];
-    }
-  }
-  object() {
-    return this.#object;
-  }
-};
-var RemoteArray = class _RemoteArray {
-  #object;
-  constructor(object) {
-    this.#object = object;
-  }
-  static objectAsArray(object) {
-    if (object?.type !== "object" || object.subtype !== "array" && object.subtype !== "typedarray") {
-      throw new Error("Object is empty or not an array");
-    }
-    return new _RemoteArray(object);
-  }
-  static async createFromRemoteObjects(objects) {
-    if (!objects.length) {
-      throw new Error("Input array is empty");
-    }
-    const result = await objects[0].callFunction(createArray, objects.map(RemoteObject.toCallArgument));
-    if (result.wasThrown || !result.object) {
-      throw new Error("Call function throws exceptions or returns empty value");
-    }
-    return _RemoteArray.objectAsArray(result.object);
-    function createArray(...args) {
-      return args;
-    }
-  }
-  async at(index) {
-    if (index < 0 || index > this.#object.arrayLength()) {
-      throw new Error("Out of range");
-    }
-    const result = await this.#object.callFunction(at, [RemoteObject.toCallArgument(index)]);
-    if (result.wasThrown || !result.object) {
-      throw new Error("Exception in callFunction or result value is empty");
-    }
-    return result.object;
-    function at(index2) {
-      return this[index2];
-    }
-  }
-  length() {
-    return this.#object.arrayLength();
-  }
-  map(func) {
-    const promises = [];
-    for (let i = 0; i < this.length(); ++i) {
-      promises.push(this.at(i).then(func));
-    }
-    return Promise.all(promises);
-  }
-  object() {
-    return this.#object;
-  }
-};
-var RemoteFunction = class _RemoteFunction {
-  #object;
-  constructor(object) {
-    this.#object = object;
-  }
-  static objectAsFunction(object) {
-    if (object.type !== "function") {
-      throw new Error("Object is empty or not a function");
-    }
-    return new _RemoteFunction(object);
-  }
-  async targetFunction() {
-    const ownProperties = await this.#object.getOwnProperties(
-      false
-      /* generatePreview */
-    );
-    const targetFunction = ownProperties.internalProperties?.find(({ name }) => name === "[[TargetFunction]]");
-    return targetFunction?.value ?? this.#object;
-  }
-  async targetFunctionDetails() {
-    const targetFunction = await this.targetFunction();
-    const functionDetails = await targetFunction.debuggerModel().functionDetailsPromise(targetFunction);
-    if (this.#object !== targetFunction) {
-      targetFunction.release();
-    }
-    return functionDetails;
-  }
-};
-var RemoteError = class _RemoteError {
-  #object;
-  #exceptionDetails;
-  #cause;
-  constructor(object) {
-    this.#object = object;
-  }
-  static objectAsError(object) {
-    if (object.subtype !== "error") {
-      throw new Error(`Object of type ${object.subtype} is not an error`);
-    }
-    return new _RemoteError(object);
-  }
-  get errorStack() {
-    return this.#object.description ?? "";
-  }
-  exceptionDetails() {
-    if (!this.#exceptionDetails) {
-      this.#exceptionDetails = this.#lookupExceptionDetails();
-    }
-    return this.#exceptionDetails;
-  }
-  #lookupExceptionDetails() {
-    if (this.#object.objectId) {
-      return this.#object.runtimeModel().getExceptionDetails(this.#object.objectId);
-    }
-    return Promise.resolve(void 0);
-  }
-  cause() {
-    if (!this.#cause) {
-      this.#cause = this.#lookupCause();
-    }
-    return this.#cause;
-  }
-  async #lookupCause() {
-    const allProperties = await this.#object.getAllProperties(
-      false,
-      false
-      /* generatePreview */
-    );
-    const cause = allProperties.properties?.find((prop) => prop.name === "cause");
-    return cause?.value;
-  }
-};
-var descriptionLengthParenRegex = /\(([0-9]+)\)/;
-var descriptionLengthSquareRegex = /\[([0-9]+)\]/;
-var LinearMemoryInspectable = class {
-  /** The linear memory inspectable {@link RemoteObject}. */
-  object;
-  /** The name of the variable or the field holding the `object`. */
-  expression;
-  /**
-   * Wrap `object` and `expression` into a reveable structure.
-   *
-   * @param object A linear memory inspectable {@link RemoteObject}.
-   * @param expression An optional name of the field or variable holding the `object`.
-   */
-  constructor(object, expression) {
-    if (!object.isLinearMemoryInspectable()) {
-      throw new Error("object must be linear memory inspectable");
-    }
-    this.object = object;
-    this.expression = expression;
-  }
-};
-
-// gen/front_end/core/sdk/IOModel.js
 var IOModel = class extends SDKModel {
   async read(handle, size, offset) {
     const result = await this.target().ioAgent().invoke_read({ handle, offset, size });
@@ -17975,6 +17987,878 @@ var IOModel = class extends SDKModel {
 };
 SDKModel.register(IOModel, { capabilities: 131072, autostart: true });
 
+// gen/front_end/core/sdk/TargetManager.js
+var TargetManager_exports = {};
+__export(TargetManager_exports, {
+  Observer: () => Observer,
+  SDKModelObserver: () => SDKModelObserver,
+  TargetManager: () => TargetManager
+});
+import * as Common9 from "./../common/common.js";
+import * as Host from "./../host/host.js";
+import * as Platform6 from "./../platform/platform.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../platform/platform.js";
+import * as Root3 from "./../root/root.js";
+
+// gen/front_end/core/sdk/FrameManager.js
+var FrameManager_exports = {};
+__export(FrameManager_exports, {
+  FrameManager: () => FrameManager
+});
+import * as Common7 from "./../common/common.js";
+import * as Root from "./../root/root.js";
+var FrameManager = class _FrameManager extends Common7.ObjectWrapper.ObjectWrapper {
+  #eventListeners = /* @__PURE__ */ new WeakMap();
+  // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
+  // (OOPIFs are usually first attached to a new target and then detached from their old target,
+  // therefore being contained in 2 models for a short period of time.)
+  #frames = /* @__PURE__ */ new Map();
+  #framesForTarget = /* @__PURE__ */ new Map();
+  #outermostFrame = null;
+  #transferringFramesDataCache = /* @__PURE__ */ new Map();
+  #awaitedFrames = /* @__PURE__ */ new Map();
+  constructor(targetManager) {
+    super();
+    targetManager.observeModels(ResourceTreeModel, this);
+  }
+  static instance({ forceNew } = { forceNew: false }) {
+    if (!Root.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
+      Root.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
+    }
+    return Root.DevToolsContext.globalInstance().get(_FrameManager);
+  }
+  static removeInstance() {
+    Root.DevToolsContext.globalInstance().delete(_FrameManager);
+  }
+  modelAdded(resourceTreeModel) {
+    const addListener = resourceTreeModel.addEventListener(Events.FrameAdded, this.frameAdded, this);
+    const detachListener = resourceTreeModel.addEventListener(Events.FrameDetached, this.frameDetached, this);
+    const navigatedListener = resourceTreeModel.addEventListener(Events.FrameNavigated, this.frameNavigated, this);
+    const resourceAddedListener = resourceTreeModel.addEventListener(Events.ResourceAdded, this.resourceAdded, this);
+    this.#eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
+    this.#framesForTarget.set(resourceTreeModel.target().id(), /* @__PURE__ */ new Set());
+  }
+  modelRemoved(resourceTreeModel) {
+    const listeners = this.#eventListeners.get(resourceTreeModel);
+    if (listeners) {
+      Common7.EventTarget.removeEventListeners(listeners);
+    }
+    const frameSet = this.#framesForTarget.get(resourceTreeModel.target().id());
+    if (frameSet) {
+      for (const frameId of frameSet) {
+        this.decreaseOrRemoveFrame(frameId);
+      }
+    }
+    this.#framesForTarget.delete(resourceTreeModel.target().id());
+  }
+  frameAdded(event) {
+    const frame = event.data;
+    const frameData = this.#frames.get(frame.id);
+    if (frameData) {
+      frame.setCreationStackTrace(frameData.frame.getCreationStackTraceData());
+      this.#frames.set(frame.id, { frame, count: frameData.count + 1 });
+    } else {
+      const cachedFrameAttributes = this.#transferringFramesDataCache.get(frame.id);
+      if (cachedFrameAttributes?.creationStackTrace && cachedFrameAttributes?.creationStackTraceTarget) {
+        frame.setCreationStackTrace({
+          creationStackTrace: cachedFrameAttributes.creationStackTrace,
+          creationStackTraceTarget: cachedFrameAttributes.creationStackTraceTarget
+        });
+      }
+      this.#frames.set(frame.id, { frame, count: 1 });
+      this.#transferringFramesDataCache.delete(frame.id);
+    }
+    this.resetOutermostFrame();
+    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
+    if (frameSet) {
+      frameSet.add(frame.id);
+    }
+    this.dispatchEventToListeners("FrameAddedToTarget", { frame });
+    this.resolveAwaitedFrame(frame);
+  }
+  frameDetached(event) {
+    const { frame, isSwap } = event.data;
+    this.decreaseOrRemoveFrame(frame.id);
+    if (isSwap && !this.#frames.get(frame.id)) {
+      const traceData = frame.getCreationStackTraceData();
+      const cachedFrameAttributes = {
+        ...traceData.creationStackTrace && { creationStackTrace: traceData.creationStackTrace },
+        ...traceData.creationStackTrace && { creationStackTraceTarget: traceData.creationStackTraceTarget }
+      };
+      this.#transferringFramesDataCache.set(frame.id, cachedFrameAttributes);
+    }
+    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
+    if (frameSet) {
+      frameSet.delete(frame.id);
+    }
+  }
+  frameNavigated(event) {
+    const frame = event.data;
+    this.dispatchEventToListeners("FrameNavigated", { frame });
+    if (frame.isOutermostFrame()) {
+      this.dispatchEventToListeners("OutermostFrameNavigated", { frame });
+    }
+  }
+  resourceAdded(event) {
+    this.dispatchEventToListeners("ResourceAdded", { resource: event.data });
+  }
+  decreaseOrRemoveFrame(frameId) {
+    const frameData = this.#frames.get(frameId);
+    if (frameData) {
+      if (frameData.count === 1) {
+        this.#frames.delete(frameId);
+        this.resetOutermostFrame();
+        this.dispatchEventToListeners("FrameRemoved", { frameId });
+      } else {
+        frameData.count--;
+      }
+    }
+  }
+  /**
+   * Looks for the outermost frame in `#frames` and sets `#outermostFrame` accordingly.
+   *
+   * Important: This method needs to be called everytime `#frames` is updated.
+   */
+  resetOutermostFrame() {
+    const outermostFrames = this.getAllFrames().filter((frame) => frame.isOutermostFrame());
+    this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
+  }
+  /**
+   * Returns the ResourceTreeFrame with a given frameId.
+   * When a frame is being detached a new ResourceTreeFrame but with the same
+   * frameId is created. Consequently getFrame() will return a different
+   * ResourceTreeFrame after detachment. Callers of getFrame() should therefore
+   * immediately use the function return value and not store it for later use.
+   */
+  getFrame(frameId) {
+    const frameData = this.#frames.get(frameId);
+    if (frameData) {
+      return frameData.frame;
+    }
+    return null;
+  }
+  getAllFrames() {
+    return Array.from(this.#frames.values(), (frameData) => frameData.frame);
+  }
+  getOutermostFrame() {
+    return this.#outermostFrame;
+  }
+  async getOrWaitForFrame(frameId, notInTarget) {
+    const frame = this.getFrame(frameId);
+    if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
+      return frame;
+    }
+    return await new Promise((resolve) => {
+      const waiting = this.#awaitedFrames.get(frameId);
+      if (waiting) {
+        waiting.push({ notInTarget, resolve });
+      } else {
+        this.#awaitedFrames.set(frameId, [{ notInTarget, resolve }]);
+      }
+    });
+  }
+  resolveAwaitedFrame(frame) {
+    const waiting = this.#awaitedFrames.get(frame.id);
+    if (!waiting) {
+      return;
+    }
+    const newWaiting = waiting.filter(({ notInTarget, resolve }) => {
+      if (!notInTarget || notInTarget !== frame.resourceTreeModel().target()) {
+        resolve(frame);
+        return false;
+      }
+      return true;
+    });
+    if (newWaiting.length > 0) {
+      this.#awaitedFrames.set(frame.id, newWaiting);
+    } else {
+      this.#awaitedFrames.delete(frame.id);
+    }
+  }
+};
+
+// gen/front_end/core/sdk/Target.js
+var Target_exports = {};
+__export(Target_exports, {
+  Target: () => Target,
+  Type: () => Type2
+});
+import * as Common8 from "./../common/common.js";
+import * as Platform5 from "./../platform/platform.js";
+import * as ProtocolClient from "./../protocol_client/protocol_client.js";
+import * as Root2 from "./../root/root.js";
+var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
+  #targetManager;
+  #name;
+  #inspectedURL = Platform5.DevToolsPath.EmptyUrlString;
+  #inspectedURLName = "";
+  #capabilitiesMask;
+  #type;
+  #parentTarget;
+  #id;
+  #modelByConstructor = /* @__PURE__ */ new Map();
+  #isSuspended;
+  /**
+   * Generally when a target crashes we don't need to know, with one exception.
+   * If a target crashes during the recording of a performance trace, after the
+   * trace when we try to resume() it, it will fail because it has crashed. This
+   * causes the performance panel to freeze (see crbug.com/333989070). So we
+   * mark the target as crashed so we can exit without trying to resume it. In
+   * `ChildTargetManager` we will mark a target as "un-crashed" when we get the
+   * `targetInfoChanged` event. This helps ensure we can deal with cases where
+   * the page crashes, but a reload fixes it and the targets get restored (see
+   * crbug.com/387258086).
+   */
+  #hasCrashed = false;
+  #targetInfo;
+  #creatingModels;
+  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection, targetInfo) {
+    super(parentTarget, sessionId, connection);
+    this.#targetManager = targetManager;
+    this.#name = name;
+    this.#capabilitiesMask = 0;
+    switch (type) {
+      case Type2.FRAME:
+        this.#capabilitiesMask = 1 | 8192 | 2 | 4 | 8 | 16 | 32 | 128 | 256 | 1024 | 2048 | 32768 | 65536 | 131072 | 262144 | 524288 | 1048576;
+        if (Root2.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
+          this.#capabilitiesMask |= 2097152;
+        }
+        if (parentTarget?.type() !== Type2.FRAME) {
+          this.#capabilitiesMask |= 4096 | 64 | 512 | 16384;
+          if (Common8.ParsedURL.schemeIs(targetInfo?.url, "chrome-extension:")) {
+            this.#capabilitiesMask &= ~512;
+          }
+        }
+        break;
+      case Type2.ServiceWorker:
+        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 2048 | 131072 | 524288;
+        if (parentTarget?.type() !== Type2.FRAME) {
+          this.#capabilitiesMask |= 1 | 8192;
+        }
+        break;
+      case Type2.SHARED_WORKER:
+        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 2048 | 524288;
+        if (parentTarget?.type() !== Type2.FRAME) {
+          this.#capabilitiesMask |= 8192;
+        }
+        break;
+      case Type2.SHARED_STORAGE_WORKLET:
+        this.#capabilitiesMask = 4 | 8 | 2048 | 524288;
+        break;
+      case Type2.Worker:
+        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 256 | 524288;
+        if (parentTarget?.type() !== Type2.FRAME) {
+          this.#capabilitiesMask |= 8192;
+        }
+        break;
+      case Type2.WORKLET:
+        this.#capabilitiesMask = 4 | 8 | 524288 | 16;
+        break;
+      case Type2.NODE:
+        this.#capabilitiesMask = 4 | 16 | 32 | 131072 | 1048576;
+        break;
+      case Type2.AUCTION_WORKLET:
+        this.#capabilitiesMask = 4 | 524288;
+        break;
+      case Type2.BROWSER:
+        this.#capabilitiesMask = 32 | 131072;
+        break;
+      case Type2.TAB:
+        this.#capabilitiesMask = 32 | 128;
+        break;
+      case Type2.NODE_WORKER:
+        this.#capabilitiesMask = 4 | 16 | 32 | 131072;
+    }
+    this.#type = type;
+    this.#parentTarget = parentTarget;
+    this.#id = id;
+    this.#isSuspended = suspended;
+    this.#targetInfo = targetInfo;
+  }
+  /** Creates the models in the order in which they are provided */
+  createModels(models) {
+    this.#creatingModels = true;
+    for (const model of models) {
+      this.model(model);
+    }
+    this.#creatingModels = false;
+  }
+  id() {
+    return this.#id;
+  }
+  name() {
+    return this.#name || this.#inspectedURLName;
+  }
+  setName(name) {
+    if (this.#name === name) {
+      return;
+    }
+    this.#name = name;
+    this.#targetManager.onNameChange(this);
+  }
+  type() {
+    return this.#type;
+  }
+  markAsNodeJSForTest() {
+    this.#type = Type2.NODE;
+  }
+  targetManager() {
+    return this.#targetManager;
+  }
+  hasAllCapabilities(capabilitiesMask) {
+    return (this.#capabilitiesMask & capabilitiesMask) === capabilitiesMask;
+  }
+  decorateLabel(label) {
+    return this.#type === Type2.Worker || this.#type === Type2.ServiceWorker ? "\u2699 " + label : label;
+  }
+  parentTarget() {
+    return this.#parentTarget;
+  }
+  outermostTarget() {
+    let lastTarget = null;
+    let currentTarget = this;
+    do {
+      if (currentTarget.type() !== Type2.TAB && currentTarget.type() !== Type2.BROWSER) {
+        lastTarget = currentTarget;
+      }
+      currentTarget = currentTarget.parentTarget();
+    } while (currentTarget);
+    return lastTarget;
+  }
+  dispose(reason) {
+    super.dispose(reason);
+    this.#targetManager.removeTarget(this);
+    for (const model of this.#modelByConstructor.values()) {
+      model.dispose();
+    }
+  }
+  model(modelClass) {
+    if (!this.#modelByConstructor.get(modelClass)) {
+      const info = SDKModel.registeredModels.get(modelClass);
+      if (info === void 0) {
+        throw new Error("Model class is not registered");
+      }
+      if ((this.#capabilitiesMask & info.capabilities) === info.capabilities) {
+        const model = new modelClass(this);
+        this.#modelByConstructor.set(modelClass, model);
+        if (!this.#creatingModels) {
+          this.#targetManager.modelAdded(modelClass, model, this.#targetManager.isInScope(this));
+        }
+      }
+    }
+    return this.#modelByConstructor.get(modelClass) || null;
+  }
+  models() {
+    return this.#modelByConstructor;
+  }
+  inspectedURL() {
+    return this.#inspectedURL;
+  }
+  setInspectedURL(inspectedURL) {
+    this.#inspectedURL = inspectedURL;
+    const parsedURL = Common8.ParsedURL.ParsedURL.fromString(inspectedURL);
+    this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + this.#id;
+    this.#targetManager.onInspectedURLChange(this);
+    if (!this.#name) {
+      this.#targetManager.onNameChange(this);
+    }
+  }
+  hasCrashed() {
+    return this.#hasCrashed;
+  }
+  setHasCrashed(isCrashed) {
+    const wasCrashed = this.#hasCrashed;
+    this.#hasCrashed = isCrashed;
+    if (wasCrashed && !isCrashed) {
+      void this.resume();
+    }
+  }
+  async suspend(reason) {
+    if (this.#isSuspended) {
+      return;
+    }
+    this.#isSuspended = true;
+    if (this.#hasCrashed) {
+      return;
+    }
+    await Promise.all(Array.from(this.models().values(), (m) => m.preSuspendModel(reason)));
+    await Promise.all(Array.from(this.models().values(), (m) => m.suspendModel(reason)));
+  }
+  async resume() {
+    if (!this.#isSuspended) {
+      return;
+    }
+    this.#isSuspended = false;
+    if (this.#hasCrashed) {
+      return;
+    }
+    await Promise.all(Array.from(this.models().values(), (m) => m.resumeModel()));
+    await Promise.all(Array.from(this.models().values(), (m) => m.postResumeModel()));
+  }
+  suspended() {
+    return this.#isSuspended;
+  }
+  updateTargetInfo(targetInfo) {
+    this.#targetInfo = targetInfo;
+  }
+  targetInfo() {
+    return this.#targetInfo;
+  }
+};
+var Type2;
+(function(Type3) {
+  Type3["FRAME"] = "frame";
+  Type3["ServiceWorker"] = "service-worker";
+  Type3["Worker"] = "worker";
+  Type3["SHARED_WORKER"] = "shared-worker";
+  Type3["SHARED_STORAGE_WORKLET"] = "shared-storage-worklet";
+  Type3["NODE"] = "node";
+  Type3["BROWSER"] = "browser";
+  Type3["AUCTION_WORKLET"] = "auction-worklet";
+  Type3["WORKLET"] = "worklet";
+  Type3["TAB"] = "tab";
+  Type3["NODE_WORKER"] = "node-worker";
+})(Type2 || (Type2 = {}));
+
+// gen/front_end/core/sdk/TargetManager.js
+var TargetManager = class _TargetManager extends Common9.ObjectWrapper.ObjectWrapper {
+  /**
+   * @deprecated
+   *
+   * Intended for {@link SDKModel} classes to be able to retrieve scoped singletons like
+   * the "PageResourceLoader" or the "FrameManager".
+   *
+   * This is only an intermediate step to migrate towards our "layering vision" where
+   * SDKModels don't require things from the next layer.
+   */
+  context;
+  #targets;
+  #observers;
+  get settings() {
+    return this.context.get(Common9.Settings.Settings);
+  }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getConsole() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(Common9.Console.Console)) {
+      return Common9.Console.Console.instance();
+    }
+    return this.context.get(Common9.Console.Console);
+  }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getFrameManager() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(FrameManager)) {
+      return FrameManager.instance();
+    }
+    return this.context.get(FrameManager);
+  }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getNetworkManager() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(MultitargetNetworkManager)) {
+      return MultitargetNetworkManager.instance();
+    }
+    return this.context.get(MultitargetNetworkManager);
+  }
+  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
+  getPageResourceLoader() {
+    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(PageResourceLoader)) {
+      return PageResourceLoader.instance();
+    }
+    return this.context.get(PageResourceLoader);
+  }
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  #modelListeners;
+  #modelObservers;
+  #scopedObservers;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+  #isSuspended;
+  #browserTarget;
+  #scopeTarget;
+  #defaultScopeSet;
+  #scopeChangeListeners;
+  #overrideAutoStartModels;
+  /**
+   * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
+   */
+  constructor(context, overrideAutoStartModels) {
+    super();
+    this.context = context;
+    this.#targets = /* @__PURE__ */ new Set();
+    this.#observers = /* @__PURE__ */ new Set();
+    this.#modelListeners = new Platform6.MapUtilities.Multimap();
+    this.#modelObservers = new Platform6.MapUtilities.Multimap();
+    this.#isSuspended = false;
+    this.#browserTarget = null;
+    this.#scopeTarget = null;
+    this.#scopedObservers = /* @__PURE__ */ new WeakSet();
+    this.#defaultScopeSet = false;
+    this.#scopeChangeListeners = /* @__PURE__ */ new Set();
+    this.#overrideAutoStartModels = overrideAutoStartModels;
+  }
+  static instance({ forceNew } = { forceNew: false }) {
+    if (!Root3.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
+      Root3.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root3.DevToolsContext.globalInstance()));
+    }
+    return Root3.DevToolsContext.globalInstance().get(_TargetManager);
+  }
+  static removeInstance() {
+    Root3.DevToolsContext.globalInstance().delete(_TargetManager);
+  }
+  onInspectedURLChange(target) {
+    if (target !== this.#scopeTarget) {
+      return;
+    }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(target.inspectedURL() || Platform6.DevToolsPath.EmptyUrlString);
+    this.dispatchEventToListeners("InspectedURLChanged", target);
+  }
+  onNameChange(target) {
+    this.dispatchEventToListeners("NameChanged", target);
+  }
+  async suspendAllTargets(reason) {
+    if (this.#isSuspended) {
+      return;
+    }
+    this.#isSuspended = true;
+    this.dispatchEventToListeners(
+      "SuspendStateChanged"
+      /* Events.SUSPEND_STATE_CHANGED */
+    );
+    const suspendPromises = Array.from(this.#targets.values(), (target) => target.suspend(reason));
+    await Promise.all(suspendPromises);
+  }
+  async #waitForPromiseWithTimeout(promise, timeoutMessage) {
+    const { promise: timeoutPromise, resolve: timeoutResolve } = Promise.withResolvers();
+    const timeoutId = globalThis.setTimeout(() => {
+      this.getConsole().warn(timeoutMessage);
+      timeoutResolve();
+    }, 2e3);
+    await Promise.race([promise, timeoutPromise]);
+    globalThis.clearTimeout(timeoutId);
+    timeoutResolve();
+  }
+  async resumeAllTargets() {
+    if (!this.#isSuspended) {
+      return;
+    }
+    this.#isSuspended = false;
+    this.dispatchEventToListeners(
+      "SuspendStateChanged"
+      /* Events.SUSPEND_STATE_CHANGED */
+    );
+    const resumePromises = Array.from(this.#targets.values(), async (target) => {
+      await this.#waitForPromiseWithTimeout(target.resume(), `Timeout waiting for target ${target.name()} to resume`);
+    });
+    await Promise.all(resumePromises);
+  }
+  allTargetsSuspended() {
+    return this.#isSuspended;
+  }
+  models(modelClass, opts) {
+    const result = [];
+    for (const target of this.#targets) {
+      if (opts?.scoped && !this.isInScope(target)) {
+        continue;
+      }
+      const model = target.model(modelClass);
+      if (!model) {
+        continue;
+      }
+      result.push(model);
+    }
+    return result;
+  }
+  inspectedURL() {
+    const mainTarget = this.primaryPageTarget();
+    return mainTarget ? mainTarget.inspectedURL() : "";
+  }
+  observeModels(modelClass, observer, opts) {
+    const models = this.models(modelClass, opts);
+    this.#modelObservers.set(modelClass, observer);
+    if (opts?.scoped) {
+      this.#scopedObservers.add(observer);
+    }
+    for (const model of models) {
+      observer.modelAdded(model);
+    }
+  }
+  unobserveModels(modelClass, observer) {
+    this.#modelObservers.delete(modelClass, observer);
+    this.#scopedObservers.delete(observer);
+  }
+  modelAdded(modelClass, model, inScope) {
+    for (const observer of this.#modelObservers.get(modelClass).values()) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
+        observer.modelAdded(model);
+      }
+    }
+  }
+  modelRemoved(modelClass, model, inScope) {
+    for (const observer of this.#modelObservers.get(modelClass).values()) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
+        observer.modelRemoved(model);
+      }
+    }
+  }
+  addModelListener(modelClass, eventType, listener, thisObject, opts) {
+    const wrappedListener = (event) => {
+      if (!opts?.scoped || this.isInScope(event)) {
+        listener.call(thisObject, event);
+      }
+    };
+    for (const model of this.models(modelClass)) {
+      model.addEventListener(eventType, wrappedListener);
+    }
+    this.#modelListeners.set(eventType, { modelClass, thisObject, listener, wrappedListener });
+  }
+  removeModelListener(modelClass, eventType, listener, thisObject) {
+    if (!this.#modelListeners.has(eventType)) {
+      return;
+    }
+    let wrappedListener = null;
+    for (const info of this.#modelListeners.get(eventType)) {
+      if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject) {
+        wrappedListener = info.wrappedListener;
+        this.#modelListeners.delete(eventType, info);
+      }
+    }
+    if (wrappedListener) {
+      for (const model of this.models(modelClass)) {
+        model.removeEventListener(eventType, wrappedListener);
+      }
+    }
+  }
+  observeTargets(targetObserver, opts) {
+    if (this.#observers.has(targetObserver)) {
+      throw new Error("Observer can only be registered once");
+    }
+    if (opts?.scoped) {
+      this.#scopedObservers.add(targetObserver);
+    }
+    for (const target of this.#targets) {
+      if (!opts?.scoped || this.isInScope(target)) {
+        targetObserver.targetAdded(target);
+      }
+    }
+    this.#observers.add(targetObserver);
+  }
+  unobserveTargets(targetObserver) {
+    this.#observers.delete(targetObserver);
+    this.#scopedObservers.delete(targetObserver);
+  }
+  /** @returns The set of models we create unconditionally for new targets in the order in which they should be created */
+  #autoStartModels() {
+    const earlyModels = /* @__PURE__ */ new Set();
+    const models = /* @__PURE__ */ new Set();
+    const shouldAutostart = (model, info) => this.#overrideAutoStartModels ? this.#overrideAutoStartModels.has(model) : info.autostart;
+    for (const [model, info] of SDKModel.registeredModels) {
+      if (info.early) {
+        earlyModels.add(model);
+      } else if (shouldAutostart(model, info) || this.#modelObservers.has(model)) {
+        models.add(model);
+      }
+    }
+    return [...earlyModels, ...models];
+  }
+  createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection, targetInfo) {
+    const target = new Target(this, id, name, type, parentTarget, sessionId || "", this.#isSuspended, connection || null, targetInfo);
+    if (waitForDebuggerInPage) {
+      void target.pageAgent().invoke_waitForDebugger();
+    }
+    target.createModels(this.#autoStartModels());
+    this.#targets.add(target);
+    const inScope = this.isInScope(target);
+    for (const observer of [...this.#observers]) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
+        observer.targetAdded(target);
+      }
+    }
+    for (const [modelClass, model] of target.models().entries()) {
+      this.modelAdded(modelClass, model, inScope);
+    }
+    for (const key of this.#modelListeners.keysArray()) {
+      for (const info of this.#modelListeners.get(key)) {
+        const model = target.model(info.modelClass);
+        if (model) {
+          model.addEventListener(key, info.wrappedListener);
+        }
+      }
+    }
+    if (target === target.outermostTarget() && (target.type() !== Type2.FRAME || target === this.primaryPageTarget()) && !this.#defaultScopeSet) {
+      this.setScopeTarget(target);
+    }
+    return target;
+  }
+  removeTarget(target) {
+    if (!this.#targets.has(target)) {
+      return;
+    }
+    const inScope = this.isInScope(target);
+    this.#targets.delete(target);
+    for (const modelClass of target.models().keys()) {
+      const model = target.models().get(modelClass);
+      assertNotNullOrUndefined2(model);
+      this.modelRemoved(modelClass, model, inScope);
+    }
+    for (const observer of [...this.#observers]) {
+      if (!this.#scopedObservers.has(observer) || inScope) {
+        observer.targetRemoved(target);
+      }
+    }
+    for (const key of this.#modelListeners.keysArray()) {
+      for (const info of this.#modelListeners.get(key)) {
+        const model = target.model(info.modelClass);
+        if (model) {
+          model.removeEventListener(key, info.wrappedListener);
+        }
+      }
+    }
+  }
+  targets() {
+    return [...this.#targets];
+  }
+  targetById(id) {
+    return this.targets().find((target) => target.id() === id) || null;
+  }
+  rootTarget() {
+    if (this.#targets.size === 0) {
+      return null;
+    }
+    return this.#targets.values().next().value ?? null;
+  }
+  primaryPageTarget() {
+    let target = this.rootTarget();
+    if (target?.type() === Type2.TAB) {
+      target = this.targets().find((t) => t.parentTarget() === target && t.type() === Type2.FRAME && !t.targetInfo()?.subtype?.length) || null;
+    }
+    return target;
+  }
+  browserTarget() {
+    return this.#browserTarget;
+  }
+  async maybeAttachInitialTarget() {
+    if (!Boolean(Root3.Runtime.Runtime.queryParam("browserConnection"))) {
+      return false;
+    }
+    if (!this.#browserTarget) {
+      this.#browserTarget = new Target(
+        this,
+        /* #id*/
+        "main",
+        /* #name*/
+        "browser",
+        Type2.BROWSER,
+        /* #parentTarget*/
+        null,
+        /* #sessionId */
+        "",
+        /* suspended*/
+        false,
+        /* #connection*/
+        null,
+        /* targetInfo*/
+        void 0
+      );
+      this.#browserTarget.createModels(this.#autoStartModels());
+    }
+    const targetId = await Host.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId();
+    void this.#browserTarget.targetAgent().invoke_autoAttachRelated({
+      targetId,
+      waitForDebuggerOnStart: true
+    });
+    return true;
+  }
+  clearAllTargetsForTest() {
+    this.#targets.clear();
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  isInScope(arg) {
+    if (!arg) {
+      return false;
+    }
+    if (isSDKModelEvent(arg)) {
+      arg = arg.source;
+    }
+    if (arg instanceof SDKModel) {
+      arg = arg.target();
+    }
+    while (arg && arg !== this.#scopeTarget) {
+      arg = arg.parentTarget();
+    }
+    return Boolean(arg) && arg === this.#scopeTarget;
+  }
+  // Sets a root of a scope substree.
+  // TargetManager API invoked with `scoped: true` will behave as if targets
+  // outside of the scope subtree don't exist. Concretely this means that
+  // target observers, model observers and model listeners won't be invoked for targets outside of the
+  // scope tree. This method will invoke targetRemoved and modelRemoved for
+  // objects in the previous scope, as if they disappear and then will invoke
+  // targetAdded and modelAdded as if they just appeared.
+  // Note that scopeTarget could be null, which will effectively prevent scoped
+  // observes from getting any events.
+  setScopeTarget(scopeTarget) {
+    if (scopeTarget === this.#scopeTarget) {
+      return;
+    }
+    for (const target of this.targets()) {
+      if (!this.isInScope(target)) {
+        continue;
+      }
+      for (const modelClass of this.#modelObservers.keysArray()) {
+        const model = target.models().get(modelClass);
+        if (!model) {
+          continue;
+        }
+        for (const observer of [...this.#modelObservers.get(modelClass)].filter((o) => this.#scopedObservers.has(o))) {
+          observer.modelRemoved(model);
+        }
+      }
+      for (const observer of [...this.#observers].filter((o) => this.#scopedObservers.has(o))) {
+        observer.targetRemoved(target);
+      }
+    }
+    this.#scopeTarget = scopeTarget;
+    for (const target of this.targets()) {
+      if (!this.isInScope(target)) {
+        continue;
+      }
+      for (const observer of [...this.#observers].filter((o) => this.#scopedObservers.has(o))) {
+        observer.targetAdded(target);
+      }
+      for (const [modelClass, model] of target.models().entries()) {
+        for (const observer of [...this.#modelObservers.get(modelClass)].filter((o) => this.#scopedObservers.has(o))) {
+          observer.modelAdded(model);
+        }
+      }
+    }
+    for (const scopeChangeListener of this.#scopeChangeListeners) {
+      scopeChangeListener();
+    }
+    if (scopeTarget?.inspectedURL()) {
+      this.onInspectedURLChange(scopeTarget);
+    }
+  }
+  addScopeChangeListener(listener) {
+    this.#scopeChangeListeners.add(listener);
+  }
+  scopeTarget() {
+    return this.#scopeTarget;
+  }
+};
+var Observer = class {
+  targetAdded(_target) {
+  }
+  targetRemoved(_target) {
+  }
+};
+var SDKModelObserver = class {
+  modelAdded(_model) {
+  }
+  modelRemoved(_model) {
+  }
+};
+function isSDKModelEvent(arg) {
+  return "source" in arg && arg.source instanceof SDKModel;
+}
+
 // gen/front_end/core/sdk/PageResourceLoader.js
 var UIStrings2 = {
   /**
@@ -17993,7 +18877,7 @@ var ResourceKey = class {
     this.key = key;
   }
 };
-var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper.ObjectWrapper {
+var PageResourceLoader = class _PageResourceLoader extends Common10.ObjectWrapper.ObjectWrapper {
   #targetManager;
   #settings;
   #userAgentProvider;
@@ -18017,12 +18901,12 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
     loadOverride: null
   }) {
     if (forceNew) {
-      Root.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common7.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
+      Root4.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common10.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
     }
-    return Root.DevToolsContext.globalInstance().get(_PageResourceLoader);
+    return Root4.DevToolsContext.globalInstance().get(_PageResourceLoader);
   }
   static removeInstance() {
-    Root.DevToolsContext.globalInstance().delete(_PageResourceLoader);
+    Root4.DevToolsContext.globalInstance().delete(_PageResourceLoader);
   }
   onPrimaryPageChanged(event) {
     const { frame: mainFrame, type } = event.data;
@@ -18172,9 +19056,9 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
     if (this.#loadOverride) {
       return await this.#loadOverride(url);
     }
-    const parsedURL = new Common7.ParsedURL.ParsedURL(url);
+    const parsedURL = new Common10.ParsedURL.ParsedURL(url);
     const eligibleForLoadFromTarget = this.getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== "file" && parsedURL.scheme !== "data" && parsedURL.scheme !== "devtools" && initiator.target;
-    Host.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
+    Host2.userMetrics.developerResourceScheme(this.getDeveloperResourceScheme(parsedURL));
     if (eligibleForLoadFromTarget) {
       let mustEnforceCSP = false;
       const isHttp = parsedURL.scheme === "http" || parsedURL.scheme === "https";
@@ -18197,7 +19081,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
         }
       }
       try {
-        Host.userMetrics.developerResourceLoaded(
+        Host2.userMetrics.developerResourceLoaded(
           0
           /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_VIA_TARGET */
         );
@@ -18205,7 +19089,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
         return result2;
       } catch (e) {
         if (e instanceof Error) {
-          Host.userMetrics.developerResourceLoaded(
+          Host2.userMetrics.developerResourceLoaded(
             2
             /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FAILURE */
           );
@@ -18221,17 +19105,17 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
           }
         }
       }
-      Host.userMetrics.developerResourceLoaded(
+      Host2.userMetrics.developerResourceLoaded(
         3
         /* Host.UserMetrics.DeveloperResourceLoaded.LOAD_THROUGH_PAGE_FALLBACK */
       );
     } else {
       const code = this.getLoadThroughTargetSetting().get() ? 6 : 5;
-      Host.userMetrics.developerResourceLoaded(code);
+      Host2.userMetrics.developerResourceLoaded(code);
     }
     const result = await this.loadFromHostBindings(url);
     if (eligibleForLoadFromTarget && !result.success) {
-      Host.userMetrics.developerResourceLoaded(
+      Host2.userMetrics.developerResourceLoaded(
         7
         /* Host.UserMetrics.DeveloperResourceLoaded.FALLBACK_FAILURE */
       );
@@ -18274,7 +19158,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
           statusCode: resource.httpStatusCode || 0,
           netError: resource.netError,
           netErrorName: resource.netErrorName,
-          message: Host.ResourceLoader.netErrorToMessage(resource.netError, resource.httpStatusCode, resource.netErrorName) || ""
+          message: Host2.ResourceLoader.netErrorToMessage(resource.netError, resource.httpStatusCode, resource.netErrorName) || ""
         }
       };
     } finally {
@@ -18293,7 +19177,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common7.ObjectWrapper
       headers["Cache-Control"] = "no-cache";
     }
     const allowRemoteFilePaths = this.#settings.moduleSetting("network.enable-remote-file-loading").get();
-    return await new Promise((resolve) => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+    return await new Promise((resolve) => Host2.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
       resolve({ success, content, errorDescription });
     }, allowRemoteFilePaths));
   }
@@ -18311,8 +19195,8 @@ __export(SourceMap_exports, {
   parseSourceMap: () => parseSourceMap
 });
 import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
-import * as Common8 from "./../common/common.js";
-import * as Platform5 from "./../platform/platform.js";
+import * as Common11 from "./../common/common.js";
+import * as Platform7 from "./../platform/platform.js";
 import * as TextUtils15 from "./../text_utils/text_utils.js";
 
 // gen/front_end/core/sdk/ScopeTreeCache.js
@@ -19146,7 +20030,7 @@ var SourceMap = class {
     this.#script = script;
     this.#compiledURL = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
-    this.#baseURL = Common8.ParsedURL.schemeIs(sourceMappingURL, "data:") ? compiledURL : sourceMappingURL;
+    this.#baseURL = Common11.ParsedURL.schemeIs(sourceMappingURL, "data:") ? compiledURL : sourceMappingURL;
     this.#debugId = "debugId" in payload ? payload.debugId : void 0;
     this.#console = console2;
     if ("sections" in this.#json) {
@@ -19230,7 +20114,7 @@ var SourceMap = class {
       };
     }
     const mappings = this.mappings();
-    const index = Platform5.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    const index = Platform7.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
     return index ? mappings[index - 1] : null;
   }
   /** Returns the entry at the given position but only if an entry exists for that exact position */
@@ -19243,7 +20127,7 @@ var SourceMap = class {
   }
   findEntryRanges(lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const endIndex = Platform5.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    const endIndex = Platform7.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
     if (!endIndex) {
       return null;
     }
@@ -19258,7 +20142,7 @@ var SourceMap = class {
     const reverseMappings = this.reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;
-    const endReverseIndex = Platform5.ArrayUtilities.upperBound(reverseMappings, void 0, (_, i) => startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber);
+    const endReverseIndex = Platform7.ArrayUtilities.upperBound(reverseMappings, void 0, (_, i) => startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber);
     if (!endReverseIndex) {
       return null;
     }
@@ -19270,8 +20154,8 @@ var SourceMap = class {
   sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
     const reverseMappings = this.reversedMappings(sourceURL);
-    const first = Platform5.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
-    const last = Platform5.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
+    const first = Platform7.ArrayUtilities.lowerBound(reverseMappings, lineNumber, lineComparator);
+    const last = Platform7.ArrayUtilities.upperBound(reverseMappings, lineNumber, lineComparator);
     if (first >= reverseMappings.length || mappings[reverseMappings[first]].sourceLineNumber !== lineNumber) {
       return null;
     }
@@ -19279,7 +20163,7 @@ var SourceMap = class {
     if (!columnMappings.length) {
       return null;
     }
-    const index = Platform5.ArrayUtilities.lowerBound(columnMappings, columnNumber, (columnNumber2, i) => columnNumber2 - mappings[i].sourceColumnNumber);
+    const index = Platform7.ArrayUtilities.lowerBound(columnMappings, columnNumber, (columnNumber2, i) => columnNumber2 - mappings[i].sourceColumnNumber);
     return index >= columnMappings.length ? mappings[columnMappings[columnMappings.length - 1]] : mappings[columnMappings[index]];
     function lineComparator(lineNumber2, i) {
       return lineNumber2 - mappings[i].sourceLineNumber;
@@ -19288,7 +20172,7 @@ var SourceMap = class {
   findReverseIndices(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
     const reverseMappings = this.reversedMappings(sourceURL);
-    const endIndex = Platform5.ArrayUtilities.upperBound(reverseMappings, void 0, (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber);
+    const endIndex = Platform7.ArrayUtilities.upperBound(reverseMappings, void 0, (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber);
     let startIndex = endIndex;
     while (startIndex > 0 && mappings[reverseMappings[startIndex - 1]].sourceLineNumber === mappings[reverseMappings[endIndex - 1]].sourceLineNumber && mappings[reverseMappings[startIndex - 1]].sourceColumnNumber === mappings[reverseMappings[endIndex - 1]].sourceColumnNumber) {
       --startIndex;
@@ -19413,14 +20297,14 @@ var SourceMap = class {
     const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
-      if (Common8.ParsedURL.ParsedURL.isRelativeURL(href)) {
+      if (Common11.ParsedURL.ParsedURL.isRelativeURL(href)) {
         if (sourceRoot && !sourceRoot.endsWith("/") && href && !href.startsWith("/")) {
           href = sourceRoot.concat("/", href);
         } else {
           href = sourceRoot.concat(href);
         }
       }
-      const url = Common8.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
+      const url = Common11.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || href;
       const source = sourceMap.sourcesContent?.[i];
       const sourceInfo = {
         sourceURL: url,
@@ -19526,7 +20410,7 @@ var SourceMap = class {
     if (reverseMappings.length === 0) {
       return [];
     }
-    let startReverseIndex = Platform5.ArrayUtilities.lowerBound(reverseMappings, textRange, ({ startLine, startColumn }, index) => {
+    let startReverseIndex = Platform7.ArrayUtilities.lowerBound(reverseMappings, textRange, ({ startLine, startColumn }, index) => {
       const { sourceLineNumber, sourceColumnNumber } = mappings[index];
       return startLine - sourceLineNumber || startColumn - sourceColumnNumber;
     });
@@ -19682,7 +20566,7 @@ var TokenIterator = class {
         throw new Error("Unexpected end of input while decodling VLQ number!");
       }
       const charCode = this.nextCharCode();
-      digit = Common8.Base64.BASE64_CODES[charCode];
+      digit = Common11.Base64.BASE64_CODES[charCode];
       if (charCode !== 65 && digit === 0) {
         throw new Error(`Unexpected char '${String.fromCharCode(charCode)}' encountered while decoding`);
       }
@@ -19765,251 +20649,8 @@ var IN_MEMORY_INSTANCE = new class {
   }
 }();
 
-// gen/front_end/core/sdk/Target.js
-var Target_exports = {};
-__export(Target_exports, {
-  Target: () => Target,
-  Type: () => Type2
-});
-import * as Common9 from "./../common/common.js";
-import * as Platform6 from "./../platform/platform.js";
-import * as ProtocolClient from "./../protocol_client/protocol_client.js";
-import * as Root2 from "./../root/root.js";
-var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
-  #targetManager;
-  #name;
-  #inspectedURL = Platform6.DevToolsPath.EmptyUrlString;
-  #inspectedURLName = "";
-  #capabilitiesMask;
-  #type;
-  #parentTarget;
-  #id;
-  #modelByConstructor = /* @__PURE__ */ new Map();
-  #isSuspended;
-  /**
-   * Generally when a target crashes we don't need to know, with one exception.
-   * If a target crashes during the recording of a performance trace, after the
-   * trace when we try to resume() it, it will fail because it has crashed. This
-   * causes the performance panel to freeze (see crbug.com/333989070). So we
-   * mark the target as crashed so we can exit without trying to resume it. In
-   * `ChildTargetManager` we will mark a target as "un-crashed" when we get the
-   * `targetInfoChanged` event. This helps ensure we can deal with cases where
-   * the page crashes, but a reload fixes it and the targets get restored (see
-   * crbug.com/387258086).
-   */
-  #hasCrashed = false;
-  #targetInfo;
-  #creatingModels;
-  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection, targetInfo) {
-    super(parentTarget, sessionId, connection);
-    this.#targetManager = targetManager;
-    this.#name = name;
-    this.#capabilitiesMask = 0;
-    switch (type) {
-      case Type2.FRAME:
-        this.#capabilitiesMask = 1 | 8192 | 2 | 4 | 8 | 16 | 32 | 128 | 256 | 1024 | 2048 | 32768 | 65536 | 131072 | 262144 | 524288 | 1048576;
-        if (Root2.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
-          this.#capabilitiesMask |= 2097152;
-        }
-        if (parentTarget?.type() !== Type2.FRAME) {
-          this.#capabilitiesMask |= 4096 | 64 | 512 | 16384;
-          if (Common9.ParsedURL.schemeIs(targetInfo?.url, "chrome-extension:")) {
-            this.#capabilitiesMask &= ~512;
-          }
-        }
-        break;
-      case Type2.ServiceWorker:
-        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 2048 | 131072 | 524288;
-        if (parentTarget?.type() !== Type2.FRAME) {
-          this.#capabilitiesMask |= 1 | 8192;
-        }
-        break;
-      case Type2.SHARED_WORKER:
-        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 2048 | 524288;
-        if (parentTarget?.type() !== Type2.FRAME) {
-          this.#capabilitiesMask |= 8192;
-        }
-        break;
-      case Type2.SHARED_STORAGE_WORKLET:
-        this.#capabilitiesMask = 4 | 8 | 2048 | 524288;
-        break;
-      case Type2.Worker:
-        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 256 | 524288;
-        if (parentTarget?.type() !== Type2.FRAME) {
-          this.#capabilitiesMask |= 8192;
-        }
-        break;
-      case Type2.WORKLET:
-        this.#capabilitiesMask = 4 | 8 | 524288 | 16;
-        break;
-      case Type2.NODE:
-        this.#capabilitiesMask = 4 | 16 | 32 | 131072 | 1048576;
-        break;
-      case Type2.AUCTION_WORKLET:
-        this.#capabilitiesMask = 4 | 524288;
-        break;
-      case Type2.BROWSER:
-        this.#capabilitiesMask = 32 | 131072;
-        break;
-      case Type2.TAB:
-        this.#capabilitiesMask = 32 | 128;
-        break;
-      case Type2.NODE_WORKER:
-        this.#capabilitiesMask = 4 | 16 | 32 | 131072;
-    }
-    this.#type = type;
-    this.#parentTarget = parentTarget;
-    this.#id = id;
-    this.#isSuspended = suspended;
-    this.#targetInfo = targetInfo;
-  }
-  /** Creates the models in the order in which they are provided */
-  createModels(models) {
-    this.#creatingModels = true;
-    for (const model of models) {
-      this.model(model);
-    }
-    this.#creatingModels = false;
-  }
-  id() {
-    return this.#id;
-  }
-  name() {
-    return this.#name || this.#inspectedURLName;
-  }
-  setName(name) {
-    if (this.#name === name) {
-      return;
-    }
-    this.#name = name;
-    this.#targetManager.onNameChange(this);
-  }
-  type() {
-    return this.#type;
-  }
-  markAsNodeJSForTest() {
-    this.#type = Type2.NODE;
-  }
-  targetManager() {
-    return this.#targetManager;
-  }
-  hasAllCapabilities(capabilitiesMask) {
-    return (this.#capabilitiesMask & capabilitiesMask) === capabilitiesMask;
-  }
-  decorateLabel(label) {
-    return this.#type === Type2.Worker || this.#type === Type2.ServiceWorker ? "\u2699 " + label : label;
-  }
-  parentTarget() {
-    return this.#parentTarget;
-  }
-  outermostTarget() {
-    let lastTarget = null;
-    let currentTarget = this;
-    do {
-      if (currentTarget.type() !== Type2.TAB && currentTarget.type() !== Type2.BROWSER) {
-        lastTarget = currentTarget;
-      }
-      currentTarget = currentTarget.parentTarget();
-    } while (currentTarget);
-    return lastTarget;
-  }
-  dispose(reason) {
-    super.dispose(reason);
-    this.#targetManager.removeTarget(this);
-    for (const model of this.#modelByConstructor.values()) {
-      model.dispose();
-    }
-  }
-  model(modelClass) {
-    if (!this.#modelByConstructor.get(modelClass)) {
-      const info = SDKModel.registeredModels.get(modelClass);
-      if (info === void 0) {
-        throw new Error("Model class is not registered");
-      }
-      if ((this.#capabilitiesMask & info.capabilities) === info.capabilities) {
-        const model = new modelClass(this);
-        this.#modelByConstructor.set(modelClass, model);
-        if (!this.#creatingModels) {
-          this.#targetManager.modelAdded(modelClass, model, this.#targetManager.isInScope(this));
-        }
-      }
-    }
-    return this.#modelByConstructor.get(modelClass) || null;
-  }
-  models() {
-    return this.#modelByConstructor;
-  }
-  inspectedURL() {
-    return this.#inspectedURL;
-  }
-  setInspectedURL(inspectedURL) {
-    this.#inspectedURL = inspectedURL;
-    const parsedURL = Common9.ParsedURL.ParsedURL.fromString(inspectedURL);
-    this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + this.#id;
-    this.#targetManager.onInspectedURLChange(this);
-    if (!this.#name) {
-      this.#targetManager.onNameChange(this);
-    }
-  }
-  hasCrashed() {
-    return this.#hasCrashed;
-  }
-  setHasCrashed(isCrashed) {
-    const wasCrashed = this.#hasCrashed;
-    this.#hasCrashed = isCrashed;
-    if (wasCrashed && !isCrashed) {
-      void this.resume();
-    }
-  }
-  async suspend(reason) {
-    if (this.#isSuspended) {
-      return;
-    }
-    this.#isSuspended = true;
-    if (this.#hasCrashed) {
-      return;
-    }
-    await Promise.all(Array.from(this.models().values(), (m) => m.preSuspendModel(reason)));
-    await Promise.all(Array.from(this.models().values(), (m) => m.suspendModel(reason)));
-  }
-  async resume() {
-    if (!this.#isSuspended) {
-      return;
-    }
-    this.#isSuspended = false;
-    if (this.#hasCrashed) {
-      return;
-    }
-    await Promise.all(Array.from(this.models().values(), (m) => m.resumeModel()));
-    await Promise.all(Array.from(this.models().values(), (m) => m.postResumeModel()));
-  }
-  suspended() {
-    return this.#isSuspended;
-  }
-  updateTargetInfo(targetInfo) {
-    this.#targetInfo = targetInfo;
-  }
-  targetInfo() {
-    return this.#targetInfo;
-  }
-};
-var Type2;
-(function(Type3) {
-  Type3["FRAME"] = "frame";
-  Type3["ServiceWorker"] = "service-worker";
-  Type3["Worker"] = "worker";
-  Type3["SHARED_WORKER"] = "shared-worker";
-  Type3["SHARED_STORAGE_WORKLET"] = "shared-storage-worklet";
-  Type3["NODE"] = "node";
-  Type3["BROWSER"] = "browser";
-  Type3["AUCTION_WORKLET"] = "auction-worklet";
-  Type3["WORKLET"] = "worklet";
-  Type3["TAB"] = "tab";
-  Type3["NODE_WORKER"] = "node-worker";
-})(Type2 || (Type2 = {}));
-
 // gen/front_end/core/sdk/SourceMapManager.js
-var SourceMapManager = class _SourceMapManager extends Common10.ObjectWrapper.ObjectWrapper {
+var SourceMapManager = class _SourceMapManager extends Common12.ObjectWrapper.ObjectWrapper {
   #target;
   #factory;
   #isEnabled = true;
@@ -20039,10 +20680,10 @@ var SourceMapManager = class _SourceMapManager extends Common10.ObjectWrapper.Ob
     while (target && target.type() !== Type2.FRAME) {
       target = target.parentTarget();
     }
-    return target?.inspectedURL() ?? Platform7.DevToolsPath.EmptyUrlString;
+    return target?.inspectedURL() ?? Platform8.DevToolsPath.EmptyUrlString;
   }
   static resolveRelativeSourceURL(target, url) {
-    url = Common10.ParsedURL.ParsedURL.completeURL(_SourceMapManager.getBaseUrl(target), url) ?? url;
+    url = Common12.ParsedURL.ParsedURL.completeURL(_SourceMapManager.getBaseUrl(target), url) ?? url;
     return url;
   }
   sourceMapForClient(client) {
@@ -20074,7 +20715,7 @@ var SourceMapManager = class _SourceMapManager extends Common10.ObjectWrapper.Ob
     };
     if (this.#isEnabled) {
       const sourceURL = _SourceMapManager.resolveRelativeSourceURL(this.#target, relativeSourceURL);
-      const sourceMapURL = Common10.ParsedURL.ParsedURL.completeURL(sourceURL, relativeSourceMapURL);
+      const sourceMapURL = Common12.ParsedURL.ParsedURL.completeURL(sourceURL, relativeSourceMapURL);
       if (sourceMapURL) {
         if (this.#attachingClient) {
           console.error("Attaching source map may cancel previously attaching source map");
@@ -20145,7 +20786,7 @@ var SourceMapManager = class _SourceMapManager extends Common10.ObjectWrapper.Ob
 async function loadSourceMap(resourceLoader, sourceMapCache, url, debugId, initiator) {
   try {
     if (debugId) {
-      const securityOrigin = initiator.initiatorUrl ? Common10.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform7.DevToolsPath.EmptyUrlString;
+      const securityOrigin = initiator.initiatorUrl ? Common12.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform8.DevToolsPath.EmptyUrlString;
       const cachedSourceMap = await sourceMapCache.get(debugId, securityOrigin);
       if (cachedSourceMap) {
         return cachedSourceMap;
@@ -20154,7 +20795,7 @@ async function loadSourceMap(resourceLoader, sourceMapCache, url, debugId, initi
     const { content } = await resourceLoader.loadResource(url, initiator);
     const sourceMap = parseSourceMap(content);
     if (debugId && "debugId" in sourceMap && sourceMap.debugId === debugId) {
-      const securityOrigin = initiator.initiatorUrl ? Common10.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform7.DevToolsPath.EmptyUrlString;
+      const securityOrigin = initiator.initiatorUrl ? Common12.ParsedURL.ParsedURL.extractOrigin(initiator.initiatorUrl) : Platform8.DevToolsPath.EmptyUrlString;
       await sourceMapCache.set(sourceMap.debugId, securityOrigin, sourceMap).catch();
     }
     return sourceMap;
@@ -20187,7 +20828,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   #resourceTreeModel;
   #sourceMapManager;
   #styleLoader;
-  #stylePollingThrottler = new Common11.Throttler.Throttler(StylePollingInterval);
+  #stylePollingThrottler = new Common13.Throttler.Throttler(StylePollingInterval);
   #styleSheetIdsForURL = /* @__PURE__ */ new Map();
   #styleSheetIdToHeader = /* @__PURE__ */ new Map();
   #cachedMatchedCascadeNode = null;
@@ -20248,7 +20889,7 @@ var CSSModel = class _CSSModel extends SDKModel {
   createRawLocationsByURL(sourceURL, lineNumber, columnNumber = 0) {
     const headers = this.headersForSourceURL(sourceURL);
     headers.sort(stylesheetComparator);
-    const endIndex = Platform8.ArrayUtilities.upperBound(headers, void 0, (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn);
+    const endIndex = Platform9.ArrayUtilities.upperBound(headers, void 0, (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn);
     if (!endIndex) {
       return [];
     }
@@ -20312,7 +20953,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setSelectorText(styleSheetId, range, text) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { selectorList } = await this.agent.invoke_setRuleSelector({ styleSheetId, range, selector: text });
@@ -20329,7 +20970,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setPropertyRulePropertyName(styleSheetId, range, text) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { propertyName } = await this.agent.invoke_setPropertyRulePropertyName({ styleSheetId, range, propertyName: text });
@@ -20346,7 +20987,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setKeyframeKey(styleSheetId, range, text) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { keyText } = await this.agent.invoke_setKeyframeKey({ styleSheetId, range, keyText: text });
@@ -20412,7 +21053,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (!node) {
       return null;
     }
-    const shouldGetAnimatedStyles = Root3.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
+    const shouldGetAnimatedStyles = Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
     const [matchedStylesResponse, animatedStylesResponse] = await Promise.all([
       this.agent.invoke_getMatchedStylesForNode({ nodeId }),
       shouldGetAnimatedStyles ? this.agent.invoke_getAnimatedStylesForNode({ nodeId }) : void 0
@@ -20546,7 +21187,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       if (!hasPseudoClass) {
         return false;
       }
-      Platform8.ArrayUtilities.removeElement(forcedPseudoClasses, pseudoClass);
+      Platform9.ArrayUtilities.removeElement(forcedPseudoClasses, pseudoClass);
       if (forcedPseudoClasses.length) {
         node.setMarker(PseudoStateMarker, forcedPseudoClasses);
       } else {
@@ -20564,7 +21205,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     return node.marker(PseudoStateMarker) || [];
   }
   async setMediaText(styleSheetId, range, newMediaText) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { media } = await this.agent.invoke_setMediaText({ styleSheetId, range, text: newMediaText });
@@ -20581,7 +21222,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setContainerQueryText(styleSheetId, range, newContainerQueryText) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryText({ styleSheetId, range, text: newContainerQueryText });
@@ -20598,7 +21239,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setContainerQueryConditionText(styleSheetId, range, newContainerQueryConditionText) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText({ styleSheetId, range, text: newContainerQueryConditionText });
@@ -20615,7 +21256,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setSupportsText(styleSheetId, range, newSupportsText) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { supports } = await this.agent.invoke_setSupportsText({ styleSheetId, range, text: newSupportsText });
@@ -20632,7 +21273,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setNavigationText(styleSheetId, range, newNavigationText) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { navigation } = await this.agent.invoke_setNavigationText({ styleSheetId, range, text: newNavigationText });
@@ -20649,7 +21290,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
   }
   async setScopeText(styleSheetId, range, newScopeText) {
-    Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.StyleRuleEdited);
+    Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
       const { scope } = await this.agent.invoke_setScopeText({ styleSheetId, range, text: newScopeText });
@@ -21064,7 +21705,7 @@ var InlineStyleResult = class {
     this.attributesStyle = attributesStyle;
   }
 };
-var CSSPropertyTracker = class extends Common11.ObjectWrapper.ObjectWrapper {
+var CSSPropertyTracker = class extends Common13.ObjectWrapper.ObjectWrapper {
   #cssModel;
   #properties;
   constructor(cssModel, propertiesToTrack) {
@@ -21092,2225 +21733,15 @@ __export(OverlayModel_exports, {
   SourceOrderHighlighter: () => SourceOrderHighlighter,
   WindowControls: () => WindowControls
 });
-import * as Common17 from "./../common/common.js";
-import * as i18n11 from "./../i18n/i18n.js";
-
-// gen/front_end/core/sdk/DebuggerModel.js
-var DebuggerModel_exports = {};
-__export(DebuggerModel_exports, {
-  BreakLocation: () => BreakLocation,
-  COND_BREAKPOINT_SOURCE_URL: () => COND_BREAKPOINT_SOURCE_URL,
-  CallFrame: () => CallFrame,
-  DebuggerModel: () => DebuggerModel,
-  DebuggerPausedDetails: () => DebuggerPausedDetails,
-  Events: () => Events5,
-  LOGPOINT_SOURCE_URL: () => LOGPOINT_SOURCE_URL,
-  Location: () => Location,
-  PauseOnExceptionsState: () => PauseOnExceptionsState,
-  Scope: () => Scope,
-  WASM_SYMBOLS_PRIORITY: () => WASM_SYMBOLS_PRIORITY,
-  sortAndMergeRanges: () => sortAndMergeRanges
-});
-import * as Common14 from "./../common/common.js";
-import * as i18n9 from "./../i18n/i18n.js";
-import * as Root4 from "./../root/root.js";
-
-// gen/front_end/core/sdk/RuntimeModel.js
-var RuntimeModel_exports = {};
-__export(RuntimeModel_exports, {
-  Events: () => Events4,
-  ExecutionContext: () => ExecutionContext,
-  RuntimeModel: () => RuntimeModel
-});
-import * as Common12 from "./../common/common.js";
-import * as Host3 from "./../host/host.js";
-
-// gen/front_end/core/sdk/HeapProfilerModel.js
-var HeapProfilerModel_exports = {};
-__export(HeapProfilerModel_exports, {
-  HeapProfilerModel: () => HeapProfilerModel
-});
-var HeapProfilerModel = class extends SDKModel {
-  #enabled = false;
-  #heapProfilerAgent;
-  #runtimeModel;
-  constructor(target) {
-    super(target);
-    target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
-    this.#heapProfilerAgent = target.heapProfilerAgent();
-    this.#runtimeModel = target.model(RuntimeModel);
-  }
-  debuggerModel() {
-    return this.#runtimeModel.debuggerModel();
-  }
-  runtimeModel() {
-    return this.#runtimeModel;
-  }
-  async enable() {
-    if (this.#enabled) {
-      return;
-    }
-    this.#enabled = true;
-    await this.#heapProfilerAgent.invoke_enable();
-  }
-  async startSampling(samplingRateInBytes) {
-    const defaultSamplingIntervalInBytes = 16384;
-    const response = await this.#heapProfilerAgent.invoke_startSampling({ samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes });
-    return Boolean(response.getError());
-  }
-  async stopSampling() {
-    const response = await this.#heapProfilerAgent.invoke_stopSampling();
-    if (response.getError()) {
-      throw new Error("Sampling profiler is not running.");
-    }
-    return response.profile;
-  }
-  async getSamplingProfile() {
-    const response = await this.#heapProfilerAgent.invoke_getSamplingProfile();
-    if (response.getError()) {
-      return null;
-    }
-    return response.profile;
-  }
-  async collectGarbage() {
-    const response = await this.#heapProfilerAgent.invoke_collectGarbage();
-    return Boolean(response.getError());
-  }
-  async snapshotObjectIdForObjectId(objectId) {
-    const response = await this.#heapProfilerAgent.invoke_getHeapObjectId({ objectId });
-    if (response.getError()) {
-      return null;
-    }
-    return response.heapSnapshotObjectId;
-  }
-  async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
-    const result = await this.#heapProfilerAgent.invoke_getObjectByHeapObjectId({ objectId: snapshotObjectId, objectGroup: objectGroupName });
-    if (result.getError()) {
-      return null;
-    }
-    return this.#runtimeModel.createRemoteObject(result.result);
-  }
-  async addInspectedHeapObject(snapshotObjectId) {
-    const response = await this.#heapProfilerAgent.invoke_addInspectedHeapObject({ heapObjectId: snapshotObjectId });
-    return Boolean(response.getError());
-  }
-  async takeHeapSnapshot(heapSnapshotOptions) {
-    await this.target().targetManager().suspendAllTargets("heap-snapshot");
-    try {
-      await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
-    } finally {
-      await this.target().targetManager().resumeAllTargets();
-    }
-  }
-  async startTrackingHeapObjects(recordAllocationStacks) {
-    const response = await this.#heapProfilerAgent.invoke_startTrackingHeapObjects({ trackAllocations: recordAllocationStacks });
-    return Boolean(response.getError());
-  }
-  async stopTrackingHeapObjects(reportProgress) {
-    const response = await this.#heapProfilerAgent.invoke_stopTrackingHeapObjects({ reportProgress });
-    return Boolean(response.getError());
-  }
-  heapStatsUpdate(samples) {
-    this.dispatchEventToListeners("HeapStatsUpdate", samples);
-  }
-  lastSeenObjectId(lastSeenObjectId, timestamp) {
-    this.dispatchEventToListeners("LastSeenObjectId", { lastSeenObjectId, timestamp });
-  }
-  addHeapSnapshotChunk(chunk) {
-    this.dispatchEventToListeners("AddHeapSnapshotChunk", chunk);
-  }
-  reportHeapSnapshotProgress(done, total, finished) {
-    this.dispatchEventToListeners("ReportHeapSnapshotProgress", { done, total, finished });
-  }
-  resetProfiles() {
-    this.dispatchEventToListeners("ResetProfiles", this);
-  }
-};
-var HeapProfilerDispatcher = class {
-  #heapProfilerModel;
-  constructor(model) {
-    this.#heapProfilerModel = model;
-  }
-  heapStatsUpdate({ statsUpdate }) {
-    this.#heapProfilerModel.heapStatsUpdate(statsUpdate);
-  }
-  lastSeenObjectId({ lastSeenObjectId, timestamp }) {
-    this.#heapProfilerModel.lastSeenObjectId(lastSeenObjectId, timestamp);
-  }
-  addHeapSnapshotChunk({ chunk }) {
-    this.#heapProfilerModel.addHeapSnapshotChunk(chunk);
-  }
-  reportHeapSnapshotProgress({ done, total, finished }) {
-    this.#heapProfilerModel.reportHeapSnapshotProgress(done, total, finished);
-  }
-  resetProfiles() {
-    this.#heapProfilerModel.resetProfiles();
-  }
-};
-SDKModel.register(HeapProfilerModel, { capabilities: 4, autostart: false });
-
-// gen/front_end/core/sdk/RuntimeModel.js
-var RuntimeModel = class extends SDKModel {
-  agent;
-  #executionContextById = /* @__PURE__ */ new Map();
-  #executionContextComparator = ExecutionContext.comparator;
-  constructor(target) {
-    super(target);
-    this.agent = target.runtimeAgent();
-    this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
-    void this.agent.invoke_enable();
-    const settings = this.target().targetManager().context.get(Common12.Settings.Settings);
-    if (settings.moduleSetting("custom-formatters").get()) {
-      void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
-    }
-    settings.moduleSetting("custom-formatters").addChangeListener(this.customFormattersStateChanged.bind(this));
-  }
-  static isSideEffectFailure(response) {
-    const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
-    return Boolean(exceptionDetails && exceptionDetails.exception?.description?.startsWith("EvalError: Possible side-effect in debug-evaluate"));
-  }
-  debuggerModel() {
-    return this.target().model(DebuggerModel);
-  }
-  heapProfilerModel() {
-    return this.target().model(HeapProfilerModel);
-  }
-  executionContexts() {
-    return [...this.#executionContextById.values()].sort(this.executionContextComparator());
-  }
-  setExecutionContextComparator(comparator) {
-    this.#executionContextComparator = comparator;
-  }
-  /**
-   * comparator
-   */
-  executionContextComparator() {
-    return this.#executionContextComparator;
-  }
-  defaultExecutionContext() {
-    for (const context of this.executionContexts()) {
-      if (context.isDefault) {
-        return context;
-      }
-    }
-    return null;
-  }
-  executionContext(id) {
-    return this.#executionContextById.get(id) || null;
-  }
-  executionContextCreated(context) {
-    const data = context.auxData || { isDefault: true };
-    const executionContext = new ExecutionContext(this, context.id, context.uniqueId, context.name, context.origin, data["isDefault"], data["frameId"]);
-    this.#executionContextById.set(executionContext.id, executionContext);
-    this.dispatchEventToListeners(Events4.ExecutionContextCreated, executionContext);
-  }
-  executionContextDestroyed(executionContextId) {
-    const executionContext = this.#executionContextById.get(executionContextId);
-    if (!executionContext) {
-      return;
-    }
-    this.debuggerModel().executionContextDestroyed(executionContext);
-    this.#executionContextById.delete(executionContextId);
-    this.dispatchEventToListeners(Events4.ExecutionContextDestroyed, executionContext);
-  }
-  fireExecutionContextOrderChanged() {
-    this.dispatchEventToListeners(Events4.ExecutionContextOrderChanged, this);
-  }
-  executionContextsCleared() {
-    this.debuggerModel().globalObjectCleared();
-    const contexts = this.executionContexts();
-    this.#executionContextById.clear();
-    for (let i = 0; i < contexts.length; ++i) {
-      this.dispatchEventToListeners(Events4.ExecutionContextDestroyed, contexts[i]);
-    }
-  }
-  createRemoteObject(payload) {
-    console.assert(typeof payload === "object", "Remote object payload should only be an object");
-    return new RemoteObjectImpl(this, payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue, payload.description, payload.preview, payload.customPreview, payload.className);
-  }
-  createScopeRemoteObject(payload, scopeRef) {
-    return new ScopeRemoteObject(this, payload.objectId, scopeRef, payload.type, payload.subtype, payload.value, payload.unserializableValue, payload.description, payload.preview);
-  }
-  createRemoteObjectFromPrimitiveValue(value) {
-    const type = typeof value;
-    let unserializableValue = void 0;
-    const unserializableDescription = RemoteObject.unserializableDescription(value);
-    if (unserializableDescription !== null) {
-      unserializableValue = unserializableDescription;
-    }
-    if (typeof unserializableValue !== "undefined") {
-      value = void 0;
-    }
-    return new RemoteObjectImpl(this, void 0, type, void 0, value, unserializableValue);
-  }
-  createRemotePropertyFromPrimitiveValue(name, value) {
-    return new RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
-  }
-  discardConsoleEntries() {
-    void this.agent.invoke_discardConsoleEntries();
-  }
-  releaseObjectGroup(objectGroup) {
-    void this.agent.invoke_releaseObjectGroup({ objectGroup });
-  }
-  releaseEvaluationResult(result) {
-    if ("object" in result && result.object) {
-      result.object.release();
-    }
-    if ("exceptionDetails" in result && result.exceptionDetails?.exception) {
-      const exception = result.exceptionDetails.exception;
-      const exceptionObject = this.createRemoteObject({ type: exception.type, objectId: exception.objectId });
-      exceptionObject.release();
-    }
-  }
-  runIfWaitingForDebugger() {
-    void this.agent.invoke_runIfWaitingForDebugger();
-  }
-  customFormattersStateChanged({ data: enabled }) {
-    void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled });
-  }
-  async compileScript(expression, sourceURL, persistScript, executionContextId) {
-    const response = await this.agent.invoke_compileScript({
-      expression,
-      sourceURL,
-      persistScript,
-      executionContextId
-    });
-    if (response.getError()) {
-      console.error(response.getError());
-      return null;
-    }
-    return { scriptId: response.scriptId, exceptionDetails: response.exceptionDetails };
-  }
-  async runScript(scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise) {
-    const response = await this.agent.invoke_runScript({
-      scriptId,
-      executionContextId,
-      objectGroup,
-      silent,
-      includeCommandLineAPI,
-      returnByValue,
-      generatePreview,
-      awaitPromise
-    });
-    const error = response.getError();
-    if (error) {
-      console.error(error);
-      return { error };
-    }
-    return { object: this.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async queryObjects(prototype) {
-    if (!prototype.objectId) {
-      return { error: "Prototype should be an Object." };
-    }
-    const response = await this.agent.invoke_queryObjects({ prototypeObjectId: prototype.objectId, objectGroup: "console" });
-    const error = response.getError();
-    if (error) {
-      console.error(error);
-      return { error };
-    }
-    return { objects: this.createRemoteObject(response.objects) };
-  }
-  async isolateId() {
-    const response = await this.agent.invoke_getIsolateId();
-    if (response.getError() || !response.id) {
-      return this.target().id();
-    }
-    return response.id;
-  }
-  async heapUsage() {
-    const result = await this.agent.invoke_getHeapUsage();
-    return result.getError() ? null : result;
-  }
-  inspectRequested(payload, hints, executionContextId) {
-    const object = this.createRemoteObject(payload);
-    if (hints !== null && typeof hints === "object") {
-      if ("copyToClipboard" in hints && Boolean(hints.copyToClipboard)) {
-        this.copyRequested(object);
-        return;
-      }
-      if ("queryObjects" in hints && hints.queryObjects) {
-        void this.queryObjectsRequested(object, executionContextId);
-        return;
-      }
-    }
-    if (object.isNode()) {
-      const omitFocus = hints !== null && typeof hints === "object" && "omitFocus" in hints && Boolean(hints.omitFocus);
-      void Common12.Revealer.reveal(object, omitFocus).then(object.release.bind(object));
-      return;
-    }
-    if (object.type === "function") {
-      void RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
-      return;
-    }
-    function didGetDetails(response) {
-      object.release();
-      if (!response?.location) {
-        return;
-      }
-      void Common12.Revealer.reveal(response.location);
-    }
-    object.release();
-  }
-  async addBinding(event) {
-    return await this.agent.invoke_addBinding(event);
-  }
-  async removeBinding(request) {
-    return await this.agent.invoke_removeBinding(request);
-  }
-  bindingCalled(event) {
-    this.dispatchEventToListeners(Events4.BindingCalled, event);
-  }
-  copyRequested(object) {
-    if (!object.objectId) {
-      Host3.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
-      return;
-    }
-    const indent = this.target().targetManager().context.get(Common12.Settings.Settings).moduleSetting("text-editor-indent").get();
-    void object.callFunctionJSON(toStringForClipboard, [{
-      value: {
-        subtype: object.subtype,
-        indent
-      }
-    }]).then(Host3.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host3.InspectorFrontendHost.InspectorFrontendHostInstance));
-    function toStringForClipboard(data) {
-      const subtype = data.subtype;
-      const indent2 = data.indent;
-      if (subtype === "node") {
-        return this instanceof Element ? this.outerHTML : void 0;
-      }
-      if (subtype && typeof this === "undefined") {
-        return String(subtype);
-      }
-      try {
-        return JSON.stringify(this, null, indent2);
-      } catch {
-        return String(this);
-      }
-    }
-  }
-  async queryObjectsRequested(object, executionContextId) {
-    const result = await this.queryObjects(object);
-    object.release();
-    if ("error" in result) {
-      this.target().targetManager().getConsole().error(result.error);
-      return;
-    }
-    this.dispatchEventToListeners(Events4.QueryObjectRequested, { objects: result.objects, executionContextId });
-  }
-  static simpleTextFromException(exceptionDetails) {
-    let text = exceptionDetails.text;
-    if (exceptionDetails.exception?.description) {
-      let description = exceptionDetails.exception.description;
-      if (description.indexOf("\n") !== -1) {
-        description = description.substring(0, description.indexOf("\n"));
-      }
-      text += " " + description;
-    }
-    return text;
-  }
-  exceptionThrown(timestamp, exceptionDetails) {
-    const exceptionWithTimestamp = { timestamp, details: exceptionDetails };
-    this.dispatchEventToListeners(Events4.ExceptionThrown, exceptionWithTimestamp);
-  }
-  exceptionRevoked(exceptionId) {
-    this.dispatchEventToListeners(Events4.ExceptionRevoked, exceptionId);
-  }
-  consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
-    const consoleAPICall = {
-      type,
-      args,
-      executionContextId,
-      timestamp,
-      stackTrace,
-      context
-    };
-    this.dispatchEventToListeners(Events4.ConsoleAPICalled, consoleAPICall);
-  }
-  executionContextIdForScriptId(scriptId) {
-    const script = this.debuggerModel().scriptForId(scriptId);
-    return script ? script.executionContextId : 0;
-  }
-  executionContextForStackTrace(stackTrace) {
-    let currentStackTrace = stackTrace;
-    while (currentStackTrace && !currentStackTrace.callFrames.length) {
-      currentStackTrace = currentStackTrace.parent || null;
-    }
-    if (!currentStackTrace?.callFrames.length) {
-      return 0;
-    }
-    return this.executionContextIdForScriptId(currentStackTrace.callFrames[0].scriptId);
-  }
-  terminateExecution() {
-    return this.agent.invoke_terminateExecution();
-  }
-  async getExceptionDetails(errorObjectId) {
-    const response = await this.agent.invoke_getExceptionDetails({ errorObjectId });
-    if (response.getError()) {
-      return void 0;
-    }
-    return response.exceptionDetails;
-  }
-};
-var Events4;
-(function(Events12) {
-  Events12["BindingCalled"] = "BindingCalled";
-  Events12["ExecutionContextCreated"] = "ExecutionContextCreated";
-  Events12["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
-  Events12["ExecutionContextChanged"] = "ExecutionContextChanged";
-  Events12["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
-  Events12["ExceptionThrown"] = "ExceptionThrown";
-  Events12["ExceptionRevoked"] = "ExceptionRevoked";
-  Events12["ConsoleAPICalled"] = "ConsoleAPICalled";
-  Events12["QueryObjectRequested"] = "QueryObjectRequested";
-})(Events4 || (Events4 = {}));
-var RuntimeDispatcher = class {
-  #runtimeModel;
-  constructor(runtimeModel) {
-    this.#runtimeModel = runtimeModel;
-  }
-  executionContextCreated({ context }) {
-    this.#runtimeModel.executionContextCreated(context);
-  }
-  executionContextDestroyed({ executionContextId }) {
-    this.#runtimeModel.executionContextDestroyed(executionContextId);
-  }
-  executionContextsCleared() {
-    this.#runtimeModel.executionContextsCleared();
-  }
-  exceptionThrown({ timestamp, exceptionDetails }) {
-    this.#runtimeModel.exceptionThrown(timestamp, exceptionDetails);
-  }
-  exceptionRevoked({ exceptionId }) {
-    this.#runtimeModel.exceptionRevoked(exceptionId);
-  }
-  consoleAPICalled({ type, args, executionContextId, timestamp, stackTrace, context }) {
-    this.#runtimeModel.consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
-  }
-  inspectRequested({ object, hints, executionContextId }) {
-    this.#runtimeModel.inspectRequested(object, hints, executionContextId);
-  }
-  bindingCalled(event) {
-    this.#runtimeModel.bindingCalled(event);
-  }
-};
-var ExecutionContext = class {
-  id;
-  uniqueId;
-  name;
-  #label;
-  origin;
-  isDefault;
-  runtimeModel;
-  debuggerModel;
-  frameId;
-  constructor(runtimeModel, id, uniqueId, name, origin, isDefault, frameId) {
-    this.id = id;
-    this.uniqueId = uniqueId;
-    this.name = name;
-    this.#label = null;
-    this.origin = origin;
-    this.isDefault = isDefault;
-    this.runtimeModel = runtimeModel;
-    this.debuggerModel = runtimeModel.debuggerModel();
-    this.frameId = frameId;
-    this.#setLabel("");
-  }
-  target() {
-    return this.runtimeModel.target();
-  }
-  static comparator(a, b) {
-    function targetWeight(target) {
-      if (target.parentTarget()?.type() !== Type2.FRAME) {
-        return 5;
-      }
-      if (target.type() === Type2.FRAME) {
-        return 4;
-      }
-      if (target.type() === Type2.ServiceWorker) {
-        return 3;
-      }
-      if (target.type() === Type2.Worker || target.type() === Type2.SHARED_WORKER) {
-        return 2;
-      }
-      return 1;
-    }
-    function targetPath(target) {
-      let currentTarget = target;
-      const parents = [];
-      while (currentTarget) {
-        parents.push(currentTarget);
-        currentTarget = currentTarget.parentTarget();
-      }
-      return parents.reverse();
-    }
-    const tagetsA = targetPath(a.target());
-    const targetsB = targetPath(b.target());
-    let targetA;
-    let targetB;
-    for (let i = 0; ; i++) {
-      if (!tagetsA[i] || !targetsB[i] || tagetsA[i] !== targetsB[i]) {
-        targetA = tagetsA[i];
-        targetB = targetsB[i];
-        break;
-      }
-    }
-    if (!targetA && targetB) {
-      return -1;
-    }
-    if (!targetB && targetA) {
-      return 1;
-    }
-    if (targetA && targetB) {
-      const weightDiff = targetWeight(targetA) - targetWeight(targetB);
-      if (weightDiff) {
-        return -weightDiff;
-      }
-      return targetA.id().localeCompare(targetB.id());
-    }
-    if (a.isDefault) {
-      return -1;
-    }
-    if (b.isDefault) {
-      return 1;
-    }
-    return a.name.localeCompare(b.name);
-  }
-  async evaluate(options, userGesture, awaitPromise) {
-    if (this.debuggerModel.selectedCallFrame()) {
-      return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
-    }
-    return await this.evaluateGlobal(options, userGesture, awaitPromise);
-  }
-  globalObject(objectGroup, generatePreview) {
-    const evaluationOptions = {
-      expression: "this",
-      objectGroup,
-      includeCommandLineAPI: false,
-      silent: true,
-      returnByValue: false,
-      generatePreview
-    };
-    return this.evaluateGlobal(evaluationOptions, false, false);
-  }
-  async callFunctionOn(options) {
-    const response = await this.runtimeModel.agent.invoke_callFunctionOn({
-      functionDeclaration: options.functionDeclaration,
-      returnByValue: options.returnByValue,
-      userGesture: options.userGesture,
-      awaitPromise: options.awaitPromise,
-      throwOnSideEffect: options.throwOnSideEffect,
-      arguments: options.arguments,
-      // Old back-ends don't know about uniqueContextId (and also don't generate
-      // one), so fall back to contextId in that case (https://crbug.com/1192621).
-      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
-    });
-    const error = response.getError();
-    if (error) {
-      return { error };
-    }
-    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async evaluateGlobal(options, userGesture, awaitPromise) {
-    if (!options.expression) {
-      options.expression = "this";
-    }
-    const response = await this.runtimeModel.agent.invoke_evaluate({
-      expression: options.expression,
-      objectGroup: options.objectGroup,
-      includeCommandLineAPI: options.includeCommandLineAPI,
-      silent: options.silent,
-      returnByValue: options.returnByValue,
-      generatePreview: options.generatePreview,
-      userGesture,
-      awaitPromise,
-      throwOnSideEffect: options.throwOnSideEffect,
-      timeout: options.timeout,
-      disableBreaks: options.disableBreaks,
-      replMode: options.replMode,
-      allowUnsafeEvalBlockedByCSP: options.allowUnsafeEvalBlockedByCSP,
-      // Old back-ends don't know about uniqueContextId (and also don't generate
-      // one), so fall back to contextId in that case (https://crbug.com/1192621).
-      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
-    });
-    const error = response.getError();
-    if (error) {
-      console.error(error);
-      return { error };
-    }
-    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async globalLexicalScopeNames() {
-    const response = await this.runtimeModel.agent.invoke_globalLexicalScopeNames({ executionContextId: this.id });
-    return response.getError() ? [] : response.names;
-  }
-  label() {
-    return this.#label;
-  }
-  setLabel(label) {
-    this.#setLabel(label);
-    this.runtimeModel.dispatchEventToListeners(Events4.ExecutionContextChanged, this);
-  }
-  #setLabel(label) {
-    if (label) {
-      this.#label = label;
-      return;
-    }
-    if (this.name) {
-      this.#label = this.name;
-      return;
-    }
-    const parsedUrl = Common12.ParsedURL.ParsedURL.fromString(this.origin);
-    this.#label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : "";
-  }
-};
-SDKModel.register(RuntimeModel, { capabilities: 4, autostart: true });
-
-// gen/front_end/core/sdk/Script.js
-var Script_exports = {};
-__export(Script_exports, {
-  Script: () => Script,
-  disassembleWasm: () => disassembleWasm,
-  sourceURLRegex: () => sourceURLRegex
-});
-import * as Platform9 from "./../platform/platform.js";
-import * as Common13 from "./../common/common.js";
+import * as Common16 from "./../common/common.js";
 import * as i18n7 from "./../i18n/i18n.js";
-import * as TextUtils17 from "./../text_utils/text_utils.js";
-var UIStrings4 = {
-  /**
-   * @description Error message for when a script can't be loaded because it was removed or deleted.
-   */
-  scriptRemovedOrDeleted: "Script removed or deleted.",
-  /**
-   * @description Error message when failing to load a script source text.
-   */
-  unableToFetchScriptSource: "Unable to fetch script source."
-};
-var str_4 = i18n7.i18n.registerUIStrings("core/sdk/Script.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var scriptCacheInstance = null;
-var Script = class _Script {
-  debuggerModel;
-  scriptId;
-  /**
-   * The URL of the script. When `hasSourceURL` is true, this value comes from a `//# sourceURL=` directive. Otherwise,
-   * it's the original `src` URL from which the script was loaded.
-   */
-  sourceURL;
-  lineOffset;
-  columnOffset;
-  endLine;
-  endColumn;
-  executionContextId;
-  hash;
-  #isContentScript;
-  #isLiveEdit;
-  sourceMapURL;
-  debugSymbols;
-  hasSourceURL;
-  contentLength;
-  originStackTrace;
-  #codeOffset;
-  #language;
-  #contentPromise;
-  #embedderName;
-  isModule;
-  buildId;
-  constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
-    this.debuggerModel = debuggerModel;
-    this.scriptId = scriptId;
-    this.sourceURL = sourceURL;
-    this.lineOffset = startLine;
-    this.columnOffset = startColumn;
-    this.endLine = endLine;
-    this.endColumn = endColumn;
-    this.isModule = isModule;
-    this.buildId = buildId;
-    this.executionContextId = executionContextId;
-    this.hash = hash;
-    this.#isContentScript = isContentScript;
-    this.#isLiveEdit = isLiveEdit;
-    this.sourceMapURL = sourceMapURL;
-    this.debugSymbols = debugSymbols;
-    this.hasSourceURL = hasSourceURL;
-    this.contentLength = length;
-    this.originStackTrace = originStackTrace;
-    this.#codeOffset = codeOffset;
-    this.#language = scriptLanguage;
-    this.#contentPromise = null;
-    this.#embedderName = embedderName;
-  }
-  embedderName() {
-    return this.#embedderName;
-  }
-  target() {
-    return this.debuggerModel.target();
-  }
-  static trimSourceURLComment(source) {
-    let sourceURLIndex = source.lastIndexOf("//# sourceURL=");
-    if (sourceURLIndex === -1) {
-      sourceURLIndex = source.lastIndexOf("//@ sourceURL=");
-      if (sourceURLIndex === -1) {
-        return source;
-      }
-    }
-    const sourceURLLineIndex = source.lastIndexOf("\n", sourceURLIndex);
-    if (sourceURLLineIndex === -1) {
-      return source;
-    }
-    const sourceURLLine = source.substr(sourceURLLineIndex + 1);
-    if (!sourceURLLine.match(sourceURLRegex)) {
-      return source;
-    }
-    return source.substr(0, sourceURLLineIndex);
-  }
-  isContentScript() {
-    return this.#isContentScript;
-  }
-  codeOffset() {
-    return this.#codeOffset;
-  }
-  isJavaScript() {
-    return this.#language === "JavaScript";
-  }
-  isWasm() {
-    return this.#language === "WebAssembly";
-  }
-  scriptLanguage() {
-    return this.#language;
-  }
-  executionContext() {
-    return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
-  }
-  isLiveEdit() {
-    return this.#isLiveEdit;
-  }
-  contentURL() {
-    return this.sourceURL;
-  }
-  contentType() {
-    return Common13.ResourceType.resourceTypes.Script;
-  }
-  async loadTextContent() {
-    const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({ scriptId: this.scriptId });
-    if (result.getError()) {
-      throw new Error(result.getError());
-    }
-    const { scriptSource, bytecode } = result;
-    if (bytecode) {
-      return new TextUtils17.ContentData.ContentData(
-        bytecode,
-        /* isBase64 */
-        true,
-        "application/wasm"
-      );
-    }
-    let content = scriptSource || "";
-    if (this.hasSourceURL && Common13.ParsedURL.schemeIs(this.sourceURL, "snippet:")) {
-      content = _Script.trimSourceURLComment(content);
-    }
-    return new TextUtils17.ContentData.ContentData(
-      content,
-      /* isBase64 */
-      false,
-      "text/javascript"
-    );
-  }
-  async loadWasmContent() {
-    if (!this.isWasm()) {
-      throw new Error("Not a wasm script");
-    }
-    const result = await this.debuggerModel.target().debuggerAgent().invoke_disassembleWasmModule({ scriptId: this.scriptId });
-    if (result.getError()) {
-      const contentData = await this.loadTextContent();
-      return await disassembleWasm(contentData.base64);
-    }
-    const { streamId, functionBodyOffsets, chunk: { lines, bytecodeOffsets } } = result;
-    const lineChunks = [];
-    const bytecodeOffsetChunks = [];
-    let totalLength = lines.reduce((sum, line) => sum + line.length + 1, 0);
-    const truncationMessage = "<truncated>";
-    const cmSizeLimit = 1e9 - truncationMessage.length;
-    if (streamId) {
-      while (true) {
-        const result2 = await this.debuggerModel.target().debuggerAgent().invoke_nextWasmDisassemblyChunk({ streamId });
-        if (result2.getError()) {
-          throw new Error(result2.getError());
-        }
-        const { chunk: { lines: linesChunk, bytecodeOffsets: bytecodeOffsetsChunk } } = result2;
-        totalLength += linesChunk.reduce((sum, line) => sum + line.length + 1, 0);
-        if (linesChunk.length === 0) {
-          break;
-        }
-        if (totalLength >= cmSizeLimit) {
-          lineChunks.push([truncationMessage]);
-          bytecodeOffsetChunks.push([0]);
-          break;
-        }
-        lineChunks.push(linesChunk);
-        bytecodeOffsetChunks.push(bytecodeOffsetsChunk);
-      }
-    }
-    const functionBodyRanges = [];
-    for (let i = 0; i < functionBodyOffsets.length; i += 2) {
-      functionBodyRanges.push({ start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1] });
-    }
-    return new TextUtils17.WasmDisassembly.WasmDisassembly(lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
-  }
-  requestContentData() {
-    if (!this.#contentPromise) {
-      const fileSizeToCache = 65535;
-      if (this.hash && !this.#isLiveEdit && this.contentLength > fileSizeToCache) {
-        if (!scriptCacheInstance) {
-          scriptCacheInstance = {
-            cache: /* @__PURE__ */ new Map(),
-            registry: new FinalizationRegistry((hashCode) => scriptCacheInstance?.cache.delete(hashCode))
-          };
-        }
-        const fullHash = [
-          this.#language,
-          this.contentLength,
-          this.lineOffset,
-          this.columnOffset,
-          this.endLine,
-          this.endColumn,
-          this.#codeOffset,
-          this.hash
-        ].join(":");
-        const cachedContentPromise = scriptCacheInstance.cache.get(fullHash)?.deref();
-        if (cachedContentPromise) {
-          this.#contentPromise = cachedContentPromise;
-        } else {
-          this.#contentPromise = this.#requestContent();
-          scriptCacheInstance.cache.set(fullHash, new WeakRef(this.#contentPromise));
-          scriptCacheInstance.registry.register(this.#contentPromise, fullHash);
-        }
-      } else {
-        this.#contentPromise = this.#requestContent();
-      }
-    }
-    return this.#contentPromise;
-  }
-  async #requestContent() {
-    if (!this.scriptId) {
-      return { error: i18nString4(UIStrings4.scriptRemovedOrDeleted) };
-    }
-    try {
-      return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
-    } catch {
-      return { error: i18nString4(UIStrings4.unableToFetchScriptSource) };
-    }
-  }
-  async getWasmBytecode() {
-    const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({ scriptId: this.scriptId });
-    const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
-    return await response.arrayBuffer();
-  }
-  originalContentProvider() {
-    return new TextUtils17.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => this.requestContentData());
-  }
-  async searchInContent(query, caseSensitive, isRegex) {
-    if (!this.scriptId) {
-      return [];
-    }
-    const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent({ scriptId: this.scriptId, query, caseSensitive, isRegex });
-    return TextUtils17.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
-  }
-  appendSourceURLCommentIfNeeded(source) {
-    if (!this.hasSourceURL) {
-      return source;
-    }
-    return source + "\n //# sourceURL=" + this.sourceURL;
-  }
-  async editSource(newSource) {
-    newSource = _Script.trimSourceURLComment(newSource);
-    newSource = this.appendSourceURLCommentIfNeeded(newSource);
-    const oldSource = TextUtils17.ContentData.ContentData.textOr(await this.requestContentData(), null);
-    if (oldSource === newSource) {
-      return {
-        changed: false,
-        status: "Ok"
-        /* Protocol.Debugger.SetScriptSourceResponseStatus.Ok */
-      };
-    }
-    const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource({ scriptId: this.scriptId, scriptSource: newSource, allowTopFrameEditing: true });
-    if (response.getError()) {
-      throw new Error(`Script#editSource failed for script with id ${this.scriptId}: ${response.getError()}`);
-    }
-    if (!response.getError() && response.status === "Ok") {
-      this.#contentPromise = Promise.resolve(new TextUtils17.ContentData.ContentData(
-        newSource,
-        /* isBase64 */
-        false,
-        "text/javascript"
-      ));
-    }
-    this.debuggerModel.dispatchEventToListeners(Events5.ScriptSourceWasEdited, { script: this, status: response.status });
-    return { changed: true, status: response.status, exceptionDetails: response.exceptionDetails };
-  }
-  rawLocation(lineNumber, columnNumber) {
-    if (this.containsLocation(lineNumber, columnNumber)) {
-      return new Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
-    }
-    return null;
-  }
-  isInlineScript() {
-    const startsAtZero = !this.lineOffset && !this.columnOffset;
-    return !this.isWasm() && Boolean(this.sourceURL) && !startsAtZero;
-  }
-  isAnonymousScript() {
-    return !this.sourceURL;
-  }
-  async setBlackboxedRanges(positions) {
-    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges({ scriptId: this.scriptId, positions });
-    return !response.getError();
-  }
-  containsLocation(lineNumber, columnNumber) {
-    const afterStart = lineNumber === this.lineOffset && columnNumber >= this.columnOffset || lineNumber > this.lineOffset;
-    const beforeEnd = lineNumber < this.endLine || lineNumber === this.endLine && columnNumber <= this.endColumn;
-    return afterStart && beforeEnd;
-  }
-  get frameId() {
-    if (typeof this[frameIdSymbol] !== "string") {
-      this[frameIdSymbol] = frameIdForScript(this);
-    }
-    return this[frameIdSymbol];
-  }
-  /**
-   * @returns true, iff this script originates from a breakpoint/logpoint condition
-   */
-  get isBreakpointCondition() {
-    return [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL].includes(this.sourceURL);
-  }
-  /**
-   * @returns the currently attached source map for this Script or `undefined` if there is none or it
-   * hasn't loaded yet.
-   */
-  sourceMap() {
-    return this.debuggerModel.sourceMapManager().sourceMapForClient(this);
-  }
-  createPageResourceLoadInitiator() {
-    return { target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName() };
-  }
-  debugId() {
-    return this.buildId;
-  }
-  rawLocationToRelativeLocation(rawLocation) {
-    let { lineNumber, columnNumber } = rawLocation;
-    if (!this.hasSourceURL && this.isInlineScript()) {
-      lineNumber -= this.lineOffset;
-      if (lineNumber === 0 && columnNumber !== void 0) {
-        columnNumber -= this.columnOffset;
-      }
-    }
-    return { lineNumber, columnNumber };
-  }
-  relativeLocationToRawLocation(relativeLocation) {
-    let { lineNumber, columnNumber } = relativeLocation;
-    if (!this.hasSourceURL && this.isInlineScript()) {
-      if (lineNumber === 0 && columnNumber !== void 0) {
-        columnNumber += this.columnOffset;
-      }
-      lineNumber += this.lineOffset;
-    }
-    return { lineNumber, columnNumber };
-  }
-};
-var frameIdSymbol = Symbol("frameid");
-function frameIdForScript(script) {
-  const executionContext = script.executionContext();
-  if (executionContext) {
-    return executionContext.frameId || null;
-  }
-  const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
-  if (!resourceTreeModel?.mainFrame) {
-    return null;
-  }
-  return resourceTreeModel.mainFrame.id;
-}
-var sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
-async function disassembleWasm(content) {
-  const worker = Platform9.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString());
-  const promise = new Promise((resolve, reject) => {
-    worker.onmessage = ({ data }) => {
-      if ("method" in data) {
-        switch (data.method) {
-          case "disassemble":
-            if ("error" in data) {
-              reject(data.error);
-            } else if ("result" in data) {
-              const { lines, offsets, functionBodyOffsets } = data.result;
-              resolve(new TextUtils17.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
-            }
-            break;
-        }
-      }
-    };
-    worker.onerror = reject;
-  });
-  worker.postMessage({ method: "disassemble", params: { content } });
-  try {
-    return await promise;
-  } finally {
-    worker.terminate();
-  }
-}
-
-// gen/front_end/core/sdk/DebuggerModel.js
-var UIStrings5 = {
-  /**
-   * @description Title of a section in the debugger showing local JavaScript variables.
-   */
-  local: "Local",
-  /**
-   * @description Text that refers to closure as a programming term.
-   */
-  closure: "Closure",
-  /**
-   * @description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
-   */
-  block: "Block",
-  /**
-   * @description Label for a group of JavaScript files.
-   */
-  script: "Script",
-  /**
-   * @description Title of a section in the debugger showing JavaScript variables from a 'with'
-   * block. Block here means section of code, 'with' refers to a JavaScript programming concept and
-   * is a fixed term.
-   */
-  withBlock: "`With` block",
-  /**
-   * @description Title of a section in the debugger showing JavaScript variables from a 'catch'
-   * block. Block here means section of code, 'catch' refers to a JavaScript programming concept and
-   * is a fixed term.
-   */
-  catchBlock: "`Catch` block",
-  /**
-   * @description Title of a section in the debugger showing JavaScript variables from the global scope.
-   */
-  global: "Global",
-  /**
-   * @description Text for a JavaScript module, the programming concept.
-   */
-  module: "Module",
-  /**
-   * @description Text describing the expression scope in WebAssembly.
-   */
-  expression: "Expression",
-  /**
-   * @description Text in Scope Chain section of the Sources panel.
-   */
-  exception: "Exception",
-  /**
-   * @description Text in Scope Chain section of the Sources panel.
-   */
-  returnValue: "Return value"
-};
-var str_5 = i18n9.i18n.registerUIStrings("core/sdk/DebuggerModel.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-function sortAndMergeRanges(locationRanges) {
-  function compare(p1, p2) {
-    return p1.lineNumber - p2.lineNumber || p1.columnNumber - p2.columnNumber;
-  }
-  function overlap(r1, r2) {
-    if (r1.scriptId !== r2.scriptId) {
-      return false;
-    }
-    const n = compare(r1.start, r2.start);
-    if (n < 0) {
-      return compare(r1.end, r2.start) >= 0;
-    }
-    if (n > 0) {
-      return compare(r1.start, r2.end) <= 0;
-    }
-    return true;
-  }
-  if (locationRanges.length === 0) {
-    return [];
-  }
-  locationRanges.sort((r1, r2) => {
-    if (r1.scriptId < r2.scriptId) {
-      return -1;
-    }
-    if (r1.scriptId > r2.scriptId) {
-      return 1;
-    }
-    return compare(r1.start, r2.start) || compare(r1.end, r2.end);
-  });
-  let prev = locationRanges[0];
-  const merged = [];
-  for (let i = 1; i < locationRanges.length; ++i) {
-    const curr = locationRanges[i];
-    if (overlap(prev, curr)) {
-      if (compare(prev.end, curr.end) <= 0) {
-        prev = { ...prev, end: curr.end };
-      }
-    } else {
-      merged.push(prev);
-      prev = curr;
-    }
-  }
-  merged.push(prev);
-  return merged;
-}
-var WASM_SYMBOLS_PRIORITY = [
-  "ExternalDWARF",
-  "EmbeddedDWARF",
-  "SourceMap"
-];
-var DebuggerModel = class _DebuggerModel extends SDKModel {
-  agent;
-  #runtimeModel;
-  #sourceMapManager;
-  #debuggerPausedDetails = null;
-  #scripts = /* @__PURE__ */ new Map();
-  #scriptsBySourceURL = /* @__PURE__ */ new Map();
-  #discardableScripts = [];
-  continueToLocationCallback = null;
-  #selectedCallFrame = null;
-  #debuggerEnabled = false;
-  #debuggerId = null;
-  #skipAllPausesTimeout = 0;
-  #beforePausedCallback = null;
-  #computeAutoStepRangesCallback = null;
-  evaluateOnCallFrameCallback = null;
-  #synchronizeBreakpointsCallback = null;
-  // We need to be able to register listeners for individual breakpoints. As such, we dispatch
-  // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
-  #breakpointResolvedEventTarget = new Common14.ObjectWrapper.ObjectWrapper();
-  // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
-  // to by way of its functionLocation (as per Debugger.CallFrame).
-  #autoSteppingContext = null;
-  #isPausing = false;
-  constructor(target) {
-    super(target);
-    target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
-    this.agent = target.debuggerAgent();
-    this.#runtimeModel = target.model(RuntimeModel);
-    this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
-    const settings = this.target().targetManager().settings;
-    settings.moduleSetting("pause-on-exception-enabled").addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("pause-on-caught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("pause-on-uncaught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("disable-async-stack-traces").addChangeListener(this.asyncStackTracesStateChanged, this);
-    settings.moduleSetting("breakpoints-active").addChangeListener(this.breakpointsActiveChanged, this);
-    if (!target.suspended()) {
-      void this.enableDebugger();
-    }
-    this.#sourceMapManager.setEnabled(settings.moduleSetting("js-source-maps-enabled").get());
-    settings.moduleSetting("js-source-maps-enabled").addChangeListener((event) => this.#sourceMapManager.setEnabled(event.data));
-    const resourceTreeModel = target.model(ResourceTreeModel);
-    if (resourceTreeModel) {
-      resourceTreeModel.addEventListener(Events.FrameNavigated, this.onFrameNavigated, this);
-    }
-  }
-  static selectSymbolSource(debugSymbols, devToolsConsole) {
-    if (!debugSymbols || debugSymbols.length === 0) {
-      return null;
-    }
-    if ("type" in debugSymbols) {
-      if (debugSymbols.type === "None") {
-        return null;
-      }
-      return debugSymbols;
-    }
-    let debugSymbolsSource = null;
-    const symbolTypes = new Map(debugSymbols.map((symbol) => [symbol.type, symbol]));
-    for (const symbol of WASM_SYMBOLS_PRIORITY) {
-      if (symbolTypes.has(symbol)) {
-        debugSymbolsSource = symbolTypes.get(symbol) || null;
-        break;
-      }
-    }
-    console.assert(debugSymbolsSource !== null, "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes");
-    if (debugSymbolsSource && debugSymbols.length > 1) {
-      devToolsConsole.warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
-    }
-    return debugSymbolsSource;
-  }
-  sourceMapManager() {
-    return this.#sourceMapManager;
-  }
-  runtimeModel() {
-    return this.#runtimeModel;
-  }
-  debuggerEnabled() {
-    return Boolean(this.#debuggerEnabled);
-  }
-  debuggerId() {
-    return this.#debuggerId;
-  }
-  async enableDebugger() {
-    if (this.#debuggerEnabled) {
-      return;
-    }
-    this.#debuggerEnabled = true;
-    const isRemoteFrontend = Root4.Runtime.Runtime.queryParam("remoteFrontend") || Root4.Runtime.Runtime.queryParam("ws");
-    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
-    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
-    let instrumentationPromise;
-    if (Root4.Runtime.experiments.isEnabled(Root4.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
-      instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
-        instrumentation: "beforeScriptExecution"
-      });
-    }
-    this.pauseOnExceptionStateChanged();
-    void this.asyncStackTracesStateChanged();
-    const settings = this.target().targetManager().settings;
-    if (!settings.moduleSetting("breakpoints-active").get()) {
-      this.breakpointsActiveChanged();
-    }
-    this.dispatchEventToListeners(Events5.DebuggerWasEnabled, this);
-    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise]);
-    this.registerDebugger(enableResult);
-  }
-  async syncDebuggerId() {
-    const isRemoteFrontend = Root4.Runtime.Runtime.queryParam("remoteFrontend") || Root4.Runtime.Runtime.queryParam("ws");
-    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
-    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
-    void enablePromise.then(this.registerDebugger.bind(this));
-    return await enablePromise;
-  }
-  onFrameNavigated() {
-    if (_DebuggerModel.shouldResyncDebuggerId) {
-      return;
-    }
-    _DebuggerModel.shouldResyncDebuggerId = true;
-  }
-  registerDebugger(response) {
-    if (response.getError()) {
-      this.#debuggerEnabled = false;
-      return;
-    }
-    const { debuggerId } = response;
-    debuggerIdToModel.set(debuggerId, this);
-    this.#debuggerId = debuggerId;
-    this.dispatchEventToListeners(Events5.DebuggerIsReadyToPause, this);
-  }
-  isReadyToPause() {
-    return Boolean(this.#debuggerId);
-  }
-  static async modelForDebuggerId(debuggerId) {
-    if (_DebuggerModel.shouldResyncDebuggerId) {
-      await _DebuggerModel.resyncDebuggerIdForModels();
-      _DebuggerModel.shouldResyncDebuggerId = false;
-    }
-    return debuggerIdToModel.get(debuggerId) || null;
-  }
-  static async resyncDebuggerIdForModels() {
-    const dbgModels = debuggerIdToModel.values();
-    for (const dbgModel of dbgModels) {
-      if (dbgModel.debuggerEnabled()) {
-        await dbgModel.syncDebuggerId();
-      }
-    }
-  }
-  async disableDebugger() {
-    if (!this.#debuggerEnabled) {
-      return;
-    }
-    this.#debuggerEnabled = false;
-    await this.asyncStackTracesStateChanged();
-    await this.agent.invoke_disable();
-    this.#isPausing = false;
-    this.globalObjectCleared();
-    this.dispatchEventToListeners(Events5.DebuggerWasDisabled, this);
-    if (typeof this.#debuggerId === "string") {
-      debuggerIdToModel.delete(this.#debuggerId);
-    }
-    this.#debuggerId = null;
-  }
-  skipAllPauses(skip) {
-    if (this.#skipAllPausesTimeout) {
-      clearTimeout(this.#skipAllPausesTimeout);
-      this.#skipAllPausesTimeout = 0;
-    }
-    void this.agent.invoke_setSkipAllPauses({ skip });
-  }
-  skipAllPausesUntilReloadOrTimeout(timeout) {
-    if (this.#skipAllPausesTimeout) {
-      clearTimeout(this.#skipAllPausesTimeout);
-    }
-    void this.agent.invoke_setSkipAllPauses({ skip: true });
-    this.#skipAllPausesTimeout = window.setTimeout(this.skipAllPauses.bind(this, false), timeout);
-  }
-  pauseOnExceptionStateChanged() {
-    const settings = this.target().targetManager().settings;
-    const pauseOnCaughtEnabled = settings.moduleSetting("pause-on-caught-exception").get();
-    let state;
-    const pauseOnUncaughtEnabled = settings.moduleSetting("pause-on-uncaught-exception").get();
-    if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
-      state = "all";
-    } else if (pauseOnCaughtEnabled) {
-      state = "caught";
-    } else if (pauseOnUncaughtEnabled) {
-      state = "uncaught";
-    } else {
-      state = "none";
-    }
-    void this.agent.invoke_setPauseOnExceptions({ state });
-  }
-  asyncStackTracesStateChanged() {
-    const maxAsyncStackChainDepth = 32;
-    const settings = this.target().targetManager().settings;
-    const enabled = !settings.moduleSetting("disable-async-stack-traces").get() && this.#debuggerEnabled;
-    const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
-    return this.agent.invoke_setAsyncCallStackDepth({ maxDepth });
-  }
-  breakpointsActiveChanged() {
-    const settings = this.target().targetManager().settings;
-    void this.agent.invoke_setBreakpointsActive({ active: settings.moduleSetting("breakpoints-active").get() });
-  }
-  setComputeAutoStepRangesCallback(callback) {
-    this.#computeAutoStepRangesCallback = callback;
-  }
-  async computeAutoStepSkipList(mode) {
-    let ranges = [];
-    if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetails && this.#debuggerPausedDetails.callFrames.length > 0) {
-      const [callFrame] = this.#debuggerPausedDetails.callFrames;
-      ranges = await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
-    }
-    const skipList = ranges.map(({ start, end }) => ({
-      scriptId: start.scriptId,
-      start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
-      end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber }
-    }));
-    return sortAndMergeRanges(skipList);
-  }
-  async stepInto() {
-    const skipList = await this.computeAutoStepSkipList(
-      "StepInto"
-      /* StepMode.STEP_INTO */
-    );
-    void this.agent.invoke_stepInto({ breakOnAsyncCall: false, skipList });
-  }
-  async stepOver() {
-    this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
-    const skipList = await this.computeAutoStepSkipList(
-      "StepOver"
-      /* StepMode.STEP_OVER */
-    );
-    void this.agent.invoke_stepOver({ skipList });
-  }
-  async stepOut() {
-    const skipList = await this.computeAutoStepSkipList(
-      "StepOut"
-      /* StepMode.STEP_OUT */
-    );
-    if (skipList.length !== 0) {
-      void this.agent.invoke_stepOver({ skipList });
-    } else {
-      void this.agent.invoke_stepOut();
-    }
-  }
-  scheduleStepIntoAsync() {
-    void this.computeAutoStepSkipList(
-      "StepInto"
-      /* StepMode.STEP_INTO */
-    ).then((skipList) => {
-      void this.agent.invoke_stepInto({ breakOnAsyncCall: true, skipList });
-    });
-  }
-  resume() {
-    void this.agent.invoke_resume({ terminateOnResume: false });
-    this.#isPausing = false;
-  }
-  pause() {
-    this.#isPausing = true;
-    this.skipAllPauses(false);
-    void this.agent.invoke_pause();
-  }
-  async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
-    let minColumnNumber = 0;
-    const scripts = this.#scriptsBySourceURL.get(url) || [];
-    for (let i = 0, l = scripts.length; i < l; ++i) {
-      const script = scripts[i];
-      if (lineNumber === script.lineOffset) {
-        minColumnNumber = minColumnNumber ? Math.min(minColumnNumber, script.columnOffset) : script.columnOffset;
-      }
-    }
-    columnNumber = Math.max(columnNumber || 0, minColumnNumber);
-    const response = await this.agent.invoke_setBreakpointByUrl({
-      lineNumber,
-      url,
-      columnNumber,
-      condition
-    });
-    if (response.getError()) {
-      return { locations: [], breakpointId: null };
-    }
-    let locations = [];
-    if (response.locations) {
-      locations = response.locations.map((payload) => Location.fromPayload(this, payload));
-    }
-    return { locations, breakpointId: response.breakpointId };
-  }
-  async setBreakpointInAnonymousScript(scriptHash, lineNumber, columnNumber, condition) {
-    const response = await this.agent.invoke_setBreakpointByUrl({ lineNumber, scriptHash, columnNumber, condition });
-    if (response.getError()) {
-      return { locations: [], breakpointId: null };
-    }
-    let locations = [];
-    if (response.locations) {
-      locations = response.locations.map((payload) => Location.fromPayload(this, payload));
-    }
-    return { locations, breakpointId: response.breakpointId };
-  }
-  async removeBreakpoint(breakpointId) {
-    await this.agent.invoke_removeBreakpoint({ breakpointId });
-  }
-  async getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
-    const response = await this.agent.invoke_getPossibleBreakpoints({
-      start: startLocation.payload(),
-      end: endLocation ? endLocation.payload() : void 0,
-      restrictToFunction
-    });
-    if (response.getError() || !response.locations) {
-      return [];
-    }
-    return response.locations.map((location) => BreakLocation.fromPayload(this, location));
-  }
-  async fetchAsyncStackTrace(stackId) {
-    const response = await this.agent.invoke_getStackTrace({ stackTraceId: stackId });
-    return response.getError() ? null : response.stackTrace;
-  }
-  breakpointResolved(breakpointId, location) {
-    this.#breakpointResolvedEventTarget.dispatchEventToListeners(breakpointId, Location.fromPayload(this, location));
-  }
-  globalObjectCleared() {
-    this.resetDebuggerPausedDetails();
-    this.reset();
-    this.dispatchEventToListeners(Events5.GlobalObjectCleared, this);
-  }
-  reset() {
-    for (const script of this.#scripts.values()) {
-      this.#sourceMapManager.detachSourceMap(script);
-    }
-    this.#scripts.clear();
-    this.#scriptsBySourceURL.clear();
-    this.#discardableScripts = [];
-    this.#autoSteppingContext = null;
-  }
-  scripts() {
-    return Array.from(this.#scripts.values());
-  }
-  scriptForId(scriptId) {
-    return this.#scripts.get(scriptId) || null;
-  }
-  isWasm(scriptId) {
-    const script = this.scriptForId(scriptId);
-    return script ? script.isWasm() : false;
-  }
-  /**
-   * Returns all `Script` objects with the same provided `sourceURL`. The
-   * resulting array is sorted by time with the newest `Script` in the front.
-   */
-  scriptsForSourceURL(sourceURL) {
-    return this.#scriptsBySourceURL.get(sourceURL) || [];
-  }
-  scriptsForExecutionContext(executionContext) {
-    const result = [];
-    for (const script of this.#scripts.values()) {
-      if (script.executionContextId === executionContext.id) {
-        result.push(script);
-      }
-    }
-    return result;
-  }
-  get callFrames() {
-    return this.#debuggerPausedDetails ? this.#debuggerPausedDetails.callFrames : null;
-  }
-  debuggerPausedDetails() {
-    return this.#debuggerPausedDetails;
-  }
-  async setDebuggerPausedDetails(debuggerPausedDetails) {
-    this.#isPausing = false;
-    this.#debuggerPausedDetails = debuggerPausedDetails;
-    if (this.#beforePausedCallback) {
-      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, this.#autoSteppingContext)) {
-        return false;
-      }
-    }
-    this.#autoSteppingContext = null;
-    this.dispatchEventToListeners(Events5.DebuggerPaused, this);
-    this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
-    return true;
-  }
-  resetDebuggerPausedDetails() {
-    this.#isPausing = false;
-    this.#debuggerPausedDetails = null;
-    this.setSelectedCallFrame(null);
-  }
-  setBeforePausedCallback(callback) {
-    this.#beforePausedCallback = callback;
-  }
-  setEvaluateOnCallFrameCallback(callback) {
-    this.evaluateOnCallFrameCallback = callback;
-  }
-  setSynchronizeBreakpointsCallback(callback) {
-    this.#synchronizeBreakpointsCallback = callback;
-  }
-  async pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
-    if (reason === "instrumentation") {
-      const script = this.scriptForId(auxData.scriptId);
-      if (this.#synchronizeBreakpointsCallback && script) {
-        await this.#synchronizeBreakpointsCallback(script);
-      }
-      this.resume();
-      return;
-    }
-    const pausedDetails = new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
-    if (this.continueToLocationCallback) {
-      const callback = this.continueToLocationCallback;
-      this.continueToLocationCallback = null;
-      if (callback(pausedDetails)) {
-        return;
-      }
-    }
-    if (!await this.setDebuggerPausedDetails(pausedDetails)) {
-      if (this.#autoSteppingContext) {
-        void this.stepOver();
-      } else {
-        void this.stepInto();
-      }
-    } else {
-      Common14.EventTarget.fireEvent("DevTools.DebuggerPaused");
-    }
-  }
-  resumedScript() {
-    this.resetDebuggerPausedDetails();
-    this.dispatchEventToListeners(Events5.DebuggerResumed, this);
-  }
-  parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
-    const knownScript = this.#scripts.get(scriptId);
-    if (knownScript) {
-      return knownScript;
-    }
-    let isContentScript = false;
-    if (executionContextAuxData && "isDefault" in executionContextAuxData) {
-      isContentScript = !executionContextAuxData["isDefault"];
-    }
-    const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
-    const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
-    this.registerScript(script);
-    this.dispatchEventToListeners(Events5.ParsedScriptSource, script);
-    if ((!selectedDebugSymbol || selectedDebugSymbol.type === "SourceMap") && script.sourceMapURL && !hasSyntaxError) {
-      this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
-    }
-    const isDiscardable = hasSyntaxError && script.isAnonymousScript();
-    if (isDiscardable) {
-      this.#discardableScripts.push(script);
-      this.collectDiscardedScripts();
-    }
-    return script;
-  }
-  setSourceMapURL(script, newSourceMapURL) {
-    this.#sourceMapManager.detachSourceMap(script);
-    script.sourceMapURL = newSourceMapURL;
-    this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
-  }
-  async setDebugInfoURL(script, _externalURL) {
-    this.dispatchEventToListeners(Events5.DebugInfoAttached, script);
-  }
-  executionContextDestroyed(executionContext) {
-    for (const script of this.#scripts.values()) {
-      if (script.executionContextId === executionContext.id) {
-        this.#sourceMapManager.detachSourceMap(script);
-      }
-    }
-  }
-  registerScript(script) {
-    this.#scripts.set(script.scriptId, script);
-    if (script.isAnonymousScript()) {
-      return;
-    }
-    let scripts = this.#scriptsBySourceURL.get(script.sourceURL);
-    if (!scripts) {
-      scripts = [];
-      this.#scriptsBySourceURL.set(script.sourceURL, scripts);
-    }
-    scripts.unshift(script);
-  }
-  unregisterScript(script) {
-    console.assert(script.isAnonymousScript());
-    this.#scripts.delete(script.scriptId);
-  }
-  collectDiscardedScripts() {
-    if (this.#discardableScripts.length < 1e3) {
-      return;
-    }
-    const scriptsToDiscard = this.#discardableScripts.splice(0, 100);
-    for (const script of scriptsToDiscard) {
-      this.unregisterScript(script);
-      this.dispatchEventToListeners(Events5.DiscardedAnonymousScriptSource, script);
-    }
-  }
-  createRawLocation(script, lineNumber, columnNumber) {
-    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
-  }
-  createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
-    for (const script of this.#scriptsBySourceURL.get(sourceURL) || []) {
-      if (script.lineOffset > lineNumber || script.lineOffset === lineNumber && columnNumber !== void 0 && script.columnOffset > columnNumber) {
-        continue;
-      }
-      if (script.endLine < lineNumber || script.endLine === lineNumber && columnNumber !== void 0 && script.endColumn <= columnNumber) {
-        continue;
-      }
-      return new Location(this, script.scriptId, lineNumber, columnNumber);
-    }
-    return null;
-  }
-  createRawLocationByScriptId(scriptId, lineNumber, columnNumber) {
-    return new Location(this, scriptId, lineNumber, columnNumber);
-  }
-  createRawLocationsByStackTrace(stackTrace) {
-    const rawLocations = [];
-    for (let current = stackTrace; current; current = current.parent) {
-      for (const { scriptId, lineNumber, columnNumber } of current.callFrames) {
-        rawLocations.push(this.createRawLocationByScriptId(scriptId, lineNumber, columnNumber));
-      }
-    }
-    return rawLocations;
-  }
-  isPaused() {
-    return Boolean(this.debuggerPausedDetails());
-  }
-  isPausing() {
-    return this.#isPausing;
-  }
-  setSelectedCallFrame(callFrame) {
-    if (this.#selectedCallFrame === callFrame) {
-      return;
-    }
-    this.#selectedCallFrame = callFrame;
-    this.dispatchEventToListeners(Events5.CallFrameSelected, this);
-  }
-  selectedCallFrame() {
-    return this.#selectedCallFrame;
-  }
-  async evaluateOnSelectedCallFrame(options) {
-    const callFrame = this.selectedCallFrame();
-    if (!callFrame) {
-      throw new Error("No call frame selected");
-    }
-    return await callFrame.evaluate(options);
-  }
-  functionDetailsPromise(remoteObject) {
-    return remoteObject.getAllProperties(
-      false,
-      false
-      /* generatePreview */
-    ).then(buildDetails.bind(this));
-    function buildDetails(response) {
-      if (!response) {
-        return null;
-      }
-      let location = null;
-      if (response.internalProperties) {
-        for (const prop of response.internalProperties) {
-          if (prop.name === "[[FunctionLocation]]") {
-            location = prop.value;
-          }
-        }
-      }
-      let functionName = null;
-      if (response.properties) {
-        for (const prop of response.properties) {
-          if (prop.name === "name" && prop.value?.type === "string") {
-            functionName = prop.value;
-          }
-        }
-      }
-      let debuggerLocation = null;
-      if (location) {
-        debuggerLocation = this.createRawLocationByScriptId(location.value.scriptId, location.value.lineNumber, location.value.columnNumber);
-      }
-      return { location: debuggerLocation, functionName: functionName ? functionName.value : "" };
-    }
-  }
-  async setVariableValue(scopeNumber, variableName, newValue, callFrameId) {
-    const response = await this.agent.invoke_setVariableValue({ scopeNumber, variableName, newValue, callFrameId });
-    const error = response.getError();
-    return error;
-  }
-  addBreakpointListener(breakpointId, listener, thisObject) {
-    this.#breakpointResolvedEventTarget.addEventListener(breakpointId, listener, thisObject);
-  }
-  removeBreakpointListener(breakpointId, listener, thisObject) {
-    this.#breakpointResolvedEventTarget.removeEventListener(breakpointId, listener, thisObject);
-  }
-  async setBlackboxPatterns(patterns, skipAnonymous) {
-    const response = await this.agent.invoke_setBlackboxPatterns({ patterns, skipAnonymous });
-    const error = response.getError();
-    return !error;
-  }
-  async setBlackboxExecutionContexts(uniqueIds) {
-    const response = await this.agent.invoke_setBlackboxExecutionContexts({ uniqueIds });
-    const error = response.getError();
-    return !error;
-  }
-  dispose() {
-    if (this.#debuggerId) {
-      debuggerIdToModel.delete(this.#debuggerId);
-    }
-    const settings = this.target().targetManager().settings;
-    settings.moduleSetting("pause-on-exception-enabled").removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("pause-on-caught-exception").removeChangeListener(this.pauseOnExceptionStateChanged, this);
-    settings.moduleSetting("disable-async-stack-traces").removeChangeListener(this.asyncStackTracesStateChanged, this);
-  }
-  async suspendModel() {
-    await this.disableDebugger();
-  }
-  async resumeModel() {
-    await this.enableDebugger();
-  }
-  static shouldResyncDebuggerId = false;
-  getEvaluateOnCallFrameCallback() {
-    return this.evaluateOnCallFrameCallback;
-  }
-  /**
-   * Iterates the async stack trace parents.
-   *
-   * Retrieving cross-target async stack fragments requires CDP interaction, so this is an async generator.
-   *
-   * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
-   */
-  async *iterateAsyncParents(stackTraceOrPausedDetails) {
-    const isPausedDetails = (details) => !("parent" in details) && !("parentId" in details);
-    let stackTrace = isPausedDetails(stackTraceOrPausedDetails) ? {
-      callFrames: [],
-      parent: stackTraceOrPausedDetails.asyncStackTrace,
-      parentId: stackTraceOrPausedDetails.asyncStackTraceId
-    } : stackTraceOrPausedDetails;
-    let target = this.target();
-    while (true) {
-      if (stackTrace.parent) {
-        stackTrace = stackTrace.parent;
-      } else if (stackTrace.parentId) {
-        const model = stackTrace.parentId.debuggerId ? await _DebuggerModel.modelForDebuggerId(stackTrace.parentId.debuggerId) : this;
-        if (!model) {
-          return;
-        }
-        const maybeStackTrace = await model.fetchAsyncStackTrace(stackTrace.parentId);
-        if (!maybeStackTrace) {
-          return;
-        }
-        stackTrace = maybeStackTrace;
-        target = model.target();
-      } else {
-        return;
-      }
-      yield { stackTrace, target };
-    }
-  }
-};
-var debuggerIdToModel = /* @__PURE__ */ new Map();
-var PauseOnExceptionsState;
-(function(PauseOnExceptionsState2) {
-  PauseOnExceptionsState2["DontPauseOnExceptions"] = "none";
-  PauseOnExceptionsState2["PauseOnAllExceptions"] = "all";
-  PauseOnExceptionsState2["PauseOnCaughtExceptions"] = "caught";
-  PauseOnExceptionsState2["PauseOnUncaughtExceptions"] = "uncaught";
-})(PauseOnExceptionsState || (PauseOnExceptionsState = {}));
-var Events5;
-(function(Events12) {
-  Events12["DebuggerWasEnabled"] = "DebuggerWasEnabled";
-  Events12["DebuggerWasDisabled"] = "DebuggerWasDisabled";
-  Events12["DebuggerPaused"] = "DebuggerPaused";
-  Events12["DebuggerResumed"] = "DebuggerResumed";
-  Events12["DebugInfoAttached"] = "DebugInfoAttached";
-  Events12["ParsedScriptSource"] = "ParsedScriptSource";
-  Events12["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
-  Events12["GlobalObjectCleared"] = "GlobalObjectCleared";
-  Events12["CallFrameSelected"] = "CallFrameSelected";
-  Events12["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
-  Events12["ScriptSourceWasEdited"] = "ScriptSourceWasEdited";
-})(Events5 || (Events5 = {}));
-var DebuggerDispatcher = class {
-  #debuggerModel;
-  constructor(debuggerModel) {
-    this.#debuggerModel = debuggerModel;
-  }
-  paused({ callFrames, reason, data, hitBreakpoints, asyncStackTrace, asyncStackTraceId }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    void this.#debuggerModel.pausedScript(callFrames, reason, data, hitBreakpoints || [], asyncStackTrace, asyncStackTraceId);
-  }
-  resumed() {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.resumedScript();
-  }
-  scriptParsed({ scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, length, isModule, stackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.parsedScriptSource(scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null, buildId || null);
-  }
-  scriptFailedToParse({ scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURL, length, isModule, stackTrace, codeOffset, scriptLanguage, embedderName, buildId }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.parsedScriptSource(scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, false, sourceMapURL, Boolean(hasSourceURL), true, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, null, embedderName || null, buildId || null);
-  }
-  breakpointResolved({ breakpointId, location }) {
-    if (!this.#debuggerModel.debuggerEnabled()) {
-      return;
-    }
-    this.#debuggerModel.breakpointResolved(breakpointId, location);
-  }
-};
-var Location = class _Location {
-  debuggerModel;
-  scriptId;
-  lineNumber;
-  columnNumber;
-  inlineFrameIndex;
-  constructor(debuggerModel, scriptId, lineNumber, columnNumber, inlineFrameIndex) {
-    this.debuggerModel = debuggerModel;
-    this.scriptId = scriptId;
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber || 0;
-    this.inlineFrameIndex = inlineFrameIndex || 0;
-  }
-  static fromPayload(debuggerModel, payload, inlineFrameIndex) {
-    return new _Location(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, inlineFrameIndex);
-  }
-  payload() {
-    return { scriptId: this.scriptId, lineNumber: this.lineNumber, columnNumber: this.columnNumber };
-  }
-  script() {
-    return this.debuggerModel.scriptForId(this.scriptId);
-  }
-  continueToLocation(pausedCallback) {
-    if (pausedCallback) {
-      this.debuggerModel.continueToLocationCallback = this.paused.bind(this, pausedCallback);
-    }
-    void this.debuggerModel.agent.invoke_continueToLocation({
-      location: this.payload(),
-      targetCallFrames: "current"
-    });
-  }
-  paused(pausedCallback, debuggerPausedDetails) {
-    const location = debuggerPausedDetails.callFrames[0].location();
-    if (location.scriptId === this.scriptId && location.lineNumber === this.lineNumber && location.columnNumber === this.columnNumber) {
-      pausedCallback();
-      return true;
-    }
-    return false;
-  }
-  id() {
-    return this.debuggerModel.target().id() + ":" + this.scriptId + ":" + this.lineNumber + ":" + this.columnNumber;
-  }
-};
-var BreakLocation = class _BreakLocation extends Location {
-  type;
-  constructor(debuggerModel, scriptId, lineNumber, columnNumber, type) {
-    super(debuggerModel, scriptId, lineNumber, columnNumber);
-    if (type) {
-      this.type = type;
-    }
-  }
-  static fromPayload(debuggerModel, payload) {
-    return new _BreakLocation(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, payload.type);
-  }
-};
-var CallFrame = class _CallFrame {
-  debuggerModel;
-  script;
-  payload;
-  #location;
-  #scopeChain;
-  #localScope;
-  inlineFrameIndex;
-  functionName;
-  #functionLocation;
-  #returnValue;
-  exception;
-  canBeRestarted;
-  constructor(debuggerModel, script, payload, inlineFrameIndex, functionName, exception = null) {
-    this.debuggerModel = debuggerModel;
-    this.script = script;
-    this.payload = payload;
-    this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
-    this.#scopeChain = [];
-    this.#localScope = null;
-    this.inlineFrameIndex = inlineFrameIndex || 0;
-    this.functionName = functionName ?? payload.functionName;
-    this.canBeRestarted = Boolean(payload.canBeRestarted);
-    this.exception = exception;
-    for (let i = 0; i < payload.scopeChain.length; ++i) {
-      const scope = new Scope(this, i);
-      this.#scopeChain.push(scope);
-      if (scope.type() === "local") {
-        this.#localScope = scope;
-      }
-    }
-    if (payload.functionLocation) {
-      this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
-    }
-    this.#returnValue = payload.returnValue ? this.debuggerModel.runtimeModel().createRemoteObject(payload.returnValue) : null;
-  }
-  static fromPayloadArray(debuggerModel, callFrames, exception) {
-    const result = [];
-    for (let i = 0; i < callFrames.length; ++i) {
-      const callFrame = callFrames[i];
-      const script = debuggerModel.scriptForId(callFrame.location.scriptId);
-      if (script) {
-        const ex = i === 0 ? exception : null;
-        result.push(new _CallFrame(debuggerModel, script, callFrame, void 0, void 0, ex));
-      }
-    }
-    return result;
-  }
-  createVirtualCallFrame(inlineFrameIndex, name) {
-    return new _CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
-  }
-  get id() {
-    return this.payload.callFrameId;
-  }
-  scopeChain() {
-    return this.#scopeChain;
-  }
-  localScope() {
-    return this.#localScope;
-  }
-  thisObject() {
-    return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;
-  }
-  returnValue() {
-    return this.#returnValue;
-  }
-  async setReturnValue(expression) {
-    if (!this.#returnValue) {
-      return null;
-    }
-    const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({ callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" });
-    if (evaluateResponse.getError() || evaluateResponse.exceptionDetails) {
-      return null;
-    }
-    const response = await this.debuggerModel.agent.invoke_setReturnValue({ newValue: evaluateResponse.result });
-    if (response.getError()) {
-      return null;
-    }
-    this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
-    return this.#returnValue;
-  }
-  location() {
-    return this.#location;
-  }
-  functionLocation() {
-    return this.#functionLocation || null;
-  }
-  async evaluate(options) {
-    const debuggerModel = this.debuggerModel;
-    const runtimeModel = debuggerModel.runtimeModel();
-    const evaluateOnCallFrameCallback = debuggerModel.getEvaluateOnCallFrameCallback();
-    if (evaluateOnCallFrameCallback) {
-      const result = await evaluateOnCallFrameCallback(this, options);
-      if (result) {
-        return result;
-      }
-    }
-    const response = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({
-      callFrameId: this.id,
-      expression: options.expression,
-      objectGroup: options.objectGroup,
-      includeCommandLineAPI: options.includeCommandLineAPI,
-      silent: options.silent,
-      returnByValue: options.returnByValue,
-      generatePreview: options.generatePreview,
-      throwOnSideEffect: options.throwOnSideEffect,
-      timeout: options.timeout
-    });
-    const error = response.getError();
-    if (error) {
-      return { error };
-    }
-    return { object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
-  }
-  async restart() {
-    console.assert(this.canBeRestarted, "This frame can not be restarted.");
-    await this.debuggerModel.agent.invoke_restartFrame({
-      callFrameId: this.id,
-      mode: "StepInto"
-      /* Protocol.Debugger.RestartFrameRequestMode.StepInto */
-    });
-  }
-  getPayload() {
-    return this.payload;
-  }
-};
-var Scope = class {
-  #callFrame;
-  #payload;
-  #type;
-  #name;
-  #ordinal;
-  #locationRange;
-  #object = null;
-  constructor(callFrame, ordinal) {
-    this.#callFrame = callFrame;
-    this.#payload = callFrame.getPayload().scopeChain[ordinal];
-    this.#type = this.#payload.type;
-    this.#name = this.#payload.name;
-    this.#ordinal = ordinal;
-    const start = this.#payload.startLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;
-    const end = this.#payload.endLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.endLocation) : null;
-    if (start && end && start.scriptId === end.scriptId) {
-      this.#locationRange = { start, end };
-    } else {
-      this.#locationRange = null;
-    }
-  }
-  callFrame() {
-    return this.#callFrame;
-  }
-  type() {
-    return this.#type;
-  }
-  typeName() {
-    switch (this.#type) {
-      case "local":
-        return i18nString5(UIStrings5.local);
-      case "closure":
-        return i18nString5(UIStrings5.closure);
-      case "catch":
-        return i18nString5(UIStrings5.catchBlock);
-      case "eval":
-        return i18n9.i18n.lockedString("Eval");
-      case "block":
-        return i18nString5(UIStrings5.block);
-      case "script":
-        return i18nString5(UIStrings5.script);
-      case "with":
-        return i18nString5(UIStrings5.withBlock);
-      case "global":
-        return i18nString5(UIStrings5.global);
-      case "module":
-        return i18nString5(UIStrings5.module);
-      case "wasm-expression-stack":
-        return i18nString5(UIStrings5.expression);
-    }
-    return "";
-  }
-  name() {
-    return this.#name;
-  }
-  range() {
-    return this.#locationRange;
-  }
-  object() {
-    if (this.#object) {
-      return this.#object;
-    }
-    const runtimeModel = this.#callFrame.debuggerModel.runtimeModel();
-    const declarativeScope = this.#type !== "with" && this.#type !== "global";
-    if (declarativeScope) {
-      this.#object = runtimeModel.createScopeRemoteObject(this.#payload.object, new ScopeRef(this.#ordinal, this.#callFrame.id));
-    } else {
-      this.#object = runtimeModel.createRemoteObject(this.#payload.object);
-    }
-    return this.#object;
-  }
-  description() {
-    const declarativeScope = this.#type !== "with" && this.#type !== "global";
-    return declarativeScope ? "" : this.#payload.object.description || "";
-  }
-  icon() {
-    return void 0;
-  }
-  extraProperties() {
-    if (this.#ordinal !== 0 || this.#type !== "local" || this.#callFrame.script.isWasm()) {
-      return [];
-    }
-    const extraProperties = [];
-    const exception = this.#callFrame.exception;
-    if (exception) {
-      extraProperties.push(new RemoteObjectProperty(
-        i18nString5(UIStrings5.exception),
-        exception,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        /* synthetic */
-        true
-      ));
-    }
-    const returnValue = this.#callFrame.returnValue();
-    if (returnValue) {
-      extraProperties.push(new RemoteObjectProperty(
-        i18nString5(UIStrings5.returnValue),
-        returnValue,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        void 0,
-        /* synthetic */
-        true,
-        this.#callFrame.setReturnValue.bind(this.#callFrame)
-      ));
-    }
-    return extraProperties;
-  }
-};
-var DebuggerPausedDetails = class {
-  debuggerModel;
-  callFrames;
-  reason;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  auxData;
-  breakpointIds;
-  asyncStackTrace;
-  asyncStackTraceId;
-  constructor(debuggerModel, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
-    this.debuggerModel = debuggerModel;
-    this.reason = reason;
-    this.auxData = auxData;
-    this.breakpointIds = breakpointIds;
-    if (asyncStackTrace) {
-      this.asyncStackTrace = this.cleanRedundantFrames(asyncStackTrace);
-    }
-    this.asyncStackTraceId = asyncStackTraceId;
-    this.callFrames = CallFrame.fromPayloadArray(debuggerModel, callFrames, this.exception());
-  }
-  exception() {
-    if (this.reason !== "exception" && this.reason !== "promiseRejection") {
-      return null;
-    }
-    return this.debuggerModel.runtimeModel().createRemoteObject(this.auxData);
-  }
-  cleanRedundantFrames(asyncStackTrace) {
-    let stack = asyncStackTrace;
-    let previous = null;
-    while (stack) {
-      if (previous && !stack.callFrames.length) {
-        previous.parent = stack.parent;
-      } else {
-        previous = stack;
-      }
-      stack = stack.parent;
-    }
-    return asyncStackTrace;
-  }
-};
-SDKModel.register(DebuggerModel, { capabilities: 4, autostart: true });
-var LOGPOINT_SOURCE_URL = "debugger://logpoint";
-var COND_BREAKPOINT_SOURCE_URL = "debugger://breakpoint";
 
 // gen/front_end/core/sdk/OverlayPersistentHighlighter.js
 var OverlayPersistentHighlighter_exports = {};
 __export(OverlayPersistentHighlighter_exports, {
   OverlayPersistentHighlighter: () => OverlayPersistentHighlighter
 });
-import * as Common16 from "./../common/common.js";
+import * as Common15 from "./../common/common.js";
 import * as Platform10 from "./../platform/platform.js";
 
 // gen/front_end/core/sdk/OverlayColorGenerator.js
@@ -23318,7 +21749,7 @@ var OverlayColorGenerator_exports = {};
 __export(OverlayColorGenerator_exports, {
   OverlayColorGenerator: () => OverlayColorGenerator
 });
-import * as Common15 from "./../common/common.js";
+import * as Common14 from "./../common/common.js";
 var OverlayColorGenerator = class {
   #colors;
   #index;
@@ -23326,23 +21757,23 @@ var OverlayColorGenerator = class {
     const format = "rgba";
     this.#colors = [
       // F59794
-      new Common15.Color.Legacy([0.9607843137254902, 0.592156862745098, 0.5803921568627451, 1], format),
+      new Common14.Color.Legacy([0.9607843137254902, 0.592156862745098, 0.5803921568627451, 1], format),
       // F0BF4C
-      new Common15.Color.Legacy([0.9411764705882353, 0.7490196078431373, 0.2980392156862745, 1], format),
+      new Common14.Color.Legacy([0.9411764705882353, 0.7490196078431373, 0.2980392156862745, 1], format),
       // D4ED31
-      new Common15.Color.Legacy([0.8313725490196079, 0.9294117647058824, 0.19215686274509805, 1], format),
+      new Common14.Color.Legacy([0.8313725490196079, 0.9294117647058824, 0.19215686274509805, 1], format),
       // 9EEB47
-      new Common15.Color.Legacy([0.6196078431372549, 0.9215686274509803, 0.2784313725490196, 1], format),
+      new Common14.Color.Legacy([0.6196078431372549, 0.9215686274509803, 0.2784313725490196, 1], format),
       // 5BD1D7
-      new Common15.Color.Legacy([0.3568627450980392, 0.8196078431372549, 0.8431372549019608, 1], format),
+      new Common14.Color.Legacy([0.3568627450980392, 0.8196078431372549, 0.8431372549019608, 1], format),
       // BCCEFB
-      new Common15.Color.Legacy([0.7372549019607844, 0.807843137254902, 0.984313725490196, 1], format),
+      new Common14.Color.Legacy([0.7372549019607844, 0.807843137254902, 0.984313725490196, 1], format),
       // C6BEEE
-      new Common15.Color.Legacy([0.7764705882352941, 0.7450980392156863, 0.9333333333333333, 1], format),
+      new Common14.Color.Legacy([0.7764705882352941, 0.7450980392156863, 0.9333333333333333, 1], format),
       // D094EA
-      new Common15.Color.Legacy([0.8156862745098039, 0.5803921568627451, 0.9176470588235294, 1], format),
+      new Common14.Color.Legacy([0.8156862745098039, 0.5803921568627451, 0.9176470588235294, 1], format),
       // EB94CF
-      new Common15.Color.Legacy([0.9215686274509803, 0.5803921568627451, 0.8117647058823529, 1], format)
+      new Common14.Color.Legacy([0.9215686274509803, 0.5803921568627451, 0.8117647058823529, 1], format)
     ];
     this.#index = 0;
   }
@@ -23450,12 +21881,12 @@ var OverlayPersistentHighlighter = class {
   buildScrollSnapContainerHighlightConfig(_nodeId) {
     return {
       snapAreaBorder: {
-        color: Common16.Color.PageHighlight.GridBorder.toProtocolRGBA(),
+        color: Common15.Color.PageHighlight.GridBorder.toProtocolRGBA(),
         pattern: "dashed"
       },
-      snapportBorder: { color: Common16.Color.PageHighlight.GridBorder.toProtocolRGBA() },
-      scrollMarginColor: Common16.Color.PageHighlight.Margin.toProtocolRGBA(),
-      scrollPaddingColor: Common16.Color.PageHighlight.Padding.toProtocolRGBA()
+      snapportBorder: { color: Common15.Color.PageHighlight.GridBorder.toProtocolRGBA() },
+      scrollMarginColor: Common15.Color.PageHighlight.Margin.toProtocolRGBA(),
+      scrollPaddingColor: Common15.Color.PageHighlight.Padding.toProtocolRGBA()
     };
   }
   highlightGridInOverlay(nodeId) {
@@ -23551,11 +21982,11 @@ var OverlayPersistentHighlighter = class {
   buildContainerQueryContainerHighlightConfig() {
     return {
       containerBorder: {
-        color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        color: Common15.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         pattern: "dashed"
       },
       descendantBorder: {
-        color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        color: Common15.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         pattern: "dashed"
       }
     };
@@ -23577,9 +22008,9 @@ var OverlayPersistentHighlighter = class {
   }
   buildIsolationModeHighlightConfig() {
     return {
-      resizerColor: Common16.Color.IsolationModeHighlight.Resizer.toProtocolRGBA(),
-      resizerHandleColor: Common16.Color.IsolationModeHighlight.ResizerHandle.toProtocolRGBA(),
-      maskColor: Common16.Color.IsolationModeHighlight.Mask.toProtocolRGBA()
+      resizerColor: Common15.Color.IsolationModeHighlight.Resizer.toProtocolRGBA(),
+      resizerHandleColor: Common15.Color.IsolationModeHighlight.ResizerHandle.toProtocolRGBA(),
+      maskColor: Common15.Color.IsolationModeHighlight.Mask.toProtocolRGBA()
     };
   }
   hideAllInOverlayWithoutSave() {
@@ -23769,14 +22200,14 @@ var OverlayPersistentHighlighter = class {
 };
 
 // gen/front_end/core/sdk/OverlayModel.js
-var UIStrings6 = {
+var UIStrings4 = {
   /**
    * @description Overlay message indicating that execution is paused in the debugger.
    */
   pausedInDebugger: "Paused in debugger"
 };
-var str_6 = i18n11.i18n.registerUIStrings("core/sdk/OverlayModel.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_4 = i18n7.i18n.registerUIStrings("core/sdk/OverlayModel.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var platformOverlayDimensions = {
   mac: { x: 85, y: 0, width: 185, height: 40 },
   linux: { x: 0, y: 0, width: 196, height: 34 },
@@ -23787,7 +22218,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   overlayAgent;
   #debuggerModel;
   #inspectModeEnabled = false;
-  #hideHighlightTimeout = null;
+  #hideHighlightTimeout;
   #defaultHighlighter;
   #highlighter;
   #showPaintRectsSetting;
@@ -23811,9 +22242,9 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
       settings.moduleSetting("disable-paused-state-overlay").addChangeListener(this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(Events5.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(Events5.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(Events5.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
+      this.#debuggerModel.addEventListener(Events4.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
+      this.#debuggerModel.addEventListener(Events4.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
+      this.#debuggerModel.addEventListener(Events4.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
     }
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
@@ -23845,13 +22276,13 @@ var OverlayModel = class _OverlayModel extends SDKModel {
         this.dispatchEventToListeners("PersistentScrollSnapOverlayStateChanged", { nodeId, enabled });
       }
     });
-    this.#domModel.addEventListener(Events6.NodeRemoved, () => {
+    this.#domModel.addEventListener(Events5.NodeRemoved, () => {
       if (!this.#persistentHighlighter) {
         return;
       }
       this.#persistentHighlighter.refreshHighlights();
     });
-    this.#domModel.addEventListener(Events6.DocumentUpdated, () => {
+    this.#domModel.addEventListener(Events5.DocumentUpdated, () => {
       if (!this.#persistentHighlighter) {
         return;
       }
@@ -23935,7 +22366,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#persistentHighlighter?.resetOverlay();
   }
   async suspendModel() {
-    Common17.EventTarget.removeEventListeners(this.#registeredListeners);
+    Common16.EventTarget.removeEventListeners(this.#registeredListeners);
     await this.overlayAgent.invoke_disable();
   }
   async resumeModel() {
@@ -23956,7 +22387,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       return;
     }
     const settings = this.target().targetManager().settings;
-    const message = this.#debuggerModel && this.#debuggerModel.isPaused() && !settings.moduleSetting("disable-paused-state-overlay").get() ? i18nString6(UIStrings6.pausedInDebugger) : void 0;
+    const message = this.#debuggerModel && this.#debuggerModel.isPaused() && !settings.moduleSetting("disable-paused-state-overlay").get() ? i18nString4(UIStrings4.pausedInDebugger) : void 0;
     void this.overlayAgent.invoke_setPausedInDebuggerMessage({ message });
   }
   setHighlighter(highlighter) {
@@ -23975,10 +22406,8 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     if (this.#sourceOrderModeActive) {
       return;
     }
-    if (this.#hideHighlightTimeout) {
-      clearTimeout(this.#hideHighlightTimeout);
-      this.#hideHighlightTimeout = null;
-    }
+    clearTimeout(this.#hideHighlightTimeout);
+    this.#hideHighlightTimeout = void 0;
     const highlightConfig = this.buildHighlightConfig(mode);
     if (typeof showInfo !== "undefined") {
       highlightConfig.showInfo = showInfo;
@@ -24063,8 +22492,8 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   }
   highlightSourceOrderInOverlay(node) {
     const sourceOrderConfig = {
-      parentOutlineColor: Common17.Color.SourceOrderHighlight.ParentOutline.toProtocolRGBA(),
-      childOutlineColor: Common17.Color.SourceOrderHighlight.ChildOutline.toProtocolRGBA()
+      parentOutlineColor: Common16.Color.SourceOrderHighlight.ParentOutline.toProtocolRGBA(),
+      childOutlineColor: Common16.Color.SourceOrderHighlight.ChildOutline.toProtocolRGBA()
     };
     this.#sourceOrderHighlighter.highlightSourceOrderInOverlay(node, sourceOrderConfig);
   }
@@ -24081,7 +22510,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     if (!this.#persistentHighlighter) {
       return;
     }
-    const color = Common17.Color.parse(colorStr);
+    const color = Common16.Color.parse(colorStr);
     if (!color) {
       return;
     }
@@ -24101,7 +22530,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     if (!this.#persistentHighlighter) {
       return;
     }
-    const color = Common17.Color.parse(colorStr);
+    const color = Common16.Color.parse(colorStr);
     if (!color) {
       return;
     }
@@ -24115,15 +22544,13 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#sourceOrderModeActive = isActive;
   }
   delayedHideHighlight(delay) {
-    if (this.#hideHighlightTimeout === null) {
-      this.#hideHighlightTimeout = window.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
+    if (this.#hideHighlightTimeout === void 0) {
+      this.#hideHighlightTimeout = globalThis.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
     }
   }
   highlightFrame(frameId) {
-    if (this.#hideHighlightTimeout) {
-      clearTimeout(this.#hideHighlightTimeout);
-      this.#hideHighlightTimeout = null;
-    }
+    clearTimeout(this.#hideHighlightTimeout);
+    this.#hideHighlightTimeout = void 0;
     this.#highlighter.highlightFrame(frameId);
   }
   showHingeForDualScreen(hinge) {
@@ -24192,187 +22619,187 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       contrastAlgorithm: settings.moduleSetting("apca").get() ? "apca" : "aa"
     };
     if (mode === "all" || mode === "content") {
-      highlightConfig.contentColor = Common17.Color.PageHighlight.Content.toProtocolRGBA();
+      highlightConfig.contentColor = Common16.Color.PageHighlight.Content.toProtocolRGBA();
     }
     if (mode === "all" || mode === "padding") {
-      highlightConfig.paddingColor = Common17.Color.PageHighlight.Padding.toProtocolRGBA();
+      highlightConfig.paddingColor = Common16.Color.PageHighlight.Padding.toProtocolRGBA();
     }
     if (mode === "all" || mode === "border") {
-      highlightConfig.borderColor = Common17.Color.PageHighlight.Border.toProtocolRGBA();
+      highlightConfig.borderColor = Common16.Color.PageHighlight.Border.toProtocolRGBA();
     }
     if (mode === "all" || mode === "margin") {
-      highlightConfig.marginColor = Common17.Color.PageHighlight.Margin.toProtocolRGBA();
+      highlightConfig.marginColor = Common16.Color.PageHighlight.Margin.toProtocolRGBA();
     }
     if (mode === "all") {
-      highlightConfig.eventTargetColor = Common17.Color.PageHighlight.EventTarget.toProtocolRGBA();
-      highlightConfig.shapeColor = Common17.Color.PageHighlight.Shape.toProtocolRGBA();
-      highlightConfig.shapeMarginColor = Common17.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
+      highlightConfig.eventTargetColor = Common16.Color.PageHighlight.EventTarget.toProtocolRGBA();
+      highlightConfig.shapeColor = Common16.Color.PageHighlight.Shape.toProtocolRGBA();
+      highlightConfig.shapeMarginColor = Common16.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
       highlightConfig.gridHighlightConfig = {
-        rowGapColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA(),
-        rowHatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-        columnGapColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA(),
-        columnHatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-        rowLineColor: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-        columnLineColor: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        rowGapColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA(),
+        rowHatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+        columnGapColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA(),
+        columnHatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+        rowLineColor: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        columnLineColor: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         rowLineDash: true,
         columnLineDash: true
       };
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         },
         itemSeparator: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dotted"
         },
         lineSeparator: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         },
         mainDistributedSpace: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         },
         crossDistributedSpace: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         },
         rowGapSpace: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         },
         columnGapSpace: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         }
       };
       highlightConfig.flexItemHighlightConfig = {
         baseSizeBox: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA()
         },
         baseSizeBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dotted"
         },
         flexibilityArrow: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA()
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA()
         }
       };
     }
     if (mode.endsWith("gap")) {
       highlightConfig.gridHighlightConfig = {
-        gridBorderColor: Common17.Color.PageHighlight.GridBorder.toProtocolRGBA(),
+        gridBorderColor: Common16.Color.PageHighlight.GridBorder.toProtocolRGBA(),
         gridBorderDash: true
       };
       if (mode === "gap" || mode === "row-gap") {
-        highlightConfig.gridHighlightConfig.rowGapColor = Common17.Color.PageHighlight.GapBackground.toProtocolRGBA();
-        highlightConfig.gridHighlightConfig.rowHatchColor = Common17.Color.PageHighlight.GapHatch.toProtocolRGBA();
+        highlightConfig.gridHighlightConfig.rowGapColor = Common16.Color.PageHighlight.GapBackground.toProtocolRGBA();
+        highlightConfig.gridHighlightConfig.rowHatchColor = Common16.Color.PageHighlight.GapHatch.toProtocolRGBA();
       }
       if (mode === "gap" || mode === "column-gap") {
-        highlightConfig.gridHighlightConfig.columnGapColor = Common17.Color.PageHighlight.GapBackground.toProtocolRGBA();
-        highlightConfig.gridHighlightConfig.columnHatchColor = Common17.Color.PageHighlight.GapHatch.toProtocolRGBA();
+        highlightConfig.gridHighlightConfig.columnGapColor = Common16.Color.PageHighlight.GapBackground.toProtocolRGBA();
+        highlightConfig.gridHighlightConfig.columnHatchColor = Common16.Color.PageHighlight.GapHatch.toProtocolRGBA();
       }
     }
     if (mode.endsWith("gap")) {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         }
       };
       if (mode === "gap" || mode === "row-gap") {
         highlightConfig.flexContainerHighlightConfig.rowGapSpace = {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         };
       }
       if (mode === "gap" || mode === "column-gap") {
         highlightConfig.flexContainerHighlightConfig.columnGapSpace = {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         };
       }
     }
     if (mode === "grid-areas") {
       highlightConfig.gridHighlightConfig = {
-        rowLineColor: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-        columnLineColor: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        rowLineColor: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        columnLineColor: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         rowLineDash: true,
         columnLineDash: true,
         showAreaNames: true,
-        areaBorderColor: Common17.Color.PageHighlight.GridAreaBorder.toProtocolRGBA()
+        areaBorderColor: Common16.Color.PageHighlight.GridAreaBorder.toProtocolRGBA()
       };
     }
     if (mode === "grid-template-columns") {
-      highlightConfig.contentColor = Common17.Color.PageHighlight.Content.toProtocolRGBA();
+      highlightConfig.contentColor = Common16.Color.PageHighlight.Content.toProtocolRGBA();
       highlightConfig.gridHighlightConfig = {
-        columnLineColor: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        columnLineColor: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         columnLineDash: true
       };
     }
     if (mode === "grid-template-rows") {
-      highlightConfig.contentColor = Common17.Color.PageHighlight.Content.toProtocolRGBA();
+      highlightConfig.contentColor = Common16.Color.PageHighlight.Content.toProtocolRGBA();
       highlightConfig.gridHighlightConfig = {
-        rowLineColor: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+        rowLineColor: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
         rowLineDash: true
       };
     }
     if (mode === "justify-content") {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         },
         mainDistributedSpace: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         }
       };
     }
     if (mode === "align-content") {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         },
         crossDistributedSpace: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA(),
-          fillColor: Common17.Color.PageHighlight.GapBackground.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA(),
+          fillColor: Common16.Color.PageHighlight.GapBackground.toProtocolRGBA()
         }
       };
     }
     if (mode === "align-items") {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         },
         lineSeparator: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         },
-        crossAlignment: { color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA() }
+        crossAlignment: { color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA() }
       };
     }
     if (mode === "flexibility") {
       highlightConfig.flexItemHighlightConfig = {
         baseSizeBox: {
-          hatchColor: Common17.Color.PageHighlight.GapHatch.toProtocolRGBA()
+          hatchColor: Common16.Color.PageHighlight.GapHatch.toProtocolRGBA()
         },
         baseSizeBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dotted"
         },
         flexibilityArrow: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA()
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA()
         }
       };
     }
     if (mode === "container-outline") {
       highlightConfig.containerQueryContainerHighlightConfig = {
         containerBorder: {
-          color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
+          color: Common16.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
           pattern: "dashed"
         }
       };
@@ -24397,7 +22824,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
         }
       });
     } else {
-      void Common17.Revealer.reveal(deferredNode);
+      void Common16.Revealer.reveal(deferredNode);
     }
     this.dispatchEventToListeners(
       "InspectModeExited"
@@ -24497,7 +22924,7 @@ var WindowControls = class _WindowControls {
     return _WindowControls.#transformStyleSheet(overlayDimensions.x, overlayDimensions.y, overlayDimensions.width, overlayDimensions.height, originalStyleSheet);
   }
   #fetchCssSourceUrl(url) {
-    const parentURL = Common17.ParsedURL.ParsedURL.extractOrigin(url);
+    const parentURL = Common16.ParsedURL.ParsedURL.extractOrigin(url);
     const cssHeaders = this.#cssModel.styleSheetHeaders();
     const header = cssHeaders.find((header2) => header2.sourceURL && header2.sourceURL.includes(parentURL));
     return header?.sourceURL;
@@ -24542,8 +22969,8 @@ var DefaultHighlighter = class {
   highlightFrame(frameId) {
     void this.#model.target().overlayAgent().invoke_highlightFrame({
       frameId,
-      contentColor: Common17.Color.PageHighlight.Content.toProtocolRGBA(),
-      contentOutlineColor: Common17.Color.PageHighlight.ContentOutline.toProtocolRGBA()
+      contentColor: Common16.Color.PageHighlight.Content.toProtocolRGBA(),
+      contentOutlineColor: Common16.Color.PageHighlight.ContentOutline.toProtocolRGBA()
     });
   }
 };
@@ -24632,7 +23059,7 @@ var DOMNodeEvents;
   DOMNodeEvents2["SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "ScrollSnapOverlayStateChanged";
   DOMNodeEvents2["CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "ContainerQueryOverlayStateChanged";
 })(DOMNodeEvents || (DOMNodeEvents = {}));
-var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
+var DOMNode = class _DOMNode extends Common17.ObjectWrapper.ObjectWrapper {
   #domModel;
   #frameManager;
   #agent;
@@ -25300,7 +23727,7 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
     node.parentNode = null;
     this.#subtreeMarkerCount -= node.#subtreeMarkerCount;
     if (node.#subtreeMarkerCount) {
-      this.#domModel.dispatchEventToListeners(Events6.MarkersChanged, this);
+      this.#domModel.dispatchEventToListeners(Events5.MarkersChanged, this);
     }
     this.renumber();
   }
@@ -25337,7 +23764,7 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
   }
   setAdoptedStyleSheets(ids) {
     this.#adoptedStyleSheets = this.toAdoptedStyleSheets(ids);
-    this.#domModel.dispatchEventToListeners(Events6.AdoptedStyleSheetsModified, this);
+    this.#domModel.dispatchEventToListeners(Events5.AdoptedStyleSheetsModified, this);
   }
   get adoptedStyleSheetsForNode() {
     return this.#adoptedStyleSheets;
@@ -25445,7 +23872,7 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
         --node.#subtreeMarkerCount;
       }
       for (let node = this; node; node = node.parentNode) {
-        this.#domModel.dispatchEventToListeners(Events6.MarkersChanged, node);
+        this.#domModel.dispatchEventToListeners(Events5.MarkersChanged, node);
       }
       return;
     }
@@ -25456,7 +23883,7 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
     }
     this.#markers.set(name, value);
     for (let node = this; node; node = node.parentNode) {
-      this.#domModel.dispatchEventToListeners(Events6.MarkersChanged, node);
+      this.#domModel.dispatchEventToListeners(Events5.MarkersChanged, node);
     }
   }
   marker(name) {
@@ -25488,7 +23915,7 @@ var DOMNode = class _DOMNode extends Common18.ObjectWrapper.ObjectWrapper {
     }
     for (let frameOwnerCandidate = this; frameOwnerCandidate; frameOwnerCandidate = frameOwnerCandidate.parentNode) {
       if (frameOwnerCandidate instanceof DOMDocument && frameOwnerCandidate.baseURL) {
-        return Common18.ParsedURL.ParsedURL.completeURL(frameOwnerCandidate.baseURL, url);
+        return Common17.ParsedURL.ParsedURL.completeURL(frameOwnerCandidate.baseURL, url);
       }
     }
     return null;
@@ -25807,7 +24234,7 @@ var DOMModel = class _DOMModel extends SDKModel {
   #frameOwnerNode;
   #loadNodeAttributesTimeout;
   #searchId;
-  #topLayerThrottler = new Common18.Throttler.Throttler(100);
+  #topLayerThrottler = new Common17.Throttler.Throttler(100);
   #topLayerNodes = [];
   #resourceTreeModel = null;
   constructor(target) {
@@ -25836,16 +24263,16 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
   }
   scheduleMutationEvent(node) {
-    if (!this.hasEventListeners(Events6.DOMMutated)) {
+    if (!this.hasEventListeners(Events5.DOMMutated)) {
       return;
     }
     this.#lastMutationId = (this.#lastMutationId || 0) + 1;
     void Promise.resolve().then(callObserve.bind(this, node, this.#lastMutationId));
     function callObserve(node2, mutationId) {
-      if (!this.hasEventListeners(Events6.DOMMutated) || this.#lastMutationId !== mutationId) {
+      if (!this.hasEventListeners(Events5.DOMMutated) || this.#lastMutationId !== mutationId) {
         return;
       }
-      this.dispatchEventToListeners(Events6.DOMMutated, node2);
+      this.dispatchEventToListeners(Events5.DOMMutated, node2);
     }
   }
   onDocumentOpened(event) {
@@ -25856,7 +24283,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       if (contentDocument && contentDocument.documentURL !== frame.url) {
         contentDocument.documentURL = frame.url;
         contentDocument.baseURL = frame.url;
-        this.dispatchEventToListeners(Events6.DocumentURLChanged, contentDocument);
+        this.dispatchEventToListeners(Events5.DocumentURLChanged, contentDocument);
       }
     }
   }
@@ -25907,9 +24334,9 @@ var DOMModel = class _DOMModel extends SDKModel {
       this.#frameOwnerNode.setChildren([]);
       if (this.#document) {
         this.#document.parentNode = this.#frameOwnerNode;
-        this.dispatchEventToListeners(Events6.NodeInserted, this.#document);
+        this.dispatchEventToListeners(Events5.NodeInserted, this.#document);
       } else if (oldDocument) {
-        this.dispatchEventToListeners(Events6.NodeRemoved, { node: oldDocument, parent: this.#frameOwnerNode });
+        this.dispatchEventToListeners(Events5.NodeRemoved, { node: oldDocument, parent: this.#frameOwnerNode });
       }
     }
     return this.#document;
@@ -25946,7 +24373,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setAttributeInternal(name, value);
-    this.dispatchEventToListeners(Events6.AttrModified, { node, name });
+    this.dispatchEventToListeners(Events5.AttrModified, { node, name });
     this.scheduleMutationEvent(node);
   }
   attributeRemoved(nodeId, name) {
@@ -25955,7 +24382,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.removeAttributeInternal(name);
-    this.dispatchEventToListeners(Events6.AttrRemoved, { node, name });
+    this.dispatchEventToListeners(Events5.AttrRemoved, { node, name });
     this.scheduleMutationEvent(node);
   }
   inlineStyleInvalidated(nodeIds) {
@@ -25976,7 +24403,7 @@ var DOMModel = class _DOMModel extends SDKModel {
           return;
         }
         if (node.setAttributesPayload(attributes)) {
-          this.dispatchEventToListeners(Events6.AttrModified, { node, name: "style" });
+          this.dispatchEventToListeners(Events5.AttrModified, { node, name: "style" });
           this.scheduleMutationEvent(node);
         }
       });
@@ -25990,7 +24417,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setNodeValueInternal(newValue);
-    this.dispatchEventToListeners(Events6.CharacterDataModified, node);
+    this.dispatchEventToListeners(Events5.CharacterDataModified, node);
     this.scheduleMutationEvent(node);
   }
   nodeForId(nodeId) {
@@ -26013,7 +24440,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     this.#undoStack().dispose(this);
     if (!this.parentModel()) {
-      this.dispatchEventToListeners(Events6.DocumentUpdated, this);
+      this.dispatchEventToListeners(Events5.DocumentUpdated, this);
     }
   }
   setDocumentForTest(document2) {
@@ -26041,7 +24468,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setChildNodeCount(newValue);
-    this.dispatchEventToListeners(Events6.ChildNodeCountUpdated, node);
+    this.dispatchEventToListeners(Events5.ChildNodeCountUpdated, node);
     this.scheduleMutationEvent(node);
   }
   childNodeInserted(parentId, prevId, payload) {
@@ -26053,7 +24480,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     const node = parent.insertChild(prev, payload);
     this.idToDOMNode.set(node.id, node);
-    this.dispatchEventToListeners(Events6.NodeInserted, node);
+    this.dispatchEventToListeners(Events5.NodeInserted, node);
     this.scheduleMutationEvent(node);
   }
   childNodeRemoved(parentId, nodeId) {
@@ -26065,7 +24492,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     parent.removeChild(node);
     this.unbind(node);
-    this.dispatchEventToListeners(Events6.NodeRemoved, { node, parent });
+    this.dispatchEventToListeners(Events5.NodeRemoved, { node, parent });
     this.scheduleMutationEvent(node);
   }
   shadowRootPushed(hostId, root) {
@@ -26077,7 +24504,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     node.parentNode = host;
     this.idToDOMNode.set(node.id, node);
     host.shadowRootsInternal.unshift(node);
-    this.dispatchEventToListeners(Events6.NodeInserted, node);
+    this.dispatchEventToListeners(Events5.NodeInserted, node);
     this.scheduleMutationEvent(node);
   }
   shadowRootPopped(hostId, rootId) {
@@ -26091,7 +24518,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     host.removeChild(root);
     this.unbind(root);
-    this.dispatchEventToListeners(Events6.NodeRemoved, { node: root, parent: host });
+    this.dispatchEventToListeners(Events5.NodeRemoved, { node: root, parent: host });
     this.scheduleMutationEvent(root);
   }
   pseudoElementAdded(parentId, pseudoElement) {
@@ -26115,7 +24542,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     } else {
       parent.pseudoElements().set(pseudoType, [node]);
     }
-    this.dispatchEventToListeners(Events6.NodeInserted, node);
+    this.dispatchEventToListeners(Events5.NodeInserted, node);
     this.scheduleMutationEvent(node);
   }
   adoptedStyleSheetsModified(parentId, styleSheets) {
@@ -26145,7 +24572,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setAffectedByStartingStyles(affectedByStartingStyles);
-    this.dispatchEventToListeners(Events6.AffectedByStartingStylesFlagUpdated, { node });
+    this.dispatchEventToListeners(Events5.AffectedByStartingStylesFlagUpdated, { node });
   }
   pseudoElementRemoved(parentId, pseudoElementId) {
     const parent = this.idToDOMNode.get(parentId);
@@ -26158,7 +24585,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     parent.removeChild(pseudoElement);
     this.unbind(pseudoElement);
-    this.dispatchEventToListeners(Events6.NodeRemoved, { node: pseudoElement, parent });
+    this.dispatchEventToListeners(Events5.NodeRemoved, { node: pseudoElement, parent });
     this.scheduleMutationEvent(pseudoElement);
   }
   distributedNodesUpdated(insertionPointId, distributedNodes) {
@@ -26167,7 +24594,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     insertionPoint.setDistributedNodePayloads(distributedNodes);
-    this.dispatchEventToListeners(Events6.DistributedNodesChanged, insertionPoint);
+    this.dispatchEventToListeners(Events5.DistributedNodesChanged, insertionPoint);
     this.scheduleMutationEvent(insertionPoint);
   }
   unbind(node) {
@@ -26282,13 +24709,13 @@ var DOMModel = class _DOMModel extends SDKModel {
           documentShortcuts.push(shortcut);
           previousDocs.delete(document2);
         }
-        this.dispatchEventToListeners(Events6.TopLayerElementsChanged, {
+        this.dispatchEventToListeners(Events5.TopLayerElementsChanged, {
           document: document2,
           documentShortcuts
         });
       }
       for (const document2 of previousDocs) {
-        this.dispatchEventToListeners(Events6.TopLayerElementsChanged, {
+        this.dispatchEventToListeners(Events5.TopLayerElementsChanged, {
           document: document2,
           documentShortcuts: []
         });
@@ -26354,7 +24781,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
   }
 };
-var Events6;
+var Events5;
 (function(Events12) {
   Events12["AttrModified"] = "AttrModified";
   Events12["AttrRemoved"] = "AttrRemoved";
@@ -26370,7 +24797,7 @@ var Events6;
   Events12["TopLayerElementsChanged"] = "TopLayerElementsChanged";
   Events12["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
   Events12["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
-})(Events6 || (Events6 = {}));
+})(Events5 || (Events5 = {}));
 var DOMDispatcher = class {
   #domModel;
   constructor(domModel) {
@@ -26445,10 +24872,10 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
-    if (!Root5.DevToolsContext.globalInstance().has(_DOMModelUndoStack) || forceNew) {
-      Root5.DevToolsContext.globalInstance().set(_DOMModelUndoStack, new _DOMModelUndoStack());
+    if (!Root6.DevToolsContext.globalInstance().has(_DOMModelUndoStack) || forceNew) {
+      Root6.DevToolsContext.globalInstance().set(_DOMModelUndoStack, new _DOMModelUndoStack());
     }
-    return Root5.DevToolsContext.globalInstance().get(_DOMModelUndoStack);
+    return Root6.DevToolsContext.globalInstance().get(_DOMModelUndoStack);
   }
   async markUndoableState(model, minorChange) {
     if (this.#lastModelWithMinorChange && model !== this.#lastModelWithMinorChange) {
@@ -26565,9 +24992,9 @@ var Resource_exports = {};
 __export(Resource_exports, {
   Resource: () => Resource
 });
-import * as Common19 from "./../common/common.js";
+import * as Common18 from "./../common/common.js";
 import * as Platform12 from "./../platform/platform.js";
-import * as TextUtils19 from "./../text_utils/text_utils.js";
+import * as TextUtils17 from "./../text_utils/text_utils.js";
 var Resource = class {
   #resourceTreeModel;
   #request;
@@ -26594,7 +25021,7 @@ var Resource = class {
     this.#documentURL = documentURL;
     this.#frameId = frameId;
     this.#loaderId = loaderId;
-    this.#type = type || Common19.ResourceType.resourceTypes.Other;
+    this.#type = type || Common18.ResourceType.resourceTypes.Other;
     this.#mimeType = mimeType;
     this.#isGenerated = false;
     this.#lastModified = lastModified && Platform12.DateUtilities.isValid(lastModified) ? lastModified : null;
@@ -26623,7 +25050,7 @@ var Resource = class {
   }
   set url(x) {
     this.#url = x;
-    this.#parsedURL = new Common19.ParsedURL.ParsedURL(x);
+    this.#parsedURL = new Common18.ParsedURL.ParsedURL(x);
   }
   get parsedURL() {
     return this.#parsedURL;
@@ -26662,8 +25089,8 @@ var Resource = class {
     return this.#url;
   }
   contentType() {
-    if (this.resourceType() === Common19.ResourceType.resourceTypes.Document && this.mimeType.indexOf("javascript") !== -1) {
-      return Common19.ResourceType.resourceTypes.Script;
+    if (this.resourceType() === Common18.ResourceType.resourceTypes.Document && this.mimeType.indexOf("javascript") !== -1) {
+      return Common18.ResourceType.resourceTypes.Script;
     }
     return this.resourceType();
   }
@@ -26675,7 +25102,7 @@ var Resource = class {
       return await this.#pendingContentData;
     }
     this.#pendingContentData = this.innerRequestContent().then((contentData) => {
-      if (!TextUtils19.ContentData.ContentData.isError(contentData)) {
+      if (!TextUtils17.ContentData.ContentData.isError(contentData)) {
         this.#contentData = contentData;
       }
       this.#pendingContentData = null;
@@ -26694,11 +25121,11 @@ var Resource = class {
       return await this.request.searchInContent(query, caseSensitive, isRegex);
     }
     const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource({ frameId: this.frameId, url: this.url, query, caseSensitive, isRegex });
-    return TextUtils19.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
+    return TextUtils17.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
   async populateImageSource(image) {
     const contentData = await this.requestContentData();
-    if (TextUtils19.ContentData.ContentData.isError(contentData)) {
+    if (TextUtils17.ContentData.ContentData.isError(contentData)) {
       return;
     }
     const imageSrc = contentData.asImagePreviewUrl();
@@ -26713,7 +25140,7 @@ var Resource = class {
     if (error) {
       return { error };
     }
-    return new TextUtils19.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
+    return new TextUtils17.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
   }
   frame() {
     return this.#frameId ? this.#resourceTreeModel.frameForId(this.#frameId) : null;
@@ -26726,7 +25153,7 @@ var Resource = class {
 // gen/front_end/core/sdk/SecurityOriginManager.js
 var SecurityOriginManager_exports = {};
 __export(SecurityOriginManager_exports, {
-  Events: () => Events7,
+  Events: () => Events6,
   SecurityOriginManager: () => SecurityOriginManager
 });
 var SecurityOriginManager = class extends SDKModel {
@@ -26742,12 +25169,12 @@ var SecurityOriginManager = class extends SDKModel {
     this.#securityOrigins = securityOrigins;
     for (const origin of oldOrigins) {
       if (!this.#securityOrigins.has(origin)) {
-        this.dispatchEventToListeners(Events7.SecurityOriginRemoved, origin);
+        this.dispatchEventToListeners(Events6.SecurityOriginRemoved, origin);
       }
     }
     for (const origin of this.#securityOrigins) {
       if (!oldOrigins.has(origin)) {
-        this.dispatchEventToListeners(Events7.SecurityOriginAdded, origin);
+        this.dispatchEventToListeners(Events6.SecurityOriginAdded, origin);
       }
     }
   }
@@ -26763,18 +25190,18 @@ var SecurityOriginManager = class extends SDKModel {
   setMainSecurityOrigin(securityOrigin, unreachableSecurityOrigin) {
     this.#mainSecurityOrigin = securityOrigin;
     this.#unreachableMainSecurityOrigin = unreachableSecurityOrigin || null;
-    this.dispatchEventToListeners(Events7.MainSecurityOriginChanged, {
+    this.dispatchEventToListeners(Events6.MainSecurityOriginChanged, {
       mainSecurityOrigin: this.#mainSecurityOrigin,
       unreachableMainSecurityOrigin: this.#unreachableMainSecurityOrigin
     });
   }
 };
-var Events7;
+var Events6;
 (function(Events12) {
   Events12["SecurityOriginAdded"] = "SecurityOriginAdded";
   Events12["SecurityOriginRemoved"] = "SecurityOriginRemoved";
   Events12["MainSecurityOriginChanged"] = "MainSecurityOriginChanged";
-})(Events7 || (Events7 = {}));
+})(Events6 || (Events6 = {}));
 SDKModel.register(SecurityOriginManager, { capabilities: 0, autostart: false });
 
 // gen/front_end/core/sdk/StorageKeyManager.js
@@ -26783,7 +25210,7 @@ __export(StorageKeyManager_exports, {
   StorageKeyManager: () => StorageKeyManager,
   parseStorageKey: () => parseStorageKey
 });
-import * as Common20 from "./../common/common.js";
+import * as Common19 from "./../common/common.js";
 var StorageKeyManager = class extends SDKModel {
   #mainStorageKey;
   #storageKeys;
@@ -26821,7 +25248,7 @@ var StorageKeyManager = class extends SDKModel {
 };
 function parseStorageKey(storageKeyString) {
   const components = storageKeyString.split("^");
-  const origin = Common20.ParsedURL.ParsedURL.extractOrigin(components[0]);
+  const origin = Common19.ParsedURL.ParsedURL.extractOrigin(components[0]);
   const storageKey = {
     // For file:// URLs, extracting the origin collapses it to "file://".
     // Node.js uses the full file URL as the StorageKey, so keep the original URL here.
@@ -26854,8 +25281,8 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     this.#frameManager = target.targetManager().getFrameManager();
     const networkManager = target.model(NetworkManager);
     if (networkManager) {
-      networkManager.addEventListener(Events8.RequestFinished, this.onRequestFinished, this);
-      networkManager.addEventListener(Events8.RequestUpdateDropped, this.onRequestUpdateDropped, this);
+      networkManager.addEventListener(Events7.RequestFinished, this.onRequestFinished, this);
+      networkManager.addEventListener(Events7.RequestUpdateDropped, this.onRequestUpdateDropped, this);
     }
     this.agent = target.pageAgent();
     this.storageAgent = target.storageAgent();
@@ -27017,7 +25444,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     if (frame) {
       this.dispatchEventToListeners(Events.DocumentOpened, frame);
       if (!frame.getResourcesMap().get(framePayload.url)) {
-        const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common21.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+        const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common20.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
         frameResource.isGenerated = true;
         frame.addResource(frameResource);
       }
@@ -27070,7 +25497,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     if (frame.getResourcesMap().get(url)) {
       return;
     }
-    const resource = new Resource(this, null, url, frame.url, frameId, data.loaderId, Common21.ResourceType.resourceTypes[data.resourceType], data.mimeType, data.lastModified, null);
+    const resource = new Resource(this, null, url, frame.url, frameId, data.loaderId, Common20.ResourceType.resourceTypes[data.resourceType], data.mimeType, data.lastModified, null);
     frame.addResource(resource);
   }
   frameForId(frameId) {
@@ -27100,11 +25527,11 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     for (let i = 0; i < frameTreePayload.resources.length; ++i) {
       const subresource = frameTreePayload.resources[i];
-      const resource = this.createResourceFromFramePayload(framePayload, subresource.url, Common21.ResourceType.resourceTypes[subresource.type], subresource.mimeType, subresource.lastModified || null, subresource.contentSize || null);
+      const resource = this.createResourceFromFramePayload(framePayload, subresource.url, Common20.ResourceType.resourceTypes[subresource.type], subresource.mimeType, subresource.lastModified || null, subresource.contentSize || null);
       frame.addResource(resource);
     }
     if (!frame.getResourcesMap().get(framePayload.url)) {
-      const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common21.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+      const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common20.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
       frame.addResource(frameResource);
     }
   }
@@ -27221,7 +25648,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       if (frame.isMainFrame()) {
         mainSecurityOrigin = origin;
         if (frame.unreachableUrl()) {
-          const unreachableParsed = new Common21.ParsedURL.ParsedURL(frame.unreachableUrl());
+          const unreachableParsed = new Common20.ParsedURL.ParsedURL(frame.unreachableUrl());
           unreachableMainSecurityOrigin = unreachableParsed.securityOrigin();
         }
       }
@@ -27568,16 +25995,16 @@ var ResourceTreeFrame = class {
   }
   displayName() {
     if (this.isOutermostFrame()) {
-      return i18n13.i18n.lockedString("top");
+      return i18n9.i18n.lockedString("top");
     }
-    const subtitle = new Common21.ParsedURL.ParsedURL(this.#url).displayName;
+    const subtitle = new Common20.ParsedURL.ParsedURL(this.#url).displayName;
     if (subtitle) {
       if (!this.#name) {
         return subtitle;
       }
       return this.#name + " (" + subtitle + ")";
     }
-    return i18n13.i18n.lockedString("iframe");
+    return i18n9.i18n.lockedString("iframe");
   }
   async getOwnerDeferredDOMNode() {
     const parentFrame = this.parentFrame();
@@ -27731,615 +26158,2180 @@ var PageDispatcher = class {
 };
 SDKModel.register(ResourceTreeModel, { capabilities: 2, autostart: true, early: true });
 
-// gen/front_end/core/sdk/FrameManager.js
-var FrameManager = class _FrameManager extends Common22.ObjectWrapper.ObjectWrapper {
-  #eventListeners = /* @__PURE__ */ new WeakMap();
-  // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
-  // (OOPIFs are usually first attached to a new target and then detached from their old target,
-  // therefore being contained in 2 models for a short period of time.)
-  #frames = /* @__PURE__ */ new Map();
-  #framesForTarget = /* @__PURE__ */ new Map();
-  #outermostFrame = null;
-  #transferringFramesDataCache = /* @__PURE__ */ new Map();
-  #awaitedFrames = /* @__PURE__ */ new Map();
-  constructor(targetManager) {
-    super();
-    targetManager.observeModels(ResourceTreeModel, this);
+// gen/front_end/core/sdk/Script.js
+var Script_exports = {};
+__export(Script_exports, {
+  Script: () => Script,
+  disassembleWasm: () => disassembleWasm,
+  sourceURLRegex: () => sourceURLRegex
+});
+import * as Platform14 from "./../platform/platform.js";
+import * as Common21 from "./../common/common.js";
+import * as i18n11 from "./../i18n/i18n.js";
+import * as TextUtils19 from "./../text_utils/text_utils.js";
+var UIStrings5 = {
+  /**
+   * @description Error message for when a script can't be loaded because it was removed or deleted.
+   */
+  scriptRemovedOrDeleted: "Script removed or deleted.",
+  /**
+   * @description Error message when failing to load a script source text.
+   */
+  unableToFetchScriptSource: "Unable to fetch script source."
+};
+var str_5 = i18n11.i18n.registerUIStrings("core/sdk/Script.ts", UIStrings5);
+var i18nString5 = i18n11.i18n.getLocalizedString.bind(void 0, str_5);
+var scriptCacheInstance = null;
+var Script = class _Script {
+  debuggerModel;
+  scriptId;
+  /**
+   * The URL of the script. When `hasSourceURL` is true, this value comes from a `//# sourceURL=` directive. Otherwise,
+   * it's the original `src` URL from which the script was loaded.
+   */
+  sourceURL;
+  lineOffset;
+  columnOffset;
+  endLine;
+  endColumn;
+  executionContextId;
+  hash;
+  #isContentScript;
+  #isLiveEdit;
+  sourceMapURL;
+  debugSymbols;
+  hasSourceURL;
+  contentLength;
+  originStackTrace;
+  #codeOffset;
+  #language;
+  #contentPromise;
+  #embedderName;
+  isModule;
+  buildId;
+  constructor(debuggerModel, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
+    this.debuggerModel = debuggerModel;
+    this.scriptId = scriptId;
+    this.sourceURL = sourceURL;
+    this.lineOffset = startLine;
+    this.columnOffset = startColumn;
+    this.endLine = endLine;
+    this.endColumn = endColumn;
+    this.isModule = isModule;
+    this.buildId = buildId;
+    this.executionContextId = executionContextId;
+    this.hash = hash;
+    this.#isContentScript = isContentScript;
+    this.#isLiveEdit = isLiveEdit;
+    this.sourceMapURL = sourceMapURL;
+    this.debugSymbols = debugSymbols;
+    this.hasSourceURL = hasSourceURL;
+    this.contentLength = length;
+    this.originStackTrace = originStackTrace;
+    this.#codeOffset = codeOffset;
+    this.#language = scriptLanguage;
+    this.#contentPromise = null;
+    this.#embedderName = embedderName;
   }
-  static instance({ forceNew } = { forceNew: false }) {
-    if (!Root6.DevToolsContext.globalInstance().has(_FrameManager) || forceNew) {
-      Root6.DevToolsContext.globalInstance().set(_FrameManager, new _FrameManager(TargetManager.instance()));
-    }
-    return Root6.DevToolsContext.globalInstance().get(_FrameManager);
+  embedderName() {
+    return this.#embedderName;
   }
-  static removeInstance() {
-    Root6.DevToolsContext.globalInstance().delete(_FrameManager);
+  target() {
+    return this.debuggerModel.target();
   }
-  modelAdded(resourceTreeModel) {
-    const addListener = resourceTreeModel.addEventListener(Events.FrameAdded, this.frameAdded, this);
-    const detachListener = resourceTreeModel.addEventListener(Events.FrameDetached, this.frameDetached, this);
-    const navigatedListener = resourceTreeModel.addEventListener(Events.FrameNavigated, this.frameNavigated, this);
-    const resourceAddedListener = resourceTreeModel.addEventListener(Events.ResourceAdded, this.resourceAdded, this);
-    this.#eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
-    this.#framesForTarget.set(resourceTreeModel.target().id(), /* @__PURE__ */ new Set());
-  }
-  modelRemoved(resourceTreeModel) {
-    const listeners = this.#eventListeners.get(resourceTreeModel);
-    if (listeners) {
-      Common22.EventTarget.removeEventListeners(listeners);
-    }
-    const frameSet = this.#framesForTarget.get(resourceTreeModel.target().id());
-    if (frameSet) {
-      for (const frameId of frameSet) {
-        this.decreaseOrRemoveFrame(frameId);
+  static trimSourceURLComment(source) {
+    let sourceURLIndex = source.lastIndexOf("//# sourceURL=");
+    if (sourceURLIndex === -1) {
+      sourceURLIndex = source.lastIndexOf("//@ sourceURL=");
+      if (sourceURLIndex === -1) {
+        return source;
       }
     }
-    this.#framesForTarget.delete(resourceTreeModel.target().id());
+    const sourceURLLineIndex = source.lastIndexOf("\n", sourceURLIndex);
+    if (sourceURLLineIndex === -1) {
+      return source;
+    }
+    const sourceURLLine = source.substr(sourceURLLineIndex + 1);
+    if (!sourceURLLine.match(sourceURLRegex)) {
+      return source;
+    }
+    return source.substr(0, sourceURLLineIndex);
   }
-  frameAdded(event) {
-    const frame = event.data;
-    const frameData = this.#frames.get(frame.id);
-    if (frameData) {
-      frame.setCreationStackTrace(frameData.frame.getCreationStackTraceData());
-      this.#frames.set(frame.id, { frame, count: frameData.count + 1 });
-    } else {
-      const cachedFrameAttributes = this.#transferringFramesDataCache.get(frame.id);
-      if (cachedFrameAttributes?.creationStackTrace && cachedFrameAttributes?.creationStackTraceTarget) {
-        frame.setCreationStackTrace({
-          creationStackTrace: cachedFrameAttributes.creationStackTrace,
-          creationStackTraceTarget: cachedFrameAttributes.creationStackTraceTarget
-        });
+  isContentScript() {
+    return this.#isContentScript;
+  }
+  codeOffset() {
+    return this.#codeOffset;
+  }
+  isJavaScript() {
+    return this.#language === "JavaScript";
+  }
+  isWasm() {
+    return this.#language === "WebAssembly";
+  }
+  scriptLanguage() {
+    return this.#language;
+  }
+  executionContext() {
+    return this.debuggerModel.runtimeModel().executionContext(this.executionContextId);
+  }
+  isLiveEdit() {
+    return this.#isLiveEdit;
+  }
+  contentURL() {
+    return this.sourceURL;
+  }
+  contentType() {
+    return Common21.ResourceType.resourceTypes.Script;
+  }
+  async loadTextContent() {
+    const result = await this.debuggerModel.target().debuggerAgent().invoke_getScriptSource({ scriptId: this.scriptId });
+    if (result.getError()) {
+      throw new Error(result.getError());
+    }
+    const { scriptSource, bytecode } = result;
+    if (bytecode) {
+      return new TextUtils19.ContentData.ContentData(
+        bytecode,
+        /* isBase64 */
+        true,
+        "application/wasm"
+      );
+    }
+    let content = scriptSource || "";
+    if (this.hasSourceURL && Common21.ParsedURL.schemeIs(this.sourceURL, "snippet:")) {
+      content = _Script.trimSourceURLComment(content);
+    }
+    return new TextUtils19.ContentData.ContentData(
+      content,
+      /* isBase64 */
+      false,
+      "text/javascript"
+    );
+  }
+  async loadWasmContent() {
+    if (!this.isWasm()) {
+      throw new Error("Not a wasm script");
+    }
+    const result = await this.debuggerModel.target().debuggerAgent().invoke_disassembleWasmModule({ scriptId: this.scriptId });
+    if (result.getError()) {
+      const contentData = await this.loadTextContent();
+      return await disassembleWasm(contentData.base64);
+    }
+    const { streamId, functionBodyOffsets, chunk: { lines, bytecodeOffsets } } = result;
+    const lineChunks = [];
+    const bytecodeOffsetChunks = [];
+    let totalLength = lines.reduce((sum, line) => sum + line.length + 1, 0);
+    const truncationMessage = "<truncated>";
+    const cmSizeLimit = 1e9 - truncationMessage.length;
+    if (streamId) {
+      while (true) {
+        const result2 = await this.debuggerModel.target().debuggerAgent().invoke_nextWasmDisassemblyChunk({ streamId });
+        if (result2.getError()) {
+          throw new Error(result2.getError());
+        }
+        const { chunk: { lines: linesChunk, bytecodeOffsets: bytecodeOffsetsChunk } } = result2;
+        totalLength += linesChunk.reduce((sum, line) => sum + line.length + 1, 0);
+        if (linesChunk.length === 0) {
+          break;
+        }
+        if (totalLength >= cmSizeLimit) {
+          lineChunks.push([truncationMessage]);
+          bytecodeOffsetChunks.push([0]);
+          break;
+        }
+        lineChunks.push(linesChunk);
+        bytecodeOffsetChunks.push(bytecodeOffsetsChunk);
       }
-      this.#frames.set(frame.id, { frame, count: 1 });
-      this.#transferringFramesDataCache.delete(frame.id);
     }
-    this.resetOutermostFrame();
-    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
-    if (frameSet) {
-      frameSet.add(frame.id);
+    const functionBodyRanges = [];
+    for (let i = 0; i < functionBodyOffsets.length; i += 2) {
+      functionBodyRanges.push({ start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1] });
     }
-    this.dispatchEventToListeners("FrameAddedToTarget", { frame });
-    this.resolveAwaitedFrame(frame);
+    return new TextUtils19.WasmDisassembly.WasmDisassembly(lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
   }
-  frameDetached(event) {
-    const { frame, isSwap } = event.data;
-    this.decreaseOrRemoveFrame(frame.id);
-    if (isSwap && !this.#frames.get(frame.id)) {
-      const traceData = frame.getCreationStackTraceData();
-      const cachedFrameAttributes = {
-        ...traceData.creationStackTrace && { creationStackTrace: traceData.creationStackTrace },
-        ...traceData.creationStackTrace && { creationStackTraceTarget: traceData.creationStackTraceTarget }
-      };
-      this.#transferringFramesDataCache.set(frame.id, cachedFrameAttributes);
-    }
-    const frameSet = this.#framesForTarget.get(frame.resourceTreeModel().target().id());
-    if (frameSet) {
-      frameSet.delete(frame.id);
-    }
-  }
-  frameNavigated(event) {
-    const frame = event.data;
-    this.dispatchEventToListeners("FrameNavigated", { frame });
-    if (frame.isOutermostFrame()) {
-      this.dispatchEventToListeners("OutermostFrameNavigated", { frame });
-    }
-  }
-  resourceAdded(event) {
-    this.dispatchEventToListeners("ResourceAdded", { resource: event.data });
-  }
-  decreaseOrRemoveFrame(frameId) {
-    const frameData = this.#frames.get(frameId);
-    if (frameData) {
-      if (frameData.count === 1) {
-        this.#frames.delete(frameId);
-        this.resetOutermostFrame();
-        this.dispatchEventToListeners("FrameRemoved", { frameId });
+  requestContentData() {
+    if (!this.#contentPromise) {
+      const fileSizeToCache = 65535;
+      if (this.hash && !this.#isLiveEdit && this.contentLength > fileSizeToCache) {
+        if (!scriptCacheInstance) {
+          scriptCacheInstance = {
+            cache: /* @__PURE__ */ new Map(),
+            registry: new FinalizationRegistry((hashCode) => scriptCacheInstance?.cache.delete(hashCode))
+          };
+        }
+        const fullHash = [
+          this.#language,
+          this.contentLength,
+          this.lineOffset,
+          this.columnOffset,
+          this.endLine,
+          this.endColumn,
+          this.#codeOffset,
+          this.hash
+        ].join(":");
+        const cachedContentPromise = scriptCacheInstance.cache.get(fullHash)?.deref();
+        if (cachedContentPromise) {
+          this.#contentPromise = cachedContentPromise;
+        } else {
+          this.#contentPromise = this.#requestContent();
+          scriptCacheInstance.cache.set(fullHash, new WeakRef(this.#contentPromise));
+          scriptCacheInstance.registry.register(this.#contentPromise, fullHash);
+        }
       } else {
-        frameData.count--;
+        this.#contentPromise = this.#requestContent();
       }
     }
+    return this.#contentPromise;
   }
-  /**
-   * Looks for the outermost frame in `#frames` and sets `#outermostFrame` accordingly.
-   *
-   * Important: This method needs to be called everytime `#frames` is updated.
-   */
-  resetOutermostFrame() {
-    const outermostFrames = this.getAllFrames().filter((frame) => frame.isOutermostFrame());
-    this.#outermostFrame = outermostFrames.length > 0 ? outermostFrames[0] : null;
+  async #requestContent() {
+    if (!this.scriptId) {
+      return { error: i18nString5(UIStrings5.scriptRemovedOrDeleted) };
+    }
+    try {
+      return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
+    } catch {
+      return { error: i18nString5(UIStrings5.unableToFetchScriptSource) };
+    }
   }
-  /**
-   * Returns the ResourceTreeFrame with a given frameId.
-   * When a frame is being detached a new ResourceTreeFrame but with the same
-   * frameId is created. Consequently getFrame() will return a different
-   * ResourceTreeFrame after detachment. Callers of getFrame() should therefore
-   * immediately use the function return value and not store it for later use.
-   */
-  getFrame(frameId) {
-    const frameData = this.#frames.get(frameId);
-    if (frameData) {
-      return frameData.frame;
+  async getWasmBytecode() {
+    const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({ scriptId: this.scriptId });
+    const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
+    return await response.arrayBuffer();
+  }
+  originalContentProvider() {
+    return new TextUtils19.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => this.requestContentData());
+  }
+  async searchInContent(query, caseSensitive, isRegex) {
+    if (!this.scriptId) {
+      return [];
+    }
+    const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent({ scriptId: this.scriptId, query, caseSensitive, isRegex });
+    return TextUtils19.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
+  }
+  appendSourceURLCommentIfNeeded(source) {
+    if (!this.hasSourceURL) {
+      return source;
+    }
+    return source + "\n //# sourceURL=" + this.sourceURL;
+  }
+  async editSource(newSource) {
+    newSource = _Script.trimSourceURLComment(newSource);
+    newSource = this.appendSourceURLCommentIfNeeded(newSource);
+    const oldSource = TextUtils19.ContentData.ContentData.textOr(await this.requestContentData(), null);
+    if (oldSource === newSource) {
+      return {
+        changed: false,
+        status: "Ok"
+        /* Protocol.Debugger.SetScriptSourceResponseStatus.Ok */
+      };
+    }
+    const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource({ scriptId: this.scriptId, scriptSource: newSource, allowTopFrameEditing: true });
+    if (response.getError()) {
+      throw new Error(`Script#editSource failed for script with id ${this.scriptId}: ${response.getError()}`);
+    }
+    if (!response.getError() && response.status === "Ok") {
+      this.#contentPromise = Promise.resolve(new TextUtils19.ContentData.ContentData(
+        newSource,
+        /* isBase64 */
+        false,
+        "text/javascript"
+      ));
+    }
+    this.debuggerModel.dispatchEventToListeners(Events4.ScriptSourceWasEdited, { script: this, status: response.status });
+    return { changed: true, status: response.status, exceptionDetails: response.exceptionDetails };
+  }
+  rawLocation(lineNumber, columnNumber) {
+    if (this.containsLocation(lineNumber, columnNumber)) {
+      return new Location(this.debuggerModel, this.scriptId, lineNumber, columnNumber);
     }
     return null;
   }
-  getAllFrames() {
-    return Array.from(this.#frames.values(), (frameData) => frameData.frame);
+  isInlineScript() {
+    const startsAtZero = !this.lineOffset && !this.columnOffset;
+    return !this.isWasm() && Boolean(this.sourceURL) && !startsAtZero;
   }
-  getOutermostFrame() {
-    return this.#outermostFrame;
+  isAnonymousScript() {
+    return !this.sourceURL;
   }
-  async getOrWaitForFrame(frameId, notInTarget) {
-    const frame = this.getFrame(frameId);
-    if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
-      return frame;
+  async setBlackboxedRanges(positions) {
+    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges({ scriptId: this.scriptId, positions });
+    return !response.getError();
+  }
+  containsLocation(lineNumber, columnNumber) {
+    const afterStart = lineNumber === this.lineOffset && columnNumber >= this.columnOffset || lineNumber > this.lineOffset;
+    const beforeEnd = lineNumber < this.endLine || lineNumber === this.endLine && columnNumber <= this.endColumn;
+    return afterStart && beforeEnd;
+  }
+  get frameId() {
+    if (typeof this[frameIdSymbol] !== "string") {
+      this[frameIdSymbol] = frameIdForScript(this);
     }
-    return await new Promise((resolve) => {
-      const waiting = this.#awaitedFrames.get(frameId);
-      if (waiting) {
-        waiting.push({ notInTarget, resolve });
-      } else {
-        this.#awaitedFrames.set(frameId, [{ notInTarget, resolve }]);
+    return this[frameIdSymbol];
+  }
+  /**
+   * @returns true, iff this script originates from a breakpoint/logpoint condition
+   */
+  get isBreakpointCondition() {
+    return [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL].includes(this.sourceURL);
+  }
+  /**
+   * @returns the currently attached source map for this Script or `undefined` if there is none or it
+   * hasn't loaded yet.
+   */
+  sourceMap() {
+    return this.debuggerModel.sourceMapManager().sourceMapForClient(this);
+  }
+  createPageResourceLoadInitiator() {
+    return { target: this.target(), frameId: this.frameId, initiatorUrl: this.embedderName() };
+  }
+  debugId() {
+    return this.buildId;
+  }
+  rawLocationToRelativeLocation(rawLocation) {
+    let { lineNumber, columnNumber } = rawLocation;
+    if (!this.hasSourceURL && this.isInlineScript()) {
+      lineNumber -= this.lineOffset;
+      if (lineNumber === 0 && columnNumber !== void 0) {
+        columnNumber -= this.columnOffset;
       }
-    });
+    }
+    return { lineNumber, columnNumber };
   }
-  resolveAwaitedFrame(frame) {
-    const waiting = this.#awaitedFrames.get(frame.id);
-    if (!waiting) {
-      return;
-    }
-    const newWaiting = waiting.filter(({ notInTarget, resolve }) => {
-      if (!notInTarget || notInTarget !== frame.resourceTreeModel().target()) {
-        resolve(frame);
-        return false;
+  relativeLocationToRawLocation(relativeLocation) {
+    let { lineNumber, columnNumber } = relativeLocation;
+    if (!this.hasSourceURL && this.isInlineScript()) {
+      if (lineNumber === 0 && columnNumber !== void 0) {
+        columnNumber += this.columnOffset;
       }
-      return true;
-    });
-    if (newWaiting.length > 0) {
-      this.#awaitedFrames.set(frame.id, newWaiting);
-    } else {
-      this.#awaitedFrames.delete(frame.id);
+      lineNumber += this.lineOffset;
     }
+    return { lineNumber, columnNumber };
   }
 };
+var frameIdSymbol = Symbol("frameid");
+function frameIdForScript(script) {
+  const executionContext = script.executionContext();
+  if (executionContext) {
+    return executionContext.frameId || null;
+  }
+  const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
+  if (!resourceTreeModel?.mainFrame) {
+    return null;
+  }
+  return resourceTreeModel.mainFrame.id;
+}
+var sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
+async function disassembleWasm(content) {
+  const worker = Platform14.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString());
+  const promise = new Promise((resolve, reject) => {
+    worker.onmessage = ({ data }) => {
+      if ("method" in data) {
+        switch (data.method) {
+          case "disassemble":
+            if ("error" in data) {
+              reject(data.error);
+            } else if ("result" in data) {
+              const { lines, offsets, functionBodyOffsets } = data.result;
+              resolve(new TextUtils19.WasmDisassembly.WasmDisassembly(lines, offsets, functionBodyOffsets));
+            }
+            break;
+        }
+      }
+    };
+    worker.onerror = reject;
+  });
+  worker.postMessage({ method: "disassemble", params: { content } });
+  try {
+    return await promise;
+  } finally {
+    worker.terminate();
+  }
+}
 
-// gen/front_end/core/sdk/TargetManager.js
-var TargetManager = class _TargetManager extends Common23.ObjectWrapper.ObjectWrapper {
+// gen/front_end/core/sdk/DebuggerModel.js
+var UIStrings6 = {
   /**
-   * @deprecated
-   *
-   * Intended for {@link SDKModel} classes to be able to retrieve scoped singletons like
-   * the "PageResourceLoader" or the "FrameManager".
-   *
-   * This is only an intermediate step to migrate towards our "layering vision" where
-   * SDKModels don't require things from the next layer.
+   * @description Title of a section in the debugger showing local JavaScript variables.
    */
-  context;
-  #targets;
-  #observers;
-  get settings() {
-    return this.context.get(Common23.Settings.Settings);
-  }
-  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
-  getConsole() {
-    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(Common23.Console.Console)) {
-      return Common23.Console.Console.instance();
-    }
-    return this.context.get(Common23.Console.Console);
-  }
-  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
-  getFrameManager() {
-    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(FrameManager)) {
-      return FrameManager.instance();
-    }
-    return this.context.get(FrameManager);
-  }
-  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
-  getNetworkManager() {
-    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(MultitargetNetworkManager)) {
-      return MultitargetNetworkManager.instance();
-    }
-    return this.context.get(MultitargetNetworkManager);
-  }
-  // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
-  getPageResourceLoader() {
-    if ("has" in this.context && typeof this.context.has === "function" && !this.context.has(PageResourceLoader)) {
-      return PageResourceLoader.instance();
-    }
-    return this.context.get(PageResourceLoader);
-  }
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  #modelListeners;
-  #modelObservers;
-  #scopedObservers;
-  /* eslint-enable @typescript-eslint/no-explicit-any */
-  #isSuspended;
-  #browserTarget;
-  #scopeTarget;
-  #defaultScopeSet;
-  #scopeChangeListeners;
-  #overrideAutoStartModels;
+  local: "Local",
   /**
-   * @param overrideAutoStartModels If provided, then the `autostart` flag on {@link RegistrationInfo} will be ignored.
+   * @description Text that refers to closure as a programming term.
    */
-  constructor(context, overrideAutoStartModels) {
-    super();
-    this.context = context;
-    this.#targets = /* @__PURE__ */ new Set();
-    this.#observers = /* @__PURE__ */ new Set();
-    this.#modelListeners = new Platform14.MapUtilities.Multimap();
-    this.#modelObservers = new Platform14.MapUtilities.Multimap();
-    this.#isSuspended = false;
-    this.#browserTarget = null;
-    this.#scopeTarget = null;
-    this.#scopedObservers = /* @__PURE__ */ new WeakSet();
-    this.#defaultScopeSet = false;
-    this.#scopeChangeListeners = /* @__PURE__ */ new Set();
-    this.#overrideAutoStartModels = overrideAutoStartModels;
+  closure: "Closure",
+  /**
+   * @description Noun that represents a section or block of code in the Debugger Model. Shown in the Sources tab, while paused on a breakpoint.
+   */
+  block: "Block",
+  /**
+   * @description Label for a group of JavaScript files.
+   */
+  script: "Script",
+  /**
+   * @description Title of a section in the debugger showing JavaScript variables from a 'with'
+   * block. Block here means section of code, 'with' refers to a JavaScript programming concept and
+   * is a fixed term.
+   */
+  withBlock: "`With` block",
+  /**
+   * @description Title of a section in the debugger showing JavaScript variables from a 'catch'
+   * block. Block here means section of code, 'catch' refers to a JavaScript programming concept and
+   * is a fixed term.
+   */
+  catchBlock: "`Catch` block",
+  /**
+   * @description Title of a section in the debugger showing JavaScript variables from the global scope.
+   */
+  global: "Global",
+  /**
+   * @description Text for a JavaScript module, the programming concept.
+   */
+  module: "Module",
+  /**
+   * @description Text describing the expression scope in WebAssembly.
+   */
+  expression: "Expression",
+  /**
+   * @description Text in Scope Chain section of the Sources panel.
+   */
+  exception: "Exception",
+  /**
+   * @description Text in Scope Chain section of the Sources panel.
+   */
+  returnValue: "Return value"
+};
+var str_6 = i18n13.i18n.registerUIStrings("core/sdk/DebuggerModel.ts", UIStrings6);
+var i18nString6 = i18n13.i18n.getLocalizedString.bind(void 0, str_6);
+function sortAndMergeRanges(locationRanges) {
+  function compare(p1, p2) {
+    return p1.lineNumber - p2.lineNumber || p1.columnNumber - p2.columnNumber;
   }
-  static instance({ forceNew } = { forceNew: false }) {
-    if (!Root7.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
-      Root7.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root7.DevToolsContext.globalInstance()));
+  function overlap(r1, r2) {
+    if (r1.scriptId !== r2.scriptId) {
+      return false;
     }
-    return Root7.DevToolsContext.globalInstance().get(_TargetManager);
+    const n = compare(r1.start, r2.start);
+    if (n < 0) {
+      return compare(r1.end, r2.start) >= 0;
+    }
+    if (n > 0) {
+      return compare(r1.start, r2.end) <= 0;
+    }
+    return true;
   }
-  static removeInstance() {
-    Root7.DevToolsContext.globalInstance().delete(_TargetManager);
+  if (locationRanges.length === 0) {
+    return [];
   }
-  onInspectedURLChange(target) {
-    if (target !== this.#scopeTarget) {
+  locationRanges.sort((r1, r2) => {
+    if (r1.scriptId < r2.scriptId) {
+      return -1;
+    }
+    if (r1.scriptId > r2.scriptId) {
+      return 1;
+    }
+    return compare(r1.start, r2.start) || compare(r1.end, r2.end);
+  });
+  let prev = locationRanges[0];
+  const merged = [];
+  for (let i = 1; i < locationRanges.length; ++i) {
+    const curr = locationRanges[i];
+    if (overlap(prev, curr)) {
+      if (compare(prev.end, curr.end) <= 0) {
+        prev = { ...prev, end: curr.end };
+      }
+    } else {
+      merged.push(prev);
+      prev = curr;
+    }
+  }
+  merged.push(prev);
+  return merged;
+}
+var WASM_SYMBOLS_PRIORITY = [
+  "ExternalDWARF",
+  "EmbeddedDWARF",
+  "SourceMap"
+];
+var DebuggerModel = class _DebuggerModel extends SDKModel {
+  agent;
+  #runtimeModel;
+  #sourceMapManager;
+  #debuggerPausedDetails = null;
+  #scripts = /* @__PURE__ */ new Map();
+  #scriptsBySourceURL = /* @__PURE__ */ new Map();
+  #discardableScripts = [];
+  continueToLocationCallback = null;
+  #selectedCallFrame = null;
+  #debuggerEnabled = false;
+  #debuggerId = null;
+  #skipAllPausesTimeout;
+  #beforePausedCallback = null;
+  #computeAutoStepRangesCallback = null;
+  evaluateOnCallFrameCallback = null;
+  #synchronizeBreakpointsCallback = null;
+  // We need to be able to register listeners for individual breakpoints. As such, we dispatch
+  // on breakpoint ids, which are not statically known. The event #payload will always be a `Location`.
+  #breakpointResolvedEventTarget = new Common22.ObjectWrapper.ObjectWrapper();
+  // When stepping over with autostepping enabled, the context denotes the function to which autostepping is restricted
+  // to by way of its functionLocation (as per Debugger.CallFrame).
+  #autoSteppingContext = null;
+  #isPausing = false;
+  constructor(target) {
+    super(target);
+    target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
+    this.agent = target.debuggerAgent();
+    this.#runtimeModel = target.model(RuntimeModel);
+    this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
+    const settings = this.target().targetManager().settings;
+    settings.moduleSetting("pause-on-exception-enabled").addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.moduleSetting("pause-on-caught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.moduleSetting("pause-on-uncaught-exception").addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.moduleSetting("disable-async-stack-traces").addChangeListener(this.asyncStackTracesStateChanged, this);
+    settings.moduleSetting("breakpoints-active").addChangeListener(this.breakpointsActiveChanged, this);
+    if (!target.suspended()) {
+      void this.enableDebugger();
+    }
+    this.#sourceMapManager.setEnabled(settings.moduleSetting("js-source-maps-enabled").get());
+    settings.moduleSetting("js-source-maps-enabled").addChangeListener((event) => this.#sourceMapManager.setEnabled(event.data));
+    const resourceTreeModel = target.model(ResourceTreeModel);
+    if (resourceTreeModel) {
+      resourceTreeModel.addEventListener(Events.FrameNavigated, this.onFrameNavigated, this);
+    }
+  }
+  static selectSymbolSource(debugSymbols, devToolsConsole) {
+    if (!debugSymbols || debugSymbols.length === 0) {
+      return null;
+    }
+    if ("type" in debugSymbols) {
+      if (debugSymbols.type === "None") {
+        return null;
+      }
+      return debugSymbols;
+    }
+    let debugSymbolsSource = null;
+    const symbolTypes = new Map(debugSymbols.map((symbol) => [symbol.type, symbol]));
+    for (const symbol of WASM_SYMBOLS_PRIORITY) {
+      if (symbolTypes.has(symbol)) {
+        debugSymbolsSource = symbolTypes.get(symbol) || null;
+        break;
+      }
+    }
+    console.assert(debugSymbolsSource !== null, "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes");
+    if (debugSymbolsSource && debugSymbols.length > 1) {
+      devToolsConsole.warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
+    }
+    return debugSymbolsSource;
+  }
+  sourceMapManager() {
+    return this.#sourceMapManager;
+  }
+  runtimeModel() {
+    return this.#runtimeModel;
+  }
+  debuggerEnabled() {
+    return Boolean(this.#debuggerEnabled);
+  }
+  debuggerId() {
+    return this.#debuggerId;
+  }
+  async enableDebugger() {
+    if (this.#debuggerEnabled) {
       return;
     }
-    Host4.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(target.inspectedURL() || Platform14.DevToolsPath.EmptyUrlString);
-    this.dispatchEventToListeners("InspectedURLChanged", target);
+    this.#debuggerEnabled = true;
+    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
+    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
+    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
+    let instrumentationPromise;
+    if (Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
+      instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
+        instrumentation: "beforeScriptExecution"
+      });
+    }
+    this.pauseOnExceptionStateChanged();
+    void this.asyncStackTracesStateChanged();
+    const settings = this.target().targetManager().settings;
+    if (!settings.moduleSetting("breakpoints-active").get()) {
+      this.breakpointsActiveChanged();
+    }
+    this.dispatchEventToListeners(Events4.DebuggerWasEnabled, this);
+    const [enableResult] = await Promise.all([enablePromise, instrumentationPromise]);
+    this.registerDebugger(enableResult);
   }
-  onNameChange(target) {
-    this.dispatchEventToListeners("NameChanged", target);
+  async syncDebuggerId() {
+    const isRemoteFrontend = Root7.Runtime.Runtime.queryParam("remoteFrontend") || Root7.Runtime.Runtime.queryParam("ws");
+    const maxScriptsCacheSize = isRemoteFrontend ? 1e7 : 1e8;
+    const enablePromise = this.agent.invoke_enable({ maxScriptsCacheSize });
+    void enablePromise.then(this.registerDebugger.bind(this));
+    return await enablePromise;
   }
-  async suspendAllTargets(reason) {
-    if (this.#isSuspended) {
+  onFrameNavigated() {
+    if (_DebuggerModel.shouldResyncDebuggerId) {
       return;
     }
-    this.#isSuspended = true;
-    this.dispatchEventToListeners(
-      "SuspendStateChanged"
-      /* Events.SUSPEND_STATE_CHANGED */
+    _DebuggerModel.shouldResyncDebuggerId = true;
+  }
+  registerDebugger(response) {
+    if (response.getError()) {
+      this.#debuggerEnabled = false;
+      return;
+    }
+    const { debuggerId } = response;
+    debuggerIdToModel.set(debuggerId, this);
+    this.#debuggerId = debuggerId;
+    this.dispatchEventToListeners(Events4.DebuggerIsReadyToPause, this);
+  }
+  isReadyToPause() {
+    return Boolean(this.#debuggerId);
+  }
+  static async modelForDebuggerId(debuggerId) {
+    if (_DebuggerModel.shouldResyncDebuggerId) {
+      await _DebuggerModel.resyncDebuggerIdForModels();
+      _DebuggerModel.shouldResyncDebuggerId = false;
+    }
+    return debuggerIdToModel.get(debuggerId) || null;
+  }
+  static async resyncDebuggerIdForModels() {
+    const dbgModels = debuggerIdToModel.values();
+    for (const dbgModel of dbgModels) {
+      if (dbgModel.debuggerEnabled()) {
+        await dbgModel.syncDebuggerId();
+      }
+    }
+  }
+  async disableDebugger() {
+    if (!this.#debuggerEnabled) {
+      return;
+    }
+    this.#debuggerEnabled = false;
+    await this.asyncStackTracesStateChanged();
+    await this.agent.invoke_disable();
+    this.#isPausing = false;
+    this.globalObjectCleared();
+    this.dispatchEventToListeners(Events4.DebuggerWasDisabled, this);
+    if (typeof this.#debuggerId === "string") {
+      debuggerIdToModel.delete(this.#debuggerId);
+    }
+    this.#debuggerId = null;
+  }
+  skipAllPauses(skip) {
+    clearTimeout(this.#skipAllPausesTimeout);
+    void this.agent.invoke_setSkipAllPauses({ skip });
+  }
+  skipAllPausesUntilReloadOrTimeout(timeout) {
+    clearTimeout(this.#skipAllPausesTimeout);
+    void this.agent.invoke_setSkipAllPauses({ skip: true });
+    this.#skipAllPausesTimeout = globalThis.setTimeout(this.skipAllPauses.bind(this, false), timeout);
+  }
+  pauseOnExceptionStateChanged() {
+    const settings = this.target().targetManager().settings;
+    const pauseOnCaughtEnabled = settings.moduleSetting("pause-on-caught-exception").get();
+    let state;
+    const pauseOnUncaughtEnabled = settings.moduleSetting("pause-on-uncaught-exception").get();
+    if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
+      state = "all";
+    } else if (pauseOnCaughtEnabled) {
+      state = "caught";
+    } else if (pauseOnUncaughtEnabled) {
+      state = "uncaught";
+    } else {
+      state = "none";
+    }
+    void this.agent.invoke_setPauseOnExceptions({ state });
+  }
+  asyncStackTracesStateChanged() {
+    const maxAsyncStackChainDepth = 32;
+    const settings = this.target().targetManager().settings;
+    const enabled = !settings.moduleSetting("disable-async-stack-traces").get() && this.#debuggerEnabled;
+    const maxDepth = enabled ? maxAsyncStackChainDepth : 0;
+    return this.agent.invoke_setAsyncCallStackDepth({ maxDepth });
+  }
+  breakpointsActiveChanged() {
+    const settings = this.target().targetManager().settings;
+    void this.agent.invoke_setBreakpointsActive({ active: settings.moduleSetting("breakpoints-active").get() });
+  }
+  setComputeAutoStepRangesCallback(callback) {
+    this.#computeAutoStepRangesCallback = callback;
+  }
+  async computeAutoStepSkipList(mode) {
+    let ranges = [];
+    if (this.#computeAutoStepRangesCallback && this.#debuggerPausedDetails && this.#debuggerPausedDetails.callFrames.length > 0) {
+      const [callFrame] = this.#debuggerPausedDetails.callFrames;
+      ranges = await this.#computeAutoStepRangesCallback.call(null, mode, callFrame);
+    }
+    const skipList = ranges.map(({ start, end }) => ({
+      scriptId: start.scriptId,
+      start: { lineNumber: start.lineNumber, columnNumber: start.columnNumber },
+      end: { lineNumber: end.lineNumber, columnNumber: end.columnNumber }
+    }));
+    return sortAndMergeRanges(skipList);
+  }
+  async stepInto() {
+    const skipList = await this.computeAutoStepSkipList(
+      "StepInto"
+      /* StepMode.STEP_INTO */
     );
-    const suspendPromises = Array.from(this.#targets.values(), (target) => target.suspend(reason));
-    await Promise.all(suspendPromises);
+    void this.agent.invoke_stepInto({ breakOnAsyncCall: false, skipList });
   }
-  async #waitForPromiseWithTimeout(promise, timeoutMessage) {
-    const { promise: timeoutPromise, resolve: timeoutResolve } = Promise.withResolvers();
-    const timeoutId = globalThis.setTimeout(() => {
-      this.getConsole().warn(timeoutMessage);
-      timeoutResolve();
-    }, 2e3);
-    await Promise.race([promise, timeoutPromise]);
-    globalThis.clearTimeout(timeoutId);
-    timeoutResolve();
-  }
-  async resumeAllTargets() {
-    if (!this.#isSuspended) {
-      return;
-    }
-    this.#isSuspended = false;
-    this.dispatchEventToListeners(
-      "SuspendStateChanged"
-      /* Events.SUSPEND_STATE_CHANGED */
+  async stepOver() {
+    this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
+    const skipList = await this.computeAutoStepSkipList(
+      "StepOver"
+      /* StepMode.STEP_OVER */
     );
-    const resumePromises = Array.from(this.#targets.values(), async (target) => {
-      await this.#waitForPromiseWithTimeout(target.resume(), `Timeout waiting for target ${target.name()} to resume`);
+    void this.agent.invoke_stepOver({ skipList });
+  }
+  async stepOut() {
+    const skipList = await this.computeAutoStepSkipList(
+      "StepOut"
+      /* StepMode.STEP_OUT */
+    );
+    if (skipList.length !== 0) {
+      void this.agent.invoke_stepOver({ skipList });
+    } else {
+      void this.agent.invoke_stepOut();
+    }
+  }
+  scheduleStepIntoAsync() {
+    void this.computeAutoStepSkipList(
+      "StepInto"
+      /* StepMode.STEP_INTO */
+    ).then((skipList) => {
+      void this.agent.invoke_stepInto({ breakOnAsyncCall: true, skipList });
     });
-    await Promise.all(resumePromises);
   }
-  allTargetsSuspended() {
-    return this.#isSuspended;
+  resume() {
+    void this.agent.invoke_resume({ terminateOnResume: false });
+    this.#isPausing = false;
   }
-  models(modelClass, opts) {
+  pause() {
+    this.#isPausing = true;
+    this.skipAllPauses(false);
+    void this.agent.invoke_pause();
+  }
+  async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
+    let minColumnNumber = 0;
+    const scripts = this.#scriptsBySourceURL.get(url) || [];
+    for (let i = 0, l = scripts.length; i < l; ++i) {
+      const script = scripts[i];
+      if (lineNumber === script.lineOffset) {
+        minColumnNumber = minColumnNumber ? Math.min(minColumnNumber, script.columnOffset) : script.columnOffset;
+      }
+    }
+    columnNumber = Math.max(columnNumber || 0, minColumnNumber);
+    const response = await this.agent.invoke_setBreakpointByUrl({
+      lineNumber,
+      url,
+      columnNumber,
+      condition
+    });
+    if (response.getError()) {
+      return { locations: [], breakpointId: null };
+    }
+    let locations = [];
+    if (response.locations) {
+      locations = response.locations.map((payload) => Location.fromPayload(this, payload));
+    }
+    return { locations, breakpointId: response.breakpointId };
+  }
+  async setBreakpointInAnonymousScript(scriptHash, lineNumber, columnNumber, condition) {
+    const response = await this.agent.invoke_setBreakpointByUrl({ lineNumber, scriptHash, columnNumber, condition });
+    if (response.getError()) {
+      return { locations: [], breakpointId: null };
+    }
+    let locations = [];
+    if (response.locations) {
+      locations = response.locations.map((payload) => Location.fromPayload(this, payload));
+    }
+    return { locations, breakpointId: response.breakpointId };
+  }
+  async removeBreakpoint(breakpointId) {
+    await this.agent.invoke_removeBreakpoint({ breakpointId });
+  }
+  async getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
+    const response = await this.agent.invoke_getPossibleBreakpoints({
+      start: startLocation.payload(),
+      end: endLocation ? endLocation.payload() : void 0,
+      restrictToFunction
+    });
+    if (response.getError() || !response.locations) {
+      return [];
+    }
+    return response.locations.map((location) => BreakLocation.fromPayload(this, location));
+  }
+  async fetchAsyncStackTrace(stackId) {
+    const response = await this.agent.invoke_getStackTrace({ stackTraceId: stackId });
+    return response.getError() ? null : response.stackTrace;
+  }
+  breakpointResolved(breakpointId, location) {
+    this.#breakpointResolvedEventTarget.dispatchEventToListeners(breakpointId, Location.fromPayload(this, location));
+  }
+  globalObjectCleared() {
+    this.resetDebuggerPausedDetails();
+    this.reset();
+    this.dispatchEventToListeners(Events4.GlobalObjectCleared, this);
+  }
+  reset() {
+    for (const script of this.#scripts.values()) {
+      this.#sourceMapManager.detachSourceMap(script);
+    }
+    this.#scripts.clear();
+    this.#scriptsBySourceURL.clear();
+    this.#discardableScripts = [];
+    this.#autoSteppingContext = null;
+  }
+  scripts() {
+    return Array.from(this.#scripts.values());
+  }
+  scriptForId(scriptId) {
+    return this.#scripts.get(scriptId) || null;
+  }
+  isWasm(scriptId) {
+    const script = this.scriptForId(scriptId);
+    return script ? script.isWasm() : false;
+  }
+  /**
+   * Returns all `Script` objects with the same provided `sourceURL`. The
+   * resulting array is sorted by time with the newest `Script` in the front.
+   */
+  scriptsForSourceURL(sourceURL) {
+    return this.#scriptsBySourceURL.get(sourceURL) || [];
+  }
+  scriptsForExecutionContext(executionContext) {
     const result = [];
-    for (const target of this.#targets) {
-      if (opts?.scoped && !this.isInScope(target)) {
-        continue;
+    for (const script of this.#scripts.values()) {
+      if (script.executionContextId === executionContext.id) {
+        result.push(script);
       }
-      const model = target.model(modelClass);
-      if (!model) {
-        continue;
-      }
-      result.push(model);
     }
     return result;
   }
-  inspectedURL() {
-    const mainTarget = this.primaryPageTarget();
-    return mainTarget ? mainTarget.inspectedURL() : "";
+  get callFrames() {
+    return this.#debuggerPausedDetails ? this.#debuggerPausedDetails.callFrames : null;
   }
-  observeModels(modelClass, observer, opts) {
-    const models = this.models(modelClass, opts);
-    this.#modelObservers.set(modelClass, observer);
-    if (opts?.scoped) {
-      this.#scopedObservers.add(observer);
-    }
-    for (const model of models) {
-      observer.modelAdded(model);
-    }
+  debuggerPausedDetails() {
+    return this.#debuggerPausedDetails;
   }
-  unobserveModels(modelClass, observer) {
-    this.#modelObservers.delete(modelClass, observer);
-    this.#scopedObservers.delete(observer);
-  }
-  modelAdded(modelClass, model, inScope) {
-    for (const observer of this.#modelObservers.get(modelClass).values()) {
-      if (!this.#scopedObservers.has(observer) || inScope) {
-        observer.modelAdded(model);
+  async setDebuggerPausedDetails(debuggerPausedDetails) {
+    this.#isPausing = false;
+    this.#debuggerPausedDetails = debuggerPausedDetails;
+    if (this.#beforePausedCallback) {
+      if (!await this.#beforePausedCallback.call(null, debuggerPausedDetails, this.#autoSteppingContext)) {
+        return false;
       }
     }
-  }
-  modelRemoved(modelClass, model, inScope) {
-    for (const observer of this.#modelObservers.get(modelClass).values()) {
-      if (!this.#scopedObservers.has(observer) || inScope) {
-        observer.modelRemoved(model);
-      }
-    }
-  }
-  addModelListener(modelClass, eventType, listener, thisObject, opts) {
-    const wrappedListener = (event) => {
-      if (!opts?.scoped || this.isInScope(event)) {
-        listener.call(thisObject, event);
-      }
-    };
-    for (const model of this.models(modelClass)) {
-      model.addEventListener(eventType, wrappedListener);
-    }
-    this.#modelListeners.set(eventType, { modelClass, thisObject, listener, wrappedListener });
-  }
-  removeModelListener(modelClass, eventType, listener, thisObject) {
-    if (!this.#modelListeners.has(eventType)) {
-      return;
-    }
-    let wrappedListener = null;
-    for (const info of this.#modelListeners.get(eventType)) {
-      if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject) {
-        wrappedListener = info.wrappedListener;
-        this.#modelListeners.delete(eventType, info);
-      }
-    }
-    if (wrappedListener) {
-      for (const model of this.models(modelClass)) {
-        model.removeEventListener(eventType, wrappedListener);
-      }
-    }
-  }
-  observeTargets(targetObserver, opts) {
-    if (this.#observers.has(targetObserver)) {
-      throw new Error("Observer can only be registered once");
-    }
-    if (opts?.scoped) {
-      this.#scopedObservers.add(targetObserver);
-    }
-    for (const target of this.#targets) {
-      if (!opts?.scoped || this.isInScope(target)) {
-        targetObserver.targetAdded(target);
-      }
-    }
-    this.#observers.add(targetObserver);
-  }
-  unobserveTargets(targetObserver) {
-    this.#observers.delete(targetObserver);
-    this.#scopedObservers.delete(targetObserver);
-  }
-  /** @returns The set of models we create unconditionally for new targets in the order in which they should be created */
-  #autoStartModels() {
-    const earlyModels = /* @__PURE__ */ new Set();
-    const models = /* @__PURE__ */ new Set();
-    const shouldAutostart = (model, info) => this.#overrideAutoStartModels ? this.#overrideAutoStartModels.has(model) : info.autostart;
-    for (const [model, info] of SDKModel.registeredModels) {
-      if (info.early) {
-        earlyModels.add(model);
-      } else if (shouldAutostart(model, info) || this.#modelObservers.has(model)) {
-        models.add(model);
-      }
-    }
-    return [...earlyModels, ...models];
-  }
-  createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection, targetInfo) {
-    const target = new Target(this, id, name, type, parentTarget, sessionId || "", this.#isSuspended, connection || null, targetInfo);
-    if (waitForDebuggerInPage) {
-      void target.pageAgent().invoke_waitForDebugger();
-    }
-    target.createModels(this.#autoStartModels());
-    this.#targets.add(target);
-    const inScope = this.isInScope(target);
-    for (const observer of [...this.#observers]) {
-      if (!this.#scopedObservers.has(observer) || inScope) {
-        observer.targetAdded(target);
-      }
-    }
-    for (const [modelClass, model] of target.models().entries()) {
-      this.modelAdded(modelClass, model, inScope);
-    }
-    for (const key of this.#modelListeners.keysArray()) {
-      for (const info of this.#modelListeners.get(key)) {
-        const model = target.model(info.modelClass);
-        if (model) {
-          model.addEventListener(key, info.wrappedListener);
-        }
-      }
-    }
-    if (target === target.outermostTarget() && (target.type() !== Type2.FRAME || target === this.primaryPageTarget()) && !this.#defaultScopeSet) {
-      this.setScopeTarget(target);
-    }
-    return target;
-  }
-  removeTarget(target) {
-    if (!this.#targets.has(target)) {
-      return;
-    }
-    const inScope = this.isInScope(target);
-    this.#targets.delete(target);
-    for (const modelClass of target.models().keys()) {
-      const model = target.models().get(modelClass);
-      assertNotNullOrUndefined2(model);
-      this.modelRemoved(modelClass, model, inScope);
-    }
-    for (const observer of [...this.#observers]) {
-      if (!this.#scopedObservers.has(observer) || inScope) {
-        observer.targetRemoved(target);
-      }
-    }
-    for (const key of this.#modelListeners.keysArray()) {
-      for (const info of this.#modelListeners.get(key)) {
-        const model = target.model(info.modelClass);
-        if (model) {
-          model.removeEventListener(key, info.wrappedListener);
-        }
-      }
-    }
-  }
-  targets() {
-    return [...this.#targets];
-  }
-  targetById(id) {
-    return this.targets().find((target) => target.id() === id) || null;
-  }
-  rootTarget() {
-    if (this.#targets.size === 0) {
-      return null;
-    }
-    return this.#targets.values().next().value ?? null;
-  }
-  primaryPageTarget() {
-    let target = this.rootTarget();
-    if (target?.type() === Type2.TAB) {
-      target = this.targets().find((t) => t.parentTarget() === target && t.type() === Type2.FRAME && !t.targetInfo()?.subtype?.length) || null;
-    }
-    return target;
-  }
-  browserTarget() {
-    return this.#browserTarget;
-  }
-  async maybeAttachInitialTarget() {
-    if (!Boolean(Root7.Runtime.Runtime.queryParam("browserConnection"))) {
-      return false;
-    }
-    if (!this.#browserTarget) {
-      this.#browserTarget = new Target(
-        this,
-        /* #id*/
-        "main",
-        /* #name*/
-        "browser",
-        Type2.BROWSER,
-        /* #parentTarget*/
-        null,
-        /* #sessionId */
-        "",
-        /* suspended*/
-        false,
-        /* #connection*/
-        null,
-        /* targetInfo*/
-        void 0
-      );
-      this.#browserTarget.createModels(this.#autoStartModels());
-    }
-    const targetId = await Host4.InspectorFrontendHost.InspectorFrontendHostInstance.initialTargetId();
-    void this.#browserTarget.targetAgent().invoke_autoAttachRelated({
-      targetId,
-      waitForDebuggerOnStart: true
-    });
+    this.#autoSteppingContext = null;
+    this.dispatchEventToListeners(Events4.DebuggerPaused, this);
+    this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
     return true;
   }
-  clearAllTargetsForTest() {
-    this.#targets.clear();
+  resetDebuggerPausedDetails() {
+    this.#isPausing = false;
+    this.#debuggerPausedDetails = null;
+    this.setSelectedCallFrame(null);
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  isInScope(arg) {
-    if (!arg) {
-      return false;
-    }
-    if (isSDKModelEvent(arg)) {
-      arg = arg.source;
-    }
-    if (arg instanceof SDKModel) {
-      arg = arg.target();
-    }
-    while (arg && arg !== this.#scopeTarget) {
-      arg = arg.parentTarget();
-    }
-    return Boolean(arg) && arg === this.#scopeTarget;
+  setBeforePausedCallback(callback) {
+    this.#beforePausedCallback = callback;
   }
-  // Sets a root of a scope substree.
-  // TargetManager API invoked with `scoped: true` will behave as if targets
-  // outside of the scope subtree don't exist. Concretely this means that
-  // target observers, model observers and model listeners won't be invoked for targets outside of the
-  // scope tree. This method will invoke targetRemoved and modelRemoved for
-  // objects in the previous scope, as if they disappear and then will invoke
-  // targetAdded and modelAdded as if they just appeared.
-  // Note that scopeTarget could be null, which will effectively prevent scoped
-  // observes from getting any events.
-  setScopeTarget(scopeTarget) {
-    if (scopeTarget === this.#scopeTarget) {
+  setEvaluateOnCallFrameCallback(callback) {
+    this.evaluateOnCallFrameCallback = callback;
+  }
+  setSynchronizeBreakpointsCallback(callback) {
+    this.#synchronizeBreakpointsCallback = callback;
+  }
+  async pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
+    if (reason === "instrumentation") {
+      const script = this.scriptForId(auxData.scriptId);
+      if (this.#synchronizeBreakpointsCallback && script) {
+        await this.#synchronizeBreakpointsCallback(script);
+      }
+      this.resume();
       return;
     }
-    for (const target of this.targets()) {
-      if (!this.isInScope(target)) {
+    const pausedDetails = new DebuggerPausedDetails(this, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId);
+    if (this.continueToLocationCallback) {
+      const callback = this.continueToLocationCallback;
+      this.continueToLocationCallback = null;
+      if (callback(pausedDetails)) {
+        return;
+      }
+    }
+    if (!await this.setDebuggerPausedDetails(pausedDetails)) {
+      if (this.#autoSteppingContext) {
+        void this.stepOver();
+      } else {
+        void this.stepInto();
+      }
+    } else {
+      Common22.EventTarget.fireEvent("DevTools.DebuggerPaused");
+    }
+  }
+  resumedScript() {
+    this.resetDebuggerPausedDetails();
+    this.dispatchEventToListeners(Events4.DebuggerResumed, this);
+  }
+  parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
+    const knownScript = this.#scripts.get(scriptId);
+    if (knownScript) {
+      return knownScript;
+    }
+    let isContentScript = false;
+    if (executionContextAuxData && "isDefault" in executionContextAuxData) {
+      isContentScript = !executionContextAuxData["isDefault"];
+    }
+    const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
+    const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
+    this.registerScript(script);
+    this.dispatchEventToListeners(Events4.ParsedScriptSource, script);
+    if ((!selectedDebugSymbol || selectedDebugSymbol.type === "SourceMap") && script.sourceMapURL && !hasSyntaxError) {
+      this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
+    }
+    const isDiscardable = hasSyntaxError && script.isAnonymousScript();
+    if (isDiscardable) {
+      this.#discardableScripts.push(script);
+      this.collectDiscardedScripts();
+    }
+    return script;
+  }
+  setSourceMapURL(script, newSourceMapURL) {
+    this.#sourceMapManager.detachSourceMap(script);
+    script.sourceMapURL = newSourceMapURL;
+    this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
+  }
+  async setDebugInfoURL(script, _externalURL) {
+    this.dispatchEventToListeners(Events4.DebugInfoAttached, script);
+  }
+  executionContextDestroyed(executionContext) {
+    for (const script of this.#scripts.values()) {
+      if (script.executionContextId === executionContext.id) {
+        this.#sourceMapManager.detachSourceMap(script);
+      }
+    }
+  }
+  registerScript(script) {
+    this.#scripts.set(script.scriptId, script);
+    if (script.isAnonymousScript()) {
+      return;
+    }
+    let scripts = this.#scriptsBySourceURL.get(script.sourceURL);
+    if (!scripts) {
+      scripts = [];
+      this.#scriptsBySourceURL.set(script.sourceURL, scripts);
+    }
+    scripts.unshift(script);
+  }
+  unregisterScript(script) {
+    console.assert(script.isAnonymousScript());
+    this.#scripts.delete(script.scriptId);
+  }
+  collectDiscardedScripts() {
+    if (this.#discardableScripts.length < 1e3) {
+      return;
+    }
+    const scriptsToDiscard = this.#discardableScripts.splice(0, 100);
+    for (const script of scriptsToDiscard) {
+      this.unregisterScript(script);
+      this.dispatchEventToListeners(Events4.DiscardedAnonymousScriptSource, script);
+    }
+  }
+  createRawLocation(script, lineNumber, columnNumber) {
+    return this.createRawLocationByScriptId(script.scriptId, lineNumber, columnNumber);
+  }
+  createRawLocationByURL(sourceURL, lineNumber, columnNumber) {
+    for (const script of this.#scriptsBySourceURL.get(sourceURL) || []) {
+      if (script.lineOffset > lineNumber || script.lineOffset === lineNumber && columnNumber !== void 0 && script.columnOffset > columnNumber) {
         continue;
       }
-      for (const modelClass of this.#modelObservers.keysArray()) {
-        const model = target.models().get(modelClass);
+      if (script.endLine < lineNumber || script.endLine === lineNumber && columnNumber !== void 0 && script.endColumn <= columnNumber) {
+        continue;
+      }
+      return new Location(this, script.scriptId, lineNumber, columnNumber);
+    }
+    return null;
+  }
+  createRawLocationByScriptId(scriptId, lineNumber, columnNumber) {
+    return new Location(this, scriptId, lineNumber, columnNumber);
+  }
+  createRawLocationsByStackTrace(stackTrace) {
+    const rawLocations = [];
+    for (let current = stackTrace; current; current = current.parent) {
+      for (const { scriptId, lineNumber, columnNumber } of current.callFrames) {
+        rawLocations.push(this.createRawLocationByScriptId(scriptId, lineNumber, columnNumber));
+      }
+    }
+    return rawLocations;
+  }
+  isPaused() {
+    return Boolean(this.debuggerPausedDetails());
+  }
+  isPausing() {
+    return this.#isPausing;
+  }
+  setSelectedCallFrame(callFrame) {
+    if (this.#selectedCallFrame === callFrame) {
+      return;
+    }
+    this.#selectedCallFrame = callFrame;
+    this.dispatchEventToListeners(Events4.CallFrameSelected, this);
+  }
+  selectedCallFrame() {
+    return this.#selectedCallFrame;
+  }
+  async evaluateOnSelectedCallFrame(options) {
+    const callFrame = this.selectedCallFrame();
+    if (!callFrame) {
+      throw new Error("No call frame selected");
+    }
+    return await callFrame.evaluate(options);
+  }
+  functionDetailsPromise(remoteObject) {
+    return remoteObject.getAllProperties(
+      false,
+      false
+      /* generatePreview */
+    ).then(buildDetails.bind(this));
+    function buildDetails(response) {
+      if (!response) {
+        return null;
+      }
+      let location = null;
+      if (response.internalProperties) {
+        for (const prop of response.internalProperties) {
+          if (prop.name === "[[FunctionLocation]]") {
+            location = prop.value;
+          }
+        }
+      }
+      let functionName = null;
+      if (response.properties) {
+        for (const prop of response.properties) {
+          if (prop.name === "name" && prop.value?.type === "string") {
+            functionName = prop.value;
+          }
+        }
+      }
+      let debuggerLocation = null;
+      if (location) {
+        debuggerLocation = this.createRawLocationByScriptId(location.value.scriptId, location.value.lineNumber, location.value.columnNumber);
+      }
+      return { location: debuggerLocation, functionName: functionName ? functionName.value : "" };
+    }
+  }
+  async setVariableValue(scopeNumber, variableName, newValue, callFrameId) {
+    const response = await this.agent.invoke_setVariableValue({ scopeNumber, variableName, newValue, callFrameId });
+    const error = response.getError();
+    return error;
+  }
+  addBreakpointListener(breakpointId, listener, thisObject) {
+    this.#breakpointResolvedEventTarget.addEventListener(breakpointId, listener, thisObject);
+  }
+  removeBreakpointListener(breakpointId, listener, thisObject) {
+    this.#breakpointResolvedEventTarget.removeEventListener(breakpointId, listener, thisObject);
+  }
+  async setBlackboxPatterns(patterns, skipAnonymous) {
+    const response = await this.agent.invoke_setBlackboxPatterns({ patterns, skipAnonymous });
+    const error = response.getError();
+    return !error;
+  }
+  async setBlackboxExecutionContexts(uniqueIds) {
+    const response = await this.agent.invoke_setBlackboxExecutionContexts({ uniqueIds });
+    const error = response.getError();
+    return !error;
+  }
+  dispose() {
+    if (this.#debuggerId) {
+      debuggerIdToModel.delete(this.#debuggerId);
+    }
+    const settings = this.target().targetManager().settings;
+    settings.moduleSetting("pause-on-exception-enabled").removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.moduleSetting("pause-on-caught-exception").removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.moduleSetting("disable-async-stack-traces").removeChangeListener(this.asyncStackTracesStateChanged, this);
+  }
+  async suspendModel() {
+    await this.disableDebugger();
+  }
+  async resumeModel() {
+    await this.enableDebugger();
+  }
+  static shouldResyncDebuggerId = false;
+  getEvaluateOnCallFrameCallback() {
+    return this.evaluateOnCallFrameCallback;
+  }
+  /**
+   * Iterates the async stack trace parents.
+   *
+   * Retrieving cross-target async stack fragments requires CDP interaction, so this is an async generator.
+   *
+   * Important: This iterator will not yield the "synchronous" part of the stack trace, only the async parent chain.
+   */
+  async *iterateAsyncParents(stackTraceOrPausedDetails) {
+    const isPausedDetails = (details) => !("parent" in details) && !("parentId" in details);
+    let stackTrace = isPausedDetails(stackTraceOrPausedDetails) ? {
+      callFrames: [],
+      parent: stackTraceOrPausedDetails.asyncStackTrace,
+      parentId: stackTraceOrPausedDetails.asyncStackTraceId
+    } : stackTraceOrPausedDetails;
+    let target = this.target();
+    while (true) {
+      if (stackTrace.parent) {
+        stackTrace = stackTrace.parent;
+      } else if (stackTrace.parentId) {
+        const model = stackTrace.parentId.debuggerId ? await _DebuggerModel.modelForDebuggerId(stackTrace.parentId.debuggerId) : this;
         if (!model) {
-          continue;
+          return;
         }
-        for (const observer of [...this.#modelObservers.get(modelClass)].filter((o) => this.#scopedObservers.has(o))) {
-          observer.modelRemoved(model);
+        const maybeStackTrace = await model.fetchAsyncStackTrace(stackTrace.parentId);
+        if (!maybeStackTrace) {
+          return;
         }
+        stackTrace = maybeStackTrace;
+        target = model.target();
+      } else {
+        return;
       }
-      for (const observer of [...this.#observers].filter((o) => this.#scopedObservers.has(o))) {
-        observer.targetRemoved(target);
-      }
+      yield { stackTrace, target };
     }
-    this.#scopeTarget = scopeTarget;
-    for (const target of this.targets()) {
-      if (!this.isInScope(target)) {
-        continue;
-      }
-      for (const observer of [...this.#observers].filter((o) => this.#scopedObservers.has(o))) {
-        observer.targetAdded(target);
-      }
-      for (const [modelClass, model] of target.models().entries()) {
-        for (const observer of [...this.#modelObservers.get(modelClass)].filter((o) => this.#scopedObservers.has(o))) {
-          observer.modelAdded(model);
-        }
-      }
-    }
-    for (const scopeChangeListener of this.#scopeChangeListeners) {
-      scopeChangeListener();
-    }
-    if (scopeTarget?.inspectedURL()) {
-      this.onInspectedURLChange(scopeTarget);
-    }
-  }
-  addScopeChangeListener(listener) {
-    this.#scopeChangeListeners.add(listener);
-  }
-  scopeTarget() {
-    return this.#scopeTarget;
   }
 };
-var Observer = class {
-  targetAdded(_target) {
+var debuggerIdToModel = /* @__PURE__ */ new Map();
+var PauseOnExceptionsState;
+(function(PauseOnExceptionsState2) {
+  PauseOnExceptionsState2["DontPauseOnExceptions"] = "none";
+  PauseOnExceptionsState2["PauseOnAllExceptions"] = "all";
+  PauseOnExceptionsState2["PauseOnCaughtExceptions"] = "caught";
+  PauseOnExceptionsState2["PauseOnUncaughtExceptions"] = "uncaught";
+})(PauseOnExceptionsState || (PauseOnExceptionsState = {}));
+var Events4;
+(function(Events12) {
+  Events12["DebuggerWasEnabled"] = "DebuggerWasEnabled";
+  Events12["DebuggerWasDisabled"] = "DebuggerWasDisabled";
+  Events12["DebuggerPaused"] = "DebuggerPaused";
+  Events12["DebuggerResumed"] = "DebuggerResumed";
+  Events12["DebugInfoAttached"] = "DebugInfoAttached";
+  Events12["ParsedScriptSource"] = "ParsedScriptSource";
+  Events12["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
+  Events12["GlobalObjectCleared"] = "GlobalObjectCleared";
+  Events12["CallFrameSelected"] = "CallFrameSelected";
+  Events12["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
+  Events12["ScriptSourceWasEdited"] = "ScriptSourceWasEdited";
+})(Events4 || (Events4 = {}));
+var DebuggerDispatcher = class {
+  #debuggerModel;
+  constructor(debuggerModel) {
+    this.#debuggerModel = debuggerModel;
   }
-  targetRemoved(_target) {
+  paused({ callFrames, reason, data, hitBreakpoints, asyncStackTrace, asyncStackTraceId }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    void this.#debuggerModel.pausedScript(callFrames, reason, data, hitBreakpoints || [], asyncStackTrace, asyncStackTraceId);
+  }
+  resumed() {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.resumedScript();
+  }
+  scriptParsed({ scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, length, isModule, stackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.parsedScriptSource(scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, Boolean(isLiveEdit), sourceMapURL, Boolean(hasSourceURL), false, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null, buildId || null);
+  }
+  scriptFailedToParse({ scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURL, length, isModule, stackTrace, codeOffset, scriptLanguage, embedderName, buildId }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.parsedScriptSource(scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, false, sourceMapURL, Boolean(hasSourceURL), true, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, null, embedderName || null, buildId || null);
+  }
+  breakpointResolved({ breakpointId, location }) {
+    if (!this.#debuggerModel.debuggerEnabled()) {
+      return;
+    }
+    this.#debuggerModel.breakpointResolved(breakpointId, location);
   }
 };
-var SDKModelObserver = class {
-  modelAdded(_model) {
+var Location = class _Location {
+  debuggerModel;
+  scriptId;
+  lineNumber;
+  columnNumber;
+  inlineFrameIndex;
+  constructor(debuggerModel, scriptId, lineNumber, columnNumber, inlineFrameIndex) {
+    this.debuggerModel = debuggerModel;
+    this.scriptId = scriptId;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber || 0;
+    this.inlineFrameIndex = inlineFrameIndex || 0;
   }
-  modelRemoved(_model) {
+  static fromPayload(debuggerModel, payload, inlineFrameIndex) {
+    return new _Location(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, inlineFrameIndex);
+  }
+  payload() {
+    return { scriptId: this.scriptId, lineNumber: this.lineNumber, columnNumber: this.columnNumber };
+  }
+  script() {
+    return this.debuggerModel.scriptForId(this.scriptId);
+  }
+  continueToLocation(pausedCallback) {
+    if (pausedCallback) {
+      this.debuggerModel.continueToLocationCallback = this.paused.bind(this, pausedCallback);
+    }
+    void this.debuggerModel.agent.invoke_continueToLocation({
+      location: this.payload(),
+      targetCallFrames: "current"
+    });
+  }
+  paused(pausedCallback, debuggerPausedDetails) {
+    const location = debuggerPausedDetails.callFrames[0].location();
+    if (location.scriptId === this.scriptId && location.lineNumber === this.lineNumber && location.columnNumber === this.columnNumber) {
+      pausedCallback();
+      return true;
+    }
+    return false;
+  }
+  id() {
+    return this.debuggerModel.target().id() + ":" + this.scriptId + ":" + this.lineNumber + ":" + this.columnNumber;
   }
 };
-function isSDKModelEvent(arg) {
-  return "source" in arg && arg.source instanceof SDKModel;
-}
+var BreakLocation = class _BreakLocation extends Location {
+  type;
+  constructor(debuggerModel, scriptId, lineNumber, columnNumber, type) {
+    super(debuggerModel, scriptId, lineNumber, columnNumber);
+    if (type) {
+      this.type = type;
+    }
+  }
+  static fromPayload(debuggerModel, payload) {
+    return new _BreakLocation(debuggerModel, payload.scriptId, payload.lineNumber, payload.columnNumber, payload.type);
+  }
+};
+var CallFrame = class _CallFrame {
+  debuggerModel;
+  script;
+  payload;
+  #location;
+  #scopeChain;
+  #localScope;
+  inlineFrameIndex;
+  functionName;
+  #functionLocation;
+  #returnValue;
+  exception;
+  canBeRestarted;
+  constructor(debuggerModel, script, payload, inlineFrameIndex, functionName, exception = null) {
+    this.debuggerModel = debuggerModel;
+    this.script = script;
+    this.payload = payload;
+    this.#location = Location.fromPayload(debuggerModel, payload.location, inlineFrameIndex);
+    this.#scopeChain = [];
+    this.#localScope = null;
+    this.inlineFrameIndex = inlineFrameIndex || 0;
+    this.functionName = functionName ?? payload.functionName;
+    this.canBeRestarted = Boolean(payload.canBeRestarted);
+    this.exception = exception;
+    for (let i = 0; i < payload.scopeChain.length; ++i) {
+      const scope = new Scope(this, i);
+      this.#scopeChain.push(scope);
+      if (scope.type() === "local") {
+        this.#localScope = scope;
+      }
+    }
+    if (payload.functionLocation) {
+      this.#functionLocation = Location.fromPayload(debuggerModel, payload.functionLocation);
+    }
+    this.#returnValue = payload.returnValue ? this.debuggerModel.runtimeModel().createRemoteObject(payload.returnValue) : null;
+  }
+  static fromPayloadArray(debuggerModel, callFrames, exception) {
+    const result = [];
+    for (let i = 0; i < callFrames.length; ++i) {
+      const callFrame = callFrames[i];
+      const script = debuggerModel.scriptForId(callFrame.location.scriptId);
+      if (script) {
+        const ex = i === 0 ? exception : null;
+        result.push(new _CallFrame(debuggerModel, script, callFrame, void 0, void 0, ex));
+      }
+    }
+    return result;
+  }
+  createVirtualCallFrame(inlineFrameIndex, name) {
+    return new _CallFrame(this.debuggerModel, this.script, this.payload, inlineFrameIndex, name, this.exception);
+  }
+  get id() {
+    return this.payload.callFrameId;
+  }
+  scopeChain() {
+    return this.#scopeChain;
+  }
+  localScope() {
+    return this.#localScope;
+  }
+  thisObject() {
+    return this.payload.this ? this.debuggerModel.runtimeModel().createRemoteObject(this.payload.this) : null;
+  }
+  returnValue() {
+    return this.#returnValue;
+  }
+  async setReturnValue(expression) {
+    if (!this.#returnValue) {
+      return null;
+    }
+    const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({ callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" });
+    if (evaluateResponse.getError() || evaluateResponse.exceptionDetails) {
+      return null;
+    }
+    const response = await this.debuggerModel.agent.invoke_setReturnValue({ newValue: evaluateResponse.result });
+    if (response.getError()) {
+      return null;
+    }
+    this.#returnValue = this.debuggerModel.runtimeModel().createRemoteObject(evaluateResponse.result);
+    return this.#returnValue;
+  }
+  location() {
+    return this.#location;
+  }
+  functionLocation() {
+    return this.#functionLocation || null;
+  }
+  async evaluate(options) {
+    const debuggerModel = this.debuggerModel;
+    const runtimeModel = debuggerModel.runtimeModel();
+    const evaluateOnCallFrameCallback = debuggerModel.getEvaluateOnCallFrameCallback();
+    if (evaluateOnCallFrameCallback) {
+      const result = await evaluateOnCallFrameCallback(this, options);
+      if (result) {
+        return result;
+      }
+    }
+    const response = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({
+      callFrameId: this.id,
+      expression: options.expression,
+      objectGroup: options.objectGroup,
+      includeCommandLineAPI: options.includeCommandLineAPI,
+      silent: options.silent,
+      returnByValue: options.returnByValue,
+      generatePreview: options.generatePreview,
+      throwOnSideEffect: options.throwOnSideEffect,
+      timeout: options.timeout
+    });
+    const error = response.getError();
+    if (error) {
+      return { error };
+    }
+    return { object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async restart() {
+    console.assert(this.canBeRestarted, "This frame can not be restarted.");
+    await this.debuggerModel.agent.invoke_restartFrame({
+      callFrameId: this.id,
+      mode: "StepInto"
+      /* Protocol.Debugger.RestartFrameRequestMode.StepInto */
+    });
+  }
+  getPayload() {
+    return this.payload;
+  }
+};
+var Scope = class {
+  #callFrame;
+  #payload;
+  #type;
+  #name;
+  #ordinal;
+  #locationRange;
+  #object = null;
+  constructor(callFrame, ordinal) {
+    this.#callFrame = callFrame;
+    this.#payload = callFrame.getPayload().scopeChain[ordinal];
+    this.#type = this.#payload.type;
+    this.#name = this.#payload.name;
+    this.#ordinal = ordinal;
+    const start = this.#payload.startLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.startLocation) : null;
+    const end = this.#payload.endLocation ? Location.fromPayload(callFrame.debuggerModel, this.#payload.endLocation) : null;
+    if (start && end && start.scriptId === end.scriptId) {
+      this.#locationRange = { start, end };
+    } else {
+      this.#locationRange = null;
+    }
+  }
+  callFrame() {
+    return this.#callFrame;
+  }
+  type() {
+    return this.#type;
+  }
+  typeName() {
+    switch (this.#type) {
+      case "local":
+        return i18nString6(UIStrings6.local);
+      case "closure":
+        return i18nString6(UIStrings6.closure);
+      case "catch":
+        return i18nString6(UIStrings6.catchBlock);
+      case "eval":
+        return i18n13.i18n.lockedString("Eval");
+      case "block":
+        return i18nString6(UIStrings6.block);
+      case "script":
+        return i18nString6(UIStrings6.script);
+      case "with":
+        return i18nString6(UIStrings6.withBlock);
+      case "global":
+        return i18nString6(UIStrings6.global);
+      case "module":
+        return i18nString6(UIStrings6.module);
+      case "wasm-expression-stack":
+        return i18nString6(UIStrings6.expression);
+    }
+    return "";
+  }
+  name() {
+    return this.#name;
+  }
+  range() {
+    return this.#locationRange;
+  }
+  object() {
+    if (this.#object) {
+      return this.#object;
+    }
+    const runtimeModel = this.#callFrame.debuggerModel.runtimeModel();
+    const declarativeScope = this.#type !== "with" && this.#type !== "global";
+    if (declarativeScope) {
+      this.#object = runtimeModel.createScopeRemoteObject(this.#payload.object, new ScopeRef(this.#ordinal, this.#callFrame.id));
+    } else {
+      this.#object = runtimeModel.createRemoteObject(this.#payload.object);
+    }
+    return this.#object;
+  }
+  description() {
+    const declarativeScope = this.#type !== "with" && this.#type !== "global";
+    return declarativeScope ? "" : this.#payload.object.description || "";
+  }
+  icon() {
+    return void 0;
+  }
+  extraProperties() {
+    if (this.#ordinal !== 0 || this.#type !== "local" || this.#callFrame.script.isWasm()) {
+      return [];
+    }
+    const extraProperties = [];
+    const exception = this.#callFrame.exception;
+    if (exception) {
+      extraProperties.push(new RemoteObjectProperty(
+        i18nString6(UIStrings6.exception),
+        exception,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        /* synthetic */
+        true
+      ));
+    }
+    const returnValue = this.#callFrame.returnValue();
+    if (returnValue) {
+      extraProperties.push(new RemoteObjectProperty(
+        i18nString6(UIStrings6.returnValue),
+        returnValue,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        void 0,
+        /* synthetic */
+        true,
+        this.#callFrame.setReturnValue.bind(this.#callFrame)
+      ));
+    }
+    return extraProperties;
+  }
+};
+var DebuggerPausedDetails = class {
+  debuggerModel;
+  callFrames;
+  reason;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  auxData;
+  breakpointIds;
+  asyncStackTrace;
+  asyncStackTraceId;
+  constructor(debuggerModel, callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
+    this.debuggerModel = debuggerModel;
+    this.reason = reason;
+    this.auxData = auxData;
+    this.breakpointIds = breakpointIds;
+    if (asyncStackTrace) {
+      this.asyncStackTrace = this.cleanRedundantFrames(asyncStackTrace);
+    }
+    this.asyncStackTraceId = asyncStackTraceId;
+    this.callFrames = CallFrame.fromPayloadArray(debuggerModel, callFrames, this.exception());
+  }
+  exception() {
+    if (this.reason !== "exception" && this.reason !== "promiseRejection") {
+      return null;
+    }
+    return this.debuggerModel.runtimeModel().createRemoteObject(this.auxData);
+  }
+  cleanRedundantFrames(asyncStackTrace) {
+    let stack = asyncStackTrace;
+    let previous = null;
+    while (stack) {
+      if (previous && !stack.callFrames.length) {
+        previous.parent = stack.parent;
+      } else {
+        previous = stack;
+      }
+      stack = stack.parent;
+    }
+    return asyncStackTrace;
+  }
+};
+SDKModel.register(DebuggerModel, { capabilities: 4, autostart: true });
+var LOGPOINT_SOURCE_URL = "debugger://logpoint";
+var COND_BREAKPOINT_SOURCE_URL = "debugger://breakpoint";
+
+// gen/front_end/core/sdk/HeapProfilerModel.js
+var HeapProfilerModel_exports = {};
+__export(HeapProfilerModel_exports, {
+  HeapProfilerModel: () => HeapProfilerModel
+});
+var HeapProfilerModel = class extends SDKModel {
+  #enabled = false;
+  #heapProfilerAgent;
+  #runtimeModel;
+  constructor(target) {
+    super(target);
+    target.registerHeapProfilerDispatcher(new HeapProfilerDispatcher(this));
+    this.#heapProfilerAgent = target.heapProfilerAgent();
+    this.#runtimeModel = target.model(RuntimeModel);
+  }
+  debuggerModel() {
+    return this.#runtimeModel.debuggerModel();
+  }
+  runtimeModel() {
+    return this.#runtimeModel;
+  }
+  async enable() {
+    if (this.#enabled) {
+      return;
+    }
+    this.#enabled = true;
+    await this.#heapProfilerAgent.invoke_enable();
+  }
+  async startSampling(samplingRateInBytes) {
+    const defaultSamplingIntervalInBytes = 16384;
+    const response = await this.#heapProfilerAgent.invoke_startSampling({ samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes });
+    return Boolean(response.getError());
+  }
+  async stopSampling() {
+    const response = await this.#heapProfilerAgent.invoke_stopSampling();
+    if (response.getError()) {
+      throw new Error("Sampling profiler is not running.");
+    }
+    return response.profile;
+  }
+  async getSamplingProfile() {
+    const response = await this.#heapProfilerAgent.invoke_getSamplingProfile();
+    if (response.getError()) {
+      return null;
+    }
+    return response.profile;
+  }
+  async collectGarbage() {
+    const response = await this.#heapProfilerAgent.invoke_collectGarbage();
+    return Boolean(response.getError());
+  }
+  async snapshotObjectIdForObjectId(objectId) {
+    const response = await this.#heapProfilerAgent.invoke_getHeapObjectId({ objectId });
+    if (response.getError()) {
+      return null;
+    }
+    return response.heapSnapshotObjectId;
+  }
+  async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
+    const result = await this.#heapProfilerAgent.invoke_getObjectByHeapObjectId({ objectId: snapshotObjectId, objectGroup: objectGroupName });
+    if (result.getError()) {
+      return null;
+    }
+    return this.#runtimeModel.createRemoteObject(result.result);
+  }
+  async addInspectedHeapObject(snapshotObjectId) {
+    const response = await this.#heapProfilerAgent.invoke_addInspectedHeapObject({ heapObjectId: snapshotObjectId });
+    return Boolean(response.getError());
+  }
+  async takeHeapSnapshot(heapSnapshotOptions) {
+    await this.target().targetManager().suspendAllTargets("heap-snapshot");
+    try {
+      await this.#heapProfilerAgent.invoke_takeHeapSnapshot(heapSnapshotOptions);
+    } finally {
+      await this.target().targetManager().resumeAllTargets();
+    }
+  }
+  async startTrackingHeapObjects(recordAllocationStacks) {
+    const response = await this.#heapProfilerAgent.invoke_startTrackingHeapObjects({ trackAllocations: recordAllocationStacks });
+    return Boolean(response.getError());
+  }
+  async stopTrackingHeapObjects(reportProgress) {
+    const response = await this.#heapProfilerAgent.invoke_stopTrackingHeapObjects({ reportProgress });
+    return Boolean(response.getError());
+  }
+  heapStatsUpdate(samples) {
+    this.dispatchEventToListeners("HeapStatsUpdate", samples);
+  }
+  lastSeenObjectId(lastSeenObjectId, timestamp) {
+    this.dispatchEventToListeners("LastSeenObjectId", { lastSeenObjectId, timestamp });
+  }
+  addHeapSnapshotChunk(chunk) {
+    this.dispatchEventToListeners("AddHeapSnapshotChunk", chunk);
+  }
+  reportHeapSnapshotProgress(done, total, finished) {
+    this.dispatchEventToListeners("ReportHeapSnapshotProgress", { done, total, finished });
+  }
+  resetProfiles() {
+    this.dispatchEventToListeners("ResetProfiles", this);
+  }
+};
+var HeapProfilerDispatcher = class {
+  #heapProfilerModel;
+  constructor(model) {
+    this.#heapProfilerModel = model;
+  }
+  heapStatsUpdate({ statsUpdate }) {
+    this.#heapProfilerModel.heapStatsUpdate(statsUpdate);
+  }
+  lastSeenObjectId({ lastSeenObjectId, timestamp }) {
+    this.#heapProfilerModel.lastSeenObjectId(lastSeenObjectId, timestamp);
+  }
+  addHeapSnapshotChunk({ chunk }) {
+    this.#heapProfilerModel.addHeapSnapshotChunk(chunk);
+  }
+  reportHeapSnapshotProgress({ done, total, finished }) {
+    this.#heapProfilerModel.reportHeapSnapshotProgress(done, total, finished);
+  }
+  resetProfiles() {
+    this.#heapProfilerModel.resetProfiles();
+  }
+};
+SDKModel.register(HeapProfilerModel, { capabilities: 4, autostart: false });
+
+// gen/front_end/core/sdk/RuntimeModel.js
+var RuntimeModel = class extends SDKModel {
+  agent;
+  #executionContextById = /* @__PURE__ */ new Map();
+  #executionContextComparator = ExecutionContext.comparator;
+  constructor(target) {
+    super(target);
+    this.agent = target.runtimeAgent();
+    this.target().registerRuntimeDispatcher(new RuntimeDispatcher(this));
+    void this.agent.invoke_enable();
+    const settings = this.target().targetManager().context.get(Common23.Settings.Settings);
+    if (settings.moduleSetting("custom-formatters").get()) {
+      void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled: true });
+    }
+    settings.moduleSetting("custom-formatters").addChangeListener(this.customFormattersStateChanged.bind(this));
+  }
+  static isSideEffectFailure(response) {
+    const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
+    return Boolean(exceptionDetails && exceptionDetails.exception?.description?.startsWith("EvalError: Possible side-effect in debug-evaluate"));
+  }
+  debuggerModel() {
+    return this.target().model(DebuggerModel);
+  }
+  heapProfilerModel() {
+    return this.target().model(HeapProfilerModel);
+  }
+  executionContexts() {
+    return [...this.#executionContextById.values()].sort(this.executionContextComparator());
+  }
+  setExecutionContextComparator(comparator) {
+    this.#executionContextComparator = comparator;
+  }
+  /**
+   * comparator
+   */
+  executionContextComparator() {
+    return this.#executionContextComparator;
+  }
+  defaultExecutionContext() {
+    for (const context of this.executionContexts()) {
+      if (context.isDefault) {
+        return context;
+      }
+    }
+    return null;
+  }
+  executionContext(id) {
+    return this.#executionContextById.get(id) || null;
+  }
+  executionContextCreated(context) {
+    const data = context.auxData || { isDefault: true };
+    const executionContext = new ExecutionContext(this, context.id, context.uniqueId, context.name, context.origin, data["isDefault"], data["frameId"]);
+    this.#executionContextById.set(executionContext.id, executionContext);
+    this.dispatchEventToListeners(Events8.ExecutionContextCreated, executionContext);
+  }
+  executionContextDestroyed(executionContextId) {
+    const executionContext = this.#executionContextById.get(executionContextId);
+    if (!executionContext) {
+      return;
+    }
+    this.debuggerModel().executionContextDestroyed(executionContext);
+    this.#executionContextById.delete(executionContextId);
+    this.dispatchEventToListeners(Events8.ExecutionContextDestroyed, executionContext);
+  }
+  fireExecutionContextOrderChanged() {
+    this.dispatchEventToListeners(Events8.ExecutionContextOrderChanged, this);
+  }
+  executionContextsCleared() {
+    this.debuggerModel().globalObjectCleared();
+    const contexts = this.executionContexts();
+    this.#executionContextById.clear();
+    for (let i = 0; i < contexts.length; ++i) {
+      this.dispatchEventToListeners(Events8.ExecutionContextDestroyed, contexts[i]);
+    }
+  }
+  createRemoteObject(payload) {
+    console.assert(typeof payload === "object", "Remote object payload should only be an object");
+    return new RemoteObjectImpl(this, payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue, payload.description, payload.preview, payload.customPreview, payload.className);
+  }
+  createScopeRemoteObject(payload, scopeRef) {
+    return new ScopeRemoteObject(this, payload.objectId, scopeRef, payload.type, payload.subtype, payload.value, payload.unserializableValue, payload.description, payload.preview);
+  }
+  createRemoteObjectFromPrimitiveValue(value) {
+    const type = typeof value;
+    let unserializableValue = void 0;
+    const unserializableDescription = RemoteObject.unserializableDescription(value);
+    if (unserializableDescription !== null) {
+      unserializableValue = unserializableDescription;
+    }
+    if (typeof unserializableValue !== "undefined") {
+      value = void 0;
+    }
+    return new RemoteObjectImpl(this, void 0, type, void 0, value, unserializableValue);
+  }
+  createRemotePropertyFromPrimitiveValue(name, value) {
+    return new RemoteObjectProperty(name, this.createRemoteObjectFromPrimitiveValue(value));
+  }
+  discardConsoleEntries() {
+    void this.agent.invoke_discardConsoleEntries();
+  }
+  releaseObjectGroup(objectGroup) {
+    void this.agent.invoke_releaseObjectGroup({ objectGroup });
+  }
+  releaseEvaluationResult(result) {
+    if ("object" in result && result.object) {
+      result.object.release();
+    }
+    if ("exceptionDetails" in result && result.exceptionDetails?.exception) {
+      const exception = result.exceptionDetails.exception;
+      const exceptionObject = this.createRemoteObject({ type: exception.type, objectId: exception.objectId });
+      exceptionObject.release();
+    }
+  }
+  runIfWaitingForDebugger() {
+    void this.agent.invoke_runIfWaitingForDebugger();
+  }
+  customFormattersStateChanged({ data: enabled }) {
+    void this.agent.invoke_setCustomObjectFormatterEnabled({ enabled });
+  }
+  async compileScript(expression, sourceURL, persistScript, executionContextId) {
+    const response = await this.agent.invoke_compileScript({
+      expression,
+      sourceURL,
+      persistScript,
+      executionContextId
+    });
+    if (response.getError()) {
+      console.error(response.getError());
+      return null;
+    }
+    return { scriptId: response.scriptId, exceptionDetails: response.exceptionDetails };
+  }
+  async runScript(scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview, awaitPromise) {
+    const response = await this.agent.invoke_runScript({
+      scriptId,
+      executionContextId,
+      objectGroup,
+      silent,
+      includeCommandLineAPI,
+      returnByValue,
+      generatePreview,
+      awaitPromise
+    });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      return { error };
+    }
+    return { object: this.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async queryObjects(prototype) {
+    if (!prototype.objectId) {
+      return { error: "Prototype should be an Object." };
+    }
+    const response = await this.agent.invoke_queryObjects({ prototypeObjectId: prototype.objectId, objectGroup: "console" });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      return { error };
+    }
+    return { objects: this.createRemoteObject(response.objects) };
+  }
+  async isolateId() {
+    const response = await this.agent.invoke_getIsolateId();
+    if (response.getError() || !response.id) {
+      return this.target().id();
+    }
+    return response.id;
+  }
+  async heapUsage() {
+    const result = await this.agent.invoke_getHeapUsage();
+    return result.getError() ? null : result;
+  }
+  inspectRequested(payload, hints, executionContextId) {
+    const object = this.createRemoteObject(payload);
+    if (hints !== null && typeof hints === "object") {
+      if ("copyToClipboard" in hints && Boolean(hints.copyToClipboard)) {
+        this.copyRequested(object);
+        return;
+      }
+      if ("queryObjects" in hints && hints.queryObjects) {
+        void this.queryObjectsRequested(object, executionContextId);
+        return;
+      }
+    }
+    if (object.isNode()) {
+      const omitFocus = hints !== null && typeof hints === "object" && "omitFocus" in hints && Boolean(hints.omitFocus);
+      void Common23.Revealer.reveal(object, omitFocus).then(object.release.bind(object));
+      return;
+    }
+    if (object.type === "function") {
+      void RemoteFunction.objectAsFunction(object).targetFunctionDetails().then(didGetDetails);
+      return;
+    }
+    function didGetDetails(response) {
+      object.release();
+      if (!response?.location) {
+        return;
+      }
+      void Common23.Revealer.reveal(response.location);
+    }
+    object.release();
+  }
+  async addBinding(event) {
+    return await this.agent.invoke_addBinding(event);
+  }
+  async removeBinding(request) {
+    return await this.agent.invoke_removeBinding(request);
+  }
+  bindingCalled(event) {
+    this.dispatchEventToListeners(Events8.BindingCalled, event);
+  }
+  copyRequested(object) {
+    if (!object.objectId) {
+      Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
+      return;
+    }
+    const indent = this.target().targetManager().context.get(Common23.Settings.Settings).moduleSetting("text-editor-indent").get();
+    void object.callFunctionJSON(toStringForClipboard, [{
+      value: {
+        subtype: object.subtype,
+        indent
+      }
+    }]).then(Host4.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host4.InspectorFrontendHost.InspectorFrontendHostInstance));
+    function toStringForClipboard(data) {
+      const subtype = data.subtype;
+      const indent2 = data.indent;
+      if (subtype === "node") {
+        return this instanceof Element ? this.outerHTML : void 0;
+      }
+      if (subtype && typeof this === "undefined") {
+        return String(subtype);
+      }
+      try {
+        return JSON.stringify(this, null, indent2);
+      } catch {
+        return String(this);
+      }
+    }
+  }
+  async queryObjectsRequested(object, executionContextId) {
+    const result = await this.queryObjects(object);
+    object.release();
+    if ("error" in result) {
+      this.target().targetManager().getConsole().error(result.error);
+      return;
+    }
+    this.dispatchEventToListeners(Events8.QueryObjectRequested, { objects: result.objects, executionContextId });
+  }
+  static simpleTextFromException(exceptionDetails) {
+    let text = exceptionDetails.text;
+    if (exceptionDetails.exception?.description) {
+      let description = exceptionDetails.exception.description;
+      if (description.indexOf("\n") !== -1) {
+        description = description.substring(0, description.indexOf("\n"));
+      }
+      text += " " + description;
+    }
+    return text;
+  }
+  exceptionThrown(timestamp, exceptionDetails) {
+    const exceptionWithTimestamp = { timestamp, details: exceptionDetails };
+    this.dispatchEventToListeners(Events8.ExceptionThrown, exceptionWithTimestamp);
+  }
+  exceptionRevoked(exceptionId) {
+    this.dispatchEventToListeners(Events8.ExceptionRevoked, exceptionId);
+  }
+  consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
+    const consoleAPICall = {
+      type,
+      args,
+      executionContextId,
+      timestamp,
+      stackTrace,
+      context
+    };
+    this.dispatchEventToListeners(Events8.ConsoleAPICalled, consoleAPICall);
+  }
+  executionContextIdForScriptId(scriptId) {
+    const script = this.debuggerModel().scriptForId(scriptId);
+    return script ? script.executionContextId : 0;
+  }
+  executionContextForStackTrace(stackTrace) {
+    let currentStackTrace = stackTrace;
+    while (currentStackTrace && !currentStackTrace.callFrames.length) {
+      currentStackTrace = currentStackTrace.parent || null;
+    }
+    if (!currentStackTrace?.callFrames.length) {
+      return 0;
+    }
+    return this.executionContextIdForScriptId(currentStackTrace.callFrames[0].scriptId);
+  }
+  terminateExecution() {
+    return this.agent.invoke_terminateExecution();
+  }
+  async getExceptionDetails(errorObjectId) {
+    const response = await this.agent.invoke_getExceptionDetails({ errorObjectId });
+    if (response.getError()) {
+      return void 0;
+    }
+    return response.exceptionDetails;
+  }
+};
+var Events8;
+(function(Events12) {
+  Events12["BindingCalled"] = "BindingCalled";
+  Events12["ExecutionContextCreated"] = "ExecutionContextCreated";
+  Events12["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
+  Events12["ExecutionContextChanged"] = "ExecutionContextChanged";
+  Events12["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
+  Events12["ExceptionThrown"] = "ExceptionThrown";
+  Events12["ExceptionRevoked"] = "ExceptionRevoked";
+  Events12["ConsoleAPICalled"] = "ConsoleAPICalled";
+  Events12["QueryObjectRequested"] = "QueryObjectRequested";
+})(Events8 || (Events8 = {}));
+var RuntimeDispatcher = class {
+  #runtimeModel;
+  constructor(runtimeModel) {
+    this.#runtimeModel = runtimeModel;
+  }
+  executionContextCreated({ context }) {
+    this.#runtimeModel.executionContextCreated(context);
+  }
+  executionContextDestroyed({ executionContextId }) {
+    this.#runtimeModel.executionContextDestroyed(executionContextId);
+  }
+  executionContextsCleared() {
+    this.#runtimeModel.executionContextsCleared();
+  }
+  exceptionThrown({ timestamp, exceptionDetails }) {
+    this.#runtimeModel.exceptionThrown(timestamp, exceptionDetails);
+  }
+  exceptionRevoked({ exceptionId }) {
+    this.#runtimeModel.exceptionRevoked(exceptionId);
+  }
+  consoleAPICalled({ type, args, executionContextId, timestamp, stackTrace, context }) {
+    this.#runtimeModel.consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
+  }
+  inspectRequested({ object, hints, executionContextId }) {
+    this.#runtimeModel.inspectRequested(object, hints, executionContextId);
+  }
+  bindingCalled(event) {
+    this.#runtimeModel.bindingCalled(event);
+  }
+};
+var ExecutionContext = class {
+  id;
+  uniqueId;
+  name;
+  #label;
+  origin;
+  isDefault;
+  runtimeModel;
+  debuggerModel;
+  frameId;
+  constructor(runtimeModel, id, uniqueId, name, origin, isDefault, frameId) {
+    this.id = id;
+    this.uniqueId = uniqueId;
+    this.name = name;
+    this.#label = null;
+    this.origin = origin;
+    this.isDefault = isDefault;
+    this.runtimeModel = runtimeModel;
+    this.debuggerModel = runtimeModel.debuggerModel();
+    this.frameId = frameId;
+    this.#setLabel("");
+  }
+  target() {
+    return this.runtimeModel.target();
+  }
+  static comparator(a, b) {
+    function targetWeight(target) {
+      if (target.parentTarget()?.type() !== Type2.FRAME) {
+        return 5;
+      }
+      if (target.type() === Type2.FRAME) {
+        return 4;
+      }
+      if (target.type() === Type2.ServiceWorker) {
+        return 3;
+      }
+      if (target.type() === Type2.Worker || target.type() === Type2.SHARED_WORKER) {
+        return 2;
+      }
+      return 1;
+    }
+    function targetPath(target) {
+      let currentTarget = target;
+      const parents = [];
+      while (currentTarget) {
+        parents.push(currentTarget);
+        currentTarget = currentTarget.parentTarget();
+      }
+      return parents.reverse();
+    }
+    const tagetsA = targetPath(a.target());
+    const targetsB = targetPath(b.target());
+    let targetA;
+    let targetB;
+    for (let i = 0; ; i++) {
+      if (!tagetsA[i] || !targetsB[i] || tagetsA[i] !== targetsB[i]) {
+        targetA = tagetsA[i];
+        targetB = targetsB[i];
+        break;
+      }
+    }
+    if (!targetA && targetB) {
+      return -1;
+    }
+    if (!targetB && targetA) {
+      return 1;
+    }
+    if (targetA && targetB) {
+      const weightDiff = targetWeight(targetA) - targetWeight(targetB);
+      if (weightDiff) {
+        return -weightDiff;
+      }
+      return targetA.id().localeCompare(targetB.id());
+    }
+    if (a.isDefault) {
+      return -1;
+    }
+    if (b.isDefault) {
+      return 1;
+    }
+    return a.name.localeCompare(b.name);
+  }
+  async evaluate(options, userGesture, awaitPromise) {
+    if (this.debuggerModel.selectedCallFrame()) {
+      return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
+    }
+    return await this.evaluateGlobal(options, userGesture, awaitPromise);
+  }
+  globalObject(objectGroup, generatePreview) {
+    const evaluationOptions = {
+      expression: "this",
+      objectGroup,
+      includeCommandLineAPI: false,
+      silent: true,
+      returnByValue: false,
+      generatePreview
+    };
+    return this.evaluateGlobal(evaluationOptions, false, false);
+  }
+  async callFunctionOn(options) {
+    const response = await this.runtimeModel.agent.invoke_callFunctionOn({
+      functionDeclaration: options.functionDeclaration,
+      returnByValue: options.returnByValue,
+      userGesture: options.userGesture,
+      awaitPromise: options.awaitPromise,
+      throwOnSideEffect: options.throwOnSideEffect,
+      arguments: options.arguments,
+      // Old back-ends don't know about uniqueContextId (and also don't generate
+      // one), so fall back to contextId in that case (https://crbug.com/1192621).
+      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
+    });
+    const error = response.getError();
+    if (error) {
+      return { error };
+    }
+    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async evaluateGlobal(options, userGesture, awaitPromise) {
+    if (!options.expression) {
+      options.expression = "this";
+    }
+    const response = await this.runtimeModel.agent.invoke_evaluate({
+      expression: options.expression,
+      objectGroup: options.objectGroup,
+      includeCommandLineAPI: options.includeCommandLineAPI,
+      silent: options.silent,
+      returnByValue: options.returnByValue,
+      generatePreview: options.generatePreview,
+      userGesture,
+      awaitPromise,
+      throwOnSideEffect: options.throwOnSideEffect,
+      timeout: options.timeout,
+      disableBreaks: options.disableBreaks,
+      replMode: options.replMode,
+      allowUnsafeEvalBlockedByCSP: options.allowUnsafeEvalBlockedByCSP,
+      // Old back-ends don't know about uniqueContextId (and also don't generate
+      // one), so fall back to contextId in that case (https://crbug.com/1192621).
+      ...this.uniqueId ? { uniqueContextId: this.uniqueId } : { contextId: this.id }
+    });
+    const error = response.getError();
+    if (error) {
+      console.error(error);
+      return { error };
+    }
+    return { object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails };
+  }
+  async globalLexicalScopeNames() {
+    const response = await this.runtimeModel.agent.invoke_globalLexicalScopeNames({ executionContextId: this.id });
+    return response.getError() ? [] : response.names;
+  }
+  label() {
+    return this.#label;
+  }
+  setLabel(label) {
+    this.#setLabel(label);
+    this.runtimeModel.dispatchEventToListeners(Events8.ExecutionContextChanged, this);
+  }
+  #setLabel(label) {
+    if (label) {
+      this.#label = label;
+      return;
+    }
+    if (this.name) {
+      this.#label = this.name;
+      return;
+    }
+    const parsedUrl = Common23.ParsedURL.ParsedURL.fromString(this.origin);
+    this.#label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : "";
+  }
+};
+SDKModel.register(RuntimeModel, { capabilities: 4, autostart: true });
 
 // gen/front_end/core/sdk/NetworkManager.js
 var _a2;
@@ -28432,6 +28424,20 @@ var str_7 = i18n15.i18n.registerUIStrings("core/sdk/NetworkManager.ts", UIString
 var i18nString7 = i18n15.i18n.getLocalizedString.bind(void 0, str_7);
 var i18nLazyString = i18n15.i18n.getLazilyComputedLocalizedString.bind(void 0, str_7);
 var requestToManagerMap = /* @__PURE__ */ new WeakMap();
+var FULL_FIDELITY_RESEND_TYPES = /* @__PURE__ */ new Set([
+  Common24.ResourceType.resourceTypes.XHR,
+  Common24.ResourceType.resourceTypes.Fetch,
+  Common24.ResourceType.resourceTypes.Script,
+  Common24.ResourceType.resourceTypes.Stylesheet,
+  Common24.ResourceType.resourceTypes.Image,
+  Common24.ResourceType.resourceTypes.Media,
+  Common24.ResourceType.resourceTypes.Font,
+  Common24.ResourceType.resourceTypes.Wasm,
+  Common24.ResourceType.resourceTypes.Manifest,
+  Common24.ResourceType.resourceTypes.TextTrack,
+  Common24.ResourceType.resourceTypes.SourceMapScript,
+  Common24.ResourceType.resourceTypes.SourceMapStyleSheet
+]);
 var CONNECTION_TYPES = /* @__PURE__ */ new Map([
   [
     "2g",
@@ -28513,16 +28519,81 @@ var NetworkManager = class _NetworkManager extends SDKModel {
   static forRequest(request) {
     return requestToManagerMap.get(request) || null;
   }
-  static canReplayRequest(request) {
-    return Boolean(requestToManagerMap.get(request)) && Boolean(request.backendRequestId()) && !request.isRedirect() && request.resourceType() === Common24.ResourceType.resourceTypes.XHR;
+  static canResendRequest(request) {
+    if (!requestToManagerMap.get(request) || !request.backendRequestId() || request.isRedirect()) {
+      return false;
+    }
+    return FULL_FIDELITY_RESEND_TYPES.has(request.resourceType());
   }
   static replayRequest(request) {
+    void _NetworkManager.resendRequest(request);
+  }
+  static async resendRequest(request) {
     const manager = requestToManagerMap.get(request);
     const requestId = request.backendRequestId();
     if (!manager || !requestId || request.isRedirect()) {
       return;
     }
-    void manager.#networkAgent.invoke_replayXHR({ requestId });
+    Host5.userMetrics.resendRequest(Host5.UserMetrics.resendRequestType(request.resourceType()));
+    if (request.resourceType() === Common24.ResourceType.resourceTypes.XHR) {
+      void manager.#networkAgent.invoke_replayXHR({ requestId });
+      return;
+    }
+    const target = manager.target();
+    const runtimeModel = target.model(RuntimeModel);
+    if (!runtimeModel) {
+      return;
+    }
+    let executionContext = null;
+    const frameId = request.frameId;
+    if (frameId) {
+      executionContext = runtimeModel.executionContexts().find((ctx) => ctx.frameId === frameId && ctx.isDefault) ?? null;
+    }
+    const usesFallbackContext = !executionContext;
+    if (!executionContext) {
+      executionContext = runtimeModel.defaultExecutionContext();
+    }
+    if (!executionContext) {
+      return;
+    }
+    if (usesFallbackContext) {
+      runtimeModel.target().targetManager().getConsole().warn("Resend: original execution context unavailable, using top-level context.");
+    }
+    const method = request.requestMethod;
+    const url = request.url();
+    const headers = [];
+    for (const { name, value } of request.requestHeaders()) {
+      if (name.startsWith(":")) {
+        continue;
+      }
+      const lower = name.toLowerCase();
+      if (lower === "host" || lower === "connection" || lower === "content-length" || lower === "cookie" || lower === "origin" || lower === "referer") {
+        continue;
+      }
+      headers.push([name, value]);
+    }
+    const body = await request.requestFormData();
+    const fetchOptions = {
+      method,
+      headers,
+      credentials: "include"
+    };
+    const isGetOrHead = method === "GET" || method === "HEAD";
+    if (body && !isGetOrHead) {
+      fetchOptions.body = body;
+    }
+    const expression = `fetch(${JSON.stringify(url)}, ${JSON.stringify(fetchOptions)})`;
+    const response = await target.runtimeAgent().invoke_evaluate({
+      expression,
+      // Use uniqueContextId if available, otherwise fall back to contextId.
+      ...executionContext.uniqueId ? { uniqueContextId: executionContext.uniqueId } : { contextId: executionContext.id },
+      silent: false,
+      awaitPromise: true
+    });
+    if (response.getError() || response.exceptionDetails) {
+      const errorText = response.getError() || response.exceptionDetails?.exception?.description || response.exceptionDetails?.text || "Unknown error";
+      runtimeModel.target().targetManager().getConsole().error(`Resend failed for ${url}: ${errorText}`);
+    }
   }
   static async searchInRequest(request, query, caseSensitive, isRegex) {
     const manager = _NetworkManager.forRequest(request);
@@ -28764,7 +28835,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     this.dispatcher.clearRequests();
   }
 };
-var Events8;
+var Events7;
 (function(Events12) {
   Events12["RequestStarted"] = "RequestStarted";
   Events12["RequestUpdated"] = "RequestUpdated";
@@ -28779,7 +28850,7 @@ var Events8;
   Events12["ReportingApiEndpointsChangedForOrigin"] = "ReportingApiEndpointsChangedForOrigin";
   Events12["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
   Events12["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
-})(Events8 || (Events8 = {}));
+})(Events7 || (Events7 = {}));
 var BlockingConditions = {
   key: "BLOCKING",
   block: true,
@@ -29008,7 +29079,7 @@ var NetworkDispatcher = class {
     this.updateNetworkRequestWithResponse(networkRequest, info.outerResponse);
     this.updateNetworkRequest(networkRequest);
     this.getExtraInfoBuilder(requestId).addHasExtraInfo(info.hasExtraInfo);
-    this.#manager.dispatchEventToListeners(Events8.ResponseReceived, { request: networkRequest, response: info.outerResponse });
+    this.#manager.dispatchEventToListeners(Events7.ResponseReceived, { request: networkRequest, response: info.outerResponse });
   }
   requestWillBeSent({ requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectHasExtraInfo, redirectResponse, type, frameId, hasUserGesture, renderBlockingBehavior }) {
     let networkRequest = this.#requestsById.get(requestId);
@@ -29028,7 +29099,7 @@ var NetworkDispatcher = class {
         });
       }
       networkRequest = this.appendRedirect(requestId, timestamp, request.url);
-      this.#manager.dispatchEventToListeners(Events8.RequestRedirected, networkRequest);
+      this.#manager.dispatchEventToListeners(Events7.RequestRedirected, networkRequest);
     } else {
       networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture, this.#manager.target().targetManager().getConsole());
       if (renderBlockingBehavior) {
@@ -29071,7 +29142,7 @@ var NetworkDispatcher = class {
         mimeType: response.mimeType,
         lastModified: lastModifiedHeader ? new Date(lastModifiedHeader) : null
       };
-      this.#manager.dispatchEventToListeners(Events8.RequestUpdateDropped, eventData);
+      this.#manager.dispatchEventToListeners(Events7.RequestUpdateDropped, eventData);
       return;
     }
     networkRequest.responseReceivedTime = timestamp;
@@ -29079,7 +29150,7 @@ var NetworkDispatcher = class {
     this.updateNetworkRequestWithResponse(networkRequest, response);
     this.updateNetworkRequest(networkRequest);
     this.getExtraInfoBuilder(requestId).addHasExtraInfo(hasExtraInfo);
-    this.#manager.dispatchEventToListeners(Events8.ResponseReceived, { request: networkRequest, response });
+    this.#manager.dispatchEventToListeners(Events7.ResponseReceived, { request: networkRequest, response });
   }
   dataReceived(event) {
     let networkRequest = this.#requestsById.get(event.requestId);
@@ -29102,7 +29173,7 @@ var NetworkDispatcher = class {
     }
     this.getExtraInfoBuilder(requestId).finished();
     this.finishNetworkRequest(networkRequest, finishTime, encodedDataLength);
-    this.#manager.dispatchEventToListeners(Events8.LoadingFinished, networkRequest);
+    this.#manager.dispatchEventToListeners(Events7.LoadingFinished, networkRequest);
   }
   loadingFailed({ requestId, timestamp: time, type: resourceType, errorText: localizedDescription, canceled, blockedReason, corsErrorStatus }) {
     const networkRequest = this.#requestsById.get(requestId);
@@ -29116,7 +29187,7 @@ var NetworkDispatcher = class {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === "inspector") {
         const message = i18nString7(UIStrings7.requestWasBlockedByDevtoolsS, { PH1: networkRequest.url() });
-        this.#manager.dispatchEventToListeners(Events8.MessageGenerated, { message, requestId, warning: true });
+        this.#manager.dispatchEventToListeners(Events7.MessageGenerated, { message, requestId, warning: true });
       }
     }
     if (corsErrorStatus) {
@@ -29317,10 +29388,10 @@ var NetworkDispatcher = class {
     if (networkRequest.loaderId === networkRequest.requestId() || networkRequest.loaderId === "") {
       this.#multitargetNetworkManager.inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
     }
-    this.#manager.dispatchEventToListeners(Events8.RequestStarted, { request: networkRequest, originalRequest });
+    this.#manager.dispatchEventToListeners(Events7.RequestStarted, { request: networkRequest, originalRequest });
   }
   updateNetworkRequest(networkRequest) {
-    this.#manager.dispatchEventToListeners(Events8.RequestUpdated, networkRequest);
+    this.#manager.dispatchEventToListeners(Events7.RequestUpdated, networkRequest);
   }
   finishNetworkRequest(networkRequest, finishTime, encodedDataLength) {
     networkRequest.endTime = finishTime;
@@ -29335,7 +29406,7 @@ var NetworkDispatcher = class {
         networkRequest.setTransferSize(encodedDataLength);
       }
     }
-    this.#manager.dispatchEventToListeners(Events8.RequestFinished, networkRequest);
+    this.#manager.dispatchEventToListeners(Events7.RequestFinished, networkRequest);
     this.#multitargetNetworkManager.inflightMainResourceRequests.delete(networkRequest.requestId());
     const settings = this.#manager.target().targetManager().settings;
     if (settings.moduleSetting("monitoring-xhr-enabled").get() && networkRequest.resourceType().category() === Common24.ResourceType.resourceCategories.XHR) {
@@ -29346,7 +29417,7 @@ var NetworkDispatcher = class {
       } else {
         message = i18nString7(UIStrings7.sFinishedLoadingSS, { PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url() });
       }
-      this.#manager.dispatchEventToListeners(Events8.MessageGenerated, { message, requestId: networkRequest.requestId(), warning: false });
+      this.#manager.dispatchEventToListeners(Events7.MessageGenerated, { message, requestId: networkRequest.requestId(), warning: false });
     }
   }
   clearRequests() {
@@ -29635,19 +29706,19 @@ var NetworkDispatcher = class {
     request.setTrustTokenOperationDoneEvent(event);
   }
   reportingApiReportAdded(data) {
-    this.#manager.dispatchEventToListeners(Events8.ReportingApiReportAdded, data.report);
+    this.#manager.dispatchEventToListeners(Events7.ReportingApiReportAdded, data.report);
   }
   reportingApiReportUpdated(data) {
-    this.#manager.dispatchEventToListeners(Events8.ReportingApiReportUpdated, data.report);
+    this.#manager.dispatchEventToListeners(Events7.ReportingApiReportUpdated, data.report);
   }
   reportingApiEndpointsChangedForOrigin(data) {
-    this.#manager.dispatchEventToListeners(Events8.ReportingApiEndpointsChangedForOrigin, data);
+    this.#manager.dispatchEventToListeners(Events7.ReportingApiEndpointsChangedForOrigin, data);
   }
   deviceBoundSessionsAdded(_params) {
-    this.#manager.dispatchEventToListeners(Events8.DeviceBoundSessionsAdded, _params.sessions);
+    this.#manager.dispatchEventToListeners(Events7.DeviceBoundSessionsAdded, _params.sessions);
   }
   deviceBoundSessionEventOccurred(_params) {
-    this.#manager.dispatchEventToListeners(Events8.DeviceBoundSessionEventOccurred, _params);
+    this.#manager.dispatchEventToListeners(Events7.DeviceBoundSessionEventOccurred, _params);
   }
   policyUpdated() {
   }
@@ -30536,8 +30607,8 @@ var CookieModel = class extends SDKModel {
   constructor(target) {
     super(target);
     target.model(ResourceTreeModel)?.addEventListener(Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-    target.model(NetworkManager)?.addEventListener(Events8.ResponseReceived, this.#onResponseReceived, this);
-    target.model(NetworkManager)?.addEventListener(Events8.LoadingFinished, this.#onLoadingFinished, this);
+    target.model(NetworkManager)?.addEventListener(Events7.ResponseReceived, this.#onResponseReceived, this);
+    target.model(NetworkManager)?.addEventListener(Events7.LoadingFinished, this.#onLoadingFinished, this);
   }
   addBlockedCookie(cookie, blockedReasons) {
     const key = cookie.key();
@@ -32557,7 +32628,7 @@ var NetworkRequest = class _NetworkRequest extends Common27.ObjectWrapper.Object
         const message = i18nString9(UIStrings9.setcookieHeaderIsIgnoredIn, {
           PH1: this.url()
         });
-        networkManager.dispatchEventToListeners(Events8.MessageGenerated, { message, requestId: this.#requestId, warning: true });
+        networkManager.dispatchEventToListeners(Events7.MessageGenerated, { message, requestId: this.#requestId, warning: true });
       }
     }
     const cookieModel = networkManager.target().model(CookieModel);
@@ -33066,11 +33137,11 @@ var AccessibilityModel = class extends SDKModel {
     void this.resumeModel();
     const domModel = target.model(DOMModel);
     if (domModel) {
-      domModel.addEventListener(Events6.NodeRemoved, () => {
+      domModel.addEventListener(Events5.NodeRemoved, () => {
         this.clear();
         this.dispatchEventToListeners("TreeUpdated", {});
       });
-      domModel.addEventListener(Events6.NodeInserted, () => {
+      domModel.addEventListener(Events5.NodeInserted, () => {
         this.clear();
         this.dispatchEventToListeners("TreeUpdated", {});
       });
@@ -33313,7 +33384,7 @@ var AnimationDOMNode = class _AnimationDOMNode {
       name: REPORT_SCROLL_POSITION_BINDING_NAME,
       executionContextName: DEVTOOLS_ANIMATIONS_WORLD_NAME
     });
-    runtimeModel.addEventListener(Events4.BindingCalled, this.#scrollBindingListener);
+    runtimeModel.addEventListener(Events8.BindingCalled, this.#scrollBindingListener);
   }
   async #removeReportScrollPositionBinding() {
     if (!this.#scrollBindingListener) {
@@ -33323,7 +33394,7 @@ var AnimationDOMNode = class _AnimationDOMNode {
     await runtimeModel.removeBinding({
       name: REPORT_SCROLL_POSITION_BINDING_NAME
     });
-    runtimeModel.removeEventListener(Events4.BindingCalled, this.#scrollBindingListener);
+    runtimeModel.removeEventListener(Events8.BindingCalled, this.#scrollBindingListener);
     this.#scrollBindingListener = void 0;
   }
   async addScrollEventListener(onScroll) {
@@ -34043,7 +34114,7 @@ var AutofillModel_exports = {};
 __export(AutofillModel_exports, {
   AutofillModel: () => AutofillModel
 });
-import * as Host5 from "./../host/host.js";
+import * as Host6 from "./../host/host.js";
 var AutofillModel = class extends SDKModel {
   agent;
   #enabled;
@@ -34172,7 +34243,7 @@ var AutofillModel = class extends SDKModel {
     });
   }
   enable() {
-    if (this.#enabled || Host5.InspectorFrontendHost.isUnderTest()) {
+    if (this.#enabled || Host6.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     void this.agent.invoke_enable();
@@ -34180,7 +34251,7 @@ var AutofillModel = class extends SDKModel {
     this.#enabled = true;
   }
   disable() {
-    if (!this.#enabled || Host5.InspectorFrontendHost.isUnderTest()) {
+    if (!this.#enabled || Host6.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     this.#enabled = false;
@@ -34231,7 +34302,7 @@ __export(ChildTargetManager_exports, {
 });
 import * as i18n23 from "./../i18n/i18n.js";
 import * as Common29 from "./../common/common.js";
-import * as Host6 from "./../host/host.js";
+import * as Host7 from "./../host/host.js";
 var UIStrings10 = {
   /**
    * @description Text that refers to the main target. The main target is the primary webpage that
@@ -34267,7 +34338,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     } else {
       void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
     }
-    if (parentTarget.parentTarget()?.type() !== Type2.FRAME && !Host6.InspectorFrontendHost.isUnderTest()) {
+    if (parentTarget.parentTarget()?.type() !== Type2.FRAME && !Host7.InspectorFrontendHost.isUnderTest()) {
       void this.#targetAgent.invoke_setDiscoverTargets({ discover: true });
       void this.#targetAgent.invoke_setRemoteLocations({ locations: [{ host: "localhost", port: 9229 }] });
     }
@@ -34506,7 +34577,7 @@ __export(Connections_exports, {
 });
 import * as i18n29 from "./../i18n/i18n.js";
 import * as Common33 from "./../common/common.js";
-import * as Host7 from "./../host/host.js";
+import * as Host8 from "./../host/host.js";
 import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
 import * as Root11 from "./../root/root.js";
 
@@ -35292,8 +35363,8 @@ var MainConnection = class {
   #eventListeners;
   constructor() {
     this.#eventListeners = [
-      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
-      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
+      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
+      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
     ];
   }
   setOnMessage(onMessage) {
@@ -35304,7 +35375,7 @@ var MainConnection = class {
   }
   sendRawMessage(message) {
     if (this.onMessage) {
-      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
+      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.sendMessageToBackend(message);
     }
   }
   dispatchMessage(event) {
@@ -35427,7 +35498,7 @@ var StubTransport = class {
     this.#onDisconnect = onDisconnect;
   }
   sendRawMessage(message) {
-    window.setTimeout(this.respondWithError.bind(this, message), 0);
+    globalThis.setTimeout(this.respondWithError.bind(this, message), 0);
   }
   respondWithError(message) {
     const messageObject = JSON.parse(message);
@@ -35451,7 +35522,7 @@ var StubTransport = class {
 async function initMainConnection(createRootTarget, onConnectionLost) {
   ProtocolClient3.ConnectionTransport.ConnectionTransport.setFactory(createMainTransport.bind(null, onConnectionLost));
   await createRootTarget();
-  Host7.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
+  Host8.InspectorFrontendHost.InspectorFrontendHostInstance.connectionReady();
 }
 function createMainTransport(onConnectionLost) {
   if (Root11.Runtime.Runtime.isTraceApp()) {
@@ -35463,7 +35534,7 @@ function createMainTransport(onConnectionLost) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
     return new WebSocketTransport(ws, onConnectionLost);
   }
-  const notEmbeddedOrWs = Host7.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
+  const notEmbeddedOrWs = Host8.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode();
   if (notEmbeddedOrWs) {
     return new StubTransport();
   }
@@ -35480,7 +35551,7 @@ __export(ConsoleModel_exports, {
   MessageSourceDisplayName: () => MessageSourceDisplayName
 });
 import * as Common34 from "./../common/common.js";
-import * as Host9 from "./../host/host.js";
+import * as Host10 from "./../host/host.js";
 import * as i18n33 from "./../i18n/i18n.js";
 import * as Platform18 from "./../platform/platform.js";
 
@@ -35608,7 +35679,7 @@ var LogModel_exports = {};
 __export(LogModel_exports, {
   LogModel: () => LogModel
 });
-import * as Host8 from "./../host/host.js";
+import * as Host9 from "./../host/host.js";
 var LogModel = class extends SDKModel {
   #logAgent;
   constructor(target) {
@@ -35616,7 +35687,7 @@ var LogModel = class extends SDKModel {
     target.registerLogDispatcher(this);
     this.#logAgent = target.logAgent();
     void this.#logAgent.invoke_enable();
-    if (!Host8.InspectorFrontendHost.isUnderTest()) {
+    if (!Host9.InspectorFrontendHost.isUnderTest()) {
       void this.#logAgent.invoke_startViolationsReport({
         config: [
           { name: "longTask", threshold: 200 },
@@ -35705,13 +35776,13 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
     const runtimeModel = target.model(RuntimeModel);
     if (runtimeModel) {
-      eventListeners.push(runtimeModel.addEventListener(Events4.ExceptionThrown, this.exceptionThrown.bind(this, runtimeModel)));
-      eventListeners.push(runtimeModel.addEventListener(Events4.ExceptionRevoked, this.exceptionRevoked.bind(this, runtimeModel)));
-      eventListeners.push(runtimeModel.addEventListener(Events4.ConsoleAPICalled, this.consoleAPICalled.bind(this, runtimeModel)));
+      eventListeners.push(runtimeModel.addEventListener(Events8.ExceptionThrown, this.exceptionThrown.bind(this, runtimeModel)));
+      eventListeners.push(runtimeModel.addEventListener(Events8.ExceptionRevoked, this.exceptionRevoked.bind(this, runtimeModel)));
+      eventListeners.push(runtimeModel.addEventListener(Events8.ConsoleAPICalled, this.consoleAPICalled.bind(this, runtimeModel)));
       if (target.parentTarget()?.type() !== Type2.FRAME) {
-        eventListeners.push(runtimeModel.debuggerModel().addEventListener(Events5.GlobalObjectCleared, this.clearIfNecessary, this));
+        eventListeners.push(runtimeModel.debuggerModel().addEventListener(Events4.GlobalObjectCleared, this.clearIfNecessary, this));
       }
-      eventListeners.push(runtimeModel.addEventListener(Events4.QueryObjectRequested, this.queryObjectRequested.bind(this, runtimeModel)));
+      eventListeners.push(runtimeModel.addEventListener(Events8.QueryObjectRequested, this.queryObjectRequested.bind(this, runtimeModel)));
     }
     this.#targetListeners.set(target, eventListeners);
   }
@@ -35738,7 +35809,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       /* awaitPromise */
       false
     );
-    Host9.userMetrics.actionTaken(Host9.UserMetrics.Action.ConsoleEvaluated);
+    Host10.userMetrics.actionTaken(Host10.UserMetrics.Action.ConsoleEvaluated);
     if ("error" in result) {
       return;
     }
@@ -36904,8 +36975,8 @@ var DOMDebuggerModel = class extends SDKModel {
     this.agent = target.domdebuggerAgent();
     this.#runtimeModel = target.model(RuntimeModel);
     this.#domModel = target.model(DOMModel);
-    this.#domModel.addEventListener(Events6.DocumentUpdated, this.documentUpdated, this);
-    this.#domModel.addEventListener(Events6.NodeRemoved, this.nodeRemoved, this);
+    this.#domModel.addEventListener(Events5.DocumentUpdated, this.documentUpdated, this);
+    this.#domModel.addEventListener(Events5.NodeRemoved, this.nodeRemoved, this);
     this.#domBreakpoints = [];
     this.#domBreakpointsSetting = this.target().targetManager().settings.createLocalSetting("dom-breakpoints", []);
     if (this.#domModel.existingDocument()) {
@@ -37920,7 +37991,7 @@ var IsolateManager = class _IsolateManager extends Common37.ObjectWrapper.Object
     const pollId = this.#pollId;
     while (pollId === this.#pollId) {
       await Promise.all(Array.from(this.isolates(), (isolate) => isolate.update()));
-      await new Promise((r) => window.setTimeout(r, PollIntervalMs));
+      await new Promise((r) => globalThis.setTimeout(r, PollIntervalMs));
     }
   }
 };
@@ -40009,7 +40080,7 @@ var ServiceWorkerContextNamer = class {
     this.#serviceWorkerManager = serviceWorkerManager;
     serviceWorkerManager.addEventListener("RegistrationUpdated", this.registrationsUpdated, this);
     serviceWorkerManager.addEventListener("RegistrationDeleted", this.registrationsUpdated, this);
-    this.#target.targetManager().addModelListener(RuntimeModel, Events4.ExecutionContextCreated, this.executionContextCreated, this);
+    this.#target.targetManager().addModelListener(RuntimeModel, Events8.ExecutionContextCreated, this.executionContextCreated, this);
   }
   registrationsUpdated() {
     this.#versionByTargetId.clear();

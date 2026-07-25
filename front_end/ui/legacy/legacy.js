@@ -2731,6 +2731,8 @@ __export(Widget_exports, {
   WidgetDirective: () => WidgetDirective,
   WidgetElement: () => WidgetElement,
   WidgetFocusRestorer: () => WidgetFocusRestorer,
+  instantiateWidget: () => instantiateWidget,
+  lookupUniverseForElement: () => lookupUniverseForElement,
   registerWidgetConfig: () => registerWidgetConfig,
   widget: () => widget,
   widgetConfig: () => widgetConfig,
@@ -2854,8 +2856,30 @@ function appendStyle(node, ...styles) {
   }
 }
 
+// gen/front_end/ui/legacy/UniverseRequestEvent.js
+var UniverseRequestEvent_exports = {};
+__export(UniverseRequestEvent_exports, {
+  UniverseRequestEvent: () => UniverseRequestEvent
+});
+var UniverseRequestEvent = class _UniverseRequestEvent extends Event {
+  static eventName = "universerequest";
+  /**
+   * The `Universe` will be filled in by the `RootView` in the event handler.
+   * Widget.ts dispatches a new UniverseRequestEvent, and retrieves the Universe from the event right after.
+   */
+  universe;
+  constructor() {
+    super(_UniverseRequestEvent.eventName, { bubbles: true, composed: true });
+  }
+};
+
 // gen/front_end/ui/legacy/Widget.js
 var { html } = Lit;
+function lookupUniverseForElement(element) {
+  const event = new UniverseRequestEvent();
+  element.dispatchEvent(event);
+  return event.universe;
+}
 var originalAppendChild = Node.prototype.appendChild;
 var originalInsertBefore = Node.prototype.insertBefore;
 var originalRemoveChild = Node.prototype.removeChild;
@@ -2998,10 +3022,21 @@ function instantiateWidget(element, widgetConfig2) {
   let newWidget;
   if (Widget.isPrototypeOf(widgetConfig2.widgetClass)) {
     const ctor = widgetConfig2.widgetClass;
-    newWidget = new ctor(element);
+    const depsCtors = ctor.INJECT;
+    if (depsCtors && depsCtors.length > 0) {
+      const universe = lookupUniverseForElement(element);
+      if (!universe) {
+        throw new Error(`No Universe found for widget ${ctor.name} requesting dependencies via INJECT.`);
+      }
+      const deps = depsCtors.map((depCtor) => universe.get(depCtor));
+      newWidget = new ctor(element, deps);
+    } else {
+      newWidget = new ctor(element);
+    }
   } else {
     const factory = widgetConfig2.widgetClass;
-    newWidget = factory(element);
+    const universe = lookupUniverseForElement(element);
+    newWidget = factory(element, universe);
   }
   if (widgetConfig2.widgetParams) {
     Object.assign(newWidget, widgetConfig2.widgetParams);
@@ -3266,6 +3301,14 @@ var Widget = class _Widget {
     }
     widgetMap.set(this.element, this);
   }
+  /**
+   * An array of dependency constructors that this widget class expects to receive as an array
+   * in the second positional argument to its constructor during `instantiateWidget`:
+   * `constructor(element: HTMLElement, deps: WidgetDependencies<typeof MyWidget>)`
+   *
+   * Override this static field in sub-classes to specify dependency constructors to be retrieved from `Universe`.
+   */
+  static INJECT = [];
   /**
    * Returns the {@link Widget} whose element is the given `node`, or `undefined`
    * if the `node` is not an element for a widget.
@@ -14299,7 +14342,7 @@ dt-icon-label {
   padding: 1px 3px;
   margin: 0 2px;
   font-size: 11px;
-  font-family: sans-serif;
+  font-family: inherit;
   white-space: nowrap;
   display: inline-block;
 }
@@ -20423,12 +20466,16 @@ var rootView_css_default = `/*
 // gen/front_end/ui/legacy/RootView.js
 var RootView = class extends VBox {
   window;
-  constructor() {
+  constructor(universe) {
     super();
     this.markAsRoot();
     this.element.classList.add("root-view");
     this.registerRequiredCSS(rootView_css_default);
     this.element.setAttribute("spellcheck", "false");
+    this.element.addEventListener(UniverseRequestEvent.eventName, (event) => {
+      event.universe = universe;
+      event.stopPropagation();
+    });
   }
   attachToDocument(document2) {
     if (document2.defaultView) {
@@ -23768,6 +23815,7 @@ export {
   Treeoutline_exports as TreeOutline,
   UIUserMetrics_exports as UIUserMetrics,
   UIUtils_exports as UIUtils,
+  UniverseRequestEvent_exports as UniverseRequestEvent,
   View_exports as View,
   ViewManager_exports as ViewManager,
   Widget_exports as Widget,

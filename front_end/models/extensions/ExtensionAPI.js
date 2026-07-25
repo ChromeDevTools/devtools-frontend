@@ -775,7 +775,7 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
         return inspectedTabId;
     }
     let keyboardEventRequestQueue = [];
-    let forwardTimer = null;
+    let forwardTimer;
     function forwardKeyboardEvent(event) {
         // Check if the event should be forwarded.
         // This is a workaround for crbug.com/923338.
@@ -820,11 +820,11 @@ self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, 
         };
         keyboardEventRequestQueue.push(requestPayload);
         if (!forwardTimer) {
-            forwardTimer = window.setTimeout(forwardEventQueue, 0);
+            forwardTimer = globalThis.setTimeout(forwardEventQueue, 0);
         }
     }
     function forwardEventQueue() {
-        forwardTimer = null;
+        forwardTimer = undefined;
         extensionServer.sendRequest({ command: "_forwardKeyboardEvent" /* PrivateAPI.Commands.ForwardKeyboardEvent */, entries: keyboardEventRequestQueue });
         keyboardEventRequestQueue = [];
     }

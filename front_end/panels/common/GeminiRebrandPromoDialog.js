@@ -143,7 +143,7 @@ export class GeminiRebrandPromoDialog extends UI.Widget.VBox {
         if (!Root.Runtime.hostConfig.aidaAvailability?.enabled) {
             return;
         }
-        const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+        const currentAidaAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
         if (currentAidaAvailability !== "available" /* Host.AidaClient.AidaAccessPreconditions.AVAILABLE */) {
             return;
         }

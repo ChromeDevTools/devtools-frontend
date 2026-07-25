@@ -1,6 +1,7 @@
 // Copyright 2011 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../common/common.js';
 import { InspectorFrontendHostInstance } from './InspectorFrontendHost.js';
 export class UserMetrics {
     sourcesPanelFileDebugged(mediaType) {
@@ -17,6 +18,9 @@ export class UserMetrics {
     }
     actionTaken(action) {
         InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken" /* EnumeratedHistogram.ActionTaken */, action, Action.MAX_VALUE);
+    }
+    resendRequest(resourceType) {
+        InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ResendRequest" /* EnumeratedHistogram.ResendRequest */, resourceType, 16 /* ResendRequestType.MAX_VALUE */);
     }
     keybindSetSettingChanged(keybindSet) {
         const value = KeybindSetSettings[keybindSet] || 0;
@@ -892,4 +896,24 @@ export var ManifestSectionCodes;
     /* eslint-enable @typescript-eslint/naming-convention */
     ManifestSectionCodes[ManifestSectionCodes["MAX_VALUE"] = 6] = "MAX_VALUE";
 })(ManifestSectionCodes || (ManifestSectionCodes = {}));
+const resendRequestTypeMap = new Map([
+    [Common.ResourceType.resourceTypes.XHR, 0 /* ResendRequestType.XHR */],
+    [Common.ResourceType.resourceTypes.Fetch, 1 /* ResendRequestType.FETCH */],
+    [Common.ResourceType.resourceTypes.Script, 2 /* ResendRequestType.SCRIPT */],
+    [Common.ResourceType.resourceTypes.Stylesheet, 3 /* ResendRequestType.STYLESHEET */],
+    [Common.ResourceType.resourceTypes.Image, 4 /* ResendRequestType.IMAGE */],
+    [Common.ResourceType.resourceTypes.Media, 5 /* ResendRequestType.MEDIA */],
+    [Common.ResourceType.resourceTypes.Font, 6 /* ResendRequestType.FONT */],
+    [Common.ResourceType.resourceTypes.Wasm, 7 /* ResendRequestType.WASM */],
+    [Common.ResourceType.resourceTypes.Manifest, 8 /* ResendRequestType.MANIFEST */],
+    [Common.ResourceType.resourceTypes.TextTrack, 9 /* ResendRequestType.TEXT_TRACK */],
+    [Common.ResourceType.resourceTypes.SourceMapScript, 10 /* ResendRequestType.SOURCE_MAP_SCRIPT */],
+    [Common.ResourceType.resourceTypes.SourceMapStyleSheet, 11 /* ResendRequestType.SOURCE_MAP_STYLE_SHEET */],
+    [Common.ResourceType.resourceTypes.Document, 12 /* ResendRequestType.DOCUMENT */],
+    [Common.ResourceType.resourceTypes.Prefetch, 13 /* ResendRequestType.PREFETCH */],
+    [Common.ResourceType.resourceTypes.Ping, 14 /* ResendRequestType.PING */],
+]);
+export function resendRequestType(resourceType) {
+    return resendRequestTypeMap.get(resourceType) ?? 15 /* ResendRequestType.OTHER */;
+}
 //# sourceMappingURL=UserMetrics.js.map

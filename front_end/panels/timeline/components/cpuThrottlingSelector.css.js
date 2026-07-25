@@ -17,6 +17,10 @@ export default `/*
     height: 20px;
   }
 
+  * {
+    font-family: var(--default-font-family);
+  }
+
   devtools-icon[name="info"] {
     margin-left: var(--sys-size-3);
     width: var(--sys-size-8);

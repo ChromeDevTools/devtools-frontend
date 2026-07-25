@@ -193,6 +193,9 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper {
         this.#pageResult = await this.#getFieldDataForCurrentPage();
         this.dispatchEventToListeners("field-data-changed" /* Events.FIELD_DATA_CHANGED */, this.#pageResult);
     }
+    setMainDocumentURL(url) {
+        this.#mainDocumentUrl = url;
+    }
     #normalizeUrl(inputUrl) {
         const normalizedUrl = new URL(inputUrl);
         normalizedUrl.hash = '';

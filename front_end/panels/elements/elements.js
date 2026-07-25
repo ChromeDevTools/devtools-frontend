@@ -5859,7 +5859,8 @@ __export(StylePropertiesSection_exports, {
   KeyframePropertiesSection: () => KeyframePropertiesSection,
   PositionTryRuleSection: () => PositionTryRuleSection,
   RegisteredPropertiesSection: () => RegisteredPropertiesSection,
-  StylePropertiesSection: () => StylePropertiesSection
+  StylePropertiesSection: () => StylePropertiesSection,
+  constructResolvedSelector: () => constructResolvedSelector
 });
 import "./../../ui/legacy/legacy.js";
 import * as Common3 from "./../../core/common/common.js";
@@ -6138,7 +6139,11 @@ var StylePropertiesSection = class _StylePropertiesSection {
     this.selectorElement.classList.add("selector");
     this.selectorElement.textContent = headerText;
     selectorContainer.appendChild(this.selectorElement);
-    this.selectorElement.addEventListener("mouseenter", () => this.onMouseEnterSelector(), false);
+    this.selectorElement.addEventListener("mouseenter", () => {
+      if (this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSStyleRule) {
+        this.onMouseEnterSelector(this.styleInternal.parentRule);
+      }
+    }, false);
     this.selectorElement.addEventListener("mouseleave", this.onMouseOutSelector.bind(this), false);
     this.#specificityTooltips = selectorContainer.createChild("span");
     if (headerText.length > 0 || !(rule instanceof SDK6.CSSRule.CSSStyleRule)) {
@@ -6457,33 +6462,29 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
     SDK6.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK6.TargetManager.TargetManager.instance());
   }
-  onMouseEnterSelector(ruleOrSelector) {
+  onMouseEnterSelector(rule, nestingIndex) {
     if (this.hoverTimer) {
       clearTimeout(this.hoverTimer);
     }
-    this.hoverTimer = window.setTimeout(this.highlight.bind(this, void 0, ruleOrSelector), 300);
+    const selectorList = constructResolvedSelector(rule, nestingIndex);
+    if (!selectorList) {
+      return;
+    }
+    this.hoverTimer = setTimeout(this.highlight.bind(this, void 0, selectorList), 300);
   }
   /**
    * Highlights the DOM node associated with this style section in the page overlay.
-   * Use `ruleOrSelector` to highlight elements matching a specific parent/ancestor
-   * rule or selector, or omit it to use the selector of the rule displayed in this section.
+   * Use `selectorList` to highlight elements matching a specific parent/ancestor
+   * rule or selector.
    *
    * @param mode Highlight mode (defaults to `'all'`).
-   * @param ruleOrSelector Parent selector string, parent rule, or `undefined`.
+   * @param selectorList Parent selector string to highlight.
    */
-  highlight(mode = "all", ruleOrSelector) {
+  highlight(mode = "all", selectorList) {
     SDK6.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK6.TargetManager.TargetManager.instance());
     const node = this.stylesContainer.node();
     if (!node) {
       return;
-    }
-    let selectorList;
-    if (typeof ruleOrSelector === "string") {
-      selectorList = ruleOrSelector;
-    } else if (ruleOrSelector instanceof SDK6.CSSRule.CSSStyleRule) {
-      selectorList = ruleOrSelector.selectorText();
-    } else if (this.styleInternal.parentRule instanceof SDK6.CSSRule.CSSStyleRule) {
-      selectorList = this.styleInternal.parentRule.selectorText();
     }
     node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, mode);
   }
@@ -6867,7 +6868,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
       return container;
     }
     const nestingElement = document.createElement("div");
-    nestingElement.addEventListener("mouseenter", () => this.onMouseEnterSelector(nestingSelector), false);
+    nestingElement.addEventListener("mouseenter", () => this.onMouseEnterSelector(rule, nestingIndex), false);
     nestingElement.addEventListener("mouseleave", this.onMouseOutSelector.bind(this), false);
     nestingElement.textContent = `${nestingSelector} {`;
     return nestingElement;
@@ -7749,6 +7750,29 @@ var HighlightPseudoStylePropertiesSection = class extends StylePropertiesSection
     return false;
   }
 };
+function constructResolvedSelector(rule, nestingIndex) {
+  if (!(rule instanceof SDK6.CSSRule.CSSStyleRule)) {
+    return void 0;
+  }
+  const nestingSelectors = rule.nestingSelectors;
+  if (!nestingSelectors) {
+    return nestingIndex === void 0 ? rule.selectorText() : void 0;
+  }
+  if (nestingIndex !== void 0 && (nestingIndex < 0 || nestingIndex >= nestingSelectors.length)) {
+    return void 0;
+  }
+  const selectorText = nestingIndex !== void 0 ? nestingSelectors[nestingIndex] : rule.selectorText();
+  const parentIndex = nestingIndex !== void 0 ? nestingIndex + 1 : 0;
+  const parentSelector = constructResolvedSelector(rule, parentIndex);
+  if (!parentSelector) {
+    return selectorText;
+  }
+  const sanitizedParent = parentSelector.replace(/::[a-zA-Z-]+/g, "").trim();
+  if (selectorText.includes("&")) {
+    return selectorText.replaceAll("&", `:is(${sanitizedParent})`);
+  }
+  return `:is(${sanitizedParent}) ${selectorText.trim()}`;
+}
 
 // gen/front_end/panels/elements/StylePropertyHighlighter.js
 var StylePropertyHighlighter_exports = {};
@@ -7865,15 +7889,26 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
   #aiCodeCompletionConfig;
   getCompletionHint;
   setAiAutoCompletion;
-  #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
+  #boundOnAidaAvailabilityChange = (ev) => {
+    this.#updateAiCodeCompletionStateWithAvailability(ev.data);
+  };
+  #boundOnSettingChange = () => {
+    const aidaAvailability = Host3.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (aidaAvailability !== void 0) {
+      this.#updateAiCodeCompletionStateWithAvailability(aidaAvailability);
+    }
+  };
   constructor(aiCodeCompletionConfig) {
     if (!AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesAvailable()) {
       throw new Error("AI code completion feature in Styles is not available.");
     }
     this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
-    Host3.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeCompletionState);
-    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeCompletionState);
-    void this.#updateAiCodeCompletionState();
+    Host3.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnSettingChange);
+    const initialAvailability = Host3.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAiCodeCompletionStateWithAvailability(initialAvailability);
+    }
   }
   static createInstance(aiCodeCompletionConfig) {
     return new _StylesAiCodeCompletionProvider(aiCodeCompletionConfig);
@@ -7902,8 +7937,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     this.#aiCodeCompletion = void 0;
     this.#aiCodeCompletionConfig?.onFeatureDisabled();
   }
-  async #updateAiCodeCompletionState() {
-    const aidaAvailability = await Host3.AidaClient.AidaClient.checkAccessPreconditions();
+  #updateAiCodeCompletionStateWithAvailability(aidaAvailability) {
     const isAvailable = aidaAvailability === "available";
     const devtoolsLocale = i18n15.DevToolsLocale.DevToolsLocale.instance().locale;
     const isEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale) && this.#aiCodeCompletionSetting.get();

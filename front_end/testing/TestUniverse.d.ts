@@ -43,6 +43,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
     #private;
     readonly supportsEmulation = true;
     constructor(options?: CreationOptions);
+    get<T>(ctor: Root.DevToolsContext.ConstructorT<T>): T;
     /**
      * Convenience shortcut for `createTarget({targetManager: testUniverse.targetManager})`
      */

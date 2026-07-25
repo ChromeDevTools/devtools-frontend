@@ -147,7 +147,7 @@ function createFunctionCode(inputData, functionBounds, options) {
  *
  * We filter projects by `target` to prevent cross-origin leaks.
  */
-export async function getFunctionCodeFromLocation(target, url, line, column, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+export async function getFunctionCodeFromLocation(target, url, line, column, debuggerWorkspaceBinding, options) {
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
         throw new Error('missing debugger model');
@@ -171,7 +171,7 @@ export async function getFunctionCodeFromLocation(target, url, line, column, opt
     if (!rawLocation) {
         return null;
     }
-    return await getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding);
+    return await getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options);
 }
 async function format(uiSourceCode, content, settings) {
     const contentType = uiSourceCode.contentType();
@@ -185,7 +185,7 @@ async function format(uiSourceCode, content, settings) {
 /**
  * Returns a {@link FunctionCode} for the given raw location.
  */
-export async function getFunctionCodeFromRawLocation(rawLocation, options, debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+export async function getFunctionCodeFromRawLocation(rawLocation, debuggerWorkspaceBinding, options) {
     const functionBounds = await debuggerWorkspaceBinding.functionBoundsAtRawLocation(rawLocation);
     if (!functionBounds) {
         return null;

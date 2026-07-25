@@ -25,7 +25,7 @@ export class OverlayModel extends SDKModel {
     overlayAgent;
     #debuggerModel;
     #inspectModeEnabled = false;
-    #hideHighlightTimeout = null;
+    #hideHighlightTimeout;
     #defaultHighlighter;
     #highlighter;
     #showPaintRectsSetting;
@@ -221,10 +221,8 @@ export class OverlayModel extends SDKModel {
             // overlay, so that it is not cleared by the highlight
             return;
         }
-        if (this.#hideHighlightTimeout) {
-            clearTimeout(this.#hideHighlightTimeout);
-            this.#hideHighlightTimeout = null;
-        }
+        clearTimeout(this.#hideHighlightTimeout);
+        this.#hideHighlightTimeout = undefined;
         const highlightConfig = this.buildHighlightConfig(mode);
         if (typeof showInfo !== 'undefined') {
             highlightConfig.showInfo = showInfo;
@@ -355,15 +353,13 @@ export class OverlayModel extends SDKModel {
         this.#sourceOrderModeActive = isActive;
     }
     delayedHideHighlight(delay) {
-        if (this.#hideHighlightTimeout === null) {
-            this.#hideHighlightTimeout = window.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
+        if (this.#hideHighlightTimeout === undefined) {
+            this.#hideHighlightTimeout = globalThis.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
         }
     }
     highlightFrame(frameId) {
-        if (this.#hideHighlightTimeout) {
-            clearTimeout(this.#hideHighlightTimeout);
-            this.#hideHighlightTimeout = null;
-        }
+        clearTimeout(this.#hideHighlightTimeout);
+        this.#hideHighlightTimeout = undefined;
         this.#highlighter.highlightFrame(frameId);
     }
     showHingeForDualScreen(hinge) {

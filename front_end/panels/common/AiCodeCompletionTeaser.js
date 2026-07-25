@@ -175,12 +175,14 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
             closable: true,
         });
     }
-    async #onAidaAvailabilityChange() {
-        const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-        if (currentAidaAvailability !== this.#aidaAvailability) {
-            this.#aidaAvailability = currentAidaAvailability;
+    #updateAidaAvailability(aidaAvailability) {
+        if (aidaAvailability !== this.#aidaAvailability) {
+            this.#aidaAvailability = aidaAvailability;
             this.requestUpdate();
         }
+    }
+    #onAidaAvailabilityChange(ev) {
+        this.#updateAidaAvailability(ev.data);
     }
     #onAiCodeCompletionSettingChanged() {
         if (this.#aiCodeCompletionFreCompletedSetting.get() || this.#aiCodeCompletionTeaserDismissedSetting.get()) {
@@ -265,7 +267,10 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChange);
         this.#aiCodeCompletionFreCompletedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
         this.#aiCodeCompletionTeaserDismissedSetting.addChangeListener(this.#boundOnAiCodeCompletionSettingChanged);
-        void this.#onAidaAvailabilityChange();
+        const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+        if (initialAvailability !== undefined) {
+            this.#updateAidaAvailability(initialAvailability);
+        }
     }
     willHide() {
         super.willHide();

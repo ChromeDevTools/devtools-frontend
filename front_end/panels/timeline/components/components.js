@@ -261,6 +261,10 @@ var cpuThrottlingSelector_css_default = `/*
     height: 20px;
   }
 
+  * {
+    font-family: var(--default-font-family);
+  }
+
   devtools-icon[name="info"] {
     margin-left: var(--sys-size-3);
     width: var(--sys-size-8);
@@ -5073,6 +5077,34 @@ devtools-link {
   margin-bottom: 12px;
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.section-header .section-title {
+  margin-bottom: 0;
+}
+
+.section-header .badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  height: var(--sys-size-8);
+  line-height: var(--sys-size-8);
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: 0 var(--sys-size-3);
+  border: var(--sys-size-1) solid var(--sys-color-primary);
+  color: var(--sys-color-primary);
+  font-weight: var(--ref-typeface-weight-bold);
+  font-size: var(--sys-size-5);
+  text-align: center;
+  margin-top: var(--sys-size-5);
+  margin-bottom: var(--sys-size-5);
+}
+
 /*# sourceURL=${import.meta.resolve("./liveMetricsView.css")} */`;
 
 // gen/front_end/panels/timeline/components/LiveMetricsView.js
@@ -5081,6 +5113,10 @@ var { widget: widget3 } = UI11.Widget;
 var DEVICE_OPTION_LIST = ["AUTO", ...CrUXManager9.DEVICE_SCOPE_LIST];
 var RTT_MINIMUM = 60;
 var UIStrings15 = {
+  /**
+   * @description Label of a badge/pill indicating that the metrics are for a soft navigation.
+   */
+  softNavigationPillText: "SOFT NAV",
   /**
    * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users. "field metrics" should be interpreted as "real user metrics".
    */
@@ -5882,7 +5918,10 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     <div class="container">
       <div class="live-metrics-view">
         <main class="live-metrics">
-          <h2 class="section-title">${liveMetricsTitle}</h2>
+          <div class="section-header">
+            <h2 class="section-title">${liveMetricsTitle}</h2>
+            ${input.navigationType === "soft-navigation" ? html14`<span class="badge">${i18nString14(UIStrings15.softNavigationPillText)}</span>` : nothing13}
+          </div>
           <div class="metric-cards">
             <div id="lcp">
               ${renderLcpCard(input)}
@@ -5964,6 +6003,7 @@ var LiveMetricsView = class extends UI11.Widget.Widget {
   #lcpValue;
   #clsValue;
   #inpValue;
+  #navigationType;
   #interactions = /* @__PURE__ */ new Map();
   #layoutShifts = [];
   #highlightedInteractionId = "";
@@ -5984,6 +6024,7 @@ var LiveMetricsView = class extends UI11.Widget.Widget {
     this.#lcpValue = event.data.lcp;
     this.#clsValue = event.data.cls;
     this.#inpValue = event.data.inp;
+    this.#navigationType = event.data.navigationType;
     const hasNewLS = this.#layoutShifts.length < event.data.layoutShifts.length;
     this.#layoutShifts = [...event.data.layoutShifts];
     const hasNewInteraction = this.#interactions.size < event.data.interactions.size;
@@ -6026,6 +6067,7 @@ var LiveMetricsView = class extends UI11.Widget.Widget {
     this.#inpValue = liveMetrics.inpValue;
     this.#interactions = liveMetrics.interactions;
     this.#layoutShifts = liveMetrics.layoutShifts;
+    this.#navigationType = liveMetrics.navigationType;
     this.requestUpdate();
   }
   willHide() {
@@ -6082,7 +6124,8 @@ var LiveMetricsView = class extends UI11.Widget.Widget {
       revealInteraction: this.#revealInteraction.bind(this),
       logExtraInteractionDetails: this.#logExtraInteractionDetails.bind(this),
       highlightedInteractionId: this.#highlightedInteractionId,
-      highlightedLayoutShiftClusterIds: this.#highlightedLayoutShiftClusterIds
+      highlightedLayoutShiftClusterIds: this.#highlightedLayoutShiftClusterIds,
+      navigationType: this.#navigationType
     };
     this.#view(viewInput, this.#viewOutput, this.contentElement);
   }

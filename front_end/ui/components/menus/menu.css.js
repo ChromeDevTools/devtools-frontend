@@ -21,6 +21,10 @@ export default `/*
   background-color: var(--override-menu-active-background-color, var(--sys-color-neutral-container));
 }
 
+* {
+  font-family: inherit;
+}
+
 #container {
   list-style-type: none;
   margin-top: var(--sys-size-4);

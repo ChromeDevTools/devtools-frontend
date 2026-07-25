@@ -33,6 +33,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
     sourceMapManager;
     willResolveSourceMaps;
     processSourceMapBacklog;
+    isPolling;
     constructor(target) {
         super(target);
         this.cpuProfilerModel = target.model(SDK.CPUProfilerModel.CPUProfilerModel);
@@ -55,6 +56,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
         this.performanceTraceRecording = false;
         this.willResolveSourceMaps = false;
         this.processSourceMapBacklog = [];
+        this.isPolling = false;
     }
     async start(jsCoveragePerBlock) {
         if (this.suspensionState !== "Active" /* SuspensionState.ACTIVE */) {
@@ -136,20 +138,28 @@ export class CoverageModel extends SDK.SDKModel.SDKModel {
         this.dispatchEventToListeners(Events.CoverageReset);
     }
     async startPolling() {
-        if (this.currentPollPromise || this.suspensionState !== "Active" /* SuspensionState.ACTIVE */) {
+        if (this.isPolling || this.suspensionState !== "Active" /* SuspensionState.ACTIVE */) {
             return;
         }
+        this.isPolling = true;
         await this.pollLoop();
     }
     async pollLoop() {
         this.clearTimer();
+        if (!this.isPolling) {
+            return;
+        }
         this.currentPollPromise = this.pollAndCallback();
         await this.currentPollPromise;
+        if (!this.isPolling) {
+            return;
+        }
         if (this.suspensionState === "Active" /* SuspensionState.ACTIVE */ || this.performanceTraceRecording) {
             this.pollTimer = window.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
         }
     }
     async stopPolling() {
+        this.isPolling = false;
         this.clearTimer();
         await this.currentPollPromise;
         this.currentPollPromise = null;

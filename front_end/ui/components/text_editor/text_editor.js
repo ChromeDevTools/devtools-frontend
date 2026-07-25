@@ -214,6 +214,7 @@ __export(config_exports, {
   dynamicSetting: () => dynamicSetting,
   hasActiveAiSuggestion: () => hasActiveAiSuggestion,
   indentUnit: () => indentUnit2,
+  removeTooltipHost: () => removeTooltipHost,
   setAiAutoCompleteSuggestion: () => setAiAutoCompleteSuggestion,
   showCompletionHint: () => showCompletionHint,
   showWhitespace: () => showWhitespace,
@@ -739,6 +740,12 @@ function getTooltipHost() {
   }
   return tooltipHost;
 }
+function removeTooltipHost() {
+  if (tooltipHost) {
+    tooltipHost.host.remove();
+    tooltipHost = null;
+  }
+}
 var CompletionHint = class extends CM3.WidgetType {
   text;
   constructor(text) {
@@ -960,7 +967,15 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   #aiCodeGeneration;
   #aiCodeGenerationCitations = [];
   #aidaClient = new Host.AidaClient.AidaClient();
-  #boundOnUpdateAiCodeGenerationState = this.#updateAiCodeGenerationState.bind(this);
+  #boundOnAidaAvailabilityChange = (ev) => {
+    void this.#updateAiCodeGenerationStateWithAvailability(ev.data);
+  };
+  #boundOnSettingChange = () => {
+    const aidaAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (aidaAvailability !== void 0) {
+      void this.#updateAiCodeGenerationStateWithAvailability(aidaAvailability);
+    }
+  };
   #controller = new AbortController();
   constructor(aiCodeGenerationConfig) {
     if (!AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationAvailable()) {
@@ -988,14 +1003,17 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
   dispose() {
     this.#controller.abort();
     this.#cleanupAiCodeGeneration();
-    this.#aiCodeGenerationEnabledSetting.removeChangeListener(this.#boundOnUpdateAiCodeGenerationState);
-    Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeGenerationState);
+    this.#aiCodeGenerationEnabledSetting.removeChangeListener(this.#boundOnSettingChange);
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
   }
   editorInitialized(editor) {
     this.#editor = editor;
-    Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeGenerationState);
-    this.#aiCodeGenerationEnabledSetting.addChangeListener(this.#boundOnUpdateAiCodeGenerationState);
-    void this.#updateAiCodeGenerationState();
+    Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeGenerationEnabledSetting.addChangeListener(this.#boundOnSettingChange);
+    const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      void this.#updateAiCodeGenerationStateWithAvailability(initialAvailability);
+    }
   }
   async #setupAiCodeGeneration() {
     if (this.#aiCodeGeneration) {
@@ -1018,8 +1036,7 @@ var AiCodeGenerationProvider = class _AiCodeGenerationProvider {
       effects: [this.#generationTeaserCompartment.reconfigure([])]
     });
   }
-  async #updateAiCodeGenerationState() {
-    const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+  async #updateAiCodeGenerationStateWithAvailability(aidaAvailability) {
     const isAvailable = aidaAvailability === "available";
     const devtoolsLocale = i18n3.DevToolsLocale.DevToolsLocale.instance().locale;
     const aiCodeGenerationEnabled = AiCodeGeneration.AiCodeGeneration.AiCodeGeneration.isAiCodeGenerationEnabled(devtoolsLocale);
@@ -1353,7 +1370,15 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   #aiCodeCompletionConfig;
   #aiCodeGenerationConfig;
   #aiCodeGenerationProvider;
-  #boundOnUpdateAiCodeCompletionState = this.#updateAiCodeCompletionState.bind(this);
+  #boundOnAidaAvailabilityChange = (ev) => {
+    this.#updateAiCodeCompletionStateWithAvailability(ev.data);
+  };
+  #boundOnSettingChange = () => {
+    const aidaAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (aidaAvailability !== void 0) {
+      this.#updateAiCodeCompletionStateWithAvailability(aidaAvailability);
+    }
+  };
   constructor(aiCodeCompletionConfig) {
     if (!AiCodeCompletion2.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {
       throw new Error("AI code completion feature is not available.");
@@ -1393,8 +1418,8 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
   dispose() {
     this.#detachTeaser();
     this.#teaser = void 0;
-    this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnUpdateAiCodeCompletionState);
-    Host2.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeCompletionState);
+    this.#aiCodeCompletionSetting.removeChangeListener(this.#boundOnSettingChange);
+    Host2.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
     this.#cleanupAiCodeCompletion();
     this.#aiCodeGenerationProvider?.dispose();
   }
@@ -1407,9 +1432,12 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
       });
       this.#editor.editor.dispatch({ effects: this.#teaserCompartment.reconfigure([aiCodeCompletionTeaserExtension(this.#teaser)]) });
     }
-    Host2.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnUpdateAiCodeCompletionState);
-    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnUpdateAiCodeCompletionState);
-    void this.#updateAiCodeCompletionState();
+    Host2.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnSettingChange);
+    const initialAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
+    if (initialAvailability !== void 0) {
+      this.#updateAiCodeCompletionStateWithAvailability(initialAvailability);
+    }
     this.#aiCodeGenerationProvider?.editorInitialized(editor);
   }
   clearCache() {
@@ -1442,8 +1470,7 @@ var AiCodeCompletionProvider = class _AiCodeCompletionProvider {
     this.#aiCodeCompletion = void 0;
     this.#aiCodeCompletionConfig?.onFeatureDisabled();
   }
-  async #updateAiCodeCompletionState() {
-    const aidaAvailability = await Host2.AidaClient.AidaClient.checkAccessPreconditions();
+  #updateAiCodeCompletionStateWithAvailability(aidaAvailability) {
     const isAvailable = aidaAvailability === "available";
     const devtoolsLocale = i18n4.DevToolsLocale.DevToolsLocale.instance().locale;
     const aiCodeCompletionEnabled = AiCodeCompletion2.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionEnabled(devtoolsLocale);

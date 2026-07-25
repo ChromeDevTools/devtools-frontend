@@ -160,7 +160,7 @@ export class StubTransport {
         this.#onDisconnect = onDisconnect;
     }
     sendRawMessage(message) {
-        window.setTimeout(this.respondWithError.bind(this, message), 0);
+        globalThis.setTimeout(this.respondWithError.bind(this, message), 0);
     }
     respondWithError(message) {
         const messageObject = JSON.parse(message);

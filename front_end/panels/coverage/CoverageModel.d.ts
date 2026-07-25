@@ -41,6 +41,7 @@ export declare class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     private sourceMapManager;
     private willResolveSourceMaps;
     private processSourceMapBacklog;
+    private isPolling;
     constructor(target: SDK.Target.Target);
     start(jsCoveragePerBlock: boolean): Promise<boolean>;
     private sourceMapAttached;

@@ -42,10 +42,8 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
         this.node = null;
         this.#cssModel = null;
         this.computedStylePromise = undefined;
-        if (this.frameResizedTimer) {
-            clearTimeout(this.frameResizedTimer);
-            this.frameResizedTimer = undefined;
-        }
+        clearTimeout(this.frameResizedTimer);
+        this.frameResizedTimer = undefined;
     }
     updateModel(cssModel) {
         if (this.#cssModel === cssModel) {
@@ -96,12 +94,10 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
     onFrameResized() {
         function refreshContents() {
             this.onCSSModelChanged(null);
-            delete this.frameResizedTimer;
+            this.frameResizedTimer = undefined;
         }
-        if (this.frameResizedTimer) {
-            clearTimeout(this.frameResizedTimer);
-        }
-        this.frameResizedTimer = window.setTimeout(refreshContents.bind(this), 100);
+        clearTimeout(this.frameResizedTimer);
+        this.frameResizedTimer = globalThis.setTimeout(refreshContents.bind(this), 100);
     }
     elementNode() {
         const node = this.node;

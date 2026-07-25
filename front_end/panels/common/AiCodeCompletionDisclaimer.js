@@ -207,12 +207,14 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
         this.#panel = panel;
         this.requestUpdate();
     }
-    async #onAidaAvailabilityChange() {
-        const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-        if (currentAidaAvailability !== this.#aidaAvailability) {
-            this.#aidaAvailability = currentAidaAvailability;
+    #updateAidaAvailability(aidaAvailability) {
+        if (aidaAvailability !== this.#aidaAvailability) {
+            this.#aidaAvailability = aidaAvailability;
             this.requestUpdate();
         }
+    }
+    #onAidaAvailabilityChange(ev) {
+        this.#updateAidaAvailability(ev.data);
     }
     #onManageInSettingsTooltipClick() {
         this.#viewOutput.hideTooltip?.();
@@ -231,7 +233,10 @@ export class AiCodeCompletionDisclaimer extends UI.Widget.Widget {
     wasShown() {
         super.wasShown();
         Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged" /* Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED */, this.#boundOnAidaAvailabilityChange);
-        void this.#onAidaAvailabilityChange();
+        const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
+        if (initialAvailability !== undefined) {
+            this.#updateAidaAvailability(initialAvailability);
+        }
     }
     willHide() {
         super.willHide();

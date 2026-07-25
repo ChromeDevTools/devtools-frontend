@@ -15,6 +15,10 @@ export default `/*
   display: block;
 }
 
+* {
+  font-family: inherit;
+}
+
 .show {
   display: block;
   font-size: 12px;

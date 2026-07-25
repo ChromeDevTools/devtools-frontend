@@ -4,6 +4,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
+import * as Bindings from '../../bindings/bindings.js';
 import * as SourceMapScopes from '../../source_map_scopes/source_map_scopes.js';
 import * as Trace from '../../trace/trace.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
@@ -17,23 +18,25 @@ import { AgentFocus } from '../performance/AIContext.js';
  * the context data for the LLM prompt and user-facing accordion disclosures.
  */
 export class PerformanceTraceContext extends ConversationContext {
-    static fromParsedTrace(parsedTrace, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
-        return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace), targetManager, freshRecordingTracker);
+    static fromParsedTrace(parsedTrace, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+        return new PerformanceTraceContext(AgentFocus.fromParsedTrace(parsedTrace), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
-    static fromInsight(parsedTrace, insight, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
-        return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight), targetManager, freshRecordingTracker);
+    static fromInsight(parsedTrace, insight, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+        return new PerformanceTraceContext(AgentFocus.fromInsight(parsedTrace, insight), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
-    static fromCallTree(callTree, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
-        return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree), targetManager, freshRecordingTracker);
+    static fromCallTree(callTree, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
+        return new PerformanceTraceContext(AgentFocus.fromCallTree(callTree), targetManager, freshRecordingTracker, debuggerWorkspaceBinding);
     }
     #focus;
     #targetManager;
     #freshRecordingTracker;
-    constructor(focus, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance()) {
+    #debuggerWorkspaceBinding;
+    constructor(focus, targetManager = SDK.TargetManager.TargetManager.instance(), freshRecordingTracker = Tracing.FreshRecording.Tracker.instance(), debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()) {
         super();
         this.#focus = focus;
         this.#targetManager = targetManager;
         this.#freshRecordingTracker = freshRecordingTracker;
+        this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
     /**
      * Returns a PerformanceTraceFormatter configured to resolve function
@@ -52,7 +55,7 @@ export class PerformanceTraceContext extends ConversationContext {
             if (!target || !isFresh) {
                 return null;
             }
-            return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
+            return await SourceMapScopes.FunctionCodeResolver.getFunctionCodeFromLocation(target, url, line, column, this.#debuggerWorkspaceBinding, { contextLength: 200, contextLineLength: 5, appendProfileData: true });
         };
         return formatter;
     }

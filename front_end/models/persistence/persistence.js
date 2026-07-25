@@ -1226,7 +1226,7 @@ var FileSystem = class extends Workspace.Workspace.ProjectStore {
         this.addFile(filePaths[i]);
       }
       if (to < filePaths.length) {
-        window.setTimeout(reportFileChunk.bind(this, to), 100);
+        globalThis.setTimeout(reportFileChunk.bind(this, to), 100);
       } else if (this.type() === "filesystem") {
         Host3.userMetrics.workspacesPopulated(performance.now() - startTime);
       }

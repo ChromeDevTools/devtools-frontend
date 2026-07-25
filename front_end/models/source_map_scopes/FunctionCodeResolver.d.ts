@@ -35,8 +35,8 @@ export interface CreateFunctionCodeOptions {
  *
  * We filter projects by `target` to prevent cross-origin leaks.
  */
-export declare function getFunctionCodeFromLocation(target: SDK.Target.Target, url: Platform.DevToolsPath.UrlString, line: number, column: number, options?: CreateFunctionCodeOptions, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<FunctionCode | null>;
+export declare function getFunctionCodeFromLocation(target: SDK.Target.Target, url: Platform.DevToolsPath.UrlString, line: number, column: number, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, options?: CreateFunctionCodeOptions): Promise<FunctionCode | null>;
 /**
  * Returns a {@link FunctionCode} for the given raw location.
  */
-export declare function getFunctionCodeFromRawLocation(rawLocation: SDK.DebuggerModel.Location, options?: CreateFunctionCodeOptions, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding): Promise<FunctionCode | null>;
+export declare function getFunctionCodeFromRawLocation(rawLocation: SDK.DebuggerModel.Location, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, options?: CreateFunctionCodeOptions): Promise<FunctionCode | null>;

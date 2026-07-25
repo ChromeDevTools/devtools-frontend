@@ -2,6 +2,7 @@ import type * as Platform from '../core/platform/platform.js';
 import type * as NodeText from '../ui/components/node_text/node_text.js';
 import * as UI from '../ui/legacy/legacy.js';
 export declare const TEST_CONTAINER_ID = "__devtools-test-container-id";
+export { setTestUniverseForWidgets } from './DOMHooks.js';
 interface RenderOptions {
     allowMultipleChildren?: boolean;
     /**
@@ -116,4 +117,3 @@ declare global {
  */
 export declare function assertScreenshot(filename: string): Promise<void>;
 export declare function setColorScheme(scheme: 'dark' | 'light'): void;
-export {};

@@ -12,6 +12,7 @@ import * as Buttons from '../ui/components/buttons/buttons.js';
 import * as UI from '../ui/legacy/legacy.js';
 import { checkForPendingActivity } from './TrackAsyncOperations.js';
 export const TEST_CONTAINER_ID = '__devtools-test-container-id';
+export { setTestUniverseForWidgets } from './DOMHooks.js';
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/

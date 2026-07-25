@@ -2872,7 +2872,7 @@ var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Common4.O
 };
 
 // gen/front_end/panels/emulation/AdvancedApp.js
-var appInstance;
+var appInstance = null;
 var AdvancedApp = class _AdvancedApp {
   rootSplitWidget;
   deviceModeView;
@@ -2880,20 +2880,28 @@ var AdvancedApp = class _AdvancedApp {
   toolboxWindow;
   toolboxRootView;
   changingDockSide;
-  constructor() {
+  #universe;
+  constructor(universe) {
+    this.#universe = universe;
     UI6.DockController.DockController.instance().addEventListener("BeforeDockSideChanged", this.openToolboxWindow, this);
   }
   /**
    * Note: it's used by toolbox.ts without real type checks.
    */
-  static instance() {
+  static instance(universe) {
     if (!appInstance) {
-      appInstance = new _AdvancedApp();
+      if (!universe) {
+        throw new Error("AdvancedApp.instance() requires a Universe on initial instantiation");
+      }
+      appInstance = new _AdvancedApp(universe);
     }
     return appInstance;
   }
+  static removeInstance() {
+    appInstance = null;
+  }
   presentUI(document2) {
-    const rootView = new UI6.RootView.RootView();
+    const rootView = new UI6.RootView.RootView(this.#universe);
     this.rootSplitWidget = new UI6.SplitWidget.SplitWidget(false, true, "inspector-view.split-view-state", 555, 300, true);
     this.rootSplitWidget.show(rootView.element);
     this.rootSplitWidget.setSidebarWidget(UI6.InspectorView.InspectorView.instance());
@@ -2927,7 +2935,7 @@ var AdvancedApp = class _AdvancedApp {
     UI6.UIUtils.addPlatformClass(toolboxDocument.documentElement);
     UI6.UIUtils.installComponentRootStyles(toolboxDocument.body);
     UI6.ContextMenu.ContextMenu.installHandler(toolboxDocument);
-    this.toolboxRootView = new UI6.RootView.RootView();
+    this.toolboxRootView = new UI6.RootView.RootView(this.#universe);
     this.toolboxRootView.attachToDocument(toolboxDocument);
     this.updateDeviceModeView();
   }
@@ -3023,8 +3031,8 @@ var AdvancedAppProvider = class _AdvancedAppProvider {
     }
     return advancedAppProviderInstance;
   }
-  createApp() {
-    return AdvancedApp.instance();
+  createApp(universe) {
+    return AdvancedApp.instance(universe);
   }
 };
 export {

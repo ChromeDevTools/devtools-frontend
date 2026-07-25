@@ -65,7 +65,7 @@ export declare class NetworkLogView extends NetworkLogView_base implements SDK.T
     private updateGroupByFrame;
     private static sortSearchValues;
     private static negativeFilter;
-    private static requestPathFilter;
+    private static requestHostAndPathFilter;
     private static subdomains;
     private static createRequestDomainFilter;
     private static requestDomainFilter;

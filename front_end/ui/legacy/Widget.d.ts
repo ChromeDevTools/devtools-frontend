@@ -1,10 +1,24 @@
 import '../dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Root from '../../core/root/root.js';
+import type * as Foundation from '../../foundation/foundation.js';
 import * as Geometry from '../../models/geometry/geometry.js';
 import * as Lit from '../../ui/lit/lit.js';
+type InjectReturn<T> = T extends {
+    INJECT: infer I;
+} ? I : T extends {
+    constructor: {
+        INJECT: infer I;
+    };
+} ? I : [];
+type MapConstructors<T> = {
+    [K in keyof T]: T[K] extends Root.DevToolsContext.ConstructorT<infer Instance> ? Instance : T[K] extends new (...args: any[]) => infer Instance ? Instance : never;
+};
+export type WidgetDependencies<T> = MapConstructors<InjectReturn<T>>;
+export declare function lookupUniverseForElement(element: HTMLElement): Foundation.Universe.Universe | undefined;
 export type AnyWidget = Widget<HTMLElement | DocumentFragment>;
-type WidgetConstructor<WidgetT extends AnyWidget> = new (element: HTMLElement) => WidgetT;
-type WidgetProducer<WidgetT extends AnyWidget> = (element: HTMLElement) => WidgetT;
+type WidgetConstructor<WidgetT extends AnyWidget> = new (element: HTMLElement, ...args: any[]) => WidgetT;
+type WidgetProducer<WidgetT extends AnyWidget> = (element: HTMLElement, universe?: Foundation.Universe.Universe) => WidgetT;
 type WidgetFactory<WidgetT extends AnyWidget> = WidgetConstructor<WidgetT> | WidgetProducer<WidgetT>;
 type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT> ? WidgetT : never;
 export declare class WidgetConfig<WidgetT extends AnyWidget> {
@@ -14,6 +28,7 @@ export declare class WidgetConfig<WidgetT extends AnyWidget> {
 }
 export declare function widgetConfig<F extends WidgetFactory<AnyWidget>, ParamKeys extends keyof InferWidgetTFromFactory<F>>(widgetClass: F, widgetParams?: Pick<InferWidgetTFromFactory<F>, ParamKeys> & Partial<InferWidgetTFromFactory<F>>): WidgetConfig<any>;
 export declare function registerWidgetConfig<WidgetT extends AnyWidget>(element: HTMLElement, config: WidgetConfig<WidgetT>): void;
+export declare function instantiateWidget<WidgetT extends AnyWidget>(element: HTMLElement, widgetConfig: WidgetConfig<WidgetT>): WidgetT;
 export declare class WidgetElement<WidgetT extends AnyWidget> extends HTMLElement {
     #private;
     onDisconnect?: () => void;
@@ -100,6 +115,14 @@ export declare class Widget<ContentTypeT extends HTMLElement | DocumentFragment 
         element?: HTMLElement,
         options?: WidgetOptions<ContentTypeT>
     ]);
+    /**
+     * An array of dependency constructors that this widget class expects to receive as an array
+     * in the second positional argument to its constructor during `instantiateWidget`:
+     * `constructor(element: HTMLElement, deps: WidgetDependencies<typeof MyWidget>)`
+     *
+     * Override this static field in sub-classes to specify dependency constructors to be retrieved from `Universe`.
+     */
+    static readonly INJECT: ReadonlyArray<Root.DevToolsContext.ConstructorT<unknown>>;
     /**
      * Returns the {@link Widget} whose element is the given `node`, or `undefined`
      * if the `node` is not an element for a widget.

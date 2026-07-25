@@ -703,6 +703,42 @@ describeWithEnvironment('FlameChart', () => {
       assert.strictEqual(chartInstance.getPopoverElementForTest().innerText, 'Very Long Header Name That Won\'t Fit');
     });
 
+    it('does not throw when updatePopoverContents is called after hideHighlight or track header hovering', () => {
+      const provider = new TooltipTestProvider();
+      const delegate = new MockFlameChartDelegate();
+      const chart = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      chartInstance = chart;
+      chart.element.style.width = '100px';
+      chart.element.style.height = '400px';
+      chart.setWindowTimes(0, 100);
+      renderChart(chart);
+
+      const popoverElement1 = document.createElement('div');
+      popoverElement1.textContent = 'Entry 1 Info';
+      chart.updatePopoverContents(popoverElement1);
+      assert.strictEqual(chart.getPopoverElementForTest().innerText, 'Entry 1 Info');
+
+      chart.hideHighlight();
+
+      const popoverElement2 = document.createElement('div');
+      popoverElement2.textContent = 'Entry 2 Info';
+      assert.doesNotThrow(() => {
+        chart.updatePopoverContents(popoverElement2);
+      });
+      assert.strictEqual(chart.getPopoverElementForTest().innerText, 'Entry 2 Info');
+
+      const event = new MouseEvent('mousemove');
+      Object.defineProperty(event, 'offsetX', {value: 22, writable: true});
+      Object.defineProperty(event, 'offsetY', {value: 17, writable: true});
+      chart.getCanvas().dispatchEvent(event);
+      assert.strictEqual(chart.getPopoverElementForTest().innerText, 'Very Long Header Name That Won\'t Fit');
+
+      assert.doesNotThrow(() => {
+        chart.updatePopoverContents(popoverElement1);
+      });
+      assert.strictEqual(chart.getPopoverElementForTest().innerText, 'Entry 1 Info');
+    });
+
     class ContextMenuTestProvider extends FakeFlameChartProvider {
       override timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
         return PerfUI.FlameChart.FlameChartTimelineData.create({

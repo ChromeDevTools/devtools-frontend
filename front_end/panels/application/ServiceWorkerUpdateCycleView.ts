@@ -45,7 +45,9 @@ export class ServiceWorkerUpdateCycleView {
     this.rows = [];
     this.selectedRowIndex = -1;
     this.tableElement = document.createElement('table');
-    this.createTimingTable();
+    this.tableElement.classList.add('service-worker-update-timing-table');
+    this.tableElement.setAttribute('jslog', `${VisualLogging.tree('update-timing-table')}`);
+    this.refresh();
   }
 
   calculateServiceWorkerUpdateRanges(): ServiceWorkerUpdateRange[] {
@@ -130,13 +132,6 @@ export class ServiceWorkerUpdateCycleView {
     }
 
     return [];
-  }
-
-  private createTimingTable(): void {
-    this.tableElement.classList.add('service-worker-update-timing-table');
-    this.tableElement.setAttribute('jslog', `${VisualLogging.tree('update-timing-table')}`);
-    const timeRanges = this.calculateServiceWorkerUpdateRanges();
-    this.updateTimingTable(timeRanges);
   }
 
   private createTimingTableHead(): void {

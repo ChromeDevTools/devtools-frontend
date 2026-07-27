@@ -187,21 +187,21 @@ const enum Punctuation {
   EQUALS = 'equals',
 }
 
-const resolveDebuggerScope = async(
-    scope: SDK.DebuggerModel.ScopeChainEntry,
-    debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
-    Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
-      if (!scope.callFrame()
-               .debuggerModel.target()
-               .targetManager()
-               .settings.moduleSetting('js-source-maps-enabled')
-               .get()) {
-        return {variableMapping: new Map(), thisMapping: null};
-      }
-      const script = scope.callFrame().script;
-      const scopeChain = await findScopeChainForDebuggerScope(scope);
-      return await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
-    };
+const resolveDebuggerScope =
+    async(scope: SDK.DebuggerModel.ScopeChainEntry,
+          debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
+        Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
+          if (!scope.callFrame()
+                   .debuggerModel.target()
+                   .targetManager()
+                   .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
+                   .get()) {
+            return {variableMapping: new Map(), thisMapping: null};
+          }
+          const script = scope.callFrame().script;
+          const scopeChain = await findScopeChainForDebuggerScope(scope);
+          return await resolveScope(script, scopeChain, debuggerWorkspaceBinding);
+        };
 
 const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.FormatterWorkerPool.ScopeTreeNode[],
                            debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
@@ -400,7 +400,10 @@ export const allVariablesInCallFrame = async(
     callFrame: SDK.DebuggerModel.CallFrame,
     debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding):
     Promise<Map<string, string|null>> => {
-      if (!callFrame.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
+      if (!callFrame.debuggerModel.target()
+               .targetManager()
+               .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
+               .get()) {
         return new Map<string, string|null>();
       }
       const cachedMap = cachedMapByCallFrame.get(callFrame);
@@ -443,7 +446,10 @@ export const allVariablesAtPosition =
           if (!script) {
             return reverseMapping;
           }
-          if (!script.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
+          if (!script.debuggerModel.target()
+                   .targetManager()
+                   .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
+                   .get()) {
             return reverseMapping;
           }
 

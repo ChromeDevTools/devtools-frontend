@@ -74,6 +74,7 @@ devtools_module("sdk") {
     "ResourceTreeModel.ts",
     "RuntimeModel.ts",
     "SDKModel.ts",
+    "SDKSettings.ts",
     "ScopeTreeCache.ts",
     "ScreenCaptureModel.ts",
     "Script.ts",

@@ -15,6 +15,7 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Script} from './Script.js';
 import {SDKModel} from './SDKModel.js';
+import {jsSourceMapsEnabledSettingDescriptor} from './SDKSettings.js';
 import {SourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
@@ -184,8 +185,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       void this.enableDebugger();
     }
 
-    this.#sourceMapManager.setEnabled(settings.moduleSetting('js-source-maps-enabled').get());
-    settings.moduleSetting('js-source-maps-enabled')
+    this.#sourceMapManager.setEnabled(settings.resolve(jsSourceMapsEnabledSettingDescriptor).get());
+    settings.resolve(jsSourceMapsEnabledSettingDescriptor)
         .addChangeListener(event => this.#sourceMapManager.setEnabled((event.data as boolean)));
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);

@@ -13,6 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingsUI from '../../ui/settings/settings.js';
 
 import type * as Sources from './sources.js';
 
@@ -463,6 +464,18 @@ const UIStrings = {
    *              wrap' setting.
    */
   toggleWordWrap: 'Toggle word wrap',
+  /**
+   * @description Setting under the Sources category to toggle usage of JavaScript source maps.
+   */
+  javaScriptSourceMaps: 'JavaScript source maps',
+  /**
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
+   */
+  enableJavaScriptSourceMaps: 'Enable JavaScript source maps',
+  /**
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
+   */
+  disableJavaScriptSourceMaps: 'Disable JavaScript source maps',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/sources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1510,6 +1523,21 @@ Common.Settings.registerSettingExtension({
   settingName: 'navigator-just-my-code',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.SOURCES,
+  title: i18nLazyString(UIStrings.javaScriptSourceMaps),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableJavaScriptSourceMaps),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableJavaScriptSourceMaps),
+    },
+  ],
 });
 
 Common.Settings.registerSettingExtension({

@@ -453,18 +453,6 @@ const UIStrings = {
   networkCacheExplanation:
       'Disabling the network cache will simulate a network experience similar to a first time visitor.',
   /**
-   * @description Setting under the Sources category to toggle usage of JavaScript source maps.
-   */
-  javaScriptSourceMaps: 'JavaScript source maps',
-  /**
-   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
-   */
-  enableJavaScriptSourceMaps: 'Enable JavaScript source maps',
-  /**
-   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
-   */
-  disableJavaScriptSourceMaps: 'Disable JavaScript source maps',
-  /**
    * @description Title of a setting under the Sources category.
    */
   cssSourceMaps: 'CSS source maps',
@@ -1389,25 +1377,6 @@ Common.Settings.registerSettingExtension({
   learnMore: {
     tooltip: i18nLazyString(UIStrings.remoteFileLoadingInfo),
   },
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.javaScriptSourceMaps),
-  settingName: 'js-source-maps-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.enableJavaScriptSourceMaps),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.disableJavaScriptSourceMaps),
-    },
-  ],
 });
 
 Common.Settings.registerSettingExtension({

@@ -156,6 +156,7 @@ devtools_entrypoint("meta") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/quick_open:bundle",
+    "../../ui/settings:bundle",
   ]
 
   visibility = [ "../../entrypoints/*" ]

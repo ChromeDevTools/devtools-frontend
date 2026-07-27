@@ -216,6 +216,9 @@ export class Universe {
     const aiHistoryStorage = new AiAssistance.AiHistoryStorage.AiHistoryStorage(settings);
     context.set(AiAssistance.AiHistoryStorage.AiHistoryStorage, aiHistoryStorage);
 
+    const builtInAi = new AiAssistance.BuiltInAi.BuiltInAi();
+    context.set(AiAssistance.BuiltInAi.BuiltInAi, builtInAi);
+
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
     context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
   }
@@ -231,6 +234,10 @@ export class Universe {
 
   get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage {
     return this.context.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
+  }
+
+  get builtInAi(): AiAssistance.BuiltInAi.BuiltInAi {
+    return this.context.get(AiAssistance.BuiltInAi.BuiltInAi);
   }
 
   get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager {

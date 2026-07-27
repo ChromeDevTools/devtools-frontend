@@ -14,6 +14,7 @@ import {createRule} from './utils/ruleCreator.ts';
  */
 const ALLOWED_RETURN_TYPES = new Set([
   'AiAssistance.AiHistoryStorage.AiHistoryStorage',
+  'AiAssistance.BuiltInAi.BuiltInAi',
   'AutofillManager.AutofillManager.AutofillManager',
   'Badges.UserBadges',
   'Common.Console.Console',

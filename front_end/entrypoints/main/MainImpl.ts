@@ -471,7 +471,7 @@ export class MainImpl {
     void this.#universe.liveMetrics.enable();
     CrUXManager.CrUXManager.instance();
 
-    const builtInAi = AiAssistanceModel.BuiltInAi.BuiltInAi.instance();
+    const builtInAi = this.#universe.builtInAi;
     builtInAi.addEventListener(
         AiAssistanceModel.BuiltInAi.Events.DOWNLOADED_AND_SESSION_CREATED,
         () => Snackbar.Snackbar.Snackbar.show({message: i18nString(UIStrings.aiModelDownloaded)}));

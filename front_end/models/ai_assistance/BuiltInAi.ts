@@ -106,6 +106,12 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   #isGpuAvailable(): boolean {
+    // In node-based API tests, there is no global `document` available. Since this
+    // class is instantiated during Universe bootstrapping, we need to guard against
+    // using document when not in the browser.
+    if (typeof document === 'undefined') {
+      return false;
+    }
     const canvas = document.createElement('canvas');
     try {
       const webgl = canvas.getContext('webgl');

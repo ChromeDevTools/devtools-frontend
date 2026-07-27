@@ -60,6 +60,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
       () => new AiAssistance.AiHistoryStorage.AiHistoryStorage(this.settings),
     ],
     [
+      AiAssistance.BuiltInAi.BuiltInAi,
+      () => new AiAssistance.BuiltInAi.BuiltInAi(),
+    ],
+    [
       AutofillManager.AutofillManager.AutofillManager,
       () => new AutofillManager.AutofillManager.AutofillManager(this.targetManager, this.frameManager),
     ],
@@ -314,6 +318,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage {
     return this.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
+  }
+
+  get builtInAi(): AiAssistance.BuiltInAi.BuiltInAi {
+    return this.get(AiAssistance.BuiltInAi.BuiltInAi);
   }
 
   get autofillManager(): AutofillManager.AutofillManager.AutofillManager {

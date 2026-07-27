@@ -60,16 +60,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface DeviceModeViewRefs {
-  toolbar: DeviceModeToolbar;
-  bottomRightResizerElement: HTMLElement;
-  bottomLeftResizerElement: HTMLElement;
-  rightResizerElement: HTMLElement;
-  leftResizerElement: HTMLElement;
-  bottomResizerElement: HTMLElement;
-  pageArea: HTMLElement;
-}
-
 export interface DeviceModeViewInput {
   model: EmulationModel.DeviceModeModel.DeviceModeModel;
   showMediaInspectorSetting: Common.Settings.Setting<boolean>;
@@ -78,10 +68,12 @@ export interface DeviceModeViewInput {
   outlineImageLoaded: boolean;
   screenImage: string;
   screenImageLoaded: boolean;
+  resizable: boolean;
   showRulers: boolean;
   showMediaInspector: boolean;
   scale: number;
   cachedCssScreenRect?: EmulationModel.DeviceModeModel.Rect;
+  cachedCssVisiblePageRect?: EmulationModel.DeviceModeModel.Rect;
   cachedOutlineRect?: EmulationModel.DeviceModeModel.Rect;
   onApplyPresetSize: (size: number, e: Event) => void;
   bottomRightResizer: UI.ResizerWidget.ResizerWidget;
@@ -101,7 +93,7 @@ export interface DeviceModeViewInput {
 
 export type DeviceModeViewView = (
     input: DeviceModeViewInput,
-    output: DeviceModeViewRefs,
+    output: undefined,
     target: HTMLElement,
     ) => void;
 
@@ -130,7 +122,7 @@ function resizerRef(
 
 export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
     input: DeviceModeViewInput,
-    output: DeviceModeViewRefs,
+    _output: undefined,
     target: HTMLElement,
     ): void => {
   const sizes = [320, 375, 425, 768, 1024, 1440, 2560];
@@ -145,8 +137,7 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
   ];
   // clang-format off
   render(html`
-    <devtools-widget ${UI.Widget.widget(DeviceModeToolbar, {model: input.model})}
-       ${UI.Widget.widgetRef(DeviceModeToolbar, t => { output.toolbar = t; })}></devtools-widget>
+    ${UI.Widget.widget(DeviceModeToolbar, {model: input.model})}
     <div class=${classMap({
       'device-mode-content-clip': true,
       vbox: true,
@@ -199,33 +190,44 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
                @load=${(): void => input.onScreenImageLoaded(true)}
                @error=${(): void => input.onScreenImageLoaded(false)}>
           <div class="device-mode-resizer device-mode-bottom-right-resizer"
+               ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({drag: true})}
                ${ref(input.bottomRightResizerRef)}>
             <div></div>
           </div>
           <div class="device-mode-resizer device-mode-bottom-left-resizer"
+               ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({drag: true})}
                ${ref(input.bottomLeftResizerRef)}>
             <div></div>
           </div>
           <div class="device-mode-resizer device-mode-right-resizer"
+               ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({drag: true})}
                ${ref(input.rightResizerRef)}>
             <div></div>
           </div>
           <div class="device-mode-resizer device-mode-left-resizer"
+               ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({drag: true})}
                ${ref(input.leftResizerRef)}>
             <div></div>
           </div>
           <div class="device-mode-resizer device-mode-bottom-resizer"
+               ?hidden=${!input.resizable}
                jslog=${VisualLogging.slider('device-mode-resizer').track({drag: true})}
                title=${i18nString(UIStrings.doubleclickForFullHeight)}
                ${ref(input.bottomResizerRef)}
                @dblclick=${input.onDoubleclickBottomResizer}>
             <div></div>
           </div>
-          <div class="device-mode-page-area" ${ref((el?: Element) => { if (el instanceof HTMLElement) { output.pageArea = el; } })}><slot></slot></div>
+          <div class="device-mode-page-area"
+               style=${styleMap(input.cachedCssVisiblePageRect ? {
+                 left: `${input.cachedCssVisiblePageRect.left}px`,
+                 top: `${input.cachedCssVisiblePageRect.top}px`,
+                 width: `${input.cachedCssVisiblePageRect.width}px`,
+                 height: `${input.cachedCssVisiblePageRect.height}px`,
+               } : {})}><slot></slot></div>
         </div>
         ${input.showRulers ? html`
           <devtools-widget class="device-mode-ruler-top device-mode-ruler"
@@ -256,34 +258,16 @@ export class DeviceModeView extends UI.Widget.VBox {
   private model: EmulationModel.DeviceModeModel.DeviceModeModel;
   private showMediaInspectorSetting: Common.Settings.Setting<boolean>;
   private showRulersSetting: Common.Settings.Setting<boolean>;
-  pageArea!: HTMLElement;
-  rightResizerElement!: HTMLElement;
-  leftResizerElement!: HTMLElement;
-  bottomResizerElement!: HTMLElement;
-  bottomRightResizerElement!: HTMLElement;
-  bottomLeftResizerElement!: HTMLElement;
   private readonly bottomRightResizer = this.createResizer(2, 1);
   private readonly bottomLeftResizer = this.createResizer(-2, 1);
   private readonly rightResizer = this.createResizer(2, 0);
   private readonly leftResizer = this.createResizer(-2, 0);
   private readonly bottomResizer = this.createResizer(0, 1);
-  private readonly bottomRightResizerRef = resizerRef(this.bottomRightResizer, el => {
-    this.bottomRightResizerElement = el;
-  });
-  private readonly bottomLeftResizerRef = resizerRef(this.bottomLeftResizer, el => {
-    this.bottomLeftResizerElement = el;
-  });
-  private readonly rightResizerRef = resizerRef(this.rightResizer, el => {
-    this.rightResizerElement = el;
-  });
-  private readonly leftResizerRef = resizerRef(this.leftResizer, el => {
-    this.leftResizerElement = el;
-  });
-  private readonly bottomResizerRef = resizerRef(this.bottomResizer, el => {
-    this.bottomResizerElement = el;
-  });
-  private cachedResizable!: boolean|undefined;
-  toolbar!: DeviceModeToolbar;
+  private readonly bottomRightResizerRef = resizerRef(this.bottomRightResizer);
+  private readonly bottomLeftResizerRef = resizerRef(this.bottomLeftResizer);
+  private readonly rightResizerRef = resizerRef(this.rightResizer);
+  private readonly leftResizerRef = resizerRef(this.leftResizer);
+  private readonly bottomResizerRef = resizerRef(this.bottomResizer);
   private slowPositionStart?: {
     x: number,
     y: number,
@@ -295,8 +279,6 @@ export class DeviceModeView extends UI.Widget.VBox {
   private cachedMediaInspectorVisible?: boolean;
   private cachedShowRulers?: boolean;
   private cachedScale?: number;
-  private handleWidth?: number;
-  private handleHeight?: number;
   #outlineImageLoaded = false;
   #lastOutlineImageSrc?: string;
   #screenImageLoaded = false;
@@ -339,11 +321,13 @@ export class DeviceModeView extends UI.Widget.VBox {
       outlineImageLoaded: this.#outlineImageLoaded,
       screenImage: this.model.screenImage(),
       screenImageLoaded: this.#screenImageLoaded,
+      resizable: this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive,
       showRulers: this.showRulersSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
       showMediaInspector:
           this.showMediaInspectorSetting.get() && this.model.type() !== EmulationModel.DeviceModeModel.Type.None,
       scale: this.model.scale(),
       cachedCssScreenRect: this.cachedCssScreenRect,
+      cachedCssVisiblePageRect: this.cachedCssVisiblePageRect,
       cachedOutlineRect: this.cachedOutlineRect,
       onApplyPresetSize: (width: number, e: Event): void => {
         this.model.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
@@ -364,7 +348,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       onOutlineImageLoaded: (success: boolean): void => this.onOutlineImageLoaded(success),
       onScreenImageLoaded: (success: boolean): void => this.onScreenImageLoaded(success),
     };
-    this.#view(input, this, this.contentElement);
+    this.#view(input, undefined, this.contentElement);
   }
 
   private onOutlineImageLoaded(success: boolean): void {
@@ -380,6 +364,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       this.requestUpdate();
     }
   }
+
   private createResizer(widthFactor: number, heightFactor: number): UI.ResizerWidget.ResizerWidget {
     const resizer = new UI.ResizerWidget.ResizerWidget();
     let cursor: 'nwse-resize'|'nesw-resize'|('ew-resize' | 'ns-resize') = widthFactor ? 'ew-resize' : 'ns-resize';
@@ -450,13 +435,6 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   private updateUI(): void {
-    function applyRect(element: HTMLElement, rect: EmulationModel.DeviceModeModel.Rect): void {
-      element.style.left = rect.left + 'px';
-      element.style.top = rect.top + 'px';
-      element.style.width = rect.width + 'px';
-      element.style.height = rect.height + 'px';
-    }
-
     if (!this.isShowing()) {
       return;
     }
@@ -474,7 +452,6 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     const cssVisiblePageRect = this.model.visiblePageRect().scale(1 / zoomFactor);
     if (!this.cachedCssVisiblePageRect || !cssVisiblePageRect.isEqual(this.cachedCssVisiblePageRect)) {
-      applyRect(this.pageArea, cssVisiblePageRect);
       callDoResize = true;
       this.cachedCssVisiblePageRect = cssVisiblePageRect;
     }
@@ -486,16 +463,6 @@ export class DeviceModeView extends UI.Widget.VBox {
         callDoResize = true;
         this.cachedOutlineRect = outlineRect;
       }
-    }
-
-    const resizable = this.model.type() === EmulationModel.DeviceModeModel.Type.Responsive;
-    if (resizable !== this.cachedResizable) {
-      this.rightResizerElement.classList.toggle('hidden', !resizable);
-      this.leftResizerElement.classList.toggle('hidden', !resizable);
-      this.bottomResizerElement.classList.toggle('hidden', !resizable);
-      this.bottomRightResizerElement.classList.toggle('hidden', !resizable);
-      this.bottomLeftResizerElement.classList.toggle('hidden', !resizable);
-      this.cachedResizable = resizable;
     }
 
     const mediaInspectorVisible =
@@ -518,7 +485,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
 
     this.requestUpdate();
-    this.toolbar.requestUpdate();
     if (callDoResize) {
       this.doResize();
     }
@@ -545,29 +511,18 @@ export class DeviceModeView extends UI.Widget.VBox {
     }
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const rect = contentArea.getBoundingClientRect();
+    const handleWidth = this.contentElement.querySelector<HTMLElement>('.device-mode-right-resizer')?.offsetWidth || 20;
+    const handleHeight =
+        this.contentElement.querySelector<HTMLElement>('.device-mode-bottom-resizer')?.offsetHeight || 20;
     const availableSize =
         new Geometry.Size(Math.max(rect.width * zoomFactor, 1), Math.max(rect.height * zoomFactor, 1));
-    const preferredSize = new Geometry.Size(
-        Math.max((rect.width - 2 * (this.handleWidth || 0)) * zoomFactor, 1),
-        Math.max((rect.height - (this.handleHeight || 0)) * zoomFactor, 1));
+    const preferredSize = new Geometry.Size(Math.max((rect.width - 2 * handleWidth) * zoomFactor, 1),
+                                            Math.max((rect.height - handleHeight) * zoomFactor, 1));
     this.model.setAvailableSize(availableSize, preferredSize);
   }
 
-  private measureHandles(): void {
-    const hidden = this.rightResizerElement.classList.contains('hidden');
-    this.rightResizerElement.classList.toggle('hidden', false);
-    this.bottomResizerElement.classList.toggle('hidden', false);
-    this.handleWidth = this.rightResizerElement.offsetWidth;
-    this.handleHeight = this.bottomResizerElement.offsetHeight;
-    this.rightResizerElement.classList.toggle('hidden', hidden);
-    this.bottomResizerElement.classList.toggle('hidden', hidden);
-  }
-
   private zoomChanged(): void {
-    delete this.handleWidth;
-    delete this.handleHeight;
     if (this.isShowing()) {
-      this.measureHandles();
       this.contentAreaResized();
     }
   }
@@ -580,8 +535,6 @@ export class DeviceModeView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-    this.measureHandles();
-    this.toolbar.restore();
   }
 
   override willHide(): void {

@@ -512,8 +512,8 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     super.wasShown();
     // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
     this.performUpdate();  // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
+    this.restore();
   }
-
   override performUpdate(): void {
     if (!this.model) {
       return;
@@ -1078,7 +1078,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
     return !this.model ? '' : `${(this.model.scale() * 100).toFixed(0)}`;
   }
 
-  restore(): void {
+  private restore(): void {
     if (!this.model) {
       return;
     }

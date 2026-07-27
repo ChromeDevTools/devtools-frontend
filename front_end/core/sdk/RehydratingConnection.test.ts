@@ -11,6 +11,7 @@ import {SnapshotTester} from '../../testing/SnapshotTester.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Common from '../common/common.js';
 import type {Message} from '../protocol_client/InspectorBackend.js';
+import * as Root from '../root/root.js';
 
 import type {
   RehydratingExecutionContext, RehydratingResource, RehydratingScript, RehydratingTarget, ServerMessage} from
@@ -286,5 +287,147 @@ describeWithEnvironment('RehydratingConnection emittance', function() {
     const sanitizedLog = messageLog.map(sanitizeLog).join('\n');
     snapshotTester.assert(this, sanitizedLog);
     sinon.assert.calledOnce(reveal);
+  });
+});
+
+// `trace_app` reads the `?traceURL` query parameter and fetches it. Because the response is replayed
+// into the trusted front-end as synthetic CDP events, only trusted origins may be fetched, and fetch
+// failures must be handled rather than left as unhandled rejections.
+describeWithEnvironment('RehydratingConnection ?traceURL loading', () => {
+  // A remote host that is neither same-origin, devtools:, nor loopback.
+  const DISALLOWED_URL = 'https://evil.example.com/trace.json';
+  // A fully controlled string that would otherwise end up as a synthetic target's url/title.
+  const INJECTED_MARKER = 'javascript:INJECTED_MARKER-<img src=x onerror=alert(document.domain)>';
+
+  // A minimal "enhanced trace" whose single primary frame's url is fully controlled.
+  function makeTrace(frameUrl: string): object {
+    return {
+      traceEvents: [{
+        cat: 'disabled-by-default-devtools.timeline',
+        name: 'TracingStartedInBrowser',
+        ph: 'I',
+        pid: 1,
+        tid: 1,
+        ts: 0,
+        args: {
+          data: {
+            frames: [{
+              frame: 'FRAME',
+              isInPrimaryMainFrame: true,
+              isOutermostMainFrame: true,
+              parent: '',
+              processId: 1,
+              url: frameUrl,
+              pid: 1,
+            }],
+          },
+        },
+      }],
+    };
+  }
+
+  let queryParamStub: sinon.SinonStub;
+  let fetchStub: sinon.SinonStub;
+  let revealStub: sinon.SinonStub;
+
+  beforeEach(() => {
+    queryParamStub = sinon.stub(Root.Runtime.Runtime, 'queryParam');
+    queryParamStub.callThrough();
+
+    fetchStub = sinon.stub(globalThis, 'fetch');
+    revealStub = sinon.stub(Common.Revealer.RevealerRegistry.prototype, 'reveal').resolves();
+  });
+
+  afterEach(() => {
+    queryParamStub.restore();
+    fetchStub.restore();
+    revealStub.restore();
+  });
+
+  function respondWith(trace: object): void {
+    // Served as plain (non-gzipped) JSON; arrayBufferToString handles both.
+    const payload = new TextEncoder().encode(JSON.stringify(trace)).buffer;
+    fetchStub.resolves({arrayBuffer: async () => payload} as Response);
+  }
+
+  it('does not fetch a traceURL from a disallowed origin', () => {
+    queryParamStub.withArgs('traceURL').returns(DISALLOWED_URL);
+    respondWith(makeTrace(INJECTED_MARKER));
+    const onConnectionLost = sinon.stub();
+
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    const messages: ServerMessage[] = [];
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+
+    // A disallowed URL is rejected synchronously in the constructor; no fetch is ever scheduled.
+    assert.isUndefined(conn.fetchPromiseForTest);
+    sinon.assert.notCalled(fetchStub);
+    assert.isEmpty(messages.filter(m => m.method === 'Target.targetCreated'));
+    sinon.assert.calledOnce(onConnectionLost);
+  });
+
+  it('does not fetch a disallowed URL via the legacy loadTimelineFromURL parameter', () => {
+    queryParamStub.withArgs('loadTimelineFromURL').returns(encodeURIComponent(DISALLOWED_URL));
+    respondWith(makeTrace(INJECTED_MARKER));
+    const onConnectionLost = sinon.stub();
+
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    conn.setOnMessage(() => {});
+
+    assert.isUndefined(conn.fetchPromiseForTest);
+    sinon.assert.notCalled(fetchStub);
+    sinon.assert.calledOnce(onConnectionLost);
+  });
+
+  it('loads a trace from an allowed (same-origin) URL', async () => {
+    const allowedUrl = new URL('/my-trace.json.gz', window.location.href).href;
+    queryParamStub.withArgs('traceURL').returns(allowedUrl);
+    respondWith(makeTrace('https://example.com/legit'));
+    const onConnectionLost = sinon.stub();
+
+    const messages: ServerMessage[] = [];
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    conn.setOnMessage(message => messages.push(message as ServerMessage));
+
+    await conn.fetchPromiseForTest;
+
+    sinon.assert.calledOnceWithExactly(fetchStub, allowedUrl);
+    sinon.assert.notCalled(onConnectionLost);
+    assert.exists(messages.find(m => m.method === 'Target.targetCreated'));
+  });
+
+  it('reports an error when the fetch fails instead of throwing', async () => {
+    const allowedUrl = new URL('/broken-trace.json', window.location.href).href;
+    queryParamStub.withArgs('traceURL').returns(allowedUrl);
+    fetchStub.rejects(new TypeError('Failed to fetch'));
+    const onConnectionLost = sinon.stub();
+
+    const conn = new SDK.RehydratingConnection.RehydratingConnectionTransport(onConnectionLost);
+    conn.setOnMessage(() => {});
+
+    await conn.fetchPromiseForTest;
+    sinon.assert.calledOnce(onConnectionLost);
+  });
+});
+
+describe('isTraceUrlAllowed', () => {
+  const {isTraceUrlAllowed} = SDK.RehydratingConnection;
+
+  it('allows same-origin, devtools: and loopback URLs', () => {
+    assert.isTrue(isTraceUrlAllowed(new URL('/trace.json', window.location.href).href));
+    assert.isTrue(isTraceUrlAllowed('/relative/trace.json.gz'));
+    assert.isTrue(isTraceUrlAllowed('devtools://devtools/bundled/trace.json'));
+    assert.isTrue(isTraceUrlAllowed('http://localhost:1234/trace.json'));
+    assert.isTrue(isTraceUrlAllowed('http://127.0.0.1:8000/trace.json.gz'));
+    assert.isTrue(isTraceUrlAllowed('http://[::1]:8000/trace.json'));
+  });
+
+  it('rejects arbitrary remote hosts and non-http(s) schemes', () => {
+    assert.isFalse(isTraceUrlAllowed('https://evil.example.com/trace.json'));
+    // A hostname that merely contains "localhost" must not be treated as loopback.
+    assert.isFalse(isTraceUrlAllowed('https://localhost.evil.example.com/trace.json'));
+    assert.isFalse(isTraceUrlAllowed('javascript:alert(document.domain)'));
+    assert.isFalse(isTraceUrlAllowed('data:application/json,%7B%7D'));
+    assert.isFalse(isTraceUrlAllowed('file:///etc/passwd'));
   });
 });

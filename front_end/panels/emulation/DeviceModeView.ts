@@ -1,15 +1,16 @@
 // Copyright 2015 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Geometry from '../../models/geometry/geometry.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -249,7 +250,11 @@ export const DEFAULT_DEVICE_MODE_VIEW: DeviceModeViewView = (
         ` : nothing}
       </div>
     </div>
-  `, target);
+  `, target, {
+    container: {
+      classes: ['device-mode-view'],
+    },
+  });
   // clang-format on
 };
 
@@ -290,7 +295,6 @@ export class DeviceModeView extends UI.Widget.VBox {
     this.#view = view;
 
     this.setMinimumSize(150, 150);
-    this.element.classList.add('device-mode-view');
     this.registerRequiredCSS(deviceModeViewStyles);
 
     this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
@@ -562,11 +566,10 @@ export class DeviceModeView extends UI.Widget.VBox {
       const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
       const contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
 
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.floor(outlineRect.width);
-      // Cap the height to not hit the GPU limit.
-      // https://crbug.com/1260828
-      canvas.height = Math.min((1 << 14), Math.floor(outlineRect.height));
+      const canvas = new OffscreenCanvas(Math.floor(outlineRect.width),
+                                         // Cap the height to not hit the GPU limit.
+                                         // https://crbug.com/1260828
+                                         Math.min((1 << 14), Math.floor(outlineRect.height)));
       const ctx = canvas.getContext('2d', {willReadFrequently: true});
       if (!ctx) {
         throw new Error('Could not get 2d context from canvas.');
@@ -580,7 +583,7 @@ export class DeviceModeView extends UI.Widget.VBox {
         await this.paintImage(ctx, this.model.screenImage(), screenRect.relativeTo(outlineRect));
       }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-      this.saveScreenshot((canvas));
+      void this.saveScreenshot(canvas);
     };
   }
 
@@ -604,23 +607,22 @@ export class DeviceModeView extends UI.Widget.VBox {
     const pageImage = new Image();
     pageImage.src = 'data:image/png;base64,' + screenshot;
     pageImage.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = pageImage.naturalWidth;
-      // Cap the height to not hit the GPU limit.
-      // https://crbug.com/1260828
-      canvas.height = Math.min((1 << 14), Math.floor(pageImage.naturalHeight));
+      const canvas = new OffscreenCanvas(pageImage.naturalWidth,
+                                         // Cap the height to not hit the GPU limit.
+                                         // https://crbug.com/1260828
+                                         Math.min((1 << 14), Math.floor(pageImage.naturalHeight)));
       const ctx = canvas.getContext('2d', {willReadFrequently: true});
       if (!ctx) {
         throw new Error('Could not get 2d context for base64 screenshot.');
       }
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(pageImage, 0, 0);
-      this.saveScreenshot((canvas));
+      void this.saveScreenshot(canvas);
     };
   }
 
-  private paintImage(ctx: CanvasRenderingContext2D, src: string, rect: EmulationModel.DeviceModeModel.Rect):
-      Promise<void> {
+  private paintImage(ctx: OffscreenCanvasRenderingContext2D|CanvasRenderingContext2D, src: string,
+                     rect: EmulationModel.DeviceModeModel.Rect): Promise<void> {
     return new Promise(resolve => {
       const image = new Image();
       image.crossOrigin = 'Anonymous';
@@ -633,7 +635,7 @@ export class DeviceModeView extends UI.Widget.VBox {
     });
   }
 
-  private saveScreenshot(canvas: HTMLCanvasElement): void {
+  private async saveScreenshot(canvas: OffscreenCanvas): Promise<void> {
     const url = this.model.inspectedURL();
     let fileName = '';
     if (url) {
@@ -645,15 +647,19 @@ export class DeviceModeView extends UI.Widget.VBox {
     if (device && this.model.type() === EmulationModel.DeviceModeModel.Type.Device) {
       fileName += `(${device.title})`;
     }
-    const link = document.createElement('a');
-    link.download = fileName + '.png';
-    canvas.toBlob(blob => {
-      if (blob === null) {
-        return;
-      }
-      link.href = URL.createObjectURL(blob);
-      link.click();
+    fileName += '.png';
+    const blob = await canvas.convertToBlob({type: 'image/png'});
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
     });
+    const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+    const contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'image/png');
+    await Workspace.FileManager.FileManager.instance().save(fileName as Platform.DevToolsPath.RawPathString,
+                                                            contentData, /* forceSaveAs=*/ true);
+    Workspace.FileManager.FileManager.instance().close(fileName as Platform.DevToolsPath.RawPathString);
   }
 }
 

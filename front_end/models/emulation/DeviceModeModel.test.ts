@@ -11,6 +11,7 @@ import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as EmulationModel from '../emulation/emulation.js';
+import * as Geometry from '../geometry/geometry.js';
 
 describe('Insets', () => {
   it('can be instantiated without issues', () => {
@@ -788,6 +789,87 @@ describe('DeviceModeModel', () => {
       deviceWithoutFrame.vertical = {width: 400, height: 800, outlineInsets: null, outlineImage: null, hinge: null};
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Device, deviceWithoutFrame, mode);
       assert.isFalse(deviceModeModel.canShowDeviceFrame(), 'Should be false when outlineImage is null');
+    } finally {
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+    }
+  });
+
+  it('behaves correctly when adjusting inputs in responsive mode', () => {
+    try {
+      const viewportSize = new Geometry.Size(320, 480);
+      deviceModeModel.setAvailableSize(viewportSize, viewportSize);
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.Responsive, null, null);
+
+      function assertState(expectedScale: number, expectedAppliedDeviceSize: {width: number, height: number},
+                           expectedScreenRect: {left: number, top: number, width: number, height: number},
+                           expectedVisiblePageRect: {left: number, top: number, width: number, height: number},
+                           expectedOutlineRect: {left: number, top: number, width: number, height: number}) {
+        assert.strictEqual(deviceModeModel.scale(), expectedScale);
+        assert.strictEqual(deviceModeModel.appliedDeviceSize().width, expectedAppliedDeviceSize.width);
+        assert.strictEqual(deviceModeModel.appliedDeviceSize().height, expectedAppliedDeviceSize.height);
+        assert.strictEqual(deviceModeModel.screenRect().left, expectedScreenRect.left);
+        assert.strictEqual(deviceModeModel.screenRect().top, expectedScreenRect.top);
+        assert.strictEqual(deviceModeModel.screenRect().width, expectedScreenRect.width);
+        assert.strictEqual(deviceModeModel.screenRect().height, expectedScreenRect.height);
+        assert.strictEqual(deviceModeModel.visiblePageRect().left, expectedVisiblePageRect.left);
+        assert.strictEqual(deviceModeModel.visiblePageRect().top, expectedVisiblePageRect.top);
+        assert.strictEqual(deviceModeModel.visiblePageRect().width, expectedVisiblePageRect.width);
+        assert.strictEqual(deviceModeModel.visiblePageRect().height, expectedVisiblePageRect.height);
+        const outlineRect = deviceModeModel.outlineRect();
+        assert.isNotNull(outlineRect);
+        if (outlineRect) {
+          assert.strictEqual(outlineRect.left, expectedOutlineRect.left);
+          assert.strictEqual(outlineRect.top, expectedOutlineRect.top);
+          assert.strictEqual(outlineRect.width, expectedOutlineRect.width);
+          assert.strictEqual(outlineRect.height, expectedOutlineRect.height);
+        }
+      }
+
+      assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
+                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+
+      let width = viewportSize.width - 1;
+      deviceModeModel.setWidthAndScaleToFit(width);
+      assertState(1, {width: 319, height: 480}, {left: 0.5, top: 0, width: 319, height: 480},
+                  {left: 0, top: 0, width: 319, height: 480}, {left: 0.5, top: 0, width: 319, height: 480});
+
+      width = viewportSize.width + 1;
+      deviceModeModel.setWidthAndScaleToFit(width);
+      assertState(0.99, {width: 321, height: 484},
+                  {left: 1.1049999999999898, top: 0, width: 317.79, height: 479.15999999999997},
+                  {left: 0, top: 0, width: 317.79, height: 479.15999999999997},
+                  {left: 1.1049999999999898, top: 0, width: 317.79, height: 479.15999999999997});
+
+      deviceModeModel.setWidthAndScaleToFit(viewportSize.width);
+      assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
+                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+
+      let height = viewportSize.height - 1;
+      deviceModeModel.setHeightAndScaleToFit(height);
+      assertState(1, {width: 320, height: 479}, {left: 0, top: 0, width: 320, height: 479},
+                  {left: 0, top: 0, width: 320, height: 479}, {left: 0, top: 0, width: 320, height: 479});
+
+      height = viewportSize.height + 1;
+      deviceModeModel.setHeightAndScaleToFit(height);
+      assertState(0.99, {width: 320, height: 481}, {left: 1.5999999999999943, top: 0, width: 316.8, height: 476.19},
+                  {left: 0, top: 0, width: 316.8, height: 476.19},
+                  {left: 1.5999999999999943, top: 0, width: 316.8, height: 476.19});
+
+      deviceModeModel.setHeightAndScaleToFit(viewportSize.height);
+      assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
+                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+
+      deviceModeModel.scaleSetting().set(0.5);
+      assertState(0.5, {width: 320, height: 480}, {left: 80, top: 0, width: 160, height: 240},
+                  {left: 0, top: 0, width: 160, height: 240}, {left: 80, top: 0, width: 160, height: 240});
+
+      deviceModeModel.scaleSetting().set(1);
+      assertState(1, {width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480},
+                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
+
+      deviceModeModel.scaleSetting().set(1.25);
+      assertState(1.25, {width: 256, height: 384}, {left: 0, top: 0, width: 320, height: 480},
+                  {left: 0, top: 0, width: 320, height: 480}, {left: 0, top: 0, width: 320, height: 480});
     } finally {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     }

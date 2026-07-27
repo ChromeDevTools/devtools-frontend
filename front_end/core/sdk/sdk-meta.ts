@@ -453,18 +453,6 @@ const UIStrings = {
   networkCacheExplanation:
       'Disabling the network cache will simulate a network experience similar to a first time visitor.',
   /**
-   * @description Title of a setting under the Sources category.
-   */
-  cssSourceMaps: 'CSS source maps',
-  /**
-   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
-   */
-  enableCssSourceMaps: 'Enable CSS source maps',
-  /**
-   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
-   */
-  disableCssSourceMaps: 'Disable CSS source maps',
-  /**
    * @description Title of a setting under the Console category in Settings.
    */
   logXmlhttprequests: 'Log XMLHttpRequests',
@@ -1377,25 +1365,6 @@ Common.Settings.registerSettingExtension({
   learnMore: {
     tooltip: i18nLazyString(UIStrings.remoteFileLoadingInfo),
   },
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.SOURCES,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.cssSourceMaps),
-  settingName: 'css-source-maps-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.enableCssSourceMaps),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.disableCssSourceMaps),
-    },
-  ],
 });
 
 Common.Settings.registerSettingExtension({

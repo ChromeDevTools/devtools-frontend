@@ -10,3 +10,10 @@ export const jsSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescri
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const cssSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'css-source-maps-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

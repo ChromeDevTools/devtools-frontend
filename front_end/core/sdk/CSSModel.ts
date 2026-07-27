@@ -25,6 +25,7 @@ import {
   ResourceTreeModel,
 } from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {cssSourceMapsEnabledSettingDescriptor} from './SDKSettings.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
 
@@ -81,8 +82,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
 
     const settings = this.target().targetManager().settings;
-    this.#sourceMapManager.setEnabled(settings.moduleSetting<boolean>('css-source-maps-enabled').get());
-    settings.moduleSetting<boolean>('css-source-maps-enabled')
+    this.#sourceMapManager.setEnabled(settings.resolve(cssSourceMapsEnabledSettingDescriptor).get());
+    settings.resolve(cssSourceMapsEnabledSettingDescriptor)
         .addChangeListener(event => this.#sourceMapManager.setEnabled(event.data));
   }
 

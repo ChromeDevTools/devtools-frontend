@@ -476,6 +476,18 @@ const UIStrings = {
    * @description Title of an option under the Sources category that can be invoked through the Command Menu.
    */
   disableJavaScriptSourceMaps: 'Disable JavaScript source maps',
+  /**
+   * @description Setting under the Sources category to toggle usage of CSS source maps.
+   */
+  cssSourceMaps: 'CSS source maps',
+  /**
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
+   */
+  enableCssSourceMaps: 'Enable CSS source maps',
+  /**
+   * @description Title of an option under the Sources category that can be invoked through the Command Menu.
+   */
+  disableCssSourceMaps: 'Disable CSS source maps',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/sources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1536,6 +1548,21 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.jsSourceMapsEnabledSet
     {
       value: false,
       title: i18nLazyString(UIStrings.disableJavaScriptSourceMaps),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cssSourceMapsEnabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.SOURCES,
+  title: i18nLazyString(UIStrings.cssSourceMaps),
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.enableCssSourceMaps),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.disableCssSourceMaps),
     },
   ],
 });

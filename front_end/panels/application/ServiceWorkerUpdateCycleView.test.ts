@@ -3,12 +3,16 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {assertScreenshot, dispatchClickEvent, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import * as Resources from './application.js';
+// eslint-disable-next-line @devtools/es-modules-import
+import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
 
 import View = Resources.ServiceWorkerUpdateCycleView;
 
@@ -16,6 +20,10 @@ describe('ServiceWorkerUpdateCycleView', () => {
   setupLocaleHooks();
   let versionId = 0;
   const registrationId = 'fake-sw-id' as Protocol.ServiceWorker.RegistrationID;
+
+  afterEach(() => {
+    sinon.restore();
+  });
 
   it('calculates update cycle ranges', () => {
     const payload: Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: '', isDeleted: false};
@@ -128,6 +136,66 @@ describe('ServiceWorkerUpdateCycleView', () => {
     registration.updateVersion(versionPayload);
     view = new View.ServiceWorkerUpdateCycleView(registration);
     ranges = view.calculateServiceWorkerUpdateRanges();
-    assert.lengthOf(ranges, 3, 'A redundent registration has ranges to display.');
+    assert.lengthOf(ranges, 3, 'A redundant registration has ranges to display.');
+  });
+
+  it('renders the view', async () => {
+    let dateNow = 1600000000000;
+    sinon.stub(Date, 'now').callsFake(() => {
+      dateNow += 2000;
+      return dateNow;
+    });
+
+    const payload: Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: '', isDeleted: false};
+    const registration = new SDK.ServiceWorkerManager.ServiceWorkerRegistration(payload);
+
+    // Add multiple states to the same version to build the timeline history
+    registration.updateVersion({
+      registrationId,
+      versionId: '1',
+      scriptURL: '',
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped,
+    });
+    registration.updateVersion({
+      registrationId,
+      versionId: '1',
+      scriptURL: '',
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped,
+    });
+    registration.updateVersion({
+      registrationId,
+      versionId: '1',
+      scriptURL: '',
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+    });
+    registration.updateVersion({
+      registrationId,
+      versionId: '1',
+      scriptURL: '',
+      status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated,
+      runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+    });
+
+    const view = new View.ServiceWorkerUpdateCycleView(registration);
+    renderElementIntoDOM(view.tableElement, {
+      includeCommonStyles: true,
+      extraStyles: [serviceWorkerUpdateCycleViewStyles],
+    });
+
+    // Wait for the initial render.
+    await raf();
+
+    const rows = view.tableElement.querySelectorAll('.service-worker-update-timing-bar-clickable');
+    for (const row of rows) {
+      dispatchClickEvent(row, {bubbles: true});
+    }
+
+    // Wait for the re-render after clicking.
+    await raf();
+
+    await assertScreenshot('application/service_worker_update_cycle_view.png');
   });
 });

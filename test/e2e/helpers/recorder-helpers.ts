@@ -6,9 +6,6 @@ import {assert} from 'chai';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
-import {
-  selectOption,
-} from '../../../test/shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
@@ -246,7 +243,7 @@ export async function clickSelectButtonItem(devToolsPage: DevToolsPage, itemLabe
       selectMenu,
   );
 
-  void selectOption(await selectMenuButton.toElement('select'), itemLabel);
+  void (await selectMenuButton.toElement('select')).select(itemLabel);
 
   await devToolsPage.click('devtools-button', {root: selectMenu});
 }

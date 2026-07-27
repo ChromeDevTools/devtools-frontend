@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {
-  selectOption,
   step,
 } from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
@@ -57,20 +56,20 @@ describe('Idle Emulation on Sensors panel', () => {
     const initialState = await getState(inspectedPage);
 
     // Emulate Idle states and verify IdleDetector updates state accordingly.
-    await selectOption(select, '{"isUserActive":false,"isScreenUnlocked":false}');
+    await select.select('{"isUserActive":false,"isScreenUnlocked":false}');
     await waitForState('Idle state: idle, locked.', inspectedPage);
 
-    await selectOption(select, '{"isUserActive":true,"isScreenUnlocked":false}');
+    await select.select('{"isUserActive":true,"isScreenUnlocked":false}');
     await waitForState('Idle state: active, locked.', inspectedPage);
 
-    await selectOption(select, '{"isUserActive":true,"isScreenUnlocked":true}');
+    await select.select('{"isUserActive":true,"isScreenUnlocked":true}');
     await waitForState('Idle state: active, unlocked.', inspectedPage);
 
-    await selectOption(select, '{"isUserActive":false,"isScreenUnlocked":true}');
+    await select.select('{"isUserActive":false,"isScreenUnlocked":true}');
     await waitForState('Idle state: idle, unlocked.', inspectedPage);
 
     // Remove Idle emulation and verify IdleDetector is in initial state.
-    await selectOption(select, 'none');
+    await select.select('none');
     await waitForState(initialState, inspectedPage);
   });
 });

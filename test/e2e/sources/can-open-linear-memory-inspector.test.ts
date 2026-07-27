@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import {selectOption} from '../../shared/helper.js';
 import {checkIfTabExistsInDrawer, DRAWER_PANEL_SELECTOR} from '../helpers/cross-tool-helper.js';
 import {
   addBreakpointForLine,
@@ -140,7 +139,7 @@ describe('Scope View', () => {
     const currentMode = await select.evaluate(node => node.value);
     assert.strictEqual('dec', currentMode);
 
-    await selectOption(select, 'hex');
+    await select.select('hex');
 
     const newValue = await devToolsPage.waitForFunction(async () => {
       const newValueElement = await devToolsPage.$('div + .value-type-cell', interpreter);

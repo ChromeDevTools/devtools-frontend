@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {AssertionError} from 'chai';
-import type * as puppeteer from 'puppeteer-core';
 
 export {platform} from '../conductor/platform.js';
 
@@ -36,15 +35,6 @@ export const step = async<T = unknown>(description: string, step: () => Promise<
   }
 };
 
-export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectElement>, value: string) => {
-  await select.evaluate(async (node, _value) => {
-    node.value = _value;
-    const event = document.createEvent('HTMLEvents');
-    event.initEvent('change', false, true);
-    node.dispatchEvent(event);
-  }, value);
-};
-
 export function matchString(actual: string, expected: string|RegExp): true|string {
   if (typeof expected === 'string') {
     if (actual !== expected) {
@@ -71,15 +61,6 @@ export function matchArray<A, E>(
   return true;
 }
 
-export function assertOk<Args extends unknown[]>(check: (...args: Args) => true | string) {
-  return (...args: Args) => {
-    const result = check(...args);
-    if (result !== true) {
-      throw new AssertionError(result);
-    }
-  };
-}
-
 export function matchTable<A, E>(
     actual: A[][], expected: E[][], comparator: (actual: A, expected: E) => true | string) {
   return matchArray(actual, expected, (actual, expected) => matchArray<A, E>(actual, expected, comparator));
@@ -87,8 +68,6 @@ export function matchTable<A, E>(
 
 export const matchStringArray = (actual: string[], expected: Array<string|RegExp>) =>
     matchArray(actual, expected, matchString);
-
-export const assertMatchArray = assertOk(matchStringArray);
 
 export const matchStringTable = (actual: string[][], expected: Array<Array<string|RegExp>>) =>
     matchTable(actual, expected, matchString);

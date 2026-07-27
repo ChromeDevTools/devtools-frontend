@@ -6,7 +6,6 @@ import type {ElementHandle} from 'puppeteer-core';
 
 import {
   platform,
-  selectOption,
 } from '../../shared/helper.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
@@ -54,7 +53,7 @@ if (platform === 'mac') {
 
 export const selectKeyboardShortcutPreset = async (devToolsPage: DevToolsPage, option: string) => {
   const presetSelectElement = await devToolsPage.waitForElementWithTextContent(SHORTCUT_SELECT_TEXT);
-  await selectOption(await presetSelectElement.toElement('select'), option);
+  await (await presetSelectElement.toElement('select')).select(option);
 };
 
 export const getShortcutListItemElement = async (devToolsPage: DevToolsPage, shortcutText: string) => {

@@ -6,9 +6,6 @@ import {assert} from 'chai';
 
 import type {StepType} from '../../../front_end/panels/recorder/models/Schema.js';
 import {
-  selectOption,
-} from '../../../test/shared/helper.js';
-import {
   clickSelectButtonItem,
   createAndStartRecording,
   enableAndOpenRecorderPanel,
@@ -327,7 +324,7 @@ describe('Recorder', function() {
             '.editable-setting select',
         );
 
-        void selectOption(await selectMenu.toElement('select'), '3G');
+        void (await selectMenu.toElement('select')).select('3G');
 
         const recording = await getCurrentRecording(devToolsPage);
 

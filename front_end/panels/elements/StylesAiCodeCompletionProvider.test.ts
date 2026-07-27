@@ -20,7 +20,8 @@ function createProvider(): {
   config: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig,
 } {
   const config: TextEditor.AiCodeCompletionProvider.AiCodeCompletionConfig = {
-    panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES,
+    disclaimerTooltipId: 'styles-disclaimer-tooltip',
+    disclaimerTextVariant: 'styles',
     completionContext: {},
     generationContext: {},
     onFeatureEnabled: () => {},

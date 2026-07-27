@@ -9,13 +9,13 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as AiCodeGeneration from '../../models/ai_code_generation/ai_code_generation.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import type {DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeCompletionTeaser.css.js';
 import {FreDialog} from './FreDialog.js';
 
@@ -164,7 +164,7 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 
 interface AiCodeCompletionTeaserConfig {
   onDetach: () => void;
-  panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  disclaimerTextVariant?: DisclaimerTextVariant;
 }
 
 export class AiCodeCompletionTeaser extends UI.Widget.Widget {
@@ -175,7 +175,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
       (ev: Common.EventTarget.EventTargetEvent<Host.AidaClient.AidaAccessPreconditions>) => void;
   #boundOnAiCodeCompletionSettingChanged: () => void;
   #onDetach: () => void;
-  #panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  #disclaimerTextVariant?: DisclaimerTextVariant;
 
   // Whether the user completed first run experience dialog or not.
   #aiCodeCompletionFreCompletedSetting =
@@ -190,7 +190,7 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
     super();
     this.markAsExternallyManaged();
     this.#onDetach = config.onDetach;
-    this.#panel = config.panel;
+    this.#disclaimerTextVariant = config.disclaimerTextVariant;
     this.#view = view ?? DEFAULT_VIEW;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#boundOnAiCodeCompletionSettingChanged = this.#onAiCodeCompletionSettingChanged.bind(this);
@@ -291,9 +291,9 @@ export class AiCodeCompletionTeaser extends UI.Widget.Widget {
 
     if (result) {
       this.#aiCodeCompletionFreCompletedSetting.set(true);
-      if (this.#panel === AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE) {
+      if (this.#disclaimerTextVariant === 'console') {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromConsole);
-      } else if (this.#panel === AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES) {
+      } else if (this.#disclaimerTextVariant === 'sources') {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiCodeCompletionFreCompletedFromSources);
       }
       this.detach();

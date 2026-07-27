@@ -76,7 +76,7 @@ export class StylesAiCodeCompletionProvider {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging,
     },
-                                                                                    this.#aiCodeCompletionConfig.panel,
+
                                                                                     undefined, stopSequences);
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }

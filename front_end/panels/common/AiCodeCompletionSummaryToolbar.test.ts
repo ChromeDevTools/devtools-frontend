@@ -6,7 +6,6 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -28,15 +27,14 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
 
   async function createToolbar() {
     const view = createViewFunctionStub(Common.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar);
-    const widget = new Common.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar(
-        {
-          citationsTooltipId: 'citations-tooltip',
-          disclaimerTooltipId: 'disclaimer-tooltip',
-          spinnerTooltipId: 'spinner-tooltip',
-          hasTopBorder: false,
-          panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES,
-        },
-        view);
+    const widget = new Common.AiCodeCompletionSummaryToolbar.AiCodeCompletionSummaryToolbar({
+      citationsTooltipId: 'citations-tooltip',
+      disclaimerTooltipId: 'disclaimer-tooltip',
+      spinnerTooltipId: 'spinner-tooltip',
+      hasTopBorder: false,
+      disclaimerTextVariant: 'sources',
+    },
+                                                                                            view);
     widget.markAsRoot();
     renderElementIntoDOM(widget);
     await view.nextInput;
@@ -156,18 +154,17 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
     it('renders correct wide layout', async () => {
       const target = createTarget('700px');
       const citations = new Set<string>(['https://example.com/1']);
-      Common.AiCodeCompletionSummaryToolbar.DEFAULT_SUMMARY_TOOLBAR_VIEW(
-          {
-            citationsTooltipId: 'citations-tooltip',
-            disclaimerTooltipId: 'disclaimer-tooltip',
-            spinnerTooltipId: 'spinner-tooltip',
-            hasTopBorder: false,
-            panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES,
-            citations,
-            loading: false,
-            aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          },
-          undefined, target);
+      Common.AiCodeCompletionSummaryToolbar.DEFAULT_SUMMARY_TOOLBAR_VIEW({
+        citationsTooltipId: 'citations-tooltip',
+        disclaimerTooltipId: 'disclaimer-tooltip',
+        spinnerTooltipId: 'spinner-tooltip',
+        hasTopBorder: false,
+        disclaimerTextVariant: 'sources',
+        citations,
+        loading: false,
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      },
+                                                                         undefined, target);
 
       await assertScreenshot('panels/common/ai-code-completion-summary-toolbar-wide.png');
     });
@@ -175,18 +172,17 @@ describeWithEnvironment('AiCodeCompletionSummaryToolbar', () => {
     it('renders correct narrow layout', async () => {
       const target = createTarget('400px');
       const citations = new Set<string>(['https://example.com/1']);
-      Common.AiCodeCompletionSummaryToolbar.DEFAULT_SUMMARY_TOOLBAR_VIEW(
-          {
-            citationsTooltipId: 'citations-tooltip',
-            disclaimerTooltipId: 'disclaimer-tooltip',
-            spinnerTooltipId: 'spinner-tooltip',
-            hasTopBorder: false,
-            panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES,
-            citations,
-            loading: false,
-            aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          },
-          undefined, target);
+      Common.AiCodeCompletionSummaryToolbar.DEFAULT_SUMMARY_TOOLBAR_VIEW({
+        citationsTooltipId: 'citations-tooltip',
+        disclaimerTooltipId: 'disclaimer-tooltip',
+        spinnerTooltipId: 'spinner-tooltip',
+        hasTopBorder: false,
+        disclaimerTextVariant: 'sources',
+        citations,
+        loading: false,
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      },
+                                                                         undefined, target);
 
       await assertScreenshot('panels/common/ai-code-completion-summary-toolbar-narrow.png');
     });

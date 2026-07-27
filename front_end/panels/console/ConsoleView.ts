@@ -601,7 +601,8 @@ export class ConsoleView extends UI.Widget.VBox implements
           onSuggestionAccepted: this.#onAiCodeCompletionSuggestionAccepted.bind(this),
           onRequestTriggered: this.#onAiCodeCompletionRequestTriggered.bind(this),
           onResponseReceived: this.#onAiCodeCompletionResponseReceived.bind(this),
-          panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+          disclaimerTooltipId: 'console-ai-code-generation-disclaimer-tooltip',
+          disclaimerTextVariant: 'console',
         } :
         undefined;
 
@@ -678,7 +679,7 @@ export class ConsoleView extends UI.Widget.VBox implements
       citationsTooltipId: CITATIONS_TOOLTIP_ID,
       disclaimerTooltipId: DISCLAIMER_TOOLTIP_ID,
       spinnerTooltipId: SPINNER_TOOLTIP_ID,
-      panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+      disclaimerTextVariant: 'console',
     });
     this.aiCodeCompletionSummaryToolbarContainer =
         this.element.createChild('div', 'ai-code-completion-summary-toolbar-container');

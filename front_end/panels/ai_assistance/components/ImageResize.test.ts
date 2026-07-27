@@ -15,10 +15,11 @@ describe('ImageResize', () => {
     assert.isNotEmpty(result.data);
 
     const img = new Image();
-    img.src = 'data:image/jpeg;base64,' + result.data;
-    await new Promise(resolve => {
+    const loaded = new Promise(resolve => {
       img.onload = resolve;
     });
+    img.src = 'data:image/jpeg;base64,' + result.data;
+    await loaded;
     assert.strictEqual(img.width, 1024);
     assert.strictEqual(img.height, 512);
   });
@@ -27,10 +28,11 @@ describe('ImageResize', () => {
     const file = await createDummyImageFile(500, 400);
     const result = await AiAssistance.ImageResize.compress(file);
     const img = new Image();
-    img.src = 'data:image/jpeg;base64,' + result.data;
-    await new Promise(resolve => {
+    const loaded = new Promise(resolve => {
       img.onload = resolve;
     });
+    img.src = 'data:image/jpeg;base64,' + result.data;
+    await loaded;
     assert.strictEqual(img.width, 500);
     assert.strictEqual(img.height, 400);
   });
@@ -42,10 +44,11 @@ describe('ImageResize', () => {
     assert.isNotEmpty(result.data);
 
     const img = new Image();
-    img.src = 'data:image/jpeg;base64,' + result.data;
-    await new Promise(resolve => {
+    const loaded = new Promise(resolve => {
       img.onload = resolve;
     });
+    img.src = 'data:image/jpeg;base64,' + result.data;
+    await loaded;
     assert.strictEqual(img.width, 512);
     assert.strictEqual(img.height, 1024);
   });

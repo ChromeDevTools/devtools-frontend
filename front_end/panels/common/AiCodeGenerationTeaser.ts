@@ -7,12 +7,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import type {DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeGenerationTeaser.css.js';
 
 const UIStringsNotTranslate = {
@@ -137,17 +137,17 @@ export enum AiCodeGenerationTeaserDisplayState {
   GENERATED = 'generated',
 }
 
-function getTooltipDisclaimerText(noLogging: boolean, panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor): string {
-  switch (panel) {
-    case AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE:
+function getTooltipDisclaimerText(noLogging: boolean, disclaimerTextVariant: DisclaimerTextVariant): string {
+  switch (disclaimerTextVariant) {
+    case 'console':
       return noLogging ?
           lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInConsole) :
           lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationInConsole);
-    case AiCodeCompletion.AiCodeCompletion.ContextFlavor.SOURCES:
+    case 'sources':
       return noLogging ?
           lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationNoLoggingInSources) :
           lockedString(UIStringsNotTranslate.tooltipDisclaimerTextForAiCodeGenerationInSources);
-    case AiCodeCompletion.AiCodeCompletion.ContextFlavor.STYLES:
+    case 'styles':
       // TODO(476101019): update with string for styles pane
       return '';
   }
@@ -160,8 +160,7 @@ export interface ViewInput {
   onManageInSettingsTooltipClick: (event: Event) => void;
   showDataUsageTeaser: boolean;
   showDiscoveryTeaser: boolean;
-  // TODO(b/472268298): Remove ContextFlavor explicitly and pass required values
-  panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  disclaimerTextVariant?: DisclaimerTextVariant;
 }
 
 export interface ViewOutput {
@@ -173,7 +172,7 @@ export interface ViewOutput {
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
-  if (!input.panel) {
+  if (!input.disclaimerTextVariant) {
     render(nothing, target);
     return;
   }
@@ -207,7 +206,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           html`${toGenerateCode}.&nbsp;${toLearnHowYourDataIsBeingUsedVisible}` :
           toGenerateCode;
 
-      const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.panel);
+      const tooltipDisclaimerText = getTooltipDisclaimerText(input.noLogging, input.disclaimerTextVariant);
 
       // clang-format off
       teaserLabel = html`<div class="ai-code-generation-teaser-trigger">
@@ -265,7 +264,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         break;
       }
       const newBadge = UI.UIUtils.maybeCreateNewBadge(PROMOTION_ID);
-      const teaserText = input.panel === AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE ?
+      const teaserText = input.disclaimerTextVariant === 'console' ?
           lockedString(UIStringsNotTranslate.writeACommentToGenerateCodeInConsole) :
           lockedString(UIStringsNotTranslate.writeACommentToGenerateCode);
       teaserLabel = newBadge ? html`${teaserText}&nbsp;${newBadge}` : nothing;
@@ -326,7 +325,7 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
   #displayState = AiCodeGenerationTeaserDisplayState.DISCOVERY;
   #disclaimerTooltipId?: string;
   #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
-  #panel?: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  #disclaimerTextVariant?: DisclaimerTextVariant;
   #timerIntervalId?: number;
   #loadStartTime?: number;
   #aiCodeGenerationUsedSetting = Common.Settings.Settings.instance().createSetting('ai-code-generation-used', false);
@@ -343,18 +342,17 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    this.#view(
-        {
-          displayState: this.#displayState,
-          onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
-          disclaimerTooltipId: this.#disclaimerTooltipId,
-          noLogging: this.#noLogging,
-          showDataUsageTeaser: AiCodeGenerationTeaser.#showDataUsageTeaser,
-          showDiscoveryTeaser:
-              !this.#aiCodeGenerationUsedSetting.get() && !AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
-          panel: this.#panel,
-        },
-        this.#viewOutput, this.contentElement);
+    this.#view({
+      displayState: this.#displayState,
+      onManageInSettingsTooltipClick: this.#onManageInSettingsTooltipClick.bind(this),
+      disclaimerTooltipId: this.#disclaimerTooltipId,
+      noLogging: this.#noLogging,
+      showDataUsageTeaser: AiCodeGenerationTeaser.#showDataUsageTeaser,
+      showDiscoveryTeaser:
+          !this.#aiCodeGenerationUsedSetting.get() && !AiCodeGenerationTeaser.#discoveryTeaserShownInSession,
+      disclaimerTextVariant: this.#disclaimerTextVariant,
+    },
+               this.#viewOutput, this.contentElement);
   }
 
   override willHide(): void {
@@ -415,8 +413,8 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  set panel(panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor) {
-    this.#panel = panel;
+  set disclaimerTextVariant(disclaimerTextVariant: DisclaimerTextVariant) {
+    this.#disclaimerTextVariant = disclaimerTextVariant;
     this.requestUpdate();
   }
 
@@ -433,5 +431,9 @@ export class AiCodeGenerationTeaser extends UI.Widget.Widget {
 
   static setDiscoveryTeaserShownInSessionForTest(value: boolean): void {
     AiCodeGenerationTeaser.#discoveryTeaserShownInSession = value;
+  }
+
+  static setShowDataUsageTeaserForTest(value: boolean): void {
+    AiCodeGenerationTeaser.#showDataUsageTeaser = value;
   }
 }

@@ -7,7 +7,6 @@ import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
-import * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
@@ -21,6 +20,7 @@ describeWithEnvironment('AiCodeGenerationTeaser', () => {
   beforeEach(() => {
     Common.Settings.Settings.instance().createSetting('ai-code-generation-used', false);
     AiCodeGenerationTeaser.setDiscoveryTeaserShownInSessionForTest(false);
+    AiCodeGenerationTeaser.setShowDataUsageTeaserForTest(true);
   });
 
   afterEach(() => {
@@ -77,14 +77,14 @@ describeWithEnvironment('AiCodeGenerationTeaser', () => {
     clock.restore();
   });
 
-  it('panel is updated', async () => {
+  it('disclaimerTextVariant is updated', async () => {
     const {view, widget} = await createTeaser();
-    assert.isUndefined(view.input.panel);
+    assert.isUndefined(view.input.disclaimerTextVariant);
 
-    widget.panel = AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE;
+    widget.disclaimerTextVariant = 'console';
     await view.nextInput;
 
-    assert.deepEqual(view.input.panel, AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE);
+    assert.deepEqual(view.input.disclaimerTextVariant, 'console');
   });
 
   it('disclaimerTooltipId is updated', async () => {

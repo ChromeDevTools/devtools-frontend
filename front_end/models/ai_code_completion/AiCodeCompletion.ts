@@ -145,18 +145,15 @@ export class AiCodeCompletion {
   #renderingTimeout?: number;
   #aidaRequestCache?: CachedRequest;
   #lastEmptyResponseText?: string;
-  // TODO(b/445394511): Remove panel from the class
-  #panel: ContextFlavor;
   #callbacks?: Callbacks;
 
   readonly #sessionId: string = crypto.randomUUID();
   readonly #aidaClient: Host.AidaClient.AidaClient;
   readonly #serverSideLoggingEnabled: boolean;
 
-  constructor(opts: AgentOptions, panel: ContextFlavor, callbacks?: Callbacks, stopSequences?: string[]) {
+  constructor(opts: AgentOptions, callbacks?: Callbacks, stopSequences?: string[]) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-    this.#panel = panel;
     this.#stopSequences = stopSequences ?? [];
     this.#callbacks = callbacks;
   }
@@ -172,15 +169,7 @@ export class AiCodeCompletion {
     // As a temporary fix for b/441221870 we are prepending a newline for each prefix.
     prefix = '\n' + prefix;
 
-    let additionalContextFiles = additionalFiles;
-    if (!additionalContextFiles) {
-      additionalContextFiles = this.#panel === ContextFlavor.CONSOLE ? [{
-        path: 'devtools-console-context.js',
-        content: consoleAdditionalContextFileContent,
-        included_reason: Host.AidaClient.Reason.RELATED_FILE,
-      }] :
-                                                                       undefined;
-    }
+    const additionalContextFiles = additionalFiles;
     return {
       client: Host.AidaClient.CLIENT_NAME,
       prefix,
@@ -383,10 +372,4 @@ export class AiCodeCompletion {
     }
     return Boolean(aidaAvailability.enabled && AiCodeCompletion.isAiCodeCompletionStylesAvailable());
   }
-}
-
-export const enum ContextFlavor {
-  CONSOLE = 'console',  // generated code can contain console specific APIs like `$0`.
-  SOURCES = 'sources',
-  STYLES = 'styles',
 }

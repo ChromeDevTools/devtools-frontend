@@ -9,11 +9,10 @@ import '../../ui/kit/kit.js';
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as AiCodeCompletion from '../../models/ai_code_completion/ai_code_completion.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, nothing, render} from '../../ui/lit/lit.js';
 
-import {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
+import {AiCodeCompletionDisclaimer, type DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 import styles from './aiCodeCompletionSummaryToolbar.css.js';
 
 const UIStringsNotTranslate = {
@@ -35,7 +34,7 @@ export interface AiCodeCompletionSummaryToolbarProps {
   disclaimerTooltipId?: string;
   spinnerTooltipId?: string;
   hasTopBorder?: boolean;
-  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  disclaimerTextVariant?: DisclaimerTextVariant;
 }
 
 export interface ViewInput {
@@ -46,7 +45,7 @@ export interface ViewInput {
   loading: boolean;
   hasTopBorder: boolean;
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
-  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  disclaimerTextVariant?: DisclaimerTextVariant;
 }
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -70,7 +69,7 @@ export const DEFAULT_SUMMARY_TOOLBAR_VIEW: View = (input, _output, target) => {
       disclaimerTooltipId: input.disclaimerTooltipId,
       spinnerTooltipId: input.spinnerTooltipId,
       loading: input.loading,
-      panel: input.panel,
+      disclaimerTextVariant: input.disclaimerTextVariant,
     })} class="disclaimer-widget"></devtools-widget>` : nothing;
 
   const recitationNotice = input.citations && input.citations.size > 0 ?
@@ -114,7 +113,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   #citations = new Set<string>();
   #loading = false;
   #hasTopBorder = false;
-  #panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor;
+  #disclaimerTextVariant?: DisclaimerTextVariant;
 
   #aidaAvailability?: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange:
@@ -126,7 +125,7 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
     this.#spinnerTooltipId = props.spinnerTooltipId;
     this.#citationsTooltipId = props.citationsTooltipId;
     this.#hasTopBorder = props.hasTopBorder ?? false;
-    this.#panel = props.panel;
+    this.#disclaimerTextVariant = props.disclaimerTextVariant;
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#view = view ?? DEFAULT_SUMMARY_TOOLBAR_VIEW;
     this.requestUpdate();
@@ -159,18 +158,17 @@ export class AiCodeCompletionSummaryToolbar extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    this.#view(
-        {
-          disclaimerTooltipId: this.#disclaimerTooltipId,
-          spinnerTooltipId: this.#spinnerTooltipId,
-          citations: this.#citations,
-          citationsTooltipId: this.#citationsTooltipId,
-          loading: this.#loading,
-          hasTopBorder: this.#hasTopBorder,
-          aidaAvailability: this.#aidaAvailability,
-          panel: this.#panel,
-        },
-        undefined, this.contentElement);
+    this.#view({
+      disclaimerTooltipId: this.#disclaimerTooltipId,
+      spinnerTooltipId: this.#spinnerTooltipId,
+      citations: this.#citations,
+      citationsTooltipId: this.#citationsTooltipId,
+      loading: this.#loading,
+      hasTopBorder: this.#hasTopBorder,
+      aidaAvailability: this.#aidaAvailability,
+      disclaimerTextVariant: this.#disclaimerTextVariant,
+    },
+               undefined, this.contentElement);
   }
 
   override wasShown(): void {

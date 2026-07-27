@@ -465,7 +465,15 @@ describeWithEnvironment('AnimationTimeline', () => {
         preview.click();
         await waitForAnimationGroupSelectedPromise.wait();
 
-        void animationModel.animationUpdated(TIME_ANIMATION_PAYLOAD);
+        void animationModel.animationUpdated({
+          ...TIME_ANIMATION_PAYLOAD,
+          source: {
+            ...TIME_ANIMATION_PAYLOAD.source,
+            iterations: 3,
+            duration: 10,
+          },
+        });
+
         await waitForScheduleRedrawAfterAnimationGroupUpdated.wait();
         await waitForScrubberOnFinish.wait();
       });

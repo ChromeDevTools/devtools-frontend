@@ -71,7 +71,6 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
         ['\n'],
     );
@@ -108,7 +107,6 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
     );
 
@@ -131,7 +129,6 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
     );
 
@@ -154,7 +151,6 @@ describeWithEnvironment('AiCodeCompletion', () => {
     });
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient},
-        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
     );
 
@@ -168,7 +164,6 @@ describeWithEnvironment('AiCodeCompletion', () => {
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient);
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient, serverSideLoggingEnabled: false},
-        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
     );
 
@@ -193,7 +188,6 @@ describeWithEnvironment('AiCodeCompletion', () => {
 
     const aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
         {aidaClient: mockAidaClient, serverSideLoggingEnabled: false},
-        AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
         createCallbacks(sinon.createStubInstance(TextEditor.TextEditor.TextEditor)),
     );
 

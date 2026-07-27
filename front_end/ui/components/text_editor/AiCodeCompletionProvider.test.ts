@@ -22,7 +22,8 @@ function createEditorWithProvider(doc: string, config: AiCodeCompletionProvider.
   onSuggestionAccepted: () => {},
   onRequestTriggered: () => {},
   onResponseReceived: () => {},
-  panel: AiCodeCompletion.AiCodeCompletion.ContextFlavor.CONSOLE,
+  disclaimerTooltipId: 'console-disclaimer-tooltip',
+  disclaimerTextVariant: 'console',
 }): {editor: TextEditor.TextEditor, provider: AiCodeCompletionProvider.AiCodeCompletionProvider} {
   const provider = AiCodeCompletionProvider.AiCodeCompletionProvider.createInstance(config);
   const editor = new TextEditor.TextEditor(

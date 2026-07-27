@@ -100,7 +100,7 @@ export {AiCodeGenerationUpgradeDialog} from './AiCodeGenerationUpgradeDialog.js'
 export {FreDialog} from './FreDialog.js';
 export {GdpSignUpDialog} from './GdpSignUpDialog.js';
 export {GeminiRebrandPromoDialog} from './GeminiRebrandPromoDialog.js';
-export {AiCodeCompletionDisclaimer} from './AiCodeCompletionDisclaimer.js';
+export {AiCodeCompletionDisclaimer, type DisclaimerTextVariant} from './AiCodeCompletionDisclaimer.js';
 export * as AiCodeCompletionSummaryToolbar from './AiCodeCompletionSummaryToolbar.js';
 export * from './BadgeNotification.js';
 export * as CPUThrottlingOption from './CPUThrottlingOption.js';

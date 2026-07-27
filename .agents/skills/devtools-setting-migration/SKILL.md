@@ -1,6 +1,6 @@
 ---
 name: devtools-setting-migration
-description: Workflow for splitting an existing SettingRegistration into a SettingDescriptor (placed in the lowest layer where used: core/, models/, or ui/settings/) and SettingUIDescriptor (registered in a higher-level -meta.ts file, outside of core/ and models/).
+description: "Workflow for splitting an existing SettingRegistration into a SettingDescriptor (placed in the lowest layer where used: core/, models/, or ui/settings/) and SettingUIDescriptor (registered in a higher-level -meta.ts file, outside of core/ and models/)."
 ---
 
 # DevTools Setting Migration Guide

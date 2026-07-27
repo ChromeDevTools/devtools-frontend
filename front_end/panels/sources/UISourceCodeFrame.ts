@@ -22,7 +22,6 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {AiCodeCompletionPlugin} from './AiCodeCompletionPlugin.js';
-import {AiWarningInfobarPlugin} from './AiWarningInfobarPlugin.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
 import {DebuggerPlugin} from './DebuggerPlugin.js';
@@ -351,7 +350,6 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
       ResourceOriginPlugin,
       CoveragePlugin,
       PerformanceProfilePlugin,
-      AiWarningInfobarPlugin,
     ];
 
     if (AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionAvailable()) {

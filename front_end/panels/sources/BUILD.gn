@@ -31,7 +31,6 @@ devtools_ui_module("sources") {
   sources = [
     "AddSourceMapURLDialog.ts",
     "AiCodeCompletionPlugin.ts",
-    "AiWarningInfobarPlugin.ts",
     "BreakpointEditDialog.ts",
     "BreakpointsView.ts",
     "BreakpointsViewUtils.ts",

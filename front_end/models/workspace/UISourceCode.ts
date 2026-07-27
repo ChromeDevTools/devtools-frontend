@@ -47,7 +47,6 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #contentEncoded: boolean|undefined;
   #isKnownThirdParty = false;
   #isUnconditionallyIgnoreListed = false;
-  #containsAiChanges = false;
 
   constructor(project: Project, url: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType) {
     super();
@@ -343,21 +342,12 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   #resetWorkingCopy(): void {
     this.#workingCopy = null;
     this.#workingCopyGetter = null;
-    this.setContainsAiChanges(false);
   }
 
   setWorkingCopy(newWorkingCopy: string): void {
     this.#workingCopy = newWorkingCopy;
     this.#workingCopyGetter = null;
     this.#workingCopyChanged();
-  }
-
-  setContainsAiChanges(containsAiChanges: boolean): void {
-    this.#containsAiChanges = containsAiChanges;
-  }
-
-  containsAiChanges(): boolean {
-    return this.#containsAiChanges;
   }
 
   setContent(content: string, isBase64: boolean): void {

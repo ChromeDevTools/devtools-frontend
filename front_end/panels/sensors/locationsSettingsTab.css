@@ -96,6 +96,7 @@
   flex-direction: column;
   gap: var(--sys-size-6);
   width: var(--sys-size-33);
+  min-width: var(--sys-size-33);
 }
 
 .editor-grid {
@@ -145,4 +146,20 @@
   justify-content: flex-end;
   gap: var(--sys-size-3);
   margin-top: var(--sys-size-3);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-title {
+  font-size: var(--sys-size-7);
+  font-weight: var(--ref-typeface-weight-medium);
+  color: var(--sys-color-on-surface);
+}
+
+.dialog-close-button {
+  flex-shrink: 0;
 }

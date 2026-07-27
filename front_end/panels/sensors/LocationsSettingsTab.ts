@@ -8,7 +8,6 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -125,6 +124,10 @@ const UIStrings = {
    * @description Label for button to cancel location edits.
    */
   cancel: 'Cancel',
+  /**
+   * @description Label for button to close the location dialog.
+   */
+  close: 'Close',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/LocationsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -236,32 +239,32 @@ export function renderEditorView(controls: EditorInputControls, errors?: Locatio
   return html`
     <div class="editor-grid">
       <div class="editor-field editor-field-full-width ${errors?.title ? 'has-error' : ''}">
-        <label class="editor-field-label">${i18nString(UIStrings.locationName)}</label>
+        <label class="editor-field-label" for="location-title">${i18nString(UIStrings.locationName)}</label>
         ${controls.titleInput}
         ${errors?.title ? html`<div class="editor-field-error" role="alert">${errors.title}</div>` : nothing}
       </div>
       <div class="editor-field ${errors?.lat ? 'has-error' : ''}">
-        <label class="editor-field-label">${i18nString(UIStrings.lat)}</label>
+        <label class="editor-field-label" for="location-lat">${i18nString(UIStrings.lat)}</label>
         ${controls.latInput}
         ${errors?.lat ? html`<div class="editor-field-error" role="alert">${errors.lat}</div>` : nothing}
       </div>
       <div class="editor-field ${errors?.long ? 'has-error' : ''}">
-        <label class="editor-field-label">${i18nString(UIStrings.long)}</label>
+        <label class="editor-field-label" for="location-long">${i18nString(UIStrings.long)}</label>
         ${controls.longInput}
         ${errors?.long ? html`<div class="editor-field-error" role="alert">${errors.long}</div>` : nothing}
       </div>
       <div class="editor-field ${errors?.timezoneId ? 'has-error' : ''}">
-        <label class="editor-field-label">${i18nString(UIStrings.timezoneId)}</label>
+        <label class="editor-field-label" for="location-timezone">${i18nString(UIStrings.timezoneId)}</label>
         ${controls.timezoneIdInput}
         ${errors?.timezoneId ? html`<div class="editor-field-error" role="alert">${errors.timezoneId}</div>` : nothing}
       </div>
       <div class="editor-field ${errors?.locale ? 'has-error' : ''}">
-        <label class="editor-field-label">${i18nString(UIStrings.locale)}</label>
+        <label class="editor-field-label" for="location-locale">${i18nString(UIStrings.locale)}</label>
         ${controls.localeInput}
         ${errors?.locale ? html`<div class="editor-field-error" role="alert">${errors.locale}</div>` : nothing}
       </div>
       <div class="editor-field editor-field-full-width ${errors?.accuracy ? 'has-error' : ''}">
-        <label class="editor-field-label">${i18nString(UIStrings.accuracy)}</label>
+        <label class="editor-field-label" for="location-accuracy">${i18nString(UIStrings.accuracy)}</label>
         ${controls.accuracyInput}
         ${errors?.accuracy ? html`<div class="editor-field-error" role="alert">${errors.accuracy}</div>` : nothing}
       </div>
@@ -316,37 +319,40 @@ export function renderLocationDialog(input: LocationDialogInput, target: HTMLEle
   };
 
   const editorControls: EditorInputControls = {
-    titleInput: html`<input type="text" placeholder=${i18nString(UIStrings.locationName)} .value=${
-        input.location.title} ${ref(titleInputRef)}>`,
-    latInput: html`<input type="text" placeholder=${i18nString(UIStrings.latitude)} .value=${
-        String(input.location.lat)} ${ref(latInputRef)}>`,
-    longInput: html`<input type="text" placeholder=${i18nString(UIStrings.longitude)} .value=${
-        String(input.location.long)} ${ref(longInputRef)}>`,
-    timezoneIdInput: html`<input type="text" placeholder=${i18nString(UIStrings.timezoneId)} .value=${
-        input.location.timezoneId} ${ref(timezoneIdInputRef)}>`,
-    localeInput: html`<input type="text" placeholder=${i18nString(UIStrings.locale)} .value=${input.location.locale} ${
-        ref(localeInputRef)}>`,
-    accuracyInput: html`<input type="text" placeholder=${i18nString(UIStrings.accuracy)} .value=${
+    titleInput:
+        html`<input id="location-title" aria-label=${i18nString(UIStrings.locationName)} type="text" placeholder=${
+            i18nString(UIStrings.locationName)} .value=${input.location.title} ${ref(titleInputRef)}>`,
+    latInput: html`<input id="location-lat" aria-label=${i18nString(UIStrings.lat)} type="text" placeholder=${
+        i18nString(UIStrings.latitude)} .value=${String(input.location.lat)} ${ref(latInputRef)}>`,
+    longInput: html`<input id="location-long" aria-label=${i18nString(UIStrings.long)} type="text" placeholder=${
+        i18nString(UIStrings.longitude)} .value=${String(input.location.long)} ${ref(longInputRef)}>`,
+    timezoneIdInput:
+        html`<input id="location-timezone" aria-label=${i18nString(UIStrings.timezoneId)} type="text" placeholder=${
+            i18nString(UIStrings.timezoneId)} .value=${input.location.timezoneId} ${ref(timezoneIdInputRef)}>`,
+    localeInput: html`<input id="location-locale" aria-label=${i18nString(UIStrings.locale)} type="text" placeholder=${
+        i18nString(UIStrings.locale)} .value=${input.location.locale} ${ref(localeInputRef)}>`,
+    accuracyInput: html`<input id="location-accuracy" aria-label=${
+        i18nString(UIStrings.accuracy)} type="text" placeholder=${i18nString(UIStrings.accuracy)} .value=${
         String(input.location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)} ${ref(accuracyInputRef)}>`,
   };
 
   // clang-format off
-  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-  render(html`
+
+  const dialogContent = html`
     <style>${locationsSettingsTabStyles}</style>
-    <devtools-dialog
-      @clickoutsidedialog=${input.onCancel}
-      @forceddialogclose=${input.onCancel}
-      .dialogTitle=${input.isNew ? i18nString(UIStrings.addLocation) : i18nString(UIStrings.editLocation)}
-      .jslogContext=${'location-dialog'}
-      .origin=${Dialogs.Dialog.MODAL}
-      .position=${Dialogs.Dialog.DialogVerticalPosition.AUTO}
-      .horizontalAlignment=${Dialogs.Dialog.DialogHorizontalAlignment.CENTER}
-      .state=${Dialogs.Dialog.DialogState.EXPANDED}
-      .closeButton=${true}
-      .closeOnESC=${true}
-      .closeOnScroll=${false}>
       <div class="location-dialog-content">
+      <div class="dialog-header">
+        <span class="dialog-title">${input.isNew ? i18nString(UIStrings.addLocation) : i18nString(UIStrings.editLocation)}</span>
+        <devtools-button
+          class="dialog-close-button"
+          .iconName=${'cross'}
+          .variant=${Buttons.Button.Variant.ICON}
+          .title=${i18nString(UIStrings.close)}
+          .jslogContext=${'dialog-close'}
+          @click=${input.onCancel}
+          aria-label=${i18nString(UIStrings.close)}>
+        </devtools-button>
+      </div>
         ${renderEditorView(editorControls, input.errors, true)}
         <div class="dialog-buttons">
           <devtools-button
@@ -363,7 +369,20 @@ export function renderLocationDialog(input: LocationDialogInput, target: HTMLEle
           </devtools-button>
         </div>
       </div>
-    </devtools-dialog>
+  `;
+
+  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+  render(html`
+    <style>${locationsSettingsTabStyles}</style>
+    <devtools-widget
+      class="location-dialog-widget"
+      ${UI.Widget.widget(UI.Dialog.DialogWidget, {
+        open: true,
+        jslogContext: 'location-dialog',
+        content: dialogContent,
+      })}
+      @hidden=${input.onCancel}>
+    </devtools-widget>
   `, target);
   // clang-format on
 }

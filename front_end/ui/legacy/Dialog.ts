@@ -6,16 +6,17 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import {type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import dialogStyles from './dialog.css.js';
-import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
+import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import type {SplitWidget} from './SplitWidget.js';
-import {WidgetFocusRestorer} from './Widget.js';
+import {Widget, WidgetFocusRestorer} from './Widget.js';
 
 const UIStrings = {
   /**
@@ -41,8 +42,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     if (jslogContext) {
-      this.contentElement.setAttribute(
-          'jslog', `${VisualLogging.dialog(jslogContext).track({resize: true, keydown: 'Escape'})}`);
+      this.jslogContext = jslogContext;
     }
     this.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
     this.setOutsideClickCallback(event => {
@@ -57,6 +57,15 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     });
     ARIAUtils.markAsModalDialog(this.contentElement);
     this.targetDocumentKeyDownHandler = this.onKeyDown.bind(this);
+  }
+
+  set jslogContext(jslogContext: string) {
+    if (jslogContext) {
+      this.contentElement.setAttribute(
+          'jslog', `${VisualLogging.dialog(jslogContext).track({resize: true, keydown: 'Escape'})}`);
+    } else {
+      this.contentElement.removeAttribute('jslog');
+    }
   }
 
   static hasInstance(): boolean {
@@ -242,4 +251,84 @@ export const enum OutsideTabIndexBehavior {
   DISABLE_ALL_OUTSIDE_TAB_INDEX = 'DisableAllTabIndex',
   PRESERVE_MAIN_VIEW_TAB_INDEX = 'PreserveMainViewTabIndex',
   PRESERVE_TAB_INDEX = 'PreserveTabIndex',
+}
+
+export class DialogWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
+  #open = false;
+  #content: LitTemplate = nothing;
+  readonly #dialog = new Dialog();
+
+  constructor(element?: HTMLElement) {
+    super(element);
+    this.#dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
+    this.#dialog.contentElement.tabIndex = -1;
+    this.#dialog.addEventListener(Events.HIDDEN, () => {
+      this.#open = false;
+      this.dispatchEventToListeners(Events.HIDDEN);
+    });
+  }
+
+  get open(): boolean {
+    return this.#open;
+  }
+
+  set open(open: boolean) {
+    if (this.#open !== open) {
+      this.#open = open;
+      this.requestUpdate();
+    }
+  }
+
+  #jslogContext = '';
+
+  get content(): LitTemplate {
+    return this.#content;
+  }
+
+  set content(content: LitTemplate) {
+    this.#content = content;
+    this.requestUpdate();
+  }
+
+  get jslogContext(): string {
+    return this.#jslogContext;
+  }
+
+  set jslogContext(jslogContext: string) {
+    if (this.#jslogContext !== jslogContext) {
+      this.#jslogContext = jslogContext;
+      this.#dialog.jslogContext = jslogContext;
+      this.requestUpdate();
+    }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#dialog.hide();
+  }
+
+  override onDetach(): void {
+    super.onDetach();
+    this.#dialog.hide();
+  }
+
+  override performUpdate(): void {
+    if (this.open) {
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(this.#content ?? nothing, this.#dialog.contentElement);
+      if (!this.#dialog.isShowing()) {
+        this.#dialog.show(this.contentElement.ownerDocument);
+        this.#dialog.contentElement.focus();
+      } else {
+        this.#dialog.positionContent();
+      }
+    } else if (this.#dialog.isShowing()) {
+      this.#dialog.hide();
+    }
+  }
 }

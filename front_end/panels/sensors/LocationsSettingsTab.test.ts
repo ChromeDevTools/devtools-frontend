@@ -8,8 +8,8 @@ import * as sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sensors from './sensors.js';
 
@@ -105,6 +105,18 @@ describeWithEnvironment('LocationsSettingsTab', () => {
   });
 });
 
+function getDialogContent(): HTMLElement {
+  const content = UI.Dialog.Dialog.getInstance()?.contentElement;
+  assert.exists(content);
+  return content;
+}
+
+async function setupLocationDialog(input: Sensors.LocationsSettingsTab.LocationDialogInput, target: HTMLElement) {
+  Sensors.LocationsSettingsTab.renderLocationDialog(input, target);
+  await RenderCoordinator.done();
+  await UI.Widget.Widget.allUpdatesComplete;
+}
+
 describeWithEnvironment('renderLocationDialog', () => {
   let target: HTMLElement;
 
@@ -114,7 +126,7 @@ describeWithEnvironment('renderLocationDialog', () => {
   });
 
   it('renders in add mode with empty location inputs', async () => {
-    Sensors.LocationsSettingsTab.renderLocationDialog({
+    await setupLocationDialog({
       location: {
         title: '',
         lat: 0,
@@ -128,20 +140,17 @@ describeWithEnvironment('renderLocationDialog', () => {
       onCancel: () => {},
       onValidateErrors: () => {},
     },
-                                                      target);
-    await RenderCoordinator.done();
+                              target);
+    assert.isTrue(UI.Dialog.Dialog.hasInstance());
+    assert.strictEqual(getDialogContent().querySelector('.dialog-title')?.textContent?.trim(), 'Add location');
 
-    const dialog = target.querySelector<Dialogs.Dialog.Dialog>('devtools-dialog');
-    assert.exists(dialog);
-    assert.strictEqual(dialog.shadowRoot?.querySelector('.dialog-header-text')?.textContent?.trim(), 'Add location');
-
-    const titleInput = target.querySelector<HTMLInputElement>('input[placeholder="Location name"]');
+    const titleInput = getDialogContent().querySelector<HTMLInputElement>('input[placeholder="Location name"]');
     assert.exists(titleInput);
     assert.strictEqual(titleInput.value, '');
   });
 
   it('renders in edit mode with existing location data', async () => {
-    Sensors.LocationsSettingsTab.renderLocationDialog({
+    await setupLocationDialog({
       location: {
         title: 'London',
         lat: 51.5074,
@@ -155,18 +164,15 @@ describeWithEnvironment('renderLocationDialog', () => {
       onCancel: () => {},
       onValidateErrors: () => {},
     },
-                                                      target);
-    await RenderCoordinator.done();
+                              target);
+    assert.isTrue(UI.Dialog.Dialog.hasInstance());
+    assert.strictEqual(getDialogContent().querySelector('.dialog-title')?.textContent?.trim(), 'Edit location');
 
-    const dialog = target.querySelector<Dialogs.Dialog.Dialog>('devtools-dialog');
-    assert.exists(dialog);
-    assert.strictEqual(dialog.shadowRoot?.querySelector('.dialog-header-text')?.textContent?.trim(), 'Edit location');
-
-    const titleInput = target.querySelector<HTMLInputElement>('input[placeholder="Location name"]');
+    const titleInput = getDialogContent().querySelector<HTMLInputElement>('input[placeholder="Location name"]');
     assert.exists(titleInput);
     assert.strictEqual(titleInput.value, 'London');
 
-    const latInput = target.querySelector<HTMLInputElement>('input[placeholder="Latitude"]');
+    const latInput = getDialogContent().querySelector<HTMLInputElement>('input[placeholder="Latitude"]');
     assert.exists(latInput);
     assert.strictEqual(latInput.value, '51.5074');
   });
@@ -175,7 +181,7 @@ describeWithEnvironment('renderLocationDialog', () => {
     const onSave = sinon.spy();
     const onValidateErrors = sinon.spy();
 
-    Sensors.LocationsSettingsTab.renderLocationDialog({
+    await setupLocationDialog({
       location: {
         title: '',
         lat: 0,
@@ -189,10 +195,9 @@ describeWithEnvironment('renderLocationDialog', () => {
       onCancel: () => {},
       onValidateErrors,
     },
-                                                      target);
-    await RenderCoordinator.done();
+                              target);
 
-    const saveButton = target.querySelector<HTMLElement>('.save-button');
+    const saveButton = getDialogContent().querySelector<HTMLElement>('.save-button');
     assert.exists(saveButton);
     saveButton.click();
 
@@ -202,7 +207,7 @@ describeWithEnvironment('renderLocationDialog', () => {
   });
 
   it('renders validation errors when passed in input', async () => {
-    Sensors.LocationsSettingsTab.renderLocationDialog({
+    await setupLocationDialog({
       location: {
         title: '',
         lat: 0,
@@ -219,10 +224,9 @@ describeWithEnvironment('renderLocationDialog', () => {
       onCancel: () => {},
       onValidateErrors: () => {},
     },
-                                                      target);
-    await RenderCoordinator.done();
+                              target);
 
-    const error = target.querySelector('.editor-field-error');
+    const error = getDialogContent().querySelector('.editor-field-error');
     assert.exists(error);
     assert.strictEqual(error.textContent?.trim(), 'Location name can’t be empty');
   });
@@ -231,7 +235,7 @@ describeWithEnvironment('renderLocationDialog', () => {
     const onSave = sinon.spy();
     const onValidateErrors = sinon.spy();
 
-    Sensors.LocationsSettingsTab.renderLocationDialog({
+    await setupLocationDialog({
       location: {
         title: 'Berlin',
         lat: 52.52,
@@ -245,10 +249,9 @@ describeWithEnvironment('renderLocationDialog', () => {
       onCancel: () => {},
       onValidateErrors,
     },
-                                                      target);
-    await RenderCoordinator.done();
+                              target);
 
-    const saveButton = target.querySelector<HTMLElement>('.save-button');
+    const saveButton = getDialogContent().querySelector<HTMLElement>('.save-button');
     assert.exists(saveButton);
     saveButton.click();
 
@@ -273,15 +276,12 @@ describeWithEnvironment('renderLocationDialog screenshots', () => {
     target.style.width = '580px';
     target.style.height = '530px';
     renderElementIntoDOM(target, {includeCommonStyles: true});
+    UI.GlassPane.GlassPane.setContainer(target);
   });
 
   async function setupAndRenderDialog(input: Sensors.LocationsSettingsTab.LocationDialogInput) {
-    Sensors.LocationsSettingsTab.renderLocationDialog(input, target);
-    await RenderCoordinator.done();
-    const dialog = target.querySelector('devtools-dialog') as Dialogs.Dialog.Dialog;
-    assert.exists(dialog);
-    dialog.setBoundingElementForTesting(target);
-    await dialog.setDialogVisible(true);
+    await setupLocationDialog(input, target);
+    assert.isTrue(UI.Dialog.Dialog.hasInstance());
     await raf();
     await RenderCoordinator.done();
   }

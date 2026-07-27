@@ -15,7 +15,6 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {checkForPendingActivity} from '../../testing/TrackAsyncOperations.js';
 import {
   createContentProviderUISourceCodes,
   createFileSystemUISourceCode,
@@ -69,7 +68,7 @@ describeWithEnvironment('SourcesView', () => {
             .resolves(null);
 
     // Wait for widget rendering/updates
-    await checkForPendingActivity();
+    await sourcesView.editorContainer.view.updateComplete;
 
     // Find the TabbedPane element
     const tabbedPane = sourcesView.element.querySelector('.tabbed-pane');

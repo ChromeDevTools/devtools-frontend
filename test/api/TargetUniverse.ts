@@ -43,10 +43,13 @@ export async function createTargetUniverse(
   if (!registeredExtensions) {
     registeredExtensions = true;
     // Register experiments expected by models
-    RootModule.Runtime.experiments.register(
-        RootModule.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
-        'Instrumentation breakpoints',
-    );
+    RootModule.Runtime.experiments.registerHostExperiment({
+      name: RootModule.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
+      title: 'Instrumentation breakpoints',
+      aboutFlag: 'devtools-instrumentation-breakpoints',
+      isEnabled: RootModule.Runtime.hostConfig.devToolsInstrumentationBreakpoints?.enabled ?? false,
+      requiresChromeRestart: false,
+    });
     Common.Settings.registerSettingExtension({
       category: Common.Settings.SettingCategory.PERFORMANCE,
       settingName: 'timeline-enable-soft-navigations',

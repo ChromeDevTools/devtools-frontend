@@ -373,8 +373,15 @@ export class MainImpl {
         Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR, protocolMonitorExperiment);
 
     // Debugging
-    Root.Runtime.experiments.register(
-        Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS, 'Instrumentation breakpoints');
+    const instrumentationBreakpointsExperiment = Root.Runtime.experiments.registerHostExperiment({
+      name: Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
+      title: 'Instrumentation breakpoints',
+      aboutFlag: 'devtools-instrumentation-breakpoints',
+      isEnabled: Root.Runtime.hostConfig.devToolsInstrumentationBreakpoints?.enabled ?? false,
+      requiresChromeRestart: false,
+    });
+    this.#migrateValueFromLegacyToHostExperiment(Root.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS,
+                                                 instrumentationBreakpointsExperiment);
 
     Root.Runtime.experiments.registerHostExperiment({
       name: Root.ExperimentNames.ExperimentName.DURABLE_MESSAGES,

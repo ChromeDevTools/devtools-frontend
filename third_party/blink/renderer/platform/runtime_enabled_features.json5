@@ -1517,15 +1517,13 @@
       name: "CorsRFC1918",
     },
     {
-      // CPU Performance API, work in progress.
+      // CPU Performance API
       // https://chromestatus.com/feature/5189864286978048
-      // https://github.com/explainers-by-googlers/cpu-performance
+      // https://github.com/WICG/cpu-performance/
       name: "CpuPerformance",
-      status: "experimental",
+      status: "stable",
       origin_trial_feature_name: "CpuPerformance",
       origin_trial_allows_third_party: true,
-      base_feature_status: "enabled",
-      copied_from_base_feature_if: "overridden",
     },
     {
       name: "CrashReportingStorageAPI",
@@ -3384,6 +3382,10 @@
       status: "experimental",
     },
     {
+      name: "GamepadButtonTypes",
+      status: "experimental",
+    },
+    {
       name: "GamepadMultitouch",
       status: "experimental",
       public: true,
@@ -3509,11 +3511,6 @@
     },
     {
       name: "HandleDisconnectedSelectionDuringDOMChanges",
-      status: "stable",
-    },
-    {
-      // Killswitch for https://crbug.com/441547032.
-      name: "HandleInvalidMaskImageWithBackdropFilter",
       status: "stable",
     },
     {
@@ -5317,7 +5314,7 @@
       name: "RootScrollbarFollowsBrowserTheme",
       status: {"Linux": "test", "Win": "test"},
     },
-    // Route matching, @route CSS rule, script type="routemap".
+    // Route matching, @route CSS rule.
     // https://chromestatus.com/feature/4771962874363904
     {
       name: "RouteMatching",
@@ -6175,7 +6172,7 @@
     },
     {
       name: "SubApps",
-      status: "test",
+      status: "stable",
     },
     // 'pointercancel' and boundary leave ('pointerout' and 'pointerleave')
     // events would now fire after a mouse drag start, matching the spec's
@@ -6301,6 +6298,16 @@
       // Don't trigger table border rendering with only bordercolor attribute.
       // This shipped in M146 and can be removed in M148.
       name: "TableBorderColorNoImplicitBorder",
+      status: "stable",
+    },
+    {
+      // When enabled (the legacy behavior), interior cell borders from the
+      // `border`/`rules` attributes inherit the table's border-color. Disable
+      // to launch the spec-compliant behavior, where they resolve to
+      // `currentColor` instead (border-color is not inherited). The
+      // `bordercolor` attribute always propagates. Matches Gecko when disabled.
+      // See crbug.com/40745409.
+      name: "TableCellBorderColorInherit",
       status: "stable",
     },
     {
@@ -7107,6 +7114,13 @@
       base_feature: "none",
     },
     {
+      // Restricts the sharing of BluetoothDevice instances across different V8
+      // worlds (e.g., main world and isolated worlds) to prevent cross-world
+      // leaks.
+      name: "WebBluetoothWorldIsolatedCache",
+      status: "stable",
+    },
+    {
       name: "WebCodecsVideoEncoderBuffers",
       status: "experimental",
     },
@@ -7167,6 +7181,13 @@
       // eventually land in the WebGPU spec.
       name: "WebGPUExperimentalFeatures",
       status: "experimental",
+      public: true,
+    },
+    {
+      // Enables "chromium-experimental-sampling-resource-table".
+      name: "WebGPUExperimentalResourceTable",
+      status: "experimental",
+      implied_by: ["WebGPUExperimentalFeatures"],
       public: true,
     },
     {

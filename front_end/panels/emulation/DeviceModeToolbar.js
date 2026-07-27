@@ -430,6 +430,7 @@ export class DeviceModeToolbar extends UI.Widget.Widget {
         super.wasShown();
         // TODO(crbug.com/407750803): Revisit once DeviceModeView is migrated.
         this.performUpdate(); // Trigger a manual update eagerly, DeviceModeView needs to measure our height.
+        this.restore();
     }
     performUpdate() {
         if (!this.model) {

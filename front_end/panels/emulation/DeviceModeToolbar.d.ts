@@ -120,5 +120,5 @@ export declare class DeviceModeToolbar extends UI.Widget.Widget {
     private modeMenuClicked;
     private getPrettyFitZoomPercentage;
     private getPrettyZoomPercentage;
-    restore(): void;
+    private restore;
 }

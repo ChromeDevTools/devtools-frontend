@@ -372,16 +372,6 @@ function main() {
 
   const suites = new Map<MochaTests, TestId[]>();
   const testIds = tests
-                      .map(t => {
-                        // The builders will use e2e_non_hosted path until we
-                        // have no branch that contains the path. After that
-                        // we can update the builders to use the new path.
-                        // In the mean time the runner will accept both e2e
-                        // and e2e_non_hosted paths and transform the
-                        // e2e_non_hosted path internally to e2e. After we
-                        // update infra I can come in and remove this.
-                        return t.replace('e2e_non_hosted', 'e2e');
-                      })
                       .flatMap(t => {
                         if (TEST_ID_REGEX.test(t)) {
                           return [t];

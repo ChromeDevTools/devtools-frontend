@@ -6,8 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
 
-let builtInAiInstance: BuiltInAi|undefined;
-
 export interface LanguageModel {
   promptStreaming: (arg0: string, opts?: {
     signal?: AbortSignal,
@@ -33,10 +31,11 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #currentlyCreatingSession = false;
 
   static instance(): BuiltInAi {
-    if (builtInAiInstance === undefined) {
-      builtInAiInstance = new BuiltInAi();
+    if (!Root.DevToolsContext.globalInstance().has(BuiltInAi)) {
+      Root.DevToolsContext.globalInstance().set(BuiltInAi, new BuiltInAi());
     }
-    return builtInAiInstance;
+
+    return Root.DevToolsContext.globalInstance().get(BuiltInAi);
   }
 
   constructor() {
@@ -197,7 +196,7 @@ Your instructions are as follows:
   }
 
   static removeInstance(): void {
-    builtInAiInstance = undefined;
+    Root.DevToolsContext.globalInstance().delete(BuiltInAi);
   }
 
   async * getConsoleInsight(prompt: string, abortController: AbortController): AsyncGenerator<string> {

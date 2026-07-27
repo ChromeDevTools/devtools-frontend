@@ -30,6 +30,7 @@ devtools_ui_module("sensors") {
     "../../panels/mobile_throttling:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/dialogs:bundle",
+    "../../ui/components/lists:bundle",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/settings_ui:bundle",

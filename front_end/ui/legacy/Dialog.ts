@@ -255,6 +255,8 @@ export const enum OutsideTabIndexBehavior {
 
 export class DialogWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
   #open = false;
+  #jslogContext = '';
+  #dialogStack = false;
   #content: LitTemplate = nothing;
   readonly #dialog = new Dialog();
 
@@ -279,8 +281,16 @@ export class DialogWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     }
   }
 
-  #jslogContext = '';
+  get dialogStack(): boolean {
+    return this.#dialogStack;
+  }
 
+  set dialogStack(dialogStack: boolean) {
+    if (this.#dialogStack !== dialogStack) {
+      this.#dialogStack = dialogStack;
+      this.requestUpdate();
+    }
+  }
   get content(): LitTemplate {
     return this.#content;
   }
@@ -322,7 +332,7 @@ export class DialogWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
       render(this.#content ?? nothing, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
-        this.#dialog.show(this.contentElement.ownerDocument);
+        this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
       } else {
         this.#dialog.positionContent();

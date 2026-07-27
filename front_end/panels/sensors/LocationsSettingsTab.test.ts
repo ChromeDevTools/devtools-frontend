@@ -8,8 +8,10 @@ import * as sinon from 'sinon';
 import * as Common from '../../core/common/common.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {render} from '../../ui/lit/lit.js';
 
 import * as Sensors from './sensors.js';
 
@@ -21,7 +23,7 @@ describeWithEnvironment('LocationsSettingsTab', () => {
     customSetting = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
     customSetting.set([]);
 
-    tab = renderElementIntoDOM(new Sensors.LocationsSettingsTab.LocationsSettingsTab());
+    tab = renderElementIntoDOM(new Sensors.LocationsSettingsTab.LocationsSettingsTab(), {includeCommonStyles: true});
     tab.element.style.display = 'flex';
     tab.element.style.width = '780px';
     tab.element.style.height = '400px';
@@ -55,53 +57,50 @@ describeWithEnvironment('LocationsSettingsTab', () => {
     await tab.updateComplete;
     await assertScreenshot('sensors/LocationsSettingsTab/populated.png');
   });
+});
 
-  it('renders add location editor mode', async () => {
-    const addButton = tab.contentElement.querySelector<HTMLElement>('.add-locations-button');
-    assert.exists(addButton);
-    addButton.click();
-    await tab.updateComplete;
+describe('LocationsSettingsTab validators', () => {
+  setupLocaleHooks();
 
-    await assertScreenshot('sensors/LocationsSettingsTab/add-editor.png');
+  it('validateTitle checks for empty string and length', () => {
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateTitle(''));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateTitle('a'.repeat(51)));
+    assert.isNull(Sensors.LocationsSettingsTab.validateTitle('Valid Title'));
   });
 
-  it('renders edit location mode with validation errors', async () => {
-    customSetting.set([
-      {
-        title: 'London',
-        lat: 51.5074,
-        long: -0.1278,
-        timezoneId: 'Europe/London',
-        locale: 'en-GB',
-        accuracy: 100,
-      },
-    ]);
-    await tab.updateComplete;
+  it('validateLatitude checks range and number validity', () => {
+    assert.isNull(Sensors.LocationsSettingsTab.validateLatitude(''));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLatitude('invalid'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLatitude('-91'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLatitude('91'));
+    assert.isNull(Sensors.LocationsSettingsTab.validateLatitude('45'));
+  });
 
-    const listWidgetElement = tab.contentElement.querySelector<HTMLElement>('.locations-list');
-    assert.exists(listWidgetElement);
-    assert.exists(listWidgetElement.shadowRoot);
+  it('validateLongitude checks range and number validity', () => {
+    assert.isNull(Sensors.LocationsSettingsTab.validateLongitude(''));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLongitude('invalid'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLongitude('-181'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLongitude('181'));
+    assert.isNull(Sensors.LocationsSettingsTab.validateLongitude('100'));
+  });
 
-    // Find the edit button inside the list item and click it
-    const editButton = listWidgetElement.shadowRoot.querySelector<HTMLElement>('devtools-button[title="Edit"]');
-    assert.exists(editButton);
-    editButton.click();
-    await tab.updateComplete;
+  it('validateTimezoneId checks for alphabetic characters or empty string', () => {
+    assert.isNull(Sensors.LocationsSettingsTab.validateTimezoneId(''));
+    assert.isNull(Sensors.LocationsSettingsTab.validateTimezoneId('Europe/London'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateTimezoneId('123'));
+  });
 
-    // Now let's enter an invalid latitude to trigger a validation error
-    const latInput = listWidgetElement.shadowRoot.querySelector<HTMLInputElement>('input[placeholder="Latitude"]');
-    assert.exists(latInput);
-    latInput.value = '150';  // Invalid: max 90
-    latInput.dispatchEvent(new Event('input'));
+  it('validateLocale checks for at least two alphabetic characters or empty string', () => {
+    assert.isNull(Sensors.LocationsSettingsTab.validateLocale(''));
+    assert.isNull(Sensors.LocationsSettingsTab.validateLocale('en-US'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateLocale('1'));
+  });
 
-    // Trigger timezone ID error as well
-    const tzInput = listWidgetElement.shadowRoot.querySelector<HTMLInputElement>('input[placeholder="Timezone ID"]');
-    assert.exists(tzInput);
-    tzInput.value = '123';  // Invalid: must contain alphabetic characters
-    tzInput.dispatchEvent(new Event('input'));
-    await tab.updateComplete;
-
-    await assertScreenshot('sensors/LocationsSettingsTab/edit-editor-invalid.png');
+  it('validateAccuracy checks number validity and non-negative range', () => {
+    assert.isNull(Sensors.LocationsSettingsTab.validateAccuracy(''));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateAccuracy('invalid'));
+    assert.isNotNull(Sensors.LocationsSettingsTab.validateAccuracy('-1'));
+    assert.isNull(Sensors.LocationsSettingsTab.validateAccuracy('10'));
   });
 });
 
@@ -112,7 +111,7 @@ function getDialogContent(): HTMLElement {
 }
 
 async function setupLocationDialog(input: Sensors.LocationsSettingsTab.LocationDialogInput, target: HTMLElement) {
-  Sensors.LocationsSettingsTab.renderLocationDialog(input, target);
+  render(Sensors.LocationsSettingsTab.renderLocationDialog(input), target);
   await RenderCoordinator.done();
   await UI.Widget.Widget.allUpdatesComplete;
 }

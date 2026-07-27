@@ -3,11 +3,13 @@
 // found in the LICENSE file.
 
 import '../../ui/kit/kit.js';
+import '../../ui/components/lists/lists.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import type * as Lists from '../../ui/components/lists/lists.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -163,27 +165,21 @@ export interface EditorInputControls {
   accuracyInput: LitTemplate|Element;
 }
 
+export interface LocationValidationErrors {
+  title?: string|null;
+  lat?: string|null;
+  long?: string|null;
+  timezoneId?: string|null;
+  locale?: string|null;
+  accuracy?: string|null;
+}
 export interface LocationDialogInput {
   location: LocationDescription;
   isNew: boolean;
-  errors?: {
-    title?: string|null,
-    lat?: string|null,
-    long?: string|null,
-    timezoneId?: string|null,
-    locale?: string|null,
-    accuracy?: string|null,
-  };
+  errors?: LocationValidationErrors;
   onSave: (location: LocationDescription) => void;
   onCancel: () => void;
-  onValidateErrors: (errors: {
-    title?: string|null,
-    lat?: string|null,
-    long?: string|null,
-    timezoneId?: string|null,
-    locale?: string|null,
-    accuracy?: string|null,
-  }) => void;
+  onValidateErrors: (errors: LocationValidationErrors) => void;
 }
 
 export function renderEditorView(controls: EditorInputControls, errors?: LocationDialogInput['errors'],
@@ -273,7 +269,7 @@ export function renderEditorView(controls: EditorInputControls, errors?: Locatio
   // clang-format on
 }
 
-export function renderLocationDialog(input: LocationDialogInput, target: HTMLElement): void {
+export function renderLocationDialog(input: LocationDialogInput): LitTemplate {
   const titleInputRef = createRef<HTMLInputElement>();
   const latInputRef = createRef<HTMLInputElement>();
   const longInputRef = createRef<HTMLInputElement>();
@@ -333,7 +329,7 @@ export function renderLocationDialog(input: LocationDialogInput, target: HTMLEle
         i18nString(UIStrings.locale)} .value=${input.location.locale} ${ref(localeInputRef)}>`,
     accuracyInput: html`<input id="location-accuracy" aria-label=${
         i18nString(UIStrings.accuracy)} type="text" placeholder=${i18nString(UIStrings.accuracy)} .value=${
-        String(input.location.accuracy || SDK.EmulationModel.Location.DEFAULT_ACCURACY)} ${ref(accuracyInputRef)}>`,
+        String(input.location.accuracy ?? SDK.EmulationModel.Location.DEFAULT_ACCURACY)} ${ref(accuracyInputRef)}>`,
   };
 
   // clang-format off
@@ -371,24 +367,28 @@ export function renderLocationDialog(input: LocationDialogInput, target: HTMLEle
       </div>
   `;
 
-  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-  render(html`
+  return html`
     <style>${locationsSettingsTabStyles}</style>
     <devtools-widget
       class="location-dialog-widget"
       ${UI.Widget.widget(UI.Dialog.DialogWidget, {
         open: true,
         jslogContext: 'location-dialog',
+        dialogStack: true,
         content: dialogContent,
       })}
       @hidden=${input.onCancel}>
     </devtools-widget>
-  `, target);
+  `;
   // clang-format on
 }
 
 interface LocationsViewInput {
+  locations: LocationDescription[];
   onAddLocation: () => void;
+  onEditLocation: (index: number) => void;
+  onRemoveLocation: (index: number) => void;
+  activeDialog?: LocationDialogInput;
 }
 
 export type ViewOutput = undefined;
@@ -400,7 +400,18 @@ export const DEFAULT_VIEW = (input: LocationsViewInput, _output: ViewOutput, tar
     <div class="settings-card-container-wrapper">
       <div class="settings-card-container">
         <devtools-card .heading=${i18nString(UIStrings.locations)}>
-          <div class="list-container"></div>
+          <div>
+            ${input.locations.length > 0 ? html`
+              <devtools-list
+                class="locations-list square-corners"
+                .editable=${true}
+                .deletable=${true}
+                @edit=${(e: Lists.List.ItemEditEvent) => input.onEditLocation(e.detail.index)}
+                @delete=${(e: Lists.List.ItemRemoveEvent) => input.onRemoveLocation(e.detail.index)}>
+                ${input.locations.map(location => renderItemView(location))}
+              </devtools-list>
+            ` : nothing}
+          </div>
           <devtools-button
             class="add-locations-button"
             .variant=${Buttons.Button.Variant.OUTLINED}
@@ -411,16 +422,22 @@ export const DEFAULT_VIEW = (input: LocationsViewInput, _output: ViewOutput, tar
           </devtools-button>
         </devtools-card>
       </div>
-    </div>`, target);
+    </div>
+    ${input.activeDialog ? renderLocationDialog(input.activeDialog) : nothing}
+  `, target);
   // clang-format on
 };
 
 export type View = typeof DEFAULT_VIEW;
-export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidget.Delegate<LocationDescription> {
-  private readonly list: UI.ListWidget.ListWidget<LocationDescription>;
+export class LocationsSettingsTab extends UI.Widget.VBox {
   private readonly customSetting: Common.Settings.Setting<LocationDescription[]>;
-  private editor?: UI.ListWidget.Editor<LocationDescription>;
   #view: View;
+  #activeDialogState?: {
+    location: LocationDescription,
+    isNew: boolean,
+    index?: number,
+    errors?: LocationValidationErrors,
+  };
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {
@@ -429,9 +446,6 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
     });
     this.#view = view;
 
-    this.list = new UI.ListWidget.ListWidget(this, undefined, true);
-    this.list.element.classList.add('locations-list');
-    this.list.registerRequiredCSS(locationsSettingsTabStyles);
     this.customSetting =
         Common.Settings.Settings.instance().moduleSetting<LocationDescription[]>('emulation.locations');
     const list =
@@ -468,127 +482,93 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
   }
 
   override performUpdate(): void {
-    const viewInput = {
+    let activeDialogInput: LocationDialogInput|undefined;
+    if (this.#activeDialogState) {
+      const state = this.#activeDialogState;
+      activeDialogInput = {
+        location: state.location,
+        isNew: state.isNew,
+        errors: state.errors,
+        onSave: (updatedLocation: LocationDescription) => this.saveDialog(updatedLocation),
+        onCancel: () => this.closeDialog(),
+        onValidateErrors: (errors: LocationValidationErrors) => this.updateDialogErrors(errors),
+      };
+    }
+
+    const viewInput: LocationsViewInput = {
+      locations: this.customSetting.get(),
       onAddLocation: () => this.addButtonClicked(),
+      onEditLocation: (index: number) => this.editLocationClicked(index),
+      onRemoveLocation: (index: number) => this.removeLocationClicked(index),
+      activeDialog: activeDialogInput,
     };
     this.#view(viewInput, undefined, this.contentElement as HTMLElement);
 
-    const listContainer = this.contentElement.querySelector('.list-container');
-    if (listContainer) {
-      this.list.show(listContainer);
     }
-  }
   private locationsUpdated(): void {
-    this.list.clear();
-
-    const conditions = this.customSetting.get();
-    for (const condition of conditions) {
-      this.list.appendItem(condition, true);
-    }
-
-    this.list.appendSeparator();
     this.requestUpdate();
   }
 
   private addButtonClicked(): void {
-    this.list.addNewItem(this.customSetting.get().length, {
-      title: '',
-      lat: 0,
-      long: 0,
-      timezoneId: '',
-      locale: '',
-      accuracy: SDK.EmulationModel.Location.DEFAULT_ACCURACY,
-    });
+    this.#activeDialogState = {
+      location: {
+        title: '',
+        lat: 0,
+        long: 0,
+        timezoneId: '',
+        locale: '',
+        accuracy: SDK.EmulationModel.Location.DEFAULT_ACCURACY,
+      },
+      isNew: true,
+    };
+    this.requestUpdate();
   }
 
-  renderItem(location: LocationDescription, _editable: boolean): Element {
-    const fragment = document.createDocumentFragment();
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(renderItemView(location), fragment);
-    return fragment.firstElementChild as Element;
+  private editLocationClicked(index: number): void {
+    const list = this.customSetting.get();
+    const location = list[index];
+    if (!location) {
+      return;
+    }
+    this.#activeDialogState = {
+      location: {...location},
+      isNew: false,
+      index,
+    };
+    this.requestUpdate();
   }
 
-  removeItemRequested(_item: LocationDescription, index: number): void {
+  private removeLocationClicked(index: number): void {
     const list = this.customSetting.get();
     list.splice(index, 1);
     this.customSetting.set(list);
   }
 
-  commitEdit(location: LocationDescription, editor: UI.ListWidget.Editor<LocationDescription>, isNew: boolean): void {
-    location.title = editor.control('title').value.trim();
-    const lat = editor.control('lat').value.trim();
-    location.lat = lat ? parseFloat(lat) : 0;
-    const long = editor.control('long').value.trim();
-    location.long = long ? parseFloat(long) : 0;
-    const timezoneId = editor.control('timezone-id').value.trim();
-    location.timezoneId = timezoneId;
-    const locale = editor.control('locale').value.trim();
-    location.locale = locale;
-    const accuracy = editor.control('accuracy').value.trim();
-    location.accuracy = accuracy ? parseFloat(accuracy) : SDK.EmulationModel.Location.DEFAULT_ACCURACY;
+  private saveDialog(updatedLocation: LocationDescription): void {
+    if (!this.#activeDialogState) {
+      return;
+    }
 
     const list = this.customSetting.get();
-    if (isNew) {
-      list.push(location);
+    if (this.#activeDialogState.isNew) {
+      list.push(updatedLocation);
+    } else if (this.#activeDialogState.index !== undefined) {
+      list[this.#activeDialogState.index] = updatedLocation;
     }
+    this.#activeDialogState = undefined;
     this.customSetting.set(list);
   }
 
-  beginEdit(location: LocationDescription): UI.ListWidget.Editor<LocationDescription> {
-    const editor = this.createEditor();
-    editor.control('title').value = location.title;
-    editor.control('lat').value = String(location.lat);
-    editor.control('long').value = String(location.long);
-    editor.control('timezone-id').value = location.timezoneId;
-    editor.control('locale').value = location.locale;
-    editor.control('accuracy').value = String(location.accuracy ?? SDK.EmulationModel.Location.DEFAULT_ACCURACY);
-    return editor;
+  private closeDialog(): void {
+    this.#activeDialogState = undefined;
+    this.requestUpdate();
   }
 
-  private createEditor(): UI.ListWidget.Editor<LocationDescription> {
-    if (this.editor) {
-      return this.editor;
+  private updateDialogErrors(errors: LocationValidationErrors): void {
+    if (this.#activeDialogState) {
+      this.#activeDialogState.errors = errors;
+      this.requestUpdate();
     }
-
-    const editor = new UI.ListWidget.Editor<LocationDescription>();
-    this.editor = editor;
-    const content = editor.contentElement();
-
-    const createValidator = (validator: (value: string) => string | null) =>
-        (_item: LocationDescription, _index: number,
-         input: UI.ListWidget.EditorControl): UI.ListWidget.ValidatorResult => {
-          const errorMessage = validator(input.value);
-          if (errorMessage) {
-            return {valid: false, errorMessage};
-          }
-          return {valid: true};
-        };
-
-    const titleInput =
-        editor.createInput('title', 'text', i18nString(UIStrings.locationName), createValidator(validateTitle));
-    const latInput =
-        editor.createInput('lat', 'text', i18nString(UIStrings.latitude), createValidator(validateLatitude));
-    const longInput =
-        editor.createInput('long', 'text', i18nString(UIStrings.longitude), createValidator(validateLongitude));
-    const timezoneIdInput = editor.createInput('timezone-id', 'text', i18nString(UIStrings.timezoneId),
-                                               createValidator(validateTimezoneId));
-    const localeInput =
-        editor.createInput('locale', 'text', i18nString(UIStrings.locale), createValidator(validateLocale));
-    const accuracyInput =
-        editor.createInput('accuracy', 'text', i18nString(UIStrings.accuracy), createValidator(validateAccuracy));
-
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(renderEditorView({
-             titleInput,
-             latInput,
-             longInput,
-             timezoneIdInput,
-             localeInput,
-             accuracyInput,
-           }),
-           content as HTMLElement);
-
-    return editor;
   }
 }
 export interface LocationDescription {
@@ -607,6 +587,7 @@ export function validateTitle(value: string): string|null {
   if (!trimmedValue.length) {
     return i18nString(UIStrings.locationNameCannotBeEmpty);
   }
+
   if (trimmedValue.length > maxLength) {
     return i18nString(UIStrings.locationNameMustBeLessThanS, {PH1: maxLength});
   }
@@ -622,6 +603,7 @@ export function validateLatitude(value: string): string|null {
   if (!trimmedValue) {
     return null;
   }
+
   if (Number.isNaN(parsedValue)) {
     return i18nString(UIStrings.latitudeMustBeANumber);
   }
@@ -643,6 +625,7 @@ export function validateLongitude(value: string): string|null {
   if (!trimmedValue) {
     return null;
   }
+
   if (Number.isNaN(parsedValue)) {
     return i18nString(UIStrings.longitudeMustBeANumber);
   }
@@ -692,6 +675,7 @@ export function validateAccuracy(value: string): string|null {
   if (!trimmedValue) {
     return null;
   }
+
   if (Number.isNaN(parsedValue)) {
     return i18nString(UIStrings.accuracyMustBeANumber);
   }

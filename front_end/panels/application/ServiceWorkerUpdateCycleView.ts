@@ -1,13 +1,15 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {html, render} from '../../ui/lit/lit.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
+import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
 
 const UIStrings = {
   /**
@@ -35,20 +37,107 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerUpdateCycleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ServiceWorkerUpdateCycleView {
-  private registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration;
+export interface ViewInput {
+  timeRanges: ServiceWorkerUpdateRange[];
+  expandedRows: Set<string>;
+  onFocus: (event: Event) => void;
+  onKeydown: (event: Event, key: string) => void;
+  onClick: (event: Event, key: string) => void;
+}
+
+export type View = (input: ViewInput, output: unknown, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input, _output, target) => {
+  let tableRows: LitTemplate|typeof nothing = nothing;
+
+  if (input.timeRanges.length > 0) {
+    const startTimes = input.timeRanges.map(r => r.start);
+    const endTimes = input.timeRanges.map(r => r.end);
+    const startTime = startTimes.reduce((a, b) => Math.min(a, b));
+    const endTime = endTimes.reduce((a, b) => Math.max(a, b));
+    const scale = 100 / (endTime - startTime);
+
+    tableRows = html`${input.timeRanges.map(range => {
+      const phaseName = range.phase;
+      const left = (scale * (range.start - startTime));
+      const right = (scale * (endTime - range.end));
+      const key = `${range.id}-${range.phase}`;
+      const expanded = input.expandedRows.has(key);
+
+      // clang-format off
+      return html`
+        <tr class="service-worker-update-timeline" jslog=${VisualLogging.treeItem('update-timeline').track({
+                      click: true,
+                      resize: true,
+                      keydown: 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space',
+                    })}>
+          <td class="service-worker-update-timing-bar-clickable" tabindex="0" role="switch"
+              aria-checked=${expanded ? 'true' : 'false'}
+              @focus=${input.onFocus}
+              @keydown=${(e: Event) => input.onKeydown(e, key)}
+              @click=${(e: Event) => input.onClick(e, key)}
+              jslog=${VisualLogging.expand('timing-info').track({click: true})}>
+            #${range.id}
+          </td>
+          <td>${phaseName}</td>
+          <td>
+            <div class="service-worker-update-timing-row">
+              <span class="service-worker-update-timing-bar ${phaseName.toLowerCase()}"
+                    style="left: ${left}%; right: ${right}%;">\u200B</span>
+            </div>
+          </td>
+        </tr>
+        <tr class="service-worker-update-timing-bar-details ${expanded ? 'service-worker-update-timing-bar-details-expanded' : 'service-worker-update-timing-bar-details-collapsed'}" tabindex="0">
+          <td colspan="3"><span>${i18nString(UIStrings.startTimeS, {PH1: new Date(range.start).toISOString()})}</span></td>
+        </tr>
+        <tr class="service-worker-update-timing-bar-details ${expanded ? 'service-worker-update-timing-bar-details-expanded' : 'service-worker-update-timing-bar-details-collapsed'}" tabindex="0">
+          <td colspan="3"><span>${i18nString(UIStrings.endTimeS, {PH1: new Date(range.end).toISOString()})}</span></td>
+        </tr>
+      `;
+      // clang-format on
+    })}`;
+  }
+
+  // clang-format off
+  render(html`
+    <style>${serviceWorkerUpdateCycleViewStyles}</style>
+    <table class="service-worker-update-timing-table" jslog=${VisualLogging.tree('update-timing-table')}>
+      <tr class="service-worker-update-timing-table-header">
+        <td>${i18nString(UIStrings.version)}</td>
+        <td>${i18nString(UIStrings.updateActivity)}</td>
+        <td>${i18nString(UIStrings.timeline)}</td>
+      </tr>
+      ${tableRows}
+    </table>
+  `, target);
+  // clang-format on
+};
+
+export class ServiceWorkerUpdateCycleView extends UI.Widget.Widget {
+  #registration?: SDK.ServiceWorkerManager.ServiceWorkerRegistration;
   private rows: HTMLTableRowElement[];
   private selectedRowIndex: number;
   private expandedRows = new Set<string>();
-  tableElement: HTMLElement;
-  constructor(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration) {
-    this.registration = registration;
+  #view: View;
+
+  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+    super(element);
+    this.#view = view;
     this.rows = [];
     this.selectedRowIndex = -1;
-    this.tableElement = document.createElement('table');
-    this.tableElement.classList.add('service-worker-update-timing-table');
-    this.tableElement.setAttribute('jslog', `${VisualLogging.tree('update-timing-table')}`);
-    this.refresh();
+  }
+
+  set registration(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration|undefined) {
+    this.#registration = registration;
+    this.requestUpdate();
+  }
+
+  get registration(): SDK.ServiceWorkerManager.ServiceWorkerRegistration|undefined {
+    return this.#registration;
+  }
+
+  set registrationFingerprint(_fingerprint: symbol|undefined) {
+    this.requestUpdate();
   }
 
   calculateServiceWorkerUpdateRanges(): ServiceWorkerUpdateRange[] {
@@ -116,7 +205,10 @@ export class ServiceWorkerUpdateCycleView {
       return ranges;
     }
 
-    const versions = this.registration.versionsByMode();
+    if (!this.#registration) {
+      return [];
+    }
+    const versions = this.#registration.versionsByMode();
     const modes = [
       SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE,
       SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING,
@@ -135,75 +227,20 @@ export class ServiceWorkerUpdateCycleView {
     return [];
   }
 
-  refresh(): void {
-    const tableHeader = html`
-      <tr class="service-worker-update-timing-table-header">
-        <td>${i18nString(UIStrings.version)}</td>
-        <td>${i18nString(UIStrings.updateActivity)}</td>
-        <td>${i18nString(UIStrings.timeline)}</td>
-      </tr>
-    `;
+  override performUpdate(): void {
     const timeRanges = this.calculateServiceWorkerUpdateRanges();
-    if (timeRanges.length === 0) {
-      // clang-format off
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(tableHeader, this.tableElement, {host: this});
-      // clang-format on
-      this.rows = [];
-      return;
-    }
 
-    const startTimes = timeRanges.map(r => r.start);
-    const endTimes = timeRanges.map(r => r.end);
-    const startTime = startTimes.reduce((a, b) => Math.min(a, b));
-    const endTime = endTimes.reduce((a, b) => Math.max(a, b));
-    const scale = 100 / (endTime - startTime);
+    const input: ViewInput = {
+      timeRanges,
+      expandedRows: this.expandedRows,
+      onFocus: this.onFocus.bind(this),
+      onKeydown: this.onKeydown.bind(this),
+      onClick: this.onClick.bind(this),
+    };
 
-    // clang-format off
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`
-      ${tableHeader}
-      ${timeRanges.map(range => {
-        const phaseName = range.phase;
-        const left = (scale * (range.start - startTime));
-        const right = (scale * (endTime - range.end));
-        const key = `${range.id}-${range.phase}`;
-        const expanded = this.expandedRows.has(key);
-
-        return html`
-          <tr class="service-worker-update-timeline" jslog=${VisualLogging.treeItem('update-timeline').track({
-                        click: true,
-                        resize: true,
-                        keydown: 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space',
-                      })}>
-            <td class="service-worker-update-timing-bar-clickable" tabindex="0" role="switch"
-                aria-checked=${expanded ? 'true' : 'false'}
-                @focus=${this.onFocus}
-                @keydown=${(e: Event) => this.onKeydown(e, key)}
-                @click=${(e: Event) => this.onClick(e, key)}
-                jslog=${VisualLogging.expand('timing-info').track({click: true})}>
-              #${range.id}
-            </td>
-            <td>${phaseName}</td>
-            <td>
-              <div class="service-worker-update-timing-row">
-                <span class="service-worker-update-timing-bar ${phaseName.toLowerCase()}"
-                      style="left: ${left}%; right: ${right}%;">\u200B</span>
-              </div>
-            </td>
-          </tr>
-          <tr class="service-worker-update-timing-bar-details ${expanded ? 'service-worker-update-timing-bar-details-expanded' : 'service-worker-update-timing-bar-details-collapsed'}" tabindex="0">
-            <td colspan="3"><span>${i18nString(UIStrings.startTimeS, {PH1: new Date(range.start).toISOString()})}</span></td>
-          </tr>
-          <tr class="service-worker-update-timing-bar-details ${expanded ? 'service-worker-update-timing-bar-details-expanded' : 'service-worker-update-timing-bar-details-collapsed'}" tabindex="0">
-            <td colspan="3"><span>${i18nString(UIStrings.endTimeS, {PH1: new Date(range.end).toISOString()})}</span></td>
-          </tr>
-        `;
-      })}
-    `, this.tableElement, {host: this});
-    // clang-format on
-
-    this.rows = Array.from(this.tableElement.querySelectorAll<HTMLTableRowElement>('.service-worker-update-timeline'));
+    this.#view(input, this, this.contentElement);
+    this.rows =
+        Array.from(this.contentElement.querySelectorAll<HTMLTableRowElement>('.service-worker-update-timeline'));
     if (this.selectedRowIndex >= this.rows.length) {
       this.selectedRowIndex = -1;
     }
@@ -215,7 +252,7 @@ export class ServiceWorkerUpdateCycleView {
     } else {
       this.expandedRows.add(key);
     }
-    this.refresh();
+    this.requestUpdate();
   }
 
   private onFocus(event: Event): void {

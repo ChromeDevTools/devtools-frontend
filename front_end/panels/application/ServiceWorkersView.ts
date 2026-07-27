@@ -20,7 +20,6 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import * as ApplicationComponents from './components/components.js';
 import serviceWorkersViewStyles from './serviceWorkersView.css.js';
-import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 const UIStrings = {
@@ -479,7 +478,7 @@ export interface SectionViewInput {
   pushData: string;
   syncTag: string;
   periodicSyncTag: string;
-  updateCycleTable: HTMLElement;
+  registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration;
   activeVersion?: SDK.ServiceWorkerManager.ServiceWorkerVersion;
   waitingVersion?: SDK.ServiceWorkerManager.ServiceWorkerVersion;
   installingVersion?: SDK.ServiceWorkerManager.ServiceWorkerVersion;
@@ -695,13 +694,18 @@ function renderStatusField(input: SectionViewInput, active?: SDK.ServiceWorkerMa
 }
 
 function renderUpdateCycleField(input: SectionViewInput): LitTemplate {
+  // clang-format off
   return html`
     <div class="report-field">
       <div class="report-field-name">${i18nString(UIStrings.updateCycle)}</div>
       <div class="report-field-value">
-        ${input.updateCycleTable}
+        ${widget(ServiceWorkerUpdateCycleView, {
+          registration: input.registration,
+          registrationFingerprint: input.registration.fingerprint(),
+        })}
       </div>
     </div>`;
+  // clang-format on
 }
 
 function renderRouterField(input: SectionViewInput): LitTemplate {
@@ -729,7 +733,6 @@ export const DEFAULT_SECTION_VIEW: SectionView =
       // clang-format off
   render(html`
       <style>${serviceWorkersViewStyles}</style>
-      <style>${serviceWorkerUpdateCycleViewStyles}</style>
       <devtools-report-section-header role="heading" aria-level="2"
               aria-label=${i18nString(UIStrings.serviceWorkerForS, { PH1: input.title })}>
         <span style="flex: 1 1 auto">${input.title}</span>
@@ -761,7 +764,6 @@ export class Section extends UI.Widget.VBox {
   private pushNotificationDataSetting!: Common.Settings.Setting<string>;
   private syncTagNameSetting!: Common.Settings.Setting<string>;
   private periodicSyncTagNameSetting!: Common.Settings.Setting<string>;
-  private updateCycleView!: ServiceWorkerUpdateCycleView;
   private readonly clientInfoCache: Map<string, Protocol.Target.TargetInfo>;
   private readonly throttler: Common.Throttler.Throttler;
   #view: SectionView;
@@ -790,7 +792,6 @@ export class Section extends UI.Widget.VBox {
     }
 
     if (registrationChanged) {
-      this.updateCycleView = new ServiceWorkerUpdateCycleView(this.registration);
       this.clientInfoCache.clear();
     }
   }
@@ -838,7 +839,7 @@ export class Section extends UI.Widget.VBox {
       pushData: this.pushNotificationDataSetting.get(),
       syncTag: this.syncTagNameSetting.get(),
       periodicSyncTag: this.periodicSyncTagNameSetting.get(),
-      updateCycleTable: this.updateCycleView.tableElement,
+      registration: this.registration,
       activeVersion: active,
       waitingVersion: waiting,
       installingVersion: installing,
@@ -856,7 +857,6 @@ export class Section extends UI.Widget.VBox {
     };
 
     this.#view(input, undefined, this.contentElement);
-    this.updateCycleView.refresh();
 
     return Promise.resolve();
   }

@@ -4,104 +4,117 @@
  * found in the LICENSE file.
  */
 
-.screencast {
-  overflow: hidden;
-}
+@scope to (devtools-widget > *) {
+  :scope {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 
-.screencast-navigation {
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding-left: 1px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  background-origin: padding-box;
-  background-clip: padding-box;
-}
+  .screencast-navigation {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 1px;
+    border-bottom: 1px solid var(--sys-color-divider);
+    background-origin: padding-box;
+    background-clip: padding-box;
+  }
 
-.screencast-navigation button {
-  border-width: 0;
-  padding: 5px;
-  width: 28px;
-  height: 26px;
-  background: none;
-}
+  .screencast-navigation devtools-button {
+    padding: 2px;
+  }
 
-.screencast-navigation button devtools-icon {
-  width: 100%;
-  height: 100%;
-}
+  .screencast-navigation input {
+    flex: 1;
+    margin: 2px;
+    max-height: 19px;
+  }
 
-.screencast-navigation button[disabled].navigation {
-  opacity: 50%;
-}
+  .screencast-navigation .progress {
+    background-color: var(--sys-color-primary-bright);
+    height: 3px;
+    left: 0;
+    position: absolute;
+    top: 100%;  /* Align with the bottom edge of the parent. */
+    width: 0;
+    z-index: 2;  /* Above .screencast-glasspane. */
+  }
 
-.screencast-navigation input {
-  flex: 1;
-  margin: 2px;
-  max-height: 19px;
-}
+  .screencast-viewport {
+    display: flex;
+    border: 1px solid var(--sys-color-divider);
+    border-radius: 20px;
+    flex: none;
+    padding: 20px;
+    margin: auto;
+    background-color: var(--sys-color-surface-variant);
+  }
 
-.screencast-navigation .progress {
-  background-color: var(--sys-color-primary-bright);
-  height: 3px;
-  left: 0;
-  position: absolute;
-  top: 100%;  /* Align with the bottom edge of the parent. */
-  width: 0;
-  z-index: 2;  /* Above .screencast-glasspane. */
-}
+  .screencast-canvas-container {
+    flex: auto;
+    display: flex;
+    border: 1px solid var(--sys-color-divider);
+    position: relative;
+  }
 
-.screencast-viewport {
-  display: flex;
-  border: 1px solid var(--sys-color-divider);
-  border-radius: 20px;
-  flex: none;
-  padding: 20px;
-  margin: auto;
-  background-color: var(--sys-color-surface-variant);
-}
+  .screencast-canvas-container.touchable {
+    /* stylelint-disable-next-line custom-property-pattern */
+    cursor: image-set(var(--image-file-touchCursor) 1x, var(--image-file-touchCursor_2x) 2x), default;
+  }
 
-.screencast-canvas-container {
-  flex: auto;
-  display: flex;
-  border: 1px solid var(--sys-color-divider);
-  position: relative;
-}
+  canvas {
+    flex: auto;
+    position: relative;
+  }
 
-.screencast-canvas-container.touchable {
-  /* stylelint-disable-next-line custom-property-pattern */
-  cursor: image-set(var(--image-file-touchCursor) 1x, var(--image-file-touchCursor_2x) 2x), default;
-}
+  .screencast-element-title {
+    position: absolute;
+    z-index: 10;
+    background-color: var(--sys-color-yellow-container);
+    border: 1px solid var(--sys-color-outline);
+    padding: 2px 4px;
+    white-space: nowrap;
+  }
 
-.screencast canvas {
-  flex: auto;
-  position: relative;
-}
+  .screencast-element-title.arrow-up::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 14px;
+    border: 7px solid transparent;
+    border-bottom-color: var(--sys-color-yellow-container);
+  }
 
-.screencast-element-title {
-  position: absolute;
-  z-index: 10;
-}
+  .screencast-element-title.arrow-down::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 14px;
+    border: 7px solid transparent;
+    border-top-color: var(--sys-color-yellow-container);
+  }
 
-.screencast-tag-name {
-  color: var(--sys-color-token-tag);
-}
+  .screencast-tag-name {
+    color: var(--sys-color-token-tag);
+  }
 
-.screencast-attribute {
-  color: var(--sys-color-token-attribute);
-}
+  .screencast-attribute {
+    color: var(--sys-color-token-attribute);
+  }
 
-.screencast-dimension {
-  /* Keep this in sync with tool_highlight.css (.dimensions) */
-  color: var(--sys-color-outline);
-}
+  .screencast-dimension {
+    /* Keep this in sync with tool_highlight.css (.dimensions) */
+    color: var(--sys-color-outline);
+  }
 
-.screencast-glasspane {
-  background-color: var(--color-background-opacity-80);
-  font-size: 30px;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  .screencast-glasspane {
+    background-color: var(--color-background-opacity-80);
+    font-size: 30px;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

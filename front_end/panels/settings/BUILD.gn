@@ -93,6 +93,7 @@ devtools_ui_module("unittests") {
   sources = [
     "AISettingsTab.test.ts",
     "EditFileSystemView.test.ts",
+    "FrameworkIgnoreListSettingsTab.test.ts",
     "WorkspaceSettingsTab.test.ts",
   ]
 

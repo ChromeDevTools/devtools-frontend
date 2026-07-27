@@ -186,4 +186,34 @@ describeWithEnvironment('ChangeManager', () => {
     );
   });
 
+  it('disposes targetManager and cssModel listeners on dispose', async () => {
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const removeModelListenerSpy = sinon.spy(targetManager, 'removeModelListener');
+    const changeManager = new AiAssistanceModel.ChangeManager.ChangeManager(targetManager);
+    const cssModel = createModel();
+    await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
+      selector: 'div',
+      className: 'ai-style-change-1',
+      styles: {
+        color: 'blue',
+      },
+    });
+
+    changeManager.dispose();
+
+    sinon.assert.calledWith(
+        removeModelListenerSpy,
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        sinon.match(SDK.ResourceTreeModel.Events.PrimaryPageChanged),
+        changeManager.clear,
+        changeManager,
+    );
+    sinon.assert.calledWith(
+        cssModel.removeEventListener,
+        SDK.CSSModel.Events.ModelDisposed,
+        sinon.match.func,
+        changeManager,
+    );
+  });
 });

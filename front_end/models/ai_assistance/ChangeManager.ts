@@ -25,18 +25,34 @@ function formatStyles(styles: Record<string, string>, indent = 2): string {
  * primarily for stylesheet generation based on all changes.
  */
 export class ChangeManager {
+  readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #stylesheetMutex = new Common.Mutex.Mutex();
   readonly #cssModelToStylesheetId =
       new Map<SDK.CSSModel.CSSModel, Map<Protocol.Page.FrameId, Protocol.DOM.StyleSheetId>>();
   readonly #stylesheetChanges = new Map<Protocol.DOM.StyleSheetId, Change[]>();
 
   constructor(targetManager: SDK.TargetManager.TargetManager = SDK.TargetManager.TargetManager.instance()) {
-    targetManager.addModelListener(
+    this.#targetManager = targetManager;
+    this.#targetManager.addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel,
         SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.clear,
         this,
     );
+  }
+
+  dispose(): void {
+    this.#targetManager.removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.clear,
+        this,
+    );
+    for (const cssModel of this.#cssModelToStylesheetId.keys()) {
+      cssModel.removeEventListener(SDK.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+    }
+    this.#cssModelToStylesheetId.clear();
+    this.#stylesheetChanges.clear();
   }
 
   async clear(): Promise<void> {

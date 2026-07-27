@@ -82,7 +82,7 @@ export class AiAgent2 extends AiAgent<unknown> {
 
   constructor(opts: AiAgent2Options) {
     super(opts);
-    this.#changes = new ChangeManager(opts.targetManager);
+    this.#changes = opts.changeManager ?? new ChangeManager(opts.targetManager);
     this.#lighthouseRecording = opts.lighthouseRecording;
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#allowedOrigin = opts.allowedOrigin;

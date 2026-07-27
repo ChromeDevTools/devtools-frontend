@@ -242,7 +242,10 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 devtools_api_test_module("api_tests") {
-  sources = [ "DOMModel.test.api.ts" ]
+  sources = [
+    "CSSModel.test.api.ts",
+    "DOMModel.test.api.ts",
+  ]
 
   deps = [
     ":bundle",

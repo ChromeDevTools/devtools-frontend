@@ -12,12 +12,10 @@ import * as Logs from '../../../../models/logs/logs.js';
 import {
   assertScreenshot,
   getCleanTextContentFromElements,
-  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import * as ReportView from '../../../../ui/components/report_view/report_view.js';
+import type * as ReportView from '../../../../ui/components/report_view/report_view.js';
 
 import * as PreloadingComponents from './components.js';
 
@@ -34,8 +32,8 @@ const renderPreloadingDetailsReportView =
   const component = new PreloadingComponents.PreloadingDetailsReportView.PreloadingDetailsReportView();
   component.data = data;
   renderElementIntoDOM(component, renderOptions);
-  assert.isNotNull(component.shadowRoot);
-  await RenderCoordinator.done();
+  await component.updateComplete;
+  assert.isNotNull(component.contentElement);
 
   return component;
 };
@@ -47,8 +45,8 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     const data = null;
 
     const component = await renderPreloadingDetailsReportView(data);
-    assert.isNotNull(component.shadowRoot);
-    const placeholder = component.shadowRoot.querySelector('.empty-state');
+    assert.isNotNull(component.contentElement);
+    const placeholder = component.contentElement.querySelector('.empty-state');
 
     assert.include(placeholder?.textContent, 'Select an element for more details');
   });
@@ -109,7 +107,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -148,7 +146,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
 
     const report = await renderPreloadingDetailsReportView(data);
 
-    assert.isTrue(report.shadowRoot?.textContent?.includes('Form submissionYes'));
+    assert.isTrue(report.contentElement.textContent?.includes('Form submissionYes'));
   });
 
   it('renders prerendering details with target hint blank', async () => {
@@ -192,7 +190,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -246,7 +244,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -299,7 +297,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -369,7 +367,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -430,7 +428,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -493,7 +491,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -558,7 +556,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -617,7 +615,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -675,7 +673,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
@@ -733,7 +731,7 @@ describeWithEnvironment('PreloadingDetailsReportView', () => {
     };
 
     const component = await renderPreloadingDetailsReportView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    const report = component.contentElement.querySelector('devtools-report') as ReportView.ReportView.Report;
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');

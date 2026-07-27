@@ -37,12 +37,19 @@ const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('ConsoleView', () => {
   let consoleView: Console.ConsoleView.ConsoleView;
+  let universe: TestUniverse;
 
   beforeEach(() => {
-    const universe = new TestUniverse();
+    universe = new TestUniverse();
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
+    sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(universe.ignoreListManager);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+    sinon.stub(IssuesManager.IssuesManager.IssuesManager, 'instance').returns(universe.issuesManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(universe.settings);
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(universe.workspace);
+
     registerNoopActions(['console.clear', 'console.clear.history', 'console.create-pin']);
     consoleView = Console.ConsoleView.ConsoleView.instance({forceNew: true, viewportThrottlerTimeout: 0});
   });
@@ -1198,4 +1205,284 @@ describeWithEnvironment('ConsoleView', () => {
     assert.isTrue(UI.UIUtils.isScrolledToBottom(viewport.element));
     assert.isTrue(viewport.stickToBottom());
   });
+
+  describe('keyboard navigation', () => {
+    let target: SDK.Target.Target;
+    let consoleModel: SDK.ConsoleModel.ConsoleModel;
+
+    beforeEach(() => {
+      target = universe.createTarget();
+      universe.targetManager.setScopeTarget(target);
+      consoleView.markAsRoot();
+      renderElementIntoDOM(consoleView);
+      const model = target.model(SDK.ConsoleModel.ConsoleModel);
+      assert.exists(model);
+      consoleModel = model;
+    });
+
+    it('can navigate links by keyboard', async () => {
+      const url = urlString`http://example.test/script.js`;
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: '1' as Protocol.Runtime.ScriptId,
+        url: 'http://example.test/script.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 100,
+        endColumn: 0,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+      });
+
+      const m1 = new SDK.ConsoleModel.ConsoleMessage(
+          target.model(SDK.RuntimeModel.RuntimeModel),
+          Protocol.Log.LogEntrySource.Javascript,
+          Protocol.Log.LogEntryLevel.Info,
+          'Before',
+          {url, line: 10, column: 1},
+      );
+      const m2 = new SDK.ConsoleModel.ConsoleMessage(
+          target.model(SDK.RuntimeModel.RuntimeModel),
+          Protocol.Log.LogEntrySource.Javascript,
+          Protocol.Log.LogEntryLevel.Info,
+          'Text around www.chromium.org/1a multiple links, www.chromium.org/1b',
+          {url, line: 20, column: 1},
+      );
+      const m3 = new SDK.ConsoleModel.ConsoleMessage(
+          target.model(SDK.RuntimeModel.RuntimeModel),
+          Protocol.Log.LogEntrySource.Javascript,
+          Protocol.Log.LogEntryLevel.Info,
+          'www.chromium.org/2',
+          {url, line: 30, column: 1},
+      );
+
+      consoleModel.addMessage(m1);
+      consoleModel.addMessage(m2);
+      consoleModel.addMessage(m3);
+
+      await consoleView.getScheduledRefreshPromiseForTest();
+
+      consoleView.focus();
+
+      const viewport = (consoleView as unknown as {viewport: Console.ConsoleViewport.ConsoleViewport}).viewport;
+      const contentElement = viewport.contentElement() as HTMLElement;
+      contentElement.focus();
+
+      const getActiveElement = (): HTMLElement => {
+        const el = UI.DOMUtilities.deepActiveElement(document);
+        if (!el) {
+          throw new Error('Active element is null');
+        }
+        return el as HTMLElement;
+      };
+
+      let activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'script.js:31');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'www.chromium.org/2');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'DIV');
+      assert.isTrue(activeElement.classList.contains('console-message-wrapper'));
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'script.js:21');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'www.chromium.org/1b');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'www.chromium.org/1a');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'DIV');
+      assert.isTrue(activeElement.classList.contains('console-message-wrapper'));
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'www.chromium.org/1a');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'www.chromium.org/1b');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'script.js:21');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'DIV');
+      assert.isTrue(activeElement.classList.contains('console-message-wrapper'));
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'www.chromium.org/2');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'script.js:31');
+    });
+
+    it('can navigate stack trace links by keyboard', async () => {
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: '1' as Protocol.Runtime.ScriptId,
+        url: 'http://example.test/foo.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 100,
+        endColumn: 0,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+      });
+      dispatchEvent(target, 'Debugger.scriptParsed', {
+        scriptId: '2' as Protocol.Runtime.ScriptId,
+        url: 'http://example.test/console-key-links.js',
+        startLine: 0,
+        startColumn: 0,
+        endLine: 100,
+        endColumn: 0,
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+        hash: '',
+        buildId: '',
+      });
+
+      const stackTrace: Protocol.Runtime.StackTrace = {
+        callFrames: [
+          {
+            functionName: 'fn1',
+            scriptId: '1' as Protocol.Runtime.ScriptId,
+            url: 'http://example.test/foo.js',
+            lineNumber: 22,
+            columnNumber: 0,
+          },
+          {
+            functionName: '',
+            scriptId: '2' as Protocol.Runtime.ScriptId,
+            url: 'http://example.test/console-key-links.js',
+            lineNumber: 75,
+            columnNumber: 0,
+          },
+        ],
+      };
+
+      const message = new SDK.ConsoleModel.ConsoleMessage(
+          target.model(SDK.RuntimeModel.RuntimeModel),
+          Protocol.Log.LogEntrySource.Javascript,
+          Protocol.Log.LogEntryLevel.Error,
+          'Custom error with link www.chromium.org/linkInErrMsg',
+          {
+            type: Protocol.Runtime.ConsoleAPICalledEventType.Error,
+            stackTrace,
+          },
+      );
+
+      consoleModel.addMessage(message);
+
+      await consoleView.getScheduledRefreshPromiseForTest();
+
+      const messageView = consoleView.itemElement(0) as Console.ConsoleViewMessage.ConsoleViewMessage;
+      assert.exists(messageView);
+
+      // Wait for stack trace to be formatted.
+      await messageView.formatErrorStackPromiseForTest();
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      consoleView.focus();
+
+      const viewport = (consoleView as unknown as {viewport: Console.ConsoleViewport.ConsoleViewport}).viewport;
+      const contentElement = viewport.contentElement() as HTMLElement;
+      contentElement.focus();
+
+      const getActiveElement = (): HTMLElement => {
+        const el = UI.DOMUtilities.deepActiveElement(document);
+        if (!el) {
+          throw new Error('Active element is null');
+        }
+        return el as HTMLElement;
+      };
+
+      let activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '',
+                     'foo.js:23');  // The active element should be the message source link.
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'www.chromium.org/linkInErrMsg');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowUp', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'DIV');
+      assert.isTrue(activeElement.classList.contains('console-message-wrapper'));
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowRight', bubbles: true, composed: true}));
+      await UI.Widget.Widget.allUpdatesComplete;  // Wait for the expand rendering to complete.
+      // ArrowDown should move focus to the link in the error message.
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'www.chromium.org/linkInErrMsg');
+
+      // ArrowDown should move focus to the source link.
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'foo.js:23');
+
+      // ArrowDown should move focus to the first frame of the stack trace.
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'foo.js:23');
+
+      // ArrowDown should move focus to the second frame of the stack trace.
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.strictEqual(activeElement.tagName, 'BUTTON');
+      assert.include(activeElement.textContent || '', 'console-key-links.js:76');
+
+      // ArrowDown should stay on the second frame of the stack trace.
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'console-key-links.js:76');
+
+      // Collapse the stack trace.
+      const wrapper = messageView.element();
+      wrapper.focus();
+      assert.strictEqual(getActiveElement(), wrapper);
+
+      wrapper.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowLeft', bubbles: true, composed: true}));
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      // Verify it collapsed by navigating down.
+      wrapper.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'www.chromium.org/linkInErrMsg');
+
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'foo.js:23');  // The active element should be the source link.
+
+      // Next ArrowDown should NOT go to stack trace, so it should stay on source link.
+      activeElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'ArrowDown', bubbles: true, composed: true}));
+      activeElement = getActiveElement();
+      assert.include(activeElement.textContent || '', 'foo.js:23');
+    });
+  });
+
 });

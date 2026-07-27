@@ -2601,6 +2601,7 @@ export const knownContextValues = new Set([
   'lmi-interpreter-settings',
   'lo',
   'load',
+  'load-cpu-profile-confirmation',
   'load-through-target',
   'loadeddata',
   'loadedmetadata',

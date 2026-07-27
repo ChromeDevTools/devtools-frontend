@@ -35,8 +35,8 @@ export class TimelineLoader {
   #collectedEvents: Trace.Types.Events.Event[] = [];
   #metadata: Trace.Types.File.MetaData|null;
 
-  #traceFinalizedCallbackForTest?: () => void;
-  #traceFinalizedPromiseForTest: Promise<void>;
+  #traceLoadedCallback?: (state: LoadingState) => void;
+  #traceLoadedPromise: Promise<LoadingState>;
 
   constructor(client: Client) {
     this.client = client;
@@ -45,8 +45,8 @@ export class TimelineLoader {
     this.#traceIsCPUProfile = false;
     this.#metadata = null;
 
-    this.#traceFinalizedPromiseForTest = new Promise<void>(resolve => {
-      this.#traceFinalizedCallbackForTest = resolve;
+    this.#traceLoadedPromise = new Promise<LoadingState>(resolve => {
+      this.#traceLoadedCallback = resolve;
     });
   }
 
@@ -57,11 +57,10 @@ export class TimelineLoader {
       client.loadingStarted();
       try {
         loader.#processParsedFile(contents);
-        await loader.close();
+        await loader.complete();
       } catch (e: unknown) {
-        await loader.close();
         const message = e instanceof Error ? e.message : '';
-        return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: message}));
+        loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: message}));
       }
     });
 
@@ -71,7 +70,11 @@ export class TimelineLoader {
   static loadFromEvents(events: Trace.Types.Events.Event[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {
-      void loader.addEvents(events, null);
+      try {
+        await loader.addEvents(events, null);
+      } catch (e: unknown) {
+        loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+      }
     });
     return loader;
   }
@@ -79,7 +82,11 @@ export class TimelineLoader {
   static loadFromTraceFile(traceFile: Trace.Types.File.TraceFile, client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {
-      void loader.addEvents(traceFile.traceEvents, traceFile.metadata);
+      try {
+        await loader.addEvents(traceFile.traceEvents, traceFile.metadata);
+      } catch (e: unknown) {
+        loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+      }
     });
     return loader;
   }
@@ -93,10 +100,15 @@ export class TimelineLoader {
           profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
-        void loader.addEvents(contents.traceEvents, null);
+        try {
+          await loader.addEvents(contents.traceEvents, null);
+        } catch (e: unknown) {
+          loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+        }
       });
-    } catch (e) {
-      console.error(e.stack);
+    } catch (e: unknown) {
+      console.error(e instanceof Error ? e.stack : e);
+      loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
     }
     return loader;
   }
@@ -120,9 +132,8 @@ export class TimelineLoader {
         const txt = stream.data();
         const trace = JSON.parse(txt);
         loader.#processParsedFile(trace);
-        await loader.close();
+        await loader.complete();
       } catch (e: unknown) {
-        await loader.close();
         const message = e instanceof Error ? e.message : '';
         return loader.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: message}));
       }
@@ -168,25 +179,29 @@ export class TimelineLoader {
 
   async addEvents(events: readonly Trace.Types.Events.Event[], metadata: Trace.Types.File.MetaData|null):
       Promise<void> {
-    this.#metadata = metadata;
-    this.client?.loadingStarted();
-    /**
-     * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
-     *
-     * This value is different though. Why? `The addEvents()` work below is different
-     * (and much faster!) than running `handleEvent()` on all handlers.
-     */
-    const eventsPerChunk = 150_000;
-    for (let i = 0; i < events.length; i += eventsPerChunk) {
-      const chunk = events.slice(i, i + eventsPerChunk);
-      this.#collectEvents(chunk as unknown as Trace.Types.Events.Event[]);
-      this.client?.loadingProgress((i + chunk.length) / events.length);
-      await new Promise(r => window.setTimeout(r, 0));  // Yield event loop to paint.
+    try {
+      this.#metadata = metadata;
+      this.client?.loadingStarted();
+      /**
+       * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
+       *
+       * This value is different though. Why? `The addEvents()` work below is different
+       * (and much faster!) than running `handleEvent()` on all handlers.
+       */
+      const eventsPerChunk = 150_000;
+      for (let i = 0; i < events.length; i += eventsPerChunk) {
+        const chunk = events.slice(i, i + eventsPerChunk);
+        this.#collectEvents(chunk as unknown as Trace.Types.Events.Event[]);
+        this.client?.loadingProgress((i + chunk.length) / events.length);
+        await new Promise(r => window.setTimeout(r, 0));  // Yield event loop to paint.
+      }
+      await this.complete();
+    } catch (e: unknown) {
+      this.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
     }
-    void this.close();
   }
 
-  async cancel(): Promise<void> {
+  async #cleanup(): Promise<void> {
     if (this.client) {
       await this.client.loadingComplete(
           /* collectedEvents */[], /* exclusiveFilter= */ null, /* metadata= */ null);
@@ -197,19 +212,29 @@ export class TimelineLoader {
     }
   }
 
+  async cancel(): Promise<void> {
+    await this.#cleanup();
+    this.#traceLoadedCallback?.(LoadingState.CANCELLED);
+  }
+
   private reportErrorAndCancelLoading(message?: string): void {
     if (message) {
       Common.Console.Console.instance().error(message);
     }
-    void this.cancel();
+    this.#traceLoadedCallback?.(LoadingState.ERROR);
+    void this.#cleanup();
   }
 
-  async close(): Promise<void> {
+  async complete(): Promise<void> {
     if (!this.client) {
       return;
     }
     this.client.processingStarted();
-    await this.finalizeTrace();
+    try {
+      await this.finalizeTrace();
+    } catch (e: unknown) {
+      this.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
+    }
   }
 
   private async finalizeTrace(): Promise<void> {
@@ -218,11 +243,11 @@ export class TimelineLoader {
     }
 
     await (this.client as Client).loadingComplete(this.#collectedEvents, this.filter, this.#metadata);
-    this.#traceFinalizedCallbackForTest?.();
+    this.#traceLoadedCallback?.(LoadingState.SUCCESS);
   }
 
-  traceFinalizedForTest(): Promise<void> {
-    return this.#traceFinalizedPromiseForTest;
+  traceLoaded(): Promise<LoadingState> {
+    return this.#traceLoadedPromise;
   }
 
   #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
@@ -241,3 +266,9 @@ export class TimelineLoader {
  * Used when we parse the input, but do not yet know if it is a raw CPU Profile or a Trace
  **/
 export type ParsedJSONFile = Trace.Types.File.Contents|Protocol.Profiler.Profile;
+
+export const enum LoadingState {
+  SUCCESS = 'SUCCESS',
+  CANCELLED = 'CANCELLED',
+  ERROR = 'ERROR',
+}

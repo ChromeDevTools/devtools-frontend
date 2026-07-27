@@ -378,6 +378,45 @@ describe('PageResourceLoader', () => {
       assert.strictEqual(result.content, 'fallback content');
       sinon.assert.calledOnce(loadHostBindingsStub);
     });
+
+    it('does not fall back to host bindings if security isolation status is unavailable (fail-closed)', async () => {
+      // If getSecurityIsolationStatus returns null (e.g. because the frame was removed before the query completed),
+      // the unsafe fallback must not execute.
+      const {loader, settings, targetManager} = setup();
+      settings.moduleSetting('cache-disabled').set(false);
+      const connection = new MockCDPConnection();
+
+      connection.setFailureHandler('Network.getSecurityIsolationStatus', () => {
+        return {
+          code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+          message: 'Frame not found',
+        };
+      });
+
+      connection.setFailureHandler('Network.loadNetworkResource', () => {
+        return {
+          code: -32000 as ProtocolClient.CDPConnection.CDPErrorStatus,
+          message: 'Frame not found',
+        };
+      });
+
+      const target = createTarget({connection, targetManager});
+      const initiator = {target, frameId: '123' as Protocol.Page.FrameId, initiatorUrl: urlString`https://example.com`};
+      const url = urlString`https://example.com/source.map`;
+
+      const loadHostBindingsStub =
+          sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'loadNetworkResource');
+
+      try {
+        await loader.loadResource(url, initiator);
+        assert.fail('Expected loadResource to throw');
+      } catch (e) {
+        assert.strictEqual(e.message, 'Frame not found');
+      }
+
+      // Fallback must not be called, null status keeps the guard armed.
+      sinon.assert.notCalled(loadHostBindingsStub);
+    });
   });
 });
 

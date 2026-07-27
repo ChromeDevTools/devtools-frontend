@@ -38,13 +38,42 @@ Note that `VBox` and `HBox` inherit directly from `Widget`. They fully support v
 
 To test the `DEFAULT_VIEW` function itself, we should use screenshot and e2e tests.
 
+### Dependency Injection via `INJECT`
+
+Subclasses of `UI.Widget.Widget` can declare dependencies from `Universe` to be automatically injected when instantiated (e.g. via `<devtools-widget>` or `UI.Widget.widget()`).
+
+To opt into dependency injection, define a static `INJECT` array containing dependency constructors:
+
+```ts
+class MyWidget extends UI.Widget.Widget {
+  static override readonly INJECT = [SDK.TargetManager.TargetManager, Common.Settings.Settings] as const;
+
+  #targetManager: SDK.TargetManager.TargetManager;
+  #settings: Common.Settings.Settings;
+
+  constructor(
+    element?: HTMLElement,
+    [targetManager, settings]: UI.Widget.WidgetDependencies<typeof MyWidget> = [],
+    view: View = DEFAULT_VIEW,
+  ) {
+    super(element);
+    this.#targetManager = targetManager;
+    this.#settings = settings;
+  }
+}
+```
+
+When `instantiateWidget` creates a widget with a non-empty `INJECT` array, it automatically resolves each requested constructor from the active `Universe` and passes the resolved instances array as parameter #2 to the constructor.
+
+Use `UI.Widget.WidgetDependencies<typeof MyWidget>` to type the injected dependencies parameter.
+
 ## Declarative and orchestrated DOM updates
 
 We should no longer use imperative API to update DOM. Instead we rely on orchestrated rendering of lit-html templates. The view function described above should be a call to lit-html `render`. The view function should be called from `UI.Widget`’s `performUpdate` method, which by default is scheduled using `requestAnimationFrame`.
 
 To embed another presenter (`UI.Widget`) in the lit-html template, use `widget(<class>, {foo: 1, bar: 2})`
 
-This will instantiate a `Widget` class with the web component as its `element` and, optionally, will set the properties provided in the second parameter. The widget won’t be re-instantiated on the subsequent template renders, but the properties would be updated. For this to work, the widget needs to accept `HTMLElement` as a sole constructor parameter and properties need to be public members or setters.
+This will instantiate a `Widget` class with the web component as its `element` and, optionally, will set the properties provided in the second parameter. The widget won’t be re-instantiated on the subsequent template renders, but the properties would be updated. For this to work, the widget needs to accept `HTMLElement` as its first constructor parameter, optional injected dependencies as parameter #2 (if `INJECT` is declared), and properties need to be public members or setters.
 
 For backwards compatibility, the first argument to `widget` can also be a factory function: `widget(element => new MyWidget(foo, bar, element))`. Similar to the class constructor version, `element` is the actual `<devtools-widget>` so the following two invocations of `widget` are equivalent: `widget(MyWidget)` and `widget(element => new MyWidget(element))`.
 
@@ -216,6 +245,20 @@ connection.setSuccessHandler('CSS.getHeaders', () => ({}));
 createTarget({connection});
 const presenter = new Presenter();
 presenter.doSomething();
+```
+
+#### Testing widgets with `INJECT` dependencies
+
+When rendering widgets into DOM in unit tests (e.g. via `renderElementIntoDOM`), DOM test helpers automatically supply a default `TestUniverse` for resolving `INJECT` dependencies.
+
+If a test requires a custom `TestUniverse` instance, pass it via `setTestUniverseForWidgets`:
+
+```ts
+import {setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
+import {TestUniverse} from '../../testing/TestUniverse.js';
+
+const customUniverse = new TestUniverse();
+setTestUniverseForWidgets(customUniverse);
 ```
 
 # Migrating Widgets and other "legacy" components

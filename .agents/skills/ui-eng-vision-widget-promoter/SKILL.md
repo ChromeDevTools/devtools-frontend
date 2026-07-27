@@ -36,13 +36,21 @@ clean `UI.Widget` classes that use native update rendering delegates.
         };
         ```
 
-    *   Make the view injectable in the constructor for testability (as per `docs/ui_engineering.md`):
+    *   Make the view injectable in the constructor for testability (as per `docs/ui_engineering.md`), and use static `INJECT` if requesting dependencies from `Universe`:
 
         ```typescript
         class MyWidget extends UI.Widget.VBox {
+          static override readonly INJECT = [SDK.TargetManager.TargetManager] as const;
+
+          #targetManager: SDK.TargetManager.TargetManager;
           #view: View;
-          constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
-            super(true, element);
+          constructor(
+            element?: HTMLElement,
+            [targetManager]: UI.Widget.WidgetDependencies<typeof MyWidget> = [],
+            view: View = DEFAULT_VIEW,
+          ) {
+            super(element);
+            this.#targetManager = targetManager;
             this.#view = view;
           }
         ```
@@ -84,4 +92,3 @@ clean `UI.Widget` classes that use native update rendering delegates.
 2.  ❓ **Inheritance**: Does the class now cleanly inherit from `UI.Widget` or its variants?
 3.  ❓ **Injectability**: Is the view injectable in the constructor?
 4.  ❓ **Build**: Does the code compile and do tests pass?
-

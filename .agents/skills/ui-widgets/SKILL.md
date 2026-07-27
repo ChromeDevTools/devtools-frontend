@@ -19,6 +19,7 @@ Adhere strictly to the Model-View-Presenter (MVP) architecture.
 * MUST extend a base `UI.Widget` class (e.g., `UI.Widget.Widget`). Note that `UI.Widget.Widget` is not an `HTMLElement` and must be appended via `.show()` or `UI.Widget.widget`
 * Constructor MUST assign the injected view function to a private `#view` field.
 * Constructor MUST call `super()`. If taking `element?: HTMLElement`, pass it to `super(element)`. `super(true)` is forbidden.
+* Dependencies from `Universe` SHOULD be requested via static `INJECT`: `static override readonly INJECT = [...] as const;` and received as constructor parameter #2 (`[dep1, dep2]: UI.Widget.WidgetDependencies<typeof MyWidget>`).
 * Styling MUST be handled within the View. `this.registerCSSFiles()` is forbidden.
 * Initial render MUST be triggered in `override wasShown(): void` by calling `this.requestUpdate()`.
 * MUST hold all UI state as private class fields (e.g., `#counter`).
@@ -109,7 +110,30 @@ render(html`
 *   **Child Widgets:** Use `UI.Widget.widgetRef` to obtain the class instance of a child widget if you need to call methods on it directly (though declarative data flow is preferred).
 
 ### Dependencies
-The `DEFAULT_VIEW` is typically a module-level function. Ensure all dependencies (enums, constants, other components) are imported at the top of the file so they are available in the function scope.
+
+* **View Dependencies:** The `DEFAULT_VIEW` is typically a module-level function. Ensure all dependencies (enums, constants, other components) are imported at the top of the file so they are available in the function scope.
+* **Presenter (`Universe`) Dependencies:** To access dependencies managed by `Universe` (e.g. `SDK.TargetManager.TargetManager`, `Common.Settings.Settings`), declare a static `INJECT` array on the `Widget` subclass:
+  ```ts
+  export class MyWidget extends UI.Widget.Widget {
+    static override readonly INJECT = [SDK.TargetManager.TargetManager, Common.Settings.Settings] as const;
+
+    #targetManager: SDK.TargetManager.TargetManager;
+    #settings: Common.Settings.Settings;
+    #view: View;
+
+    constructor(
+      element?: HTMLElement,
+      [targetManager, settings]: UI.Widget.WidgetDependencies<typeof MyWidget> = [],
+      view: View = DEFAULT_VIEW,
+    ) {
+      super(element);
+      this.#targetManager = targetManager;
+      this.#settings = settings;
+      this.#view = view;
+    }
+  }
+  ```
+  `instantiateWidget` automatically resolves dependencies from `Universe` and passes them as constructor parameter #2. In unit tests using `renderElementIntoDOM`, `TestUniverse` handles injection automatically (override via `setTestUniverseForWidgets`).
 
 ## Step-by-Step Implementation Example
 

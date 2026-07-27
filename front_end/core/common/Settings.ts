@@ -362,6 +362,8 @@ export class Settings {
         this.createRegExpSetting(name, evaluatedDefaultValue, undefined, storageType) :
         this.createSetting(name, evaluatedDefaultValue, storageType);
 
+    setting.setSettingType(type);
+
     this.registerModuleSetting(setting);
     return setting as Setting<T>;
   }
@@ -511,6 +513,7 @@ export class Deprecation {
 
 export class Setting<V> {
   #registration: SettingRegistration|null = null;
+  #type: SettingType|null = null;
   #requiresUserAction?: boolean;
   #value?: V;
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
@@ -679,8 +682,15 @@ export class Setting<V> {
     this.eventSupport.dispatchEventToListeners(this.name, value);
   }
 
+  setSettingType(type: SettingType): void {
+    this.#type = type;
+  }
+
   setRegistration(registration: SettingRegistration): void {
     this.#registration = registration;
+    if (registration.settingType) {
+      this.#type = registration.settingType;
+    }
     const {deprecationNotice} = registration;
     if (deprecationNotice?.disabled) {
       const experiment = deprecationNotice.experiment ?
@@ -694,10 +704,7 @@ export class Setting<V> {
   }
 
   type(): SettingType|null {
-    if (this.#registration) {
-      return this.#registration.settingType;
-    }
-    return null;
+    return this.#type ?? this.#registration?.settingType ?? null;
   }
 
   options(): SimpleSettingOption[] {

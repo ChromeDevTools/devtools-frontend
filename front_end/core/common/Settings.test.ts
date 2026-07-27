@@ -352,6 +352,16 @@ describe('Settings instance', () => {
       assert.strictEqual(passedConfig, Root.Runtime.hostConfig);
     });
 
+    it('sets the setting type from the descriptor', () => {
+      const descriptor: Common.Settings.SettingDescriptor<boolean> = {
+        name: 'test-setting-type-from-descriptor',
+        type: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: true,
+      };
+      const setting = settings.resolve(descriptor);
+      assert.strictEqual(setting.type(), Common.Settings.SettingType.BOOLEAN);
+    });
+
     it('returns the same setting instance when resolving two different descriptors with the same name', () => {
       const descriptor1: Common.Settings.SettingDescriptor<boolean> = {
         name: 'test-setting-shared-name',

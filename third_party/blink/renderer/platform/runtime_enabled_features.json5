@@ -1021,10 +1021,6 @@
       status: "stable",
     },
     {
-      name: "CallExitNodeWithoutLayoutObject",
-      status: "stable",
-    },
-    {
       // Enables the <camera> and <microphone> HTML elements, allowing sites to
       // embed camera and microphone permission request controls directly in the page.
       // https://chromestatus.com/feature/5153829504024576
@@ -1217,25 +1213,12 @@
       name: "ClickFocusDoesntPersistStatusBubble",
       status: "stable",
     },
-    // This ensures that clipboard event fires on a target node which is
-    // focused in case no visible selection is present.
-    // crbug.com/40735783
-    {
-      name: "ClipboardEventTargetCanBeFocusedElement",
-      status: "stable",
-    },
     {
       // Uses ComputeContainerNode() instead of AnchorNode() for clipboard event
       // targeting so that kBeforeAnchor/kAfterAnchor selections correctly target
       // the containing parent element rather than the element itself.
       // See https://crbug.com/40684204
       name: "ClipboardEventTargetUsesContainerNode",
-      status: "stable",
-    },
-    {
-      // Support ClipboardItemData of Promise<DOMString> type according to spec
-      // https://w3c.github.io/clipboard-apis/#typedefdef-clipboarditemdata
-      name: "ClipboardItemWithDOMStringSupport",
       status: "stable",
     },
     {
@@ -1387,33 +1370,6 @@
       status: "experimental",
     },
     {
-      // When enabled, providing developers control over the resources loaded
-      // into their pages' contexts and the endpoints to which their pages can
-      // make requests.
-      // Note: To enable this feature, developers MUST include the origin trial
-      // token within the HTTP headers. Including the origin trial token via the
-      // <meta> tag in the head of any page does NOT enable the feature.
-      // See https://wicg.github.io/connection-allowlists/.
-      name: "ConnectionAllowlist",
-      origin_trial_feature_name: "ConnectionAllowlist",
-      // This feature flag is used for overriding origin trial requirements for
-      // testing purpose. See the comment below for `status` field for why this
-      // is required even though there already exists a
-      // `network::features::kConnectionAllowlists` for connection allowlist.
-      // Kill switch is `network::features::kConnectionAllowlists`.
-      base_feature: "OverrideConnectionAllowlistOriginTrial",
-      base_feature_status: "disabled",
-      // For the connection allowlist, its implementation is entirely within the
-      // browser processes. It does not involve any changes in the renderer
-      // process. The `status` field does not behave in the same manner for
-      // other web platform features. For example, setting it to "stable" does
-      // not enable the feature -- the renderer's internal state is updated, but
-      // does not get propagated to the browser process. So connection allowlist
-      // cannot know the status of the RuntimeEnabledFeature.
-      status: "experimental",
-      settable_from_internals: true,
-    },
-    {
       // Enables Connection-Allowlist embedded enforcement: the
       // `connectionallowlist` iframe content attribute (and its
       // `connectionAllowlist` IDL reflection), by which an embedder requires a
@@ -1431,7 +1387,6 @@
       name: "ConnectionAllowlistEmbeddedEnforcement",
       origin_trial_feature_name: "ConnectionAllowlistEmbeddedEnforcement",
       status: "experimental",
-      depends_on: ["ConnectionAllowlist"],
     },
     {
       // Fix for https://crbug.com/40659076. When enabled, queryCommandState for
@@ -2694,10 +2649,6 @@
       status: {"Android": "experimental", "iOS": "", "default": "stable"},
     },
     {
-      name: "ElementInnerTextHandleFirstLineStyle",
-      status: "stable",
-    },
-    {
       // ElementInternals.behaviors allows web authors to attach
       // platform-provided behaviors to custom elements, enabling
       // them to adopt native behaviors without extending native
@@ -3301,6 +3252,12 @@
       status: "experimental",
     },
     {
+      // Respects explicit outline colors for focus rings in dark mode and uses
+      // an off-white default. https://issues.chromium.org/issues/480978106
+      name: "FocusRingRespectExplicitOutlineColorInDarkMode",
+      status: "stable",
+    },
+    {
       name: "FontAccess",
       status: {"Android": "", "default": "stable"},
     },
@@ -3402,6 +3359,14 @@
       status: "stable",
     },
     {
+      // When enabled, the drag image overlay for an element will be created
+      // before the "dragstart" event is fired. This fixes a bug that made
+      // drags not start if the "dragstart" event caused a layout shift that
+      // made the mouse hit test miss the drag source.
+      name: "GenerateDragOverlayBeforeDragStart",
+      status: "experimental",
+    },
+    {
       // Tracking bug for the implementation: https://crbug.com/430204832
       name: "GeolocationElement",
       status: "stable",
@@ -3457,7 +3422,7 @@
     {
       name: "GetDisplayMediaAudioSelection",
       depends_on: ["GetDisplayMedia"],
-      status: "experimental",
+      status: "stable",
     },
     {
       name: "GetDisplayMediaRequiresUserActivation",
@@ -4917,12 +4882,6 @@
       base_feature: "none",
     },
     {
-      // When enabled, preserves dropEffect in drag event set during dragover
-      // events. See https://crbug.com/434151262
-      name: "PreserveDropEffect",
-      status: "stable",
-    },
-    {
       name: "PreserveHtmlEquivalentTagsInTypingStyle",
       status: "stable",
     },
@@ -4932,12 +4891,6 @@
       // See https://crbug.com/41340914
       name: "PreventTextSelectionJump",
       status: "stable",
-    },
-    {
-      // When enabled, prevents undo to be applied if the enclosing block
-      // is not editable
-      name: "PreventUndoIfNotEditable",
-      status: "stable"
     },
     {
       // Controls the aggregate error reporting feature, which allows for
@@ -5795,12 +5748,6 @@
     },
     {
       name: "ServiceWorkerStaticRouterTimingInfo",
-      status: "stable",
-    },
-    {
-      // When enabled, sets the default drop effect as according to spec for
-      // events like dragOver, dragLeave, etc. See https://crbug.com/434151262
-      name: "SetDefaultDropEffect",
       status: "stable",
     },
     {

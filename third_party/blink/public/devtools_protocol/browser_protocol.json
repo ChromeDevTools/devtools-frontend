@@ -30535,7 +30535,8 @@
                         },
                         {
                             "name": "signCount",
-                            "description": "Signature counter. This is incremented by one for each successful\nassertion.\nSee https://w3c.github.io/webauthn/#signature-counter",
+                            "description": "Signature counter. Must be equal to or greater than -1.\nIf -1, the credential won't have an associated signature counter, and\nevery assertion operation will report a value of 0.\nSee https://w3c.github.io/webauthn/#signature-counter",
+                            "optional": true,
                             "type": "integer"
                         },
                         {
@@ -30799,6 +30800,12 @@
                             "name": "generateCmtgKeyOnNextOperation",
                             "optional": true,
                             "type": "boolean"
+                        },
+                        {
+                            "name": "signCount",
+                            "description": "Must be equal to or greater than -1.\nIf -1, the signature counter is removed from the credential, and every\nassertion operation will report a value of 0.\nSee https://w3c.github.io/webauthn/#signature-counter",
+                            "optional": true,
+                            "type": "integer"
                         }
                     ]
                 }

@@ -492,7 +492,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     UI.ARIAUtils.markAsGroup(settingsPane);
 
     const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
-    const preserveConsoleLogSetting = Common.Settings.Settings.instance().moduleSetting('preserve-console-log');
+    const preserveConsoleLogSetting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor);
     const userActivationEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval');
     settingsPane.append(
         SettingsUI.SettingsUI.createSettingCheckbox(
@@ -776,7 +777,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   modelRemoved(model: SDK.ConsoleModel.ConsoleModel): void {
-    if (!Common.Settings.Settings.instance().moduleSetting('preserve-console-log').get() &&
+    if (!Common.Settings.Settings.instance().resolve(SDK.SDKSettings.preserveConsoleLogSettingDescriptor).get() &&
         model.target().outermostTarget() === model.target()) {
       this.consoleCleared();
     }

@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu.
-   */
-  preserveLogUponNavigation: 'Keep log on navigation',
-  /**
-   * @description Title of a setting under the Console category that can be invoked through the Command Menu.
-   */
-  doNotPreserveLogUponNavigation: 'Don’t keep log on navigation',
-  /**
    * @description Text for pausing the debugger on exceptions.
    */
   pauseOnExceptions: 'Pause on exceptions',
@@ -470,25 +462,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.CONSOLE,
-  storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.preserveLogUponNavigation),
-  settingName: 'preserve-console-log',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.preserveLogUponNavigation),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotPreserveLogUponNavigation),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.DEBUGGER,

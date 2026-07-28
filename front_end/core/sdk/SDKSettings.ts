@@ -17,3 +17,10 @@ export const cssSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescr
   defaultValue: true,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const preserveConsoleLogSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'preserve-console-log',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+};

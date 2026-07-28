@@ -34,6 +34,7 @@ import {
   RuntimeModel,
 } from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {preserveConsoleLogSettingDescriptor} from './SDKSettings.js';
 import {Capability, type Target, Type} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
 
@@ -287,7 +288,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
 
   private clearIfNecessary(): void {
     const settings = this.target().targetManager().settings;
-    if (!settings.moduleSetting('preserve-console-log').get()) {
+    if (!settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
       this.clear();
     }
     ++this.#pageLoadSequenceNumber;
@@ -296,7 +297,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
   private primaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
     const settings = this.target().targetManager().settings;
-    if (settings.moduleSetting('preserve-console-log').get()) {
+    if (settings.resolve(preserveConsoleLogSettingDescriptor).get()) {
       const {frame} = event.data;
       if (frame.backForwardCacheDetails.restoredFromCache) {
         this.#console.log(i18nString(UIStrings.bfcacheNavigation, {PH1: frame.url}));

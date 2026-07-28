@@ -16,8 +16,6 @@
 # crbug.com/1342718 front_end/panels/explain/components/ConsoleInsight.test.ts:ConsoleInsight:shows_opt-in_teaser_when_setting_is_turned_off [ Failure Pass ]
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
 
-# Flaky.
-crbug.com/537672763 test/e2e/performance/wasm/performance_profiling.test.ts [ Failure Pass ]
 # Skipped because Shared Storage API is deprecated and stubbed in Blink.
 crbug.com/462465887 test/e2e/application/shared-storage.test.ts [ Skip ]
 

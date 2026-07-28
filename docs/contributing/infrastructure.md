@@ -257,7 +257,13 @@ because they picked up the test as it was being touched.
 
 You can skip Flake Detection for your tests by adding the `Skip-Flake-Detection`
 CL footer (see example [CL](https://crrev.com/c/6994031)). Make sure you use the
-full path to your test.
+full path to your test. If you need to skip multiple tests, you can repeat the footer:
+```
+Skip-Flake-Detection: test/e2e/foo.test.ts
+Skip-Flake-Detection: test/e2e/bar.test.ts
+```
+
+You can also skip Flake Detection for multiple tests using a glob pattern by adding the `Skip-Flake-Detection-Pattern` CL footer. For example: `Skip-Flake-Detection-Pattern: test/e2e/performance/*`.
 
 ### Common build failures
 

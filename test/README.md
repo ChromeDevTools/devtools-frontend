@@ -183,6 +183,18 @@ For example, to mark a test as flaky:
 crbug.com/12345678 test/e2e/foo.test.ts:Foo:can_return_bar [ Pass Failure ]
 ```
 
+### Skip flake detection in CQ
+
+When a test is updated in a CL that is not related to the test's flakiness, the CQ builder might fail in the Flake Detection steps. You can skip Flake Detection for specific tests by adding the `Skip-Flake-Detection` CL footer with the full path to your test. For example: `Skip-Flake-Detection: test/e2e/foo.test.ts`.
+
+If you need to skip multiple tests, you can repeat the footer for each test:
+```
+Skip-Flake-Detection: test/e2e/foo.test.ts
+Skip-Flake-Detection: test/e2e/bar.test.ts
+```
+
+You can also skip Flake Detection for multiple tests using a glob pattern by adding the `Skip-Flake-Detection-Pattern` CL footer. For example: `Skip-Flake-Detection-Pattern: test/e2e/*`.
+
 ### De-flaking tests
 
 Note that despite the bot name all kinds of tests are supported.

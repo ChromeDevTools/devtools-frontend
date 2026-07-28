@@ -511,8 +511,8 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     }
   }
 
-  #editCallback(node: DataGridElementNode, columnId: string, valueBeforeEditing: string, newText: string,
-                moveDirection?: string): void {
+  #editCallback(node: DataGridElementNode, columnId: string, valueBeforeEditing: string|boolean,
+                newText: string|boolean, moveDirection?: string): void {
     if (node.isCreationNode) {
       this.#usedCreationNode = node;
       let hasNextEditableColumn = false;

@@ -57,7 +57,7 @@ export interface ViewInput {
   renderInline?: boolean;
   portBindingEnabled?: boolean;
   schemeBindingEnabled?: boolean;
-  onEdit: (data: CookieData, columnId: string, valueBeforeEditing: string, newText: string) => void;
+  onEdit: (data: CookieData, columnId: string, valueBeforeEditing: string|boolean, newText: string|boolean) => void;
   onCreate: (data: CookieData) => void;
   onRefresh: () => void;
   onDelete: (data: CookieData) => void;
@@ -71,18 +71,21 @@ type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => v
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME|SDK.Cookie.Attribute.VALUE|SDK.Cookie.Attribute.DOMAIN|
                          SDK.Cookie.Attribute.PATH|SDK.Cookie.Attribute.SECURE|SDK.Cookie.Attribute.SAME_SITE;
 
-type CookieData = Partial<Record<SDK.Cookie.Attribute, string>>&{
-  name: string,
-  value: string,
-}&{
-  key?: string,
-  flagged?: boolean,
-  icons?: Partial<Record<AttributeWithIcon, Icon>>,
-  priorityValue?: number,
-  expiresTooltip?: string,
-  dirty?: boolean,
-  inactive?: boolean,
-};
+type BooleanAttributes =
+    SDK.Cookie.Attribute.HTTP_ONLY|SDK.Cookie.Attribute.SECURE|SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR;
+type CookieData = Partial<Record<Exclude<SDK.Cookie.Attribute, BooleanAttributes>, string>>&
+    Partial<Record<BooleanAttributes, string|boolean>>&{
+      name: string,
+      value: string,
+    }&{
+      key?: string,
+      flagged?: boolean,
+      icons?: Partial<Record<AttributeWithIcon, Icon>>,
+      priorityValue?: number,
+      expiresTooltip?: string,
+      dirty?: boolean,
+      inactive?: boolean,
+    };
 
 const {repeat, ifDefined} = Directives;
 
@@ -185,6 +188,10 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 
 const expiresSessionValue = i18nLazyString(UIStrings.session);
 
+function isFlagAttribute(attribute: SDK.Cookie.Attribute): attribute is BooleanAttributes {
+  return attribute === SDK.Cookie.Attribute.HTTP_ONLY || attribute === SDK.Cookie.Attribute.SECURE;
+}
+
 export interface CookiesTableData {
   cookies: SDK.Cookie.Cookie[];
   cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>;
@@ -280,13 +287,13 @@ export class CookiesTable extends UI.Widget.VBox {
                 </th>` : ''}
               </tr>
               ${repeat(this.data, cookie => cookie.key, cookie => {
-                const isHttpOnly = cookie['http-only'] === 'true';
+                const isHttpOnly = Boolean(cookie['http-only']);
                 return html`
                 <tr ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
                     ?dirty=${cookie.dirty}
                     ?highlighted=${cookie.flagged}
-                    @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string, newText: string}>) =>
+                    @edit=${(e: CustomEvent<{columnId: string, valueBeforeEditing: string|boolean, newText: string|boolean}>) =>
                        input.onEdit(cookie, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
                     @delete=${()=> input.onDelete(cookie)}
                     @contextmenu=${(e: CustomEvent<UI.ContextMenu.ContextMenu>) => input.onContextMenu(cookie, e.detail)}
@@ -479,7 +486,8 @@ export class CookiesTable extends UI.Widget.VBox {
     }
   }
 
-  private onUpdateCookie(oldData: CookieData, columnIdentifier: string, _oldText: string, newText: string): void {
+  private onUpdateCookie(oldData: CookieData, columnIdentifier: string, _oldText: string|boolean,
+                         newText: string|boolean): void {
     const oldCookie = this.cookies.find(cookie => cookie.key() === oldData.key);
     if (!oldCookie) {
       return;
@@ -547,7 +555,14 @@ export class CookiesTable extends UI.Widget.VBox {
              of [SDK.Cookie.Attribute.DOMAIN, SDK.Cookie.Attribute.PATH, SDK.Cookie.Attribute.HTTP_ONLY,
                  SDK.Cookie.Attribute.SECURE, SDK.Cookie.Attribute.SAME_SITE, SDK.Cookie.Attribute.SOURCE_SCHEME]) {
       if (attribute in data) {
-        cookie.addAttribute(attribute, data[attribute]);
+        const value = data[attribute];
+        if (isFlagAttribute(attribute)) {
+          if (value === true) {
+            cookie.addAttribute(attribute);
+          }
+        } else {
+          cookie.addAttribute(attribute, value);
+        }
       }
     }
     if (data.expires && data.expires !== expiresSessionValue()) {
@@ -559,11 +574,8 @@ export class CookiesTable extends UI.Widget.VBox {
           Number.parseInt(data[SDK.Cookie.Attribute.SOURCE_PORT] || '', 10) || undefined);
     }
     if (data[SDK.Cookie.Attribute.PARTITION_KEY_SITE]) {
-      cookie.setPartitionKey(
-          data[SDK.Cookie.Attribute.PARTITION_KEY_SITE],
-          Boolean(
-              data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] ? data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] :
-                                                                   false));
+      cookie.setPartitionKey(data[SDK.Cookie.Attribute.PARTITION_KEY_SITE],
+                             data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] === true);
     }
     cookie.setSize(data[SDK.Cookie.Attribute.NAME].length + data[SDK.Cookie.Attribute.VALUE].length);
     return cookie;
@@ -578,7 +590,11 @@ export class CookiesTable extends UI.Widget.VBox {
              of [SDK.Cookie.Attribute.HTTP_ONLY, SDK.Cookie.Attribute.SECURE, SDK.Cookie.Attribute.SAME_SITE,
                  SDK.Cookie.Attribute.SOURCE_SCHEME, SDK.Cookie.Attribute.SOURCE_PORT]) {
       if (cookie.hasAttribute(attribute)) {
-        data[attribute] = String(cookie.getAttribute(attribute) ?? true);
+        if (isFlagAttribute(attribute)) {
+          data[attribute] = true;
+        } else {
+          data[attribute] = String(cookie.getAttribute(attribute) ?? true);
+        }
       }
     }
     data[SDK.Cookie.Attribute.DOMAIN] = cookie.domain() || (isRequest ? i18nString(UIStrings.na) : '');
@@ -596,7 +612,7 @@ export class CookiesTable extends UI.Widget.VBox {
     }
     data[SDK.Cookie.Attribute.PARTITION_KEY_SITE] =
         cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey).toString() : cookie.topLevelSite();
-    data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] = cookie.hasCrossSiteAncestor() ? 'true' : '';
+    data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] = cookie.hasCrossSiteAncestor();
     data[SDK.Cookie.Attribute.SIZE] = String(cookie.size());
     data[SDK.Cookie.Attribute.PRIORITY] = cookie.priority();
     data.priorityValue = ['Low', 'Medium', 'High'].indexOf(cookie.priority());

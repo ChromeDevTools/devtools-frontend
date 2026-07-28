@@ -1116,6 +1116,14 @@ UI.ActionRegistration.registerActionExtension({
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
     },
+    {
+      platform: UI.ActionRegistration.Platforms.MAC,
+      shortcut: 'Meta+g',
+      keybindSets: [
+        UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
+        UI.ActionRegistration.KeybindSet.VS_CODE,
+      ],
+    },
   ],
 });
 
@@ -1335,6 +1343,10 @@ UI.ActionRegistration.registerActionExtension({
     {
       shortcut: 'Ctrl+,',
     },
+    {
+      platform: UI.ActionRegistration.Platforms.MAC,
+      shortcut: 'Meta+,',
+    },
   ],
 });
 
@@ -1352,6 +1364,10 @@ UI.ActionRegistration.registerActionExtension({
   bindings: [
     {
       shortcut: 'Ctrl+.',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.MAC,
+      shortcut: 'Meta+.',
     },
   ],
 });

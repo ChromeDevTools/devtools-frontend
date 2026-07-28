@@ -211,6 +211,9 @@ UI.ActionRegistration.registerActionExtension({
         UI.ActionRegistration.KeybindSet.DEVTOOLS_DEFAULT,
         UI.ActionRegistration.KeybindSet.VS_CODE,
       ],
+      // The Cmd+` combination is used in macOS to activate the next
+      // open window in the front app. Therefore it was not implemented
+      // below.
     },
   ],
 });

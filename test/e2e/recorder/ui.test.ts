@@ -451,7 +451,7 @@ describe('Recorder', function() {
       await devToolsPage.page.select('pierce/select', 'AllRecordingsPage');
       await devToolsPage.click('pierce/.delete-recording-button');
 
-      await devToolsPage.page.waitForSelector('pierce/.empty-state');
+      await devToolsPage.waitFor('.empty-state');
     });
   });
 });

@@ -19,7 +19,7 @@ const TEST_RECORDING_NAME = 'New Recording';
 
 export async function record(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await devToolsPage.bringToFront();
-  await devToolsPage.page.waitForSelector('pierce/.settings');
+  await devToolsPage.waitFor('.settings');
   await inspectedPage.bringToFront();
   const element = await inspectedPage.waitForSelector('a[href="recorder2.html"]');
   await element?.click();
@@ -106,7 +106,7 @@ export async function changeNetworkConditions(devToolsPage: DevToolsPage, condit
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Show Network');
   await devToolsPage.pressKey('Enter');
-  await devToolsPage.page.waitForSelector('pierce/select[aria-label="Throttling"]');
+  await devToolsPage.waitFor('select[aria-label="Throttling"]');
   await devToolsPage.page.select('pierce/select[aria-label="Throttling"]', condition);
 }
 

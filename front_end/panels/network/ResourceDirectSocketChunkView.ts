@@ -13,7 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import {DataGridItem, ResourceChunkView} from './ResourceChunkView.js';
+import {DataGridItem, OriginalResourceChunkView} from './OriginalResourceChunkView.js';
 
 const UIStrings = {
   /**
@@ -48,7 +48,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceDirectSocketChunkView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.NetworkRequest.DirectSocketChunk> {
+export class ResourceDirectSocketChunkView extends OriginalResourceChunkView<SDK.NetworkRequest.DirectSocketChunk> {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super(
         request, 'network-direct-socket-chunk-filter', 'resource-direct-socket-chunk-split-view-state',

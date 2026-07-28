@@ -30,7 +30,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import {DataGridItem, ResourceChunkView} from './ResourceChunkView.js';
+import {DataGridItem, OriginalResourceChunkView} from './OriginalResourceChunkView.js';
 
 const UIStrings = {
   /**
@@ -91,7 +91,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameV
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export class ResourceWebSocketFrameView extends ResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
+export class ResourceWebSocketFrameView extends OriginalResourceChunkView<SDK.NetworkRequest.WebSocketFrame> {
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super(
         request, 'network-web-socket-message-filter', 'resource-web-socket-frame-split-view-state',

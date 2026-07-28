@@ -92,6 +92,7 @@ devtools_ui_module("unittests") {
     "AdvancedApp.test.ts",
     "DeviceModeToolbar.test.ts",
     "DeviceModeView.test.ts",
+    "DeviceModeWrapper.test.ts",
     "MediaQueryInspector.test.ts",
   ]
 

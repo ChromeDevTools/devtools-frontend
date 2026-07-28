@@ -378,7 +378,7 @@ export interface RequestActivatedEvent {
 }
 
 export interface EventTypes {
-  [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest;
+  [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest|null;
   [Events.RequestActivated]: RequestActivatedEvent;
 }
 

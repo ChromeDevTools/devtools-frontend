@@ -1575,6 +1575,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private reset(): void {
     this.dispatchEventToListeners(Events.RequestActivated, {showPanel: RequestPanelBehavior.HidePanel});
+    this.dispatchEventToListeners(Events.RequestSelected, null);
 
     this.setHoveredNode(null);
     this.columnsInternal.reset();

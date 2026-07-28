@@ -1563,6 +1563,20 @@ describeWithEnvironment('NetworkLogView', () => {
     const preloadedItem = contextMenu.buildDescriptor().subItems?.find(item => item.jslogContext === 'is-preloaded');
     assert.exists(preloadedItem);
   });
+
+  it('dispatches RequestSelected with null when reset', () => {
+    stubNoopSettings();
+    const networkLogView = createNetworkLogView();
+    const dispatchEventSpy = sinon.spy(networkLogView, 'dispatchEventToListeners');
+
+    Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(Logs.NetworkLog.Events.Reset,
+                                                                   {clearIfPreserved: false});
+
+    const call =
+        dispatchEventSpy.getCalls().find(c => c.args[0] === Network.NetworkDataGridNode.Events.RequestSelected);
+    assert.exists(call);
+    assert.isNull(call.args[1]);
+  });
 });
 
 function testPlaceholderText(

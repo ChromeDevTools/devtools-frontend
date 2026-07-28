@@ -1271,12 +1271,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       };
 
   #handleNetworkRequestFlavorChange =
-      (ev: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void => {
+      (ev: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest|null>): void => {
         if (this.#selectedRequest?.getItem() === ev.data) {
           return;
         }
 
-        if (Boolean(ev.data)) {
+        if (ev.data) {
           const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
           this.#selectedRequest = new AiAssistanceModel.RequestContext.RequestContext(ev.data, calculator);
         } else {

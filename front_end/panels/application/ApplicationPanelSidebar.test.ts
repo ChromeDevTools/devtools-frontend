@@ -783,6 +783,14 @@ describe('Ask-AI Hover Floating Button', () => {
         treeElement.listItemElement.querySelector('button');
     assert.exists(floatingButton, 'Expected Ask-AI floating button on tree element');
   });
+
+  it('adds hover Ask-AI button for general local storage', () => {
+    const expandableTreeElement = new Application.ApplicationPanelTreeElement.ExpandableApplicationPanelTreeElement(
+        panel, 'Local Storage', 'No local storage', 'Local Storage Description', 'local-storage');
+    expandableTreeElement.onattach();
+    const floatingButton = expandableTreeElement.listItemElement.querySelector('devtools-floating-button');
+    assert.exists(floatingButton, 'Expected Ask-AI floating button on tree element');
+  });
 });
 
 describe('Storage Agent Context Menu', () => {
@@ -936,5 +944,26 @@ describe('Storage Agent Selection', () => {
     assert.exists(flavor);
     assert.instanceOf(flavor, AiAssistance.StorageItem.CookieItem);
     assert.strictEqual((flavor as AiAssistance.StorageItem.CookieItem).origin, 'https://example.com');
+  });
+
+  it('sets active DOMStorageItem flavor on Local Storage category selection', () => {
+    const treeElement = new Application.ApplicationPanelTreeElement.ExpandableApplicationPanelTreeElement(
+        panel, 'Local Storage', 'No local storage', 'Local Storage Description', 'local-storage');
+    const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    treeOutline.appendChild(treeElement);
+
+    // Clear flavor first
+    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, null);
+
+    // Select the element
+    treeElement.select();
+
+    const flavor = UI.Context.Context.instance().flavor(AiAssistance.StorageItem.StorageItem);
+    assert.exists(flavor);
+    assert.instanceOf(flavor, AiAssistance.StorageItem.DOMStorageItem);
+    assert.strictEqual(flavor.origin, '');
+    assert.isTrue(flavor.isGenericContext);
+    assert.strictEqual(flavor.primaryTargetOrigin, 'http://example.com');
+    assert.strictEqual((flavor as AiAssistance.StorageItem.DOMStorageItem).type, 'localStorage');
   });
 });

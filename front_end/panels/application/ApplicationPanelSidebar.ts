@@ -1787,7 +1787,7 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
     const storageItem = this.#getStorageItem();
     if (storageItem) {
-      this.createAiButton(storageItem);
+      this.createAiButton(() => this.#getStorageItem());
     }
   }
 
@@ -1910,7 +1910,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
     const storageItem = this.#getStorageItem();
     if (storageItem) {
-      this.createAiButton(storageItem);
+      this.createAiButton(() => this.#getStorageItem());
     }
   }
 

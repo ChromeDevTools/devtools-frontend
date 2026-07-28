@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as ApplicationPanelSidebar from './ApplicationPanelSidebar.js';
+import * as ApplicationPanelTreeElement from './ApplicationPanelTreeElement.js';
 import * as AppManifestView from './AppManifestView.js';
 import * as BackgroundServiceModel from './BackgroundServiceModel.js';
 import * as BackgroundServiceView from './BackgroundServiceView.js';
@@ -45,6 +46,7 @@ import * as WebMCPView from './WebMCPView.js';
 export * as Components from './components/components.js';
 export {
   ApplicationPanelSidebar,
+  ApplicationPanelTreeElement,
   AppManifestView,
   BackgroundServiceModel,
   BackgroundServiceView,

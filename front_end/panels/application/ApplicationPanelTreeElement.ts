@@ -8,6 +8,7 @@ import '../../ui/components/buttons/buttons.js';
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as AiAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -66,7 +67,14 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
     this.resourcesPanel.showView(view);
   }
 
-  protected createAiButton(storageItem: AiAssistance.StorageItem.StorageItem): void {
+  /**
+   * Creates the Ask-AI floating button on this tree element.
+   * @param storageItemProvider A provider function returning the StorageItem context.
+   * Using a function provider allows dynamic context resolution at click time
+   * (e.g. for category headers that aren't recreated (e.g. Local Storage) whose target origin may change), while supporting
+   * static contexts for individual leaf items under these general category headers.
+   */
+  protected createAiButton(storageItemProvider: () => AiAssistance.StorageItem.StorageItem | null): void {
     const STORAGE_FLOATING_BUTTON_ACTION_ID = 'ai-assistance.storage-floating-button';
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
     if (!actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID)) {
@@ -78,11 +86,15 @@ export class ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
       const icon = AiAssistance.AiUtils.getIconName();
       const onClick = (ev: Event): void => {
         ev.stopPropagation();
-        UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, storageItem);
-        void action.execute();
+        const item = storageItemProvider();
+        if (item) {
+          UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item);
+          void action.execute();
+        }
       };
 
       // clang-format off
+
       Lit.render(html`
             <devtools-floating-button
               icon-name=${icon}
@@ -106,17 +118,38 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
   // in the Application Panel.
   protected emptyCategoryHeadline: string;
   protected categoryDescription: string;
+  protected readonly settingsKey: string;
 
   constructor(
       resourcesPanel: ResourcesPanel, categoryName: string, emptyCategoryHeadline: string, categoryDescription: string,
       settingsKey: string, settingsDefault = false) {
     super(resourcesPanel, categoryName, false, settingsKey);
+    this.settingsKey = settingsKey;
     this.expandedSetting =
         Common.Settings.Settings.instance().createSetting('resources-' + settingsKey + '-expanded', settingsDefault);
     this.categoryName = categoryName;
     this.categoryLink = null;
     this.emptyCategoryHeadline = emptyCategoryHeadline;
     this.categoryDescription = categoryDescription;
+  }
+
+  protected createGenericStorageAiContext(): AiAssistance.StorageItem.StorageItem|null {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const mainPageOrigin =
+        target?.inspectedURL() ? Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL()) : '';
+    if (!mainPageOrigin) {
+      return null;
+    }
+    if (this.settingsKey === 'cookies') {
+      return AiAssistance.StorageItem.CookieItem.createGenericContext(mainPageOrigin);
+    }
+    if (this.settingsKey === 'local-storage') {
+      return AiAssistance.StorageItem.DOMStorageItem.createGenericContext(mainPageOrigin, 'localStorage');
+    }
+    if (this.settingsKey === 'session-storage') {
+      return AiAssistance.StorageItem.DOMStorageItem.createGenericContext(mainPageOrigin, 'sessionStorage');
+    }
+    return null;
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {
@@ -134,6 +167,8 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
   override onselect(selectedByUser: boolean|undefined): boolean {
     super.onselect(selectedByUser);
     this.updateCategoryView();
+    const item = this.createGenericStorageAiContext();
+    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item);
     return false;
   }
 
@@ -164,6 +199,9 @@ export class ExpandableApplicationPanelTreeElement extends ApplicationPanelTreeE
     super.onattach();
     if (this.expandedSetting.get()) {
       this.expand();
+    }
+    if (this.createGenericStorageAiContext()) {
+      this.createAiButton(() => this.createGenericStorageAiContext());
     }
   }
 

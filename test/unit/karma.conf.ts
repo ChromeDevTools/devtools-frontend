@@ -308,6 +308,8 @@ const ProgressWithDiffReporter = function(
         throw new Error(`Karma exited early: executed ${success + failed + skipped} out of ${total} tests`);
       }
     });
+    // eslint-disable-next-line no-console
+    console.log('\n\nRe-run with --verbose to see full logs.');
   };
 };
 ProgressWithDiffReporter.$inject =
@@ -425,6 +427,7 @@ const BrowserArtifactReporter = function(this: any, baseReporterDecorator: any) 
   this.specSkipped = function(_browser: any, result: any) {
     appendResult(result);
   };
+  this.onRunComplete = function() {};
 };
 BrowserArtifactReporter.$inject = ['baseReporterDecorator'];
 

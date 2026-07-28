@@ -80,8 +80,10 @@ export const bindOutputStream = function(stream: Common.StringOutputStream.Outpu
 };
 
 export const discardOutputStream = function(id: number): void {
-  void _boundStreams[id].close();
-  delete _boundStreams[id];
+  if (_boundStreams[id]) {
+    void _boundStreams[id].close();
+    delete _boundStreams[id];
+  }
 };
 
 export const streamWrite = function(id: number, chunk: string): void {

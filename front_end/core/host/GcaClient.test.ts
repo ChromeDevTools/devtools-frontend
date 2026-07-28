@@ -76,8 +76,8 @@ describe('GcaClient', () => {
         {client: 'test', prefix: 'test', metadata: {disable_user_content_logging: true, client_version: '1.2.3'}});
 
     assert.isNotNull(result);
-    assert.strictEqual(result?.generatedSamples[0].generationString, 'result');
-    assert.strictEqual(result?.metadata.rpcGlobalId, '123');
+    assert.strictEqual(result.generatedSamples[0].generationString, 'result');
+    assert.strictEqual(result.metadata.rpcGlobalId, '123');
   });
 
   it('handles successful generateCode', async () => {
@@ -102,8 +102,8 @@ describe('GcaClient', () => {
     });
 
     assert.isNotNull(result);
-    assert.strictEqual(result?.samples[0].generationString, 'generated code');
-    assert.strictEqual(result?.metadata.rpcGlobalId, '456');
+    assert.strictEqual(result.samples[0].generationString, 'generated code');
+    assert.strictEqual(result.metadata.rpcGlobalId, '456');
   });
 
   it('handles successful conversationRequest', async () => {

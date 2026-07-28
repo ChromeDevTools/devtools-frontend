@@ -77,18 +77,16 @@ export class GcaClient {
         });
   }
 
-  async completeCode(request: CompletionRequest): Promise<CompletionResponse|null> {
+  async completeCode(request: CompletionRequest): Promise<CompletionResponse> {
     const gcaRequest = aidaCompletionRequestToGcaRequest(request);
     const result = await this.#requestContent(gcaRequest);
-    const aidaResult = result ? gcaResponseToAidaCompletionResponse(result) : null;
-    return aidaResult;
+    return gcaResponseToAidaCompletionResponse(result);
   }
 
-  async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}):
-      Promise<GenerateCodeResponse|null> {
+  async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}): Promise<GenerateCodeResponse> {
     const gcaRequest = aidaGenerateCodeRequestToGcaRequest(request);
     const result = await this.#requestContent(gcaRequest, options);
-    return result ? gcaResponseToAidaGenerateCodeResponse(result) : null;
+    return gcaResponseToAidaGenerateCodeResponse(result);
   }
 
   async #requestContent(request: GenerateContentRequest,

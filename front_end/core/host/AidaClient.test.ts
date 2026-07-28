@@ -750,6 +750,104 @@ describe('AidaClient', () => {
     }
   });
 
+  it('removes the abort event listener when the stream finishes', async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const addSpy = sinon.spy(signal, 'addEventListener');
+    const removeSpy = sinon.spy(signal, 'removeEventListener');
+
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
+        .callsFake(async (request, callback) => {
+          assert.isDefined(request.streamId);
+          const streamId = request.streamId;
+          Host.ResourceLoader.streamWrite(streamId, JSON.stringify({textChunk: {text: 'hello'}}));
+          callback({statusCode: 200, response: ''});
+        });
+
+    const provider = new Host.AidaClient.AidaClient();
+    for await (const result of provider.doConversation(
+        Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'),
+        {signal},
+        )) {
+      void result;
+    }
+
+    // addEventListener and removeEventListener are called twice:
+    // 1. Once in AidaClient.doConversation to abort the generator stream.
+    // 2. Once in DispatchHttpRequestClient.makeHttpRequest to abort the network request.
+    sinon.assert.calledTwice(addSpy);
+    sinon.assert.calledTwice(removeSpy);
+    assert.isTrue(removeSpy.calledAfter(addSpy));
+  });
+
+  it('throws AidaAbortError and cleans up when aborted', async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const addSpy = sinon.spy(signal, 'addEventListener');
+    const removeSpy = sinon.spy(signal, 'removeEventListener');
+
+    sinon
+        .stub(
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+            'dispatchHttpRequest',
+            )
+        .callsFake(async (_request, _callback) => {
+                       // Simulate request hanging
+                   });
+
+    const provider = new Host.AidaClient.AidaClient();
+    const call = provider.doConversation(
+        Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'),
+        {signal},
+    );
+
+    const nextPromise = call.next();
+    controller.abort();
+
+    let error;
+    try {
+      await nextPromise;
+    } catch (err) {
+      error = err;
+    }
+
+    assert.instanceOf(error, Host.AidaClient.AidaAbortError);
+    // addEventListener is called twice (stream level and network level).
+    // removeEventListener is only called once (in AidaClient finally block)
+    // because the network request fails and the browser unregisters its
+    // listener automatically when the event fires due to {once: true}.
+    sinon.assert.calledTwice(addSpy);
+    sinon.assert.calledOnce(removeSpy);
+    assert.isTrue(removeSpy.calledAfter(addSpy));
+  });
+
+  it('throws AidaAbortError immediately if started with an already aborted signal', async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const signal = controller.signal;
+    const addSpy = sinon.spy(signal, 'addEventListener');
+
+    const provider = new Host.AidaClient.AidaClient();
+    const call = provider.doConversation(
+        Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo'),
+        {signal},
+    );
+
+    let error;
+    try {
+      await call.next();
+    } catch (err) {
+      error = err;
+    }
+
+    assert.instanceOf(error, Host.AidaClient.AidaAbortError);
+    sinon.assert.notCalled(addSpy);
+  });
+
   describe('getAidaClientAvailability', () => {
     function mockGetSyncInformation(
         information: Host.InspectorFrontendHostAPI.SyncInformation,

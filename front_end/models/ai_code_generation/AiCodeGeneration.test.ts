@@ -27,7 +27,7 @@ describeWithEnvironment('AiCodeGeneration', () => {
 
   it('builds a request and calls the AIDA client', async () => {
     const mockAidaClient = sinon.createStubInstance(Host.AidaClient.AidaClient, {
-      generateCode: Promise.resolve(null),
+      generateCode: Promise.resolve({samples: [], metadata: {rpcGlobalId: 1}}),
     });
     const aiCodeGeneration = new AiCodeGeneration.AiCodeGeneration.AiCodeGeneration(
         {aidaClient: mockAidaClient},

@@ -33,7 +33,7 @@ import * as GcaClient from './GcaClient.js';
 import type {GenerateContentResponse} from './GcaTypes.js';
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {AidaClientResult, AidaCodeCompleteResult, SyncInformation} from './InspectorFrontendHostAPI.js';
-import {bindOutputStream} from './ResourceLoader.js';
+import {bindOutputStream, discardOutputStream} from './ResourceLoader.js';
 
 export * from './AidaClientTypes.js';
 
@@ -159,6 +159,10 @@ export class AidaClient {
       throw new Error('dispatchHttpRequest is not available');
     }
 
+    if (options?.signal?.aborted) {
+      throw new AidaAbortError();
+    }
+
     // Disable logging for now.
     // For context, see b/454563259#comment35.
     // We should be able to remove this ~end of April.
@@ -166,51 +170,67 @@ export class AidaClient {
       request.metadata.disable_user_content_logging = true;
     }
 
-    const stream = (() => {
-      let {promise, resolve, reject} = Promise.withResolvers<string|null>();
-      options?.signal?.addEventListener('abort', () => {
-        reject(new AidaAbortError());
-      }, {once: true});
-      return {
-        write: async(data: string): Promise<void> => {
-          resolve(data);
-          ({promise, resolve, reject} = Promise.withResolvers<string|null>());
-        },
-        close: async(): Promise<void> => {
-          resolve(null);
-        },
-        read: (): Promise<string|null> => {
-          return promise;
-        },
-        fail: (e: Error) => reject(e),
-      };
-    })();
-    const streamId = bindOutputStream(stream);
-
-    let response;
-    if (this.#gcaClient.enabled()) {
-      // Inline and remove the else clause after migration
-      response = this.#gcaClient.conversationRequest(request, streamId, options);
-    } else {
-      response = DispatchHttpRequestClient.makeHttpRequest(
-          {
-            service: SERVICE_NAME,
-            path: '/v1/aida:doConversation',
-            method: 'POST',
-            body: JSON.stringify(request),
-            streamId,
+    let abortListener: (() => void)|undefined;
+    let streamId: number|undefined;
+    try {
+      const stream = (() => {
+        let {promise, resolve, reject} = Promise.withResolvers<string|null>();
+        // Prevent unhandled promise rejections if stream.fail() is called after
+        // doConversation has already exited early (e.g. on recitation block or abort).
+        // Active readers calling await stream.read() will still receive the rejection.
+        promise.catch(() => {});
+        abortListener = () => {
+          reject(new AidaAbortError());
+        };
+        options?.signal?.addEventListener('abort', abortListener, {once: true});
+        return {
+          write: async(data: string): Promise<void> => {
+            resolve(data);
+            ({promise, resolve, reject} = Promise.withResolvers<string|null>());
+            promise.catch(() => {});
           },
-          options);
-    }
-    response.then(
-        () => {
-          void stream.close();
+          close: async(): Promise<void> => {
+            resolve(null);
+          },
+          read: (): Promise<string|null> => {
+            return promise;
+          },
+          fail: (e: Error) => reject(e),
+        };
+      })();
+      streamId = bindOutputStream(stream);
+
+      let response;
+      if (this.#gcaClient.enabled()) {
+        // Inline and remove the else clause after migration
+        response = this.#gcaClient.conversationRequest(request, streamId, options);
+      } else {
+        response = DispatchHttpRequestClient.makeHttpRequest({
+          service: SERVICE_NAME,
+          path: '/v1/aida:doConversation',
+          method: 'POST',
+          body: JSON.stringify(request),
+          streamId,
         },
-        err => {
-          debugLog('doConversation failed with error:', JSON.stringify(err));
-          stream.fail(mapError(err));
-        });
-    await (yield* this.#handleResponseStream(stream));
+                                                             options);
+      }
+      response.then(
+          () => {
+            void stream.close();
+          },
+          err => {
+            debugLog('doConversation failed with error:', JSON.stringify(err));
+            stream.fail(mapError(err));
+          });
+      yield* this.#handleResponseStream(stream);
+    } finally {
+      if (options?.signal && abortListener) {
+        options.signal.removeEventListener('abort', abortListener);
+      }
+      if (streamId !== undefined) {
+        discardOutputStream(streamId);
+      }
+    }
   }
 
   async * #handleResponseStream(stream: AiStream): AsyncGenerator<DoConversationResponse, void, void> {
@@ -397,8 +417,7 @@ export class AidaClient {
     return {generatedSamples, metadata};
   }
 
-  async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}):
-      Promise<GenerateCodeResponse|null> {
+  async generateCode(request: GenerateCodeRequest, options?: {signal?: AbortSignal}): Promise<GenerateCodeResponse> {
     // Disable logging for now.
     // For context, see b/454563259#comment35.
     // We should be able to remove this ~end of April.
@@ -495,8 +514,8 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
     return eventDescriptor;
   }
 
-  override removeEventListener(eventType: Events, listener: Common.EventTarget.EventListener<EventTypes, Events>):
-      void {
+  override removeEventListener(eventType: Events,
+                               listener: Common.EventTarget.EventListener<EventTypes, Events>): void {
     super.removeEventListener(eventType, listener);
     if (!this.hasEventListeners(eventType)) {
       clearTimeout(this.#pollTimer);

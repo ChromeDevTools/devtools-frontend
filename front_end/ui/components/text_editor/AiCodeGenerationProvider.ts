@@ -358,7 +358,7 @@ export class AiCodeGenerationProvider {
         this.#dismissTeaserAndSuggestion();
       }
 
-      if (!generationResponse || generationResponse.samples.length === 0) {
+      if (generationResponse.samples.length === 0) {
         this.#aiCodeGenerationConfig.onResponseReceived();
         return;
       }

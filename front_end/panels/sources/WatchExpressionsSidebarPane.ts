@@ -150,11 +150,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     }
   };
 
-  const renderNameElement = (e: WatchExpression): Element => {
-    const nameElement = ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection.createNameElement(e.expression);
-    UI.Tooltip.Tooltip.install(nameElement as HTMLElement, e.expression);
-    return nameElement;
-  };
+  const renderNameElement = (e: WatchExpression): TemplateResult => ObjectUI.ObjectPropertiesSection.renderPropertyName(
+      e.expression, /* isPrivate= */ false, e.expression ?? undefined);
 
   const renderTreeElement = (e: WatchExpression): TemplateResult =>
       // clang-format off

@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/no-lit-render-outside-of-view, @devtools/enforce-custom-element-definitions-location */
 
 import '../tooltips/tooltips.js';
-import './SettingDeprecationWarning.js';
 import '../../kit/kit.js';
 
 import type * as Common from '../../../core/common/common.js';
@@ -61,11 +60,6 @@ export class SettingCheckbox extends HTMLElement {
   icon(): Lit.TemplateResult|undefined {
     if (!this.#setting) {
       return undefined;
-    }
-
-    if (this.#setting.deprecation) {
-      return html`<devtools-setting-deprecation-warning .data=${
-          this.#setting.deprecation}></devtools-setting-deprecation-warning>`;
     }
 
     const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(this.#setting.descriptor());

@@ -9,17 +9,11 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [
-    "settingCheckbox.css",
-    "settingDeprecationWarning.css",
-  ]
+  sources = [ "settingCheckbox.css" ]
 }
 
 devtools_ui_module("settings") {
-  sources = [
-    "SettingCheckbox.ts",
-    "SettingDeprecationWarning.ts",
-  ]
+  sources = [ "SettingCheckbox.ts" ]
 
   deps = [
     "../../../core/common:bundle",
@@ -49,10 +43,7 @@ devtools_entrypoint("bundle") {
 devtools_ui_module("unittests") {
   testonly = true
 
-  sources = [
-    "SettingCheckbox.test.ts",
-    "SettingDeprecationWarning.test.ts",
-  ]
+  sources = [ "SettingCheckbox.test.ts" ]
 
   deps = [
     ":bundle",

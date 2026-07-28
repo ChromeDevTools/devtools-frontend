@@ -109,26 +109,6 @@ describeWithEnvironment('SettingsUI', () => {
     assert.isTrue(container.firstElementChild?.classList.contains('chrome-select-label'));
   });
 
-  it('renders a deprecation warning if provided', () => {
-    const deprecationNotice = {
-      disabled: true,
-      warning: () => i18n.i18n.lockedString('Test Deprecation Warning'),
-    };
-    const setting = setup(undefined, {deprecationNotice});
-
-    const template = SettingsUI.SettingsUI.renderSettingSelect(setting);
-    const container = document.createElement('div');
-    Lit.render(template, container);
-    renderElementIntoDOM(container);
-
-    const warning = container.querySelector('devtools-setting-deprecation-warning');
-    assert.isNotNull(warning);
-    assert.isNotNull(warning.shadowRoot);
-    const icon = warning.shadowRoot.querySelector('devtools-icon');
-    assert.isNotNull(icon);
-    assert.strictEqual(icon.getAttribute('title'), 'Test Deprecation Warning');
-  });
-
   describe('renderControlForSetting', () => {
     it('renders a checkbox for a boolean setting', () => {
       const setting = createSettingsForTest([{

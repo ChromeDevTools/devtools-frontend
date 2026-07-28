@@ -38,10 +38,6 @@ const UIStrings = {
    * @description Text for help title of run command menu
    */
   runCommand: 'Run command',
-  /**
-   * @description Hint text to indicate that a selected command is deprecated
-   */
-  deprecated: '— deprecated',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/CommandMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -75,7 +71,6 @@ export class CommandMenu {
       executeHandler,
       availableHandler,
       userActionCode,
-      deprecationWarning,
       isPanelOrDrawer,
       featurePromotionId,
     } = options;
@@ -89,9 +84,8 @@ export class CommandMenu {
         // not here
       };
     }
-    return new Command(
-        category, title, keys, shortcut, jslogContext, handler, availableHandler, deprecationWarning, isPanelOrDrawer,
-        featurePromotionId);
+    return new Command(category, title, keys, shortcut, jslogContext, handler, availableHandler, isPanelOrDrawer,
+                       featurePromotionId);
   }
 
   static createSettingCommand<V>(setting: Common.Settings.Setting<V>, title: Common.UIString.LocalizedString, value: V,
@@ -111,11 +105,6 @@ export class CommandMenu {
       shortcut: '',
       jslogContext: Platform.StringUtilities.toKebabCase(`${setting.name}-${value}`),
       executeHandler: () => {
-        if (setting.deprecation?.disabled &&
-            (!setting.deprecation?.experiment || setting.deprecation.experiment.isEnabled())) {
-          void Common.Revealer.reveal(setting);
-          return;
-        }
         setting.set(value);
 
         if (setting.name === 'emulate-page-focus') {
@@ -128,7 +117,6 @@ export class CommandMenu {
         }
       },
       availableHandler,
-      deprecationWarning: setting.deprecation?.warning,
     });
 
     function availableHandler(): boolean {
@@ -273,7 +261,6 @@ export interface CreateCommandOptions {
   executeHandler: () => void;
   availableHandler?: () => boolean;
   userActionCode?: number;
-  deprecationWarning?: Platform.UIString.LocalizedString;
   isPanelOrDrawer?: PanelOrDrawer;
   featurePromotionId?: string;
 }
@@ -357,7 +344,6 @@ export class CommandMenuProvider extends Provider {
   override renderItem(itemIndex: number, query: string): TemplateResult {
     const command = this.commands[itemIndex];
     const badge = command.featurePromotionId ? UI.UIUtils.maybeCreateNewBadge(command.featurePromotionId) : undefined;
-    const deprecationWarning = command.deprecationWarning;
     // clang-format off
     return html`
       <devtools-icon name=${categoryIcons[command.category]}></devtools-icon>
@@ -367,10 +353,6 @@ export class CommandMenuProvider extends Provider {
         </devtools-highlight>
         ${badge ?? nothing}
         <div>${command.shortcut}</div>
-        ${deprecationWarning ? html`
-          <span class="deprecated-tag" title=${deprecationWarning}>
-            ${i18nString(UIStrings.deprecated)}
-          </span>` : nothing}
       </div>
       <span class="tag">${command.category}</span>`;
     // clang-format on
@@ -422,18 +404,15 @@ export class Command {
   readonly key: string;
   readonly shortcut: string;
   readonly jslogContext: string;
-  readonly deprecationWarning?: Platform.UIString.LocalizedString;
   readonly isPanelOrDrawer?: PanelOrDrawer;
   readonly featurePromotionId?: string;
 
   readonly #executeHandler: () => unknown;
   readonly #availableHandler?: () => boolean;
 
-  constructor(
-      category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string, shortcut: string,
-      jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean,
-      deprecationWarning?: Platform.UIString.LocalizedString, isPanelOrDrawer?: PanelOrDrawer,
-      featurePromotionId?: string) {
+  constructor(category: Common.UIString.LocalizedString, title: Common.UIString.LocalizedString, key: string,
+              shortcut: string, jslogContext: string, executeHandler: () => unknown, availableHandler?: () => boolean,
+              isPanelOrDrawer?: PanelOrDrawer, featurePromotionId?: string) {
     this.category = category;
     this.title = title;
     this.key = category + '\0' + title + '\0' + key;
@@ -441,7 +420,6 @@ export class Command {
     this.jslogContext = jslogContext;
     this.#executeHandler = executeHandler;
     this.#availableHandler = availableHandler;
-    this.deprecationWarning = deprecationWarning;
     this.isPanelOrDrawer = isPanelOrDrawer;
     this.featurePromotionId = featurePromotionId;
   }

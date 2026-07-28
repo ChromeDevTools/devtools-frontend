@@ -494,23 +494,6 @@ export class SettingsStorage {
   }
 }
 
-export class Deprecation {
-  readonly disabled: boolean;
-  readonly warning: Platform.UIString.LocalizedString;
-  readonly experiment?: Root.Runtime.Experiment|Root.Runtime.HostExperiment;
-
-  constructor({deprecationNotice}: SettingRegistration) {
-    if (!deprecationNotice) {
-      throw new Error('Cannot create deprecation info for a non-deprecated setting');
-    }
-    this.disabled = deprecationNotice.disabled;
-    this.warning = deprecationNotice.warning();
-    this.experiment = deprecationNotice.experiment ?
-        Root.Runtime.experiments.allConfigurableExperiments().find(e => e.name === deprecationNotice.experiment) :
-        undefined;
-  }
-}
-
 export class Setting<V> {
   #registration: SettingRegistration|null = null;
   #type: SettingType|null = null;
@@ -520,7 +503,6 @@ export class Setting<V> {
   #serializer: Serializer<unknown, V> = JSON;
   #hadUserAction?: boolean;
   #disabled?: boolean;
-  #deprecation: Deprecation|null = null;
   #loggedInitialAccess = false;
   #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
   readonly #console: Console;
@@ -691,16 +673,6 @@ export class Setting<V> {
     if (registration.settingType) {
       this.#type = registration.settingType;
     }
-    const {deprecationNotice} = registration;
-    if (deprecationNotice?.disabled) {
-      const experiment = deprecationNotice.experiment ?
-          Root.Runtime.experiments.allConfigurableExperiments().find(e => e.name === deprecationNotice.experiment) :
-          undefined;
-      if ((!experiment || experiment.isEnabled())) {
-        this.set(this.defaultValue);
-        this.setDisabled(true);
-      }
-    }
   }
 
   type(): SettingType|null {
@@ -756,16 +728,6 @@ export class Setting<V> {
    */
   learnMore(): LearnMore|null {
     return this.#registration?.learnMore ?? null;
-  }
-
-  get deprecation(): Deprecation|null {
-    if (!this.#registration || !this.#registration.deprecationNotice) {
-      return null;
-    }
-    if (!this.#deprecation) {
-      this.#deprecation = new Deprecation(this.#registration);
-    }
-    return this.#deprecation;
   }
 
   private printSettingsSavingError(message: string, value: string): void {

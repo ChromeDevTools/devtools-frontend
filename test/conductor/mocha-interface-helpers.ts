@@ -6,7 +6,6 @@ import type * as Mocha from 'mocha';
 
 import {AsyncScope} from './async-scope.js';
 import {dumpCollectedErrors} from './events.js';
-import {getBrowserAndPages} from './puppeteer-state.js';
 import {ScreenshotError} from './screenshot-error.js';
 import {TestConfig} from './test_config.js';
 
@@ -194,18 +193,8 @@ export class DefaultPuppeteerStateProvider implements TestStateProvider<unknown,
     if (error instanceof ScreenshotError || TestConfig.debug) {
       return error;
     }
-    try {
-      const {target, frontend} = getBrowserAndPages();
-      if (!target && !frontend) {
-        return error;
-      }
-      const opts = {encoding: 'base64' as 'base64'};
-      const targetScreenshot = target ? await target.screenshot(opts) : undefined;
-      const frontendScreenshot = frontend ? await frontend.screenshot(opts) : undefined;
-      return ScreenshotError.fromBase64Images(error, targetScreenshot, frontendScreenshot);
-    } catch {
-      return error;
-    }
+    // TODO: Capture frontend and target screenshots.
+    return error;
   }
 }
 

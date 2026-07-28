@@ -13,7 +13,6 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {SOURCE_ROOT} from '../conductor/paths.js';
 import {platform} from '../conductor/platform.js';
-import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 import {ScreenshotError} from '../conductor/screenshot-error.js';
 import {TestConfig} from '../conductor/test_config.js';
 
@@ -81,52 +80,42 @@ export const assertElementScreenshotUnchanged = async (
       element, fileName, DEFAULT_SCREENSHOT_THRESHOLD_PERCENT, DEFAULT_RETRIES_COUNT, options);
 };
 
-function getFrontend() {
-  // Outside e2e or interaction tests the frontend can be undefined.
-  try {
-    const {frontend} = getBrowserAndPages();
-    return frontend;
-  } catch {
-    return;
-  }
-}
-
 const assertScreenshotUnchangedWithRetries = async (
-    elementOrPage: puppeteer.ElementHandle|puppeteer.Page, fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
-    maximumDiffThreshold: number, maximumRetries: number, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
-  const frontend = getFrontend();
-  try {
-    await frontend?.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
-    /**
-     * You can call the helper with a path for the golden - e.g.
-     * accordion/basic.png. So we split on `/` and then join on path.sep to
-     * ensure we calculate the right path regardless of platform.
-     */
-    const fileNameForPlatform = fileName.split('/').join(path.sep);
-    const goldenScreenshotPath = path.join(GOLDENS_FOLDER, fileNameForPlatform);
-    const generatedScreenshotPath =
-        path.join(generatedScreenshotFolder, fileNameForPlatform) as NonNullable<puppeteer.ScreenshotOptions['path']>;
+    elementOrPage: puppeteer.ElementHandle|puppeteer.Page,
+    fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
+    maximumDiffThreshold: number,
+    maximumRetries: number,
+    options: Partial<puppeteer.ScreenshotOptions> = {},
+    ) => {
+  /**
+   * You can call the helper with a path for the golden - e.g.
+   * accordion/basic.png. So we split on `/` and then join on path.sep to
+   * ensure we calculate the right path regardless of platform.
+   */
+  const fileNameForPlatform = fileName.split('/').join(path.sep);
+  const goldenScreenshotPath = path.join(GOLDENS_FOLDER, fileNameForPlatform);
+  const generatedScreenshotPath = path.join(
+                                      generatedScreenshotFolder,
+                                      fileNameForPlatform,
+                                      ) as NonNullable<puppeteer.ScreenshotOptions['path']>;
 
-    /**
-     * Ensure that the directories for the golden/generated file exist. We need
-     * this because if the user calls this function with `accordion/basic.png`,
-     * we need to make sure that the `accordion` folder exists.
-     */
-    fs.mkdirSync(path.dirname(generatedScreenshotPath), {recursive: true});
-    fs.mkdirSync(path.dirname(goldenScreenshotPath), {recursive: true});
+  /**
+   * Ensure that the directories for the golden/generated file exist. We need
+   * this because if the user calls this function with `accordion/basic.png`,
+   * we need to make sure that the `accordion` folder exists.
+   */
+  fs.mkdirSync(path.dirname(generatedScreenshotPath), {recursive: true});
+  fs.mkdirSync(path.dirname(goldenScreenshotPath), {recursive: true});
 
-    await assertScreenshotUnchanged({
-      elementOrPage,
-      generatedScreenshotPath,
-      goldenScreenshotPath,
-      screenshotOptions: options,
-      fileName,
-      maximumDiffThreshold,
-      maximumRetries,
-    });
-  } finally {
-    await frontend?.evaluate(() => window.dispatchEvent(new Event('showcomponentdocsui')));
-  }
+  await assertScreenshotUnchanged({
+    elementOrPage,
+    generatedScreenshotPath,
+    goldenScreenshotPath,
+    screenshotOptions: options,
+    fileName,
+    maximumDiffThreshold,
+    maximumRetries,
+  });
 };
 
 interface ScreenshotAssertionOptions {

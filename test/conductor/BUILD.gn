@@ -27,7 +27,6 @@ node_ts_library("implementation") {
     "mocha-interface.ts",
     "paths.ts",
     "platform.ts",
-    "puppeteer-state.ts",
     "resultsdb.ts",
     "screenshot-error.ts",
     "sharding.ts",

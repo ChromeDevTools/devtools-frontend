@@ -58,7 +58,7 @@ code this way.
 To listen to the frontend's console:
 
 ```ts
-getBrowserAndPages().frontend.on('console', msg => console.log(msg.text()));
+devToolsPage.page.on('console', msg => console.log(msg.text()));
 ```
 
 ### Debugging E2E tests with VSCode

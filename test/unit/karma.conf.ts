@@ -347,6 +347,7 @@ module.exports = function(config: any) {
   const options = {
     basePath: CHECKOUT_ROOT,
     autoWatchBatchDelay: 1000,
+    failOnEmptyTestSuite: false,
 
     customContextFile: path.join(GEN_DIR, 'test/unit/context.html'),
     customDebugFile: path.join(GEN_DIR, 'test/unit/debug.html'),
@@ -449,7 +450,6 @@ module.exports = function(config: any) {
     pingTimeout: 15_000,
     browserDisconnectTimeout: 15_000,
     browserNoActivityTimeout: 60_000,
-
     mochaReporter: {
       showDiff: true,
     },

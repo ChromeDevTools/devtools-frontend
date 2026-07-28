@@ -94,13 +94,7 @@ export declare class EventEmitter<Events extends Record<EventType, unknown>> imp
      * @returns `this` to enable you to chain method calls.
      */
     removeAllListeners(type?: keyof EventsWithWildcard<Events>): this;
-    /**
-     * @internal
-     */
     [disposeSymbol](): void;
-    /**
-     * @internal
-     */
     [asyncDisposeSymbol](): Promise<void>;
 }
 //# sourceMappingURL=EventEmitter.d.ts.map

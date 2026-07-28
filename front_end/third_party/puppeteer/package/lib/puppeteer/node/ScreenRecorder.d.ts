@@ -59,9 +59,6 @@ export declare class ScreenRecorder extends PassThrough {
      * @public
      */
     stop(): Promise<void>;
-    /**
-     * @internal
-     */
     [asyncDisposeSymbol](): Promise<void>;
 }
 //# sourceMappingURL=ScreenRecorder.d.ts.map

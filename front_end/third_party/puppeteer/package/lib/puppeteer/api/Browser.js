@@ -178,11 +178,9 @@ export class Browser extends EventEmitter {
     async setPermission(origin, ...permissions) {
         return await this.defaultBrowserContext().setPermission(origin, ...permissions);
     }
-    /** @internal */
     [disposeSymbol]() {
         return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
-    /** @internal */
     async [asyncDisposeSymbol]() {
         if (this.process()) {
             await this.close();

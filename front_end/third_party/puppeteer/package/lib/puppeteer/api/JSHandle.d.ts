@@ -115,9 +115,7 @@ export declare abstract class JSHandle<T = unknown> {
      * backing this handle.
      */
     abstract remoteObject(): Protocol.Runtime.RemoteObject;
-    /** @internal */
     [disposeSymbol](): void;
-    /** @internal */
     [asyncDisposeSymbol](): Promise<void>;
 }
 //# sourceMappingURL=JSHandle.d.ts.map

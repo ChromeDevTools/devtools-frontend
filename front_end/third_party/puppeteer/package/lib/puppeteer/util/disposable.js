@@ -6,11 +6,11 @@
 Symbol.dispose ??= Symbol('dispose');
 Symbol.asyncDispose ??= Symbol('asyncDispose');
 /**
- * @internal
+ * @public
  */
 export const disposeSymbol = Symbol.dispose;
 /**
- * @internal
+ * @public
  */
 export const asyncDisposeSymbol = Symbol.asyncDispose;
 /**

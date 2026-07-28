@@ -30,10 +30,16 @@ export class Dialog {
     #type;
     #message;
     #defaultValue;
+    #handled = false;
     /**
-     * @internal
+     * A boolean value indicating whether the dialog has been handled.
      */
-    handled = false;
+    get handled() {
+        return this.#handled;
+    }
+    set handled(handled) {
+        this.#handled = handled;
+    }
     /**
      * @internal
      */

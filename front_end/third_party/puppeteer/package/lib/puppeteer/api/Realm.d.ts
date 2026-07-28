@@ -135,7 +135,6 @@ export declare abstract class Realm {
     get disposed(): boolean;
     /** @internal */
     dispose(): void;
-    /** @internal */
     [disposeSymbol](): void;
 }
 //# sourceMappingURL=Realm.d.ts.map

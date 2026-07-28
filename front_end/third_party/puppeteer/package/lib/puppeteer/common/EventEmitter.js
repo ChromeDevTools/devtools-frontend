@@ -114,15 +114,9 @@ export class EventEmitter {
         this[disposeSymbol]();
         return this;
     }
-    /**
-     * @internal
-     */
     [disposeSymbol]() {
         return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
-    /**
-     * @internal
-     */
     async [asyncDisposeSymbol]() {
         for (const [type, handlers] of this.#handlers) {
             for (const handler of handlers) {

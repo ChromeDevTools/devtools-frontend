@@ -64,7 +64,6 @@ export class Realm {
         this.#disposed = true;
         this.taskManager.terminateAll(new Error('waitForFunction failed: frame got detached.'));
     }
-    /** @internal */
     [disposeSymbol]() {
         this.dispose();
     }

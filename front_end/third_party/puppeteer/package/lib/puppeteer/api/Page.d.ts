@@ -755,7 +755,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     abstract get tracing(): Tracing;
     /**
      * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
-     * Requires Chrome 150+ with the `--enable-features=WebMCP` flag enabled.
+     * Requires Chrome 151+ with the `--enable-features=WebMCP` flag enabled.
      *
      * @experimental
      */
@@ -2430,9 +2430,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * @experimental
      */
     abstract windowId(): Promise<WindowId>;
-    /** @internal */
     [disposeSymbol](): void;
-    /** @internal */
     [asyncDisposeSymbol](): Promise<void>;
     /**
      * Opens DevTools for the this page if not already open and returns the DevTools page.

@@ -7,8 +7,8 @@ import { BidiMapper } from 'chromium-bidi';
 import { debug } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { BidiConnection } from './Connection.js';
-const bidiServerLogger = (prefix, ...args) => {
-    debug(`bidi:${prefix}`)?.(args);
+const bidiServerLogger = (prefix) => {
+    return debug(`bidi:${prefix}`);
 };
 /**
  * @internal

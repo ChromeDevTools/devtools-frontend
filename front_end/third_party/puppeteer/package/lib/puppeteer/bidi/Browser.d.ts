@@ -5,7 +5,7 @@
  */
 import type { ChildProcess } from 'node:child_process';
 import type { CreatePageOptions } from '../api/Browser.js';
-import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type DebugInfo } from '../api/Browser.js';
+import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type DebugInfo, type PWAState } from '../api/Browser.js';
 import type { Extension } from '../api/Extension.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
@@ -54,6 +54,10 @@ export declare class BidiBrowser extends Browser {
     newPage(options?: CreatePageOptions): Promise<Page>;
     installExtension(path: string): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
+    installPWA(): Promise<string>;
+    uninstallPWA(): Promise<void>;
+    launchPWA(): Promise<Page>;
+    getPWAState(): Promise<PWAState>;
     screens(): Promise<ScreenInfo[]>;
     addScreen(_params: AddScreenParams): Promise<ScreenInfo>;
     removeScreen(_screenId: string): Promise<void>;

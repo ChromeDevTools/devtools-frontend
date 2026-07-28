@@ -1446,13 +1446,11 @@ let Page = (() => {
         waitForFunction(pageFunction, options, ...args) {
             return this.mainFrame().waitForFunction(pageFunction, options, ...args);
         }
-        /** @internal */
         [(_screenshot_decorators = [guarded(function () {
                 return this.browser();
             })], disposeSymbol)]() {
             return void this[asyncDisposeSymbol]().catch(debugCatchError);
         }
-        /** @internal */
         async [asyncDisposeSymbol]() {
             await this.close();
             await super[asyncDisposeSymbol]();

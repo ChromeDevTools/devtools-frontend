@@ -170,11 +170,9 @@ export class BrowserContext extends EventEmitter {
     get id() {
         return undefined;
     }
-    /** @internal */
     [disposeSymbol]() {
         return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
-    /** @internal */
     async [asyncDisposeSymbol]() {
         await this.close();
         await super[asyncDisposeSymbol]();

@@ -29,9 +29,10 @@ import type { Protocol } from 'devtools-protocol';
 export declare abstract class Dialog {
     #private;
     /**
-     * @internal
+     * A boolean value indicating whether the dialog has been handled.
      */
-    protected handled: boolean;
+    get handled(): boolean;
+    protected set handled(handled: boolean);
     /**
      * @internal
      */

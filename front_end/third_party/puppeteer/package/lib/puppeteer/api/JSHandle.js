@@ -205,11 +205,9 @@ let JSHandle = (() => {
             }
             return map;
         }
-        /** @internal */
         [(_getProperty_decorators = [throwIfDisposed()], _getProperties_decorators = [throwIfDisposed()], disposeSymbol)]() {
             return void this[asyncDisposeSymbol]().catch(debugCatchError);
         }
-        /** @internal */
         [asyncDisposeSymbol]() {
             return this.dispose();
         }

@@ -259,6 +259,18 @@ let BidiBrowser = (() => {
         async uninstallExtension(id) {
             await this.#browserCore.uninstallExtension(id);
         }
+        installPWA() {
+            throw new UnsupportedOperation();
+        }
+        uninstallPWA() {
+            throw new UnsupportedOperation();
+        }
+        launchPWA() {
+            throw new UnsupportedOperation();
+        }
+        getPWAState() {
+            throw new UnsupportedOperation();
+        }
         screens() {
             throw new UnsupportedOperation();
         }

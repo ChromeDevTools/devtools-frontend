@@ -297,6 +297,55 @@ export class CdpBrowser extends BrowserBase {
         await Promise.all(targetDestroyedPromises);
         this.#extensions.delete(id);
     }
+    async installPWA(options) {
+        await this.#connection.send('PWA.install', {
+            manifestId: options.manifestId,
+            installUrlOrBundleUrl: options.installUrlOrBundleUrl,
+        });
+        if (options.displayMode) {
+            await this.#connection.send('PWA.changeAppUserSettings', {
+                manifestId: options.manifestId,
+                displayMode: options.displayMode,
+            });
+        }
+        return options.manifestId;
+    }
+    async uninstallPWA(options) {
+        await this.#connection.send('PWA.uninstall', {
+            manifestId: options.manifestId,
+        });
+    }
+    async launchPWA(options) {
+        // `PWA.launch` resolves with the id of the launched *tab* target (see the
+        // CDP `PWA.LaunchResponse` docs). Tab targets sit above page targets in the
+        // target hierarchy and are not exposed through `browser.targets()`, so the
+        // returned id can't be awaited directly.
+        const { targetId: tabTargetId } = await this.#connection.send('PWA.launch', {
+            manifestId: options.manifestId,
+            url: options.url,
+        });
+        const target = (await this.waitForTarget(candidate => {
+            const tab = this.#targetManager.getAvailableTargets().get(tabTargetId);
+            if (tab?.type() !== 'tab') {
+                return false;
+            }
+            for (const child of tab._childTargets()) {
+                if (child === candidate) {
+                    return true;
+                }
+            }
+            return false;
+        }, { timeout: options.timeout }));
+        const page = await target.page();
+        if (!page) {
+            throw new Error(`Failed to create a page for the launched PWA (manifestId = ${options.manifestId})`);
+        }
+        return page;
+    }
+    async getPWAState(options) {
+        const { badgeCount, fileHandlers } = await this.#connection.send('PWA.getOsAppState', { manifestId: options.manifestId });
+        return { badgeCount, fileHandlers };
+    }
     async screens() {
         const { screenInfos } = await this.#connection.send('Emulation.getScreenInfos');
         return screenInfos;

@@ -957,7 +957,7 @@ export abstract class Page extends EventEmitter<PageEvents> {
 
   /**
    * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
-   * Requires Chrome 150+ with the `--enable-features=WebMCP` flag enabled.
+   * Requires Chrome 151+ with the `--enable-features=WebMCP` flag enabled.
    *
    * @experimental
    */
@@ -3232,12 +3232,10 @@ export abstract class Page extends EventEmitter<PageEvents> {
    */
   abstract windowId(): Promise<WindowId>;
 
-  /** @internal */
   override [disposeSymbol](): void {
     return void this[asyncDisposeSymbol]().catch(debugCatchError);
   }
 
-  /** @internal */
   override async [asyncDisposeSymbol](): Promise<void> {
     await this.close();
     await super[asyncDisposeSymbol]();

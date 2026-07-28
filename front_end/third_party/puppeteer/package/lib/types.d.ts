@@ -124,6 +124,11 @@ export declare interface AddScreenParams {
 }
 
 /**
+ * @public
+ */
+export declare const asyncDisposeSymbol: typeof Symbol.asyncDispose;
+
+/**
  * Supported autofill address field names.
  *
  * @public
@@ -568,6 +573,55 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
    */
   abstract uninstallExtension(id: string): Promise<void>;
   /**
+   * Installs a Progressive Web App (PWA) and returns its manifest id.
+   *
+   * @remarks
+   *
+   * Only available when connected to the browser over a pipe connection. Set
+   * `pipe: true` in {@link PuppeteerNode.launch | puppeteer.launch}; the launch
+   * option defaults to `false`. The underlying `PWA` CDP domain is not exposed
+   * over a WebSocket connection.
+   *
+   * The returned manifest id echoes {@link InstallPWAOptions.manifestId}, so it
+   * can be passed directly to {@link Browser.launchPWA},
+   * {@link Browser.getPWAState}, or {@link Browser.uninstallPWA}.
+   */
+  abstract installPWA(options: InstallPWAOptions): Promise<string>;
+  /**
+   * Uninstalls a previously installed Progressive Web App (PWA).
+   *
+   * @remarks
+   *
+   * Only available over a pipe connection. See {@link Browser.installPWA}.
+   */
+  abstract uninstallPWA(options: UninstallPWAOptions): Promise<void>;
+  /**
+   * Launches an installed Progressive Web App (PWA) and resolves with the
+   * {@link Page | page} backing the app window.
+   *
+   * @remarks
+   *
+   * Only available over a pipe connection. See {@link Browser.installPWA}.
+   *
+   * `PWA.launch` resolves with the id of the launched _tab_ target. Puppeteer
+   * does not expose tab targets through {@link Browser.targets}; this method
+   * instead resolves with the tab's child page target (the app's web contents).
+   * If Chromium focuses an existing app window, this returns that window's
+   * existing page.
+   */
+  abstract launchPWA(options: LaunchPWAOptions): Promise<Page>;
+  /**
+   * Returns the OS-integration state of an installed Progressive Web App (PWA),
+   * such as its badge count and registered file handlers.
+   *
+   * @remarks
+   *
+   * Only available over a pipe connection. See {@link Browser.installPWA}.
+   * Meaningful only for an app that is currently installed; querying an
+   * unknown manifest id rejects.
+   */
+  abstract getPWAState(options: GetPWAStateOptions): Promise<PWAState>;
+  /**
    * Gets a list of {@link ScreenInfo | screen information objects}.
    */
   abstract screens(): Promise<ScreenInfo[]>;
@@ -591,6 +645,8 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
    * Whether Puppeteer is connected to this {@link Browser | browser}.
    */
   abstract get connected(): boolean;
+  [disposeSymbol](): void;
+  [asyncDisposeSymbol](): Promise<void>;
   /**
    * Get debug information from Puppeteer.
    *
@@ -788,6 +844,8 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
    * Identifier for this {@link BrowserContext | browser context}.
    */
   get id(): string | undefined;
+  [disposeSymbol](): void;
+  [asyncDisposeSymbol](): Promise<void>;
 }
 
 /**
@@ -2068,6 +2126,11 @@ export declare interface DeviceRequestPromptDevice {
 export declare abstract class Dialog {
   #private;
   /**
+   * A boolean value indicating whether the dialog has been handled.
+   */
+  get handled(): boolean;
+  protected set handled(handled: boolean);
+  /**
    * The type of the dialog.
    */
   type(): Protocol.Page.DialogType;
@@ -2093,6 +2156,11 @@ export declare abstract class Dialog {
    */
   dismiss(): Promise<void>;
 }
+
+/**
+ * @public
+ */
+export declare const disposeSymbol: typeof Symbol.dispose;
 
 /**
  * @public
@@ -2794,6 +2862,8 @@ export declare class EventEmitter<
    * @returns `this` to enable you to chain method calls.
    */
   removeAllListeners(type?: keyof EventsWithWildcard<Events>): this;
+  [disposeSymbol](): void;
+  [asyncDisposeSymbol](): Promise<void>;
 }
 
 /**
@@ -3732,6 +3802,18 @@ export declare interface GeolocationOptions {
 }
 
 /**
+ * Options for {@link Browser.getPWAState}.
+ *
+ * @public
+ */
+export declare interface GetPWAStateOptions {
+  /**
+   * The id from the web app's manifest file.
+   */
+  manifestId: string;
+}
+
+/**
  * @public
  */
 export declare interface GoToOptions extends WaitForOptions {
@@ -4158,6 +4240,37 @@ export declare type InnerParams<T extends unknown[]> = {
 };
 
 /**
+ * Options for {@link Browser.installPWA}.
+ *
+ * @public
+ */
+export declare interface InstallPWAOptions {
+  /**
+   * The id from the web app's manifest file, commonly the URL of the site
+   * installing the web app. See
+   * {@link https://web.dev/learn/pwa/web-app-manifest | Web app manifest}.
+   */
+  manifestId: string;
+  /**
+   * The URL used to install the app, or the URL of its signed web bundle.
+   *
+   * This is required because the browser-scoped CDP session has no associated
+   * page from which Chromium could derive an install URL.
+   */
+  installUrlOrBundleUrl: string;
+  /**
+   * Whether the app should open in a standalone window or a browser tab.
+   *
+   * @remarks
+   *
+   * `PWA.install` alone leaves the app at Chromium's default display mode
+   * (`browser`); setting this chains a `PWA.changeAppUserSettings` call to apply
+   * the preference.
+   */
+  displayMode?: PWADisplayMode;
+}
+
+/**
  * @public
  */
 export declare enum InterceptResolutionAction {
@@ -4355,6 +4468,8 @@ export declare abstract class JSHandle<T = unknown> {
    * backing this handle.
    */
   abstract remoteObject(): Protocol.Runtime.RemoteObject;
+  [disposeSymbol](): void;
+  [asyncDisposeSymbol](): Promise<void>;
 }
 
 /**
@@ -5101,6 +5216,28 @@ export declare interface LaunchOptions extends ConnectOptions {
 }
 
 /**
+ * Options for {@link Browser.launchPWA}.
+ *
+ * @public
+ */
+export declare interface LaunchPWAOptions {
+  /**
+   * The id from the web app's manifest file.
+   */
+  manifestId: string;
+  /**
+   * An optional URL within the app's scope to launch. Defaults to the app's
+   * start URL.
+   */
+  url?: string;
+  /**
+   * Maximum time in milliseconds to wait for the app's page target to appear.
+   * Defaults to 30 seconds. Pass `0` to disable the timeout.
+   */
+  timeout?: number;
+}
+
+/**
  * Locators describe a strategy of locating objects and performing an action on
  * them. If the action fails because the object is not ready for the action, the
  * whole operation is retried. Various preconditions for a successful action are
@@ -5817,7 +5954,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
   abstract get tracing(): Tracing;
   /**
    * Experimental API for {@link https://github.com/webmachinelearning/webmcp| WebMCP}.
-   * Requires Chrome 150+ with the `--enable-features=WebMCP` flag enabled.
+   * Requires Chrome 151+ with the `--enable-features=WebMCP` flag enabled.
    *
    * @experimental
    */
@@ -7560,6 +7697,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
    * @experimental
    */
   abstract windowId(): Promise<WindowId>;
+  [disposeSymbol](): void;
+  [asyncDisposeSymbol](): Promise<void>;
   /**
    * Opens DevTools for the this page if not already open and returns the DevTools page.
    * This method is only available in Chrome.
@@ -8188,6 +8327,12 @@ declare namespace Puppeteer_2 {
     WorkAreaInsets,
     AddScreenParams,
     ExtensionInstallOptions,
+    PWADisplayMode,
+    InstallPWAOptions,
+    UninstallPWAOptions,
+    LaunchPWAOptions,
+    GetPWAStateOptions,
+    PWAState,
     BrowserContextEvents,
     CDPEvents,
     CDPSessionEvents,
@@ -8371,6 +8516,8 @@ declare namespace Puppeteer_2 {
     FileChooser,
     Puppeteer,
     SecurityDetails,
+    disposeSymbol,
+    asyncDisposeSymbol,
     BrowserLauncher,
     PuppeteerNode,
     ScreenRecorder,
@@ -8538,6 +8685,31 @@ export declare class PuppeteerNode extends Puppeteer {
 }
 
 /**
+ * If the user prefers opening an installed web app in a standalone window or in
+ * a browser tab.
+ *
+ * @public
+ */
+export declare type PWADisplayMode = 'standalone' | 'browser';
+
+/**
+ * The OS-integration state of an installed web app, returned by
+ * {@link Browser.getPWAState}.
+ *
+ * @public
+ */
+export declare interface PWAState {
+  /**
+   * The current badge count shown on the app icon.
+   */
+  badgeCount: number;
+  /**
+   * The file handlers registered by the app with the OS.
+   */
+  fileHandlers: Protocol.PWA.FileHandler[];
+}
+
+/**
  * @public
  */
 export declare type Quad = [Point, Point, Point, Point];
@@ -8682,6 +8854,7 @@ export declare abstract class Realm {
     },
     ...args: Params
   ): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+  [disposeSymbol](): void;
 }
 
 /**
@@ -8865,6 +9038,7 @@ export declare class ScreenRecorder extends PassThrough {
    * @public
    */
   stop(): Promise<void>;
+  [asyncDisposeSymbol](): Promise<void>;
 }
 
 /**
@@ -9336,6 +9510,18 @@ export declare interface TracingOptions {
   path?: string;
   screenshots?: boolean;
   categories?: string[];
+}
+
+/**
+ * Options for {@link Browser.uninstallPWA}.
+ *
+ * @public
+ */
+export declare interface UninstallPWAOptions {
+  /**
+   * The id from the web app's manifest file.
+   */
+  manifestId: string;
 }
 
 /**

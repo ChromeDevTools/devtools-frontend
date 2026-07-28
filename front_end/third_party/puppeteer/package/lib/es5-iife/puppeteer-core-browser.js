@@ -2473,11 +2473,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   Symbol.dispose ??= Symbol('dispose');
   Symbol.asyncDispose ??= Symbol('asyncDispose');
   /**
-   * @internal
+   * @public
    */
   const disposeSymbol = Symbol.dispose;
   /**
-   * @internal
+   * @public
    */
   const asyncDisposeSymbol = Symbol.asyncDispose;
   /**
@@ -2924,7 +2924,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   // If moved update release-please config
   // x-release-please-start-version
-  const packageVersion = '25.3.0';
+  const packageVersion = '25.4.0';
   // x-release-please-end
 
   /**
@@ -3734,15 +3734,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       this[disposeSymbol]();
       return this;
     }
-    /**
-     * @internal
-     */
     [disposeSymbol]() {
       return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
-    /**
-     * @internal
-     */
     async [asyncDisposeSymbol]() {
       for (const [type, handlers] of _classPrivateFieldGet(_handlers, this)) {
         for (const handler of handlers) {
@@ -3913,11 +3907,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async setPermission(origin, ...permissions) {
       return await this.defaultBrowserContext().setPermission(origin, ...permissions);
     }
-    /** @internal */
     [disposeSymbol]() {
       return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
-    /** @internal */
     async [asyncDisposeSymbol]() {
       if (this.process()) {
         await this.close();
@@ -4264,11 +4256,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     get id() {
       return undefined;
     }
-    /** @internal */
     [disposeSymbol]() {
       return void this[asyncDisposeSymbol]().catch(debugCatchError);
     }
-    /** @internal */
     async [asyncDisposeSymbol]() {
       await this.close();
       await super[asyncDisposeSymbol]();
@@ -4408,7 +4398,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _type = /*#__PURE__*/new WeakMap();
   var _message = /*#__PURE__*/new WeakMap();
   var _defaultValue = /*#__PURE__*/new WeakMap();
+  var _handled = /*#__PURE__*/new WeakMap();
   class Dialog {
+    /**
+     * A boolean value indicating whether the dialog has been handled.
+     */
+    get handled() {
+      return _classPrivateFieldGet(_handled, this);
+    }
+    set handled(handled) {
+      _classPrivateFieldSet(_handled, this, handled);
+    }
     /**
      * @internal
      */
@@ -4416,10 +4416,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _type, void 0);
       _classPrivateFieldInitSpec(this, _message, void 0);
       _classPrivateFieldInitSpec(this, _defaultValue, void 0);
-      /**
-       * @internal
-       */
-      _defineProperty(this, "handled", false);
+      _classPrivateFieldInitSpec(this, _handled, false);
       _classPrivateFieldSet(_type, this, type);
       _classPrivateFieldSet(_message, this, message);
       _classPrivateFieldSet(_defaultValue, this, defaultValue);
@@ -5127,7 +5124,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }) => {
     return cssQuerySelectorAll(element, selector);
   });
-  const source = "\"use strict\";var N=Object.defineProperty;var B=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)N(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&N(t,n,{get:()=>e[n],enumerable:!(o=B(e,n))||o.enumerable});return t};var z=t=>J(N({},\"__esModule\",{value:!0}),t);var ye={};l(ye,{default:()=>pe});module.exports=z(ye);var b=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends b{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var W=new Map,j=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var v={};l(v,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{CustomQuerySelectorRegistry:()=>y,customQuerySelectors:()=>P});var y=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new y;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var w=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},T=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var L={};l(L,{PCombinator:()=>U,pQuerySelector:()=>me,pQuerySelectorAll:()=>X});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var O={};l(O,{textQuerySelectorAll:()=>m});var oe=new Set([\"checkbox\",\"image\",\"radio\"]),ne=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!oe.has(t.type),se=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!se.has(t.nodeName)&&!document.head?.contains(t),C=new WeakMap,V=t=>{for(;t;)C.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},F=new WeakSet,I,ie=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)V(r.target)})),I},d=t=>{let e=C.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(ne(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{V(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),F.has(t)||(ie().observe(t,{childList:!0,characterData:!0,subtree:!0}),F.add(t))}return C.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var M={};l(M,{checkVisibility:()=>ae,pierce:()=>g,pierceAll:()=>k});var le=[\"hidden\",\"collapse\"],ae=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),n=o&&!le.includes(o.visibility)&&!ce(r);return e===n?t:!1};function ce(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ue=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*g(t){ue(t)?yield t.shadowRoot:yield t}function*k(t){t=g(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var D={};l(D,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,i[h]=null};var de=/[-\\w\\P{ASCII}*]/u,U=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(U||{}),H=t=>\"querySelectorAll\"in t,Q=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){for(typeof this.#o==\"string\"&&this.#o.trimStart()===\":scope\"&&this.#t();this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&de.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){H(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!H(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,g),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,k),this.#t();break}default:this.#r=e,this.#t();break}}},_=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},fe=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new _;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},X=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return fe(a.flatMap(r,o=>{let n=new Q(t,o);return n.run(),n.elements}))},me=async function(t,e){for await(let r of X(t,e))return r;return null};var he=Object.freeze({...v,...A,...R,...L,...O,...M,...D,...E,Deferred:c,createFunction:j,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:w,RAFPoller:T}),pe=he;\n";
+  const source = "\"use strict\";var N=Object.defineProperty;var B=Object.getOwnPropertyDescriptor;var Y=Object.getOwnPropertyNames;var G=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)N(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of Y(e))!G.call(t,n)&&n!==r&&N(t,n,{get:()=>e[n],enumerable:!(o=B(e,n))||o.enumerable});return t};var z=t=>J(N({},\"__esModule\",{value:!0}),t);var ye={};l(ye,{default:()=>pe});module.exports=z(ye);var b=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends b{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var W=new Map,j=t=>{let e=W.get(t);return e||(e=new Function(`return ${t}`)(),W.set(t,e),e)};var v={};l(v,{ariaQuerySelector:()=>K,ariaQuerySelectorAll:()=>x});var K=(t,e)=>globalThis.__ariaQuerySelector(t,e),x=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>Z,cssQuerySelectorAll:()=>ee});var Z=(t,e)=>t.querySelector(e),ee=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{CustomQuerySelectorRegistry:()=>y,customQuerySelectors:()=>P});var y=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new y;var R={};l(R,{pierceQuerySelector:()=>te,pierceQuerySelectorAll:()=>re});var te=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},re=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var w=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},T=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var L={};l(L,{PCombinator:()=>U,pQuerySelector:()=>me,pQuerySelectorAll:()=>X});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var O={};l(O,{textQuerySelectorAll:()=>m});var oe=new Set([\"checkbox\",\"image\",\"radio\"]),ne=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!oe.has(t.type),se=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!se.has(t.nodeName)&&!document.head?.contains(t),C=new WeakMap,V=t=>{for(;t;)C.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},F=new WeakSet,I,ie=()=>{let t=globalThis.MutationObserver;if(!t)throw new Error(\"MutationObserver is not available in this environment.\");return I||(I=new t(e=>{for(let r of e)V(r.target)})),I},d=t=>{let e=C.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(ne(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{V(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),F.has(t)||(ie().observe(t,{childList:!0,characterData:!0,subtree:!0}),F.add(t))}return C.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var M={};l(M,{checkVisibility:()=>ae,pierce:()=>g,pierceAll:()=>k});var le=[\"hidden\",\"collapse\"],ae=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t;if(!r)return e===!1;let o=window.getComputedStyle(r),n=o&&!le.includes(o.visibility)&&!ce(r);return e===n?t:!1};function ce(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ue=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*g(t){ue(t)?yield t.shadowRoot:yield t}function*k(t){t=g(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var D={};l(D,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,i[h]=null};var de=/[-\\w\\P{ASCII}*]/u,U=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(U||{}),H=t=>\"querySelectorAll\"in t,Q=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){for(typeof this.#o==\"string\"&&this.#o.trimStart()===\":scope\"&&this.#t();this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&de.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){H(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!H(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*x(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,g),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,k),this.#t();break}default:this.#r=e,this.#t();break}}},_=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},$=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?$(o,i):r<n?-1:1},fe=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new _;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>$(o,n)).map(([o])=>o)},X=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return fe(a.flatMap(r,o=>{let n=new Q(t,o);return n.run(),n.elements}))},me=async function(t,e){for await(let r of X(t,e))return r;return null};var he=Object.freeze({...v,...A,...R,...L,...O,...M,...D,...E,Deferred:c,createFunction:j,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:w,RAFPoller:T}),pe=he;\n";
 
   /**
    * @license
@@ -6124,11 +6121,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         }
         return map;
       }
-      /** @internal */
       [_ref]() {
         return void this[asyncDisposeSymbol]().catch(debugCatchError);
       }
-      /** @internal */
       [asyncDisposeSymbol]() {
         return this.dispose();
       }
@@ -12242,11 +12237,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       waitForFunction(pageFunction, options, ...args) {
         return this.mainFrame().waitForFunction(pageFunction, options, ...args);
       }
-      /** @internal */
       [_ref2]() {
         return void this[asyncDisposeSymbol]().catch(debugCatchError);
       }
-      /** @internal */
       async [asyncDisposeSymbol]() {
         await this.close();
         await super[asyncDisposeSymbol]();
@@ -12623,7 +12616,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_disposed3, this, true);
       this.taskManager.terminateAll(new Error('waitForFunction failed: frame got detached.'));
     }
-    /** @internal */
     [disposeSymbol]() {
       this.dispose();
     }
@@ -13700,7 +13692,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   var _element = /*#__PURE__*/new WeakMap();
   var _multiple = /*#__PURE__*/new WeakMap();
-  var _handled = /*#__PURE__*/new WeakMap();
+  var _handled2 = /*#__PURE__*/new WeakMap();
   class FileChooser {
     /**
      * @internal
@@ -13708,7 +13700,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     constructor(element, multiple) {
       _classPrivateFieldInitSpec(this, _element, void 0);
       _classPrivateFieldInitSpec(this, _multiple, void 0);
-      _classPrivateFieldInitSpec(this, _handled, false);
+      _classPrivateFieldInitSpec(this, _handled2, false);
       _classPrivateFieldSet(_element, this, element);
       _classPrivateFieldSet(_multiple, this, multiple);
     }
@@ -13730,16 +13722,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * absolute.
      */
     async accept(paths) {
-      assert(!_classPrivateFieldGet(_handled, this), 'Cannot accept FileChooser which is already handled!');
-      _classPrivateFieldSet(_handled, this, true);
+      assert(!_classPrivateFieldGet(_handled2, this), 'Cannot accept FileChooser which is already handled!');
+      _classPrivateFieldSet(_handled2, this, true);
       await _classPrivateFieldGet(_element, this).uploadFile(...paths);
     }
     /**
      * Closes the file chooser without selecting any files.
      */
     async cancel() {
-      assert(!_classPrivateFieldGet(_handled, this), 'Cannot cancel FileChooser which is already handled!');
-      _classPrivateFieldSet(_handled, this, true);
+      assert(!_classPrivateFieldGet(_handled2, this), 'Cannot cancel FileChooser which is already handled!');
+      _classPrivateFieldSet(_handled2, this, true);
       // XXX: These events should converted to trusted events. Perhaps do this
       // in `DOM.setFileInputFiles`?
       await _classPrivateFieldGet(_element, this).evaluate(element => {
@@ -15466,7 +15458,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _client6 = /*#__PURE__*/new WeakMap();
   var _timeoutSettings = /*#__PURE__*/new WeakMap();
   var _id5 = /*#__PURE__*/new WeakMap();
-  var _handled2 = /*#__PURE__*/new WeakMap();
+  var _handled3 = /*#__PURE__*/new WeakMap();
   var _updateDevicesHandle = /*#__PURE__*/new WeakMap();
   var _waitForDevicePromises = /*#__PURE__*/new WeakMap();
   var _CdpDeviceRequestPrompt_brand = /*#__PURE__*/new WeakSet();
@@ -15477,7 +15469,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _client6, void 0);
       _classPrivateFieldInitSpec(this, _timeoutSettings, void 0);
       _classPrivateFieldInitSpec(this, _id5, void 0);
-      _classPrivateFieldInitSpec(this, _handled2, false);
+      _classPrivateFieldInitSpec(this, _handled3, false);
       _classPrivateFieldInitSpec(this, _updateDevicesHandle, _assertClassBrand(_CdpDeviceRequestPrompt_brand, this, _updateDevices).bind(this));
       _classPrivateFieldInitSpec(this, _waitForDevicePromises, new Set());
       _classPrivateFieldSet(_client6, this, client);
@@ -15523,9 +15515,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async select(device) {
       assert(_classPrivateFieldGet(_client6, this) !== null, 'Cannot select device through detached session!');
       assert(this.devices.includes(device), 'Cannot select unknown device!');
-      assert(!_classPrivateFieldGet(_handled2, this), 'Cannot select DeviceRequestPrompt which is already handled!');
+      assert(!_classPrivateFieldGet(_handled3, this), 'Cannot select DeviceRequestPrompt which is already handled!');
       _classPrivateFieldGet(_client6, this).off('DeviceAccess.deviceRequestPrompted', _classPrivateFieldGet(_updateDevicesHandle, this));
-      _classPrivateFieldSet(_handled2, this, true);
+      _classPrivateFieldSet(_handled3, this, true);
       return await _classPrivateFieldGet(_client6, this).send('DeviceAccess.selectPrompt', {
         id: _classPrivateFieldGet(_id5, this),
         deviceId: device.id
@@ -15533,9 +15525,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     async cancel() {
       assert(_classPrivateFieldGet(_client6, this) !== null, 'Cannot cancel prompt through detached session!');
-      assert(!_classPrivateFieldGet(_handled2, this), 'Cannot cancel DeviceRequestPrompt which is already handled!');
+      assert(!_classPrivateFieldGet(_handled3, this), 'Cannot cancel DeviceRequestPrompt which is already handled!');
       _classPrivateFieldGet(_client6, this).off('DeviceAccess.deviceRequestPrompted', _classPrivateFieldGet(_updateDevicesHandle, this));
-      _classPrivateFieldSet(_handled2, this, true);
+      _classPrivateFieldSet(_handled3, this, true);
       return await _classPrivateFieldGet(_client6, this).send('DeviceAccess.cancelPrompt', {
         id: _classPrivateFieldGet(_id5, this)
       });
@@ -24961,6 +24953,67 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       await Promise.all(targetDestroyedPromises);
       _classPrivateFieldGet(_extensions, this).delete(id);
     }
+    async installPWA(options) {
+      await _classPrivateFieldGet(_connection5, this).send('PWA.install', {
+        manifestId: options.manifestId,
+        installUrlOrBundleUrl: options.installUrlOrBundleUrl
+      });
+      if (options.displayMode) {
+        await _classPrivateFieldGet(_connection5, this).send('PWA.changeAppUserSettings', {
+          manifestId: options.manifestId,
+          displayMode: options.displayMode
+        });
+      }
+      return options.manifestId;
+    }
+    async uninstallPWA(options) {
+      await _classPrivateFieldGet(_connection5, this).send('PWA.uninstall', {
+        manifestId: options.manifestId
+      });
+    }
+    async launchPWA(options) {
+      // `PWA.launch` resolves with the id of the launched *tab* target (see the
+      // CDP `PWA.LaunchResponse` docs). Tab targets sit above page targets in the
+      // target hierarchy and are not exposed through `browser.targets()`, so the
+      // returned id can't be awaited directly.
+      const {
+        targetId: tabTargetId
+      } = await _classPrivateFieldGet(_connection5, this).send('PWA.launch', {
+        manifestId: options.manifestId,
+        url: options.url
+      });
+      const target = await this.waitForTarget(candidate => {
+        const tab = _classPrivateFieldGet(_targetManager3, this).getAvailableTargets().get(tabTargetId);
+        if (tab?.type() !== 'tab') {
+          return false;
+        }
+        for (const child of tab._childTargets()) {
+          if (child === candidate) {
+            return true;
+          }
+        }
+        return false;
+      }, {
+        timeout: options.timeout
+      });
+      const page = await target.page();
+      if (!page) {
+        throw new Error(`Failed to create a page for the launched PWA (manifestId = ${options.manifestId})`);
+      }
+      return page;
+    }
+    async getPWAState(options) {
+      const {
+        badgeCount,
+        fileHandlers
+      } = await _classPrivateFieldGet(_connection5, this).send('PWA.getOsAppState', {
+        manifestId: options.manifestId
+      });
+      return {
+        badgeCount,
+        fileHandlers
+      };
+    }
     async screens() {
       const {
         screenInfos
@@ -27252,9 +27305,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '150.0.7871.24',
-    'chrome-headless-shell': '150.0.7871.24',
-    firefox: 'stable_152.0.4'
+    chrome: '151.0.7922.47',
+    'chrome-headless-shell': '151.0.7922.47',
+    firefox: 'stable_152.0.5'
   });
 
   /**

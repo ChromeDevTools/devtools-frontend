@@ -5,7 +5,7 @@
  */
 import type { ChildProcess } from 'node:child_process';
 import type { CreatePageOptions, DebugInfo, ExtensionInstallOptions } from '../api/Browser.js';
-import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId } from '../api/Browser.js';
+import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type TargetFilterCallback, type ScreenInfo, type AddScreenParams, type WindowBounds, type WindowId, type InstallPWAOptions, type UninstallPWAOptions, type LaunchPWAOptions, type GetPWAStateOptions, type PWAState } from '../api/Browser.js';
 import type { Extension } from '../api/Extension.js';
 import type { Page } from '../api/Page.js';
 import type { DownloadBehavior } from '../common/DownloadBehavior.js';
@@ -39,6 +39,10 @@ export declare class CdpBrowser extends BrowserBase {
     _hasDevToolsTarget(pageTargetId: string): Promise<string | undefined>;
     installExtension(path: string, options?: ExtensionInstallOptions): Promise<string>;
     uninstallExtension(id: string): Promise<void>;
+    installPWA(options: InstallPWAOptions): Promise<string>;
+    uninstallPWA(options: UninstallPWAOptions): Promise<void>;
+    launchPWA(options: LaunchPWAOptions): Promise<Page>;
+    getPWAState(options: GetPWAStateOptions): Promise<PWAState>;
     screens(): Promise<ScreenInfo[]>;
     addScreen(params: AddScreenParams): Promise<ScreenInfo>;
     removeScreen(screenId: string): Promise<void>;

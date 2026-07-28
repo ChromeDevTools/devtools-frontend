@@ -24,11 +24,11 @@ declare global {
     }
 }
 /**
- * @internal
+ * @public
  */
 export declare const disposeSymbol: typeof Symbol.dispose;
 /**
- * @internal
+ * @public
  */
 export declare const asyncDisposeSymbol: typeof Symbol.asyncDispose;
 /**

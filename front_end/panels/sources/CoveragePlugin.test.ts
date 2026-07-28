@@ -58,7 +58,7 @@ describeWithEnvironment('CoveragePlugin', () => {
         new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
     const [toolbarItem] = coveragePlugin.rightToolbarItems();
 
-    assert.strictEqual('Show Details', toolbarItem.element.shadowRoot?.querySelector('button')?.title);
+    assert.strictEqual('Show details', toolbarItem.element.shadowRoot?.querySelector('button')?.title);
     assert.strictEqual('Coverage: 32.1%', toolbarItem.element.textContent);
   });
 
@@ -79,7 +79,7 @@ describeWithEnvironment('CoveragePlugin', () => {
     assert.strictEqual('Coverage: 32.1%', toolbarItem.element.textContent);
 
     model.dispatchEventToListeners(Coverage.CoverageModel.Events.CoverageReset);
-    assert.strictEqual('Click to show Coverage Panel', toolbarItem.element.ariaLabel);
-    assert.strictEqual('Coverage: n/a', toolbarItem.element.textContent);
+    assert.strictEqual('Click to show Coverage panel', toolbarItem.element.ariaLabel);
+    assert.strictEqual('Coverage: N/A', toolbarItem.element.textContent);
   });
 });

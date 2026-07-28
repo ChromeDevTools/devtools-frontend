@@ -16,11 +16,11 @@ import filteredUISourceCodeListProviderStyles from './filteredUISourceCodeListPr
 
 const UIStrings = {
   /**
-   * @description Text in Filtered UISource Code List Provider of the Sources panel
+   * @description Text in Filtered UISourceCode list provider of the Sources panel.
    */
   noFilesFound: 'No files found',
   /**
-   * @description Name of an item that is on the ignore list
+   * @description Name of an item that is on the ignore list.
    * @example {compile.html} PH1
    */
   sIgnoreListed: '{PH1} (ignore listed)',

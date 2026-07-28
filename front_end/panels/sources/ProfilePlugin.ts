@@ -17,7 +17,7 @@ import {Plugin} from './Plugin.js';
 
 const UIStrings = {
   /**
-   * @description The milisecond unit
+   * @description The millisecond unit.
    */
   ms: 'ms',
 } as const;

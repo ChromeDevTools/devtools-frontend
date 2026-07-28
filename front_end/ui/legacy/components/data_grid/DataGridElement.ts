@@ -320,7 +320,6 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     const visibleColumns = new Set(this.#columns.map(({id}) => id).filter(id => !this.#hiddenColumns.has(id)));
     this.#dataGrid.setColumnsVisibility(visibleColumns);
     this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : undefined, INTERNAL_TOKEN);
-    this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
   }
 
   #needUpdateColumns(mutationList: MutationRecord[]): boolean {
@@ -544,6 +543,9 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
     super.addEventListener(...args);
     if (args[0] === 'refresh') {
       this.#dataGrid.refreshCallback = this.#refreshCallback.bind(this);
+    }
+    if (args[0] === 'delete') {
+      this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
     }
   }
 

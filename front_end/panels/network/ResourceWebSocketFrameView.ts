@@ -159,7 +159,7 @@ const opCodeDescriptions: Array<() => string> = (function(): Array<() => Common.
 
 class ResourceFrameNode extends DataGridItem {
   readonly frame: SDK.NetworkRequest.WebSocketFrame;
-  private readonly isTextFrame: boolean;
+  override readonly isTextFrame: boolean;
   #dataText: string;
   #binaryView: BinaryResourceView|null;
 

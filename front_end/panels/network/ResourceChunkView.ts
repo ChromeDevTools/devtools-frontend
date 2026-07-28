@@ -55,10 +55,6 @@ const UIStrings = {
    */
   copyMessage: 'Copy message',
   /**
-   * @description Text to clear everything
-   */
-  clearAllL: 'Clear all',
-  /**
    * @description Text for everything
    */
   all: 'All',
@@ -185,7 +181,7 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
               Host.InspectorFrontendHost.InspectorFrontendHostInstance, textToCopy),
           {jslogContext: 'copy'});
     }
-    contextMenu.footerSection().appendItem(i18nString(UIStrings.clearAllL), this.clearChunks.bind(this),
+    contextMenu.footerSection().appendItem(i18nString(UIStrings.clearAll), this.clearChunks.bind(this),
                                            {jslogContext: 'clear-all'});
   }
 
@@ -336,6 +332,7 @@ export abstract class DataGridItem extends DataGrid.SortableDataGrid.SortableDat
   abstract binaryView(): BinaryResourceView|null;
   abstract getTime(): number;
   abstract dataText(): string;
+  abstract readonly isTextFrame: boolean;
 }
 
 function resourceChunkNodeTimeComparator(a: DataGridItem, b: DataGridItem): number {

@@ -2863,6 +2863,7 @@ export const knownContextValues = new Set([
   'network.add-network-request-blocking-pattern',
   'network.blocked-urls',
   'network.clear',
+  'network.clear-all',
   'network.config',
   'network.enable-remote-file-loading',
   'network.enable-remote-file-loading-documentation',

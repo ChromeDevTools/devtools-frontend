@@ -134,6 +134,7 @@ export class ResourceDirectSocketChunkView extends ResourceChunkView<SDK.Network
 class ResourceChunkNode extends DataGridItem {
   #binaryView: BinaryResourceView|null = null;
   readonly chunk: SDK.NetworkRequest.DirectSocketChunk;
+  override readonly isTextFrame = false;
 
   constructor(chunk: SDK.NetworkRequest.DirectSocketChunk, boundSocket: boolean) {
     const time = new Date(chunk.timestamp * 1000);

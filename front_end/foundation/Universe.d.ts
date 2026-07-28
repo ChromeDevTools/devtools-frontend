@@ -31,6 +31,7 @@ export declare class Universe {
     get automaticFileSystemManager(): Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager;
     get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;
     get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage;
+    get builtInAi(): AiAssistance.BuiltInAi.BuiltInAi;
     get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager;
     get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager;
     get cruxManager(): CrUXManager.CrUXManager;

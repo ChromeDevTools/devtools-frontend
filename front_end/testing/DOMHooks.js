@@ -27,6 +27,9 @@ function removeElementOrWidget(node, parent = document.body) {
  * If a widget creates a glass pane, it can get orphaned and not cleaned up correctly.
  */
 function removeGlassPanes() {
+    while (UI.Dialog.Dialog.hasInstance()) {
+        UI.Dialog.Dialog.getInstance()?.hide();
+    }
     for (const pane of document.body.querySelectorAll('[data-devtools-glass-pane]')) {
         removeElementOrWidget(pane);
     }

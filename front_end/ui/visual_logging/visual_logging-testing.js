@@ -2636,6 +2636,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "local-storage-for-domain",
   "locale",
   "location",
+  "location-dialog",
   "log-level",
   "logpoint",
   "long",

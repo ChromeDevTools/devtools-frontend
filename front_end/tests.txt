@@ -570,6 +570,7 @@ panels/sensors/LocationsSettingsTab.test.js
 panels/sensors/SensorsView.test.js
 panels/settings/AISettingsTab.test.js
 panels/settings/EditFileSystemView.test.js
+panels/settings/FrameworkIgnoreListSettingsTab.test.js
 panels/settings/WorkspaceSettingsTab.test.js
 panels/settings/components/SyncSection.test.js
 panels/settings/emulation/components/UserAgentClientHintsForm.test.js

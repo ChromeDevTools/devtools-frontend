@@ -1,2 +1,3 @@
+core/sdk/CSSModel.test.api.js
 core/sdk/DOMModel.test.api.js
 foundation/Universe.test.api.js

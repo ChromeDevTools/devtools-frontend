@@ -49,6 +49,7 @@ export declare class TestUniverse implements Foundation.Universe.Universe {
      */
     createTarget(options?: Parameters<typeof createTarget>[0]): SDK.Target.Target;
     get aiHistoryStorage(): AiAssistance.AiHistoryStorage.AiHistoryStorage;
+    get builtInAi(): AiAssistance.BuiltInAi.BuiltInAi;
     get autofillManager(): AutofillManager.AutofillManager.AutofillManager;
     get automaticFileSystemManager(): Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager;
     get automaticFileSystemWorkspaceBinding(): Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding;

@@ -16,6 +16,7 @@ import { CSSStyleSheetHeader } from './CSSStyleSheetHeader.js';
 import { DOMModel } from './DOMModel.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './ResourceTreeModel.js';
 import { SDKModel } from './SDKModel.js';
+import { cssSourceMapsEnabledSettingDescriptor } from './SDKSettings.js';
 import { SourceMapManager } from './SourceMapManager.js';
 export class CSSModel extends SDKModel {
     agent;
@@ -51,8 +52,8 @@ export class CSSModel extends SDKModel {
             void this.enable();
         }
         const settings = this.target().targetManager().settings;
-        this.#sourceMapManager.setEnabled(settings.moduleSetting('css-source-maps-enabled').get());
-        settings.moduleSetting('css-source-maps-enabled')
+        this.#sourceMapManager.setEnabled(settings.resolve(cssSourceMapsEnabledSettingDescriptor).get());
+        settings.resolve(cssSourceMapsEnabledSettingDescriptor)
             .addChangeListener(event => this.#sourceMapManager.setEnabled(event.data));
     }
     async colorScheme() {

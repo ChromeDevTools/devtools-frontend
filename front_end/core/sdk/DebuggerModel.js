@@ -9,6 +9,7 @@ import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './Resource
 import { RuntimeModel } from './RuntimeModel.js';
 import { Script } from './Script.js';
 import { SDKModel } from './SDKModel.js';
+import { jsSourceMapsEnabledSettingDescriptor } from './SDKSettings.js';
 import { SourceMap } from './SourceMap.js';
 import { SourceMapManager } from './SourceMapManager.js';
 const UIStrings = {
@@ -154,8 +155,8 @@ export class DebuggerModel extends SDKModel {
         if (!target.suspended()) {
             void this.enableDebugger();
         }
-        this.#sourceMapManager.setEnabled(settings.moduleSetting('js-source-maps-enabled').get());
-        settings.moduleSetting('js-source-maps-enabled')
+        this.#sourceMapManager.setEnabled(settings.resolve(jsSourceMapsEnabledSettingDescriptor).get());
+        settings.resolve(jsSourceMapsEnabledSettingDescriptor)
             .addChangeListener(event => this.#sourceMapManager.setEnabled(event.data));
         const resourceTreeModel = target.model(ResourceTreeModel);
         if (resourceTreeModel) {

@@ -141,7 +141,7 @@ const resolveDebuggerScope = async (scope, debuggerWorkspaceBinding) => {
     if (!scope.callFrame()
         .debuggerModel.target()
         .targetManager()
-        .settings.moduleSetting('js-source-maps-enabled')
+        .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
         .get()) {
         return { variableMapping: new Map(), thisMapping: null };
     }
@@ -316,7 +316,10 @@ export const resolveScopeChain = async function (callFrame, debuggerWorkspaceBin
  * shadowed) we set it to `null`.
  */
 export const allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
-    if (!callFrame.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
+    if (!callFrame.debuggerModel.target()
+        .targetManager()
+        .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
+        .get()) {
         return new Map();
     }
     const cachedMap = cachedMapByCallFrame.get(callFrame);
@@ -353,7 +356,10 @@ export const allVariablesAtPosition = async (location, debuggerWorkspaceBinding)
     if (!script) {
         return reverseMapping;
     }
-    if (!script.debuggerModel.target().targetManager().settings.moduleSetting('js-source-maps-enabled').get()) {
+    if (!script.debuggerModel.target()
+        .targetManager()
+        .settings.resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor)
+        .get()) {
         return reverseMapping;
     }
     const scopeTreeAndText = await computeScopeTree(script);

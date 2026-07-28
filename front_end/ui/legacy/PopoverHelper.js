@@ -24,7 +24,7 @@ export class PopoverHelper {
     boundMouseDown;
     boundMouseMove;
     boundMouseOut;
-    boundScrollEnd;
+    boundScroll;
     boundKeyUp;
     jslogContext;
     constructor(container, getRequest, jslogContext) {
@@ -41,7 +41,7 @@ export class PopoverHelper {
         this.boundMouseDown = this.mouseDown.bind(this);
         this.boundMouseMove = this.mouseMove.bind(this);
         this.boundMouseOut = this.mouseOut.bind(this);
-        this.boundScrollEnd = this.scrollEnd.bind(this);
+        this.boundScroll = this.scroll.bind(this);
         this.boundKeyUp = this.keyUp.bind(this);
         this.container.addEventListener('mousedown', this.boundMouseDown, false);
         this.container.addEventListener('mousemove', this.boundMouseMove, false);
@@ -59,7 +59,7 @@ export class PopoverHelper {
     eventInScheduledContent(event) {
         return this.scheduledRequest ? this.scheduledRequest.box.contains(event.clientX, event.clientY) : false;
     }
-    scrollEnd(_event) {
+    scroll(_event) {
         this.hidePopover();
     }
     mouseDown(event) {
@@ -198,14 +198,14 @@ export class PopoverHelper {
             popover.contentElement.addEventListener('mouseout', this.popoverMouseOut.bind(this, popover), true);
             popover.setContentAnchorBox(request.box);
             popover.show(document);
-            this.container.addEventListener('scrollend', this.boundScrollEnd, true);
+            this.container.addEventListener('scroll', this.boundScroll, true);
             this.hidePopoverCallback = () => {
                 if (request.hide) {
                     request.hide.call(null);
                 }
                 popover.hide();
                 popoverHelperInstance = null;
-                this.container.removeEventListener('scrollend', this.boundScrollEnd, true);
+                this.container.removeEventListener('scroll', this.boundScroll, true);
             };
         });
     }

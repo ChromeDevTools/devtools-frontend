@@ -471,7 +471,7 @@ export class DebuggerPlugin extends Plugin {
             }
         }
         if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
-            Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get() &&
+            Common.Settings.Settings.instance().resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get() &&
             !Workspace.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
             if (this.scriptFileForDebuggerModel.size) {
                 const scriptFile = this.scriptFileForDebuggerModel.values().next().value;
@@ -1316,7 +1316,7 @@ export class DebuggerPlugin extends Plugin {
         if (this.sourceMapInfobar) {
             return;
         }
-        if (!Common.Settings.Settings.instance().moduleSetting('js-source-maps-enabled').get()) {
+        if (!Common.Settings.Settings.instance().resolve(SDK.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
             return;
         }
         if (!this.scriptHasSourceMap()) {

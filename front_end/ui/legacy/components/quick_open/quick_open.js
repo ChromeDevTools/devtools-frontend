@@ -1009,7 +1009,16 @@ var CommandMenu = class _CommandMenu {
       if (!options || !registeredSettingUI.uiDescriptor.category) {
         continue;
       }
-      const setting = Common2.Settings.Settings.instance().resolve(registeredSettingUI.descriptor);
+      let setting;
+      if ("isAvailable" in registeredSettingUI.descriptor) {
+        const settingResult = Common2.Settings.Settings.instance().maybeResolve(registeredSettingUI.descriptor);
+        if (!("setting" in settingResult)) {
+          continue;
+        }
+        setting = settingResult.setting;
+      } else {
+        setting = Common2.Settings.Settings.instance().resolve(registeredSettingUI.descriptor);
+      }
       for (const pair of options) {
         this.#commands.push(_CommandMenu.createSettingCommand(setting, pair.title(), pair.value, registeredSettingUI.uiDescriptor));
       }

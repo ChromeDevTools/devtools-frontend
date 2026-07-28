@@ -277,6 +277,9 @@ interface DevToolsAdsPanel {
 interface DevToolsPlusButton {
     enabled: boolean;
 }
+interface DevToolsInstrumentationBreakpoints {
+    enabled: boolean;
+}
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -334,6 +337,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsAdsPanel: DevToolsAdsPanel;
     devToolsUseGcaApi: UseGcaApi;
     devToolsPlusButton: DevToolsPlusButton;
+    devToolsInstrumentationBreakpoints: DevToolsInstrumentationBreakpoints;
     extensionsOnChromeUrls: ExtensionsOnChromeUrls;
 }>;
 /**

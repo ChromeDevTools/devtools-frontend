@@ -43,6 +43,10 @@ export class TestUniverse {
             () => new AiAssistance.AiHistoryStorage.AiHistoryStorage(this.settings),
         ],
         [
+            AiAssistance.BuiltInAi.BuiltInAi,
+            () => new AiAssistance.BuiltInAi.BuiltInAi(),
+        ],
+        [
             AutofillManager.AutofillManager.AutofillManager,
             () => new AutofillManager.AutofillManager.AutofillManager(this.targetManager, this.frameManager),
         ],
@@ -256,6 +260,9 @@ export class TestUniverse {
     }
     get aiHistoryStorage() {
         return this.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
+    }
+    get builtInAi() {
+        return this.get(AiAssistance.BuiltInAi.BuiltInAi);
     }
     get autofillManager() {
         return this.get(AutofillManager.AutofillManager.AutofillManager);

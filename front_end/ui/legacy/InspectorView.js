@@ -264,10 +264,6 @@ export class InspectorView extends VBox {
     applyDrawerOrientationForDockSideForTest() {
     }
     #applyDrawerOrientationForDockSide() {
-        if (!this.drawerVisible()) {
-            this.applyDrawerOrientationForDockSideForTest();
-            return;
-        }
         const newOrientation = this.#getOrientationForDockMode();
         this.#applyDrawerOrientation(newOrientation);
         this.applyDrawerOrientationForDockSideForTest();
@@ -424,6 +420,7 @@ export class InspectorView extends VBox {
             }
             return;
         }
+        this.#applyDrawerOrientationForDockSide();
         this.#drawerView.show(hasTargetDrawer);
         if (focus) {
             this.focusRestorer = new WidgetFocusRestorer(this.drawerTabbedPane);
@@ -433,7 +430,6 @@ export class InspectorView extends VBox {
             this.focusRestorer = null;
             this.#mainPanelAtDrawerFocus = null;
         }
-        this.#applyDrawerOrientationForDockSide();
         ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.drawerShown));
     }
     drawerVisible() {

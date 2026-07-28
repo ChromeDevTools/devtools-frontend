@@ -1,5 +1,7 @@
 import * as Common from '../../core/common/common.js';
+import { type LitTemplate } from '../../ui/lit/lit.js';
 import { GlassPane } from './GlassPane.js';
+import { Widget } from './Widget.js';
 declare const Dialog_base: (new (...args: any[]) => {
     __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
     addEventListener<T extends Events.HIDDEN>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
@@ -18,6 +20,7 @@ export declare class Dialog extends Dialog_base {
     private readonly targetDocumentKeyDownHandler;
     private escapeKeyCallback;
     constructor(jslogContext?: string);
+    set jslogContext(jslogContext: string);
     static hasInstance(): boolean;
     /**
      * If there is only one dialog, returns that.
@@ -56,5 +59,28 @@ export declare const enum OutsideTabIndexBehavior {
     DISABLE_ALL_OUTSIDE_TAB_INDEX = "DisableAllTabIndex",
     PRESERVE_MAIN_VIEW_TAB_INDEX = "PreserveMainViewTabIndex",
     PRESERVE_TAB_INDEX = "PreserveTabIndex"
+}
+declare const DialogWidget_base: (new (...args: any[]) => {
+    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
+    addEventListener<T extends Events.HIDDEN>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
+    once<T extends Events.HIDDEN>(eventType: T): Promise<EventTypes[T]>;
+    removeEventListener<T extends Events.HIDDEN>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
+    hasEventListeners(eventType: Events.HIDDEN): boolean;
+    dispatchEventToListeners<T extends Events.HIDDEN>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
+    dispatchDOMEvent?(event: Event): void;
+}) & typeof Widget;
+export declare class DialogWidget extends DialogWidget_base {
+    #private;
+    constructor(element?: HTMLElement);
+    get open(): boolean;
+    set open(open: boolean);
+    get content(): LitTemplate;
+    set content(content: LitTemplate);
+    get jslogContext(): string;
+    set jslogContext(jslogContext: string);
+    wasShown(): void;
+    willHide(): void;
+    onDetach(): void;
+    performUpdate(): void;
 }
 export {};

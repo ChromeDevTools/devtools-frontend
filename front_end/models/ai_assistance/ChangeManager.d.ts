@@ -13,6 +13,7 @@ export interface Change {
 export declare class ChangeManager {
     #private;
     constructor(targetManager?: SDK.TargetManager.TargetManager);
+    dispose(): void;
     clear(): Promise<void>;
     addChange(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId, change: Change): Promise<string>;
 }

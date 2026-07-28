@@ -103,6 +103,7 @@
     "../../../../../../front_end/core/sdk/ResourceTreeModel.ts",
     "../../../../../../front_end/core/sdk/RuntimeModel.ts",
     "../../../../../../front_end/core/sdk/SDKModel.ts",
+    "../../../../../../front_end/core/sdk/SDKSettings.ts",
     "../../../../../../front_end/core/sdk/ScopeTreeCache.ts",
     "../../../../../../front_end/core/sdk/ScreenCaptureModel.ts",
     "../../../../../../front_end/core/sdk/Script.ts",

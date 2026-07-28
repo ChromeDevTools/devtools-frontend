@@ -126,6 +126,8 @@ var Universe = class {
     context.set(Badges.UserBadges, userBadges);
     const aiHistoryStorage = new AiAssistance.AiHistoryStorage.AiHistoryStorage(settings);
     context.set(AiAssistance.AiHistoryStorage.AiHistoryStorage, aiHistoryStorage);
+    const builtInAi = new AiAssistance.BuiltInAi.BuiltInAi();
+    context.set(AiAssistance.BuiltInAi.BuiltInAi, builtInAi);
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
     context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
   }
@@ -137,6 +139,9 @@ var Universe = class {
   }
   get aiHistoryStorage() {
     return this.context.get(AiAssistance.AiHistoryStorage.AiHistoryStorage);
+  }
+  get builtInAi() {
+    return this.context.get(AiAssistance.BuiltInAi.BuiltInAi);
   }
   get breakpointManager() {
     return this.context.get(Breakpoints.BreakpointManager.BreakpointManager);

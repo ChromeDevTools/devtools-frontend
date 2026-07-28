@@ -6368,6 +6368,7 @@ var Settings = class _Settings {
     const isGetter = (value) => typeof value === "function";
     const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root4.Runtime.hostConfig) : defaultValue;
     setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(name, evaluatedDefaultValue, void 0, storageType) : this.createSetting(name, evaluatedDefaultValue, storageType);
+    setting.setSettingType(type);
     this.registerModuleSetting(setting);
     return setting;
   }
@@ -6490,6 +6491,7 @@ var Setting = class {
   eventSupport;
   storage;
   #registration = null;
+  #type = null;
   #requiresUserAction;
   #value;
   // TODO(crbug.com/1172300) Type cannot be inferred without changes to consumers. See above.
@@ -6635,8 +6637,14 @@ var Setting = class {
     }
     this.eventSupport.dispatchEventToListeners(this.name, value);
   }
+  setSettingType(type) {
+    this.#type = type;
+  }
   setRegistration(registration) {
     this.#registration = registration;
+    if (registration.settingType) {
+      this.#type = registration.settingType;
+    }
     const { deprecationNotice } = registration;
     if (deprecationNotice?.disabled) {
       const experiment = deprecationNotice.experiment ? Root4.Runtime.experiments.allConfigurableExperiments().find((e) => e.name === deprecationNotice.experiment) : void 0;
@@ -6647,10 +6655,7 @@ var Setting = class {
     }
   }
   type() {
-    if (this.#registration) {
-      return this.#registration.settingType;
-    }
-    return null;
+    return this.#type ?? this.#registration?.settingType ?? null;
   }
   options() {
     if (this.#registration && this.#registration.options) {

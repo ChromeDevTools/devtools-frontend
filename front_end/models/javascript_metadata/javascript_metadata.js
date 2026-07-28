@@ -122,11 +122,6 @@ var NativeFunctions = [
     receivers: ["Clients", "BackgroundFetchManager"]
   },
   {
-    name: "get",
-    signatures: [["entry"]],
-    receivers: ["RouteMap"]
-  },
-  {
     name: "set",
     signatures: [["v"]],
     receivers: ["PropertyDescriptor"]
@@ -2009,6 +2004,11 @@ var NativeFunctions = [
   },
   {
     name: "remove",
+    signatures: [["slot"]],
+    receivers: ["GPUResourceTable"]
+  },
+  {
+    name: "remove",
     signatures: [["manifest_ids"]],
     receivers: ["SubApps"]
   },
@@ -3305,6 +3305,11 @@ var NativeFunctions = [
     name: "update",
     signatures: [["response"]],
     receivers: ["MediaKeySession"]
+  },
+  {
+    name: "update",
+    signatures: [["slot", "resource"]],
+    receivers: ["GPUResourceTable"]
   },
   {
     name: "createObjectStore",
@@ -6690,6 +6695,14 @@ var NativeFunctions = [
     signatures: [["querySet", "queryIndex"]]
   },
   {
+    name: "setResourceTable",
+    signatures: [["table"]]
+  },
+  {
+    name: "createResourceTable",
+    signatures: [["descriptor"]]
+  },
+  {
     name: "GPUInternalError",
     signatures: [["message"]]
   },
@@ -6716,6 +6729,10 @@ var NativeFunctions = [
   {
     name: "multiDrawIndexedIndirect",
     signatures: [["indirectBuffer", "indirectOffset", "maxDrawCount", "?drawCountBuffer", "?drawCountBufferOffset"]]
+  },
+  {
+    name: "insert",
+    signatures: [["resource"]]
   },
   {
     name: "GPUUncapturedErrorEvent",
@@ -8472,10 +8489,6 @@ var NativeFunctions = [
   {
     name: "removeProcessingInstruction",
     signatures: [["pi"]]
-  },
-  {
-    name: "RouteEvent",
-    signatures: [["type"]]
   },
   {
     name: "ResizeObserver",

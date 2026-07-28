@@ -4,6 +4,7 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import { nothing, render } from '../../ui/lit/lit.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
@@ -11,7 +12,7 @@ import dialogStyles from './dialog.css.js';
 import { GlassPane } from './GlassPane.js';
 import { InspectorView } from './InspectorView.js';
 import { KeyboardShortcut, Keys } from './KeyboardShortcut.js';
-import { WidgetFocusRestorer } from './Widget.js';
+import { Widget, WidgetFocusRestorer } from './Widget.js';
 const UIStrings = {
     /**
      * @description Text to close the dialog
@@ -34,7 +35,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
         this.contentElement.tabIndex = 0;
         this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
         if (jslogContext) {
-            this.contentElement.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({ resize: true, keydown: 'Escape' })}`);
+            this.jslogContext = jslogContext;
         }
         this.setPointerEventsBehavior("BlockedByGlassPane" /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */);
         this.setOutsideClickCallback(event => {
@@ -48,6 +49,14 @@ export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
         });
         ARIAUtils.markAsModalDialog(this.contentElement);
         this.targetDocumentKeyDownHandler = this.onKeyDown.bind(this);
+    }
+    set jslogContext(jslogContext) {
+        if (jslogContext) {
+            this.contentElement.setAttribute('jslog', `${VisualLogging.dialog(jslogContext).track({ resize: true, keydown: 'Escape' })}`);
+        }
+        else {
+            this.contentElement.removeAttribute('jslog');
+        }
     }
     static hasInstance() {
         return Dialog.dialogs.length > 0;
@@ -195,5 +204,74 @@ export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
         }
     }
     static dialogs = [];
+}
+export class DialogWidget extends Common.ObjectWrapper.eventMixin(Widget) {
+    #open = false;
+    #content = nothing;
+    #dialog = new Dialog();
+    constructor(element) {
+        super(element);
+        this.#dialog.setSizeBehavior("MeasureContent" /* SizeBehavior.MEASURE_CONTENT */);
+        this.#dialog.contentElement.tabIndex = -1;
+        this.#dialog.addEventListener("hidden" /* Events.HIDDEN */, () => {
+            this.#open = false;
+            this.dispatchEventToListeners("hidden" /* Events.HIDDEN */);
+        });
+    }
+    get open() {
+        return this.#open;
+    }
+    set open(open) {
+        if (this.#open !== open) {
+            this.#open = open;
+            this.requestUpdate();
+        }
+    }
+    #jslogContext = '';
+    get content() {
+        return this.#content;
+    }
+    set content(content) {
+        this.#content = content;
+        this.requestUpdate();
+    }
+    get jslogContext() {
+        return this.#jslogContext;
+    }
+    set jslogContext(jslogContext) {
+        if (this.#jslogContext !== jslogContext) {
+            this.#jslogContext = jslogContext;
+            this.#dialog.jslogContext = jslogContext;
+            this.requestUpdate();
+        }
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    willHide() {
+        super.willHide();
+        this.#dialog.hide();
+    }
+    onDetach() {
+        super.onDetach();
+        this.#dialog.hide();
+    }
+    performUpdate() {
+        if (this.open) {
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(this.#content ?? nothing, this.#dialog.contentElement);
+            if (!this.#dialog.isShowing()) {
+                this.#dialog.show(this.contentElement.ownerDocument);
+                this.#dialog.contentElement.focus();
+            }
+            else {
+                this.#dialog.positionContent();
+            }
+        }
+        else if (this.#dialog.isShowing()) {
+            this.#dialog.hide();
+        }
+    }
 }
 //# sourceMappingURL=Dialog.js.map

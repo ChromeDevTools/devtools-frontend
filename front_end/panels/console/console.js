@@ -4319,7 +4319,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
   #isForWarning;
   #callShowTooltip = false;
   #startTime = 0;
-  constructor(uuid, consoleViewMessage, element, view) {
+  constructor(uuid, consoleViewMessage, element, view, builtInAi = AiAssistanceModel3.BuiltInAi.BuiltInAi.instance()) {
     super(element);
     this.#view = view ?? DEFAULT_VIEW3;
     this.#uuid = uuid;
@@ -4329,7 +4329,7 @@ var ConsoleInsightTeaser = class extends UI5.Widget.Widget {
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#boundOnDownloadProgressChange = this.#onDownloadProgressChange.bind(this);
     this.#boundOnSessionCreation = this.#onSessionCreation.bind(this);
-    this.#builtInAi = AiAssistanceModel3.BuiltInAi.BuiltInAi.instance();
+    this.#builtInAi = builtInAi;
     this.#state = this.#builtInAi.hasSession() ? "ready" : "no-model";
     this.#callShowTooltip = true;
     this.requestUpdate();

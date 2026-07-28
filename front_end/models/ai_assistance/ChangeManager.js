@@ -13,11 +13,21 @@ function formatStyles(styles, indent = 2) {
  * primarily for stylesheet generation based on all changes.
  */
 export class ChangeManager {
+    #targetManager;
     #stylesheetMutex = new Common.Mutex.Mutex();
     #cssModelToStylesheetId = new Map();
     #stylesheetChanges = new Map();
     constructor(targetManager = SDK.TargetManager.TargetManager.instance()) {
-        targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+        this.#targetManager = targetManager;
+        this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+    }
+    dispose() {
+        this.#targetManager.removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.clear, this);
+        for (const cssModel of this.#cssModelToStylesheetId.keys()) {
+            cssModel.removeEventListener(SDK.CSSModel.Events.ModelDisposed, this.#onCssModelDisposed, this);
+        }
+        this.#cssModelToStylesheetId.clear();
+        this.#stylesheetChanges.clear();
     }
     async clear() {
         const models = Array.from(this.#cssModelToStylesheetId.keys());

@@ -1,5 +1,6 @@
 import '../../ui/components/tooltips/tooltips.js';
 import '../../ui/kit/kit.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import type * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ConsoleViewMessage } from './ConsoleViewMessage.js';
@@ -33,7 +34,7 @@ export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target
 export type View = typeof DEFAULT_VIEW;
 export declare class ConsoleInsightTeaser extends UI.Widget.Widget {
     #private;
-    constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View);
+    constructor(uuid: string, consoleViewMessage: ConsoleViewMessage, element?: HTMLElement, view?: View, builtInAi?: AiAssistanceModel.BuiltInAi.BuiltInAi);
     maybeGenerateTeaser(): void;
     abortTeaserGeneration(): {
         okToRemove: boolean;

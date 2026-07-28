@@ -75,6 +75,7 @@ import * as ScopeTreeCache from './ScopeTreeCache.js';
 import * as ScreenCaptureModel from './ScreenCaptureModel.js';
 import * as Script from './Script.js';
 import * as SDKModel from './SDKModel.js';
+import * as SDKSettings from './SDKSettings.js';
 import * as SecurityOriginManager from './SecurityOriginManager.js';
 import * as ServerSentEventProtocol from './ServerSentEventsProtocol.js';
 import * as ServerTiming from './ServerTiming.js';
@@ -160,6 +161,7 @@ export {
   ScreenCaptureModel,
   Script,
   SDKModel,
+  SDKSettings,
   SecurityOriginManager,
   ServerSentEventProtocol,
   ServerTiming,

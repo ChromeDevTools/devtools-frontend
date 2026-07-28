@@ -327,7 +327,7 @@ var scopeIdentifiers = async function(script, scope, ancestorScopes) {
 };
 var identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
 var resolveDebuggerScope = async (scope, debuggerWorkspaceBinding) => {
-  if (!scope.callFrame().debuggerModel.target().targetManager().settings.moduleSetting("js-source-maps-enabled").get()) {
+  if (!scope.callFrame().debuggerModel.target().targetManager().settings.resolve(SDK2.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
     return { variableMapping: /* @__PURE__ */ new Map(), thisMapping: null };
   }
   const script = scope.callFrame().script;
@@ -479,7 +479,7 @@ var resolveScopeChain = async function(callFrame, debuggerWorkspaceBinding) {
   return callFrame.scopeChain().map((scope) => new ScopeWithSourceMappedVariables(scope, thisObject, debuggerWorkspaceBinding));
 };
 var allVariablesInCallFrame = async (callFrame, debuggerWorkspaceBinding) => {
-  if (!callFrame.debuggerModel.target().targetManager().settings.moduleSetting("js-source-maps-enabled").get()) {
+  if (!callFrame.debuggerModel.target().targetManager().settings.resolve(SDK2.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
     return /* @__PURE__ */ new Map();
   }
   const cachedMap = cachedMapByCallFrame.get(callFrame);
@@ -511,7 +511,7 @@ var allVariablesAtPosition = async (location, debuggerWorkspaceBinding) => {
   if (!script) {
     return reverseMapping;
   }
-  if (!script.debuggerModel.target().targetManager().settings.moduleSetting("js-source-maps-enabled").get()) {
+  if (!script.debuggerModel.target().targetManager().settings.resolve(SDK2.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
     return reverseMapping;
   }
   const scopeTreeAndText = await computeScopeTree(script);

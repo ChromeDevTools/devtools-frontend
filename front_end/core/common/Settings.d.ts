@@ -207,6 +207,7 @@ export declare class Setting<V> {
     getIfNotDisabled(): V | undefined;
     forceGet(): Promise<V>;
     set(value: V): void;
+    setSettingType(type: SettingType): void;
     setRegistration(registration: SettingRegistration): void;
     type(): SettingType | null;
     options(): SimpleSettingOption[];

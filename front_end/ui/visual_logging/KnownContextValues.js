@@ -2612,6 +2612,7 @@ export const knownContextValues = new Set([
     'local-storage-for-domain',
     'locale',
     'location',
+    'location-dialog',
     'log-level',
     'logpoint',
     'long',

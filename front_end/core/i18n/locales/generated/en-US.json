@@ -470,9 +470,6 @@
   "core/sdk/sdk-meta.ts | critical": {
     "message": "Critical"
   },
-  "core/sdk/sdk-meta.ts | cssSourceMaps": {
-    "message": "CSS source maps"
-  },
   "core/sdk/sdk-meta.ts | customFormatters": {
     "message": "Custom formatters"
   },
@@ -491,14 +488,8 @@
   "core/sdk/sdk-meta.ts | disableCache": {
     "message": "Disable cache while DevTools is open"
   },
-  "core/sdk/sdk-meta.ts | disableCssSourceMaps": {
-    "message": "Disable CSS source maps"
-  },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Disable JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | disableJavaScriptSourceMaps": {
-    "message": "Disable JavaScript source maps"
   },
   "core/sdk/sdk-meta.ts | disableJpegXlFormat": {
     "message": "Disable JPEG XL format"
@@ -608,14 +599,8 @@
   "core/sdk/sdk-meta.ts | enableCache": {
     "message": "Enable cache"
   },
-  "core/sdk/sdk-meta.ts | enableCssSourceMaps": {
-    "message": "Enable CSS source maps"
-  },
   "core/sdk/sdk-meta.ts | enableJavascript": {
     "message": "Enable JavaScript"
-  },
-  "core/sdk/sdk-meta.ts | enableJavaScriptSourceMaps": {
-    "message": "Enable JavaScript source maps"
   },
   "core/sdk/sdk-meta.ts | enableJpegXlFormat": {
     "message": "Enable JPEG XL format"
@@ -661,9 +646,6 @@
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Highlight ad frames"
-  },
-  "core/sdk/sdk-meta.ts | javaScriptSourceMaps": {
-    "message": "JavaScript source maps"
   },
   "core/sdk/sdk-meta.ts | logXmlhttprequests": {
     "message": "Log XMLHttpRequests"
@@ -13457,6 +13439,15 @@
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "Add location"
   },
+  "panels/sensors/LocationsSettingsTab.ts | cancel": {
+    "message": "Cancel"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | close": {
+    "message": "Close"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | editLocation": {
+    "message": "Edit location"
+  },
   "panels/sensors/LocationsSettingsTab.ts | lat": {
     "message": "Lat"
   },
@@ -13504,6 +13495,9 @@
   },
   "panels/sensors/LocationsSettingsTab.ts | longitudeMustBeLessThanOrEqualTo": {
     "message": "Longitude must be less than or equal to {PH1}"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | save": {
+    "message": "Save"
   },
   "panels/sensors/LocationsSettingsTab.ts | timezoneId": {
     "message": "Timezone ID"
@@ -14849,6 +14843,9 @@
   "panels/sources/sources-meta.ts | createNewSnippet": {
     "message": "Create new snippet"
   },
+  "panels/sources/sources-meta.ts | cssSourceMaps": {
+    "message": "CSS source maps"
+  },
   "panels/sources/sources-meta.ts | deactivateBreakpoints": {
     "message": "Deactivate breakpoints"
   },
@@ -14872,6 +14869,12 @@
   },
   "panels/sources/sources-meta.ts | disableCodeFolding": {
     "message": "Disable code folding"
+  },
+  "panels/sources/sources-meta.ts | disableCssSourceMaps": {
+    "message": "Disable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | disableJavaScriptSourceMaps": {
+    "message": "Disable JavaScript source maps"
   },
   "panels/sources/sources-meta.ts | disableTabMovesFocus": {
     "message": "Disable tab moves focus"
@@ -14918,6 +14921,12 @@
   "panels/sources/sources-meta.ts | enableCodeFolding": {
     "message": "Enable code folding"
   },
+  "panels/sources/sources-meta.ts | enableCssSourceMaps": {
+    "message": "Enable CSS source maps"
+  },
+  "panels/sources/sources-meta.ts | enableJavaScriptSourceMaps": {
+    "message": "Enable JavaScript source maps"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Enable tab moves focus"
   },
@@ -14944,6 +14953,9 @@
   },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "Increment CSS unit by {PH1}"
+  },
+  "panels/sources/sources-meta.ts | javaScriptSourceMaps": {
+    "message": "JavaScript source maps"
   },
   "panels/sources/sources-meta.ts | jumpToNextEditingLocation": {
     "message": "Jump to next editing location"

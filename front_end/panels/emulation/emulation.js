@@ -37,8 +37,10 @@ import * as Common3 from "./../../core/common/common.js";
 import * as Host2 from "./../../core/host/host.js";
 import * as i18n5 from "./../../core/i18n/i18n.js";
 import * as Platform3 from "./../../core/platform/platform.js";
+import * as TextUtils from "./../../core/text_utils/text_utils.js";
 import * as EmulationModel2 from "./../../models/emulation/emulation.js";
 import * as Geometry from "./../../models/geometry/geometry.js";
+import * as Workspace from "./../../models/workspace/workspace.js";
 import * as UI3 from "./../../ui/legacy/legacy.js";
 import { Directives as Directives3, html as html3, nothing as nothing2, render as render3 } from "./../../ui/lit/lit.js";
 import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
@@ -2126,7 +2128,11 @@ var DEFAULT_DEVICE_MODE_VIEW = (input, _output, target) => {
         ` : nothing2}
       </div>
     </div>
-  `, target);
+  `, target, {
+    container: {
+      classes: ["device-mode-view"]
+    }
+  });
 };
 var DeviceModeView = class extends UI3.Widget.VBox {
   wrapperInstance;
@@ -2160,7 +2166,6 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     super({ useShadowDom: true });
     this.#view = view;
     this.setMinimumSize(150, 150);
-    this.element.classList.add("device-mode-view");
     this.registerRequiredCSS(deviceModeView_css_default);
     this.model = EmulationModel2.DeviceModeModel.DeviceModeModel.instance();
     this.model.addEventListener("Updated", this.updateUI, this);
@@ -2390,9 +2395,12 @@ var DeviceModeView = class extends UI3.Widget.VBox {
       const visiblePageRect = this.model.visiblePageRect().scale(scale);
       const contentLeft = screenRect.left + visiblePageRect.left - outlineRect.left;
       const contentTop = screenRect.top + visiblePageRect.top - outlineRect.top;
-      const canvas = document.createElement("canvas");
-      canvas.width = Math.floor(outlineRect.width);
-      canvas.height = Math.min(1 << 14, Math.floor(outlineRect.height));
+      const canvas = new OffscreenCanvas(
+        Math.floor(outlineRect.width),
+        // Cap the height to not hit the GPU limit.
+        // https://crbug.com/1260828
+        Math.min(1 << 14, Math.floor(outlineRect.height))
+      );
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) {
         throw new Error("Could not get 2d context from canvas.");
@@ -2405,7 +2413,7 @@ var DeviceModeView = class extends UI3.Widget.VBox {
         await this.paintImage(ctx, this.model.screenImage(), screenRect.relativeTo(outlineRect));
       }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-      this.saveScreenshot(canvas);
+      void this.saveScreenshot(canvas);
     };
   }
   async captureFullSizeScreenshot() {
@@ -2426,16 +2434,19 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     const pageImage = new Image();
     pageImage.src = "data:image/png;base64," + screenshot;
     pageImage.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = pageImage.naturalWidth;
-      canvas.height = Math.min(1 << 14, Math.floor(pageImage.naturalHeight));
+      const canvas = new OffscreenCanvas(
+        pageImage.naturalWidth,
+        // Cap the height to not hit the GPU limit.
+        // https://crbug.com/1260828
+        Math.min(1 << 14, Math.floor(pageImage.naturalHeight))
+      );
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) {
         throw new Error("Could not get 2d context for base64 screenshot.");
       }
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(pageImage, 0, 0);
-      this.saveScreenshot(canvas);
+      void this.saveScreenshot(canvas);
     };
   }
   paintImage(ctx, src, rect) {
@@ -2450,7 +2461,7 @@ var DeviceModeView = class extends UI3.Widget.VBox {
       };
     });
   }
-  saveScreenshot(canvas) {
+  async saveScreenshot(canvas) {
     const url = this.model.inspectedURL();
     let fileName = "";
     if (url) {
@@ -2461,15 +2472,28 @@ var DeviceModeView = class extends UI3.Widget.VBox {
     if (device && this.model.type() === EmulationModel2.DeviceModeModel.Type.Device) {
       fileName += `(${device.title})`;
     }
-    const link = document.createElement("a");
-    link.download = fileName + ".png";
-    canvas.toBlob((blob) => {
-      if (blob === null) {
-        return;
-      }
-      link.href = URL.createObjectURL(blob);
-      link.click();
+    fileName += ".png";
+    const blob = await canvas.convertToBlob({ type: "image/png" });
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
     });
+    const base64 = dataUrl.slice(dataUrl.indexOf(",") + 1);
+    const contentData = new TextUtils.ContentData.ContentData(
+      base64,
+      /* isBase64=*/
+      true,
+      "image/png"
+    );
+    await Workspace.FileManager.FileManager.instance().save(
+      fileName,
+      contentData,
+      /* forceSaveAs=*/
+      true
+    );
+    Workspace.FileManager.FileManager.instance().close(fileName);
   }
 };
 var DEFAULT_RULER_VIEW = (input, output, target) => {

@@ -4,7 +4,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
-let builtInAiInstance;
 export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper {
     #availability = null;
     #hasGpu;
@@ -13,10 +12,10 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper {
     #downloadProgress = null;
     #currentlyCreatingSession = false;
     static instance() {
-        if (builtInAiInstance === undefined) {
-            builtInAiInstance = new BuiltInAi();
+        if (!Root.DevToolsContext.globalInstance().has(BuiltInAi)) {
+            Root.DevToolsContext.globalInstance().set(BuiltInAi, new BuiltInAi());
         }
-        return builtInAiInstance;
+        return Root.DevToolsContext.globalInstance().get(BuiltInAi);
     }
     constructor() {
         super();
@@ -79,6 +78,12 @@ export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper {
         }, 1000);
     }
     #isGpuAvailable() {
+        // In node-based API tests, there is no global `document` available. Since this
+        // class is instantiated during Universe bootstrapping, we need to guard against
+        // using document when not in the browser.
+        if (typeof document === 'undefined') {
+            return false;
+        }
         const canvas = document.createElement('canvas');
         try {
             const webgl = canvas.getContext('webgl');
@@ -165,7 +170,7 @@ Your instructions are as follows:
         this.#currentlyCreatingSession = false;
     }
     static removeInstance() {
-        builtInAiInstance = undefined;
+        Root.DevToolsContext.globalInstance().delete(BuiltInAi);
     }
     async *getConsoleInsight(prompt, abortController) {
         if (!this.#consoleInsightsSession) {

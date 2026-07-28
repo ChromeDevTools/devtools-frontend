@@ -5,22 +5,23 @@
 import {exec} from 'node:child_process';
 import {promisify} from 'node:util';
 
+import {type Cluster, getFlakyClusters} from './fetch_luci_test_clusters.ts';
+
 const execAsync = promisify(exec);
 
 async function main() {
   // Start both commands in parallel
-  const flakyPromise = execAsync('python3 scripts/fetch_luci_test_clusters.py --format=json', {encoding: 'utf-8'});
+  const flakyPromise = getFlakyClusters(1);
   const disabledPromise =
       execAsync('node scripts/extract_bugs.ts --format=json --sources devtools', {encoding: 'utf-8'});
 
-  let flakyOutput = '';
   let disabledOutput = '';
   let flakyError: Error|null = null;
   let disabledError: Error|null = null;
+  let clusters: Cluster[] = [];
 
   try {
-    const flakyResult = await flakyPromise;
-    flakyOutput = flakyResult.stdout;
+    clusters = await flakyPromise;
   } catch (e) {
     flakyError = e instanceof Error ? e : new Error(String(e));
   }
@@ -37,16 +38,7 @@ async function main() {
   console.log('='.repeat(80));
   console.log();
 
-  let clusters = [];
-  let bugs = [];
-
-  if (!flakyError) {
-    try {
-      clusters = JSON.parse(flakyOutput);
-    } catch (error) {
-      flakyError = new Error('Failed to parse flaky tests JSON', {cause: error});
-    }
-  }
+  let bugs: Array<{bug: string, file: string}> = [];
 
   if (!disabledError) {
     try {

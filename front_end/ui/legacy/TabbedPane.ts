@@ -506,6 +506,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   protected clearMeasuredWidths(): void {
+    delete this.measuredDropDownButtonWidth;
     for (let i = 0; i < this.#tabs.length; ++i) {
       delete this.#tabs[i].measuredWidth;
     }
@@ -842,7 +843,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private maybeShowDropDown(hasMoreTabs: boolean): void {
     // The legacy chevron is suppressed when a trailing-button slot is
     // populated; the slotted element takes its place.
-    const shouldShow = this.#trailingSlot.assignedElements().length === 0 && hasMoreTabs;
+    const shouldShow = this.#trailingSlot.assignedElements().length === 0 && hasMoreTabs &&
+        this.totalWidth() >= (this.measuredDropDownButtonWidth || 0);
     if (shouldShow && !this.dropDownButton.parentElement) {
       this.headerContentsElement.appendChild(this.dropDownButton);
     } else if (!shouldShow && this.dropDownButton.parentElement) {
@@ -942,7 +944,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.dropDownButton.classList.add('measuring');
     this.headerContentsElement.appendChild(this.dropDownButton);
-    this.measuredDropDownButtonWidth = this.dropDownButton.getBoundingClientRect().width;
+    const width = this.dropDownButton.getBoundingClientRect().width;
+    if (width > 0) {
+      this.measuredDropDownButtonWidth = width;
+    }
     this.headerContentsElement.removeChild(this.dropDownButton);
     this.dropDownButton.classList.remove('measuring');
   }

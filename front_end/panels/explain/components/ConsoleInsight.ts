@@ -10,6 +10,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -861,12 +862,9 @@ export class ConsoleInsight extends UI.Widget.Widget {
   // off -> entrypoints are shown, and point to the AI setting panel where the setting can be turned on
   // on -> entrypoints are shown, and console insights can be generated
   #getConsoleInsightsEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
-    try {
-      return Common.Settings.Settings.instance().moduleSetting('console-insights-enabled') as
-          Common.Settings.Setting<boolean>;
-    } catch {
-      return;
-    }
+    const result = Common.Settings.Settings.instance().maybeResolve(
+        AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor);
+    return 'setting' in result ? (result.setting as Common.Settings.Setting<boolean>) : undefined;
   }
 
   // off -> consent reminder is shown, unless the 'console-insights-enabled'-setting has been enabled in the current DevTools session

@@ -4,10 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Console from '../../panels/console/console.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as SettingUIRegistration from '../../ui/settings/settings.js';
 
 const UIStrings = {
   /**
@@ -27,27 +28,9 @@ const UIStrings = {
    * the settings tab.
    */
   enableConsoleInsights: 'Understand console messages with AI',
-  /**
-   * @description Message shown to the user if the DevTools locale is not
-   * supported.
-   */
-  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings.',
-  /**
-   * @description Message shown to the user if the user's region is not
-   * supported.
-   */
-  geoRestricted: 'This feature is unavailable in your region.',
-  /**
-   * @description Message shown to the user if the enterprise policy does
-   * not allow this feature.
-   */
-  policyRestricted: 'This setting is managed by your administrator.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const setting = 'console-insights-enabled';
 
 const actions = [
   {
@@ -92,11 +75,6 @@ const actions = [
   },
 ];
 
-function isLocaleRestricted(): boolean {
-  const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
-  return !devtoolsLocale.locale.startsWith('en-');
-}
-
 function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
   return config?.aidaAvailability?.blockedByGeo === true;
 }
@@ -109,31 +87,11 @@ function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && config?.devToolsConsoleInsights?.enabled) === true;
 }
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.AI,
-  settingName: setting,
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  title: i18nLazyString(UIStrings.enableConsoleInsights),
-  defaultValue: false,
-  reloadRequired: false,
-  condition: config => isFeatureEnabled(config),
-  disabledCondition: config => {
-    const reasons: Platform.UIString.LocalizedString[] = [];
-    if (isGeoRestricted(config)) {
-      reasons.push(i18nString(UIStrings.geoRestricted));
-    }
-    if (isPolicyRestricted(config)) {
-      reasons.push(i18nString(UIStrings.policyRestricted));
-    }
-    if (isLocaleRestricted()) {
-      reasons.push(i18nString(UIStrings.wrongLocale));
-    }
-    if (reasons.length > 0) {
-      return {disabled: true, reasons};
-    }
-    return {disabled: false};
-  },
-});
+SettingUIRegistration.SettingUIRegistration.register(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor,
+                                                     {
+                                                       category: Common.Settings.SettingCategory.AI,
+                                                       title: i18nLazyString(UIStrings.enableConsoleInsights),
+                                                     });
 
 for (const action of actions) {
   UI.ActionRegistration.registerActionExtension({

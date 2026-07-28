@@ -104,6 +104,7 @@ devtools_entrypoint("bundle") {
     "../../panels/common/*",
     "../../panels/console/*",
     "../../panels/elements/*",
+    "../../panels/explain/*",
     "../../panels/network/*",
     "../../panels/settings/*",
     "../../panels/sources/*",

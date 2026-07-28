@@ -4,10 +4,77 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 
 import {debugLog} from './debug.js';
+
+export const enum DisabledReason {
+  GEO_RESTRICTED = 'geo-restricted',
+  POLICY_RESTRICTED = 'policy-restricted',
+  WRONG_LOCALE = 'wrong-locale',
+  NOT_SUPPORTED = 'not-supported',
+}
+
+function isLocaleRestricted(): boolean {
+  try {
+    const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
+    return !devtoolsLocale.locale.startsWith('en-');
+  } catch {
+    return false;
+  }
+}
+
+function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.aidaAvailability?.blockedByGeo === true;
+}
+
+function isPolicyRestricted(config?: Root.Runtime.HostConfig): boolean {
+  return config?.aidaAvailability?.blockedByEnterprisePolicy === true;
+}
+
+function isConsoleInsightsFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
+  return config?.aidaAvailability?.enabled !== false && config?.devToolsConsoleInsights?.enabled === true;
+}
+
+export const consoleInsightsEnabledSettingDescriptor:
+    Common.Settings.ConditionalSettingDescriptor<boolean, DisabledReason[]> = {
+  name: 'console-insights-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  isAvailable: (config?: Root.Runtime.HostConfig): Common.Settings.SettingAvailabilityStatus<DisabledReason[]> => {
+    if (!isConsoleInsightsFeatureEnabled(config)) {
+      return {
+        status: Common.Settings.SettingAvailability.UNAVAILABLE,
+        reason: [DisabledReason.NOT_SUPPORTED],
+      };
+    }
+    const reasons: DisabledReason[] = [];
+    if (isGeoRestricted(config)) {
+      reasons.push(DisabledReason.GEO_RESTRICTED);
+    }
+    if (isPolicyRestricted(config)) {
+      reasons.push(DisabledReason.POLICY_RESTRICTED);
+    }
+    if (isLocaleRestricted()) {
+      reasons.push(DisabledReason.WRONG_LOCALE);
+    }
+    if (reasons.length > 0) {
+      return {
+        status: Common.Settings.SettingAvailability.DISABLED,
+        reason: reasons,
+      };
+    }
+    return {
+      status: Common.Settings.SettingAvailability.AVAILABLE,
+    };
+  },
+};
+
+export function isGeminiBranding(): boolean {
+  return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+}
 
 /**
  * Preconditions determined entirely on the DevTools frontend side (e.g. Incognito
@@ -51,10 +118,6 @@ export function getDisabledReasons(aidaAvailability: Host.AidaClient.AidaAccessP
   }
 
   return reasons;
-}
-
-export function isGeminiBranding(): boolean {
-  return !!Root.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 
 export function getIconName(): string {

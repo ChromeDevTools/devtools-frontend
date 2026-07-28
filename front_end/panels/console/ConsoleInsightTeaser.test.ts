@@ -33,6 +33,14 @@ describeWithEnvironment('ConsoleInsightTeaser', () => {
   beforeEach(() => {
     // @ts-expect-error
     originalLanguageModel = window.LanguageModel;
+    updateHostConfig({
+      aidaAvailability: {
+        enabled: true,
+      },
+      devToolsConsoleInsights: {
+        enabled: true,
+      },
+    });
   });
 
   afterEach(() => {

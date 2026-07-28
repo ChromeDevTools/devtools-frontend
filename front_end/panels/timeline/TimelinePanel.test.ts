@@ -625,7 +625,7 @@ describe('TimelinePanel', function() {
       assert.strictEqual(showDialogStub.getCall(0).args[1], 'Load CPU profile?');
       assert.isUndefined(showDialogStub.getCall(0).args[2]);
       assert.deepEqual(showDialogStub.getCall(0).args[3], {jslogContext: 'load-cpu-profile-confirmation'});
-      sinon.assert.calledOnceWithExactly(loadFromCpuProfileStub, fakeCpuProfile);
+      sinon.assert.calledOnceWithExactly(loadFromCpuProfileStub, fakeCpuProfile, 'Test Profile');
       sinon.assert.calledOnceWithExactly(showViewStub, 'timeline');
     });
 
@@ -695,6 +695,36 @@ describe('TimelinePanel', function() {
       sinon.assert.calledTwice(showDialogStub);
       assert.strictEqual(showDialogStub.getCall(1).args[0],
                          'Do you want to load the recorded CPU profile "Profile 2" into the Performance panel?');
+    });
+
+    it('continues processing subsequent profiles even if a previous profile load fails', async function() {
+      const showDialogStub = sinon.stub(UI.UIUtils.ConfirmDialog, 'show').resolves(true);
+      const showViewStub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
+      showViewStub.onFirstCall().rejects(new Error('Failed to show view'));
+      showViewStub.onSecondCall().resolves();
+
+      sinon.stub(timeline, 'loadFromCpuProfile' as keyof Timeline.TimelinePanel.TimelinePanel);
+      const fakeCpuProfile = {} as Protocol.Profiler.Profile;
+
+      const revealer1 = new Timeline.TimelinePanel.ProfileFinishedRevealer();
+      const revealer2 = new Timeline.TimelinePanel.ProfileFinishedRevealer();
+
+      const p1 = revealer1.reveal({title: 'Profile 1', cpuProfile: fakeCpuProfile} as
+                                  SDK.CPUProfilerModel.ProfileFinishedData);
+      const p2 = revealer2.reveal({title: 'Profile 2', cpuProfile: fakeCpuProfile} as
+                                  SDK.CPUProfilerModel.ProfileFinishedData);
+
+      let p1Error: Error|null = null;
+      try {
+        await p1;
+      } catch (err) {
+        p1Error = err as Error;
+      }
+      assert.isNotNull(p1Error);
+      assert.strictEqual(p1Error?.message, 'Failed to show view');
+      await p2;
+
+      sinon.assert.calledTwice(showDialogStub);
     });
   });
 });

@@ -1046,12 +1046,12 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, t
     this.#minimapComponent.highlightBounds(bounds, /* withBracket */ false);
   }
 
-  loadFromCpuProfile(profile: Protocol.Profiler.Profile|null): void {
+  loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, title?: string): void {
     if (this.state !== State.IDLE || profile === null) {
       return;
     }
     this.prepareToLoadTimeline();
-    this.loader = TimelineLoader.loadFromCpuProfile(profile, this);
+    this.loader = TimelineLoader.loadFromCpuProfile(profile, this, title);
   }
 
   private setState(state: State): void {
@@ -3256,21 +3256,21 @@ export class ProfileFinishedRevealer implements Common.Revealer.Revealer<SDK.CPU
   static #consoleProfilePromiseChain: Promise<void> = Promise.resolve();
 
   async reveal(data: SDK.CPUProfilerModel.ProfileFinishedData): Promise<void> {
-    ProfileFinishedRevealer.#consoleProfilePromiseChain =
-        ProfileFinishedRevealer.#consoleProfilePromiseChain.then(async () => {
-          const title = data.title || 'Untitled';
-          const confirmed = await UI.UIUtils.ConfirmDialog.show(
-              i18nString(UIStrings.loadCpuProfileConfirmation, {PH1: title}),
-              i18nString(UIStrings.loadCpuProfileHeader),
-              undefined,
-              {jslogContext: 'load-cpu-profile-confirmation'},
-          );
-          if (confirmed) {
-            await UI.ViewManager.ViewManager.instance().showView('timeline');
-            TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile);
-          }
-        });
-    return await ProfileFinishedRevealer.#consoleProfilePromiseChain;
+    const taskPromise = ProfileFinishedRevealer.#consoleProfilePromiseChain.then(async () => {
+      const title = data.title || 'Untitled';
+      const confirmed = await UI.UIUtils.ConfirmDialog.show(
+          i18nString(UIStrings.loadCpuProfileConfirmation, {PH1: title}),
+          i18nString(UIStrings.loadCpuProfileHeader),
+          undefined,
+          {jslogContext: 'load-cpu-profile-confirmation'},
+      );
+      if (confirmed) {
+        await UI.ViewManager.ViewManager.instance().showView('timeline');
+        TimelinePanel.instance().loadFromCpuProfile(data.cpuProfile, title);
+      }
+    });
+    ProfileFinishedRevealer.#consoleProfilePromiseChain = taskPromise.catch(() => {});
+    return await taskPromise;
   }
 }
 

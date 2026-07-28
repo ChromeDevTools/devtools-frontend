@@ -211,6 +211,7 @@ export interface PersistedTraceVisualConfig {
  * on load.
  */
 export interface MetaData {
+  title?: string;
   source?: 'DevTools';
   startTime?: string;
   emulatedDeviceTitle?: string;

@@ -91,7 +91,7 @@ export class TimelineLoader {
     return loader;
   }
 
-  static loadFromCpuProfile(profile: Protocol.Profiler.Profile, client: Client): TimelineLoader {
+  static loadFromCpuProfile(profile: Protocol.Profiler.Profile, client: Client, title?: string): TimelineLoader {
     const loader = new TimelineLoader(client);
     loader.#traceIsCPUProfile = true;
 
@@ -101,7 +101,7 @@ export class TimelineLoader {
 
       window.setTimeout(async () => {
         try {
-          await loader.addEvents(contents.traceEvents, null);
+          await loader.addEvents(contents.traceEvents, title ? {title} : null);
         } catch (e: unknown) {
           loader.reportErrorAndCancelLoading(e instanceof Error ? e.message : undefined);
         }
@@ -122,9 +122,8 @@ export class TimelineLoader {
         Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').get();
     Host.ResourceLoader.loadAsStream(url, null, stream, finishedCallback, allowRemoteFilePaths);
 
-    async function finishedCallback(
-        success: boolean, _headers: Record<string, string>,
-        errorDescription: Host.ResourceLoader.LoadErrorDescription): Promise<void> {
+    async function finishedCallback(success: boolean, _headers: Record<string, string>,
+                                    errorDescription: Host.ResourceLoader.LoadErrorDescription): Promise<void> {
       if (!success) {
         return loader.reportErrorAndCancelLoading(errorDescription.message);
       }
@@ -177,8 +176,8 @@ export class TimelineLoader {
     }
   }
 
-  async addEvents(events: readonly Trace.Types.Events.Event[], metadata: Trace.Types.File.MetaData|null):
-      Promise<void> {
+  async addEvents(events: readonly Trace.Types.Events.Event[],
+                  metadata: Trace.Types.File.MetaData|null): Promise<void> {
     try {
       this.#metadata = metadata;
       this.client?.loadingStarted();

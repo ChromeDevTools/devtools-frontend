@@ -228,7 +228,17 @@ export class CommandMenu {
       if (!options || !registeredSettingUI.uiDescriptor.category) {
         continue;
       }
-      const setting = Common.Settings.Settings.instance().resolve(registeredSettingUI.descriptor);
+      let setting: Common.Settings.Setting<unknown>;
+      if ('isAvailable' in registeredSettingUI.descriptor) {
+        const settingResult = Common.Settings.Settings.instance().maybeResolve(
+            registeredSettingUI.descriptor as Common.Settings.ConditionalSettingDescriptor<unknown, unknown>);
+        if (!('setting' in settingResult)) {
+          continue;
+        }
+        setting = settingResult.setting;
+      } else {
+        setting = Common.Settings.Settings.instance().resolve(registeredSettingUI.descriptor);
+      }
       for (const pair of options) {
         this.#commands.push(
             CommandMenu.createSettingCommand(setting, pair.title(), pair.value, registeredSettingUI.uiDescriptor));

@@ -1907,7 +1907,10 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
             this.project.id() as Platform.DevToolsPath.UrlString),
         '/', this.folderPath);
-    const hasMappedFiles =
+    const isOverrides =
+        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
+    const hasMappedFiles = isOverrides ?
+        Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() :
         Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
     this.treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
   }
@@ -2094,7 +2097,11 @@ export class NavigatorGroupTreeNode extends NavigatorTreeNode {
     const fileSystemPath = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
         this.project.id() as Platform.DevToolsPath.UrlString);
     const wasActive = this.treeElement.listItemElement.classList.contains('has-mapped-files');
-    const isActive = Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
+    const isOverrides =
+        Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === 'overrides';
+    const isActive = isOverrides ?
+        Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() :
+        Persistence.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
     if (wasActive === isActive) {
       return;
     }

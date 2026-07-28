@@ -467,9 +467,8 @@ describe('NetworkNavigatorView', () => {
       const nodeBSelectSpy = sinon.spy(nodeB, 'select');
       const nodeCSelectSpy = sinon.spy(nodeC, 'select');
 
-      dispatchEvent(
-          target, 'Runtime.executionContextDestroyed',
-          {executionContextId: 2 as Protocol.Runtime.ExecutionContextId, executionContextUniqueId: 'c2'});
+      dispatchEvent(target, 'Runtime.executionContextDestroyed',
+                    {executionContextId: 2 as Protocol.Runtime.ExecutionContextId, executionContextUniqueId: 'c2'});
 
       sinon.assert.notCalled(nodeBSelectSpy);
       sinon.assert.called(nodeCSelectSpy);
@@ -771,6 +770,78 @@ describe('FilesNavigatorView', () => {
       throw new Error('Content data is an error: ' + contentData.error);
     }
     assert.strictEqual(contentData.text, 'testme');
+
+    project.removeProject();
+  });
+});
+
+describe('OverridesNavigatorView', () => {
+  setupRuntimeHooks();
+  setupLocaleHooks();
+
+  let workspace: Workspace.Workspace.WorkspaceImpl;
+  let backend: MockDebuggerBackend;
+  let networkProjectManager: Bindings.NetworkProject.NetworkProjectManager;
+
+  beforeEach(() => {
+    backend = new MockDebuggerBackend();
+    workspace = backend.universe.workspace;
+    const targetManager = backend.universe.targetManager;
+
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(workspace);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(targetManager);
+    sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+    sinon.stub(Common.Settings.Settings, 'instance').returns(backend.universe.settings);
+
+    const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings: backend.universe.settings,
+    });
+    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+
+    networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
+  });
+
+  afterEach(async () => {
+    sinon.restore();
+    await deinitializeGlobalVars();
+  });
+
+  it('marks override items as active (has-mapped-files) when overrides are enabled', async () => {
+    const {project} = createFileSystemUISourceCode({
+      url: urlString`file:///home/workspace/overrides/.headers`,
+      mimeType: 'text/plain',
+      fileSystemPath: 'file:///home/workspace/overrides',
+      type: Persistence.PlatformFileSystem.PlatformFileSystemType.OVERRIDES,
+      universe: backend.universe,
+    });
+
+    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(true);
+
+    const navigatorView =
+        Sources.SourcesNavigator.OverridesNavigatorView.instance({forceNew: true, networkProjectManager});
+
+    const rootElement = navigatorView.scriptsTree.rootElement();
+    const children = rootElement.children();
+    assert.lengthOf(children, 1);
+    const overridesNode = children[0];
+    assert.isTrue(overridesNode.listItemElement.classList.contains('has-mapped-files'));
+
+    // Setup a listener promise since toggling the 'persistence-network-overrides-enabled' will fire an event
+    const updatePromise = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().once(
+        Persistence.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED);
+
+    Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
+    // Waiting for the event to be fired
+    await updatePromise;
+
+    const disabledOverridesNode = rootElement.children()[0];
+    assert.isFalse(disabledOverridesNode.listItemElement.classList.contains('has-mapped-files'));
 
     project.removeProject();
   });

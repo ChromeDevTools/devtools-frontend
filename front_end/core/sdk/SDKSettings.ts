@@ -30,3 +30,9 @@ export const pauseOnExceptionEnabledSettingDescriptor: Common.Settings.SettingDe
   type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
 };
+
+export const pauseOnCaughtExceptionSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'pause-on-caught-exception',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

@@ -895,7 +895,8 @@ export class SourcesPanel extends UI.Panel.Panel implements
     debugToolbarDrawer.classList.add('scripts-debug-toolbar-drawer');
 
     const label = i18nString(UIStrings.pauseOnCaughtExceptions);
-    const setting = Common.Settings.Settings.instance().moduleSetting('pause-on-caught-exception');
+    const setting =
+        Common.Settings.Settings.instance().resolve(SDK.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
     debugToolbarDrawer.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(label, setting));
 
     return debugToolbarDrawer;

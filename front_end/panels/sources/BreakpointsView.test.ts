@@ -898,7 +898,8 @@ describe('BreakpointsSidebarController', () => {
         assert.strictEqual(data.pauseOnUncaughtExceptions, pauseOnUncaughtExceptions);
         assert.strictEqual(data.pauseOnCaughtExceptions, pauseOnCaughtExceptions);
         assert.strictEqual(settings.moduleSetting('pause-on-uncaught-exception').get(), pauseOnUncaughtExceptions);
-        assert.strictEqual(settings.moduleSetting('pause-on-caught-exception').get(), pauseOnCaughtExceptions);
+        assert.strictEqual(settings.resolve(SDK.SDKSettings.pauseOnCaughtExceptionSettingDescriptor).get(),
+                           pauseOnCaughtExceptions);
       }
     }
   });

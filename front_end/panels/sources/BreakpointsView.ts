@@ -174,7 +174,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
     this.#breakpointsActiveSetting.addChangeListener(this.update, this);
     this.#pauseOnUncaughtExceptionSetting = settings.moduleSetting('pause-on-uncaught-exception');
     this.#pauseOnUncaughtExceptionSetting.addChangeListener(this.update, this);
-    this.#pauseOnCaughtExceptionSetting = settings.moduleSetting('pause-on-caught-exception');
+    this.#pauseOnCaughtExceptionSetting = settings.resolve(SDK.SDKSettings.pauseOnCaughtExceptionSettingDescriptor);
     this.#pauseOnCaughtExceptionSetting.addChangeListener(this.update, this);
   }
 

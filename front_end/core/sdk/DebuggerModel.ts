@@ -15,7 +15,7 @@ import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTr
 import {type EvaluationOptions, type EvaluationResult, type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {Script} from './Script.js';
 import {SDKModel} from './SDKModel.js';
-import {jsSourceMapsEnabledSettingDescriptor} from './SDKSettings.js';
+import {jsSourceMapsEnabledSettingDescriptor, pauseOnExceptionEnabledSettingDescriptor} from './SDKSettings.js';
 import {SourceMap} from './SourceMap.js';
 import {SourceMapManager} from './SourceMapManager.js';
 import {Capability, type Target} from './Target.js';
@@ -175,7 +175,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                  compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
 
     const settings = this.target().targetManager().settings;
-    settings.moduleSetting('pause-on-exception-enabled').addChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
+        .addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('pause-on-caught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('pause-on-uncaught-exception').addChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('disable-async-stack-traces').addChangeListener(this.asyncStackTracesStateChanged, this);
@@ -868,7 +869,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       debuggerIdToModel.delete(this.#debuggerId);
     }
     const settings = this.target().targetManager().settings;
-    settings.moduleSetting('pause-on-exception-enabled').removeChangeListener(this.pauseOnExceptionStateChanged, this);
+    settings.resolve(pauseOnExceptionEnabledSettingDescriptor)
+        .removeChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('pause-on-caught-exception').removeChangeListener(this.pauseOnExceptionStateChanged, this);
     settings.moduleSetting('disable-async-stack-traces').removeChangeListener(this.asyncStackTracesStateChanged, this);
   }

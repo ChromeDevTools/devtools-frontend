@@ -24,3 +24,9 @@ export const preserveConsoleLogSettingDescriptor: Common.Settings.SettingDescrip
   defaultValue: false,
   storageType: Common.Settings.SettingStorageType.SYNCED,
 };
+
+export const pauseOnExceptionEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
+  name: 'pause-on-exception-enabled',
+  type: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+};

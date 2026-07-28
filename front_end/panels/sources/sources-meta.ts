@@ -19,6 +19,14 @@ import type * as Sources from './sources.js';
 
 const UIStrings = {
   /**
+   * @description Text for pausing the debugger on exceptions.
+   */
+  pauseOnExceptions: 'Pause on exceptions',
+  /**
+   * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
+   */
+  doNotPauseOnExceptions: 'Do not pause on exceptions',
+  /**
    * @description Command for showing the 'Sources' tool
    */
   showSources: 'Show Sources',
@@ -1563,6 +1571,20 @@ SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.cssSourceMapsEnabledSe
     {
       value: false,
       title: i18nLazyString(UIStrings.disableCssSourceMaps),
+    },
+  ],
+});
+
+SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.pauseOnExceptionEnabledSettingDescriptor, {
+  category: Common.Settings.SettingCategory.DEBUGGER,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.pauseOnExceptions),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.doNotPauseOnExceptions),
     },
   ],
 });

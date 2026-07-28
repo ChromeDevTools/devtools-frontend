@@ -7,14 +7,6 @@ import * as i18n from '../i18n/i18n.js';
 
 const UIStrings = {
   /**
-   * @description Text for pausing the debugger on exceptions.
-   */
-  pauseOnExceptions: 'Pause on exceptions',
-  /**
-   * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
-   */
-  doNotPauseOnExceptions: 'Do not pause on exceptions',
-  /**
    * @description Title of a setting under the Debugger category that can be invoked through the Command Menu.
    */
   disableJavascript: 'Disable JavaScript',
@@ -462,23 +454,6 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.DEBUGGER,
-  settingName: 'pause-on-exception-enabled',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.pauseOnExceptions),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.doNotPauseOnExceptions),
-    },
-  ],
-});
 
 Common.Settings.registerSettingExtension({
   settingName: 'pause-on-caught-exception',

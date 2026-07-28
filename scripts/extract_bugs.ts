@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {globSync, readFileSync} from 'node:fs';
+import {existsSync, globSync, readFileSync} from 'node:fs';
 import * as ts from 'typescript';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
+
+import {parseExpectations} from '../test/conductor/test_expectations_parser.js';
 
 const argv = yargs(hideBin(process.argv))
                  .option('format', {
@@ -83,6 +85,21 @@ if (argv.sources.includes('devtools')) {
     extract(ts.createSourceFile(
         file, readFileSync(file).toString(), ts.ScriptTarget.ESNext,
         /* setParentNodes */ true));
+  }
+
+  const devtoolsExpectationsPath = 'test/TestExpectations';
+  if (existsSync(devtoolsExpectationsPath)) {
+    const content = readFileSync(devtoolsExpectationsPath, 'utf-8');
+    const expectations = parseExpectations(content);
+    for (const exp of expectations) {
+      if (!exp.isCommentOrEmpty && exp.results?.includes('Skip')) {
+        for (const bug of exp.bugs || []) {
+          const bugId = bug.replace('crbug.com/', '');
+          bugs.add(bugId);
+          bugToFile.set(bugId, exp.testName || '');
+        }
+      }
+    }
   }
 }
 

@@ -37,10 +37,9 @@ export interface ScreenshotState {
 
 async function takeScreenshots(state: ScreenshotState): Promise<{inspectedPage?: string, devToolsPage?: string}> {
   try {
-    const {devToolsPage, inspectedPage} = state;
-    const inspectedPageScreenshot = await inspectedPage?.screenshot();
-    const devToolsPageScreenshot = devToolsPage ? await devToolsPage.screenshot() : undefined;
-    return {inspectedPage: inspectedPageScreenshot, devToolsPage: devToolsPageScreenshot};
+    const inspectedPage = await state.inspectedPage?.screenshot();
+    const devToolsPage = await state.devToolsPage?.screenshot();
+    return {inspectedPage, devToolsPage};
   } catch (err) {
     console.error('Error taking a screenshot', err);
     return {};

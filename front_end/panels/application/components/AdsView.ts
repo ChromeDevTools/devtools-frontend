@@ -101,7 +101,9 @@ interface AdFrameNodeData {
   elementId: string;
   initialOrigin: string;
   networkBytes: string;
+  rawNetworkBytes: number;
   cpuTime: string;
+  rawCpuTime: number;
   revealFrame: (e: Event) => void;
 }
 
@@ -206,10 +208,10 @@ const DEFAULT_VIEW: View = (input, output, target) => {
         <devtools-data-grid striped resize="last" class="ad-frames-data-grid" name=${i18nString(UIStrings.adIframes)}>
           <table>
             <tr>
-              <th id="elementId" weight="1">${i18nString(UIStrings.elementId)}</th>
-              <th id="initialOrigin" weight="2">${i18nString(UIStrings.initialOrigin)}</th>
-              <th id="cpuTime" weight="1">${i18nString(UIStrings.cpu)}</th>
-              <th id="networkBytes" weight="1">${i18nString(UIStrings.network)}</th>
+              <th id="elementId" weight="1" sortable>${i18nString(UIStrings.elementId)}</th>
+              <th id="initialOrigin" weight="2" sortable>${i18nString(UIStrings.initialOrigin)}</th>
+              <th id="cpuTime" weight="1" sortable type="numeric">${i18nString(UIStrings.cpu)}</th>
+              <th id="networkBytes" weight="1" sortable type="numeric">${i18nString(UIStrings.network)}</th>
             </tr>
             ${input.adFrames.map(frame => html`
               <tr>
@@ -223,8 +225,8 @@ const DEFAULT_VIEW: View = (input, output, target) => {
                     : Lit.nothing}
                 </td>
                 <td title=${frame.initialOrigin}>${frame.initialOrigin}</td>
-                <td title=${frame.cpuTime}>${frame.cpuTime}</td>
-                <td title=${frame.networkBytes}>${frame.networkBytes}</td>
+                <td title=${frame.cpuTime} data-value=${frame.rawCpuTime}>${frame.cpuTime}</td>
+                <td title=${frame.networkBytes} data-value=${frame.rawNetworkBytes}>${frame.networkBytes}</td>
               </tr>
             `)}
           </table>
@@ -421,7 +423,9 @@ export class AdsView extends UI.Widget.Widget {
         elementId: elementIdText,
         initialOrigin: frame.initialOrigin || '',
         cpuTime: formatCpu(frame.cpuTime),
+        rawCpuTime: frame.cpuTime ?? -1,
         networkBytes: formatNetwork(frame.networkBytes),
+        rawNetworkBytes: frame.networkBytes ?? -1,
         revealFrame,
       });
     }

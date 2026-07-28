@@ -285,7 +285,9 @@ export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate 
       if (align !== Align.CENTER && align !== Align.RIGHT) {
         align = undefined;
       }
-      const dataType = column.getAttribute('type') === 'boolean' ? DataType.BOOLEAN : DataType.STRING;
+      const typeAttr = column.getAttribute('type');
+      const dataType =
+          typeAttr === 'boolean' ? DataType.BOOLEAN : (typeAttr === 'numeric' ? DataType.NUMBER : DataType.STRING);
       const weight = parseFloat(column.getAttribute('weight') || '') ?? undefined;
       const editable = column.hasAttribute('editable');
       if (editable) {

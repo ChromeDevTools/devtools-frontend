@@ -1719,6 +1719,7 @@ export const enum Align {
 export const enum DataType {
   STRING = 'String',
   BOOLEAN = 'Boolean',
+  NUMBER = 'Number',
 }
 
 export const ColumnResizePadding = 30;

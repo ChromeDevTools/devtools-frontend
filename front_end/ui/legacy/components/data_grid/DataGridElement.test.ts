@@ -518,6 +518,35 @@ describeWithEnvironment('DataGrid', () => {
     assert.strictEqual(alerts[0], 'Column 1: Value A');
   });
 
+  it('supports numeric sorting', async () => {
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name="Display Name">
+          <table>
+            <tr>
+              <th id="column-1" sortable sort="ascending" type="numeric">Column 1</th>
+            </tr>
+            <tr><td data-value="10">10</td></tr>
+            <tr><td data-value="2">2</td></tr>
+            <tr><td data-value="3">3</td></tr>
+          </table>
+        </devtools-data-grid>`);
+    // After initial render, rows should be sorted ascending numerically by column-1.
+    // So 2, 3, 10 (not 10, 2, 3 which would be string sorting).
+    sendKeydown(element, 'ArrowDown');
+    let alerts = getAlertAnnouncement(element);
+    const expectedRowData = 'Column 1: 2';
+    const expectedGridDesc = 'Display Name Rows: 3, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.';
+    assert.isTrue(alerts[0] === expectedRowData || alerts[0] === expectedGridDesc, `Expected alert to be row data or grid description, got: ${alerts[0]}`);
+    liveAnnouncerAlertStub.resetHistory();
+    sendKeydown(element, 'ArrowDown');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: 3');
+    liveAnnouncerAlertStub.resetHistory();
+    sendKeydown(element, 'ArrowDown');
+    alerts = getAlertAnnouncement(element);
+    assert.strictEqual(alerts[0], 'Column 1: 10');
+  });
+
   it('can be styled with a style tag', async () => {
     const element = await renderDataGrid(html`
         <devtools-data-grid .template=${html`

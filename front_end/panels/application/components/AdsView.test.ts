@@ -243,6 +243,93 @@ describeWithEnvironment('AdsView', () => {
     panel.detach();
   });
 
+  it('sorts ad frames when data grid header is clicked', async () => {
+    let callCount = 0;
+    connection.setHandler('Ads.getAdMetrics', null);
+    connection.setSuccessHandler('Ads.getAdMetrics', () => {
+      callCount++;
+      if (callCount === 1) {
+        return {
+          metrics: {
+            viewportAdDensityByArea: 0,
+            averageViewportAdDensityByArea: 0,
+            viewportAdCount: 0,
+            averageViewportAdCount: 0,
+            totalAdCpuTime: 0,
+            totalAdNetworkBytes: 0,
+            updateAdFrames: [
+              {
+                frameId: 'frame-1' as Protocol.Page.FrameId,
+                initialOrigin: 'https://example.com',
+                cpuTime: 100,
+                networkBytes: 1024,
+              },
+              {
+                frameId: 'frame-2' as Protocol.Page.FrameId,
+                initialOrigin: 'https://example2.com',
+                cpuTime: 50,
+                networkBytes: 2048,
+              },
+            ],
+            removeAdFrames: [],
+          },
+        };
+      }
+      return {
+        metrics: {
+          viewportAdDensityByArea: 0,
+          averageViewportAdDensityByArea: 0,
+          viewportAdCount: 0,
+          averageViewportAdCount: 0,
+          totalAdCpuTime: 0,
+          totalAdNetworkBytes: 0,
+          updateAdFrames: [],
+          removeAdFrames: [],
+        },
+      };
+    });
+
+    const panel = new ApplicationComponents.AdsView.AdsView();
+    renderElementIntoDOM(panel);
+
+    // Wait for the initial poll and subsequent async element ID fetches to resolve
+    await clock.tickAsync(0);
+    await panel.updateComplete;
+    await RenderCoordinator.done();
+
+    const dataGrid = panel.contentElement.querySelector('devtools-data-grid');
+    assert.isNotNull(dataGrid);
+
+    // Initial order: frame-1, then frame-2 (based on data returned)
+    assert.isNotNull(dataGrid.shadowRoot);
+    const internalDataGrid = dataGrid.shadowRoot.querySelector('.data-grid');
+    assert.isNotNull(internalDataGrid);
+    let rows = Array.from(internalDataGrid.querySelectorAll('tbody tr.data-grid-data-grid-node'));
+    assert.include(rows[0].textContent, 'frame-1');
+    assert.include(rows[1].textContent, 'frame-2');
+
+    const cpuTimeHeader = internalDataGrid.querySelector('th.cpuTime-column');
+    assert.isNotNull(cpuTimeHeader);
+
+    // First click sorts ascending by default (50, 100, meaning frame-2 then frame-1)
+    cpuTimeHeader.dispatchEvent(new MouseEvent('click', {bubbles: true, composed: true}));
+    await panel.updateComplete;
+    await RenderCoordinator.done({waitForWork: true});
+    rows = Array.from(internalDataGrid.querySelectorAll('tbody tr.data-grid-data-grid-node'));
+    assert.include(rows[0].textContent, 'frame-2');
+    assert.include(rows[1].textContent, 'frame-1');
+
+    // Second click sorts descending (100, 50, meaning frame-1 then frame-2)
+    cpuTimeHeader.dispatchEvent(new MouseEvent('click', {bubbles: true, composed: true}));
+    await panel.updateComplete;
+    await RenderCoordinator.done({waitForWork: true});
+    rows = Array.from(internalDataGrid.querySelectorAll('tbody tr.data-grid-data-grid-node'));
+    assert.include(rows[0].textContent, 'frame-1');
+    assert.include(rows[1].textContent, 'frame-2');
+
+    panel.detach();
+  });
+
   it('toggles ad highlights when the checkbox is clicked', async () => {
     const panel = new ApplicationComponents.AdsView.AdsView();
     renderElementIntoDOM(panel);

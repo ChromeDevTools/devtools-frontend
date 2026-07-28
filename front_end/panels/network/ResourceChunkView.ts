@@ -84,13 +84,14 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
   private readonly mainToolbar: UI.Toolbar.Toolbar;
   private readonly clearAllButton: UI.Toolbar.ToolbarButton;
   private readonly filterTypeCombobox: UI.Toolbar.ToolbarComboBox;
-  protected filterType: string|null;
+  protected filterType: string|null = null;
   private readonly filterTextInput: UI.Toolbar.ToolbarInput;
-  protected filterRegex: RegExp|null;
+  protected filterRegex: RegExp|null = null;
   private readonly frameEmptyWidget: UI.EmptyWidget.EmptyWidget;
   private currentSelectedNode?: DataGridItem|null;
   readonly request: SDK.NetworkRequest.NetworkRequest;
   private readonly messageFilterSetting: Common.Settings.Setting<string>;
+  private sidebarWidget: UI.Widget.Widget|null = null;
 
   abstract getRequestChunks(): Chunk[];
   abstract createGridItem(chunk: Chunk): DataGridItem;
@@ -114,7 +115,7 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
       displayName: dataGridDisplayName,
       columns,
     });
-    this.dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
+    this.dataGrid.setRowContextMenuCallback((menu, node) => this.onRowContextMenu(menu, node));
     this.dataGrid.setEnableAutoScrollToBottom(true);
     this.dataGrid.setCellClass('resource-chunk-view-td');
     this.timeComparator =
@@ -138,21 +139,19 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
     this.mainToolbar.appendToolbarItem(this.clearAllButton);
 
     this.filterTypeCombobox =
-        new UI.Toolbar.ToolbarComboBox(this.updateFilterSetting.bind(this), i18nString(UIStrings.filter));
+        new UI.Toolbar.ToolbarComboBox(this.onFilterTypeChanged.bind(this), i18nString(UIStrings.filter));
     for (const filterItem of FILTER_TYPES) {
       const option = this.filterTypeCombobox.createOption(filterItem.label(), filterItem.name);
       this.filterTypeCombobox.addOption(option);
     }
     this.mainToolbar.appendToolbarItem(this.filterTypeCombobox);
-    this.filterType = null;
 
     this.filterTextInput = new UI.Toolbar.ToolbarFilter(filterUsingRegexHint, 0.4);
-    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.updateFilterSetting, this);
+    this.filterTextInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterTextChanged, this);
     const filter = this.messageFilterSetting.get();
     if (filter) {
       this.filterTextInput.setValue(filter);
     }
-    this.filterRegex = null;
     this.mainToolbar.appendToolbarItem(this.filterTextInput);
 
     const mainContainer = new UI.Widget.VBox();
@@ -163,29 +162,31 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
 
     this.frameEmptyWidget = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectMessageToBrowseItsContent));
-    this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
+    this.sidebarWidget = this.frameEmptyWidget;
+    this.splitWidget.setSidebarWidget(this.sidebarWidget);
 
     if (filter) {
       this.applyFilter(filter);
     }
+  }
 
-    function onRowContextMenu(
-        this: ResourceChunkView<Chunk>, contextMenu: UI.ContextMenu.ContextMenu,
-        genericNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
-      const node = (genericNode as DataGridItem);
-      const binaryView = node.binaryView();
-      if (binaryView) {
-        binaryView.addCopyToContextMenu(contextMenu, i18nString(UIStrings.copyMessageD));
-      } else {
-        contextMenu.clipboardSection().appendItem(
-            i18nString(UIStrings.copyMessage),
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
-                Host.InspectorFrontendHost.InspectorFrontendHostInstance, node.data.data),
-            {jslogContext: 'copy'});
-      }
-      contextMenu.footerSection().appendItem(
-          i18nString(UIStrings.clearAllL), this.clearChunks.bind(this), {jslogContext: 'clear-all'});
+  private onRowContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
+                           node: DataGrid.DataGrid.DataGridNode<unknown>): void {
+    const item = node as DataGridItem;
+    const binaryView = item.binaryView();
+    if (binaryView) {
+      binaryView.addCopyToContextMenu(contextMenu, i18nString(UIStrings.copyMessageD));
+    } else {
+      const dataVal = item.data.data;
+      const textToCopy = typeof dataVal === 'string' ? dataVal : item.dataText();
+      contextMenu.clipboardSection().appendItem(
+          i18nString(UIStrings.copyMessage),
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance, textToCopy),
+          {jslogContext: 'copy'});
     }
+    contextMenu.footerSection().appendItem(i18nString(UIStrings.clearAllL), this.clearChunks.bind(this),
+                                           {jslogContext: 'clear-all'});
   }
 
   getColumns(): DataGrid.DataGrid.ColumnDescriptor[] {
@@ -212,17 +213,22 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
   private clearChunks(): void {
     // TODO(allada): actually remove frames from request.
     clearChunkOffsets.set(this.request, this.getRequestChunks().length);
-    this.refresh();
+    this.performUpdate();
   }
 
-  private updateFilterSetting(): void {
+  private onFilterTypeChanged(): void {
+    const val = (this.filterTypeCombobox.selectedOption() as HTMLOptionElement).value;
+    this.filterType = val === 'all' ? null : val;
+    this.performUpdate();
+  }
+
+  private onFilterTextChanged(): void {
     const text = this.filterTextInput.value();
     this.messageFilterSetting.set(text);
     this.applyFilter(text);
   }
 
   private applyFilter(text: string): void {
-    const type = (this.filterTypeCombobox.selectedOption() as HTMLOptionElement).value;
     if (text) {
       try {
         this.filterRegex = new RegExp(text, 'i');
@@ -232,46 +238,69 @@ export abstract class ResourceChunkView<Chunk> extends UI.Widget.VBox {
     } else {
       this.filterRegex = null;
     }
-    this.filterType = type === 'all' ? null : type;
-    this.refresh();
+    this.performUpdate();
   }
 
   private async onChunkSelected(event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<unknown>>):
       Promise<void> {
     this.currentSelectedNode = (event.data as DataGridItem);
+    await this.updateSidebar();
+  }
+
+  private onChunkDeselected(): void {
+    this.currentSelectedNode = null;
+    void this.updateSidebar();
+  }
+
+  async updateSidebar(): Promise<void> {
+    if (!this.currentSelectedNode) {
+      this.sidebarWidget = null;
+      this.updateSidebarWidget();
+      return;
+    }
+
     const content = this.currentSelectedNode.dataText();
 
     const binaryView = this.currentSelectedNode.binaryView();
     if (binaryView) {
-      this.splitWidget.setSidebarWidget(binaryView);
+      this.sidebarWidget = binaryView;
+      this.updateSidebarWidget();
       return;
     }
 
     const jsonView = await SourceFrame.JSONView.JSONView.createView(content);
     if (jsonView) {
-      this.splitWidget.setSidebarWidget(jsonView);
+      this.sidebarWidget = jsonView;
+      this.updateSidebarWidget();
       return;
     }
 
-    this.splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
-        TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-            this.request.url(), this.request.resourceType(), content),
-        ''));
+    this.sidebarWidget = new SourceFrame.ResourceSourceFrame.ResourceSourceFrame(
+        TextUtils.StaticContentProvider.StaticContentProvider.fromString(this.request.url(),
+                                                                         this.request.resourceType(), content),
+        '');
+    this.updateSidebarWidget();
   }
 
-  private onChunkDeselected(): void {
-    this.currentSelectedNode = null;
-    this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
+  private updateSidebarWidget(): void {
+    const activeSidebar = this.sidebarWidget || this.frameEmptyWidget;
+    if (this.splitWidget.sidebarWidget() !== activeSidebar) {
+      this.splitWidget.setSidebarWidget(activeSidebar);
+    }
+  }
+
+  override performUpdate(): void {
+    this.dataGrid.rootNode().removeChildren();
+    let chunks = this.getRequestChunks();
+    const offset = clearChunkOffsets.get(this.request) || 0;
+    chunks = chunks.slice(offset).filter(this.chunkFilter.bind(this));
+    chunks.forEach(chunk => this.dataGrid.insertChild(this.createGridItem(chunk)));
+
+    this.updateSidebarWidget();
   }
 
   refresh(): void {
-    this.dataGrid.rootNode().removeChildren();
-
-    let chunks = this.getRequestChunks();
-    const offset = clearChunkOffsets.get(this.request) || 0;
-    chunks = chunks.slice(offset);
-    chunks = chunks.filter(this.chunkFilter.bind(this));
-    chunks.forEach(chunk => this.dataGrid.insertChild(this.createGridItem(chunk)));
+    this.performUpdate();
   }
 
   private sortItems(): void {

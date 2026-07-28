@@ -709,6 +709,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     activeSidebarMessage: null,
     inlineExpandedMessages: [],
   };
+  #textInputValue = '';
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -793,6 +794,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
+          textInputValue: this.#textInputValue,
+          onTextChange: (text: string) => {
+            this.#textInputValue = text;
+          },
           onExportConversation: this.#onExportConversationClick.bind(this),
           uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() &&
               this.#conversation.type === AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING,
@@ -1715,6 +1720,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleNewChatRequest(): void {
+    this.#textInputValue = '';
     this.#updateConversationState();
     this.#resetWalkthrough();
     UI.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.newChatCreated));

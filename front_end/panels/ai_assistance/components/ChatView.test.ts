@@ -13,7 +13,7 @@ import {
   initializePersistenceImplForTests,
   setupAutomaticFileSystem,
 } from '../../../testing/AiAssistanceHelpers.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistancePanel from '../ai_assistance.js';
 
@@ -60,6 +60,8 @@ describeWithEnvironment('ChatView', () => {
       isTextInputDisabled: false,
       emptyStateSuggestions: [],
       inputPlaceholder: i18n.i18n.lockedString('input placeholder'),
+      textInputValue: '',
+      onTextChange: noop,
       disclaimerText: i18n.i18n.lockedString('disclaimer text'),
       markdownRenderer: new AiAssistancePanel.MarkdownRendererWithCodeBlock(),
       walkthrough: {
@@ -139,6 +141,26 @@ describeWithEnvironment('ChatView', () => {
       await capturedExportClick!();
       // Should still be 1 because of cache
       sinon.assert.callCount(generateSummaryStub, 1);
+    });
+  });
+
+  describe('Interaction', () => {
+    it('should call onTextChange when the textarea text is changed', async () => {
+      const onTextChangeStub = sinon.stub();
+      const props = getProp({
+        onTextChange: onTextChangeStub,
+      });
+      const chat = new AiAssistancePanel.ChatView(props);
+      renderElementIntoDOM(chat);
+
+      await raf();
+
+      const textArea = chat.shadowRoot!.querySelector('.chat-input') as HTMLTextAreaElement;
+      assert.exists(textArea);
+      textArea.value = 'test text';
+      textArea.dispatchEvent(new Event('input'));
+
+      sinon.assert.calledWith(onTextChangeStub, 'test text');
     });
   });
 });

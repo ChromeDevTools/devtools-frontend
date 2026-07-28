@@ -158,6 +158,7 @@ export interface ViewInput {
   imageInput?: ImageInputData;
   uploadImageInputEnabled: boolean;
   isReadOnly: boolean;
+  textInputValue: string;
   textAreaRef: Lit.Directives.Ref<HTMLTextAreaElement>;
 
   onContextClick: () => void;
@@ -302,6 +303,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: HTML
               .disabled=${input.isTextInputDisabled}
               wrap="hard"
               maxlength="10000"
+              .value=${input.textInputValue}
               @keydown=${input.onTextAreaKeyDown}
               @paste=${input.onImagePaste}
               @dragover=${input.onImageDragOver}
@@ -523,6 +525,7 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   multimodalInputEnabled = false;
   uploadImageInputEnabled = false;
   isReadOnly = false;
+  textInputValue = '';
 
   #textAreaRef = createRef<HTMLTextAreaElement>();
   #imageInput?: ImageInputData;
@@ -542,21 +545,30 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   setInputValue(text: string): void {
     if (this.#textAreaRef.value) {
       const maxLength = this.#textAreaRef.value.maxLength;
-      const truncatedText = (maxLength >= 0) ? text.substring(0, maxLength) : text;
+      const truncatedText = maxLength >= 0 ? text.substring(0, maxLength) : text;
       this.#textAreaRef.value.value = truncatedText;
       // Place the cursor at the end of the new value.
-      this.#textAreaRef.value.setSelectionRange(truncatedText.length, truncatedText.length);
+      this.#textAreaRef.value.setSelectionRange(
+          truncatedText.length,
+          truncatedText.length,
+      );
+      this.textInputValue = truncatedText;
+      this.onTextChange(truncatedText);
     }
     this.performUpdate();
   }
 
   #isTextInputEmpty(): boolean {
-    return !this.#textAreaRef.value?.value?.trim();
+    const text = this.#textAreaRef?.value?.value ?? this.textInputValue;
+    return !text.trim();
   }
 
-  onTextSubmit:
-      (text: string, imageInput?: Host.AidaClient.Part,
-       multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void = () => {};
+  onTextSubmit: (
+      text: string,
+      imageInput?: Host.AidaClient.Part,
+      multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType,
+      ) => void = () => {};
+  onTextChange: (text: string) => void = () => {};
   onContextClick = (): void => {};
   onInspectElementClick = (): void => {};
   onCancelClick = (): void => {};
@@ -751,12 +763,15 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           imageInput: this.#imageInput,
           uploadImageInputEnabled: this.uploadImageInputEnabled,
           isReadOnly: this.isReadOnly,
+          textInputValue: this.textInputValue,
           textAreaRef: this.#textAreaRef,
           onContextClick: this.onContextClick,
           onInspectElementClick: this.onInspectElementClick,
           onImagePaste: this.#handleImagePaste,
           onNewConversation: this.onNewConversation,
-          onTextInputChange: () => {
+          onTextInputChange: (text: string) => {
+            this.textInputValue = text;
+            this.onTextChange(text);
             this.requestUpdate();
           },
           onTakeScreenshot: this.#handleTakeScreenshot.bind(this),
@@ -770,7 +785,9 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
           onContextRemoved: this.onContextRemoved,
           onContextAdd: this.onContextAdd,
         },
-        undefined, this.contentElement);
+        undefined,
+        this.contentElement,
+    );
   }
 
   focusTextInput(): void {

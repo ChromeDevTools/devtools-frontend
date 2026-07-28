@@ -253,6 +253,7 @@ describeWithEnvironment('ChatInput', () => {
       AiAssistance.ImageResize.setCompressImplementationForTest(async () => {
         throw new Error('Failed to compress image');
       });
+      const consoleErrorStub = sinon.stub(console, 'error');
       const [view] = createComponent();
       const file = new File(['test'], 'image.png', {type: 'image/png'});
       const snackbarSpy = sinon.spy(Snackbars.Snackbar.Snackbar, 'show');
@@ -262,6 +263,7 @@ describeWithEnvironment('ChatInput', () => {
       assert.isUndefined(view.input.imageInput);
       sinon.assert.calledOnce(snackbarSpy);
       assert.include(snackbarSpy.firstCall.args[0].message, 'Failed to upload image');
+      sinon.assert.calledOnce(consoleErrorStub);
     });
   });
 
@@ -374,6 +376,7 @@ describeWithEnvironment('ChatInput', () => {
         blockedByCrossOrigin: false,
         isTextInputDisabled: false,
         inputPlaceholder: 'Type a message...' as Platform.UIString.LocalizedString,
+        textInputValue: '',
         context: null,
         isContextSelected: false,
         inspectElementToggled: false,

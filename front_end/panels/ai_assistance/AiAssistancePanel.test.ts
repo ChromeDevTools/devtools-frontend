@@ -640,6 +640,44 @@ describeWithEnvironment('AI Assistance Panel', () => {
     });
   });
 
+  describe('chat input', () => {
+    it('should save text state between changing view', async () => {
+      await enableAllFeatureAndSetting();
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      let nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(nextInput.props.textInputValue, '');
+
+      nextInput.props.onTextChange('test text');
+
+      Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(true);
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.DISABLED_VIEW);
+
+      Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').setDisabled(false);
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(nextInput.props.textInputValue, 'test text');
+    });
+
+    it('should clear text state when starting a new chat', async () => {
+      await enableAllFeatureAndSetting();
+      const {panel, view} = await createAiAssistancePanel();
+      void panel.handleAction('freestyler.elements-floating-button');
+      let nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+      nextInput.props.onTextChange('test text');
+
+      nextInput.props.onNewConversation();
+
+      nextInput = await view.nextInput;
+      assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+      assert.strictEqual(nextInput.props.textInputValue, '');
+    });
+  });
+
   describe('storage suggestions', () => {
     it('should show default suggestions when no context is attached', async () => {
       await enableAllFeatureAndSetting();

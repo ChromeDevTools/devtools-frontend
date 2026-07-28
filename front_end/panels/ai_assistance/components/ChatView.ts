@@ -60,11 +60,17 @@ interface ViewOutput {
 type View = (input: ChatWidgetInput, output: ViewOutput, target: HTMLElement|ShadowRoot) => void;
 
 export interface Props {
-  onTextSubmit:
-      (text: string, imageInput?: Host.AidaClient.Part,
-       multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => void;
+  onTextSubmit: (
+      text: string,
+      imageInput?: Host.AidaClient.Part,
+      multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType,
+      ) => void;
   onInspectElementClick: () => void;
-  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
+  onFeedbackSubmit: (
+      rpcId: Host.AidaClient.RpcGlobalId,
+      rate: Host.AidaClient.Rating,
+      feedback?: string,
+      ) => void;
   onCancelClick: () => void;
   onContextClick: () => void;
   onNewConversation: () => void;
@@ -87,6 +93,8 @@ export interface Props {
   emptyStateSuggestions: AiAssistanceModel.AiAgent.ConversationSuggestion[];
   inputPlaceholder: Platform.UIString.LocalizedString;
   disclaimerText: Platform.UIString.LocalizedString;
+  textInputValue: string;
+  onTextChange: (text: string) => void;
   uploadImageInputEnabled?: boolean;
   markdownRenderer: MarkdownLitRenderer;
   generateConversationSummary: (markdown: string) => Promise<string>;
@@ -199,6 +207,8 @@ const DEFAULT_VIEW: View = (input, output, target) => {
             conversationType: input.conversationType,
             uploadImageInputEnabled: input.uploadImageInputEnabled ?? false,
             isReadOnly: input.isReadOnly,
+            textInputValue: input.textInputValue,
+            onTextChange: input.onTextChange,
             onContextClick: input.onContextClick,
             onInspectElementClick: input.onInspectElementClick,
             onTextSubmit: input.onTextSubmit,

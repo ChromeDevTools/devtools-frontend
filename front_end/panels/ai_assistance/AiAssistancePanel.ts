@@ -725,8 +725,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#toggleSearchElementAction =
           UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     }
-    AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
-        AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
   }
 
   #getToolbarInput(): ToolbarViewInput {
@@ -1144,6 +1142,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         createStorageContext(UI.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem));
     this.#updateConversationState(this.#conversation);
 
+    AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
+        AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
@@ -1188,6 +1188,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   override willHide(): void {
     super.willHide();
+    AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance().removeEventListener(
+        AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED, this.#onHistoryDeleted, this);
     this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);

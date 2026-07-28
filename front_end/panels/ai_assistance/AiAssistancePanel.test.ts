@@ -1601,6 +1601,29 @@ describeWithEnvironment('AI Assistance Panel', () => {
           'Placeholder item should be disabled',
       );
     });
+
+    it('manages AiHistoryStorage listener lifecycle during wasShown and willHide', async () => {
+      const historyStorage = AiAssistanceModel.AiHistoryStorage.AiHistoryStorage.instance();
+      const addEventListenerSpy = sinon.spy(historyStorage, 'addEventListener');
+      const removeEventListenerSpy = sinon.spy(historyStorage, 'removeEventListener');
+
+      const {panel} = await createAiAssistancePanel();
+
+      sinon.assert.calledWith(
+          addEventListenerSpy,
+          AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED,
+          sinon.match.func,
+          panel,
+      );
+
+      panel.willHide();
+      sinon.assert.calledWith(
+          removeEventListenerSpy,
+          AiAssistanceModel.AiHistoryStorage.Events.HISTORY_DELETED,
+          sinon.match.func,
+          panel,
+      );
+    });
   });
 
   describe('empty state', () => {

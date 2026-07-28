@@ -7,7 +7,6 @@ import '../../../ui/components/spinners/spinners.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as Root from '../../../core/root/root.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type {MarkdownLitRenderer} from '../../../ui/components/markdown_view/MarkdownView.js';
@@ -116,12 +115,9 @@ export interface ChatWidgetInput extends Props {
 }
 
 const DEFAULT_VIEW: View = (input, output, target) => {
-  const hasAiV2 = Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceV2?.enabled);
-
   const chatUiClasses = classMap({
     'chat-ui': true,
     gemini: AiAssistanceModel.AiUtils.isGeminiBranding(),
-    'ai-v2': hasAiV2,
   });
 
   const inputWidgetClasses = classMap({

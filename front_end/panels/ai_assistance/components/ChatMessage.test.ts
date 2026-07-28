@@ -20,7 +20,6 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {
   describeWithEnvironment,
-  updateHostConfig,
   waitFor,
 } from '../../../testing/EnvironmentHelpers.js';
 import {
@@ -605,9 +604,6 @@ describeWithEnvironment('ChatMessage', () => {
   });
 
   describe('Walkthrough Rendering', () => {
-    beforeEach(() => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
-    });
 
     const stepMessage: AiAssistance.ChatMessage.ModelChatMessage = {
       entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
@@ -1150,6 +1146,43 @@ describeWithEnvironment('ChatMessage', () => {
       }
     });
 
+    it('renders side effect step with aborted indicator when canceled', () => {
+      const sideEffectMessage: AiAssistance.ChatMessage.ModelChatMessage = {
+        entity: AiAssistance.ChatMessage.ChatMessageEntity.MODEL,
+        parts: [
+          {
+            type: 'step',
+            step: {
+              isLoading: false,
+              title: 'Side Effect Step',
+              code: 'doSomethingDangerous()',
+              canceled: true,
+              requestApproval: {
+                description: 'Confirm!',
+                onAnswer: () => {},
+              },
+            },
+          },
+        ],
+        rpcId: 99,
+        id: '1',
+      };
+
+      const target = renderView({
+        message: sideEffectMessage,
+        walkthrough: {
+          ...DEFAULT_WALKTHROUGH,
+          isInlined: true,
+          isExpanded: false,
+        },
+      });
+
+      const indicator = target.querySelector('.side-effect-container devtools-icon.indicator');
+      assert.isNotNull(indicator);
+      assert.strictEqual(indicator?.getAttribute('aria-label'), 'Aborted');
+      assert.isNull(target.querySelector('.side-effect-confirmation'));
+    });
+
     it('renders widget title and reveal button label from widget data', async () => {
       const root = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
       const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
@@ -1250,9 +1283,8 @@ describeWithEnvironment('ChatMessage', () => {
       sinon.assert.calledOnce(mockContentData.asImagePreviewUrl);
     });
 
-    it('renders the "Export for agents" button after action buttons and before suggestions when onExportClick is provided, it is the last message, and V2 is enabled',
+    it('renders the "Export for agents" button after action buttons and before suggestions when onExportClick is provided and it is the last message',
        async () => {
-         updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
          const onExportClick = sinon.stub();
          const target = renderView({
            onExportClick,
@@ -1294,18 +1326,6 @@ describeWithEnvironment('ChatMessage', () => {
          sinon.assert.calledOnce(onExportClick);
        });
 
-    it('does not render the "Export for agents" button when V2 is disabled', async () => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: false}});
-      const onExportClick = sinon.stub();
-      const target = renderView({
-        onExportClick,
-        isLastMessage: true,
-        showActions: true,
-      });
-
-      const exportButton = target.querySelector('.export-for-agents-button');
-      assert.isNull(exportButton);
-    });
   });
   describe('view', () => {
     it('renders a minimal model message', async () => {
@@ -1474,7 +1494,6 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     it('renders SOURCE_FILES_LIST widget with correct dynamic title', async () => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
       function createMockFile(name: string) {
         return {
           name: () => name,
@@ -1534,7 +1553,6 @@ describeWithEnvironment('ChatMessage', () => {
 
     it('renders SOURCE_FILES_LIST widget with more than 10 files, limiting to 10 and using details element for the rest',
        async () => {
-         updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
          function createMockFile(name: string) {
            return {
              name: () => name,
@@ -1607,7 +1625,6 @@ describeWithEnvironment('ChatMessage', () => {
        });
 
     it('renders NETWORK_REQUESTS_LIST widget with less than 15 requests, not showing the expand button', async () => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
       function createMockRequest(id: string) {
         return {
           requestId: () => id,
@@ -1673,7 +1690,6 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     it('renders NETWORK_REQUESTS_LIST widget with more than 15 requests, showing the expand button', async () => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
       function createMockRequest(id: string) {
         return {
           requestId: () => id,
@@ -1746,7 +1762,6 @@ describeWithEnvironment('ChatMessage', () => {
     });
 
     it('shows a snackbar with the error message when reveal fails', async () => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
       const root = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
       const domModel = sinon.createStubInstance(SDK.DOMModel.DOMModel);
       const target = sinon.createStubInstance(SDK.Target.Target);
@@ -1808,7 +1823,6 @@ describeWithEnvironment('ChatMessage', () => {
       snackbarShowStub.restore();
     });
     it('renders NETWORK_TRACK widget with correct header and widget element', async () => {
-      updateHostConfig({devToolsAiAssistanceV2: {enabled: true}});
       const parsedTrace = getBaseTraceHandlerData();
       const bounds = microsecondsTraceWindow(100, 200);
       const message: AiAssistance.ChatMessage.ModelChatMessage = {

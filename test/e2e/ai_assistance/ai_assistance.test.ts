@@ -638,6 +638,8 @@ describe('AI Assistance', function() {
     await openConversationFromHistory(
         devToolsPage, 'aria/Change the background color for this element to green, unchecked');
 
+    await devToolsPage.click(
+        'aria/Show thinking for prompt Change the background color for this element to (and 6 more characters)');
     await devToolsPage.waitForAria('Aborted');
   });
 

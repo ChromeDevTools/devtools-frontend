@@ -4,6 +4,7 @@ BUILD.gn
 build_overrides
 DEPS
 *.test.ts
+*.test.api.ts
 
 PRESUBMIT.py
 OWNERS

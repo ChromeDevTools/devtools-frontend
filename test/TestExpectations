@@ -27,3 +27,5 @@ crbug.com/538269887 [ linux ] front_end/panels/explain/components/ConsoleInsight
 crbug.com/538206828 [ linux ] front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.test.ts:linearmemoryinspector:renders_the_inspector [ Failure Pass ]
 crbug.com/538332664 [ linux ] front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.test.ts:objectpropertytreeelement:shows_expandable_text_contents_for_lengthy_strings [ Failure Pass ]
 crbug.com/537672763 test/e2e/performance/wasm/performance_profiling.test.ts [ Failure Pass ]
+
+crbug.com/537136541 test/e2e/sources/inline-variable.test.ts:sources_tab:shows_correct_inline_variable_at_definition [ Failure Pass ]

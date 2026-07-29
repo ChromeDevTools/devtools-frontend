@@ -80,6 +80,7 @@ devtools_module("ai_assistance") {
     "../bindings:bundle",
     "../crux-manager:bundle",
     "../emulation:bundle",
+    "../formatter:bundle",
     "../lighthouse:bundle",
     "../logs:bundle",
     "../network_time_calculator:bundle",

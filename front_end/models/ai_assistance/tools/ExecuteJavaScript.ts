@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import * as Formatter from '../../formatter/formatter.js';
 import type {FunctionCallHandlerResult, FunctionHandlerOptions} from '../agents/AiAgent.js';
 import {JavascriptExecutor} from '../agents/ExecuteJavascript.js';
 
@@ -15,6 +17,10 @@ import {
   type ToolArgs,
   ToolName,
 } from './Tool.js';
+
+const MAX_FORMATTED_LINES = 40;
+const MAX_LINE_LENGTH = 120;
+const MAX_TOTAL_CHARACTERS = 2500;
 
 export interface ExecuteJavaScriptArgs extends ToolArgs {
   code: string;
@@ -28,6 +34,33 @@ export class ExecuteJavaScriptTool implements
 
   readonly description =
       'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request.';
+
+  static async validateAndFormatCode(code: string): Promise<{formattedCode?: string, error?: string}> {
+    try {
+      const formatted = await Formatter.ScriptFormatter.formatScriptContent(
+          Common.Settings.Settings.instance(),
+          'text/javascript',
+          code,
+          '  ',
+      );
+      const formattedCode = formatted.formattedContent;
+      const lines = formattedCode.split('\n');
+      const maxLineLen = Math.max(...lines.map(line => line.length));
+
+      if (lines.length > MAX_FORMATTED_LINES || maxLineLen > MAX_LINE_LENGTH ||
+          formattedCode.length > MAX_TOTAL_CHARACTERS) {
+        return {
+          error: `Error: JavaScript code exceeds maximum allowed size ` +
+              `(max ${MAX_FORMATTED_LINES} formatted lines, ${MAX_LINE_LENGTH} chars/line, ${
+                     MAX_TOTAL_CHARACTERS} total chars). ` +
+              `Please split your logic into smaller function calls.`,
+        };
+      }
+      return {formattedCode};
+    } catch {
+      return {error: 'Error: JavaScript code snippet contains invalid syntax.'};
+    }
+  }
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ExecuteJavaScriptArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -46,6 +79,7 @@ export class ExecuteJavaScriptTool implements
 * **CRITICAL** Only get styles that might be relevant to the user request.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
+* **CRITICAL** Keep code concise (max 40 lines and 2,500 characters). Split complex logic into multiple steps.
 
 For example, the code to change element styles:
 
@@ -113,6 +147,16 @@ const data = {
     const executionNode = context.getExecutionContextNode();
     if (!executionNode) {
       return {error: 'Error: Could not find the context node for execution.'};
+    }
+
+    if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
+      const validationResult = await ExecuteJavaScriptTool.validateAndFormatCode(params.code);
+      if (validationResult.error) {
+        return {error: validationResult.error};
+      }
+      if (validationResult.formattedCode) {
+        params.code = validationResult.formattedCode;
+      }
     }
 
     const executionMode = Root.Runtime.hostConfig.devToolsFreestyler?.executionMode ??

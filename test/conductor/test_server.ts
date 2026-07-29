@@ -13,17 +13,13 @@ let runningServer: ChildProcess|undefined;
  * Starts a hosted mode server on any available port and returns the port number
  * once the server is ready to receive requests.
  **/
-export function startServer(server: 'hosted-mode', commandLineArgs: string[]): Promise<number> {
+export function startServer(commandLineArgs: string[]): Promise<number> {
   if (runningServer) {
     throw new Error('Server was already started.');
   }
   function handleServerError(error: Error) {
     console.error(`Server error: ${error}`);
   }
-
-  const serverExecutable = {
-    'hosted-mode': HOSTED_MODE_SERVER_PATH,
-  }[server];
 
   // Copy the current env and append the port.
   const env = Object.create(process.env);
@@ -33,8 +29,12 @@ export function startServer(server: 'hosted-mode', commandLineArgs: string[]): P
     // used back to us. For parallel test mode, we need to avoid specifying a
     // port directly and instead request any free port, which is what port 0
     // signifies to the OS.
-    const processArguments = [serverExecutable, ...commandLineArgs];
-    runningServer = spawn(process.execPath, processArguments, {cwd, env, stdio: ['pipe', 'pipe', 'pipe', 'ipc']});
+    const processArguments = [HOSTED_MODE_SERVER_PATH, ...commandLineArgs];
+    runningServer = spawn(process.execPath, processArguments, {
+      cwd,
+      env,
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+    });
     runningServer.on('message', message => {
       if (message === 'ERROR') {
         reject('Could not start server');
@@ -43,9 +43,7 @@ export function startServer(server: 'hosted-mode', commandLineArgs: string[]): P
       }
     });
     runningServer.on('error', handleServerError);
-    if (runningServer.stderr) {
-      runningServer.stderr.on('data', handleServerError);
-    }
+    runningServer.stderr?.on('data', handleServerError);
   });
 }
 

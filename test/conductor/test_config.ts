@@ -16,24 +16,18 @@ import {shardFilter} from './sharding.js';
 const argv = yargs(expandResponseFiles(hideBin(process.argv))).parseSync()['_'] as string[];
 
 const options = commandLineArgs(yargs(argv)).parseSync();
-
-export const enum ServerType {
-  HOSTED_MODE = 'hosted-mode',
-}
-
 interface Config {
   tests: string[];
   verbose: number;
   artifactsDir: string;
   chromeBinary: string;
-  serverType: ServerType;
   debug: boolean;
   headless: boolean;
   coverage: boolean;
   repetitions: number;
   onDiff: {update: boolean|string[], throw: boolean};
   shuffle: boolean;
-  mochaGrep: {invert?: boolean, grep?: string}|{invert?: boolean, fgrep?: string};
+  mochaGrep:|{invert?: boolean, grep?: string}|{invert?: boolean, fgrep?: string};
   copyScreenshotGoldens: boolean;
   retries: number;
   configureChrome: (executablePath: string) => void;
@@ -128,7 +122,6 @@ export const TestConfig: Config = {
   verbose: Number(options['verbose'] ?? 0),
   artifactsDir: options['artifacts-dir'] || getDefaultArtifactDir(),
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
-  serverType: ServerType.HOSTED_MODE,
   debug: options['debug'],
   headless: options['headless'] === undefined ? !options['debug'] : options['headless'],
   coverage: options['coverage'],
@@ -146,8 +139,14 @@ export const TestConfig: Config = {
   shardCount: options['shard-count'],
   shardNumber: options['shard-number'],
   shardBias: options['shard-bias'],
-  isAiAgent: ['GEMINI_CLI', 'CLAUDECODE', 'CODEX_SANDBOX', 'CURSOR_AGENT', 'AI_AGENT', 'ANTIGRAVITY_AGENT'].some(
-      agent => agent in process.env),
+  isAiAgent: [
+    'GEMINI_CLI',
+    'CLAUDECODE',
+    'CODEX_SANDBOX',
+    'CURSOR_AGENT',
+    'AI_AGENT',
+    'ANTIGRAVITY_AGENT',
+  ].some(agent => agent in process.env),
   isPerfTest: false,
   expectationsFile: options['expectations-file'],
 };

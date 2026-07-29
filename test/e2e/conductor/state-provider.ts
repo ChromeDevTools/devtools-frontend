@@ -201,9 +201,9 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
   }
 
   static async #globalSetup() {
-    const serverPort = Number(await startServer(TestConfig.serverType, []));
+    const serverPort = Number(await startServer([]));
     // eslint-disable-next-line no-console
-    console.log(`Started ${TestConfig.serverType} server on port ${serverPort}`);
+    console.log(`Started server on port ${serverPort}`);
     puppeteer.Puppeteer.registerCustomQueryHandler('pierceShadowText', {
       queryOne: querySelectorShadowTextOne as ((node: Node, selector: string) => Node | null),
       queryAll: querySelectorShadowTextAll as unknown as ((node: Node, selector: string) => Node[]),

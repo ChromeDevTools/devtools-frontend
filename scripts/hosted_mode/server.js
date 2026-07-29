@@ -1,23 +1,20 @@
 // Copyright 2016 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-const fs = require('node:fs');
-const https = require('node:https');
-const path = require('node:path');
-const promisify = require('node:util').promisify;
-const WebSocketServer = require('ws').Server;
+import * as fs from 'node:fs';
+import * as https from 'node:https';
+import * as path from 'node:path';
+import {WebSocketServer} from 'ws';
 
 function parseURL(url) {
   return new URL(url, 'http://localhost');
 }
 
-const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT, 10) || 9222;
-const port = parseInt(process.env.PORT, 10);
-const requestedPort = port || port === 0 ? port : 8090;
-const readFile = promisify(fs.readFile);
-const exists = promisify(fs.exists);
+const remoteDebuggingPort = parseInt(process.env.REMOTE_DEBUGGING_PORT ?? '9222', 10) || 9222;
+const port = parseInt(process.env.PORT ?? '0', 10);
+const requestedPort = port === 0 ? port : 8090;
 
-let pathToOutTargetDir = __dirname;
+let pathToOutTargetDir = import.meta.dirname;
 /**
  * If we are in the gen directory, we need to find the out/Default folder to use
  * as our base to find files from. We could do this with path.join(x, '..',
@@ -36,15 +33,15 @@ while (!fs.existsSync(path.join(pathToOutTargetDir, 'args.gn'))) {
 // We care about everything in the gen/ directory, unless we are in a full checkout.
 let devtoolsFolder = path.resolve(path.join(pathToOutTargetDir, 'gen'));
 const fullCheckoutDevtoolsRootFolder = path.join(devtoolsFolder, 'third_party', 'devtools-frontend', 'src');
-if (__dirname.startsWith(fullCheckoutDevtoolsRootFolder)) {
+if (import.meta.dirname.startsWith(fullCheckoutDevtoolsRootFolder)) {
   devtoolsFolder = fullCheckoutDevtoolsRootFolder;
 }
 
 // The certificate is taken from
 // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/tools/apache_config/webkit-httpd.pem
 const options = {
-  key: fs.readFileSync(__dirname + '/key.pem'),
-  cert: fs.readFileSync(__dirname + '/cert.pem'),
+  key: fs.readFileSync(import.meta.dirname + '/key.pem'),
+  cert: fs.readFileSync(import.meta.dirname + '/cert.pem'),
 };
 
 const server = https.createServer(options, requestHandler);
@@ -56,7 +53,7 @@ server.once('error', error => {
 });
 server.once('listening', () => {
   // If port 0 was used, then requested and actual port will be different.
-  const actualPort = server.address().port;
+  const actualPort = server.address()?.port;
   if (process.send) {
     process.send(actualPort);
   }
@@ -99,7 +96,10 @@ async function requestHandler(request, response) {
       const basename = parseURL(origin || url).hostname;
       const absoluteFilePath = path.join(devtoolsFolder, `test/e2e/resources/performance/${basename}.rawresponse`);
       try {
-        const responseContents = await readFile(absoluteFilePath, 'utf8');
+        const responseContents = await fs.promises.readFile(
+            absoluteFilePath,
+            'utf8',
+        );
         const {statusCode, data, headers} = parseRawResponse(responseContents);
         sendResponse(statusCode || 200, data, 'utf8', headers);
       } catch (err) {
@@ -120,7 +120,7 @@ async function requestHandler(request, response) {
     return;
   }
 
-  const fileExists = await exists(absoluteFilePath);
+  const fileExists = await fs.promises.access(absoluteFilePath).then(() => true, () => false);
   if (!fileExists) {
     console.log(`Cannot find file ${absoluteFilePath}. Requested URL: ${filePath}`);
     sendResponse(404, '404 - File not found', 'utf8');
@@ -128,10 +128,13 @@ async function requestHandler(request, response) {
   }
 
   let statusCode, data, headers;
-  const headersFileExists = await exists(absoluteFilePath + '.headers');
+  const headersFileExists = await fs.promises.access(absoluteFilePath + '.headers').then(() => true, () => false);
   if (headersFileExists) {
     try {
-      const headersFile = await readFile(absoluteFilePath + '.headers', 'utf8');
+      const headersFile = await fs.promises.readFile(
+          absoluteFilePath + '.headers',
+          'utf8',
+      );
       ({statusCode, headers} = parseRawResponse(headersFile));
     } catch (err) {
       console.log(`Unable to read local file ${absoluteFilePath}.headers:`, err);
@@ -139,6 +142,7 @@ async function requestHandler(request, response) {
     }
   }
 
+  /** @type {BufferEncoding} */
   let encoding = 'utf8';
   if (absoluteFilePath.endsWith('.wasm') || absoluteFilePath.endsWith('.png') || absoluteFilePath.endsWith('.jpg') ||
       absoluteFilePath.endsWith('.avif') || absoluteFilePath.endsWith('.dwp') || absoluteFilePath.endsWith('.dwo') ||
@@ -147,7 +151,7 @@ async function requestHandler(request, response) {
   }
 
   try {
-    data = await readFile(absoluteFilePath, encoding);
+    data = await fs.promises.readFile(absoluteFilePath, {encoding});
     if (absoluteFilePath.endsWith('.rawresponse')) {
       ({statusCode, data, headers} = parseRawResponse(data));
     }
@@ -198,10 +202,9 @@ async function requestHandler(request, response) {
 
   async function sendResponse(statusCode, data, encoding, headers) {
     if (url.search === '?delay') {
-      delayPromise = new Promise(resolve => {
+      await new Promise(resolve => {
         delayResolve = resolve;
       });
-      await delayPromise;
     }
     if (!headers) {
       headers = new Map();

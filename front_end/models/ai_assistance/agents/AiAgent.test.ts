@@ -270,6 +270,15 @@ describeWithEnvironment('AiAgent', () => {
   });
 
   describe('run', () => {
+    it('returns early when enhanced query is empty and no multimodal input is provided', async () => {
+      const aidaClient = mockAidaClient();
+      const agent = new AiAgentMock({
+        aidaClient,
+      });
+      const responses = await Array.fromAsync(agent.run('   ', {selected: null}));
+      assert.deepEqual(responses, []);
+    });
+
     describe('partial yielding for answers', () => {
       it('should yield partial answer with final answer at the end', async () => {
         const agent = new AiAgentMock({

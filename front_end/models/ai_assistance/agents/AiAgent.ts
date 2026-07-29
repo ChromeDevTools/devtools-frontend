@@ -759,6 +759,9 @@ export abstract class AiAgent<T> {
     await this.preRun();
 
     const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, multimodalInput?.type);
+    if (!enhancedQuery.trim() && !multimodalInput) {
+      return;
+    }
     Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
 
     let query: Host.AidaClient.Part|Host.AidaClient.Part[];

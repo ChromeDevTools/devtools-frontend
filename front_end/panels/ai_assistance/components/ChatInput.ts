@@ -802,6 +802,10 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
     const imageInput = !this.#imageInput?.isLoading && this.#imageInput?.data ?
         {inlineData: {data: this.#imageInput.data, mimeType: this.#imageInput.mimeType}} :
         undefined;
+    const text = this.#textAreaRef.value?.value?.trim() ?? '';
+    if (!text && !imageInput) {
+      return;
+    }
     this.onTextSubmit(this.#textAreaRef.value?.value ?? '', imageInput, this.#imageInput?.inputType);
     this.#imageInput = undefined;
     this.#historyOffset = -1;

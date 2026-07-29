@@ -487,5 +487,15 @@ describeWithEnvironment('ChatInput', () => {
       addButton.click();
       sinon.assert.calledOnce(onContextAdd);
     });
+    it('does not trigger onTextSubmit on submit event when input is empty', async () => {
+      const [, component] = createComponent();
+      const onTextSubmit = sinon.stub();
+      component.onTextSubmit = onTextSubmit;
+
+      const event = new SubmitEvent('submit', {cancelable: true});
+      component.onSubmit(event);
+
+      sinon.assert.notCalled(onTextSubmit);
+    });
   });
 });

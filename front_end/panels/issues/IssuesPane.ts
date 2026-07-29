@@ -274,7 +274,9 @@ export class IssuesPane extends UI.Widget.VBox {
     const issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     issueCounter.data = {
       clickHandler: () => {
-        this.focus();
+        const summary = IssueCounter.IssueCounter.getIssueCountsEnumeration(
+            IssuesManager.IssuesManager.IssuesManager.instance(), false);
+        UI.ARIAUtils.LiveAnnouncer.alert(summary);
       },
       tooltipCallback: () => {
         const issueEnumeration = IssueCounter.IssueCounter.getIssueCountsEnumeration(

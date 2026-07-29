@@ -29,7 +29,7 @@ export interface IconButtonData {
 }
 
 export class IconButton extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   #clickHandler?: () => void;
   #groups: IconWithTextData[] = [];
   #compact = false;

@@ -96,7 +96,7 @@ export function getIssueCountsEnumeration(
 }
 
 export class IssueCounter extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   #clickHandler?: () => void;
   #tooltipCallback?: () => void;
   #leadingText = '';
